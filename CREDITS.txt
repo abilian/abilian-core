@@ -1,0 +1,26 @@
+Design, programming
+-------------------
+
+Stefane Fermigier, 2012.
+
+Art (images, icons)
+-------------------
+
+See links for copyright and licences (usually Creative Commons).
+
+- Background image(s) for login:
+  Kevin Dooley <http://www.flickr.com/photos/pagedooley/>
+
+- File types icons:
+  http://www.splitbrain.org/projects/file_icons
+
+- Animal pictures:
+  http://en.wikipedia.org/wiki/Wikipedia:Featured_pictures/Animals#Animals
+
+- Group pictures:
+  http://en.wikipedia.org/wiki/File:Estudiante_INTEC.jpg
+  http://en.wikipedia.org/wiki/File:Salesman_-beach_-_bikini-_sun-27Dec2008.jpg
+  http://en.wikipedia.org/wiki/File:Cocacola-5cents-1900_edit1.jpg
+
+- Group Icon (CC Attribution-Noncommercial-No Derivate 3.0):
+  http://www.iconarchive.com/show/soft-scraps-icons-by-deleket/User-Group-icon.html

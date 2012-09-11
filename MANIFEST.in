@@ -1,0 +1,4 @@
+include *.md *.txt *.ini
+recursive-include doc *
+recursive-include yaka *
+

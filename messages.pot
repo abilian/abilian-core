@@ -1,0 +1,320 @@
+# Translations template for PROJECT.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2012-06-15 18:01+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: yaka/filters.py:39
+msgid "a minute ago"
+msgstr ""
+
+#: yaka/filters.py:41
+#, python-format
+msgid "%(num)d minutes ago"
+msgstr ""
+
+#: yaka/filters.py:43
+msgid "an hour ago"
+msgstr ""
+
+#: yaka/filters.py:45
+#, python-format
+msgid "%(num)d hours ago"
+msgstr ""
+
+#: yaka/filters.py:48
+msgid "yesterday"
+msgstr ""
+
+#: yaka/filters.py:50
+#, python-format
+msgid "%(num)d days ago"
+msgstr ""
+
+#: yaka/filters.py:52
+msgid "a month ago"
+msgstr ""
+
+#: yaka/filters.py:54
+#, python-format
+msgid "%(num)d months ago"
+msgstr ""
+
+#: yaka/filters.py:56
+msgid "last year"
+msgstr ""
+
+#: yaka/filters.py:58
+#, python-format
+msgid "%(num)d years ago"
+msgstr ""
+
+#: yaka/apps/social/forms.py:9
+msgid "Name"
+msgstr ""
+
+#: yaka/apps/social/forms.py:10
+msgid "Name is required."
+msgstr ""
+
+#: yaka/apps/social/forms.py:12
+msgid "Description"
+msgstr ""
+
+#: yaka/apps/social/groups.py:79
+msgid "Your new group has been created"
+msgstr ""
+
+#: yaka/apps/social/invites.py:32
+msgid "Action aborted"
+msgstr ""
+
+#: yaka/apps/social/invites.py:50
+msgid "Invitation sent"
+msgstr ""
+
+#: yaka/apps/social/users.py:26
+msgid "Conversations"
+msgstr ""
+
+#: yaka/apps/social/users.py:27
+msgid "Profile"
+msgstr ""
+
+#: yaka/apps/social/users.py:28
+msgid "Documents"
+msgstr ""
+
+#: yaka/apps/social/users.py:29
+msgid "Images"
+msgstr ""
+
+#: yaka/apps/social/users.py:30
+msgid "Audit"
+msgstr ""
+
+#: yaka/core/forms.py:92
+msgid "Invalid email address."
+msgstr ""
+
+#: yaka/templates/social/base.html:10
+msgid "Main"
+msgstr ""
+
+#: yaka/templates/social/base.html:11
+msgid "My feed"
+msgstr ""
+
+#: yaka/templates/social/base.html:13
+msgid "Private messages"
+msgstr ""
+
+#: yaka/templates/social/base.html:15
+msgid "My profile"
+msgstr ""
+
+#: yaka/templates/social/base.html:17 yaka/templates/social/user.html:32
+#: yaka/templates/social/user.html:192
+msgid "Groups"
+msgstr ""
+
+#: yaka/templates/social/base.html:18 yaka/templates/social/groups.html:18
+msgid "All groups"
+msgstr ""
+
+#: yaka/templates/social/base.html:23
+msgid "People"
+msgstr ""
+
+#: yaka/templates/social/base.html:24 yaka/templates/social/home.html:17
+msgid "Everyone"
+msgstr ""
+
+#: yaka/templates/social/base.html:25
+msgid "My followees"
+msgstr ""
+
+#: yaka/templates/social/base.html:26
+msgid "My followers"
+msgstr ""
+
+#: yaka/templates/social/base.html:28
+msgid "Apps"
+msgstr ""
+
+#: yaka/templates/social/base.html:29
+msgid "Files"
+msgstr ""
+
+#: yaka/templates/social/group.html:16 yaka/templates/social/groups.html:70
+msgid "Leave"
+msgstr ""
+
+#: yaka/templates/social/group.html:18 yaka/templates/social/groups.html:68
+msgid "Join"
+msgstr ""
+
+#: yaka/templates/social/group.html:41
+msgid "Group admins"
+msgstr ""
+
+#: yaka/templates/social/group.html:48
+msgid "Group members"
+msgstr ""
+
+#: yaka/templates/social/groups-new.html:8
+msgid "Create a new group"
+msgstr ""
+
+#: yaka/templates/social/groups.html:6
+msgid "Groups Directory"
+msgstr ""
+
+#: yaka/templates/social/groups.html:10
+msgid ""
+"Create and join groups to discuss projects or to meet colleagues with "
+"similar skills, interests and hobbies. Public groups are open to anyone "
+"and appear in the groups directory. Private groups are invitation-only "
+"spaces for confidential activities, and do not appear in the groups "
+"directory."
+msgstr ""
+
+#: yaka/templates/social/groups.html:13
+msgid "Create new group"
+msgstr ""
+
+#: yaka/templates/social/groups.html:19
+msgid "My groups"
+msgstr ""
+
+#: yaka/templates/social/home.html:8
+msgid "Share an update"
+msgstr ""
+
+#: yaka/templates/social/home.html:13
+msgid "Share"
+msgstr ""
+
+#: yaka/templates/social/home.html:15
+msgid "with group:"
+msgstr ""
+
+#: yaka/templates/social/home.html:56
+msgid "Your feed"
+msgstr ""
+
+#: yaka/templates/social/home.html:69
+msgid "Latest visitors"
+msgstr ""
+
+#: yaka/templates/social/home.html:69
+msgid "active"
+msgstr ""
+
+#: yaka/templates/social/home.html:80
+msgid "Trending topics"
+msgstr ""
+
+#: yaka/templates/social/invite.html:6
+msgid "Invite colleagues to join this community"
+msgstr ""
+
+#: yaka/templates/social/invite.html:9
+msgid ""
+"Please enter the email addresses of people you'd like to invite to the "
+"community. Enter one email address per line."
+msgstr ""
+
+#: yaka/templates/social/invite.html:15
+msgid "Emails"
+msgstr ""
+
+#: yaka/templates/social/invite.html:22
+msgid "Personnalized message"
+msgstr ""
+
+#: yaka/templates/social/invite.html:31
+msgid "Invite"
+msgstr ""
+
+#: yaka/templates/social/invite.html:32
+msgid "Cancel"
+msgstr ""
+
+#: yaka/templates/social/user.html:9
+msgid "Personal details"
+msgstr ""
+
+#: yaka/templates/social/user.html:13
+msgid "Email:"
+msgstr ""
+
+#: yaka/templates/social/user.html:20
+msgid "Job title:"
+msgstr ""
+
+#: yaka/templates/social/user.html:27
+msgid "Location:"
+msgstr ""
+
+#: yaka/templates/social/user.html:34
+msgid "is member of the following groups:"
+msgstr ""
+
+#: yaka/templates/social/user.html:44
+msgid "Stats"
+msgstr ""
+
+#: yaka/templates/social/user.html:47
+msgid "Joined on:"
+msgstr ""
+
+#: yaka/templates/social/user.html:52
+msgid "Latest connection:"
+msgstr ""
+
+#: yaka/templates/social/user.html:88 yaka/templates/users/user.html:63
+msgid "Audit log"
+msgstr ""
+
+#: yaka/templates/social/user.html:143 yaka/templates/social/users.html:65
+msgid "Unfollow"
+msgstr ""
+
+#: yaka/templates/social/user.html:145 yaka/templates/social/users.html:63
+msgid "Follow"
+msgstr ""
+
+#: yaka/templates/social/user.html:181
+msgid "Top tags"
+msgstr ""
+
+#: yaka/templates/social/user.html:185
+msgid "Followers"
+msgstr ""
+
+#: yaka/templates/social/users.html:7
+msgid "Users directory"
+msgstr ""
+
+#: yaka/templates/social/users.html:11
+msgid "Search users directory"
+msgstr ""
+
+#: yaka/templates/social/users.html:12
+msgid "Search"
+msgstr ""
+

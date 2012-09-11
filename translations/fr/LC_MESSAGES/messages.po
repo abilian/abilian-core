@@ -1,0 +1,31 @@
+# French translations for PROJECT.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2012-06-12 17:45+0200\n"
+"PO-Revision-Date: 2012-06-12 17:18+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: yaka/core/forms.py:92
+msgid "Invalid email address."
+msgstr "Adresse email invalide."
+
+#: yaka/templates/social/groups.html:7
+msgid "Groups Directory"
+msgstr "Répertoire des groupes"
+
+#: yaka/templates/social/users.html:7
+msgid "Users Directory"
+msgstr "Répertoire des utilisateurs"
+

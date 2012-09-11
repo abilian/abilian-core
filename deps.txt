@@ -1,0 +1,41 @@
+# Flask and Flask extensions
+Flask
+Flask-SQLAlchemy
+Flask-Testing
+Flask-Security
+Flask-WTF
+Flask-Script
+Flask-DebugToolbar
+Flask-Uploads
+Flask-Babel
+Flask-Assets
+
+# Flask extensions not used (yet?)
+Flask-Themes
+Flask-Mail
+Flask-OpenID
+Flask-Cache
+
+# Assets management (might not be necessary if distributing compiled assets)
+jsmin
+closure
+cssmin
+
+# Other
+sqlalchemy
+whoosh
+markdown
+feedparser
+blinker
+requests
+iso8601
+passlib
+py-bcrypt
+pillow
+python-magic
+twill
+logbook
+guess-language
+
+# For development only
+coverage==3.5.1
