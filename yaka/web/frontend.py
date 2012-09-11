@@ -3,7 +3,8 @@ import copy
 import json
 import re
 
-from flask import session, redirect, request, g, render_template, flash, Markup, Blueprint
+from flask import session, redirect, request, g, render_template, flash, \
+  Markup, Blueprint
 
 from yaka.core.extensions import db
 from yaka.core.entities import Entity
@@ -121,7 +122,7 @@ class TableView(object):
         # XXX: security issue here
         cell = Markup('<a href="%s">%s</a>' % (value, value[len("http://"):]))
       else:
-        cell = str(value)
+        cell = unicode(value)
       line.append(cell)
     return line
 
@@ -164,7 +165,7 @@ class SingleView(object):
     elif isinstance(value, Entity):
       return Markup('<a href="%s">%s</a>' % (value.url, cgi.escape(value.name)))
     else:
-      return str(value)
+      return unicode(value)
 
 
 #

@@ -15,6 +15,7 @@ tests/extra_files
 maxid.data
 sandbox
 results
+build
 
 yaka/static/misc*
 yaka/static/.webassets-cache
