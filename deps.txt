@@ -1,3 +1,4 @@
+#: PRODUCTION
 # Flask and Flask extensions
 Flask
 Flask-SQLAlchemy
@@ -16,11 +17,6 @@ Flask-Mail
 Flask-OpenID
 Flask-Cache
 
-# Assets management (might not be necessary if distributing compiled assets)
-jsmin
-closure
-cssmin
-
 # Other
 sqlalchemy
 whoosh
@@ -37,5 +33,12 @@ twill
 logbook
 guess-language
 
-# For development only
+# Assets management (might not be necessary if distributing compiled assets)
+jsmin
+closure
+cssmin
+
+#: DEVELOPMENT
 coverage==3.5.1
+nose
+pytest

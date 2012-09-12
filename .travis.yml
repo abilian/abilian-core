@@ -10,7 +10,6 @@ before_install:
 # Install Python dependencies
 install:
   - pip install . --use-mirrors
-  - pip install nose --use-mirrors
 
 # Run tests
 script: nosetests -e 'test_search' -e '_(word|excel|odt|wordx)_' tests
