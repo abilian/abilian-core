@@ -17,6 +17,22 @@ def get_deps():
     deps.append(dep)
   return deps
 
+def get_long_description():
+  import os
+
+  if os.path.exists("README.rst"):
+    return open("README.rst").read()
+  elif os.path.exists("README.md"):
+    rst = os.popen("pandoc -r markdown -w rst -o - README.md").read()
+    if rst:
+      return rst
+    else:
+      return open("README.md").read()
+  elif os.path.exists("README.txt"):
+    return open("README.txt").read()
+  else:
+    return None
+
 
 metadata = dict(
   name='Yaka Core',
@@ -26,7 +42,7 @@ metadata = dict(
   author='Stefane Fermigier',
   author_email='sf@fermigier.com',
   description='Enterprise social networking meets CRM',
-  long_description=__doc__,
+  long_description=get_long_description(),
   packages=['yaka'],
   platforms='any',
   classifiers=[
