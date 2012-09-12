@@ -2,9 +2,21 @@
 
 from setuptools import setup, find_packages
 
-deps = [ line.strip()
-         for line in open("deps.txt")
-         if line and not line.startswith("#") ]
+
+def get_deps():
+  import re
+
+  deps_raw = [ line.strip() for line in open("deps.txt")]
+  deps = []
+  for dep in deps_raw:
+    if not dep or dep.startswith("#"):
+      continue
+    m = re.search("#egg=(.*)", dep)
+    if m:
+      dep = m.group(1)
+    deps.append(dep)
+  return deps
+
 
 metadata = dict(
   name='Yaka Core',
@@ -25,10 +37,10 @@ metadata = dict(
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     ],
-  # Unsupported by distutils.
-  #install_requires=deps,
-  #include_package_data=True,
-  #zip_safe=False,
+  # Setuptools specific
+  install_requires=get_deps(),
+  include_package_data=True,
+  zip_safe=False,
 )
 
 setup(**metadata)
