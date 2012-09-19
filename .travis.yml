@@ -14,3 +14,4 @@ install:
 # Run tests
 script:
   - nosetests -e 'test_search' -e '_(word|excel|odt|wordx)_' tests
+  - py.test tests
