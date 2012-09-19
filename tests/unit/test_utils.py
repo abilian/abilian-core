@@ -1,6 +1,7 @@
+# coding=utf-8
 from unittest import TestCase
 
-from yaka.core.util import Pagination
+from yaka.core.util import Pagination, slugify
 
 
 class TestPagination(TestCase):
@@ -24,3 +25,16 @@ class TestPagination(TestCase):
     p = Pagination(10, 10, 100)
     l = list(p.iter_pages())
     self.assertEquals([1, 2, None, 8, 9, 10], l)
+
+
+class TestSlugify(TestCase):
+
+  def test1(self):
+    slug = slugify(u"a b c")
+    assert slug == 'a-b-c'
+    assert isinstance(slug, str)
+
+  def test2(self):
+    slug = slugify(u"C'est l'été")
+    assert slug == 'c-est-l-ete'
+    assert isinstance(slug, str)

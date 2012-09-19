@@ -10,6 +10,10 @@ from flask import request
 
 
 # XXX: really needed ?
+import unicodedata
+import re
+
+
 def get_params(names):
   """Returns dictionary with params from request"""
   params = {}
@@ -102,3 +106,15 @@ class Pagination(object):
           yield None
         yield num
         last = num
+
+
+def slugify(value, separator="-"):
+  """ Slugify an unicode string, to make it URL friendly. """
+  assert isinstance(value, unicode)
+  value = unicodedata.normalize('NFKD', value)
+  value = value.encode('ascii', 'ignore')
+  value = value.decode('ascii')
+  value = re.sub('[^\w\s-]', ' ', value)
+  value = value.strip().lower()
+  value = re.sub('[%s\s]+' % separator, separator, value)
+  return str(value)
