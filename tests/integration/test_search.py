@@ -1,7 +1,8 @@
 from unittest import skip
+from nose.tools import eq_, ok_
+
 from sqlalchemy import Column, UnicodeText, Text
 from base import IntegrationTestCase
-from nose.tools import eq_, ok_
 
 from yaka.services import indexing
 from yaka.core.entities import SEARCHABLE, Entity
