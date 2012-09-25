@@ -110,7 +110,8 @@ class Pagination(object):
 
 def slugify(value, separator="-"):
   """ Slugify an unicode string, to make it URL friendly. """
-  assert isinstance(value, unicode)
+  if not isinstance(value, unicode):
+    value = unicode(value)
   value = unicodedata.normalize('NFKD', value)
   value = value.encode('ascii', 'ignore')
   value = value.decode('ascii')
