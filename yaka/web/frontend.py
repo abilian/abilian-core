@@ -3,7 +3,7 @@ import copy
 import json
 import re
 
-from flask import session, redirect, request, g, render_template, flash, \
+from flask import session, redirect, request, g, render_template, flash,\
   Markup, Blueprint
 
 from yaka.core.extensions import db
@@ -223,6 +223,16 @@ def labelize(s):
   return " ".join([w.capitalize() for w in s.split("_")])
 
 
+def make_single_view(form):
+  panels = []
+  for g in form._groups:
+    panel = Panel(g[0], *[ Row(x) for x in g[1] ])
+    panels.append(panel)
+  return SingleView(*panels)
+
+
+
+
 class ModuleMeta(type):
   """
       Module metaclass.
@@ -272,6 +282,7 @@ class Module(object):
   _urls = []
 
 
+
   def __init__(self):
     # If endpoint name is not provided, get it from the class name
     if self.endpoint is None:
@@ -282,6 +293,8 @@ class Module(object):
 
     if self.id is None:
       self.id = self.managed_class.__name__.lower()
+
+    self.single_view = make_single_view(self.edit_form)
 
   def create_blueprint(self, crud_app):
     """
