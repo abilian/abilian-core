@@ -90,18 +90,19 @@ class TableView(object):
     default_width = 0.99 / len(columns)
     for col in columns:
       if type(col) == str:
-        self.columns.append(dict(name=col, width=default_width))
-      else:
-        self.columns.append(col)
+        col = dict(name=col, width=default_width)
+      assert type(col) == dict
+      if not col.has_key('label'):
+        col['label'] = labelize(col['name'])
+      self.columns.append(col)
 
   def render(self, model):
-    columns = [{'name': labelize(col['name']), 'width': col['width']} for col in self.columns]
     table = []
     for entity in model:
       table.append(self.render_line(entity))
 
-    return Markup(render_template('crm/render_table.html', table=table, columns=columns,
-                                  table_name=self.name))
+    return Markup(render_template('crm/render_table.html', table=table,
+                                  columns=self.columns, table_name=self.name))
 
   def render_line(self, entity):
     line = []
