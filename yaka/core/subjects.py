@@ -41,7 +41,8 @@ class User(Entity):
   __editable__ = ['first_name', 'last_name', 'job_title', 'department', 'company', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
-  query = db.session.query_property(UserQuery)
+  query_class = UserQuery
+  #query = db.session.query_property(UserQuery)
 
   # Basic information
   first_name = Column(UnicodeText, info=SEARCHABLE)

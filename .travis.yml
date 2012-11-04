@@ -15,5 +15,5 @@ install:
 # Run tests
 script:
   - nosetests -e 'test_search' -e '_(word|excel|odt|wordx)_' tests
-  - cd docs; sphinx-build -W -b html -d _build/doctrees . _build/html
+  - sphinx-build -W -b html docs/ docs/_build/
 

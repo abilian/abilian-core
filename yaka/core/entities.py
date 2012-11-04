@@ -15,7 +15,7 @@ from .extensions import db
 from .util import memoized
 
 
-__all__ = ['Column', 'Entity', 'all_entity_classes']
+__all__ = ['Entity', 'all_entity_classes']
 
 
 class Info(dict):
@@ -243,7 +243,10 @@ event.listen(Entity, 'class_instrument', register_metadata)
 
 @memoized
 def all_entity_classes():
-  """Returns the list of all concrete persistent classes that are subclasses of Entity."""
+  """
+  Returns the list of all concrete persistent classes that are subclasses of
+  Entity.
+  """
   classes = []
   for module_name, module in sys.modules.items():
     for name in dir(module):

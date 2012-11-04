@@ -16,6 +16,8 @@ maxid.data
 sandbox
 results
 build
+MANIFEST
+docs/_build
 
 yaka/static/misc*
 yaka/static/.webassets-cache
