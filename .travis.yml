@@ -9,10 +9,11 @@ before_install:
 
 # Install Python dependencies
 install:
-  - pip install -r deps.txt --use-mirrors
+  - pip install sphinx --use-mirrors
+  - pip install -e . -r deps.txt --use-mirrors
 
 # Run tests
 script:
   - nosetests -e 'test_search' -e '_(word|excel|odt|wordx)_' tests
-  # Disable for now.
-  #- py.test tests
+  - cd docs; sphinx-build -W -b html -d _build/doctrees . _build/html
+
