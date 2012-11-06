@@ -196,11 +196,6 @@ class Entity(AbstractConcreteBase, db.Model):
   def to_json(self):
     return json.dumps(self.to_dict())
 
-  # TODO: only one of these two
-  #@property
-  #def url(self):
-  #  return "%s/%s" % (self.base_url, self.id)
-
   @property
   def _url(self):
     return self.base_url + "/%d" % self.id
@@ -209,8 +204,14 @@ class Entity(AbstractConcreteBase, db.Model):
     return "/static/icons/%s-%d.png" % (self.__class__.__name__.lower(), size)
 
   @property
-  def name(self):
-    raise NotImplementedError()
+  def _name(self):
+    if hasattr(self, 'name'):
+      return self.name
+    else:
+      raise NotImplementedError()
+
+  def __unicode__(self):
+    return self._name
 
 
 # TODO: make this unecessary

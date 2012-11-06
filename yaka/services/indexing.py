@@ -197,8 +197,8 @@ class WhooshIndexService(object):
             attrs = {}
             for key in indexed_fields:
               value = getattr(model, key)
-              if hasattr(value, 'name'):
-                value = value.name
+              if hasattr(value, '_name'):
+                value = value._name
               if isinstance(value, str):
                 value = unicode(value)
               elif isinstance(value, int):

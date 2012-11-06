@@ -43,7 +43,7 @@ class BreadCrumbs(object):
 def add_to_recent_items(entity, type=None):
   if not type:
     type = entity.__class__.__name__.lower()
-  g.recent_items.insert(0, dict(type=type, name=entity.name, url=entity._url))
+  g.recent_items.insert(0, dict(type=type, name=entity._name, url=entity._url))
   s = set()
   l = []
   for item in g.recent_items:
@@ -94,10 +94,12 @@ class TableView(object):
       value = getattr(entity, column_name)
       if value is None:
         value = ""
-      if column_name == 'name':
-        cell = Markup('<a href="%s">%s</a>' % (entity._url, cgi.escape(value)))
+      if column_name == '_name':
+        cell = Markup('<a href="%s">%s</a>' \
+                      % (entity._url, cgi.escape(value)))
       elif isinstance(value, Entity):
-        cell = Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value.name)))
+        cell = Markup('<a href="%s">%s</a>' \
+                      % (value._url, cgi.escape(value._name)))
       elif (isinstance(value, str) or isinstance(value, unicode))\
           and value.startswith("http://"):
         # XXX: security issue here
@@ -144,7 +146,7 @@ class SingleView(object):
     if value is None:
       return ""
     elif isinstance(value, Entity):
-      return Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value.name)))
+      return Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value._name)))
     else:
       return unicode(value)
 
@@ -323,17 +325,12 @@ class Module(object):
 
     return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
 
-#    return render_template('crm/list_view.html',
-#                           rendered_table=rendered_table,
-#                           breadcrumbs=bc,
-#                           module=self)
-
   @expose("/<int:entity_id>")
   @templated("crm/single_view.html")
   def entity_view(self, entity_id):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
-    bc = self.bread_crumbs(entity.name)
+    bc = self.bread_crumbs(entity._name)
     add_to_recent_items(entity)
 
     rendered_entity = self.single_view.render(entity)
@@ -351,7 +348,7 @@ class Module(object):
   def entity_edit(self, entity_id):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
-    bc = self.bread_crumbs(entity.name)
+    bc = self.bread_crumbs(entity._name)
     add_to_recent_items(entity)
 
     form = self.edit_form(obj=entity)
@@ -377,7 +374,7 @@ class Module(object):
     else:
       flash("Please fix the error below", "error")
       rendered_entity = self.single_view.render_form(form)
-      bc = self.bread_crumbs(entity.name)
+      bc = self.bread_crumbs(entity._name)
       return render_template('crm/single_view.html',
                              rendered_entity=rendered_entity,
                              breadcrumbs=bc,
