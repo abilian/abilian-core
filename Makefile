@@ -3,7 +3,7 @@
 SRC=yaka
 PEP8IGNORE=E111,E121,E201,E225,E501,
 
-all: test pep8 docs
+all: test pep8 doc
 
 #
 # testing & checking
@@ -35,7 +35,7 @@ full-test:
 pep8:
 	pep8 -r --ignore $(PEP8IGNORE) *.py $(SRC) tests
 
-docs:
+check-docs:
 	sphinx-build -W -b html docs/ docs/_build/html
 
 #
@@ -43,6 +43,9 @@ docs:
 #
 install:
 	python setup.py install
+
+doc:
+	python setup.py build_sphinx
 
 clean:
 	find . -name "*.pyc" | xargs rm -f

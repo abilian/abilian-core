@@ -5,6 +5,7 @@ import re
 
 from flask import session, redirect, request, g, render_template, flash,\
   Markup, Blueprint
+from yaka.web.decorators import templated
 
 from yaka.core.extensions import db
 from yaka.core.entities import Entity
@@ -42,7 +43,7 @@ class BreadCrumbs(object):
 def add_to_recent_items(entity, type=None):
   if not type:
     type = entity.__class__.__name__.lower()
-  g.recent_items.insert(0, dict(type=type, name=entity.name, url=entity.url))
+  g.recent_items.insert(0, dict(type=type, name=entity.name, url=entity._url))
   s = set()
   l = []
   for item in g.recent_items:
@@ -53,27 +54,6 @@ def add_to_recent_items(entity, type=None):
   if len(l) > 10:
     del l[10:]
   session['recent_items'] = g.recent_items = l
-
-
-#
-# UI model classes
-#
-class EntityListModel(object):
-  """Wraps a list of entities for presentation by a TableView."""
-
-  # TODO: not used for now
-
-  def __init__(self, entity_list):
-    self.entity_list = entity_list
-
-
-class SingleEntityModel(object):
-  """Wraps an entity for presentation by a SingleView."""
-
-  # TODO: not used for now
-
-  def __init__(self, entity):
-    self.entity = entity
 
 
 #
@@ -115,11 +95,11 @@ class TableView(object):
       if value is None:
         value = ""
       if column_name == 'name':
-        cell = Markup('<a href="%s">%s</a>' % (entity.url, cgi.escape(value)))
+        cell = Markup('<a href="%s">%s</a>' % (entity._url, cgi.escape(value)))
       elif isinstance(value, Entity):
-        cell = Markup('<a href="%s">%s</a>' % (value.url, cgi.escape(value.name)))
+        cell = Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value.name)))
       elif (isinstance(value, str) or isinstance(value, unicode))\
-      and value.startswith("http://"):
+          and value.startswith("http://"):
         # XXX: security issue here
         cell = Markup('<a href="%s">%s</a>' % (value, value[len("http://"):]))
       else:
@@ -164,7 +144,7 @@ class SingleView(object):
     if value is None:
       return ""
     elif isinstance(value, Entity):
-      return Markup('<a href="%s">%s</a>' % (value.url, cgi.escape(value.name)))
+      return Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value.name)))
     else:
       return unicode(value)
 
@@ -232,8 +212,6 @@ def make_single_view(form):
   return SingleView(*panels)
 
 
-
-
 class ModuleMeta(type):
   """
       Module metaclass.
@@ -281,8 +259,6 @@ class Module(object):
   related_views = []
 
   _urls = []
-
-
 
   def __init__(self):
     # If endpoint name is not provided, get it from the class name
@@ -336,18 +312,24 @@ class Module(object):
   # Exposed views
   #
   @expose("/")
+  @templated("crm/list_view.html")
   def list_view(self):
     bc = self.bread_crumbs()
 
-    entities = self.managed_class.query.all()
+    entities = self.get_entities()
 
     table_view = TableView(self.list_view_columns)
     rendered_table = table_view.render(entities)
 
-    return render_template('crm/list_view.html',
-                           rendered_table=rendered_table, breadcrumbs=bc, module=self)
+    return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
+
+#    return render_template('crm/list_view.html',
+#                           rendered_table=rendered_table,
+#                           breadcrumbs=bc,
+#                           module=self)
 
   @expose("/<int:entity_id>")
+  @templated("crm/single_view.html")
   def entity_view(self, entity_id):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
@@ -358,11 +340,14 @@ class Module(object):
     related_views = self.render_related_views(entity)
 
     audit_entries = self.app.extensions['audit'].entries_for(entity)
-    return render_template('crm/single_view.html', rendered_entity=rendered_entity,
-                           related_views=related_views, audit_entries=audit_entries,
-                           breadcrumbs=bc, module=self)
+    return dict(rendered_entity=rendered_entity,
+                related_views=related_views,
+                audit_entries=audit_entries,
+                breadcrumbs=bc,
+                module=self)
 
   @expose("/<int:entity_id>/edit")
+  @templated("crm/single_view.html")
   def entity_edit(self, entity_id):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
@@ -372,8 +357,9 @@ class Module(object):
     form = self.edit_form(obj=entity)
     rendered_entity = self.single_view.render_form(form)
 
-    return render_template('crm/single_view.html', rendered_entity=rendered_entity,
-                           breadcrumbs=bc, module=self)
+    return dict(rendered_entity=rendered_entity,
+                breadcrumbs=bc,
+                module=self)
 
   @expose("/<int:entity_id>/edit", methods=['POST'])
   def entity_edit_post(self, entity_id):
@@ -392,18 +378,22 @@ class Module(object):
       flash("Please fix the error below", "error")
       rendered_entity = self.single_view.render_form(form)
       bc = self.bread_crumbs(entity.name)
-      return render_template('crm/single_view.html', rendered_entity=rendered_entity,
-                             breadcrumbs=bc, module=self)
+      return render_template('crm/single_view.html',
+                             rendered_entity=rendered_entity,
+                             breadcrumbs=bc,
+                             module=self)
 
   @expose("/new")
+  @templated("crm/single_view.html")
   def entity_new(self):
     bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
 
     form = self.edit_form()
     rendered_entity = self.single_view.render_form(form, for_new=True)
 
-    return render_template('crm/single_view.html', rendered_entity=rendered_entity,
-                           breadcrumbs=bc, module=self)
+    return dict(rendered_entity=rendered_entity,
+                breadcrumbs=bc,
+                module=self)
 
   @expose("/new", methods=['PUT', 'POST'])
   def entity_new_put(self):
@@ -422,8 +412,10 @@ class Module(object):
       flash("Error", "error")
       rendered_entity = self.single_view.render_form(form, for_new=True)
       bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
-      return render_template('crm/single_view.html', rendered_entity=rendered_entity,
-                             breadcrumbs=bc, module=self)
+      return render_template('crm/single_view.html',
+                             rendered_entity=rendered_entity,
+                             breadcrumbs=bc,
+                             module=self)
 
   @expose("/<int:entity_id>/delete")
   def entity_delete(self, entity_id):
@@ -434,6 +426,12 @@ class Module(object):
     db.session.commit()
     flash("Entity deleted", "success")
     return redirect(self.url)
+
+  #
+  # Override in subclasses
+  #
+  def get_entities(self):
+    return self.managed_class.query.all()
 
   #
   # Utils
@@ -455,7 +453,9 @@ class Module(object):
     for label, attr_name, column_names in self.related_views:
       view = TableView(column_names)
       related_entities = getattr(entity, attr_name)
-      obj = dict(label=label, rendered=view.render(related_entities), size=len(related_entities))
+      obj = dict(label=label,
+                 rendered=view.render(related_entities),
+                 size=len(related_entities))
       rendered.append(obj)
     return rendered
 

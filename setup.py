@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 def get_deps():
@@ -37,11 +37,11 @@ def get_long_description():
 metadata = dict(
   name='Yaka Core',
   version='0.1dev',
-  url='http://www.yaka.biz/',
+  url='http://www.abilian.com/',
   license='LGPL',
   author='Stefane Fermigier',
   author_email='sf@fermigier.com',
-  description='Enterprise social networking meets CRM',
+  description='Base framework for E2.0 applications',
   long_description=get_long_description(),
   packages=['yaka'],
   platforms='any',
@@ -53,7 +53,7 @@ metadata = dict(
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     ],
-  # Setuptools specific
+  # These args are setuptools specific
   install_requires=get_deps(),
   include_package_data=True,
   zip_safe=False,

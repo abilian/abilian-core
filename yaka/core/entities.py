@@ -197,9 +197,9 @@ class Entity(AbstractConcreteBase, db.Model):
     return json.dumps(self.to_dict())
 
   # TODO: only one of these two
-  @property
-  def url(self):
-    return "%s/%s" % (self.base_url, self.id)
+  #@property
+  #def url(self):
+  #  return "%s/%s" % (self.base_url, self.id)
 
   @property
   def _url(self):
