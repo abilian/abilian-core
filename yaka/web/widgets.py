@@ -16,6 +16,24 @@ class Column(object):
       setattr(self, k, w)
 
 
+class ModelAdapter(object):
+  """
+  Adapts a persistent entity for
+  """
+  def __init__(self, model):
+    self.model = model
+    self.cls = model.__class__
+
+  def __getitem__(self, name):
+    value = getattr(self.model, name)
+    try:
+      info = self.cls.__mapper__.c[name].info
+      label = info['label']
+    except:
+      label = name
+    return dict(name=name, value=value, label=label)
+
+
 class TableView(object):
   """
   """
@@ -38,6 +56,22 @@ class TableView(object):
       self.columns.append(col)
 
   def render(self, model):
+    aoColumns = [{'asSorting': [] }] if self.show_controls else []
+    aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
+                   for i in range(0, len(self.columns)) ]
+    datatable_options = {
+      'aoColumns': aoColumns,
+      'bFilter': self.show_controls,
+      'oLanguage': {
+        'sSearch': "Filter records:"
+      },
+      'sPaginationType': "bootstrap",
+      'bLengthChange': False,
+      'iDisplayLength': 50
+
+    }
+    js = "$(%s).dataTable(%s);" % (self.name, json.dumps(datatable_options))
+
     table = []
     for entity in model:
       table.append(self.render_line(entity))
@@ -85,12 +119,10 @@ class SingleView(object):
     self.panels = panels
 
   def render(self, model):
-    # TODO: refactor by passing a model instead
-    def get(attr_name):
-      return self.get(model, attr_name)
+    model = ModelAdapter(model)
 
     return Markup(render_template('widgets/render_single.html',
-                                  panels=self.panels, get=get))
+                                  panels=self.panels, model=model))
 
   def render_form(self, form, for_new=False):
     # Client-side rules for jQuery.validate

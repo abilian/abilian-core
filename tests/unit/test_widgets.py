@@ -37,7 +37,7 @@ class TableViewTestCase(TestCase):
 
   def test_single_view(self):
     with self.app.test_request_context():
-      panels = [Panel('main', Row('name', 'price'))]
+      panels = [Panel('main', Row('name'), Row('price'))]
       view = SingleView(*panels)
 
       model = Model(name="Renault Megane", price=10000)
