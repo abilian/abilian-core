@@ -314,7 +314,7 @@ class Module(object):
   def bread_crumbs(self, label=None):
     bc = BreadCrumbs([("/", "Home"), ("/crm/", "CRM")])
     if label:
-      bc.add("/crm/" + self.endpoint, self.label)
+      bc.add("/crm/%s/" % self.endpoint, self.label)
       bc.add("", label)
     else:
       bc.add("", self.label)
