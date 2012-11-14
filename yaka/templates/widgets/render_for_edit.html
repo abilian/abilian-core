@@ -1,0 +1,77 @@
+{% macro render_field(field) %}
+  {% if field.errors %}
+    <div class="control-group error">
+      {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+      <label class="control-label" for="input-{{ field.name }}">{{ field.label }}</label>
+      <div class="controls">
+        {{ field(class=css_class, **kwargs) }}
+        <span class="help-inline">{% for error in field.errors %}{{ error|e }}. {% endfor %}</span>
+      </div>
+    </div>
+  {% else %}
+    <div class="control-group">
+      {% if field.flags.required %}
+        <label class="control-label"
+               for="input-{{ field.name }}"><b>{{ field.label }}</b></label>
+      {% else %}
+        <label class="control-label" for="input-{{ field.name }}">{{ field.label }}</label>
+      {% endif %}
+      <div class="controls">
+        {{ field(**kwargs) }}
+      </div>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+<form action="{{ request.path }}" method="POST" class="form-horizontal" id="edit-form">
+  {{ form.csrf }}
+
+  {% for label, field_names in form._groups %}
+    <legend>{{ label }}</legend>
+
+    <fieldset>
+      {% for field_name in field_names %}
+        {{ render_field(form[field_name]) }}
+      {% endfor %}
+    </fieldset>
+  {% endfor %}
+
+  <div class="form-actions">
+    {% if for_new %}
+      <button type="submit" class="btn btn-primary" name="_action" value="add">Add new</button>
+      <button type="submit" class="btn cancel" name="_action" value="cancel">Cancel</button>
+    {% else %}
+      <button type="submit" class="btn btn-primary" name="_action" value="save">Save changes</button>
+      <button type="submit" class="btn cancel" name="_action" value="cancel">Cancel</button>
+    {% endif %}
+  </div>
+
+</form>
+
+{% if rules %}
+<script>
+  $(document).ready(function() {
+    var rules = {{ rules }};
+
+    // Make bold labels for required fields
+    $("label").each(function(i, e) {
+      var for_ = $(e).attr("for");
+      if (rules[for_] && rules[for_].required) {
+        $(e).addClass("required");
+      }
+    });
+
+    // Activate valitation plugin
+    $("#edit-form").validate({
+      /* debug: true, */
+      rules: rules,
+      highlight: function(label) {
+        $(label).closest('.control-group').addClass('error');
+      },
+      unhighlight: function(label) {
+        $(label).closest('.control-group').removeClass('error');
+      }
+    });
+  });
+</script>
+{% endif %}

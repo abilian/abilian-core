@@ -1,0 +1,83 @@
+{% if table %}
+<script>
+$(document).ready(function() {
+  var id = "#{{ table_name }}";
+  var bFilter = {% if show_controls %} true {% else %} false {% endif %};
+  $(id).dataTable( {
+    aoColumns: [
+      {% if show_controls %}
+      { asSorting: [] },
+      {% endif %}
+      {% for i in range(0, columns|count) %}
+      { asSorting: [ "asc", "desc" ] },
+      {% endfor %}
+    ],
+    bFilter: bFilter,
+    oLanguage: {
+      sSearch: "Filter records:"
+    },
+    sPaginationType: "bootstrap",
+    bLengthChange: false,
+    iDisplayLength: 50
+  });
+} );
+</script>
+
+<form>
+
+{% if show_controls %}
+<div class="btn-group">
+  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    Select
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li><a href="">All</a></li>
+    <li><a href="">All</a></li>
+    <!-- dropdown menu links -->
+  </ul>
+</div>
+{% endif %}
+
+<table cellpadding="0" cellspacing="0" border="0"
+       class="table table-striped table-bordered"
+       id="{{ table_name }}">
+  <thead>
+  <tr>
+    {% if show_controls %}
+    <th width="1%"></th>
+    {% endif %}
+    {% for col in columns %}
+    <th width="{{ col.width }}%">{{ col.label }}</th>
+    {% endfor %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for line in table %}
+    <tr>
+      {% if show_controls %}
+      <td><input type="checkbox"></td>
+      {% endif %}
+      {% for cell in line %}
+      <td>{{ cell }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+  <tr>
+    {% if show_controls %}
+    <th></th>
+    {% endif %}
+    {% for col in columns %}
+      <th width="{{ col.width }}%">{{ col.label }}</th>
+    {% endfor %}
+  </tr>
+  </tfoot>
+</table>
+</form>
+{% else %}
+No data. <a href="new">Create new</a>.
+{% endif %}
+
+<div style="clear: both;"></div>

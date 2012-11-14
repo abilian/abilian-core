@@ -1,0 +1,30 @@
+<a class="btn" href="{{ request.path }}/edit"><i class="icon-edit"></i> Edit</a>
+<a class="btn btn-danger" href="{{ request.path }}/delete"
+   onclick="confirm('Are you sure?');"><i class="icon-trash icon-white"></i> Delete</a>
+
+{% for panel in panels %}
+<div class="panel" style="margin-top: 10px;">
+  <h2>{{ panel.label }}</h2>
+
+  <table class="table table-striped table-condensed" style="margin: 10px 0 15px 0;">
+    <tbody>
+    {% for row in panel %}
+    {% if row|count == 1 %}
+      <tr class="row">
+        <th class="span2">{{ row[0]|labelize}}</th>
+        <td class="span12" colspan="3">{{ get(row[0]) }}</td>
+      </tr>
+    {%  else %}
+      <tr class="row">
+        <th class="span2">{{ row[0]|labelize }}</th>
+        <td class="span5">{{ get(row[0]) }}</td>
+        <th class="span2">{{ row[1]|labelize }}</th>
+        <td class="span5">{{ get(row[1]) }}</td>
+      </tr>
+    {% endif %}
+    </tbody>
+    {% endfor %}
+  </table>
+
+</div>
+{% endfor %}
