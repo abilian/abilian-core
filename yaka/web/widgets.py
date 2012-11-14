@@ -25,13 +25,22 @@ class ModelAdapter(object):
     self.cls = model.__class__
 
   def __getitem__(self, name):
-    value = getattr(self.model, name)
     try:
       info = self.cls.__mapper__.c[name].info
       label = info['label']
     except:
       label = name
-    return dict(name=name, value=value, label=label)
+    value = getattr(self.model, name)
+    if value is None:
+      value = ""
+      skip = True
+    elif isinstance(value, Entity):
+      value = Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value._name)))
+      skip = False
+    else:
+      value = unicode(value)
+      skip = False
+    return dict(name=name, value=value, label=label, skip=skip)
 
 
 class TableView(object):
@@ -143,15 +152,6 @@ class SingleView(object):
 
     return Markup(render_template('widgets/render_for_edit.html',
                                   form=form, for_new=for_new, rules=rules))
-
-  def get(self, model, attr_name):
-    value = getattr(model, attr_name)
-    if value is None:
-      return ""
-    elif isinstance(value, Entity):
-      return Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value._name)))
-    else:
-      return unicode(value)
 
 
 #
