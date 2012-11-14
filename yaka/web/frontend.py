@@ -5,8 +5,8 @@ import re
 
 from flask import session, redirect, request, g, render_template, flash,\
   Markup, Blueprint
-from yaka.web.decorators import templated
 
+from yaka.web.decorators import templated
 from yaka.core.extensions import db
 from yaka.core.entities import Entity
 
@@ -60,9 +60,10 @@ def add_to_recent_items(entity, type=None):
 # UI views
 #
 class TableView(object):
-  def __init__(self, columns):
+  def __init__(self, columns, show_controls=False):
     self.init_columns(columns)
     self.name = id(self)
+    self.show_controls = show_controls
 
   def init_columns(self, columns):
     # TODO
@@ -81,7 +82,8 @@ class TableView(object):
     for entity in model:
       table.append(self.render_line(entity))
 
-    return Markup(render_template('crm/render_table.html', table=table,
+    return Markup(render_template('crm/render_table.html',
+                                  table=table, show_controls=self.show_controls,
                                   columns=self.columns, table_name=self.name))
 
   def render_line(self, entity):
@@ -320,7 +322,7 @@ class Module(object):
 
     entities = self.get_entities()
 
-    table_view = TableView(self.list_view_columns)
+    table_view = TableView(self.list_view_columns, show_controls=True)
     rendered_table = table_view.render(entities)
 
     return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
@@ -337,6 +339,7 @@ class Module(object):
     related_views = self.render_related_views(entity)
 
     audit_entries = self.app.extensions['audit'].entries_for(entity)
+
     return dict(rendered_entity=rendered_entity,
                 related_views=related_views,
                 audit_entries=audit_entries,
