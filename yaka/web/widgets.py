@@ -31,16 +31,34 @@ class ModelAdapter(object):
     except:
       label = name
     value = getattr(self.model, name)
+
+    # Massage the value a little bit
+    skip = False
+    rendered = ""
     if value is None:
-      value = ""
       skip = True
+    elif value is False:
+      skip = True
+    elif value == "":
+      skip = True
+    elif value is True:
+      rendered = u"\u2713" # Unicode "Check mark"
     elif isinstance(value, Entity):
-      value = Markup('<a href="%s">%s</a>' % (value._url, cgi.escape(value._name)))
-      skip = False
+      rendered = Markup('<a href="%s">%s</a>'
+                     % (value._url, cgi.escape(value._name)))
+    elif name == 'siret' and value:
+      # XXX: This is a hack. Needs to be moved somewhere else.
+      siret = str(value)
+      if len(siret) > 9:
+        siren = siret[0:9]
+      else:
+        siren = siret
+      url = "http://societe.com/cgi-bin/recherche?rncs=%s" % siren
+      rendered = Markup('<a href="%s">%s</a>' % (url, siret))
     else:
-      value = unicode(value)
-      skip = False
-    return dict(name=name, value=value, label=label, skip=skip)
+      rendered = unicode(value)
+
+    return dict(name=name, rendered=rendered, label=label, skip=skip)
 
 
 class TableView(object):
