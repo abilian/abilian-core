@@ -47,7 +47,7 @@ class ModelWrapper(object):
     try:
       info = self.cls.__mapper__.c[name].info
       label = info['label']
-    except AttributeError:
+    except (AttributeError, KeyError):
       label = name
     value = getattr(self.model, name)
 
