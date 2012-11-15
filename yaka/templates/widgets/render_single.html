@@ -2,7 +2,7 @@
 <a class="btn btn-danger" href="{{ request.path }}/delete"
    onclick="confirm('Are you sure?');"><i class="icon-trash icon-white"></i> Delete</a>
 
-{% for panel in panels %}
+{% for panel in model.filter_non_empty_panels(panels) %}
 <div class="panel" style="margin-top: 10px;">
   <h2>{{ panel.label }}</h2>
 

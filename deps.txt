@@ -24,6 +24,7 @@ markdown
 feedparser
 blinker
 requests
+bleach
 iso8601
 passlib
 py-bcrypt

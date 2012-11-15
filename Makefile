@@ -1,9 +1,9 @@
 .PHONY: test unit full-test pep8 clean docs
 
 SRC=yaka
-PEP8IGNORE=E111,E121,E201,E225,E501,
+PEP8IGNORE=E111,E121,E201,E225,E501
 
-all: test pep8 doc
+all: test doc
 
 #
 # testing & checking

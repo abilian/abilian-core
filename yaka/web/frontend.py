@@ -128,7 +128,7 @@ class Module(object):
   list_view = None
   list_view_columns = []
   single_view = None
-  edit_form = None
+  edit_form_class = None
   url = None
   name = None
   static_folder = None
@@ -147,7 +147,7 @@ class Module(object):
     if self.id is None:
       self.id = self.managed_class.__name__.lower()
 
-    self.single_view = make_single_view(self.edit_form)
+    self.single_view = make_single_view(self.edit_form_class)
 
   def create_blueprint(self, crud_app):
     """
@@ -226,7 +226,7 @@ class Module(object):
     bc = self.bread_crumbs(entity._name)
     add_to_recent_items(entity)
 
-    form = self.edit_form(obj=entity)
+    form = self.edit_form_class(obj=entity)
     rendered_entity = self.single_view.render_form(form)
 
     return dict(rendered_entity=rendered_entity,
@@ -237,7 +237,7 @@ class Module(object):
   def entity_edit_post(self, entity_id):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
-    form = self.edit_form(obj=entity)
+    form = self.edit_form_class(obj=entity)
 
     if request.form.get('_action') == 'cancel':
       return redirect("%s/%d" % (self.url, entity_id))
@@ -260,7 +260,7 @@ class Module(object):
   def entity_new(self):
     bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
 
-    form = self.edit_form()
+    form = self.edit_form_class()
     rendered_entity = self.single_view.render_form(form, for_new=True)
 
     return dict(rendered_entity=rendered_entity,
@@ -269,7 +269,7 @@ class Module(object):
 
   @expose("/new", methods=['PUT', 'POST'])
   def entity_new_put(self):
-    form = self.edit_form()
+    form = self.edit_form_class()
     entity = self.managed_class()
 
     if request.form.get('_action') == 'cancel':

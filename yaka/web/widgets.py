@@ -3,6 +3,8 @@ Reusable widgets to be included in views.
 """
 
 import cgi
+import bleach
+
 from flask import render_template, json, Markup
 
 from yaka.core.entities import Entity
@@ -16,19 +18,36 @@ class Column(object):
       setattr(self, k, w)
 
 
-class ModelAdapter(object):
+class ModelWrapper(object):
   """
-  Adapts a persistent entity for
+  Adds a convenience `__getitem__` method to a model.
   """
+
   def __init__(self, model):
     self.model = model
     self.cls = model.__class__
+
+  def filter_non_empty_panels(self, panels):
+    non_empty_panels = []
+
+    for panel in panels:
+      names = []
+      for row in panel.rows:
+        for name in row:
+          names.append(name)
+
+      for name in names:
+        if not self[name]['skip']:
+          non_empty_panels.append(panel)
+          break
+
+    return non_empty_panels
 
   def __getitem__(self, name):
     try:
       info = self.cls.__mapper__.c[name].info
       label = info['label']
-    except:
+    except AttributeError:
       label = name
     value = getattr(self.model, name)
 
@@ -39,15 +58,16 @@ class ModelAdapter(object):
       skip = True
     elif value is False:
       skip = True
-    elif value == "":
+    elif value in ("", "-"):
       skip = True
     elif value is True:
       rendered = u"\u2713" # Unicode "Check mark"
     elif isinstance(value, Entity):
       rendered = Markup('<a href="%s">%s</a>'
                      % (value._url, cgi.escape(value._name)))
+
+    # XXX: Several hacks. Needs to be moved somewhere else.
     elif name == 'siret' and value:
-      # XXX: This is a hack. Needs to be moved somewhere else.
       siret = str(value)
       if len(siret) > 9:
         siren = siret[0:9]
@@ -55,6 +75,10 @@ class ModelAdapter(object):
         siren = siret
       url = "http://societe.com/cgi-bin/recherche?rncs=%s" % siren
       rendered = Markup('<a href="%s">%s</a>' % (url, siret))
+    elif name == 'email' and value:
+      rendered = Markup(bleach.linkify(value, parse_email=True))
+    elif name == 'site_web' and value:
+      rendered = Markup(bleach.linkify(value))
     else:
       rendered = unicode(value)
 
@@ -83,6 +107,8 @@ class TableView(object):
       self.columns.append(col)
 
   def render(self, model):
+
+    # Not used yet
     aoColumns = [{'asSorting': [] }] if self.show_controls else []
     aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
                    for i in range(0, len(self.columns)) ]
@@ -99,6 +125,7 @@ class TableView(object):
     }
     js = "$(%s).dataTable(%s);" % (self.name, json.dumps(datatable_options))
 
+    # This is the current code
     table = []
     for entity in model:
       table.append(self.render_line(entity))
@@ -108,6 +135,7 @@ class TableView(object):
                                   columns=self.columns, table_name=self.name))
 
   def render_line(self, entity):
+    print "rendering line for:", entity._name
     line = []
     for col in self.columns:
       if type(col) == str:
@@ -115,6 +143,9 @@ class TableView(object):
       else:
         column_name = col['name']
       value = getattr(entity, column_name)
+      print column_name, "->", repr(value)
+
+      # Manual massage.
       if value is None:
         value = ""
       if column_name == '_name':
@@ -123,12 +154,12 @@ class TableView(object):
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'\
                       % (value._url, cgi.escape(value._name)))
-      elif (isinstance(value, str) or isinstance(value, unicode))\
-      and value.startswith("http://"):
-        # XXX: security issue here
-        cell = Markup('<a href="%s">%s</a>' % (value, value[len("http://"):]))
+      elif isinstance(value, basestring) \
+          and (value.startswith("http://") or value.startswith("www.")):
+        cell = Markup(bleach.linkify(value))
       else:
         cell = unicode(value)
+
       line.append(cell)
     return line
 
@@ -146,10 +177,9 @@ class SingleView(object):
     self.panels = panels
 
   def render(self, model):
-    model = ModelAdapter(model)
-
+    wrapped_model = ModelWrapper(model)
     return Markup(render_template('widgets/render_single.html',
-                                  panels=self.panels, model=model))
+                                  panels=self.panels, model=wrapped_model))
 
   def render_form(self, form, for_new=False):
     # Client-side rules for jQuery.validate
