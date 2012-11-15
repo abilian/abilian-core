@@ -1,12 +1,14 @@
 # coding=utf-8
 import os
 
-from unittest import TestCase
+from unittest import TestCase, skip
 from flask import Flask
+from wtforms import Form, TextField, IntegerField
+from wtforms.validators import required
 from yaka.web.widgets import TableView, SingleView, Panel, Row, ModelWrapper
 
 
-class Model(object):
+class DummyModel(object):
   """
   Mock model.
   """
@@ -15,16 +17,21 @@ class Model(object):
       setattr(self, k, v)
 
 
+class DummyForm(Form):
+  name = TextField(u'Nom du véhicule')
+  price = IntegerField(u"Prix du véhicule")
+
+
 class ModelWrapperTestCase(TestCase):
 
   def test_non_empty_panels(self):
-    model = Model(name="Renault Megane", price=10000)
+    model = DummyModel(name="Renault Megane", price=10000)
     panels = [Panel('main', Row('name'), Row('price'))]
     wrapper = ModelWrapper(model)
     self.assertEquals(wrapper.filter_non_empty_panels(panels), panels)
 
   def test_empty_panels(self):
-    model = Model(name="", maker="")
+    model = DummyModel(name="", maker="")
     panels = [Panel('main', Row('name'), Row('maker'))]
     wrapper = ModelWrapper(model)
     self.assertEquals(wrapper.filter_non_empty_panels(panels), [])
@@ -46,8 +53,8 @@ class TableViewTestCase(BaseTestCase):
       columns = ['name', 'price']
       view = TableView(columns)
 
-      model1 = Model(name="Renault Megane", _name="toto", price=10000)
-      model2 = Model(name="Peugeot 308", _name="titi", price=12000)
+      model1 = DummyModel(name="Renault Megane", _name="toto", price=10000)
+      model2 = DummyModel(name="Peugeot 308", _name="titi", price=12000)
 
       models = [model1, model2]
 
@@ -64,7 +71,7 @@ class ModelViewTestCase(BaseTestCase):
       panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
       view = SingleView(*panels)
 
-      model = Model(name="Renault Megane",
+      model = DummyModel(name="Renault Megane",
                     price=10000, email="joe@example.com")
       res = view.render(model)
 
@@ -72,13 +79,17 @@ class ModelViewTestCase(BaseTestCase):
       assert "10000" in res
       assert "mailto:joe@example.com" in res
 
+  @skip
   def test_edit_view(self):
     with self.app.test_request_context():
       panels = [Panel('main', Row('name'), Row('price'))]
       view = SingleView(*panels)
 
-      model = Model(name="Renault Megane", price=10000)
-      res = view.render(model)
+      model = DummyModel(name="Renault Megane", price=10000)
+      form = DummyForm(obj=model)
+      res = view.render_form(form)
+
+      print res
 
       assert "Renault Megane" in res
       assert "10000" in res

@@ -135,7 +135,7 @@ class TableView(object):
                                   columns=self.columns, table_name=self.name))
 
   def render_line(self, entity):
-    print "rendering line for:", entity._name
+    print "rendering line for:", repr(entity._name)
     line = []
     for col in self.columns:
       if type(col) == str:
