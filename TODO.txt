@@ -1,5 +1,5 @@
-TODO for v. 0.1 (19 june 2012)
-==============================
+TODO for v. 0.1
+===============
 
 Focus: usable social networking.
 
@@ -12,7 +12,7 @@ Focus: usable social networking.
 - Finish REST API
 
 
-TODO v. 0.2 (end of July 2012)
+TODO v. 0.2
 ===========
 
 Focus: social CRM
@@ -25,8 +25,8 @@ Focus: social CRM
 - Convert leads to account + opportunity
 
 
-TODO v 0.3 (end of August 2012)
-===============================
+TODO v 0.3
+==========
 
 Focus: configuration.
 
