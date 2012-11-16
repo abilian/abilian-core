@@ -11,6 +11,18 @@ from yaka.core.entities import Entity
 from yaka.web.filters import labelize
 
 
+def linkify_url(value):
+  value = value.strip()
+  if value.startswith("http://"):
+    value = value[len("http://"):]
+  url = value
+  if not url.startswith("http"):
+    url = "http://" + value
+    if '"' in url:
+      url = url.split('"')[0]
+  return '<a href="%s">%s</a>' % (url, value)
+
+
 class Column(object):
 
   def __init__(self, **kw):
@@ -78,15 +90,7 @@ class ModelWrapper(object):
     elif name == 'email' and value:
       rendered = Markup(bleach.linkify(value, parse_email=True))
     elif name == 'site_web' and value:
-      value = value.strip()
-      if value.startswith("http://"):
-        value = value[len("http://"):]
-      url = value
-      if not url.startswith("http"):
-        url = "http://" + value
-        if '"' in url:
-          url = url.split('"')[0]
-      rendered = Markup('<a href="%s">%s</a>' % (url, value))
+      rendered = Markup(linkify_url(value))
 
     # Default
     else:
@@ -165,7 +169,7 @@ class TableView(object):
                       % (value._url, cgi.escape(value._name)))
       elif isinstance(value, basestring) \
           and (value.startswith("http://") or value.startswith("www.")):
-        cell = Markup(bleach.linkify(value))
+        cell = Markup(linkify_url(value))
       else:
         cell = unicode(value)
 
