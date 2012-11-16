@@ -64,7 +64,7 @@ class ModelWrapper(object):
       rendered = u"\u2713" # Unicode "Check mark"
     elif isinstance(value, Entity):
       rendered = Markup('<a href="%s">%s</a>'
-                     % (value._url, cgi.escape(value._name)))
+                        % (value._url, cgi.escape(value._name)))
 
     # XXX: Several hacks. Needs to be moved somewhere else.
     elif name == 'siret' and value:
@@ -78,7 +78,17 @@ class ModelWrapper(object):
     elif name == 'email' and value:
       rendered = Markup(bleach.linkify(value, parse_email=True))
     elif name == 'site_web' and value:
-      rendered = Markup(bleach.linkify(value))
+      value = value.strip()
+      if value.startswith("http://"):
+        value = value[len("http://"):]
+      url = value
+      if not url.startswith("http"):
+        url = "http://" + value
+        if '"' in url:
+          url = url.split('"')[0]
+      rendered = Markup('<a href="%s">%s</a>' % (url, value))
+
+    # Default
     else:
       rendered = unicode(value)
 
@@ -89,10 +99,11 @@ class TableView(object):
   """
   """
   # TODO: rewrite
-  def __init__(self, columns, show_controls=False):
+  def __init__(self, columns, show_controls=False, paginate=False):
     self.init_columns(columns)
     self.name = id(self)
     self.show_controls = show_controls
+    self.paginate = paginate
 
   def init_columns(self, columns):
     # TODO
@@ -107,7 +118,6 @@ class TableView(object):
       self.columns.append(col)
 
   def render(self, model):
-
     # Not used yet
     aoColumns = [{'asSorting': [] }] if self.show_controls else []
     aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
@@ -118,12 +128,12 @@ class TableView(object):
       'oLanguage': {
         'sSearch': "Filter records:"
       },
+      'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",
       'bLengthChange': False,
       'iDisplayLength': 50
-
     }
-    js = "$(%s).dataTable(%s);" % (self.name, json.dumps(datatable_options))
+    js = "$('#%s').dataTable(%s);" % (self.name, json.dumps(datatable_options))
 
     # This is the current code
     table = []
@@ -131,11 +141,10 @@ class TableView(object):
       table.append(self.render_line(entity))
 
     return Markup(render_template('widgets/render_table.html',
-                                  table=table, show_controls=self.show_controls,
-                                  columns=self.columns, table_name=self.name))
+                                  table=table, js=Markup(js), view=self))
 
   def render_line(self, entity):
-    print "rendering line for:", repr(entity._name)
+    #print "rendering line for:", repr(entity._name)
     line = []
     for col in self.columns:
       if type(col) == str:
@@ -143,7 +152,7 @@ class TableView(object):
       else:
         column_name = col['name']
       value = getattr(entity, column_name)
-      print column_name, "->", repr(value)
+      #print column_name, "->", repr(value)
 
       # Manual massage.
       if value is None:

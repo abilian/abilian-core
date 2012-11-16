@@ -59,12 +59,12 @@ def add_to_recent_items(entity, type=None):
 
 def expose(url='/', methods=('GET',)):
   """
-      Use this decorator to expose views in your view classes.
+  Use this decorator to expose views in your view classes.
 
-      `url`
-          Relative URL for the view
-      `methods`
-          Allowed HTTP methods. By default only GET is allowed.
+  `url`
+      Relative URL for the view
+  `methods`
+      Allowed HTTP methods. By default only GET is allowed.
   """
 
   def wrap(f):
@@ -90,10 +90,10 @@ def make_single_view(form):
 
 class ModuleMeta(type):
   """
-      Module metaclass.
+  Module metaclass.
 
-      Does some precalculations (like getting list of view methods from the class) to avoid
-      calculating them for each view class instance.
+  Does some precalculations (like getting list of view methods from the
+  class) to avoid calculating them for each view class instance.
   """
 
   def __init__(cls, classname, bases, fields):
@@ -151,7 +151,7 @@ class Module(object):
 
   def create_blueprint(self, crud_app):
     """
-        Create Flask blueprint.
+    Create a Flask blueprint for this module.
     """
     # Store admin instance
     self.crud_app = crud_app
@@ -192,9 +192,9 @@ class Module(object):
   def list_view(self):
     bc = self.bread_crumbs()
 
+    table_view = TableView(self.list_view_columns,
+                           paginate=True, show_controls=True)
     entities = self.get_entities()
-
-    table_view = TableView(self.list_view_columns, show_controls=True)
     rendered_table = table_view.render(entities)
 
     return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
@@ -334,11 +334,11 @@ class Module(object):
   @staticmethod
   def _prettify_name(name):
     """
-        Prettify class name by splitting name by capital characters.
-        So, 'MySuperClass' will look like 'My Super Class'
+    Prettify class name by splitting name by capital characters.
+    So, 'MySuperClass' will look like 'My Super Class'
 
-        `name`
-            String to prettify
+    `name`
+      String to prettify
     """
     return re.sub(r'(?<=.)([A-Z])', r' \1', name)
 
