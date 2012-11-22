@@ -25,6 +25,7 @@ from yaka.core.entities import Entity, all_entity_classes
 from yaka.core.extensions import db
 
 
+# TODO: use flufl.enum here
 CREATION = 0
 UPDATE   = 1
 DELETION = 2
@@ -90,19 +91,20 @@ class AuditService(object):
   __instance = None
   running = False
 
+  def __init__(self, app=None):
+    self.all_model_classes = set()
+    self.app = app
+    if app is not None:
+      self.init_app(self.app)
+
   @classmethod
   def instance(cls, app=None):
     if not cls.__instance:
       cls.__instance = AuditService(app)
     return cls.__instance
 
-  def __init__(self, app=None):
-    self.all_model_classes = set()
-    if app:
-      self.init_app(app)
-
   def init_app(self, app):
-    self.app = app
+    app.extensions['audit'] = self
     event.listen(Session, "before_commit", self.before_commit)
 
   def start(self):

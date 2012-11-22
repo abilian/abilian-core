@@ -12,6 +12,7 @@ from sqlalchemy.types import Integer, DateTime
 from sqlalchemy import event
 
 from .extensions import db
+
 from .util import memoized
 
 

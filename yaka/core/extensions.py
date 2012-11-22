@@ -1,14 +1,15 @@
-#from flaskext.cache import Cache
-#from flaskext.openid import OpenID
-from flask.ext.mail import Mail
-from flask_sqlalchemy import SQLAlchemy
-from flask.ext.babel import Babel
+__all__ = ['db', 'babel', 'mail', 'audit']
 
-# Create helpers
-db = SQLAlchemy()
-babel = Babel()
+# Standard extensions.
+from flask.ext.mail import Mail
 mail = Mail()
 
-# Not needed yet
-#oid = OpenID()
-#cache = Cache()
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
+
+from flask.ext.babel import Babel
+babel = Babel()
+
+# Homegrown extensions.
+from yaka.services.audit import AuditService
+audit = AuditService()

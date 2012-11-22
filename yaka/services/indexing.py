@@ -44,11 +44,11 @@ class WhooshIndexService(object):
     self.indexes = {}
     self.indexed_classes = set()
     self.running = False
+    self.app = app
     if app:
       self.init_app(app)
 
   def init_app(self, app):
-    self.app = app
     self.whoosh_base = app.config.get("WHOOSH_BASE")
     if not self.whoosh_base:
       self.whoosh_base = "whoosh"  # Default value

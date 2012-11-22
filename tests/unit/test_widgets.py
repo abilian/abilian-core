@@ -65,6 +65,8 @@ class TableViewTestCase(BaseTestCase):
 
 
 class ModelViewTestCase(BaseTestCase):
+  # Hack to silence test harness bug
+  __name__ = "ModelView test case"
 
   def test_single_view(self):
     with self.app.test_request_context():

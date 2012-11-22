@@ -274,7 +274,8 @@ class Module(object):
 
     if request.form.get('_action') == 'cancel':
       return redirect("%s/" % self.url)
-    elif form.validate():
+
+    if form.validate():
       flash("Entity successfully added", "success")
       form.populate_obj(entity)
       db.session.add(entity)
