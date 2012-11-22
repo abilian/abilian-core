@@ -43,3 +43,4 @@ cssmin
 coverage==3.5.1
 nose
 pytest
+sphinx

@@ -1,9 +1,11 @@
 from nose.tools import eq_
-from sqlalchemy import Column, UnicodeText, Text, LargeBinary
-from base import IntegrationTestCase
+from sqlalchemy import Column, UnicodeText, Text
 
-from yaka.services.audit import AuditEntry, AuditService
+from yaka.services import audit
+from yaka.services.audit import AuditEntry
 from yaka.core.entities import Entity, SEARCHABLE
+
+from .base import IntegrationTestCase
 
 
 class Account(Entity):
@@ -17,12 +19,13 @@ class Account(Entity):
 class TestAudit(IntegrationTestCase):
 
   def setUp(self):
-    AuditService.instance().start()
+    audit.init_app(self.app)
+    audit.start()
     IntegrationTestCase.setUp(self)
 
   def tearDown(self):
     IntegrationTestCase.tearDown(self)
-    AuditService.instance().stop()
+    audit.stop()
 
   def test_audit(self):
     eq_(0, len(AuditEntry.query.all()))

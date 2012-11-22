@@ -1,3 +1,11 @@
+"""
+All signals used by Abilian Core.
+
+Cf. http://flask.pocoo.org/docs/signals/ for detailed documentation.
+
+These signals are currently not used, and for this reason subject to change.
+"""
+
 from blinker.base import Namespace
 
 signals = Namespace()

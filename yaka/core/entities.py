@@ -1,3 +1,8 @@
+"""
+Base class for entities, objects that are managed by the Abilian framwework
+(unlike SQLAlchemy models which are considered lower-level).
+"""
+
 from datetime import datetime
 import json
 from threading import Lock
@@ -249,12 +254,12 @@ def all_entity_classes():
   Returns the list of all concrete persistent classes that are subclasses of
   Entity.
   """
-  classes = []
+  classes = set()
   for module_name, module in sys.modules.items():
     for name in dir(module):
       v = getattr(module, name)
       if isinstance(v, type) and issubclass(v, Entity) and hasattr(v, '__table__'):
-        classes.append(v)
+        classes.add(v)
   return classes
 
 

@@ -1,4 +1,4 @@
-"""Audit Service.
+"""Audit Service: logs modifications to audited objects.
 
 Only subclasses of Entity are auditable, at this point.
 
@@ -6,7 +6,6 @@ TODO: In the future, we may decide to:
 
 - Make Models that have the __auditable__ property (set to True) auditable.
 - Make Entities that have the __auditable__ property set to False not auditable.
-
 """
 
 from datetime import datetime
@@ -64,10 +63,11 @@ class AuditEntry(db.Model):
     return entry
 
   def __repr__(self):
-    return "<AuditEntry id=%s type=%s user=%s>" % (
+    return "<AuditEntry id=%s type=%s user=%s entity=<%s id=%s>>" % (
       self.id,
       {CREATION: "CREATION", DELETION: "DELETION", UPDATE: "UPDATE"}[self.type],
-      self.user)
+      self.user,
+      self.entity_class, self.entity_id)
 
   #noinspection PyTypeChecker
   def get_changes(self):
@@ -88,8 +88,8 @@ class AuditEntry(db.Model):
 
 class AuditService(object):
 
-  __instance = None
   running = False
+  listening = False
 
   def __init__(self, app=None):
     self.all_model_classes = set()
@@ -97,20 +97,19 @@ class AuditService(object):
     if app is not None:
       self.init_app(self.app)
 
-  @classmethod
-  def instance(cls, app=None):
-    if not cls.__instance:
-      cls.__instance = AuditService(app)
-    return cls.__instance
-
   def init_app(self, app):
     app.extensions['audit'] = self
-    event.listen(Session, "before_commit", self.before_commit)
 
   def start(self):
     assert not self.running
     self.running = True
     self.register_classes()
+
+    # Workaround the fact that we can't stop listening when the service is
+    # stopped.
+    if not self.listening:
+      event.listen(Session, "before_commit", self.before_commit)
+      self.listening = True
 
   def stop(self):
     assert self.running
@@ -160,6 +159,9 @@ class AuditService(object):
     changes[attr_name] = (old_value, new_value)
 
   def before_commit(self, session):
+    if not self.running:
+      return
+
     for model in session.new:
       self.log_new(session, model)
 
@@ -197,7 +199,3 @@ class AuditService(object):
 
   def entries_for(self, entity):
     return AuditEntry.query.filter(AuditEntry.entity_id == entity.id).all()
-
-
-def get_service(app=None):
-  return AuditService.instance(app)

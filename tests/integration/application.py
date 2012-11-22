@@ -31,6 +31,8 @@ class Application(Flask):
     db.init_app(self)
     mail.init_app(self)
 
+    audit.init_app(self)
+
     # Initialise filters
     init_filters(self)
     #init_auth(self)
@@ -40,7 +42,6 @@ class Application(Flask):
   def register_services(self):
     # Initiate services
     self.extensions['indexing'] = indexing.get_service(self)
-    self.extensions['audit'] = audit.get_service(self)
     self.extensions['activity'] = activity.get_service(self)
 
   def start_services(self):

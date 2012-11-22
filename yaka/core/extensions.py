@@ -1,4 +1,11 @@
-__all__ = ['db', 'babel', 'mail', 'audit']
+"""
+Create all standard extensions.
+
+Because of issues with circular dependencies, Abilian-specific extensions are
+created later.
+"""
+
+__all__ = ['db', 'babel', 'mail']
 
 # Standard extensions.
 from flask.ext.mail import Mail
@@ -10,6 +17,3 @@ db = SQLAlchemy()
 from flask.ext.babel import Babel
 babel = Babel()
 
-# Homegrown extensions.
-from yaka.services.audit import AuditService
-audit = AuditService()
