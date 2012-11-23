@@ -1,26 +1,25 @@
 """
-    Indexing service for Yaka.
+Indexing service for Yaka.
 
-    Adds Whoosh indexing capabilities to SQLAlchemy models.
+Adds Whoosh indexing capabilities to SQLAlchemy models.
 
-    Based on Flask-whooshalchemy by Karl Gyllstrom (Flask is still supported, but not mandatory).
+Based on Flask-whooshalchemy by Karl Gyllstrom.
 
-    :copyright: (c) 2012 by Stefane Fermigier
-    :copyright: (c) 2012 by Karl Gyllstrom
-    :license: BSD (see LICENSE.txt)
+:copyright: (c) 2012 by Stefane Fermigier
+:copyright: (c) 2012 by Karl Gyllstrom
+:license: BSD (see LICENSE.txt)
 """
 
 # TODO: not sure that one index per class is the way to go.
 # TODO: speed issue
 # TODO: this is a singleton. makes tests hard (for instance, launching parallel tests).
 
-
 import sqlalchemy
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
-from whoosh import sorting
 
 import whoosh.index
+from whoosh import sorting
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import Schema
@@ -28,6 +27,7 @@ from whoosh.fields import Schema
 from yaka.core.entities import all_entity_classes
 
 import os
+from shutil import rmtree
 
 
 class WhooshIndexService(object):
@@ -54,6 +54,16 @@ class WhooshIndexService(object):
 
   def stop(self):
     self.running = False
+
+  def clear(self):
+    assert not self.running
+
+    for cls in self.indexed_classes:
+      index_path = os.path.join(self.whoosh_base, cls.__name__)
+      rmtree(index_path)
+
+    self.indexes = {}
+    self.indexed_classes = set()
 
   def search(self, query, cls=None, limit=10, filter=None):
     if cls:
