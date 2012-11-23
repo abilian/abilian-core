@@ -1,3 +1,7 @@
+"""
+Test the index service.
+"""
+
 from sqlalchemy import Column, UnicodeText, Text
 from base import IntegrationTestCase
 
@@ -14,12 +18,7 @@ class Contact(Entity):
   email = Column(Text, default=u"")
 
 
-class SearchTestCase(IntegrationTestCase):
-  # Hack to work around test framework bug
-  __name__ = "Search test case"
-
-  init_data = True
-  no_login = True
+class IndexingTestCase(IntegrationTestCase):
 
   def setUp(self):
     index_service.init_app(self.app)
