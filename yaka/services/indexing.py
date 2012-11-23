@@ -18,6 +18,8 @@ import sqlalchemy
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 
+from logbook import Logger
+
 import whoosh.index
 from whoosh import sorting
 from whoosh.qparser import MultifieldParser
@@ -29,8 +31,12 @@ from yaka.core.entities import all_entity_classes
 import os
 from shutil import rmtree
 
+log = Logger("Index service")
+
 
 class WhooshIndexService(object):
+
+  app = None
 
   def __init__(self, app=None):
     self.indexes = {}
@@ -49,18 +55,25 @@ class WhooshIndexService(object):
     event.listen(Session, "after_commit", self.after_commit)
 
   def start(self):
+    assert self.app, "service not bound to an app"
+    log.info("Starting index service")
     self.running = True
     self.register_classes()
 
   def stop(self):
+    log.info("Stopping index service")
     self.running = False
 
   def clear(self):
+    log.info("Resetting indexes")
     assert not self.running
 
     for cls in self.indexed_classes:
       index_path = os.path.join(self.whoosh_base, cls.__name__)
-      rmtree(index_path)
+      try:
+        rmtree(index_path)
+      except OSError:
+        pass
 
     self.indexes = {}
     self.indexed_classes = set()
