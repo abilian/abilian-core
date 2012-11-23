@@ -12,7 +12,6 @@ from .config import TestConfig
 from .application import Application
 
 
-
 BASEDIR = os.path.dirname(__file__)
 
 class IntegrationTestCase(TestCase):

@@ -4,4 +4,4 @@
 
 # Homegrown extensions.
 from .audit import AuditService
-audit = AuditService()
+audit_service = AuditService()

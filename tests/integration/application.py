@@ -8,7 +8,7 @@ from yaka.web.filters import init_filters
 
 #from .auth import init_auth
 
-from yaka.services import indexing, audit, activity
+from yaka.services import audit_service
 
 # Import entity classes. Don't remove
 # TODO move this to a plugin / app system
@@ -31,8 +31,6 @@ class Application(Flask):
     db.init_app(self)
     mail.init_app(self)
 
-    audit.init_app(self)
-
     # Initialise filters
     init_filters(self)
     #init_auth(self)
@@ -40,19 +38,17 @@ class Application(Flask):
     self.register_services()
 
   def register_services(self):
+    audit_service.init_app(self)
+
     # Initiate services
-    self.extensions['indexing'] = indexing.get_service(self)
-    self.extensions['activity'] = activity.get_service(self)
+    #self.extensions['indexing'] = indexing.get_service(self)
+    #self.extensions['activity'] = activity.get_service(self)
 
   def start_services(self):
-    for service in self.extensions.values():
-      if hasattr(service, 'start'):
-        service.start()
+    audit_service.start()
 
   def stop_services(self):
-    for service in self.extensions.values():
-      if hasattr(service, 'stop'):
-        service.stop()
+    audit_service.stop()
 
 
 def create_app(config):

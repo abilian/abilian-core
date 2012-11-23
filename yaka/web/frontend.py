@@ -4,6 +4,7 @@ import re
 from flask import session, redirect, request, g, render_template, flash,\
   Blueprint
 
+from yaka.services import audit_service
 from yaka.web.decorators import templated
 from yaka.core.extensions import db
 
@@ -210,7 +211,7 @@ class Module(object):
     rendered_entity = self.single_view.render(entity)
     related_views = self.render_related_views(entity)
 
-    audit_entries = self.app.extensions['audit'].entries_for(entity)
+    audit_entries = audit_service.entries_for(entity)
 
     return dict(rendered_entity=rendered_entity,
                 related_views=related_views,

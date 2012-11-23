@@ -9,7 +9,7 @@ TODO: In the future, we may decide to:
 """
 
 from datetime import datetime
-import json
+import pickle
 from flask import g
 
 from sqlalchemy import event
@@ -17,7 +17,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm.attributes import NO_VALUE
 from sqlalchemy.orm.session import Session
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, DateTime, Text
+from sqlalchemy.types import Integer, DateTime, Text, Binary
 
 from yaka.core.subjects import User
 from yaka.core.entities import Entity, all_entity_classes
@@ -45,7 +45,7 @@ class AuditEntry(db.Model):
   user_id = Column(Integer, ForeignKey(User.id))
   user = relationship(User)
 
-  changes_json = Column(Text, default="{}", nullable=False)
+  changes_pickle = Column(Binary)
 
   @staticmethod
   def from_model(model, type):
@@ -71,10 +71,15 @@ class AuditEntry(db.Model):
 
   #noinspection PyTypeChecker
   def get_changes(self):
-    return json.loads(self.changes_json)
+    # Using Pickle here instead of JSON because we need to pickle values
+    # such as dates. This could make schema migration more difficult, though.
+    if self.changes_pickle:
+      return pickle.loads(self.changes_pickle)
+    else:
+      return {}
 
   def set_changes(self, changes):
-    self.changes_json = json.dumps(changes)
+    self.changes_pickle = pickle.dumps(changes)
 
   changes = property(get_changes, set_changes)
 
@@ -140,7 +145,11 @@ class AuditService(object):
     attr_name = initiator.key
     if old_value == new_value:
       return
-    #print "set_atttribute called for", entity, "key", attr_name
+    if old_value == NO_VALUE:
+      return
+
+    #print "set_atttribute called for: %s, key: %s" % (entity, attr_name)
+    #print "old value: %s, new value: %s" % (old_value, new_value)
     changes = getattr(entity, "__changes__", None)
     if not changes:
       changes = entity.__changes__ = {}
@@ -178,13 +187,8 @@ class AuditService(object):
     entry = AuditEntry.from_model(model, type=CREATION)
     session.add(entry)
 
-  def log_deleted(self, session, model):
-    if not isinstance(model, Entity):
-      return
-
-    entry = AuditEntry.from_model(model, type=DELETION)
-    #print "logging", entry
-    session.add(entry)
+    if hasattr(model, '__changes__'):
+      del model.__changes__
 
   def log_updated(self, session, model):
     if not isinstance(model, Entity):
@@ -196,6 +200,14 @@ class AuditService(object):
     session.add(entry)
 
     del model.__changes__
+
+  def log_deleted(self, session, model):
+    if not isinstance(model, Entity):
+      return
+
+    entry = AuditEntry.from_model(model, type=DELETION)
+    #print "logging", entry
+    session.add(entry)
 
   def entries_for(self, entity):
     return AuditEntry.query.filter(AuditEntry.entity_id == entity.id).all()
