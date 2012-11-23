@@ -32,23 +32,15 @@ import os
 
 class WhooshIndexService(object):
 
-  __instance = None
-
-  @classmethod
-  def instance(cls, app=None):
-    if not cls.__instance:
-      cls.__instance = WhooshIndexService(app)
-    return cls.__instance
-
   def __init__(self, app=None):
     self.indexes = {}
     self.indexed_classes = set()
     self.running = False
-    self.app = app
     if app:
       self.init_app(app)
 
   def init_app(self, app):
+    self.app = app
     self.whoosh_base = app.config.get("WHOOSH_BASE")
     if not self.whoosh_base:
       self.whoosh_base = "whoosh"  # Default value
@@ -246,6 +238,3 @@ class Searcher(object):
     for hit in hits:
       yield (hit, session.query(self.model_class).get(hit[self.primary]))
 
-
-def get_service(app=None):
-  return WhooshIndexService.instance(app)
