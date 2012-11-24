@@ -10,9 +10,9 @@ import uuid
 from flask.ext.testing import TestCase
 
 from yaka.core.extensions import db
+from yaka.application import Application
 
 from .config import TestConfig
-from .application import Application
 
 
 BASEDIR = os.path.dirname(__file__)

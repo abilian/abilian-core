@@ -1,9 +1,16 @@
 """
 Test the index service.
 """
+import mimetypes
+from random import choice, randint, sample
+from os import listdir
+from genericpath import isdir
+from os.path import dirname
 
-from sqlalchemy import Column, UnicodeText, Text
+from sqlalchemy import Column, UnicodeText, Text, join
 from base import IntegrationTestCase
+from yaka.core.extensions import db
+from yaka.core.subjects import User
 
 from yaka.services import index_service
 from yaka.core.entities import SEARCHABLE, Entity
@@ -51,24 +58,4 @@ class IndexingTestCase(IntegrationTestCase):
     assert contact.id == int(search_result[0][0]['id'])
 
 
-# TODO: move this tests to a package that actually provides web UI.
-#  def test_basic_search(self):
-#    # Note: there a guy named "Paul Dupont" in the test data
-#    response = self.client.get("/search/?q=dupont")
-#    self.assert_200(response)
-#    assert "Paul" in response.data
-#
-#  def test_live_search(self):
-#    response = self.client.get("/search/live?q=dupont")
-#    self.assert_200(response)
-#    assert "Paul" in response.data
-#
-#  def test_document_search(self):
-#    loader = DataLoader()
-#    loader.load_users()
-#    loader.load_files()
-#
-#    response = self.client.get("/search/docs?q=rammstein")
-#    self.assert_200(response)
-#    print response.data
-#    assert "Wikipedia" in response.data
+

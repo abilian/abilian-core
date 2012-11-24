@@ -1,6 +1,6 @@
-"""Application factory specific for the tests.
-
-TODO: make it so it can be used as a base class for client application.
+"""
+Base Flask application class, used by tests or to be extended
+in real applications.
 """
 
 from flask import Flask
