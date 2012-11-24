@@ -11,7 +11,6 @@ from flask.ext.testing import TestCase
 
 from yaka.core.extensions import db
 
-from . import util
 from .config import TestConfig
 from .application import Application
 
@@ -20,7 +19,6 @@ BASEDIR = os.path.dirname(__file__)
 
 class IntegrationTestCase(TestCase):
 
-  init_data = False
   no_login = False
 
   def create_app(self):
@@ -34,8 +32,6 @@ class IntegrationTestCase(TestCase):
   def setUp(self):
     db.create_all()
     self.session = db.session
-    if self.init_data:
-      util.init_data()
 
   def tearDown(self):
     db.session.remove()
