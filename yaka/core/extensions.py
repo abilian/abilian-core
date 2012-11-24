@@ -5,7 +5,8 @@ Because of issues with circular dependencies, Abilian-specific extensions are
 created later.
 """
 
-__all__ = ['db', 'babel', 'mail']
+
+__all__ = ['db', 'babel', 'mail', 'login_manager']
 
 # Standard extensions.
 from flask.ext.mail import Mail
@@ -16,4 +17,7 @@ db = SQLAlchemy()
 
 from flask.ext.babel import Babel
 babel = Babel()
+
+from flask.ext.login import LoginManager
+login_manager = LoginManager()
 

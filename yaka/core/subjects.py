@@ -3,6 +3,7 @@
 See ICOM-ics-v1.0 "Subject Branch".
 """
 from datetime import datetime, timedelta
+from flask.ext.login import UserMixin
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
@@ -36,7 +37,7 @@ class UserQuery(Query):
     return self.filter_by(email=email).all()[0]
 
 
-class User(Entity):
+class User(UserMixin, Entity):
   __tablename__ = 'user'
   __editable__ = ['first_name', 'last_name', 'job_title', 'department', 'company', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
@@ -124,7 +125,7 @@ class User(Entity):
     return self in group.admins
 
   @property
-  def is_active(self):
+  def is_online(self):
     return datetime.utcnow() - self.last_active <= timedelta(0, 60)
 
   #

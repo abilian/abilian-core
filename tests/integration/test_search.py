@@ -56,6 +56,3 @@ class IndexingTestCase(IntegrationTestCase):
     assert len(search_result) == 1
     assert contact == search_result[0][1]
     assert contact.id == int(search_result[0][0]['id'])
-
-
-

@@ -150,6 +150,10 @@ class AuditService(object):
     attr_name = initiator.key
     if old_value == new_value:
       return
+
+    # We don't log a few trivial cases so as not to overflow the audit log.
+    if not old_value and not new_value:
+      return
     if old_value == NO_VALUE:
       return
 
