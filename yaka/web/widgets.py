@@ -66,9 +66,7 @@ class ModelWrapper(object):
     # Massage the value a little bit
     skip = False
     rendered = ""
-    if value is None:
-      skip = True
-    elif value is False:
+    if value in (None, False, 0, 0.0):
       skip = True
     elif value in ("", "-"):
       skip = True
