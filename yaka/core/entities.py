@@ -8,7 +8,7 @@ import json
 from threading import Lock
 import sys
 
-from flask.globals import g
+from flask import g
 
 from sqlalchemy.ext.declarative import AbstractConcreteBase, declared_attr
 from sqlalchemy.orm.util import class_mapper
@@ -46,11 +46,12 @@ NOT_SEARCHABLE = Info(searchable=False)
 EXPORTABLE = Info(exportable=True)
 NOT_EXPORTABLE = Info(exportable=False)
 
-# SYSTEM properties are defined by the system and not supposed to be changed manually.
+#: SYSTEM properties are properties defined by the system
+#: and not supposed to be changed manually.
 SYSTEM = Info(editable=False, auditable=False)
 
 
-# TODO: get rid of flask-sqlalchemy, replace db.Model by Base
+# TODO: get rid of flask-sqlalchemy, replace db.Model by Base?
 #Base = declarative_base()
 
 

@@ -39,16 +39,7 @@ class ActivityEntry(db.Model):
       self.id, self.actor, self.verb, "TODO", "TODO")
 
 
-# TODO: this class has no state (except for the running variable). Do we really need a class here?
 class ActivityService(object):
-
-  __instance = None
-
-  @classmethod
-  def instance(cls, app=None):
-    if not cls.__instance:
-      cls.__instance = ActivityService(app)
-    return cls.__instance
 
   def __init__(self, app=None):
     self.running = False
@@ -86,7 +77,3 @@ class ActivityService(object):
   @staticmethod
   def entries_for_actor(actor, limit=50):
     return ActivityEntry.query.filter(ActivityEntry.actor_id == actor.id).limit(limit).all()
-
-
-def get_service(app=None):
-  return ActivityService.instance(app)

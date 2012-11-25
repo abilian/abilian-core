@@ -8,13 +8,31 @@ from flask import Flask
 from yaka.core.extensions import mail, db
 from yaka.web.filters import init_filters
 
-from yaka.services import audit_service, index_service
+from yaka.services import audit_service, index_service, activity_service
 
 
-__all__ = ['create_app', 'Application']
+__all__ = ['create_app', 'Application', 'ServiceManager']
 
 
-class Application(Flask):
+class ServiceManager(object):
+
+  def register_services(self):
+    audit_service.init_app(self)
+    index_service.init_app(self)
+    activity_service.init_app(self)
+
+  def start_services(self):
+    audit_service.start()
+    index_service.start()
+    activity_service.start()
+
+  def stop_services(self):
+    audit_service.stop()
+    index_service.stop()
+    activity_service.stop()
+
+
+class Application(Flask, ServiceManager):
   def __init__(self, config):
     Flask.__init__(self, __name__)
 
@@ -31,21 +49,6 @@ class Application(Flask):
 
     self.register_services()
     # Note
-
-  def register_services(self):
-    audit_service.init_app(self)
-    index_service.init_app(self)
-
-    # TODO:
-    #self.extensions['activity'] = activity.get_service(self)
-
-  def start_services(self):
-    audit_service.start()
-    index_service.start()
-
-  def stop_services(self):
-    audit_service.stop()
-    index_service.stop()
 
 
 def create_app(config):
