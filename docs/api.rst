@@ -18,14 +18,6 @@ API
    :members:
    :undoc-members:
 
-:mod:`yaka.core.security`
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.core.security
-   :members:
-   :undoc-members:
-
-
 :mod:`yaka.core.signals`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

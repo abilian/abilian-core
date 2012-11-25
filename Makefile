@@ -1,4 +1,4 @@
-.PHONY: test unit full-test pep8 clean docs
+.PHONY: test unit full-test pep8 clean docs tox
 
 SRC=yaka
 PEP8IGNORE=E111,E121,E201,E225,E501
@@ -29,8 +29,8 @@ unit-with-coverage:
 unit-with-profile:
 	python -m nose.core --with-profile tests/unit
 
-full-test:
-	tox -e py27
+tox:
+	tox
 
 pep8:
 	pep8 -r --ignore $(PEP8IGNORE) *.py $(SRC) tests

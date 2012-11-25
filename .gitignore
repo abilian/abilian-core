@@ -18,6 +18,7 @@ results
 build
 MANIFEST
 docs/_build
+htmlcov
 
 yaka/static/misc*
 yaka/static/.webassets-cache
