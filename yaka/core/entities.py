@@ -84,12 +84,15 @@ id_gen = IdGenerator()
 
 # Special case for "unowned" object? Maybe not. XXX.
 class DummyUser(object):
-  name = "Nobody"
+  name = "System"
   _url = ""
   photo = ""
-  _name = "Nobody"
+  _name = "System"
 
-nobody = DummyUser()
+  def __repr__(self):
+    return "System"
+
+system = DummyUser()
 
 
 # Cache to speed up demos. TODO: remove later.
@@ -138,7 +141,7 @@ class Entity(AbstractConcreteBase, db.Model):
         user_cache[self.creator_id] = user
         return user
     else:
-      return nobody
+      return system
 
   @property
   def owner(self):
@@ -151,7 +154,7 @@ class Entity(AbstractConcreteBase, db.Model):
         user_cache[self.owner_id] = user
         return user
     else:
-      return nobody
+      return system
 
   # Should not be necessary
   __editable__ = set()

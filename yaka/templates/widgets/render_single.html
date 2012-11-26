@@ -8,6 +8,7 @@
         "label" : "Delete",
         "class" : "btn-danger",   // or btn-primary, or btn-danger, or nothing at all
         "callback": function() {
+          // Hack to provoke a POST instead of a GET.
           var path = "{{ request.path }}/delete";
           var form = document.createElement("form");
           form.setAttribute("method", "POST");
@@ -24,8 +25,6 @@
     });
   });
 </script>
-
-<div id="confirmDiv">
 
 {% for panel in model.filter_non_empty_panels(panels) %}
 <div class="panel" style="margin-top: 10px;">

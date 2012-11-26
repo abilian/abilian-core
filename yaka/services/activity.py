@@ -38,6 +38,17 @@ class ActivityEntry(db.Model):
     return "<ActivityEntry id=%s actor=%s verb=%s object=%s subject=%s>" % (
       self.id, self.actor, self.verb, "TODO", "TODO")
 
+  # FIXME: temporary implementation, obviously totally wrong from an
+  # extensibility point of view.
+  @property
+  def object(self):
+    from extranet_spr.apps.crm.models import Partenaire, Contact, Visite, ActionFiliere
+    cls = {'Partenaire': Partenaire,
+           'Contact': Contact,
+           'Visite': Visite,
+           'ActionFiliere': ActionFiliere}[self.object_class]
+    return cls.query.get(self.object_id)
+
 
 class ActivityService(object):
 
@@ -61,7 +72,6 @@ class ActivityService(object):
 
   def log_activity(self, sender, actor, verb, object, subject=None):
     assert self.running
-
     print "New activity", sender, actor, verb, object, subject
     entry = ActivityEntry()
     entry.actor = actor

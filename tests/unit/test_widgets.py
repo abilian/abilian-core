@@ -5,8 +5,8 @@ from unittest import TestCase, skip
 from flask import Flask
 from wtforms import Form, TextField, IntegerField
 from wtforms.validators import required
-from yaka.web.widgets import TableView, SingleView, Panel, Row, ModelWrapper, \
-  linkify_url
+from yaka.web.widgets import MainTableView, SingleView, Panel, Row, ModelWrapper, \
+  linkify_url, text2html
 
 
 class DummyModel(object):
@@ -52,7 +52,7 @@ class TableViewTestCase(BaseTestCase):
   def test_table_view(self):
     with self.app.test_request_context():
       columns = ['name', 'price']
-      view = TableView(columns)
+      view = MainTableView(columns)
 
       model1 = DummyModel(name="Renault Megane", _name="toto", price=10000)
       model2 = DummyModel(name="Peugeot 308", _name="titi", price=12000)
@@ -109,3 +109,22 @@ class TestLinkify(TestCase):
     value = "example.com"
     result = linkify_url(value)
     self.assertEquals(result, self.EXPECTED)
+
+
+class TestText2Html(TestCase):
+
+  def test1(self):
+    result = text2html("a")
+    self.assertEquals(result, "a")
+
+  def test2(self):
+    result = text2html("a\nb")
+    self.assertEquals(str(result), "<p>a</p>\n<p>b</p>")
+
+  def test3(self):
+    result = text2html("a\n\nb")
+    self.assertEquals(str(result), "<p>a</p>\n<p>b</p>")
+
+  def test4(self):
+    result = text2html("a\n<a>toto</a>")
+    self.assertEquals(str(result), "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>")

@@ -3,6 +3,7 @@ import re
 
 from flask import session, redirect, request, g, render_template, flash,\
   Blueprint
+from yaka.core.signals import activity
 
 from yaka.services import audit_service
 from yaka.core.extensions import db
@@ -12,7 +13,8 @@ from .decorators import templated
 #
 # Helper classes
 #
-from yaka.web.widgets import Panel, Row, SingleView, TableView
+from yaka.web.widgets import Panel, Row, SingleView, RelatedTableView, \
+  MainTableView
 
 
 class BreadCrumbs(object):
@@ -55,7 +57,6 @@ def add_to_recent_items(entity, type=None):
   if len(l) > 10:
     del l[10:]
   session['recent_items'] = g.recent_items = l
-
 
 
 def expose(url='/', methods=('GET',)):
@@ -193,8 +194,7 @@ class Module(object):
   def list_view(self):
     bc = self.bread_crumbs()
 
-    table_view = TableView(self.list_view_columns,
-                           paginate=True, show_controls=True)
+    table_view = MainTableView(self.list_view_columns)
     entities = self.get_entities()
     rendered_table = table_view.render(entities)
 
@@ -245,6 +245,7 @@ class Module(object):
     elif form.validate():
       flash("Entity successfully edited", "success")
       form.populate_obj(entity)
+      activity.send(self, actor=g.user, verb="update", object=entity)
       db.session.commit()
       return redirect("%s/%d" % (self.url, entity_id))
     else:
@@ -280,6 +281,7 @@ class Module(object):
       flash("Entity successfully added", "success")
       form.populate_obj(entity)
       db.session.add(entity)
+      activity.send(self, actor=g.user, verb="post", object=entity)
       db.session.commit()
       return redirect("%s/%d" % (self.url, entity.id))
     else:
@@ -297,6 +299,7 @@ class Module(object):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
     db.session.delete(entity)
+    activity.send(self, actor=g.user, verb="delete", object=entity)
     db.session.commit()
     flash("Entity deleted", "success")
     return redirect(self.url)
@@ -325,7 +328,7 @@ class Module(object):
   def render_related_views(self, entity):
     rendered = []
     for label, attr_name, column_names in self.related_views:
-      view = TableView(column_names)
+      view = RelatedTableView(column_names)
       related_entities = getattr(entity, attr_name)
       obj = dict(label=label,
                  rendered=view.render(related_entities),

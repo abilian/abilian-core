@@ -239,7 +239,8 @@ class Searcher(object):
     self.parser = MultifieldParser(list(fields), index.schema)
 
   def __call__(self, query, limit=None):
-    """API similar to SQLAlchemy's queries.
+    """
+    API similar to SQLAlchemy's queries.
     """
     session = self.model_class.query.session
 
@@ -253,7 +254,9 @@ class Searcher(object):
       return session.query(self.model_class).filter(primary_column.in_(keys))
 
   def search(self, query, limit=None):
-    """New API: returns both whoosh records and SA models."""
+    """
+    New API: returns both whoosh records and SA models.
+    """
     # TODO: highly suboptimal
 
     session = self.model_class.query.session
