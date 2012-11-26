@@ -1,6 +1,31 @@
 <a class="btn" href="{{ request.path }}/edit"><i class="icon-edit"></i> Edit</a>
-<a class="btn btn-danger" href="{{ request.path }}/delete"
-   onclick="confirm('Are you sure?');"><i class="icon-trash icon-white"></i> Delete</a>
+<a class="btn btn-danger" id="delete-button"><i class="icon-trash icon-white"></i> Delete</a>
+
+<script type="text/javascript">
+  $(function () {
+    $("#delete-button").click(function () {
+      bootbox.dialog("Do you really want to delete this entity?", [{
+        "label" : "Delete",
+        "class" : "btn-danger",   // or btn-primary, or btn-danger, or nothing at all
+        "callback": function() {
+          var path = "{{ request.path }}/delete";
+          var form = document.createElement("form");
+          form.setAttribute("method", "POST");
+          form.setAttribute("action", path);
+          document.body.appendChild(form);
+          form.submit();
+        }
+      }, {
+        "label" : "Cancel",
+        "class" : ""   // or btn-primary, or btn-danger, or nothing at all
+      }], {
+        'keyboard': true
+      });
+    });
+  });
+</script>
+
+<div id="confirmDiv">
 
 {% for panel in model.filter_non_empty_panels(panels) %}
 <div class="panel" style="margin-top: 10px;">

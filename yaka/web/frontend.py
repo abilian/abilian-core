@@ -5,9 +5,9 @@ from flask import session, redirect, request, g, render_template, flash,\
   Blueprint
 
 from yaka.services import audit_service
-from yaka.web.decorators import templated
 from yaka.core.extensions import db
 
+from .decorators import templated
 
 #
 # Helper classes
@@ -291,7 +291,7 @@ class Module(object):
                              breadcrumbs=bc,
                              module=self)
 
-  @expose("/<int:entity_id>/delete")
+  @expose("/<int:entity_id>/delete", methods=['POST'])
   def entity_delete(self, entity_id):
     # TODO: don't really delete, switch state to "deleted"
     entity = self.managed_class.query.get(entity_id)
