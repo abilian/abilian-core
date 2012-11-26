@@ -8,7 +8,6 @@ Includes result caching (on filesystem).
 Assumes poppler-utils and LibreOffice are installed.
 """
 
-# Yay, no dependencies on Yaka!
 import glob
 import hashlib
 import shutil
@@ -26,7 +25,12 @@ import StringIO
 
 from PIL import Image
 from PIL.ExifTags import TAGS
+
 from .image import resize
+
+
+# Hack for Mac OS + homebrew
+os.environ['PATH'] += ":/usr/local/bin"
 
 
 TMP_DIR = "tmp"
@@ -236,7 +240,7 @@ class PdfToTextHandler(Handler):
   accepts_mime_types = ['application/pdf']
   produces_mime_types = ['text/plain']
 
-  def convert(self, blob):
+  def convert(self, blob, **kw):
     in_fn = make_temp_file(blob)
     out_fn = mktemp(dir=TMP_DIR)
 
@@ -260,7 +264,7 @@ class ImageMagickHandler(Handler):
   accepts_mime_types = ['image/.*']
   produces_mime_types = ['application/pdf']
 
-  def convert(self, blob):
+  def convert(self, blob, **kw):
     in_fn = make_temp_file(blob)
     out_fn = mktemp(dir=TMP_DIR)
 
@@ -301,7 +305,7 @@ class UnoconvPdfHandler(Handler):
   accepts_mime_types = [r'application/.*']
   produces_mime_types = ['application/pdf']
 
-  def convert(self, blob):
+  def convert(self, blob, **kw):
     "Unoconv converter called"
     in_fn = make_temp_file(blob)
     out_fn = mktemp(suffix=".pdf", dir=TMP_DIR)
