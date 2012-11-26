@@ -144,11 +144,8 @@ class User(UserMixin, Entity):
 
   # XXX: Should entities know about their own URL? I guess yes.
   @property
-  def url(self):
+  def _url(self):
     return "/social/users/%d" % self.id
-
-  # FIXME: choose canonical name
-  _url = url
 
 
 class Group(Entity):
@@ -168,10 +165,6 @@ class Group(Entity):
 
   # Should entities know about their own URL? I guess yes.
   @property
-  def url(self):
+  def _url(self):
     return "/social/groups/%d" % self.id
-
-  # FIXME: choose canonical name
-  _url = url
-
 

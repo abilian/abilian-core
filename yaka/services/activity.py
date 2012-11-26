@@ -9,6 +9,7 @@ from datetime import datetime
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime, Text
+from yaka.core.entities import all_entity_classes
 
 from yaka.core.signals import activity
 from yaka.core.subjects import User
@@ -42,12 +43,10 @@ class ActivityEntry(db.Model):
   # extensibility point of view.
   @property
   def object(self):
-    from extranet_spr.apps.crm.models import Partenaire, Contact, Visite, ActionFiliere
-    cls = {'Partenaire': Partenaire,
-           'Contact': Contact,
-           'Visite': Visite,
-           'ActionFiliere': ActionFiliere}[self.object_class]
-    return cls.query.get(self.object_id)
+    for cls in all_entity_classes():
+      if cls.__name__ == self.object_class:
+        return cls.query.get(self.object_id)
+    raise Exception("Unknown class: %s" % cls.__name__)
 
 
 class ActivityService(object):
@@ -72,7 +71,6 @@ class ActivityService(object):
 
   def log_activity(self, sender, actor, verb, object, subject=None):
     assert self.running
-    print "New activity", sender, actor, verb, object, subject
     entry = ActivityEntry()
     entry.actor = actor
     entry.verb = verb
