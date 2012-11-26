@@ -3,6 +3,8 @@ Reusable widgets to be included in views.
 """
 
 import cgi
+import urlparse
+import re
 import bleach
 
 from flask import render_template, json, Markup
@@ -13,14 +15,32 @@ from yaka.web.filters import labelize
 
 def linkify_url(value):
   value = value.strip()
+
+  rjs = r'[\s]*(&#x.{1,7})?'.join(list('javascript:'))
+  rvb = r'[\s]*(&#x.{1,7})?'.join(list('vbscript:'))
+  re_scripts = re.compile('(%s)|(%s)' % (rjs, rvb), re.IGNORECASE)
+
+  value = re_scripts.sub('', value)
+
+  url = value
+  if not url.startswith("http://") and not url.startswith("https://"):
+    url = "http://" + url
+
+  url = urlparse.urlsplit(url).geturl()
+  if '"' in url:
+    url = url.split('"')[0]
+  if '<' in url:
+    url = url.split('<')[0]
+
   if value.startswith("http://"):
     value = value[len("http://"):]
-  url = value
-  if not url.startswith("http"):
-    url = "http://" + value
-    if '"' in url:
-      url = url.split('"')[0]
-  return '<a href="%s">%s</a>' % (url, value)
+  elif value.startswith("https://"):
+    value = value[len("https://"):]
+
+  if value.count("/") == 1 and value.endswith("/"):
+    value = value[0:-1]
+
+  return '<a href="%s">%s</a><i class="icon-share-alt"></i>' % (url, value)
 
 
 class Column(object):
@@ -84,7 +104,8 @@ class ModelWrapper(object):
       else:
         siren = siret
       url = "http://societe.com/cgi-bin/recherche?rncs=%s" % siren
-      rendered = Markup('<a href="%s">%s</a>' % (url, siret))
+      rendered = Markup('<a href="%s">%s</a><i class="icon-share-alt"></i>'
+                        % (url, siret))
     elif name == 'email' and value:
       rendered = Markup(bleach.linkify(value, parse_email=True))
     elif name == 'site_web' and value:

@@ -87,6 +87,7 @@ class DummyUser(object):
   name = "Nobody"
   _url = ""
   photo = ""
+  _name = "Nobody"
 
 nobody = DummyUser()
 

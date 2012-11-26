@@ -5,7 +5,8 @@ from unittest import TestCase, skip
 from flask import Flask
 from wtforms import Form, TextField, IntegerField
 from wtforms.validators import required
-from yaka.web.widgets import TableView, SingleView, Panel, Row, ModelWrapper
+from yaka.web.widgets import TableView, SingleView, Panel, Row, ModelWrapper, \
+  linkify_url
 
 
 class DummyModel(object):
@@ -91,7 +92,20 @@ class ModelViewTestCase(BaseTestCase):
       form = DummyForm(obj=model)
       res = view.render_form(form)
 
-      print res
-
       assert "Renault Megane" in res
       assert "10000" in res
+
+
+class TestLinkify(TestCase):
+
+  EXPECTED = '<a href="http://example.com">example.com</a><i class="icon-share-alt"></i>'
+
+  def test_http(self):
+    value = "http://example.com"
+    result = linkify_url(value)
+    self.assertEquals(result, self.EXPECTED)
+
+  def test_no_http(self):
+    value = "example.com"
+    result = linkify_url(value)
+    self.assertEquals(result, self.EXPECTED)
