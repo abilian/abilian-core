@@ -2,18 +2,10 @@
 Test the index service.
 """
 
-from sqlalchemy import Column, UnicodeText, Text
-from base import IntegrationTestCase
+from .base import IntegrationTestCase
+from ..unit.dummy import DummyContact
 
 from yaka.services import index_service
-from yaka.core.entities import SEARCHABLE, Entity
-
-
-class DummyContact(Entity):
-  salutation = Column(UnicodeText, default=u"")
-  first_name = Column(UnicodeText, default=u"", info=SEARCHABLE)
-  last_name = Column(UnicodeText, default=u"", info=SEARCHABLE)
-  email = Column(Text, default=u"")
 
 
 class IndexingTestCase(IntegrationTestCase):

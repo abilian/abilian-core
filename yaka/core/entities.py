@@ -128,10 +128,10 @@ class Entity(AbstractConcreteBase, db.Model):
   @classmethod
   def __declare_last__(cls):
     pj1 = "User.id==%s.creator_id" % cls.__name__
-    cls.creator = relationship("User", primaryjoin=pj1)
+    cls.creator = relationship("User", primaryjoin=pj1, uselist=False)
 
     pj2 = "User.id==%s.owner_id" % cls.__name__
-    cls.owner = relationship("User", primaryjoin=pj2)
+    cls.owner = relationship("User", primaryjoin=pj2,  uselist=False)
 
   def __init__(self, **kw):
     self.id = id_gen.new()
