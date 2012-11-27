@@ -9,8 +9,6 @@ from .base import IntegrationTestCase
 
 
 class DummyAccount(Entity):
-  __tablename__ = 'dummy_account'
-
   name = Column(UnicodeText, default=u"", info=SEARCHABLE)
   website = Column(Text, default=u"")
   office_phone = Column(UnicodeText, default=u"")

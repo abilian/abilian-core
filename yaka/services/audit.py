@@ -34,9 +34,9 @@ log = Logger("Audit")
 
 
 class AuditEntry(db.Model):
-  """Logs modifications to auditable classes."""
-
-  __tablename__ = 'audit_entry'
+  """
+  Logs modifications to auditable classes.
+  """
 
   id = Column(Integer, primary_key=True)
   happened_at = Column(DateTime, default=datetime.utcnow)
@@ -215,7 +215,6 @@ class AuditService(object):
       return
 
     entry = AuditEntry.from_model(model, type=DELETION)
-    #print "logging", entry
     session.add(entry)
 
   def entries_for(self, entity):

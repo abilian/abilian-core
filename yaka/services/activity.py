@@ -1,4 +1,5 @@
-"""Activity Service.
+"""
+Activity Service.
 
 See: http://activitystrea.ms/specs/json/1.0/
 See: http://activitystrea.ms/specs/atom/1.0/#activity
@@ -6,20 +7,19 @@ See: http://stackoverflow.com/questions/1443960/how-to-implement-the-activity-st
 """
 
 from datetime import datetime
+
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime, Text
-from yaka.core.entities import all_entity_classes
 
+from yaka.core.entities import db, all_entity_classes
 from yaka.core.signals import activity
 from yaka.core.subjects import User
-from yaka.core.extensions import db
 
 
+# TODO: review the design as it hits the DB with too many requests.
 class ActivityEntry(db.Model):
   """Main table for all activities."""
-
-  __tablename__ = 'activity_entry'
 
   id = Column(Integer, primary_key=True)
   happened_at = Column(DateTime, default=datetime.utcnow)
@@ -39,14 +39,12 @@ class ActivityEntry(db.Model):
     return "<ActivityEntry id=%s actor=%s verb=%s object=%s subject=%s>" % (
       self.id, self.actor, self.verb, "TODO", "TODO")
 
-  # FIXME: temporary implementation, obviously totally wrong from an
-  # extensibility point of view.
   @property
   def object(self):
     for cls in all_entity_classes():
       if cls.__name__ == self.object_class:
         return cls.query.get(self.object_id)
-    raise Exception("Unknown class: %s" % cls.__name__)
+    raise Exception("Unknown class: %s" % self.object_class)
 
 
 class ActivityService(object):

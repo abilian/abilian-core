@@ -3,6 +3,7 @@
 See ICOM-ics-v1.0 "Subject Branch".
 """
 from datetime import datetime, timedelta
+
 from flask.ext.login import UserMixin
 
 from sqlalchemy.orm import relationship
@@ -10,8 +11,7 @@ from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTime, Text
 
-from .entities import Entity, SEARCHABLE, SYSTEM
-from .extensions import db
+from .entities import db, Entity, SEARCHABLE, SYSTEM
 
 
 # Tables for many-to-many relationships
@@ -38,7 +38,6 @@ class UserQuery(Query):
 
 
 class User(UserMixin, Entity):
-  __tablename__ = 'user'
   __editable__ = ['first_name', 'last_name', 'job_title', 'department', 'company', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
@@ -142,17 +141,15 @@ class User(UserMixin, Entity):
   def __unicode__(self):
     return self.name
 
-  # XXX: Should entities know about their own URL? I guess yes.
+  # XXX: Should entities know about their own URL? Eventually, no.
   @property
   def _url(self):
     return "/social/users/%d" % self.id
 
 
 class Group(Entity):
-  __tablename__ = 'group'
   __editable__ = ['name', 'description']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
-
 
   name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
   description = Column(UnicodeText, info=SEARCHABLE)
@@ -163,7 +160,7 @@ class Group(Entity):
 
   photo = Column(LargeBinary)
 
-  # Should entities know about their own URL? I guess yes.
+  # XXX: Should entities know about their own URL? Eventually, no.
   @property
   def _url(self):
     return "/social/groups/%d" % self.id

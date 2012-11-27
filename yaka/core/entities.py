@@ -11,8 +11,9 @@ import sys
 from flask import g
 
 from sqlalchemy.ext.declarative import AbstractConcreteBase, declared_attr
+from sqlalchemy.orm import relationship
 from sqlalchemy.orm.util import class_mapper
-from sqlalchemy.schema import Column
+from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime
 from sqlalchemy import event
 
@@ -21,7 +22,7 @@ from .extensions import db
 from .util import memoized
 
 
-__all__ = ['Entity', 'all_entity_classes']
+__all__ = ['Entity', 'all_entity_classes', 'db']
 
 
 class Info(dict):
@@ -102,8 +103,14 @@ user_cache = {}
 class Entity(AbstractConcreteBase, db.Model):
   """Base class for Yaka entities."""
 
+  # Default magic metadata, should not be necessary
+  __editable__ = set()
+  __searchable__ = set()
+  __auditable__ = set()
+
   base_url = None
 
+  # Persisted attributes.
   id = Column(Integer, primary_key=True, info=SYSTEM)
 
   created_at = Column(DateTime, default=datetime.utcnow, info=SYSTEM)
@@ -111,63 +118,28 @@ class Entity(AbstractConcreteBase, db.Model):
                       info=SYSTEM)
   deleted_at = Column(DateTime, default=None, info=SYSTEM)
 
-  @declared_attr
-  def creator_id(self):
-    return Column(Integer, info=SYSTEM)
-    #return Column(Integer, ForeignKey("UserBase.id"), info=SYSTEM)
+  creator_id = declared_attr(lambda c: Column(ForeignKey("user.id"), info=SYSTEM))
+  owner_id = declared_attr(lambda c: Column(ForeignKey("user.id"), info=SYSTEM))
 
   @declared_attr
-  def owner_id(self):
-    return Column(Integer)
-    #return Column(Integer, ForeignKey("UserBase.id"))
+  def __tablename__(cls):
+    return cls.__name__.lower()
 
-  # TODO: doesn't work.
-  #@declared_attr
-  #def creator(self):
-  #  return relationship("User")
-  #@declared_attr
-  #def owner(self):
-  #  return relationship("User")
+  @classmethod
+  def __declare_last__(cls):
+    pj1 = "User.id==%s.creator_id" % cls.__name__
+    cls.creator = relationship("User", primaryjoin=pj1)
 
-  # FIXME: extremely suboptimal
-  @property
-  def creator(self):
-    from .subjects import User
-    if self.creator_id:
-      if self.creator_id in user_cache:
-        return user_cache[self.creator_id]
-      else:
-        user = User.query.get(self.creator_id)
-        user_cache[self.creator_id] = user
-        return user
-    else:
-      return system
-
-  @property
-  def owner(self):
-    from .subjects import User
-    if self.owner_id:
-      if self.owner_id in user_cache:
-        return user_cache[self.owner_id]
-      else:
-        user = User.query.get(self.owner_id)
-        user_cache[self.owner_id] = user
-        return user
-    else:
-      return system
-
-  # Should not be necessary
-  __editable__ = set()
-  __searchable__ = set()
-  __auditable__ = set()
+    pj2 = "User.id==%s.owner_id" % cls.__name__
+    cls.owner = relationship("User", primaryjoin=pj2)
 
   def __init__(self, **kw):
     self.id = id_gen.new()
     if hasattr(g, 'user'):
-      if not self.creator_id:
-        self.creator_id = g.user.id
-      if not self.owner_id:
-        self.owner_id = g.user.id
+      if not self.creator:
+        self.creator = g.user
+      if not self.owner:
+        self.owner = g.user
     self.update(kw)
 
   def __repr__(self):
