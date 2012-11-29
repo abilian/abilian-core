@@ -15,6 +15,9 @@ __all__ = ['create_app', 'Application', 'ServiceManager']
 
 
 class ServiceManager(object):
+  """
+  XXX: probably too much hardcoding here.
+  """
 
   def register_services(self):
     audit_service.init_app(self)

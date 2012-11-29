@@ -101,11 +101,11 @@ class AuditService(object):
 
   def __init__(self, app=None):
     self.all_model_classes = set()
-    self.app = app
     if app is not None:
       self.init_app(self.app)
 
   def init_app(self, app):
+    self.app = app
     app.extensions['audit'] = self
 
   def start(self):
