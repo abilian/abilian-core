@@ -261,7 +261,7 @@ class PdfToTextHandler(Handler):
 
 
 class WordToTextWvwareHandler(Handler):
-  accepts_mime_types = ['application/word']
+  accepts_mime_types = ['application/msword']
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
