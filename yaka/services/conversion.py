@@ -260,6 +260,30 @@ class PdfToTextHandler(Handler):
     return converted_unicode
 
 
+class WordToTextWvwareHandler(Handler):
+  accepts_mime_types = ['application/word']
+  produces_mime_types = ['text/plain']
+
+  def convert(self, blob, **kw):
+    in_fn = make_temp_file(blob)
+    out_fn = mktemp(dir=TMP_DIR)
+
+    subprocess.check_call(['wvText', in_fn, out_fn])
+
+    converted = open(out_fn).read()
+
+    encoding = encoding_sniffer.from_file(out_fn)
+    if encoding in ("binary", None):
+      encoding = "ascii"
+    try:
+      converted_unicode = unicode(converted, encoding, errors="ignore")
+    except:
+      traceback.print_exc()
+      converted_unicode = unicode(converted, errors="ignore")
+
+    return converted_unicode
+
+
 class ImageMagickHandler(Handler):
   accepts_mime_types = ['image/.*']
   produces_mime_types = ['application/pdf']
@@ -384,6 +408,7 @@ converter = Converter()
 converter.register_handler(PdfToTextHandler())
 converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
+converter.register_handler(WordToTextWvwareHandler())
 
 # Deactivated for now
 #converter.register_handler(UnoconvPdfHandler())
