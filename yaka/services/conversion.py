@@ -244,7 +244,10 @@ class PdfToTextHandler(Handler):
     in_fn = make_temp_file(blob)
     out_fn = mktemp(dir=TMP_DIR)
 
-    subprocess.check_call(['pdftotext', in_fn, out_fn])
+    try:
+      subprocess.check_call(['pdftotext', in_fn, out_fn])
+    except Exception, e:
+      raise ConversionError(e)
 
     converted = open(out_fn).read()
 
@@ -268,7 +271,10 @@ class WordToTextWvwareHandler(Handler):
     in_fn = make_temp_file(blob)
     out_fn = mktemp(dir=TMP_DIR)
 
-    subprocess.check_call(['wvText', in_fn, out_fn])
+    try:
+      subprocess.check_call(['wvText', in_fn, out_fn])
+    except Exception, e:
+      raise ConversionError(e)
 
     converted = open(out_fn).read()
 
