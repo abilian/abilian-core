@@ -271,10 +271,15 @@ class AbiwordTextHandler(Handler):
     in_fn = make_temp_file(blob, suffix=".doc")
     out_fn = mktemp(dir=TMP_DIR, suffix='.txt')
 
+    cur_dir = os.getcwd()
     try:
-      subprocess.check_call(['abiword', '--to', out_fn, in_fn])
+      os.chdir(TMP_DIR)
+      subprocess.check_call(
+        ['abiword', '--to', os.path.basename(out_fn), os.path.basename(in_fn)])
     except Exception, e:
       raise ConversionError(e)
+    finally:
+      os.chdir(cur_dir)
 
     converted = open(out_fn).read()
 
@@ -300,10 +305,15 @@ class AbiwordPDFHandler(Handler):
     in_fn = make_temp_file(blob, suffix=".doc")
     out_fn = mktemp(dir=TMP_DIR, suffix='.pdf')
 
+    cur_dir = os.getcwd()
     try:
-      subprocess.check_call(['abiword', '--to', out_fn, in_fn])
+      os.chdir(TMP_DIR)
+      subprocess.check_call(
+        ['abiword', '--to', os.path.basename(out_fn), os.path.basename(in_fn)])
     except Exception, e:
       raise ConversionError(e)
+    finally:
+      os.chdir(cur_dir)
 
     converted = open(out_fn).read()
     return converted
@@ -351,7 +361,7 @@ class UnoconvPdfHandler(Handler):
   Uses unoconv.
   """
 
-  accepts_mime_types = [r'application/.*', 'text/rtf', 'text/plain']
+  accepts_mime_types = [r'application/.*', 'text/rtf']
   produces_mime_types = ['application/pdf']
 
   def convert(self, blob, **kw):
@@ -464,12 +474,10 @@ converter.register_handler(PdfToTextHandler())
 converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
 
-converter.register_handler(UnoconvPdfHandler())
+#converter.register_handler(UnoconvPdfHandler())
 
-# Doesn't work currently
-#converter.register_handler(AbiwordPDFHandler())
-#converter.register_handler(AbiwordTextHandler())
-
+converter.register_handler(AbiwordPDFHandler())
+converter.register_handler(AbiwordTextHandler())
 
 
 # Needs to be rewriten
