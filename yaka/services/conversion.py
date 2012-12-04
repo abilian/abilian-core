@@ -263,16 +263,18 @@ class PdfToTextHandler(Handler):
     return converted_unicode
 
 
-class WordToTextWvwareHandler(Handler):
-  accepts_mime_types = ['application/msword']
+class AbiwordTextHandler(Handler):
+  accepts_mime_types = ['application/msword',
+                        'application/vnd.oasis.opendocument.text',
+                        'text/rtf',]
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
     in_fn = make_temp_file(blob)
-    out_fn = mktemp(dir=TMP_DIR)
+    out_fn = mktemp(dir=TMP_DIR, suffix='txt')
 
     try:
-      subprocess.check_call(['wvText', in_fn, out_fn])
+      subprocess.check_call(['abiword', '--to', out_fn, in_fn])
     except Exception, e:
       raise ConversionError(e)
 
@@ -288,6 +290,25 @@ class WordToTextWvwareHandler(Handler):
       converted_unicode = unicode(converted, errors="ignore")
 
     return converted_unicode
+
+
+class AbiwordPDFHandler(Handler):
+  accepts_mime_types = ['application/msword',
+                        'application/vnd.oasis.opendocument.text',
+                        'text/rtf',]
+  produces_mime_types = ['application/pdf']
+
+  def convert(self, blob, **kw):
+    in_fn = make_temp_file(blob)
+    out_fn = mktemp(dir=TMP_DIR, suffix='pdf')
+
+    try:
+      subprocess.check_call(['abiword', '--to', out_fn, in_fn])
+    except Exception, e:
+      raise ConversionError(e)
+
+    converted = open(out_fn).read()
+    return converted
 
 
 class ImageMagickHandler(Handler):
@@ -397,6 +418,32 @@ class CloudoooPdfHandler(Handler):
     fd.close()
     return new_key
 
+class WvwareTextHandler(Handler):
+  accepts_mime_types = ['application/msword']
+  produces_mime_types = ['text/plain']
+
+  def convert(self, blob, **kw):
+    in_fn = make_temp_file(blob)
+    out_fn = mktemp(dir=TMP_DIR)
+
+    try:
+      subprocess.check_call(['wvText', in_fn, out_fn])
+    except Exception, e:
+      raise ConversionError(e)
+
+    converted = open(out_fn).read()
+
+    encoding = encoding_sniffer.from_file(out_fn)
+    if encoding in ("binary", None):
+      encoding = "ascii"
+    try:
+      converted_unicode = unicode(converted, encoding, errors="ignore")
+    except:
+      traceback.print_exc()
+      converted_unicode = unicode(converted, errors="ignore")
+
+    return converted_unicode
+
 
 # Utils
 def make_temp_file(blob):
@@ -414,7 +461,9 @@ converter = Converter()
 converter.register_handler(PdfToTextHandler())
 converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
-converter.register_handler(WordToTextWvwareHandler())
+converter.register_handler(AbiwordPDFHandler())
+converter.register_handler(AbiwordTextHandler())
+
 
 # Deactivated for now
 #converter.register_handler(UnoconvPdfHandler())
