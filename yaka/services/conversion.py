@@ -351,7 +351,7 @@ class UnoconvPdfHandler(Handler):
   Uses unoconv.
   """
 
-  accepts_mime_types = [r'application/.*']
+  accepts_mime_types = [r'application/.*', 'text/rtf', 'text/plain']
   produces_mime_types = ['application/pdf']
 
   def convert(self, blob, **kw):
@@ -365,7 +365,11 @@ class UnoconvPdfHandler(Handler):
              '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn]
     else:
       cmd = ['unoconv', '-f', 'pdf', '-o', out_fn, in_fn]
-    subprocess.check_call(cmd)
+
+    try:
+      subprocess.check_call(cmd)
+    except Exception, e:
+      raise ConversionError(e)
 
     converted = open(out_fn).read()
     return converted
@@ -459,12 +463,14 @@ converter = Converter()
 converter.register_handler(PdfToTextHandler())
 converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
-converter.register_handler(AbiwordPDFHandler())
-converter.register_handler(AbiwordTextHandler())
+
+converter.register_handler(UnoconvPdfHandler())
+
+# Doesn't work currently
+#converter.register_handler(AbiwordPDFHandler())
+#converter.register_handler(AbiwordTextHandler())
 
 
-# Deactivated for now
-#converter.register_handler(UnoconvPdfHandler())
 
 # Needs to be rewriten
 #converter.register_handler(CloudoooPdfHandler())
