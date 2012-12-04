@@ -264,13 +264,11 @@ class PdfToTextHandler(Handler):
 
 
 class AbiwordTextHandler(Handler):
-  accepts_mime_types = ['application/msword',
-                        'application/vnd.oasis.opendocument.text',
-                        'text/rtf',]
+  accepts_mime_types = ['application/msword']
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
-    in_fn = make_temp_file(blob)
+    in_fn = make_temp_file(blob, suffix=".doc")
     out_fn = mktemp(dir=TMP_DIR, suffix='.txt')
 
     try:
@@ -299,7 +297,7 @@ class AbiwordPDFHandler(Handler):
   produces_mime_types = ['application/pdf']
 
   def convert(self, blob, **kw):
-    in_fn = make_temp_file(blob)
+    in_fn = make_temp_file(blob, suffix=".doc")
     out_fn = mktemp(dir=TMP_DIR, suffix='.pdf')
 
     try:
@@ -446,10 +444,10 @@ class WvwareTextHandler(Handler):
 
 
 # Utils
-def make_temp_file(blob):
+def make_temp_file(blob, suffix=""):
   if not os.path.exists(TMP_DIR):
     os.mkdir(TMP_DIR)
-  in_fn = mktemp(dir=TMP_DIR)
+  in_fn = mktemp(dir=TMP_DIR, suffix=suffix)
   fd = open(in_fn, "wcb")
   fd.write(blob)
   fd.close()
