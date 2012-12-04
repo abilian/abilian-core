@@ -271,7 +271,7 @@ class AbiwordTextHandler(Handler):
 
   def convert(self, blob, **kw):
     in_fn = make_temp_file(blob)
-    out_fn = mktemp(dir=TMP_DIR, suffix='txt')
+    out_fn = mktemp(dir=TMP_DIR, suffix='.txt')
 
     try:
       subprocess.check_call(['abiword', '--to', out_fn, in_fn])
@@ -300,7 +300,7 @@ class AbiwordPDFHandler(Handler):
 
   def convert(self, blob, **kw):
     in_fn = make_temp_file(blob)
-    out_fn = mktemp(dir=TMP_DIR, suffix='pdf')
+    out_fn = mktemp(dir=TMP_DIR, suffix='.pdf')
 
     try:
       subprocess.check_call(['abiword', '--to', out_fn, in_fn])
