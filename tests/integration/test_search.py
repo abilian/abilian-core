@@ -30,12 +30,11 @@ class IndexingTestCase(IntegrationTestCase):
     assert len(search_result) == 1
     assert contact == search_result[0]
 
-    search_result = list(DummyContact.search_query.search(u"john"))
+    search_result = list(DummyContact.search_query.search(u"john", get_models=True))
     assert len(search_result) == 1
-    assert contact == search_result[0][1]
-    assert contact.id == int(search_result[0][0]['id'])
+    assert contact.id == int(search_result[0]['id'])
+    assert contact == search_result[0].model
 
     search_result = list(index_service.search(u"john"))
     assert len(search_result) == 1
-    assert contact == search_result[0][1]
-    assert contact.id == int(search_result[0][0]['id'])
+    assert contact.id == int(search_result[0]['id'])

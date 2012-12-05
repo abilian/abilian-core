@@ -54,8 +54,8 @@ def add_to_recent_items(entity, type=None):
       continue
     s.add(item['url'])
     l.append(item)
-  if len(l) > 10:
-    del l[10:]
+  if len(l) > 5:
+    del l[5:]
   session['recent_items'] = g.recent_items = l
 
 

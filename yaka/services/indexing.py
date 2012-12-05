@@ -241,7 +241,11 @@ class Searcher(object):
 
   def __call__(self, query, limit=None):
     """
-    API similar to SQLAlchemy's queries.
+    Original WhooshAlchemy API: allows chaining search queries with SQL
+    filtering.
+
+    Not used anymore for performance reasons, but may still be
+    useful in some circumstances.
     """
     session = self.model_class.query.session
 
@@ -254,14 +258,28 @@ class Searcher(object):
       primary_column = getattr(self.model_class, self.primary)
       return session.query(self.model_class).filter(primary_column.in_(keys))
 
-  def search(self, query, limit=None):
+  def search(self, query, limit=None, get_models=False):
     """
-    New API: returns both whoosh records and SA models.
+    Returns a standard Whoosh search query result set. Optionally, if
+    `get_models` is True, will add the original SQLA models to the Whoos
+    records, using only one SQL query.
     """
-    # TODO: highly suboptimal
 
-    session = self.model_class.query.session
     hits = self.index.searcher().search(self.parser.parse(query), limit=limit)
-    for hit in hits:
-      yield (hit, session.query(self.model_class).get(hit[self.primary]))
+    if not get_models:
+      return hits
 
+    ids = [ hit[self.primary] for hit in hits ]
+
+    primary_column = getattr(self.model_class, self.primary)
+    session = self.model_class.query.session
+    models = session.query(self.model_class).filter(primary_column.in_(ids)).all()
+
+    hits_with_models = []
+    for i in range(0, len(hits)):
+      hit = hits[i]
+      hit.model = models[i]
+      hits_with_models.append(hit)
+
+    assert all([hit.model for hit in hits_with_models])
+    return hits_with_models
