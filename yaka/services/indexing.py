@@ -261,7 +261,7 @@ class Searcher(object):
   def search(self, query, limit=None, get_models=False):
     """
     Returns a standard Whoosh search query result set. Optionally, if
-    `get_models` is True, will add the original SQLA models to the Whoos
+    `get_models` is True, will add the original SQLA models to the Whoosh
     records, using only one SQL query.
     """
 
@@ -273,13 +273,15 @@ class Searcher(object):
 
     primary_column = getattr(self.model_class, self.primary)
     session = self.model_class.query.session
-    models = session.query(self.model_class).filter(primary_column.in_(ids)).all()
+    query = session.query(self.model_class)
+    models = query.filter(primary_column.in_(ids)).all()
 
     hits_with_models = []
-    for i in range(0, len(hits)):
-      hit = hits[i]
-      hit.model = models[i]
-      hits_with_models.append(hit)
+    for hit in hits:
+      model = query.get(hit[self.primary])
+      if model:
+        hit.model = model
+        hits_with_models.append(hit)
 
     assert all([hit.model for hit in hits_with_models])
     return hits_with_models
