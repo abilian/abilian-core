@@ -8,10 +8,10 @@ from yaka.web.filters import filesize, date_age
 class TestFilters(unittest.TestCase):
 
   def test_filesize(self):
-    eq_("100 B", filesize(100))
-    eq_("1.0 kB", filesize(1000))
-    eq_("1.1 kB", filesize(1100))
-    eq_("10 kB", filesize(10000))
+    eq_("100&nbsp;B", str(filesize(100)))
+    eq_("1.0&nbsp;kB", str(filesize(1000)))
+    eq_("1.1&nbsp;kB", str(filesize(1100)))
+    eq_("10&nbsp;kB", str(filesize(10000)))
 
   def test_date_age(self):
     now = datetime.datetime(2012, 6, 10, 10, 10, 10)
