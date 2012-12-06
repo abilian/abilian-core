@@ -2,29 +2,38 @@ from datetime import datetime
 
 from flask.ext import babel
 from flask.ext.babel import gettext as _
+from jinja2 import Markup
 
 
 def labelize(s):
   return " ".join([ w.capitalize() for w in s.split("_") ])
 
+
 def filesize(d):
+  if not isinstance(d, int):
+    d = int(d)
+
   if d < 1000:
-    return "%d B" % d
+    s = "%d&nbsp;B" % d
 
-  if d < 1e4:
-    return "%.1f kB" % (d / 1e3)
-  if d < 1e6:
-    return "%.0f kB" % (d / 1e3)
+  elif d < 1e4:
+    s = "%.1f&nbsp;kB" % (d / 1e3)
+  elif d < 1e6:
+    s = "%.0f&nbsp;kB" % (d / 1e3)
 
-  if d < 1e7:
-    return "%.1f MB" % (d / 1e6)
-  if d < 1e9:
-    return "%.0f MB" % (d / 1e6)
+  elif d < 1e7:
+    s = "%.1f&nbsp;MB" % (d / 1e6)
+  elif d < 1e9:
+    s = "%.0f&nbsp;MB" % (d / 1e6)
 
-  if d < 1e10:
-    return "%.1f GB" % (d / 1e9)
+  elif d < 1e10:
+    s = "%.1f&nbsp;GB" % (d / 1e9)
 
-  return "%.0f GB" % (d / 1e9)
+  else:
+    s = "%.0f&nbsp;GB" % (d / 1e9)
+
+  return Markup(s)
+
 
 def age(dt, now=None):
   # Fail silently for now XXX

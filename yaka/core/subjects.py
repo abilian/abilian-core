@@ -8,7 +8,7 @@ from flask.ext.login import UserMixin
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
-from sqlalchemy.schema import Column, Table, ForeignKey
+from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTime, Text
 
 from .entities import db, Entity, SEARCHABLE, SYSTEM
@@ -38,7 +38,8 @@ class UserQuery(Query):
 
 
 class User(UserMixin, Entity):
-  __editable__ = ['first_name', 'last_name', 'job_title', 'department', 'company', 'email', 'password']
+  __editable__ = ['first_name', 'last_name', 'job_title', 'department',
+                  'company', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
   query_class = UserQuery
@@ -67,10 +68,9 @@ class User(UserMixin, Entity):
 
   photo = Column(LargeBinary)
 
-  # TODO: move to a roles or permission table
-  is_admin = Column(Boolean, nullable=False, default=False)
-
   last_active = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, info=SYSTEM)
+
+  __table_args__ = (UniqueConstraint('email'),)
 
   # TODO: add if needed:
   # location
