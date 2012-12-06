@@ -180,7 +180,12 @@ class WhooshIndexService(object):
 
     for model in session.dirty:
       model_class = model.__class__
+      indexed_fields = model_class.whoosh_schema.names()
       if hasattr(model_class, '__searchable__'):
+        # Hack: Load lazy fields in case they are needed after_commit
+        # This prevents a transaction error in the next method.
+        for key in indexed_fields:
+          value = getattr(model, key)
         self.to_update.setdefault(model_class.__name__, []).append(("changed", model))
 
   #noinspection PyUnusedLocal
@@ -274,6 +279,9 @@ class Searcher(object):
     primary_column = getattr(self.model_class, self.primary)
     session = self.model_class.query.session
     query = session.query(self.model_class)
+
+    # Don't remove. Loads all the models at once, so one can perform a `get`
+    # later on the session without issuing a query.
     models = query.filter(primary_column.in_(ids)).all()
 
     hits_with_models = []
@@ -283,5 +291,4 @@ class Searcher(object):
         hit.model = model
         hits_with_models.append(hit)
 
-    assert all([hit.model for hit in hits_with_models])
     return hits_with_models
