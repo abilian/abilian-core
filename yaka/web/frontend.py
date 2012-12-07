@@ -242,28 +242,6 @@ class Module(object):
     else:
       q = q.order_by(sort_col.desc())
 
-#    if sort_col == 1:
-#      if sort_dir == 'asc':
-#        q = q.order_by(User.last_name)
-#      else:
-#        q = q.order_by(User.last_name.desc())
-#
-#    elif sort_col == 2:
-#      if sort_dir == 'asc':
-#        q = q.order_by(User.created_at)
-#      else:
-#        q = q.order_by(User.created_at.desc())
-#
-#    elif sort_col == 3:
-#      if sort_dir == 'asc':
-#        q = q.order_by(User.last_active)
-#      else:
-#        q = q.order_by(User.last_active.desc())
-#
-#    # default is sort on last name
-#    else:
-#      q = q.order_by(User.last_name)
-
     entities = q.slice(start, end).all()
 
     # TODO: should be an instance variable.
@@ -278,7 +256,7 @@ class Module(object):
       "iTotalRecords": total_count,
       "iTotalDisplayRecords": count,
       "aaData": data,
-      }
+    }
     return jsonify(result)
 
   @expose("/<int:entity_id>")
@@ -402,8 +380,13 @@ class Module(object):
 
   def render_related_views(self, entity):
     rendered = []
-    for label, attr_name, column_names in self.related_views:
-      view = RelatedTableView(column_names)
+    for t in self.related_views:
+      label, attr_name, column_names = t[0:3]
+      if len(t) == 4:
+        options = t[3]
+      else:
+        options = {}
+      view = RelatedTableView(column_names, options)
       related_entities = getattr(entity, attr_name)
       obj = dict(label=label,
                  rendered=view.render(related_entities),
@@ -434,7 +417,6 @@ class CRUDApp(object):
 
   def add_module(self, module):
     self.app.register_blueprint(module.create_blueprint(self))
-    #self._add_view_to_menu(view)
 
   @property
   def breadcrumbs(self):

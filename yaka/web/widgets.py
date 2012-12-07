@@ -69,6 +69,7 @@ class BaseTableView(object):
   """
   show_controls = False
   paginate = False
+  options = {}
 
   def __init__(self, columns):
     self.init_columns(columns)
@@ -112,6 +113,8 @@ class BaseTableView(object):
 
   def render_line(self, entity):
     line = []
+    make_link_on = self.options.get("make_link_on")
+
     for col in self.columns:
       if type(col) == str:
         column_name = col
@@ -119,12 +122,13 @@ class BaseTableView(object):
         column_name = col['name']
       value = getattr(entity, column_name)
 
+
       # Manual massage.
       if value is None:
         value = ""
-      if column_name == '_name':
+      if column_name == make_link_on or column_name == '_name':
         cell = Markup('<a href="%s">%s</a>'\
-                      % (entity._url, cgi.escape(value)))
+                      % (entity._url, cgi.escape(str(value))))
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'\
                       % (value._url, cgi.escape(value._name)))
@@ -152,6 +156,10 @@ class RelatedTableView(BaseTableView):
   """
   show_controls = False
   paginate = False
+
+  def __init__(self, column_names, options):
+    BaseTableView.__init__(self, column_names)
+    self.options = options
 
 
 class AjaxMainTableView(object):
