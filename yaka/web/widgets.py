@@ -87,7 +87,6 @@ class BaseTableView(object):
       self.columns.append(col)
 
   def render(self, model):
-    # Not used yet
     aoColumns = [{'asSorting': [] }] if self.show_controls else []
     aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
                    for i in range(0, len(self.columns)) ]
@@ -155,12 +154,83 @@ class RelatedTableView(BaseTableView):
   paginate = False
 
 
-class AjaxTableView(object):
+class AjaxMainTableView(object):
   """
-  A table that gets its data from an AJAX call.
+  Variant of the MainTableView that gets content from AJAX requests.
+
+  TODO: refactor all of this (currently code is copy/pasted!).
   """
-  # TODO
-  pass
+  show_controls = False
+  paginate = True
+
+  def __init__(self, columns, ajax_source):
+    self.init_columns(columns)
+    self.ajax_source = ajax_source
+    self.name = id(self)
+
+  def init_columns(self, columns):
+    # TODO: compute the correct width for each column.
+    self.columns = []
+    default_width = 0.99 / len(columns)
+    for col in columns:
+      if type(col) == str:
+        col = dict(name=col, width=default_width)
+      assert type(col) == dict
+      if not col.has_key('label'):
+        col['label'] = labelize(col['name'])
+      self.columns.append(col)
+
+  def render(self):
+    aoColumns = [{'asSorting': [] }] if self.show_controls else []
+    aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
+                   for i in range(0, len(self.columns)) ]
+
+    datatable_options = {
+      'aoColumns': aoColumns,
+      'bFilter': True,
+      'oLanguage': {
+        'sSearch': "Filter records:"
+      },
+      'bPaginate': self.paginate,
+      'sPaginationType': "bootstrap",
+      'bLengthChange': False,
+      'iDisplayLength': 25,
+
+      'bProcessing': True,
+      'bServerSide': True,
+      'sAjaxSource': self.ajax_source,
+    }
+    js = "$('#%s').dataTable(%s);" % (self.name, json.dumps(datatable_options))
+
+    return Markup(render_template('widgets/render_ajax_table.html',
+                                  js=Markup(js), view=self))
+
+  def render_line(self, entity):
+    line = []
+    for col in self.columns:
+      if type(col) == str:
+        column_name = col
+      else:
+        column_name = col['name']
+      value = getattr(entity, column_name)
+
+      # Manual massage.
+      if value is None:
+        value = ""
+      if column_name == '_name':
+        cell = Markup('<a href="%s">%s</a>'\
+                      % (entity._url, cgi.escape(value)))
+      elif isinstance(value, Entity):
+        cell = Markup('<a href="%s">%s</a>'\
+                      % (value._url, cgi.escape(value._name)))
+      elif isinstance(value, basestring)\
+      and (value.startswith("http://") or value.startswith("www.")):
+        cell = Markup(linkify_url(value))
+      else:
+        cell = unicode(value)
+
+      line.append(cell)
+    return line
 
 
 #

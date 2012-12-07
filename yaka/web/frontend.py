@@ -1,20 +1,18 @@
+# coding=utf-8
 import copy
 import re
 
 from flask import session, redirect, request, g, render_template, flash,\
-  Blueprint
-from yaka.core.signals import activity
+  Blueprint, jsonify
+from sqlalchemy import or_
 
+from yaka.core.signals import activity
 from yaka.services import audit_service
 from yaka.core.extensions import db
 
 from .decorators import templated
-
-#
-# Helper classes
-#
-from yaka.web.widgets import Panel, Row, SingleView, RelatedTableView, \
-  MainTableView
+from .widgets import Panel, Row, SingleView, RelatedTableView,\
+  MainTableView, AjaxMainTableView
 
 
 class BreadCrumbs(object):
@@ -194,11 +192,94 @@ class Module(object):
   def list_view(self):
     bc = self.bread_crumbs()
 
-    table_view = MainTableView(self.list_view_columns)
-    entities = self.get_entities()
-    rendered_table = table_view.render(entities)
+    # TODO: should be an instance variable.
+    table_view = AjaxMainTableView(columns=self.list_view_columns,
+                                   ajax_source=self.url + "/json")
+    rendered_table = table_view.render()
 
     return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
+
+  @expose("/json")
+  def list_json(self):
+    args = request.args
+    cls = self.managed_class
+
+    for k in sorted(args.keys()):
+      print k, args[k]
+    print
+
+    length = int(args.get("iDisplayLength", 10))
+    start = int(args.get("iDisplayStart", 0))
+    sort_col = int(args.get("iSortCol_0", 1))
+    sort_dir = args.get("sSortDir_0", "asc")
+    echo = int(args.get("sEcho", 0))
+    search = args.get("sSearch", "").replace("%", "")
+
+    end = start + length
+
+    q = cls.query
+    total_count = q.count()
+
+    if search:
+      # TODO: gérer les accents
+      if hasattr(cls, "name"):
+        filter = cls.name.like("%" + search + "%")
+      elif hasattr(cls, "nom"):
+        filter = cls.nom.like("%" + search + "%")
+      else:
+        pass # ???
+      q = q.filter(filter)
+
+    count = q.count()
+
+    sort_col_name = self.list_view_columns[sort_col]['name']
+    if sort_col_name == '_name':
+      sort_col_name = 'nom'
+    sort_col = getattr(cls, sort_col_name)
+    print sort_col_name, sort_col
+    if sort_dir == 'asc':
+      q = q.order_by(sort_col)
+    else:
+      q = q.order_by(sort_col.desc())
+
+#    if sort_col == 1:
+#      if sort_dir == 'asc':
+#        q = q.order_by(User.last_name)
+#      else:
+#        q = q.order_by(User.last_name.desc())
+#
+#    elif sort_col == 2:
+#      if sort_dir == 'asc':
+#        q = q.order_by(User.created_at)
+#      else:
+#        q = q.order_by(User.created_at.desc())
+#
+#    elif sort_col == 3:
+#      if sort_dir == 'asc':
+#        q = q.order_by(User.last_active)
+#      else:
+#        q = q.order_by(User.last_active.desc())
+#
+#    # default is sort on last name
+#    else:
+#      q = q.order_by(User.last_name)
+
+    entities = q.slice(start, end).all()
+
+    # TODO: should be an instance variable.
+    table_view = AjaxMainTableView(columns=self.list_view_columns,
+                                   ajax_source=self.url + "/json")
+    data = []
+    for entity in entities:
+      data.append(table_view.render_line(entity))
+
+    result = {
+      "sEcho": echo,
+      "iTotalRecords": total_count,
+      "iTotalDisplayRecords": count,
+      "aaData": data,
+      }
+    return jsonify(result)
 
   @expose("/<int:entity_id>")
   @templated("crm/single_view.html")
@@ -303,12 +384,6 @@ class Module(object):
     db.session.commit()
     flash("Entity deleted", "success")
     return redirect(self.url)
-
-  #
-  # Override in subclasses
-  #
-  def get_entities(self):
-    return self.managed_class.query.all()
 
   #
   # Utils
