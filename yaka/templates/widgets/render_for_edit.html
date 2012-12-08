@@ -75,3 +75,11 @@
   });
 </script>
 {% endif %}
+
+{% if form.js %}
+  <script>
+  $(document).ready(function() {
+    {{ form.js }}
+  });
+  </script>
+{% endif %}
