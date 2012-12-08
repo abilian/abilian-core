@@ -78,13 +78,6 @@ API
    :members:
    :undoc-members:
 
-:mod:`yaka.services.sitemap`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.services.sitemap
-   :members:
-   :undoc-members:
-
 ``yaka.web``
 ------------
 
