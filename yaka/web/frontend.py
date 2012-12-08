@@ -10,7 +10,7 @@ import copy
 import re
 
 from flask import session, redirect, request, g, render_template, flash,\
-  Blueprint, jsonify
+  Blueprint, jsonify, abort
 
 from yaka.core.signals import activity
 from yaka.services import audit_service
@@ -276,16 +276,15 @@ class Module(object):
     args = request.args
     cls = self.managed_class
 
-    for k in sorted(args.keys()):
-      print "%s: %s" % (k, args[k])
-    print
+    q = args.get("q").replace("%", " ")
+    if not q or len(q) < 2:
+      abort(500)
 
-    result = {'results': [
-      {'id': 0, 'text': 'toto'},
-      {'id': 1, 'text': 'titi'},
-      {'id': 2, 'text': 'tutu'},
-      {'id': 3, 'text': 'tata'},
-    ]}
+    query = db.session.query(cls.id, cls.nom)
+    query = query.filter(cls.nom.like("%" + q + "%"))
+    all = query.all()
+
+    result = {'results': [ { 'id': r[0], 'text': r[1]} for r in all ] }
     return jsonify(result)
 
   @expose("/<int:entity_id>")
