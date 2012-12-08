@@ -50,10 +50,31 @@ class RelationSelectField(SelectField):
   pass
 
 
-# TODO: all of this is currently only stubs and needs to be implemented.
+# TODO: most of this is currently only stubs and needs to be implemented.
 #
 # Validators
 #
+# NOTE: the `rule` property is supposed to be useful for generating client-side
+# validation code.
+class Email(Email):
+  def __call__(self, form, field):
+    if self.message is None:
+      self.message = field.gettext(u'Invalid email address.')
+
+    if field.data:
+      super(Email, self).__call__(form, field)
+
+  @property
+  def rule(self):
+    return {"email": True}
+
+
+class Required(Required):
+  @property
+  def rule(self):
+    return {"required": True}
+
+
 class EqualTo(EqualTo):
   @property
   def rule(self):
@@ -78,29 +99,10 @@ class Optional(Optional):
     return None
 
 
-class Required(Required):
-  @property
-  def rule(self):
-    return {"required": True}
-
-
 class Regexp(Regexp):
   @property
   def rule(self):
     return None
-
-
-class Email(Email):
-  def __call__(self, form, field):
-    if self.message is None:
-      self.message = field.gettext(u'Invalid email address.')
-
-    if field.data:
-      super(Email, self).__call__(form, field)
-
-  @property
-  def rule(self):
-    return {"email": True}
 
 
 class IPAddress(IPAddress):
@@ -137,3 +139,19 @@ class NoneOf(NoneOf):
   @property
   def rule(self):
     return None
+
+
+# These are the canonical names that should be used.
+equalto = EqualTo
+length = Length
+numberrange = NumberRange
+optional = Optional
+required = Required
+regexp = Regexp
+email = Email
+ipaddress = IPAddress
+macaddress = MacAddress
+url = URL
+uuid = UUID
+anyof = AnyOf
+noneof = NoneOf
