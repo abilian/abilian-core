@@ -207,6 +207,9 @@ class Module(object):
 
   @expose("/json")
   def list_json(self):
+    """
+    JSON endpoint, for AJAX-backed table views.
+    """
     args = request.args
     cls = self.managed_class
 
@@ -238,11 +241,11 @@ class Module(object):
 
     count = q.count()
 
+    # TODO: won't work in all the cases
     sort_col_name = self.list_view_columns[sort_col]['name']
     if sort_col_name == '_name':
       sort_col_name = 'nom'
     sort_col = getattr(cls, sort_col_name)
-    print sort_col_name, sort_col
     if sort_dir == 'asc':
       q = q.order_by(sort_col)
     else:
@@ -263,6 +266,26 @@ class Module(object):
       "iTotalDisplayRecords": count,
       "aaData": data,
     }
+    return jsonify(result)
+
+  @expose("/json2")
+  def list_json2(self):
+    """
+    Other JSON endpoint, this time used for filling select boxes dynamically.
+    """
+    args = request.args
+    cls = self.managed_class
+
+    for k in sorted(args.keys()):
+      print "%s: %s" % (k, args[k])
+    print
+
+    result = {'results': [
+      {'id': 0, 'text': 'toto'},
+      {'id': 1, 'text': 'titi'},
+      {'id': 2, 'text': 'tutu'},
+      {'id': 3, 'text': 'tata'},
+    ]}
     return jsonify(result)
 
   @expose("/<int:entity_id>")

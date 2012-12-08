@@ -79,7 +79,7 @@
 {% if form.js %}
   <script>
   $(document).ready(function() {
-    {{ form.js }}
+    {{ form.js|safe }}
   });
   </script>
 {% endif %}
