@@ -133,17 +133,3 @@ class NoneOf(NoneOf):
   @property
   def rule(self):
     return None
-
-
-email = Email
-equal_to = EqualTo
-ip_address = IPAddress
-mac_address = MacAddress
-length = Length
-number_range = NumberRange
-optional = Optional
-required = Required
-regexp = Regexp
-url = URL
-any_of = AnyOf
-none_of = NoneOf
