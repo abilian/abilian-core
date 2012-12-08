@@ -4,18 +4,21 @@ Various tools that don't belong some place specific.
 
 import functools
 import time
-from logbook import Logger
 from math import ceil
-from flask import request
-
-
-# XXX: really needed ?
 import unicodedata
 import re
 
+from logbook import Logger
+from flask import request
+
 
 def get_params(names):
-  """Returns dictionary with params from request"""
+  """
+  Returns a dictionary with params from request.
+
+  TODO: I think we don't use it anymore and it should be removed before
+  someone gets hurt.
+  """
   params = {}
   for name in names:
     value = request.form.get(name) or request.files.get(name)
@@ -111,7 +114,7 @@ class Pagination(object):
 
 
 def slugify(value, separator="-"):
-  """ Slugify an unicode string, to make it URL friendly. """
+  """Slugify an unicode string, to make it URL friendly."""
   if not isinstance(value, unicode):
     value = unicode(value)
   value = unicodedata.normalize('NFKD', value)

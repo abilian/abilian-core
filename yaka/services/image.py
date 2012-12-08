@@ -1,3 +1,8 @@
+"""
+Provides tools (currently: only functions, not a real service) for image
+processing.
+"""
+
 from StringIO import StringIO
 from PIL import Image
 

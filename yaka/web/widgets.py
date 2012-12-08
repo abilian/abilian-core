@@ -1,5 +1,7 @@
 """
 Reusable widgets to be included in views.
+
+NOTE: code is currently quite messy. Needs to be refactored.
 """
 
 import cgi
@@ -14,6 +16,8 @@ from yaka.web.filters import labelize
 
 
 def linkify_url(value):
+  """Tranform an URL pulled from the database to a safe HTML fragment."""
+
   value = value.strip()
 
   rjs = r'[\s]*(&#x.{1,7})?'.join(list('javascript:'))
@@ -246,7 +250,9 @@ class AjaxMainTableView(object):
 #
 class ModelWrapper(object):
   """
-  Adds a convenience `__getitem__` method to a model.
+  Decorator / proxy (I've never really understood the difference in the GoF
+  patterns book) which mostly adds a few convenience methods to a model, like
+  a custom `__getitem__`.
   """
 
   def __init__(self, model):
@@ -320,6 +326,8 @@ class ModelWrapper(object):
 
 
 class SingleView(object):
+  """View on a single object."""
+
   def __init__(self, *panels):
     self.panels = panels
 
@@ -353,6 +361,14 @@ class SingleView(object):
 # Used to describe single entity views.
 #
 class Panel(object):
+  """
+  `Panel` and `Row` classes help implement a trivial internal DSL for
+  specifying multi-column layouts in forms or object views.
+
+  They are currently not really used, since we went with 1-column designs
+  eventually.
+  """
+
   def __init__(self, label=None, *rows):
     self.label = label
     self.rows = rows
@@ -368,6 +384,14 @@ class Panel(object):
 
 
 class Row(object):
+  """
+  `Panel` and `Row` classes help implement a trivial internal DSL for
+  specifying multi-column layouts in forms or object views.
+
+  They are currently not really used, since we went with 1-column designs
+  eventually.
+  """
+
   def __init__(self, *cols):
     self.cols = cols
 

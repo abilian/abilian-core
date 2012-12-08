@@ -230,6 +230,9 @@ def all_entity_classes():
   """
   Returns the list of all concrete persistent classes that are subclasses of
   Entity.
+
+  FIXME: this is slow (I think). Could be replaced by a metaclass that registers
+  all the `Entity` subclasses in a registry somewhere.
   """
   classes = set()
   for module_name, module in sys.modules.items():

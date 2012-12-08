@@ -1,3 +1,7 @@
+"""
+Add a few specific filters to Jinja2.
+"""
+
 from datetime import datetime
 
 from flask.ext import babel
@@ -69,6 +73,7 @@ def age(dt, now=None):
 
   return age_str
 
+
 def date_age(dt, now=None):
   # Fail silently for now XXX
   if not dt:
@@ -76,9 +81,11 @@ def date_age(dt, now=None):
   age_str = age(dt, now)
   return "%s (%s)" % (dt.strftime("%Y-%m-%d %H:%M"), age_str)
 
+
 def date(value):
   format="EE, d MMMM y"
   return babel.format_datetime(value, format)
+
 
 def abbrev(s, max_size):
   if len(s) <= max_size:

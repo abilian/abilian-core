@@ -16,7 +16,9 @@ __all__ = ['create_app', 'Application', 'ServiceManager']
 
 class ServiceManager(object):
   """
-  XXX: probably too much hardcoding here.
+  Mixin that provides lifecycle (register/start/stop) support for services.
+
+  XXX: too much hardcoding here.
   """
 
   def register_services(self):
@@ -36,6 +38,9 @@ class ServiceManager(object):
 
 
 class Application(Flask, ServiceManager):
+  """
+  Base application class. Extend it in your own app.
+  """
   def __init__(self, config):
     Flask.__init__(self, __name__)
 

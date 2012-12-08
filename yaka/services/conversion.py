@@ -136,7 +136,8 @@ class Converter(object):
     raise ConversionError()
 
   def to_image(self, digest, blob, mime_type, index, size=500):
-    """Converts a file to a list of images. Returns image at the given index.
+    """
+    Converts a file to a list of images. Returns image at the given index.
     """
     # Special case, for now (XXX).
     if mime_type.startswith("image/"):

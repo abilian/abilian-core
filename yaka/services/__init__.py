@@ -1,4 +1,6 @@
-"""Modules that provide services (no UI).
+"""
+Modules that provide services (no UI). They are implemented as
+Flask extensions (see: http://flask.pocoo.org/docs/extensiondev/ )
 
 """
 

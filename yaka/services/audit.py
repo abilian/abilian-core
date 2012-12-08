@@ -1,4 +1,5 @@
-"""Audit Service: logs modifications to audited objects.
+"""
+Audit Service: logs modifications to audited objects.
 
 Only subclasses of Entity are auditable, at this point.
 

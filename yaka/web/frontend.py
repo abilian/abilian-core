@@ -1,10 +1,16 @@
 # coding=utf-8
+
+"""
+Front-end for a CRM app.
+
+This should eventually allow implementing very custom CRM-style application.
+"""
+
 import copy
 import re
 
 from flask import session, redirect, request, g, render_template, flash,\
   Blueprint, jsonify
-from sqlalchemy import or_
 
 from yaka.core.signals import activity
 from yaka.services import audit_service
@@ -12,7 +18,7 @@ from yaka.core.extensions import db
 
 from .decorators import templated
 from .widgets import Panel, Row, SingleView, RelatedTableView,\
-  MainTableView, AjaxMainTableView
+  AjaxMainTableView
 
 
 class BreadCrumbs(object):
@@ -406,6 +412,7 @@ class Module(object):
     return re.sub(r'(?<=.)([A-Z])', r' \1', name)
 
 
+# TODO: rename to CRMApp ?
 class CRUDApp(object):
   def __init__(self, app, modules=None):
     if modules:

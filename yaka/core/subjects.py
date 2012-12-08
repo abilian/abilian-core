@@ -1,7 +1,12 @@
-"""Subject classes (i.e. people, groups, etc.).
+"""
+Subject classes (i.e. people, groups, etc.).
 
 See ICOM-ics-v1.0 "Subject Branch".
+
+TODO: I'm not a big fan of the "subject" name. Could be replaced by something
+else, like "people" or "principal" ?
 """
+
 from datetime import datetime, timedelta
 
 from flask.ext.login import UserMixin

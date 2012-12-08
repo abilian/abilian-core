@@ -1,4 +1,6 @@
-"""Extensions to WTForms fields, widgets and validators."""
+"""
+Extensions to WTForms fields, widgets and validators.
+"""
 
 from cgi import escape
 
@@ -47,6 +49,8 @@ class RelationSelectField(SelectField):
   # TODO: Later...
   pass
 
+
+# TODO: all of this is currently only stubs and needs to be implemented.
 #
 # Validators
 #

@@ -13,6 +13,7 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 # TODO: not sure that one index per class is the way to go.
 # TODO: speed issue
 # TODO: this is a singleton. makes tests hard (for instance, launching parallel tests).
+# TODO: make asynchonous.
 
 import sqlalchemy
 from sqlalchemy import event

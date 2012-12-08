@@ -1,10 +1,18 @@
-# From: http://flask.pocoo.org/docs/patterns/viewdecorators/
+"""
+Useful decorators for web views.
+"""
 
 from functools import wraps
 from flask import request, render_template
 
 
+# Copy/pasted from: http://flask.pocoo.org/docs/patterns/viewdecorators/
 def templated(template=None):
+  """
+  The idea of this decorator is that you return a dictionary with the values
+  passed to the template from the view function and the template
+  is automatically rendered.
+  """
   def decorator(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
