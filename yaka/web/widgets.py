@@ -132,7 +132,7 @@ class BaseTableView(object):
         value = ""
       if column_name == make_link_on or column_name == '_name':
         cell = Markup('<a href="%s">%s</a>'\
-                      % (entity._url, cgi.escape(str(value))))
+                      % (entity._url, cgi.escape(unicode(value))))
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'\
                       % (value._url, cgi.escape(value._name)))
@@ -300,7 +300,7 @@ class ModelWrapper(object):
 
     # XXX: Several hacks. Needs to be moved somewhere else.
     elif name == 'siret' and value:
-      siret = str(value)
+      siret = unicode(value)
       if len(siret) > 9:
         siren = siret[0:9]
       else:
