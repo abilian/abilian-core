@@ -11,6 +11,7 @@ import re
 
 from flask import session, redirect, request, g, render_template, flash,\
   Blueprint, jsonify, abort
+from sqlalchemy.exc import IntegrityError
 
 from yaka.core.signals import activity
 from yaka.services import audit_service
@@ -330,19 +331,25 @@ class Module(object):
     if request.form.get('_action') == 'cancel':
       return redirect("%s/%d" % (self.url, entity_id))
     elif form.validate():
-      flash("Entity successfully edited", "success")
       form.populate_obj(entity)
       activity.send(self, actor=g.user, verb="update", object=entity)
-      db.session.commit()
-      return redirect("%s/%d" % (self.url, entity_id))
+      try:
+        db.session.commit()
+        flash("Entity successfully edited", "success")
+        return redirect("%s/%d" % (self.url, entity_id))
+      except IntegrityError, e:
+        db.session.rollback()
+        flash("An entity with this name already exists in the database", "error")
     else:
-      flash("Please fix the error below", "error")
-      rendered_entity = self.single_view.render_form(form)
-      bc = self.bread_crumbs(entity._name)
-      return render_template('crm/single_view.html',
-                             rendered_entity=rendered_entity,
-                             breadcrumbs=bc,
-                             module=self)
+      flash("Please fix the error(s) below", "error")
+
+    # All unhappy path should end here
+    rendered_entity = self.single_view.render_form(form)
+    bc = self.bread_crumbs(entity._name)
+    return render_template('crm/single_view.html',
+                           rendered_entity=rendered_entity,
+                           breadcrumbs=bc,
+                           module=self)
 
   @expose("/new")
   @templated("crm/single_view.html")
@@ -365,20 +372,26 @@ class Module(object):
       return redirect("%s/" % self.url)
 
     if form.validate():
-      flash("Entity successfully added", "success")
       form.populate_obj(entity)
       db.session.add(entity)
       activity.send(self, actor=g.user, verb="post", object=entity)
-      db.session.commit()
-      return redirect("%s/%d" % (self.url, entity.id))
+      try:
+        db.session.commit()
+        flash("Entity successfully added", "success")
+        return redirect("%s/%d" % (self.url, entity.id))
+      except IntegrityError, e:
+        db.session.rollback()
+        flash("An entity with this name already exists in the database", "error")
     else:
-      flash("Error", "error")
-      rendered_entity = self.single_view.render_form(form, for_new=True)
-      bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
-      return render_template('crm/single_view.html',
-                             rendered_entity=rendered_entity,
-                             breadcrumbs=bc,
-                             module=self)
+      flash("Please fix the error(s) below", "error")
+
+    # All unhappy paths should here here
+    rendered_entity = self.single_view.render_form(form, for_new=True)
+    bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
+    return render_template('crm/single_view.html',
+                           rendered_entity=rendered_entity,
+                           breadcrumbs=bc,
+                           module=self)
 
   @expose("/<int:entity_id>/delete", methods=['POST'])
   def entity_delete(self, entity_id):
