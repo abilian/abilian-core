@@ -5,12 +5,15 @@ Front-end for a CRM app.
 
 This should eventually allow implementing very custom CRM-style application.
 """
+import StringIO
 
 import copy
+import csv
+from time import strftime, gmtime
 import re
 
 from flask import session, redirect, request, g, render_template, flash,\
-  Blueprint, jsonify, abort
+  Blueprint, jsonify, abort, make_response
 from sqlalchemy.exc import IntegrityError
 
 from yaka.core.signals import activity
@@ -269,10 +272,44 @@ class Module(object):
     }
     return jsonify(result)
 
+  @expose("/export")
+  def export_to_csv(self):
+    # TODO: take care of all the special cases
+    csvfile = StringIO.StringIO()
+    writer = csv.writer(csvfile)
+
+    objects = self.managed_class.query.all()
+
+    form = self.edit_form_class()
+    headers = ['id']
+    for field in form:
+      if hasattr(objects[0], field.name):
+        headers.append(field.name)
+    writer.writerow(headers)
+
+    for object in objects:
+      row = [object.id]
+      for field in form:
+        if hasattr(object, field.name):
+          value = getattr(object, field.name)
+          if value is None:
+            value = ""
+          row.append(unicode(value).encode('utf8'))
+      writer.writerow(row)
+
+    response = make_response(csvfile.getvalue())
+    response.headers['content-type'] = 'application/csv'
+    filename = "%s-%s.csv" % (self.managed_class.__name__,
+                              strftime("%d:%m:%Y-%H:%M:%S", gmtime()))
+    response.headers['content-disposition'] = 'attachment;filename="%s"' % filename
+    return response
+
   @expose("/json2")
   def list_json2(self):
     """
     Other JSON endpoint, this time used for filling select boxes dynamically.
+
+    NB: not used currently.
     """
     args = request.args
     cls = self.managed_class
