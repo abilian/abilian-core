@@ -14,6 +14,7 @@ import re
 
 from flask import session, redirect, request, g, render_template, flash,\
   Blueprint, jsonify, abort, make_response
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
 from yaka.core.signals import activity
@@ -251,9 +252,9 @@ class Module(object):
       sort_col_name = 'nom'
     sort_col = getattr(cls, sort_col_name)
     if sort_dir == 'asc':
-      q = q.order_by(sort_col)
+      q = q.order_by(func.lower(sort_col))
     else:
-      q = q.order_by(sort_col.desc())
+      q = q.order_by(func.lower(sort_col).desc())
 
     entities = q.slice(start, end).all()
 
