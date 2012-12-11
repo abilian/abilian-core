@@ -139,6 +139,8 @@ class BaseTableView(object):
       elif isinstance(value, basestring) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
+      elif isinstance(value, list):
+        cell = "; ".join(value)
       else:
         cell = unicode(value)
 
@@ -297,6 +299,9 @@ class ModelWrapper(object):
     elif isinstance(value, Entity):
       rendered = Markup('<a href="%s">%s</a>'
                         % (value._url, cgi.escape(value._name)))
+
+    elif isinstance(value, list):
+      rendered = "; ".join(value)
 
     # XXX: Several hacks. Needs to be moved somewhere else.
     elif name == 'siret' and value:
