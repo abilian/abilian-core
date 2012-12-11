@@ -58,6 +58,15 @@ class Application(Flask, ServiceManager):
     self.register_services()
     # Note
 
+  def create_db(self):
+    from yaka.core.subjects import User    
+    with self.app_context():
+      db.create_all()
+      if User.query.get(0) is None:
+        root = User(id=0, last_name=u'SYSTEM', email='admin@abilian.com', password='*')
+        db.session.add(root)
+        db.session.commit()
 
+    
 def create_app(config):
   return Application(config)

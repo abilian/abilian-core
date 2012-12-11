@@ -30,7 +30,7 @@ class IntegrationTestCase(TestCase):
     return self.app
 
   def setUp(self):
-    db.create_all()
+    self.app.create_db()
     self.session = db.session
 
   def tearDown(self):

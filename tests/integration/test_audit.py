@@ -28,6 +28,9 @@ class TestAudit(IntegrationTestCase):
       audit_service.stop()
 
   def test_audit(self):
+    # creation of system user(0) should have created one entry. We clear it for this test
+    AuditEntry.query.delete()
+    self.session.flush()
     assert len(AuditEntry.query.all()) == 0
 
     account = DummyAccount(name="John SARL")
