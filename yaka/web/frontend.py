@@ -16,6 +16,7 @@ from flask import session, redirect, request, g, render_template, flash,\
   Blueprint, jsonify, abort, make_response
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
+from yaka.core.entities import ValidationError
 
 from yaka.core.signals import activity
 from yaka.services import audit_service
@@ -375,6 +376,9 @@ class Module(object):
         db.session.commit()
         flash("Entity successfully edited", "success")
         return redirect("%s/%d" % (self.url, entity_id))
+      except ValidationError, e:
+        db.session.rollback()
+        flash(e.message, "error")
       except IntegrityError, e:
         db.session.rollback()
         flash("An entity with this name already exists in the database", "error")
@@ -417,6 +421,9 @@ class Module(object):
         db.session.commit()
         flash("Entity successfully added", "success")
         return redirect("%s/%d" % (self.url, entity.id))
+      except ValidationError, e:
+        db.session.rollback()
+        flash(e.message, "error")
       except IntegrityError, e:
         db.session.rollback()
         flash("An entity with this name already exists in the database", "error")

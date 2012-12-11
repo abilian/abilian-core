@@ -11,7 +11,7 @@ import sys
 from flask import g
 
 from sqlalchemy.ext.declarative import AbstractConcreteBase, declared_attr
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, mapper
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime
@@ -22,7 +22,7 @@ from .extensions import db
 from .util import memoized
 
 
-__all__ = ['Entity', 'all_entity_classes', 'db']
+__all__ = ['Entity', 'all_entity_classes', 'db', 'ValidationError']
 
 
 class Info(dict):
@@ -54,6 +54,20 @@ SYSTEM = Info(editable=False, auditable=False)
 
 # TODO: get rid of flask-sqlalchemy, replace db.Model by Base?
 #Base = declarative_base()
+
+
+#
+# Manual validation
+#
+class ValidationError(Exception):
+  pass
+
+def validation_listener(mapper, connection, target):
+  if hasattr(target, "_validate"):
+    target._validate()
+
+event.listen(mapper, 'before_insert', validation_listener)
+event.listen(mapper, 'before_update', validation_listener)
 
 
 # TODO: very hackish. Use Redis instead?
