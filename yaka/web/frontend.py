@@ -252,6 +252,11 @@ class Module(object):
     if sort_col_name == '_name':
       sort_col_name = 'nom'
     sort_col = getattr(cls, sort_col_name)
+
+    # XXX: Big hack, date are sorted in reverse order by default
+    if sort_col_name.startswith("date"):
+      sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
+
     if sort_dir == 'asc':
       q = q.order_by(func.lower(sort_col))
     else:
