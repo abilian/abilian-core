@@ -130,7 +130,8 @@ class BaseTableView(object):
       # Manual massage.
       if value is None:
         value = ""
-      if column_name == make_link_on or column_name == '_name':
+      if column_name == make_link_on or column_name == '_name' or \
+         col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'\
                       % (entity._url, cgi.escape(unicode(value))))
       elif isinstance(value, Entity):
@@ -238,8 +239,11 @@ class AjaxMainTableView(object):
         cell = Markup('<a href="%s">%s</a>'\
                       % (value._url, cgi.escape(value._name)))
       elif isinstance(value, basestring)\
-      and (value.startswith("http://") or value.startswith("www.")):
-        cell = Markup(linkify_url(value))
+        and (value.startswith("http://") or value.startswith("www.")):
+          cell = Markup(linkify_url(value))
+      elif col.get('linkable'):
+        cell = Markup('<a href="%s">%s</a>'\
+                      % (entity._url, cgi.escape(unicode(value))))
       else:
         cell = unicode(value)
 
