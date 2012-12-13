@@ -19,6 +19,9 @@ from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTim
 from .entities import db, Entity, SEARCHABLE, SYSTEM
 
 
+__all__ = ['User', 'Group', 'Principal']
+
+
 # Tables for many-to-many relationships
 following = Table(
   'following', db.Model.metadata,
@@ -30,6 +33,8 @@ membership = Table(
   Column('user_id', Integer, ForeignKey('user.id')),
   Column('group_id', Integer, ForeignKey('group.id'))
 )
+
+# Should not be needed (?)
 administratorship = Table(
   'administratorship', db.Model.metadata,
   Column('user_id', Integer, ForeignKey('user.id')),
@@ -42,7 +47,12 @@ class UserQuery(Query):
     return self.filter_by(email=email).all()[0]
 
 
-class User(UserMixin, Entity):
+class Principal(object):
+  """A principal is either a User or a Group."""
+  pass
+
+
+class User(Principal, UserMixin, Entity):
   __editable__ = ['first_name', 'last_name', 'job_title', 'department',
                   'company', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
@@ -152,7 +162,7 @@ class User(UserMixin, Entity):
     return "/social/users/%d" % self.id
 
 
-class Group(Entity):
+class Group(Entity, Principal):
   __editable__ = ['name', 'description']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
@@ -169,4 +179,3 @@ class Group(Entity):
   @property
   def _url(self):
     return "/social/groups/%d" % self.id
-
