@@ -9,6 +9,7 @@ import StringIO
 
 import copy
 import csv
+from datetime import date
 from time import strftime, gmtime
 import re
 
@@ -16,7 +17,8 @@ from flask import session, redirect, request, g, render_template, flash,\
   Blueprint, jsonify, abort, make_response
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-from yaka.core.entities import ValidationError
+from xlwt import Workbook, XFStyle
+from yaka.core.entities import ValidationError, Entity
 
 from yaka.core.signals import activity
 from yaka.services import audit_service
@@ -283,34 +285,47 @@ class Module(object):
   @expose("/export_xls")
   def export_to_xls(self):
     # TODO: take care of all the special cases
-    csvfile = StringIO.StringIO()
-    writer = csv.writer(csvfile)
+    wb = Workbook()
+    ws = wb.add_sheet("Sheet 1")
 
     objects = self.managed_class.query.all()
 
     form = self.edit_form_class()
-    headers = ['id']
+
+    col_names = ['id']
     for field in form:
       if hasattr(objects[0], field.name):
-        headers.append(field.name)
-    writer.writerow(headers)
+        col_names.append(field.name)
 
-    for object in objects:
-      row = [object.id]
-      for field in form:
-        if hasattr(object, field.name):
-          value = getattr(object, field.name)
-          if value is None:
-            value = ""
-          row.append(unicode(value).encode('utf8'))
-      writer.writerow(row)
+    for c, col_name in enumerate(col_names):
+      ws.write(0, c, col_name)
 
-    response = make_response(csvfile.getvalue())
-    response.headers['content-type'] = 'application/csv'
-    filename = "%s-%s.csv" % (self.managed_class.__name__,
+    for r, obj in enumerate(objects):
+      for c, col_name in enumerate(col_names):
+        style = None
+        value = getattr(obj, col_name)
+        if isinstance(value, Entity):
+          value = value._name
+        elif isinstance(value, list):
+          value = "; ".join(value)
+        elif isinstance(value, date):
+          style = XFStyle()
+          style.num_format_str = "D/M/Y"
+        if style:
+          ws.write(r+1, c, value, style)
+        else:
+          ws.write(r+1, c, value)
+
+    fd = StringIO.StringIO()
+    wb.save(fd)
+
+    response = make_response(fd.getvalue())
+    response.headers['content-type'] = 'application/ms-excel'
+    filename = "%s-%s.xls" % (self.managed_class.__name__,
                               strftime("%d:%m:%Y-%H:%M:%S", gmtime()))
     response.headers['content-disposition'] = 'attachment;filename="%s"' % filename
     return response
+
 
   @expose("/export")
   def export_to_csv(self):
