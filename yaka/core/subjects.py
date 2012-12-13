@@ -79,7 +79,7 @@ class User(Principal, UserMixin, Entity):
 
   email = Column(UnicodeText, nullable=False)
   # TODO: encrypt
-  password = Column(UnicodeText, nullable=False)
+  password = Column(UnicodeText)
 
   photo = Column(LargeBinary)
 
