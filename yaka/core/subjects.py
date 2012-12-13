@@ -44,7 +44,7 @@ administratorship = Table(
 
 class UserQuery(Query):
   def get_by_email(self, email):
-    return self.filter_by(email=email).all()[0]
+    return self.filter_by(email=email).one()
 
 
 class Principal(object):
@@ -58,7 +58,6 @@ class User(Principal, UserMixin, Entity):
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
   query_class = UserQuery
-  #query = db.session.query_property(UserQuery)
 
   # Basic information
   first_name = Column(UnicodeText, info=SEARCHABLE)
@@ -83,7 +82,7 @@ class User(Principal, UserMixin, Entity):
 
   photo = Column(LargeBinary)
 
-  last_active = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, info=SYSTEM)
+  last_active = Column(DateTime, info=SYSTEM)
 
   __table_args__ = (UniqueConstraint('email'),)
 
@@ -140,6 +139,8 @@ class User(Principal, UserMixin, Entity):
 
   @property
   def is_online(self):
+    if self.last_active is None:
+      return False
     return datetime.utcnow() - self.last_active <= timedelta(0, 60)
 
   #
@@ -174,6 +175,8 @@ class Group(Entity, Principal):
   admins = relationship("User", secondary=administratorship)
 
   photo = Column(LargeBinary)
+
+  public = Column(Boolean, default=False, nullable=False)
 
   # XXX: Should entities know about their own URL? Eventually, no.
   @property

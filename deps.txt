@@ -33,6 +33,7 @@ python-magic
 twill
 logbook
 guess-language
+xlwt
 
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin

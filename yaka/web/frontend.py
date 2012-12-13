@@ -219,9 +219,9 @@ class Module(object):
     args = request.args
     cls = self.managed_class
 
-    for k in sorted(args.keys()):
-      print k, args[k]
-    print
+    #for k in sorted(args.keys()):
+    #  print k, args[k]
+    #print
 
     length = int(args.get("iDisplayLength", 10))
     start = int(args.get("iDisplayStart", 0))
@@ -257,6 +257,7 @@ class Module(object):
     if sort_col_name.startswith("date"):
       sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
 
+    # TODO: lower() doesn't work on non-textual types
     if sort_dir == 'asc':
       q = q.order_by(func.lower(sort_col))
     else:
@@ -278,6 +279,38 @@ class Module(object):
       "aaData": data,
     }
     return jsonify(result)
+
+  @expose("/export_xls")
+  def export_to_xls(self):
+    # TODO: take care of all the special cases
+    csvfile = StringIO.StringIO()
+    writer = csv.writer(csvfile)
+
+    objects = self.managed_class.query.all()
+
+    form = self.edit_form_class()
+    headers = ['id']
+    for field in form:
+      if hasattr(objects[0], field.name):
+        headers.append(field.name)
+    writer.writerow(headers)
+
+    for object in objects:
+      row = [object.id]
+      for field in form:
+        if hasattr(object, field.name):
+          value = getattr(object, field.name)
+          if value is None:
+            value = ""
+          row.append(unicode(value).encode('utf8'))
+      writer.writerow(row)
+
+    response = make_response(csvfile.getvalue())
+    response.headers['content-type'] = 'application/csv'
+    filename = "%s-%s.csv" % (self.managed_class.__name__,
+                              strftime("%d:%m:%Y-%H:%M:%S", gmtime()))
+    response.headers['content-disposition'] = 'attachment;filename="%s"' % filename
+    return response
 
   @expose("/export")
   def export_to_csv(self):
