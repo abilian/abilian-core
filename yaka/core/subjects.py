@@ -6,7 +6,7 @@ See ICOM-ics-v1.0 "Subject Branch".
 TODO: I'm not a big fan of the "subject" name. Could be replaced by something
 else, like "people" or "principal" ?
 """
-
+import bcrypt
 from datetime import datetime, timedelta
 
 from flask.ext.login import UserMixin
@@ -105,6 +105,24 @@ class User(Principal, UserMixin, Entity):
   followees = []
 
   groups = []
+
+  def __init__(self, password='', can_login=True, *args, **kwargs):
+    Principal.__init__(self)
+    UserMixin.__init__(self)
+    Entity.__init__(self, *args, **kwargs)
+
+    if can_login:
+      # encrypt password
+      self.set_password(password)
+    else:
+      self.password = '*'
+
+  # auth
+  def authenticate(self, password):
+    return bcrypt.hashpw(password, self.password) == self.password
+
+  def set_password(self, password):
+    self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
   def follow(self, followee):
     if followee == self:
