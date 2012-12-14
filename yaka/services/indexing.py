@@ -53,7 +53,9 @@ class WhooshIndexService(object):
     if not self.whoosh_base:
       self.whoosh_base = "whoosh"  # Default value
 
+    event.listen(Session, "before_flush", self.before_flush)
     event.listen(Session, "before_commit", self.before_commit)
+    event.listen(Session, "after_flush", self.after_flush)
     event.listen(Session, "after_commit", self.after_commit)
 
   def start(self):
@@ -163,6 +165,9 @@ class WhooshIndexService(object):
 
     return Schema(**schema), primary
 
+  def before_flush(self, session, flush_context, instances):
+    self.before_commit(session)
+
   def before_commit(self, session):
     if not self.running:
       return
@@ -186,8 +191,11 @@ class WhooshIndexService(object):
         # Hack: Load lazy fields in case they are needed after_commit
         # This prevents a transaction error in the next method.
         for key in indexed_fields:
-          value = getattr(model, key)
+          getattr(model, key)
         self.to_update.setdefault(model_class.__name__, []).append(("changed", model))
+
+  def after_flush(self, session, flush_context):
+    self.after_commit(session)
 
   #noinspection PyUnusedLocal
   def after_commit(self, session):
@@ -272,6 +280,7 @@ class Searcher(object):
     """
 
     hits = self.index.searcher().search(self.parser.parse(query), limit=limit)
+
     if not get_models:
       return hits
 
