@@ -10,6 +10,7 @@ import StringIO
 import copy
 import csv
 from datetime import date
+from pprint import pprint
 from time import strftime, gmtime
 import re
 
@@ -293,8 +294,9 @@ class Module(object):
     form = self.edit_form_class()
 
     col_names = ['id']
+    obj = objects[0]
     for field in form:
-      if hasattr(objects[0], field.name):
+      if hasattr(obj, field.name):
         col_names.append(field.name)
 
     for c, col_name in enumerate(col_names):

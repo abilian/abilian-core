@@ -34,6 +34,7 @@ twill
 logbook
 guess-language
 xlwt
+xlrd
 
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
