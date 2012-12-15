@@ -14,6 +14,7 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 # TODO: speed issue
 # TODO: this is a singleton. makes tests hard (for instance, launching parallel tests).
 # TODO: make asynchonous.
+from itertools import groupby
 
 import sqlalchemy
 from sqlalchemy import event
@@ -197,7 +198,6 @@ class WhooshIndexService(object):
   def after_flush(self, session, flush_context):
     self.after_commit(session)
 
-  #noinspection PyUnusedLocal
   def after_commit(self, session):
     """
     Any db updates go through here. We check if any of these models have
@@ -224,20 +224,45 @@ class WhooshIndexService(object):
           writer.delete_by_term(primary_field, unicode(getattr(model, primary_field)))
 
           if change_type in ("new", "changed"):
-            attrs = {}
-            for key in indexed_fields:
-              value = getattr(model, key)
-              if hasattr(value, '_name'):
-                value = value._name
-              if isinstance(value, str):
-                value = unicode(value)
-              elif isinstance(value, int):
-                value = unicode(value)
-              attrs[key] = value
-            attrs[primary_field] = unicode(getattr(model, primary_field))
-            writer.add_document(**attrs)
+            document = self.make_document(model, indexed_fields, primary_field)
+            writer.add_document(**document)
 
     self.to_update = {}
+
+  def index_objects(self, objects):
+    """
+    Bulk index a list of objets, that must be not indexed yet, and all of the
+    same class.
+    """
+    if not objects:
+      return
+
+    model_class = objects[0].__class__
+    assert all(m.__class__ is model_class for m in objects),\
+      "All objects must be of the same class."
+
+    index = self.index_for_model_class(model_class)
+    with index.writer() as writer:
+      primary_field = model_class.search_query.primary
+      indexed_fields = model_class.whoosh_schema.names()
+
+      for model in objects:
+        document = self.make_document(model, indexed_fields, primary_field)
+        writer.add_document(**document)
+
+  def make_document(self, model, indexed_fields, primary_field):
+    attrs = {}
+    for key in indexed_fields:
+      value = getattr(model, key)
+      if hasattr(value, '_name'):
+        value = value._name
+      if isinstance(value, str):
+        value = unicode(value)
+      elif isinstance(value, int):
+        value = unicode(value)
+      attrs[key] = value
+    attrs[primary_field] = unicode(getattr(model, primary_field))
+    return attrs
 
 
 class Searcher(object):
