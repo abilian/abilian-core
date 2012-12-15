@@ -77,8 +77,8 @@ class User(Principal, UserMixin, Entity):
   # More: education, work experience, etc.
 
   email = Column(UnicodeText, nullable=False)
-  # TODO: encrypt
-  password = Column(UnicodeText)
+  can_login = Column(Boolean, nullable=False)
+  password = Column(UnicodeText, default=u"*")
 
   photo = Column(LargeBinary)
 
@@ -106,22 +106,21 @@ class User(Principal, UserMixin, Entity):
 
   groups = []
 
-  def __init__(self, password='', can_login=True, *args, **kwargs):
+  def __init__(self, password='', can_login=True, **kwargs):
     Principal.__init__(self)
     UserMixin.__init__(self)
-    Entity.__init__(self, *args, **kwargs)
+    Entity.__init__(self, **kwargs)
 
-    if can_login:
-      # encrypt password
+    self.can_login = can_login
+    if can_login and password:
       self.set_password(password)
-    else:
-      self.password = '*'
 
-  # auth
   def authenticate(self, password):
     return bcrypt.hashpw(password, self.password) == self.password
 
   def set_password(self, password):
+    """Encrypts and sets password."""
+
     self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
   def follow(self, followee):
