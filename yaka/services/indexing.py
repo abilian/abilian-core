@@ -52,7 +52,7 @@ class WhooshIndexService(object):
     app.extensions['indexing'] = self
     self.whoosh_base = app.config.get("WHOOSH_BASE")
     if not self.whoosh_base:
-      self.whoosh_base = "whoosh"  # Default value
+      self.whoosh_base = "data/whoosh"  # Default value
 
     event.listen(Session, "before_flush", self.before_flush)
     event.listen(Session, "before_commit", self.before_commit)
