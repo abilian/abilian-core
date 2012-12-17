@@ -231,7 +231,7 @@ class Module(object):
     sort_col = int(args.get("iSortCol_0", 1))
     sort_dir = args.get("sSortDir_0", "asc")
     echo = int(args.get("sEcho", 0))
-    search = args.get("sSearch", "").replace("%", "")
+    search = args.get("sSearch", "").replace("%", "").lower()
 
     end = start + length
 
@@ -241,11 +241,11 @@ class Module(object):
     if search:
       # TODO: gérer les accents
       if hasattr(cls, "name"):
-        filter = cls.name.like("%" + search + "%")
+        filter = func.lower(cls.name).like("%" + search + "%")
       elif hasattr(cls, "nom"):
-        filter = cls.nom.like("%" + search + "%")
+        filter = func.lower(cls.nom).like("%" + search + "%")
       else:
-        pass # ???
+        pass # TODO: ???
       q = q.filter(filter)
 
     count = q.count()
@@ -259,12 +259,17 @@ class Module(object):
     # XXX: Big hack, date are sorted in reverse order by default
     if sort_col_name.startswith("date"):
       sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
+      if sort_dir == 'asc':
+        q = q.order_by(sort_col)
+      else:
+        q = q.order_by(sort_col.desc())
 
-    # TODO: lower() doesn't work on non-textual types
-    if sort_dir == 'asc':
-      q = q.order_by(func.lower(sort_col))
     else:
-      q = q.order_by(func.lower(sort_col).desc())
+      # Hack: lower() doesn't work on non-textual types on Postgres
+      if sort_dir == 'asc':
+        q = q.order_by(func.lower(sort_col))
+      else:
+        q = q.order_by(func.lower(sort_col).desc())
 
     entities = q.slice(start, end).all()
 
