@@ -17,6 +17,7 @@ from abc import ABCMeta, abstractmethod
 from magic import Magic
 import os
 import subprocess
+import threading
 from base64 import encodestring, decodestring
 from xmlrpclib import ServerProxy
 import mimetypes
@@ -364,6 +365,8 @@ class UnoconvPdfHandler(Handler):
 
   accepts_mime_types = [r'application/.*', 'text/rtf']
   produces_mime_types = ['application/pdf']
+  run_timeout = 60
+  _process = None
 
   def convert(self, blob, **kw):
     "Unoconv converter called"
@@ -377,14 +380,31 @@ class UnoconvPdfHandler(Handler):
     else:
       cmd = ['unoconv', '-f', 'pdf', '-o', out_fn, in_fn]
 
+    def run_uno():
+      self._process = subprocess.Popen(cmd, close_fds=True, cwd=TMP_DIR)
+      try:
+        subprocess.communicate()
+      except Exception, e:
+        raise ConversionError(e)
+
+    run_thread = threading.Thread(target=run_uno)
+    run_thread.start()
+    thread.join(self.timeout)
+
     try:
-      subprocess.check_call(cmd)
-    except Exception, e:
-      raise ConversionError(e)
+      if thread.is_alive():
+        self._process.terminate()
+        if not self._process.poll() is None:
+          self._process.kill()
 
-    converted = open(out_fn).read()
-    return converted
+        self._process = None
+        raise ConversionError("Conversion timeout ({})".format(self.run_timeout))
 
+      converted = open(out_fn).read()
+      return converted
+
+    finally:
+      self._process = None
 
 class CloudoooPdfHandler(Handler):
   """Handles conversion from OOo to PDF.
