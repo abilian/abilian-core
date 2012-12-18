@@ -476,8 +476,9 @@ class Module(object):
     if form.validate():
       form.populate_obj(entity)
       db.session.add(entity)
-      activity.send(self, actor=g.user, verb="post", object=entity)
       try:
+        db.session.flush()
+        activity.send(self, actor=g.user, verb="post", object=entity)
         db.session.commit()
         flash("Entity successfully added", "success")
         return redirect("%s/%d" % (self.url, entity.id))
