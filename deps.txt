@@ -31,7 +31,6 @@ py-bcrypt
 pillow
 python-magic
 twill
-logbook
 guess-language
 xlwt
 xlrd

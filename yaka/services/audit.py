@@ -12,7 +12,6 @@ TODO: In the future, we may decide to:
 from datetime import datetime
 import pickle
 from flask import g
-from logbook import Logger
 
 from sqlalchemy import event
 from sqlalchemy.orm import relationship
@@ -30,9 +29,6 @@ from yaka.core.extensions import db
 CREATION = 0
 UPDATE   = 1
 DELETION = 2
-
-log = Logger("Audit")
-
 
 class AuditEntry(db.Model):
   """
@@ -111,7 +107,7 @@ class AuditService(object):
 
   def start(self):
     assert not self.running
-    log.info("Starting audit service")
+    self.app.logger.info("Starting audit service")
     self.running = True
     self.register_classes()
 
@@ -123,7 +119,7 @@ class AuditService(object):
 
   def stop(self):
     assert self.running
-    log.info("Stopping audit service")
+    self.app.logger.info("Stopping audit service")
     self.running = False
     # One can't currently remove these events.
     #event.remove(Session, "before_commit", self.before_commit)
