@@ -5,7 +5,6 @@ Base class for entities, objects that are managed by the Abilian framwework
 
 from datetime import datetime
 import json
-from threading import Lock
 import sys
 
 from flask import g
@@ -52,9 +51,6 @@ NOT_EXPORTABLE = Info(exportable=False)
 SYSTEM = Info(editable=False, auditable=False)
 
 
-# TODO: get rid of flask-sqlalchemy, replace db.Model by Base?
-#Base = declarative_base()
-
 #
 # Manual validation
 #
@@ -68,8 +64,26 @@ def validation_listener(mapper, connection, target):
 event.listen(mapper, 'before_insert', validation_listener)
 event.listen(mapper, 'before_update', validation_listener)
 
-# Cache to speed up demos. TODO: remove later.
-user_cache = {}
+
+#
+# CRUD events. TODO: connect to signals instead?
+#
+def before_insert_listener(mapper, connection, target):
+  if hasattr(target, "_before_insert"):
+    target._before_insert()
+
+def before_update_listener(mapper, connection, target):
+  if hasattr(target, "_before_update"):
+    target._before_update()
+
+def before_delete_listener(mapper, connection, target):
+  if hasattr(target, "_before_delete"):
+    target._before_delete()
+
+event.listen(mapper, 'before_insert', before_insert_listener)
+event.listen(mapper, 'before_update', before_update_listener)
+event.listen(mapper, 'before_delete', before_delete_listener)
+
 
 class Entity(AbstractConcreteBase, db.Model):
   """Base class for Yaka entities."""
