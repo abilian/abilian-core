@@ -2,7 +2,7 @@
 import os
 
 class TestConfig(object):
-  DEBUG = True
+  DEBUG = False
   TESTING = True
 
   SQLALCHEMY_DATABASE_URI = "sqlite://"
