@@ -96,20 +96,6 @@ class IdGenerator(object):
 # Singleton. Yuck :( !
 id_gen = IdGenerator()
 
-
-# Special case for "unowned" object? Maybe not. XXX.
-class DummyUser(object):
-  name = "System"
-  _url = ""
-  photo = ""
-  _name = "System"
-
-  def __repr__(self):
-    return "System"
-
-system = DummyUser()
-
-
 # Cache to speed up demos. TODO: remove later.
 user_cache = {}
 
