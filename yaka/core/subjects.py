@@ -116,7 +116,10 @@ class User(Principal, UserMixin, Entity):
       self.set_password(password)
 
   def authenticate(self, password):
-    return bcrypt.hashpw(password, self.password) == self.password
+    if self.password and self.password != "*":
+      return bcrypt.hashpw(password, self.password) == self.password
+    else:
+      return False
 
   def set_password(self, password):
     """Encrypts and sets password."""
