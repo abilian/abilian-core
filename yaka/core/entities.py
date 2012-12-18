@@ -55,7 +55,6 @@ SYSTEM = Info(editable=False, auditable=False)
 # TODO: get rid of flask-sqlalchemy, replace db.Model by Base?
 #Base = declarative_base()
 
-
 #
 # Manual validation
 #
@@ -69,36 +68,8 @@ def validation_listener(mapper, connection, target):
 event.listen(mapper, 'before_insert', validation_listener)
 event.listen(mapper, 'before_update', validation_listener)
 
-
-# TODO: very hackish. Use Redis instead?
-# We will need a simpler implementation for unit tests, also, so
-# we have to get rid of the singleton.
-class IdGenerator(object):
-  """Dummy integer id generator."""
-
-  # TODO: one counter and one lock per class ?
-
-  def __init__(self):
-    self.lock = Lock()
-    try:
-      self.current = int(open("maxid.data").read())
-    except:
-      self.current = 0
-
-  def new(self):
-    with self.lock:
-      self.current += 1
-      with open("maxid.data", "wc") as fd:
-        fd.write(str(self.current))
-    return self.current
-
-
-# Singleton. Yuck :( !
-id_gen = IdGenerator()
-
 # Cache to speed up demos. TODO: remove later.
 user_cache = {}
-
 
 class Entity(AbstractConcreteBase, db.Model):
   """Base class for Yaka entities."""
@@ -134,7 +105,6 @@ class Entity(AbstractConcreteBase, db.Model):
     cls.owner = relationship("User", primaryjoin=pj2,  uselist=False)
 
   def __init__(self, **kw):
-    self.id = id_gen.new()
     if hasattr(g, 'user'):
       if not self.creator:
         self.creator = g.user
