@@ -118,7 +118,7 @@ class AuditService(object):
     # Workaround the fact that we can't stop listening when the service is
     # stopped.
     if not self.listening:
-      event.listen(Session, "before_commit", self.before_commit)
+      event.listen(Session, "after_flush", self.create_audit_entries)
       self.listening = True
 
   def stop(self):
@@ -177,9 +177,11 @@ class AuditService(object):
       pass
     changes[attr_name] = (old_value, new_value)
 
-  def before_commit(self, session):
+  def create_audit_entries(self, session, flush_context):
     if not self.running:
       return
+
+    transaction = session.begin(subtransactions=True)
 
     for model in session.new:
       self.log_new(session, model)
@@ -189,6 +191,8 @@ class AuditService(object):
 
     for model in session.dirty:
       self.log_updated(session, model)
+
+    transaction.commit()
 
   def log_new(self, session, model):
     if not isinstance(model, Entity):
@@ -201,10 +205,10 @@ class AuditService(object):
       del model.__changes__
 
   def log_updated(self, session, model):
-    if not isinstance(model, Entity):
+    if not (isinstance(model, Entity)
+            and hasattr(model, '__changes__')):
       return
-    if not hasattr(model, '__changes__'):
-      return
+
     entry = AuditEntry.from_model(model, type=UPDATE)
     entry.changes = model.__changes__
     session.add(entry)
