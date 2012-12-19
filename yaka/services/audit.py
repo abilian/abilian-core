@@ -134,11 +134,12 @@ class AuditService(object):
     if entity_class in self.all_model_classes:
       return
     self.all_model_classes.add(entity_class)
-    for column in entity_class.__table__.columns:
-      name = column.name
-      attr = getattr(entity_class, name)
-
+    mapper = entity_class.__mapper__
+    for column in mapper.columns:
+      props = mapper.get_property_by_column(column)
+      attr = getattr(entity_class, props.key)
       info = column.info
+
       if info.get('auditable', True):
         #print "I will now audit attribute %s for class %s" % (name, entity_class)
         event.listen(attr, "set", self.set_attribute)
