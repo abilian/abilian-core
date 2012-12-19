@@ -3,12 +3,12 @@ Various tools that don't belong some place specific.
 """
 
 import functools
+import logging
 import time
 from math import ceil
 import unicodedata
 import re
 
-from logbook import Logger
 from flask import request
 
 
@@ -36,7 +36,7 @@ class timer(object):
 
   def __init__(self, f):
     self.__f = f
-    self.log = Logger(f.func_name)
+    self.log = logging.getLogger("." + f.func_name)
 
   def __call__(self, *args, **kwargs):
     self.__start = time.time()
