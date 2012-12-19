@@ -49,9 +49,8 @@ class WhooshIndexService(object):
     if not self.whoosh_base:
       self.whoosh_base = "data/whoosh"  # Default value
 
-    event.listen(Session, "before_flush", self.before_flush)
-    event.listen(Session, "before_commit", self.before_commit)
     event.listen(Session, "after_flush", self.after_flush)
+    event.listen(Session, "after_flush_postexec", self.after_flush_postexec)
     event.listen(Session, "after_commit", self.after_commit)
 
   def start(self):
@@ -151,6 +150,7 @@ class WhooshIndexService(object):
   def _get_whoosh_schema_and_primary(self, cls):
     schema = {}
     primary = None
+
     for field in cls.__table__.columns:
       if field.primary_key:
         schema[field.name] = whoosh.fields.ID(stored=True, unique=True)
@@ -161,10 +161,7 @@ class WhooshIndexService(object):
 
     return Schema(**schema), primary
 
-  def before_flush(self, session, flush_context, instances):
-    self.before_commit(session)
-
-  def before_commit(self, session):
+  def after_flush(self, session, flush_context):
     if not self.running:
       return
 
@@ -190,7 +187,7 @@ class WhooshIndexService(object):
           getattr(model, key)
         self.to_update.setdefault(model_class.__name__, []).append(("changed", model))
 
-  def after_flush(self, session, flush_context):
+  def after_flush_postexec(self, session, flush_context):
     self.after_commit(session)
 
   def after_commit(self, session):
@@ -206,6 +203,7 @@ class WhooshIndexService(object):
 
     for typ, values in self.to_update.iteritems():
       model_class = values[0][1].__class__
+
       index = self.index_for_model_class(model_class)
       with index.writer() as writer:
         primary_field = model_class.search_query.primary
