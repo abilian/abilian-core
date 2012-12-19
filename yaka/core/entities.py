@@ -89,9 +89,9 @@ class Entity(AbstractConcreteBase, db.Model):
   """Base class for Yaka entities."""
 
   # Default magic metadata, should not be necessary
-  __editable__ = set()
-  __searchable__ = set()
-  __auditable__ = set()
+  __editable__ = frozenset()
+  __searchable__ = frozenset()
+  __auditable__ = frozenset()
 
   base_url = None
 
