@@ -166,9 +166,9 @@ class AuditService(object):
       old_value = None
     # FIXME: a bit hackish
     try:
-      if len(old_value) > 100:
+      if len(old_value) > 1000:
         old_value = "<<large value>>"
-      if len(new_value) > 100:
+      if len(new_value) > 1000:
         new_value = "<<large value>>"
     except:
       pass
