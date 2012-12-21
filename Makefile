@@ -64,7 +64,7 @@ tidy: clean
 	rm -rf .tox
 
 update-pot:
-	pybabel extract -F babel.cfg -o messages.pot .
+    # _n => ngettext, _l => lazy_gettext
+	pybabel extract -F babel.cfg -k "_n" -k "_l" -o messages.pot "${SRC}"
 	pybabel update -i messages.pot -d $(SRC)/translations
 	pybabel compile -d $(SRC)/translations
-
