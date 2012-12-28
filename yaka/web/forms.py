@@ -4,11 +4,11 @@ Extensions to WTForms fields, widgets and validators.
 
 from cgi import escape
 
-from wtforms.fields.core import SelectField
+from wtforms.fields.core import SelectField, FormField, _unset_value
 from wtforms.validators import EqualTo, Length, NumberRange, Optional, Required,\
   Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf
 from wtforms.widgets.core import html_params, Select, HTMLString, Input
-
+from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 
 class Chosen(Select):
   """
@@ -44,6 +44,20 @@ class TagInput(Input):
 
     return HTMLString(u'<input %s>' % self.html_params(name=field.name, **kwargs))
 
+class ModelFieldList(BaseModelFieldList):
+  """ Filter empty entries
+  """
+
+  def validate(self, form, extra_validators=tuple()):
+    for field in self.entries:
+      is_subform = isinstance(field, FormField)
+      data = field.data.values() if is_subform else [field.data]
+
+      if not any(data):
+        # all inputs empty: discard row
+        self.entries.remove(field)
+
+    return super(ModelFieldList, self).validate(form, extra_validators)
 
 class RelationSelectField(SelectField):
   # TODO: Later...
@@ -140,6 +154,17 @@ class NoneOf(NoneOf):
   def rule(self):
     return None
 
+class FlagHidden(object):
+  """ Flag the field as hidden
+  """
+  field_flags = ('hidden',)
+
+  def __call__(self, form, field):
+    pass
+
+  @property
+  def rule(self):
+    return None
 
 # These are the canonical names that should be used.
 equalto = EqualTo
@@ -155,3 +180,4 @@ url = URL
 uuid = UUID
 anyof = AnyOf
 noneof = NoneOf
+flaghidden = FlagHidden

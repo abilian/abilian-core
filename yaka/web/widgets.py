@@ -9,6 +9,7 @@ import urlparse
 import re
 import bleach
 
+import wtforms
 from flask import render_template, json, Markup
 
 from yaka.core.entities import Entity
@@ -424,3 +425,40 @@ class Row(object):
 
   def __len__(self):
     return len(self.cols)
+
+# Form field widgets ###########################################################
+class ListWidget(wtforms.widgets.ListWidget):
+  """ display field label is optionnal
+  """
+
+  def __init__(self, html_tag='ul', prefix_label=True, show_label=True):
+    wtforms.widgets.ListWidget.__init__(self, html_tag, prefix_label)
+    self.show_label = show_label
+
+  def __call__(self, field, **kwargs):
+    if self.show_label:
+      return super(ListWidget, self)(field, **kwargs)
+
+    kwargs.setdefault('id', field.id)
+    html = [u'<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs))]
+    for subfield in field:
+      html.append(u'<li>{}</li>'.format(subfield()))
+
+    html.append(u'</%s>' % self.html_tag)
+    return wtforms.widgets.HTMLString(''.join(html))
+
+class TabularFieldListWidget(object):
+  """ For list of formfields
+  """
+
+  def __call__(self, field, **kwargs):
+    assert isinstance(field, wtforms.fields.FieldList)
+    labels = None
+
+    if len(field):
+      assert isinstance(field[0], wtforms.fields.FormField)
+      labels = [f.label for f in field[0] if not f.flags.hidden]
+
+    return Markup(
+      render_template('widgets/tabular_fieldlist_widget.html',
+                      labels=labels, field=field))
