@@ -305,7 +305,19 @@ class ModelWrapper(object):
                         % (value._url, cgi.escape(value._name)))
 
     elif isinstance(value, list):
-      rendered = "; ".join(value)
+      if any((lambda v: isinstance(v, db.Model) for v in value)):
+        # at least one of the value is a model
+        columns = [c for c in value[0].__table__.columns
+                   if c.info.get('editable', True)]
+        attributes = [c.name for c in columns]
+        labels = [c.info.get(label, c.name) for c in columns]
+        rendered = Markup(
+              render_template('widgets/horizontal_table.html',
+                              values=value, labels=labels,
+                              attributes=attributes,)
+              )
+      else:
+        rendered = "; ".join(value)
 
     # XXX: Several hacks. Needs to be moved somewhere else.
     elif name == 'siret' and value:
