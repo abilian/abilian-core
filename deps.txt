@@ -32,7 +32,7 @@ pillow
 python-magic
 twill
 guess-language
-wtforms-alchemy==0.2.1
+wtforms-alchemy
 xlwt
 xlrd
 

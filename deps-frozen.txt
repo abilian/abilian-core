@@ -46,5 +46,6 @@ speaklater==1.3
 twill==0.9
 webassets==0.7
 wsgiref==0.1.2
+wtforms-alchemy==0.2.1
 xlwt==0.7.4
 xlrd==0.8.0
