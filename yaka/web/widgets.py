@@ -14,7 +14,7 @@ from flask import render_template, json, Markup
 
 from yaka.core.entities import Entity
 from yaka.web.filters import labelize
-
+from yaka.core.extensions import db
 
 def linkify_url(value):
   """Tranform an URL pulled from the database to a safe HTML fragment."""
@@ -306,7 +306,7 @@ class ModelWrapper(object):
                         % (value._url, cgi.escape(value._name)))
 
     elif isinstance(value, list):
-      if any((lambda v: isinstance(v, db.Model) for v in value)):
+      if any((isinstance(v, db.Model) for v in value)):
         # at least one of the value is a model
         columns = [c for c in value[0].__table__.columns
                    if c.info.get('editable', True)]
