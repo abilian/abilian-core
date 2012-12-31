@@ -1,3 +1,4 @@
+{% if labels %}
 <table class="dynamic-row-widget span{{ labels|length }}">
   {% if labels %}
   <thead>
@@ -24,3 +25,4 @@
     {%- endfor %}
   </tbody>
 </table>
+{%- endif %}
