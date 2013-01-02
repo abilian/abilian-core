@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-12-21 18:06+0100\n"
-"PO-Revision-Date: 2012-12-21 18:06+0100\n"
+"POT-Creation-Date: 2013-01-02 16:32+0100\n"
+"PO-Revision-Date: 2013-01-02 16:32+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -62,7 +62,31 @@ msgstr "l'année dernière"
 msgid "%(num)d years ago"
 msgstr "il y a %(num)d ans"
 
-#: yaka/web/forms.py:62
+#: yaka/web/forms.py:76
 msgid "Invalid email address."
 msgstr "Adresse email non valide"
+
+#: yaka/web/widgets.py:211
+msgid "Filter records:"
+msgstr "Filtrer les entrées:"
+
+#: yaka/web/widgets.py:212
+msgid "Previous"
+msgstr "Précédent"
+
+#: yaka/web/widgets.py:213
+msgid "Next"
+msgstr "Suivant"
+
+#: yaka/web/widgets.py:214
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
+
+#: yaka/web/widgets.py:215
+msgid "(filtered from _MAX_ total entries)"
+msgstr "(filtré sur un total de _MAX_ entrées)"
+
+#: yaka/web/widgets.py:216
+msgid "Advanced search"
+msgstr "Recherche avancée"
 
