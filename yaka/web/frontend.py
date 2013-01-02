@@ -25,6 +25,7 @@ from yaka.core.signals import activity
 from yaka.services import audit_service
 from yaka.core.extensions import db
 
+from . import search
 from .decorators import templated
 from .widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
@@ -148,7 +149,7 @@ class Module(object):
   name = None
   static_folder = None
   related_views = []
-
+  search_criterions = (search.NameCriterion("name"),)
   _urls = []
 
   def __init__(self):
@@ -209,7 +210,8 @@ class Module(object):
 
     # TODO: should be an instance variable.
     table_view = AjaxMainTableView(columns=self.list_view_columns,
-                                   ajax_source=self.url + "/json")
+                                   ajax_source=self.url + "/json",
+                                   search_criterions=self.search_criterions,)
     rendered_table = table_view.render()
 
     return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
@@ -238,15 +240,8 @@ class Module(object):
     q = cls.query
     total_count = q.count()
 
-    if search:
-      # TODO: gérer les accents
-      if hasattr(cls, "name"):
-        filter = func.lower(cls.name).like("%" + search + "%")
-      elif hasattr(cls, "nom"):
-        filter = func.lower(cls.nom).like("%" + search + "%")
-      else:
-        pass # TODO: ???
-      q = q.filter(filter)
+    for crit in self.search_criterions:
+      q = crit.filter(q, self, request, search)
 
     count = q.count()
 
@@ -286,6 +281,7 @@ class Module(object):
       "iTotalDisplayRecords": count,
       "aaData": data,
     }
+
     return jsonify(result)
 
   @expose("/export_xls")

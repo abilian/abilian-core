@@ -1,6 +1,7 @@
   <script>
     $(document).ready(function() {
-      {{ js }}
+
+      $("#{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
 
       $(document).bind("keydown", keyDown);
 

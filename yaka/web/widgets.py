@@ -11,6 +11,7 @@ import bleach
 
 import wtforms
 from flask import render_template, json, Markup
+from flaskext.babel import gettext as _
 
 from yaka.core.entities import Entity
 from yaka.web.filters import labelize
@@ -179,9 +180,10 @@ class AjaxMainTableView(object):
   show_controls = False
   paginate = True
 
-  def __init__(self, columns, ajax_source):
+  def __init__(self, columns, ajax_source, search_criterions=()):
     self.init_columns(columns)
     self.ajax_source = ajax_source
+    self.search_criterions = search_criterions
     self.name = id(self)
 
   def init_columns(self, columns):
@@ -202,10 +204,16 @@ class AjaxMainTableView(object):
                    for i in range(0, len(self.columns)) ]
 
     datatable_options = {
+      'sDom': 'lfFrtip',
       'aoColumns': aoColumns,
       'bFilter': True,
       'oLanguage': {
-        'sSearch': "Filter records:"
+        'sSearch': _("Filter records:"),
+        'sPrevious': _("Previous"),
+        'sNext': _("Next"),
+        'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
+        'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
+        'sAdvancedSearch': _("Advanced search"),
       },
       'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",
@@ -216,10 +224,19 @@ class AjaxMainTableView(object):
       'bServerSide': True,
       'sAjaxSource': self.ajax_source,
     }
-    js = "$('#%s').dataTable(%s);" % (self.name, json.dumps(datatable_options))
+
+    advanced_search_filters = [dict(name=c.name,
+                                    label=unicode(c.label),
+                                    type=c.form_filter_type,
+                                    args=c.form_filter_args)
+                               for c in self.search_criterions
+                               if c.has_form_filter]
+    if advanced_search_filters:
+      datatable_options['aoAdvancedSearchFilters'] = advanced_search_filters
 
     return Markup(render_template('widgets/render_ajax_table.html',
-                                  js=Markup(js), view=self))
+                                  datatable_options=datatable_options,
+                                  view=self))
 
   def render_line(self, entity):
     line = []
