@@ -166,6 +166,12 @@ class Module(object):
 
     self.single_view = make_single_view(self.edit_form_class)
 
+    # copy criterions instances; without that they may be shared by subclasses
+    self.search_criterions = tuple((copy.deepcopy(c)
+                                    for c in self.search_criterions))
+    for sc in self.search_criterions:
+      sc.model = self.managed_class
+
   def create_blueprint(self, crud_app):
     """
     Create a Flask blueprint for this module.
