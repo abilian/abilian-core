@@ -149,7 +149,8 @@ class Module(object):
   name = None
   static_folder = None
   related_views = []
-  search_criterions = (search.NameCriterion("name"),)
+  search_criterions = (search.TextSearchCriterion("name",
+                                                  attributes=('name', 'nom')),)
   _urls = []
 
   def __init__(self):
