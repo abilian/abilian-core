@@ -279,8 +279,15 @@ class Module(object):
       sort_col = func.lower(sort_col)
 
     direction = desc if sort_dir == 'desc' else asc
-    nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
-    q = q.order_by(nullsorder(direction(sort_col)))
+    sort_col = direction(sort_col)
+
+    # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
+    engine = q.session.get_bind(cls.__mapper__)
+    if engine.name != 'sqlite':
+      nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
+      sort_col = nullsorder(sort_col)
+
+    q = q.order_by(sort_col)
 
     entities = q.slice(start, end).all()
 
