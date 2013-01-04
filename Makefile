@@ -59,6 +59,7 @@ clean:
 	rm -rf docs/_build docs/cache docs/tmp
 	rm -rf $(SRC)/static/gen
 	rm -rf dist build
+	rm -rf htmlcov
 
 tidy: clean
 	rm -rf .tox
