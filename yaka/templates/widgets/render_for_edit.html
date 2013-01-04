@@ -24,7 +24,7 @@
 {% endmacro %}
 
 <form action="{{ request.path }}" method="POST" class="form-horizontal" id="edit-form">
-  {{ form.csrf }}
+  {# {{ form.csrf }} #}
 
   {% for label, field_names in form._groups %}
     <legend>{{ label }}</legend>
