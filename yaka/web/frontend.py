@@ -209,6 +209,63 @@ class Module(object):
 
     return self.blueprint
 
+  def query(self, request):
+    """ Return filtered query based on request args
+    """
+    args = request.args
+    search = args.get("sSearch", "").replace("%", "").lower()
+    q = self.managed_class.query
+
+    for crit in self.search_criterions:
+      q = crit.filter(q, self, request, search)
+
+    return q
+
+  def ordered_query(self, request, query=None):
+    """ Order query according to request args.
+
+    If query is None, the query is generated according to request args with
+    self.query(request)
+    """
+    if query is None:
+      query = self.query(request)
+    args = request.args
+    sort_col = int(args.get("iSortCol_0", 1))
+    sort_dir = args.get("sSortDir_0", "asc")
+    sort_col_def = self.list_view_columns[sort_col]
+    sort_col_name = sort_col_def['name']
+
+    if sort_col_name == '_name':
+      sort_col_name = 'nom'
+
+    sort_col = getattr(self.managed_class, sort_col_name)
+
+    if isinstance(sort_col.property, orm.properties.RelationshipProperty):
+      # this is a related model: find attribute to filter on
+      query = query.join(sort_col_name)
+      query.reset_joinpoint()
+      rel_sort_name = sort_col_def.get('sort_on', 'nom')
+      rel_model = sort_col.property.mapper.class_
+      sort_col = getattr(rel_model, rel_sort_name)
+
+    # XXX: Big hack, date are sorted in reverse order by default
+    if sort_col_name.startswith("date"):
+      sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
+    else:
+      # Hack: lower() doesn't work on non-textual types on Postgres
+      sort_col = func.lower(sort_col)
+
+    direction = desc if sort_dir == 'desc' else asc
+    sort_col = direction(sort_col)
+
+    # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
+    engine = query.session.get_bind(self.managed_class.__mapper__)
+    if engine.name != 'sqlite':
+      nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
+      sort_col = nullsorder(sort_col)
+
+    return query.order_by(sort_col)
+
   #
   # Exposed views
   #
@@ -231,80 +288,29 @@ class Module(object):
     JSON endpoint, for AJAX-backed table views.
     """
     args = request.args
-    cls = self.managed_class
-
-    #for k in sorted(args.keys()):
-    #  print k, args[k]
-    #print
-
+    echo = int(args.get("sEcho", 0))
     length = int(args.get("iDisplayLength", 10))
     start = int(args.get("iDisplayStart", 0))
-    sort_col = int(args.get("iSortCol_0", 1))
-    sort_dir = args.get("sSortDir_0", "asc")
-    echo = int(args.get("sEcho", 0))
-    search = args.get("sSearch", "").replace("%", "").lower()
-
     end = start + length
 
-    q = cls.query
-    total_count = q.count()
-
-    for crit in self.search_criterions:
-      q = crit.filter(q, self, request, search)
-
+    total_count = self.managed_class.query.count()
+    q = self.query(request)
     count = q.count()
-
-    # ordering
-    sort_col_def = self.list_view_columns[sort_col]
-    sort_col_name = sort_col_def['name']
-
-    if sort_col_name == '_name':
-      sort_col_name = 'nom'
-
-    sort_col = getattr(cls, sort_col_name)
-
-    if isinstance(sort_col.property, orm.properties.RelationshipProperty):
-      # this is a related model
-      q = q.join(sort_col_name)
-      q.reset_joinpoint()
-      rel_sort_name = sort_col_def.get('sort_on', 'nom')
-      rel_model = sort_col.property.mapper.class_
-      sort_col = getattr(rel_model, rel_sort_name)
-
-    # XXX: Big hack, date are sorted in reverse order by default
-    if sort_col_name.startswith("date"):
-      sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
-    else:
-      # Hack: lower() doesn't work on non-textual types on Postgres
-      sort_col = func.lower(sort_col)
-
-    direction = desc if sort_dir == 'desc' else asc
-    sort_col = direction(sort_col)
-
-    # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
-    engine = q.session.get_bind(cls.__mapper__)
-    if engine.name != 'sqlite':
-      nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
-      sort_col = nullsorder(sort_col)
-
-    q = q.order_by(sort_col)
+    q = self.ordered_query(request, q)
 
     entities = q.slice(start, end).all()
 
     # TODO: should be an instance variable.
     table_view = AjaxMainTableView(columns=self.list_view_columns,
                                    ajax_source=self.url + "/json")
-    data = []
-    for entity in entities:
-      data.append(table_view.render_line(entity))
 
+    data = [table_view.render_line(e) for e in entities]
     result = {
       "sEcho": echo,
       "iTotalRecords": total_count,
       "iTotalDisplayRecords": count,
       "aaData": data,
     }
-
     return jsonify(result)
 
   @expose("/export_xls")
@@ -313,8 +319,7 @@ class Module(object):
     wb = Workbook()
     ws = wb.add_sheet("Sheet 1")
 
-    objects = self.managed_class.query.all()
-
+    objects = self.ordered_query(request)
     form = self.edit_form_class()
 
     col_names = ['id']
@@ -352,14 +357,13 @@ class Module(object):
     response.headers['content-disposition'] = 'attachment;filename="%s"' % filename
     return response
 
-
   @expose("/export")
   def export_to_csv(self):
     # TODO: take care of all the special cases
     csvfile = StringIO.StringIO()
     writer = csv.writer(csvfile)
 
-    objects = self.managed_class.query.all()
+    objects = self.ordered_query(request)
 
     form = self.edit_form_class()
     headers = ['id']
