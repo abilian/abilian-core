@@ -213,7 +213,7 @@ class AjaxMainTableView(object):
         'sNext': _("Next"),
         'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
         'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
-        'sAdvancedSearch': _("Advanced search"),
+        'sAdvancedSearch': _("Advanced filtering"),
       },
       'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",
