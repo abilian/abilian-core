@@ -17,7 +17,9 @@ import re
 from flask import session, redirect, request, g, render_template, flash,\
   Blueprint, jsonify, abort, make_response
 from sqlalchemy import func
+from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import orm
 from xlwt import Workbook, XFStyle
 from yaka.core.entities import ValidationError, Entity
 
@@ -252,26 +254,33 @@ class Module(object):
 
     count = q.count()
 
-    # TODO: won't work in all the cases
-    sort_col_name = self.list_view_columns[sort_col]['name']
+    # ordering
+    sort_col_def = self.list_view_columns[sort_col]
+    sort_col_name = sort_col_def['name']
+
     if sort_col_name == '_name':
       sort_col_name = 'nom'
+
     sort_col = getattr(cls, sort_col_name)
+
+    if isinstance(sort_col.property, orm.properties.RelationshipProperty):
+      # this is a related model
+      q = q.join(sort_col_name)
+      q.reset_joinpoint()
+      rel_sort_name = sort_col_def.get('sort_on', 'nom')
+      rel_model = sort_col.property.mapper.class_
+      sort_col = getattr(rel_model, rel_sort_name)
 
     # XXX: Big hack, date are sorted in reverse order by default
     if sort_col_name.startswith("date"):
       sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
-      if sort_dir == 'asc':
-        q = q.order_by(sort_col)
-      else:
-        q = q.order_by(sort_col.desc())
-
     else:
       # Hack: lower() doesn't work on non-textual types on Postgres
-      if sort_dir == 'asc':
-        q = q.order_by(func.lower(sort_col))
-      else:
-        q = q.order_by(func.lower(sort_col).desc())
+      sort_col = func.lower(sort_col)
+
+    direction = desc if sort_dir == 'desc' else asc
+    nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
+    q = q.order_by(nullsorder(direction(sort_col)))
 
     entities = q.slice(start, end).all()
 
