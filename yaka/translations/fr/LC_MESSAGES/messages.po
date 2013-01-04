@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-01-04 15:13+0100\n"
-"PO-Revision-Date: 2013-01-04 15:13+0100\n"
+"POT-Creation-Date: 2013-01-04 18:45+0100\n"
+"PO-Revision-Date: 2013-01-04 15:15+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -88,5 +88,5 @@ msgstr "(filtré sur un total de _MAX_ entrées)"
 
 #: yaka/web/widgets.py:216
 msgid "Advanced filtering"
-msgstr "Filtrage avancée"
+msgstr "Filtrage avancé"
 
