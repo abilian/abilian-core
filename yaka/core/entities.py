@@ -221,7 +221,7 @@ def all_entity_classes():
   classes = set()
   for module_name, module in sys.modules.items():
     for name in dir(module):
-      v = getattr(module, name)
+      v = getattr(module, name, None)
       if isinstance(v, type) and issubclass(v, Entity) and hasattr(v, '__table__'):
         classes.add(v)
   return classes
