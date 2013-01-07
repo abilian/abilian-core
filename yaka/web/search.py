@@ -109,7 +109,7 @@ class TextSearchCriterion(BaseCriterion):
         has_joins = True
 
       # TODO: gérer les accents
-      clauses.append(func.lower(attr).like("%{}%".format(searched_text)))
+      clauses.append(func.lower(attr).like(u"%{}%".format(searched_text)))
 
     if clauses:
       query = query.filter(or_(*clauses))
