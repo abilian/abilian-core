@@ -15,7 +15,7 @@ from time import strftime, gmtime
 import re
 
 from flask import session, redirect, request, g, render_template, flash,\
-  Blueprint, jsonify, abort, make_response
+  Blueprint, jsonify, abort, make_response, current_app
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from sqlalchemy.exc import IntegrityError
@@ -463,8 +463,11 @@ class Module(object):
         db.session.rollback()
         flash(e.message, "error")
       except IntegrityError, e:
+        sentry = current_app.extensions.get('sentry')
+        if sentry:
+          sentry.captureException()
         db.session.rollback()
-        flash("An entity with this name already exists in the database", "error")
+        flash("An entity with this name already exists in the database.", "error")
     else:
       flash("Please fix the error(s) below", "error")
 
