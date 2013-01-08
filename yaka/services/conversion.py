@@ -406,16 +406,16 @@ class UnoconvPdfHandler(Handler):
     def run_uno():
       self._process = subprocess.Popen(cmd, close_fds=True, cwd=TMP_DIR)
       try:
-        subprocess.communicate()
+        self._process.communicate()
       except Exception, e:
         raise ConversionError(e)
 
     run_thread = threading.Thread(target=run_uno)
     run_thread.start()
-    thread.join(self.timeout)
+    run_thread.join(self.run_timeout)
 
     try:
-      if thread.is_alive():
+      if run_thread.is_alive():
         # timeout reached
         self._process.terminate()
         if not self._process.poll() is None:
