@@ -11,8 +11,9 @@ from gettext import NullTranslations
 from babel.support import Translations
 from flask import _request_ctx_stack
 import flaskext.babel
+from celery import Celery
 
-__all__ = ['db', 'babel', 'mail', 'login_manager']
+__all__ = ['db', 'babel', 'mail', 'celery', 'login_manager']
 
 # Standard extensions.
 from flask.ext.mail import Mail
@@ -21,6 +22,18 @@ mail = Mail()
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
+# celery
+#
+# for defining a task:
+#
+# from yaka.core.extensions import celery
+# @celery.task
+# def ...
+#
+# Application should configure it (i.e. celery.config_from_object, etc)
+celery = Celery()
+
+# babel i18n
 from flask.ext.babel import Babel as BabelBase
 
 class Babel(BabelBase):

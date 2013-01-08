@@ -24,6 +24,7 @@ Werkzeug==0.8.3
 Whoosh==2.4.1
 bleach==1.1.5
 blinker==1.2
+celery==3.0.13
 closure==20120305
 coverage==3.5.1
 cssmin==0.1.4

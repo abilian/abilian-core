@@ -36,6 +36,8 @@ wtforms-alchemy
 xlwt
 xlrd
 
+celery==3.0.13
+
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
 closure
