@@ -14,8 +14,6 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 # TODO: speed issue
 # TODO: this is a singleton. makes tests hard (for instance, launching parallel tests).
 # TODO: make asynchonous.
-from itertools import groupby
-
 import sqlalchemy
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
