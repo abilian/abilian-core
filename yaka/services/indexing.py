@@ -329,7 +329,9 @@ def index_update(class_name, items):
   index = service.index_for_model_class(model_class)
   primary_field = model_class.search_query.primary
   indexed_fields = model_class.whoosh_schema.names()
-  query = db.session.query(model_class)
+
+  session = Session(bind=db.session.get_bind(None, None))
+  query = session.query(model_class)
 
   with index.writer() as writer:
     for change_type, model_pk in items:
@@ -342,6 +344,10 @@ def index_update(class_name, items):
 
       if change_type in ("new", "changed"):
         model = query.get(model_pk)
+        if model is None:
+          # deleted after task queued, but before task run
+          continue
+
         # Hack: Load lazy fields
         # This prevents a transaction error in make_document
         for key in indexed_fields:
@@ -350,3 +356,4 @@ def index_update(class_name, items):
         document = service.make_document(model, indexed_fields, primary_field)
         writer.add_document(**document)
 
+    session.close()
