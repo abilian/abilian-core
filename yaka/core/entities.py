@@ -2,7 +2,7 @@
 Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level).
 """
-
+from inspect import isclass
 from datetime import datetime
 import json
 import sys
@@ -216,7 +216,9 @@ def all_entity_classes():
   Entity.
   """
   persistent_classes = Entity._decl_class_registry.values()
-  return [ cls for cls in persistent_classes if issubclass(cls, Entity) ]
+  # with sqlalchemy 0.8 _decl_class_registry holds object that are not classes
+  return [ cls for cls in persistent_classes
+           if isclass(cls) and issubclass(cls, Entity) ]
 
 
 def register_all_entity_classes():
