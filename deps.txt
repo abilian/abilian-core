@@ -18,7 +18,7 @@ Flask-OpenID
 Flask-Cache
 
 # Other
-sqlalchemy
+SQLAlchemy==0.7.9
 whoosh
 markdown
 feedparser
