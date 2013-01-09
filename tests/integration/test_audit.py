@@ -18,7 +18,6 @@ class DummyAccount(Entity):
 class TestAudit(IntegrationTestCase):
 
   def setUp(self):
-    audit_service.init_app(self.app)
     audit_service.start()
     IntegrationTestCase.setUp(self)
 

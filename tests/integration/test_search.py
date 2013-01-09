@@ -11,7 +11,6 @@ from yaka.services import index_service
 class IndexingTestCase(IntegrationTestCase):
 
   def setUp(self):
-    index_service.init_app(self.app)
     index_service.start()
     IntegrationTestCase.setUp(self)
 
