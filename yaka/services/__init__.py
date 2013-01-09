@@ -10,8 +10,7 @@ __all__ = ['audit_service', 'index_service', 'activity_service']
 from .audit import AuditService
 audit_service = AuditService()
 
-from .indexing import WhooshIndexService
-index_service = WhooshIndexService()
+from .indexing import service as index_service
 
 from .activity import ActivityService
 activity_service = ActivityService()

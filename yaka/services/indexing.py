@@ -25,6 +25,7 @@ from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import Schema
 
 from yaka.core.entities import all_entity_classes
+from yaka.core.extensions import celery, db
 
 import os
 from shutil import rmtree
@@ -60,6 +61,7 @@ class WhooshIndexService(object):
     self.app.logger.info("Starting index service")
     self.running = True
     self.register_classes()
+    self.to_update = {}
 
   def stop(self):
     self.app.logger.info("Stopping index service")
@@ -78,6 +80,7 @@ class WhooshIndexService(object):
 
     self.indexes = {}
     self.indexed_classes = set()
+    self.to_update = {}
 
   def search(self, query, cls=None, limit=10, filter=None):
     if cls:
@@ -167,30 +170,26 @@ class WhooshIndexService(object):
     if not self.running:
       return
 
-    self.to_update = {}
+    get_queue_for = lambda cls_name: self.to_update.setdefault(cls_name, [])
 
     for model in session.new:
       model_class = model.__class__
+
       if hasattr(model_class, '__searchable__'):
-        self.to_update.setdefault(model_class.__name__, []).append(("new", model))
+        get_queue_for(model_class.__name__).append(("new", model))
 
     for model in session.deleted:
       model_class = model.__class__
       if hasattr(model_class, '__searchable__'):
-        self.to_update.setdefault(model_class.__name__, []).append(("deleted", model))
+        get_queue_for(model_class.__name__).append(("deleted", model))
 
     for model in session.dirty:
       model_class = model.__class__
-      indexed_fields = model_class.whoosh_schema.names()
-      if hasattr(model_class, '__searchable__'):
-        # Hack: Load lazy fields in case they are needed after_commit
-        # This prevents a transaction error in the next method.
-        for key in indexed_fields:
-          getattr(model, key)
-        self.to_update.setdefault(model_class.__name__, []).append(("changed", model))
+      get_queue_for(model_class.__name__).append(("changed", model))
 
   def after_flush_postexec(self, session, flush_context):
-    self.after_commit(session)
+    #self.after_commit(session)
+    pass
 
   def after_commit(self, session):
     """
@@ -199,28 +198,16 @@ class WhooshIndexService(object):
     we update the whoosh index for the model. If no index exists, it will be
     created here; this could impose a penalty on the initial commit of a model.
     """
-
     if not self.running:
       return
 
-    for typ, values in self.to_update.iteritems():
+    for cls_name, values in self.to_update.iteritems():
       model_class = values[0][1].__class__
-
-      index = self.index_for_model_class(model_class)
-      with index.writer() as writer:
-        primary_field = model_class.search_query.primary
-        indexed_fields = model_class.whoosh_schema.names()
-
-        for change_type, model in values:
-          # delete everything. stuff that's updated or inserted will get
-          # added as a new doc. Could probably replace this with a whoosh
-          # update.
-
-          writer.delete_by_term(primary_field, unicode(getattr(model, primary_field)))
-
-          if change_type in ("new", "changed"):
-            document = self.make_document(model, indexed_fields, primary_field)
-            writer.add_document(**document)
+      assert model_class.__name__ == cls_name
+      primary_field = model_class.search_query.primary
+      values = [(op, getattr(model, primary_field))
+                for op, model in values]
+      index_update.apply_async(kwargs=dict(class_name=cls_name, items=values))
 
     self.to_update = {}
 
@@ -326,3 +313,40 @@ class Searcher(object):
         hits_with_models.append(hit)
 
     return hits_with_models
+
+service = WhooshIndexService()
+
+@celery.task(ignore_result=True)
+def index_update(class_name, items):
+  """ items: dict of model class name => list of (operation, primary key)
+  """
+  cls_registry = dict([(cls.__name__, cls) for cls in service.indexed_classes])
+  model_class = cls_registry.get(class_name)
+
+  if model_class is None:
+    raise ValueError("Invalid class: {}".format(class_name))
+
+  index = service.index_for_model_class(model_class)
+  primary_field = model_class.search_query.primary
+  indexed_fields = model_class.whoosh_schema.names()
+  query = db.session.query(model_class)
+
+  with index.writer() as writer:
+    for change_type, model_pk in items:
+      if model_pk is None:
+        continue
+      # delete everything. stuff that's updated or inserted will get
+      # added as a new doc. Could probably replace this with a whoosh
+      # update.
+      writer.delete_by_term(primary_field, unicode(model_pk))
+
+      if change_type in ("new", "changed"):
+        model = query.get(model_pk)
+        # Hack: Load lazy fields
+        # This prevents a transaction error in make_document
+        for key in indexed_fields:
+          getattr(model, key)
+
+        document = service.make_document(model, indexed_fields, primary_field)
+        writer.add_document(**document)
+
