@@ -8,6 +8,9 @@ class TestConfig(object):
   SQLALCHEMY_DATABASE_URI = "sqlite://"
   SQLALCHEMY_ECHO = False
 
+  CELERY_ALWAYS_EAGER = True # run tasks locally, no async
+  CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+
   CSRF_ENABLED = False
   SECRET_KEY = "tototiti"
   SALT = "retwis"
