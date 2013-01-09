@@ -306,6 +306,10 @@ class Searcher(object):
 
     ids = [ hit[self.primary] for hit in hits ]
 
+    if not ids:
+      # don't query with empty 'in_(ids)'
+      return []
+
     primary_column = getattr(self.model_class, self.primary)
     session = self.model_class.query.session
     query = session.query(self.model_class)
