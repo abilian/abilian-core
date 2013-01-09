@@ -215,7 +215,9 @@ def all_entity_classes():
   Returns the list of all concrete persistent classes that are subclasses of
   Entity.
   """
-  return Entity._decl_class_registry.values()
+  persistent_classes = Entity._decl_class_registry.values()
+  return [ cls for cls in persistent_classes if issubclass(cls, Entity) ]
+
 
 def register_all_entity_classes():
   for cls in all_entity_classes():
