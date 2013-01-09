@@ -38,6 +38,7 @@ class WhooshIndexService(object):
     self.indexes = {}
     self.indexed_classes = set()
     self.running = False
+    self.listening = False
     if app:
       self.init_app(app)
 
@@ -48,9 +49,11 @@ class WhooshIndexService(object):
     if not self.whoosh_base:
       self.whoosh_base = "data/whoosh"  # Default value
 
-    event.listen(Session, "after_flush", self.after_flush)
-    event.listen(Session, "after_flush_postexec", self.after_flush_postexec)
-    event.listen(Session, "after_commit", self.after_commit)
+    if not self.listening:
+      event.listen(Session, "after_flush", self.after_flush)
+      event.listen(Session, "after_flush_postexec", self.after_flush_postexec)
+      event.listen(Session, "after_commit", self.after_commit)
+      self.listening = True
 
   def start(self):
     assert self.app, "service not bound to an app"
