@@ -5,7 +5,7 @@ in real applications.
 
 from flask import Flask
 
-from yaka.core.extensions import mail, db
+from yaka.core.extensions import mail, db, celery
 from yaka.web.filters import init_filters
 
 from yaka.services import audit_service, index_service, activity_service
@@ -50,6 +50,9 @@ class Application(Flask, ServiceManager):
     # Initialise helpers and services
     db.init_app(self)
     mail.init_app(self)
+
+    # celery async service
+    celery.config_from_object(config)
 
     # Initialise filters
     init_filters(self)
