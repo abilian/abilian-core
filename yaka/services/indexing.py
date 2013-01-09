@@ -185,7 +185,8 @@ class WhooshIndexService(object):
 
     for model in session.dirty:
       model_class = model.__class__
-      get_queue_for(model_class.__name__).append(("changed", model))
+      if hasattr(model_class, '__searchable__'):
+        get_queue_for(model_class.__name__).append(("changed", model))
 
   def after_flush_postexec(self, session, flush_context):
     #self.after_commit(session)
@@ -204,6 +205,12 @@ class WhooshIndexService(object):
     for cls_name, values in self.to_update.iteritems():
       model_class = values[0][1].__class__
       assert model_class.__name__ == cls_name
+
+      if (model_class not in self.indexed_classes
+          or not hasattr(model_class, '__searchable__')):
+        # safeguard
+        continue
+
       primary_field = model_class.search_query.primary
       values = [(op, getattr(model, primary_field))
                 for op, model in values]
