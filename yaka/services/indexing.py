@@ -34,6 +34,7 @@ from shutil import rmtree
 class WhooshIndexService(object):
 
   app = None
+  to_update = {}
 
   def __init__(self, app=None):
     self.indexes = {}
