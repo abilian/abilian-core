@@ -22,13 +22,14 @@ import threading
 from base64 import encodestring, decodestring
 from xmlrpclib import ServerProxy
 import mimetypes
+from os.path import join
 import re
 import StringIO
 
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-from .image import resize
+from yaka.services.image import resize
 
 
 # Hack for Mac OS + homebrew
@@ -333,6 +334,7 @@ class AbiwordPDFHandler(Handler):
       os.remove(in_fn)
       os.remove(out_fn)
 
+
 class ImageMagickHandler(Handler):
   accepts_mime_types = ['image/.*']
   produces_mime_types = ['application/pdf']
@@ -346,9 +348,12 @@ class ImageMagickHandler(Handler):
 
       converted = open(out_fn).read()
       return converted
+    except Exception, e:
+      raise ConversionError(e)
     finally:
       os.remove(in_fn)
       os.remove(out_fn)
+
 
 class PdfToPpmHandler(Handler):
   accepts_mime_types = ['application/pdf']
@@ -372,6 +377,8 @@ class PdfToPpmHandler(Handler):
         converted_images.append(converted)
 
       return converted_images
+    except Exception, e:
+      raise ConversionError(e)
     finally:
       for fn in itertools.chain([in_fn, out_fn], l):
         try:
@@ -379,13 +386,20 @@ class PdfToPpmHandler(Handler):
         except OSError:
             pass
 
+
 class UnoconvPdfHandler(Handler):
   """Handles conversion from office documents (MS-Office, OOo) to PDF.
 
   Uses unoconv.
   """
 
-  accepts_mime_types = [r'application/.*', 'text/rtf']
+  # TODO: add more if needed.
+  accepts_mime_types = ['application/vnd.oasis.*',
+                        'application/msword',
+                        'application/mspowerpoint',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.*',
+                        'text/rtf']
   produces_mime_types = ['application/pdf']
   run_timeout = 60
   _process = None
@@ -432,6 +446,7 @@ class UnoconvPdfHandler(Handler):
       os.remove(in_fn)
       os.remove(out_fn)
 
+
 class CloudoooPdfHandler(Handler):
   """Handles conversion from OOo to PDF.
 
@@ -476,6 +491,7 @@ class CloudoooPdfHandler(Handler):
     fd.write(converted)
     fd.close()
     return new_key
+
 
 class WvwareTextHandler(Handler):
   accepts_mime_types = ['application/msword']
