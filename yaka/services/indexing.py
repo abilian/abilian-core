@@ -20,6 +20,7 @@ from sqlalchemy.orm.session import Session
 
 import whoosh.index
 from whoosh import sorting
+from whoosh.writing import AsyncWriter
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import Schema
@@ -340,7 +341,7 @@ def index_update(class_name, items):
   session = Session(bind=db.session.get_bind(None, None))
   query = session.query(model_class)
 
-  with index.writer() as writer:
+  with AsyncWriter(index) as writer:
     for change_type, model_pk in items:
       if model_pk is None:
         continue
