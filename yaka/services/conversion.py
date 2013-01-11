@@ -272,6 +272,7 @@ class PdfToTextHandler(Handler):
       os.remove(in_fn)
       os.remove(out_fn)
 
+
 class AbiwordTextHandler(Handler):
   accepts_mime_types = ['application/msword']
   produces_mime_types = ['text/plain']
@@ -305,7 +306,9 @@ class AbiwordTextHandler(Handler):
       return converted_unicode
     finally:
       os.remove(in_fn)
-      os.remove(out_fn)
+      if os.path.exists(out_fn):
+        os.remove(out_fn)
+
 
 class AbiwordPDFHandler(Handler):
   accepts_mime_types = ['application/msword',
