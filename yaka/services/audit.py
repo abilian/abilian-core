@@ -220,4 +220,6 @@ class AuditService(object):
     session.add(entry)
 
   def entries_for(self, entity):
-    return AuditEntry.query.filter(AuditEntry.entity_id == entity.id).all()
+    return AuditEntry.query.filter(
+      AuditEntry.entity_class == entity.__class__.__name__,
+      AuditEntry.entity_id == entity.id).all()
