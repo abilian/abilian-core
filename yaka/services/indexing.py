@@ -168,7 +168,7 @@ class WhooshIndexService(object):
     return Schema(**schema), primary
 
   def after_flush(self, session, flush_context):
-    if not self.running:
+    if not self.running or session is not db.session():
       return
 
     get_queue_for = lambda cls_name: self.to_update.setdefault(cls_name, [])
@@ -200,7 +200,7 @@ class WhooshIndexService(object):
     we update the whoosh index for the model. If no index exists, it will be
     created here; this could impose a penalty on the initial commit of a model.
     """
-    if not self.running:
+    if not self.running or session is not db.session():
       return
 
     for cls_name, values in self.to_update.iteritems():
