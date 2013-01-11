@@ -332,7 +332,8 @@ class AbiwordPDFHandler(Handler):
       return converted
     finally:
       os.remove(in_fn)
-      os.remove(out_fn)
+      if os.path.exists(out_fn):
+        os.remove(out_fn)
 
 
 class ImageMagickHandler(Handler):
