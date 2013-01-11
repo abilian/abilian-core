@@ -138,6 +138,17 @@ class Converter(object):
 
     raise ConversionError()
 
+  def get_image(self, digest, blob, mime_type, index, size=500):
+    """ Return an image for the given content, only if it already exists in the
+    image cache
+    """
+    # Special case, for now (XXX).
+    if mime_type.startswith("image/"):
+      return ""
+
+    cache_key = "img:%s:%s:%s" % (index, size, digest)
+    return self.cache.get(cache_key, u"")
+
   def to_image(self, digest, blob, mime_type, index, size=500):
     """
     Converts a file to a list of images. Returns image at the given index.
