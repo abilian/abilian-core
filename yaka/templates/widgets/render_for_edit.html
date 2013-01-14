@@ -38,11 +38,11 @@
 
   <div class="form-actions">
     {% if for_new %}
-      <button type="submit" class="btn btn-primary" name="_action" value="add">Add new</button>
-      <button type="submit" class="btn cancel" name="_action" value="cancel">Cancel</button>
+      <button type="submit" class="btn btn-primary" name="_action" value="add">{{ _("Add new") }}</button>
+      <button type="submit" class="btn cancel" name="_action" value="cancel">{{ _("Cancel") }}</button>
     {% else %}
-      <button type="submit" class="btn btn-primary" name="_action" value="save">Save changes</button>
-      <button type="submit" class="btn cancel" name="_action" value="cancel">Cancel</button>
+      <button type="submit" class="btn btn-primary" name="_action" value="save">{{ _("Save changes") }}</button>
+      <button type="submit" class="btn cancel" name="_action" value="cancel">{{ _("Cancel") }}</button>
     {% endif %}
   </div>
 
