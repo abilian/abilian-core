@@ -304,7 +304,12 @@ class ModelWrapper(object):
       info = self.cls.__mapper__.c[name].info
       label = info['label']
     except (AttributeError, KeyError):
-      label = name
+      try:
+        label = _(name)
+      except KeyError:
+        # i18n may be not initialized (in some unit tests for example)
+        label = name
+
     value = getattr(self.model, name)
 
     # Massage the values a little bit
