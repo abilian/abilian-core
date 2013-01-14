@@ -22,7 +22,6 @@ import threading
 from base64 import encodestring, decodestring
 from xmlrpclib import ServerProxy
 import mimetypes
-from os.path import join
 import re
 import StringIO
 
