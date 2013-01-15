@@ -147,7 +147,7 @@ class Converter(object):
       return ""
 
     cache_key = "img:%s:%s:%s" % (index, size, digest)
-    return self.cache.get(cache_key, u"")
+    return self.cache.get(cache_key)
 
   def to_image(self, digest, blob, mime_type, index, size=500):
     """
