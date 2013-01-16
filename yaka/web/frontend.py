@@ -414,7 +414,9 @@ class Module(object):
   @templated("crm/single_view.html")
   def entity_view(self, entity_id):
     entity = self.managed_class.query.get(entity_id)
-    assert entity is not None
+    if entity is None:
+      abort(404)
+
     bc = self.bread_crumbs(entity._name)
     add_to_recent_items(entity)
 
