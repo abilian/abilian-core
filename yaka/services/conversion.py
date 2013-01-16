@@ -49,19 +49,28 @@ class ConversionError(Exception):
 
 class Cache(object):
 
+  def _path(self, key):
+    """ file path for `key`"""
+    return os.path.join("cache", "{}.blob".format(key))
+
+  def __contains__(self, key):
+    return os.path.exists(self._path(key))
+
   def get(self, key):
-    if os.path.exists("cache/%s.blob" % key):
-      value = open("cache/%s.blob" % key).read()
+    if key in self:
+      value = open(self._path(key), 'rb').read()
       if key.startswith("txt:"):
         value = unicode(value, encoding="utf8")
       return value
     else:
       return None
 
+  __getitem__ = get
+
   def set(self, key, value):
     if not os.path.exists(CACHE_DIR):
       os.mkdir(CACHE_DIR)
-    fd = open("cache/%s.blob" % key, "wbc")
+    fd = open(self._path(key), "wbc")
     if key.startswith("txt:"):
       fd.write(value.encode("utf8"))
     else:
@@ -137,6 +146,12 @@ class Converter(object):
         return text
 
     raise ConversionError()
+
+  def has_image(self, digest, mime_type, index, size=500):
+    """ Tell if there is a preview image
+    """
+    cache_key = "img:%s:%s:%s" % (index, size, digest)
+    return mime_type.startswith("image/") or cache_key in self.cache
 
   def get_image(self, digest, blob, mime_type, index, size=500):
     """ Return an image for the given content, only if it already exists in the
