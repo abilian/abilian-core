@@ -50,7 +50,7 @@ class TestAudit(IntegrationTestCase):
     assert entry.type == UPDATE
     assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
-    assert entry.changes == {'website': (u'', 'http://www.john.com/')}
+    assert entry.changes == {u'website': (u'', u'http://www.john.com/')}
 
     account.birthday = datetime.date(2012, 12, 25)
     self.session.commit()
@@ -60,7 +60,7 @@ class TestAudit(IntegrationTestCase):
     assert entry.type == UPDATE
     assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
-    assert entry.changes == {'birthday': (None, datetime.date(2012, 12, 25))}
+    assert entry.changes == {u'birthday': (None, datetime.date(2012, 12, 25))}
 
     self.session.delete(account)
     self.session.commit()

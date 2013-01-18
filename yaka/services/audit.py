@@ -79,7 +79,17 @@ class AuditEntry(db.Model):
       return {}
 
   def set_changes(self, changes):
-    self.changes_pickle = pickle.dumps(changes)
+    # for strings: store only unicode values
+    uchanges = {}
+    for k, v in changes.iteritems():
+      k = unicode(k)
+      uv = []
+      for val in v:
+        if isinstance(val, str):
+          val = val.decode('utf-8')
+        uv.append(val)
+      uchanges[k] = tuple(uv)
+    self.changes_pickle = pickle.dumps(uchanges)
 
   changes = property(get_changes, set_changes)
 
