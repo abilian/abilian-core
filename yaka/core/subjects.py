@@ -172,7 +172,9 @@ class User(Principal, UserMixin, Entity):
 
   @property
   def name(self):
-    return (self.first_name or "Unknown") + " " + (self.last_name or "Unknown")
+    name = u'{first_name} {last_name}'.format(first_name=self.first_name or u'',
+                                              last_name=self.last_name or u'')
+    return name.strip() or u'Unknown'
 
   def __unicode__(self):
     return self.name
