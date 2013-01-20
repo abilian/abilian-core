@@ -86,7 +86,12 @@ class AuditEntry(db.Model):
       uv = []
       for val in v:
         if isinstance(val, str):
-          val = val.decode('utf-8')
+          # TODO: Temp fix for errors that happen during migration
+          try:
+            val = val.decode('utf-8')
+          except:
+            print "A unicode error happened on changes %s" % repr(changes)
+            val = u"[[Somme error occurred. Working on it]]"
         uv.append(val)
       uchanges[k] = tuple(uv)
     self.changes_pickle = pickle.dumps(uchanges)
