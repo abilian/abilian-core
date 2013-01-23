@@ -102,7 +102,6 @@ class Converter(object):
   # TODO: refactor, pass a "File" or "Document" or "Blob" object
   def to_pdf(self, digest, blob, mime_type):
     cache_key = "pdf:" + digest
-
     pdf = self.cache.get(cache_key)
     if pdf:
       return pdf
@@ -570,10 +569,10 @@ converter.register_handler(PdfToTextHandler())
 converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
 
-#converter.register_handler(UnoconvPdfHandler())
+converter.register_handler(UnoconvPdfHandler())
 
-converter.register_handler(AbiwordPDFHandler())
-converter.register_handler(AbiwordTextHandler())
+#converter.register_handler(AbiwordPDFHandler())
+#converter.register_handler(AbiwordTextHandler())
 
 
 # Needs to be rewriten
