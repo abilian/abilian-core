@@ -197,12 +197,12 @@ class Converter(object):
 
     raise ConversionError()
 
-  def get_metadata(self, digest, file, mime_type):
-    """Gets a dictionary representing the metadata embedded in the given file."""
+  def get_metadata(self, digest, content, mime_type):
+    """Gets a dictionary representing the metadata embedded in the given content."""
 
     # XXX: ad-hoc for now, refactor later
     if mime_type.startswith("image/"):
-      img = Image.open(StringIO.StringIO(file))
+      img = Image.open(StringIO.StringIO(content))
       ret = {}
       if not hasattr(img, '_getexif'):
         return {}
@@ -213,9 +213,11 @@ class Converter(object):
         decoded = TAGS.get(tag, tag)
         ret["EXIF:" + str(decoded)] = value
       return ret
+    else:
+      if mime_type != "application/pdf":
+        content = self.to_pdf(digest, content, mime_type)
 
-    if mime_type == "application/pdf":
-      in_fn = make_temp_file(file)
+      in_fn = make_temp_file(content)
       output = subprocess.check_output(['pdfinfo', in_fn])
       ret = {}
       for line in output.split("\n"):
