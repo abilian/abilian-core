@@ -29,6 +29,7 @@ from yaka.core.extensions import db
 
 from . import search
 from .decorators import templated
+from .forms import ModelFieldList
 from .widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
 
@@ -325,6 +326,8 @@ class Module(object):
     col_names = ['id']
     obj = objects[0]
     for field in form:
+      if isinstance(field, ModelFieldList):
+        continue
       if hasattr(obj, field.name):
         col_names.append(field.name)
 
@@ -349,6 +352,11 @@ class Module(object):
 
     fd = StringIO.StringIO()
     wb.save(fd)
+
+    debug = request.args.get('debug_sql')
+    if debug:
+      # useful only in DEBUG mode, to get the debug toolbar in browser
+      return '<html><body>Exported</body></html>'
 
     response = make_response(fd.getvalue())
     response.headers['content-type'] = 'application/ms-excel'
