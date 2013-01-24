@@ -280,11 +280,11 @@ class Searcher(object):
 
     results = self.index.searcher().search(self.parser.parse(query), limit=limit)
     keys = [x[self.primary] for x in results]
+    primary_column = getattr(self.model_class, self.primary)
     if not keys:
       # Dummy request...
-      return session.query(self.model_class).filter("id = -1")
+      return session.query(self.model_class).filter(primary_column == -1)
     else:
-      primary_column = getattr(self.model_class, self.primary)
       return session.query(self.model_class).filter(primary_column.in_(keys))
 
   def search(self, query, limit=None, get_models=False):
