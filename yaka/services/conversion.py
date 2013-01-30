@@ -12,6 +12,7 @@ import glob
 import hashlib
 import shutil
 import itertools
+import logging
 from tempfile import mktemp, mkstemp
 import traceback
 from abc import ABCMeta, abstractmethod
@@ -30,6 +31,7 @@ from PIL.ExifTags import TAGS
 
 from yaka.services.image import resize
 
+logger = logging.getLogger(__name__)
 
 # Hack for Mac OS + homebrew
 os.environ['PATH'] += ":/usr/local/bin"
@@ -90,6 +92,11 @@ class Converter(object):
       os.mkdir(TMP_DIR)
     if not os.path.exists(CACHE_DIR):
       os.mkdir(CACHE_DIR)
+
+  def init_app(self, app):
+
+    for handler in self.handlers:
+      handler.init_app(app)
 
   def clear(self):
     self.cache.clear()
@@ -244,6 +251,12 @@ class Handler(object):
 
   accepts_mime_types = []
   produces_mime_types = []
+
+  def __init__(self, *args, **kwargs):
+    self.log = logger.getChild(self.__class__.__name__)
+
+  def init_app(self, app):
+    pass
 
   def accept(self, source_mime_type, target_mime_type):
     """Generic matcher based on patterns."""
@@ -433,6 +446,40 @@ class UnoconvPdfHandler(Handler):
   produces_mime_types = ['application/pdf']
   run_timeout = 60
   _process = None
+  unoconv = 'unoconv'
+
+  def init_app(self, app):
+    unoconv = app.config.get('UNOCONV_LOCATION')
+    found = False
+    execute_ok = False
+
+    if unoconv:
+      found = os.path.isfile(unoconv)
+      if found:
+        execute_ok = os.access(unoconv, os.X_OK)
+        if not execute_ok:
+          self.log.warning('Not allowed to execute "{}", fallback to '
+                           '"unoconv"'.format(unoconv))
+      else:
+        self.log.warning('Cannot find "{}", fallback to "unoconv"'
+                         ''.format(unoconv))
+    if (not unoconv or not found or not execute_ok):
+      unoconv = 'unoconv'
+
+    self.unoconv = unoconv
+
+  @property
+  def unoconv_version(self):
+    # Hack for my Mac, FIXME later
+    if os.path.exists("/Applications/LibreOffice.app/Contents/program/python"):
+      cmd = ['/Applications/LibreOffice.app/Contents/program/python',
+             '/usr/local/bin/unoconv', '--version']
+    else:
+      cmd = [self.unoconv, '--version']
+
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out, err = process.communicate()
+    return out
 
   def convert(self, blob, **kw):
     "Unoconv converter called"
@@ -445,7 +492,7 @@ class UnoconvPdfHandler(Handler):
       cmd = ['/Applications/LibreOffice.app/Contents/program/python',
              '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn]
     else:
-      cmd = ['unoconv', '-f', 'pdf', '-o', out_fn, in_fn]
+      cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
 
     def run_uno():
       self._process = subprocess.Popen(cmd, close_fds=True, cwd=TMP_DIR)
@@ -569,7 +616,8 @@ converter.register_handler(PdfToTextHandler())
 converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
 
-converter.register_handler(UnoconvPdfHandler())
+_unoconv_handler = UnoconvPdfHandler()
+converter.register_handler(_unoconv_handler)
 
 #converter.register_handler(AbiwordPDFHandler())
 #converter.register_handler(AbiwordTextHandler())

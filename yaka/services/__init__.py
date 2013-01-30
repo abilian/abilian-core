@@ -11,6 +11,7 @@ from .audit import AuditService
 audit_service = AuditService()
 
 from .indexing import service as index_service
+from .conversion import converter
 
 from .activity import ActivityService
 activity_service = ActivityService()
