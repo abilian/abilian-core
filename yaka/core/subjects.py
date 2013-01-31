@@ -116,13 +116,22 @@ class User(Principal, UserMixin, Entity):
       self.set_password(password)
 
   def authenticate(self, password):
+    # crypt work only on str, not unicode
     if self.password and self.password != "*":
-      return bcrypt.hashpw(password, self.password) == self.password
+      current_passwd = self.password
+      if isinstance(current_passwd, unicode):
+        current_passwd = self.password.encode('utf-8')
+      if isinstance(password, unicode):
+        password = password.encode('utf-8')
+
+      return bcrypt.hashpw(password, current_passwd) == current_passwd
     else:
       return False
 
   def set_password(self, password):
     """Encrypts and sets password."""
+    if isinstance(password, unicode):
+      password = password.encode('utf-8')
 
     self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
