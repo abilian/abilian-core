@@ -143,8 +143,8 @@ class Entity(AbstractConcreteBase, db.Model):
   def update(self, d):
     for k, v in d.items():
       assert k in self.column_names, "%s not allowed" % k
-      if type(v) == type(""):
-        v = unicode(v)
+      #if type(v) == type(""):
+      #  v = unicode(v)
       setattr(self, k, v)
 
   def to_dict(self):
