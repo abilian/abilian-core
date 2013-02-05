@@ -287,7 +287,8 @@ class PdfToTextHandler(Handler):
 
   def convert(self, blob, **kw):
     in_fn = make_temp_file(blob)
-    out_fn = mktemp(dir=TMP_DIR)
+    fd, out_fn = mkstemp(dir=TMP_DIR)
+    os.close(fd)
 
     try:
       try:
