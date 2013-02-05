@@ -90,7 +90,8 @@ class AuditEntry(db.Model):
           try:
             val = val.decode('utf-8')
           except:
-            print "A unicode error happened on changes %s" % repr(changes)
+            self.app.logger.error("A unicode error happened on changes %s",
+                                  repr(changes))
             val = u"[[Somme error occurred. Working on it]]"
         uv.append(val)
       uchanges[k] = tuple(uv)
