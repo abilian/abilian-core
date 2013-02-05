@@ -112,11 +112,20 @@ class Entity(AbstractConcreteBase, db.Model):
 
   @classmethod
   def __declare_last__(cls):
-    pj1 = "User.id==%s.creator_id" % cls.__name__
-    cls.creator = relationship("User", primaryjoin=pj1, uselist=False)
+    if Entity in cls.__bases__:
+      # declare "owner"" and "creator"" relations only for direct
+      # subclasses. Otherwise when using subclasses of direct subclasses this
+      # would produce the warning:
+      #
+      # sqlalchemy/orm/properties.py:909: SAWarning: Warning: relationship
+      # 'creator' on mapper 'Mapper|Subsubclass|table' supersedes the same
+      # relationship on inherited mapper 'Mapper|Subclass|table'; this can cause
+      # dependency issues during flush
+      pj1 = "User.id==%s.creator_id" % cls.__name__
+      cls.creator = relationship("User", primaryjoin=pj1, uselist=False)
 
-    pj2 = "User.id==%s.owner_id" % cls.__name__
-    cls.owner = relationship("User", primaryjoin=pj2,  uselist=False)
+      pj2 = "User.id==%s.owner_id" % cls.__name__
+      cls.owner = relationship("User", primaryjoin=pj2,  uselist=False)
 
   def __init__(self, **kw):
     if hasattr(g, 'user'):
