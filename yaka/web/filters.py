@@ -84,7 +84,7 @@ def date_age(dt, now=None):
 
 def date(value):
   format="EE, d MMMM y"
-  return babel.format_datetime(value, format)
+  return babel.format_date(value, format)
 
 
 def abbrev(s, max_size):
