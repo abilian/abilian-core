@@ -40,6 +40,7 @@ class Info(dict):
 EDITABLE = Info(editable=True)
 NOT_EDITABLE = Info(editable=False)
 AUDITABLE = Info(auditable=True)
+AUDITABLE_HIDDEN = Info(auditable=True, audit_hide_content=True)
 NOT_AUDITABLE = Info(auditable=False)
 SEARCHABLE = Info(searchable=True)
 NOT_SEARCHABLE = Info(searchable=False)

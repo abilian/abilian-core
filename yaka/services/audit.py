@@ -181,6 +181,14 @@ class AuditService(object):
     if old_value == NO_VALUE:
       old_value = None
     # FIXME: a bit hackish
+
+    # Hide content if needed (like password columns)
+    # FIXME: we can only handle the simplest case: 1 attribute => 1 column
+    columns = initiator.parent_token.columns
+    if (len(columns) == 1 and
+        columns[0].info.get('audit_hide_content')):
+      old_value = new_value = u'******'
+
     try:
       if len(old_value) > 1000:
         old_value = "<<large value>>"

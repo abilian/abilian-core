@@ -1,15 +1,16 @@
 import datetime
-from sqlalchemy import Column, UnicodeText, Text, Date
+from sqlalchemy import Column, Unicode, UnicodeText, Text, Date
 
 from yaka.services import audit_service
 from yaka.services.audit import AuditEntry, CREATION, UPDATE, DELETION
-from yaka.core.entities import Entity, SEARCHABLE
+from yaka.core.entities import Entity, SEARCHABLE, AUDITABLE_HIDDEN
 
 from .base import IntegrationTestCase
 
 
 class DummyAccount(Entity):
   name = Column(UnicodeText, default=u"", info=SEARCHABLE)
+  password = Column(Unicode, default=u'*', info=AUDITABLE_HIDDEN)
   website = Column(Text, default=u"")
   office_phone = Column(UnicodeText, default=u"")
   birthday = Column(Date)
@@ -62,11 +63,23 @@ class TestAudit(IntegrationTestCase):
     assert entry.entity_id == account.id
     assert entry.changes == {u'birthday': (None, datetime.date(2012, 12, 25))}
 
-    self.session.delete(account)
+    # content hiding
+    account.password = u'new super secret password'
+    assert account.__changes__ == {u'password': (u'******', u'******')}
     self.session.commit()
-    assert len(AuditEntry.query.all()) == 4
 
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[3]
+    assert entry.type == UPDATE
+    assert entry.entity_class == "DummyAccount"
+    assert entry.entity_id == account.id
+    assert entry.changes == {u'password': (u'******', u'******')}
+
+    # deletion
+    self.session.delete(account)
+    self.session.commit()
+    assert len(AuditEntry.query.all()) == 5
+
+    entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[4]
     assert entry.type == DELETION
     assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id

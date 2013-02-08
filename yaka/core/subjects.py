@@ -78,7 +78,8 @@ class User(Principal, UserMixin, Entity):
 
   email = Column(UnicodeText, nullable=False)
   can_login = Column(Boolean, nullable=False)
-  password = Column(UnicodeText, default=u"*")
+  password = Column(UnicodeText, default=u"*",
+                    info={'audit_hide_content': True,})
 
   photo = Column(LargeBinary)
 
