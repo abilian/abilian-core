@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-from sqlalchemy import func
+from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
 
 logger = logging.getLogger(__name__)
@@ -103,16 +103,19 @@ class TextSearchCriterion(BaseCriterion):
 
       attr = val['attr']
 
-      if val['rel_attr_name'] is not None:
-        # related model
-        query = query.join(val['rel_attr_name'])
+      if val['model'] is not None:
+        # related model - generate an alias, required when searched model has
+        # more than one relationship with another model
+        model = orm.aliased(val['model'])
+        attr = getattr(model, attr.key)
+        query = query.outerjoin(model, val['rel_attr_name'])
         has_joins = True
 
       # TODO: gérer les accents
       clauses.append(func.lower(attr).like(u"%{}%".format(searched_text)))
 
     if clauses:
-      query = query.filter(or_(*clauses))
+      query = query.filter(or_(*clauses)).distinct()
 
     if has_joins:
       query = query.reset_joinpoint()
