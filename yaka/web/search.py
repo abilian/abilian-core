@@ -49,12 +49,14 @@ class TextSearchCriterion(BaseCriterion):
   """ Fulltext search on given attributes
   """
 
-  def __init__(self, name, label=u'', attributes=None):
+  def __init__(self, name, label=u'', attributes=None,
+               search_fmt=u'%{q}%'):
     self.name = name
     self.label = label
     self.attributes = dict.fromkeys(attributes if attributes is not None
                                     else (name,))
     self._attributes_prepared = False
+    self.search_fmt = search_fmt
 
   def _prepare_attributes(self):
     to_del = []
@@ -112,7 +114,8 @@ class TextSearchCriterion(BaseCriterion):
         has_joins = True
 
       # TODO: gérer les accents
-      clauses.append(func.lower(attr).like(u"%{}%".format(searched_text)))
+      like_txt = self.search_fmt.format(q=searched_text)
+      clauses.append(func.lower(attr).like(like_txt))
 
     if clauses:
       query = query.filter(or_(*clauses)).distinct()
