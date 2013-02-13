@@ -370,4 +370,4 @@ def index_update(class_name, items):
         document = service.make_document(model, indexed_fields, primary_field)
         writer.add_document(**document)
 
-    session.close()
+  session.close()
