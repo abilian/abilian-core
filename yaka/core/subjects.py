@@ -134,7 +134,7 @@ class User(Principal, UserMixin, Entity):
     if isinstance(password, unicode):
       password = password.encode('utf-8')
 
-    self.password = bcrypt.hashpw(password, bcrypt.gensalt())
+    self.password = bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
 
   def follow(self, followee):
     if followee == self:

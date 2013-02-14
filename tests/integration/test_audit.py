@@ -33,7 +33,7 @@ class TestAudit(IntegrationTestCase):
     self.session.flush()
     assert len(AuditEntry.query.all()) == 0
 
-    account = DummyAccount(name="John SARL")
+    account = DummyAccount(name=u"John SARL")
     self.session.add(account)
     self.session.commit()
     assert len(AuditEntry.query.all()) == 1

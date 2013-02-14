@@ -66,7 +66,7 @@ class Application(Flask, ServiceManager):
     with self.app_context():
       db.create_all()
       if User.query.get(0) is None:
-        root = User(id=0, last_name=u'SYSTEM', email='system@example.com', can_login=False)
+        root = User(id=0, last_name=u'SYSTEM', email=u'system@example.com', can_login=False)
         db.session.add(root)
         db.session.commit()
 

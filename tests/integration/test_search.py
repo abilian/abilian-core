@@ -20,7 +20,7 @@ class IndexingTestCase(IntegrationTestCase):
       index_service.stop()
 
   def test_contacts_are_indexed(self):
-    contact = DummyContact(first_name="John", last_name="Test User", email="test@example.com")
+    contact = DummyContact(first_name=u"John", last_name=u"Test User", email=u"test@example.com")
     self.session.add(contact)
     self.session.commit()
 

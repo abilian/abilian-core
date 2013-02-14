@@ -7,7 +7,7 @@ from yaka.core.subjects import User
 
 class EntityTestCase(TestCase):
   def test(self):
-    contact = DummyContact(first_name="John")
+    contact = DummyContact(first_name=u"John")
     self.assertEquals(None, contact.creator)
     self.assertEquals(None, contact.owner)
 
