@@ -103,8 +103,10 @@ class AuditEntry(db.Model):
   @property
   def entity(self):
     #noinspection PyTypeChecker
-    cls = locals()[self.entity_class]
-    return cls.query.get(self.entity_id)
+    if not self.entity_class or not self.entity_id:
+      return None
+    cls = audit_service.model_class_names.get(self.entity_class)
+    return cls.query.get(self.entity_id) if cls is not None else None
 
 
 class AuditService(object):
@@ -114,6 +116,7 @@ class AuditService(object):
 
   def __init__(self, app=None):
     self.all_model_classes = set()
+    self.model_class_names = {}
     if app is not None:
       self.init_app(self.app)
 
@@ -150,6 +153,10 @@ class AuditService(object):
     if entity_class in self.all_model_classes:
       return
     self.all_model_classes.add(entity_class)
+
+    assert entity_class.__name__ not in self.model_class_names
+    self.model_class_names[entity_class.__name__] = entity_class
+
     mapper = entity_class.__mapper__
     for column in mapper.columns:
       props = mapper.get_property_by_column(column)
@@ -247,3 +254,6 @@ class AuditService(object):
     return AuditEntry.query.filter(
       AuditEntry.entity_class == entity.__class__.__name__,
       AuditEntry.entity_id == entity.id).all()
+
+audit_service = AuditService()
+
