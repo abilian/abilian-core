@@ -18,7 +18,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm.attributes import NO_VALUE
 from sqlalchemy.orm.session import Session
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, DateTime, Text, Binary
+from sqlalchemy.types import Integer, Unicode, DateTime, Text, Binary
 
 from yaka.core.subjects import User
 from yaka.core.entities import Entity, all_entity_classes
@@ -41,6 +41,7 @@ class AuditEntry(db.Model):
 
   entity_id = Column(Integer)
   entity_class = Column(Text)
+  entity_name = Column(Unicode(length=255))
 
   user_id = Column(Integer, ForeignKey(User.id))
   user = relationship(User)
@@ -59,6 +60,12 @@ class AuditEntry(db.Model):
     entry.entity_id = model.id
     entry.entity_class = model.__class__.__name__
     entry.user_id = user_id
+    for attr_name in ('_name', 'path', '__path_before_delete'):
+      if hasattr(model, attr_name):
+        try:
+          entry.entity_name = getattr(model, attr_name)
+        except:
+          raise
 
     return entry
 
