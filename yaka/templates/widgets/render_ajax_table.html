@@ -35,7 +35,7 @@
   </script>
 
   <form>
-    {% if view.show_controls %}
+    {%- if view.show_controls %}
       <div class="btn-group">
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
           Select
@@ -47,35 +47,31 @@
           <!-- dropdown menu links -->
         </ul>
       </div>
-    {% endif %}
-
-    <table class="table table-striped table-bordered table-condensed"
-        id="{{ view.name }}">
+    {%- endif %}
+    <table id="{{ view.name }}" class="table table-striped table-bordered table-condensed">
       <thead>
       <tr>
-        {% if view.show_controls %}
+        {%- if view.show_controls %}
           <th style="width: 1%;"></th>
-        {% endif %}
-        {% for col in view.columns %}
+        {%- endif %}
+        {%- for col in view.columns %}
           <th style="width: {{ col.width }}%;">{{ col.label }}</th>
-        {% endfor %}
+        {%- endfor %}
       </tr>
       </thead>
 
       <tbody>
-        <tr>
-        <td colspan="{{ view.columns|count }}">Loading data...</td>
-        </tr>
+        <tr><td colspan="{{ view.columns|count }}">Loading data...</td></tr>
       </tbody>
 
       <tfoot>
       <tr>
-        {% if view.show_controls %}
+        {%- if view.show_controls %}
           <th></th>
-        {% endif %}
-        {% for col in view.columns %}
+        {%- endif %}
+        {%- for col in view.columns %}
           <th>{{ col.label }}</th>
-        {% endfor %}
+        {%- endfor %}
       </tr>
       </tfoot>
     </table>

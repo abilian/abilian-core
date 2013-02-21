@@ -1,15 +1,15 @@
 <table>
-  {% if labels %}
+  {%- if labels %}
   <thead>
-    {% for label in labels %}
+    {%- for label in labels %}
       <th>{{ label }}</th>
     {%- endfor %}
   </thead>
   {%- endif %}
   <tbody>
-    {% for value in values %}
+    {%- for value in values %}
     <tr>
-      {% for attr in attributes %}
+      {%- for attr in attributes %}
       <td>{{ value[attr]|default("", True) }}</td>
       {%- endfor %}
     </tr>
