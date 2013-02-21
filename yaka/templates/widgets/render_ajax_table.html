@@ -1,39 +1,3 @@
-  <script>
-    $(document).ready(function() {
-
-      var tbl = $("#{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
-
-      /* export button: setup url args on click, to match current table filtering */
-      tbl.bind('xhr', $.fn.dataTableSetExportArgs);
-      $('.btn.datatable-export').click(
-          { 'table': tbl.get(0) },
-          function(e) {
-              var tbl = e.data.table;
-              var target = $(e.target);
-              var href = target.attr('href');
-              var params = $.data(tbl, 'current-query-args');
-              window.location = href + '?' + $.param(params);
-              return false;
-          }
-      );
-
-      $(document).bind("keydown", keyDown);
-
-      function keyDown(e) {
-        var code = e.keyCode;
-        // Note: we prevent default keyboard action
-        if (code == 39) {
-          $("li.next a").click();
-          return false;
-        } else if (code == 37) {
-          $("li.prev a").click();
-          return false;
-        }
-        return true;
-      }
-    });
-  </script>
-
   <form>
     {%- if view.show_controls %}
       <div class="btn-group">
@@ -77,4 +41,40 @@
     </table>
   </form>
 
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      var tbl = $("#{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
+
+      /* export button: setup url args on click, to match current table filtering */
+      tbl.bind('xhr', $.fn.dataTableSetExportArgs);
+      $('.btn.datatable-export').click(
+          { 'table': tbl.get(0) },
+          function(e) {
+              var tbl = e.data.table;
+              var target = $(e.target);
+              var href = target.attr('href');
+              var params = $.data(tbl, 'current-query-args');
+              window.location = href + '?' + $.param(params);
+              return false;
+          }
+      );
+
+      $(document).bind("keydown", keyDown);
+
+      function keyDown(e) {
+        var code = e.keyCode;
+        // Note: we prevent default keyboard action
+        if (code == 39) {
+          $("li.next a").click();
+          return false;
+        } else if (code == 37) {
+          $("li.prev a").click();
+          return false;
+        }
+        return true;
+      }
+    });
+  </script>
+    
 <div style="clear: both;"></div>

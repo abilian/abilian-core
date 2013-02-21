@@ -1,10 +1,4 @@
 {%- if table %}
-  <script>
-    $(document).ready(function() {
-      {{ js }}
-    });
-  </script>
-
   <form>
     {%- if view.show_controls %}
       <div class="btn-group">
@@ -58,6 +52,13 @@
       </tfoot>
     </table>
   </form>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      {{ js }}
+    });
+  </script>
+
 {%- else %}
   No data. {# <a href="new">{{ _("Create new") }}</a>. #}
 {%- endif %}
