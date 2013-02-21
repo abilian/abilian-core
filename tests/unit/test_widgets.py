@@ -5,6 +5,7 @@ from unittest import TestCase, skip
 from flask import Flask
 from wtforms import Form, TextField, IntegerField
 from wtforms.validators import required
+from yaka.core.extensions import babel
 from yaka.web.widgets import MainTableView, SingleView, Panel, Row, ModelWrapper, \
   linkify_url, text2html
 
@@ -45,6 +46,7 @@ class BaseTestCase(TestCase):
     template_dir = os.path.dirname(__file__) + "/../../yaka/templates"
     template_dir = os.path.normpath(template_dir)
     self.app = Flask(__name__, template_folder=template_dir)
+    babel.init_app(self.app)
 
 
 class TableViewTestCase(BaseTestCase):

@@ -3,9 +3,9 @@ Base Flask application class, used by tests or to be extended
 in real applications.
 """
 
-from flask import Flask
+from flask import Flask, g, request
 
-from yaka.core.extensions import mail, db, celery
+from yaka.core.extensions import mail, db, celery, babel
 from yaka.web.filters import init_filters
 
 from yaka.services import audit_service, index_service, activity_service
@@ -51,6 +51,10 @@ class Application(Flask, ServiceManager):
     db.init_app(self)
     mail.init_app(self)
 
+    # Babel (for i18n)
+    babel.init_app(self)
+    babel.localeselector(get_locale)
+
     # celery async service
     celery.config_from_object(config)
 
@@ -73,3 +77,17 @@ class Application(Flask, ServiceManager):
 
 def create_app(config):
   return Application(config)
+
+
+# Additional config for Babel
+def get_locale():
+  # if a user is logged in, use the locale from the user settings
+  user = getattr(g, 'user', None)
+  if user is not None:
+    locale = getattr(user, 'locale', None)
+    if locale:
+      return user.locale
+  # otherwise try to guess the language from the user accept
+  # header the browser transmits.  We support de/fr/en in this
+  # example.  The best match wins.
+  return request.accept_languages.best_match(['en', 'fr'])
