@@ -33,7 +33,7 @@ python-magic
 twill
 guess-language
 wtforms-alchemy
-xlwt
+-e git://github.com/python-excel/xlwt.git@35cad572687e3a284e6a5d1d32b2e58ef4eeb80c#egg=xlwt
 xlrd
 
 celery==3.0.13
