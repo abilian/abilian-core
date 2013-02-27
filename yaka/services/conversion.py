@@ -457,6 +457,8 @@ class UnoconvPdfHandler(Handler):
     if unoconv:
       found = os.path.isfile(unoconv)
       if found:
+        # make absolute path: avoid errors when running with different CWD
+        unoconv = os.path.abspath(unoconv)
         execute_ok = os.access(unoconv, os.X_OK)
         if not execute_ok:
           self.log.warning('Not allowed to execute "{}", fallback to '
