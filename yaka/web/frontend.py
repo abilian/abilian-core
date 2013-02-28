@@ -105,7 +105,7 @@ def make_single_view(form):
   for g in form._groups:
     panel = Panel(g[0], *[ Row(x) for x in g[1] ])
     panels.append(panel)
-  return SingleView(*panels)
+  return SingleView(form, *panels)
 
 
 class ModuleMeta(type):

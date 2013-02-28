@@ -3,15 +3,15 @@ Reusable widgets to be included in views.
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
-
 import cgi
 import urlparse
 import re
+import datetime
 import bleach
 
 import wtforms
 from flask import render_template, json, Markup
-from flaskext.babel import gettext as _
+from flask.ext.babel import gettext as _, format_date, format_datetime
 
 from yaka.core.entities import Entity
 from yaka.web.filters import labelize
@@ -281,9 +281,13 @@ class ModelWrapper(object):
   patterns book) which mostly adds a few convenience methods to a model, like
   a custom `__getitem__`.
   """
+  form = None
 
-  def __init__(self, model):
+  def __init__(self, model, form=None):
     self.model = model
+    if form is not None:
+      self.form = form()
+
     self.cls = model.__class__
 
   def filter_non_empty_panels(self, panels):
@@ -303,15 +307,23 @@ class ModelWrapper(object):
     return non_empty_panels
 
   def __getitem__(self, name):
-    try:
-      info = self.cls.__mapper__.c[name].info
-      label = info['label']
-    except (AttributeError, KeyError):
+    label = None
+    if self.form is not None:
       try:
-        label = _(name)
-      except KeyError:
-        # i18n may be not initialized (in some unit tests for example)
-        label = name
+        label = self.form._fields[name].label
+      except:
+        pass
+
+    if label is None:
+      try:
+        info = self.cls.__mapper__.c[name].info
+        label = info['label']
+      except (AttributeError, KeyError):
+        try:
+          label = _(name)
+        except KeyError:
+          # i18n may be not initialized (in some unit tests for example)
+          label = name
 
     value = getattr(self.model, name)
 
@@ -337,6 +349,16 @@ class ModelWrapper(object):
                    if c.info.get('editable', True)]
         attributes = [c.name for c in columns]
         labels = [c.info.get(label, c.name) for c in columns]
+
+        if self.form is not None:
+          # try to get labels nicer than simple attributes names
+          field = self.form._fields.get(name)
+          if field is not None:
+            fields = field.entries[0]._fields
+            for idx, name in enumerate(attributes):
+              if name in fields:
+                labels[idx] = fields[name].label
+
         rendered = Markup(
               render_template('widgets/horizontal_table.html',
                               values=value, labels=labels,
@@ -344,6 +366,10 @@ class ModelWrapper(object):
               )
       else:
         rendered = "; ".join(value)
+    elif isinstance(value, datetime.date):
+      rendered = format_date(value)
+    elif isinstance(value, datetime.datetime):
+      rendered = format_datetime(value)
 
     # XXX: Several hacks. Needs to be moved somewhere else.
     elif name == 'siret' and value:
@@ -375,11 +401,12 @@ class ModelWrapper(object):
 class SingleView(object):
   """View on a single object."""
 
-  def __init__(self, *panels):
+  def __init__(self, form, *panels):
+    self.form = form
     self.panels = panels
 
   def render(self, model):
-    wrapped_model = ModelWrapper(model)
+    wrapped_model = ModelWrapper(model, self.form)
     return Markup(render_template('widgets/render_single.html',
                                   panels=self.panels, model=wrapped_model))
 

@@ -74,8 +74,7 @@ class ModelViewTestCase(BaseTestCase):
   def test_single_view(self):
     with self.app.test_request_context():
       panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
-      view = SingleView(*panels)
-
+      view = SingleView(DummyForm, *panels)
       model = DummyModel(name="Renault Megane",
                     price=10000, email="joe@example.com")
       res = view.render(model)
@@ -88,8 +87,7 @@ class ModelViewTestCase(BaseTestCase):
   def test_edit_view(self):
     with self.app.test_request_context():
       panels = [Panel('main', Row('name'), Row('price'))]
-      view = SingleView(*panels)
-
+      view = SingleView(DummyForm, *panels)
       model = DummyModel(name="Renault Megane", price=10000)
       form = DummyForm(obj=model)
       res = view.render_form(form)
