@@ -276,9 +276,11 @@ class Module(object):
     bc = self.bread_crumbs()
 
     # TODO: should be an instance variable.
-    table_view = AjaxMainTableView(columns=self.list_view_columns,
-                                   ajax_source=self.url + "/json",
-                                   search_criterions=self.search_criterions,)
+    table_view = AjaxMainTableView(
+      name=self.managed_class.__name__.lower(),
+      columns=self.list_view_columns,
+      ajax_source=self.url + "/json",
+      search_criterions=self.search_criterions,)
     rendered_table = table_view.render()
 
     return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
@@ -303,6 +305,7 @@ class Module(object):
 
     # TODO: should be an instance variable.
     table_view = AjaxMainTableView(columns=self.list_view_columns,
+                                   name=self.managed_class.__name__.lower(),
                                    ajax_source=self.url + "/json")
 
     data = [table_view.render_line(e) for e in entities]
