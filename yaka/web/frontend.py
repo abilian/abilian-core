@@ -16,6 +16,7 @@ import re
 
 from flask import session, redirect, request, g, render_template, flash,\
   Blueprint, jsonify, abort, make_response, current_app
+import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from sqlalchemy.exc import IntegrityError
@@ -250,10 +251,9 @@ class Module(object):
       sort_col = getattr(rel_model, rel_sort_name)
 
     # XXX: Big hack, date are sorted in reverse order by default
-    if sort_col_name.startswith("date"):
+    if isinstance(sort_col, sa.types._DateAffinity):
       sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
-    else:
-      # Hack: lower() doesn't work on non-textual types on Postgres
+    elif isinstance(sort_col, sa.types.String):
       sort_col = func.lower(sort_col)
 
     direction = desc if sort_dir == 'desc' else asc
