@@ -250,6 +250,9 @@ class AjaxMainTableView(object):
       # Manual massage.
       if value is None:
         value = ""
+      elif 'display_fmt' in col:
+        value = col['display_fmt'](value)
+
       if column_name == '_name':
         cell = Markup('<a href="%s">%s</a>'\
                       % (entity._url, cgi.escape(value)))
