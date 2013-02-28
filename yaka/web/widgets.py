@@ -101,8 +101,9 @@ class BaseTableView(object):
       'aoColumns': aoColumns,
       'bFilter': self.show_controls,
       'oLanguage': {
-        'sSearch': "Filter records:"
+        'sSearch': _("Filter records:"),
       },
+      'bStateSave': False,
       'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",
       'bLengthChange': False,
@@ -180,11 +181,12 @@ class AjaxMainTableView(object):
   show_controls = False
   paginate = True
 
-  def __init__(self, columns, ajax_source, search_criterions=()):
+  def __init__(self, columns, ajax_source, search_criterions=(), name=None):
     self.init_columns(columns)
     self.ajax_source = ajax_source
     self.search_criterions = search_criterions
-    self.name = id(self)
+    self.name = name if name is not None else id(self)
+    self.save_state = name is not None
 
   def init_columns(self, columns):
     # TODO: compute the correct width for each column.
@@ -220,6 +222,7 @@ class AjaxMainTableView(object):
       'bLengthChange': False,
       'iDisplayLength': 25,
 
+      'bStateSave': self.save_state,
       'bProcessing': True,
       'bServerSide': True,
       'sAjaxSource': self.ajax_source,
