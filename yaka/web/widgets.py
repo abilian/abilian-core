@@ -480,6 +480,9 @@ class TabularFieldListWidget(object):
 
 class ModelListWidget(object):
 
+  def __init__(self, template='widgets/horizontal_table.html'):
+    self.template = template
+
   def render_view(self, field):
     assert isinstance(field, ModelFieldList)
     value = field.object_data
@@ -487,25 +490,29 @@ class ModelListWidget(object):
       return u''
 
     mapper = value[0].__mapper__
-    rows = []
-    for entry in field.entries:
-      rows.append([Markup(f.render_view())
-                   for f in entry.form if not f.flags.hidden])
-
+    field_names = []
     labels = []
-
     for f in field.entries[0].form:
       if f.flags.hidden:
         continue
       name = f.short_name
+      field_names.append(name)
       col_label = u''
       col = mapper.c.get(name)
       if col is not None:
         col_label = col.info.get('label', name)
       labels.append(f.label if f.label else col_label)
 
-    rendered = render_template('widgets/horizontal_table.html',
-                               rows=rows, labels=labels)
+    data_type = field.entries[0].object_data.__class__.__name__ + 'Data'
+    Data = namedtuple(data_type, field_names)
+
+    rows = []
+    for entry in field.entries:
+      row = []
+      for f in (f for f in entry.form if not f.flags.hidden):
+        row.append(Markup(f.render_view()))
+
+      rows.append(Data(*row))
+
+    rendered = render_template(self.template, rows=rows, labels=labels)
     return rendered
-
-
