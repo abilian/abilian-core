@@ -7,10 +7,10 @@
   </thead>
   {%- endif %}
   <tbody>
-    {%- for value in values %}
+    {%- for row in rows %}
     <tr>
-      {%- for attr in attributes %}
-      <td>{{ value[attr]|default("", True) }}</td>
+      {%- for value in row %}
+      <td>{{ value }}</td>
       {%- endfor %}
     </tr>
     {%- endfor %}

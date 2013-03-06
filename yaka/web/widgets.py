@@ -8,10 +8,12 @@ import urlparse
 import re
 import datetime
 import bleach
+from collections import namedtuple
 
 import wtforms
 from flask import render_template, json, Markup
 from flask.ext.babel import gettext as _, format_date, format_datetime
+from wtforms_alchemy import ModelFieldList
 
 from yaka.core.entities import Entity
 from yaka.web.filters import labelize
@@ -276,131 +278,8 @@ class AjaxMainTableView(object):
 
 
 #
-# Single object view + helper class
+# Single object view
 #
-class ModelWrapper(object):
-  """
-  Decorator / proxy (I've never really understood the difference in the GoF
-  patterns book) which mostly adds a few convenience methods to a model, like
-  a custom `__getitem__`.
-  """
-  form = None
-
-  def __init__(self, model, form=None):
-    self.model = model
-    if form is not None:
-      self.form = form()
-
-    self.cls = model.__class__
-
-  def filter_non_empty_panels(self, panels):
-    non_empty_panels = []
-
-    for panel in panels:
-      names = []
-      for row in panel.rows:
-        for name in row:
-          names.append(name)
-
-      for name in names:
-        if not self[name]['skip']:
-          non_empty_panels.append(panel)
-          break
-
-    return non_empty_panels
-
-  def __getitem__(self, name):
-    label = None
-    if self.form is not None:
-      try:
-        label = self.form._fields[name].label
-      except:
-        pass
-
-    if label is None:
-      try:
-        info = self.cls.__mapper__.c[name].info
-        label = info['label']
-      except (AttributeError, KeyError):
-        try:
-          label = _(name)
-        except KeyError:
-          # i18n may be not initialized (in some unit tests for example)
-          label = name
-
-    value = getattr(self.model, name)
-
-    # Massage the values a little bit
-    skip = False
-    rendered = ""
-
-    if value in (None, False, 0, 0.0):
-      skip = True
-    elif value in ("", "-"):
-      skip = True
-
-    elif value is True:
-      rendered = u"\u2713" # Unicode "Check mark"
-    elif isinstance(value, Entity):
-      rendered = Markup('<a href="%s">%s</a>'
-                        % (value._url, cgi.escape(value._name)))
-
-    elif isinstance(value, list):
-      if any((isinstance(v, db.Model) for v in value)):
-        # at least one of the value is a model
-        columns = [c for c in value[0].__table__.columns
-                   if c.info.get('editable', True)]
-        attributes = [c.name for c in columns]
-        labels = [c.info.get(label, c.name) for c in columns]
-
-        if self.form is not None:
-          # try to get labels nicer than simple attributes names
-          field = self.form._fields.get(name)
-          if field is not None:
-            fields = field.entries[0]._fields
-            for idx, name in enumerate(attributes):
-              if name in fields:
-                labels[idx] = fields[name].label
-
-        rendered = Markup(
-              render_template('widgets/horizontal_table.html',
-                              values=value, labels=labels,
-                              attributes=attributes,)
-              )
-      else:
-        rendered = "; ".join(value)
-    elif isinstance(value, datetime.date):
-      rendered = format_date(value)
-    elif isinstance(value, datetime.datetime):
-      rendered = format_datetime(value)
-
-    # XXX: Several hacks. Needs to be moved somewhere else.
-    elif name == 'siret' and value:
-      siret = unicode(value)
-      if len(siret) > 9:
-        siren = siret[0:9]
-      else:
-        siren = siret
-      url = "http://societe.com/cgi-bin/recherche?rncs=%s" % siren
-      rendered = Markup('<a href="%s">%s</a><i class="icon-share-alt"></i>'
-                        % (url, siret))
-
-    elif name == 'email' and value:
-      rendered = Markup(bleach.linkify(value, parse_email=True)
-                        + '&nbsp;<i class="icon-envelope"></i>')
-
-    elif name == 'site_web' and value:
-      rendered = Markup(linkify_url(value))
-
-    # Default cases come last
-    elif isinstance(value, basestring):
-      rendered = text2html(value)
-    else:
-      rendered = unicode(value)
-
-    return dict(name=name, rendered=rendered, label=label, skip=skip)
-
-
 class SingleView(object):
   """View on a single object."""
 
@@ -409,9 +288,34 @@ class SingleView(object):
     self.panels = panels
 
   def render(self, model):
-    wrapped_model = ModelWrapper(model, self.form)
+    form = self.form(obj=model)
+    mapper = model.__class__.__mapper__
+    panels = []
+    _to_skip = (None, False, 0, 0.0, '', u'-')
+
+    for panel in self.panels:
+      data = {}
+      field_name_iter = (fn for row in panel.rows
+                         for fn in row)
+
+      for name in field_name_iter:
+        field = form._fields[name]
+        if field.flags.hidden:
+          continue
+
+        value = field.object_data
+        if value in _to_skip:
+          continue
+
+        value = Markup(field.render_view())
+        label = self.label_for(field, mapper, name)
+        data[name] = (label,value,)
+
+      if data:
+        panels.append((panel, data,))
+
     return Markup(render_template('widgets/render_single.html',
-                                  panels=self.panels, model=wrapped_model))
+                                  panels=panels))
 
   def render_form(self, form, for_new=False):
     # Client-side rules for jQuery.validate
@@ -433,6 +337,23 @@ class SingleView(object):
     return Markup(render_template('widgets/render_for_edit.html',
                                   form=form, for_new=for_new, rules=rules))
 
+  def label_for(self, field, mapper, name):
+    label = field.label
+    if label is None:
+      try:
+        info = mapper.c[name].info
+        label = info['label']
+      except (AttributeError, KeyError):
+        pass
+
+    if label is None:
+      try:
+        label = _(name)
+      except KeyError:
+        # i18n may be not initialized (in some unit tests for example)
+        label = name
+
+    return label
 
 #
 # Used to describe single entity views.
@@ -482,6 +403,41 @@ class Row(object):
     return len(self.cols)
 
 # Form field widgets ###########################################################
+class DefaultViewWidget(object):
+  def render_view(self, field):
+    value = field.object_data
+    if isinstance(value, basestring):
+      return text2html(value)
+    else:
+      return unicode(value or u'') # [], None and other must be rendered using
+                                   # empty string
+
+class BooleanWidget(wtforms.widgets.CheckboxInput):
+  def render_view(self, field):
+    return u'\u2713' if field.object_data else u'' # Unicode "Check mark"
+
+class DateWidget(wtforms.widgets.TextInput):
+  def render_view(self, field):
+    return format_date(field.object_data)
+
+class DateTimeWidget(DateWidget):
+  def render_view(self, field):
+    return format_datetime(field.object_data)
+
+class EntityWidget(object):
+  def render_view(self, field):
+    obj = field.object_data
+    return u'<a href="{}">{}</a>'.format(obj._url, cgi.escape(obj._name))
+
+class EmailWidget(object):
+  def render_view(self, field):
+    link = bleach.linkify(field.object_data, parse_email=True)
+    return u'{}&nbsp;<i class="icon-envelope"></i>'.format(link)
+
+class URLWidget(object):
+  def render_view(self, field):
+    return linkify_url(field.object_data)
+
 class ListWidget(wtforms.widgets.ListWidget):
   """ display field label is optionnal
   """
@@ -502,6 +458,9 @@ class ListWidget(wtforms.widgets.ListWidget):
     html.append(u'</%s>' % self.html_tag)
     return wtforms.widgets.HTMLString(''.join(html))
 
+  def render_view(self, field):
+    return u'; '.join(field.object_data)
+
 class TabularFieldListWidget(object):
   """ For list of formfields
   """
@@ -517,3 +476,36 @@ class TabularFieldListWidget(object):
     return Markup(
       render_template('widgets/tabular_fieldlist_widget.html',
                       labels=labels, field=field))
+
+
+class ModelListWidget(object):
+
+  def render_view(self, field):
+    assert isinstance(field, ModelFieldList)
+    value = field.object_data
+    if not value:
+      return u''
+
+    mapper = value[0].__mapper__
+    rows = []
+    for entry in field.entries:
+      rows.append([Markup(f.render_view())
+                   for f in entry.form if not f.flags.hidden])
+
+    labels = []
+
+    for f in field.entries[0].form:
+      if f.flags.hidden:
+        continue
+      name = f.short_name
+      col_label = u''
+      col = mapper.c.get(name)
+      if col is not None:
+        col_label = col.info.get('label', name)
+      labels.append(f.label if f.label else col_label)
+
+    rendered = render_template('widgets/horizontal_table.html',
+                               rows=rows, labels=labels)
+    return rendered
+
+
