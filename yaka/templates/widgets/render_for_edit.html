@@ -22,24 +22,22 @@
 <form action="{{ request.path }}" method="POST" class="form-horizontal" id="edit-form">
   {{ form.csrf_token }}
 
-  {% for label, field_names in form._groups %}
-    <legend>{{ label }}</legend>
-
+  {%- for label, field_names in form._groups %}
+    {%- if label %}<legend>{{ label }}</legend>{%- endif %}
     <fieldset>
-      {% for field_name in field_names %}
+      {%- for field_name in field_names %}
         {{ render_field(form[field_name]) }}
-      {% endfor %}
+      {%- endfor %}
     </fieldset>
   {% endfor %}
 
   <div class="form-actions">
-    {% if for_new %}
+    {%- if for_new %}
       <button type="submit" class="btn btn-primary" name="_action" value="add">{{ _("Add new") }}</button>
-      <button type="submit" class="btn cancel" name="_action" value="cancel">{{ _("Cancel") }}</button>
-    {% else %}
+    {%- else %}
       <button type="submit" class="btn btn-primary" name="_action" value="save">{{ _("Save changes") }}</button>
-      <button type="submit" class="btn cancel" name="_action" value="cancel">{{ _("Cancel") }}</button>
-    {% endif %}
+    {%- endif %}
+    <button type="submit" class="btn cancel" name="_action" value="cancel">{{ _("Cancel") }}</button>    
   </div>
 
 </form>
