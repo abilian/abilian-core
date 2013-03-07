@@ -431,7 +431,7 @@ class Module(object):
     bc = self.bread_crumbs(entity._name)
     add_to_recent_items(entity)
 
-    rendered_entity = self.single_view.render(entity)
+    rendered_entity = self.render_entity_view(entity)
     related_views = self.render_related_views(entity)
 
     audit_entries = audit_service.entries_for(entity)
@@ -563,6 +563,9 @@ class Module(object):
     else:
       bc.add("", self.label)
     return bc
+
+  def render_entity_view(self, entity):
+    return self.single_view.render(entity)
 
   def render_related_views(self, entity):
     rendered = []
