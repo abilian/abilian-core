@@ -36,13 +36,13 @@ if not _PATCHED:
   Field.__init__ = _core_field_init
   del _core_field_init
 
-  def render_view(self):
+  def render_view(self, **kwargs):
     """ render data
     """
     if hasattr(self.view_widget, 'render_view'):
-      return self.view_widget.render_view(self)
+      return self.view_widget.render_view(self, **kwargs)
 
-    return DefaultViewWidget().render_view(self)
+    return DefaultViewWidget().render_view(self, **kwargs)
 
   Field.render_view = render_view
   del render_view

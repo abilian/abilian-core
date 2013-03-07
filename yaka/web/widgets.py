@@ -404,7 +404,7 @@ class Row(object):
 
 # Form field widgets ###########################################################
 class DefaultViewWidget(object):
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     value = field.object_data
     if isinstance(value, basestring):
       return text2html(value)
@@ -485,7 +485,7 @@ class ModelListWidget(object):
   def __init__(self, template='widgets/horizontal_table.html'):
     self.template = template
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     assert isinstance(field, ModelFieldList)
     value = field.object_data
     if not value:
@@ -517,5 +517,6 @@ class ModelListWidget(object):
 
       rows.append(Data(*row))
 
-    rendered = render_template(self.template, rows=rows, labels=labels)
+    rendered = render_template(self.template, field=field,  labels=labels,
+                               rows=rows, **kwargs)
     return rendered
