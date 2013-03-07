@@ -464,6 +464,8 @@ class ListWidget(wtforms.widgets.ListWidget):
 class TabularFieldListWidget(object):
   """ For list of formfields
   """
+  def __init__(self, template='widgets/tabular_fieldlist_widget.html'):
+    self.template = template
 
   def __call__(self, field, **kwargs):
     assert isinstance(field, wtforms.fields.FieldList)
@@ -471,12 +473,12 @@ class TabularFieldListWidget(object):
 
     if len(field):
       assert isinstance(field[0], wtforms.fields.FormField)
-      labels = [f.label for f in field[0] if not f.flags.hidden]
+      field_names = [f.short_name for f in field[0] if not f.flags.hidden]
+      data_type = field.entries[0].__class__.__name__ + 'Data'
+      Data = namedtuple(data_type, field_names)
+      labels = Data(*[f.label for f in field[0] if not f.flags.hidden])
 
-    return Markup(
-      render_template('widgets/tabular_fieldlist_widget.html',
-                      labels=labels, field=field))
-
+    return Markup(render_template(self.template, labels=labels, field=field))
 
 class ModelListWidget(object):
 
