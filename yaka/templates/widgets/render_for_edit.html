@@ -1,26 +1,22 @@
 {% macro render_field(field) %}
-  {% if field.errors %}
-    <div class="control-group error">
-      {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
-      <label class="control-label" for="input-{{ field.name }}">{{ field.label }}</label>
-      <div class="controls">
+  {%- set css_class = kwargs.pop('class', '') %}
+  {%- set error_css = '' %}
+  {%- if field.flags.required %}
+    {% set css_class = '{} required'.format(css_class) %}
+  {%- endif %}
+  {%- if field.errors %}
+    {% set css_class = '{} has_error'.format(css_class) %}
+    {%- set error_css = 'error' %}
+  {%- endif %}
+  <div class="control-group {{ error_css }}">
+    {{ field.label(class="control-label"+error_css) }}
+    <div class="controls">
         {{ field(class=css_class, **kwargs) }}
-        <span class="help-inline">{% for error in field.errors %}{{ error|e }}. {% endfor %}</span>
-      </div>
+        {%- if field.errors %}
+          <span class="help-inline">{% for error in field.errors %}{{ error|e }}. {% endfor %}</span>
+        {%- endif %}
     </div>
-  {% else %}
-    <div class="control-group">
-      {% if field.flags.required %}
-        <label class="control-label"
-               for="input-{{ field.name }}"><b>{{ field.label }}</b></label>
-      {% else %}
-        <label class="control-label" for="input-{{ field.name }}">{{ field.label }}</label>
-      {% endif %}
-      <div class="controls">
-        {{ field(**kwargs) }}
-      </div>
-    </div>
-  {% endif %}
+  </div>
 {% endmacro %}
 
 <form action="{{ request.path }}" method="POST" class="form-horizontal" id="edit-form">
