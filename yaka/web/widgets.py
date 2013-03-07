@@ -501,10 +501,11 @@ class ModelListWidget(object):
       col = mapper.c.get(name)
       if col is not None:
         col_label = col.info.get('label', name)
-      labels.append(f.label if f.label else col_label)
+      labels.append(f.label.text if f.label else col_label)
 
     data_type = field.entries[0].object_data.__class__.__name__ + 'Data'
     Data = namedtuple(data_type, field_names)
+    labels = Data(*labels)
 
     rows = []
     for entry in field.entries:
