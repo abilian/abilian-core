@@ -4,40 +4,28 @@ import os
 from unittest import TestCase, skip
 from flask import Flask
 from wtforms import Form, TextField, IntegerField
-from wtforms.validators import required
 from yaka.core.extensions import babel
-from yaka.web.widgets import MainTableView, SingleView, Panel, Row, ModelWrapper, \
-  linkify_url, text2html
+from yaka.web.widgets import MainTableView, SingleView, Panel, Row, \
+  linkify_url, text2html, EmailWidget
 
+class DummyMapper(object):
+  def __init__(self):
+    self.c = {}
 
 class DummyModel(object):
   """
   Mock model.
   """
+  __mapper__ = DummyMapper()
+
   def __init__(self, **kw):
     for k, v in kw.items():
       setattr(self, k, v)
 
-
 class DummyForm(Form):
   name = TextField(u'Nom du véhicule')
   price = IntegerField(u"Prix du véhicule")
-
-
-class ModelWrapperTestCase(TestCase):
-
-  def test_non_empty_panels(self):
-    model = DummyModel(name="Renault Megane", price=10000)
-    panels = [Panel('main', Row('name'), Row('price'))]
-    wrapper = ModelWrapper(model)
-    self.assertEquals(wrapper.filter_non_empty_panels(panels), panels)
-
-  def test_empty_panels(self):
-    model = DummyModel(name="", maker="")
-    panels = [Panel('main', Row('name'), Row('maker'))]
-    wrapper = ModelWrapper(model)
-    self.assertEquals(wrapper.filter_non_empty_panels(panels), [])
-
+  email = TextField(u'email', view_widget=EmailWidget())
 
 class BaseTestCase(TestCase):
 
@@ -76,11 +64,12 @@ class ModelViewTestCase(BaseTestCase):
       panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
       view = SingleView(DummyForm, *panels)
       model = DummyModel(name="Renault Megane",
-                    price=10000, email="joe@example.com")
+                         price=10000, email="joe@example.com")
       res = view.render(model)
 
       assert "Renault Megane" in res
       assert "10000" in res
+      # 'mailto:' is created by EmailWidget
       assert "mailto:joe@example.com" in res
 
   @skip

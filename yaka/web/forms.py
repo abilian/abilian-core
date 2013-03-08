@@ -1,14 +1,54 @@
+# coding=utf-8
 """
 Extensions to WTForms fields, widgets and validators.
 """
-
+import logging
 from cgi import escape
 
-from wtforms.fields.core import SelectField, FormField, _unset_value
+from wtforms import fields
+from wtforms.fields.core import Field, SelectField, FormField
 from wtforms.validators import EqualTo, Length, NumberRange, Optional, Required,\
   Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf
 from wtforms.widgets.core import html_params, Select, HTMLString, Input
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
+from .widgets import DefaultViewWidget
+
+logger = logging.getLogger(__name__)
+### PATCH wtforms.field.core.Field ####################
+_PATCHED = False
+
+if not _PATCHED:
+  logger.info('PATCH %s: add methods for "view" mode on fields', repr(Field))
+  Field.view_template = None
+
+  _wtforms_Field_init = Field.__init__
+  def _core_field_init(self, *args, **kwargs):
+    view_widget = None
+    if 'view_widget' in kwargs:
+      view_widget = kwargs.pop('view_widget')
+
+    _wtforms_Field_init(self, *args, **kwargs)
+    if view_widget is None:
+      view_widget = self.widget
+
+    self.view_widget = view_widget
+
+  Field.__init__ = _core_field_init
+  del _core_field_init
+
+  def render_view(self, **kwargs):
+    """ render data
+    """
+    if hasattr(self.view_widget, 'render_view'):
+      return self.view_widget.render_view(self, **kwargs)
+
+    return DefaultViewWidget().render_view(self, **kwargs)
+
+  Field.render_view = render_view
+  del render_view
+
+  _PATCHED = True
+### END PATCH wtforms.field.core.Field #################
 
 class Chosen(Select):
   """

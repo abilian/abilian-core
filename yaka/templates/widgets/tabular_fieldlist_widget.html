@@ -1,24 +1,23 @@
-{% if labels %}
-<table class="dynamic-row-widget span{{ labels|length }}">
-  {% if labels %}
+{%- if labels %}
+<table class="dynamic-row-widget span{{ labels|length }}" data-prefix="{{ field.name }}">
   <thead>
-    {% for label in labels %}
+    {%- for label in labels %}
       <th>{{ label }}</th>
     {%- endfor %}
   </thead>
-  {%- endif %}
   <tbody>
-    {% for fieldform in field %}
+    {%- for fieldform in field %}
     <tr>
-      {% for subfield in fieldform if not subfield.flags.hidden %}
+      {%- for subfield in fieldform if not subfield.flags.hidden %}
       <td>
-        {% if loop.first %}
-          {% for subfield in fieldform if subfield.flags.hidden %}
-            {{ subfield }}
+        {%- if loop.first %}
+          {%- for subfield in fieldform if subfield.flags.hidden %}
+          {%- set attrs={'data-short-name': subfield.short_name} %}
+            {{ subfield(id=subfield.name, **attrs) }}
           {%- endfor %}
         {%- endif %}
-        
-        {{ subfield(class="span1") }}
+        {%- set attrs={'data-short-name': subfield.short_name} %}
+        {{ subfield(class="span1", **attrs) }}
       </td>
       {%- endfor %}
     </tr>
