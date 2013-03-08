@@ -418,25 +418,30 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 
 class DateWidget(wtforms.widgets.TextInput):
   def render_view(self, field):
-    return format_date(field.object_data)
+    return (format_date(field.object_data)
+            if field.object_data else u'')
 
 class DateTimeWidget(DateWidget):
   def render_view(self, field):
-    return format_datetime(field.object_data)
+    return (format_datetime(field.object_data)
+            if field.object_data else u'')
 
 class EntityWidget(object):
   def render_view(self, field):
     obj = field.object_data
-    return u'<a href="{}">{}</a>'.format(obj._url, cgi.escape(obj._name))
+    return (u'<a href="{}">{}</a>'.format(obj._url, cgi.escape(obj._name))
+            if obj else u'')
 
 class EmailWidget(object):
   def render_view(self, field):
     link = bleach.linkify(field.object_data, parse_email=True)
-    return u'{}&nbsp;<i class="icon-envelope"></i>'.format(link)
+    return (u'{}&nbsp;<i class="icon-envelope"></i>'.format(link)
+            if link else u'')
 
 class URLWidget(object):
   def render_view(self, field):
-    return linkify_url(field.object_data)
+    return (linkify_url(field.object_data)
+            if field.object_data else u'')
 
 class ListWidget(wtforms.widgets.ListWidget):
   """ display field label is optionnal
