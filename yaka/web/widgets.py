@@ -8,6 +8,7 @@ import urlparse
 import re
 import datetime
 import bleach
+from itertools import ifilter
 from collections import namedtuple
 
 import wtforms
@@ -494,13 +495,17 @@ class ModelListWidget(object):
     assert isinstance(field, ModelFieldList)
     value = field.object_data
     if not value:
-      return u''
+      return render_template(self.template, field=field,  labels=(),
+                             rows=(), **kwargs)
 
     mapper = value[0].__mapper__
     field_names = []
     labels = []
+    def is_included(f):
+      return not (f.flags.hidden or isinstance(f, wtforms.fields.HiddenField))
+
     for f in field.entries[0].form:
-      if f.flags.hidden:
+      if not is_included(f):
         continue
       name = f.short_name
       field_names.append(name)
@@ -517,7 +522,7 @@ class ModelListWidget(object):
     rows = []
     for entry in field.entries:
       row = []
-      for f in (f for f in entry.form if not f.flags.hidden):
+      for f in ifilter(is_included, entry.form):
         row.append(Markup(f.render_view()))
 
       rows.append(Data(*row))
