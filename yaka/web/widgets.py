@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Reusable widgets to be included in views.
 
@@ -432,6 +433,26 @@ class EntityWidget(object):
     obj = field.object_data
     return (u'<a href="{}">{}</a>'.format(obj._url, cgi.escape(obj._name))
             if obj else u'')
+
+class MoneyWidget(wtforms.widgets.Input):
+  """ Widget used to show / enter money amount.
+  Currently hardcoded to € / k€
+  """
+  input_type = 'number'
+
+  def render_view(self, field):
+    val = field.object_data
+    unit = u'€'
+
+    if val is None:
+      return u''
+
+    if val > 1000:
+      unit = u'k€'
+      val = int(round(val / 1000.0))
+
+    # \u00A0: non-breakable whitespace
+    return u'{value}\u00A0{unit}'.format(value=val, unit=unit)
 
 class EmailWidget(object):
   def render_view(self, field):
