@@ -10,7 +10,6 @@ import StringIO
 import copy
 import csv
 from datetime import date
-from pprint import pprint
 from time import strftime, gmtime
 import re
 
