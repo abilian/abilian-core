@@ -81,9 +81,11 @@ class BaseTableView(object):
   paginate = False
   options = {}
 
-  def __init__(self, columns):
+  def __init__(self, columns, options=None):
     self.init_columns(columns)
     self.name = id(self)
+    if options is not None:
+      self.options = options
 
   def init_columns(self, columns):
     # TODO
@@ -97,7 +99,7 @@ class BaseTableView(object):
         col['label'] = labelize(col['name'])
       self.columns.append(col)
 
-  def render(self, model):
+  def render(self, entities, **kwargs):
     aoColumns = [{'asSorting': [] }] if self.show_controls else []
     aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
                    for i in range(0, len(self.columns)) ]
@@ -116,11 +118,13 @@ class BaseTableView(object):
     js = "$('#%s').dataTable(%s);" % (self.name, json.dumps(datatable_options))
 
     table = []
-    for entity in model:
+    for entity in entities:
       table.append(self.render_line(entity))
 
-    return Markup(render_template('widgets/render_table.html',
-                                  table=table, js=Markup(js), view=self))
+    template = (self.options.get('template', ''), 'widgets/render_table.html')
+    return Markup(render_template(template,
+                                  table=table, js=Markup(js), view=self,
+                                  **kwargs))
 
   def render_line(self, entity):
     line = []
@@ -170,11 +174,6 @@ class RelatedTableView(BaseTableView):
   """
   show_controls = False
   paginate = False
-
-  def __init__(self, column_names, options):
-    BaseTableView.__init__(self, column_names)
-    self.options = options
-
 
 class AjaxMainTableView(object):
   """
