@@ -47,6 +47,16 @@ if not _PATCHED:
   Field.render_view = render_view
   del render_view
 
+  def is_hidden(self):
+    """ WTForms is not consistent with hidden fields, since flags.hidden is not
+    set on HiddenField :-(
+    """
+    return (self.flags.hidden
+            or isinstance(self, fields.HiddenField))
+
+  Field.is_hidden = property(is_hidden)
+  del is_hidden
+
   _PATCHED = True
 ### END PATCH wtforms.field.core.Field #################
 

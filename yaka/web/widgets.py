@@ -508,10 +508,10 @@ class TabularFieldListWidget(object):
 
     if len(field):
       assert isinstance(field[0], wtforms.fields.FormField)
-      field_names = [f.short_name for f in field[0] if not f.flags.hidden]
+      field_names = [f.short_name for f in field[0] if not f.is_hidden]
       data_type = field.entries[0].__class__.__name__ + 'Data'
       Data = namedtuple(data_type, field_names)
-      labels = Data(*[f.label for f in field[0] if not f.flags.hidden])
+      labels = Data(*[f.label for f in field[0] if not f.is_hidden])
 
     return Markup(render_template(self.template, labels=labels, field=field))
 
@@ -530,11 +530,9 @@ class ModelListWidget(object):
     mapper = value[0].__mapper__
     field_names = []
     labels = []
-    def is_included(f):
-      return not (f.flags.hidden or isinstance(f, wtforms.fields.HiddenField))
 
     for f in field.entries[0].form:
-      if not is_included(f):
+      if f.is_hidden:
         continue
       name = f.short_name
       field_names.append(name)
@@ -551,7 +549,7 @@ class ModelListWidget(object):
     rows = []
     for entry in field.entries:
       row = []
-      for f in ifilter(is_included, entry.form):
+      for f in ifilter(lambda f: not f.is_hidden, entry.form):
         row.append(Markup(f.render_view()))
 
       rows.append(Data(*row))
