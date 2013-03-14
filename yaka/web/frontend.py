@@ -577,7 +577,8 @@ class Module(object):
       view = RelatedTableView(column_names, options)
       related_entities = getattr(entity, attr_name)
       obj = dict(label=label,
-                 rendered=view.render(related_entities),
+                 attr_name=attr_name,
+                 rendered=view.render(related_entities, related_to=entity),
                  size=len(related_entities))
       rendered.append(obj)
     return rendered
