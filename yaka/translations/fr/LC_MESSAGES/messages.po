@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-01-14 15:59+0100\n"
-"PO-Revision-Date: 2013-01-04 15:15+0100\n"
+"POT-Creation-Date: 2013-03-25 18:08+0100\n"
+"PO-Revision-Date: 2013-03-25 18:09+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -17,18 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: yaka/templates/widgets/render_for_edit.html:41
+#: yaka/templates/widgets/render_for_edit.html:36
 msgid "Add new"
 msgstr "Créer"
 
-#: yaka/templates/widgets/render_for_edit.html:42
-#: yaka/templates/widgets/render_for_edit.html:45
+#: yaka/templates/widgets/render_for_edit.html:38
+msgid "Save changes"
+msgstr "Sauvegarder"
+
+#: yaka/templates/widgets/render_for_edit.html:40
 msgid "Cancel"
 msgstr "Supprimer"
 
-#: yaka/templates/widgets/render_for_edit.html:44
-msgid "Save changes"
-msgstr "Sauvegarder"
+#: yaka/templates/widgets/render_single.html:1
+msgid "Edit"
+msgstr "Éditer"
+
+#: yaka/templates/widgets/render_single.html:2
+msgid "Delete"
+msgstr "Supprimer"
 
 #: yaka/web/filters.py:53
 msgid "a minute ago"
@@ -37,7 +44,7 @@ msgstr "il y a une minute"
 #: yaka/web/filters.py:55
 #, python-format
 msgid "%(num)d minutes ago"
-msgstr "il y %(num)d minutes"
+msgstr "il y a %(num)d minutes"
 
 #: yaka/web/filters.py:57
 msgid "an hour ago"
@@ -59,7 +66,7 @@ msgstr "il y a %(num)d jours"
 
 #: yaka/web/filters.py:66
 msgid "a month ago"
-msgstr "il y un mois"
+msgstr "il y a un mois"
 
 #: yaka/web/filters.py:68
 #, python-format
@@ -75,31 +82,31 @@ msgstr "l'année dernière"
 msgid "%(num)d years ago"
 msgstr "il y a %(num)d ans"
 
-#: yaka/web/forms.py:76
+#: yaka/web/forms.py:126
 msgid "Invalid email address."
 msgstr "Adresse email non valide"
 
-#: yaka/web/widgets.py:211
+#: yaka/web/widgets.py:110 yaka/web/widgets.py:216
 msgid "Filter records:"
 msgstr "Filtrer les entrées:"
 
-#: yaka/web/widgets.py:212
+#: yaka/web/widgets.py:217
 msgid "Previous"
 msgstr "Précédent"
 
-#: yaka/web/widgets.py:213
+#: yaka/web/widgets.py:218
 msgid "Next"
 msgstr "Suivant"
 
-#: yaka/web/widgets.py:214
+#: yaka/web/widgets.py:219
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
 
-#: yaka/web/widgets.py:215
+#: yaka/web/widgets.py:220
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtré sur un total de _MAX_ entrées)"
 
-#: yaka/web/widgets.py:216
+#: yaka/web/widgets.py:221
 msgid "Advanced filtering"
 msgstr "Filtrage avancé"
 
