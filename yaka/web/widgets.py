@@ -426,6 +426,22 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
   def render_view(self, field):
     return u'\u2713' if field.object_data else u'' # Unicode "Check mark"
 
+class FloatWidget(wtforms.widgets.TextInput):
+  """ in view mode, format float number to 'precision' decimal
+  """
+  def __init__(self, precision=None):
+    self.precision = precision
+    if precision is not None:
+        self._fmt = '.{:d}f'.format(precision)
+
+  def render_view(self, field):
+    data = field.object_data
+    if data is None:
+      return u''
+
+    return format(data, self._fmt)
+
+
 class DateWidget(wtforms.widgets.TextInput):
   def render_view(self, field):
     return (format_date(field.object_data)
