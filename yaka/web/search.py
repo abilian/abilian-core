@@ -56,6 +56,10 @@ class TextSearchCriterion(BaseCriterion):
     self.attributes = dict.fromkeys(attributes if attributes is not None
                                     else (name,))
     self._attributes_prepared = False
+
+    if isinstance(search_fmt, basestring):
+      search_fmt = [search_fmt]
+
     self.search_fmt = search_fmt
 
   def _prepare_attributes(self):
@@ -114,8 +118,9 @@ class TextSearchCriterion(BaseCriterion):
         has_joins = True
 
       # TODO: gérer les accents
-      like_txt = self.search_fmt.format(q=searched_text)
-      clauses.append(func.lower(attr).like(like_txt))
+      for fmt in self.search_fmt:
+        like_txt = fmt.format(q=searched_text)
+        clauses.append(func.lower(attr).like(like_txt))
 
     if clauses:
       query = query.filter(or_(*clauses)).distinct()
