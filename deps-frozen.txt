@@ -31,7 +31,7 @@ bleach==1.2.1
 blinker==1.2
 celery==3.0.13
 closure==20121212
-coverage==3.5.1
+coverage==3.6
 cssmin==0.1.4
 docutils==0.10
 feedparser==5.1.3
