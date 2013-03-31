@@ -1,8 +1,8 @@
 from unittest import TestCase
 from tests.unit.dummy import DummyContact
 
-from yaka.core.entities import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE
-from yaka.core.subjects import User
+from abilian.core.entities import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE
+from abilian.core.subjects import User
 
 
 class EntityTestCase(TestCase):

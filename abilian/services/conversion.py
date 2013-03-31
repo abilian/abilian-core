@@ -29,7 +29,7 @@ import StringIO
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-from yaka.services.image import resize
+from abilian.services.image import resize
 
 logger = logging.getLogger(__name__)
 

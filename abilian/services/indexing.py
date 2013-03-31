@@ -1,5 +1,5 @@
 """
-Indexing service for Yaka.
+Indexing service for Abilian.
 
 Adds Whoosh indexing capabilities to SQLAlchemy models.
 
@@ -25,8 +25,8 @@ from whoosh.qparser import MultifieldParser
 from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import Schema
 
-from yaka.core.entities import all_entity_classes
-from yaka.core.extensions import celery, db
+from abilian.core.entities import all_entity_classes
+from abilian.core.extensions import celery, db
 
 import os
 from shutil import rmtree
@@ -329,6 +329,7 @@ class Searcher(object):
     return hits_with_models
 
 service = WhooshIndexService()
+
 
 @celery.task(ignore_result=True)
 def index_update(class_name, items):

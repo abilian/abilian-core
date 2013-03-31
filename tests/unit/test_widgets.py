@@ -4,13 +4,20 @@ import os
 from unittest import TestCase, skip
 from flask import Flask
 from wtforms import Form, TextField, IntegerField
-from yaka.core.extensions import babel
-from yaka.web.widgets import MainTableView, SingleView, Panel, Row, \
+
+# Import for side-effects (monkey-patch)
+import abilian.web.forms
+
+from abilian.core.extensions import babel
+from abilian.web.widgets import MainTableView, SingleView, Panel, Row, \
   linkify_url, text2html, EmailWidget
+
+
 
 class DummyMapper(object):
   def __init__(self):
     self.c = {}
+
 
 class DummyModel(object):
   """
@@ -22,16 +29,18 @@ class DummyModel(object):
     for k, v in kw.items():
       setattr(self, k, v)
 
+
 class DummyForm(Form):
   name = TextField(u'Nom du véhicule')
   price = IntegerField(u"Prix du véhicule")
   email = TextField(u'email', view_widget=EmailWidget())
 
+
 class BaseTestCase(TestCase):
 
   def setUp(self):
     # Hack to set up the template folder properly.
-    template_dir = os.path.dirname(__file__) + "/../../yaka/templates"
+    template_dir = os.path.dirname(__file__) + "/../../abilian/templates"
     template_dir = os.path.normpath(template_dir)
     self.app = Flask(__name__, template_folder=template_dir)
     babel.init_app(self.app)

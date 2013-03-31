@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
-from yaka.core.subjects import User
+from abilian.core.subjects import User
+
 
 class SubjectTestCase(TestCase):
 

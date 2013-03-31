@@ -1,8 +1,8 @@
 About
 =====
 
-"Yaka: when CRM meets enterprise social networking."
-
+Abilian core framework and services. Based on Flask, SQLAlchemy and other
+libraries.
 
 Install
 =======

@@ -10,15 +10,16 @@ Flask-DebugToolbar
 Flask-Uploads
 Flask-Babel
 Flask-Assets
+Flask-Mail
 
 # Flask extensions not used (yet?)
-Flask-Themes
-Flask-Mail
-Flask-OpenID
-Flask-Cache
+#Flask-Themes
+#Flask-OpenID
+#Flask-Cache
 
 # Other
 SQLAlchemy==0.7.9
+phonenumbers
 whoosh
 markdown
 feedparser

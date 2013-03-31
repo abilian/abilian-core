@@ -16,9 +16,9 @@ from flask import render_template, json, Markup
 from flask.ext.babel import gettext as _, format_date, format_datetime
 from wtforms_alchemy import ModelFieldList
 
-from yaka.core.entities import Entity
-from yaka.web.filters import labelize
-from yaka.core.extensions import db
+from abilian.core.entities import Entity
+from abilian.web.filters import labelize
+from abilian.core.extensions import db
 
 def linkify_url(value):
   """Tranform an URL pulled from the database to a safe HTML fragment."""

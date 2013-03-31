@@ -5,7 +5,7 @@ Test the index service.
 from .base import IntegrationTestCase
 from ..unit.dummy import DummyContact
 
-from yaka.services import index_service
+from abilian.services import index_service
 
 
 class IndexingTestCase(IntegrationTestCase):

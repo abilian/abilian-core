@@ -87,7 +87,7 @@ event.listen(mapper, 'before_delete', before_delete_listener)
 
 
 class Entity(AbstractConcreteBase, db.Model):
-  """Base class for Yaka entities."""
+  """Base class for Abilian entities."""
 
   # Default magic metadata, should not be necessary
   __editable__ = frozenset()

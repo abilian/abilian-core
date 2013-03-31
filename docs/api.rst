@@ -1,117 +1,117 @@
 API
 ====
 
-``yaka.core``
--------------
+``abilian.core``
+----------------
 
-:mod:`yaka.core.entities`
-^^^^^^^^^^^^^^^^^^^^^^^^^
+:mod:`abilian.core.entities`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: yaka.core.entities
+.. automodule:: abilian.core.entities
    :members:
    :undoc-members:
 
-:mod:`yaka.core.extensions`
+:mod:`abilian.core.extensions`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.core.extensions
+   :members:
+   :undoc-members:
+
+:mod:`abilian.core.signals`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: yaka.core.extensions
+.. automodule:: abilian.core.signals
    :members:
    :undoc-members:
 
-:mod:`yaka.core.signals`
+:mod:`abilian.core.subjects`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.core.subjects
+   :members:
+   :undoc-members:
+
+:mod:`abilian.core.util`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: yaka.core.signals
+.. automodule:: abilian.core.util
    :members:
    :undoc-members:
 
-:mod:`yaka.core.subjects`
-^^^^^^^^^^^^^^^^^^^^^^^^^
+``abilian.services``
+--------------------
 
-.. automodule:: yaka.core.subjects
+:mod:`abilian.services.activity`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.services.activity
    :members:
    :undoc-members:
 
-:mod:`yaka.core.util`
-^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: yaka.core.util
-   :members:
-   :undoc-members:
-
-``yaka.services``
------------------
-
-:mod:`yaka.services.activity`
+:mod:`abilian.services.audit`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: yaka.services.activity
+.. automodule:: abilian.services.audit
    :members:
    :undoc-members:
 
+:mod:`abilian.services.conversion`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:mod:`yaka.services.audit`
+.. automodule:: abilian.services.conversion
+   :members:
+   :undoc-members:
+
+:mod:`abilian.services.image`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.services.image
+   :members:
+   :undoc-members:
+
+:mod:`abilian.services.indexing`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.services.indexing
+   :members:
+   :undoc-members:
+
+``abilian.web``
+---------------
+
+:mod:`abilian.web.decorators`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.decorators
+   :members:
+   :undoc-members:
+
+:mod:`abilian.web.filters`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.filters
+   :members:
+   :undoc-members:
+
+:mod:`abilian.web.forms`
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.forms
+   :members:
+   :undoc-members:
+
+:mod:`abilian.web.frontend`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: yaka.services.audit
+.. automodule:: abilian.web.frontend
    :members:
    :undoc-members:
 
-:mod:`yaka.services.conversion`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.services.conversion
-   :members:
-   :undoc-members:
-
-:mod:`yaka.services.image`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.services.image
-   :members:
-   :undoc-members:
-
-:mod:`yaka.services.indexing`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.services.indexing
-   :members:
-   :undoc-members:
-
-``yaka.web``
-------------
-
-:mod:`yaka.web.decorators`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.web.decorators
-   :members:
-   :undoc-members:
-
-:mod:`yaka.web.filters`
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.web.filters
-   :members:
-   :undoc-members:
-
-:mod:`yaka.web.forms`
-^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.web.forms
-   :members:
-   :undoc-members:
-
-:mod:`yaka.web.frontend`
+:mod:`abilian.web.utils`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: yaka.web.frontend
-   :members:
-   :undoc-members:
-
-:mod:`yaka.web.utils`
-^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: yaka.web.util
+.. automodule:: abilian.web.util
    :members:
    :undoc-members:

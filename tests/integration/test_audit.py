@@ -1,9 +1,9 @@
 import datetime
 from sqlalchemy import Column, Unicode, UnicodeText, Text, Date
 
-from yaka.services import audit_service
-from yaka.services.audit import AuditEntry, CREATION, UPDATE, DELETION
-from yaka.core.entities import Entity, SEARCHABLE, AUDITABLE_HIDDEN
+from abilian.core.entities import Entity, SEARCHABLE, AUDITABLE_HIDDEN
+from abilian.services import audit_service
+from abilian.services.audit import AuditEntry, CREATION, UPDATE, DELETION
 
 from .base import IntegrationTestCase
 
@@ -83,5 +83,3 @@ class TestAudit(IntegrationTestCase):
     assert entry.type == DELETION
     assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
-
-

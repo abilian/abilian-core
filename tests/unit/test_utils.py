@@ -1,7 +1,7 @@
 # coding=utf-8
 from unittest import TestCase
 
-from yaka.core.util import Pagination, slugify
+from abilian.core.util import Pagination, slugify
 
 
 class TestPagination(TestCase):

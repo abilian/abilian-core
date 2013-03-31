@@ -5,7 +5,7 @@
 .vagrant
 
 whoosh*
-yaka.db
+abilian.db
 tmp
 cache
 dist
@@ -20,10 +20,10 @@ MANIFEST
 docs/_build
 htmlcov
 
-yaka/static/misc*
-yaka/static/.webassets-cache
-yaka/static/gen
-yaka/static/placeholders
+abilian/static/misc*
+abilian/static/.webassets-cache
+abilian/static/gen
+abilian/static/placeholders
 
 *.pyc
 *.egg-info

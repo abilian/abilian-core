@@ -1,5 +1,5 @@
 from sqlalchemy import Column, UnicodeText, Text
-from yaka.core.entities import Entity, SEARCHABLE
+from abilian.core.entities import Entity, SEARCHABLE
 
 
 class DummyContact(Entity):
@@ -7,4 +7,3 @@ class DummyContact(Entity):
   first_name = Column(UnicodeText, default=u"", info=SEARCHABLE)
   last_name = Column(UnicodeText, default=u"", info=SEARCHABLE)
   email = Column(Text, default=u"")
-

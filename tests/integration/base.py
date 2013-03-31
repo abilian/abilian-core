@@ -9,13 +9,14 @@ import os
 import uuid
 from flask.ext.testing import TestCase
 
-from yaka.core.extensions import db
-from yaka.application import Application
+from abilian.core.extensions import db
+from abilian.application import Application
 
 from .config import TestConfig
 
 
 BASEDIR = os.path.dirname(__file__)
+
 
 class IntegrationTestCase(TestCase):
 

@@ -6,7 +6,7 @@ from unittest import TestCase
 from nose.tools import eq_
 from magic import Magic
 
-from yaka.services.conversion import converter
+from abilian.services.conversion import converter
 
 
 BASEDIR = join(dirname(__file__), "..", "dummy_files")

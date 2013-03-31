@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Yaka documentation build configuration file, created by
+# Abilian documentation build configuration file, created by
 # sphinx-quickstart on Fri Jun  8 11:00:48 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -42,8 +42,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Yaka'
-copyright = u'2012, Stefane Fermigier'
+project = u'Abilian'
+copyright = u'2012-2013, Abilian SAS'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -169,7 +169,7 @@ html_theme = 'flask'
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Yakadoc'
+htmlhelp_basename = 'abiliandoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -188,7 +188,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Yaka.tex', u'Yaka Documentation',
+  ('index', 'Abilian.tex', u'Abilian Documentation',
    u'Stefane Fermigier', 'manual'),
 ]
 
@@ -218,7 +218,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'yaka', u'Yaka Documentation',
+    ('index', 'abilian', u'Abilian Documentation',
      [u'Stefane Fermigier'], 1)
 ]
 
@@ -232,8 +232,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Yaka', u'Yaka Documentation',
-   u'Stefane Fermigier', 'Yaka', 'One line description of project.',
+  ('index', 'Abilian', u'Abilian Documentation',
+   u'Stefane Fermigier', 'Abilian', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -250,7 +250,7 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Yaka'
+epub_title = u'Abilian'
 epub_author = u'Stefane Fermigier'
 epub_publisher = u'Stefane Fermigier'
 epub_copyright = u'2012, Stefane Fermigier'

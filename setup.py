@@ -35,7 +35,7 @@ def get_long_description():
 
 
 metadata = dict(
-  name='Yaka Core',
+  name='Abilian Core',
   version='0.1dev',
   url='http://www.abilian.com/',
   license='LGPL',
@@ -43,7 +43,7 @@ metadata = dict(
   author_email='sf@fermigier.com',
   description='Base framework for E2.0 applications',
   long_description=get_long_description(),
-  packages=['yaka'],
+  packages=['abilian'],
   platforms='any',
   classifiers=[
     'Development Status :: 3 - Alpha',

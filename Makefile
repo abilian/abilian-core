@@ -1,6 +1,6 @@
 .PHONY: test unit full-test pep8 clean docs tox
 
-SRC=yaka
+SRC=abilian
 PEP8IGNORE=E111,E121,E201,E225,E501
 
 all: test doc
@@ -49,7 +49,7 @@ doc:
 
 clean:
 	find . -name "*.pyc" | xargs rm -f
-	find . -name yaka.db | xargs rm -f
+	find . -name abilian.db | xargs rm -f
 	rm -f maxid.data
 	rm -rf data tests/data tests/integration/data
 	rm -rf tmp tests/tmp tests/integration/tmp

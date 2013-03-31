@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+
 class TestConfig(object):
   DEBUG = False
   TESTING = True

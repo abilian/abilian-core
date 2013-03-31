@@ -2,7 +2,7 @@ import unittest
 import datetime
 from nose.tools import eq_
 
-from yaka.web.filters import filesize, date_age
+from abilian.web.filters import filesize, date_age
 
 
 class TestFilters(unittest.TestCase):

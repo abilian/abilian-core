@@ -12,9 +12,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime, Text
 
-from yaka.core.entities import db, all_entity_classes
-from yaka.core.signals import activity
-from yaka.core.subjects import User
+from abilian.core.entities import db, all_entity_classes
+from abilian.core.signals import activity
+from abilian.core.subjects import User
 
 
 # TODO: review the design as it hits the DB with too many requests.

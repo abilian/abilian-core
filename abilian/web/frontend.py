@@ -22,11 +22,11 @@ from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import orm
 from xlwt import Workbook, XFStyle
-from yaka.core.entities import ValidationError, Entity
 
-from yaka.core.signals import activity
-from yaka.services import audit_service
-from yaka.core.extensions import db
+from abilian.core.entities import ValidationError, Entity
+from abilian.core.signals import activity
+from abilian.core.extensions import db
+from abilian.services import audit_service
 
 from . import search
 from .decorators import templated

@@ -20,9 +20,9 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, Unicode, DateTime, Text, Binary
 
-from yaka.core.subjects import User
-from yaka.core.entities import Entity, all_entity_classes
-from yaka.core.extensions import db
+from abilian.core.subjects import User
+from abilian.core.entities import Entity, all_entity_classes
+from abilian.core.extensions import db
 
 
 # TODO: use flufl.enum here

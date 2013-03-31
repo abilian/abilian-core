@@ -5,10 +5,10 @@ in real applications.
 
 from flask import Flask, g, request
 
-from yaka.core.extensions import mail, db, celery, babel
-from yaka.web.filters import init_filters
+from abilian.core.extensions import mail, db, celery, babel
+from abilian.web.filters import init_filters
 
-from yaka.services import audit_service, index_service, activity_service
+from abilian.services import audit_service, index_service, activity_service
 
 
 __all__ = ['create_app', 'Application', 'ServiceManager']
@@ -66,7 +66,7 @@ class Application(Flask, ServiceManager):
     # Note
 
   def create_db(self):
-    from yaka.core.subjects import User
+    from abilian.core.subjects import User
     with self.app_context():
       db.create_all()
       if User.query.get(0) is None:

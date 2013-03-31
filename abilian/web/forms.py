@@ -194,6 +194,7 @@ class NoneOf(NoneOf):
   def rule(self):
     return None
 
+
 class FlagHidden(object):
   """ Flag the field as hidden
   """
