@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Reusable widgets to be included in views.
 
@@ -80,9 +81,11 @@ class BaseTableView(object):
   paginate = False
   options = {}
 
-  def __init__(self, columns):
+  def __init__(self, columns, options=None):
     self.init_columns(columns)
     self.name = id(self)
+    if options is not None:
+      self.options = options
 
   def init_columns(self, columns):
     # TODO
@@ -96,7 +99,7 @@ class BaseTableView(object):
         col['label'] = labelize(col['name'])
       self.columns.append(col)
 
-  def render(self, model):
+  def render(self, entities, **kwargs):
     aoColumns = [{'asSorting': [] }] if self.show_controls else []
     aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
                    for i in range(0, len(self.columns)) ]
@@ -115,11 +118,13 @@ class BaseTableView(object):
     js = "$('#%s').dataTable(%s);" % (self.name, json.dumps(datatable_options))
 
     table = []
-    for entity in model:
+    for entity in entities:
       table.append(self.render_line(entity))
 
-    return Markup(render_template('widgets/render_table.html',
-                                  table=table, js=Markup(js), view=self))
+    template = (self.options.get('template', ''), 'widgets/render_table.html')
+    return Markup(render_template(template,
+                                  table=table, js=Markup(js), view=self,
+                                  **kwargs))
 
   def render_line(self, entity):
     line = []
@@ -169,11 +174,6 @@ class RelatedTableView(BaseTableView):
   """
   show_controls = False
   paginate = False
-
-  def __init__(self, column_names, options):
-    BaseTableView.__init__(self, column_names)
-    self.options = options
-
 
 class AjaxMainTableView(object):
   """
@@ -309,6 +309,15 @@ class SingleView(object):
           continue
 
         value = Markup(field.render_view())
+        if value == u'':
+          # related models may have [] as value, but we don't discard this type
+          # of value in order to let widget a chance to render something useful
+          # like an 'add model' button.
+          #
+          # if it renders an empty string, there's really no point in rendering
+          # a line for this empty field
+          continue
+
         label = self.label_for(field, mapper, name)
         data[name] = (label,value,)
 
@@ -417,6 +426,22 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
   def render_view(self, field):
     return u'\u2713' if field.object_data else u'' # Unicode "Check mark"
 
+class FloatWidget(wtforms.widgets.TextInput):
+  """ in view mode, format float number to 'precision' decimal
+  """
+  def __init__(self, precision=None):
+    self.precision = precision
+    if precision is not None:
+        self._fmt = '.{:d}f'.format(precision)
+
+  def render_view(self, field):
+    data = field.object_data
+    if data is None:
+      return u''
+
+    return format(data, self._fmt)
+
+
 class DateWidget(wtforms.widgets.TextInput):
   def render_view(self, field):
     return (format_date(field.object_data)
@@ -432,6 +457,26 @@ class EntityWidget(object):
     obj = field.object_data
     return (u'<a href="{}">{}</a>'.format(obj._url, cgi.escape(obj._name))
             if obj else u'')
+
+class MoneyWidget(wtforms.widgets.Input):
+  """ Widget used to show / enter money amount.
+  Currently hardcoded to € / k€
+  """
+  input_type = 'number'
+
+  def render_view(self, field):
+    val = field.object_data
+    unit = u'€'
+
+    if val is None:
+      return u''
+
+    if val > 1000:
+      unit = u'k€'
+      val = int(round(val / 1000.0))
+
+    # \u00A0: non-breakable whitespace
+    return u'{value}\u00A0{unit}'.format(value=val, unit=unit)
 
 class EmailWidget(object):
   def render_view(self, field):
@@ -479,10 +524,10 @@ class TabularFieldListWidget(object):
 
     if len(field):
       assert isinstance(field[0], wtforms.fields.FormField)
-      field_names = [f.short_name for f in field[0] if not f.flags.hidden]
+      field_names = [f.short_name for f in field[0] if not f.is_hidden]
       data_type = field.entries[0].__class__.__name__ + 'Data'
       Data = namedtuple(data_type, field_names)
-      labels = Data(*[f.label for f in field[0] if not f.flags.hidden])
+      labels = Data(*[f.label for f in field[0] if not f.is_hidden])
 
     return Markup(render_template(self.template, labels=labels, field=field))
 
@@ -501,11 +546,9 @@ class ModelListWidget(object):
     mapper = value[0].__mapper__
     field_names = []
     labels = []
-    def is_included(f):
-      return not (f.flags.hidden or isinstance(f, wtforms.fields.HiddenField))
 
     for f in field.entries[0].form:
-      if not is_included(f):
+      if f.is_hidden:
         continue
       name = f.short_name
       field_names.append(name)
@@ -522,7 +565,7 @@ class ModelListWidget(object):
     rows = []
     for entry in field.entries:
       row = []
-      for f in ifilter(is_included, entry.form):
+      for f in ifilter(lambda f: not f.is_hidden, entry.form):
         row.append(Markup(f.render_view()))
 
       rows.append(Data(*row))

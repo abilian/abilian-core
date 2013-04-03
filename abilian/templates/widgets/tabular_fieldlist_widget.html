@@ -8,10 +8,10 @@
   <tbody>
     {%- for fieldform in field %}
     <tr>
-      {%- for subfield in fieldform if not subfield.flags.hidden %}
+      {%- for subfield in fieldform if not subfield.is_hidden %}
       <td>
         {%- if loop.first %}
-          {%- for subfield in fieldform if subfield.flags.hidden %}
+          {%- for subfield in fieldform if subfield.is_hidden %}
           {%- set attrs={'data-short-name': subfield.short_name} %}
             {{ subfield(id=subfield.name, **attrs) }}
           {%- endfor %}
