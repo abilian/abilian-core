@@ -5,6 +5,7 @@ from sqlalchemy.sql.expression import or_
 
 logger = logging.getLogger(__name__)
 
+
 class BaseCriterion(object):
   """
   """
@@ -44,6 +45,7 @@ class BaseCriterion(object):
   @property
   def form_filter_args(self):
     raise NotImplementedError
+
 
 class TextSearchCriterion(BaseCriterion):
   """ Fulltext search on given attributes
@@ -129,7 +131,6 @@ class TextSearchCriterion(BaseCriterion):
       query = query.reset_joinpoint()
 
     return query
-
 
   def get_rel_attr(self, attr_name, model):
     """ for a related attribute specification, return (related model,

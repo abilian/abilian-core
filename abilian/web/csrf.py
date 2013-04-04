@@ -3,6 +3,7 @@ from functools import wraps
 from werkzeug.exceptions import Forbidden as HTTPForbidden
 from flask.ext.wtf import Form
 
+
 def field():
   """
   Return an instance of wtforms.ext.csrf.fields.CSRFTokenField, suitable for
@@ -10,17 +11,20 @@ def field():
   """
   return Form().csrf_token
 
+
 def name():
   """ Field name expected to have CSRF token. Useful for passing it to
   javascript for instance.
   """
   return u'csrf_token'
 
+
 def token():
   """ Value of current csrf token. Useful for passing it to javascript for
   instance.
   """
   return field().current_token or u''
+
 
 def protect(view):
   """ Protect a view agains CSRF attacks by checking 'csrf_token' value in

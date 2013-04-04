@@ -7,20 +7,20 @@ NOTE: code is currently quite messy. Needs to be refactored.
 import cgi
 import urlparse
 import re
-import datetime
-import bleach
 from itertools import ifilter
 from collections import namedtuple
+import bleach
 
-import wtforms
 from flask import render_template, json, Markup
 from flask.ext.babel import gettext as _, format_date, format_datetime
+import wtforms
 from wtforms_alchemy import ModelFieldList
 
 from abilian.core.entities import Entity
 from abilian.web.filters import labelize
+
 from . import csrf
-from abilian.core.extensions import db
+
 
 def linkify_url(value):
   """Tranform an URL pulled from the database to a safe HTML fragment."""
@@ -175,6 +175,7 @@ class RelatedTableView(BaseTableView):
   """
   show_controls = False
   paginate = False
+
 
 class AjaxMainTableView(object):
   """
@@ -370,6 +371,7 @@ class SingleView(object):
 
     return label
 
+
 #
 # Used to describe single entity views.
 #
@@ -417,6 +419,7 @@ class Row(object):
   def __len__(self):
     return len(self.cols)
 
+
 # Form field widgets ###########################################################
 class DefaultViewWidget(object):
   def render_view(self, field, **kwargs):
@@ -427,12 +430,14 @@ class DefaultViewWidget(object):
       return unicode(value or u'') # [], None and other must be rendered using
                                    # empty string
 
+
 class BooleanWidget(wtforms.widgets.CheckboxInput):
   def render_view(self, field):
     return u'\u2713' if field.object_data else u'' # Unicode "Check mark"
 
+
 class FloatWidget(wtforms.widgets.TextInput):
-  """ in view mode, format float number to 'precision' decimal
+  """ In view mode, format float number to 'precision' decimal
   """
   def __init__(self, precision=None):
     self.precision = precision
@@ -452,16 +457,19 @@ class DateWidget(wtforms.widgets.TextInput):
     return (format_date(field.object_data)
             if field.object_data else u'')
 
+
 class DateTimeWidget(DateWidget):
   def render_view(self, field):
     return (format_datetime(field.object_data)
             if field.object_data else u'')
+
 
 class EntityWidget(object):
   def render_view(self, field):
     obj = field.object_data
     return (u'<a href="{}">{}</a>'.format(obj._url, cgi.escape(obj._name))
             if obj else u'')
+
 
 class MoneyWidget(wtforms.widgets.Input):
   """ Widget used to show / enter money amount.
@@ -483,16 +491,19 @@ class MoneyWidget(wtforms.widgets.Input):
     # \u00A0: non-breakable whitespace
     return u'{value}\u00A0{unit}'.format(value=val, unit=unit)
 
+
 class EmailWidget(object):
   def render_view(self, field):
     link = bleach.linkify(field.object_data, parse_email=True)
     return (u'{}&nbsp;<i class="icon-envelope"></i>'.format(link)
             if link else u'')
 
+
 class URLWidget(object):
   def render_view(self, field):
     return (linkify_url(field.object_data)
             if field.object_data else u'')
+
 
 class ListWidget(wtforms.widgets.ListWidget):
   """ display field label is optionnal
@@ -517,6 +528,7 @@ class ListWidget(wtforms.widgets.ListWidget):
   def render_view(self, field):
     return u'; '.join(field.object_data)
 
+
 class TabularFieldListWidget(object):
   """ For list of formfields
   """
@@ -535,6 +547,7 @@ class TabularFieldListWidget(object):
       labels = Data(*[f.label for f in field[0] if not f.is_hidden])
 
     return Markup(render_template(self.template, labels=labels, field=field))
+
 
 class ModelListWidget(object):
 

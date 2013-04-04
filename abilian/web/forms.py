@@ -60,6 +60,7 @@ if not _PATCHED:
   _PATCHED = True
 ### END PATCH wtforms.field.core.Field #################
 
+
 class Chosen(Select):
   """
   Extends the Select widget using the Chosen jQuery plugin.
@@ -94,6 +95,7 @@ class TagInput(Input):
 
     return HTMLString(u'<input %s>' % self.html_params(name=field.name, **kwargs))
 
+
 class ModelFieldList(BaseModelFieldList):
   """ Filter empty entries
   """
@@ -108,6 +110,7 @@ class ModelFieldList(BaseModelFieldList):
         self.entries.remove(field)
 
     return super(ModelFieldList, self).validate(form, extra_validators)
+
 
 class RelationSelectField(SelectField):
   # TODO: Later...
@@ -216,6 +219,7 @@ class FlagHidden(object):
   @property
   def rule(self):
     return None
+
 
 # These are the canonical names that should be used.
 equalto = EqualTo
