@@ -43,6 +43,10 @@ class BaseTestCase(TestCase):
     template_dir = os.path.dirname(__file__) + "/../../abilian/templates"
     template_dir = os.path.normpath(template_dir)
     self.app = Flask(__name__, template_folder=template_dir)
+    self.app.config.update({
+      'TESTING': True,
+      'CSRF_ENABLED': False,
+      })
     babel.init_app(self.app)
 
 
