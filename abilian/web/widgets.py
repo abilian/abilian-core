@@ -326,8 +326,8 @@ class SingleView(object):
       if data:
         panels.append((panel, data,))
 
-    view_template = self.options.get('view_template',
-                                     'widgets/render_single.html')
+    view_template = (self.options.get('view_template') or '',
+                     'widgets/render_single.html')
     return Markup(render_template(view_template,
                                   csrf_token=csrf.field(),
                                   entity=model, panels=panels))
