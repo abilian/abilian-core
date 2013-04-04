@@ -66,6 +66,6 @@ tidy: clean
 
 update-pot:
     # _n => ngettext, _l => lazy_gettext
-	pybabel extract -F babel.cfg -k "_n" -k "_l" -o messages.pot "${SRC}"
+	pybabel extract -F babel.cfg -k "_n:1,2" -k "_l" -o messages.pot "${SRC}"
 	pybabel update -i messages.pot -d $(SRC)/translations
 	pybabel compile -d $(SRC)/translations
