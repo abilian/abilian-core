@@ -99,12 +99,12 @@ def labelize(s):
   return " ".join([w.capitalize() for w in s.split("_")])
 
 
-def make_single_view(form):
+def make_single_view(form, **options):
   panels = []
   for g in form._groups:
     panel = Panel(g[0], *[ Row(x) for x in g[1] ])
     panels.append(panel)
-  return SingleView(form, *panels)
+  return SingleView(form, *panels, **options)
 
 
 class ModuleMeta(type):
@@ -151,6 +151,7 @@ class Module(object):
   url = None
   name = None
   static_folder = None
+  view_template = None
   related_views = []
   search_criterions = (search.TextSearchCriterion("name",
                                                   attributes=('name', 'nom')),)
@@ -167,7 +168,8 @@ class Module(object):
     if self.id is None:
       self.id = self.managed_class.__name__.lower()
 
-    self.single_view = make_single_view(self.edit_form_class)
+    self.single_view = make_single_view(self.edit_form_class,
+                                        view_template=self.view_template)
 
     # copy criterions instances; without that they may be shared by subclasses
     self.search_criterions = tuple((copy.deepcopy(c)

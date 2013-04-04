@@ -19,6 +19,7 @@ from wtforms_alchemy import ModelFieldList
 
 from abilian.core.entities import Entity
 from abilian.web.filters import labelize
+from . import csrf
 from abilian.core.extensions import db
 
 def linkify_url(value):
@@ -284,9 +285,10 @@ class AjaxMainTableView(object):
 class SingleView(object):
   """View on a single object."""
 
-  def __init__(self, form, *panels):
+  def __init__(self, form, *panels, **options):
     self.form = form
     self.panels = panels
+    self.options = options
 
   def render(self, model):
     form = self.form(obj=model)
@@ -324,8 +326,11 @@ class SingleView(object):
       if data:
         panels.append((panel, data,))
 
-    return Markup(render_template('widgets/render_single.html',
-                                  panels=panels))
+    view_template = self.options.get('view_template',
+                                     'widgets/render_single.html')
+    return Markup(render_template(view_template,
+                                  csrf_token=csrf.field(),
+                                  entity=model, panels=panels))
 
   def render_form(self, form, for_new=False):
     # Client-side rules for jQuery.validate
