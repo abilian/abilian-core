@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-03-25 18:08+0100\n"
+"POT-Creation-Date: 2013-04-04 12:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,96 +17,96 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: yaka/templates/widgets/render_for_edit.html:36
+#: abilian/templates/widgets/render_for_edit.html:36
 msgid "Add new"
 msgstr ""
 
-#: yaka/templates/widgets/render_for_edit.html:38
+#: abilian/templates/widgets/render_for_edit.html:38
 msgid "Save changes"
 msgstr ""
 
-#: yaka/templates/widgets/render_for_edit.html:40
+#: abilian/templates/widgets/render_for_edit.html:40
 msgid "Cancel"
 msgstr ""
 
-#: yaka/templates/widgets/render_single.html:1
+#: abilian/templates/widgets/render_single.html:1
 msgid "Edit"
 msgstr ""
 
-#: yaka/templates/widgets/render_single.html:2
+#: abilian/templates/widgets/render_single.html:2
 msgid "Delete"
 msgstr ""
 
-#: yaka/web/filters.py:53
+#: abilian/web/filters.py:53
 msgid "a minute ago"
 msgstr ""
 
-#: yaka/web/filters.py:55
+#: abilian/web/filters.py:55
 #, python-format
 msgid "%(num)d minutes ago"
 msgstr ""
 
-#: yaka/web/filters.py:57
+#: abilian/web/filters.py:57
 msgid "an hour ago"
 msgstr ""
 
-#: yaka/web/filters.py:59
+#: abilian/web/filters.py:59
 #, python-format
 msgid "%(num)d hours ago"
 msgstr ""
 
-#: yaka/web/filters.py:62
+#: abilian/web/filters.py:62
 msgid "yesterday"
 msgstr ""
 
-#: yaka/web/filters.py:64
+#: abilian/web/filters.py:64
 #, python-format
 msgid "%(num)d days ago"
 msgstr ""
 
-#: yaka/web/filters.py:66
+#: abilian/web/filters.py:66
 msgid "a month ago"
 msgstr ""
 
-#: yaka/web/filters.py:68
+#: abilian/web/filters.py:68
 #, python-format
 msgid "%(num)d months ago"
 msgstr ""
 
-#: yaka/web/filters.py:70
+#: abilian/web/filters.py:70
 msgid "last year"
 msgstr ""
 
-#: yaka/web/filters.py:72
+#: abilian/web/filters.py:72
 #, python-format
 msgid "%(num)d years ago"
 msgstr ""
 
-#: yaka/web/forms.py:126
+#: abilian/web/forms.py:126
 msgid "Invalid email address."
 msgstr ""
 
-#: yaka/web/widgets.py:110 yaka/web/widgets.py:216
+#: abilian/web/widgets.py:110 abilian/web/widgets.py:216
 msgid "Filter records:"
 msgstr ""
 
-#: yaka/web/widgets.py:217
+#: abilian/web/widgets.py:217
 msgid "Previous"
 msgstr ""
 
-#: yaka/web/widgets.py:218
+#: abilian/web/widgets.py:218
 msgid "Next"
 msgstr ""
 
-#: yaka/web/widgets.py:219
+#: abilian/web/widgets.py:219
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
-#: yaka/web/widgets.py:220
+#: abilian/web/widgets.py:220
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
-#: yaka/web/widgets.py:221
+#: abilian/web/widgets.py:221
 msgid "Advanced filtering"
 msgstr ""
 

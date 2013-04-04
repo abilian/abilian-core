@@ -20,7 +20,8 @@ Look at the `fabfile.py` for the exact list.
 Python modules
 --------------
 
-Create a virtualenv (ex: `mkvirtualenv yaka`, assuming you have mkvirtualenv installed).
+Create a virtualenv (ex: `mkvirtualenv abilian`, assuming you have
+mkvirtualenv installed).
 
 Then run `pip install -r deps.txt` or `python setup.py develop`.
 
@@ -76,6 +77,6 @@ Assuming you deploying to an Ubuntu Precise Pangolin (12.04 LTS) server:
 Build Status
 ============
 
-The project is under continuous integration with Travis:
+The project is under continuous integration with Jenkins. Check its status:
 
-[![Build Status](https://secure.travis-ci.org/sfermigier/yaka-core.png?branch=master)](https://secure.travis-ci.org/#!/sfermigier/yaka-core)
+<http://jenkins.abilian.com/job/Abilian-Core/>

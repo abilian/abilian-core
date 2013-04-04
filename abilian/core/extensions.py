@@ -26,7 +26,7 @@ db = SQLAlchemy()
 #
 # for defining a task:
 #
-# from yaka.core.extensions import celery
+# from abilian.core.extensions import celery
 # @celery.task
 # def ...
 #
@@ -51,7 +51,7 @@ class Babel(BabelBase):
   def add_translations(self, module_name):
     """ Add translation from external module
 
-    babel.add_translations('yaka.core')
+    babel.add_translations('abilian.core')
     """
     module = importlib.import_module(module_name)
     for path in (os.path.join(p, 'translations') for p in module.__path__):
