@@ -1,10 +1,11 @@
 # Don't remove
+from warnings import warn
 import fix_path
 
 from os.path import join, dirname
 from unittest import TestCase
 from nose.tools import eq_
-from magic import Magic
+from magic import Magic, os
 
 from abilian.services.conversion import converter
 
@@ -32,6 +33,9 @@ class Test(TestCase):
 
   # To text
   def test_pdf_to_text(self):
+    if not os.popen("which pdftotex").read().strip():
+      warn("pdftotext not found, skipping test")
+      return
     blob = self.read_file("onepage.pdf")
     text = converter.to_text("", blob, "application/pdf")
 
@@ -65,6 +69,9 @@ class Test(TestCase):
 
   # To images
   def test_pdf_to_images(self):
+    if not os.popen("which pdftoppm").read().strip():
+      warn("pdftoppm not found, skipping test")
+      return
     blob = self.read_file("onepage.pdf")
     image = converter.to_image("", blob, "application/pdf", 0)
     eq_("image/jpeg", mime_sniffer.from_buffer(image))
