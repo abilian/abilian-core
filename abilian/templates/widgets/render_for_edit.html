@@ -19,7 +19,7 @@
   </div>
 {% endmacro %}
 
-<form action="{{ request.path }}" method="POST" class="form-horizontal" id="edit-form">
+<form action="{{ request.path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="edit-form">
   {{ form.csrf_token }}
 
   {%- for label, field_names in form._groups %}
