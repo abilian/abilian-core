@@ -11,7 +11,7 @@ from itertools import ifilter
 from collections import namedtuple
 import bleach
 
-from flask import render_template, json, Markup
+from flask import render_template, json, Markup, render_template_string
 from flask.ext.babel import gettext as _, format_date, format_datetime
 import wtforms
 from wtforms_alchemy import ModelFieldList
@@ -526,7 +526,12 @@ class ListWidget(wtforms.widgets.ListWidget):
     return wtforms.widgets.HTMLString(''.join(html))
 
   def render_view(self, field):
-    return u'; '.join(field.object_data)
+    return render_template_string(
+      '''{%- for obj in data %}
+      <span class="label">{{ obj }}</span>
+      {%- endfor %}''',
+      data=field.object_data
+      )
 
 
 class TabularFieldListWidget(object):
