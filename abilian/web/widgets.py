@@ -79,10 +79,14 @@ class BaseTableView(object):
   """
   """
   show_controls = False
+  show_search = None
   paginate = False
   options = {}
 
   def __init__(self, columns, options=None):
+    if self.show_search is None:
+      self.show_search = self.show_controls
+
     self.init_columns(columns)
     self.name = id(self)
     if options is not None:
