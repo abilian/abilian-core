@@ -87,6 +87,9 @@ class BaseTableView(object):
     self.name = id(self)
     if options is not None:
       self.options = options
+      self.show_controls = self.options.get('show_controls', self.show_controls)
+      self.show_search = self.options.get('show_search', self.show_controls)
+      self.paginate = self.options.get('paginate', self.paginate)
 
   def init_columns(self, columns):
     # TODO
@@ -106,7 +109,7 @@ class BaseTableView(object):
                    for i in range(0, len(self.columns)) ]
     datatable_options = {
       'aoColumns': aoColumns,
-      'bFilter': self.show_controls,
+      'bFilter': self.show_search,
       'oLanguage': {
         'sSearch': _("Filter records:"),
       },
@@ -114,7 +117,7 @@ class BaseTableView(object):
       'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",
       'bLengthChange': False,
-      'iDisplayLength': 50
+      'iDisplayLength': self.options.get('paginate_length', 50)
     }
     js = "$('#%s').dataTable(%s);" % (self.name, json.dumps(datatable_options))
 
