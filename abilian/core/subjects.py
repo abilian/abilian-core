@@ -26,19 +26,22 @@ __all__ = ['User', 'Group', 'Principal']
 following = Table(
   'following', db.Model.metadata,
   Column('follower_id', Integer, ForeignKey('user.id')),
-  Column('followee_id', Integer, ForeignKey('user.id'))
+  Column('followee_id', Integer, ForeignKey('user.id')),
+  UniqueConstraint('follower_id', 'followee_id'),
 )
 membership = Table(
   'membership', db.Model.metadata,
   Column('user_id', Integer, ForeignKey('user.id')),
-  Column('group_id', Integer, ForeignKey('group.id'))
+  Column('group_id', Integer, ForeignKey('group.id')),
+  UniqueConstraint('user_id', 'group_id'),
 )
 
 # Should not be needed (?)
 administratorship = Table(
   'administratorship', db.Model.metadata,
   Column('user_id', Integer, ForeignKey('user.id')),
-  Column('group_id', Integer, ForeignKey('group.id'))
+  Column('group_id', Integer, ForeignKey('group.id')),
+  UniqueConstraint('user_id', 'group_id'),
 )
 
 
