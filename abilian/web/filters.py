@@ -1,13 +1,43 @@
 """
 Add a few specific filters to Jinja2.
 """
-
+import re
+from functools import wraps
 from datetime import datetime
 
+from jinja2 import Markup, escape, evalcontextfilter
 from flask.ext import babel
 from flask.ext.babel import gettext as _
-from jinja2 import Markup
 
+def autoescape(filter_func):
+  """ Decorator to autoescape result from filters
+  """
+  @evalcontextfilter
+  @wraps(filter_func)
+  def _autoescape(eval_ctx, *args, **kwargs):
+    result = filter_func(*args, **kwargs)
+    if eval_ctx.autoescape:
+      result = Markup(result)
+    return result
+  return _autoescape
+
+@autoescape
+def nl2br(value):
+  """ Replace newlines with <br />
+  """
+  result =  escape(value).replace(u'\n', Markup(u'<br />\n'))
+  return result
+
+_PARAGRAPH_RE = re.compile(r'(?:\r\n|\r|\n){2,}')
+
+@autoescape
+def paragraphs(value):
+  """ Blank lines delimitates paragraphs
+  """
+  result = u'\n\n'.join(
+    (u'<p>{}</p>'.format(p.strip().replace('\n', Markup('<br />\n')))
+     for p in _PARAGRAPH_RE.split(escape(value))))
+  return result
 
 def labelize(s):
   return " ".join([ w.capitalize() for w in s.split("_") ])
@@ -96,6 +126,8 @@ def abbrev(s, max_size):
 
 
 def init_filters(app):
+  app.jinja_env.filters['nl2br'] = nl2br
+  app.jinja_env.filters['paragraphs'] = paragraphs
   app.jinja_env.filters['date_age'] = date_age
   app.jinja_env.filters['age'] = age
   app.jinja_env.filters['date'] = date

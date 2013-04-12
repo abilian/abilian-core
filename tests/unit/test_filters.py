@@ -1,9 +1,16 @@
 import unittest
 import datetime
 from nose.tools import eq_
+from jinja2 import Environment
 
-from abilian.web.filters import filesize, date_age
+from abilian.web.filters import init_filters, filesize, date_age, paragraphs
 
+class FakeApp(object):
+  def __init__(self, env):
+    self.jinja_env = env
+
+env = Environment()
+init_filters(FakeApp(env))
 
 class TestFilters(unittest.TestCase):
 
@@ -24,3 +31,33 @@ class TestFilters(unittest.TestCase):
 
     dt = datetime.datetime(2012, 6, 10, 8, 10, 10)
     eq_("2012-06-10 08:10 (2 hours ago)", date_age(dt, now))
+
+  def test_nl2br(self):
+    tmpl = env.from_string(
+      '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}')
+    eq_(tmpl.render(),
+        u'first line<br />\nsecond line<br />\n<br />\n  third, indented')
+
+  def test_paragraphs(self):
+    tmpl = env.from_string(
+    '''{{ "First paragraph
+    some text
+    with line return
+
+    Second paragraph
+    ... lorem
+
+    Last one - a single line" | paragraphs }}
+    ''')
+
+    eq_(tmpl.render(),
+        u'''<p>First paragraph<br />
+    some text<br />
+    with line return</p>
+
+<p>Second paragraph<br />
+    ... lorem</p>
+
+<p>Last one - a single line</p>
+    '''
+        )
