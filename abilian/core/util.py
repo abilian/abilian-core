@@ -5,12 +5,53 @@ Various tools that don't belong some place specific.
 import functools
 import logging
 import time
+from datetime import tzinfo, timedelta
+import pytz
 from math import ceil
 import unicodedata
 import re
 
 from flask import request
 
+class __system_tz(tzinfo):
+  """ Host Timezone info. Useful for getting utc datetime in current
+  timezone.
+  This class is inspired by LocalTimeZone in python documentation:
+  http://docs.python.org/2/library/datetime.html
+  """
+  __ZERO = timedelta(0)
+  __UTCOFFSET = timedelta(seconds=-time.timezone)
+  __ALTOFFSET = (timedelta(seconds=-time.altzone)
+                 if time.daylight
+                 else __UTCOFFSET)
+  __DSTDIFF = __ALTOFFSET - __UTCOFFSET
+
+  def tzname(self, dt):
+    return time.tzname[int(self._isdst(dt))]
+
+  def utcoffset(self, dt):
+    return self.__ALTOFFSET if self._isdst(dt) else self.__UTCOFFSET
+
+  def dst(self, dt):
+    return self.__DSTDIFF if self._isdst(dt) else self.__ZERO
+
+  def _isdst(self, dt):
+    tt = (dt.year, dt.month, dt.day,
+          dt.hour, dt.minute, dt.second,
+          dt.weekday(), 0, 0)
+    stamp = time.mktime(tt)
+    tt = time.localtime(stamp)
+    return tt.tm_isdst > 0
+
+system_tz = __system_tz()
+
+def local_dt(dt):
+  """ Return an aware datetime in system timezone, from a naive or aware
+  datetime. Naive datetime are assumed to be UTC.
+  """
+  if not dt.tzinfo:
+    dt = dt.replace(tzinfo=pytz.utc)
+  return dt.astimezone(system_tz)
 
 def get_params(names):
   """
