@@ -441,6 +441,7 @@ class UnoconvPdfHandler(Handler):
   accepts_mime_types = ['application/vnd.oasis.*',
                         'application/msword',
                         'application/mspowerpoint',
+                        'application/vnd.ms-powerpoint',
                         'application/vnd.ms-excel',
                         'application/vnd.openxmlformats-officedocument.*',
                         'text/rtf']
