@@ -11,7 +11,7 @@ TODO: In the future, we may decide to:
 
 from datetime import datetime
 import pickle
-from flask import g
+from flask import g, current_app
 
 from sqlalchemy import event
 from sqlalchemy.orm import relationship
@@ -97,8 +97,8 @@ class AuditEntry(db.Model):
           try:
             val = val.decode('utf-8')
           except:
-            self.app.logger.error("A unicode error happened on changes %s",
-                                  repr(changes))
+            current_app.logger.error("A unicode error happened on changes %s",
+                                     repr(changes))
             val = u"[[Somme error occurred. Working on it]]"
         uv.append(val)
       uchanges[k] = tuple(uv)
