@@ -81,7 +81,8 @@ class TextSearchCriterion(BaseCriterion):
         attr = getattr(self.model, attr_name, None)
 
       if attr is None:
-        logger.error("could not find \"{}\"".format(attr_name))
+        logger.debug('Model: "%s", could not find "%s"',
+                     self.model.__class__.__name__, attr_name)
         to_del.append(attr_name)
       else:
         val.update(dict(attr=attr,
