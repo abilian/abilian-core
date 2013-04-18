@@ -43,6 +43,13 @@ class __system_tz(tzinfo):
     tt = time.localtime(stamp)
     return tt.tm_isdst > 0
 
+  # pytz specific, used by flask.ext.babel for example
+  def normalize(self, dt):
+    if dt.tzinfo is None:
+      raise ValueError('Naive time - no tzinfo set')
+
+    return dt.astimezone(self)
+
 system_tz = __system_tz()
 
 def local_dt(dt):
