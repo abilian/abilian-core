@@ -1,21 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+import setuptools
+import setup_util as deps
 
-
-def get_deps():
-  import re
-
-  deps_raw = [ line.strip() for line in open("deps.txt")]
-  deps = []
-  for dep in deps_raw:
-    if not dep or dep.startswith("#"):
-      continue
-    m = re.search("#egg=(.*)", dep)
-    if m:
-      dep = m.group(1)
-    deps.append(dep)
-  return deps
+requires = deps.parse_requirements([u'deps.txt'])
+depend_links = deps.parse_dependency_links([u'deps.txt'])
 
 def get_long_description():
   import os
@@ -34,7 +23,7 @@ def get_long_description():
     return None
 
 
-metadata = dict(
+setuptools.setup(
   name='Abilian Core',
   version='0.1dev',
   url='http://www.abilian.com/',
@@ -53,10 +42,9 @@ metadata = dict(
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     ],
-  # These args are setuptools specific
-  install_requires=get_deps(),
+  # These args are setuptools specifically
+  install_requires=requires,
+  dependency_links=depend_links,
   include_package_data=True,
   zip_safe=False,
 )
-
-setup(**metadata)
