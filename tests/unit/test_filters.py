@@ -3,6 +3,7 @@ import datetime
 from nose.tools import eq_
 from jinja2 import Environment
 
+from abilian.core.util import system_tz
 from abilian.web.filters import init_filters, filesize, date_age, paragraphs
 
 class FakeApp(object):
@@ -21,15 +22,15 @@ class TestFilters(unittest.TestCase):
     eq_("10&nbsp;kB", str(filesize(10000)))
 
   def test_date_age(self):
-    now = datetime.datetime(2012, 6, 10, 10, 10, 10)
+    now = datetime.datetime(2012, 6, 10, 10, 10, 10).replace(tzinfo=system_tz)
 
-    dt = datetime.datetime(2012, 6, 10, 10, 10, 0)
+    dt = datetime.datetime(2012, 6, 10, 10, 10, 0).replace(tzinfo=system_tz)
     eq_("2012-06-10 10:10 (a minute ago)", date_age(dt, now))
 
-    dt = datetime.datetime(2012, 6, 10, 10, 8, 10)
+    dt = datetime.datetime(2012, 6, 10, 10, 8, 10).replace(tzinfo=system_tz)
     eq_("2012-06-10 10:08 (2 minutes ago)", date_age(dt, now))
 
-    dt = datetime.datetime(2012, 6, 10, 8, 10, 10)
+    dt = datetime.datetime(2012, 6, 10, 8, 10, 10).replace(tzinfo=system_tz)
     eq_("2012-06-10 08:10 (2 hours ago)", date_age(dt, now))
 
   def test_nl2br(self):

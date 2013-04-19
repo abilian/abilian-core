@@ -9,6 +9,8 @@ from jinja2 import Markup, escape, evalcontextfilter
 from flask.ext import babel
 from flask.ext.babel import gettext as _
 
+from abilian.core.util import local_dt, utc_dt
+
 def autoescape(filter_func):
   """ Decorator to autoescape result from filters
   """
@@ -77,6 +79,9 @@ def age(dt, now=None):
   if not now:
     now = datetime.utcnow()
 
+  dt = utc_dt(dt)
+  now = utc_dt(now)
+
   age = now - dt
   if age.days == 0:
     if age.seconds < 120:
@@ -109,12 +114,12 @@ def date_age(dt, now=None):
   if not dt:
     return ""
   age_str = age(dt, now)
-  return "%s (%s)" % (dt.strftime("%Y-%m-%d %H:%M"), age_str)
+  return "%s (%s)" % (local_dt(dt).strftime("%Y-%m-%d %H:%M"), age_str)
 
 
 def date(value):
   format="EE, d MMMM y"
-  return babel.format_date(value, format)
+  return babel.format_date(local_dt(value), format)
 
 
 def abbrev(s, max_size):
