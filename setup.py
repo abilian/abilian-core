@@ -34,6 +34,7 @@ setuptools.setup(
   long_description=get_long_description(),
   packages=['abilian'],
   platforms='any',
+  setup_requires=['setuptools-git'],
   classifiers=[
     'Development Status :: 3 - Alpha',
     'Environment :: Web Environment',
