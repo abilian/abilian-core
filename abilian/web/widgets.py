@@ -98,19 +98,21 @@ class BaseTableView(object):
   def init_columns(self, columns):
     # TODO
     self.columns = []
-    default_width = 0.99 / len(columns)
+    default_width = '{:2.0f}%'.format(0.99 / len(columns) * 100)
     for col in columns:
       if type(col) == str:
         col = dict(name=col, width=default_width)
       assert type(col) == dict
-      if not col.has_key('label'):
+      col.setdefault('width', default_width)
+      if 'label' not in col:
         col['label'] = labelize(col['name'])
       self.columns.append(col)
 
   def render(self, entities, **kwargs):
     aoColumns = [{'asSorting': [] }] if self.show_controls else []
-    aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
-                   for i in range(0, len(self.columns)) ]
+    aoColumns.extend([{'asSorting': [ "asc", "desc" ],
+                       'sWidth': str(c['width'])}
+                       for c in self.columns])
     datatable_options = {
       'aoColumns': aoColumns,
       'bFilter': self.show_search,
