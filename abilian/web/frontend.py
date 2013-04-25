@@ -477,10 +477,10 @@ class Module(object):
         db.session.rollback()
         flash(e.message, "error")
       except IntegrityError, e:
+        db.session.rollback()
         sentry = current_app.extensions.get('sentry')
         if sentry:
           sentry.captureException()
-        db.session.rollback()
         flash("An entity with this name already exists in the database.", "error")
     else:
       flash("Please fix the error(s) below", "error")
