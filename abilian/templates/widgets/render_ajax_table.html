@@ -48,7 +48,7 @@
 
       /* export button: setup url args on click, to match current table filtering */
       tbl.bind('xhr', $.fn.dataTableSetExportArgs);
-      $('.btn.datatable-export').click(
+      $('.datatable-export').click(
           { 'table': tbl.get(0) },
           function(e) {
               var tbl = e.data.table;
