@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-04-04 12:10+0200\n"
+"POT-Creation-Date: 2013-04-26 15:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,76 +37,100 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: abilian/web/filters.py:53
+#: abilian/web/filters.py:88
 msgid "a minute ago"
 msgstr ""
 
-#: abilian/web/filters.py:55
+#: abilian/web/filters.py:90
 #, python-format
 msgid "%(num)d minutes ago"
 msgstr ""
 
-#: abilian/web/filters.py:57
+#: abilian/web/filters.py:92
 msgid "an hour ago"
 msgstr ""
 
-#: abilian/web/filters.py:59
+#: abilian/web/filters.py:94
 #, python-format
 msgid "%(num)d hours ago"
 msgstr ""
 
-#: abilian/web/filters.py:62
+#: abilian/web/filters.py:97
 msgid "yesterday"
 msgstr ""
 
-#: abilian/web/filters.py:64
+#: abilian/web/filters.py:99
 #, python-format
 msgid "%(num)d days ago"
 msgstr ""
 
-#: abilian/web/filters.py:66
+#: abilian/web/filters.py:101
 msgid "a month ago"
 msgstr ""
 
-#: abilian/web/filters.py:68
+#: abilian/web/filters.py:103
 #, python-format
 msgid "%(num)d months ago"
 msgstr ""
 
-#: abilian/web/filters.py:70
+#: abilian/web/filters.py:105
 msgid "last year"
 msgstr ""
 
-#: abilian/web/filters.py:72
+#: abilian/web/filters.py:107
 #, python-format
 msgid "%(num)d years ago"
 msgstr ""
 
-#: abilian/web/forms.py:126
+#: abilian/web/forms.py:129
 msgid "Invalid email address."
 msgstr ""
 
-#: abilian/web/widgets.py:110 abilian/web/widgets.py:216
+#: abilian/web/frontend.py:476
+msgid "Entity successfully edited"
+msgstr ""
+
+#: abilian/web/frontend.py:486
+msgid "An entity with this name already exists in the database."
+msgstr ""
+
+#: abilian/web/frontend.py:488 abilian/web/frontend.py:534
+msgid "Please fix the error(s) below"
+msgstr ""
+
+#: abilian/web/frontend.py:525
+msgid "Entity successfully added"
+msgstr ""
+
+#: abilian/web/frontend.py:532
+msgid "An entity with this name already exists in the database"
+msgstr ""
+
+#: abilian/web/frontend.py:552
+msgid "Entity deleted"
+msgstr ""
+
+#: abilian/web/widgets.py:120 abilian/web/widgets.py:227
 msgid "Filter records:"
 msgstr ""
 
-#: abilian/web/widgets.py:217
+#: abilian/web/widgets.py:228
 msgid "Previous"
 msgstr ""
 
-#: abilian/web/widgets.py:218
+#: abilian/web/widgets.py:229
 msgid "Next"
 msgstr ""
 
-#: abilian/web/widgets.py:219
+#: abilian/web/widgets.py:230
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
-#: abilian/web/widgets.py:220
+#: abilian/web/widgets.py:231
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
-#: abilian/web/widgets.py:221
+#: abilian/web/widgets.py:232
 msgid "Advanced filtering"
 msgstr ""
 

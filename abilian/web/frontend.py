@@ -22,6 +22,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import orm
 from xlwt import Workbook, XFStyle
 
+from flask.ext.babel import gettext as _
+
 from abilian.core.entities import ValidationError, Entity
 from abilian.core.signals import activity
 from abilian.core.extensions import db
@@ -471,7 +473,7 @@ class Module(object):
       activity.send(self, actor=g.user, verb="update", object=entity)
       try:
         db.session.commit()
-        flash("Entity successfully edited", "success")
+        flash(_(u"Entity successfully edited"), "success")
         return redirect("%s/%d" % (self.url, entity_id))
       except ValidationError, e:
         db.session.rollback()
@@ -481,9 +483,9 @@ class Module(object):
         sentry = current_app.extensions.get('sentry')
         if sentry:
           sentry.captureException()
-        flash("An entity with this name already exists in the database.", "error")
+        flash(_(u"An entity with this name already exists in the database."), "error")
     else:
-      flash("Please fix the error(s) below", "error")
+      flash(_(u"Please fix the error(s) below"), "error")
 
     # All unhappy path should end here
     rendered_entity = self.single_view.render_form(form)
@@ -520,16 +522,16 @@ class Module(object):
         db.session.flush()
         activity.send(self, actor=g.user, verb="post", object=entity)
         db.session.commit()
-        flash("Entity successfully added", "success")
+        flash(_(u"Entity successfully added"), "success")
         return redirect("%s/%d" % (self.url, entity.id))
       except ValidationError, e:
         db.session.rollback()
         flash(e.message, "error")
       except IntegrityError, e:
         db.session.rollback()
-        flash("An entity with this name already exists in the database", "error")
+        flash(_(u"An entity with this name already exists in the database"), "error")
     else:
-      flash("Please fix the error(s) below", "error")
+      flash(_(u"Please fix the error(s) below"), "error")
 
     # All unhappy paths should here here
     rendered_entity = self.single_view.render_form(form, for_new=True)
@@ -547,7 +549,7 @@ class Module(object):
     db.session.delete(entity)
     activity.send(self, actor=g.user, verb="delete", object=entity)
     db.session.commit()
-    flash("Entity deleted", "success")
+    flash(_(u"Entity deleted"), "success")
     return redirect(self.url)
 
   #
