@@ -108,7 +108,6 @@ def make_single_view(form, **options):
     panels.append(panel)
   return SingleView(form, *panels, **options)
 
-
 class ModuleMeta(type):
   """
   Module metaclass.
@@ -172,12 +171,22 @@ class Module(object):
 
     self.single_view = make_single_view(self.edit_form_class,
                                         view_template=self.view_template)
+    self.init_related_views()
 
     # copy criterions instances; without that they may be shared by subclasses
     self.search_criterions = tuple((copy.deepcopy(c)
                                     for c in self.search_criterions))
     for sc in self.search_criterions:
       sc.model = self.managed_class
+
+
+  def init_related_views(self):
+    related_views = []
+    for view in self.related_views:
+      if not isinstance(view, RelatedView):
+        view = DefaultRelatedView(*view)
+      related_views.append(view)
+    self.related_views = related_views
 
   def create_blueprint(self, crud_app):
     """
@@ -435,8 +444,7 @@ class Module(object):
     add_to_recent_items(entity)
 
     rendered_entity = self.render_entity_view(entity)
-    related_views = self.render_related_views(entity)
-
+    related_views = [v.render(entity) for v in self.related_views]
     audit_entries = audit_service.entries_for(entity)
 
     return dict(rendered_entity=rendered_entity,
@@ -529,7 +537,8 @@ class Module(object):
         flash(e.message, "error")
       except IntegrityError, e:
         db.session.rollback()
-        flash(_(u"An entity with this name already exists in the database"), "error")
+        flash(_(u"An entity with this name already exists in the database"),
+              "error")
     else:
       flash(_(u"Please fix the error(s) below"), "error")
 
@@ -570,23 +579,6 @@ class Module(object):
   def render_entity_view(self, entity):
     return self.single_view.render(entity)
 
-  def render_related_views(self, entity):
-    rendered = []
-    for t in self.related_views:
-      label, attr_name, column_names = t[0:3]
-      if len(t) == 4:
-        options = t[3]
-      else:
-        options = {}
-      view = RelatedTableView(column_names, options)
-      related_entities = getattr(entity, attr_name)
-      obj = dict(label=label,
-                 attr_name=attr_name,
-                 rendered=view.render(related_entities, related_to=entity),
-                 size=len(related_entities))
-      rendered.append(obj)
-    return rendered
-
   @staticmethod
   def _prettify_name(name):
     """
@@ -598,6 +590,33 @@ class Module(object):
     """
     return re.sub(r'(?<=.)([A-Z])', r' \1', name)
 
+class RelatedView(object):
+  """ A base class for related views
+  """
+  def render(self, entity):
+    """ Return a dict with keys 'label', 'attr_name', 'rendered', 'size'
+    """
+    raise NotImplementedError
+
+class DefaultRelatedView(RelatedView):
+  """ Default view used by Module for items directly related to entity
+  """
+
+  def __init__(self, label, attr, column_names, options=None):
+    self.label = label
+    self.attr = attr
+    self.column_names = column_names
+    self.options = {}
+    if options is not None:
+      self.options.update(options)
+
+  def render(self, entity):
+    view = RelatedTableView(self.column_names, self.options)
+    related_entities = getattr(entity, self.attr)
+    return dict(label=self.label,
+                attr_name=self.attr,
+                rendered=view.render(related_entities, related_to=entity),
+                size=len(related_entities))
 
 # TODO: rename to CRMApp ?
 class CRUDApp(object):
