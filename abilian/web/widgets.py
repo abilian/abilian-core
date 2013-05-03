@@ -155,8 +155,10 @@ class BaseTableView(object):
         column_name = col
       else:
         column_name = col['name']
-      value = getattr(entity, column_name)
 
+      value = entity
+      for attr in column_name.split('.'):
+        value = getattr(value, attr)
 
       # Manual massage.
       if value is None:
