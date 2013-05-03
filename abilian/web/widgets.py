@@ -104,16 +104,26 @@ class BaseTableView(object):
         col = dict(name=col, width=default_width)
       assert type(col) == dict
       col.setdefault('width', default_width)
+      col.setdefault('sorting', ('asc', 'desc'))
       if 'label' not in col:
         col['label'] = labelize(col['name'])
       self.columns.append(col)
 
   def render(self, entities, **kwargs):
-    aoColumns = [{'asSorting': [] }] if self.show_controls else []
-    aoColumns.extend([{'asSorting': [ "asc", "desc" ],
-                       'sWidth': str(c['width'])}
-                       for c in self.columns])
+    aoColumns = []
+    aaSorting = []
+    offset = 0
+    if self.show_controls:
+      aoColumns.append({'asSorting': [] })
+      offset = 1
+
+    for idx, c in enumerate(self.columns, offset):
+      aoColumns.append({'asSorting': c['sorting'],
+                       'sWidth': str(c['width'])})
+      aaSorting.append([idx, c['sorting'][0]])
+
     datatable_options = {
+      'aaSorting': aaSorting,
       'aoColumns': aoColumns,
       'bFilter': self.show_search,
       'oLanguage': {
