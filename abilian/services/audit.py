@@ -30,6 +30,7 @@ CREATION = 0
 UPDATE   = 1
 DELETION = 2
 
+
 class AuditEntry(db.Model):
   """
   Logs modifications to auditable classes.

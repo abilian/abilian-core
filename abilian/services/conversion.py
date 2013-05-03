@@ -6,6 +6,8 @@ Hardcoded to manage only conversion to PDF, to text and to image series.
 Includes result caching (on filesystem).
 
 Assumes poppler-utils and LibreOffice are installed.
+
+TODO: rename Converter into ConversionService ?
 """
 
 import glob

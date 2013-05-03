@@ -36,6 +36,7 @@ celery = Celery()
 # babel i18n
 from flask.ext.babel import Babel as BabelBase
 
+
 class Babel(BabelBase):
   """ Allow to load translations from other modules
   """

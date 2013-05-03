@@ -2,9 +2,11 @@
 <table>
   {%- if labels %}
   <thead>
+    <tr>
     {%- for label in labels %}
       <th>{{ label }}</th>
     {%- endfor %}
+    </tr>
   </thead>
   {%- endif %}
   <tbody>

@@ -31,6 +31,7 @@ from abilian.core.extensions import celery, db
 import os
 from shutil import rmtree
 
+
 class WhooshIndexService(object):
 
   app = None

@@ -86,7 +86,7 @@ def get_locale():
   if user is not None:
     locale = getattr(user, 'locale', None)
     if locale:
-      return user.locale
+      return locale
   # otherwise try to guess the language from the user accept
   # header the browser transmits.  We support de/fr/en in this
   # example.  The best match wins.
