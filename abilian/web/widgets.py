@@ -100,7 +100,7 @@ class BaseTableView(object):
     self.columns = []
     default_width = '{:2.0f}%'.format(0.99 / len(columns) * 100)
     for col in columns:
-      if type(col) == str:
+      if isinstance(col, basestring):
         col = dict(name=col, width=default_width)
       assert type(col) == dict
       col.setdefault('width', default_width)
