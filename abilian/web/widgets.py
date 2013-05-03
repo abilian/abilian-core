@@ -173,6 +173,8 @@ class BaseTableView(object):
       elif isinstance(value, basestring) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
+      elif value in (True, False):
+        cell = u'\u2713' if value else u'' # Unicode "Check mark"
       elif isinstance(value, list):
         cell = "; ".join(value)
       else:
