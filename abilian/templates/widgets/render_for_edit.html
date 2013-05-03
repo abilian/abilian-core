@@ -34,6 +34,9 @@
   <div class="form-actions">
     {%- if for_new %}
       <button type="submit" class="btn btn-primary" name="_action" value="add">{{ _("Add new") }}</button>
+      {%- if has_save_and_add_new %}
+        <button type="submit" class="btn btn-info" name="_action" value="save_and_add_new">{{ _("Save and add new") }}</button>
+      {%- endif %}
     {%- else %}
       <button type="submit" class="btn btn-primary" name="_action" value="save">{{ _("Save changes") }}</button>
     {%- endif %}

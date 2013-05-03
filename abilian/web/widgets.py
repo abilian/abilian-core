@@ -356,7 +356,7 @@ class SingleView(object):
                                   csrf_token=csrf.field(),
                                   entity=model, panels=panels))
 
-  def render_form(self, form, for_new=False):
+  def render_form(self, form, for_new=False, has_save_and_add_new=False):
     # Client-side rules for jQuery.validate
     # See: http://docs.jquery.com/Plugins/Validation/Methods#Validator
     rules = {}
@@ -374,7 +374,10 @@ class SingleView(object):
       rules = None
 
     return Markup(render_template('widgets/render_for_edit.html',
-                                  form=form, for_new=for_new, rules=rules))
+                                  form=form,
+                                  for_new=for_new,
+                                  has_save_and_add_new=has_save_and_add_new,
+                                  rules=rules))
 
   def label_for(self, field, mapper, name):
     label = field.label

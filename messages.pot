@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-04-26 15:48+0200\n"
+"POT-Creation-Date: 2013-05-03 17:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,10 +22,14 @@ msgid "Add new"
 msgstr ""
 
 #: abilian/templates/widgets/render_for_edit.html:38
+msgid "Save and add new"
+msgstr ""
+
+#: abilian/templates/widgets/render_for_edit.html:41
 msgid "Save changes"
 msgstr ""
 
-#: abilian/templates/widgets/render_for_edit.html:40
+#: abilian/templates/widgets/render_for_edit.html:43
 msgid "Cancel"
 msgstr ""
 
@@ -86,51 +90,51 @@ msgstr ""
 msgid "Invalid email address."
 msgstr ""
 
-#: abilian/web/frontend.py:476
+#: abilian/web/frontend.py:488
 msgid "Entity successfully edited"
 msgstr ""
 
-#: abilian/web/frontend.py:486
+#: abilian/web/frontend.py:498
 msgid "An entity with this name already exists in the database."
 msgstr ""
 
-#: abilian/web/frontend.py:488 abilian/web/frontend.py:534
+#: abilian/web/frontend.py:500 abilian/web/frontend.py:555
 msgid "Please fix the error(s) below"
 msgstr ""
 
-#: abilian/web/frontend.py:525
-msgid "Entity successfully added"
-msgstr ""
-
-#: abilian/web/frontend.py:532
+#: abilian/web/frontend.py:546
 msgid "An entity with this name already exists in the database"
 msgstr ""
 
-#: abilian/web/frontend.py:552
+#: abilian/web/frontend.py:549
+msgid "Entity successfully added"
+msgstr ""
+
+#: abilian/web/frontend.py:573
 msgid "Entity deleted"
 msgstr ""
 
-#: abilian/web/widgets.py:120 abilian/web/widgets.py:227
+#: abilian/web/widgets.py:130 abilian/web/widgets.py:241
 msgid "Filter records:"
 msgstr ""
 
-#: abilian/web/widgets.py:228
+#: abilian/web/widgets.py:242
 msgid "Previous"
 msgstr ""
 
-#: abilian/web/widgets.py:229
+#: abilian/web/widgets.py:243
 msgid "Next"
 msgstr ""
 
-#: abilian/web/widgets.py:230
+#: abilian/web/widgets.py:244
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
-#: abilian/web/widgets.py:231
+#: abilian/web/widgets.py:245
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
-#: abilian/web/widgets.py:232
+#: abilian/web/widgets.py:246
 msgid "Advanced filtering"
 msgstr ""
 

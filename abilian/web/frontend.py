@@ -13,8 +13,11 @@ from datetime import date
 from time import strftime, gmtime
 import re
 
-from flask import session, redirect, request, g, render_template, flash,\
-  Blueprint, jsonify, abort, make_response, current_app
+from flask import (
+  session, redirect, request, g, render_template, flash,
+  Blueprint, jsonify, abort, make_response, current_app,
+  url_for,
+  )
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
@@ -151,6 +154,7 @@ class Module(object):
   edit_form_class = None
   url = None
   name = None
+  view_new_save_and_add = False # show 'save and add new' button in /new form
   static_folder = None
   view_template = None
   related_views = []
@@ -509,7 +513,10 @@ class Module(object):
     bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
 
     form = self.edit_form_class()
-    rendered_entity = self.single_view.render_form(form, for_new=True)
+    rendered_entity = self.single_view.render_form(
+      form,
+      for_new=True,
+      has_save_and_add_new=self.view_new_save_and_add,)
 
     return dict(rendered_entity=rendered_entity,
                 breadcrumbs=bc,
@@ -519,8 +526,9 @@ class Module(object):
   def entity_new_put(self):
     form = self.edit_form_class()
     entity = self.managed_class()
+    action = request.form.get('_action')
 
-    if request.form.get('_action') == 'cancel':
+    if action == 'cancel': #FIXME: what if action is None?
       return redirect("%s/" % self.url)
 
     if form.validate():
@@ -530,8 +538,6 @@ class Module(object):
         db.session.flush()
         activity.send(self, actor=g.user, verb="post", object=entity)
         db.session.commit()
-        flash(_(u"Entity successfully added"), "success")
-        return redirect("%s/%d" % (self.url, entity.id))
       except ValidationError, e:
         db.session.rollback()
         flash(e.message, "error")
@@ -539,6 +545,12 @@ class Module(object):
         db.session.rollback()
         flash(_(u"An entity with this name already exists in the database"),
               "error")
+      else:
+        flash(_(u"Entity successfully added"), "success")
+        if self.view_new_save_and_add and  action == 'save_and_add_new':
+          return redirect(url_for('.entity_new'))
+        return redirect(url_for('.entity_view', entity_id=entity.id))
+
     else:
       flash(_(u"Please fix the error(s) below"), "error")
 

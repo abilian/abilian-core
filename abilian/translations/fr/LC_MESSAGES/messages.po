@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-04-26 15:48+0200\n"
-"PO-Revision-Date: 2013-04-26 15:48+0200\n"
+"POT-Creation-Date: 2013-05-03 17:45+0200\n"
+"PO-Revision-Date: 2013-05-03 17:45+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -22,10 +22,14 @@ msgid "Add new"
 msgstr "Créer"
 
 #: abilian/templates/widgets/render_for_edit.html:38
+msgid "Save and add new"
+msgstr "Créer et ajouter un nouveau"
+
+#: abilian/templates/widgets/render_for_edit.html:41
 msgid "Save changes"
 msgstr "Sauvegarder"
 
-#: abilian/templates/widgets/render_for_edit.html:40
+#: abilian/templates/widgets/render_for_edit.html:43
 msgid "Cancel"
 msgstr "Supprimer"
 
@@ -86,51 +90,51 @@ msgstr "il y a %(num)d ans"
 msgid "Invalid email address."
 msgstr "Adresse email non valide"
 
-#: abilian/web/frontend.py:476
+#: abilian/web/frontend.py:488
 msgid "Entity successfully edited"
 msgstr "Édition réussie"
 
-#: abilian/web/frontend.py:486
+#: abilian/web/frontend.py:498
 msgid "An entity with this name already exists in the database."
 msgstr "Il y a déjà une entité avec ce nom dans la base de donnée."
 
-#: abilian/web/frontend.py:488 abilian/web/frontend.py:534
+#: abilian/web/frontend.py:500 abilian/web/frontend.py:555
 msgid "Please fix the error(s) below"
 msgstr "Veuillez corriger la ou les erreurs ci-dessous"
 
-#: abilian/web/frontend.py:525
-msgid "Entity successfully added"
-msgstr "Ajout réussi"
-
-#: abilian/web/frontend.py:532
+#: abilian/web/frontend.py:546
 msgid "An entity with this name already exists in the database"
 msgstr "Il y a déjà une entité avec ce nom dans la base de donnée"
 
-#: abilian/web/frontend.py:552
+#: abilian/web/frontend.py:549
+msgid "Entity successfully added"
+msgstr "Ajout réussi"
+
+#: abilian/web/frontend.py:573
 msgid "Entity deleted"
 msgstr "Entité supprimée"
 
-#: abilian/web/widgets.py:120 abilian/web/widgets.py:227
+#: abilian/web/widgets.py:130 abilian/web/widgets.py:241
 msgid "Filter records:"
 msgstr "Filtrer les entrées:"
 
-#: abilian/web/widgets.py:228
+#: abilian/web/widgets.py:242
 msgid "Previous"
 msgstr "Précédent"
 
-#: abilian/web/widgets.py:229
+#: abilian/web/widgets.py:243
 msgid "Next"
 msgstr "Suivant"
 
-#: abilian/web/widgets.py:230
+#: abilian/web/widgets.py:244
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
 
-#: abilian/web/widgets.py:231
+#: abilian/web/widgets.py:245
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtré sur un total de _MAX_ entrées)"
 
-#: abilian/web/widgets.py:232
+#: abilian/web/widgets.py:246
 msgid "Advanced filtering"
 msgstr "Filtrage avancé"
 
