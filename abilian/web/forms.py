@@ -14,6 +14,7 @@ from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 from .widgets import DefaultViewWidget
 
 logger = logging.getLogger(__name__)
+
 ### PATCH wtforms.field.core.Field ####################
 _PATCHED = False
 
@@ -115,6 +116,15 @@ class ModelFieldList(BaseModelFieldList):
 class RelationSelectField(SelectField):
   # TODO: Later...
   pass
+
+
+def strip(data):
+    """
+    Strip data if data is a string
+    """
+    if not isinstance(data, basestring):
+        return data
+    return data.strip()
 
 
 # TODO: most of this is currently only stubs and needs to be implemented.
