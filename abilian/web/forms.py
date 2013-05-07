@@ -118,6 +118,9 @@ class RelationSelectField(SelectField):
   pass
 
 
+#
+# Field filters
+#
 def strip(data):
     """
     Strip data if data is a string
@@ -125,6 +128,12 @@ def strip(data):
     if not isinstance(data, basestring):
         return data
     return data.strip()
+
+
+def uppercase(data):
+    if not isinstance(data, basestring):
+        return data
+    return data.upper()
 
 
 # TODO: most of this is currently only stubs and needs to be implemented.
