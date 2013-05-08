@@ -14,7 +14,6 @@ tests/cache
 tests/tmp
 tests/extra_files
 maxid.data
-sandbox
 results
 build
 MANIFEST

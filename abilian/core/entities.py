@@ -5,7 +5,6 @@ Base class for entities, objects that are managed by the Abilian framwework
 from inspect import isclass
 from datetime import datetime
 import json
-import sys
 
 from flask import g
 
