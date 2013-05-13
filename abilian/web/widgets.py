@@ -353,6 +353,7 @@ class SingleView(object):
     view_template = (self.options.get('view_template') or '',
                      'widgets/render_single.html')
     return Markup(render_template(view_template,
+                                  view=self,
                                   csrf_token=csrf.field(),
                                   entity=item, panels=panels))
 
@@ -374,6 +375,7 @@ class SingleView(object):
       rules = None
 
     return Markup(render_template('widgets/render_for_edit.html',
+                                  view=self,
                                   form=form,
                                   for_new=for_new,
                                   has_save_and_add_new=has_save_and_add_new,

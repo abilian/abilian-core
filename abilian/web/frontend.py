@@ -158,6 +158,7 @@ class Module(object):
   view_new_save_and_add = False # show 'save and add new' button in /new form
   static_folder = None
   view_template = None
+  view_options = None
   related_views = []
   search_criterions = (search.TextSearchCriterion("name",
                                                   attributes=('name', 'nom')),)
@@ -174,8 +175,10 @@ class Module(object):
     if self.id is None:
       self.id = self.managed_class.__name__.lower()
 
+    view_options = self.view_options if self.view_options is not None else {}
     self.single_view = make_single_view(self.edit_form_class,
-                                        view_template=self.view_template)
+                                        view_template=self.view_template,
+                                        **view_options)
     if self.view_form_class is None:
       self.view_form_class = self.edit_form_class
 
