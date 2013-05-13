@@ -258,10 +258,16 @@ class AuditService(object):
     entry = AuditEntry.from_model(model, type=DELETION)
     session.add(entry)
 
-  def entries_for(self, entity):
-    return AuditEntry.query.filter(
+  def entries_for(self, entity, limit=None):
+    q =AuditEntry.query.filter(
       AuditEntry.entity_class == entity.__class__.__name__,
-      AuditEntry.entity_id == entity.id).all()
+      AuditEntry.entity_id == entity.id)
+    q = q.order_by(AuditEntry.happened_at.desc())
+
+    if limit is not None:
+      q = q.limit(limit)
+
+    return q.all()
 
 audit_service = AuditService()
 
