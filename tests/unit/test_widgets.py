@@ -18,12 +18,20 @@ class DummyMapper(object):
   def __init__(self):
     self.c = {}
 
+class DummyManager(object):
+  """ mock sqlalchemy class manager
+  """
+
+dummy_mapper = DummyMapper()
+dummy_manager = DummyManager()
+dummy_manager.mapper = dummy_mapper
 
 class DummyModel(object):
   """
   Mock model.
   """
-  __mapper__ = DummyMapper()
+  _sa_class_manager = dummy_manager
+  __mapper__ = dummy_mapper
 
   def __init__(self, **kw):
     for k, v in kw.items():
@@ -78,7 +86,8 @@ class ModelViewTestCase(BaseTestCase):
       view = SingleView(DummyForm, *panels)
       model = DummyModel(name="Renault Megane",
                          price=10000, email="joe@example.com")
-      res = view.render(model)
+      form = DummyForm(obj=model)
+      res = view.render(model, form)
 
       assert "Renault Megane" in res
       assert "10000" in res
