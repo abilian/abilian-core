@@ -152,6 +152,7 @@ class Module(object):
   list_view_columns = []
   single_view = None
   edit_form_class = None
+  view_form_class = None # by default, same as edit_form_class
   url = None
   name = None
   view_new_save_and_add = False # show 'save and add new' button in /new form
@@ -175,6 +176,9 @@ class Module(object):
 
     self.single_view = make_single_view(self.edit_form_class,
                                         view_template=self.view_template)
+    if self.view_form_class is None:
+      self.view_form_class = self.edit_form_class
+
     self.init_related_views()
 
     # copy criterions instances; without that they may be shared by subclasses
@@ -589,7 +593,8 @@ class Module(object):
     return bc
 
   def render_entity_view(self, entity):
-    return self.single_view.render(entity)
+    form = self.view_form_class(obj=entity)
+    return self.single_view.render(entity, form)
 
   @staticmethod
   def _prettify_name(name):

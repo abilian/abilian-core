@@ -11,6 +11,7 @@ from itertools import ifilter
 from collections import namedtuple
 import bleach
 
+import sqlalchemy as sa
 from flask import render_template, json, Markup, render_template_string
 from flask.ext.babel import gettext as _, format_date, format_datetime
 import wtforms
@@ -314,9 +315,8 @@ class SingleView(object):
     self.panels = panels
     self.options = options
 
-  def render(self, model):
-    form = self.form(obj=model)
-    mapper = model.__class__.__mapper__
+  def render(self, item, form):
+    mapper = sa.orm.class_mapper(item.__class__)
     panels = []
     _to_skip = (None, False, 0, 0.0, '', u'-')
 
@@ -354,7 +354,7 @@ class SingleView(object):
                      'widgets/render_single.html')
     return Markup(render_template(view_template,
                                   csrf_token=csrf.field(),
-                                  entity=model, panels=panels))
+                                  entity=item, panels=panels))
 
   def render_form(self, form, for_new=False, has_save_and_add_new=False):
     # Client-side rules for jQuery.validate
