@@ -11,7 +11,9 @@ from wtforms.validators import EqualTo, Length, NumberRange, Optional, Required,
   Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf
 from wtforms.widgets.core import html_params, Select, HTMLString, Input
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
+
 from .widgets import DefaultViewWidget
+
 
 logger = logging.getLogger(__name__)
 

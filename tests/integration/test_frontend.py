@@ -3,6 +3,7 @@ Test the frontend.
 """
 from flask.ext.wtf import Form
 from sqlalchemy import Column, UnicodeText, String
+
 from abilian.core.entities import Entity
 from abilian.web.frontend import CRUDApp, Module
 

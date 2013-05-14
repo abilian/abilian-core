@@ -638,6 +638,7 @@ class DefaultRelatedView(RelatedView):
                 rendered=view.render(related_entities, related_to=entity),
                 size=len(related_entities))
 
+
 # TODO: rename to CRMApp ?
 class CRUDApp(object):
   def __init__(self, app, modules=None):

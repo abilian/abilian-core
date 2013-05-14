@@ -13,10 +13,10 @@ from abilian.web.widgets import MainTableView, SingleView, Panel, Row, \
   linkify_url, text2html, EmailWidget
 
 
-
 class DummyMapper(object):
   def __init__(self):
     self.c = {}
+
 
 class DummyManager(object):
   """ mock sqlalchemy class manager
@@ -25,6 +25,7 @@ class DummyManager(object):
 dummy_mapper = DummyMapper()
 dummy_manager = DummyManager()
 dummy_manager.mapper = dummy_mapper
+
 
 class DummyModel(object):
   """

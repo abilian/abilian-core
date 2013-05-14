@@ -1,6 +1,7 @@
 """
 Add a few specific filters to Jinja2.
 """
+
 import re
 from functools import wraps
 from datetime import datetime
@@ -9,7 +10,8 @@ from jinja2 import Markup, escape, evalcontextfilter
 from flask.ext import babel
 from flask.ext.babel import gettext as _
 
-from abilian.core.util import local_dt, utc_dt
+from ..core.util import local_dt, utc_dt
+
 
 def autoescape(filter_func):
   """ Decorator to autoescape result from filters
@@ -23,14 +25,16 @@ def autoescape(filter_func):
     return result
   return _autoescape
 
+
 @autoescape
 def nl2br(value):
   """ Replace newlines with <br />
   """
-  result =  escape(value).replace(u'\n', Markup(u'<br />\n'))
+  result = escape(value).replace(u'\n', Markup(u'<br />\n'))
   return result
 
 _PARAGRAPH_RE = re.compile(r'(?:\r\n|\r|\n){2,}')
+
 
 @autoescape
 def paragraphs(value):
@@ -40,6 +44,7 @@ def paragraphs(value):
     (u'<p>{}</p>'.format(p.strip().replace('\n', Markup('<br />\n')))
      for p in _PARAGRAPH_RE.split(escape(value))))
   return result
+
 
 def labelize(s):
   return " ".join([ w.capitalize() for w in s.split("_") ])
@@ -118,7 +123,7 @@ def date_age(dt, now=None):
 
 
 def date(value):
-  format="EE, d MMMM y"
+  format = "EE, d MMMM y"
   return babel.format_date(local_dt(value), format)
 
 

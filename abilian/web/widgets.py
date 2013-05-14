@@ -4,6 +4,7 @@ Reusable widgets to be included in views.
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
+
 import cgi
 import urlparse
 import re
@@ -17,9 +18,8 @@ from flask.ext.babel import gettext as _, format_date, format_datetime
 import wtforms
 from wtforms_alchemy import ModelFieldList
 
-from abilian.core.entities import Entity
-from abilian.web.filters import labelize
-
+from ..core.entities import Entity
+from .filters import labelize
 from . import csrf
 
 
