@@ -53,6 +53,7 @@ class __system_tz(tzinfo):
 
 system_tz = __system_tz()
 
+
 def local_dt(dt):
   """ Return an aware datetime in system timezone, from a naive or aware
   datetime. Naive datetime are assumed to be in UTC TZ.
@@ -61,6 +62,7 @@ def local_dt(dt):
     dt = dt.replace(tzinfo=pytz.utc)
   return dt.astimezone(system_tz)
 
+
 def utc_dt(dt):
   """ set UTC timezone on a datetime object. A naive datetime is assumed to be
   in UTC TZ
@@ -68,6 +70,7 @@ def utc_dt(dt):
   if not dt.tzinfo:
     return dt.replace(tzinfo=pytz.utc)
   return dt.astimezone(pytz.utc)
+
 
 def get_params(names):
   """

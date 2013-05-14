@@ -2,6 +2,7 @@
 Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level).
 """
+
 from inspect import isclass
 from datetime import datetime
 import json
@@ -85,30 +86,20 @@ event.listen(mapper, 'before_update', before_update_listener)
 event.listen(mapper, 'before_delete', before_delete_listener)
 
 
-class Entity(AbstractConcreteBase, db.Model):
-  """Base class for Abilian entities."""
-
-  # Default magic metadata, should not be necessary
-  __editable__ = frozenset()
-  __searchable__ = frozenset()
-  __auditable__ = frozenset()
-
-  base_url = None
-
-  # Persisted attributes.
+class IdMixin(object):
   id = Column(Integer, primary_key=True, info=SYSTEM)
 
+
+class TimestanpedMixin(object):
   created_at = Column(DateTime, default=datetime.utcnow, info=SYSTEM)
   updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
                       info=SYSTEM)
   deleted_at = Column(DateTime, default=None, info=SYSTEM)
 
+
+class OwnedMixin(object):
   creator_id = declared_attr(lambda c: Column(ForeignKey("user.id"), info=SYSTEM))
   owner_id = declared_attr(lambda c: Column(ForeignKey("user.id"), info=SYSTEM))
-
-  @declared_attr
-  def __tablename__(cls):
-    return cls.__name__.lower()
 
   @classmethod
   def __declare_last__(cls):
@@ -126,6 +117,13 @@ class Entity(AbstractConcreteBase, db.Model):
 
       pj2 = "User.id==%s.owner_id" % cls.__name__
       cls.owner = relationship("User", primaryjoin=pj2,  uselist=False)
+
+
+class BaseMixin(IdMixin, TimestanpedMixin, OwnedMixin):
+
+  @declared_attr
+  def __tablename__(cls):
+    return cls.__name__.lower()
 
   def __init__(self, **kw):
     if hasattr(g, 'user'):
@@ -152,8 +150,6 @@ class Entity(AbstractConcreteBase, db.Model):
   def update(self, d):
     for k, v in d.items():
       assert k in self.column_names, "%s not allowed" % k
-      #if type(v) == type(""):
-      #  v = unicode(v)
       setattr(self, k, v)
 
   def to_dict(self):
@@ -188,6 +184,18 @@ class Entity(AbstractConcreteBase, db.Model):
 
   def __unicode__(self):
     return self._name
+
+
+class Entity(BaseMixin, AbstractConcreteBase, db.Model):
+  """Base class for Abilian entities."""
+
+  # Default magic metadata, should not be necessary
+  # TODO: remove
+  __editable__ = frozenset()
+  __searchable__ = frozenset()
+  __auditable__ = frozenset()
+
+  base_url = None
 
 
 # TODO: make this unecessary
