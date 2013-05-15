@@ -95,6 +95,17 @@ API
    :members:
    :undoc-members:
 
+:mod:`abilian.web.action`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.action
+   :members:
+   :undoc-members:
+
+   .. autoclass:: ActionRegistry
+      :members:
+      :undoc-members:
+   
 :mod:`abilian.web.forms`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
