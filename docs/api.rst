@@ -26,7 +26,7 @@ API
    :undoc-members:
 
 :mod:`abilian.core.sqlalchemy`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.sqlalchemy
    :members:
