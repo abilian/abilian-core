@@ -302,7 +302,7 @@ class Module(object):
     table_view = AjaxMainTableView(
       name=self.managed_class.__name__.lower(),
       columns=self.list_view_columns,
-      ajax_source=self.url + "/json",
+      ajax_source=url_for('.list_json'),
       search_criterions=self.search_criterions,)
     rendered_table = table_view.render()
 
@@ -329,7 +329,7 @@ class Module(object):
     # TODO: should be an instance variable.
     table_view = AjaxMainTableView(columns=self.list_view_columns,
                                    name=self.managed_class.__name__.lower(),
-                                   ajax_source=self.url + "/json")
+                                   ajax_source=url_for('.list_json'))
 
     data = [table_view.render_line(e) for e in entities]
     result = {
