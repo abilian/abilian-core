@@ -14,7 +14,7 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 # TODO: speed issue
 # TODO: this is a singleton. makes tests hard (for instance, launching parallel tests).
 # TODO: make asynchonous.
-import sqlalchemy
+import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 
@@ -22,8 +22,9 @@ import whoosh.index
 from whoosh import sorting
 from whoosh.writing import AsyncWriter
 from whoosh.qparser import MultifieldParser
-from whoosh.analysis import StemmingAnalyzer
+from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 from whoosh.fields import Schema
+from whoosh.support.charset import accent_map
 
 from abilian.core.entities import all_entity_classes
 from abilian.core.extensions import celery, db
@@ -31,6 +32,7 @@ from abilian.core.extensions import celery, db
 import os
 from shutil import rmtree
 
+_TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
 class WhooshIndexService(object):
 
@@ -107,7 +109,8 @@ class WhooshIndexService(object):
     facets.add_field("creator")
     facets.add_field("owner")
 
-    results = searcher.search(parser.parse(query), groupedby=facets, limit=limit, filter=filter)
+    results = searcher.search(parser.parse(query),
+                              groupedby=facets, limit=limit, filter=filter)
     return results
 
   def register_classes(self):
@@ -163,8 +166,8 @@ class WhooshIndexService(object):
         schema[field.name] = whoosh.fields.ID(stored=True, unique=True)
         primary = field.name
       if field.name in cls.__searchable__:
-        if type(field.type) in (sqlalchemy.types.Text, sqlalchemy.types.UnicodeText):
-          schema[field.name] = whoosh.fields.TEXT(analyzer=StemmingAnalyzer())
+        if type(field.type) in (sa.types.Text, sa.types.UnicodeText):
+          schema[field.name] = whoosh.fields.TEXT(analyzer=_TEXT_ANALYZER)
 
     return Schema(**schema), primary
 
@@ -267,7 +270,7 @@ class Searcher(object):
     self.index = index
     self.searcher = index.searcher()
     fields = set(index.schema._fields.keys()) - set([self.primary])
-    self.parser = MultifieldParser(list(fields), index.schema)
+    self.parser = MultifieldParser(list(fields), schema=index.schema)
 
   def __call__(self, query, limit=None):
     """
