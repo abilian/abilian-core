@@ -38,6 +38,11 @@ class DummyModel(object):
     for k, v in kw.items():
       setattr(self, k, v)
 
+    self._display_value_called = False
+
+  def display_value(self, attr):
+    self._display_value_called = True
+    return getattr(self, attr)
 
 class DummyForm(Form):
   name = TextField(u'Nom du véhicule')
@@ -73,6 +78,8 @@ class TableViewTestCase(BaseTestCase):
 
       res = view.render(models)
 
+      assert model1._display_value_called
+      assert model2._display_value_called
       assert "Renault Megane" in res
       assert "10000" in res
 
@@ -104,6 +111,7 @@ class ModelViewTestCase(BaseTestCase):
       form = DummyForm(obj=model)
       res = view.render_form(form)
 
+      assert model._display_value_called
       assert "Renault Megane" in res
       assert "10000" in res
 

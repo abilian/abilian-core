@@ -5,6 +5,8 @@ Create all standard extensions.
 Because of issues with circular dependencies, Abilian-specific extensions are
 created later.
 """
+from __future__ import absolute_import
+
 import os
 import importlib
 from gettext import NullTranslations
@@ -19,8 +21,43 @@ __all__ = ['db', 'babel', 'mail', 'celery', 'login_manager']
 from flask.ext.mail import Mail
 mail = Mail()
 
+import sqlalchemy as sa
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
+
+def _install_get_display_value(cls):
+
+  _MARK = object()
+
+  def display_value(self, field_name, value=_MARK):
+    """ Return display value for fields having 'choices' mapping (stored value
+    -> human readable value). For other fields it will simply return field
+    value.
+
+    `display_value` should be used instead of directly getting field value.
+
+    If `value` is provided it is "tranlated" to a human-readable value. This is
+    useful for multivalued fields, like JSON-encoded lists.
+    """
+    val = getattr(self, field_name) if value is _MARK else value
+    mapper = sa.orm.object_mapper(self)
+    try:
+      field = getattr(mapper.c, field_name)
+    except AttributeError:
+      pass
+    else:
+      if 'choices' in field.info:
+        val = field.info['choices'].get(val, val)
+
+    return val
+
+  if hasattr(cls, 'display_value'):
+    assert cls.display_value.im_func.func_code is display_value.func_code
+  else:
+    cls.display_value = display_value
+
+
+sa.event.listen(db.Model, 'class_instrument', _install_get_display_value)
 
 # celery
 #

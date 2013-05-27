@@ -159,7 +159,7 @@ class BaseTableView(object):
 
       value = entity
       for attr in column_name.split('.'):
-        value = getattr(value, attr)
+        value = value.display_value(attr)
 
       # Manual massage.
       if value is None:
@@ -277,7 +277,8 @@ class AjaxMainTableView(object):
         column_name = col
       else:
         column_name = col['name']
-      value = getattr(entity, column_name)
+
+      value = entity.display_value(column_name)
 
       # Manual massage.
       if value is None:

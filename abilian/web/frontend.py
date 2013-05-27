@@ -363,7 +363,8 @@ class Module(object):
     for r, obj in enumerate(objects):
       for c, col_name in enumerate(col_names):
         style = None
-        value = getattr(obj, col_name)
+        value = obj.display_value(col_name)
+
         if isinstance(value, Entity):
           value = value._name
         elif isinstance(value, list):
@@ -410,7 +411,7 @@ class Module(object):
       row = [object.id]
       for field in form:
         if hasattr(object, field.name):
-          value = getattr(object, field.name)
+          value = object.display_value(field.name)
           if value is None:
             value = ""
           row.append(unicode(value).encode('utf8'))
