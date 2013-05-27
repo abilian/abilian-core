@@ -144,12 +144,33 @@ class JSON(sa.types.TypeDecorator):
     return value
 
 
+class JSONUniqueListType(JSON):
+  """ Store a list in JSON format, with items made unique and sorted
+  """
+  def process_bind_param(self, value, dialect):
+    if value is not None:
+      value = sorted(set(value))
+
+    return JSON.process_bind_param(value, dialect)
+
+
 def JSONDict(*args, **kwargs):
   """ Stores a dict as JSON on database, with mutability support
   """
   return MutationDict.as_mutable(JSON(*args, **kwargs))
 
 def JSONList(*args, **kwargs):
-  """ Stores a dict as JSON on database, with mutability support
+  """ Stores a list as JSON on database, with mutability support
+
+  if kwargs has a param `unique_sorted` (which evaluated to True), list values
+  are made unique and sorted.
   """
-  return MutationList.as_mutable(JSON(*args, **kwargs))
+  type_ = JSON
+  try:
+    if kwargs.pop('unique_sorted'):
+      type_ = JSONUniqueListType
+  except KeyError:
+    pass
+
+  return MutationList.as_mutable(type_(*args, **kwargs))
+
