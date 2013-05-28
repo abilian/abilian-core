@@ -21,6 +21,15 @@ class MutationDict(Mutable, dict):
     else:
       return value
 
+  #  pickling support. see:
+  #  http://docs.sqlalchemy.org/en/rel_0_8/orm/extensions/mutable.html#supporting-pickling
+  def __getstate__(self):
+    return dict(self)
+
+  def __setstate__(self, state):
+    self.update(state)
+
+  # dict methods
   def __setitem__(self, key, value):
     """Detect dictionary set events and emit change events."""
     dict.__setitem__(self, key, value)
@@ -68,6 +77,14 @@ class MutationList(Mutable, list):
     else:
       return value
 
+  #  pickling support. see:
+  #  http://docs.sqlalchemy.org/en/rel_0_8/orm/extensions/mutable.html#supporting-pickling
+  def __getstate__(self):
+    d = self.__dict__.copy()
+    d.pop('_parents', None)
+    return d
+
+  # list methods
   def __setitem__(self, idx, value):
     list.__setitem__(self, idx, value)
     self.changed()
