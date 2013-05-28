@@ -555,13 +555,15 @@ class ListWidget(wtforms.widgets.ListWidget):
     return wtforms.widgets.HTMLString(''.join(html))
 
   def render_view(self, field):
+    data = ([label for v, label, checked in field.iter_choices() if checked]
+            if hasattr(field, 'iter_choices') and callable(field.iter_choices)
+            else field.object_data)
+
     return render_template_string(
       '''{%- for obj in data %}
       <span class="label">{{ obj }}</span>
       {%- endfor %}''',
-      data=field.object_data
-      )
-
+      data=data)
 
 class TabularFieldListWidget(object):
   """ For list of formfields
