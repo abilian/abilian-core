@@ -37,9 +37,10 @@ def _install_get_display_value(cls):
     `display_value` should be used instead of directly getting field value.
 
     If `value` is provided it is "tranlated" to a human-readable value. This is
-    useful for multivalued fields, like JSON-encoded lists.
+    useful for obtaining a human readable label from a raw value
     """
     val = getattr(self, field_name) if value is _MARK else value
+
     mapper = sa.orm.object_mapper(self)
     try:
       field = getattr(mapper.c, field_name)
@@ -47,7 +48,11 @@ def _install_get_display_value(cls):
       pass
     else:
       if 'choices' in field.info:
-        val = field.info['choices'].get(val, val)
+        get = lambda v: field.info['choices'].get(v, v)
+        if isinstance(val, list):
+          val = [get(v) for v in val]
+        else:
+          val = get(val)
 
     return val
 
