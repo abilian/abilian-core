@@ -151,7 +151,7 @@ class JSONUniqueListType(JSON):
     if value is not None:
       value = sorted(set(value))
 
-    return JSON.process_bind_param(value, dialect)
+    return JSON.process_bind_param(self, value, dialect)
 
 
 def JSONDict(*args, **kwargs):
