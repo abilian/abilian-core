@@ -165,7 +165,9 @@ class JSONUniqueListType(JSON):
   """ Store a list in JSON format, with items made unique and sorted
   """
   def process_bind_param(self, value, dialect):
-    if value is not None:
+    # value may be a simple string used in a LIKE clause for instance, so we
+    # must ensure we uniquify/sort only for list-like values
+    if value is not None and isinstance(value, (tuple, list)):
       value = sorted(set(value))
 
     return JSON.process_bind_param(self, value, dialect)
