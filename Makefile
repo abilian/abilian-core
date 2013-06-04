@@ -9,7 +9,7 @@ all: test doc
 # testing & checking
 #
 test:
-	py.test abilian tests
+	py.test -x tests/unit abilian tests/integration
 
 unit:
 	py.test tests/unit
