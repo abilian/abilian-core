@@ -9,11 +9,10 @@ all: test doc
 # testing & checking
 #
 test:
-	python -m nose.core -v tests/unit
-	python -m nose.core -v tests/integration
+	py.test abilian tests
 
 unit:
-	python -m nose.core -v tests/unit
+	py.test tests/unit
 
 test-with-coverage:
 	python -m nose.core --with-coverage --cover-erase \

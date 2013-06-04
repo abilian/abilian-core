@@ -91,7 +91,7 @@ class IdMixin(object):
   id = Column(Integer, primary_key=True, info=SYSTEM)
 
 
-class TimestanpedMixin(object):
+class TimestampedMixin(object):
   created_at = Column(DateTime, default=datetime.utcnow, info=SYSTEM)
   updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
                       info=SYSTEM)
@@ -120,7 +120,7 @@ class OwnedMixin(object):
       cls.owner = relationship("User", primaryjoin=pj2,  uselist=False)
 
 
-class BaseMixin(IdMixin, TimestanpedMixin, OwnedMixin):
+class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
   @declared_attr
   def __tablename__(cls):

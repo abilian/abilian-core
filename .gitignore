@@ -26,6 +26,7 @@ abilian/static/gen
 abilian/static/placeholders
 
 *.pyc
+*.egg
 *.egg-info
 *.swp
 *.prof
