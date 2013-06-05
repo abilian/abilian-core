@@ -134,8 +134,8 @@ class ActionRegistry(object):
     If ``overwrite`` is True then it is allowed to overwrite an existing
     action with same name and category; else ValueError is raised.
     """
-    assert(self.installed(), "Actions not enabled on this application")
-    assert(all(map(lambda a: isinstance(a, Action), actions)))
+    assert self.installed(), "Actions not enabled on this application"
+    assert all(map(lambda a: isinstance(a, Action), actions))
 
     for action in actions:
       cat = action.category
@@ -150,7 +150,7 @@ class ActionRegistry(object):
     if ``context`` is None, then current action context is used
     (:attr:``context``)
     """
-    assert(self.installed(), "Actions not enabled on this application")
+    assert self.installed(), "Actions not enabled on this application"
     result = {}
     if context is None:
       context = self.context
@@ -167,7 +167,7 @@ class ActionRegistry(object):
     if ``context`` is None, then current action context is used
     (:attr:``context``)
     """
-    assert(self.installed(), "Actions not enabled on this application")
+    assert self.installed(), "Actions not enabled on this application"
     try:
       actions = self._state['categories'][category]
     except KeyError:
