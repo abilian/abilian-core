@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from unittest import skip
 
 from flask.ext.login import AnonymousUser
-from flask.ext.testing import TestCase
-from abilian.application import Application
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.subjects import User, Group
+from abilian.testing import BaseTestCase
 
 from . import security, RoleAssignment, InheritSecurity
 
-#from .base import IntegrationTestCase, TEST_EMAIL, TEST_PASSWORD
+
 
 TEST_EMAIL = u"joe@example.com"
 TEST_PASSWORD = "tototiti"
@@ -25,22 +23,10 @@ def init_user():
   db.session.flush()
 
 
-class TestConfig(object):
-  TESTING = True
-  SQLALCHEMY_DATABASE_URI = "sqlite://"
-
-
-class IntegrationTestCase(TestCase):
-  def create_app(self):
-    config = TestConfig()
-    self.app = Application(config)
-
-    return self.app
+class IntegrationTestCase(BaseTestCase):
 
   def setUp(self):
-    db.drop_all()
-    self.app.create_db()
-    self.session = db.session
+    BaseTestCase.setUp(self)
     init_user()
     self.app.start_services()
 
@@ -50,11 +36,8 @@ class IntegrationTestCase(TestCase):
   def tearDown(self):
     security.stop()
     security.clear()
-
     self.app.stop_services()
-    db.session.remove()
-    db.drop_all()
-    db.engine.dispose() # ensure we close all db connections
+    BaseTestCase.tearDown(self)
 
 
 class DummyModel(Entity):
