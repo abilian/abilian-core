@@ -7,7 +7,7 @@ from flask import Flask, g, request
 
 from abilian.core.extensions import mail, db, celery, babel
 from abilian.web.filters import init_filters
-
+from abilian.plugin.loader import AppLoader
 from abilian.services import audit_service, index_service, activity_service
 
 
@@ -37,7 +37,14 @@ class ServiceManager(object):
     activity_service.stop()
 
 
-class Application(Flask, ServiceManager):
+class PluginManager(object):
+  def load_plugins(self):
+    loader = AppLoader()
+    loader.load(__name__.split('.')[0])
+    loader.register(self)
+
+
+class Application(Flask, ServiceManager, PluginManager):
   """
   Base application class. Extend it in your own app.
   """
