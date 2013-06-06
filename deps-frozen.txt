@@ -57,4 +57,5 @@ twill==0.9
 webassets==0.8
 wsgiref==0.1.2
 xlrd==0.9.0
+straight.plugin==1.4.0-post-1
 -e git://github.com/python-excel/xlwt.git@35cad572687e3a284e6a5d1d32b2e58ef4eeb80c#egg=xlwt-dev
