@@ -37,8 +37,8 @@ wtforms==1.0.3
 -e git://github.com/abilian/wtforms-alchemy.git@548d43812d86d50cb2c46c85eb6407095ff9abd9#egg=wtforms-alchemy
 xlwt==0.7.5
 xlrd==0.9.2
-
 celery==3.0.13
+straight.plugin==1.4.0-post-1
 
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
