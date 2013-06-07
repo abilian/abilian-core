@@ -10,15 +10,17 @@ from abilian.core.entities import db
 class TestConfig(object):
   SQLALCHEMY_DATABASE_URI = "sqlite://"
   SQLALCHEMY_ECHO = False
+  TESTING = True
 
 
 class BaseTestCase(TestCase):
 
   config_class = TestConfig
+  application_class = Application
 
   def create_app(self):
     config = self.config_class()
-    self.app = Application(config)
+    self.app = self.application_class(config)
     return self.app
 
   def setUp(self):
