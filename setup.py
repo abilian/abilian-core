@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import setuptools
-import setup_util as deps
+from setup_util import parse_requirements, parse_dependency_links
 
-requires = deps.parse_requirements([u'etc/deps-frozen.txt'])
-depend_links = deps.parse_dependency_links([u'etc/deps-frozen.txt'])
+# Should be deps-frozen.txt
+requirements = parse_requirements([u'etc/deps.txt'])
+dependency_links = parse_dependency_links([u'etc/deps.txt'])
+
+print requirements
+print dependency_links
 
 def get_long_description():
   import os
@@ -44,8 +48,8 @@ setuptools.setup(
     'Programming Language :: Python',
     ],
   # These args are setuptools specifically
-  install_requires=requires,
-  dependency_links=depend_links,
+  install_requires=requirements,
+  dependency_links=dependency_links,
   include_package_data=True,
   zip_safe=False,
 )
