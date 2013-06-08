@@ -11,6 +11,7 @@ class TestConfig(object):
   SQLALCHEMY_DATABASE_URI = "sqlite://"
   SQLALCHEMY_ECHO = False
   TESTING = True
+  SECRET = ""
 
 
 class BaseTestCase(TestCase):

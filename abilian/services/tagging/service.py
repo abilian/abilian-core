@@ -1,6 +1,10 @@
+"""
+
+"""
 
 class Taggable(object):
-  """Mixin trait for taggable objects.
+  """
+  Mixin trait for taggable objects.
 
   Currently not used.
   """
@@ -8,7 +12,8 @@ class Taggable(object):
 
 
 class TagService(object):
-  """The tag service.
+  """
+  The tag service.
   """
 
   def tag(self, object, term, user=None):
@@ -22,7 +27,9 @@ class TagService(object):
     """
 
   def get_objects_tagged_with(self, term):
-    """Returns a list of objects tagged with a given term."""
+    """Returns a list of objects tagged with a given term.
+    """
 
   def get_tags_applied_on(self, object):
-    """Return a list of tags applied on a given document."""
+    """Returns a list of tags applied on a given document.
+    """
