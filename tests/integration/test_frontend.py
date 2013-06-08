@@ -57,3 +57,6 @@ class FrontendTestCase(IntegrationTestCase):
 
   def test(self):
     pass
+    # FIXME
+    #response = self.client.get("/crm")
+    #self.assert_200(response)
