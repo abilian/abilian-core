@@ -9,7 +9,6 @@ before_install:
 
 # Install Python dependencies
 install:
-  - pip install sphinx --use-mirrors
   - pip install -r etc/deps-frozen.txt --use-mirrors
   - pip install -r etc/deps-devel.txt --use-mirrors
 
