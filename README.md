@@ -4,6 +4,16 @@ About
 Abilian core framework and services. Based on Flask, SQLAlchemy and other
 libraries.
 
+Current Status
+--------------
+
+The official CI server for the project is our own Jenkins:
+[![Build Status](http://jenkins.abilian.com/job/Abilian-Core/badge/icon)](http://jenkins.abilian.com/job/Abilian-Core/)
+
+Additional badges:
+[![Build Status (drone.io)](https://drone.io/github.com/abilian/abilian-core/status.png)](https://drone.io/github.com/abilian/abilian-core/latest)
+
+
 Install
 =======
 
@@ -77,6 +87,3 @@ Assuming you deploying to an Ubuntu Precise Pangolin (12.04 LTS) server:
 Build Status
 ============
 
-The project is under continuous integration with Jenkins. Check its status:
-
-<http://jenkins.abilian.com/job/Abilian-Core/>
