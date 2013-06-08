@@ -35,6 +35,9 @@ from abilian.services.image import resize
 
 logger = logging.getLogger(__name__)
 
+# For some reason, twill includes a broken version of subprocess.
+assert not 'twill' in subprocess.__file__
+
 # Hack for Mac OS + homebrew
 os.environ['PATH'] += ":/usr/local/bin"
 
@@ -236,8 +239,6 @@ class Converter(object):
       os.remove(in_fn)
       return ret
 
-    return {}
-
   @staticmethod
   def digest(blob):
     assert type(blob) in (str, unicode)
@@ -398,7 +399,8 @@ class ImageMagickHandler(Handler):
       raise ConversionError(e)
     finally:
       os.remove(in_fn)
-      os.remove(out_fn)
+      if os.path.exists(out_fn):
+        os.remove(out_fn)
 
 
 class PdfToPpmHandler(Handler):
@@ -615,6 +617,7 @@ def make_temp_file(blob, prefix='tmp', suffix=""):
   fd.write(blob)
   fd.close()
   return in_fn
+
 
 # Singleton, yuck!
 converter = Converter()

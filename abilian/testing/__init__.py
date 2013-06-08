@@ -1,6 +1,9 @@
 """Base stuff for testing.
 """
 
+import subprocess
+assert not 'twill' in subprocess.__file__
+
 from flask.ext.testing import TestCase
 
 from abilian.application import Application
