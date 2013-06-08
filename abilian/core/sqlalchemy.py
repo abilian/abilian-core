@@ -6,6 +6,7 @@ import json
 import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
 
+
 class MutationDict(Mutable, dict):
   """ Provides a dictionary type with mutability support.
   """
@@ -162,7 +163,7 @@ class JSON(sa.types.TypeDecorator):
 
 
 class JSONUniqueListType(JSON):
-  """ Store a list in JSON format, with items made unique and sorted
+  """ Store a list in JSON format, with items made unique and sorted.
   """
   def process_bind_param(self, value, dialect):
     # value may be a simple string used in a LIKE clause for instance, so we
@@ -174,14 +175,15 @@ class JSONUniqueListType(JSON):
 
 
 def JSONDict(*args, **kwargs):
-  """ Stores a dict as JSON on database, with mutability support
+  """ Stores a dict as JSON on database, with mutability support.
   """
   return MutationDict.as_mutable(JSON(*args, **kwargs))
 
-def JSONList(*args, **kwargs):
-  """ Stores a list as JSON on database, with mutability support
 
-  if kwargs has a param `unique_sorted` (which evaluated to True), list values
+def JSONList(*args, **kwargs):
+  """ Stores a list as JSON on database, with mutability support.
+
+  If kwargs has a param `unique_sorted` (which evaluated to True), list values
   are made unique and sorted.
   """
   type_ = JSON
