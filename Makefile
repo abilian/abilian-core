@@ -1,7 +1,13 @@
-.PHONY: test unit full-test pep8 clean docs tox
+.PHONY: test pep8 pylama clean docs tox
 
+# The source director
 SRC=abilian
+# The package name
+PKG=abilian
+
+# Additional parameters
 PEP8IGNORE=E111,E121,E201,E225,E501
+
 
 all: test doc
 
@@ -9,30 +15,19 @@ all: test doc
 # testing & checking
 #
 test:
-	py.test -x tests/unit abilian tests/integration
-
-unit:
-	py.test tests/unit
+	py.test -x $(PKG) tests
 
 test-with-coverage:
-	python -m nose.core --with-coverage --cover-erase \
-	   	--cover-package=$(SRC) tests
-
-test-with-profile:
-	python -m nose.core --with-profile tests
-
-unit-with-coverage:
-	python -m nose.core --with-coverage --cover-erase \
-	   	--cover-package=$(SRC) tests/unit
-
-unit-with-profile:
-	python -m nose.core --with-profile tests/unit
+	py.test --cov $(PKG) --cov-report term-missing $(PKG) tests
 
 tox:
 	tox
 
 pep8:
 	pep8 -r --ignore $(PEP8IGNORE) *.py $(SRC) tests
+
+pylama:
+	pylama -o etc/pylama.ini
 
 check-docs:
 	sphinx-build -W -b html docs/ docs/_build/html
@@ -64,7 +59,7 @@ tidy: clean
 	rm -rf .tox
 
 update-pot:
-    # _n => ngettext, _l => lazy_gettext
-	pybabel extract -F babel.cfg -k "_n:1,2" -k "_l" -o messages.pot "${SRC}"
+	# _n => ngettext, _l => lazy_gettext
+	pybabel extract -F etc/babel.cfg -k "_n:1,2" -k "_l" -o messages.pot "${SRC}"
 	pybabel update -i messages.pot -d $(SRC)/translations
 	pybabel compile -d $(SRC)/translations

@@ -5,3 +5,4 @@ coveralls==0.2
 nose==1.2.1
 pytest-cov==1.6
 pytest==2.3.4
+pylama==1.0.4

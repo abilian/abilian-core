@@ -6,6 +6,8 @@ from flask.ext.testing import TestCase
 from abilian.application import Application
 from abilian.core.entities import db
 
+__all__ = ['TestConfig', 'BaseTestCase']
+
 
 class TestConfig(object):
   SQLALCHEMY_DATABASE_URI = "sqlite://"
