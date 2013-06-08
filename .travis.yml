@@ -11,9 +11,12 @@ before_install:
 install:
   - pip install sphinx --use-mirrors
   - pip install -e . -r deps-frozen.txt --use-mirrors
+  - pip install coveralls --use-mirrors
 
 # Run tests
 script:
-  - nosetests -e 'test_search' -e '_(word|excel|odt|wordx)_' tests
+  - py.test -q --cov abilian --cov-report term-missing tests abilian
   - sphinx-build -W -b html docs/ docs/_build/
 
+after_success:
+  - coveralls

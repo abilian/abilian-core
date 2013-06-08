@@ -4,6 +4,7 @@
 .coverage
 .vagrant
 .cache
+.coveralls.yml
 
 whoosh*
 abilian.db
