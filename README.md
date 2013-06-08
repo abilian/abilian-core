@@ -8,11 +8,13 @@ Current Status
 --------------
 
 The official CI server for the project is our own Jenkins:
-[![Build Status](http://jenkins.abilian.com/job/Abilian-Core/badge/icon)](http://jenkins.abilian.com/job/Abilian-Core/)
+[![Build Status (Jenkins)](http://jenkins.abilian.com/job/Abilian-Core/badge/icon)](http://jenkins.abilian.com/job/Abilian-Core/)
 
 Additional CI badges:
 [![Build Status (drone.io)](https://drone.io/github.com/abilian/abilian-core/status.png)](https://drone.io/github.com/abilian/abilian-core/latest)
 [![Build Status (travis)](https://api.travis-ci.org/abilian/abilian-core.png)](https://travis-ci.org/abilian/abilian-core)
+[![Coverage Status](https://coveralls.io/repos/abilian/abilian-core/badge.png?branch=master)](https://coveralls.io/r/abilian/abilian-core?branch=master)
+
 
 Install
 =======
