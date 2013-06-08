@@ -4,7 +4,9 @@ from nose.tools import eq_
 from jinja2 import Environment
 
 from abilian.core.util import system_tz
-from abilian.web.filters import init_filters, filesize, date_age, paragraphs
+
+from ..filters import init_filters, filesize, date_age, paragraphs
+
 
 class FakeApp(object):
   def __init__(self, env):
@@ -12,6 +14,7 @@ class FakeApp(object):
 
 env = Environment()
 init_filters(FakeApp(env))
+
 
 class TestFilters(unittest.TestCase):
 

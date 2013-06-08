@@ -7,8 +7,6 @@ from setup_util import parse_requirements, parse_dependency_links
 requirements = parse_requirements([u'etc/deps.txt'])
 dependency_links = parse_dependency_links([u'etc/deps.txt'])
 
-print requirements
-print dependency_links
 
 def get_long_description():
   import os

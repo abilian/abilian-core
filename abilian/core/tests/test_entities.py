@@ -1,8 +1,9 @@
 from unittest import TestCase
-from tests.unit.dummy import DummyContact
 
 from abilian.core.entities import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE
 from abilian.core.subjects import User
+
+from .dummy import DummyContact
 
 
 class EntityTestCase(TestCase):

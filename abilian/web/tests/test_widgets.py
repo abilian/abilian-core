@@ -9,7 +9,8 @@ from wtforms import Form, TextField, IntegerField
 import abilian.web.forms
 
 from abilian.core.extensions import babel
-from abilian.web.widgets import MainTableView, SingleView, Panel, Row, \
+
+from ..widgets import MainTableView, SingleView, Panel, Row, \
   linkify_url, text2html, EmailWidget
 
 
@@ -51,10 +52,11 @@ class DummyForm(Form):
 
 
 class BaseTestCase(TestCase):
+  # TODO: use abilian.testing.BaseTestCase instead
 
   def setUp(self):
     # Hack to set up the template folder properly.
-    template_dir = os.path.dirname(__file__) + "/../../abilian/templates"
+    template_dir = os.path.dirname(__file__) + "/../../templates"
     template_dir = os.path.normpath(template_dir)
     self.app = Flask(__name__, template_folder=template_dir)
     self.app.config.update({

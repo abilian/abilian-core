@@ -52,10 +52,6 @@ class SecurityService(object):
 
   def init_app(self, app):
     self.app = app
-
-    if not hasattr(app, 'extensions'):
-      app.extensions = {}
-
     app.extensions['security'] = self
 
   def start(self):
