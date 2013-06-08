@@ -3,8 +3,8 @@
 import setuptools
 import setup_util as deps
 
-requires = deps.parse_requirements([u'deps.txt'])
-depend_links = deps.parse_dependency_links([u'deps.txt'])
+requires = deps.parse_requirements([u'etc/deps-frozen.txt'])
+depend_links = deps.parse_dependency_links([u'etc/deps-frozen.txt'])
 
 def get_long_description():
   import os
