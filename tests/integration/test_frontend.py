@@ -53,7 +53,7 @@ class FrontendTestCase(BaseTestCase):
 
   def setUp(self):
     BaseTestCase.setUp(self)
-    crm = SimpleCRM(self.app)
+    self.crm = SimpleCRM(self.app)
 
   def test(self):
     response = self.client.get("/crm/contacts/json")
@@ -86,3 +86,7 @@ class FrontendTestCase(BaseTestCase):
 
     # response = self.client.get("/crm/contacts/export_xls")
     # self.assert_200(response)
+
+  def test_export_xls(self):
+    # at least just test dummy empty export is working without error
+    self.crm.modules[0].export_to_xls()

@@ -350,11 +350,10 @@ class Module(object):
     form = self.edit_form_class()
 
     col_names = ['id']
-    obj = objects[0]
     for field in form:
       if isinstance(field, ModelFieldList):
         continue
-      if hasattr(obj, field.name):
+      if hasattr(self.managed_class, field.name):
         col_names.append(field.name)
 
     for c, col_name in enumerate(col_names):
