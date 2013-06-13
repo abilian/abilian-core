@@ -39,9 +39,23 @@ if not _PATCHED:
   Field.__init__ = _core_field_init
   del _core_field_init
 
+  #  support 'widget_options' for some custom widgets
+  _wtforms_Field_render = Field.__call__
+  def _core_field_render(self, **kwargs):
+    if 'widget_options' in kwargs and not kwargs['widget_options']:
+      kwargs.pop('widget_options')
+
+    return _wtforms_Field_render(self, **kwargs)
+
+  Field.__call__ = _core_field_render
+  del _core_field_render
+
   def render_view(self, **kwargs):
     """ render data
     """
+    if 'widget_options' in kwargs and not kwargs['widget_options']:
+      kwargs.pop('widget_options')
+
     if hasattr(self.view_widget, 'render_view'):
       return self.view_widget.render_view(self, **kwargs)
 

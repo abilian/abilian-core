@@ -22,11 +22,12 @@
 <form action="{{ request.path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="edit-form">
   {{ form.csrf_token }}
 
+  {%- set options = form._widgets_options|default({}) %}
   {%- for label, field_names in form._groups %}
     {%- if label %}<legend>{{ label }}</legend>{%- endif %}
     <fieldset>
       {%- for field_name in field_names %}
-        {{ render_field(form[field_name]) }}
+        {{ render_field(form[field_name], widget_options=options.get(field_name, {})) }}
       {%- endfor %}
     </fieldset>
   {% endfor %}
