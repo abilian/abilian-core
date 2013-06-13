@@ -1,1 +1,1 @@
-__author__ = 'fermigier'
+from .service import preferences

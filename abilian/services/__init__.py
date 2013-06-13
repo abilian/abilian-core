@@ -1,5 +1,5 @@
 """
-Modules that provide services (no UI). They are implemented as
+Modules that provide services. They are implemented as
 Flask extensions (see: http://flask.pocoo.org/docs/extensiondev/ )
 
 """
