@@ -108,7 +108,7 @@ class PreferenceService(object):
       """Index redirects to the first accessible panel."""
 
       # Work around unit test failure. FIXME.
-      if not getattr(current_user, 'id'):
+      if current_user.is_anonymous():
         return "OK"
 
       for panel in self.panels:
