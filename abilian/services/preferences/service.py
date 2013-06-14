@@ -6,7 +6,7 @@ Notes:
 - For global setting, there should be a SettingService
 """
 
-from flask import Blueprint, url_for, request
+from flask import Blueprint, url_for, request, redirect, abort
 from flask.ext.login import current_user
 from abilian.core.extensions import db
 
@@ -102,6 +102,16 @@ class PreferenceService(object):
                  'active': active}
         menu.append(entry)
       return dict(menu=menu)
+
+    @self.blueprint.route("/")
+    def index():
+      """Index redirects to the first accessible panel."""
+      for panel in self.panels:
+        if panel.is_accessible():
+          return redirect(url_for("preferences." + panel.id))
+      else:
+        # Should not happen.
+        abort(500)
 
 
 preferences = PreferenceService()
