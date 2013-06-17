@@ -43,7 +43,6 @@ class PreferenceService(object):
   def set_preferences(self, user=None, **kwargs):
     """Sets preferences from keyword arguments.
     """
-    print kwargs
     if user is None:
       user = current_user
 
