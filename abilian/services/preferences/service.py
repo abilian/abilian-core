@@ -37,8 +37,7 @@ class PreferenceService(object):
     """
     if user is None:
       user = current_user
-    preferences = UserPreference.query.filter(UserPreference.user_id == user.id).all()
-    return { pref.key: pref.value for pref in preferences}
+    return { pref.key: pref.value for pref in user.preferences }
 
   def set_preferences(self, user=None, **kwargs):
     """Sets preferences from keyword arguments.
@@ -46,8 +45,7 @@ class PreferenceService(object):
     if user is None:
       user = current_user
 
-    preferences = UserPreference.query.filter(UserPreference.user_id == user.id).all()
-    d = { pref.key: pref for pref in preferences}
+    d = { pref.key: pref for pref in user.preferences }
     for k, v in kwargs.items():
       if k in d:
         d[k].value = v
@@ -61,9 +59,10 @@ class PreferenceService(object):
     if user is None:
       user = current_user
 
-    preferences = UserPreference.query.filter(UserPreference.user_id == user.id).all()
-    for pref in preferences:
-      db.session.delete(pref)
+    #  don't delete UserPreference 1 by 1 with session.delete, else
+    #  user.preferences is not updated until commit() (not flush()). see
+    #  http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html#deleting-from-collections
+    user.preferences = []
 
   def register_panel(self, panel):
     self.panels.append(panel)
