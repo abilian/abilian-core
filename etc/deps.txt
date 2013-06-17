@@ -46,7 +46,7 @@ closure
 cssmin
 
 #: DEVELOPMENT
-coverage==3.5.1
+coverage==3.6
 nose
 pytest
 sphinx
