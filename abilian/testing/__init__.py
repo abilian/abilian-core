@@ -37,3 +37,10 @@ class BaseTestCase(TestCase):
     db.session.remove()
     db.drop_all()
     db.engine.dispose()
+
+  # Useful for debugging
+  def dump_routes(self):
+    rules = list(self.app.url_map.iter_rules())
+    rules.sort(key=lambda x: x.rule)
+    for rule in rules:
+      print rule, rule.methods, rule.endpoint
