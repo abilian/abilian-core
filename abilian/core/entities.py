@@ -127,12 +127,12 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     return cls.__name__.lower()
 
   def __init__(self, **kw):
+    self.update(kw)
     if hasattr(g, 'user'):
       if not self.creator:
         self.creator = g.user
       if not self.owner:
         self.owner = g.user
-    self.update(kw)
 
   def __repr__(self):
     if hasattr(self, 'name'):
@@ -150,7 +150,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
   def update(self, d):
     for k, v in d.items():
-      assert k in self.column_names, "%s not allowed" % k
+      #assert k in self.column_names, "%s not allowed" % k
       setattr(self, k, v)
 
   def to_dict(self):

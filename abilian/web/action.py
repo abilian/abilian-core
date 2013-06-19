@@ -171,7 +171,7 @@ class ActionRegistry(object):
     try:
       actions = self._state['categories'][category]
     except KeyError:
-      raise KeyError('Category "{category} does not exist"')
+      raise KeyError('Category "{}" does not exist'.format(category))
 
     if context is None:
       context = self.context
