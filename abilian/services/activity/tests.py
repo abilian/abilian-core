@@ -1,6 +1,7 @@
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.subjects import User
+from abilian.services.activity import ActivityEntry
 from abilian.testing import BaseTestCase
 
 from .service import ActivityService
@@ -23,13 +24,12 @@ class ActivityTestCase(BaseTestCase):
 
     db.session.add(user)
     db.session.add(message)
-    db.session.flush()
-
     service.log_activity(None, user, "post", message)
-    db.session.flush()
+    db.session.commit()
 
     entries = service.entries_for_actor(user, 10)
     self.assertEquals(len(entries), 1)
+
     entry = entries[0]
     self.assertEquals(entry.actor, user)
     self.assertEquals(entry.object, message)

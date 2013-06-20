@@ -49,3 +49,10 @@ class ActivityEntry(db.Model):
       if cls.__name__ == self.object_class:
         return cls.query.get(self.object_id)
     raise Exception("Unknown class: %s" % self.object_class)
+
+  @property
+  def subject(self):
+    for cls in all_entity_classes():
+      if cls.__name__ == self.sibject_class:
+        return cls.query.get(self.subject_id)
+    raise Exception("Unknown class: %s" % self.subject_class)

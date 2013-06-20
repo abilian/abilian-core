@@ -184,3 +184,18 @@ def slugify(value, separator="-"):
   value = value.strip().lower()
   value = re.sub('[%s\s]+' % separator, separator, value)
   return str(value)
+
+
+class BasePresenter(object):
+  """A presenter wraps a model an adds specific (often, web-centric) behaviour.
+  subclass to make it useful.
+  """
+  def __init__(self, model):
+    self._model = model
+
+  def __getattr__(self, key):
+    return getattr(self._model, key)
+
+  @classmethod
+  def wrap_collection(cls, models):
+    return [cls(model) for model in models]
