@@ -8,7 +8,7 @@ Roles and permissions are just strings, and are currently hardcoded.
 from itertools import chain
 
 from flask import g
-from flask.ext.login import AnonymousUser
+from flask.ext.login import AnonymousUserMixin
 from werkzeug.local import LocalProxy
 
 from sqlalchemy.orm import subqueryload, object_session
@@ -425,7 +425,7 @@ def has_role(self, role):
   return security.has_role(self, role)
 
 Principal.has_role = has_role
-AnonymousUser.has_role = has_role
+AnonymousUserMixin.has_role = has_role
 
 
 # Instanciate the service

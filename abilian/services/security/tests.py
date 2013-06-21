@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from flask.ext.login import AnonymousUser
+from flask.ext.login import AnonymousUserMixin
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -52,7 +52,7 @@ class SecurityTestCase(IntegrationTestCase):
   def test_anonymous_user(self):
     # anonymous user is not an SQLAlchemy instance and must be handled
     # specifically to avoid tracebacks
-    anon = AnonymousUser()
+    anon = AnonymousUserMixin()
     assert not security.has_role(anon, 'read')
 
   def test_grant_basic_roles(self):
