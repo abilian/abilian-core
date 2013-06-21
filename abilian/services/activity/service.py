@@ -36,13 +36,13 @@ class ActivityService(object):
     self.running = False
     self.listening = False
 
-  def log_activity(self, sender, actor, verb, object, subject=None):
+  def log_activity(self, sender, actor, verb, object, target=None):
     assert self.running
     entry = ActivityEntry()
     entry.actor = actor
     entry.verb = verb
     entry._object = object
-    entry._subject = subject
+    entry._target = target
     if not hasattr(g, 'activities_to_flush'):
       g.activities_to_flush = []
     g.activities_to_flush.append(entry)
@@ -57,9 +57,9 @@ class ActivityService(object):
       entry.object_id = entry._object.id
       entry.object_class = entry._object.__class__.__name__
 
-      if entry._subject:
-        entry.subject_id = entry._subject.id
-        entry.subject_class = entry._subject.__class__.__name__
+      if entry._target:
+        entry.subject_id = entry._target.id
+        entry.subject_class = entry._target.__class__.__name__
       db.session.add(entry)
 
     transaction.commit()

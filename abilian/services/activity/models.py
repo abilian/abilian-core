@@ -36,12 +36,13 @@ class ActivityEntry(db.Model):
   object_class = Column(Text)
   object_id = Column(Integer)
 
+  # TODO: rename to "taget_..."
   subject_class = Column(Text)
   subject_id = Column(Integer)
 
   def __repr__(self):
-    return "<ActivityEntry id=%s actor=%s verb=%s object=%s subject=%s>" % (
-      self.id, self.actor, self.verb, "TODO", "TODO")
+    return "<ActivityEntry id=%s actor=%s verb=%s object=%s target=%s>" % (
+      self.id, self.actor, self.verb, self.object, self.target)
 
   @property
   def object(self):
@@ -51,8 +52,8 @@ class ActivityEntry(db.Model):
     raise Exception("Unknown class: %s" % self.object_class)
 
   @property
-  def subject(self):
+  def target(self):
     for cls in all_entity_classes():
-      if cls.__name__ == self.sibject_class:
+      if cls.__name__ == self.subject_class:
         return cls.query.get(self.subject_id)
     raise Exception("Unknown class: %s" % self.subject_class)
