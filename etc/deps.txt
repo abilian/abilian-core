@@ -3,7 +3,7 @@
 Flask
 Flask-SQLAlchemy
 Flask-Testing
-Flask-Security==1.6.5
+Flask-Security
 Flask-Login==0.2.3
 Flask-WTF
 Flask-Script
