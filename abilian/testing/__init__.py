@@ -7,7 +7,7 @@ assert not 'twill' in subprocess.__file__
 from flask.ext.testing import TestCase
 
 from abilian.application import Application
-from abilian.core.entities import db
+
 
 __all__ = ['TestConfig', 'BaseTestCase']
 
@@ -20,7 +20,6 @@ class TestConfig(object):
 
 
 class BaseTestCase(TestCase):
-
   config_class = TestConfig
   application_class = Application
 
@@ -31,12 +30,16 @@ class BaseTestCase(TestCase):
 
   def setUp(self):
     self.app.create_db()
-    self.session = db.session
+    self.session = self.db.session
 
   def tearDown(self):
-    db.session.remove()
-    db.drop_all()
-    db.engine.dispose()
+    self.db.session.remove()
+    self.db.drop_all()
+    self.db.engine.dispose()
+
+  @property
+  def db(self):
+    return self.app.extensions['sqlalchemy'].db
 
   # Useful for debugging
   def dump_routes(self):
