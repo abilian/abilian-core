@@ -180,6 +180,8 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   def _name(self):
     if hasattr(self, 'name'):
       return self.name
+    elif hasattr(self, 'title'):
+      return self.title
     else:
       raise NotImplementedError()
 
