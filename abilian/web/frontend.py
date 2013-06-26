@@ -349,6 +349,9 @@ class Module(object):
     objects = self.ordered_query(request)
     form = self.edit_form_class()
 
+    DATE_STYLE = XFStyle()
+    DATE_STYLE.num_format_str = "DD/MM/YYYY"
+
     col_names = ['id']
     for field in form:
       if isinstance(field, ModelFieldList):
@@ -369,8 +372,7 @@ class Module(object):
         elif isinstance(value, list):
           value = "; ".join(value)
         elif isinstance(value, date):
-          style = XFStyle()
-          style.num_format_str = "D/M/Y"
+          style = DATE_STYLE
         if style:
           ws.write(r+1, c, value, style)
         else:
