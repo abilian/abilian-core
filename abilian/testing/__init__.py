@@ -53,6 +53,9 @@ class BaseTestCase(TestCase):
     for rule in rules:
       print rule, rule.methods, rule.endpoint
 
+  def assert_302(self, response):
+    self.assert_status(response, 302)
+
   #
   # Validates HTML if asked by the config or the Unix environment
   #
