@@ -20,6 +20,7 @@ def resize(orig, hsize):
     return cache[cache_key]
 
   image = Image.open(StringIO(orig))
+  format = image.format
   x, y = image.size
 
   if x <= hsize:
@@ -29,9 +30,14 @@ def resize(orig, hsize):
   y1 = int(1.0 * y * hsize / x)
   image.thumbnail((x1, y1), Image.ANTIALIAS)
   output = StringIO()
-  image.save(output, "JPEG")
+
+  if format == 'PNG':
+    image.save(output, "PNG")
+  else:
+    image.save(output, "JPEG")
   converted = output.getvalue()
   cache[cache_key] = converted
+
   return converted
 
 
@@ -43,6 +49,7 @@ def crop_and_resize(orig, hsize, vsize=0):
     return cache[cache_key]
 
   image = Image.open(StringIO(orig))
+  format = image.format
 
   # Compute cropping coordinates
   x1 = y1 = 0
@@ -60,7 +67,11 @@ def crop_and_resize(orig, hsize, vsize=0):
   image.thumbnail((hsize, vsize), Image.ANTIALIAS)
 
   output = StringIO()
-  image.save(output, "JPEG")
+  if format == 'PNG':
+    image.save(output, "PNG")
+  else:
+    image.save(output, "JPEG")
   converted = output.getvalue()
   cache[cache_key] = converted
+
   return converted

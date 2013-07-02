@@ -4,7 +4,9 @@ Add a few specific filters to Jinja2.
 
 import re
 from functools import wraps
-from datetime import datetime
+import datetime
+from pytz import utc
+from calendar import timegm
 
 from jinja2 import Markup, escape, evalcontextfilter
 from flask.ext import babel
@@ -82,7 +84,7 @@ def age(dt, now=None):
     return ""
 
   if not now:
-    now = datetime.utcnow()
+    now = datetime.datetime.utcnow()
 
   dt = utc_dt(dt)
   now = utc_dt(now)
@@ -127,6 +129,12 @@ def date(value):
   return babel.format_date(local_dt(value), format)
 
 
+# Doesn't work yet. TZ issues.
+def to_timestamp(dt):
+  utc_datetime = dt.astimezone(utc)
+  return timegm(utc_datetime.timetuple()) + utc_datetime.microsecond / 1e6
+
+
 def abbrev(s, max_size):
   if len(s) <= max_size:
     return s
@@ -141,6 +149,7 @@ def init_filters(app):
   app.jinja_env.filters['date_age'] = date_age
   app.jinja_env.filters['age'] = age
   app.jinja_env.filters['date'] = date
+  app.jinja_env.filters['to_timestamp'] = to_timestamp
 
   app.jinja_env.filters['abbrev'] = abbrev
   app.jinja_env.filters['filesize'] = filesize

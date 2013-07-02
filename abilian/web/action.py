@@ -1,6 +1,7 @@
 # coding=utf-8
 from jinja2 import Template, Markup
-from flask import current_app, g
+from flask import current_app, g, url_for
+
 
 __all__ = ('Action', 'ModalActionMixin', 'actions')
 
@@ -13,32 +14,29 @@ class Action(object):
   description = None
   icon = None
   _url = None
+  endpoint = None
   #: a bool (or something that can be converted to bool), or a callable which
   #: accept a context dict as parameter.
   condition = None
 
   template_string = (
     u'<a href="{{ url }}">'
-    u'{%- if action.icon %}<i class="icon-{{ action.icon }}"></i>{%- endif %}'
+    u'{%- if action.icon %}<i class="icon-{{ action.icon }}"></i> {% endif %}'
     u'{{ action.title }}'
     u'</a>'
-    )
+  )
 
   def __init__(self, category, name, title=None, description=None, icon=None,
-               url=None, condition=None):
+               url=None, endpoint=None, condition=None):
     self.category = category
     self.name = name
 
-    if title is not None:
-      self.title = title
-    if description is not None:
-      self.description = description
-    if icon is not None:
-      self.icon = icon
-    if url is not None:
-      self._url = url
-    if condition is not None:
-      self.condition = condition
+    self.title = title
+    self.description = description
+    self.icon = icon
+    self._url = url
+    self.endpoint = endpoint
+    self.condition = condition
 
     self._active = True
 
@@ -88,6 +86,8 @@ class Action(object):
   def url(self, context=None):
     if callable(self._url):
       return self._url(context)
+    if self.endpoint:
+      return url_for(self.endpoint)
     return self._url
 
 
