@@ -11,8 +11,8 @@ the spec need to be implemented.
 
 from datetime import datetime
 
-from sqlalchemy.orm import relationship
-from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.orm import relationship, synonym
+from sqlalchemy.schema import Column, ForeignKey, Index
 from sqlalchemy.types import Integer, DateTime, Text
 
 from abilian.core.entities import db, all_entity_classes
@@ -36,9 +36,20 @@ class ActivityEntry(db.Model):
   object_class = Column(Text)
   object_id = Column(Integer)
 
-  # TODO: rename to "taget_..."
   subject_class = Column(Text)
   subject_id = Column(Integer)
+  target_class = synonym('subject_class')
+  target_id = synonym('subject_id')
+
+  # TODO: replace the above (and the index below) by:
+  # target_class = Column(Text)
+  # target_id = Column(Integer)
+
+  __table_args__ = (
+    Index('object_index', 'object_class', 'object_id'),
+    #Index('target_index', 'target_class', 'target_id'),
+    Index('target_index', 'subject_class', 'subject_id'),
+  )
 
   def __repr__(self):
     return "<ActivityEntry id=%s actor=%s verb=%s object=%s target=%s>" % (
@@ -46,6 +57,9 @@ class ActivityEntry(db.Model):
 
   @property
   def object(self):
+    if self.object_class is None:
+      # TODO: object is probably never None, check the specs.
+      return None
     for cls in all_entity_classes():
       if cls.__name__ == self.object_class:
         return cls.query.get(self.object_id)
@@ -53,7 +67,9 @@ class ActivityEntry(db.Model):
 
   @property
   def target(self):
+    if self.target_class is None:
+      return None
     for cls in all_entity_classes():
-      if cls.__name__ == self.subject_class:
-        return cls.query.get(self.subject_id)
-    raise Exception("Unknown class: %s" % self.subject_class)
+      if cls.__name__ == self.target_class:
+        return cls.query.get(self.target_id)
+    raise Exception("Unknown class: %s" % self.target_class)

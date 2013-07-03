@@ -58,8 +58,8 @@ class ActivityService(object):
       entry.object_class = entry._object.__class__.__name__
 
       if entry._target:
-        entry.subject_id = entry._target.id
-        entry.subject_class = entry._target.__class__.__name__
+        entry.target_id = entry._target.id
+        entry.target_class = entry._target.__class__.__name__
       db.session.add(entry)
 
     transaction.commit()
