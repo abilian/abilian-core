@@ -3,13 +3,14 @@ Base Flask application class, used by tests or to be extended
 in real applications.
 """
 
-from flask import Flask, g, request
+from flask import Flask, g, request, logging
 
 from abilian.core.extensions import mail, db, celery, babel
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
 from abilian.services import audit_service, index_service, activity_service
 
+logger = logging.getLogger(__name__)
 
 __all__ = ['create_app', 'Application', 'ServiceManager']
 
@@ -39,9 +40,22 @@ class ServiceManager(object):
 
 class PluginManager(object):
   def load_plugins(self):
+    """Discovers and load plugins.
+
+    At this point, prefer explicit loading using the `register_plugin`
+    method.
+    """
     loader = AppLoader()
     loader.load(__name__.split('.')[0])
     loader.register(self)
+
+  def register_plugin(self, name):
+    """Load and register a plugin given its package name.
+    """
+    logger.info("Registering plugin: " + name)
+    import importlib
+    module = importlib.import_module(name)
+    module.register_plugin(self)
 
 
 class Application(Flask, ServiceManager, PluginManager):
