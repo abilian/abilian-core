@@ -55,7 +55,8 @@
               var target = $(e.target);
               var href = target.attr('href');
               var params = $.data(tbl, 'current-query-args');
-              window.location = href + '?' + $.param(params);
+              var concat_char = href.indexOf('?') == -1 ? '?' : '&';
+              window.location = href + concat_char + $.param(params);
               return false;
           }
       );
