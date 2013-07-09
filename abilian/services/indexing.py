@@ -37,13 +37,14 @@ _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 class WhooshIndexService(object):
 
   app = None
-  to_update = {}
+  to_update = None
 
   def __init__(self, app=None):
     self.indexes = {}
     self.indexed_classes = set()
     self.running = False
     self.listening = False
+    self.to_update = {}
     if app:
       self.init_app(app)
 
@@ -59,6 +60,11 @@ class WhooshIndexService(object):
       event.listen(Session, "after_flush_postexec", self.after_flush_postexec)
       event.listen(Session, "after_commit", self.after_commit)
       self.listening = True
+
+    app.before_request(self.clear_update_queue)
+
+  def clear_update_queue(self):
+    self.to_update = {}
 
   def start(self):
     assert self.app, "service not bound to an app"
@@ -84,7 +90,7 @@ class WhooshIndexService(object):
 
     self.indexes = {}
     self.indexed_classes = set()
-    self.to_update = {}
+    self.clear_update_queue()
 
   def search(self, query, cls=None, limit=10, filter=None):
     if cls:
@@ -218,10 +224,12 @@ class WhooshIndexService(object):
 
       primary_field = model_class.search_query.primary
       values = [(op, getattr(model, primary_field))
-                for op, model in values]
+                for op, model in values
+                # safeguard against DetachedInstanceError
+                if sa.orm.object_session(model) is not None]
       index_update.apply_async(kwargs=dict(class_name=cls_name, items=values))
 
-    self.to_update = {}
+    self.clear_update_queue()
 
   def index_objects(self, objects):
     """
