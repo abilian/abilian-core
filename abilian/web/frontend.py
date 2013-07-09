@@ -6,7 +6,7 @@ Front-end for a CRM app.
 This should eventually allow implementing very custom CRM-style application.
 """
 import StringIO
-
+import logging
 import copy
 import csv
 from datetime import date
@@ -38,6 +38,7 @@ from .forms import ModelFieldList
 from .widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
 
+logger = logging.getLogger(__name__)
 
 class BreadCrumbs(object):
   def __init__(self, l=()):
@@ -501,10 +502,9 @@ class Module(object):
         flash(e.message, "error")
       except IntegrityError, e:
         db.session.rollback()
-        sentry = current_app.extensions.get('sentry')
-        if sentry:
-          sentry.captureException()
-        flash(_(u"An entity with this name already exists in the database."), "error")
+        logger.error(e)
+        flash(_(u"An entity with this name already exists in the database."),
+              "error")
     else:
       flash(_(u"Please fix the error(s) below"), "error")
 
