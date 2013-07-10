@@ -447,6 +447,7 @@ class UnoconvPdfHandler(Handler):
                         'application/mspowerpoint',
                         'application/vnd.ms-powerpoint',
                         'application/vnd.ms-excel',
+                        'application/ms-excel',
                         'application/vnd.openxmlformats-officedocument.*',
                         'text/rtf']
   produces_mime_types = ['application/pdf']
