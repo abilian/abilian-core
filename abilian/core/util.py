@@ -96,13 +96,13 @@ class timer(object):
 
   def __init__(self, f):
     self.__f = f
-    self.log = logging.getLogger("." + f.func_name)
+    self.log = logging.getLogger(f.__module__ + '.' + f.func_name)
 
   def __call__(self, *args, **kwargs):
     self.__start = time.time()
     result = self.__f(*args, **kwargs)
     value = time.time() - self.__start
-    self.log.info('ellapsed time: {0:.2f}ms'.format(value * 1000))
+    self.log.info('elapsed time: {0:.2f}ms'.format(value * 1000))
     return result
 
 
