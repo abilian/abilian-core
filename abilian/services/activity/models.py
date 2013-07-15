@@ -10,6 +10,7 @@ the spec need to be implemented.
 """
 
 from datetime import datetime
+from flask import logging
 
 from sqlalchemy.orm import relationship, synonym
 from sqlalchemy.schema import Column, ForeignKey, Index
@@ -19,6 +20,8 @@ from abilian.core.entities import db, all_entity_classes
 from abilian.core.subjects import User
 
 __all__ = ['ActivityEntry']
+
+logger = logging.getLogger(__name__)
 
 
 # TODO: review the design as it hits the DB with too many requests.
@@ -60,6 +63,10 @@ class ActivityEntry(db.Model):
     if self.object_class is None:
       # TODO: object is probably never None, check the specs.
       return None
+    if self.object_id is None:
+      logger.warning("object_id is null on ActivityEntry with id=%d" % self.id)
+      # TODO: should not happen
+      return None
     for cls in all_entity_classes():
       if cls.__name__ == self.object_class:
         return cls.query.get(self.object_id)
@@ -68,6 +75,10 @@ class ActivityEntry(db.Model):
   @property
   def target(self):
     if self.target_class is None:
+      return None
+    if self.target_id is None:
+      # TODO: should not happen
+      logger.warning("target_id is null on ActivityEntry with id=%d" % self.id)
       return None
     for cls in all_entity_classes():
       if cls.__name__ == self.target_class:
