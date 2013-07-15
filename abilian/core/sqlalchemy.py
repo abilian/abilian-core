@@ -99,20 +99,20 @@ class MutationList(Mutable, list):
     self.changed()
 
   def __setslice__(self, i, j, other):
-    list.setslice(self, i, j, other)
+    list.__setslice__(self, i, j, other)
     self.changed()
 
   def __delslice__(self, i, j):
-    list.delslice(self, i, j)
+    list.__delslice__(self, i, j)
     self.changed()
 
   def __iadd__(self, other):
-    l = list.iadd(self, other)
+    l = list.__iadd__(self, other)
     self.changed()
     return l
 
   def __imul__(self, n):
-    l = list.imul(self, n)
+    l = list.__imul__(self, n)
     self.changed()
     return l
 
