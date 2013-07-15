@@ -187,14 +187,22 @@ def slugify(value, separator="-"):
 
 
 class BasePresenter(object):
-  """A presenter wraps a model an adds specific (often, web-centric) behaviour.
-  subclass to make it useful.
+  """A presenter wraps a model an adds specific (often, web-centric) accessors.
+  subclass to make it useful. Presenters are immutable.
   """
   def __init__(self, model):
     self._model = model
 
   def __getattr__(self, key):
     return getattr(self._model, key)
+
+  def __setattr__(self, key, value):
+    """Make presenter immutable.
+    """
+    if key == '_model':
+      self.__dict__[key] = value
+    else:
+      raise AttributeError("Can't set attribute on a presenter.")
 
   @classmethod
   def wrap_collection(cls, models):
