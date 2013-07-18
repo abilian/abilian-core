@@ -94,10 +94,10 @@ class Action(object):
 class ModalActionMixin(object):
   template_string = (
     u'<a href="{{ url }}" data-toggle="modal">'
-    u'{%- if action.icon %}<i class="icon-{{ action.icon }}"></i>{%- endif %}'
+    u'{%- if action.icon %}<i class="icon-{{ action.icon }}"></i> {% endif %}'
     u'{{ action.title }}'
     u'</a>'
-    )
+  )
 
 
 class ActionRegistry(object):
@@ -168,10 +168,7 @@ class ActionRegistry(object):
     (:attr:``context``)
     """
     assert self.installed(), "Actions not enabled on this application"
-    try:
-      actions = self._state['categories'][category]
-    except KeyError:
-      raise KeyError('Category "{}" does not exist'.format(category))
+    actions = self._state['categories'].get(category, [])
 
     if context is None:
       context = self.context
