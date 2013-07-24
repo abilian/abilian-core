@@ -7,6 +7,7 @@ from cgi import escape
 
 from wtforms import fields
 from wtforms.fields.core import Field, SelectField, FormField
+from flask.ext.wtf import FileField as BaseFileField
 from wtforms.validators import EqualTo, Length, NumberRange, Optional, Required,\
   Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf
 from wtforms.widgets.core import html_params, Select, HTMLString, Input
@@ -132,6 +133,24 @@ class ModelFieldList(BaseModelFieldList):
 class RelationSelectField(SelectField):
   # TODO: Later...
   pass
+
+class FileField(BaseFileField):
+  """ support 'multiple' attribute, enabling html5 multiple file input in widget
+  """
+  multiple = False
+
+  def __init__(self, *args, **kwargs):
+    try:
+      self.multiple = kwargs.pop('multiple')
+    except KeyError:
+      pass
+
+    BaseFileField.__init__(self, *args, **kwargs)
+
+  def __call__(self, **kwargs):
+    if 'multiple' not in kwargs and self.multiple:
+      kwargs['multiple'] = 'multiple'
+    return BaseFileField.__call__(self, **kwargs)
 
 
 #
