@@ -5,9 +5,12 @@ Extensions to WTForms fields, widgets and validators.
 import logging
 from cgi import escape
 
+from flask.ext.babel import gettext as _, ngettext as _n
+
 from wtforms import fields
 from wtforms.fields.core import Field, SelectField, FormField
 from flask.ext.wtf import FileField as BaseFileField
+from flask.ext.wtf.form import Form as BaseForm
 from wtforms.validators import EqualTo, Length, NumberRange, Optional, Required,\
   Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf
 from wtforms.widgets.core import html_params, Select, HTMLString, Input
@@ -15,8 +18,22 @@ from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 
 from .widgets import DefaultViewWidget
 
-
 logger = logging.getLogger(__name__)
+
+#  setup Form class with babel support
+class _BabelTranslation(object):
+  def gettext(self, string):
+    return _(string)
+
+  def ngettext(self, singular, plural, n):
+    return _n(singular, plural, n)
+
+BabelTranslation = _BabelTranslation()
+
+class Form(BaseForm):
+  def _get_translations(self):
+    return BabelTranslation
+
 
 ### PATCH wtforms.field.core.Field ####################
 _PATCHED = False
