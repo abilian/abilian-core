@@ -7,6 +7,7 @@ import fix_path
 
 import os
 import uuid
+import shutil
 from flask.ext.testing import TestCase
 
 from abilian.core.extensions import db
@@ -37,6 +38,10 @@ class IntegrationTestCase(TestCase):
   def tearDown(self):
     db.session.remove()
     db.drop_all()
+    # clear whoosh
+    whoosh_base = self.app.config['WHOOSH_BASE']
+    if os.path.isdir(whoosh_base):
+      shutil.rmtree(whoosh_base)
 
   def assert_302(self, response):
     self.assert_status(response, 302)

@@ -1,5 +1,6 @@
 # Don't remove
 from warnings import warn
+import tempfile
 import fix_path
 
 from os.path import join, dirname
@@ -20,6 +21,12 @@ encoding_sniffer = Magic(mime_encoding=True)
 # FIXME: tests that rely on OOo are disabled until we fix stability issues.
 
 class Test(TestCase):
+
+  @classmethod
+  def setUpClass(cls):
+    cache_dir = tempfile.mkdtemp(suffix='unittest')
+    tmp_dir = tempfile.mkdtemp(suffix='unittest')
+    converter.init_work_dirs(cache_dir, tmp_dir)
 
   @classmethod
   def tearDownClass(cls):

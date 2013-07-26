@@ -55,6 +55,11 @@ class WhooshIndexService(object):
     if not self.whoosh_base:
       self.whoosh_base = "data/whoosh"  # Default value
 
+    if not os.path.isabs(self.whoosh_base):
+      self.whoosh_base = os.path.join(app.instance_path, self.whoosh_base)
+
+    self.whoosh_base = os.path.abspath(self.whoosh_base)
+
     if not self.listening:
       event.listen(Session, "after_flush", self.after_flush)
       event.listen(Session, "after_flush_postexec", self.after_flush_postexec)

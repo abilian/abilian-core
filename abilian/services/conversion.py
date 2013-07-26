@@ -55,9 +55,11 @@ class ConversionError(Exception):
 
 class Cache(object):
 
+  CACHE_DIR = None
+
   def _path(self, key):
     """ file path for `key`"""
-    return os.path.join("cache", "{}.blob".format(key))
+    return os.path.join(self.CACHE_DIR, "{}.blob".format(key))
 
   def __contains__(self, key):
     return os.path.exists(self._path(key))
@@ -74,8 +76,8 @@ class Cache(object):
   __getitem__ = get
 
   def set(self, key, value):
-    if not os.path.exists(CACHE_DIR):
-      os.mkdir(CACHE_DIR)
+    # if not os.path.exists(self.CACHE_DIR):
+    #   os.mkdir(CACHE_DIR)
     fd = open(self._path(key), "wbc")
     if key.startswith("txt:"):
       fd.write(value.encode("utf8"))
@@ -93,20 +95,29 @@ class Converter(object):
   def __init__(self):
     self.handlers = []
     self.cache = Cache()
-    if not os.path.exists(TMP_DIR):
-      os.mkdir(TMP_DIR)
-    if not os.path.exists(CACHE_DIR):
-      os.mkdir(CACHE_DIR)
 
   def init_app(self, app):
+    self.init_work_dirs(
+      cache_dir=os.path.join(app.instance_path, CACHE_DIR),
+      tmp_dir=os.path.join(app.instance_path, TMP_DIR),)
 
     for handler in self.handlers:
       handler.init_app(app)
 
+  def init_work_dirs(self, cache_dir, tmp_dir):
+    self.TMP_DIR = tmp_dir
+    self.CACHE_DIR = cache_dir
+    self.cache.CACHE_DIR = self.CACHE_DIR
+
+    if not os.path.exists(self.TMP_DIR):
+      os.mkdir(self.TMP_DIR)
+    if not os.path.exists(self.CACHE_DIR):
+      os.mkdir(self.CACHE_DIR)
+
   def clear(self):
     self.cache.clear()
-    shutil.rmtree(TMP_DIR)
-    shutil.rmtree(CACHE_DIR)
+    shutil.rmtree(self.TMP_DIR)
+    shutil.rmtree(self.CACHE_DIR)
 
   def register_handler(self, handler):
     self.handlers.append(handler)
