@@ -132,7 +132,8 @@ def _get_translations_multi_paths():
         # test must not use isinstance: Translations is a subclass of
         # NullTranlations
         continue
-      elif translations is not None:
+      elif (translations is not None
+            and translations.__class__ is not NullTranslations):
           translations.merge(trs)
       else:
           translations = trs
