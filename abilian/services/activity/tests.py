@@ -1,7 +1,6 @@
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.subjects import User
-from abilian.services.activity import ActivityEntry
 from abilian.testing import BaseTestCase
 
 from .service import ActivityService
@@ -9,6 +8,7 @@ from .service import ActivityService
 
 class Message1(Entity):
   pass
+
 
 class ActivityTestCase(BaseTestCase):
 

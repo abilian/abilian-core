@@ -135,14 +135,13 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
         self.owner = g.user
 
   def __repr__(self):
-    if hasattr(self, 'name'):
-      if isinstance(self.name, unicode):
-        name = self.name.encode("ascii", errors="ignore")
-      else:
-        name = self.name
-    else:
-      name = "with id=%s" % self.id
-    return "<%s %s>" % (self.__class__.__name__, name)
+    name = self._name
+
+    # Just in case....
+    if isinstance(name, unicode):
+      name = name.encode("ascii", errors="ignore")
+
+    return "<%s %s id=%s>" % (self.__class__.__name__, name, self.id)
 
   @property
   def column_names(self):

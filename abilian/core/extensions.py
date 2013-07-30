@@ -12,7 +12,7 @@ import importlib
 from gettext import NullTranslations
 from babel.support import Translations
 from flask import _request_ctx_stack
-import flaskext.babel
+import flask.ext.babel
 from celery import Celery
 
 __all__ = ['db', 'babel', 'mail', 'celery', 'login_manager']
@@ -126,7 +126,7 @@ def _get_translations_multi_paths():
     # reverse order: thus the application catalog is loaded last, so that
     # translations from libraries can be overriden
     for dirname in reversed(ctx.app.extensions['babel']._translations_paths):
-      trs = Translations.load(dirname, [flaskext.babel.get_locale()])
+      trs = Translations.load(dirname, [flask.ext.babel.get_locale()])
 
       if not trs or trs.__class__ is NullTranslations:
         # test must not use isinstance: Translations is a subclass of
@@ -147,7 +147,7 @@ def _get_translations_multi_paths():
   return translations
 
 # monkey patch flask-babel
-flaskext.babel.get_translations = _get_translations_multi_paths
+flask.ext.babel.get_translations = _get_translations_multi_paths
 
 babel = Babel()
 

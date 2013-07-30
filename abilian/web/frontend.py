@@ -13,11 +13,8 @@ from datetime import date
 from time import strftime, gmtime
 import re
 
-from flask import (
-  session, redirect, request, g, render_template, flash,
-  Blueprint, jsonify, abort, make_response, current_app,
-  url_for,
-  )
+from flask import (session, redirect, request, g, render_template, flash,
+  Blueprint, jsonify, abort, make_response, url_for)
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
@@ -39,6 +36,7 @@ from .widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
 
 logger = logging.getLogger(__name__)
+
 
 class BreadCrumbs(object):
   def __init__(self, l=()):
@@ -112,6 +110,7 @@ def make_single_view(form, **options):
     panels.append(panel)
   return SingleView(form, *panels, **options)
 
+
 class ModuleMeta(type):
   """
   Module metaclass.
@@ -161,6 +160,7 @@ class Module(object):
   view_template = None
   view_options = None
   related_views = []
+  blueprint = None
   search_criterions = (search.TextSearchCriterion("name",
                                                   attributes=('name', 'nom')),)
   _urls = []
@@ -190,7 +190,6 @@ class Module(object):
                                     for c in self.search_criterions))
     for sc in self.search_criterions:
       sc.model = self.managed_class
-
 
   def init_related_views(self):
     related_views = []
