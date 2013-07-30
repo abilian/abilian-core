@@ -8,7 +8,11 @@ Roles and permissions are just strings, and are currently hardcoded.
 from itertools import chain
 
 from flask import g
-from flask.ext.login import AnonymousUserMixin
+# Work around API change
+try:
+  from flask.ext.login import AnonymousUserMixin
+except ImportError:
+  from flask.ext.login import AnonymousUser as AnonymousUserMixin
 from werkzeug.local import LocalProxy
 
 from sqlalchemy.orm import subqueryload, object_session
@@ -254,7 +258,9 @@ class SecurityService(object):
 
     Note2: caching could also be moved upfront to when the user is loaded.
     """
-    assert user_or_group
+    if not user_or_group:
+      return False
+
     user_or_group = noproxy(user_or_group)
     if not self.running:
       return True
