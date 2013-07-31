@@ -10,7 +10,7 @@ import abilian.web.forms
 
 from abilian.core.extensions import babel
 
-from ..widgets import MainTableView, SingleView, Panel, Row, \
+from ..forms.widgets import MainTableView, SingleView, Panel, Row, \
   linkify_url, text2html, EmailWidget
 
 

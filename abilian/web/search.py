@@ -54,8 +54,7 @@ class TextSearchCriterion(BaseCriterion):
 
   def __init__(self, name, label=u'', attributes=None,
                search_fmt=u'%{q}%'):
-    self.name = name
-    self.label = label
+    super(TextSearchCriterion, self).__init__(name, label)
     self.attributes = dict.fromkeys(attributes if attributes is not None
                                     else (name,))
     self._attributes_prepared = False

@@ -31,8 +31,8 @@ from abilian.services import audit_service
 
 from . import search
 from .decorators import templated
-from .forms import ModelFieldList
-from .widgets import Panel, Row, SingleView, RelatedTableView,\
+from .forms.fields import ModelFieldList
+from .forms.widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
 
 logger = logging.getLogger(__name__)
