@@ -2,13 +2,13 @@ import operator
 from functools import partial
 
 from wtforms import ValidationError, SelectMultipleField, SelectField, \
-  DateField, SelectFieldBase, FormField
+  DateField, SelectFieldBase, FormField, DateTimeField
 from wtforms.compat import string_types, text_type
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 from flask.ext.wtf import FileField as BaseFileField
 
-from .widgets import DateInput, Select2, Select2Ajax
+from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax
 
 
 __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
@@ -49,6 +49,14 @@ class FileField(BaseFileField):
       kwargs['multiple'] = 'multiple'
     return BaseFileField.__call__(self, **kwargs)
 
+
+class DateTimeField(DateTimeField):
+  """
+  """
+  widget = DateTimeInput()
+
+  def __init__(self, label=None, validators=None, format='%d/%m/%Y %H:%M', **kwargs):
+    super(DateTimeField, self).__init__(label, validators, format=format, **kwargs)
 
 class DateField(DateField):
   """

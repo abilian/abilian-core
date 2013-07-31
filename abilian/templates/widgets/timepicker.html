@@ -1,0 +1,5 @@
+<div class="input-append bootstrap-timepicker">
+  <input id="{{ id }}" class="span2 timepicker" size="13" type="text" value="{{ value }}"
+ {%- for attr, val in timepicker_attributes.items() %} {{ attr }}={{ val }}{%- endfor %} {%- if required %}required{%- endif %} />
+  <span class="add-on"><i class="icon-time"></i></span>
+</div>

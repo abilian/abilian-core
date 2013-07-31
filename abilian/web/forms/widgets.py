@@ -8,6 +8,7 @@ NOTE: code is currently quite messy. Needs to be refactored.
 import cgi
 import urlparse
 import re
+from datetime import datetime
 from itertools import ifilter
 from collections import namedtuple
 import bleach
@@ -506,6 +507,8 @@ class DateInput(Input):
   def __call__(self, field, **kwargs):
     kwargs.setdefault('id', field.id)
     field_id = kwargs.pop('id')
+    kwargs.setdefault('name', field.name)
+    field_name = kwargs.pop('name')
     kwargs.pop('type', None)
     value = kwargs.pop('value', None)
     if value is None:
@@ -516,14 +519,11 @@ class DateInput(Input):
         .replace("d", "dd")\
         .replace("m", "mm")\
         .replace("Y", "yyyy")
-    params = "data-date-format='%s' %s" % (
-      format,
-      html_params(name=field.name, id=field_id, value=value, **kwargs)
-      )
+
     s = u'<div class="input-append date datepicker" %s>' \
         % html_params(**{'data-date': value, 'data-date-format': format})
     s += u'<input class="span2" size="13" type="text" %s>' \
-        % html_params(name=field.name, id=field.id, value=value)
+        % html_params(name=field_name, id=field_id, value=value)
     s += u'<span class="add-on"><i class="icon-calendar"></i></span>'
     s += u'</div>'
     return Markup(s)
@@ -531,6 +531,92 @@ class DateInput(Input):
   def render_view(self, field):
     return format_date(field.object_data)
 
+
+class TimeInput(Input):
+  """
+  Renders time inputs using boostrap timepicker:
+  https://github.com/jdewit/bootstrap-timepicker
+  """
+  template = 'widgets/timepicker.html'
+
+
+  def __init__(self, template=None, widget_mode='dropdown', h24_mode=True, minuteStep=1,
+               showSeconds=False, secondStep=1, showInputs=False,
+               disableFocus=False, modalBackdrop=False):
+    Input.__init__(self)
+
+    if template is not None:
+      self.template = template
+
+    self.widget_mode = widget_mode
+    self.h24_mode = h24_mode
+    self.minuteStep = minuteStep
+    self.showSeconds = showSeconds
+    self.secondStep = secondStep
+    self.showInputs = showInputs
+    self.disableFocus = disableFocus
+    self.modalBackdrop = modalBackdrop
+    self.strptime = u'%H:%M' if self.h24_mode else u'%I:%M %p'
+
+  def __call__(self, field, **kwargs):
+    kwargs.setdefault('id', field.id)
+    field_id = kwargs.pop('id')
+    value = kwargs.pop('value', None)
+    if value is None:
+      value = field._value()
+    if not value:
+      value = ''
+
+    input_params = {
+      'data-template': self.widget_mode,
+      'data-show-meridian': not self.h24_mode,
+      'data-minute-step': self.minuteStep,
+      'data-show-seconds': self.showSeconds,
+      'data-second-step': self.secondStep,
+      'data-show-inputs': self.showInputs,
+      'data-disable-focus': self.disableFocus,
+      'data-modal-backdrop': self.modalBackdrop
+      }
+
+    input_params = {k: Markup(json.dumps(v)) for k, v in input_params.items()}
+
+    return Markup(render_template(self.template,
+                                  id=field_id, value=value,
+                                  field=field,
+                                  required=False,
+                                  timepicker_attributes=input_params))
+
+
+class DateTimeInput(object):
+
+  def __init__(self):
+    self.date = DateInput()
+    self.time = TimeInput()
+
+  def __call__(self, field, **kwargs):
+    kwargs.setdefault('id', field.id)
+    field_id = kwargs.pop('id')
+    kwargs.setdefault('name', field.name)
+    field_name = kwargs.pop('name')
+
+    value = kwargs.pop('value', None)
+    if value is None:
+      value = datetime.strptime(field._value(), '%d/%m/%Y %H:%M')
+
+    date_value = value.strftime('%d/%m/%Y')
+    time_value = value.strftime('%H:%M')
+
+    return (
+      Markup(u'<input class="datetimepicker" type="hidden" id="{id}" name="{id}" value="{date} {time}" />\n'
+             ''.format(id=field_id, name=field_name, date=date_value, time=time_value))
+             +
+      self.date(field,
+                id=field_id + '-date', name=field_name + '-date',
+                value=date_value,)
+      + self.time(field,
+                  id=field_id + '-time', name=field_name + '-time',
+                  value=time_value)
+      )
 
 class DefaultViewWidget(object):
   def render_view(self, field, **kwargs):
