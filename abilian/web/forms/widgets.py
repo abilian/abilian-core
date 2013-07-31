@@ -23,6 +23,14 @@ from abilian.core.entities import Entity
 from abilian.web.filters import labelize
 from abilian.web import csrf
 
+__all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',
+           'MainTableView', 'RelatedTableView', 'AjaxMainTableView',
+           'SingleView', 'Panel', 'Row', 'Chosen', 'TagInput',
+           'DateInput', 'DefaultViewWidget', 'BooleanWidget', 'FloatWidget',
+           'DateTimeWidget', 'DateWidget', 'MoneyWidget', 'EmailWidget',
+           'URLWidget', 'ListWidget', 'TabularFieldListWidget',
+           'ModelListWidget', 'Select2', 'Select2Ajax']
+
 
 def linkify_url(value):
   """Tranform an URL pulled from the database to a safe HTML fragment."""
@@ -486,6 +494,42 @@ class TagInput(Input):
     return HTMLString(u'<input %s>' % self.html_params(name=field.name, **kwargs))
 
 
+class DateInput(Input):
+  """
+  Renders date inputs using the fancy Bootstrap Datepicker:
+  http://www.eyecon.ro/bootstrap-datepicker/ .
+  """
+  input_type = 'date'
+
+  def __call__(self, field, **kwargs):
+    kwargs.setdefault('id', field.id)
+    field_id = kwargs.pop('id')
+    kwargs.pop('type', None)
+    value = kwargs.pop('value', None)
+    if value is None:
+      value = field._value()
+    if not value:
+      value = ''
+    format = field.format.replace("%", "")\
+        .replace("d", "dd")\
+        .replace("m", "mm")\
+        .replace("Y", "yyyy")
+    params = "data-date-format='%s' %s" % (
+      format,
+      html_params(name=field.name, id=field_id, value=value, **kwargs)
+      )
+    s = u'<div class="input-append date datepicker" %s>' \
+        % html_params(**{'data-date': value, 'data-date-format': format})
+    s += u'<input class="span2" size="13" type="text" %s>' \
+        % html_params(name=field.name, id=field.id, value=value)
+    s += u'<span class="add-on"><i class="icon-calendar"></i></span>'
+    s += u'</div>'
+    return Markup(s)
+
+  def render_view(self, field):
+    return format_date(field.object_data)
+
+
 class DefaultViewWidget(object):
   def render_view(self, field, **kwargs):
     value = field.object_data
@@ -664,3 +708,51 @@ class ModelListWidget(object):
     rendered = render_template(self.template, field=field,  labels=labels,
                                rows=rows, **kwargs)
     return rendered
+
+
+#
+# Selection widget.
+#
+class Select2(Select):
+  """
+  Transforms a Select widget into a Select2 widget. Depends on global JS code.
+  """
+  def __call__(self, *args, **kwargs):
+    # Just add a select2 css class to the widget and let JQuery do the rest.
+    kwargs = kwargs.copy()
+    kwargs['class'] = 'select2'
+    return Select.__call__(self, *args, **kwargs)
+
+  def render_view(self, field, **kwargs):
+    labels  = [label for v, label, checked in field.iter_choices() if checked]
+    return u'; '.join(labels)
+
+
+class Select2Ajax(object):
+  """
+  Ad-hoc select widget based on Select2.
+
+  The code below is probably very fragile, since it depends on the internal
+  structure of a Select2 widget.
+  """
+  def __init__(self, template='widgets/select2ajax.html'):
+    self.template = template
+
+  def __call__(self, field, **kwargs):
+    css_class = kwargs.setdefault('class', u'')
+    if 'js-widget' not in css_class:
+      css_class += u' js-widget'
+      kwargs['class'] = css_class
+
+    extra_args = Markup(html_params(**kwargs))
+    url = field.ajax_source
+    data = field.data # accessor / obj lookup
+    object_name = data._name if data else ""
+    object_id = data.id if data else ""
+
+    return Markup(render_template(self.template,
+                                  name=field.name,
+                                  id=field.id,
+                                  value=object_id, label=object_name, url=url,
+                                  required=not field.allow_blank,
+                                  extra_args=extra_args))
