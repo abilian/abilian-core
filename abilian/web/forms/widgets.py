@@ -151,7 +151,8 @@ class BaseTableView(object):
     for entity in entities:
       table.append(self.render_line(entity))
 
-    template = (self.options.get('template', ''), 'widgets/render_table.html')
+    template = filter(bool, (self.options.get('template'),
+                             'widgets/render_table.html'))
     return Markup(render_template(template,
                                   table=table, js=Markup(js), view=self,
                                   **kwargs))
@@ -360,8 +361,9 @@ class SingleView(object):
       if data:
         panels.append((panel, data,))
 
-    view_template = (self.options.get('view_template') or '',
-                     'widgets/render_single.html')
+    view_template = filter(bool, (self.options.get('view_template'),
+                                  'widgets/render_single.html'))
+
     return Markup(render_template(view_template,
                                   view=self,
                                   csrf_token=csrf.field(),
