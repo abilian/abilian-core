@@ -44,7 +44,6 @@ This includes:
 
 - Using our products daily.
 
-
 You can check the build status:
 
 - `Our own Jenkins server <http://jenkins.abilian.com/job/Abilian-Core/>`_

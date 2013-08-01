@@ -35,7 +35,7 @@ Contents
 
    introduction
    installing
-   using
+   quickstart
    contributing
    api
    changelog
