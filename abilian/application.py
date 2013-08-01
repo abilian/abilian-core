@@ -2,8 +2,10 @@
 Base Flask application class, used by tests or to be extended
 in real applications.
 """
-
+import yaml
 from flask import Flask, g, request, logging
+from flask.helpers import locked_cached_property
+import jinja2
 
 from abilian.core.extensions import mail, db, celery, babel
 from abilian.web.filters import init_filters
@@ -67,6 +69,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # TODO: deal with envvar and pyfile
     self.config.from_object(config)
+    self.setup_logging()
 
     # Initialise helpers and services
     db.init_app(self)
@@ -74,7 +77,9 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # Babel (for i18n)
     babel.init_app(self)
+    babel.add_translations('abilian')
     babel.localeselector(get_locale)
+    babel.timezoneselector(get_timezone)
 
     # celery async service
     celery.config_from_object(config)
@@ -85,6 +90,54 @@ class Application(Flask, ServiceManager, PluginManager):
 
     self.register_services()
     # Note
+
+  def setup_logging(self):
+    self.logger # force flask to create application logger before logging
+                # configuration; else, flask will overwrite our settings
+
+    logging_file = self.config.get('LOGGING_CONFIG_FILE')
+    if logging_file:
+      if logging_file.endswith('.conf'):
+        # old standard 'ini' file config
+        logging.config.fileConfig(logging_file, disable_existing_loggers=False)
+      elif logging_file.endswith('.yml'):
+        # yml config file
+        logging_cfg = yaml.load(open(logging_file, 'r'))
+        logging_cfg.setdefault('version', 1)
+        logging.config.dictConfig(logging_cfg)
+
+  @property
+  def jinja_options(self):
+    options = dict(Flask.jinja_options)
+    if (self.config.get('DEBUG', False)
+        and self.config.get('TEMPLATE_DEBUG', False)):
+      options['undefined'] = jinja2.StrictUndefined
+    return options
+
+  @locked_cached_property
+  def jinja_loader(self):
+    """ Search templates in custom app templates dir (default flask behaviour),
+    fallback on abilian templates
+    """
+    return jinja2.ChoiceLoader([
+      Flask.jinja_loader.func(self),
+      jinja2.PackageLoader('abilian', 'templates'),
+    ])
+
+  # Error handling
+  def handle_user_exception(self, e):
+    # inconditionally forget all DB changes, and ensure clean session during
+    # exception handling
+    db.session.rollback()
+    return Flask.handle_user_exception(self, e)
+
+  def handle_exception(self, e):
+    if not db.session().is_active:
+      # something happened in error handlers and session is not usable, rollback
+      # will restore a usable session
+      db.session().rollback()
+    return Flask.handle_exception(self, e)
+
 
   def create_db(self):
     from abilian.core.subjects import User
@@ -112,3 +165,6 @@ def get_locale():
   # header the browser transmits.  We support de/fr/en in this
   # example.  The best match wins.
   return request.accept_languages.best_match(['en', 'fr'])
+
+def get_timezone():
+  return abilian.core.util.system_tz
