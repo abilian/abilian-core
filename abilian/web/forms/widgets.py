@@ -605,8 +605,8 @@ class DateTimeInput(object):
       if field_value:
         value = datetime.strptime(field_value, '%d/%m/%Y %H:%M')
 
-    date_value = value.strftime('%d/%m/%Y') if value else None
-    time_value = value.strftime('%H:%M') if value else None
+    date_value = value.strftime('%d/%m/%Y') if value else u''
+    time_value = value.strftime('%H:%M') if value else u''
 
     return (
       Markup(u'<input class="datetimepicker" type="hidden" id="{id}" name="{id}" value="{date} {time}" />\n'
