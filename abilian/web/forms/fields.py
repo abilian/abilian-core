@@ -58,6 +58,7 @@ class DateTimeField(DateTimeField):
   def __init__(self, label=None, validators=None, format='%d/%m/%Y %H:%M', **kwargs):
     super(DateTimeField, self).__init__(label, validators, format=format, **kwargs)
 
+
 class DateField(DateField):
   """
   A text field which stores a `datetime.datetime` matching a format.
