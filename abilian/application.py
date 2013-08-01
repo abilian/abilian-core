@@ -8,6 +8,7 @@ from flask.helpers import locked_cached_property
 import jinja2
 
 from abilian.core.extensions import mail, db, celery, babel
+import abilian.core.util
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
 from abilian.services import audit_service, index_service, activity_service
@@ -64,8 +65,9 @@ class Application(Flask, ServiceManager, PluginManager):
   """
   Base application class. Extend it in your own app.
   """
-  def __init__(self, config):
-    Flask.__init__(self, __name__)
+  def __init__(self, config, name=None, *args, **kwargs):
+    kwargs.setdefault('instance_relative_config', True)
+    Flask.__init__(self, name or __name__, *args, **kwargs)
 
     # TODO: deal with envvar and pyfile
     self.config.from_object(config)
