@@ -601,10 +601,12 @@ class DateTimeInput(object):
 
     value = kwargs.pop('value', None)
     if value is None:
-      value = datetime.strptime(field._value(), '%d/%m/%Y %H:%M')
+      field_value = field._value()
+      if field_value:
+        value = datetime.strptime(field_value, '%d/%m/%Y %H:%M')
 
-    date_value = value.strftime('%d/%m/%Y')
-    time_value = value.strftime('%H:%M')
+    date_value = value.strftime('%d/%m/%Y') if value else None
+    time_value = value.strftime('%H:%M') if value else None
 
     return (
       Markup(u'<input class="datetimepicker" type="hidden" id="{id}" name="{id}" value="{date} {time}" />\n'
