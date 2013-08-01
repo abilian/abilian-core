@@ -19,7 +19,7 @@ Flask-Mail
 #Flask-Cache
 
 # Other
-SQLAlchemy==0.7.9
+SQLAlchemy>=0.7,<0.8
 phonenumbers
 whoosh
 markdown
