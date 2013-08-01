@@ -45,12 +45,14 @@ This includes:
 - Using our products daily.
 
 
-The following badges give you the build status:
+You can check the build status:
 
-.. image:: http://jenkins.abilian.com/job/Abilian-Core/badge/icon
+- `Our own Jenkins server <http://jenkins.abilian.com/job/Abilian-Core/>`_
 
-.. image:: https://drone.io/github.com/abilian/abilian-core/status.png
+- `On drone.io <https://drone.io/github.com/abilian/abilian-core/latest>`_
 
-.. image:: https://api.travis-ci.org/abilian/abilian-core.png
+- `On Travis CI <https://travis-ci.org/abilian/abilian-core>`_
 
-.. image:: https://coveralls.io/repos/abilian/abilian-core/badge.png?branch=master
+You can also check the coverage reports:
+
+- `On coveralls.io <https://coveralls.io/r/abilian/abilian-core?branch=master>`_
