@@ -39,8 +39,14 @@ check-docs:
 install:
 	python setup.py install
 
-doc:
-	python setup.py build_sphinx
+doc: doc-html doc-pdf
+
+doc-html:
+	sphinx-build -b html docs/ docs/_build/html
+
+doc-pdf:
+	sphinx-build -b latex docs/ docs/_build/latex
+	make -C docs/_build/latex all-pdf
 
 clean:
 	find . -name "*.pyc" | xargs rm -f
@@ -55,6 +61,7 @@ clean:
 	rm -rf $(SRC)/static/gen
 	rm -rf dist build
 	rm -rf htmlcov
+	rm -rf docs/_build
 
 tidy: clean
 	rm -rf .tox

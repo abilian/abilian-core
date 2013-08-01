@@ -1,8 +1,16 @@
 API
 ====
 
-``abilian.core``
-----------------
+Package ``abilian``
+-------------------
+
+.. automodule:: abilian.application
+   :members:
+   :undoc-members:
+
+
+Package ``abilian.core``
+------------------------
 
 :mod:`abilian.core.entities`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -46,8 +54,8 @@ API
    :members:
    :undoc-members:
 
-``abilian.services``
---------------------
+Package ``abilian.services``
+----------------------------
 
 :mod:`abilian.services.activity`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -85,8 +93,9 @@ API
    :members:
    :undoc-members:
 
-``abilian.web``
----------------
+
+Package ``abilian.web``
+-----------------------
 
 :mod:`abilian.web.decorators`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -112,7 +121,7 @@ API
    .. autoclass:: ActionRegistry
       :members:
       :undoc-members:
-   
+
 :mod:`abilian.web.forms`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -1,28 +1,48 @@
-.. Abilian documentation master file, created by
-   sphinx-quickstart on Fri Jun  8 11:00:48 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+:orphan:
 
-===================================
-Welcome to Abilian's documentation!
-===================================
+Welcome to Abilian Core
+=======================
 
-Abilian is a platform for enterprise social networking and other social applications.
+.. image:: images/abilian-logo-baseline.png
+   :alt: Abilian - Connected we work
+   :width: 350
 
 
-Contents:
+Welcome to Abilian Core's documentation.
+
+Abilian is a platform for enterprise social networking and other social
+applications.
+
+Abilian Core (the only publicly released package of the Abilian suite, so far),
+is the foundation of the Abilian platform.
+
+It builds on powerful and well documented Python librairies, so this
+documentation will assume that a developer already has some knowledge of these
+librairies.
+
+The main building blocks of Abilian Core are:
+
+- `Flask <http://flask.pocoo.org/>`_
+- `SQLAlchemy <http://www.sqlalchemy.org/>`_
+- `WTForms <http://wtforms.simplecodes.com/>`_
+
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
 
-   installation
-   quickstart
-   architecture
+   introduction
+   installing
+   using
+   contributing
    api
    changelog
+   credits
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
