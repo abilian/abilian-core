@@ -515,7 +515,8 @@ class DateInput(Input):
       value = field._value()
     if not value:
       value = ''
-    format = field.format.replace("%", "")\
+
+    format = kwargs.pop('format', field.format).replace("%", "")\
         .replace("d", "dd")\
         .replace("m", "mm")\
         .replace("Y", "yyyy")
@@ -614,7 +615,7 @@ class DateTimeInput(object):
              +
       self.date(field,
                 id=field_id + '-date', name=field_name + '-date',
-                value=date_value,)
+                value=date_value, format='%d/%m/%Y')
       + self.time(field,
                   id=field_id + '-time', name=field_name + '-time',
                   value=time_value)
