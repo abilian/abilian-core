@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 
 from flask.ext.login import UserMixin
 
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTime, Text
@@ -187,7 +187,7 @@ class Group(Entity, Principal):
   description = Column(UnicodeText, info=SEARCHABLE)
 
   members = relationship("User", secondary=membership,
-                         backref='groups')
+                         backref=backref('groups', lazy='joined'))
   admins = relationship("User", secondary=administratorship)
 
   photo = Column(LargeBinary)
