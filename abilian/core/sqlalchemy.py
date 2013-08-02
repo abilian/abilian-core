@@ -7,6 +7,16 @@ import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
 
 
+def filter_cols(model, *filtered_columns):
+  """ Return columnsnames for a model except named ones. Useful for defer() for
+  example to retain only columns of interest
+  """
+  m = sa.orm.class_mapper(model)
+  return list(set(p.key for p in m.iterate_properties
+              if hasattr(p, 'columns')).difference(filtered_columns)
+              )
+
+
 class MutationDict(Mutable, dict):
   """ Provides a dictionary type with mutability support.
   """
