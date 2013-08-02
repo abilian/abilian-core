@@ -58,8 +58,7 @@ class Principal(object):
 
 
 class User(Principal, UserMixin, Entity):
-  __editable__ = ['first_name', 'last_name', 'job_title', 'department',
-                  'company', 'email', 'password']
+  __editable__ = ['first_name', 'last_name', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
   query_class = UserQuery
@@ -72,15 +71,6 @@ class User(Principal, UserMixin, Entity):
   # System information
   locale = Column(Text)
 
-  # Additional information (should be customisable)
-  job_title = Column(UnicodeText, info=SEARCHABLE)
-  department = Column(UnicodeText, info=SEARCHABLE)
-  company = Column(UnicodeText, info=SEARCHABLE)
-  location = Column(UnicodeText)
-  expertise = Column(UnicodeText)
-  interests = Column(UnicodeText)
-  # More: education, work experience, etc.
-
   email = Column(UnicodeText, nullable=False)
   can_login = Column(Boolean, nullable=False)
   password = Column(UnicodeText, default=u"*",
@@ -91,17 +81,6 @@ class User(Principal, UserMixin, Entity):
   last_active = Column(DateTime, info=SYSTEM)
 
   __table_args__ = (UniqueConstraint('email'),)
-
-  # TODO: add if needed:
-  # location
-  # manager
-  # phone numbers (office, mobile)
-  # email(s)
-  # IM addresses
-  # social networking addresses
-  # properties
-  # profile / interests / job description
-  # settings
 
   id = Entity.id
   followers = relationship("User", secondary=following,
