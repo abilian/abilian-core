@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 
 from flask.ext.login import UserMixin
 
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, deferred
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTime, Text
@@ -76,7 +76,7 @@ class User(Principal, UserMixin, Entity):
   password = Column(UnicodeText, default=u"*",
                     info={'audit_hide_content': True,})
 
-  photo = Column(LargeBinary)
+  photo = deferred(Column(LargeBinary))
 
   last_active = Column(DateTime, info=SYSTEM)
 
