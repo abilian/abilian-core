@@ -11,14 +11,10 @@ import os
 import importlib
 from gettext import NullTranslations
 from babel.support import Translations
-from flask import _request_ctx_stack, current_app
+from flask import _request_ctx_stack
 import flask.ext.babel
-from celery import (
-  Celery as CeleryBase,
-  Task as TaskBase,
-  current_app as current_celery_app,
-  )
-from celery.task import PeriodicTask as PeriodicTaskBase
+from celery import Celery
+from celery.task import periodic_task as periodic_task_base
 
 __all__ = ['db', 'babel', 'mail', 'celery', 'login_manager']
 
@@ -78,39 +74,8 @@ sa.event.listen(db.Model, 'class_instrument', _install_get_display_value)
 # def ...
 #
 # Application should configure it (i.e. celery.config_from_object, etc)
-class AppContextTask(TaskBase):
-  """ Task with application context set up
-  """
-  abstract=True
-
-  def __call__(self, *args, **kwargs):
-    with current_app.app_context():
-      return TaskBase.__call__(self, *args, **kwargs)
-
-
-class AppContextPeriodicTask(PeriodicTaskBase):
-  """ Periodic task with application context set up
-  """
-  abstract=True
-
-  def __call__(self, *args, **kwargs):
-    with current_app.app_context():
-      return PeriodicTaskBase.__call__(self, *args, **kwargs)
-
-
-def periodic_task(*args, **options):
-  """Same as `celery.task.periodic_task, but task is run in app context"""
-  return current_celery_app.task(
-    **dict({'base': AppContextPeriodicTask},
-           **options))
-
-
-class Celery(CeleryBase):
-  Task = AppContextTask
-
 celery = Celery()
-# celery.Task = AppContextTask
-
+periodic_task = periodic_task_base
 
 # babel i18n
 from flask.ext.babel import Babel as BabelBase
