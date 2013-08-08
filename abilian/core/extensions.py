@@ -13,10 +13,20 @@ from gettext import NullTranslations
 from babel.support import Translations
 from flask import _request_ctx_stack
 import flask.ext.babel
-from celery import Celery
-from celery.task import periodic_task as periodic_task_base
 
 __all__ = ['db', 'babel', 'mail', 'celery', 'login_manager']
+
+# celery
+#
+# for defining a task:
+#
+# from abilian.core.extensions import celery
+# @celery.task
+# def ...
+#
+# Application should set flask_app and configure celery
+# (i.e. celery.config_from_object, etc)
+from .celery import celery
 
 # Standard extensions.
 from flask.ext.mail import Mail
@@ -64,18 +74,6 @@ def _install_get_display_value(cls):
 
 
 sa.event.listen(db.Model, 'class_instrument', _install_get_display_value)
-
-# celery
-#
-# for defining a task:
-#
-# from abilian.core.extensions import celery
-# @celery.task
-# def ...
-#
-# Application should configure it (i.e. celery.config_from_object, etc)
-celery = Celery()
-periodic_task = periodic_task_base
 
 # babel i18n
 from flask.ext.babel import Babel as BabelBase
