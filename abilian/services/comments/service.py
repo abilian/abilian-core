@@ -36,7 +36,6 @@ class CommentService(object):
     comments = comments.order_by(Comment.created_at).all()
     return comments
 
-
   def create_comment(self, object, content):
     """Creates and returns a new comment on a given commentable object.
     """
@@ -49,7 +48,6 @@ class CommentService(object):
     db.session.add(comment)
     db.session.flush()
     return comment
-
 
   def delete_comment(self, comment):
     """Deletes an existing comment.

@@ -7,6 +7,7 @@ from functools import wraps
 import datetime
 from pytz import utc
 from calendar import timegm
+import bleach
 
 from jinja2 import Markup, escape, evalcontextfilter
 from flask.ext import babel
@@ -143,6 +144,11 @@ def abbrev(s, max_size):
     return s[0:h] + "..." + s[-h:]
 
 
+@autoescape
+def linkify(s):
+  return Markup(bleach.linkify(s))
+
+
 def init_filters(app):
   app.jinja_env.filters['nl2br'] = nl2br
   app.jinja_env.filters['paragraphs'] = paragraphs
@@ -154,4 +160,5 @@ def init_filters(app):
   app.jinja_env.filters['abbrev'] = abbrev
   app.jinja_env.filters['filesize'] = filesize
   app.jinja_env.filters['labelize'] = labelize
+  app.jinja_env.filters['linkify'] = linkify
 

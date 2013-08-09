@@ -4,6 +4,7 @@ from abilian.testing import BaseTestCase
 from .service import PreferenceService
 from .models import UserPreference
 
+
 class PreferencesTestCase(BaseTestCase):
 
   def test_preferences(self):

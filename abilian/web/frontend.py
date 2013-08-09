@@ -67,6 +67,8 @@ class BreadCrumbs(object):
 def add_to_recent_items(entity, type=None):
   if not type:
     type = entity.__class__.__name__.lower()
+  if not hasattr(g, 'recent_items'):
+    g.recent_items = []
   g.recent_items.insert(0, dict(type=type, name=entity._name, url=entity._url))
   s = set()
   l = []

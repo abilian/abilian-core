@@ -12,7 +12,10 @@ from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from flask.ext.wtf.form import Form as BaseForm
 
-from .widgets import DefaultViewWidget
+from .fields import *
+from .filters import *
+from .validators import *
+from .widgets import *
 
 logger = logging.getLogger(__name__)
 
