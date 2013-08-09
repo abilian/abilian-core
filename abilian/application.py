@@ -86,7 +86,13 @@ class Application(Flask, ServiceManager, PluginManager):
   def __init__(self, name=None, config=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
     name = name or __name__
+
+    # used by make_config to determine if we try to load config from instance /
+    # environment variable /...
+    self._ABILIAN_INIT_TESTING_FLAG = (getattr(config, 'TESTING', False)
+                                       if config else False)
     Flask.__init__(self, name, *args, **kwargs)
+    del self._ABILIAN_INIT_TESTING_FLAG
 
     if config:
       self.config.from_object(config)
@@ -102,9 +108,12 @@ class Application(Flask, ServiceManager, PluginManager):
     if not self.config.get('TESTING', False):
       self.start_services()
 
-
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
+
+    if self._ABILIAN_INIT_TESTING_FLAG:
+      # testing: don't load any config file!
+      return config
 
     if instance_relative:
       cfg_path = os.path.join(self.instance_path, 'config.py')
