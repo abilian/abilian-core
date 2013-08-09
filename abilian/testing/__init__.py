@@ -30,7 +30,7 @@ class BaseTestCase(TestCase):
 
   def create_app(self):
     config = self.config_class()
-    self.app = self.application_class(config)
+    self.app = self.application_class(config=config)
     return self.app
 
   def setUp(self):

@@ -27,7 +27,7 @@ class IntegrationTestCase(TestCase):
     config = TestConfig()
     config.WHOOSH_BASE = os.path.join(BASEDIR, "whoosh", str(uuid.uuid4()))
     config.NO_LOGIN = self.no_login
-    self.app = Application(config)
+    self.app = Application(config=config)
 
     return self.app
 

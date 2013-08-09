@@ -9,7 +9,7 @@ from celery.utils.imports import symbol_by_name
 
 def default_app_factory():
   from abilian.application import Application
-  return Application(None)
+  return Application()
 
 def is_celery_setting(key):
   return key.startswith('CELERY') \

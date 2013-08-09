@@ -67,6 +67,7 @@ class PluginManager(object):
 
 default_config = dict(Flask.default_config)
 default_config.update(
+  TEMPLATE_DEBUG=False,
   PLUGINS=(),
   )
 default_config = ImmutableDict(default_config)
@@ -82,7 +83,7 @@ class Application(Flask, ServiceManager, PluginManager):
   #: configured instance.
   CONFIG_ENVVAR = 'ABILIAN_CONFIG'
 
-  def __init__(self, config, name=None, *args, **kwargs):
+  def __init__(self, name=None, config=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
     name = name or __name__
     Flask.__init__(self, name, *args, **kwargs)
@@ -94,6 +95,13 @@ class Application(Flask, ServiceManager, PluginManager):
     self.init_extensions()
     self.register_plugins()
     self.register_services()
+
+    # Initialise Abilian core services.
+    # Must come after all entity classes have been declared.
+    # Inherited from ServiceManager. Will need some configuration love later.
+    if not self.config.get('TESTING', False):
+      self.start_services()
+
 
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
@@ -121,7 +129,8 @@ class Application(Flask, ServiceManager, PluginManager):
         logging.config.dictConfig(logging_cfg)
 
   def init_extensions(self):
-    # Initialise helpers and services
+    """ Initialize flask extensions, helpers and services
+    """
     db.init_app(self)
     mail.init_app(self)
 
