@@ -76,6 +76,10 @@ class Application(Flask, ServiceManager, PluginManager):
   Base application class. Extend it in your own app.
   """
   default_config = default_config
+
+  #: environment variable used to locate a config file to load last (after :
+  #: instance config file). Use this if you want to override some settings on a
+  #: configured instance.
   CONFIG_ENVVAR = 'ABILIAN_CONFIG'
 
   def __init__(self, config, name=None, *args, **kwargs):
