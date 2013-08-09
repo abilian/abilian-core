@@ -2,9 +2,11 @@
 """
 Create all standard extensions.
 
-Because of issues with circular dependencies, Abilian-specific extensions are
-created later.
 """
+
+# Note: Because of issues with circular dependencies, Abilian-specific extensions are
+# created later.
+
 from __future__ import absolute_import
 
 import os
@@ -14,7 +16,7 @@ from babel.support import Translations
 from flask import _request_ctx_stack
 import flask.ext.babel
 
-__all__ = ['db', 'babel', 'mail', 'celery', 'login_manager']
+__all__ = ['get_extension', 'db', 'babel', 'mail', 'celery', 'login_manager']
 
 # celery
 #
@@ -35,6 +37,15 @@ mail = Mail()
 import sqlalchemy as sa
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
+
+
+def get_extension(name):
+  """Get the named extension from the current app, returning None if not found.
+  """
+
+  from flask import current_app
+  return current_app.extensions.get(name)
+
 
 def _install_get_display_value(cls):
 
