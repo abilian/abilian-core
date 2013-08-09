@@ -2,8 +2,12 @@
 Base Flask application class, used by tests or to be extended
 in real applications.
 """
+import os
 import yaml
-from flask import Flask, g, request, logging
+import logging
+
+from werkzeug.datastructures import ImmutableDict
+from flask import Flask, g, request, current_app
 from flask.helpers import locked_cached_property
 import jinja2
 
@@ -61,37 +65,41 @@ class PluginManager(object):
     module.register_plugin(self)
 
 
+default_config = dict(Flask.default_config)
+default_config.update(
+  PLUGINS=(),
+  )
+default_config = ImmutableDict(default_config)
+
 class Application(Flask, ServiceManager, PluginManager):
   """
   Base application class. Extend it in your own app.
   """
+  default_config = default_config
+  CONFIG_ENVVAR = 'ABILIAN_CONFIG'
+
   def __init__(self, config, name=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
-    Flask.__init__(self, name or __name__, *args, **kwargs)
+    name = name or __name__
+    Flask.__init__(self, name, *args, **kwargs)
 
-    # TODO: deal with envvar and pyfile
-    self.config.from_object(config)
+    if config:
+      self.config.from_object(config)
+
     self.setup_logging()
-
-    # Initialise helpers and services
-    db.init_app(self)
-    mail.init_app(self)
-
-    # Babel (for i18n)
-    babel.init_app(self)
-    babel.add_translations('abilian')
-    babel.localeselector(get_locale)
-    babel.timezoneselector(get_timezone)
-
-    # celery async service
-    celery.config_from_object(config)
-
-    # Initialise filters
-    init_filters(self)
-    #init_auth(self)
-
+    self.init_extensions()
+    self.register_plugins()
     self.register_services()
-    # Note
+
+  def make_config(self, instance_relative=False):
+    config = Flask.make_config(self, instance_relative)
+
+    if instance_relative:
+      cfg_path = os.path.join(self.instance_path, 'config.py')
+      config.from_pyfile(cfg_path, silent=True)
+
+    config.from_envvar(self.CONFIG_ENVVAR, silent=True)
+    return config
 
   def setup_logging(self):
     self.logger # force flask to create application logger before logging
@@ -107,6 +115,35 @@ class Application(Flask, ServiceManager, PluginManager):
         logging_cfg = yaml.load(open(logging_file, 'r'))
         logging_cfg.setdefault('version', 1)
         logging.config.dictConfig(logging_cfg)
+
+  def init_extensions(self):
+    # Initialise helpers and services
+    db.init_app(self)
+    mail.init_app(self)
+
+    # Babel (for i18n)
+    babel.init_app(self)
+    babel.add_translations('abilian')
+    babel.localeselector(get_locale)
+    babel.timezoneselector(get_timezone)
+
+    # celery async service
+    celery.config_from_object(self.config)
+
+  def register_plugins(self):
+    """ Load plugins listing in config variable 'PLUGINS'
+    """
+    for plugin_fqdn in self.config['PLUGINS']:
+      self.register_plugin(plugin_fqdn)
+
+  # Jinja setup
+  def create_jinja_environment(self):
+    env = Flask.create_jinja_environment(self)
+    env.globals.update(
+      app=current_app,
+    )
+    init_filters(env)
+    return env
 
   @property
   def jinja_options(self):
@@ -141,6 +178,10 @@ class Application(Flask, ServiceManager, PluginManager):
     return Flask.handle_exception(self, e)
 
 
+  @property
+  def db(self):
+    return self.extensions['sqlalchemy'].db
+
   def create_db(self):
     from abilian.core.subjects import User
     with self.app_context():
@@ -151,7 +192,7 @@ class Application(Flask, ServiceManager, PluginManager):
         db.session.commit()
 
 
-def create_app(config):
+def create_app(config=None):
   return Application(config)
 
 

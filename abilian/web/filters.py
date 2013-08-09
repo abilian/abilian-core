@@ -10,6 +10,7 @@ from calendar import timegm
 import bleach
 
 from jinja2 import Markup, escape, evalcontextfilter
+from flask import Flask
 from flask.ext import babel
 from flask.ext.babel import gettext as _
 
@@ -143,22 +144,24 @@ def abbrev(s, max_size):
     h = max_size / 2 - 1
     return s[0:h] + "..." + s[-h:]
 
-
 @autoescape
 def linkify(s):
   return Markup(bleach.linkify(s))
 
+def init_filters(env):
+  if isinstance(env, Flask):
+    # old api for init_filters: we used to pass flask application
+    env = env.jinja_env
 
-def init_filters(app):
-  app.jinja_env.filters['nl2br'] = nl2br
-  app.jinja_env.filters['paragraphs'] = paragraphs
-  app.jinja_env.filters['date_age'] = date_age
-  app.jinja_env.filters['age'] = age
-  app.jinja_env.filters['date'] = date
-  app.jinja_env.filters['to_timestamp'] = to_timestamp
+  env.filters['nl2br'] = nl2br
+  env.filters['paragraphs'] = paragraphs
+  env.filters['date_age'] = date_age
+  env.filters['age'] = age
+  env.filters['date'] = date
+  env.filters['to_timestamp'] = to_timestamp
 
-  app.jinja_env.filters['abbrev'] = abbrev
-  app.jinja_env.filters['filesize'] = filesize
-  app.jinja_env.filters['labelize'] = labelize
-  app.jinja_env.filters['linkify'] = linkify
+  env.filters['abbrev'] = abbrev
+  env.filters['filesize'] = filesize
+  env.filters['labelize'] = labelize
+  env.filters['linkify'] = linkify
 

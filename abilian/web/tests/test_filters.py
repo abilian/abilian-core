@@ -7,15 +7,8 @@ from abilian.core.util import system_tz
 
 from ..filters import init_filters, filesize, date_age
 
-
-class FakeApp(object):
-  def __init__(self, env):
-    self.jinja_env = env
-
-
 env = Environment()
-init_filters(FakeApp(env))
-
+init_filters(env)
 
 class TestFilters(unittest.TestCase):
 
