@@ -7,7 +7,7 @@ subscribers that something happened.
 
 Cf. http://flask.pocoo.org/docs/signals/ for detailed documentation.
 
-The main signal is currently :ref:`activity`.
+The main signal is currently :obj:`activity`.
 """
 
 from __future__ import absolute_import
