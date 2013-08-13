@@ -45,9 +45,12 @@ class BaseTestCase(TestCase):
   @classmethod
   def tearDownClass(cls):
     tmp_dir = cls.TEST_INSTANCE_PATH
-    if tmp_dir and tmp_dir.startswith('tmp-py-unittest'):
-      shutil.rmtree(tmp_dir)
-      cls.TEST_INSTANCE_PATH = None
+    if tmp_dir:
+      is_dir = os.path.isdir(tmp_dir)
+      basename = os.path.basename(tmp_dir)
+      if is_dir and basename.startswith('tmp-py-unittest'):
+        shutil.rmtree(tmp_dir)
+        cls.TEST_INSTANCE_PATH = None
 
     TestCase.tearDownClass()
 
