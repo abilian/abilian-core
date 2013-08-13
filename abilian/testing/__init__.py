@@ -4,7 +4,8 @@ import os
 
 import subprocess
 import requests
-
+import tempfile
+import shutil
 
 assert not 'twill' in subprocess.__file__
 
@@ -28,6 +29,27 @@ class BaseTestCase(TestCase):
   config_class = TestConfig
   application_class = Application
 
+  TEST_INSTANCE_PATH = None
+
+  @classmethod
+  def setUpClass(cls):
+    TestCase.setUpClass()
+    join = os.path.join
+    tmp_dir = cls.TEST_INSTANCE_PATH = tempfile.mkdtemp(
+      prefix='tmp-py-unittest-',
+      suffix='-' + cls.__name__,
+    )
+    os.mkdir(join(tmp_dir, 'tmp'))
+    os.mkdir(join(tmp_dir, 'cache'))
+
+  @classmethod
+  def tearDownClass(cls):
+    tmp_dir = cls.TEST_INSTANCE_PATH
+    if tmp_dir and tmp_dir.startswith('tmp-py-unittest'):
+      shutil.rmtree(tmp_dir)
+      cls.TEST_INSTANCE_PATH = None
+
+    TestCase.tearDownClass()
   def create_app(self):
     config = self.config_class()
     self.app = self.application_class(config=config)
