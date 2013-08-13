@@ -55,8 +55,8 @@ class SecurityService(object):
       self.init_app(app)
 
   def init_app(self, app):
-    self.app = app
     app.extensions['security'] = self
+    app.services['security'] = self
 
   def start(self):
     """Starts the service.

@@ -32,6 +32,7 @@ class AuditService(object):
   def init_app(self, app):
     self.app = app
     app.extensions['audit'] = self
+    app.services['audit'] = self
 
   def start(self):
     assert not self.running

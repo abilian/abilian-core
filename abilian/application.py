@@ -25,24 +25,17 @@ __all__ = ['create_app', 'Application', 'ServiceManager']
 class ServiceManager(object):
   """
   Mixin that provides lifecycle (register/start/stop) support for services.
-
-  XXX: too much hardcoding here.
   """
-
-  def register_services(self):
-    audit_service.init_app(self)
-    index_service.init_app(self)
-    activity_service.init_app(self)
+  def __init__(self):
+    self.services = {}
 
   def start_services(self):
-    audit_service.start()
-    index_service.start()
-    activity_service.start()
+    for svc in self.services.values():
+      svc.start()
 
   def stop_services(self):
-    audit_service.stop()
-    index_service.stop()
-    activity_service.stop()
+    for svc in self.services.values():
+      svc.stop()
 
 
 class PluginManager(object):
@@ -94,13 +87,15 @@ class Application(Flask, ServiceManager, PluginManager):
     Flask.__init__(self, name, *args, **kwargs)
     del self._ABILIAN_INIT_TESTING_FLAG
 
+    ServiceManager.__init__(self)
+    PluginManager.__init__(self)
+
     if config:
       self.config.from_object(config)
 
     self.setup_logging()
     self.init_extensions()
     self.register_plugins()
-    self.register_services()
 
     # Initialise Abilian core services.
     # Must come after all entity classes have been declared.
@@ -148,6 +143,10 @@ class Application(Flask, ServiceManager, PluginManager):
     babel.add_translations('abilian')
     babel.localeselector(get_locale)
     babel.timezoneselector(get_timezone)
+
+    audit_service.init_app(self)
+    index_service.init_app(self)
+    activity_service.init_app(self)
 
     # celery async service
     celery.config_from_object(self.config)

@@ -51,6 +51,8 @@ class WhooshIndexService(object):
   def init_app(self, app):
     self.app = app
     app.extensions['indexing'] = self
+    app.services['indexing'] = self
+
     self.whoosh_base = app.config.get("WHOOSH_BASE")
     if not self.whoosh_base:
       self.whoosh_base = "data/whoosh"  # Default value

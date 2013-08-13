@@ -19,7 +19,8 @@ class ActivityService(object):
       self.init_app(app)
 
   def init_app(self, app):
-    self.app = app
+    app.extensions['activity'] = self
+    app.services['activity'] = self
 
   def start(self):
     assert not self.running

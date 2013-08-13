@@ -28,15 +28,12 @@ class IntegrationTestCase(BaseTestCase):
   def setUp(self):
     BaseTestCase.setUp(self)
     init_user()
+    security.init_app(self.app)
     self.app.start_services()
 
-    security.init_app(self.app)
-    security.start()
-
   def tearDown(self):
-    security.stop()
-    security.clear()
     self.app.stop_services()
+    security.clear()
     BaseTestCase.tearDown(self)
 
 
