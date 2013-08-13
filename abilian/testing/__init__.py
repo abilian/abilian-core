@@ -50,9 +50,18 @@ class BaseTestCase(TestCase):
       cls.TEST_INSTANCE_PATH = None
 
     TestCase.tearDownClass()
+
+  def get_setup_config(self):
+    """ Called by `create_app`
+    """
+    return self.config_class()
+
   def create_app(self):
-    config = self.config_class()
-    self.app = self.application_class(config=config)
+    config = self.get_setup_config()
+    self.app = self.application_class(
+      config=config,
+      instance_path=self.TEST_INSTANCE_PATH,
+    )
     return self.app
 
   def setUp(self):
