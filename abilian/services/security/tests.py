@@ -29,10 +29,10 @@ class IntegrationTestCase(BaseTestCase):
     BaseTestCase.setUp(self)
     init_user()
     security.init_app(self.app)
-    self.app.start_services()
+    security.start()
 
   def tearDown(self):
-    self.app.stop_services()
+    security.stop()
     security.clear()
     BaseTestCase.tearDown(self)
 
