@@ -123,6 +123,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
     logging_file = self.config.get('LOGGING_CONFIG_FILE')
     if logging_file:
+      logging_file = os.path.abspath(os.path.join(self.instance_path,
+                                                  logging_file))
       if logging_file.endswith('.conf'):
         # old standard 'ini' file config
         logging.config.fileConfig(logging_file, disable_existing_loggers=False)
