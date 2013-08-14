@@ -4,7 +4,10 @@ Flask extensions (see: http://flask.pocoo.org/docs/extensiondev/ )
 
 """
 
-__all__ = ['audit_service', 'index_service', 'activity_service']
+__all__ = ['Service', 'ServiceState',
+           'audit_service', 'index_service', 'activity_service']
+
+from .base import Service, ServiceState
 
 # Homegrown extensions.
 from .audit import AuditService, audit_service
