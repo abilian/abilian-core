@@ -21,6 +21,7 @@ from sqlalchemy import sql
 from abilian.core.subjects import User, Group, Principal
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
+from abilian.services import Service, ServiceState
 from abilian.services.security.models import SecurityAudit, RoleAssignment, \
   InheritSecurity
 
@@ -45,30 +46,20 @@ class SecurityError(Exception):
   pass
 
 
-class SecurityService(object):
-
+class SecurityServiceState(ServiceState):
+  """ """
   use_cache = True
 
-  def __init__(self, app=None):
-    self.running = False
-    if app:
-      self.init_app(app)
+
+class SecurityService(Service):
+  """ """
+  name = 'security'
+  AppStateClass = SecurityServiceState
 
   def init_app(self, app):
-    app.extensions['security'] = self
-    app.services['security'] = self
-
-  def start(self):
-    """Starts the service.
-    """
-    assert not self.running
-    self.running = True
-
-  def stop(self):
-    """Stops the service. Every security check will be granted from now on.
-    """
-    assert self.running
-    self.running = False
+    Service.init_app(self, app)
+    state = app.extensions[self.name]
+    state.use_cache = True
 
   def clear(self):
     pass
@@ -183,7 +174,7 @@ class SecurityService(object):
 
     Return role_cache of `principal`
     """
-    if not self.use_cache:
+    if not self.app_state.use_cache:
       return None
 
     if not self._has_role_cache(principal) or overwrite:
@@ -194,7 +185,7 @@ class SecurityService(object):
     """ Fill role cache for `principals` (Users and/or Groups), in order to
     avoid too many queries when checking role access with 'has_role'
     """
-    if not self.use_cache:
+    if not self.app_state.use_cache:
       return
 
     q = RoleAssignment.query
@@ -279,7 +270,7 @@ class SecurityService(object):
     else:
       object_str = None
 
-    if self.use_cache:
+    if self.app_state.use_cache:
       cache = self._fill_role_cache(user_or_group)
 
       if 'admin' in cache.get(None, ()):

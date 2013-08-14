@@ -1,41 +1,35 @@
-from flask import g
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
+
+from flask import g
+
+from abilian.services import Service
 from abilian.core.extensions import db
 from abilian.core.signals import activity
 
 from .models import ActivityEntry
 
-
 __all__ = ['ActivityService']
 
+class ActivityService(Service):
+  name = 'activity'
 
-class ActivityService(object):
-
-  def __init__(self, app=None):
-    self.running = False
-    self.listening = False
-    if app:
-      self.init_app(app)
+  _listening = False
 
   def init_app(self, app):
-    app.extensions['activity'] = self
-    app.services['activity'] = self
+    Service.init_app(self, app)
+
+    if not self._listening:
+      event.listen(Session, "after_flush", self.flush)
+      self._listening = True
 
   def start(self):
-    assert not self.running
+    Service.start(self)
     activity.connect(self.log_activity)
-    self.running = True
-
-    if not self.listening:
-      event.listen(Session, "after_flush", self.flush)
-      self.listening = True
 
   def stop(self):
-    assert self.running
+    Service.stop(self)
     activity.disconnect(self.log_activity)
-    self.running = False
-    self.listening = False
 
   def log_activity(self, sender, actor, verb, object, target=None):
     assert self.running

@@ -9,65 +9,64 @@ TODO: In the future, we may decide to:
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
 
+import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import NO_VALUE
 from sqlalchemy.orm.session import Session
 
+from abilian.services import Service, ServiceState
 from abilian.core.entities import Entity, all_entity_classes
 
 from .models import AuditEntry, CREATION, UPDATE, DELETION
 
 
-class AuditService(object):
+class AuditServiceState(ServiceState):
 
-  running = False
-  listening = False
+  all_model_classes = None
+  model_class_names = None
 
-  def __init__(self, app=None):
+  def __init__(self, *args, **kwargs):
+    ServiceState.__init__(self, *args, **kwargs)
     self.all_model_classes = set()
     self.model_class_names = {}
-    if app is not None:
-      self.init_app(self.app)
+
+
+class AuditService(Service):
+  name = 'audit'
+  AppStateClass = AuditServiceState
+
+  _listening = False
 
   def init_app(self, app):
-    self.app = app
-    app.extensions['audit'] = self
-    app.services['audit'] = self
+    Service.init_app(self, app)
+
+    if not self._listening:
+      event.listen(Session, "after_flush", self.create_audit_entries)
+      self._listening = True
 
   def start(self):
-    assert not self.running
-    self.app.logger.info("Starting audit service")
-    self.running = True
+    Service.start(self)
     self.register_classes()
 
-    # Workaround the fact that we can't stop listening when the service is
-    # stopped.
-    if not self.listening:
-      event.listen(Session, "after_flush", self.create_audit_entries)
-      self.listening = True
-
-  def stop(self):
-    assert self.running
-    self.app.logger.info("Stopping audit service")
-    self.running = False
-    # One can't currently remove these events.
-    #event.remove(Session, "before_commit", self.before_commit)
-
   def register_classes(self):
+    state = self.app_state
     for cls in all_entity_classes():
-      self.register_class(cls)
+      self.register_class(cls, app_state=state)
 
-  def register_class(self, entity_class):
+  def register_class(self, entity_class, app_state=None):
     if not hasattr(entity_class, "__table__"):
       return
-    if entity_class in self.all_model_classes:
+
+    state = app_state if app_state is not None else self.app_state
+    if entity_class in state.all_model_classes:
       return
-    self.all_model_classes.add(entity_class)
 
-    assert entity_class.__name__ not in self.model_class_names
-    self.model_class_names[entity_class.__name__] = entity_class
+    state.all_model_classes.add(entity_class)
 
-    mapper = entity_class.__mapper__
+    assert entity_class.__name__ not in state.model_class_names
+    state.model_class_names[entity_class.__name__] = entity_class
+
+    mapper = sa.orm.class_mapper(entity_class)
     for column in mapper.columns:
       props = mapper.get_property_by_column(column)
       attr = getattr(entity_class, props.key)

@@ -26,6 +26,9 @@ from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 from whoosh.fields import Schema
 from whoosh.support.charset import accent_map
 
+from flask import current_app
+
+from abilian.services import Service, ServiceState
 from abilian.core.entities import all_entity_classes
 from abilian.core.extensions import celery, db
 
@@ -34,72 +37,71 @@ from shutil import rmtree
 
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
-class WhooshIndexService(object):
-
-  app = None
+class IndexServiceState(ServiceState):
+  whoosh_base = None
+  # FIXME: to_update should be on an app_context object for isolation between
+  # concurrent requests on threaded servers
   to_update = None
+  indexes = None
+  indexed_classes = None
 
-  def __init__(self, app=None):
+  def __init__(self, *args, **kwargs):
+    ServiceState.__init__(self, *args, **kwargs)
+    self.to_update = {}
     self.indexes = {}
     self.indexed_classes = set()
-    self.running = False
-    self.listening = False
-    self.to_update = {}
-    if app:
-      self.init_app(app)
+
+
+class WhooshIndexService(Service):
+  name = 'indexing'
+  AppStateClass = IndexServiceState
+
+  _listening = False
 
   def init_app(self, app):
-    self.app = app
-    # FIXME: those values should be on app.extensions as context object
-    self.indexes = {}
-    self.indexed_classes = set()
-    app.extensions['indexing'] = self
-    app.services['indexing'] = self
+    Service.init_app(self, app)
+    state = app.extensions[self.name]
 
-    self.whoosh_base = app.config.get("WHOOSH_BASE")
-    if not self.whoosh_base:
-      self.whoosh_base = "data/whoosh"  # Default value
+    whoosh_base = app.config.get("WHOOSH_BASE")
+    if not whoosh_base:
+      whoosh_base = "whoosh"  # Default value
 
-    if not os.path.isabs(self.whoosh_base):
-      self.whoosh_base = os.path.join(app.instance_path, self.whoosh_base)
+    if not os.path.isabs(whoosh_base):
+      whoosh_base = os.path.join(app.instance_path, whoosh_base)
 
-    self.whoosh_base = os.path.abspath(self.whoosh_base)
+    state.whoosh_base = os.path.abspath(whoosh_base)
 
-    if not self.listening:
+    if not self._listening:
       event.listen(Session, "after_flush", self.after_flush)
       event.listen(Session, "after_flush_postexec", self.after_flush_postexec)
       event.listen(Session, "after_commit", self.after_commit)
-      self.listening = True
+      self._listening = True
 
     app.before_request(self.clear_update_queue)
 
   def clear_update_queue(self):
-    self.to_update = {}
+    self.app_state.to_update = {}
 
   def start(self):
-    assert self.app, "service not bound to an app"
-    self.app.logger.info("Starting index service")
-    self.running = True
+    Service.start(self)
     self.register_classes()
-    self.to_update = {}
-
-  def stop(self):
-    self.app.logger.info("Stopping index service")
-    self.running = False
+    self.clear_update_queue()
 
   def clear(self):
-    self.app.logger.info("Resetting indexes")
+    current_app.logger.info("Resetting indexes")
     assert not self.running
 
-    for cls in self.indexed_classes:
-      index_path = os.path.join(self.whoosh_base, cls.__name__)
+    state = self.app_state
+
+    for cls in state.indexed_classes:
+      index_path = os.path.join(state.whoosh_base, cls.__name__)
       try:
         rmtree(index_path)
       except OSError:
         pass
 
-    self.indexes = {}
-    self.indexed_classes = set()
+    state.indexes = {}
+    state.indexed_classes = set()
     self.clear_update_queue()
 
   def search(self, query, cls=None, limit=10, filter=None):
@@ -108,13 +110,13 @@ class WhooshIndexService(object):
 
     else:
       res = []
-      for indexed_class in self.indexed_classes:
+      for indexed_class in self.app_state.indexed_classes:
         searcher = indexed_class.search_query
         res += searcher.search(query, limit)
       return res
 
   def search_for_class(self, query, cls, limit=50, filter=None):
-    index = self.indexes[cls.__name__]
+    index = self.app_state.indexes[cls.__name__]
     searcher = index.searcher()
     fields = set(index.schema._fields.keys()) - set(['id'])
     parser = MultifieldParser(list(fields), index.schema)
@@ -130,17 +132,18 @@ class WhooshIndexService(object):
     return results
 
   def register_classes(self):
+    state = self.app_state
     for cls in all_entity_classes():
-      if not cls in self.indexed_classes:
-        self.register_class(cls)
+      if not cls in state.indexed_classes:
+        self.register_class(cls, app_state=state)
 
-  def register_class(self, cls):
+  def register_class(self, cls, app_state=None):
     """
     Registers a model class, by creating the necessary Whoosh index if needed.
     """
-    self.indexed_classes.add(cls)
-
-    index_path = os.path.join(self.whoosh_base, cls.__name__)
+    state = app_state if app_state is not None else self.app_state
+    state.indexed_classes.add(cls)
+    index_path = os.path.join(state.whoosh_base, cls.__name__)
 
     if hasattr(cls, 'whoosh_schema'):
       schema = cls.whoosh_schema
@@ -156,7 +159,9 @@ class WhooshIndexService(object):
         os.makedirs(index_path)
       index = whoosh.index.create_in(index_path, schema)
 
-    self.indexes[cls.__name__] = index
+    state.indexes[cls.__name__] = index
+    # FIXME: search_query should be a property to return Searcher for
+    # current_app ('index' is specific to current_app)
     cls.search_query = Searcher(cls, primary, index)
     return index
 
@@ -168,7 +173,7 @@ class WhooshIndexService(object):
     -> whoosh.TEXT, but can add more later. A dict of model -> whoosh index
     is added to the ``app`` variable.
     """
-    index = self.indexes.get(cls.__name__)
+    index = self.app_state.indexes.get(cls.__name__)
     if index is None:
       index = self.register_class(cls)
     return index
@@ -191,7 +196,9 @@ class WhooshIndexService(object):
     if not self.running or session is not db.session():
       return
 
-    get_queue_for = lambda cls_name: self.to_update.setdefault(cls_name, [])
+    to_update = self.app_state.to_update
+    def get_queue_for(cls_name):
+      return to_update.setdefault(cls_name, [])
 
     for model in session.new:
       model_class = model.__class__
@@ -223,11 +230,12 @@ class WhooshIndexService(object):
     if not self.running or session is not db.session():
       return
 
-    for cls_name, values in self.to_update.iteritems():
+    state = self.app_state
+    for cls_name, values in state.to_update.iteritems():
       model_class = values[0][1].__class__
       assert model_class.__name__ == cls_name
 
-      if (model_class not in self.indexed_classes
+      if (model_class not in state.indexed_classes
           or not hasattr(model_class, '__searchable__')):
         # safeguard
         continue
@@ -357,7 +365,8 @@ service = WhooshIndexService()
 def index_update(class_name, items):
   """ items: dict of model class name => list of (operation, primary key)
   """
-  cls_registry = dict([(cls.__name__, cls) for cls in service.indexed_classes])
+  cls_registry = dict([(cls.__name__, cls)
+                       for cls in service.app_state.indexed_classes])
   model_class = cls_registry.get(class_name)
 
   if model_class is None:
