@@ -50,6 +50,9 @@ class WhooshIndexService(object):
 
   def init_app(self, app):
     self.app = app
+    # FIXME: those values should be on app.extensions as context object
+    self.indexes = {}
+    self.indexed_classes = set()
     app.extensions['indexing'] = self
     app.services['indexing'] = self
 
