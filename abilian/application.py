@@ -7,7 +7,7 @@ import yaml
 import logging
 
 from werkzeug.datastructures import ImmutableDict
-from flask import Flask, g, request, current_app
+from flask import Flask, g, request, current_app, has_app_context
 from flask.helpers import locked_cached_property
 import jinja2
 
@@ -101,7 +101,11 @@ class Application(Flask, ServiceManager, PluginManager):
     # Must come after all entity classes have been declared.
     # Inherited from ServiceManager. Will need some configuration love later.
     if not self.config.get('TESTING', False):
-      self.start_services()
+      if has_app_context():
+        self.start_services()
+      else:
+        with self.app_context():
+          self.start_services()
 
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
