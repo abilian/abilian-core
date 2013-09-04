@@ -5,6 +5,7 @@ in real applications.
 import os
 import yaml
 import logging
+from itertools import chain
 
 from werkzeug.datastructures import ImmutableDict
 from flask import Flask, g, request, current_app, has_app_context
@@ -71,7 +72,10 @@ class Application(Flask, ServiceManager, PluginManager):
   """
   default_config = default_config
 
-  #: environment variable used to locate a config file to load last (after :
+  #: custom apps may want to always load some plugins: list them here
+  APP_PLUGINS = ()
+
+  #: environment variable used to locate a config file to load last (after
   #: instance config file). Use this if you want to override some settings on a
   #: configured instance.
   CONFIG_ENVVAR = 'ABILIAN_CONFIG'
@@ -160,8 +164,11 @@ class Application(Flask, ServiceManager, PluginManager):
   def register_plugins(self):
     """ Load plugins listing in config variable 'PLUGINS'
     """
-    for plugin_fqdn in self.config['PLUGINS']:
-      self.register_plugin(plugin_fqdn)
+    registered = set()
+    for plugin_fqdn in chain(self.APP_PLUGINS, self.config['PLUGINS']):
+      if plugin_fqdn not in registered:
+        self.register_plugin(plugin_fqdn)
+        registered.add(plugin_fqdn)
 
   # Jinja setup
   def create_jinja_environment(self):
