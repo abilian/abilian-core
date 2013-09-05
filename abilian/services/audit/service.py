@@ -8,7 +8,7 @@ TODO: In the future, we may decide to:
 - Make Models that have the __auditable__ property (set to True) auditable.
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
-
+import logging
 import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import NO_VALUE
@@ -19,11 +19,16 @@ from abilian.core.entities import Entity, all_entity_classes
 
 from .models import AuditEntry, CREATION, UPDATE, DELETION
 
+log = logging.getLogger(__name__)
 
 class AuditServiceState(ServiceState):
 
   all_model_classes = None
   model_class_names = None
+
+  # set to True when creating audit entries, to avoid examining a session full
+  # of audit entries
+  creating_entries = False
 
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
@@ -118,21 +123,28 @@ class AuditService(Service):
     changes[attr_name] = (old_value, new_value)
 
   def create_audit_entries(self, session, flush_context):
-    if not self.running:
+    if not self.running or self.app_state.creating_entries:
       return
 
-    transaction = session.begin(subtransactions=True)
+    self.app_state.creating_entries = True
 
-    for model in session.new:
-      self.log_new(session, model)
+    # if an error happens during audit creation it should not break the rest of
+    # the application, and db session should be left clean. Only the developper
+    # (and raven/sentry/whatever) should know
+    try:
+      with session.begin(subtransactions=True):
+        for model in session.new:
+          self.log_new(session, model)
 
-    for model in session.deleted:
-      self.log_deleted(session, model)
+        for model in session.deleted:
+          self.log_deleted(session, model)
 
-    for model in session.dirty:
-      self.log_updated(session, model)
-
-    transaction.commit()
+        for model in session.dirty:
+          self.log_updated(session, model)
+    except:
+      log.error('Exception during audit entries creation', exc_info=True)
+    finally:
+      self.app_state.creating_entries = False
 
   def log_new(self, session, model):
     if not self.is_auditable(model):
