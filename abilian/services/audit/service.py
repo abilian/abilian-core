@@ -48,6 +48,9 @@ class AuditService(Service):
     Service.start(self)
     self.register_classes()
 
+  def is_auditable(self, model):
+    return isinstance(model, Entity)
+
   def register_classes(self):
     state = self.app_state
     for cls in all_entity_classes():
@@ -132,7 +135,7 @@ class AuditService(Service):
     transaction.commit()
 
   def log_new(self, session, model):
-    if not isinstance(model, Entity):
+    if not self.is_auditable(model):
       return
 
     entry = AuditEntry.from_model(model, type=CREATION)
@@ -142,18 +145,17 @@ class AuditService(Service):
       del model.__changes__
 
   def log_updated(self, session, model):
-    if not (isinstance(model, Entity)
+    if not (self.is_auditable(model)
             and hasattr(model, '__changes__')):
       return
 
     entry = AuditEntry.from_model(model, type=UPDATE)
     entry.changes = model.__changes__
     session.add(entry)
-
     del model.__changes__
 
   def log_deleted(self, session, model):
-    if not isinstance(model, Entity):
+    if not self.is_auditable(model):
       return
 
     entry = AuditEntry.from_model(model, type=DELETION)
