@@ -66,6 +66,7 @@ default_config.update(
   )
 default_config = ImmutableDict(default_config)
 
+
 class Application(Flask, ServiceManager, PluginManager):
   """
   Base application class. Extend it in your own app.
