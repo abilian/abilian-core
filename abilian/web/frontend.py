@@ -372,7 +372,12 @@ class Module(object):
         if isinstance(value, Entity):
           value = value._name
         elif isinstance(value, list):
-          value = "; ".join(value)
+          if all(isinstance(x, basestring) for x in value):
+            value = "; ".join(value)
+          elif all(isinstance(x, Entity) for x in value):
+            value = "; ".join([x._name for x in value])
+          else:
+            raise Exception("I don't know how to export column {}".format(col_name))
         elif isinstance(value, date):
           style = DATE_STYLE
         if style:
