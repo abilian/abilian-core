@@ -150,7 +150,10 @@ class QuerySelect2Field(SelectFieldBase):
       formdata = set(formdata)
       data = [obj for pk, obj in self._get_object_list()
               if pk in formdata]
-      data = sorted(data, key=lambda x: x._name())
+      if all(hasattr(x, '_name') for x in data):
+        data = sorted(data, key=lambda x: x._name)
+      else:
+        data = sorted(data)
       if data:
         if not self.multiple:
           data = data[0]
