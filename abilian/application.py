@@ -7,6 +7,8 @@ import yaml
 import logging
 from itertools import chain
 
+from sqlalchemy.orm.attributes import NO_VALUE
+
 from werkzeug.datastructures import ImmutableDict
 from flask import Flask, g, request, current_app, has_app_context
 from flask.helpers import locked_cached_property
@@ -176,6 +178,7 @@ class Application(Flask, ServiceManager, PluginManager):
     env = Flask.create_jinja_environment(self)
     env.globals.update(
       app=current_app,
+      NO_VALUE=NO_VALUE,
     )
     init_filters(env)
     return env

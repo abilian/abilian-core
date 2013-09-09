@@ -204,7 +204,6 @@ def register_metadata(cls):
   #print "register_metadata called for class", cls
   cls.__editable__ = set()
   cls.__searchable__ = set()
-  cls.__auditable__ = set()
 
   # TODO: use SQLAlchemy 0.8 introspection
   if hasattr(cls, '__table__'):
@@ -220,9 +219,6 @@ def register_metadata(cls):
       cls.__editable__.add(name)
     if info.get('searchable', False):
       cls.__searchable__.add(name)
-    if info.get('auditable', True):
-      cls.__auditable__.add(name)
-
 
 event.listen(Entity, 'class_instrument', register_metadata)
 

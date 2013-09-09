@@ -1,5 +1,12 @@
 import datetime
-from sqlalchemy import Column, Unicode, UnicodeText, Text, Date
+from itertools import count
+
+import sqlalchemy as sa
+from sqlalchemy.orm.attributes import NO_VALUE
+from sqlalchemy import (
+  Column, Unicode, UnicodeText, Text, Date, ForeignKey,
+  Integer,
+)
 
 from abilian.core.entities import Entity, SEARCHABLE, AUDITABLE_HIDDEN
 from abilian.core.extensions import db
@@ -16,6 +23,21 @@ class DummyAccount(Entity):
   website = Column(Text, default=u"")
   office_phone = Column(UnicodeText, default=u"")
   birthday = Column(Date)
+
+class AccountRelated(db.Model):
+  __tablename__ = 'account_related'
+  __auditable_entity__ = ('account', 'datas', ('id',))
+  id = Column(Integer, primary_key=True)
+
+  account_id = Column(Integer, ForeignKey(DummyAccount.id), nullable=False)
+  account = sa.orm.relationship(
+    DummyAccount,
+    backref=sa.orm.backref('datas',
+                           order_by='AccountRelated.id',
+                           cascade='all, delete-orphan')
+  )
+
+  text = Column(UnicodeText, default=u"")
 
 
 class TestAudit(BaseTestCase):
@@ -85,3 +107,38 @@ class TestAudit(BaseTestCase):
     assert entry.type == DELETION
     assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
+
+  def test_audit_related(self):
+    AuditEntry.query.delete()
+    db.session.flush()
+    assert len(AuditEntry.query.all()) == 0
+
+    #  helper
+    audit_idx = count()
+    audit_query = AuditEntry.query.order_by(AuditEntry.happened_at)
+    def next_entry():
+      return audit_query.all()[audit_idx.next()]
+
+    account = DummyAccount(name=u"John SARL")
+    db.session.add(account)
+    db.session.commit()
+    assert len(AuditEntry.query.all()) == 1
+    audit_idx.next()
+
+    data = AccountRelated(account=account, text=u'text 1')
+    db.session.add(data)
+    db.session.commit()
+
+    entry = next_entry()
+    assert entry.op == CREATION
+    assert entry.related
+    assert entry.entity_class == "DummyAccount"
+    assert entry.entity_id == account.id
+
+    changes = entry.changes
+    assert len(changes) == 1
+    assert 'datas 1' in changes
+    changes = changes['datas 1']
+    assert changes == {'text': (NO_VALUE, u'text 1'),
+                       'account_id': (NO_VALUE, 1),
+                       'id': (None, 1), }

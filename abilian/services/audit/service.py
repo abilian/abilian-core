@@ -1,5 +1,5 @@
 """
-Audit Service: logs modifications to audited objects.
+audit Service: logs modifications to audited objects.
 
 Only subclasses of Entity are auditable, at this point.
 
@@ -9,17 +9,36 @@ TODO: In the future, we may decide to:
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
 import logging
+from inspect import isclass
+
 import sqlalchemy as sa
 from sqlalchemy import event
-from sqlalchemy.orm.attributes import NO_VALUE
+from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 
-from abilian.services import Service, ServiceState
-from abilian.core.entities import Entity, all_entity_classes
+from flask import g, current_app
 
-from .models import AuditEntry, CREATION, UPDATE, DELETION
+from abilian.services import Service, ServiceState
+from abilian.core.entities import Entity
+
+from .models import AuditEntry, CREATION, UPDATE, DELETION, RELATED
 
 log = logging.getLogger(__name__)
+
+class AuditableMeta(object):
+  name = None
+  id_attr = None
+  related = None
+  backref_attr = None
+  audited_attrs = None
+  enduser_ids = None
+
+  def __init__(self, name=None, id_attr=None, related=False):
+    self.name = name
+    self.id_attr = id_attr
+    self.related = related
+    self.audited_attrs = set()
+
 
 class AuditServiceState(ServiceState):
 
@@ -53,12 +72,21 @@ class AuditService(Service):
     Service.start(self)
     self.register_classes()
 
-  def is_auditable(self, model):
-    return isinstance(model, Entity)
+  def is_auditable(self, model_or_class):
+    if hasattr(model_or_class, '__auditable_entity__'):
+      return True
+
+    if isclass(model_or_class):
+      return issubclass(model_or_class, Entity)
+    else:
+      return isinstance(model_or_class, Entity)
 
   def register_classes(self):
     state = self.app_state
-    for cls in all_entity_classes():
+    BaseModel = current_app.db.Model
+    all_models = (cls for cls in BaseModel._decl_class_registry.values()
+                  if isclass(cls) and self.is_auditable(cls))
+    for cls in all_models:
       self.register_class(cls, app_state=state)
 
   def register_class(self, entity_class, app_state=None):
@@ -70,6 +98,7 @@ class AuditService(Service):
       return
 
     state.all_model_classes.add(entity_class)
+    self.setup_auditable_entity(entity_class)
 
     assert entity_class.__name__ not in state.model_class_names
     state.model_class_names[entity_class.__name__] = entity_class
@@ -81,8 +110,46 @@ class AuditService(Service):
       info = column.info
 
       if info.get('auditable', True):
-        #print "I will now audit attribute %s for class %s" % (name, entity_class)
+        entity_class.__auditable__.audited_attrs.add(attr)
         event.listen(attr, "set", self.set_attribute)
+
+  def setup_auditable_entity(self, entity_class):
+    meta = AuditableMeta(entity_class.__name__, 'id')
+    entity_class.__auditable__ = meta
+
+    if not hasattr(entity_class, '__auditable_entity__'):
+      return
+
+    related_attr, backref_attr, enduser_ids = entity_class.__auditable_entity__
+
+    related = getattr(entity_class, related_attr)
+    if not isinstance(related, sa.orm.attributes.InstrumentedAttribute):
+      return
+
+    try:
+      rel_prop = related.impl.parent_token
+    except AttributeError:
+      return
+
+    try:
+      meta.name = rel_prop.mapper.class_.__name__
+    except AttributeError:
+      return
+
+    if not backref_attr:
+      try:
+        backref_attr = rel_prop.back_populates
+      except AttributeError:
+        raise ValueError(
+          'Audit setup class<{cls}: Could not guess backref name'
+          ' of relationship "{related_attr}", please use tuple annotation '
+          'on __auditable_entity__'.format(cls=entity_class.__name__,
+                                           related_attr=related_attr)
+        )
+
+    meta.related = related_attr
+    meta.backref_attr = backref_attr
+    meta.enduser_ids = enduser_ids
 
   def set_attribute(self, entity, new_value, old_value, initiator):
     attr_name = initiator.key
@@ -92,19 +159,12 @@ class AuditService(Service):
     # We don't log a few trivial cases so as not to overflow the audit log.
     if not old_value and not new_value:
       return
-    if old_value == NO_VALUE:
-      return
 
-    #print "set_atttribute called for: %s, key: %s" % (entity, attr_name)
-    #print "old value: %s, new value: %s" % (old_value, new_value)
     changes = getattr(entity, "__changes__", None)
     if not changes:
       changes = entity.__changes__ = {}
-    if changes.has_key(attr_name):
+    if attr_name in changes:
       old_value = changes[attr_name][0]
-    if old_value == NO_VALUE:
-      old_value = None
-    # FIXME: a bit hackish
 
     # Hide content if needed (like password columns)
     # FIXME: we can only handle the simplest case: 1 attribute => 1 column
@@ -113,13 +173,8 @@ class AuditService(Service):
         columns[0].info.get('audit_hide_content')):
       old_value = new_value = u'******'
 
-    try:
-      if len(old_value) > 1000:
-        old_value = "<<large value>>"
-      if len(new_value) > 1000:
-        new_value = "<<large value>>"
-    except:
-      pass
+    old_value = format_large_value(old_value)
+    new_value = format_large_value(new_value)
     changes[attr_name] = (old_value, new_value)
 
   def create_audit_entries(self, session, flush_context):
@@ -127,54 +182,85 @@ class AuditService(Service):
       return
 
     self.app_state.creating_entries = True
-
-    # if an error happens during audit creation it should not break the rest of
-    # the application, and db session should be left clean. Only the developper
-    # (and raven/sentry/whatever) should know
     try:
-      with session.begin(subtransactions=True):
-        for model in session.new:
-          self.log_new(session, model)
+      # if an error happens during audit creation it should not break the rest of
+      # the application, and db session should be left clean. Only the developper
+      # (and raven/sentry/whatever) should know
+      entries = []
+      for identity_set, op in ((session.new, CREATION),
+                        (session.deleted, DELETION),
+                        (session.dirty, UPDATE)):
+        for model in identity_set:
+          try:
+            with session.begin(nested=True):
+              entry = self.log(session, model, op)
+              if entry:
+                entries.append(entry)
+          except:
+            if current_app.config.get('DEBUG'):
+              raise
+            log.error('Exception during entry creation', exc_info=True)
 
-        for model in session.deleted:
-          self.log_deleted(session, model)
-
-        for model in session.dirty:
-          self.log_updated(session, model)
-    except:
-      log.error('Exception during audit entries creation', exc_info=True)
+        with session.begin(nested=True):
+          for e in entries:
+            session.add(e)
     finally:
       self.app_state.creating_entries = False
 
-  def log_new(self, session, model):
+  def log(self, session, model, op_type):
     if not self.is_auditable(model):
       return
 
-    entry = AuditEntry.from_model(model, type=CREATION)
-    session.add(entry)
+    entity = model
+    try:
+      user_id = g.user.id
+    except:
+      user_id = 0
+
+    meta = model.__auditable__
+    if meta.related:
+      op_type |= RELATED
+      entity = getattr(model, meta.related)
+      if entity is None:
+        return
+
+    entry = AuditEntry(type=op_type, user_id=user_id)
+    entry.entity_id = getattr(entity, meta.id_attr)
+    entry.entity_class = meta.name
+
+    entity_name = u''
+    for attr_name in ('_name', 'path', '__path_before_delete'):
+      if hasattr(entity, attr_name):
+        entity_name = getattr(entity, attr_name)
+    entry.entity_name = entity_name
+
+    changes = {}
+    op = entry.op
+    if op == CREATION:
+      for instrumented_attr in meta.audited_attrs:
+        value = getattr(model, instrumented_attr.key)
+        self.set_attribute(model, value, NEVER_SET, instrumented_attr.impl)
+      changes = getattr(model, '__changes__', {})
+    elif op == UPDATE:
+      changes = getattr(model, '__changes__', {})
+      if not changes:
+        return
 
     if hasattr(model, '__changes__'):
       del model.__changes__
 
-  def log_updated(self, session, model):
-    if not (self.is_auditable(model)
-            and hasattr(model, '__changes__')):
-      return
+    if meta.related:
+      enduser_ids = [unicode(getattr(model, attr)) for attr in meta.enduser_ids]
+      related_name = u'{} {}'.format(meta.backref_attr, u' '.join(enduser_ids))
+      log.debug('related changes: %s', repr(changes))
+      changes = {related_name: changes}
 
-    entry = AuditEntry.from_model(model, type=UPDATE)
-    entry.changes = model.__changes__
-    session.add(entry)
-    del model.__changes__
+    entry.changes = changes
 
-  def log_deleted(self, session, model):
-    if not self.is_auditable(model):
-      return
-
-    entry = AuditEntry.from_model(model, type=DELETION)
-    session.add(entry)
+    return entry
 
   def entries_for(self, entity, limit=None):
-    q =AuditEntry.query.filter(
+    q = AuditEntry.query.filter(
       AuditEntry.entity_class == entity.__class__.__name__,
       AuditEntry.entity_id == entity.id)
     q = q.order_by(AuditEntry.happened_at.desc())
@@ -186,3 +272,11 @@ class AuditService(Service):
 
 audit_service = AuditService()
 
+def format_large_value(value):
+  try:
+    if len(value) > 1000:
+      return "<<large value>>"
+  except TypeError:
+    # object of type '...' has no len()
+    pass
+  return value

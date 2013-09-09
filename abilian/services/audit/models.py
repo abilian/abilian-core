@@ -11,7 +11,7 @@ TODO: In the future, we may decide to:
 
 from datetime import datetime
 import pickle
-from flask import g, current_app
+from flask import current_app
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
@@ -24,13 +24,13 @@ from abilian.core.extensions import db
 CREATION = 0
 UPDATE   = 1
 DELETION = 2
+RELATED = 1 << 7
 
 
 class AuditEntry(db.Model):
   """
   Logs modifications to auditable classes.
   """
-
   id = Column(Integer, primary_key=True)
   happened_at = Column(DateTime, default=datetime.utcnow)
   type = Column(Integer) # CREATION / UPDATE / DELETION
@@ -44,33 +44,21 @@ class AuditEntry(db.Model):
 
   changes_pickle = Column(Binary)
 
-  @staticmethod
-  def from_model(model, type):
-    try:
-      user_id = g.user.id
-    except:
-      user_id = 0
-
-    entry = AuditEntry()
-    entry.type = type
-    entry.entity_id = model.id
-    entry.entity_class = model.__class__.__name__
-    entry.user_id = user_id
-    for attr_name in ('_name', 'path', '__path_before_delete'):
-      if hasattr(model, attr_name):
-        try:
-          entry.entity_name = getattr(model, attr_name)
-        except:
-          raise
-
-    return entry
-
   def __repr__(self):
-    return "<AuditEntry id=%s type=%s user=%s entity=<%s id=%s>>" % (
+    return "<AuditEntry id=%s type=%s user=%s %sentity=<%s id=%s>>" % (
       self.id,
-      {CREATION: "CREATION", DELETION: "DELETION", UPDATE: "UPDATE"}[self.type],
+      {CREATION: "CREATION", DELETION: "DELETION", UPDATE: "UPDATE"}[self.op],
       self.user,
+      'related ' if self.related else '',
       self.entity_class, self.entity_id)
+
+  @property
+  def op(self):
+    return self.type & ~RELATED
+
+  @property
+  def related(self):
+    return self.type & RELATED
 
   #noinspection PyTypeChecker
   def get_changes(self):
@@ -82,25 +70,34 @@ class AuditEntry(db.Model):
       return {}
 
   def set_changes(self, changes):
-    # for strings: store only unicode values
+    changes = self._format_changes(changes)
+    self.changes_pickle = pickle.dumps(changes)
+
+  changes = property(get_changes, set_changes)
+
+  def _format_changes(self, changes):
     uchanges = {}
     for k, v in changes.iteritems():
       k = unicode(k)
       uv = []
-      for val in v:
-        if isinstance(val, str):
-          # TODO: Temp fix for errors that happen during migration
-          try:
-            val = val.decode('utf-8')
-          except:
-            current_app.logger.error("A unicode error happened on changes %s",
-                                     repr(changes))
-            val = u"[[Somme error occurred. Working on it]]"
-        uv.append(val)
-      uchanges[k] = tuple(uv)
-    self.changes_pickle = pickle.dumps(uchanges)
+      if isinstance(v, dict):
+        # field k is a related model with its own changes
+        uv = self._format_changes(v)
+      else:
+        for val in v:
+          if isinstance(val, str):
+            # TODO: Temp fix for errors that happen during migration
+            try:
+              val = val.decode('utf-8')
+            except:
+              current_app.logger.error("A unicode error happened on changes %s",
+                                       repr(changes))
+              val = u"[[Somme error occurred. Working on it]]"
+          uv.append(val)
+        uv = tuple(uv)
+      uchanges[k] = uv
+    return uchanges
 
-  changes = property(get_changes, set_changes)
 
   # FIXME: extremely innefficient
   @property
