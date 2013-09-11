@@ -19,7 +19,7 @@ Flask-Mail
 #Flask-Cache
 
 # Other
-SQLAlchemy>=0.7,<0.8
+SQLAlchemy>=0.8,<0.9
 phonenumbers
 whoosh
 markdown
@@ -34,8 +34,9 @@ pillow
 python-magic
 twill
 guess-language
-wtforms==1.0.3
--e git://github.com/abilian/wtforms-alchemy.git@548d43812d86d50cb2c46c85eb6407095ff9abd9#egg=wtforms-alchemy
+wtforms==1.0.4
+wtforms-alchemy==0.7.15
+
 xlwt==0.7.5
 xlrd==0.9.2
 celery==3.0.21

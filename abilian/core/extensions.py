@@ -78,9 +78,7 @@ def _install_get_display_value(cls):
 
     return val
 
-  if hasattr(cls, 'display_value'):
-    assert cls.display_value.im_func.func_code is display_value.func_code
-  else:
+  if not hasattr(cls, 'display_value'):
     cls.display_value = display_value
 
 

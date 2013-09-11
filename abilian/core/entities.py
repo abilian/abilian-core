@@ -98,25 +98,33 @@ class TimestampedMixin(object):
 
 
 class OwnedMixin(object):
-  creator_id = declared_attr(lambda c: Column(ForeignKey("user.id"), info=SYSTEM))
-  owner_id = declared_attr(lambda c: Column(ForeignKey("user.id"), info=SYSTEM))
 
-  @classmethod
-  def __declare_last__(cls):
-    if Entity in cls.__bases__:
-      # declare "owner"" and "creator"" relations only for direct
-      # subclasses. Otherwise when using subclasses of direct subclasses this
-      # would produce the warning:
-      #
-      # sqlalchemy/orm/properties.py:909: SAWarning: Warning: relationship
-      # 'creator' on mapper 'Mapper|Subsubclass|table' supersedes the same
-      # relationship on inherited mapper 'Mapper|Subclass|table'; this can cause
-      # dependency issues during flush
-      pj1 = "User.id==%s.creator_id" % cls.__name__
-      cls.creator = relationship("User", primaryjoin=pj1, uselist=False)
+  def __init__(self, *args, **kwargs):
+    if hasattr(g, 'user'):
+      if not self.creator:
+        self.creator_id = g.user.id
+        self.creator = g.user
+      if not self.owner:
+        self.owner_id = g.user.id
+        self.owner = g.user
 
-      pj2 = "User.id==%s.owner_id" % cls.__name__
-      cls.owner = relationship("User", primaryjoin=pj2,  uselist=False)
+  @declared_attr
+  def creator_id(cls):
+    return Column(ForeignKey("user.id"), info=SYSTEM)
+
+  @declared_attr
+  def creator(cls):
+    pj = "User.id == %s.creator_id" % cls.__name__
+    return relationship("User", primaryjoin=pj, uselist=False)
+
+  @declared_attr
+  def owner_id(cls):
+    return Column(ForeignKey("user.id"), info=SYSTEM)
+
+  @declared_attr
+  def owner(cls):
+    pj = "User.id == %s.owner_id" % cls.__name__
+    return relationship("User", primaryjoin=pj,  uselist=False)
 
 
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
@@ -126,12 +134,8 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     return cls.__name__.lower()
 
   def __init__(self, **kw):
-    self.update(kw)
-    if hasattr(g, 'user'):
-      if not self.creator:
-        self.creator = g.user
-      if not self.owner:
-        self.owner = g.user
+    #    self.update(kw)
+    OwnedMixin.__init__(self)
 
   def __repr__(self):
     name = self._name
@@ -140,16 +144,16 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     if isinstance(name, unicode):
       name = name.encode("ascii", errors="ignore")
 
-    return "<%s %s id=%s>" % (self.__class__.__name__, name, self.id)
+    return "<%s %s id=%s>" % (self.__class__.__name__, name, str(self.id))
 
   @property
   def column_names(self):
     return [ col.name for col in class_mapper(self.__class__).mapped_table.c ]
 
-  def update(self, d):
-    for k, v in d.items():
-      #assert k in self.column_names, "%s not allowed" % k
-      setattr(self, k, v)
+  # def update(self, d):
+  #   for k, v in d.items():
+  #     #assert k in self.column_names, "%s not allowed" % k
+  #     setattr(self, k, v)
 
   def to_dict(self):
     if hasattr(self, "__exportable__"):
@@ -189,6 +193,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
 class Entity(BaseMixin, AbstractConcreteBase, db.Model):
   """Base class for Abilian entities."""
+  __abstract__ = True
 
   # Default magic metadata, should not be necessary
   # TODO: remove
@@ -198,6 +203,9 @@ class Entity(BaseMixin, AbstractConcreteBase, db.Model):
 
   base_url = None
 
+  def __init__(self, *args, **kwargs):
+    db.Model.__init__(self, *args, **kwargs)
+    BaseMixin.__init__(self)
 
 # TODO: make this unecessary
 def register_metadata(cls):

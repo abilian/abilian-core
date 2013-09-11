@@ -2,38 +2,25 @@
 import os
 
 from unittest import TestCase, skip
+import sqlalchemy as sa
 from flask import Flask
 from wtforms import Form, TextField, IntegerField
 
 # Import for side-effects (monkey-patch)
 import abilian.web.forms
 
-from abilian.core.extensions import babel
+from abilian.core.extensions import babel, db
 
 from ..forms.widgets import MainTableView, SingleView, Panel, Row, \
   linkify_url, text2html, EmailWidget
 
 
-class DummyMapper(object):
-  def __init__(self):
-    self.c = {}
-
-
-class DummyManager(object):
-  """ mock sqlalchemy class manager
-  """
-
-dummy_mapper = DummyMapper()
-dummy_manager = DummyManager()
-dummy_manager.mapper = dummy_mapper
-
-
-class DummyModel(object):
+class WidgetTestModel(db.Model):
   """
   Mock model.
   """
-  _sa_class_manager = dummy_manager
-  __mapper__ = dummy_mapper
+  __tablename__ = 'widget_test_model'
+  id = sa.Column(sa.Integer, primary_key=True)
 
   def __init__(self, **kw):
     for k, v in kw.items():
@@ -73,8 +60,8 @@ class TableViewTestCase(BaseTestCase):
       columns = ['name', 'price']
       view = MainTableView(columns)
 
-      model1 = DummyModel(name="Renault Megane", _name="toto", price=10000)
-      model2 = DummyModel(name="Peugeot 308", _name="titi", price=12000)
+      model1 = WidgetTestModel(name="Renault Megane", _name="toto", price=10000)
+      model2 = WidgetTestModel(name="Peugeot 308", _name="titi", price=12000)
 
       models = [model1, model2]
 
@@ -94,7 +81,7 @@ class ModelViewTestCase(BaseTestCase):
     with self.app.test_request_context():
       panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
       view = SingleView(DummyForm, *panels)
-      model = DummyModel(name="Renault Megane",
+      model = WidgetTestModel(name="Renault Megane",
                          price=10000, email="joe@example.com")
       form = DummyForm(obj=model)
       res = view.render(model, form)
@@ -109,7 +96,7 @@ class ModelViewTestCase(BaseTestCase):
     with self.app.test_request_context():
       panels = [Panel('main', Row('name'), Row('price'))]
       view = SingleView(DummyForm, *panels)
-      model = DummyModel(name="Renault Megane", price=10000)
+      model = WidgetTestModel(name="Renault Megane", price=10000)
       form = DummyForm(obj=model)
       res = view.render_form(form)
 
