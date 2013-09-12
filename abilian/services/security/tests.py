@@ -94,10 +94,9 @@ class SecurityTestCase(IntegrationTestCase):
     assert not security.has_role(group, "admin")
     #assert security.get_roles(group) == []
 
-    # FIXME: one needs to flush the cache at this point.
-    #assert not security.has_permission(user, "read")
-    #assert not security.has_permission(user, "write")
-    #assert not security.has_permission(user, "manage")
+    assert not security.has_permission(user, "read")
+    assert not security.has_permission(user, "write")
+    assert not security.has_permission(user, "manage")
 
   def test_grant_roles_on_objects(self):
     user = User(email=u"john@example.com", password=u"x")
@@ -130,12 +129,15 @@ class SecurityTestCase(IntegrationTestCase):
     assert RoleAssignment.query.count() == 0
 
     security.grant_role(user, "manager", obj)
+    self.session.flush()
     assert RoleAssignment.query.count() == 1
 
     security.grant_role(user, "manager", obj)
+    self.session.flush()
     assert RoleAssignment.query.count() == 1
 
     security.grant_role(user, "reader", obj)
+    self.session.flush()
     assert RoleAssignment.query.count() == 2
 
 

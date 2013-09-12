@@ -5,9 +5,10 @@ Currently very simple (simplisitic?).
 
 Roles and permissions are just strings, and are currently hardcoded.
 """
+from functools import wraps
 from itertools import chain
 
-from flask import g
+from flask import g, current_app
 # Work around API change
 try:
   from flask.ext.login import AnonymousUserMixin
@@ -49,6 +50,27 @@ class SecurityError(Exception):
 class SecurityServiceState(ServiceState):
   """ """
   use_cache = True
+  #: True if security has changed
+  needs_db_flush = False
+
+
+def require_flush(fun):
+  """ Decorator for methods that need to query security. It ensures all security
+  related operations are flushed to DB, but avoids unneeded flushes.
+  """
+  @wraps(fun)
+  def ensure_flushed(service, *args, **kwargs):
+    if service.app_state.needs_db_flush:
+      session = current_app.db.session
+      if any(isinstance(m, (RoleAssignment, SecurityAudit))
+             for models in (session.new, session.dirty, session.deleted)
+             for m in models):
+        session.flush()
+      service.app_state.needs_db_flush = False
+
+    return fun(service, *args, **kwargs)
+
+  return ensure_flushed
 
 
 class SecurityService(Service):
@@ -60,6 +82,11 @@ class SecurityService(Service):
     Service.init_app(self, app)
     state = app.extensions[self.name]
     state.use_cache = True
+
+  def _needs_flush(self):
+    """ Mark next security queries needs DB flush to have up to date information
+    """
+    self.app_state.needs_db_flush = True
 
   def clear(self):
     pass
@@ -73,6 +100,7 @@ class SecurityService(Service):
       return User.query.get(0)
 
   # security log
+  @require_flush
   def entries_for(self, obj, limit=20):
     assert isinstance(obj, Entity)
     object_str = "%s:%s" % (obj.__class__.__name__, obj.id)
@@ -96,10 +124,12 @@ class SecurityService(Service):
           else SecurityAudit.UNSET_INHERIT)
     audit = SecurityAudit(manager=manager, op=op, object=object_str)
     db.session.add(audit)
+    self._needs_flush()
 
   #
   # Roles-related API.
   #
+  @require_flush
   def get_roles(self, user, object=None):
     """
     Gets all the roles attached to given `user`, on a given `object`.
@@ -115,6 +145,7 @@ class SecurityService(Service):
     ra_list = q.all()
     return [ra.role for ra in ra_list]
 
+  @require_flush
   def get_principals(self, role, users=True, groups=True,
                      object=None):
     """ Return all users which are assigned given role
@@ -137,6 +168,7 @@ class SecurityService(Service):
 
     return [(ra.user or ra.group) for ra in q.all()]
 
+  @require_flush
   def _all_roles(self, principal):
     q = db.session.query(RoleAssignment.object, RoleAssignment.role)
 
@@ -181,6 +213,7 @@ class SecurityService(Service):
       self._set_role_cache(principal, self._all_roles(principal))
     return self._role_cache(principal)
 
+  @require_flush
   def _fill_role_cache_batch(self, principals, overwrite=False):
     """ Fill role cache for `principals` (Users and/or Groups), in order to
     avoid too many queries when checking role access with 'has_role'
@@ -299,6 +332,7 @@ class SecurityService(Service):
     assert user_or_group
     user_or_group = noproxy(user_or_group)
     manager = self._current_user_manager()
+    session = object_session(object) if object is not None else db.session
 
     if object:
       assert isinstance(object, Entity)
@@ -317,12 +351,20 @@ class SecurityService(Service):
       # role already granted, nothing to do
       return
 
+    # same as above but in current, not yet flushed objects in session. We
+    # cannot call flush() in grant_role() since this method may be called a
+    # great number of times in the same transaction, and sqlalchemy limits to
+    # 100 flushes before triggering a warning
+    for obj in (o for models in (session.new, session.dirty)
+                for o in models if isinstance(o, RoleAssignment)):
+      if all(getattr(obj, attr) == val for attr, val in args.items()):
+        return
+
     ra = RoleAssignment(**args)
-    session = object_session(object) if object is not None else db.session
     session.add(ra)
     audit = SecurityAudit(manager=manager, op=SecurityAudit.GRANT, **args)
     session.add(audit)
-    session.flush()
+    self._needs_flush()
 
     if hasattr(user_or_group, "__roles_cache__"):
       del user_or_group.__roles_cache__
@@ -358,11 +400,12 @@ class SecurityService(Service):
     args['object'] = object_str
     audit = SecurityAudit(manager=manager, op=SecurityAudit.REVOKE, **args)
     session.add(audit)
-    session.flush()
+    self._needs_flush()
 
     if hasattr(user_or_group, "__roles_cache__"):
       del user_or_group.__roles_cache__
 
+  @require_flush
   def get_role_assignements(self, object):
     q = RoleAssignment.query
     object_str = "%s:%s" % (object.__class__.__name__, object.id)
