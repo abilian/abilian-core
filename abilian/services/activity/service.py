@@ -46,18 +46,15 @@ class ActivityService(Service):
     if not hasattr(g, 'activities_to_flush'):
       return
 
-    transaction = session.begin(subtransactions=True)
-
-    for entry in g.activities_to_flush:
+    while g.activities_to_flush:
+      entry = g.activities_to_flush.pop()
       entry.object_id = entry._object.id
       entry.object_class = entry._object.__class__.__name__
 
       if entry._target:
         entry.target_id = entry._target.id
         entry.target_class = entry._target.__class__.__name__
-      db.session.add(entry)
-
-    transaction.commit()
+      session.add(entry)
 
   @staticmethod
   def entries_for_actor(actor, limit=50):
