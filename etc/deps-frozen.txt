@@ -16,11 +16,11 @@ Jinja2==2.6
 Markdown==2.3.1
 Pillow==2.0.0
 Pygments==1.6
-SQLAlchemy==0.7.9
-SQLAlchemy-Utils==0.7.7
-WTForms==1.0.3
-WTForms-Alchemy==0.4.5
-WTForms-Components==0.4.6
+SQLAlchemy==0.8.2
+SQLAlchemy-Utils==0.16.9
+WTForms==1.0.4
+WTForms-Alchemy==0.7.15
+WTForms-Components==0.7.0
 Werkzeug==0.8.3
 Whoosh==2.4.1
 amqp==1.0.10
