@@ -6,6 +6,8 @@ import subprocess
 import requests
 import tempfile
 import shutil
+import warnings
+from sqlalchemy.exc import SAWarning
 
 assert not 'twill' in subprocess.__file__
 
@@ -30,6 +32,7 @@ class BaseTestCase(TestCase):
   application_class = Application
 
   TEST_INSTANCE_PATH = None
+  SQLALCHEMY_WARNINGS_AS_ERROR = True
 
   @classmethod
   def setUpClass(cls):
@@ -41,6 +44,9 @@ class BaseTestCase(TestCase):
     )
     os.mkdir(join(tmp_dir, 'tmp'))
     os.mkdir(join(tmp_dir, 'cache'))
+
+    sa_warn = 'error' if cls.SQLALCHEMY_WARNINGS_AS_ERROR else 'default'
+    warnings.simplefilter(sa_warn, SAWarning)
 
   @classmethod
   def tearDownClass(cls):

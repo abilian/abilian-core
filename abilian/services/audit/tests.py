@@ -159,7 +159,7 @@ class TestAudit(BaseTestCase):
                        'account_id': (NO_VALUE, 1),
                        'id': (None, 1), }
 
-    comment = CommentRelated(related=data, text='comment')
+    comment = CommentRelated(related=data, text=u'comment')
     db.session.add(comment)
     db.session.commit()
     entry = next_entry()
