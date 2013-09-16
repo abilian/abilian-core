@@ -1,8 +1,6 @@
 """
 audit Service: logs modifications to audited objects.
 
-Only subclasses of Entity are auditable, at this point.
-
 TODO: In the future, we may decide to:
 
 - Make Models that have the __auditable__ property (set to True) auditable.
@@ -121,25 +119,31 @@ class AuditService(Service):
       return
 
     related_attr, backref_attr, enduser_ids = entity_class.__auditable_entity__
+    related_path = related_attr.split('.')
+    inferred_backref = []
+    mapper = sa.orm.class_mapper(entity_class)
+    for attr in related_path:
+      relation = mapper.relationships.get(attr)
+      if not relation:
+        raise ValueError('Invalid relation: "{}", invalid attribute is "{}"'
+                         ''.format(related_attr, attr))
 
-    related = getattr(entity_class, related_attr)
-    if not isinstance(related, sa.orm.attributes.InstrumentedAttribute):
-      return
+      mapper = relation.mapper
+      if inferred_backref is not None:
+        try:
+          inferred_backref.append(relation.back_populates)
+        except AttributeError:
+          inferred_backref = None
 
     try:
-      rel_prop = related.impl.parent_token
-    except AttributeError:
-      return
-
-    try:
-      meta.name = rel_prop.mapper.class_.__name__
+      meta.name = mapper.entity.__name__
     except AttributeError:
       return
 
     if not backref_attr:
-      try:
-        backref_attr = rel_prop.back_populates
-      except AttributeError:
+      if inferred_backref is not None:
+        backref_attr = '.'.join(inferred_backref)
+      else:
         raise ValueError(
           'Audit setup class<{cls}: Could not guess backref name'
           ' of relationship "{related_attr}", please use tuple annotation '
@@ -147,9 +151,9 @@ class AuditService(Service):
                                            related_attr=related_attr)
         )
 
-    meta.related = related_attr
+    meta.related = related_path
     meta.backref_attr = backref_attr
-    meta.enduser_ids = enduser_ids
+    meta.enduser_ids = [attr_name.split('.') for attr_name in enduser_ids]
 
   def set_attribute(self, entity, new_value, old_value, initiator):
     attr_name = initiator.key
@@ -192,18 +196,15 @@ class AuditService(Service):
                         (session.dirty, UPDATE)):
         for model in identity_set:
           try:
-            with session.begin(nested=True):
-              entry = self.log(session, model, op)
-              if entry:
-                entries.append(entry)
+            entry = self.log(session, model, op)
+            if entry:
+              entries.append(entry)
           except:
-            if current_app.config.get('DEBUG'):
+            if current_app.config.get('DEBUG') or current_app.config.get('TESTING'):
               raise
             log.error('Exception during entry creation', exc_info=True)
 
-        with session.begin(nested=True):
-          for e in entries:
-            session.add(e)
+        session.add_all(entries)
     finally:
       self.app_state.creating_entries = False
 
@@ -220,9 +221,11 @@ class AuditService(Service):
     meta = model.__auditable__
     if meta.related:
       op_type |= RELATED
-      entity = getattr(model, meta.related)
-      if entity is None:
-        return
+      entity = model
+      for attr in meta.related:
+        entity = getattr(entity, attr)
+        if entity is None:
+          return
 
     entry = AuditEntry(type=op_type, user_id=user_id)
     entry.entity_id = getattr(entity, meta.id_attr)
@@ -250,7 +253,13 @@ class AuditService(Service):
       del model.__changes__
 
     if meta.related:
-      enduser_ids = [unicode(getattr(model, attr)) for attr in meta.enduser_ids]
+      enduser_ids = []
+      for path in meta.enduser_ids:
+        item = model
+        for attr in path:
+          item = getattr(item, attr)
+        enduser_ids.append(unicode(item))
+
       related_name = u'{} {}'.format(meta.backref_attr, u' '.join(enduser_ids))
       log.debug('related changes: %s', repr(changes))
       changes = {related_name: changes}

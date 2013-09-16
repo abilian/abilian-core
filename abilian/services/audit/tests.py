@@ -40,6 +40,22 @@ class AccountRelated(db.Model):
   text = Column(UnicodeText, default=u"")
 
 
+class CommentRelated(db.Model):
+  __tablename__ = 'account_related_comment'
+  __auditable_entity__ = ('related.account',
+                          'datas.comments',
+                          ('related.id', 'id'))
+  id = Column(Integer, primary_key=True)
+
+  related_id = Column(Integer, ForeignKey(AccountRelated.id), nullable=False)
+  related = sa.orm.relationship(
+    AccountRelated,
+    backref=sa.orm.backref('comments', order_by='CommentRelated.id',
+                           cascade='all, delete-orphan')
+    )
+  text = Column(UnicodeText, default=u"")
+
+
 class TestAudit(BaseTestCase):
 
   def setUp(self):
@@ -142,3 +158,37 @@ class TestAudit(BaseTestCase):
     assert changes == {'text': (NO_VALUE, u'text 1'),
                        'account_id': (NO_VALUE, 1),
                        'id': (None, 1), }
+
+    comment = CommentRelated(related=data, text='comment')
+    db.session.add(comment)
+    db.session.commit()
+    entry = next_entry()
+    assert entry.op == CREATION
+    assert entry.related
+    assert entry.entity_class == "DummyAccount"
+    assert entry.entity_id == account.id
+
+    changes = entry.changes
+    assert len(changes) == 1
+    assert 'datas.comments 1 1' in changes
+    changes = changes['datas.comments 1 1']
+    assert changes == {'text': (NO_VALUE, u'comment'),
+                       'related_id': (NO_VALUE, 1),
+                       'id': (None, 1), }
+
+    comment = CommentRelated(related=data, text=u'comment 2')
+    db.session.add(comment)
+    db.session.commit()
+    entry = next_entry()
+    assert entry.op == CREATION
+    assert entry.related
+    assert entry.entity_class == "DummyAccount"
+    assert entry.entity_id == account.id
+
+    changes = entry.changes
+    assert len(changes) == 1
+    assert 'datas.comments 1 2' in changes
+    changes = changes['datas.comments 1 2']
+    assert changes == {'text': (NO_VALUE, u'comment 2'),
+                       'related_id': (NO_VALUE, 1),
+                       'id': (None, 2), }
