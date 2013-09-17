@@ -26,6 +26,11 @@ class TestConfig(object):
   SECRET_KEY = "SECRET"
   CSRF_ENABLED = False
 
+  def __init__(self):
+    db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    if db_uri:
+      self.SQLALCHEMY_DATABASE_URI = db_uri
+
 
 class BaseTestCase(TestCase):
   config_class = TestConfig
