@@ -1,12 +1,14 @@
 """Base stuff for testing.
 """
 import os
+from time import time
 
 import subprocess
 import requests
 import tempfile
 import shutil
 import warnings
+
 from sqlalchemy.exc import SAWarning
 
 assert not 'twill' in subprocess.__file__
@@ -79,13 +81,41 @@ class BaseTestCase(TestCase):
     return self.app
 
   def setUp(self):
-    self.app.create_db()
+    TestCase.setUp(self)
     self.session = self.db.session
+
+    if self.db.engine.name == 'postgresql':
+      # ensure we are on a clean DB: let's use our own schema
+      self.__pg_schema = 'test_{}'.format(str(time()).replace('.', '_'))
+      username = self.db.engine.url.username
+      with self.db.engine.connect() as conn:
+        with conn.begin():
+          conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(self.__pg_schema))
+          conn.execute('CREATE SCHEMA {}'.format(self.__pg_schema))
+          conn.execute('SET search_path TO {}'.format(self.__pg_schema))
+          conn.execute(
+            'ALTER ROLE {username} SET search_path TO {schema}'
+            ''.format(username=username, schema=self.__pg_schema))
+        conn.execute('COMMIT')
+    self.app.create_db()
 
   def tearDown(self):
     self.db.session.remove()
     self.db.drop_all()
+
+    if self.db.engine.name == 'postgresql':
+      username = self.db.engine.url.username
+      with self.db.engine.connect() as conn:
+        with conn.begin():
+          conn.execute('ALTER ROLE {username} SET search_path TO public'
+                       ''.format(username=username))
+          conn.execute('SET search_path TO public')
+          conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(self.__pg_schema))
+        conn.execute('COMMIT')
+      del self.__pg_schema
+
     self.db.engine.dispose()
+    TestCase.tearDown(self)
 
   @property
   def db(self):
