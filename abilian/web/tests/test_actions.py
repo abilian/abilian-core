@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from flask import Flask
+from flask.ext.testing import TestCase
 
 from abilian.web.action import actions, Action
 from abilian.testing import BaseTestCase
@@ -18,6 +19,7 @@ class TestActions(BaseTestCase):
   """ Test Action and ActionRegistry.
   """
   def setUp(self):
+    BaseTestCase.setUp(self)
     actions.init_app(self.app)
     actions.register(BASIC, CONDITIONAL, OTHER_CAT)
     actions._before_request()
