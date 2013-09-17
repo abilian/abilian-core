@@ -1,4 +1,4 @@
-from sqlalchemy import Column, UnicodeText, Integer, String
+from sqlalchemy import Column, Unicode, Integer, String
 
 from abilian.core.entities import Entity
 
@@ -17,7 +17,7 @@ class Comment(Entity):
   object_class = Column(String, nullable=False)
 
   #: the comment's body, as HTML (?).
-  content = Column(UnicodeText(MAX_COMMENT_LENGTH))
+  content = Column(Unicode(MAX_COMMENT_LENGTH))
 
   @property
   def target(self):
