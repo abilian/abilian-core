@@ -498,8 +498,9 @@ class Module(object):
       return redirect("%s/%d" % (self.url, entity_id))
     elif form.validate():
       form.populate_obj(entity)
-      activity.send(self, actor=g.user, verb="update", object=entity)
       try:
+        db.session.flush()
+        activity.send(self, actor=g.user, verb="update", object=entity)
         db.session.commit()
         flash(_(u"Entity successfully edited"), "success")
         return redirect("%s/%d" % (self.url, entity_id))
