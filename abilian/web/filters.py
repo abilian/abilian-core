@@ -128,7 +128,10 @@ def date_age(dt, now=None):
 
 def date(value):
   format = "EE, d MMMM y"
-  return babel.format_date(local_dt(value), format)
+  if isinstance(value, datetime.date):
+    return babel.format_date(value, format)
+  else:
+    return babel.format_date(local_dt(value), format)
 
 
 # Doesn't work yet. TZ issues.
