@@ -16,7 +16,7 @@ from sqlalchemy.orm import relationship, synonym
 from sqlalchemy.schema import Column, ForeignKey, Index
 from sqlalchemy.types import Integer, DateTime, Text
 
-from abilian.core.entities import db, all_entity_classes
+from abilian.core.entities import db, all_entity_classes, Entity
 from abilian.core.subjects import User
 
 __all__ = ['ActivityEntry']
@@ -67,9 +67,12 @@ class ActivityEntry(db.Model):
       logger.warning("object_id is null on ActivityEntry with id=%d" % self.id)
       # TODO: should not happen
       return None
-    for cls in all_entity_classes():
-      if cls.__name__ == self.object_class:
-        return cls.query.get(self.object_id)
+
+    cls = Entity._decl_class_registry.get(self.object_class)
+    if cls:
+      # actually we rely on SA identity map for effective caching of object
+      self.__object = cls.query.get(self.object_id)
+      return self.__object
     raise Exception("Unknown class: %s" % self.object_class)
 
   @property
@@ -80,7 +83,10 @@ class ActivityEntry(db.Model):
       # TODO: should not happen
       logger.warning("target_id is null on ActivityEntry with id=%d" % self.id)
       return None
-    for cls in all_entity_classes():
-      if cls.__name__ == self.target_class:
-        return cls.query.get(self.target_id)
+    cls = Entity._decl_class_registry.get(self.object_class)
+    if cls:
+      # actually we rely on SA identity map for effective caching of target
+      self.__target = cls.query.get(self.object_id)
+      return self.__target
+
     raise Exception("Unknown class: %s" % self.target_class)
