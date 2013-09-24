@@ -4,7 +4,7 @@ API
 Package ``abilian``
 -------------------
 
-.. automodule:: abilian.application
+.. automodule:: abilian.app
    :members:
    :undoc-members:
 
