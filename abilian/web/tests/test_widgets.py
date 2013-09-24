@@ -43,7 +43,7 @@ class BaseTestCase(TestCase):
 
   def setUp(self):
     # Hack to set up the template folder properly.
-    template_dir = os.path.dirname(__file__) + "/../../templates"
+    template_dir = os.path.dirname(__file__) + "/../../web/templates"
     template_dir = os.path.normpath(template_dir)
     self.app = Flask(__name__, template_folder=template_dir)
     self.app.config.update({

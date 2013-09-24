@@ -198,7 +198,7 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     return jinja2.ChoiceLoader([
       Flask.jinja_loader.func(self),
-      jinja2.PackageLoader('abilian', 'templates'),
+      jinja2.PackageLoader('abilian', 'web/templates'),
     ])
 
   # Error handling
