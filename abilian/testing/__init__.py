@@ -15,7 +15,7 @@ assert not 'twill' in subprocess.__file__
 
 from flask.ext.testing import TestCase
 
-from abilian.application import Application
+from abilian.app import Application
 
 
 __all__ = ['TestConfig', 'BaseTestCase']

@@ -11,7 +11,7 @@ import shutil
 from flask.ext.testing import TestCase
 
 from abilian.core.extensions import db
-from abilian.application import Application
+from abilian.app import Application
 
 from .config import TestConfig
 

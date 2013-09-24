@@ -8,7 +8,7 @@ from celery.loaders.base import BaseLoader
 from celery.utils.imports import symbol_by_name
 
 def default_app_factory():
-  from abilian.application import Application
+  from abilian.app import Application
   return Application()
 
 def is_celery_setting(key):
