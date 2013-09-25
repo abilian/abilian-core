@@ -12,6 +12,13 @@ Package ``abilian``
 Package ``abilian.core``
 ------------------------
 
+:mod:`abilian.core.commands`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.core.commands
+   :members:
+   :undoc-members:
+
 :mod:`abilian.core.entities`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
