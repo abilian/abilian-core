@@ -36,6 +36,8 @@ import logging
 from flask import current_app
 from flask.ext.script import Manager
 
+from .assets import ManageAssets
+
 __all__ = ['manager', 'setup_abilian_commands']
 
 # Setup basic logging capabilities in case logging is not yet set up. From doc:
@@ -68,6 +70,7 @@ def setup_abilian_commands(manager):
   for name, command in abilian_manager._commands.items():
     manager.add_command(name, command)
 
+  manager.add_command("assets", ManageAssets()) # flask-assets
   return manager
 
 

@@ -5,23 +5,26 @@ in real applications.
 import os
 import yaml
 import logging
+import logging.config
 from itertools import chain
+from functools import partial
 
 from sqlalchemy.orm.attributes import NO_VALUE
 
 from werkzeug.datastructures import ImmutableDict
 from flask import Flask, g, request, current_app, has_app_context
-from flask.helpers import locked_cached_property
+from flask.helpers import locked_cached_property, send_from_directory
 import jinja2
+from flask.ext.assets import Bundle, Environment as AssetsEnv
 
-from abilian.core.extensions import mail, db, celery, babel
+from abilian.core import extensions
 import abilian.core.util
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
 from abilian.services import audit_service, index_service, activity_service
 
 logger = logging.getLogger(__name__)
-
+db = extensions.db
 __all__ = ['create_app', 'Application', 'ServiceManager']
 
 
@@ -148,21 +151,62 @@ class Application(Flask, ServiceManager, PluginManager):
   def init_extensions(self):
     """ Initialize flask extensions, helpers and services
     """
-    db.init_app(self)
-    mail.init_app(self)
+    extensions.db.init_app(self)
+    extensions.mail.init_app(self)
+
+    # webassets
+    assets = self.extensions['webassets'] = AssetsEnv(self)
+    assets.debug = not self.config.get('PRODUCTION', False)
+
+    assets_dir = os.path.join(self.instance_path, 'webassets')
+    assets_cache_dir = os.path.join(assets_dir, 'cache')
+    for path in (assets_dir, assets_cache_dir):
+      if not os.path.exists(path):
+        os.mkdir(path)
+    assets.directory = assets_dir
+    assets.cache = assets_cache_dir
+
+    base_bundles = (
+      ('css', Bundle(self.css_bundle, output='style-%(version)s.min.css')),
+      ('js-top', Bundle(self.top_js_bundle, output='top-%(version)s.min.js')),
+      ('js', Bundle(self.js_bundle, output='app-%(version)s.min.js')),
+    )
+    for name, bundle in base_bundles:
+      assets.register(name, bundle)
+
+    # webassets: setup static url for our assets
+    from abilian.web import assets as core_bundles
+    assets.append_path(core_bundles.RESOURCES_DIR, 'static/abilian')
+
+    def send_file_from_directory(filename, directory):
+      cache_timeout = self.get_send_file_max_age(filename)
+      return send_from_directory(directory, filename,
+                                 cache_timeout=cache_timeout)
+
+    self.add_url_rule(
+      self.static_url_path + '/abilian/<path:filename>',
+      endpoint='abilian_static',
+      view_func=partial(send_file_from_directory,
+                        directory=core_bundles.RESOURCES_DIR))
+
+    assets.url = self.static_url_path + '/min'
+    self.add_url_rule(
+      self.static_url_path + '/min/<path:filename>',
+      endpoint='webassets_static',
+      view_func=partial(send_file_from_directory, directory=assets_dir))
 
     # Babel (for i18n)
-    babel.init_app(self)
-    babel.add_translations('abilian')
-    babel.localeselector(get_locale)
-    babel.timezoneselector(get_timezone)
+    extensions.babel.init_app(self)
+    extensions.babel.add_translations('abilian')
+    extensions.babel.localeselector(get_locale)
+    extensions.babel.timezoneselector(get_timezone)
 
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)
 
     # celery async service
-    celery.config_from_object(self.config)
+    extensions.celery.config_from_object(self.config)
 
   def register_plugins(self):
     """ Load plugins listing in config variable 'PLUGINS'
@@ -198,7 +242,7 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     return jinja2.ChoiceLoader([
       Flask.jinja_loader.func(self),
-      jinja2.PackageLoader('abilian', 'web/templates'),
+      jinja2.PackageLoader('abilian.web', 'templates'),
     ])
 
   # Error handling
@@ -228,6 +272,33 @@ class Application(Flask, ServiceManager, PluginManager):
         root = User(id=0, last_name=u'SYSTEM', email=u'system@example.com', can_login=False)
         db.session.add(root)
         db.session.commit()
+
+  @property
+  def css_bundle(self):
+    """ :return: CSS resources
+        :rtype: ``webassets.Bundle``
+    """
+    from abilian.web import assets as bundles
+    debug = self.config.get('DEBUG')
+    return bundles.CSS if not debug else bundles.CSS_DEBUG
+
+  @property
+  def top_js_bundle(self):
+    """ :return: JS resources (before body)
+        :rtype: ``webassets.Bundle``
+    """
+    from abilian.web import assets as bundles
+    debug = self.config.get('DEBUG')
+    return bundles.JQUERY if not debug else bundles.JQUERY_DEBUG
+
+  @property
+  def js_bundle(self):
+    """ :return: JS resources (after body)
+        :rtype: ``webassets.Bundle``
+    """
+    from abilian.web import assets as bundles
+    debug = self.config.get('DEBUG')
+    return bundles.JS if not debug else bundles.JS_DEBUG
 
 
 def create_app(config=None):
