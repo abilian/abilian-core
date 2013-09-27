@@ -158,16 +158,22 @@ class Application(Flask, ServiceManager, PluginManager):
     assets = self.extensions['webassets'] = AssetsEnv(self)
     assets.debug = not self.config.get('PRODUCTION', False)
 
-    assets_dir = os.path.join(self.instance_path, 'webassets')
-    assets_cache_dir = os.path.join(assets_dir, 'cache')
-    for path in (assets_dir, assets_cache_dir):
+    assets_base_dir = os.path.join(self.instance_path, 'webassets')
+    assets_dir = os.path.join(assets_base_dir, 'compiled')
+    assets_cache_dir = os.path.join(assets_base_dir, 'cache')
+    for path in (assets_base_dir, assets_dir, assets_cache_dir):
       if not os.path.exists(path):
         os.mkdir(path)
+
     assets.directory = assets_dir
     assets.cache = assets_cache_dir
+    manifest_file = os.path.join(assets_base_dir, 'manifest.json')
+    assets.manifest = 'json:{}'.format(manifest_file)
 
     base_bundles = (
-      ('css', Bundle(self.css_bundle, output='style-%(version)s.min.css')),
+      ('css', Bundle(self.css_bundle,
+                     filters='cssrewrite',
+                     output='style-%(version)s.min.css')),
       ('js-top', Bundle(self.top_js_bundle, output='top-%(version)s.min.js')),
       ('js', Bundle(self.js_bundle, output='app-%(version)s.min.js')),
     )
