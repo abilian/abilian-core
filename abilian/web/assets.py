@@ -6,8 +6,9 @@ import logging
 import os
 import re
 import pkg_resources
+from cStringIO import StringIO
 
-from webassets.filter import Filter, register_filter
+from webassets.filter import Filter, register_filter, get_filter
 from flask.ext.assets import Bundle
 
 RESOURCES_DIR = pkg_resources.resource_filename(__name__, 'resources')
@@ -67,9 +68,17 @@ class ImportCSSFilter(Filter):
         out.write(line[:start])
         out.write('\n')
 
-      with open(abs_filename, 'r') as included:
-        # FIXME: pass included file through webassets.filters.cssrewrite.CSSRewrite
-        self.input(included, out, source_path=abs_filename)
+      with open(abs_filename, 'r') as included, StringIO() as stream:
+        url_rewriter = get_filter('cssrewrite')
+        url_rewriter.set_environment(self.env)
+        url_rewriter.setup()
+        url_rewriter.input(included, stream,
+                           source_path=abs_filename,
+                           output_path=filepath)
+        # process '@includes' directives in included file
+        self.input(included, out,
+                   source_path=abs_filename,
+                   output_path=filepath)
 
       if end < len(line):
         out.write(line[end:])
