@@ -27,8 +27,14 @@ BOOTSTRAP_CSS = Bundle('bootstrap/css/bootstrap.min.css',
 BOOTSTRAP_CSS_DEBUG = Bundle('bootstrap/css/bootstrap.css',
                              'bootstrap/css/bootstrap-theme.css')
 
-CSS = BOOTSTRAP_CSS
-CSS_DEBUG = BOOTSTRAP_CSS_DEBUG
+FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
+FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
+
+CSS = Bundle(BOOTSTRAP_CSS,
+             FONTAWESOME_CSS,)
+CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
+                   FONTAWESOME_CSS_DEBUG,)
+
 JS = BOOTSTRAP_JS
 JS_DEBUG = BOOTSTRAP_JS_DEBUG
 
@@ -62,6 +68,7 @@ class ImportCSSFilter(Filter):
         out.write('\n')
 
       with open(abs_filename, 'r') as included:
+        # FIXME: pass included file through webassets.filters.cssrewrite.CSSRewrite
         self.input(included, out, source_path=abs_filename)
 
       if end < len(line):
