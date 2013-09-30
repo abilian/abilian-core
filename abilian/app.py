@@ -290,7 +290,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
   @property
   def top_js_bundle(self):
-    """ :return: JS resources (before body)
+    """ :return: JS resources (before <body>)
         :rtype: ``webassets.Bundle``
     """
     from abilian.web import assets as bundles
@@ -299,7 +299,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
   @property
   def js_bundle(self):
-    """ :return: JS resources (after body)
+    """ :return: JS resources (after <body>)
         :rtype: ``webassets.Bundle``
     """
     from abilian.web import assets as bundles
