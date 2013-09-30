@@ -104,6 +104,8 @@ class Application(Flask, ServiceManager, PluginManager):
       self.config.from_object(config)
 
     self.setup_logging()
+    self._jinja_loaders = list()
+    self.register_jinja_loaders(jinja2.PackageLoader('abilian.web', 'templates'))
     self.init_extensions()
     self.register_plugins()
 
@@ -215,7 +217,7 @@ class Application(Flask, ServiceManager, PluginManager):
     extensions.celery.config_from_object(self.config)
 
   def register_plugins(self):
-    """ Load plugins listing in config variable 'PLUGINS'
+    """ Load plugins listed in config variable 'PLUGINS'
     """
     registered = set()
     for plugin_fqdn in chain(self.APP_PLUGINS, self.config['PLUGINS']):
@@ -241,15 +243,37 @@ class Application(Flask, ServiceManager, PluginManager):
       options['undefined'] = jinja2.StrictUndefined
     return options
 
+  def register_jinja_loaders(self, *loaders):
+    """ Register one or many `jinja2.Loader` instances for templates lookup.
+
+    During application initialization plugins can register a loader so that
+    their templates are available to jinja2 renderer.
+
+    Order of registration matters: last registered is first looked up (after
+    standard Flask lookup in app template folder). This allows a plugin to
+    override templates provided by others, or by base application. The
+    application can override any template from any plugins from its template
+    folder (See `Flask.Application.template_folder`).
+
+    :raise: `ValueError` if a template has already been rendered
+    """
+    if not hasattr(self, '_jinja_loaders'):
+      raise ValueError(
+        'Cannot register new jinja loaders after first template rendered'
+      )
+
+    self._jinja_loaders.extend(loaders)
+
   @locked_cached_property
   def jinja_loader(self):
     """ Search templates in custom app templates dir (default flask behaviour),
     fallback on abilian templates
     """
-    return jinja2.ChoiceLoader([
-      Flask.jinja_loader.func(self),
-      jinja2.PackageLoader('abilian.web', 'templates'),
-    ])
+    loaders = self._jinja_loaders
+    del self._jinja_loaders
+    loaders.append(Flask.jinja_loader.func(self))
+    loaders.reverse()
+    return jinja2.ChoiceLoader(loaders)
 
   # Error handling
   def handle_user_exception(self, e):
