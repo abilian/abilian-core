@@ -30,29 +30,38 @@
 </head>
 
 <body>
-{% block header %}{% endblock %}
+{%- block body %}
+  {%- include "navbar.html" %}
+  
+<div class="container">
+  {%- block content %}
+  <header>
+    {% block header %}
+    {% endblock %}
+  </header>
 
-<div class="main-container container-fluid">
-  {% block body %}
-  {% endblock %}
+  {%- block main %}
+  {%- endblock %}
+
+  {%- endblock %}
 </div>
 
-<footer class="footer">
+<footer>
   <div class="container">
     <div class="row">
       <div class="span12">
-        <hr>
-        <p>Powered by <a href="http://www.abilian.com/">Abilian</a></p>
+        <hr />
+        <p class="text-right"><small>Powered by <a href="http://www.abilian.com/">Abilian</a></small></p>
     </div>
     </div>
   </div>
 </footer>
 
-{# {%- assets filters="closure_js", output="gen/packed.js", #}
 {%- assets "js" %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {%- endassets %}
 
+{%- endblock %}
 {%- block js %}{%- endblock %}
 </body>
 </html>

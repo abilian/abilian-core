@@ -1,0 +1,39 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  {# Brand and toggle get grouped for better mobile display #}
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#"><img src="{{ url_for('abilian_static', filename='img/logo-abilian-32x32.png') }}" /></a>
+  </div>
+
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+      <li>FIXME: LOOP MENU ELEMENTS HERE</li>
+    </ul>
+
+    {%- if g.user and g.user.id %}
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <img class="avatar-25" style="margin-top: -3px;" alt=""
+               src="{{ url_for("social.user_mugshot", user_id=g.user.id, s=25) }}" />
+               {{ g.user.name }}<b class="caret"></b>               
+        </a>
+        <ul class="dropdown-menu">
+          <li>FIXME: USER MENU ELEMENTS HERE</li>
+        </ul>
+      </li>
+    </ul>
+    {%- endif %}
+
+    <form class="navbar-form navbar-right" role="search">
+      <input type="text" name="q" class="search-query"
+             placeholder="{{ _('Search') }}" autocomplete="off" id="search-box" />
+    </form>
+
+  </div> {# navbar-collapse #}
+</nav>
