@@ -55,7 +55,11 @@ class ImportCSSFilter(Filter):
 
   def input(self, _in, out, **kwargs):
     filepath = kwargs['source_path']
+    source = kwargs['source']
+    # output = kwargs['output']
     base_dir = os.path.dirname(filepath)
+    rel_dir = os.path.dirname(source)
+
     self.logger.debug('process "%s"', filepath)
 
     for line in _in.readlines():
@@ -67,22 +71,31 @@ class ImportCSSFilter(Filter):
       filename = import_match.group('filename')
       self.logger.debug('Import "%s" line: |%s|', filename, line.strip())
       abs_filename = os.path.join(base_dir, filename)
+      rel_filename= os.path.normpath(os.path.join(rel_dir, filename))
+
       start, end = import_match.span()
       if start > 0:
         out.write(line[:start])
         out.write('\n')
 
-      with open(abs_filename, 'r') as included, StringIO() as stream:
+      with open(abs_filename, 'r') as included:
+        # rewrite url() statements
+        buf = StringIO()
         url_rewriter = get_filter('cssrewrite')
         url_rewriter.set_environment(self.env)
         url_rewriter.setup()
-        url_rewriter.input(included, stream,
+        url_rewriter.input(included, buf,
+                           source=rel_filename,
                            source_path=abs_filename,
+                           output=source,
                            output_path=filepath)
-        # process '@includes' directives in included file
-        self.input(included, out,
-                   source_path=abs_filename,
-                   output_path=filepath)
+      buf.seek(0)
+      # now process '@includes' directives in included file
+      self.input(buf, out,
+                 source=rel_filename,
+                 source_path=abs_filename,
+                 output=source,
+                 output_path=filepath)
 
       if end < len(line):
         out.write(line[end:])
