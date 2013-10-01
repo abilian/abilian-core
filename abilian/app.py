@@ -174,7 +174,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     base_bundles = (
       ('css', Bundle(self.css_bundle,
-                     filters='cssrewrite',
+                     filters='cssimporter, cssrewrite',
                      output='style-%(version)s.min.css')),
       ('js-top', Bundle(self.top_js_bundle, output='top-%(version)s.min.js')),
       ('js', Bundle(self.js_bundle, output='app-%(version)s.min.js')),
@@ -184,7 +184,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # webassets: setup static url for our assets
     from abilian.web import assets as core_bundles
-    assets.append_path(core_bundles.RESOURCES_DIR, 'static/abilian')
+    assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
 
     def send_file_from_directory(filename, directory):
       cache_timeout = self.get_send_file_max_age(filename)
