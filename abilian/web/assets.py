@@ -31,10 +31,14 @@ BOOTSTRAP_CSS_DEBUG = Bundle('bootstrap/css/bootstrap.css',
 FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
 FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
 
+ABILIAN_CSS = Bundle('css/abilian.css')
+
 CSS = Bundle(BOOTSTRAP_CSS,
-             FONTAWESOME_CSS,)
+             FONTAWESOME_CSS,
+             ABILIAN_CSS,)
 CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
-                   FONTAWESOME_CSS_DEBUG,)
+                   FONTAWESOME_CSS_DEBUG,
+                   ABILIAN_CSS,)
 
 JS = BOOTSTRAP_JS
 JS_DEBUG = BOOTSTRAP_JS_DEBUG
