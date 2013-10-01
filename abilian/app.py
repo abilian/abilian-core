@@ -19,6 +19,7 @@ from flask.ext.assets import Bundle, Environment as AssetsEnv
 
 from abilian.core import extensions
 import abilian.core.util
+from abilian.web.views import http_error_pages
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
 from abilian.services import audit_service, index_service, activity_service
@@ -215,6 +216,11 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # celery async service
     extensions.celery.config_from_object(self.config)
+
+    # dev helper
+    if self.config['DEBUG']:
+      self.register_blueprint(http_error_pages, url_prefix='/http_error')
+
 
   def register_plugins(self):
     """ Load plugins listed in config variable 'PLUGINS'
