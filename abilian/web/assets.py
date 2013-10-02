@@ -31,6 +31,9 @@ BOOTSTRAP_CSS_DEBUG = Bundle('bootstrap/css/bootstrap.css',
 FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
 FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
 
+TYPEAHEAD_JS = Bundle('typeahead/typeahead.min.js')
+TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js')
+
 ABILIAN_CSS = Bundle('css/abilian.css')
 
 CSS = Bundle(BOOTSTRAP_CSS,
@@ -40,8 +43,10 @@ CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
                    FONTAWESOME_CSS_DEBUG,
                    ABILIAN_CSS,)
 
-JS = BOOTSTRAP_JS
-JS_DEBUG = BOOTSTRAP_JS_DEBUG
+JS = Bundle(BOOTSTRAP_JS,
+            TYPEAHEAD_JS,)
+JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
+                  TYPEAHEAD_JS_DEBUG,)
 
 
 class ImportCSSFilter(Filter):
