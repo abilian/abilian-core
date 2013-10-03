@@ -25,6 +25,7 @@
              'enterKeyed',
              function(e) { search_box.get(0).form.submit(); }
          );
+         $('.tt-hint').addClass('form-control');
      }
 
      $(window).on(Abilian.events.appInit, initLiveSearch);
