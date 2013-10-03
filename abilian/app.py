@@ -325,7 +325,7 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     from abilian.web import assets as bundles
     debug = self.config.get('DEBUG')
-    return bundles.JQUERY if not debug else bundles.JQUERY_DEBUG
+    return bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG
 
   @property
   def js_bundle(self):

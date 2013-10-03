@@ -62,6 +62,14 @@
 {%- endassets %}
 
 {%- endblock %}
-{%- block js %}{%- endblock %}
+{%- block js %}{%- endblock %} {# this block should be used to load additional libraries #}
+
+<script type="text/javascript">
+  Abilian.DEBUG = {{ config.DEBUG|tojson }};
+  Abilian.init();
+
+  {%- if inline_js %}{{ inline_js }}{%- endif %}
+</script>
+
 </body>
 </html>

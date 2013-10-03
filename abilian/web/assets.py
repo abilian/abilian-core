@@ -37,6 +37,8 @@ TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js',
                             'typeahead/hogan-2.0.0.js')
 
 ABILIAN_CSS = Bundle('css/abilian.css')
+ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
+ABILIAN_JS = Bundle('js/abilian.js')
 
 CSS = Bundle(BOOTSTRAP_CSS,
              FONTAWESOME_CSS,
@@ -45,10 +47,19 @@ CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
                    FONTAWESOME_CSS_DEBUG,
                    ABILIAN_CSS,)
 
+TOP_JS = Bundle(JQUERY,
+                ABILIAN_JS_NS);
+TOP_JS_DEBUG = Bundle(JQUERY_DEBUG,
+                      ABILIAN_JS_NS);
+
 JS = Bundle(BOOTSTRAP_JS,
-            TYPEAHEAD_JS,)
+            TYPEAHEAD_JS,
+            ABILIAN_JS,
+            )
 JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
-                  TYPEAHEAD_JS_DEBUG,)
+                  TYPEAHEAD_JS_DEBUG,
+                  ABILIAN_JS,
+)
 
 
 class ImportCSSFilter(Filter):
