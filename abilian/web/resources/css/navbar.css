@@ -1,0 +1,15 @@
+.navbar .search-query {
+  border-radius: 3px;  
+}
+
+/* typeahead hint is input box set behind seach input to show completion for 1st
+   element */
+.navbar-search .tt-hint {
+  font-size: 13px;
+  padding: 4px 14px;
+}
+
+.twitter-typeahead {
+  /* ensure search box width vary */
+  width: 100%
+}
