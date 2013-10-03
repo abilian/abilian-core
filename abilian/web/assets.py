@@ -31,8 +31,10 @@ BOOTSTRAP_CSS_DEBUG = Bundle('bootstrap/css/bootstrap.css',
 FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
 FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
 
-TYPEAHEAD_JS = Bundle('typeahead/typeahead.min.js')
-TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js')
+TYPEAHEAD_JS = Bundle('typeahead/typeahead.min.js',
+                      'typeahead/hogan-2.0.0.js',)
+TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js',
+                            'typeahead/hogan-2.0.0.js')
 
 ABILIAN_CSS = Bundle('css/abilian.css')
 
