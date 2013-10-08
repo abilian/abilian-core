@@ -8,10 +8,10 @@ import fix_path
 import os
 import uuid
 import shutil
-from flask.ext.testing import TestCase
 
 from abilian.core.extensions import db
 from abilian.app import Application
+from abilian.testing import BaseTestCase
 
 from .config import TestConfig
 
@@ -19,7 +19,7 @@ from .config import TestConfig
 BASEDIR = os.path.dirname(__file__)
 
 
-class IntegrationTestCase(TestCase):
+class IntegrationTestCase(BaseTestCase):
 
   no_login = False
 
