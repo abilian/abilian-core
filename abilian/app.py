@@ -345,8 +345,10 @@ class Application(Flask, ServiceManager, PluginManager):
     return bundles.JS if not debug else bundles.JS_DEBUG
 
   def install_default_handler(self, http_error_code):
-    """ Installs a default error handler for `http_error_code`. The default
-    error handler renders a template named error404.html for http_error_code 404.
+    """ Installs a default error handler for `http_error_code`.
+
+    The default error handler renders a template named error404.html for
+    http_error_code 404.
     """
     logger.debug('Set Default HTTP error handler for status code %d',
                  http_error_code)
@@ -356,12 +358,11 @@ class Application(Flask, ServiceManager, PluginManager):
   def handle_http_error(self, code, error):
     """ Helper that renders error{code}.html
 
-    Convenient way to use it:
-    ```
+    Convenient way to use it::
+
        from functools import partial
        handler = partial(app.handle_http_error, code)
        app.errorhandler(code)(handler)
-    ```
     """
     if (code / 100) == 5:
       # 5xx code: error on server side
