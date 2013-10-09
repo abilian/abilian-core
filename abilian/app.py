@@ -12,7 +12,9 @@ from functools import partial
 from sqlalchemy.orm.attributes import NO_VALUE
 
 from werkzeug.datastructures import ImmutableDict
-from flask import Flask, g, request, current_app, has_app_context
+from flask import (
+  Flask, g, request, current_app, has_app_context, render_template,
+  )
 from flask.helpers import locked_cached_property, send_from_directory
 import jinja2
 from flask.ext.assets import Bundle, Environment as AssetsEnv
@@ -108,6 +110,10 @@ class Application(Flask, ServiceManager, PluginManager):
     self.setup_logging()
     self._jinja_loaders = list()
     self.register_jinja_loaders(jinja2.PackageLoader('abilian.web', 'templates'))
+
+    for http_error_code in (403, 404, 500):
+      self.install_default_handler(http_error_code)
+
     self.init_extensions()
     self.register_plugins()
 
@@ -337,6 +343,33 @@ class Application(Flask, ServiceManager, PluginManager):
     from abilian.web import assets as bundles
     debug = self.config.get('DEBUG')
     return bundles.JS if not debug else bundles.JS_DEBUG
+
+  def install_default_handler(self, http_error_code):
+    """ Installs a default error handler for `http_error_code`. The default
+    error handler renders a template named error404.html for http_error_code 404.
+    """
+    logger.debug('Set Default HTTP error handler for status code %d',
+                 http_error_code)
+    handler = partial(self.handle_http_error, http_error_code)
+    self.errorhandler(http_error_code)(handler)
+
+  def handle_http_error(self, code, error):
+    """ Helper that renders error{code}.html
+
+    Convenient way to use it:
+    ```
+       from functools import partial
+       handler = partial(app.handle_http_error, code)
+       app.errorhandler(code)(handler)
+    ```
+    """
+    if (code / 100) == 5:
+      # 5xx code: error on server side
+      db.session.rollback() # ensure rollback if needed, else error page may
+                            # have an error, too, resulting in raw 500 page :-()
+
+    template = 'error{:d}.html'.format(code)
+    return render_template(template, error=error), code
 
 
 def create_app(config=None):
