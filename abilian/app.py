@@ -22,7 +22,8 @@ import abilian.core.util
 from abilian.web.views import http_error_pages
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
-from abilian.services import audit_service, index_service, activity_service
+from abilian.services import (audit_service, index_service, activity_service,
+                              auth_service)
 
 logger = logging.getLogger(__name__)
 db = extensions.db
@@ -210,6 +211,7 @@ class Application(Flask, ServiceManager, PluginManager):
     extensions.babel.localeselector(get_locale)
     extensions.babel.timezoneselector(get_timezone)
 
+    auth_service.init_app(self)
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)

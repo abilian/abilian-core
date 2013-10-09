@@ -15,20 +15,23 @@
       <li>FIXME: LOOP MENU ELEMENTS HERE</li>
     </ul>
 
-    {%- if g.user and g.user.id %}
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <img class="avatar-25" style="margin-top: -3px;" alt=""
-               src="{{ url_for("social.user_mugshot", user_id=g.user.id, s=25) }}" />
-               {{ g.user.name }}<b class="caret"></b>               
-        </a>
-        <ul class="dropdown-menu">
-          <li>FIXME: USER MENU ELEMENTS HERE</li>
-        </ul>
-      </li>
+    <ul id="nav-menu-user" class="nav navbar-nav navbar-right">
+      {%- if g.user and g.user.id %}        
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <img class="avatar-25" style="margin-top: -3px;" alt=""
+                 src="{{ url_for("social.user_mugshot", user_id=g.user.id, s=25) }}" />
+                 {{ g.user.name }}<b class="caret"></b>               
+          </a>
+          <ul class="dropdown-menu">
+            <li class="divider"></li>
+            <li><a href="{{ url_for('login.logout') }}">{{ _('logout') }}</a></li>
+          </ul>
+        </li>
+      {%- else %}
+        <li><a href="{{ url_for('login.login_form') }}">{{ _('login') }}</a></li>
+      {%- endif %}
     </ul>
-    {%- endif %}
 
     <form class="navbar-form navbar-right" role="search">
       <input type="text" name="q" class="search-query form-control"
