@@ -178,7 +178,7 @@ class BaseTestCase(TestCase):
     """ Validates HTML if asked by the config or the Unix environment
     """
     response = self.client.get(url)
-    if validate and reponse == 200:
+    if validate and response == 200:
       self.assert_valid(response)
 
     return response
