@@ -5,7 +5,7 @@ from __future__ import absolute_import
 import logging
 from datetime import datetime, timedelta
 
-from flask import current_app, g, request, redirect, url_for
+from flask import current_app, g, request
 from flask.ext.login import current_user
 
 from abilian.services import Service
