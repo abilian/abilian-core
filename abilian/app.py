@@ -320,7 +320,7 @@ class Application(Flask, ServiceManager, PluginManager):
   @property
   def css_bundle(self):
     """ :return: CSS resources
-        :rtype: ``webassets.Bundle``
+        :rtype: `webassets.Bundle <http://elsdoerfer.name/docs/webassets/bundles.html>`_
     """
     from abilian.web import assets as bundles
     debug = self.config.get('DEBUG')
@@ -328,8 +328,10 @@ class Application(Flask, ServiceManager, PluginManager):
 
   @property
   def top_js_bundle(self):
-    """ :return: JS resources (before <body>)
-        :rtype: ``webassets.Bundle``
+    """ Javascript resources to put before beginning of document, in <head>
+
+        :return: JS resources
+        :rtype: `webassets.Bundle <http://elsdoerfer.name/docs/webassets/bundles.html>`_
     """
     from abilian.web import assets as bundles
     debug = self.config.get('DEBUG')
@@ -337,8 +339,10 @@ class Application(Flask, ServiceManager, PluginManager):
 
   @property
   def js_bundle(self):
-    """ :return: JS resources (after <body>)
-        :rtype: ``webassets.Bundle``
+    """ Javascript resources to put at end of document, just before </body>
+
+        :return: JS resources
+        :rtype: `webassets.Bundle <http://elsdoerfer.name/docs/webassets/bundles.html>`_
     """
     from abilian.web import assets as bundles
     debug = self.config.get('DEBUG')
