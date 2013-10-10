@@ -1,4 +1,4 @@
-"""Base stuff for testing.
+""" Elements to build test cases of an :class:`abilian.app.Application`
 """
 import os
 from time import time
@@ -22,6 +22,11 @@ __all__ = ['TestConfig', 'BaseTestCase']
 
 
 class TestConfig(object):
+  """ Base class config settings for test cases.
+
+    Environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
+    test against different databases.
+  """
   SQLALCHEMY_DATABASE_URI = "sqlite://"
   SQLALCHEMY_ECHO = False
   TESTING = True
@@ -35,11 +40,40 @@ class TestConfig(object):
 
 
 class BaseTestCase(TestCase):
+  """ Base test case to test an :class:`abilian.app.Application`.
+
+  It will create an instance path that will be used and shared for all tests
+  defined in this test case.
+
+  The test case creates a clean database before running each test by calling
+  :meth:`abilian.app.Application.create_db` et destroys it after test.
+
+  Additionaly if the database is postgresql a schema is created for each test
+  and the connection role is altered to use this DB schema. This is done to
+  ensure harder test isolation.
+  """
+
+  #: config class to use for :attr:`application_class` configuration
   config_class = TestConfig
+
+  #: Application class to instantiate
   application_class = Application
 
   TEST_INSTANCE_PATH = None
+  """ Path to instance folder.  Mostly set for internal use, since you should
+  access the value on the application (see `Flask instance folders
+  <http://flask.pocoo.org/docs/config/#instance-folders>`_)
+
+  This parameter is set by :meth:`setUpClass`
+  """
+
   SQLALCHEMY_WARNINGS_AS_ERROR = True
+  """ By default sqlalchemy treats warnings as info. This settings makes
+  sqlalchemy warnings treated as errors (and thus making test fail). The
+  rationale is that it improves code quality (for example most frequent warnings
+  are non-unicode string assigned on a Unicode column; this setting force you to
+  be explicit and ensure unicode where appropriate)
+  """
 
   @classmethod
   def setUpClass(cls):
@@ -68,7 +102,11 @@ class BaseTestCase(TestCase):
     TestCase.tearDownClass()
 
   def get_setup_config(self):
-    """ Called by `create_app`
+    """ Called by `create_app` Override this if you want to tweak the config
+    before :attr:`application_class` is instanciated.
+
+    :return: an instance of :attr:`config_class`, or anything that is valid
+             config object for Flask.
     """
     return self.config_class()
 
@@ -119,10 +157,15 @@ class BaseTestCase(TestCase):
 
   @property
   def db(self):
+    """ Shortcut to application db object
+    """
     return self.app.extensions['sqlalchemy'].db
 
-  # Useful for debugging
   def dump_routes(self):
+    """ Useful for debugging
+
+    FIXME: why in the testcase?
+    """
     rules = list(self.app.url_map.iter_rules())
     rules.sort(key=lambda x: x.rule)
     for rule in rules:
@@ -131,33 +174,31 @@ class BaseTestCase(TestCase):
   def assert_302(self, response):
     self.assert_status(response, 302)
 
-  #
-  # Validates HTML if asked by the config or the Unix environment
-  #
   def get(self, url, validate=True):
+    """ Validates HTML if asked by the config or the Unix environment
+    """
     response = self.client.get(url)
-    if not validate or response != 200:
-      return response
+    if validate and reponse == 200:
+      self.assert_valid(response)
 
-    validator_url = self.app.config.get('VALIDATOR_URL') \
-        or os.environ.get('VALIDATOR_URL')
-    if not validator_url:
-      return response
-
-    content_type = response.headers['Content-Type']
-    if content_type.split(';')[0].strip() != 'text/html':
-      return response
-
-    return self.validate(url, response.data, content_type, validator_url)
+    return response
 
   # TODO: post(), put(), etc.
 
   def assert_valid(self, response):
+    """ Validate html with config.VALIDATOR_URL
+    """
+    # FIXME: put this and document in TestConfig class
     validator_url = self.app.config.get('VALIDATOR_URL') \
         or os.environ.get('VALIDATOR_URL')
-    if validator_url:
-      self.validate(None, response.data,
-                    response.headers['Content-Type'], validator_url)
+    if not validator_url:
+      return
+
+    content_type = response.headers['Content-Type']
+    if content_type.split(';')[0].strip() != 'text/html':
+      return
+
+    self.validate(None, response.data, content_type, validator_url)
 
   def validate(self, url, content, content_type, validator_url):
     response = requests.post(validator_url + '?out=json', content,
@@ -173,4 +214,3 @@ class BaseTestCase(TestCase):
           message['message'])
         self.fail((u'Got a validation error for %r:\n%s' %
                    (url, detail)).encode('utf-8'))
-

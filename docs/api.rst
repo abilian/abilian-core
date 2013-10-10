@@ -8,6 +8,12 @@ Package ``abilian``
    :members:
    :undoc-members:
 
+Package ``abilian.testing``
+---------------------------
+
+.. automodule:: abilian.testing
+   :members:
+   :undoc-members:
 
 Package ``abilian.core``
 ------------------------
