@@ -31,7 +31,6 @@ WTForms-Alchemy==0.7.15
 WTForms-Components==0.7.1
 Werkzeug==0.9.4
 Whoosh==2.4.1
--e git+git@github.com:sfermigier/abilian-sbe.git@fe616ebb7aea24405f1d28307a99d91759551957#egg=abilian.sbe-dev
 alembic==0.6.0
 amqp==1.0.13
 anyjson==0.3.3
