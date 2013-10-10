@@ -59,7 +59,6 @@ jsmin==2.0.3
 kombu==2.5.12
 lxml==3.2.3
 mr.bob==0.1a9
-myapp==1.0.0-dev
 newrelic==1.10.2.38
 paramiko==1.11.0
 passlib==1.6.1
