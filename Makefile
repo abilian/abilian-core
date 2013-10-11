@@ -62,6 +62,7 @@ clean:
 	rm -rf dist build
 	rm -rf htmlcov
 	rm -rf docs/_build
+	rm -f junit-py27.xml
 
 tidy: clean
 	rm -rf .tox

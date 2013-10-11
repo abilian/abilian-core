@@ -20,6 +20,7 @@ build
 MANIFEST
 docs/_build
 htmlcov
+junit-py27.xml
 
 abilian/static/misc*
 abilian/static/.webassets-cache
