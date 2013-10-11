@@ -3,6 +3,7 @@ Base Flask application class, used by tests or to be extended
 in real applications.
 """
 import os
+import errno
 import yaml
 import logging
 import logging.config
@@ -128,7 +129,30 @@ class Application(Flask, ServiceManager, PluginManager):
         with self.app_context():
           self.start_services()
 
+  def check_instance_folder(self):
+    """ Verify instance path exists, is a directory, and has necessary
+    permissions
+
+    :raises: OSError with relevant errno
+    """
+    path = self.instance_path
+    err = None
+
+    if not os.path.exists(path):
+      err = 'Instance folder does not exists'
+      eno = errno.ENOENT
+    elif not os.path.isdir(path):
+      err = 'Instance folder not a directory'
+      eno = errno.ENOTDIR
+    elif not os.access(path, os.R_OK | os.W_OK | os.X_OK):
+      err = 'Require "rwx" access rights, please verify permissions'
+      eno = errno.EPERM
+
+    if err:
+      raise OSError(eno, err, path)
+
   def make_config(self, instance_relative=False):
+    self.check_instance_folder()
     config = Flask.make_config(self, instance_relative)
 
     if self._ABILIAN_INIT_TESTING_FLAG:
@@ -137,6 +161,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     if instance_relative:
       cfg_path = os.path.join(self.instance_path, 'config.py')
+      logger.info('Try to load config: "%s"', cfg_path)
       config.from_pyfile(cfg_path, silent=True)
 
     config.from_envvar(self.CONFIG_ENVVAR, silent=True)
