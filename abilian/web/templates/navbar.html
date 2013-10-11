@@ -7,15 +7,24 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="#"><img src="{{ url_for('abilian_static', filename='img/logo-abilian-32x32.png') }}" /></a>
+    <a class="navbar-brand" href="{{ request.url_root }}"><img src="{{ url_for('abilian_static', filename='img/logo-abilian-32x32.png') }}" /></a>
   </div>
 
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
-      <li>FIXME: LOOP MENU ELEMENTS HERE</li>
+      {%- for navitem in actions.for_category('navigation:section') %}
+        {%- if action.divider %}<li class="divider"></li>{%- endif %}
+        <li>{{ action.render() }}</li>
+      {%- endfor %}
     </ul>
 
     <ul id="nav-menu-user" class="nav navbar-nav navbar-right">
+      {%- for action in actions.for_category('navigation:user') %}
+        {%- if action.divider %}<li class="divider"></li>{%- endif %}
+        <li>{{ action.render() }}</li>
+      {%- endfor %}
+
+      {#
       {%- if g.user and g.user.id %}        
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -31,6 +40,7 @@
       {%- else %}
         <li><a href="{{ url_for('login.login_form') }}">{{ _('login') }}</a></li>
       {%- endif %}
+      #}
     </ul>
 
     <form class="navbar-form navbar-right" role="search">

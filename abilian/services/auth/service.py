@@ -5,17 +5,44 @@ from __future__ import absolute_import
 import logging
 from datetime import datetime, timedelta
 
-from flask import current_app, g, request
+from flask import current_app, g, request, url_for
 from flask.ext.login import current_user
+from flask.ext.babel import lazy_gettext as _l
 
 from abilian.services import Service
 from abilian.core.subjects import User
 from abilian.core.extensions import db, login_manager
+from abilian.web.action import actions
+from abilian.web.nav import NavItem, NavGroup
 
 from .views import login as login_views
 from .models import LoginSession
 
+__all__ = ['AuthService',]
+
 logger = logging.getLogger(__name__)
+
+
+def is_anonymous(context):
+  return current_user.is_anonymous()
+
+def is_authenticated(context):
+  return not is_anonymous(context)
+
+_ACTIONS = (
+  NavItem('user', 'login', title=_l(u'Login'), icon='log-in',
+          url=lambda context: url_for('login.login_form'),
+          condition=is_anonymous),
+  NavGroup(
+    'user', 'authenticated', title=lambda c: current_user.name,
+    icon='user',
+    condition=is_authenticated,
+    items=(
+      NavItem('user', 'logout', title=_l(u'Logout'), icon='log-out',
+              url=lambda context: url_for('login.logout'),
+              divider=True),
+  ))
+)
 
 class AuthService(Service):
   name = 'auth'
@@ -26,6 +53,8 @@ class AuthService(Service):
     self.login_url_prefix = app.config.get('LOGIN_URL', '/login')
     app.before_request(self.before_request)
     app.register_blueprint(login_views, url_prefix=self.login_url_prefix)
+    with app.app_context():
+      actions.register(*_ACTIONS)
 
   @login_manager.user_loader
   def load_user(user_id):

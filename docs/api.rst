@@ -135,6 +135,13 @@ Package ``abilian.web``
       :members:
       :undoc-members:
 
+:mod:`abilian.web.nav`
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.nav
+   :members:
+   :undoc-members:
+
 :mod:`abilian.web.forms`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

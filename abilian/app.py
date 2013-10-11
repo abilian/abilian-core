@@ -21,6 +21,7 @@ from flask.ext.assets import Bundle, Environment as AssetsEnv
 
 from abilian.core import extensions
 import abilian.core.util
+from abilian.web.action import actions
 from abilian.web.views import http_error_pages
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
@@ -163,6 +164,7 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     extensions.db.init_app(self)
     extensions.mail.init_app(self)
+    actions.init_app(self)
 
     # webassets
     assets = self.extensions['webassets'] = AssetsEnv(self)
