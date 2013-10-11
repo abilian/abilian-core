@@ -113,6 +113,10 @@ class ActionRegistry(object):
   __EXTENSION_NAME = 'abilian:actions'
 
   def init_app(self, app):
+    if self.__EXTENSION_NAME in app.extensions:
+      log.warning('ActionRegistry.init_app: actions already enabled on this application')
+      return
+
     app.extensions[self.__EXTENSION_NAME] = dict(categories=dict())
     app.before_request(self._before_request)
 
