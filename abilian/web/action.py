@@ -1,9 +1,16 @@
 # coding=utf-8
+import logging
 from jinja2 import Template, Markup
 from flask import current_app, g, url_for
 
+log = logging.getLogger(__name__)
 
 __all__ = ('Action', 'ModalActionMixin', 'actions')
+
+def getset(f):
+  """ shortcut for a custom getter/ standard setter
+  """
+  return property(f, f)
 
 class Action(object):
   """ Action interface
@@ -14,7 +21,12 @@ class Action(object):
   description = None
   icon = None
   _url = None
+
+  #: a string for a simple endpoint, a tuple (endpoint_name, kwargs) to be
+  #: passed to `url_for(endpoint_name, **kwargs)` or a callable which accept a
+  #: context dict and returns a valid value.
   endpoint = None
+
   #: a bool (or something that can be converted to bool), or a callable which
   #: accept a context dict as parameter.
   condition = None
@@ -40,15 +52,67 @@ class Action(object):
 
     self._active = True
 
-  def _active_getset(self, value=None):
+  #: boolean. Inactive actions are unconditionnaly skipped
+  @getset
+  def active(self, value=None):
     active = self._active
     if value is not None:
       assert isinstance(value, bool)
       self._active = active = value
     return active
 
-  #: boolean. Inactive actions are unconditionnaly skipped
-  active = property(_active_getset, _active_getset)
+
+  def _get_and_call(self, attr):
+    attr = '_' + attr
+    value = getattr(self, attr)
+    if callable(value):
+      value = value(actions.context)
+    return value
+
+  @property
+  def title(self):
+    return self._get_and_call('title')
+
+  @title.setter
+  def title(self, title):
+    self._title = title
+
+  @property
+  def description(self):
+    return self._get_and_call('description')
+
+  @description.setter
+  def description(self, description):
+    self._description = description
+
+  @property
+  def icon(self):
+    return self._get_and_call('icon')
+
+  @icon.setter
+  def icon(self, icon):
+    self._icon = icon
+
+  @property
+  def endpoint(self):
+    endpoint = self._get_and_call('endpoint')
+    if endpoint is None:
+      return
+
+    if isinstance(endpoint, basestring):
+      endpoint = (endpoint, {})
+    elif isinstance(endpoint, (tuple, list)):
+      assert len(endpoint) == 2
+      assert isinstance(endpoint[0], basestring)
+      assert isinstance(endpoint[1], dict)
+    else:
+      raise ValueError('Invalid endpoint specifier: "%s"' % repr(endpoint))
+
+    return endpoint
+
+  @endpoint.setter
+  def endpoint(self, endpoint):
+    self._endpoint = endpoint
 
   def available(self, context):
     """ Determine if this actions is available in this ``context``. ``context``
@@ -86,8 +150,10 @@ class Action(object):
   def url(self, context=None):
     if callable(self._url):
       return self._url(context)
-    if self.endpoint:
-      return url_for(self.endpoint)
+
+    endpoint = self.endpoint
+    if endpoint:
+      return url_for(*endpoint[0], **endpoint[1])
     return self._url
 
 
