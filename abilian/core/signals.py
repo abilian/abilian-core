@@ -16,6 +16,10 @@ from blinker.base import Namespace
 
 signals = Namespace()
 
+#: Triggered at application initialization when all extensions and plugins have
+#: been loaded
+components_registered = signals.signal("app:components:registered")
+
 #: This signal is used by the activity streams service and its clients.
 activity = signals.signal("activity")
 

@@ -20,7 +20,7 @@ from flask.helpers import locked_cached_property, send_from_directory
 import jinja2
 from flask.ext.assets import Bundle, Environment as AssetsEnv
 
-from abilian.core import extensions
+from abilian.core import extensions, signals
 import abilian.core.util
 from abilian.web.action import actions
 from abilian.web.views import http_error_pages
@@ -118,6 +118,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     self.init_extensions()
     self.register_plugins()
+    signals.components_registered.send(self)
 
     # Initialise Abilian core services.
     # Must come after all entity classes have been declared.
