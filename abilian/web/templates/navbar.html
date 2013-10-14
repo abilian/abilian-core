@@ -13,8 +13,8 @@
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
       {%- for navitem in actions.for_category('navigation:section') %}
-        {%- if action.divider %}<li class="divider"></li>{%- endif %}
-        <li>{{ action.render() }}</li>
+        {%- if navitem.divider %}<li class="divider"></li>{%- endif %}
+        <li>{{ navitem.render() }}</li>
       {%- endfor %}
     </ul>
 
