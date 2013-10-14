@@ -33,6 +33,7 @@ class NavGroup(NavItem):
         </a>
         <ul class="dropdown-menu">
           {%- for item in action.items %}
+          {%- if item.divider %}<li class="divider"></li>{%- endif %}
           <li>{{ item.render() }}</li>
           {%- endfor %}
         </ul>
@@ -46,5 +47,3 @@ class NavGroup(NavItem):
 
   def append(self, item):
     self.items.append(item)
-
-
