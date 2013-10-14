@@ -5,7 +5,6 @@ Notes:
 - Preferences are user-specific
 - For global setting, there should be a SettingService
 """
-
 from flask import Blueprint, url_for, request, redirect, abort
 from flask.ext.login import current_user
 from flask.ext.babel import lazy_gettext as _l
@@ -13,6 +12,7 @@ from abilian.core.extensions import db
 from abilian.web.nav import NavItem
 from abilian.services.auth.service import user_menu
 
+from abilian.services.base import Service, ServiceState
 from .models import UserPreference
 
 user_menu.items.insert(
@@ -22,27 +22,31 @@ user_menu.items.insert(
           condition=lambda context: not current_user.is_anonymous()
   ))
 
-class PreferenceService(object):
+class PreferenceState(ServiceState):
+  panels = None
+  blueprint = None
+  blueprint_registered = False
+
+  def __init__(self, *args, **kwargs):
+    ServiceState.__init__(self, *args, **kwargs)
+    self.panels = []
+
+class PreferenceService(Service):
   """
   Flask extension for a user-level preference service, with pluggable
   panels.
   """
+  name = 'preferences'
+  AppStateClass = PreferenceState
 
-  def __init__(self, *panels, **kwargs):
-    self.app = None
-    self.panels = []
-    self.setup_blueprint()
-    for panel in panels:
-      self.register_panel(panel)
+  def init_app(self, app, *panels):
+    Service.init_app(self, app)
 
-    app = kwargs.pop('app', None)
-    if app:
-      self.init_app(app)
+    with app.app_context():
+      self.setup_blueprint(app)
+      for panel in panels:
+        self.register_panel(panel)
 
-  def init_app(self, app):
-    self.app = app
-    app.extensions['preferences'] = self
-    app.register_blueprint(self.blueprint)
 
   def get_preferences(self, user=None):
     """Returns a string->value dictionnary representing the given user
@@ -80,25 +84,30 @@ class PreferenceService(object):
     user.preferences = []
 
   def register_panel(self, panel):
-    if self.app:
+    state = self.app_state
+    if state.blueprint_registered:
       raise ValueError("Extension already initialized for app, cannot add more panel")
 
-    self.panels.append(panel)
+    state.panels.append(panel)
     panel.preferences = self
     rule = "/" + getattr(panel, 'path', panel.id)
     endpoint = panel.id
     if hasattr(panel, 'get'):
-      self.blueprint.add_url_rule(rule, endpoint, panel.get)
+      state.blueprint.add_url_rule(rule, endpoint, panel.get)
     if hasattr(panel, 'post'):
       endpoint += "_post"
-      self.blueprint.add_url_rule(rule, endpoint, panel.post, methods=['POST'])
+      state.blueprint.add_url_rule(rule, endpoint, panel.post, methods=['POST'])
 
-  def setup_blueprint(self):
-    self.blueprint = Blueprint("preferences", __name__,
-                               template_folder='templates',
-                               url_prefix="/preferences")
+  def setup_blueprint(self, app):
+    bp = self.app_state.blueprint = Blueprint("preferences", __name__,
+                                              template_folder='templates',
+                                              url_prefix="/preferences")
 
-    # @self.blueprint.before_request
+    # we need to delay blueprint registration to allow adding more panels during
+    # initialization
+    app.before_first_request(lambda: app.register_blueprint(bp))
+
+    # @bp.before_request
     # def check_security():
     #   user = current_user._get_current_object()
     #   if security.has_role(user, "admin"):
@@ -106,7 +115,7 @@ class PreferenceService(object):
     #   else:
     #     abort(403)
 
-    @self.blueprint.context_processor
+    @bp.context_processor
     def inject_menu():
       menu = []
       for panel in self.panels:
@@ -119,7 +128,7 @@ class PreferenceService(object):
         menu.append(entry)
       return dict(menu=menu)
 
-    @self.blueprint.route("/")
+    @bp.route("/")
     def index():
       """Index redirects to the first accessible panel."""
 
