@@ -18,7 +18,7 @@ from abilian.web.nav import NavItem, NavGroup
 from .views import login as login_views
 from .models import LoginSession
 
-__all__ = ['AuthService',]
+__all__ = ['AuthService', 'user_menu']
 
 logger = logging.getLogger(__name__)
 
@@ -29,19 +29,22 @@ def is_anonymous(context):
 def is_authenticated(context):
   return not is_anonymous(context)
 
+user_menu = NavGroup(
+  'user', 'authenticated', title=lambda c: current_user.name,
+  icon='user',
+  condition=is_authenticated,
+  items=(
+      NavItem('user', 'logout', title=_l(u'Logout'), icon='log-out',
+              url=lambda context: url_for('login.logout'),
+              divider=True),
+))
+
+
 _ACTIONS = (
   NavItem('user', 'login', title=_l(u'Login'), icon='log-in',
           url=lambda context: url_for('login.login_form'),
           condition=is_anonymous),
-  NavGroup(
-    'user', 'authenticated', title=lambda c: current_user.name,
-    icon='user',
-    condition=is_authenticated,
-    items=(
-      NavItem('user', 'logout', title=_l(u'Logout'), icon='log-out',
-              url=lambda context: url_for('login.logout'),
-              divider=True),
-  ))
+  user_menu,
 )
 
 class AuthService(Service):

@@ -8,10 +8,19 @@ Notes:
 
 from flask import Blueprint, url_for, request, redirect, abort
 from flask.ext.login import current_user
+from flask.ext.babel import lazy_gettext as _l
 from abilian.core.extensions import db
+from abilian.web.nav import NavItem
+from abilian.services.auth.service import user_menu
 
 from .models import UserPreference
 
+user_menu.items.insert(
+  0,
+  NavItem('user', 'preferences', title=_l(u'Preferences'), icon='cog',
+          url=lambda context: request.url_root + 'preferences',
+          condition=lambda context: not current_user.is_anonymous()
+  ))
 
 class PreferenceService(object):
   """
@@ -19,15 +28,21 @@ class PreferenceService(object):
   panels.
   """
 
-  def __init__(self, app=None):
+  def __init__(self, *panels, **kwargs):
+    self.app = None
     self.panels = []
+    self.setup_blueprint()
+    for panel in panels:
+      self.register_panel(panel)
+
+    app = kwargs.pop('app', None)
     if app:
       self.init_app(app)
 
   def init_app(self, app):
     self.app = app
     app.extensions['preferences'] = self
-    self.setup_blueprint()
+    app.register_blueprint(self.blueprint)
 
   def get_preferences(self, user=None):
     """Returns a string->value dictionnary representing the given user
@@ -65,6 +80,9 @@ class PreferenceService(object):
     user.preferences = []
 
   def register_panel(self, panel):
+    if self.app:
+      raise ValueError("Extension already initialized for app, cannot add more panel")
+
     self.panels.append(panel)
     panel.preferences = self
     rule = "/" + getattr(panel, 'path', panel.id)
