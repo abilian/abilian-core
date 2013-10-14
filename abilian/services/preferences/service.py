@@ -9,6 +9,7 @@ from flask import Blueprint, url_for, request, redirect, abort
 from flask.ext.login import current_user
 from flask.ext.babel import lazy_gettext as _l
 from abilian.core.extensions import db
+from abilian.core import signals
 from abilian.web.nav import NavItem
 from abilian.services.auth.service import user_menu
 
@@ -105,7 +106,9 @@ class PreferenceService(Service):
 
     # we need to delay blueprint registration to allow adding more panels during
     # initialization
-    app.before_first_request(lambda: app.register_blueprint(bp))
+    @signals.components_registered.connect_via(app)
+    def register_bp(app):
+        app.register_blueprint(bp)
 
     # @bp.before_request
     # def check_security():
@@ -118,7 +121,7 @@ class PreferenceService(Service):
     @bp.context_processor
     def inject_menu():
       menu = []
-      for panel in self.panels:
+      for panel in self.app_state.panels:
         endpoint = 'preferences.' + panel.id
         active = endpoint == request.endpoint
         entry = {'endpoint': endpoint,
@@ -136,7 +139,7 @@ class PreferenceService(Service):
       if current_user.is_anonymous():
         return "OK"
 
-      for panel in self.panels:
+      for panel in self.app_state.panels:
         if panel.is_accessible():
           return redirect(url_for("preferences." + panel.id))
       else:
