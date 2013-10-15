@@ -1,6 +1,14 @@
+{% macro deprecated(name, newfile) %}
+<small class="text-warning"><strong>This block is generated from macro "{{ name
+}}" in deprecated file "macros.html". Import from "macros/{{ newfile }}.html" instead.
+</strong></small>
+ {% endmacro %}
+
 {# Generic renderer for boxes / portlets #}
 {% macro m_box(title, color="blue", with_toolbar=False) %}
   <div class="box">
+  {{ deprecated("m_box", "box") }}
+    
     {% if title %}
       <div class="box-header box-header-small box-header-color-{{ color }}">
         <h5>{{ title }}</h5>
@@ -26,6 +34,7 @@
 {% endmacro %}
 
 {% macro m_box_menu(title=None, color="green", with_toolbar=False) %}
+  {{ deprecated("m_box_menu", "box") }}
   <div class="box">
     <div class="box-header box-header-small box-header-color-{{ color }}">
       <h5>{{ title or _('Menu') }}</h5>
@@ -39,6 +48,7 @@
 
 {% macro m_box_content(title=None, color="blue", with_toolbar=False) %}
   <div class="box">
+  {{ deprecated("m_box_content", "box") }}
     {% if title %}
       <div class="box-header box-header-small box-header-color-{{ color }}">
         <h5>{{ title }}</h5>
@@ -54,9 +64,9 @@
   </div>
 {% endmacro %}
 
-
 {# Generic renderer for activity streams #}
 {% macro m_activities(entries, ignore_communities=False) %}
+  {{ deprecated("m_activities", "?") }}
   <ul class="activities">
     {% for entry in entries %}
       {% set actor_href = url_for("social.user", user_id=entry.actor.id) %}
@@ -84,6 +94,7 @@
 
 
 {% macro _m_audit_field_changes(changes) %}
+  {{ deprecated("_m_audit_field_changes", "?") }}
   <ul>
     {%- for key, values in changes.items() %}
       <li>
@@ -105,6 +116,7 @@
 {% endmacro %}
 
 {% macro m_audit_log(entries) %}
+  {{ deprecated("m_audit_log", "?") }}
   {%- if entries %}
     <h3 class="main collapsed" data-toggle="collapse"
         href="#audit_log_entries">{{ _("Audit Log") }}</h3>
@@ -135,30 +147,24 @@
 {% endmacro %}
 
 {% macro m_breadcrumbs(breadcrumbs) %}
-  <ul class="breadcrumb">
-    {%- for obj in breadcrumbs[0:-1] %}
-      <li><a href="{{ obj.path }}">{{ obj.label }}</a><span
-          class="divider">/</span></li>
-    {%- endfor %}
-    <li class="active"><strong>{{ breadcrumbs[-1].label }}</strong></li>
-  </ul>
-{% endmacro %}
+  <small class="text-warning">
+    <strong>Breadcrumb is no more generated from a macro. Just include
+"breadcrumb.html" if you are overriding "body" block from "base.html".</strong>
+  </small>
+ {% endmacro %}
 
 {% macro m_flashed_messages() %}
-  {%- with messages = get_flashed_messages(with_categories=true) %}
-    {%- if messages %}
-      {%- for category, message in messages %}
-        <div class="alert alert-block alert-{{ category }}">
-          <a class="close" data-dismiss="alert">&times;</a>
-          {{ message }}
-        </div>
-      {%- endfor %}
-    {%- endif %}
-  {%- endwith %}
+  <small class="text-warning">
+    <strong>Flash message block is no more generated from a macro. Just include
+"flash-messages.html" if you are overriding "body" block from
+"base.html".</strong>
+  </small>
 {% endmacro %}
 
 
 {% macro m_recent_items(recent_items) %}
+  {{ deprecated("m_recent_items", "?") }}
+
   {%- if recent_items %}
     <div class="well" style="padding: 8px 0;">
       <ul class="nav nav-list">
@@ -183,6 +189,8 @@
 
 <!-- table for file properties -->
 {% macro m_table(lines) %}
+  {{ deprecated("m_table", "?") }}
+
   <table class="table table-striped table-condensed"
       style="margin: 10px 0 15px 0;">
     <tbody>
@@ -202,6 +210,7 @@
 
 
 {% macro m_renderfield(field) -%}
+  {{ deprecated("m_renderfield", "form") }}
   {% set with_label = kwargs.pop('with_label', True) %}
   {% set placeholder = '' %}
   {% if not with_label %}

@@ -1,0 +1,45 @@
+{# Generic renderer for boxes / portlets #}
+{% macro m_box(title, color="blue") %}
+  <div class="box">
+    {%- if title %}
+      <div class="box-header box-header-small box-header-color-{{ color }}">
+        <h5>{{ title }}</h5>
+      </div>
+    {%- endif %}
+
+    <div class="box-body">
+      <div class="box-main">
+        {{ caller() }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro m_box_menu(title=None, color="green") %}
+  <div class="box box-menu">
+    <div class="box-header box-header-small box-header-color-{{ color }}">
+      <h5>{{ title or _('Menu') }}</h5>
+    </div>
+
+    <div class="box-body">
+      {{ caller() }}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro m_box_content(title=None, color="blue") %}
+  <div class="box box-content">
+    {% if title %}
+      <div class="box-header box-header-small box-header-color-{{ color }}">
+        <h5>{{ title }}</h5>
+      </div>
+    {% endif %}
+
+    <div class="box-body">
+      <div class="box-main">
+        {{ caller() }}
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+{% endmacro %}
