@@ -31,44 +31,49 @@
 
 <body>
 {%- block body %}
-  {# accessibility link: see http://getbootstrap.com/getting-started/#accessibility #}
+  {#- accessibility link: see http://getbootstrap.com/getting-started/#accessibility #}
   <a href="#content" class="sr-only">{{ _("Skip to content") }}</a>
 
-  {%- include "navbar.html" %}
+  <!-- navbar -->
+  {% include "navbar.html" %}
   
-<div id="content" class="container clearfix">
-  <div id="flash-messages">
-    {%- include "flash-messages.html" %}
+  <div id="content" class="container clearfix">
+
+    <!-- breadcrumbs -->
+    {% include "breadcrumbs.html" %}
+
+    <!-- flash messages -->
+    <div id="flash-messages">
+      {%- include "flash-messages.html" %}
+    </div>
+
+    {% block content %}    
+      <header>
+        {% block header %}
+        {%- endblock %}
+      </header>
+
+      {% block main %}
+      {%- endblock %}    
+    {%- endblock %}
   </div>
 
-  {%- block content %}    
-  <header>
-    {% block header %}
-    {% endblock %}
-  </header>
-
-  {%- block main %}
-  {%- endblock %}
-
-  {%- endblock %}
-</div>
-
-<footer>
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12">
-        <hr />
-        <p class="text-right"><small>Powered by <a href="http://www.abilian.com/">Abilian</a></small></p>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <hr />
+          <p class="text-right"><small>Powered by <a href="http://www.abilian.com/">Abilian</a></small></p>
+        </div>
+      </div>
     </div>
-    </div>
-  </div>
-</footer>
+  </footer>
+{%- endblock %}
 
 {%- assets "js" %}
-  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-{%- endassets %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{%- endassets %}  
 
-{%- endblock %}
 {%- block js %}{%- endblock %} {# this block should be used to load additional libraries #}
 
 <script type="text/javascript">

@@ -13,16 +13,18 @@ from functools import partial
 from sqlalchemy.orm.attributes import NO_VALUE
 
 from werkzeug.datastructures import ImmutableDict
+import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
   )
 from flask.helpers import locked_cached_property, send_from_directory
-import jinja2
 from flask.ext.assets import Bundle, Environment as AssetsEnv
+from flask.ext.babel import gettext as _
 
 from abilian.core import extensions, signals
 import abilian.core.util
 from abilian.web.action import actions
+from abilian.web.nav import BreadcrumbItem
 from abilian.web.views import http_error_pages
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
@@ -120,7 +122,9 @@ class Application(Flask, ServiceManager, PluginManager):
     self.register_plugins()
     signals.components_registered.send(self)
 
-    # Initialise Abilian core services.
+    self.before_request(self._setup_breadcrumbs)
+
+    # Initialize Abilian core services.
     # Must come after all entity classes have been declared.
     # Inherited from ServiceManager. Will need some configuration love later.
     if not self.config.get('TESTING', False):
@@ -129,6 +133,17 @@ class Application(Flask, ServiceManager, PluginManager):
       else:
         with self.app_context():
           self.start_services()
+
+  def _setup_breadcrumbs(self):
+    """ Before request handler. If you want to customize first items of
+    breadcrumbs override :meth:`init_breadcrumbs`
+    """
+    g.breadcrumb = []
+    self.init_breadcrumbs()
+
+  def init_breadcrumbs(self):
+    g.breadcrumb.append(BreadcrumbItem(_(u'Home'),
+                                       url=u'/' + request.script_root))
 
   def check_instance_folder(self):
     """ Verify instance path exists, is a directory, and has necessary

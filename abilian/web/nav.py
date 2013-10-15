@@ -9,6 +9,7 @@ Abilian define theses categories:
 """
 from __future__ import absolute_import
 
+from flask import url_for
 from .action import Action
 
 class NavItem(Action):
@@ -20,6 +21,7 @@ class NavItem(Action):
     category = 'navigation:' + category
     Action.__init__(self, category, name, *args, **kwargs)
     self.divider = divider
+
 
 class NavGroup(NavItem):
   """ A navigation group renders a list of items
@@ -47,3 +49,42 @@ class NavGroup(NavItem):
 
   def append(self, item):
     self.items.append(item)
+
+class Endpoint(object):
+
+  def __init__(self, name, *args, **kwargs):
+    self.name = name
+    self.args = args
+    self.kwargs = kwargs
+
+  def __unicode__(self):
+    return unicode(url_for(self.name, *self.args, **self.kwargs))
+
+  def __repr__(self):
+    return 'Endpoint({name}, *{args}, **{kwargs})'.format(
+      name=repr(self.name),
+      args=repr(self.args),
+      kwargs=repr(self.kwargs),
+      )
+
+
+class BreadcrumbItem(object):
+  """
+  """
+  #: Label shown to user. May be an i18n string instance
+  label = None
+
+  #: Additional text, can be used as tooltip for example
+  description = None
+
+  #: either an unicode string or an :class:`Endpoint` instance.
+  _url = None
+
+  def __init__(self, label, url=u'#', description=None):
+    self.label = label
+    self.description = description
+    self._url = url
+
+  @property
+  def url(self):
+    return unicode(self._url)
