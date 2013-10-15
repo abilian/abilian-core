@@ -4,3 +4,89 @@ body {
   padding-bottom: 40px;
   padding-top: 70px;
 }
+
+/* Boxes */
+.box {
+  padding: 0;
+  box-shadow: none;
+  margin: 3px 0 20px 0;
+}
+
+.box-header {
+  position: relative;
+  border-top: 1px solid #CCC;
+  border-left: 1px solid #CCC;
+  border-right: 1px solid #CCC;
+  border-bottom: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  text-align: right;
+  background-repeat: repeat-x;
+}
+
+.box-header-color-blue {
+  background-color: #d9edf7;
+  color: #3a87ad;
+}
+
+.box-header-color-green {
+  background-color: #dff0d8;
+  color: #468847;
+}
+
+.box-header-color-orange {
+  background-color: #fcf8d9;
+  color: #c09853;
+}
+
+.box-header-color-red {
+  background-color: #f2dede;
+  color: #b94a48;
+}
+
+.box-header-small {
+  min-height: 31px;
+  padding-left: 10px;
+}
+
+.box-header>:first-child {
+  line-height: 36px;
+  padding: 0;
+  margin: 0;
+  float: left;
+  text-align: left;
+}
+
+.box-header a {
+  color: #777;
+  text-decoration: none;
+}
+
+.box-header-small>:first-child {
+  line-height: 30px;
+}
+
+.box-toolbar {
+  display: inline-block;
+  padding: 0 10px;
+  line-height: 31px;
+  position: relative;
+  text-align: left;
+}
+
+.box-body {
+  border: 1px solid #CCC;
+  background-color: #FFF;
+}
+
+.box-meny .box-body {
+  padding: 10px inherit;
+}
+
+.box-main {
+  padding: 12px;
+}
+
+.box-main>h2:first-child {
+  margin-top: 6px;
+}
