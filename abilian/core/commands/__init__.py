@@ -50,6 +50,7 @@ logger = logging.getLogger('')
 #: ``flask.ext.script.Manager`` instance for abilian commands
 manager = Manager(usage='Abilian base commands')
 
+
 def setup_abilian_commands(manager):
   """
   Register abilian commands on ``manager``.
@@ -88,13 +89,12 @@ def print_config(config):
     "Version: {version}".format(
       configured_path=unoconv,
       abspath=os.path.abspath(unoconv),
-      version=conversion._unoconv_handler.unoconv_version)
-    )
+      version=conversion._unoconv_handler.unoconv_version))
 
 
 @manager.command
 def run():
-  """ Like runserver, print application configuration.
+  """ Like runserver, also print application configuration.
   """
   app = current_app
   print_config(app.config)
@@ -106,6 +106,16 @@ def run():
 
 @manager.command
 def initdb():
-  """ Create application DB
+  """ Create application DB.
   """
   current_app.create_db()
+
+
+@manager.command
+def dump_routes():
+  """ Dump all the routes registered in Flask.
+  """
+  rules = list(current_app.url_map.iter_rules())
+  rules.sort(key=lambda x: x.rule)
+  for rule in rules:
+    print rule, rule.methods, rule.endpoint
