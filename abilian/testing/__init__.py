@@ -10,12 +10,10 @@ import shutil
 import warnings
 
 from sqlalchemy.exc import SAWarning
+from flask.ext.testing import TestCase
+from abilian.app import Application
 
 assert not 'twill' in subprocess.__file__
-
-from flask.ext.testing import TestCase
-
-from abilian.app import Application
 
 
 __all__ = ['TestConfig', 'BaseTestCase']
@@ -161,21 +159,11 @@ class BaseTestCase(TestCase):
     """
     return self.app.extensions['sqlalchemy'].db
 
-  def dump_routes(self):
-    """ Useful for debugging
-
-    FIXME: why in the testcase?
-    """
-    rules = list(self.app.url_map.iter_rules())
-    rules.sort(key=lambda x: x.rule)
-    for rule in rules:
-      print rule, rule.methods, rule.endpoint
-
   def assert_302(self, response):
     self.assert_status(response, 302)
 
   def get(self, url, validate=True):
-    """ Validates HTML if asked by the config or the Unix environment
+    """ Validates HTML if asked by the config or the Unix environment.
     """
     response = self.client.get(url)
     if validate and response == 200:
