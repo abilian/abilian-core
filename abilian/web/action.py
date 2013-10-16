@@ -153,7 +153,7 @@ class Action(object):
 
     endpoint = self.endpoint
     if endpoint:
-      return url_for(*endpoint[0], **endpoint[1])
+      return url_for(endpoint[0], **endpoint[1])
     return self._url
 
 
