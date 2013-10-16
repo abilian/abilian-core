@@ -1,4 +1,14 @@
 (function($) {
+     /*
+      * For form inputs: disable form submission on 'enter' key
+      */
+     $.fn.preventEnterKey = function() {
+         return $(this).on('keypress', function(e) {                              
+                            if (e.keyCode == 13) {
+                                e.preventDefault();
+                            }
+                        });
+     };
 
      function initLiveSearch() {
          var datasets = [
