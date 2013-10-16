@@ -112,10 +112,20 @@ def initdb():
 
 
 @manager.command
+def dropdb():
+  """ Drop the application DB.
+  """
+  confirm = raw_input("Are you sure you want to drop the database? (Y/N) ")
+  if confirm.lower() == 'y':
+    with current_app.app_context():
+      current_app.db.drop_all()
+
+
+@manager.command
 def dump_routes():
   """ Dump all the routes registered in Flask.
   """
   rules = list(current_app.url_map.iter_rules())
   rules.sort(key=lambda x: x.rule)
   for rule in rules:
-    print rule, rule.methods, rule.endpoint
+    print "{} ({}) -> {}".format(rule, " ".join(rule.methods), rule.endpoint)
