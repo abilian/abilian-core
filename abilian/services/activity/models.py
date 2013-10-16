@@ -83,10 +83,10 @@ class ActivityEntry(db.Model):
       # TODO: should not happen
       logger.warning("target_id is null on ActivityEntry with id=%d" % self.id)
       return None
-    cls = Entity._decl_class_registry.get(self.object_class)
+    cls = Entity._decl_class_registry.get(self.target_class)
     if cls:
       # actually we rely on SA identity map for effective caching of target
-      self.__target = cls.query.get(self.object_id)
+      self.__target = cls.query.get(self.target_id)
       return self.__target
 
     raise Exception("Unknown class: %s" % self.target_class)
