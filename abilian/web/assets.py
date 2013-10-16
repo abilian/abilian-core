@@ -19,6 +19,9 @@ JQUERY = Bundle('jquery/js/jquery-1.10.2.min.js',
 JQUERY_DEBUG = Bundle('jquery/js/jquery-1.10.2.js',
                       'jquery/js/jquery-migrate-1.2.1.js')
 
+BOOTBOX_JS = Bundle('bootbox/bootbox.min.js')
+BOOTBOX_JS_DEBUG = Bundle('bootbox/bootbox.js')
+
 BOOTSTRAP_JS = Bundle('bootstrap/js/bootstrap.min.js')
 BOOTSTRAP_JS_DEBUG = Bundle('bootstrap/js/bootstrap.js')
 
@@ -54,10 +57,12 @@ TOP_JS_DEBUG = Bundle(JQUERY_DEBUG,
 
 JS = Bundle(BOOTSTRAP_JS,
             TYPEAHEAD_JS,
+            BOOTBOX_JS,
             ABILIAN_JS,
             )
 JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
                   TYPEAHEAD_JS_DEBUG,
+                  BOOTBOX_JS_DEBUG,
                   ABILIAN_JS,
 )
 
