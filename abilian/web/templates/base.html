@@ -47,15 +47,14 @@
       {%- include "flash-messages.html" %}
     </div>
 
-    {% block content %}    
-      <header>
-        {% block header %}
-        {%- endblock %}
-      </header>
+    <header>
+      {% block header %}
+      {%- endblock %}
+    </header>
 
-      {% block main %}
-      {%- endblock %}    
-    {%- endblock %}
+    {% block main %}
+    {%- endblock %}        
+
   </div>
 
   <footer>
