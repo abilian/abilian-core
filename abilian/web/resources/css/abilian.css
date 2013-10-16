@@ -1,4 +1,5 @@
 /* Abilian default theme */
 
 @import 'layout.css';
+@import 'form.css';
 @import 'navbar.css';
