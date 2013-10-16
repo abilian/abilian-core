@@ -4,7 +4,10 @@
 from __future__ import absolute_import
 from flask.ext.assets import ManageAssets as BaseManageAssets
 
+
 class ManageAssets(BaseManageAssets):
+  """ Manages assets.
+  """
 
   def create_parser(self, prog, *args, **kwargs):
     """ As of Flask-Script 0.6.2, create_parser is called with additional kwarg

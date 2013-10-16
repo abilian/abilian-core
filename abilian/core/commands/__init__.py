@@ -35,6 +35,7 @@ import logging
 
 from flask import current_app
 from flask.ext.script import Manager
+from abilian.core.subjects import User
 
 from .assets import ManageAssets
 
@@ -94,7 +95,7 @@ def print_config(config):
 
 @manager.command
 def run():
-  """ Like runserver, also print application configuration.
+  """ Likes runserver, also print application configuration.
   """
   app = current_app
   print_config(app.config)
@@ -106,14 +107,14 @@ def run():
 
 @manager.command
 def initdb():
-  """ Create application DB.
+  """ Creates application DB.
   """
   current_app.create_db()
 
 
 @manager.command
 def dropdb():
-  """ Drop the application DB.
+  """ Drops the application DB.
   """
   confirm = raw_input("Are you sure you want to drop the database? (Y/N) ")
   if confirm.lower() == 'y':
@@ -122,10 +123,31 @@ def dropdb():
 
 
 @manager.command
-def dump_routes():
-  """ Dump all the routes registered in Flask.
+def dumproutes():
+  """ Dumps all the routes registered in Flask.
   """
   rules = list(current_app.url_map.iter_rules())
   rules.sort(key=lambda x: x.rule)
   for rule in rules:
     print "{} ({}) -> {}".format(rule, " ".join(rule.methods), rule.endpoint)
+
+
+@manager.command
+def createadmin(email, password):
+  """ Adds an admin user with given email and password.
+  """
+  user = User(email=email, password=password, can_login=True, active=True)
+  security.grant_role(user, "admin")
+  db.session.add(user)
+  db.session.commit()
+  print "User {} added".format(email)
+
+
+@manager.command
+def changepassword(email, password):
+  """ Changes the password of the given user.
+  """
+  user = User.query.filter(User.email==email).one()
+  user.password = password
+  db.session.commit()
+  print "Password updated for user {}".format(email)
