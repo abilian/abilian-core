@@ -3,8 +3,7 @@ from itertools import count
 
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
-from sqlalchemy import (
-  Column, Unicode, UnicodeText, Text, Date, ForeignKey,
+from sqlalchemy import (Column, Unicode, UnicodeText, Text, Date, ForeignKey,
   Integer,
 )
 
@@ -16,13 +15,13 @@ from . import audit_service
 from . import AuditEntry, CREATION, UPDATE, DELETION
 
 
-
 class DummyAccount(Entity):
   name = Column(UnicodeText, default=u"", info=SEARCHABLE)
   password = Column(Unicode, default=u'*', info=AUDITABLE_HIDDEN)
   website = Column(Text, default=u"")
   office_phone = Column(UnicodeText, default=u"")
   birthday = Column(Date)
+
 
 class AccountRelated(db.Model):
   __tablename__ = 'account_related'
@@ -34,8 +33,7 @@ class AccountRelated(db.Model):
     DummyAccount,
     backref=sa.orm.backref('datas',
                            order_by='AccountRelated.id',
-                           cascade='all, delete-orphan')
-  )
+                           cascade='all, delete-orphan'))
 
   text = Column(UnicodeText, default=u"")
 
@@ -51,8 +49,7 @@ class CommentRelated(db.Model):
   related = sa.orm.relationship(
     AccountRelated,
     backref=sa.orm.backref('comments', order_by='CommentRelated.id',
-                           cascade='all, delete-orphan')
-    )
+                           cascade='all, delete-orphan'))
   text = Column(UnicodeText, default=u"")
 
 

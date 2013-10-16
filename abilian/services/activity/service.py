@@ -4,12 +4,12 @@ from sqlalchemy.orm.session import Session
 from flask import g
 
 from abilian.services import Service
-from abilian.core.extensions import db
 from abilian.core.signals import activity
 
 from .models import ActivityEntry
 
 __all__ = ['ActivityService']
+
 
 class ActivityService(Service):
   name = 'activity'

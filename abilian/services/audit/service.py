@@ -23,6 +23,7 @@ from .models import AuditEntry, CREATION, UPDATE, DELETION, RELATED
 
 log = logging.getLogger(__name__)
 
+
 class AuditableMeta(object):
   name = None
   id_attr = None
@@ -280,6 +281,7 @@ class AuditService(Service):
     return q.all()
 
 audit_service = AuditService()
+
 
 def format_large_value(value):
   try:

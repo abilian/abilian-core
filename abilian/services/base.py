@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from flask import current_app
 
+
 class ServiceState(object):
   service = None
   running = False
@@ -49,7 +50,7 @@ class Service(object):
 
   @property
   def app_state(self):
-    """ Current service state in current application
+    """ Current service state in current application.
     """
     return current_app.extensions[self.name]
 
