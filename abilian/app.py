@@ -17,7 +17,7 @@ import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
   )
-from flask.helpers import locked_cached_property, send_from_directory
+from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
 from flask.ext.babel import gettext as _
 
@@ -27,6 +27,7 @@ from abilian.web.action import actions
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.views import http_error_pages
 from abilian.web.filters import init_filters
+from abilian.web.util import send_file_from_directory
 from abilian.plugin.loader import AppLoader
 from abilian.services import (audit_service, index_service, activity_service,
                               auth_service)
@@ -236,11 +237,6 @@ class Application(Flask, ServiceManager, PluginManager):
     # webassets: setup static url for our assets
     from abilian.web import assets as core_bundles
     assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
-
-    def send_file_from_directory(filename, directory):
-      cache_timeout = self.get_send_file_max_age(filename)
-      return send_from_directory(directory, filename,
-                                 cache_timeout=cache_timeout)
 
     self.add_url_rule(
       self.static_url_path + '/abilian/<path:filename>',
