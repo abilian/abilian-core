@@ -35,7 +35,9 @@ import logging
 
 from flask import current_app
 from flask.ext.script import Manager
+from abilian.core.extensions import db
 from abilian.core.subjects import User
+from abilian.services import get_service
 
 from .assets import ManageAssets
 
@@ -136,7 +138,8 @@ def dumproutes():
 def createadmin(email, password):
   """ Adds an admin user with given email and password.
   """
-  user = User(email=email, password=password, can_login=True, active=True)
+  user = User(email=email, password=password, can_login=True)
+  security = get_service('security')
   security.grant_role(user, "admin")
   db.session.add(user)
   db.session.commit()
