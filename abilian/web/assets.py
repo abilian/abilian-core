@@ -31,6 +31,12 @@ BOOTSTRAP_CSS = Bundle('bootstrap/css/bootstrap.min.css',
 BOOTSTRAP_CSS_DEBUG = Bundle('bootstrap/css/bootstrap.css',
                              'bootstrap/css/bootstrap-theme.css')
 
+DATATABLE_CSS = Bundle('datatables/css/jquery.dataTables.css',
+                       'datatables/css/jquery.dataTables_themeroller.css')
+
+DATATABLE_JS = Bundle('datatables/js/jquery.dataTables.min.js')
+DATATABLE_JS_DEBUG = Bundle('datatables/js/jquery.dataTables.js')
+
 FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
 FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
 
@@ -41,13 +47,16 @@ TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js',
 
 ABILIAN_CSS = Bundle('css/abilian.css')
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
-ABILIAN_JS = Bundle('js/abilian.js')
+ABILIAN_JS = Bundle('js/abilian.js',
+                    'js/datatables-setup.js')
 
 CSS = Bundle(BOOTSTRAP_CSS,
              FONTAWESOME_CSS,
+             DATATABLE_CSS,
              ABILIAN_CSS,)
 CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
                    FONTAWESOME_CSS_DEBUG,
+                   DATATABLE_CSS,
                    ABILIAN_CSS,)
 
 TOP_JS = Bundle(JQUERY,
@@ -58,11 +67,13 @@ TOP_JS_DEBUG = Bundle(JQUERY_DEBUG,
 JS = Bundle(BOOTSTRAP_JS,
             TYPEAHEAD_JS,
             BOOTBOX_JS,
+            DATATABLE_JS,
             ABILIAN_JS,
             )
 JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
                   TYPEAHEAD_JS_DEBUG,
                   BOOTBOX_JS_DEBUG,
+                  DATATABLE_JS_DEBUG,
                   ABILIAN_JS,
 )
 
