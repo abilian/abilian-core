@@ -156,7 +156,7 @@ Package ``abilian.web``
    :members:
    :undoc-members:
 
-:mod:`abilian.web.utils`
+:mod:`abilian.web.util`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.util
