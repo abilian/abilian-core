@@ -76,8 +76,7 @@
 {%- block js %}{%- endblock %} {# this block should be used to load additional libraries #}
 
 <script type="text/javascript">
-  Abilian.DEBUG = {{ config.DEBUG|tojson }};
-  Abilian.init();
+  {%- include "abilian_init.js" %}
 
   {%- if inline_js %}{{ inline_js }}{%- endif %}
 </script>
