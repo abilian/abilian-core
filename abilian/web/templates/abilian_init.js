@@ -1,6 +1,5 @@
-/* -*- jinja2 -*- */
 Abilian.DEBUG = {{ config.DEBUG|tojson }};
-Abilian.locale = 'fr'; {# FIXME: set locale from request/babel preferred locale #}
+Abilian.locale = {{ get_locale().language|tojson }};
 
 bootbox.setDefaults({
     'locale': Abilian.locale

@@ -19,7 +19,7 @@ from flask import (
   )
 from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
-from flask.ext.babel import gettext as _
+from flask.ext.babel import gettext as _, get_locale as babel_get_locale
 
 from abilian.core import extensions, signals
 import abilian.core.util
@@ -283,6 +283,7 @@ class Application(Flask, ServiceManager, PluginManager):
     env = Flask.create_jinja_environment(self)
     env.globals.update(
       app=current_app,
+      get_locale=babel_get_locale,
       NO_VALUE=NO_VALUE,
     )
     init_filters(env)
