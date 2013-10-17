@@ -40,6 +40,11 @@ DATATABLE_JS_DEBUG = Bundle('datatables/js/jquery.dataTables.js')
 FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
 FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
 
+SELECT2_CSS = Bundle('select2/select2.css',
+                     'select2/select2-bootstrap.css',)
+SELECT2_JS = Bundle('select2/select2.min.js')
+SELECT2_JS_DEBUG = Bundle('select2/select2.js')
+
 TYPEAHEAD_JS = Bundle('typeahead/typeahead.min.js',
                       'typeahead/hogan-2.0.0.js',)
 TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js',
@@ -52,10 +57,12 @@ ABILIAN_JS = Bundle('js/abilian.js',
 
 CSS = Bundle(BOOTSTRAP_CSS,
              FONTAWESOME_CSS,
+             SELECT2_CSS,
              DATATABLE_CSS,
              ABILIAN_CSS,)
 CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
                    FONTAWESOME_CSS_DEBUG,
+                   SELECT2_CSS,
                    DATATABLE_CSS,
                    ABILIAN_CSS,)
 
@@ -67,11 +74,13 @@ TOP_JS_DEBUG = Bundle(JQUERY_DEBUG,
 JS = Bundle(BOOTSTRAP_JS,
             TYPEAHEAD_JS,
             BOOTBOX_JS,
+            SELECT2_JS,
             DATATABLE_JS,
             ABILIAN_JS,
             )
 JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
                   TYPEAHEAD_JS_DEBUG,
+                  SELECT2_JS_DEBUG,
                   BOOTBOX_JS_DEBUG,
                   DATATABLE_JS_DEBUG,
                   ABILIAN_JS,
