@@ -7,6 +7,11 @@
       */
      Abilian.DEBUG = null;
 
+     /**
+      *  @define {?string} locale to use. Set it as soon as possible. Defaults to 'en'.
+      */
+     Abilian.locale = 'en';
+
      /*
       * Abilian events. Listeners should be registered using
       * `jQuery(...).on(Abilian.events.event_name, ...)` rather than using
