@@ -8,7 +8,9 @@
      Abilian.DEBUG = null;
 
      /**
-      *  @define {?string} locale to use. Set it as soon as possible. Defaults to 'en'.
+      *  @define {?string} locale to use. Set it as soon as possible. Abilian's
+      *  default templates and scripts set it based on locale from user
+      *  preferences or negociated by HTTP request.  Defaults to 'en'.
       */
      Abilian.locale = 'en';
 
@@ -19,6 +21,20 @@
       */
      Abilian.events = {};
      Abilian.events.appInit = 'abilian.app-init';
+
+
+     /*
+      * Abilian fonctions. Use this to register convenient functions
+      */     
+     Abilian.fn = {};
+
+     /*
+      * Shortcut to register a function that must execute when application is
+      * initialized. This is the preferred way to register init handlers.
+      */
+     Abilian.fn.onAppInit = function(callback) {
+       $(window).on(Abilian.events.appInit, callback);
+     };
 
      /**
       * @define {Object} filled by custom code, holds information about current

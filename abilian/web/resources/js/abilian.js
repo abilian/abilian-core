@@ -38,6 +38,6 @@
          $('.tt-hint').addClass('form-control');
      }
 
-     $(window).on(Abilian.events.appInit, initLiveSearch);
+     Abilian.fn.onAppInit(initLiveSearch);
 
 }(jQuery));
