@@ -1,0 +1,50 @@
+{% macro _m_audit_field_changes(changes) %}
+  <ul>
+    {%- for key, values in changes.items() %}
+      <li>
+        {%- if values.items %}
+          Field <b>{{ key }}</b> changed:
+          {{ _m_audit_field_changes(values) }}
+        {%- else %}
+          {%- set old_value, new_value = values %}
+          {%- if old_value and old_value != NO_VALUE %}
+            Field <b>{{ key }}</b> changed from <em>{{ old_value }}</em>
+            to <em>{{ new_value }}</em>
+          {%- else %}
+            Field <b>{{ key }}</b> set to <em>{{ new_value }}</em>
+          {%- endif %}
+        {%- endif %}
+      </li>
+    {%- endfor %}
+  </ul>
+{% endmacro %}
+
+{% macro m_audit_log(entries) %}
+  {%- if entries %}
+    <h3 class="main collapsed" data-toggle="collapse"
+        href="#audit_log_entries">{{ _("Audit Log") }}</h3>
+    <div id="audit_log_entries" class="collapse" style="margin-bottom: 25px;">
+      {%- for entry in entries %}
+        {%- if entry.related or entry.op == 1 %}
+          <div>
+            <img
+                src="{{ url_for("social.user_mugshot", user_id=entry.user.id, s=16) }}"
+                alt=""/>
+            <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
+            made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
+            {{ _m_audit_field_changes(entry.changes) }}
+          </div>
+        {%- elif entry.type == 0 %}
+          <div>
+            <img
+                src="{{ url_for("social.user_mugshot", user_id=entry.user.id, s=16) }}"
+                alt=""/>
+            <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
+            created this record
+            on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
+          </div>
+        {%- endif %}
+      {%- endfor %}
+    </div>
+  {%- endif %}
+{% endmacro %}

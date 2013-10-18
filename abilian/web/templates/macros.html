@@ -66,7 +66,7 @@
 
 {# Generic renderer for activity streams #}
 {% macro m_activities(entries, ignore_communities=False) %}
-  {{ deprecated("m_activities", "?") }}
+  {{ deprecated("m_activities", "activity") }}
   <ul class="activities">
     {% for entry in entries %}
       {% set actor_href = url_for("social.user", user_id=entry.actor.id) %}
@@ -94,7 +94,7 @@
 
 
 {% macro _m_audit_field_changes(changes) %}
-  {{ deprecated("_m_audit_field_changes", "?") }}
+  {{ deprecated("_m_audit_field_changes", "audit") }}
   <ul>
     {%- for key, values in changes.items() %}
       <li>
@@ -116,7 +116,7 @@
 {% endmacro %}
 
 {% macro m_audit_log(entries) %}
-  {{ deprecated("m_audit_log", "?") }}
+  {{ deprecated("m_audit_log", "audit") }}
   {%- if entries %}
     <h3 class="main collapsed" data-toggle="collapse"
         href="#audit_log_entries">{{ _("Audit Log") }}</h3>
@@ -163,7 +163,7 @@
 
 
 {% macro m_recent_items(recent_items) %}
-  {{ deprecated("m_recent_items", "?") }}
+  {{ deprecated("m_recent_items", "recent") }}
 
   {%- if recent_items %}
     <div class="well" style="padding: 8px 0;">

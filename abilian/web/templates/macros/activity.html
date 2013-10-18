@@ -1,0 +1,25 @@
+{# Generic renderer for activity streams #}
+{%- macro m_activities(entries, ignore_communities=False) %}
+  <ul class="activities">
+    {% for entry in entries %}
+      {% set actor_href = url_for("social.user", user_id=entry.actor.id) %}
+      {% set actor_img = url_for("social.user_mugshot", user_id=entry.actor.id, s=45) %}
+
+      <li>
+        <a href="{{ actor_href }}"><img class="avatar" alt="" src="{{ actor_img }}"></a>
+
+        <div class="entry">
+          <span class="arrow"></span>
+          <a href="{{ actor_href }}" class="name">{{ entry.actor }}</a>,
+          <span class="datetime">{{ entry.happened_at|datetimeformat }}</span>
+          <span class="message">{{ entry.message(ignore_communities)|safe }}</span>
+
+          {% set body = entry.body() %}
+          {% if body %}
+            <span class="body">"<a href="{{ entry.object_url }}">{{ body }}"</a></span>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
