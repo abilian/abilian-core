@@ -21,4 +21,9 @@ Abilian.datepicker_defaults = {
     {#- first week day: for babel 0 == Monday, datetimepicker 0 == Sunday #}
     'weekStart': {{ ((locale.first_week_day + 1) % 7)|tojson }}
 };
+
+{#- timepicker: set 12/24 time #}
+{%- set short_time = locale.time_formats['short'].pattern %}
+Abilian.timepicker_defaults = { 'showMeridian': {{ ('h' in short_time or 'k' in short_time)|tojson }} };
+
 }(jQuery));
