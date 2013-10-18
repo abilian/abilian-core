@@ -3,3 +3,7 @@
 .not-resizeable {
   resize: none;
 }
+
+.resizeable-vertical {
+  resize: vertical;
+}
