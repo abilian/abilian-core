@@ -2,6 +2,7 @@
 (function($) {
 
 $(document).ready(Abilian.init);
+window.onbeforeprint = Abilian.fn.before_print;
 
 Abilian.DEBUG = {{ config.DEBUG|tojson }};
 Abilian.locale = {{ locale.language|tojson }};

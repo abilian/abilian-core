@@ -1,6 +1,8 @@
 (function($) {
-     /*
+     /**
       * For form inputs: disable form submission on 'enter' key
+      * We put this function in jQuery.fn so that it is callable on any $()
+      * wrapped element.
       */
      $.fn.preventEnterKey = function() {
          return $(this).on('keypress', function(e) {                              
@@ -8,6 +10,18 @@
                                 e.preventDefault();
                             }
                         });
+     };
+
+     /**
+      * This function is to be set on window.onbeforeprint.
+      */
+     Abilian.fn.before_print = function () {
+         /* Firefox does not allow page-break inside fieldsets: for very long
+          * fieldset bottom maybe below page footer... */
+         $(document.body).find('fieldset').each(
+             function() {
+                 $(this).replaceWith('<div class="fieldset">' + $(this).html() + '</div>');
+             });         
      };
 
      function initLiveSearch() {
