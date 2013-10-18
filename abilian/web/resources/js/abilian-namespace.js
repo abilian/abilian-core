@@ -14,7 +14,7 @@
       */
      Abilian.locale = 'en';
 
-     /*
+     /**
       * Abilian events. Listeners should be registered using
       * `jQuery(...).on(Abilian.events.event_name, ...)` rather than using
       * string value
@@ -23,17 +23,29 @@
      Abilian.events.appInit = 'abilian.app-init';
 
 
-     /*
+     /**
       * Abilian fonctions. Use this to register convenient functions
       */     
      Abilian.fn = {};
 
-     /*
+     /**
       * Shortcut to register a function that must execute when application is
       * initialized. This is the preferred way to register init handlers.
       */
      Abilian.fn.onAppInit = function(callback) {
        $(window).on(Abilian.events.appInit, callback);
+     };
+
+
+     /**
+      * emit a 'script' tag to load additional javascript files
+      */
+     Abilian.fn.loadScript = function(url) {
+         var element = document.createElement("script");
+         element.type = 'text/javascript';
+         element.src = url;
+         document.write(element.outerHTML);
+         element = null;         
      };
 
      /**
