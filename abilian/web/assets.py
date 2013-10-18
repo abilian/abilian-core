@@ -31,6 +31,9 @@ BOOTSTRAP_CSS = Bundle('bootstrap/css/bootstrap.min.css',
 BOOTSTRAP_CSS_DEBUG = Bundle('bootstrap/css/bootstrap.css',
                              'bootstrap/css/bootstrap-theme.css')
 
+BOOTSTRAP_DATEPICKER_CSS = Bundle('bootstrap-datepicker/css/datepicker.css')
+BOOTSTRAP_DATEPICKER_JS = Bundle('bootstrap-datepicker/js/bootstrap-datepicker.js')
+
 DATATABLE_CSS = Bundle('datatables/css/jquery.dataTables.css',
                        'datatables/css/jquery.dataTables_themeroller.css')
 
@@ -58,11 +61,13 @@ ABILIAN_JS = Bundle('js/abilian.js',
 CSS = Bundle(BOOTSTRAP_CSS,
              FONTAWESOME_CSS,
              SELECT2_CSS,
+             BOOTSTRAP_DATEPICKER_CSS,
              DATATABLE_CSS,
              ABILIAN_CSS,)
 CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
                    FONTAWESOME_CSS_DEBUG,
                    SELECT2_CSS,
+                   BOOTSTRAP_DATEPICKER_CSS,
                    DATATABLE_CSS,
                    ABILIAN_CSS,)
 
@@ -75,6 +80,7 @@ JS = Bundle(BOOTSTRAP_JS,
             TYPEAHEAD_JS,
             BOOTBOX_JS,
             SELECT2_JS,
+            BOOTSTRAP_DATEPICKER_JS,
             DATATABLE_JS,
             ABILIAN_JS,
             )
@@ -82,6 +88,7 @@ JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
                   TYPEAHEAD_JS_DEBUG,
                   SELECT2_JS_DEBUG,
                   BOOTBOX_JS_DEBUG,
+                  BOOTSTRAP_DATEPICKER_JS,
                   DATATABLE_JS_DEBUG,
                   ABILIAN_JS,
 )
