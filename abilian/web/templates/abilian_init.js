@@ -15,13 +15,15 @@ Abilian.fn.loadScript('{{ url_for('abilian_static', filename='select2/select2_lo
 {#- bootstrap-datepicker locale #}
 Abilian.fn.loadScript('{{ url_for('abilian_static', filename='bootstrap-datepicker/js/locales/bootstrap-datepicker.' + locale.language + '.js') }}');
 
-Abilian.datepicker_defaults = {
-    'todayHighlight': true,
-    'todayBtn': true,
-    'language': {{ locale.language|tojson }},
-    {#- first week day: for babel 0 == Monday, datetimepicker 0 == Sunday #}
-    'weekStart': {{ ((locale.first_week_day + 1) % 7)|tojson }}
-};
+$.extend(
+    $.fn.datepicker.defaults,
+    { 'todayHighlight': true,
+      'todayBtn': true,
+      'language': {{ locale.language|tojson }},
+      'format': {{ locale.date_formats['short']|babel2datepicker|tojson }},
+      {#- first week day: for babel 0 == Monday, datetimepicker 0 == Sunday #}
+      'weekStart': {{ ((locale.first_week_day + 1) % 7)|tojson }}
+    });
 
 {#- timepicker: set 12/24 time #}
 {%- set short_time = locale.time_formats['short'].pattern %}
