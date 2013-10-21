@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import setuptools
 from setup_util import parse_requirements, parse_dependency_links
 
@@ -9,7 +10,10 @@ dependency_links = parse_dependency_links([u'etc/deps.txt'])
 
 
 def get_long_description():
-  import os
+  """
+  Hack to provide a ``.rst`` description to PyPI even when the ``README`` is
+  actually written using Markdown.
+  """
 
   if os.path.exists("README.rst"):
     return open("README.rst").read()
@@ -26,13 +30,13 @@ def get_long_description():
 
 
 setuptools.setup(
-  name='Abilian Core',
-  version='0.1dev',
+  name='Abilian-Core',
+  version='0.1',
   url='http://www.abilian.com/',
   license='LGPL',
-  author='Stefane Fermigier',
-  author_email='sf@fermigier.com',
-  description='Base framework for E2.0 applications',
+  author='Abilian SAS',
+  author_email='contact@abilian.com',
+  description='Base framework for social business applications',
   long_description=get_long_description(),
   packages=['abilian'],
   platforms='any',

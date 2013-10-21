@@ -51,4 +51,4 @@ cssmin
 coverage==3.6
 nose
 pytest
-sphinx
+Sphinx==1.1.3

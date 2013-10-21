@@ -36,11 +36,11 @@ all the tools that are at our disposal to make it rock-solid.
 
 This includes:
 
-- Having a large test suite.
+- Having an exhaustive test suite.
 
 - Using continuous integration (CI) servers to run the test suite on every commit.
 
-- Running tests
+- Running tests.
 
 - Using our products daily.
 

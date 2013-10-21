@@ -5,7 +5,8 @@ Welcome to Abilian Core
 
 .. image:: images/abilian-logo-baseline.png
    :alt: Abilian - Connected we work
-   :width: 350
+   :width: 300
+   :class: floatingflask
 
 
 Welcome to Abilian Core's documentation.
