@@ -15,13 +15,13 @@ import bleach
 
 import sqlalchemy as sa
 from flask import render_template, json, Markup, render_template_string
-from flask.ext.babel import gettext as _, format_date, format_datetime
+from flask.ext.babel import gettext as _, format_date, format_datetime, get_locale
 import wtforms
 from wtforms.widgets import HTMLString, Input, html_params, Select
 from wtforms_alchemy import ModelFieldList
 
 from abilian.core.entities import Entity
-from abilian.web.filters import labelize
+from abilian.web.filters import labelize, babel2datepicker
 from abilian.web import csrf
 
 __all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',
@@ -516,17 +516,27 @@ class DateInput(Input):
     if not value:
       value = ''
 
-    format = kwargs.pop('format', field.format).replace("%", "")\
+    date_fmt = kwargs.pop('format', None)
+    if date_fmt is not None:
+      date_fmt = date_fmt.replace("%", "")\
         .replace("d", "dd")\
         .replace("m", "mm")\
         .replace("Y", "yyyy")
+    else:
+      date_fmt = get_locale().date_formats['short'].pattern
+      date_fmt = babel2datepicker(date_fmt)
+      date_fmt = date_fmt.replace('M', 'm') # force numerical months
 
-    s = u'<div class="input-append date datepicker" %s>' \
-        % html_params(**{'data-date': value, 'data-date-format': format})
-    s += u'<input class="span2" size="13" type="text" %s>' \
-        % html_params(name=field_name, id=field_id, value=value)
-    s += u'<span class="add-on"><i class="icon-calendar"></i></span>'
-    s += u'</div>'
+    s = u'<div {}>\n'.format(html_params(
+      **{'class': "input-group date",
+         'data-provide': 'datepicker',
+         'data-date': value,
+         'data-date-format': date_fmt}))
+
+    s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
+        html_params(name=field_name, id=field_id, value=value))
+    s += u'  <span class="input-group-addon"><i class="icon-calendar"></i></span>\n'
+    s += u'</div>\n'
     return Markup(s)
 
   def render_view(self, field):

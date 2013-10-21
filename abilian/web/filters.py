@@ -7,6 +7,7 @@ from functools import wraps
 import datetime
 from pytz import utc
 from calendar import timegm
+from babel.dates import DateTimePattern
 import bleach
 
 from jinja2 import Markup, escape, evalcontextfilter
@@ -134,6 +135,47 @@ def date(value):
     return babel.format_date(local_dt(value), format)
 
 
+def babel2datepicker(fmt):
+  """ Convert date format from babel
+  (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
+  bootstrap-datepicker.
+  """
+  if isinstance(fmt, DateTimePattern):
+    fmt = fmt.pattern
+
+  # days
+  replace = None
+  if 'd' in fmt:
+    replace = ('d', 'd')
+  elif 'EEEEE' in fmt:
+    replace = ('EEEEE', 'D') # narrow name => short name
+  elif 'EEEE' in fmt:
+    replace = ('EEEE', 'DD')
+  else:
+    replace = ('EEE', 'D')
+
+  fmt = fmt.replace(*replace)
+  replace = None
+
+  # months
+  if 'MMMM' in fmt:
+    replace = ('MMMM', 'MM')
+  elif 'MMM' in fmt:
+    replace = ('MMM', 'M')
+  elif 'M' in fmt:
+    # numerical months, 1 or 2-digit format
+    fmt.replace('M', 'm')
+
+  if replace:
+    fmt = fmt.replace(*replace)
+
+  if 'yyyy' not in fmt:
+    # by default change to 4-digit years
+    fmt = fmt.replace('yy', 'yyyy')
+
+  return fmt
+
+
 # Doesn't work yet. TZ issues.
 def to_timestamp(dt):
   utc_datetime = dt.astimezone(utc)
@@ -161,6 +203,7 @@ def init_filters(env):
   env.filters['date_age'] = date_age
   env.filters['age'] = age
   env.filters['date'] = date
+  env.filters['babel2datepicker'] = babel2datepicker
   env.filters['to_timestamp'] = to_timestamp
 
   env.filters['abbrev'] = abbrev
