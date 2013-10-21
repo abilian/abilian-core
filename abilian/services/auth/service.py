@@ -64,7 +64,7 @@ class AuthService(Service):
     try:
       user = User.query.get(user_id)
 
-      if not user.can_login:
+      if user and not user.can_login:
         # if a user is edited and should not have access any more, this will
         # ensure he cannot continue if he had an active session
         return None
