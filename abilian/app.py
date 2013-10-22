@@ -57,7 +57,7 @@ class PluginManager(object):
   def load_plugins(self):
     """Discovers and load plugins.
 
-    At this point, prefer explicit loading using the `register_plugin`
+    At this point, prefer explicit loading using the :method:~`register_plugin`
     method.
     """
     loader = AppLoader()
@@ -87,10 +87,10 @@ class Application(Flask, ServiceManager, PluginManager):
   """
   default_config = default_config
 
-  #: custom apps may want to always load some plugins: list them here
+  #: Custom apps may want to always load some plugins: list them here.
   APP_PLUGINS = ()
 
-  #: environment variable used to locate a config file to load last (after
+  #: Environment variable used to locate a config file to load last (after
   #: instance config file). Use this if you want to override some settings on a
   #: configured instance.
   CONFIG_ENVVAR = 'ABILIAN_CONFIG'

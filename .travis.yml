@@ -6,6 +6,7 @@ python:
 before_install:
  - sudo apt-get update
  - sudo apt-get install -y poppler-utils
+ - sudo rmdir /dev/shm && sudo ln -Tsf /{run,dev}/shm
 
 # Install Python dependencies
 install:

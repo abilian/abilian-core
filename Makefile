@@ -65,7 +65,7 @@ clean:
 	rm -f junit-py27.xml
 
 tidy: clean
-	rm -rf .tox
+	rm -rf .tox .travis-solo
 
 update-pot:
 	# _n => ngettext, _l => lazy_gettext

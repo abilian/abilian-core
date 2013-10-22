@@ -51,10 +51,10 @@ class BaseTestCase(TestCase):
   ensure harder test isolation.
   """
 
-  #: config class to use for :attr:`application_class` configuration
+  #: Config class to use for :attr:`.application_class` configuration.
   config_class = TestConfig
 
-  #: Application class to instantiate
+  #: Application class to instantiate.
   application_class = Application
 
   TEST_INSTANCE_PATH = None
@@ -100,10 +100,10 @@ class BaseTestCase(TestCase):
     TestCase.tearDownClass()
 
   def get_setup_config(self):
-    """ Called by `create_app` Override this if you want to tweak the config
+    """ Called by :meth:`create_app` Override this if you want to tweak the config
     before :attr:`application_class` is instanciated.
 
-    :return: an instance of :attr:`config_class`, or anything that is valid
+    :return: an instance of :attr:`config_class`, or anything that is a valid
              config object for Flask.
     """
     return self.config_class()
@@ -155,7 +155,7 @@ class BaseTestCase(TestCase):
 
   @property
   def db(self):
-    """ Shortcut to application db object
+    """ Shortcut to the application db object.
     """
     return self.app.extensions['sqlalchemy'].db
 
@@ -174,7 +174,8 @@ class BaseTestCase(TestCase):
   # TODO: post(), put(), etc.
 
   def assert_valid(self, response):
-    """ Validate html with config.VALIDATOR_URL
+    """ Validate `response.data` as HTML using validator provided by
+    `config.VALIDATOR_URL`.
     """
     # FIXME: put this and document in TestConfig class
     validator_url = self.app.config.get('VALIDATOR_URL') \

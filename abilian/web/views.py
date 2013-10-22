@@ -12,6 +12,7 @@ base = Blueprint('web', __name__,
 
 http_error_pages = Blueprint('http_error_pages', __name__)
 
+
 @http_error_pages.route('/<int:code>')
 def error_page(code):
   """ Helper for development to show 403, 404, 500..."""

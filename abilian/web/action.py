@@ -7,13 +7,15 @@ log = logging.getLogger(__name__)
 
 __all__ = ('Action', 'ModalActionMixin', 'actions')
 
+
 def getset(f):
-  """ shortcut for a custom getter/ standard setter
+  """ Shortcut for a custom getter/ standard setter
   """
   return property(f, f)
 
+
 class Action(object):
-  """ Action interface
+  """ Action interface.
   """
   category = None
   name = None
@@ -22,13 +24,13 @@ class Action(object):
   icon = None
   _url = None
 
-  #: a string for a simple endpoint, a tuple (endpoint_name, kwargs) to be
-  #: passed to `url_for(endpoint_name, **kwargs)` or a callable which accept a
+  #: A string for a simple endpoint, a tuple ``(endpoint_name, kwargs)`` to be
+  #: passed to ``url_for(endpoint_name, **kwargs)`` or a callable which accept a
   #: context dict and returns a valid value.
   endpoint = None
 
-  #: a bool (or something that can be converted to bool), or a callable which
-  #: accept a context dict as parameter.
+  #: A boolean (or something that can be converted to boolean), or a callable
+  #: which accepts a context dict as parameter.
   condition = None
 
   template_string = (
@@ -52,7 +54,7 @@ class Action(object):
 
     self._active = True
 
-  #: boolean. Inactive actions are unconditionnaly skipped
+  #: Boolean. Inactive actions are unconditionnaly skipped.
   @getset
   def active(self, value=None):
     active = self._active
@@ -60,7 +62,6 @@ class Action(object):
       assert isinstance(value, bool)
       self._active = active = value
     return active
-
 
   def _get_and_call(self, attr):
     attr = '_' + attr
@@ -115,18 +116,18 @@ class Action(object):
     self._endpoint = endpoint
 
   def available(self, context):
-    """ Determine if this actions is available in this ``context``. ``context``
+    """ Determine if this actions is available in this `context`. `context`
     is a dict whose content is left to application needs; if :attr:`.condition`
-    is a callable it receives ``context`` in parameter.
+    is a callable it receives `context` in parameter.
     """
     if not self._active:
       return False
     return self.pre_condition(context) and self._check_condition(context)
 
   def pre_condition(self, context):
-    """ Called by :meth:``.available`` before checking condition. Subclasses may
+    """ Called by :meth:`.available` before checking condition. Subclasses may
     override it to ease creating actions with repetitive check (for example:
-    actions that apply on a given content type only)
+    actions that apply on a given content type only).
     """
     return True
 
@@ -174,7 +175,7 @@ class ActionRegistry(object):
 
   From your application use the instanciated registry :data:`.actions`.
 
-  The registry is available in jinja2 templates as ``actions``
+  The registry is available in jinja2 templates as `actions`.
   """
   __EXTENSION_NAME = 'abilian:actions'
 
@@ -191,18 +192,18 @@ class ActionRegistry(object):
       return dict(actions=self)
 
   def installed(self, app=None):
-    """ Return True if the registry has been installed in current applications
+    """ Return `True` if the registry has been installed in current applications
     """
     if app == None:
       app = current_app
     return self.__EXTENSION_NAME in app.extensions
 
   def register(self, *actions):
-    """ Register ``actions`` in current application. All ``actions`` must be an
+    """ Register `actions` in the current application. All `actions` must be an
     instance of :class:`.Action` or one of its subclasses.
 
-    If ``overwrite`` is True then it is allowed to overwrite an existing
-    action with same name and category; else ValueError is raised.
+    If `overwrite` is `True`, then it is allowed to overwrite an existing
+    action with same name and category; else `ValueError` is raised.
     """
     assert self.installed(), "Actions not enabled on this application"
     assert all(map(lambda a: isinstance(a, Action), actions))
@@ -217,8 +218,8 @@ class ActionRegistry(object):
 
     Actions are filtered according to :meth:`.Action.available`.
 
-    if ``context`` is None, then current action context is used
-    (:attr:``context``)
+    if `context` is None, then current action context is used
+    (:attr:`context`).
     """
     assert self.installed(), "Actions not enabled on this application"
     result = {}
@@ -234,8 +235,8 @@ class ActionRegistry(object):
 
     Actions are filtered according to :meth:`.Action.available`.
 
-    if ``context`` is None, then current action context is used
-    (:attr:``context``)
+    if `context` is None, then current action context is used
+    (:attr:`context`)
     """
     assert self.installed(), "Actions not enabled on this application"
     actions = self._state['categories'].get(category, [])

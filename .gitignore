@@ -1,5 +1,6 @@
 .idea
 .tox
+.travis-solo
 .DS_Store
 .coverage
 .vagrant
