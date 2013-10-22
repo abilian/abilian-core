@@ -15,15 +15,15 @@ def get_object_or_404(cls, *args):
 
 
 def send_file_from_directory(filename, directory, app=None):
-  """
-  Helper to add static rules, like in abilian.app::
+  """Helper to add static rules, like in `abilian.app`.app
 
-      app.add_url_rule(
-        app.static_url_path + '/abilian/<path:filename>',
-        endpoint='abilian_static',
-        view_func=partial(send_file_from_directory,
-                          directory='/path/to/static/files/dir'))
+     Example use::
 
+         app.add_url_rule(
+            app.static_url_path + '/abilian/<path:filename>',
+            endpoint='abilian_static',
+            view_func=partial(send_file_from_directory,
+                              directory='/path/to/static/files/dir'))
   """
   if app is None:
     app = current_app
