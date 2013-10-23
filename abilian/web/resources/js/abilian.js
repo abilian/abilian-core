@@ -26,6 +26,8 @@
 
 
      Abilian.fn.init_widgets = function() {
+         $('[data-toggle="select2"]').select2();
+
          $(".timepicker").timepicker()
             .on('click.timepicker',
                 function(e) {

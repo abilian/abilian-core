@@ -821,7 +821,7 @@ class Select2(Select):
   def __call__(self, *args, **kwargs):
     # Just add a select2 css class to the widget and let JQuery do the rest.
     kwargs = kwargs.copy()
-    kwargs['class'] = 'select2'
+    kwargs['data-toggle'] = 'select2'
     return Select.__call__(self, *args, **kwargs)
 
   def render_view(self, field, **kwargs):
