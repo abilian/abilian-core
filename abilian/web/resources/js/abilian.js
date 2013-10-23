@@ -24,6 +24,45 @@
              });         
      };
 
+
+     Abilian.fn.init_widgets = function() {
+         $(".timepicker").timepicker()
+            .on('click.timepicker',
+                function(e) {
+                    e.preventDefault();
+                    $(this).timepicker('showWidget');
+                }
+               );
+
+         datetimePickerSetup();
+     };
+     Abilian.fn.onAppInit(Abilian.fn.init_widgets);
+
+     function datetimePickerSetup() {
+         /* automatically concat datepicker + timepicker in hidden input */
+         $('.datetimepicker').each(
+             function() {
+                 var $self = $(this);
+                 var $datepicker = $('#'+ this.id + '-date');
+                 var $timepicker = $('#'+ this.id + '-time');
+                 
+                 $datepicker.parent().on(
+                     'changeDate',
+                     function updateDateTime(e) {
+                         $self.val($datepicker.val() + ' ' + $timepicker.val());
+                     }
+                 );
+
+                 $timepicker.timepicker().on(
+                     'changeTime.timepicker',
+                     function updateDateTime(e) {
+                         $self.val($datepicker.val() + ' ' + e.time.value);
+                     }
+                 );
+             }
+         );
+     };
+
      function initLiveSearch() {
          var datasets = [
              { name: 'documents',

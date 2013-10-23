@@ -27,6 +27,9 @@ $.extend(
 
 {#- timepicker: set 12/24 time #}
 {%- set short_time = locale.time_formats['short'].pattern %}
-Abilian.timepicker_defaults = { 'showMeridian': {{ ('h' in short_time or 'k' in short_time)|tojson }} };
+$.extend(
+    $.fn.timepicker.defaults,
+    { 'showMeridian': {{ ('h' in short_time or 'k' in short_time)|tojson }} 
+    });
 
 }(jQuery));
