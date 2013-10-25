@@ -229,8 +229,12 @@ class AuditService(Service):
           return
 
     entry = AuditEntry(type=op_type, user_id=user_id)
-    entry.entity_id = getattr(entity, meta.id_attr)
-    entry.entity_class = meta.name
+    if op_type != DELETION:
+      # DELETION of a related model is ok: entity is still here
+      entry.entity = entity
+
+    entry.entity_id = entity.id
+    entry.entity_type = entity.entity_type
 
     entity_name = u''
     for attr_name in ('_name', 'path', '__path_before_delete'):
@@ -270,9 +274,7 @@ class AuditService(Service):
     return entry
 
   def entries_for(self, entity, limit=None):
-    q = AuditEntry.query.filter(
-      AuditEntry.entity_class == entity.__class__.__name__,
-      AuditEntry.entity_id == entity.id)
+    q = AuditEntry.query.filter(AuditEntry.entity == entity)
     q = q.order_by(AuditEntry.happened_at.desc())
 
     if limit is not None:

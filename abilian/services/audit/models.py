@@ -15,8 +15,9 @@ from flask import current_app
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, Unicode, DateTime, Text, Binary
+from sqlalchemy.types import Integer, Unicode, DateTime, Binary, String
 
+from abilian.core.entities import Entity
 from abilian.core.subjects import User
 from abilian.core.extensions import db
 
@@ -35,12 +36,18 @@ class AuditEntry(db.Model):
   happened_at = Column(DateTime, default=datetime.utcnow)
   type = Column(Integer) # CREATION / UPDATE / DELETION
 
+  # 2 entity_id columns: 1 to keep even if entity is deleted, 1 to set up
+  # relation (and all audit entries will have it set to null if entity is
+  # deleted)
+  _fk_entity_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
+  entity = relationship(Entity, foreign_keys=[_fk_entity_id], lazy='joined')
+
   entity_id = Column(Integer)
-  entity_class = Column(Text)
+  entity_type = Column(String(1000))
   entity_name = Column(Unicode(length=255))
 
   user_id = Column(Integer, ForeignKey(User.id))
-  user = relationship(User)
+  user = relationship(User, foreign_keys=user_id)
 
   changes_pickle = Column(Binary)
 
@@ -50,7 +57,7 @@ class AuditEntry(db.Model):
       {CREATION: "CREATION", DELETION: "DELETION", UPDATE: "UPDATE"}[self.op],
       self.user,
       'related ' if self.related else '',
-      self.entity_class, self.entity_id)
+      self.entity_type, self.entity_id)
 
   @property
   def op(self):
@@ -97,16 +104,3 @@ class AuditEntry(db.Model):
         uv = tuple(uv)
       uchanges[k] = uv
     return uchanges
-
-
-  # FIXME: extremely innefficient
-  @property
-  def entity(self):
-    # Avoid circular import
-    from .service import audit_service
-
-    #noinspection PyTypeChecker
-    if not self.entity_class or not self.entity_id:
-      return None
-    cls = audit_service.model_class_names.get(self.entity_class)
-    return cls.query.get(self.entity_id) if cls is not None else None

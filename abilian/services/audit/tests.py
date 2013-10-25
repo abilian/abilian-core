@@ -77,8 +77,8 @@ class TestAudit(BaseTestCase):
 
     entry = AuditEntry.query.one()
     assert entry.type == CREATION
-    assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
+    assert entry.entity == account
 
     account.website = "http://www.john.com/"
     db.session.commit()
@@ -86,8 +86,8 @@ class TestAudit(BaseTestCase):
 
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[1]
     assert entry.type == UPDATE
-    assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
+    assert entry.entity == account
     assert entry.changes == {u'website': (u'', u'http://www.john.com/')}
 
     account.birthday = datetime.date(2012, 12, 25)
@@ -96,8 +96,8 @@ class TestAudit(BaseTestCase):
 
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[2]
     assert entry.type == UPDATE
-    assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
+    assert entry.entity == account
     assert entry.changes == {u'birthday': (None, datetime.date(2012, 12, 25))}
 
     # content hiding
@@ -107,8 +107,8 @@ class TestAudit(BaseTestCase):
 
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[3]
     assert entry.type == UPDATE
-    assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
+    assert entry.entity == account
     assert entry.changes == {u'password': (u'******', u'******')}
 
     # deletion
@@ -118,8 +118,14 @@ class TestAudit(BaseTestCase):
 
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[4]
     assert entry.type == DELETION
-    assert entry.entity_class == "DummyAccount"
     assert entry.entity_id == account.id
+    assert entry.entity == None
+
+    # check all entries are still present (but have lost reference to entity)
+    entries = AuditEntry.query.all()
+    assert len(entries) == 5
+    assert all(e.entity_id == account.id for e in entries)
+    assert all(e.entity == None for e in entries)
 
   def test_audit_related(self):
     AuditEntry.query.delete()
@@ -145,8 +151,9 @@ class TestAudit(BaseTestCase):
     entry = next_entry()
     assert entry.op == CREATION
     assert entry.related
-    assert entry.entity_class == "DummyAccount"
+    assert entry.entity_type == account.entity_type
     assert entry.entity_id == account.id
+    assert entry.entity == account
 
     changes = entry.changes
     assert len(changes) == 1
@@ -162,7 +169,7 @@ class TestAudit(BaseTestCase):
     entry = next_entry()
     assert entry.op == CREATION
     assert entry.related
-    assert entry.entity_class == "DummyAccount"
+    assert entry.entity_type == account.entity_type
     assert entry.entity_id == account.id
 
     changes = entry.changes
@@ -179,7 +186,7 @@ class TestAudit(BaseTestCase):
     entry = next_entry()
     assert entry.op == CREATION
     assert entry.related
-    assert entry.entity_class == "DummyAccount"
+    assert entry.entity_type == account.entity_type
     assert entry.entity_id == account.id
 
     changes = entry.changes
@@ -189,3 +196,16 @@ class TestAudit(BaseTestCase):
     assert changes == {'text': (NO_VALUE, u'comment 2'),
                        'related_id': (NO_VALUE, 1),
                        'id': (None, 2), }
+
+    # deletion
+    db.session.delete(comment)
+    db.session.commit()
+
+    entry = next_entry()
+    assert entry.op == DELETION
+    assert entry.related
+    assert entry.entity_id == account.id
+    # entity not deleted: audit should still have reference to it
+    assert entry.entity == account
+
+
