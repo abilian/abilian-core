@@ -10,6 +10,7 @@ import logging.config
 from itertools import chain
 from functools import partial
 
+import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
 
 from werkzeug.datastructures import ImmutableDict
@@ -121,6 +122,14 @@ class Application(Flask, ServiceManager, PluginManager):
 
     self.init_extensions()
     self.register_plugins()
+    # at this point all models should have been imported: time to configure
+    # mappers. Normally Sqlalchemy does it when needed but mappers may be
+    # configured inside sa.orm.class_mapper() which hides a misconfiguration: if
+    # a mapper is misconfigured its exception is swallowed by
+    # class_mapper(model) results in this laconic (and misleading) message:
+    # "model is not mapped"
+    sa.orm.configure_mappers()
+
     signals.components_registered.send(self)
 
     self.before_request(self._setup_breadcrumbs)
