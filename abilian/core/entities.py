@@ -133,8 +133,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   def __tablename__(cls):
     return cls.__name__.lower()
 
-  def __init__(self, **kw):
-    #    self.update(kw)
+  def __init__(self):
     OwnedMixin.__init__(self)
 
   def __repr__(self):
@@ -150,10 +149,6 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   def column_names(self):
     return [ col.name for col in class_mapper(self.__class__).mapped_table.c ]
 
-  # def update(self, d):
-  #   for k, v in d.items():
-  #     #assert k in self.column_names, "%s not allowed" % k
-  #     setattr(self, k, v)
 
   def to_dict(self):
     if hasattr(self, "__exportable__"):
@@ -206,6 +201,7 @@ class Entity(BaseMixin, AbstractConcreteBase, db.Model):
   def __init__(self, *args, **kwargs):
     db.Model.__init__(self, *args, **kwargs)
     BaseMixin.__init__(self)
+
 
 # TODO: make this unecessary
 def register_metadata(cls):
