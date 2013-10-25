@@ -10,11 +10,11 @@ import json
 
 from flask import g
 
-from sqlalchemy.ext.declarative import AbstractConcreteBase, declared_attr
+from sqlalchemy.ext.declarative import DeclarativeMeta, declared_attr
 from sqlalchemy.orm import relationship, mapper
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, DateTime
+from sqlalchemy.types import Integer, DateTime, String
 from sqlalchemy import event
 
 from .extensions import db
@@ -186,9 +186,57 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     return self._name
 
 
-class Entity(BaseMixin, AbstractConcreteBase, db.Model):
-  """Base class for Abilian entities."""
-  __abstract__ = True
+class _EntityInherit(object):
+  @declared_attr
+  def id(cls):
+    return Column(
+      Integer,
+      ForeignKey('entity.id', use_alter=True, name='fk_inherited_entity_id'),
+      primary_key=True)
+
+  @declared_attr
+  def __mapper_args__(cls):
+    return {'polymorphic_identity': cls.entity_type,
+            'inherit_condition': cls.id == Entity.id,}
+
+
+BaseMeta = db.Model.__class__
+
+class EntityMeta(BaseMeta):
+  """ Metaclass for Entities. It properly sets-up subclasses by adding
+  _EntityInherit to __bases__ which provides `id` attibute and `__mapper_args__`
+  """
+
+  def __new__(mcs, classname, bases, d):
+    if (d['__module__'] != EntityMeta.__module__ or classname != 'Entity'):
+      if not any(issubclass(b, _EntityInherit) for b in bases):
+        bases = (_EntityInherit,) + bases
+        d['id'] = _EntityInherit.id
+
+      if d.get('entity_type') is None:
+        d['entity_type'] = d['__module__'] + '.' + classname
+
+    return BaseMeta.__new__(mcs, classname, bases, d)
+
+  def __init__(cls, classname, bases, d):
+    bases = cls.__bases__
+    BaseMeta.__init__(cls, classname, bases, d)
+
+
+class Entity(BaseMixin, db.Model):
+  """Base class for Abilian entities.
+
+  From Sqlalchemy POV Entities use `Joined-Table inheritance
+  <http://docs.sqlalchemy.org/en/rel_0_8/orm/inheritance.html#joined-table-inheritance>`_,
+  thus entities subclasses cannot use inheritance themselves (as of 2013
+  Sqlalchemy does not support multi-level inheritance)
+  """
+  __metaclass__ = EntityMeta
+  __mapper_args__ = {'polymorphic_on': '_entity_type',
+                     'with_polymorphic': '*'}
+
+  _entity_type =  Column('entity_type', String(1000), nullable=False)
+  entity_type = None
 
   # Default magic metadata, should not be necessary
   # TODO: remove
