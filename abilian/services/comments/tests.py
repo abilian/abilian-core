@@ -5,7 +5,8 @@ from .service import CommentService, Commentable
 
 
 class Message(Entity, Commentable):
-  pass
+
+    __repr__ = object.__repr__
 
 
 class TestComments(BaseTestCase):
@@ -17,9 +18,9 @@ class TestComments(BaseTestCase):
   def test_one_comment(self):
     msg = Message()
     db.session.add(msg)
+    comment = self.comment_service.create_comment(msg, u"First post!")
     db.session.flush()
 
-    comment = self.comment_service.create_comment(msg, u"First post!")
     comments = self.comment_service.get_comments(msg)
     self.assertEquals(comments, [comment])
 
@@ -30,10 +31,10 @@ class TestComments(BaseTestCase):
   def test_two_comments(self):
     msg = Message()
     db.session.add(msg)
-    db.session.flush()
 
     comment1 = self.comment_service.create_comment(msg, u"First post!")
     comment2 = self.comment_service.create_comment(msg, u"Second post!")
+    db.session.flush()
 
     comments = self.comment_service.get_comments(msg)
     self.assertEquals(comments, [comment1, comment2])
