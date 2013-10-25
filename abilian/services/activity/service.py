@@ -33,11 +33,12 @@ class ActivityService(Service):
 
   def log_activity(self, sender, actor, verb, object, target=None):
     assert self.running
-    entry = ActivityEntry()
-    entry.actor = actor
-    entry.verb = verb
-    entry._object = object
-    entry._target = target
+    entry = ActivityEntry(actor=actor, verb=verb, object=object, target=target)
+    entry.object_type = object.entity_type
+
+    if target is not None:
+        entry.target_type = target.entity_type
+
     if not hasattr(g, 'activities_to_flush'):
       g.activities_to_flush = []
     g.activities_to_flush.append(entry)
@@ -48,14 +49,13 @@ class ActivityService(Service):
 
     while g.activities_to_flush:
       entry = g.activities_to_flush.pop()
-      entry.object_id = entry._object.id
-      entry.object_class = entry._object.__class__.__name__
+      entry.object_id = entry.object.id
 
-      if entry._target:
+      if entry.target:
         entry.target_id = entry._target.id
-        entry.target_class = entry._target.__class__.__name__
+
       session.add(entry)
 
   @staticmethod
   def entries_for_actor(actor, limit=50):
-    return ActivityEntry.query.filter(ActivityEntry.actor_id == actor.id).limit(limit).all()
+    return ActivityEntry.query.filter(ActivityEntry.actor == actor).limit(limit).all()

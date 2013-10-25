@@ -32,6 +32,9 @@ class ActivityTestCase(BaseTestCase):
 
     entry = entries[0]
     self.assertEquals(entry.actor, user)
-    self.assertEquals(entry.object, message)
+    self.assertEquals(entry.actor_id, user.id)
 
+    self.assertEquals(entry.object, message)
+    self.assertEquals(entry.object_type, message.entity_type)
+    self.assertEquals(entry.object_id, message.id)
 
