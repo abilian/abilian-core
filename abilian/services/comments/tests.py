@@ -25,6 +25,7 @@ class TestComments(BaseTestCase):
     self.assertEquals(comments, [comment])
 
     self.comment_service.delete_comment(comment)
+    db.session.flush()
     comments = self.comment_service.get_comments(msg)
     self.assertEquals(comments, [])
 
@@ -40,5 +41,6 @@ class TestComments(BaseTestCase):
     self.assertEquals(comments, [comment1, comment2])
 
     self.comment_service.delete_comment(comment1)
+    db.session.flush()
     comments = self.comment_service.get_comments(msg)
     self.assertEquals(comments, [comment2])
