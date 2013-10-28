@@ -23,6 +23,16 @@ __all__ = ['ActivityEntry']
 
 logger = logging.getLogger(__name__)
 
+def _default_from(column):
+  """ Helper for default and onupdates parameters in a Column definitions.
+
+  Returns a `context-sensitive default function <http://docs.sqlalchemy.org/en/rel_0_8/core/defaults.html#context-sensitive-default-functions>`_ to set value from another column
+  """
+  def _default_value(context):
+    return context.current_parameters[column]
+  return _default_value
+
+
 class ActivityEntry(db.Model):
   """Main table for all activities."""
 
@@ -35,12 +45,12 @@ class ActivityEntry(db.Model):
   actor = relationship(User, foreign_keys=actor_id)
 
   object_type = Column(String(1000))
-  object_id = Column(Integer)
+  object_id = Column(Integer, default=_default_from('_fk_object_id'))
   _fk_object_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
   object = relationship(Entity, foreign_keys=_fk_object_id)
 
   target_type = Column(String(1000))
-  target_id = Column(Integer)
+  target_id = Column(Integer, default=_default_from('_fk_target_id'))
   _fk_target_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
   target = relationship(Entity, foreign_keys=_fk_target_id)
 

@@ -1,4 +1,5 @@
 from sqlalchemy import event
+from sqlalchemy.orm import object_session
 from sqlalchemy.orm.session import Session
 
 from flask import g
@@ -14,14 +15,8 @@ __all__ = ['ActivityService']
 class ActivityService(Service):
   name = 'activity'
 
-  _listening = False
-
   def init_app(self, app):
     Service.init_app(self, app)
-
-    if not self._listening:
-      event.listen(Session, "after_flush", self.flush)
-      self._listening = True
 
   def start(self):
     Service.start(self)
@@ -39,22 +34,8 @@ class ActivityService(Service):
     if target is not None:
         entry.target_type = target.entity_type
 
-    if not hasattr(g, 'activities_to_flush'):
-      g.activities_to_flush = []
-    g.activities_to_flush.append(entry)
+    object_session(object).add(entry)
 
-  def flush(self, session, flush_context):
-    if not hasattr(g, 'activities_to_flush'):
-      return
-
-    while g.activities_to_flush:
-      entry = g.activities_to_flush.pop()
-      entry.object_id = entry.object.id
-
-      if entry.target:
-        entry.target_id = entry._target.id
-
-      session.add(entry)
 
   @staticmethod
   def entries_for_actor(actor, limit=50):
