@@ -70,6 +70,7 @@ class SettingsServiceTestCase(BaseTestCase):
   def test_service_facade(self):
     svc = self.service
     svc.set('key_1', 42, 'int')
+    self.db.session.flush()
     self.assertEqual(svc.get('key_1'), 42)
 
     # new key with no type: raise error:
@@ -78,6 +79,7 @@ class SettingsServiceTestCase(BaseTestCase):
 
     # key already with type_, this should not raise an error
     svc.set('key_1', 24)
+    self.db.session.flush()
     self.assertEqual(svc.get('key_1'), 24)
 
     svc.delete('key_1')
@@ -103,6 +105,7 @@ class SettingsServiceTestCase(BaseTestCase):
     # list keys
     svc.set('key_2', 2, 'int')
     svc.set('other', 'azerty', 'string')
+    self.db.session.flush()
     self.assertEqual(sorted(svc.keys()), ['key_1', 'key_2', 'other'])
     self.assertEqual(sorted(svc.keys(prefix='key_')), ['key_1', 'key_2'])
 
@@ -110,11 +113,13 @@ class SettingsServiceTestCase(BaseTestCase):
     svc = self.service
     ns = svc.namespace('test')
     ns.set('1', 42, 'int')
+    self.db.session.flush()
     self.assertEqual(ns.get('1'), 42)
     self.assertEqual(svc.get('test:1'), 42)
 
     ns.set('sub:2', 2, 'int')
     svc.set('other', 'not in NS', 'string')
+    self.db.session.flush()
     self.assertEqual(sorted(ns.keys()), ['1', 'sub:2'])
     self.assertEqual(sorted(svc.keys()), ['other', 'test:1', 'test:sub:2'])
 
@@ -122,13 +127,16 @@ class SettingsServiceTestCase(BaseTestCase):
     sub = ns.namespace('sub')
     self.assertEqual(sorted(sub.keys()), ['2'])
     self.assertEqual(sub.get('2'), 2)
+
     sub.set('1', 1, 'int')
+    self.db.session.flush()
     self.assertEqual(sub.get('1'), 1)
     self.assertEqual(ns.get('1'), 42)
     self.assertEqual(sorted(svc.keys()),
                      ['other', 'test:1', 'test:sub:1', 'test:sub:2'])
     sub.delete('1')
     sub.delete('2')
+    self.db.session.flush()
     self.assertEqual(sorted(sub.keys()), [])
     self.assertEqual(sorted(ns.keys()), ['1'])
     self.assertEqual(sorted(svc.keys()), ['other', 'test:1'])
