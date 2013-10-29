@@ -31,7 +31,7 @@ from abilian.web.filters import init_filters
 from abilian.web.util import send_file_from_directory
 from abilian.plugin.loader import AppLoader
 from abilian.services import (audit_service, index_service, activity_service,
-                              auth_service)
+                              auth_service, settings_service)
 
 logger = logging.getLogger(__name__)
 db = extensions.db
@@ -265,6 +265,7 @@ class Application(Flask, ServiceManager, PluginManager):
     extensions.babel.localeselector(get_locale)
     extensions.babel.timezoneselector(get_timezone)
 
+    settings_service.init_app(self)
     auth_service.init_app(self)
     audit_service.init_app(self)
     index_service.init_app(self)
