@@ -292,6 +292,10 @@ class SecurityService(Service):
     if hasattr(user_or_group, 'is_anonymous') and user_or_group.is_anonymous():
       return False
 
+    # root always have any role
+    if isinstance(user_or_group, User) and user_or_group.id == 0:
+      return True
+
     # admin & manager always have role
     if isinstance(role, basestring):
       role = (role,)
@@ -431,6 +435,10 @@ class SecurityService(Service):
     """
     assert permission in PERMISSION
     user = noproxy(user)
+
+    # root always have any permission
+    if isinstance(user, User) and user.id == 0:
+      return True
 
     roles = ['manager', 'admin'] # have 'manage' permission
 

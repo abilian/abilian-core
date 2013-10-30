@@ -52,6 +52,19 @@ class SecurityTestCase(IntegrationTestCase):
     anon = AnonymousUserMixin()
     assert not security.has_role(anon, 'read')
 
+  def test_root_user(self):
+    """ Root user always has any role, any permission
+    """
+    root = User.query.get(0)
+    assert security.has_role(root, 'admin')
+    assert security.has_permission(root, 'manage')
+
+    obj = DummyModel()
+    self.session.add(obj)
+    self.session.flush()
+    assert security.has_role(root, 'admin', obj)
+    assert security.has_permission(root, 'manage', obj)
+
   def test_grant_basic_roles(self):
     user = User(email=u"john@example.com", password="x")
     self.session.add(user)
