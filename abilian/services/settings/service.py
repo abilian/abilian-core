@@ -16,14 +16,31 @@ class SettingsService(Service):
     return SettingsNamespace(name, self)
 
   def keys(self, prefix=None):
-    """ List all keys, with optional prefix
+    """ List all keys, with optional prefix filtering
     """
     q = Setting.query
-
     if prefix:
       q = q.filter(Setting.key.startswith(prefix))
 
-    return [i[0] for i in q.values(Setting.key)]
+    # don't use iteritems: 'value' require little processing whereas we only
+    # want 'key'
+    return [i[0] for i in q.yield_per(1000).values(Setting.key)]
+
+  def iteritems(self, prefix=None):
+    """ Like dict.iteritems
+    """
+    q = Setting.query
+    if prefix:
+      q = q.filter(Setting.key.startswith(prefix))
+
+    for s in q.yield_per(1000):
+      yield (s.key, s.value)
+
+  def as_dict(self, prefix=None):
+    """ Return a mapping key -> value of settings, with optional prefix
+    filtering
+    """
+    return dict(self.iteritems(prefix))
 
   def _get_setting(self, key):
     s = Setting.query.get(key)
@@ -85,6 +102,15 @@ class SettingsNamespace(object):
     prefix = ':'.join((self.name, prefix))
     start = len(self.name) + 1 # +1 for colon
     return [ k[start:] for k in self.service.keys(prefix=prefix)]
+
+  def iteritems(self, prefix=''):
+    prefix = ':'.join((self.name, prefix))
+    start = len(self.name) + 1 # +1 for colon
+    for k, v in self.service.iteritems(prefix=prefix):
+      yield (k[start:], v)
+
+  def as_dict(self, prefix=''):
+    return dict(self.iteritems(prefix))
 
   def get(self, key):
     """ Proxy to :meth:`SettingsService.get`
