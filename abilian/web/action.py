@@ -161,7 +161,7 @@ class Action(object):
 class ModalActionMixin(object):
   template_string = (
     u'<a href="{{ url }}" data-toggle="modal">'
-    u'{%- if action.icon %}<i class="icon-{{ action.icon }}"></i> {% endif %}'
+    u'{%- if action.icon %}<i class="glyphicon glyphicon-{{ action.icon }}"></i> {% endif %}'
     u'{{ action.title }}'
     u'</a>'
   )
