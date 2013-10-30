@@ -5,7 +5,7 @@ from __future__ import absolute_import
 import logging
 from datetime import datetime, timedelta
 
-from flask import current_app, g, request, url_for
+from flask import current_app, g, request, url_for, _request_ctx_stack
 from flask.ext.login import current_user
 from flask.ext.babel import lazy_gettext as _l
 
@@ -87,9 +87,10 @@ class AuthService(Service):
     return user
 
   def before_request(self):
-    if current_app.config.get("NO_LOGIN"):
+    if current_app.testing and current_app.config.get("NO_LOGIN"):
       # Special case for tests
-      user = g.user = User.query.first()
+      # current_user points to _request_ctx_stack.top.user
+      user = _request_ctx_stack.top.user = g.user = User.query.first()
     else:
       user = g.user = current_user
 
