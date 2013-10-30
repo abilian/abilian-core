@@ -81,6 +81,7 @@ default_config.update(
   PLUGINS=(),
   ADMIN_PANELS=(
     'abilian.web.admin.panels.dashboard.DashboardPanel',
+    'abilian.web.admin.panels.settings.SettingsPanel',
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
     )
   )
@@ -118,7 +119,32 @@ class Application(Flask, ServiceManager, PluginManager):
     if config:
       self.config.from_object(config)
 
+    # at this point we have loaded all external config files: SQLALCHEMY_URI is
+    # definitively fixed (it cannot be defined in database AFAICT), and
+    # LOGGING_FILE cannot be set in DB settings.
     self.setup_logging()
+
+    # time to load config bits from database: 'settings'
+    # First init required stuff: db to make queries, and settings service
+    extensions.db.init_app(self)
+    settings_service.init_app(self)
+
+    with self.app_context():
+      try:
+        settings = self.services['settings'].namespace('config').as_dict()
+      except sa.exc.DatabaseError as exc:
+        # we may get here if DB is not initialized and "settings" table is
+        # missing. Command "initdb" must be run to initialize db, but first we
+        # must pass app init
+        if not self.testing:
+          # durint tests this message will show up on every test, since db is
+          # always recreated
+          logging.error(exc.message)
+        self.db.session.rollback()
+
+      else:
+        self.config.update(settings)
+
     self._jinja_loaders = list()
     self.register_jinja_loaders(jinja2.PackageLoader('abilian.web', 'templates'))
 
@@ -218,7 +244,6 @@ class Application(Flask, ServiceManager, PluginManager):
   def init_extensions(self):
     """ Initialize flask extensions, helpers and services
     """
-    extensions.db.init_app(self)
     extensions.mail.init_app(self)
     actions.init_app(self)
 
@@ -270,7 +295,6 @@ class Application(Flask, ServiceManager, PluginManager):
     extensions.babel.localeselector(get_locale)
     extensions.babel.timezoneselector(get_timezone)
 
-    settings_service.init_app(self)
     auth_service.init_app(self)
     security_service.init_app(self)
     audit_service.init_app(self)

@@ -1,0 +1,22 @@
+{% extends "admin/_base.html" %}
+
+{% from "macros/box.html" import m_box %}
+
+{% block content %}
+  {%- call m_box(title=_("Setting")) %}
+  <h2>{{ _("Current access rights") }}</h2>
+
+  <form method="POST" role="form">
+    {{ csrf }}
+
+    {%- for k in keys %}
+      <div class="form-group">
+        <label for="{{ k.id }}">{{ k.label or k.id }}</label>
+        <input type="text" class="form-control" name="{{ k.id }}" value="{{ config[k.id] }}" />
+      </div>
+    {%- endfor %}
+
+    <button class="btn btn-primary" type="submit" name="action" value="save">{{ _("Save") }}</button>
+  </form>
+  {%- endcall %}
+{% endblock %}
