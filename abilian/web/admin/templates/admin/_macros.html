@@ -1,0 +1,43 @@
+{# XXX: not used ? #}
+
+{% macro m_audit_entry(e) %}
+  <img src="{{ url_for("social.user_mugshot", user_id=e.user.id, s=16) }}" alt="" />
+  {{ e.msg }}
+  {% if e.entity_deleted %}<i class="icon-trash"></i>{% endif %}
+  {%- if e.changes %}
+    <ul>
+      {%- for msg in e.changes %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
+
+{% macro m_security_entry(e) %}
+    {{ e.msg }}
+{% endmacro %}
+
+{#  This one is used, though! #}
+{% macro m_stats(stats) %}
+  <ul class="stats">
+    <li>
+      <strong class="logins">{{ stats.active_users }}</strong>
+      <span>{{ _("active users") }}</span>
+    </li>
+
+    <li>
+      <strong class="new_members">{{ stats.new_members }}</strong>
+      <span>{{ _("new members") }}</span>
+    </li>
+
+    <li>
+      <strong class="new_documents">{{ stats.new_documents }}</strong>
+      <span>{{ _("new documents") }}</span>
+    </li>
+
+    <li>
+      <strong class="new_messages">{{ stats.new_messages }}</strong>
+      <span>{{ _("new messages") }}</span>
+    </li>
+  </ul>
+{% endmacro %}

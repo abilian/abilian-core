@@ -23,30 +23,21 @@
         {%- if action.divider %}<li class="divider"></li>{%- endif %}
         <li>{{ action.render() }}</li>
       {%- endfor %}
-
-      {#
-      {%- if g.user and g.user.id %}        
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img class="avatar-25" style="margin-top: -3px;" alt=""
-                 src="{{ url_for("social.user_mugshot", user_id=g.user.id, s=25) }}" />
-                 {{ g.user.name }}<b class="caret"></b>               
-          </a>
-          <ul class="dropdown-menu">
-            <li class="divider"></li>
-            <li><a href="{{ url_for('login.logout') }}">{{ _('logout') }}</a></li>
-          </ul>
-        </li>
-      {%- else %}
-        <li><a href="{{ url_for('login.login_form') }}">{{ _('login') }}</a></li>
-      {%- endif %}
-      #}
     </ul>
 
     <form class="navbar-form navbar-right" role="search">
       <input type="text" name="q" class="search-query form-control"
              placeholder="{{ _('Search') }}" autocomplete="off" id="search-box" />
     </form>
+
+    {%- set admin_nav = actions.for_category('navigation:admin') %}
+    {%- if admin_nav %}
+      <ul id="nav-menu-admin" class="nav navbar-nav navbar-right">
+        {%- for action in admin_nav %}
+        <li>{{ action.render() }}</li>
+      {%- endfor %}
+      </ul>
+    {%- endif %}
 
   </div> {# navbar-collapse #}
 </nav>

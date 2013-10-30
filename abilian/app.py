@@ -29,6 +29,7 @@ from abilian.web.nav import BreadcrumbItem
 from abilian.web.views import http_error_pages
 from abilian.web.filters import init_filters
 from abilian.web.util import send_file_from_directory
+from abilian.web.admin import Admin
 from abilian.plugin.loader import AppLoader
 from abilian.services import (audit_service, index_service, activity_service,
                               auth_service, settings_service, security_service)
@@ -78,6 +79,10 @@ default_config = dict(Flask.default_config)
 default_config.update(
   TEMPLATE_DEBUG=False,
   PLUGINS=(),
+  ADMIN_PANELS=(
+    'abilian.web.admin.panels.dashboard.DashboardPanel',
+    'abilian.web.admin.panels.sysinfo.SysinfoPanel',
+    )
   )
 default_config = ImmutableDict(default_config)
 
@@ -271,6 +276,8 @@ class Application(Flask, ServiceManager, PluginManager):
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)
+
+    Admin().init_app(self)
 
     # celery async service
     extensions.celery.config_from_object(self.config)

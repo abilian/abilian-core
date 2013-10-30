@@ -1,0 +1,23 @@
+{% extends "admin/_base.html" %}
+
+{% from "macros/box.html" import m_box %}
+{% from "admin/_macros.html" import m_stats %}
+
+{% block content %}
+
+  {% call m_box(title="Dashboard") %}
+    <div id="dashboard">
+
+      <h2>Today</h2>
+      {{ m_stats(stats.today) }}
+
+      <h2>This week</h2>
+      {{ m_stats(stats.this_week) }}
+
+      <h2>This month</h2>
+      {{ m_stats(stats.this_month) }}
+
+    </div>
+  {% endcall %}
+
+{% endblock %}
