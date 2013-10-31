@@ -101,11 +101,9 @@ class OwnedMixin(object):
 
   def __init__(self, *args, **kwargs):
     if hasattr(g, 'user'):
-      if not self.creator:
-        self.creator_id = g.user.id
+      if not self.creator and not g.user.is_anonymous():
         self.creator = g.user
-      if not self.owner:
-        self.owner_id = g.user.id
+      if not self.owner and not g.user.is_anonymous():
         self.owner = g.user
 
   @declared_attr
