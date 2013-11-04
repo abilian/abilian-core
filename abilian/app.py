@@ -81,6 +81,7 @@ default_config.update(
   PLUGINS=(),
   ADMIN_PANELS=(
     'abilian.web.admin.panels.dashboard.DashboardPanel',
+    'abilian.web.admin.panels.audit.AuditPanel',
     'abilian.web.admin.panels.settings.SettingsPanel',
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
     )
