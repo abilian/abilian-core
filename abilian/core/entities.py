@@ -10,7 +10,7 @@ import json
 
 from flask import g
 
-from sqlalchemy.ext.declarative import DeclarativeMeta, declared_attr
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, mapper
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.schema import Column, ForeignKey
