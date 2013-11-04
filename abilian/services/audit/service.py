@@ -110,7 +110,7 @@ class AuditService(Service):
 
       if info.get('auditable', True):
         entity_class.__auditable__.audited_attrs.add(attr)
-        event.listen(attr, "set", self.set_attribute)
+        event.listen(attr, "set", self.set_attribute, active_history=True)
 
   def setup_auditable_entity(self, entity_class):
     meta = AuditableMeta(entity_class.__name__, 'id')

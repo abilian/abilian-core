@@ -270,7 +270,7 @@ def register_metadata(cls):
     if info.get('searchable', False):
       cls.__searchable__.add(name)
 
-event.listen(Entity, 'class_instrument', register_metadata)
+event.listen(Entity, 'class_instrument', register_metadata, propagate=True)
 
 
 @memoized

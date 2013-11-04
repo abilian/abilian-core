@@ -2,7 +2,7 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
-from sqlalchemy.orm.attributes import NO_VALUE
+from sqlalchemy.orm.attributes import NO_VALUE, NEVER_SET
 from sqlalchemy import (Column, Unicode, UnicodeText, Text, Date, ForeignKey,
   Integer,
 )
@@ -159,8 +159,8 @@ class TestAudit(BaseTestCase):
     assert len(changes) == 1
     assert 'datas 1' in changes
     changes = changes['datas 1']
-    assert changes == {'text': (NO_VALUE, u'text 1'),
-                       'account_id': (NO_VALUE, 1),
+    assert changes == {'text': (NEVER_SET, u'text 1'),
+                       'account_id': (NEVER_SET, 1),
                        'id': (None, 1), }
 
     comment = CommentRelated(related=data, text=u'comment')
@@ -176,8 +176,8 @@ class TestAudit(BaseTestCase):
     assert len(changes) == 1
     assert 'datas.comments 1 1' in changes
     changes = changes['datas.comments 1 1']
-    assert changes == {'text': (NO_VALUE, u'comment'),
-                       'related_id': (NO_VALUE, 1),
+    assert changes == {'text': (NEVER_SET, u'comment'),
+                       'related_id': (NEVER_SET, 1),
                        'id': (None, 1), }
 
     comment = CommentRelated(related=data, text=u'comment 2')
@@ -193,8 +193,8 @@ class TestAudit(BaseTestCase):
     assert len(changes) == 1
     assert 'datas.comments 1 2' in changes
     changes = changes['datas.comments 1 2']
-    assert changes == {'text': (NO_VALUE, u'comment 2'),
-                       'related_id': (NO_VALUE, 1),
+    assert changes == {'text': (NEVER_SET, u'comment 2'),
+                       'related_id': (NEVER_SET, 1),
                        'id': (None, 2), }
 
     # deletion
