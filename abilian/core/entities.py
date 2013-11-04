@@ -113,7 +113,7 @@ class OwnedMixin(object):
   @declared_attr
   def creator(cls):
     pj = "User.id == %s.creator_id" % cls.__name__
-    return relationship("User", primaryjoin=pj, uselist=False)
+    return relationship("User", primaryjoin=pj, lazy='joined', uselist=False)
 
   @declared_attr
   def owner_id(cls):
@@ -122,7 +122,7 @@ class OwnedMixin(object):
   @declared_attr
   def owner(cls):
     pj = "User.id == %s.owner_id" % cls.__name__
-    return relationship("User", primaryjoin=pj,  uselist=False)
+    return relationship("User", primaryjoin=pj, lazy='joined', uselist=False)
 
 
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):

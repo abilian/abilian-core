@@ -18,7 +18,7 @@ from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTime, Text
 
-from .entities import db, Entity, SEARCHABLE, SYSTEM
+from .entities import db, IdMixin, TimestampedMixin, SEARCHABLE, SYSTEM
 
 
 __all__ = ['User', 'Group', 'Principal']
@@ -52,12 +52,13 @@ class UserQuery(Query):
     return self.filter_by(email=email).one()
 
 
-class Principal(object):
+class Principal(IdMixin, TimestampedMixin):
   """A principal is either a User or a Group."""
   pass
 
 
-class User(Principal, UserMixin, Entity):
+class User(Principal, UserMixin, db.Model):
+  __tablename__ = 'user'
   __editable__ = ['first_name', 'last_name', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
@@ -72,7 +73,7 @@ class User(Principal, UserMixin, Entity):
   locale = Column(Text)
 
   email = Column(UnicodeText, nullable=False)
-  can_login = Column(Boolean, nullable=False)
+  can_login = Column(Boolean, nullable=False, default=True)
   password = Column(UnicodeText, default=u"*",
                     info={'audit_hide_content': True,})
 
@@ -82,22 +83,17 @@ class User(Principal, UserMixin, Entity):
 
   __table_args__ = (UniqueConstraint('email'),)
 
-  id = Entity.id
   followers = relationship("User", secondary=following,
-                           primaryjoin=(id == following.c.follower_id),
-                           secondaryjoin=(id == following.c.followee_id),
+                           primaryjoin=('User.id == following.c.follower_id'),
+                           secondaryjoin=('User.id == following.c.followee_id'),
                            backref='followees')
-  followees = []
 
-  groups = []
-
-  def __init__(self, password='', can_login=True, **kwargs):
+  def __init__(self, password=None, **kwargs):
     Principal.__init__(self)
     UserMixin.__init__(self)
-    Entity.__init__(self, **kwargs)
+    db.Model.__init__(self, **kwargs)
 
-    self.can_login = can_login
-    if can_login and password:
+    if self.can_login and password is not None:
       self.set_password(password)
 
   def authenticate(self, password):
@@ -179,7 +175,8 @@ class User(Principal, UserMixin, Entity):
     return "/social/users/%d" % self.id
 
 
-class Group(Entity, Principal):
+class Group(Principal, db.Model):
+  __tablename__ = 'group'
   __editable__ = ['name', 'description']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
@@ -187,10 +184,10 @@ class Group(Entity, Principal):
   description = Column(UnicodeText, info=SEARCHABLE)
 
   members = relationship("User", secondary=membership,
-                         backref=backref('groups', lazy='joined'))
+                         backref=backref('groups', lazy='lazy'))
   admins = relationship("User", secondary=administratorship)
 
-  photo = Column(LargeBinary)
+  photo = deferred(Column(LargeBinary))
 
   public = Column(Boolean, default=False, nullable=False)
 
