@@ -14,6 +14,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
 
 from werkzeug.datastructures import ImmutableDict
+from babel.dates import LOCALTZ
 import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
@@ -480,4 +481,4 @@ def get_locale():
   return request.accept_languages.best_match(['en', 'fr'])
 
 def get_timezone():
-  return abilian.core.util.system_tz
+  return LOCALTZ
