@@ -230,11 +230,14 @@ class Entity(BaseMixin, db.Model):
   Sqlalchemy does not support multi-level inheritance)
   """
   __metaclass__ = EntityMeta
-  __mapper_args__ = {'polymorphic_on': '_entity_type',
-                     'with_polymorphic': '*'}
+  __mapper_args__ = {'polymorphic_on': '_entity_type'}
 
   _entity_type =  Column('entity_type', String(1000), nullable=False)
   entity_type = None
+
+  @property
+  def entity_class(self):
+    return self.entity_type and self.entity_type.rsplit('.', 1)[-1]
 
   # Default magic metadata, should not be necessary
   # TODO: remove
