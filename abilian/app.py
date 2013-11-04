@@ -82,6 +82,7 @@ default_config.update(
   ADMIN_PANELS=(
     'abilian.web.admin.panels.dashboard.DashboardPanel',
     'abilian.web.admin.panels.audit.AuditPanel',
+    'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
     'abilian.web.admin.panels.settings.SettingsPanel',
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
     )
@@ -327,6 +328,7 @@ class Application(Flask, ServiceManager, PluginManager):
     env.globals.update(
       app=current_app,
       get_locale=babel_get_locale,
+      local_dt=abilian.core.util.local_dt,
       NO_VALUE=NO_VALUE,
     )
     init_filters(env)
