@@ -95,23 +95,29 @@ class AuditPanel(AdminPanel):
         entries.append((e_date.date(), day_entries))
       day_entries.append(e)
 
-    # top_date and lowest_date are converted to naive datetime (from UTC), so that
-    # isoformat does not include TZ shift (else we should fix strptime above)
-    top_date = entries[0][1][0].date.astimezone(pytz.utc).replace(tzinfo=None)
-    lowest_date = entries[-1] [1][-1].date.astimezone(pytz.utc)\
-                                          .replace(tzinfo=None)
+    top_date = u''
+    lowest_date = u''
 
-    if not (after_query(AuditEntry, top_date).limit(1).first() is not None
-            or after_query(SecurityAudit, top_date).limit(1).first() is not None):
-      top_date = u''
-    else:
-      top_date = top_date.isoformat()
+    if entries:
+      # top_date and lowest_date are converted to naive datetime (from UTC), so
+      # that isoformat does not include TZ shift (else we should fix strptime
+      # above)
+      top_date = entries[0][1][0].date.astimezone(pytz.utc).replace(tzinfo=None)
+      lowest_date = entries[-1][1][-1].date.astimezone(pytz.utc)\
+                                            .replace(tzinfo=None)
 
-    if not (before_query(AuditEntry, lowest_date).limit(1).first() is not None
-            or before_query(SecurityAudit, lowest_date).limit(1).first() is not None):
-      lowest_date = u''
-    else:
-      lowest_date = lowest_date.isoformat()
+      if not (after_query(AuditEntry, top_date).limit(1).first() is not None
+              or after_query(SecurityAudit, top_date).limit(1).first() is not None):
+        top_date = u''
+      else:
+        top_date = top_date.isoformat()
+
+      if not (before_query(AuditEntry, lowest_date).limit(1).first() is not None
+              or before_query(SecurityAudit, lowest_date).limit(1).first() is not None):
+        lowest_date = u''
+      else:
+        lowest_date = lowest_date.isoformat()
+
     return render_template("admin/audit.html", entries=entries,
                            top_date=top_date, lowest_date=lowest_date)
 

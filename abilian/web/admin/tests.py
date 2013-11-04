@@ -27,3 +27,16 @@ class TestViews(BaseTestCase):
   def test_sysinfo(self):
     response = self.client.get(url_for("admin.sysinfo"))
     self.assert_200(response)
+
+  def test_login_session(self):
+    response = self.client.get(url_for("admin.login_sessions"))
+    self.assert_200(response)
+
+  def test_audit(self):
+    response = self.client.get(url_for("admin.audit"))
+    self.assert_200(response)
+
+  def test_settings(self):
+    response = self.client.get(url_for("admin.settings"))
+    self.assert_200(response)
+

@@ -11,8 +11,8 @@ from ..panel import AdminPanel
 
 
 class LoginSessionsPanel(AdminPanel):
-  id = "security_audit"
-  label = "Access log"
+  id = "login_sessions"
+  label = "Session log"
   icon = 'log-in'
 
   def get(self):
