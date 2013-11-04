@@ -11,7 +11,6 @@ from __future__ import absolute_import
 
 import os
 import importlib
-from gettext import NullTranslations
 from babel.support import Translations
 from flask import _request_ctx_stack
 import flask.ext.babel
@@ -137,12 +136,14 @@ def _get_translations_multi_paths():
     for dirname in reversed(ctx.app.extensions['babel']._translations_paths):
       trs = Translations.load(dirname, [flask.ext.babel.get_locale()])
 
-      if not trs or trs.__class__ is NullTranslations:
-        # test must not use isinstance: Translations is a subclass of
-        # NullTranlations
+      # babel.support.Translations is a subclass of
+      # babel.support.NullTranslations, so we test if object has a 'merge'
+      # method
+
+      if not trs or not hasattr(trs, 'merge'):
+        # got None or NullTranslations instance
         continue
-      elif (translations is not None
-            and translations.__class__ is not NullTranslations):
+      elif (translations is not None and hasattr(translations, 'merge')):
           translations.merge(trs)
       else:
           translations = trs
