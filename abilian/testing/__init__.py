@@ -31,6 +31,17 @@ class TestConfig(object):
   SECRET_KEY = "SECRET"
   CSRF_ENABLED = False
 
+  BABEL_DEFAULT_LOCALE = 'en'
+
+  # It's a good idea to test with a timezone that's not your system timezone nor
+  # UTC. It can reveal problem with date handling within app (rule is: all dates
+  # are manipulated in UTC, and shown in user timezone).
+  #
+  # For example this one is GMT+8 and has no DST (tests should pass any time in
+  # year)
+  # BABEL_DEFAULT_TIMEZONE = 'Asia/Hong_Kong'
+  BABEL_DEFAULT_TIMEZONE = 'UTC' # this is flask-babel default
+
   def __init__(self):
     db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
     if db_uri:
