@@ -151,11 +151,20 @@ class Application(Flask, ServiceManager, PluginManager):
     self._jinja_loaders = list()
     self.register_jinja_loaders(jinja2.PackageLoader('abilian.web', 'templates'))
 
+    self._assets_bundles = {
+      'css': {'options': dict(filters='cssimporter, cssrewrite',
+                              output='style-%(version)s.min.css'),
+        },
+      'js-top': {'options': dict(output='top-%(version)s.min.js')},
+      'js': {'options': dict(output='app-%(version)s.min.js')},
+      }
+
     for http_error_code in (403, 404, 500):
       self.install_default_handler(http_error_code)
 
     self.init_extensions()
     self.register_plugins()
+    self._finalize_assets_setup()
     # at this point all models should have been imported: time to configure
     # mappers. Normally Sqlalchemy does it when needed but mappers may be
     # configured inside sa.orm.class_mapper() which hides a misconfiguration: if
@@ -251,38 +260,8 @@ class Application(Flask, ServiceManager, PluginManager):
     actions.init_app(self)
 
     # webassets
-    assets = self.extensions['webassets'] = AssetsEnv(self)
-    assets.debug = not self.config.get('PRODUCTION', False)
-
-    assets_base_dir = os.path.join(self.instance_path, 'webassets')
-    assets_dir = os.path.join(assets_base_dir, 'compiled')
-    assets_cache_dir = os.path.join(assets_base_dir, 'cache')
-    for path in (assets_base_dir, assets_dir, assets_cache_dir):
-      if not os.path.exists(path):
-        os.mkdir(path)
-
-    assets.directory = assets_dir
-    assets.cache = assets_cache_dir
-    manifest_file = os.path.join(assets_base_dir, 'manifest.json')
-    assets.manifest = 'json:{}'.format(manifest_file)
-
-    base_bundles = (
-      ('css', Bundle(self.css_bundle,
-                     filters='cssimporter, cssrewrite',
-                     output='style-%(version)s.min.css')),
-      ('js-top', Bundle(self.top_js_bundle, output='top-%(version)s.min.js')),
-      ('js', Bundle(self.js_bundle, output='app-%(version)s.min.js')),
-    )
-    for name, bundle in base_bundles:
-      assets.register(name, bundle)
-
-    # webassets: setup static url for our assets
-    from abilian.web import assets as core_bundles
-    assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
-    self.add_static_url('abilian', core_bundles.RESOURCES_DIR, endpoint='abilian_static',)
-
-    assets.url = self.static_url_path + '/min'
-    self.add_static_url('min', assets_dir, endpoint='webassets_static',)
+    self._setup_asset_extension()
+    self._register_base_assets()
 
     # Babel (for i18n)
     extensions.babel.init_app(self)
@@ -419,36 +398,70 @@ class Application(Flask, ServiceManager, PluginManager):
         db.session.add(root)
         db.session.commit()
 
-  @property
-  def css_bundle(self):
-    """ :return: CSS resources
-        :rtype: `webassets.Bundle <http://elsdoerfer.name/docs/webassets/bundles.html>`_
+  def _setup_asset_extension(self):
+    assets = self.extensions['webassets'] = AssetsEnv(self)
+    assets.debug = not self.config.get('PRODUCTION', False)
+
+    assets_base_dir = os.path.join(self.instance_path, 'webassets')
+    assets_dir = os.path.join(assets_base_dir, 'compiled')
+    assets_cache_dir = os.path.join(assets_base_dir, 'cache')
+    for path in (assets_base_dir, assets_dir, assets_cache_dir):
+      if not os.path.exists(path):
+        os.mkdir(path)
+
+    assets.directory = assets_dir
+    assets.cache = assets_cache_dir
+    manifest_file = os.path.join(assets_base_dir, 'manifest.json')
+    assets.manifest = 'json:{}'.format(manifest_file)
+
+    # setup static url for our assets
+    from abilian.web import assets as core_bundles
+    assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
+    self.add_static_url('abilian', core_bundles.RESOURCES_DIR, endpoint='abilian_static',)
+
+    # static minified are here
+    assets.url = self.static_url_path + '/min'
+    self.add_static_url('min', assets_dir, endpoint='webassets_static',)
+
+  def _finalize_assets_setup(self):
+    assets = self.extensions['webassets']
+
+    for name, data in self._assets_bundles.items():
+      bundles = data.get('bundles', [])
+      options = data.get('options', {})
+      if bundles:
+        assets.register(name, Bundle(*bundles, **options))
+
+
+  def register_asset(self, type_, asset):
+    """ Registers webassets bundle to be served on all pages
+
+    :param type_: `"css"`, `"js-top"` or `"js""`.
+    :param asset: a `webassets.Bundle
+                  <http://elsdoerfer.name/docs/webassets/bundles.html>`_
+                  instance or a callable that returns a Bundle instance.
+    :raises KeyError: if `type_` is not supported.
+    """
+    supported = self._assets_bundles.keys()
+    if type_ not in supported:
+      raise KeyError("Invalid type: %s. Valid types: ",
+                     repr(type_), ', '.join(sorted(supported)))
+
+    if not isinstance(asset, Bundle) and callable(asset):
+      asset = asset()
+    assert isinstance(asset, Bundle)
+
+    self._assets_bundles[type_].setdefault('bundles', []).append(asset)
+
+  def _register_base_assets(self):
+    """Register assets needed by Abilian. This is done in a separate method in
+    order to allow applications to redefins it at will.
     """
     from abilian.web import assets as bundles
     debug = self.config.get('DEBUG')
-    return bundles.CSS if not debug else bundles.CSS_DEBUG
-
-  @property
-  def top_js_bundle(self):
-    """ Javascript resources to put before beginning of document, in <head>
-
-        :return: JS resources
-        :rtype: `webassets.Bundle <http://elsdoerfer.name/docs/webassets/bundles.html>`_
-    """
-    from abilian.web import assets as bundles
-    debug = self.config.get('DEBUG')
-    return bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG
-
-  @property
-  def js_bundle(self):
-    """ Javascript resources to put at end of document, just before </body>
-
-        :return: JS resources
-        :rtype: `webassets.Bundle <http://elsdoerfer.name/docs/webassets/bundles.html>`_
-    """
-    from abilian.web import assets as bundles
-    debug = self.config.get('DEBUG')
-    return bundles.JS if not debug else bundles.JS_DEBUG
+    self.register_asset('css', bundles.CSS if not debug else bundles.CSS_DEBUG)
+    self.register_asset('js-top', bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG)
+    self.register_asset('js', bundles.JS if not debug else bundles.JS_DEBUG)
 
   def install_default_handler(self, http_error_code):
     """ Installs a default error handler for `http_error_code`.
