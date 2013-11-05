@@ -279,18 +279,10 @@ class Application(Flask, ServiceManager, PluginManager):
     # webassets: setup static url for our assets
     from abilian.web import assets as core_bundles
     assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
-
-    self.add_url_rule(
-      self.static_url_path + '/abilian/<path:filename>',
-      endpoint='abilian_static',
-      view_func=partial(send_file_from_directory,
-                        directory=core_bundles.RESOURCES_DIR))
+    self.add_static_url('abilian', core_bundles.RESOURCES_DIR, endpoint='abilian_static',)
 
     assets.url = self.static_url_path + '/min'
-    self.add_url_rule(
-      self.static_url_path + '/min/<path:filename>',
-      endpoint='webassets_static',
-      view_func=partial(send_file_from_directory, directory=assets_dir))
+    self.add_static_url('min', assets_dir, endpoint='webassets_static',)
 
     # Babel (for i18n)
     extensions.babel.init_app(self)
@@ -322,6 +314,30 @@ class Application(Flask, ServiceManager, PluginManager):
       if plugin_fqdn not in registered:
         self.register_plugin(plugin_fqdn)
         registered.add(plugin_fqdn)
+
+  def add_static_url(self, url_path, directory, endpoint=None):
+    """
+    adds a new url rule for static files
+
+    :param endpoint: flask endpoint name for this url rule.
+    :param url: subpath from application static url path. No heading or trailing
+                slash.
+    :param directory: directory to serve content from.
+
+    Example::
+
+       app.add_static_url('myplugin',
+                          '/path/to/myplugin/resources',
+                          endpoint='myplugin_static')
+
+    With default setup it will serve content from directory
+    `/path/to/myplugin/resources` from url `http://.../static/myplugin`
+    """
+    url_path = self.static_url_path + '/' + url_path + '/<path:filename>'
+    self.add_url_rule(url_path,
+                      endpoint=endpoint,
+                      view_func=partial(send_file_from_directory,
+                                        directory=directory))
 
   # Jinja setup
   def create_jinja_environment(self):
