@@ -1,15 +1,35 @@
-import unittest
 import datetime
 from nose.tools import eq_
 from jinja2 import Environment
-from babel.dates import LOCALTZ
+from pytz import timezone, utc
+
+from flask import Flask
+from flask.ext.testing import TestCase as FlaskTestCase
+from flask.ext.babel import Babel
 
 from ..filters import init_filters, filesize, date_age
 
 env = Environment()
 init_filters(env)
 
-class TestFilters(unittest.TestCase):
+def en_locale():
+  return 'en'
+
+def user_tz():
+  # This one is GMT+8 and has no DST (tests should pass any time in year)
+  return 'Asia/Hong_Kong'
+
+USER_TZ = timezone(user_tz())
+
+
+class TestFilters(FlaskTestCase):
+
+  def create_app(self):
+    app = Flask(__name__)
+    babel = Babel(app, default_locale='fr', default_timezone=USER_TZ)
+    babel.localeselector(en_locale)
+    babel.timezoneselector(user_tz)
+    return app
 
   def test_filesize(self):
     eq_("100&nbsp;B", str(filesize(100)))
@@ -18,16 +38,16 @@ class TestFilters(unittest.TestCase):
     eq_("10&nbsp;kB", str(filesize(10000)))
 
   def test_date_age(self):
-    now = datetime.datetime(2012, 6, 10, 10, 10, 10).replace(tzinfo=LOCALTZ)
+    now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
 
-    dt = datetime.datetime(2012, 6, 10, 10, 10, 0).replace(tzinfo=LOCALTZ)
-    eq_("2012-06-10 10:10 (a minute ago)", date_age(dt, now))
+    dt = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
+    eq_("2012-06-10 18:10 (1 minute ago)", date_age(dt, now))
 
-    dt = datetime.datetime(2012, 6, 10, 10, 8, 10).replace(tzinfo=LOCALTZ)
-    eq_("2012-06-10 10:08 (2 minutes ago)", date_age(dt, now))
+    dt = datetime.datetime(2012, 6, 10, 10, 8, 10, tzinfo=utc)
+    eq_("2012-06-10 18:08 (2 minutes ago)", date_age(dt, now))
 
-    dt = datetime.datetime(2012, 6, 10, 8, 10, 10).replace(tzinfo=LOCALTZ)
-    eq_("2012-06-10 08:10 (2 hours ago)", date_age(dt, now))
+    dt = datetime.datetime(2012, 6, 10, 8, 30, 10, tzinfo=utc)
+    eq_("2012-06-10 16:30 (2 hours ago)", date_age(dt, now))
 
   def test_nl2br(self):
     tmpl = env.from_string(

@@ -7,13 +7,12 @@ from functools import wraps
 import datetime
 from pytz import utc
 from calendar import timegm
-from babel.dates import DateTimePattern
+from babel.dates import DateTimePattern, format_timedelta
 import bleach
 
 from jinja2 import Markup, escape, evalcontextfilter
 from flask import Flask
 from flask.ext import babel
-from flask.ext.babel import gettext as _
 
 from ..core.util import local_dt, utc_dt
 
@@ -92,39 +91,21 @@ def age(dt, now=None):
   dt = utc_dt(dt)
   now = utc_dt(now)
 
-  age = now - dt
-  if age.days == 0:
-    if age.seconds < 120:
-      age_str = _("a minute ago")
-    elif age.seconds < 3600:
-      age_str = _("%(num)d minutes ago", num=age.seconds / 60)
-    elif age.seconds < 7200:
-      age_str = _("an hour ago")
-    else:
-      age_str = _("%(num)d hours ago", num=age.seconds / 3600)
-  else:
-    if age.days == 1:
-      age_str = _("yesterday")
-    elif age.days <= 31:
-      age_str = _("%(num)d days ago", num=age.days)
-    elif age.days <= 72:
-      age_str = _("a month ago")
-    elif age.days <= 365:
-      age_str = _("%(num)d months ago", num=age.days / 30)
-    elif age.days <= 2*365:
-      age_str = _("last year")
-    else:
-      age_str = _("%(num)d years ago", num=age.days / 365)
-
-  return age_str
-
+  # don't use (flask.ext.)babel.format_timedelta: as of Flask-Babel 0.9 it
+  # doesn't support "threshold" arg.
+  return format_timedelta((dt - now),
+                          locale=babel.get_locale(),
+                          granularity='minute',
+                          threshold=0.9,
+                          add_direction=True)
 
 def date_age(dt, now=None):
   # Fail silently for now XXX
   if not dt:
     return ""
-  age_str = age(dt, now)
-  return "%s (%s)" % (local_dt(dt).strftime("%Y-%m-%d %H:%M"), age_str)
+
+  formatted_date = babel.format_datetime(dt, format='yyyy-MM-dd HH:mm')
+  return u"{} ({})".format(formatted_date, age(dt, now))
 
 
 def date(value):
