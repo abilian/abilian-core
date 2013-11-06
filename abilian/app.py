@@ -385,16 +385,25 @@ class Application(Flask, ServiceManager, PluginManager):
 
   # Error handling
   def handle_user_exception(self, e):
-    # inconditionally forget all DB changes, and ensure clean session during
-    # exception handling
-    db.session.rollback()
+    # If session.transaction._parent is None, then exception has occured in
+    # after_commit(): doing a rollback() raises an error and would hide actual
+    # error
+    if db.session().transaction._parent is not None:
+      # inconditionally forget all DB changes, and ensure clean session during
+      # exception handling
+      db.session.rollback()
+
     return Flask.handle_user_exception(self, e)
 
   def handle_exception(self, e):
-    if not db.session().is_active:
+    session = db.session()
+    if not session.is_active and session.transaction._parent is not None:
       # something happened in error handlers and session is not usable, rollback
-      # will restore a usable session
-      db.session().rollback()
+      # will restore a usable session.
+      #
+      # "session.transaction._parent is not None": see comment in
+      # handle_user_exception()
+      session.rollback()
     return Flask.handle_exception(self, e)
 
 
