@@ -276,10 +276,9 @@ class WhooshIndexService(Service):
       value = getattr(model, key)
       if hasattr(value, '_name'):
         value = value._name
-      if isinstance(value, str):
+      elif isinstance(value, (str, int, db.Model)):
         value = unicode(value)
-      elif isinstance(value, int):
-        value = unicode(value)
+
       attrs[key] = value
     attrs[primary_field] = unicode(getattr(model, primary_field))
     return attrs
