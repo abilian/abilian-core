@@ -86,7 +86,8 @@ default_config.update(
     'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
     'abilian.web.admin.panels.settings.SettingsPanel',
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
-    )
+    ),
+  SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
   )
 default_config = ImmutableDict(default_config)
 
@@ -126,6 +127,9 @@ class Application(Flask, ServiceManager, PluginManager):
     # definitively fixed (it cannot be defined in database AFAICT), and
     # LOGGING_FILE cannot be set in DB settings.
     self.setup_logging()
+
+    if not self.testing:
+      self.init_sentry()
 
     # time to load config bits from database: 'settings'
     # First init required stuff: db to make queries, and settings service
@@ -406,6 +410,26 @@ class Application(Flask, ServiceManager, PluginManager):
       session.rollback()
     return Flask.handle_exception(self, e)
 
+  def log_exception(self, exc_info):
+    """ Log exception only if sentry is not installed (this avoids getting error
+    twice in sentry)
+    """
+    if 'sentry' not in self.extensions:
+      super(Application, self).log_exception(exc_info)
+
+  def init_sentry(self):
+    """ Installs Sentry handler if config defines 'SENTRY_DSN'.
+    """
+    if self.config.get('SENTRY_DSN', None):
+      try:
+        from abilian.core.sentry import Sentry
+      except ImportError:
+        logger.error(
+          'SENTRY_DSN is defined in config but package "raven" is not '
+          'installed.')
+        return
+
+      Sentry(self, logging=True, level=logging.ERROR)
 
   @property
   def db(self):
