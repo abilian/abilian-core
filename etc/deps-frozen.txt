@@ -67,7 +67,7 @@ twill==0.9
 Unidecode==0.04.13
 webassets==0.8
 Werkzeug==0.9.4
-Whoosh==2.4.1
+Whoosh==2.5.3
 WTForms-Alchemy==0.7.15
 WTForms-Components==0.7.1
 WTForms==1.0.4

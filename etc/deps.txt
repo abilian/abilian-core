@@ -22,7 +22,7 @@ Flask-Mail
 # Other
 SQLAlchemy>=0.8,<0.9
 phonenumbers
-whoosh
+whoosh>=2.5
 markdown
 feedparser
 blinker
