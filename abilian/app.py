@@ -253,9 +253,22 @@ class Application(Flask, ServiceManager, PluginManager):
         logging_cfg.setdefault('version', 1)
         logging.config.dictConfig(logging_cfg)
 
+  def init_debug_toolbar(self):
+    if (not self.testing
+        and self.config.get('DEBUG_TB_ENABLED')
+        and 'debugtoolbar' not in self.blueprints):
+      try:
+        from flask.ext.debugtoolbar import DebugToolbarExtension
+      except ImportError:
+        logger.warning('DEBUG_TOOLBAR is on but flask.ext.debugtoolbar is not '
+                       'installed.')
+      else:
+        DebugToolbarExtension(self)
+
   def init_extensions(self):
     """ Initialize flask extensions, helpers and services
     """
+    self.init_debug_toolbar()
     extensions.mail.init_app(self)
     actions.init_app(self)
 
