@@ -1,0 +1,56 @@
+# coding=utf-8
+"""
+Documentation for flask config variables is here:
+http://flask.pocoo.org/docs/config/#builtin-configuration-values
+"""
+PRODUCTION = {{ cfg.PRODUCTION }}
+# SERVER_NAME = 'my.server.name'
+SITE_NAME = {{ cfg.SITE_NAME }}
+MAIL_SENDER = {{ cfg.MAIL_SENDER }}
+
+SESSION_COOKIE_NAME = {{ cfg.SESSION_COOKIE_NAME }}
+LOGGING_CONFIG_FILE = {{ cfg.LOGGING_CONFIG_FILE }}
+
+SQLALCHEMY_DATABASE_URI = {{ cfg.SQLALCHEMY_DATABASE_URI }}
+# SQLALCHEMY_ECHO = {{ cfg.SQLALCHEMY_ECHO }}
+
+# celery settings
+BROKER_URL = {{ cfg.BROKER_URL }}
+CELERY_RESULT_BACKEND = {{ cfg.CELERY_RESULT_BACKEND }}
+
+CELERYD_PREFETCH_MULTIPLIER = {{ cfg.CELERYD_PREFETCH_MULTIPLIER }}
+CELERY_ALWAYS_EAGER = {{ cfg.CELERY_ALWAYS_EAGER }} # True: run tasks locally, no async
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = {{ cfg.CELERY_EAGER_PROPAGATES_EXCEPTIONS }}
+
+# uncomment if you don't want to use system timezone
+# CELERY_TIMEZONE = 'Europe/Paris'
+
+
+# SENTRY_DSN = 'http://...'
+
+# private key for sessions
+SECRET_KEY = {{ cfg.SECRET_KEY }}
+
+WHOOSH_BASE = {{ cfg.WHOOSH_BASE }}
+UNOCONV_LOCATION = {{ cfg.UNOCONV_LOCATION }}
+
+
+# develop settings
+DEBUG = {{ cfg.DEBUG }}
+ASSETS_DEBUG = {{ cfg.ASSETS_DEBUG }}
+DEBUG_TB_ENABLED = {{ cfg.DEBUG_TB_ENABLED }}
+TEMPLATE_DEBUG = {{ cfg.TEMPLATE_DEBUG }}
+DEBUG_TB_INTERCEPT_REDIRECTS = {{ cfg.DEBUG_TB_INTERCEPT_REDIRECTS }}
+DEBUG_TB_PROFILER_ENABLED = {{ cfg.DEBUG_TB_PROFILER_ENABLED }}
+
+# DEBUG_TB_PANELS = [
+#     'flask_debugtoolbar.panels.versions.VersionDebugPanel',
+#     'flask_debugtoolbar.panels.timer.TimerDebugPanel',
+#     'flask_debugtoolbar.panels.headers.HeaderDebugPanel',
+#     'flask_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
+#     'flask_debugtoolbar.panels.template.TemplateDebugPanel',
+#     'flask_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel',
+#     'flask_debugtoolbar.panels.logger.LoggingPanel',
+#     'flask_debugtoolbar.panels.profiler.ProfilerDebugPanel',
+#     'flask_debugtoolbar_lineprofilerpanel.panels.LineProfilerPanel',
+#     ]
