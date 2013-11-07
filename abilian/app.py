@@ -79,6 +79,7 @@ class PluginManager(object):
 default_config = dict(Flask.default_config)
 default_config.update(
   TEMPLATE_DEBUG=False,
+  CSRF_ENABLED=True,
   PLUGINS=(),
   ADMIN_PANELS=(
     'abilian.web.admin.panels.dashboard.DashboardPanel',
