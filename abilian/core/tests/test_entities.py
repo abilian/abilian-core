@@ -1,4 +1,6 @@
 from unittest import TestCase
+from datetime import datetime
+import sqlalchemy as sa
 
 from abilian.core.entities import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE
 from abilian.core.subjects import User
@@ -16,6 +18,27 @@ class EntityTestCase(TestCase):
     contact.owner = user
     contact.creator = user
 
+  def test_updated_at(self):
+    engine = sa.create_engine('sqlite:///:memory:', echo=False)
+    Session = sa.orm.sessionmaker(bind=engine)
+    session = Session()
+
+    setattr(session, '_model_changes', {}) # flask-sqlalchemy as listeners
+                                           #looking for this
+
+    DummyContact.metadata.create_all(engine)
+    contact = DummyContact()
+    session.add(contact)
+    session.commit()
+
+    assert isinstance(contact.updated_at, datetime)
+    updated = contact.updated_at
+
+    contact.first_name = u'John'
+    session.commit()
+
+    assert isinstance(contact.updated_at, datetime)
+    assert contact.updated_at > updated
 
 class InfoTestCase(TestCase):
 

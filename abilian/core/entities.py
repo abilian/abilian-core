@@ -10,8 +10,9 @@ import json
 
 from flask import g
 
+import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import relationship, mapper
+from sqlalchemy.orm import relationship, mapper, Session
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime, String
@@ -275,6 +276,21 @@ def register_metadata(cls):
 
 event.listen(Entity, 'class_instrument', register_metadata, propagate=True)
 
+@event.listens_for(Session, 'before_flush')
+def polymorphic_update_timestamp(session, flush_context, instances):
+  """This listeners ensure an update statement is emited for "entity" table
+  to update 'updated_at'.
+
+  With joined-table inheritance if the only modified attributes are
+  subclass's ones, then no update statement will be emitted.
+  """
+  for obj in session.dirty:
+    if not isinstance(obj, Entity):
+      continue
+    state = sa.inspect(obj)
+    history = state.get_history('updated_at', state.dict)
+    if not any((history.added, history.deleted)):
+      obj.updated_at = datetime.utcnow()
 
 @memoized
 def all_entity_classes():
