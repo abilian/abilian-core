@@ -188,9 +188,22 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Abilian.tex', u'Abilian Documentation',
+  ('index', 'abilian-core.tex', u'Abilian Core Documentation',
    u'Stefane Fermigier', 'manual'),
 ]
+
+# From Flask doc
+latex_use_modindex = False
+latex_elements = {
+  'fontpkg':      r'\usepackage{mathpazo}',
+  'papersize':    'a4paper',
+  'pointsize':    '12pt',
+  'preamble':     r'\usepackage{flaskstyle}'
+}
+latex_use_parts = True
+latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
+
+
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.

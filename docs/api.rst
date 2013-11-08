@@ -8,12 +8,6 @@ Package ``abilian``
    :members:
    :undoc-members:
 
-Package ``abilian.testing``
----------------------------
-
-.. automodule:: abilian.testing
-   :members:
-   :undoc-members:
 
 Package ``abilian.core``
 ------------------------
@@ -162,3 +156,12 @@ Package ``abilian.web``
 .. automodule:: abilian.web.util
    :members:
    :undoc-members:
+
+
+Package ``abilian.testing``
+---------------------------
+
+.. automodule:: abilian.testing
+   :members:
+   :undoc-members:
+
