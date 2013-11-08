@@ -5,12 +5,12 @@ from __future__ import absolute_import
 import logging
 
 from werkzeug.utils import import_string
-from flask import Blueprint, abort, url_for, request
+from flask import Blueprint, abort, url_for, request, g
 from flask.ext.babel import lazy_gettext as _l
 from flask.ext.login import current_user
 from abilian.services.security import security
 from abilian.web.action import actions
-from abilian.web.nav import NavGroup, NavItem
+from abilian.web.nav import NavGroup, NavItem, BreadcrumbItem, Endpoint
 
 from .panel import AdminPanel
 
@@ -29,6 +29,7 @@ class Admin(object):
   def __init__(self, *panels, **kwargs):
     self.app = None
     self.panels = []
+    self.breadcrumb_items = {}
     self.setup_blueprint()
 
     self.nav_root = NavGroup(
@@ -67,6 +68,13 @@ class Admin(object):
         return "No panels registered"
 
       self.nav_root.endpoint = 'admin.no_panel'
+    else:
+      self.nav_root.endpoint = self.nav_root.items[0].endpoint
+
+    self.root_breadcrumb_item = BreadcrumbItem(
+      label=self.nav_root.title,
+      url=Endpoint(self.nav_root.endpoint[0], **self.nav_root.endpoint[1])
+    )
 
     app.register_blueprint(self.blueprint)
 
@@ -85,23 +93,31 @@ class Admin(object):
 
     panel.admin = self
     rule = "/" + panel.id
-    endpoint = panel.id
+    endpoint = nav_id = panel.id
+    abs_endpoint = 'admin.{}'.format(endpoint)
+
     if hasattr(panel, 'get'):
       self.blueprint.add_url_rule(rule, endpoint, panel.get)
     if hasattr(panel, 'post'):
       endpoint += "_post"
       self.blueprint.add_url_rule(rule, endpoint, panel.post, methods=['POST'])
 
-    nav = NavItem('admin:panel', panel.id,
+    nav = NavItem('admin:panel', nav_id,
                   title=panel.label, icon=panel.icon, divider=False,
-                  endpoint='admin.' + endpoint)
+                  endpoint=abs_endpoint)
     self.nav_root.append(nav)
-
+    self.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
+      label=panel.label,
+      icon=panel.icon,
+      url=Endpoint(abs_endpoint)
+    )
 
   def setup_blueprint(self):
     self.blueprint = Blueprint("admin", __name__,
                                template_folder='templates',
                                url_prefix='/' + _BP_PREFIX)
+
+    self.blueprint.url_value_preprocessor(self.build_breadcrumbs)
 
     @self.blueprint.before_request
     def check_security():
@@ -121,3 +137,8 @@ class Admin(object):
                  'active': active}
         menu.append(entry)
       return dict(menu=menu)
+
+  def build_breadcrumbs(self, endpoint, view_args):
+    g.breadcrumb.append(self.root_breadcrumb_item)
+    g.breadcrumb.append(self.breadcrumb_items[endpoint])
+
