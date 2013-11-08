@@ -22,7 +22,7 @@ from flask import (
   )
 from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
-from flask.ext.babel import gettext as _, get_locale as babel_get_locale
+from flask.ext.babel import get_locale as babel_get_locale
 
 from abilian.core import extensions, signals
 import abilian.core.util
@@ -193,15 +193,20 @@ class Application(Flask, ServiceManager, PluginManager):
         with self.app_context():
           self.start_services()
 
-  def _setup_breadcrumbs(self):
-    """ Before request handler. If you want to customize first items of
-    breadcrumbs override :meth:`init_breadcrumbs`
+  def _setup_breadcrumbs(self, app=None):
+    """Listener for `request_started` event. If you want to customize first
+    items of breadcrumbs override :meth:`init_breadcrumbs`
     """
     g.breadcrumb = []
     self.init_breadcrumbs()
 
   def init_breadcrumbs(self):
-    g.breadcrumb.append(BreadcrumbItem(_(u'Home'),
+    """Insert the first element in breadcrumbs.
+
+    This happens during `request_started` event, which is triggered before any
+    url_value_preprocessor and `before_request` handlers.
+    """
+    g.breadcrumb.append(BreadcrumbItem(icon=u'home',
                                        url=u'/' + request.script_root))
 
   def check_instance_folder(self):
