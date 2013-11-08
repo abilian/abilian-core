@@ -18,6 +18,7 @@ from babel.dates import LOCALTZ
 import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
+  request_started
   )
 from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
@@ -180,7 +181,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     signals.components_registered.send(self)
 
-    self.before_request(self._setup_breadcrumbs)
+    request_started.connect(self._setup_breadcrumbs)
 
     # Initialize Abilian core services.
     # Must come after all entity classes have been declared.
