@@ -1,5 +1,5 @@
--e git+https://github.com/abilian/flask-security.git@c8166203a8b41474cdef2ab50f9de3480168213b#egg=Flask_Security-dev
 -e git://github.com/tobiasandtobias/flask-alembic.git@d0f4d3523e115d6376aeba3b0b0cbba3af888add#egg=Flask_Alembic-dev
+
 alembic==0.6.0
 amqp==1.0.13
 anyjson==0.3.3
@@ -20,6 +20,7 @@ Flask-LinkTester==0.2.1
 Flask-Login==0.2.3
 Flask-Mail==0.8.2
 Flask-Principal==0.4.0
+Flask-Security==1.6.9
 Flask-Script==0.6.2
 Flask-SQLAlchemy==0.16
 Flask-Testing==0.4
