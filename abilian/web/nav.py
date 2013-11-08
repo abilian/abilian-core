@@ -9,6 +9,7 @@ Abilian define theses categories:
 """
 from __future__ import absolute_import
 
+from jinja2 import Template, Markup
 from flask import url_for
 from .action import Action
 
@@ -69,10 +70,13 @@ class Endpoint(object):
 
 
 class BreadcrumbItem(object):
-  """
+  """ A breadcrumb element has at least a label or an icon.
   """
   #: Label shown to user. May be an i18n string instance
   label = None
+
+  #: Icon to use.
+  icon = None
 
   #: Additional text, can be used as tooltip for example
   description = None
@@ -80,11 +84,26 @@ class BreadcrumbItem(object):
   #: either an unicode string or an :class:`Endpoint` instance.
   _url = None
 
-  def __init__(self, label, url=u'#', description=None):
+  template_string = (
+    u'<a href="{{ item.url }}">'
+    u'{%- if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}">'
+    u'</i> {%- endif %}'
+    u'{{ item.label }}'
+    u'</a>'
+    )
+
+  def __init__(self, label=u'', url=u'#', icon=None, description=None):
+    assert label or icon
     self.label = label
+    self.icon = icon
     self.description = description
     self._url = url
+    self.__template = Template(self.template_string)
 
   @property
   def url(self):
     return unicode(self._url)
+
+  def render(self):
+    return Markup(self.__template.render(item=self))
+
