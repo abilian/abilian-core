@@ -21,7 +21,12 @@ Flask-Mail
 
 # Other
 SQLAlchemy>=0.8,<0.9
-phonenumbers
+
+# specify min versions for "phonenumbers" because for now all releases are
+# "pre-releases".
+# see http://www.pip-installer.org/en/latest/logic.html#pre-release-versions
+phonenumbers>=5.8b1
+
 whoosh>=2.5
 markdown
 feedparser
@@ -45,8 +50,12 @@ straight.plugin==1.4.0-post-1
 
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
-closure
 cssmin
+
+# specify min versions for "closure" because for now all releases are
+# "pre-releases".
+# see http://www.pip-installer.org/en/latest/logic.html#pre-release-versions
+closure>=20121212
 
 #: DEVELOPMENT
 coverage==3.6
