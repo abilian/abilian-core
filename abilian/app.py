@@ -245,6 +245,10 @@ class Application(Flask, ServiceManager, PluginManager):
       config.from_pyfile(cfg_path, silent=True)
 
     config.from_envvar(self.CONFIG_ENVVAR, silent=True)
+
+    if 'WTF_CSRF_ENABLED' not in config:
+      config['WTF_CSRF_ENABLED'] = config.get('CSRF_ENABLED', True)
+
     return config
 
   def setup_logging(self):

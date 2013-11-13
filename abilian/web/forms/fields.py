@@ -6,7 +6,7 @@ from wtforms import ValidationError, SelectMultipleField, SelectField, \
 from wtforms.compat import string_types, text_type
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
-from flask.ext.wtf import FileField as BaseFileField
+from flask.ext.wtf.file import FileField as BaseFileField
 
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax
 

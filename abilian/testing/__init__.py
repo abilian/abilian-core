@@ -30,6 +30,7 @@ class TestConfig(object):
   TESTING = True
   SECRET_KEY = "SECRET"
   CSRF_ENABLED = False
+  WTF_CSRF_ENABLED = False
 
   BABEL_DEFAULT_LOCALE = 'en'
 

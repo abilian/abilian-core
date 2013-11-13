@@ -49,6 +49,7 @@ class BaseTestCase(TestCase):
     self.app.config.update({
       'TESTING': True,
       'CSRF_ENABLED': False,
+      'WTF_CSRF_ENABLED': False,
       })
     babel.init_app(self.app)
 
