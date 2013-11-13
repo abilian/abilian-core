@@ -51,10 +51,19 @@ class Service(object):
   @property
   def app_state(self):
     """ Current service state in current application.
+
+    :raise:RuntimeError if working outside application context.
     """
     return current_app.extensions[self.name]
 
   @property
   def running(self):
-    return self.app_state.running
+    """:returns: `False` if working outside application context or if service is
+    halted for current application.
+    """
+    try:
+      return self.app_state.running
+    except RuntimeError:
+      # current_app is None: working outside application context
+      return False
 
