@@ -63,8 +63,9 @@ class Service(object):
 
   @property
   def running(self):
-    """:returns: `False` if working outside application context or if service is
-    halted for current application.
+    """
+    :returns: `False` if working outside application context or if service is
+              halted for current application.
     """
     try:
       return self.app_state.running
