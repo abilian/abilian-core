@@ -64,6 +64,13 @@ Package ``abilian.core``
 Package ``abilian.services``
 ----------------------------
 
+:mod:`abilian.services.base`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.services.base
+   :members:
+   :undoc-members:
+
 :mod:`abilian.services.activity`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
