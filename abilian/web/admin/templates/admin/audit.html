@@ -4,14 +4,12 @@
 
 {% block content %}
   {%- call m_box(title="Global audit") %}
-    <div class="pagination">
-      <ul>
-        <li {% if not top_date %}class="disabled"{% endif %}><a
-            href="?after={{ top_date|default }}">{{ _("Previous") }}</a></li>
-        <li {% if not lowest_date %}class="disabled"{% endif %}><a
-            href="?before={{ lowest_date|default }}">{{ _("Next") }}</a></li>
-      </ul>
-    </div>
+    <ul class="pagination">
+      <li {% if not top_date %}class="disabled"{% endif %}><a
+        href="?after={{ top_date|default }}">{{ _("Previous") }}</a></li>
+      <li {% if not lowest_date %}class="disabled"{% endif %}><a
+        href="?before={{ lowest_date|default }}">{{ _("Next") }}</a></li>
+    </ul>
 
     <div style="margin-bottom: 25px;">
       {% for day, entries in entries %}
@@ -23,13 +21,11 @@
       {% endfor %}
     </div>
 
-    <div class="pagination">
-      <ul>
-        <li {% if not top_date %}class="disabled"{% endif %}><a
-            href="?after={{ top_date|default }}">{{ _("Previous") }}</a></li>
-        <li {% if not lowest_date %}class="disabled"{% endif %}><a
-            href="?before={{ lowest_date|default }}">{{ _("Next") }}</a></li>
-      </ul>
-    </div>
+    <ul class="pagination">
+      <li {% if not top_date %}class="disabled"{% endif %}><a
+        href="?after={{ top_date|default }}">{{ _("Previous") }}</a></li>
+      <li {% if not lowest_date %}class="disabled"{% endif %}><a
+        href="?before={{ lowest_date|default }}">{{ _("Next") }}</a></li>
+    </ul>
   {%- endcall %}
 {% endblock %}
