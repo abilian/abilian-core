@@ -9,6 +9,8 @@ import logging
 import logging.config
 from itertools import chain
 from functools import partial
+from pkg_resources import resource_filename
+
 
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
@@ -20,6 +22,7 @@ from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
   request_started
   )
+from flask.config import  ConfigAttribute
 from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
 from flask.ext.babel import get_locale as babel_get_locale
@@ -108,6 +111,8 @@ class Application(Flask, ServiceManager, PluginManager):
   #: configured instance.
   CONFIG_ENVVAR = 'ABILIAN_CONFIG'
 
+  configured = ConfigAttribute('CONFIGURED')
+
   def __init__(self, name=None, config=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
     name = name or __name__
@@ -125,34 +130,43 @@ class Application(Flask, ServiceManager, PluginManager):
     if config:
       self.config.from_object(config)
 
-    # at this point we have loaded all external config files: SQLALCHEMY_URI is
-    # definitively fixed (it cannot be defined in database AFAICT), and
-    # LOGGING_FILE cannot be set in DB settings.
+    # at this point we have loaded all external config files:
+    # SQLALCHEMY_DATABASE_URI is definitively fixed (it cannot be defined in
+    # database AFAICT), and LOGGING_FILE cannot be set in DB settings.
     self.setup_logging()
+
+    configured = bool(self.config.get('SQLALCHEMY_DATABASE_URI'))
+    self.config['CONFIGURED'] = configured
 
     if not self.testing:
       self.init_sentry()
+
+    if not configured:
+      # set fixed secret_key so that any unconfigured worker will use, so that
+      # session can be used during setup even if multiple processes are
+      # processing requests.
+      self.config['SECRET_KEY'] = 'abilian_setup_key'
 
     # time to load config bits from database: 'settings'
     # First init required stuff: db to make queries, and settings service
     extensions.db.init_app(self)
     settings_service.init_app(self)
 
-    with self.app_context():
-      try:
-        settings = self.services['settings'].namespace('config').as_dict()
-      except sa.exc.DatabaseError as exc:
-        # we may get here if DB is not initialized and "settings" table is
-        # missing. Command "initdb" must be run to initialize db, but first we
-        # must pass app init
-        if not self.testing:
-          # durint tests this message will show up on every test, since db is
-          # always recreated
-          logging.error(exc.message)
-        self.db.session.rollback()
-
-      else:
-        self.config.update(settings)
+    if configured:
+      with self.app_context():
+        try:
+          settings = self.services['settings'].namespace('config').as_dict()
+        except sa.exc.DatabaseError as exc:
+          # we may get here if DB is not initialized and "settings" table is
+          # missing. Command "initdb" must be run to initialize db, but first we
+          # must pass app init
+          if not self.testing:
+            # durint tests this message will show up on every test, since db is
+            # always recreated
+            logging.error(exc.message)
+          self.db.session.rollback()
+        else:
+          self.config.update(settings)
 
     self._jinja_loaders = list()
     self.register_jinja_loaders(jinja2.PackageLoader('abilian.web', 'templates'))
@@ -209,9 +223,11 @@ class Application(Flask, ServiceManager, PluginManager):
     g.breadcrumb.append(BreadcrumbItem(icon=u'home',
                                        url=u'/' + request.script_root))
 
-  def check_instance_folder(self):
-    """ Verify instance path exists, is a directory, and has necessary
+  def check_instance_folder(self, create=False):
+    """ Verify instance folder exists, is a directory, and has necessary
     permissions
+
+    :param:create: if `True`, creates directory hierarchy
 
     :raises: OSError with relevant errno
     """
@@ -219,8 +235,12 @@ class Application(Flask, ServiceManager, PluginManager):
     err = None
 
     if not os.path.exists(path):
-      err = 'Instance folder does not exists'
-      eno = errno.ENOENT
+      if create:
+        logger.info('Create instance folder: {}'.format(path.encode('utf-8')))
+        os.makedirs(path, 0775)
+      else:
+        err = 'Instance folder does not exists'
+        eno = errno.ENOENT
     elif not os.path.isdir(path):
       err = 'Instance folder not a directory'
       eno = errno.ENOTDIR
@@ -232,7 +252,6 @@ class Application(Flask, ServiceManager, PluginManager):
       raise OSError(eno, err, path)
 
   def make_config(self, instance_relative=False):
-    self.check_instance_folder()
     config = Flask.make_config(self, instance_relative)
 
     if self._ABILIAN_INIT_TESTING_FLAG:
@@ -240,9 +259,14 @@ class Application(Flask, ServiceManager, PluginManager):
       return config
 
     if instance_relative:
-      cfg_path = os.path.join(self.instance_path, 'config.py')
-      logger.info('Try to load config: "%s"', cfg_path)
-      config.from_pyfile(cfg_path, silent=True)
+      self.check_instance_folder(create=True)
+
+    cfg_path = os.path.join(config.root_path, 'config.py')
+    logger.info('Try to load config: "%s"', cfg_path)
+    try:
+      config.from_pyfile(cfg_path, silent=False)
+    except IOError:
+      return config
 
     config.from_envvar(self.CONFIG_ENVVAR, silent=True)
 
@@ -259,14 +283,18 @@ class Application(Flask, ServiceManager, PluginManager):
     if logging_file:
       logging_file = os.path.abspath(os.path.join(self.instance_path,
                                                   logging_file))
-      if logging_file.endswith('.conf'):
-        # old standard 'ini' file config
-        logging.config.fileConfig(logging_file, disable_existing_loggers=False)
-      elif logging_file.endswith('.yml'):
-        # yml config file
-        logging_cfg = yaml.load(open(logging_file, 'r'))
-        logging_cfg.setdefault('version', 1)
-        logging.config.dictConfig(logging_cfg)
+    else:
+      logging_file = resource_filename(__name__, 'default_logging.yml')
+
+    if logging_file.endswith('.conf'):
+      # old standard 'ini' file config
+      logging.config.fileConfig(logging_file, disable_existing_loggers=False)
+    elif logging_file.endswith('.yml'):
+      # yml config file
+      logging_cfg = yaml.load(open(logging_file, 'r'))
+      logging_cfg.setdefault('version', 1)
+      logging.config.dictConfig(logging_cfg)
+
 
   def init_debug_toolbar(self):
     if (not self.testing

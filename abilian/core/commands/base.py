@@ -24,7 +24,11 @@ manager = Manager(usage='Abilian base commands')
 
 def print_config(config):
   lines = ["Application configuration:"]
-  db_settings = set(current_app.services['settings'].namespace('config').keys())
+
+  if config.get('CONFIGURED'):
+    db_settings = set(current_app.services['settings'].namespace('config').keys())
+  else:
+    db_settings = {}
 
   for k, v in sorted(config.items()):
     prefix = '    '

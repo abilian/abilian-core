@@ -1,0 +1,58 @@
+disable_existing_loggers: false
+
+root:
+  level: INFO
+  handlers: [console]
+
+formatters:
+  simpleFormater:
+    format: '%(asctime)s - %(levelname)s [%(name)s]: %(message)s'
+    datefmt: '%Y/%m/%d %H:%M:%S'
+
+  with_origin:
+    format: '%(asctime)s - %(levelname)s: %(pathname)s:%(lineno)d [%(funcName)s()]: %(message)s'
+    datefmt: '%Y/%m/%d %H:%M:%S'    
+
+  msg_only:
+    format: '%(message)s'
+    datefmt: ''
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: simpleFormater
+    level: DEBUG
+    stream: ext://sys.stdout
+
+  console_trace:
+    class: logging.StreamHandler
+    formatter: with_origin
+    level: DEBUG
+    stream: ext://sys.stdout
+
+  console_msg_only:
+    class: logging.StreamHandler
+    formatter: msg_only
+    level: DEBUG
+    stream: ext://sys.stdout
+
+loggers:
+
+  abilian:
+    level: INFO
+
+  webassets:
+    level: ERROR
+
+  sqlalchemy:
+    level: WARNING
+
+  # INFO level will show queries
+  sqlalchemy.engine:
+    level: WARNING
+
+  # werkeug use console_msg_only so that HTTP requests are printed as standard
+  # HTTP access log
+  werkzeug:
+    propagate: false
+    handlers: [console_msg_only]
