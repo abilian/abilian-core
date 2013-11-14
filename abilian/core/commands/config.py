@@ -83,7 +83,7 @@ def init(filename='config.py', logging_config='logging.yml'):
   Creates a default config files in instance folder:
 
   * [FILENAME] (default: "config.py")
-  * [LOGGING_CONFIG] (default: logging.yml
+  * [LOGGING_CONFIG] (default: logging.yml)
 
   Defaults are tailored for development.
   """
