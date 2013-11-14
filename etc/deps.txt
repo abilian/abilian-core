@@ -21,6 +21,7 @@ Flask-Mail
 
 # Other
 SQLAlchemy>=0.8,<0.9
+redis>=2.6.0
 
 # specify min versions for "phonenumbers" because for now all releases are
 # "pre-releases".
