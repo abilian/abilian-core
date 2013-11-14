@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Installation steps</h2>
+      </div>
+      <div class="list-group">
+        {%- for step in setup_steps %}
+          <a href="#" class="list-group-item{%- if step == current_step %} active{%- endif %}">
+            <h4 class="list-group-item-heading">{{ loop.index }}. {{ step.title }}</h4>
+            {%- if step.description %}
+              <p class="list-group-item-text">
+                {{ step.description }}
+              </p>
+            {%- endif %}
+          </a>
+        {%- endfor %}
+      </div>
+
+    </div>
+  </div>
+  <div class="col-md-9">
+    {%- block content %}
+
+      {%- block pre_form %}
+      {%- endblock %}
+
+      <form action="{{ url_for(request.endpoint) }}" method="POST" class="form-horizontal" role="form">
+        {%- block formfields %}
+        {%- endblock %}
+
+        {%- if prev_step %}
+          <a href="{{ url_for("{}.{}".format(request.blueprint, prev_step.endpoint)) }}" class="btn btn-default">&larr; Previous</a>
+        {%- else %}
+          <a href="#" class="btn btn-default disabled">&larr; Previous</a>
+        {%- endif %}
+        <button type="submit" class="btn btn-default" name="save">Next &rarr;</button>
+      </form>
+    {%- endblock %}
+  </div>
+</div>
+
+{% endblock %}
+t

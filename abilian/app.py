@@ -184,6 +184,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     self.init_extensions()
     self.register_plugins()
+    self.maybe_register_setup_wizard()
     self._finalize_assets_setup()
     # at this point all models should have been imported: time to configure
     # mappers. Normally Sqlalchemy does it when needed but mappers may be
@@ -349,6 +350,14 @@ class Application(Flask, ServiceManager, PluginManager):
       if plugin_fqdn not in registered:
         self.register_plugin(plugin_fqdn)
         registered.add(plugin_fqdn)
+
+  def maybe_register_setup_wizard(self):
+    if self.configured:
+      return
+
+    logger.info('Application is not configured, installing setup wizard')
+    from abilian.web import setupwizard
+    self.register_blueprint(setupwizard.setup, url_prefix='/setup')
 
   def add_static_url(self, url_path, directory, endpoint=None):
     """
