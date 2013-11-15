@@ -1,0 +1,8 @@
+{% extends "setupwizard/_base.html" %}
+
+{% block content %}
+<form action="{{ url_for(request.endpoint) }}" method="POST" class="form-horizontal" role="form">
+  {%- block formfields %}
+  {%- endblock %}
+
+{%- endblock %}

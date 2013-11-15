@@ -77,13 +77,35 @@ class ReprProxy(object):
     return Markup(repr(self.__obj.__getattribute__(name)))
 
 
+def write_config(config_file, config):
+  jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
+  template = jinja_env.get_template('config.py.jinja2')
+
+  with open(config_file, 'w') as f:
+    f.write(template.render(cfg=ReprProxy(config)))
+  logger.info('Generated "%s"', config_file)
+
+
+def maybe_write_logging(logging_file):
+  if not os.path.exists(logging_file):
+    jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
+    template = jinja_env.get_template('logging.yml.jinja2')
+
+    with open(logging_file, 'w') as f:
+      f.write(template.render())
+    logger.info('Generated "%s"', logging_file)
+
+  else:
+    logger.info('Logging config file "%s" already exists, skipping creation.',
+                logging_file)
+
 @manager.command
 def init(filename='config.py', logging_config='logging.yml'):
   """
   Creates a default config files in instance folder:
 
   * [FILENAME] (default: "config.py")
-  * [LOGGING_CONFIG] (default: logging.yml
+  * [LOGGING_CONFIG] (default: logging.yml)
 
   Defaults are tailored for development.
   """
@@ -96,20 +118,6 @@ def init(filename='config.py', logging_config='logging.yml'):
     return 1
 
   config = DefaultConfig(logging_file=logging_config)
-  jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
-  template = jinja_env.get_template('config.py.jinja2')
-
-  with open(config_file, 'w') as f:
-    f.write(template.render(cfg=ReprProxy(config)))
-  logger.info('Generated "%s"', config_file)
-
-
-  if not os.path.exists(logging_file):
-    template = jinja_env.get_template('logging.yml.jinja2')
-    with open(logging_file, 'w') as f:
-      f.write(template.render())
-    logger.info('Generated "%s"', logging_file)
-  else:
-    logger.info('Logging config file "%s" already exists, skipping creation.',
-                logging_file)
+  write_config(config_file, config)
+  maybe_write_logging(logging_file)
 

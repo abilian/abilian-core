@@ -1,0 +1,30 @@
+{% extends "setupwizard/_base.html" %}
+
+{% from "macros/box.html" import m_box %}
+{% set cmd = app.name %}
+
+{% block content %}
+  <h1>Success!</h1>
+
+  <p>Configuration file sucessfully written.</p>
+
+  {%- call m_box(title="Location") %}
+    <div class="list-group">
+      <div class="list-group-item">{{ config_file }}</div>
+      <div class="list-group-item">{{ logging_file }}</div>
+    </div>
+  {%- endcall %}
+  
+  <p>For the final steps you will have to run the following commands from command line:
+    <ol>
+      <li>Initialize the database:
+        <pre>{{ cmd }} initdb</pre>
+      </li>
+      <li>
+        Create the admin account. The email is used for login:
+        <pre>{{ cmd }} createadmin -n admin [-f FIRST_NAME] email password</pre>
+      </li>
+      <li>restart the server</li>
+    </ol>
+  </p>
+{% endblock %}

@@ -4,6 +4,8 @@ import os
 import logging
 from pprint import pformat
 
+import sqlalchemy as sa
+
 from flask import current_app
 from flask.ext.script import Manager
 from abilian.core.extensions import db
@@ -24,7 +26,15 @@ manager = Manager(usage='Abilian base commands')
 
 def print_config(config):
   lines = ["Application configuration:"]
-  db_settings = set(current_app.services['settings'].namespace('config').keys())
+
+  if config.get('CONFIGURED'):
+    try:
+      db_settings = set(current_app.services['settings'].namespace('config').keys())
+    except sa.exc.ProgrammingError:
+      # there is config.py, db uri, but maybe "initdb" has yet to be run
+      db_settings = {}
+  else:
+    db_settings = {}
 
   for k, v in sorted(config.items()):
     prefix = '    '
