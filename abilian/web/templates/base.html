@@ -40,20 +40,26 @@
   <div id="content" class="container clearfix">
 
     <!-- breadcrumbs -->
+    <div class="row">
     {% include "breadcrumbs.html" %}
+    </div>
 
     <!-- flash messages -->
-    <div id="flash-messages">
+    <div class="row" id="flash-messages">
       {%- include "flash-messages.html" %}
     </div>
 
-    <header>
-      {% block header %}
-      {%- endblock %}
-    </header>
+    <div class="row">
+      <header>
+        {% block header %}
+        {%- endblock %}
+      </header>
+    </div>
 
-    {% block main %}
-    {%- endblock %}        
+    <div class="row">
+      {% block main %}
+      {%- endblock %}   
+    </div>     
 
   </div>
 
