@@ -1,5 +1,7 @@
 {% extends "setupwizard/_base.html" %}
 
+{% block content_title %}Redis{% endblock %}
+
 {% block formfields %}
   <div class="form-group">
   <div class="form-group">
@@ -14,6 +16,7 @@
     <label for="port" class="col-sm-2 control-label">Port</label>
     <div class="col-sm-10">
       <input type="number" class="form-control" name="port" placeholder="Default port"
+             min="0" step="1" pattern="\d+"
              value="{{ data['port']|default("") }}">
     </div>
   </div>
@@ -21,7 +24,8 @@
   <div class="form-group">
     <label for="db" class="col-sm-2 control-label">Database number</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" name="db"
+      <input type="number" class="form-control" name="db"
+             min="0" step="1" pattern="\d+"
              value="{{ data['db']|default("1") }}">
     </div>
   </div>

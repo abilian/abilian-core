@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block main %}
-
-<div class="row">
   <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -11,7 +9,12 @@
       <div class="list-group">
         {%- for step in setup_steps %}
           <a href="#" class="list-group-item{%- if step == current_step %} active{%- endif %}">
-            <h4 class="list-group-item-heading">{{ loop.index }}. {{ step.title }}</h4>
+            <h4 class="list-group-item-heading">
+              {{ loop.index }}. {{ step.title }}
+              {%- if step.name in validated_steps %}
+                <i class="glyphicon glyphicon-ok text-success pull-right"></i>
+              {%- endif %}
+            </h4>
             {%- if step.description %}
               <p class="list-group-item-text">
                 {{ step.description }}
@@ -23,8 +26,10 @@
 
     </div>
   </div>
-  <div class="col-md-9">
+  <div class="col-md-8">
     {%- block content %}
+
+      <h2>{%- block content_title %}{%- endblock %}</h2>
 
       {%- block pre_form %}
       {%- endblock %}
@@ -33,6 +38,7 @@
         {%- block formfields %}
         {%- endblock %}
 
+        <!-- prev / next buttons -->
         {%- if prev_step %}
           <a href="{{ url_for("{}.{}".format(request.blueprint, prev_step.endpoint)) }}" class="btn btn-default">&larr; Previous</a>
         {%- else %}
@@ -42,7 +48,6 @@
       </form>
     {%- endblock %}
   </div>
-</div>
 
 {% endblock %}
 t
