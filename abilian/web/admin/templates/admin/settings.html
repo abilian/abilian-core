@@ -3,9 +3,7 @@
 {% from "macros/box.html" import m_box %}
 
 {% block content %}
-  {%- call m_box(title=_("Setting")) %}
-  <h2>{{ _("Current access rights") }}</h2>
-
+  {%- call m_box(title=_("Settings")) %}
   <form method="POST" role="form">
     {{ csrf }}
 
