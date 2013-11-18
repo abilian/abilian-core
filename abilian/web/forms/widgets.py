@@ -23,6 +23,8 @@ from wtforms_alchemy import ModelFieldList
 from abilian.core.entities import Entity
 from abilian.web.filters import labelize, babel2datepicker
 from abilian.web import csrf
+from .util import babel2datetime
+
 
 __all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',
            'MainTableView', 'RelatedTableView', 'AjaxMainTableView',
@@ -578,9 +580,12 @@ class TimeInput(Input):
     if not value:
       value = ''
 
+    time_fmt = get_locale().time_formats['short'].format
+    is_h12 = ('%(h)s' in time_fmt or '%(K)s' in time_fmt)
+
     input_params = {
       'data-template': self.widget_mode,
-      'data-show-meridian': not self.h24_mode,
+      'data-show-meridian': is_h12,
       'data-minute-step': self.minuteStep,
       'data-show-seconds': self.showSeconds,
       'data-second-step': self.secondStep,
@@ -610,23 +615,33 @@ class DateTimeInput(object):
     kwargs.setdefault('name', field.name)
     field_name = kwargs.pop('name')
 
+    locale = get_locale()
+    date_fmt = locale.date_formats['short'].pattern
+    date_fmt = babel2datetime(date_fmt)
+    date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m') # force numerical months
+    time_fmt = u'%H:%M'
+    datetime_fmt = '{} | {}'.format(date_fmt, time_fmt)
+
     value = kwargs.pop('value', None)
     if value is None:
       field_value = field._value()
       if field_value:
-        value = datetime.strptime(field_value, '%d/%m/%Y %H:%M')
+        value = datetime.strptime(field_value, datetime_fmt)
 
-    date_value = value.strftime('%d/%m/%Y') if value else u''
-    time_value = value.strftime('%H:%M') if value else u''
+    date_value = value.strftime(date_fmt) if value else u''
+    time_value = value.strftime(time_fmt) if value else u''
 
     return (
-      Markup(u'<input class="datetimepicker" type="hidden" id="{id}" name="{id}" value="{date} {time}" />\n'
-             ''.format(id=field_id, name=field_name, date=date_value, time=time_value))
-             +
+      Markup(
+        u'<input class="datetimepicker" type="hidden" id="{id}" name="{id}" '
+        u'value="{date} | {time}" />\n'
+        u''.format(id=field_id, name=field_name, date=date_value, time=time_value))
+      +
       self.date(field,
                 id=field_id + '-date', name=field_name + '-date',
-                value=date_value, format='%d/%m/%Y')
-      + self.time(field,
+                value=date_value)
+      +
+      self.time(field,
                   id=field_id + '-time', name=field_name + '-time',
                   value=time_value)
       )

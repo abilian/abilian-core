@@ -51,14 +51,14 @@
                  $datepicker.parent().on(
                      'changeDate',
                      function updateDateTime(e) {
-                         $self.val($datepicker.val() + ' ' + $timepicker.val());
+                         $self.val($datepicker.val() + ' | ' + $timepicker.val());
                      }
                  );
 
                  $timepicker.timepicker().on(
                      'changeTime.timepicker',
                      function updateDateTime(e) {
-                         $self.val($datepicker.val() + ' ' + e.time.value);
+                         $self.val($datepicker.val() + ' | ' + e.time.value);
                      }
                  );
              }

@@ -26,10 +26,10 @@ $.extend(
     });
 
 {#- timepicker: set 12/24 time #}
-{%- set short_time = locale.time_formats['short'].pattern %}
+{%- set short_time = locale.time_formats['short'].format %}
 $.extend(
     $.fn.timepicker.defaults,
-    { 'showMeridian': {{ ('h' in short_time or 'k' in short_time)|tojson }} 
+    { 'showMeridian': {{ ('%(h)s' in short_time or '%(K)s' in short_time)|tojson }} 
     });
 
 }(jQuery));

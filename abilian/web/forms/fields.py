@@ -1,15 +1,29 @@
+# coding=utf-8
+"""
+"""
+from __future__ import absolute_import
+
 import operator
 from functools import partial
+import datetime
 
-from wtforms import ValidationError, SelectMultipleField, SelectField, \
-  DateField, SelectFieldBase, FormField, DateTimeField
+from wtforms import (
+    ValidationError,
+    Field,
+    SelectMultipleField,
+    SelectField,
+    SelectFieldBase,
+    FormField,
+)
 from wtforms.compat import string_types, text_type
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
+
 from flask.ext.wtf.file import FileField as BaseFileField
+from flask.ext.babel import get_locale, format_date, format_datetime
 
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax
-
+from .util import babel2datetime
 
 __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
            'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field']
@@ -50,24 +64,66 @@ class FileField(BaseFileField):
     return BaseFileField.__call__(self, **kwargs)
 
 
-class DateTimeField(DateTimeField):
+class DateTimeField(Field):
   """
   """
   widget = DateTimeInput()
 
-  def __init__(self, label=None, validators=None, format='%d/%m/%Y %H:%M', **kwargs):
-    super(DateTimeField, self).__init__(label, validators, format=format, **kwargs)
+  def __init__(self, label=None, validators=None, **kwargs):
+    super(DateTimeField, self).__init__(label, validators, **kwargs)
+
+  def _value(self):
+    if self.raw_data:
+      return ' '.join(self.raw_data)
+    else:
+      return format_datetime(self.data) if self.data else ''
+
+  def process_formdata(self, valuelist):
+    if valuelist:
+      date_str = ' '.join(valuelist)
+      locale = get_locale()
+      date_fmt = locale.date_formats['short']
+      date_fmt = babel2datetime(date_fmt)
+      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m') # force numerical months
+
+      time_fmt = locale.time_formats['short']
+      time_fmt = babel2datetime(time_fmt)
+
+      datetime_fmt = u'{} | {}'.format(date_fmt, time_fmt)
+      try:
+        self.data = datetime.datetime.strptime(date_str, datetime_fmt)
+      except ValueError:
+        self.data = None
+        raise ValueError(self.gettext('Not a valid datetime value'))
 
 
-class DateField(DateField):
+class DateField(DateTimeField):
   """
   A text field which stores a `datetime.datetime` matching a format.
   """
   widget = DateInput()
 
-  def __init__(self, label=None, validators=None, format='%d/%m/%Y', **kwargs):
-    super(DateField, self).__init__(label, validators, format=format, **kwargs)
-    self.format = format
+  def __init__(self, label=None, validators=None, **kwargs):
+    super(DateField, self).__init__(label, validators, **kwargs)
+
+  def _value(self):
+    if self.raw_data:
+      return ' '.join(self.raw_data)
+    else:
+      return format_date(self.data) if self.data else ''
+
+  def process_formdata(self, valuelist):
+    if valuelist:
+      date_str = ' '.join(valuelist)
+      date_fmt = get_locale().date_formats['short']
+      date_fmt = babel2datetime(date_fmt)
+      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m') # force numerical months
+
+      try:
+        self.data = datetime.datetime.strptime(date_str, date_fmt).date()
+      except ValueError:
+        self.data = None
+        raise ValueError(self.gettext('Not a valid datetime value'))
 
 
 class Select2Field(SelectField):

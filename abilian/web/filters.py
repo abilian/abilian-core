@@ -7,7 +7,7 @@ from functools import wraps
 import datetime
 from pytz import utc
 from calendar import timegm
-from babel.dates import DateTimePattern, format_timedelta
+from babel.dates import DateTimePattern, format_timedelta, parse_pattern
 import bleach
 
 from jinja2 import Markup, escape, evalcontextfilter
@@ -116,45 +116,50 @@ def date(value):
     return babel.format_date(local_dt(value), format)
 
 
-def babel2datepicker(fmt):
+def babel2datepicker(pattern):
   """ Convert date format from babel
   (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
   bootstrap-datepicker.
   """
-  if isinstance(fmt, DateTimePattern):
-    fmt = fmt.pattern
+  if not isinstance(pattern, DateTimePattern):
+    pattern = parse_pattern(pattern)
 
-  # days
-  replace = None
-  if 'd' in fmt:
-    replace = ('d', 'd')
-  elif 'EEEEE' in fmt:
-    replace = ('EEEEE', 'D') # narrow name => short name
-  elif 'EEEE' in fmt:
-    replace = ('EEEE', 'DD')
-  else:
-    replace = ('EEE', 'D')
+  map_fmt = {
+    # days
+    'd'    : 'dd',
+    'dd'   : 'dd',
+    'EEE'  : 'D',
+    'EEEE' : 'DD',
+    'EEEEE': 'D', # narrow name => short name
+    # months
+    'M'   : 'mm',
+    'MM'  : 'mm',
+    'MMM' : 'M',
+    'MMMM': 'MM',
+    # years
+    'y'   : 'yyyy',
+    'yy'  : 'yyyy',
+    'yyy' : 'yyyy',
+    'yyyy': 'yyyy',
 
-  fmt = fmt.replace(*replace)
-  replace = None
+    # time picker format
+    # hours
+    'h' : '%I',
+    'hh': '%I',
+    'H' : '%H',
+    'HH': '%H',
+    # minutes,
+    'm' : '%M',
+    'mm': '%M',
+    # seconds
+    's' : '%S',
+    'ss': '%S',
+    # am/pm
+    'a': '%p',
 
-  # months
-  if 'MMMM' in fmt:
-    replace = ('MMMM', 'MM')
-  elif 'MMM' in fmt:
-    replace = ('MMM', 'M')
-  elif 'M' in fmt:
-    # numerical months, 1 or 2-digit format
-    fmt.replace('M', 'm')
+    }
 
-  if replace:
-    fmt = fmt.replace(*replace)
-
-  if 'yyyy' not in fmt:
-    # by default change to 4-digit years
-    fmt = fmt.replace('yy', 'yyyy')
-
-  return fmt
+  return pattern.format % map_fmt
 
 
 # Doesn't work yet. TZ issues.
