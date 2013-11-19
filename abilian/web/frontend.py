@@ -37,33 +37,6 @@ from .forms.widgets import Panel, Row, SingleView, RelatedTableView,\
 
 logger = logging.getLogger(__name__)
 
-
-class BreadCrumbs(object):
-  def __init__(self, l=()):
-    self._bc = []
-    for path, label in l:
-      self.add(path, label)
-
-  def add(self, path="", label=""):
-    if path and not path.startswith("/"):
-      previous = self._bc[-1]
-      path = previous['path'] + "/" + path
-    self._bc.append(dict(path=path, label=label))
-
-  def __getitem__(self, item):
-    return self._bc[item]
-
-  def __add__(self, t):
-    bc = self.clone()
-    bc.add(t[0], t[1])
-    return bc
-
-  def clone(self):
-    new = BreadCrumbs()
-    new._bc = copy.copy(self._bc)
-    return new
-
-
 def add_to_recent_items(entity, type=None):
   if not type:
     type = entity.__class__.__name__.lower()
@@ -595,14 +568,17 @@ class Module(object):
   def is_current(self):
     return request.path.startswith(self.url)
 
-  def bread_crumbs(self, label=None):
-    bc = BreadCrumbs([("/", "Home"), ("/crm/", "CRM")])
-    if label:
-      bc.add("/crm/%s/" % self.endpoint, self.label)
-      bc.add("", label)
-    else:
-      bc.add("", self.label)
-    return bc
+  # FIXME: breadcrumb is handled with g.breadcrumbs, which is a list of
+  # abilian.web.nav.BreadCrumbItem instances
+  #
+  # def bread_crumbs(self, label=None):
+  #   bc = BreadCrumbs([("/", "Home"), ("/crm/", "CRM")])
+  #   if label:
+  #     bc.add("/crm/%s/" % self.endpoint, self.label)
+  #     bc.add("", label)
+  #   else:
+  #     bc.add("", self.label)
+  #   return bc
 
   def render_entity_view(self, entity):
     form = self.view_form_class(obj=entity)
