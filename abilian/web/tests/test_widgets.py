@@ -9,7 +9,8 @@ from wtforms import Form, TextField, IntegerField
 # Import for side-effects (monkey-patch)
 import abilian.web.forms
 
-from abilian.core.extensions import babel, db
+from abilian.i18n import babel
+from abilian.core.extensions import db
 
 from ..forms.widgets import MainTableView, SingleView, Panel, Row, \
   linkify_url, text2html, EmailWidget

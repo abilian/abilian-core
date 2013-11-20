@@ -20,18 +20,18 @@ from babel.dates import LOCALTZ
 import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
-  request_started
+  request_started, Blueprint, abort
   )
 from flask.config import  ConfigAttribute
 from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
 from flask.ext.babel import get_locale as babel_get_locale
 
+import abilian.i18n
 from abilian.core import extensions, signals
 import abilian.core.util
 from abilian.web.action import actions
 from abilian.web.nav import BreadcrumbItem
-from abilian.web.views import http_error_pages
 from abilian.web.filters import init_filters
 from abilian.web.util import send_file_from_directory
 from abilian.web.admin import Admin
@@ -319,12 +319,11 @@ class Application(Flask, ServiceManager, PluginManager):
     # webassets
     self._setup_asset_extension()
     self._register_base_assets()
-
     # Babel (for i18n)
-    extensions.babel.init_app(self)
-    extensions.babel.add_translations('abilian')
-    extensions.babel.localeselector(get_locale)
-    extensions.babel.timezoneselector(get_timezone)
+    abilian.i18n.babel.init_app(self)
+    abilian.i18n.babel.add_translations('abilian')
+    abilian.i18n.babel.localeselector(get_locale)
+    abilian.i18n.babel.timezoneselector(get_timezone)
 
     auth_service.init_app(self)
     security_service.init_app(self)

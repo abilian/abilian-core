@@ -4,8 +4,21 @@ API
 Package ``abilian``
 -------------------
 
+:mod:`abilian.app`
+^^^^^^^^^^^^^^^^^^^
+
 .. automodule:: abilian.app
 
+:mod:`abilian.i18n`
+^^^^^^^^^^^^^^^^^^^
+.. automodule:: abilian.i18n
+.. autodata:: _
+.. autodata:: _l
+.. autodata:: _n
+.. autoclass:: Babel
+    :show-inheritance:
+    :no-undoc-members:
+.. autodata:: babel
 
 Package ``abilian.core``
 ------------------------
