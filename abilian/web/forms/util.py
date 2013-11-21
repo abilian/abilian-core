@@ -15,10 +15,10 @@ def babel2datetime(pattern):
 
   map_fmt = {
     # days
-    'd'   : '%d',
-    'dd'  : '%d',
-    'EEE' : '%a',
-    'EEEE': '%A',
+    'd'    : '%d',
+    'dd'   : '%d',
+    'EEE'  : '%a',
+    'EEEE' : '%A',
     'EEEEE': '%a', # narrow name => short name
     # months
     'M'   : '%m',
