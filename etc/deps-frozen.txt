@@ -51,7 +51,7 @@ py==1.4.15
 pycrypto==2.6
 pygeoip==0.2.7
 python-dateutil==1.5
-python-magic==0.4.3
+python-magic==0.4.6
 pytz==2013b
 PyYAML==3.10
 raven==3.3.3
