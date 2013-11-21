@@ -12,13 +12,14 @@ Package ``abilian``
 :mod:`abilian.i18n`
 ^^^^^^^^^^^^^^^^^^^
 .. automodule:: abilian.i18n
-.. autodata:: _
-.. autodata:: _l
-.. autodata:: _n
-.. autoclass:: Babel
-    :show-inheritance:
-    :no-undoc-members:
-.. autodata:: babel
+
+   .. autodata:: _
+   .. autodata:: _l
+   .. autodata:: _n
+   .. autoclass:: Babel
+       :show-inheritance:
+       :no-undoc-members:
+   .. autodata:: babel
 
 Package ``abilian.core``
 ------------------------
@@ -124,6 +125,11 @@ Package ``abilian.web``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.forms
+
+:mod:`abilian.web.views`
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.views   
 
 :mod:`abilian.web.frontend`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
