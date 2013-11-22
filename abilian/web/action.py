@@ -166,6 +166,23 @@ class ModalActionMixin(object):
     u'</a>'
   )
 
+class ButtonAction(Action):
+  template_string = (
+    u'<button type="submit" class="btn btn-{{ action.btn_class }}" '
+    u'name="{{ action.submit_name }}" '
+    u'value="{{ action.name }}">'
+    u'{%- if action.icon %}<i class="glyphicon glyphicon-{{ action.icon }}"></i> {% endif %}'
+    u'{{ action.title }}</button>'
+  )
+
+  btn_class = 'default'
+
+  def __init__(self, category, name, submit_name="__action", btn_class= 'default',
+               *args, **kwargs):
+        Action.__init__(self, category, name, *args, **kwargs)
+        self.submit_name = submit_name
+        self.btn_class = btn_class
+
 
 class ActionRegistry(object):
   """ The Action registry.
