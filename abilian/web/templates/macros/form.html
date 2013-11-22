@@ -1,42 +1,65 @@
-{% macro m_field(field) %}
+{%- macro m_field(field, horizontal=False, label_width=2, field_width=8) %}
   {%- set with_label = kwargs.pop('with_label', True) %}
   {%- set placeholder = '' %}
   {%- if not with_label %}
     {%- set placeholder = field.label.text %}
   {%- endif %}
-
-  <div class="form-group{% if field.errors %} has-error{% endif %}">
+  {%- set css_class = 'form-control ' + kwargs.pop('class_', '') %}
+  {%- set standard_field = field.type not in ('BooleanField', 'CSRFTokenField') %}
+  {%- if field.flags.required %}
+    {%- set css_class = css_class + ' required' %}
+  {%- endif %}
+  <div class="form-group{% if field.errors %} has-error {% endif %}">
     {%- if with_label and not field.type in ('BooleanField', 'CSRFTokenField') %}
-      <label for="{{ field.id }}">{{ field.label.text }}{% if field.flags.required %} *{% endif %}:</label>
+      <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}{% if field.flags.required %} *{% endif %}:</label>
     {%- endif %}
 
-    {%- set class_ = 'form-control ' + kwargs.pop('class_', '') %}
-    {%- if field.flags.required %}
-      {%- set class_ = class_ + ' required' %}
-    {%- endif %}
+    {%- if horizontal and standard_field %}<div class="col-sm-{{ field_width }}">{%- endif %}
 
     {%- if field.type == 'CSRFTokenField' %}
       {{ field() }}
+
     {%- elif field.type == 'BooleanField' %}
-      <label class="checkbox">
-        {{ field(class_=class_, **kwargs) }}
+      <label class="checkbox  {%- if horizontal %} col-sm-offset-{{ label_width }} col-sm-{{ field_width }} {%- endif %}">
+        {{ field(class_=css_class, **kwargs) }}
         {{ field.label.text|safe }}
       </label>
+
     {%- else %}
       {%- if field.type in ('TextField', 'TextAreaField', 'PasswordField') %}
-        {%- set class_ = class_ + ' input-xlarge' %}
+        {%- set css_class = css_class + ' input-xlarge' %}
       {%- elif field.type == 'FileField' %}
-        {%- set class_ = class_ + ' input-file' %}
+        {%- set css_class = css_class + ' input-file' %}
       {%- endif %}
-      {{ field(class_=class_, placeholder=placeholder, **kwargs)|safe }}
+      {{ field(class_=css_class, placeholder=placeholder, **kwargs)|safe }}
     {%- endif %}
 
     {%- if field.errors %}
-      <span class="error help-inline">{{ field.errors|join(', ') }}</span>
+      <span class="help-inline">{{ field.errors|join(', ') }}</span>
     {% endif %}
 
     {%- if field.description %}
       <span class="help-block">{{ field.description|safe }}</span>
     {%- endif %}
+
+    {%- if horizontal and standard_field %}</div>{%- endif %}
   </div>
+{%- endmacro %}
+
+{%- macro m_form(form, fields=(), action="", method="POST", enctype="multipart/form-data", 
+                 horizontal=False, id=None, role="form",
+                 label_width=2, field_width=8) %}
+  <form action="{{ action }}" method="{{ method }}" enctype="{{ enctype }}" {%- if horizontal %}class="form-horizontal" {%- endif %} {%- if id %} id="{{ id }}" {%- endif %} role="{{ role }}">
+
+    {%- for field in (fields or form) %}
+      {{ m_field(field, horizontal=horizontal, label_width=label_width, field_width=field_width) }}
+    {%- endfor %}
+
+    <div class="form-actions">
+      {%- for button in g.view.buttons %}
+        {{ button.render() }}
+      {%- endfor %}
+    </div>
+
+  </form>
 {%- endmacro %}
