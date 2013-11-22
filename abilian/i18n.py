@@ -71,9 +71,11 @@ class Babel(BabelBase):
 
   def add_translations(self, module_name):
     """
-    Adds translation from external module::
+    Adds translations from external module. For example::
 
-         babel.add_translations('abilian.core')
+        babel.add_translations('abilian.core')
+
+    Will add translations files from `abilian.core` module.
     """
     module = importlib.import_module(module_name)
     for path in (os.path.join(p, 'translations') for p in module.__path__):
@@ -88,10 +90,10 @@ class Babel(BabelBase):
       self._translations_paths.append(path)
 
 def _get_translations_multi_paths():
-  """Returns the correct gettext translations that should be used for
-    this request. This will never fail and return a dummy translation
-  object if used outside of the request or if a translation cannot be
-  found.
+  """
+  Returns the correct gettext translations that should be used for this
+  request. This will never fail and return a dummy translation object
+  if used outside of the request or if a translation cannot be found.
   """
   ctx = _request_ctx_stack.top
   if ctx is None:
@@ -130,5 +132,5 @@ def _get_translations_multi_paths():
 # monkey patch flask-babel
 flask.ext.babel.get_translations = _get_translations_multi_paths
 
-#: flask extension
+#: importable instance of :class:`Babel`
 babel = Babel()
