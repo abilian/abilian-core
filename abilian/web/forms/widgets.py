@@ -17,7 +17,10 @@ import sqlalchemy as sa
 from flask import render_template, json, Markup, render_template_string
 from flask.ext.babel import gettext as _, format_date, format_datetime, get_locale
 import wtforms
-from wtforms.widgets import HTMLString, Input, html_params, Select
+from wtforms.widgets import (
+    HTMLString, Input, html_params, Select,
+    TextArea as BaseTextArea,
+    )
 from wtforms_alchemy import ModelFieldList
 
 from abilian.core.entities import Entity
@@ -464,6 +467,33 @@ class Row(object):
 
 
 # Form field widgets ###########################################################
+class TextArea(BaseTextArea):
+  """
+  Accepts "resizeable" parameter: "vertical", "horizontal", "both", None
+  """
+  _resizeable_valid = ("vertical", "horizontal", "both", None)
+  resizeable = None
+
+  def __init__(self, resizeable=None, *args, **kwargs):
+    BaseTextArea.__init__(self, *args, **kwargs)
+
+    if not resizeable in self._resizeable_valid:
+      raise ValueError(
+        'Invalid value for resizeable: {}, valid values are: {}'.format(
+          repr(resizeable),
+          ','.join(repr(v) for v in self._resizeable_valid)
+          )
+      )
+    if resizeable:
+      self.resizeable = 'resizeable-' + resizeable
+
+  def __call__(self, *args, **kwargs):
+    if self.resizeable:
+      css = kwargs.get('class_', '')
+      kwargs['class_'] = css + ' ' + self.resizeable
+    return super(TextArea, self).__call__(*args, **kwargs)
+
+
 class Chosen(Select):
   """
   Extends the Select widget using the Chosen jQuery plugin.
