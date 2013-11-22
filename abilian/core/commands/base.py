@@ -68,7 +68,7 @@ def run(port=None):
   # TODO: pass host and debug as params to
   host = "0.0.0.0"
   debug = app.config.get('DEBUG')
-  port = int(port) or app.config.get('PORT', 5000)
+  port = int(port or app.config.get('PORT', 5000))
   app.run(host=host, debug=debug, port=port)
 
 
