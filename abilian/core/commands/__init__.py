@@ -37,6 +37,7 @@ from .config import manager as config_manager
 
 __all__ = ['manager', 'setup_abilian_commands']
 
+
 def setup_abilian_commands(manager):
   """
   Register abilian commands on ``manager``.

@@ -24,6 +24,7 @@ logger = logging.getLogger('')
 #: ``flask.ext.script.Manager`` instance for abilian commands
 manager = Manager(usage='Abilian base commands')
 
+
 def print_config(config):
   lines = ["Application configuration:"]
 
@@ -57,27 +58,32 @@ def print_config(config):
 
 
 @manager.command
-def run():
-  """ Likes runserver, also print application configuration.
+def run(port=None):
+  """
+  Like runserver, also print application configuration.
   """
   app = current_app
   print_config(app.config)
 
-  DEBUG = app.config.get('DEBUG')
-  PORT = app.config.get('PORT', 5000)
-  app.run(host="0.0.0.0", debug=DEBUG, port=PORT)
+  # TODO: pass host and debug as params to
+  host = "0.0.0.0"
+  debug = app.config.get('DEBUG')
+  port = int(port) or app.config.get('PORT', 5000)
+  app.run(host=host, debug=debug, port=port)
 
 
 @manager.command
 def initdb():
-  """ Creates application DB.
+  """
+  Creates application DB.
   """
   current_app.create_db()
 
 
 @manager.command
 def dropdb():
-  """ Drops the application DB.
+  """
+  Drops the application DB.
   """
   confirm = raw_input("Are you sure you want to drop the database? (Y/N) ")
   if confirm.lower() == 'y':
@@ -87,7 +93,8 @@ def dropdb():
 
 @manager.command
 def dumproutes():
-  """ Dumps all the routes registered in Flask.
+  """
+  Dumps all the routes registered in Flask.
   """
   rules = list(current_app.url_map.iter_rules())
   rules.sort(key=lambda x: x.rule)
@@ -97,7 +104,8 @@ def dumproutes():
 
 @manager.command
 def createadmin(email, password, name=None, first_name=None):
-  """ Adds an admin user with given email and password.
+  """
+  Adds an admin user with given email and password.
   """
   user = User(email=email, password=password,
               last_name=name, first_name=first_name,
@@ -111,7 +119,8 @@ def createadmin(email, password, name=None, first_name=None):
 
 @manager.command
 def changepassword(email, password):
-  """ Changes the password of the given user.
+  """
+  Changes the password for the given user.
   """
   user = User.query.filter(User.email==email).one()
   user.password = password
