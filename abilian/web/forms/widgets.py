@@ -494,6 +494,24 @@ class TextArea(BaseTextArea):
     return super(TextArea, self).__call__(*args, **kwargs)
 
 
+class FileInput(object):
+  """
+  Renders a file input.  Inspired from
+  http://www.abeautifulsite.net/blog/2013/08/whipping-file-inputs-into-shape-with-bootstrap-3/
+  """
+  def __call__(self, field, **kwargs):
+    kwargs.setdefault('id', field.id)
+    input_elem = u'<input {}>'.format(html_params(name=field.name, type='file',
+                                                  **kwargs))
+    label = _(u'Browse &hellip; {input}').format(input=input_elem)
+    return HTMLString(
+      u'<div class="input-group file-input">'
+      u'<span class="input-group-btn"><span class="btn btn-default btn-file">'
+      u'{label}</span></span>'
+      u'<input type="text" class="form-control" readonly>'
+      u'</div>'.format(label=label)
+    )
+
 class Chosen(Select):
   """
   Extends the Select widget using the Chosen jQuery plugin.

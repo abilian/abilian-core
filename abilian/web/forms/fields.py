@@ -22,7 +22,7 @@ from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 from flask.ext.wtf.file import FileField as BaseFileField
 from flask.ext.babel import get_locale, format_date, format_datetime
 
-from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax
+from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
 
 __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
@@ -49,6 +49,7 @@ class FileField(BaseFileField):
   """ support 'multiple' attribute, enabling html5 multiple file input in widget
   """
   multiple = False
+  widget = FileInput()
 
   def __init__(self, *args, **kwargs):
     try:
