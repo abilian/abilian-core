@@ -32,4 +32,18 @@ $.extend(
     { 'showMeridian': {{ ('%(h)s' in short_time or '%(K)s' in short_time)|tojson }} 
     });
 
+if (window.FileAPI) {
+    window.FileAPI = $.extend(
+        window.FileAPI,
+        { debug: false   // debug mode, see Console
+          , cors: false    // if used CORS, set `true`
+          , media: false   // if used WebCam, set `true`
+          , staticPath: {{ url_for('abilian_static', filename='fileapi/')|tojson }} // path to '*.swf'
+          , flashUrl:  {{ url_for('abilian_static', filename='fileapi/FileAPI.flash.swf')|tojson }}
+          , flashImageUrl:  {{ url_for('abilian_static', filename='fileapi/FileAPI.flash.image.swf')|tojson }}
+          , flashWebcamUrl:  {{ url_for('abilian_static', filename='fileapi/FileAPI.flash.camera.swf')|tojson }}
+        });
+}
+
+
 }(jQuery));

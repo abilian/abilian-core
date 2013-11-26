@@ -43,6 +43,9 @@ DATATABLE_CSS = Bundle('datatables/css/jquery.dataTables.css',
 DATATABLE_JS = Bundle('datatables/js/jquery.dataTables.min.js')
 DATATABLE_JS_DEBUG = Bundle('datatables/js/jquery.dataTables.js')
 
+FILEAPI_JS = Bundle('fileapi/FileAPI.min.js')
+FILEAPI_JS_DEBUG = Bundle('fileapi/FileAPI.js')
+
 FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
 FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
 
@@ -59,7 +62,8 @@ TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js',
 ABILIAN_CSS = Bundle('css/abilian.css')
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
 ABILIAN_JS = Bundle('js/abilian.js',
-                    'js/datatables-setup.js')
+                    'js/datatables-setup.js',
+                    'js/widgets/image.js')
 
 CSS = Bundle(BOOTSTRAP_CSS,
              FONTAWESOME_CSS,
@@ -88,6 +92,7 @@ JS = Bundle(BOOTSTRAP_JS,
             BOOTSTRAP_DATEPICKER_JS,
             BOOTSTRAP_TIMEPICKER_JS,
             DATATABLE_JS,
+            FILEAPI_JS,
             ABILIAN_JS,
             )
 JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
@@ -97,6 +102,7 @@ JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
                   BOOTSTRAP_DATEPICKER_JS,
                   BOOTSTRAP_TIMEPICKER_JS,
                   DATATABLE_JS_DEBUG,
+                  FILEAPI_JS_DEBUG,
                   ABILIAN_JS,
 )
 

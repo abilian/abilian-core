@@ -1,0 +1,10 @@
+<div class="image-input">
+  <div class="upload_preview" data-width="{{ width }}" data-height="{{ height }}">
+    {%- if image_url %}
+      <image src="{{ image_url }}" class="img-thumbnail" style="max-width: {{ width }}px; max-height: {{ height }}px" />
+    {%- endif %}
+  </div>
+  <div class="js-fileapi-wrapper upload-btn">
+    <input name="{{ field.name }}" type="file" />
+  </div>
+</div>

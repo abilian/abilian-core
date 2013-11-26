@@ -55,6 +55,9 @@
 				     input.val(log);
 			     }
              });
+
+         /* image input */
+         $('.image-input').imageInput();
      };
      Abilian.fn.onAppInit(Abilian.fn.init_widgets);
 

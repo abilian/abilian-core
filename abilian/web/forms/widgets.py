@@ -512,6 +512,38 @@ class FileInput(object):
       u'</div>'.format(label=label)
     )
 
+class ImageInput(object):
+  """
+  An image widget with client-side preview. To show current image field
+  data has to provide an attribute named `url`.
+  """
+  def __init__(self, template='widgets/image_input.html',
+               width=120, height=120,
+               valid_extensions=('jpg', 'jpeg', 'png'),):
+    self.template = template
+    self.valid_extensions = valid_extensions
+    self.width, self.height = width, height
+
+  def __call__(self, field, **kwargs):
+    field_id = kwargs.pop('id', field.id)
+    image_url = None
+    value = kwargs.get('value', field.object_data)
+
+    if hasattr(value, 'url'):
+      image_url = value.url
+
+    pattern = '.*\.({ext})'.format(ext='|'.join(self.valid_extensions))
+    return Markup(
+      render_template(self.template,
+                      id=field_id,
+                      field=field,
+                      required=False,
+                      image_url=image_url,
+                      width=self.width,
+                      height=self.height,
+                      pattern=pattern,))
+
+
 class Chosen(Select):
   """
   Extends the Select widget using the Chosen jQuery plugin.
