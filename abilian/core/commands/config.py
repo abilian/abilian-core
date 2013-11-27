@@ -63,6 +63,10 @@ class DefaultConfig(object):
     self.SESSION_COOKIE_NAME = '{}-session'.format(current_app.name)
     self.UNOCONV_LOCATION = os.path.join(sys.prefix, 'bin', 'unoconv')
     self.SECRET_KEY = os.urandom(24)
+
+    db_dir = os.path.join(current_app.instance_path, 'data')
+    if not os.path.exists(db_dir):
+      os.mkdir(db_dir)
     self.SQLALCHEMY_DATABASE_URI = \
       "sqlite:///{}/data/db.sqlite".format(current_app.instance_path)
 
