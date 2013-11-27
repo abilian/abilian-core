@@ -31,6 +31,7 @@ import abilian.i18n
 from abilian.core import extensions, signals
 import abilian.core.util
 from abilian.web.action import actions
+from abilian.web.views import Registry as ViewRegistry
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.filters import init_filters
 from abilian.web.util import send_file_from_directory
@@ -111,7 +112,12 @@ class Application(Flask, ServiceManager, PluginManager):
   #: configured instance.
   CONFIG_ENVVAR = 'ABILIAN_CONFIG'
 
+  #: True if application as a config file and can be considered configured for
+  #: site.
   configured = ConfigAttribute('CONFIGURED')
+
+  #: instance of :class:`.web.views.registry.Registry`.
+  default_view = None
 
   def __init__(self, name=None, config=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
@@ -126,6 +132,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     ServiceManager.__init__(self)
     PluginManager.__init__(self)
+    self.default_view = ViewRegistry()
 
     if config:
       self.config.from_object(config)
