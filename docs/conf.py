@@ -33,6 +33,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.autosummary',
 ]
 
 # sphinx.ext.autodoc configuration
