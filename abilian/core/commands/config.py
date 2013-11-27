@@ -11,22 +11,24 @@ from flask import current_app
 from flask.ext.script import Manager
 
 from .base import print_config, logger
+
 #: sub-manager for config commands
 manager = Manager()
 
+
 @manager.command
 def show(only_path=False):
-  """ Show current config
   """
-  app = current_app
+  Shows the current config.
+  """
   infos = ['\n']
-  infos.append('Instance path: "{}"'.format(app.instance_path))
-  infos.append('CONFIG_ENVVAR: "{}"'.format(app.CONFIG_ENVVAR))
+  infos.append('Instance path: "{}"'.format(current_app.instance_path))
+  infos.append('CONFIG_ENVVAR: "{}"'.format(current_app.CONFIG_ENVVAR))
 
   logger.info('\n  '.join(infos))
 
   if not only_path:
-    print_config(app.config)
+    print_config(current_app.config)
 
 
 class DefaultConfig(object):
@@ -35,7 +37,7 @@ class DefaultConfig(object):
   PRODUCTION = False
   LOGGING_CONFIG_FILE = 'logging.yml'
 
-  SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+  #SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
   SQLALCHEMY_ECHO = False
 
   DEBUG = True
@@ -61,13 +63,16 @@ class DefaultConfig(object):
     self.SESSION_COOKIE_NAME = '{}-session'.format(current_app.name)
     self.UNOCONV_LOCATION = os.path.join(sys.prefix, 'bin', 'unoconv')
     self.SECRET_KEY = os.urandom(24)
+    self.SQLALCHEMY_DATABASE_URI = \
+      "sqlite:///{}/data/db.sqlite".format(current_app.instance_path)
 
     if logging_file:
       self.LOGGING_CONFIG_FILE = logging_file
 
 
 class ReprProxy(object):
-  """Proxy an object and apply repr() + Mark safe when accesing an
+  """
+  Proxy an object and apply repr() + Mark safe when accesing an
   attribute. Used in jinja templates.
   """
   def __init__(self, obj):
@@ -99,10 +104,11 @@ def maybe_write_logging(logging_file):
     logger.info('Logging config file "%s" already exists, skipping creation.',
                 logging_file)
 
+
 @manager.command
 def init(filename='config.py', logging_config='logging.yml'):
   """
-  Creates a default config files in instance folder:
+  Creates default config files in instance folder.
 
   * [FILENAME] (default: "config.py")
   * [LOGGING_CONFIG] (default: logging.yml)
