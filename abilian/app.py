@@ -404,6 +404,15 @@ class Application(Flask, ServiceManager, PluginManager):
   @property
   def jinja_options(self):
     options = dict(Flask.jinja_options)
+
+    if 'bytecode_cache' not in options:
+      cache_dir = os.path.join(self.instance_path, 'cache', 'jinja')
+      if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir, 0775)
+
+      options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(cache_dir,
+                                                                 '%s.cache')
+
     if (self.config.get('DEBUG', False)
         and self.config.get('TEMPLATE_DEBUG', False)):
       options['undefined'] = jinja2.StrictUndefined
