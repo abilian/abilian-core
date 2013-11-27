@@ -63,5 +63,5 @@ closure>=20121212
 #: DEVELOPMENT
 coverage==3.6
 nose
-pytest
+pytest>=2.4.2
 Sphinx==1.1.3
