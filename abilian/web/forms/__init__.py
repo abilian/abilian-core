@@ -41,7 +41,7 @@ class Form(BaseForm):
 _PATCHED = False
 
 if not _PATCHED:
-  logger.info('PATCH %s: add methods for "view" mode on fields', repr(Field))
+  logger.debug('Patching %s', repr(Field))
   Field.view_template = None
 
   _wtforms_Field_init = Field.__init__
@@ -71,7 +71,8 @@ if not _PATCHED:
   del _core_field_render
 
   def render_view(self, **kwargs):
-    """ render data
+    """
+    Render data
     """
     if 'widget_options' in kwargs and not kwargs['widget_options']:
       kwargs.pop('widget_options')
@@ -85,8 +86,9 @@ if not _PATCHED:
   del render_view
 
   def is_hidden(self):
-    """ WTForms is not consistent with hidden fields, since flags.hidden is not
-    set on HiddenField :-(
+    """
+    WTForms is not consistent with hidden fields, since `flags.hidden` is not
+    set on `HiddenField` :-(
     """
     return (self.flags.hidden
             or isinstance(self, HiddenField))
