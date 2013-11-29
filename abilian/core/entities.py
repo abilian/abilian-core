@@ -165,6 +165,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   def to_json(self):
     return json.dumps(self.to_dict())
 
+  #FIXME: remove when all entities will have a default view registered
   @property
   def _url(self):
     return self.base_url + "/%d" % self.id
@@ -172,6 +173,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   def _icon(self, size=12):
     return "/static/icons/%s-%d.png" % (self.__class__.__name__.lower(), size)
 
+  #FIXME: we can do better than that
   @property
   def _name(self):
     if hasattr(self, 'name'):
@@ -202,8 +204,11 @@ class _EntityInherit(object):
 BaseMeta = db.Model.__class__
 
 class EntityMeta(BaseMeta):
-  """ Metaclass for Entities. It properly sets-up subclasses by adding
-  _EntityInherit to __bases__ which provides `id` attibute and `__mapper_args__`
+  """
+  Metaclass for Entities. It properly sets-up subclasses by adding
+  _EntityInherit to `__bases__`.
+
+  `_EntityInherit` provides `id` attibute and `__mapper_args__`.
   """
 
   def __new__(mcs, classname, bases, d):
@@ -223,7 +228,8 @@ class EntityMeta(BaseMeta):
 
 
 class Entity(BaseMixin, db.Model):
-  """Base class for Abilian entities.
+  """
+  Base class for Abilian entities.
 
   From Sqlalchemy POV Entities use `Joined-Table inheritance
   <http://docs.sqlalchemy.org/en/rel_0_8/orm/inheritance.html#joined-table-inheritance>`_,
@@ -254,6 +260,7 @@ class Entity(BaseMixin, db.Model):
 
 
 # TODO: make this unecessary
+@event.listens_for(Entity, 'class_instrument', propagate=True)
 def register_metadata(cls):
   #print "register_metadata called for class", cls
   cls.__editable__ = set()
@@ -274,11 +281,11 @@ def register_metadata(cls):
     if info.get('searchable', False):
       cls.__searchable__.add(name)
 
-event.listen(Entity, 'class_instrument', register_metadata, propagate=True)
 
 @event.listens_for(Session, 'before_flush')
 def polymorphic_update_timestamp(session, flush_context, instances):
-  """This listeners ensure an update statement is emited for "entity" table
+  """
+  This listeners ensure an update statement is emited for "entity" table
   to update 'updated_at'.
 
   With joined-table inheritance if the only modified attributes are
