@@ -11,7 +11,6 @@ from itertools import chain
 from functools import partial
 from pkg_resources import resource_filename
 
-
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
 
@@ -22,7 +21,7 @@ from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
   request_started, Blueprint, abort
   )
-from flask.config import  ConfigAttribute
+from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
 from flask.ext.babel import get_locale as babel_get_locale
@@ -40,6 +39,7 @@ from abilian.plugin.loader import AppLoader
 from abilian.services import (audit_service, index_service, activity_service,
                               auth_service, settings_service, security_service)
 
+
 logger = logging.getLogger(__name__)
 db = extensions.db
 __all__ = ['create_app', 'Application', 'ServiceManager']
@@ -49,6 +49,7 @@ class ServiceManager(object):
   """
   Mixin that provides lifecycle (register/start/stop) support for services.
   """
+
   def __init__(self):
     self.services = {}
 
@@ -62,8 +63,13 @@ class ServiceManager(object):
 
 
 class PluginManager(object):
+  """
+  Mixin that provides support for loading plugins.
+  """
+
   def load_plugins(self):
-    """Discovers and load plugins.
+    """
+    Discovers and loads plugins.
 
     At this point, prefer explicit loading using the :method:~`register_plugin`
     method.
@@ -73,10 +79,12 @@ class PluginManager(object):
     loader.register(self)
 
   def register_plugin(self, name):
-    """Load and register a plugin given its package name.
+    """
+    Loads and registers a plugin given its package name.
     """
     logger.info("Registering plugin: " + name)
     import importlib
+
     module = importlib.import_module(name)
     module.register_plugin(self)
 
@@ -92,9 +100,9 @@ default_config.update(
     'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
     'abilian.web.admin.panels.settings.SettingsPanel',
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
-    ),
+  ),
   SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
-  )
+)
 default_config = ImmutableDict(default_config)
 
 
@@ -176,15 +184,16 @@ class Application(Flask, ServiceManager, PluginManager):
           self.config.update(settings)
 
     self._jinja_loaders = list()
-    self.register_jinja_loaders(jinja2.PackageLoader('abilian.web', 'templates'))
+    self.register_jinja_loaders(
+      jinja2.PackageLoader('abilian.web', 'templates'))
 
     self._assets_bundles = {
       'css': {'options': dict(filters='cssimporter, cssrewrite',
                               output='style-%(version)s.min.css'),
-        },
+      },
       'js-top': {'options': dict(output='top-%(version)s.min.js')},
       'js': {'options': dict(output='app-%(version)s.min.js')},
-      }
+    }
 
     for http_error_code in (403, 404, 500):
       self.install_default_handler(http_error_code)
@@ -216,14 +225,18 @@ class Application(Flask, ServiceManager, PluginManager):
           self.start_services()
 
   def _setup_breadcrumbs(self, app=None):
-    """Listener for `request_started` event. If you want to customize first
-    items of breadcrumbs override :meth:`init_breadcrumbs`
+    """
+    Listener for `request_started` event.
+
+    If you want to customize first items of breadcrumbs, override
+    :meth:`init_breadcrumbs`
     """
     g.breadcrumb = []
     self.init_breadcrumbs()
 
   def init_breadcrumbs(self):
-    """Insert the first element in breadcrumbs.
+    """
+    Inserts the first element in breadcrumbs.
 
     This happens during `request_started` event, which is triggered before any
     url_value_preprocessor and `before_request` handlers.
@@ -232,8 +245,8 @@ class Application(Flask, ServiceManager, PluginManager):
                                        url=u'/' + request.script_root))
 
   def check_instance_folder(self, create=False):
-    """ Verify instance folder exists, is a directory, and has necessary
-    permissions
+    """
+    Verifies instance folder exists, is a directory, and has necessary permissions.
 
     :param:create: if `True`, creates directory hierarchy
 
@@ -285,7 +298,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
   def setup_logging(self):
     self.logger # force flask to create application logger before logging
-                # configuration; else, flask will overwrite our settings
+    # configuration; else, flask will overwrite our settings
 
     logging_file = self.config.get('LOGGING_CONFIG_FILE')
     if logging_file:
@@ -317,7 +330,8 @@ class Application(Flask, ServiceManager, PluginManager):
         DebugToolbarExtension(self)
 
   def init_extensions(self):
-    """ Initialize flask extensions, helpers and services
+    """
+    Initializes flask extensions, helpers and services.
     """
     self.init_debug_toolbar()
     extensions.mail.init_app(self)
@@ -326,21 +340,24 @@ class Application(Flask, ServiceManager, PluginManager):
     # webassets
     self._setup_asset_extension()
     self._register_base_assets()
+
     # Babel (for i18n)
     abilian.i18n.babel.init_app(self)
     abilian.i18n.babel.add_translations('abilian')
     abilian.i18n.babel.localeselector(get_locale)
     abilian.i18n.babel.timezoneselector(get_timezone)
 
+    # Abilian Core services
     auth_service.init_app(self)
     security_service.init_app(self)
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)
 
+    # Admin interface
     Admin().init_app(self)
 
-    # celery async service
+    # Celery async service
     extensions.celery.config_from_object(self.config)
 
     # dev helper
@@ -356,7 +373,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
 
   def register_plugins(self):
-    """ Load plugins listed in config variable 'PLUGINS'
+    """
+    Loads plugins listed in config variable 'PLUGINS'.
     """
     registered = set()
     for plugin_fqdn in chain(self.APP_PLUGINS, self.config['PLUGINS']):
@@ -370,11 +388,12 @@ class Application(Flask, ServiceManager, PluginManager):
 
     logger.info('Application is not configured, installing setup wizard')
     from abilian.web import setupwizard
+
     self.register_blueprint(setupwizard.setup, url_prefix='/setup')
 
   def add_static_url(self, url_path, directory, endpoint=None):
     """
-    adds a new url rule for static files
+    Adds a new url rule for static files.
 
     :param endpoint: flask endpoint name for this url rule.
     :param url: subpath from application static url path. No heading or trailing
@@ -426,7 +445,8 @@ class Application(Flask, ServiceManager, PluginManager):
     return options
 
   def register_jinja_loaders(self, *loaders):
-    """ Register one or many `jinja2.Loader` instances for templates lookup.
+    """
+    Registers one or many `jinja2.Loader` instances for templates lookup.
 
     During application initialization plugins can register a loader so that
     their templates are available to jinja2 renderer.
@@ -448,8 +468,9 @@ class Application(Flask, ServiceManager, PluginManager):
 
   @locked_cached_property
   def jinja_loader(self):
-    """ Search templates in custom app templates dir (default flask behaviour),
-    fallback on abilian templates
+    """
+    Searches templates in custom app templates dir (default flask behaviour),
+    fallback on abilian templates.
     """
     loaders = self._jinja_loaders
     del self._jinja_loaders
@@ -481,14 +502,16 @@ class Application(Flask, ServiceManager, PluginManager):
     return Flask.handle_exception(self, e)
 
   def log_exception(self, exc_info):
-    """ Log exception only if sentry is not installed (this avoids getting error
-    twice in sentry)
+    """
+    Log exception only if sentry is not installed (this avoids getting error
+    twice in sentry).
     """
     if 'sentry' not in self.extensions:
       super(Application, self).log_exception(exc_info)
 
   def init_sentry(self):
-    """ Installs Sentry handler if config defines 'SENTRY_DSN'.
+    """
+    Installs Sentry handler if config defines 'SENTRY_DSN'.
     """
     if self.config.get('SENTRY_DSN', None):
       try:
@@ -507,10 +530,12 @@ class Application(Flask, ServiceManager, PluginManager):
 
   def create_db(self):
     from abilian.core.subjects import User
+
     with self.app_context():
       db.create_all()
       if User.query.get(0) is None:
-        root = User(id=0, last_name=u'SYSTEM', email=u'system@example.com', can_login=False)
+        root = User(id=0, last_name=u'SYSTEM', email=u'system@example.com',
+                    can_login=False)
         db.session.add(root)
         db.session.commit()
 
@@ -532,12 +557,15 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # setup static url for our assets
     from abilian.web import assets as core_bundles
+
+
     assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
-    self.add_static_url('abilian', core_bundles.RESOURCES_DIR, endpoint='abilian_static',)
+    self.add_static_url('abilian', core_bundles.RESOURCES_DIR,
+                        endpoint='abilian_static', )
 
     # static minified are here
     assets.url = self.static_url_path + '/min'
-    self.add_static_url('min', assets_dir, endpoint='webassets_static',)
+    self.add_static_url('min', assets_dir, endpoint='webassets_static', )
 
   def _finalize_assets_setup(self):
     assets = self.extensions['webassets']
@@ -550,7 +578,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
 
   def register_asset(self, type_, asset):
-    """ Registers webassets bundle to be served on all pages
+    """
+    Registers webassets bundle to be served on all pages.
 
     :param type_: `"css"`, `"js-top"` or `"js""`.
     :param asset: a `webassets.Bundle
@@ -570,17 +599,22 @@ class Application(Flask, ServiceManager, PluginManager):
     self._assets_bundles[type_].setdefault('bundles', []).append(asset)
 
   def _register_base_assets(self):
-    """Register assets needed by Abilian. This is done in a separate method in
+    """
+    Registers assets needed by Abilian. This is done in a separate method in
     order to allow applications to redefins it at will.
     """
     from abilian.web import assets as bundles
+
+
     debug = self.config.get('DEBUG')
     self.register_asset('css', bundles.CSS if not debug else bundles.CSS_DEBUG)
-    self.register_asset('js-top', bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG)
+    self.register_asset('js-top',
+                        bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG)
     self.register_asset('js', bundles.JS if not debug else bundles.JS_DEBUG)
 
   def install_default_handler(self, http_error_code):
-    """ Installs a default error handler for `http_error_code`.
+    """
+    Installs a default error handler for `http_error_code`.
 
     The default error handler renders a template named error404.html for
     http_error_code 404.
@@ -591,7 +625,8 @@ class Application(Flask, ServiceManager, PluginManager):
     self.errorhandler(http_error_code)(handler)
 
   def handle_http_error(self, code, error):
-    """ Helper that renders error{code}.html
+    """
+    Helper that renders `error{code}.html`.
 
     Convenient way to use it::
 
@@ -602,7 +637,7 @@ class Application(Flask, ServiceManager, PluginManager):
     if (code / 100) == 5:
       # 5xx code: error on server side
       db.session.rollback() # ensure rollback if needed, else error page may
-                            # have an error, too, resulting in raw 500 page :-()
+      # have an error, too, resulting in raw 500 page :-()
 
     template = 'error{:d}.html'.format(code)
     return render_template(template, error=error), code
@@ -620,10 +655,12 @@ def get_locale():
     locale = getattr(user, 'locale', None)
     if locale:
       return locale
-  # otherwise try to guess the language from the user accept
+
+  # Otherwise, try to guess the language from the user accept
   # header the browser transmits.  We support de/fr/en in this
   # example.  The best match wins.
   return request.accept_languages.best_match(['en', 'fr'])
+
 
 def get_timezone():
   return LOCALTZ
