@@ -15,11 +15,13 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, mapper, Session
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, DateTime, String
+from sqlalchemy.types import Integer, DateTime, String, UnicodeText
 from sqlalchemy import event
 
+from whoosh.fields import ID
+
 from .extensions import db
-from .util import memoized
+from .util import memoized, fqcn
 
 
 __all__ = ['Entity', 'all_entity_classes', 'db', 'ValidationError']
@@ -96,13 +98,34 @@ event.listen(mapper, 'before_delete', before_delete_listener)
 
 
 class IdMixin(object):
-  id = Column(Integer, primary_key=True, info=SYSTEM)
+  id = Column(Integer, primary_key=True, info=SYSTEM|SEARCHABLE)
+
+
+class Indexable(object):
+  """
+  Mixin with sensible defaults for indexable objects.
+  """
+  __indexation_args__ = {
+    'searchable': True,
+    'index_to': (('object_type', (('object_type',
+                                   ID(stored=True, unique=False)),)),
+                 ),
+    }
+
+  @classmethod
+  def _object_type(cls):
+    return fqcn(cls)
+
+  @property
+  def object_type(self):
+    return self._object_type
 
 
 class TimestampedMixin(object):
-  created_at = Column(DateTime, default=datetime.utcnow, info=SYSTEM)
-  updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
-                      info=SYSTEM)
+  created_at = Column(DateTime, default=datetime.utcnow, info=SYSTEM|SEARCHABLE)
+  updated_at = Column(DateTime, default=datetime.utcnow,
+                      onupdate=datetime.utcnow,
+                      info=SYSTEM|SEARCHABLE)
   deleted_at = Column(DateTime, default=None, info=SYSTEM)
 
 
@@ -122,7 +145,8 @@ class OwnedMixin(object):
   @declared_attr
   def creator(cls):
     pj = "User.id == %s.creator_id" % cls.__name__
-    return relationship("User", primaryjoin=pj, lazy='joined', uselist=False)
+    return relationship("User", primaryjoin=pj, lazy='joined', uselist=False,
+                        info=SYSTEM|SEARCHABLE)
 
   @declared_attr
   def owner_id(cls):
@@ -131,7 +155,8 @@ class OwnedMixin(object):
   @declared_attr
   def owner(cls):
     pj = "User.id == %s.owner_id" % cls.__name__
-    return relationship("User", primaryjoin=pj, lazy='joined', uselist=False)
+    return relationship("User", primaryjoin=pj, lazy='joined', uselist=False,
+                        info=SYSTEM|SEARCHABLE)
 
 
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
@@ -200,7 +225,8 @@ class _EntityInherit(object):
     return Column(
       Integer,
       ForeignKey('entity.id', use_alter=True, name='fk_inherited_entity_id'),
-      primary_key=True)
+      primary_key=True,
+      info=SYSTEM|SEARCHABLE)
 
   @declared_attr
   def __mapper_args__(cls):
@@ -216,7 +242,7 @@ class EntityMeta(BaseMeta):
   Metaclass for Entities. It properly sets-up subclasses by adding
   _EntityInherit to `__bases__`.
 
-  `_EntityInherit` provides `id` attibute and `__mapper_args__`.
+  `_EntityInherit` provides `id` attibute and `__mapper_args__`
   """
 
   def __new__(mcs, classname, bases, d):
@@ -235,7 +261,7 @@ class EntityMeta(BaseMeta):
     BaseMeta.__init__(cls, classname, bases, d)
 
 
-class Entity(BaseMixin, db.Model):
+class Entity(Indexable, BaseMixin, db.Model):
   """
   Base class for Abilian entities.
 
@@ -247,8 +273,14 @@ class Entity(BaseMixin, db.Model):
   __metaclass__ = EntityMeta
   __mapper_args__ = {'polymorphic_on': '_entity_type'}
 
+  name = Column('name', UnicodeText(), info=EDITABLE|SEARCHABLE)
+
   _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None
+
+  @property
+  def object_type(self):
+    return unicode(self.entity_type)
 
   @property
   def entity_class(self):
@@ -272,7 +304,6 @@ class Entity(BaseMixin, db.Model):
 def register_metadata(cls):
   #print "register_metadata called for class", cls
   cls.__editable__ = set()
-  cls.__searchable__ = set()
 
   # TODO: use SQLAlchemy 0.8 introspection
   if hasattr(cls, '__table__'):
@@ -286,8 +317,6 @@ def register_metadata(cls):
 
     if info.get("editable", True):
       cls.__editable__.add(name)
-    if info.get('searchable', False):
-      cls.__searchable__.add(name)
 
 
 @event.listens_for(Session, 'before_flush')

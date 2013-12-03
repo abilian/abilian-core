@@ -9,11 +9,9 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :copyright: (c) 2012 by Karl Gyllstrom
 :license: BSD (see LICENSE.txt)
 """
+import os
+from shutil import rmtree
 
-# TODO: not sure that one index per class is the way to go.
-# TODO: speed issue
-# TODO: this is a singleton. makes tests hard (for instance, launching parallel tests).
-# TODO: make asynchonous.
 import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
@@ -23,33 +21,49 @@ from whoosh import sorting
 from whoosh.writing import AsyncWriter
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import StemmingAnalyzer, CharsetFilter
-from whoosh.fields import Schema
+import whoosh.query as wq
+from whoosh import sorting
 from whoosh.support.charset import accent_map
 
-from flask import current_app
+from flask import (
+    current_app,
+    _app_ctx_stack, appcontext_pushed,
+)
+from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
+from abilian.core.util import fqcn
 from abilian.core.entities import all_entity_classes
 from abilian.core.extensions import celery, db
 
-import os
-from shutil import rmtree
+from .adapter import SchemaAdapter, SAAdapter
+from .schema import DefaultSearchSchema
 
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
+_pending_indexation_attr = 'abilian_pending_indexation'
+
 class IndexServiceState(ServiceState):
   whoosh_base = None
-  # FIXME: to_update should be on an app_context object for isolation between
-  # concurrent requests on threaded servers
-  to_update = None
   indexes = None
   indexed_classes = None
 
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
-    self.to_update = {}
     self.indexes = {}
     self.indexed_classes = set()
+
+  @property
+  def to_update(self):
+    return _lookup_app_object(_pending_indexation_attr)
+
+  @to_update.setter
+  def to_update(self, value):
+    top = _app_ctx_stack.top
+    if top is None:
+        raise RuntimeError('working outside of application context')
+
+    setattr(top, _pending_indexation_attr, value)
 
 
 class WhooshIndexService(Service):
@@ -57,6 +71,12 @@ class WhooshIndexService(Service):
   AppStateClass = IndexServiceState
 
   _listening = False
+
+  def __init__(self, *args, **kwargs):
+    Service.__init__(self, *args, **kwargs)
+    self.adapters_cls = [SAAdapter]
+    self.adapted = {}
+    self.schemas = { 'default': DefaultSearchSchema() }
 
   def init_app(self, app):
     Service.init_app(self, app)
@@ -73,19 +93,37 @@ class WhooshIndexService(Service):
 
     if not self._listening:
       event.listen(Session, "after_flush", self.after_flush)
-      event.listen(Session, "after_flush_postexec", self.after_flush_postexec)
       event.listen(Session, "after_commit", self.after_commit)
       self._listening = True
 
-    app.before_request(self.clear_update_queue)
+    appcontext_pushed.connect(self.clear_update_queue, app)
 
-  def clear_update_queue(self):
-    self.app_state.to_update = {}
+  def clear_update_queue(self, app=None):
+    self.app_state.to_update = []
 
   def start(self):
     Service.start(self)
     self.register_classes()
+    self.init_indexes()
     self.clear_update_queue()
+
+  def init_indexes(self):
+    """
+    Create indexes for schemas.
+    """
+    state = self.app_state
+
+    for name, schema in self.schemas.iteritems():
+      index_path = os.path.join(state.whoosh_base, name)
+
+      if whoosh.index.exists_in(index_path):
+        index = whoosh.index.open_dir(index_path)
+      else:
+        if not os.path.exists(index_path):
+          os.makedirs(index_path)
+        index = whoosh.index.create_in(index_path, schema)
+
+      state.indexes[name] = index
 
   def clear(self):
     current_app.logger.info("Resetting indexes")
@@ -104,32 +142,60 @@ class WhooshIndexService(Service):
     state.indexed_classes = set()
     self.clear_update_queue()
 
-  def search(self, query, cls=None, limit=10, filter=None):
-    if cls:
-      return self.search_for_class(query, cls, limit, filter)
+  def search(self, q, index='default', Models=(), get_models=False, **search_args):
+    """
+    Interface to search indexes.
 
-    else:
-      res = []
-      for indexed_class in self.app_state.indexed_classes:
-        searcher = indexed_class.search_query
-        res += searcher.search(query, limit)
-      return res
+    :param q: unparsed search string.
+    :param index: name of index to use for search.
+    :param Models: list of Model classes to limit search on.
+    :param limit: maximum number of results.
+    :param search_args: any valid parameter for
+        :meth:`whoosh.searching.Search.search`.
+    """
+    index = self.app_state.indexes[index]
+    fields = set(index.schema.names()) - set(['id'])
+    if Models:
+      fields.discard('object_type')
 
-  def search_for_class(self, query, cls, limit=50, filter=None):
-    index = self.app_state.indexes[cls.__name__]
-    searcher = index.searcher()
-    fields = set(index.schema._fields.keys()) - set(['id'])
     parser = MultifieldParser(list(fields), index.schema)
+    query = parser.parse(q)
 
-    facets = sorting.Facets()
-    facets.add_field("language")
-    facets.add_field("mime_type")
-    facets.add_field("creator")
-    facets.add_field("owner")
+    if Models:
+      # limit object_type
+      filtered_models = []
+      for m in Models:
+        object_type = m.object_type
+        if not object_type:
+          continue
+        filtered_models.append(wq.Term('object_type', object_type))
 
-    results = searcher.search(parser.parse(query),
-                              groupedby=facets, limit=limit, filter=filter)
+      if filtered_models:
+        filtered_models = (wq.Or(*filtered_models)
+                           if len(filtered_models) > 1
+                           else filtered_models[0])
+        query = wq.And(query, filtered_models)
+
+    with index.searcher(closereader=False) as searcher:
+      # 'closereader' is needed, else results cannot by used outside 'with'
+      # statement
+      results = searcher.search(query, **search_args)
+
+      if get_models:
+        # FIXME: get_models is not a good idea in the general case (inefficient,
+        # potentially many results), search results should be self-sufficients
+        res = []
+        for r in results:
+          adapter = self.adapted.get(r['object_type'])
+          if adapter:
+            r.model = adapter.retrieve(r['id'])
+            res.append(r)
+        results = res
+
     return results
+
+  def search_for_class(self, query, cls, index='default', **search_args):
+    return self.search(query, Models=(cls,), index=index, **search_args)
 
   def register_classes(self):
     state = self.app_state
@@ -139,86 +205,38 @@ class WhooshIndexService(Service):
 
   def register_class(self, cls, app_state=None):
     """
-    Registers a model class, by creating the necessary Whoosh index if needed.
+    Registers a model class
     """
     state = app_state if app_state is not None else self.app_state
+
+    for Adapter in self.adapters_cls:
+      if Adapter.can_adapt(cls):
+        break
+    else:
+      return
+
+    self.adapted[fqcn(cls)] = Adapter(cls, self.schemas['default'])
     state.indexed_classes.add(cls)
-    index_path = os.path.join(state.whoosh_base, cls.__name__)
-
-    if hasattr(cls, 'whoosh_schema'):
-      schema = cls.whoosh_schema
-      primary = 'id'
-    else:
-      schema, primary = self._get_whoosh_schema_and_primary(cls)
-      cls.whoosh_schema = schema
-
-    if whoosh.index.exists_in(index_path):
-      index = whoosh.index.open_dir(index_path)
-    else:
-      if not os.path.exists(index_path):
-        os.makedirs(index_path)
-      index = whoosh.index.create_in(index_path, schema)
-
-    state.indexes[cls.__name__] = index
-    # FIXME: search_query should be a property to return Searcher for
-    # current_app ('index' is specific to current_app)
-    cls.search_query = Searcher(cls, primary, index)
-    return index
-
-  def index_for_model_class(self, cls):
-    """
-    Gets the whoosh index for this model, creating one if it does not exist.
-    in creating one, a schema is created based on the fields of the model.
-    Currently we only support primary key -> whoosh.ID, and sqlalchemy.TEXT
-    -> whoosh.TEXT, but can add more later. A dict of model -> whoosh index
-    is added to the ``app`` variable.
-    """
-    index = self.app_state.indexes.get(cls.__name__)
-    if index is None:
-      index = self.register_class(cls)
-    return index
-
-  def _get_whoosh_schema_and_primary(self, cls):
-    schema = {}
-    primary = None
-
-    for field in cls.__table__.columns:
-      if field.primary_key:
-        schema[field.name] = whoosh.fields.ID(stored=True, unique=True)
-        primary = field.name
-      if field.name in cls.__searchable__:
-        if type(field.type) in (sa.types.Text, sa.types.UnicodeText):
-          schema[field.name] = whoosh.fields.TEXT(analyzer=_TEXT_ANALYZER)
-
-    return Schema(**schema), primary
 
   def after_flush(self, session, flush_context):
     if not self.running or session is not db.session():
       return
 
     to_update = self.app_state.to_update
-    def get_queue_for(cls_name):
-      return to_update.setdefault(cls_name, [])
+    session_objs = (
+      ('new', session.new),
+      ('deleted', session.deleted),
+      ('changed', session.dirty),
+    )
+    for key, objs in session_objs:
+      for obj in objs:
+        model_name = fqcn(obj.__class__)
+        adapter = self.adapted.get(model_name)
 
-    for model in session.new:
-      model_class = model.__class__
+        if adapter is None or not adapter.indexable:
+          continue
 
-      if hasattr(model_class, '__searchable__'):
-        get_queue_for(model_class.__name__).append(("new", model))
-
-    for model in session.deleted:
-      model_class = model.__class__
-      if hasattr(model_class, '__searchable__'):
-        get_queue_for(model_class.__name__).append(("deleted", model))
-
-    for model in session.dirty:
-      model_class = model.__class__
-      if hasattr(model_class, '__searchable__'):
-        get_queue_for(model_class.__name__).append(("changed", model))
-
-  def after_flush_postexec(self, session, flush_context):
-    #self.after_commit(session)
-    pass
+        to_update.append((key, obj))
 
   def after_commit(self, session):
     """
@@ -230,23 +248,19 @@ class WhooshIndexService(Service):
     if not self.running or session is not db.session():
       return
 
+    primary_field = 'id'
     state = self.app_state
-    for cls_name, values in state.to_update.iteritems():
-      model_class = values[0][1].__class__
-      assert model_class.__name__ == cls_name
-
-      if (model_class not in state.indexed_classes
-          or not hasattr(model_class, '__searchable__')):
+    items = []
+    for op, obj in state.to_update:
+      model_name = fqcn(obj.__class__)
+      if model_name not in self.adapted or not self.adapted[model_name].indexable:
         # safeguard
         continue
 
-      primary_field = model_class.search_query.primary
-      values = [(op, getattr(model, primary_field))
-                for op, model in values
-                # safeguard against DetachedInstanceError
-                if sa.orm.object_session(model) is not None]
-      index_update.apply_async(kwargs=dict(class_name=cls_name, items=values))
+      if sa.orm.object_session(obj) is not None: # safeguard against DetachedInstanceError
+        items.append((op, model_name, getattr(obj, primary_field), {}))
 
+    index_update.apply_async(kwargs=dict(index='default', items=items))
     self.clear_update_queue()
 
   def index_objects(self, objects):
@@ -297,25 +311,6 @@ class Searcher(object):
     fields = set(index.schema._fields.keys()) - set([self.primary])
     self.parser = MultifieldParser(list(fields), schema=index.schema)
 
-  def __call__(self, query, limit=None):
-    """
-    Original WhooshAlchemy API: allows chaining search queries with SQL
-    filtering.
-
-    Not used anymore for performance reasons, but may still be
-    useful in some circumstances.
-    """
-    session = self.model_class.query.session
-
-    results = self.index.searcher().search(self.parser.parse(query), limit=limit)
-    keys = [x[self.primary] for x in results]
-    primary_column = getattr(self.model_class, self.primary)
-    if not keys:
-      # Dummy request...
-      return session.query(self.model_class).filter(primary_column == -1)
-    else:
-      return session.query(self.model_class).filter(primary_column.in_(keys))
-
   def search(self, query, limit=None, get_models=False):
     """
     Returns a standard Whoosh search query result set. Optionally, if
@@ -361,44 +356,46 @@ service = WhooshIndexService()
 
 
 @celery.task(ignore_result=True)
-def index_update(class_name, items):
-  """ items: dict of model class name => list of (operation, primary key)
+def index_update(index, items):
   """
-  cls_registry = dict([(cls.__name__, cls)
-                       for cls in service.app_state.indexed_classes])
-  model_class = cls_registry.get(class_name)
+  :param:index: index name
+  :param:items: list of (operation, model key, primary key, data) tuples.
+  """
+  index_name = index
+  index = service.app_state.indexes[index_name]
+  adapted = service.adapted
+  # indexed_fields = index.schema.names()
 
-  if model_class is None:
-    raise ValueError("Invalid class: {}".format(class_name))
-
-  index = service.index_for_model_class(model_class)
-  primary_field = model_class.search_query.primary
-  indexed_fields = model_class.whoosh_schema.names()
-
+  primary_field = 'id'
   session = Session(bind=db.session.get_bind(None, None))
-  query = session.query(model_class)
 
   with AsyncWriter(index) as writer:
-    for change_type, model_pk in items:
-      if model_pk is None:
+    for op, cls_name, pk, data in items:
+      if pk is None:
         continue
       # delete everything. stuff that's updated or inserted will get
       # added as a new doc. Could probably replace this with a whoosh
       # update.
-      writer.delete_by_term(primary_field, unicode(model_pk))
+      writer.delete_by_term(primary_field, pk)
 
-      if change_type in ("new", "changed"):
-        model = query.get(model_pk)
-        if model is None:
+      adapter = adapted.get(cls_name)
+      if not adapter:
+        # FIXME: log to sentry?
+        continue
+
+      if op in ("new", "changed"):
+        obj = adapter.retrieve(pk, _session=session, **data)
+        if obj is None:
           # deleted after task queued, but before task run
           continue
 
-        # Hack: Load lazy fields
-        # This prevents a transaction error in make_document
-        for key in indexed_fields:
-          getattr(model, key)
+        # # Hack: Load lazy fields
+        # # This prevents a transaction error in get_document
+        # # FIXME: really required?
+        # for key in indexed_fields:
+        #   getattr(obj, key, None)
 
-        document = service.make_document(model, indexed_fields, primary_field)
+        document = adapter.get_document(obj)
         writer.add_document(**document)
 
   session.close()
