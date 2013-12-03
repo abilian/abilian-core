@@ -26,4 +26,4 @@ class DefaultSearchSchema(SchemaClass):
 
   name = TEXT(stored=True, analyzer=accent_folder)
   description = TEXT(stored=True, analyzer=accent_folder)
-  text = TEXT(stored=True, analyzer=accent_folder)
+  text = TEXT(stored=False, analyzer=accent_folder)
