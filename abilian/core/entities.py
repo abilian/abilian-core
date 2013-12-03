@@ -31,11 +31,16 @@ class Info(dict):
     for k, v in kw.items():
       self[k] = v
 
+  def copy(self):
+    # dict.copy would return an instance of dict
+    return self.__class__(**self)
+
   def __add__(self, other):
     d = self.copy()
-    for k, v in other.items():
-      d[k] = v
+    d.update(other)
     return d
+
+  __or__ = __add__
 
 
 EDITABLE = Info(editable=True)
