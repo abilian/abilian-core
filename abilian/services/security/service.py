@@ -411,7 +411,9 @@ class SecurityService(Service):
 
   @require_flush
   def get_role_assignements(self, object):
-    q = RoleAssignment.query
+    session = object_session(object) if object is not None else db.session
+    q = session.query(RoleAssignment)
+
     object_str = "%s:%s" % (object.__class__.__name__, object.id)
     q = q.filter(RoleAssignment.object == object_str)\
          .options(subqueryload('user.groups'))
