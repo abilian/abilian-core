@@ -33,7 +33,7 @@ from abilian.web.action import actions
 from abilian.web.views import Registry as ViewRegistry
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.filters import init_filters
-from abilian.web.util import send_file_from_directory
+from abilian.web.util import send_file_from_directory, url_for
 from abilian.web.admin import Admin
 from abilian.plugin.loader import AppLoader
 from abilian.services import (audit_service, index_service, activity_service,
@@ -415,7 +415,9 @@ class Application(Flask, ServiceManager, PluginManager):
                       view_func=partial(send_file_from_directory,
                                         directory=directory))
 
-  # Jinja setup
+  #
+  # Templating and context injection setup
+  #
   def create_jinja_environment(self):
     env = Flask.create_jinja_environment(self)
     env.globals.update(
@@ -477,6 +479,11 @@ class Application(Flask, ServiceManager, PluginManager):
     loaders.append(Flask.jinja_loader.func(self))
     loaders.reverse()
     return jinja2.ChoiceLoader(loaders)
+
+  def setup_context_processor(self):
+    @self.context_processor
+    def inject():
+      return dict(url_for=url_for)
 
   # Error handling
   def handle_user_exception(self, e):

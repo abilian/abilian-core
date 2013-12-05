@@ -19,7 +19,7 @@
       </thead>
       {% for session in sessions %}
         <tr>
-          <td>{{ session.user.name }}</a>
+          <td><a href="{{ url_for(session.user) }}">{{ session.user.name }}</a>
           </td>
           <td>{{ local_dt(session.started_at) | datetimeformat(format='short') }}</td>
           <td>{%- if session.ended_at %}

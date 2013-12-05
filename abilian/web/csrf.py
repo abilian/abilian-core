@@ -1,6 +1,6 @@
 # coding=utf-8
 from functools import wraps
-from werkzeug.exceptions import Forbidden as HTTPForbidden
+from werkzeug.exceptions import Forbidden
 from flask.ext.wtf import Form
 
 
@@ -36,7 +36,7 @@ def protect(view):
   def csrf_check(*args, **kwargs):
     # an empty form is used to validate current csrf token and only that!
     if not Form().validate():
-      raise HTTPForbidden('CSRF validation failed.')
+      raise Forbidden('CSRF validation failed.')
 
     return view(*args, **kwargs)
   return csrf_check

@@ -25,7 +25,7 @@ from wtforms_alchemy import ModelFieldList
 
 from abilian.core.entities import Entity
 from abilian.web.filters import labelize, babel2datepicker
-from abilian.web import csrf
+from abilian.web import csrf, url_for
 from .util import babel2datetime
 
 
@@ -183,10 +183,10 @@ class BaseTableView(object):
       if column_name == make_link_on or column_name == '_name' or \
          col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'\
-                      % (entity._url, cgi.escape(unicode(value))))
+                      % (url_for(entity), cgi.escape(unicode(value))))
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'\
-                      % (value._url, cgi.escape(value._name)))
+                      % (url_for(value), cgi.escape(value._name)))
       elif isinstance(value, basestring) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
@@ -304,16 +304,16 @@ class AjaxMainTableView(object):
 
       if column_name == '_name':
         cell = Markup('<a href="%s">%s</a>'\
-                      % (entity._url, cgi.escape(value)))
+                      % (url_for(entity), cgi.escape(value)))
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'\
-                      % (value._url, cgi.escape(value._name)))
+                      % (url_for(value), cgi.escape(value._name)))
       elif isinstance(value, basestring)\
         and (value.startswith("http://") or value.startswith("www.")):
           cell = Markup(linkify_url(value))
       elif col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'\
-                      % (entity._url, cgi.escape(unicode(value))))
+                      % (url_for(entity), cgi.escape(unicode(value))))
       else:
         cell = unicode(value)
 
@@ -772,7 +772,7 @@ class DateTimeWidget(DateWidget):
 class EntityWidget(object):
   def render_view(self, field):
     obj = field.object_data
-    return (u'<a href="{}">{}</a>'.format(obj._url, cgi.escape(obj._name))
+    return (u'<a href="{}">{}</a>'.format(url_for(obj), cgi.escape(obj._name))
             if obj else u'')
 
 

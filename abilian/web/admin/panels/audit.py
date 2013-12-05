@@ -297,7 +297,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
     entity = u''
     if e.object:
       entity = render(
-        u'<a href="{{ entity._url }}">{{ entity.path or entity._name }}</a>',
+        u'<a href="{{ url_for(entity) }}">{{ entity.path or entity._name }}</a>',
         entity=self.object)
 
       if e.op == e.SET_INHERIT:

@@ -15,7 +15,7 @@ all: test doc
 # testing & checking
 #
 test:
-	py.test -x $(PKG) tests
+	py.test $(PKG) tests
 
 test-with-coverage:
 	py.test --cov $(PKG) --cov-config etc/coverage.rc \

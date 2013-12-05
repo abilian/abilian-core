@@ -77,7 +77,7 @@ def login_post():
 
   # Login successful
   login_user(user)
-  return redirect_back(request.url_root)
+  return redirect_back(url=request.url_root)
 
 
 @route("/logout", methods=['GET', 'POST'])
@@ -279,7 +279,6 @@ def send_mail(subject, recipient, template, **context):
   mail.send(msg)
 
 
-
 #
 # Logging
 #
@@ -307,12 +306,14 @@ def is_safe_url(target):
   return test_url.scheme in ('http', 'https') and \
     ref_url.netloc == test_url.netloc
 
+
 def get_redirect_target():
   for target in (request.values.get('next'), request.referrer):
     if not target:
       continue
     if is_safe_url(target):
       return target
+
 
 def redirect_back(endpoint=None, url=None, **values):
   target = request.form.get('next')
