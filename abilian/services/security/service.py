@@ -23,9 +23,10 @@ from abilian.core.subjects import User, Group, Principal
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.services import Service, ServiceState
-from abilian.services.security.models import SecurityAudit, RoleAssignment, \
+from abilian.services.security.models import (
+  SecurityAudit, RoleAssignment, Anonymous,
   InheritSecurity
-
+)
 
 def noproxy(obj):
   """ Unwrap obj from werkzeug.local.LocalProxy if needed. This is required if
@@ -103,8 +104,7 @@ class SecurityService(Service):
   @require_flush
   def entries_for(self, obj, limit=20):
     assert isinstance(obj, Entity)
-    object_str = "%s:%s" % (obj.__class__.__name__, obj.id)
-    return SecurityAudit.query.filter(SecurityAudit.object == object_str)\
+    return SecurityAudit.query.filter(SecurityAudit.object == obj)\
       .order_by(SecurityAudit.happened_at.desc())\
       .limit(limit)
 
@@ -114,7 +114,6 @@ class SecurityService(Service):
     """
     assert isinstance(obj, InheritSecurity)
     assert isinstance(obj, Entity)
-    object_str = "%s:%s" % (obj.__class__.__name__, obj.id)
 
     obj.inherit_security = inherit_security
     db.session.add(obj)
@@ -122,7 +121,7 @@ class SecurityService(Service):
     manager = self._current_user_manager()
     op = (SecurityAudit.SET_INHERIT if inherit_security
           else SecurityAudit.UNSET_INHERIT)
-    audit = SecurityAudit(manager=manager, op=op, object=object_str)
+    audit = SecurityAudit(manager=manager, op=op, object=obj)
     db.session.add(audit)
     self._needs_flush()
 
@@ -136,17 +135,17 @@ class SecurityService(Service):
     """
     assert user
 
-    q = RoleAssignment.query
-    q = q.filter(RoleAssignment.user_id == user.id)
+    q = db.session.query(RoleAssignment.role)
+    q = q.filter(RoleAssignment.user == user)
     if object:
       assert isinstance(object, Entity)
-      object_str = "%s:%s" % (object.__class__.__name__, object.id)
-      q = q.filter(RoleAssignment.object == object_str)
-    ra_list = q.all()
-    return [ra.role for ra in ra_list]
+      q = q.filter(RoleAssignment.object == object)
+
+    return [i[0] for i in q.all()]
+
 
   @require_flush
-  def get_principals(self, role, users=True, groups=True,
+  def get_principals(self, role, anonymous=True, users=True, groups=True,
                      object=None):
     """ Return all users which are assigned given role
     """
@@ -156,21 +155,22 @@ class SecurityService(Service):
     assert (users or groups)
     q = RoleAssignment.query.filter_by(role=role)
 
+    if not Anonymous:
+      q = q.filter(RoleAssignment.anonymous == False)
     if not users:
       q = q.filter(RoleAssignment.user == None)
     elif not groups:
       q = q.filter(RoleAssignment.group == None)
 
-    if object:
-      assert isinstance(object, Entity)
-      object_str = "%s:%s" % (object.__class__.__name__, object.id)
-      q = q.filter(RoleAssignment.object == object_str)
+    q = q.filter(RoleAssignment.object == object)
 
     return [(ra.user or ra.group) for ra in q.all()]
 
   @require_flush
   def _all_roles(self, principal):
-    q = db.session.query(RoleAssignment.object, RoleAssignment.role)
+    q = db.session.query(RoleAssignment.object_id, RoleAssignment.role)\
+      .outerjoin(Entity)\
+      .add_columns(Entity._entity_type)
 
     if isinstance(principal, User):
       filter_cond = (RoleAssignment.user == principal)
@@ -182,7 +182,11 @@ class SecurityService(Service):
 
     results = q.all()
     all_roles = {}
-    for object_key, role in results:
+    for object_id, role, object_type in results:
+      if object_id is None:
+        object_key = None
+      else:
+        object_key = u'{}:{}'.format(object_type, object_id)
       all_roles.setdefault(object_key, set()).add(str(role))
 
     return all_roles
@@ -221,7 +225,7 @@ class SecurityService(Service):
     if not self.app_state.use_cache:
       return
 
-    q = RoleAssignment.query
+    q = db.session.query(RoleAssignment)
     users = set((u for u in principals if isinstance(u, User)))
     groups = set((g for g in principals if isinstance(g, Group)))
     groups |= set((g for u in users
@@ -254,7 +258,8 @@ class SecurityService(Service):
       else:
         all_roles = ra_groups.setdefault(ra.group, {})
 
-      all_roles.setdefault(ra.object, set()).add(str(ra.role))
+      object_key = u'{}:{:d}'.format(ra.object.entity_type, ra.object_id)
+      all_roles.setdefault(object_key, set()).add(str(ra.role))
 
     for group, all_roles in ra_groups.iteritems():
       self._set_role_cache(group, all_roles)
@@ -268,9 +273,9 @@ class SecurityService(Service):
 
       self._set_role_cache(user, all_roles)
 
-  def has_role(self, user_or_group, role, object=None):
+  def has_role(self, principal, role, object=None):
     """
-    True if `user_or_group` has `role` (either globally, if `object` is None, or on
+    True if `principal` has `role` (either globally, if `object` is None, or on
     the specific `object`).
 
     `role` can be a list or tuple of strings
@@ -282,18 +287,19 @@ class SecurityService(Service):
 
     Note2: caching could also be moved upfront to when the user is loaded.
     """
-    if not user_or_group:
+    if not principal:
       return False
 
-    user_or_group = noproxy(user_or_group)
+    principal = noproxy(principal)
     if not self.running:
       return True
 
-    if hasattr(user_or_group, 'is_anonymous') and user_or_group.is_anonymous():
+    if (principal is Anonymous
+        or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
       return False
 
     # root always have any role
-    if isinstance(user_or_group, User) and user_or_group.id == 0:
+    if isinstance(principal, User) and principal.id == 0:
       return True
 
     # admin & manager always have role
@@ -303,53 +309,52 @@ class SecurityService(Service):
 
     if object:
       assert isinstance(object, Entity)
-      object_str = "%s:%s" % (object.__class__.__name__, object.id)
+      object_key = u"{}:{:d}".format(object.object_type, object.id)
     else:
-      object_str = None
+      object_key = None
 
     if self.app_state.use_cache:
-      cache = self._fill_role_cache(user_or_group)
+      cache = self._fill_role_cache(principal)
 
       if 'admin' in cache.get(None, ()):
         # user is a global admin
         return True
 
-      if object_str in cache:
-        roles = cache[object_str]
+      if object_key in cache:
+        roles = cache[object_key]
         return len(valid_roles & roles) > 0
       return False
 
-    all_roles = self._all_roles(user_or_group)
+    all_roles = self._all_roles(principal)
 
     if 'admin' in all_roles.get(None, ()):
       # user is a global admin
       return True
 
-    roles = all_roles.get(object_str, set())
+    roles = all_roles.get(object_key, set())
     return len(valid_roles & roles) > 0
 
-  def grant_role(self, user_or_group, role, object=None):
+  def grant_role(self, principal, role, obj=None):
     """
-    Grants `role` to `user` (either globally, if `object` is None, or on
-    the specific `object`).
+    Grants `role` to `user` (either globally, if `obj` is None, or on
+    the specific `obj`).
     """
-    assert user_or_group
-    user_or_group = noproxy(user_or_group)
+    assert principal
+    principal = noproxy(principal)
     manager = self._current_user_manager()
-    session = object_session(object) if object is not None else db.session
+    session = object_session(obj) if obj is not None else db.session
 
-    if object:
-      assert isinstance(object, Entity)
-      object_str = "%s:%s" % (object.__class__.__name__, object.id)
+    args = dict(role=role, object=obj,
+                anonymous=False,
+                user=None, group=None)
+
+    if (principal is Anonymous
+        or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+      args['anonymous'] = True
+    elif isinstance(principal, User):
+      args['user'] = principal
     else:
-      object_str = None
-
-    args = dict(role=role, object=object_str)
-
-    if isinstance(user_or_group, User):
-      args['user'] = user_or_group
-    else:
-      args['group'] = user_or_group
+      args['group'] = principal
 
     if len(RoleAssignment.query.filter_by(**args).limit(1).all()) > 0:
       # role already granted, nothing to do
@@ -370,62 +375,67 @@ class SecurityService(Service):
     session.add(audit)
     self._needs_flush()
 
-    if hasattr(user_or_group, "__roles_cache__"):
-      del user_or_group.__roles_cache__
+    if hasattr(principal, "__roles_cache__"):
+      del principal.__roles_cache__
 
-  def ungrant_role(self, user_or_group, role, object=None):
+  def ungrant_role(self, principal, role, object=None):
     """
     Ungrants `role` to `user` (either globally, if `object` is None, or on
     the specific `object`).
     """
-    assert user_or_group
-    user_or_group = noproxy(user_or_group)
+    assert principal
+    principal = noproxy(principal)
     session = object_session(object) if object is not None else db.session
     manager = self._current_user_manager()
 
-    args = dict(role=role)
-    object_str = None
+    args = dict(role=role, object=object,
+                anonymous=False, user=None, group=None)
     q = session.query(RoleAssignment)
-    q = q.filter(RoleAssignment.role == role)
-    if isinstance(user_or_group, User):
-      args['user'] = user_or_group
-      q = q.filter(RoleAssignment.user_id == user_or_group.id)
-    else:
-      args['group'] = user_or_group
-      q = q.filter(RoleAssignment.group_id == user_or_group.id)
+    q = q.filter(RoleAssignment.role == role,
+                 RoleAssignment.object == object)
 
-    if object:
-      assert isinstance(object, Entity)
-      object_str = "%s:%s" % (object.__class__.__name__, object.id)
-      q = q.filter(RoleAssignment.object == object_str)
+    if (principal is Anonymous
+        or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+      args['anonymous'] = True
+      q.filter(RoleAssignment.anonymous == False,
+               RoleAssignment.user == None,
+               RoleAssignment.group == None)
+
+    elif isinstance(principal, User):
+      args['user'] = principal
+      q = q.filter(RoleAssignment.user == principal)
+    else:
+      args['group'] = principal
+      q = q.filter(RoleAssignment.group == principal)
 
     ra = q.one()
     session.delete(ra)
-    args['object'] = object_str
     audit = SecurityAudit(manager=manager, op=SecurityAudit.REVOKE, **args)
     session.add(audit)
     self._needs_flush()
 
-    if hasattr(user_or_group, "__roles_cache__"):
-      del user_or_group.__roles_cache__
+    if hasattr(principal, "__roles_cache__"):
+      del principal.__roles_cache__
 
   @require_flush
   def get_role_assignements(self, object):
     session = object_session(object) if object is not None else db.session
     q = session.query(RoleAssignment)
-
-    object_str = "%s:%s" % (object.__class__.__name__, object.id)
-    q = q.filter(RoleAssignment.object == object_str)\
+    q = q.filter(RoleAssignment.object == object)\
          .options(subqueryload('user.groups'))
 
     role_assignments = q.all()
 
     results = []
     for ra in role_assignments:
-      if ra.user_id:
-        results.append((ra.user, ra.role))
+      principal = None
+      if ra.anonymous:
+        principal = Anonymous
+      elif ra.user:
+        principal = ra.user
       else:
-        results.append((ra.group, ra.role))
+        principal = ra.group
+      results.append((principal, ra.role))
     return results
 
   #
