@@ -3,11 +3,16 @@
 """
 from __future__ import absolute_import
 
-from whoosh.analysis import CharsetFilter, RegexTokenizer, LowercaseFilter
+from whoosh.analysis import (
+    CharsetFilter, RegexTokenizer, LowercaseFilter,
+    PathTokenizer,
+    )
+
 from whoosh.support.charset import accent_map
+from whoosh.formats import Existence
 from whoosh.fields import (
-    SchemaClass,
-    ID, DATETIME, TEXT, NUMERIC
+    SchemaClass, FieldType,
+    ID, KEYWORD, DATETIME, TEXT, NUMERIC
     )
 
 #: A Whoosh analyzer that folds accents and case.
@@ -23,6 +28,14 @@ class DefaultSearchSchema(SchemaClass):
   updated_at = DATETIME(stored=True, sortable=True)
   creator = ID(stored=True)
   owner = ID(stored=True)
+
+  #: security index. This list roles and user/group ids allowed to *see* this
+  #: content
+  allowed_roles_and_users = KEYWORD(stored=True)
+
+  # hierarchical index of ids path ('/' is the separator)
+  parent_ids = FieldType(format=Existence(), analyzer=PathTokenizer(),
+                         stored=True, unique=False)
 
   name = TEXT(stored=True, analyzer=accent_folder)
   description = TEXT(stored=True, analyzer=accent_folder)
