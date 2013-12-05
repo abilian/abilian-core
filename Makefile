@@ -12,7 +12,7 @@ all: test doc
 # testing & checking
 #
 test:
-	py.test $(PKG) tests
+	py.test --tb=short $(PKG) tests
 
 test-with-coverage:
 	py.test --cov $(PKG) --cov-config etc/coverage.rc \
