@@ -367,7 +367,7 @@ def index_update(index, items):
   # indexed_fields = index.schema.names()
 
   primary_field = 'id'
-  session = Session(bind=db.session.get_bind(None, None))
+  session = Session(bind=db.session.get_bind(None, None), autocommit=True)
 
   with AsyncWriter(index) as writer:
     for op, cls_name, pk, data in items:
@@ -384,7 +384,9 @@ def index_update(index, items):
         continue
 
       if op in ("new", "changed"):
-        obj = adapter.retrieve(pk, _session=session, **data)
+        with session.begin():
+          obj = adapter.retrieve(pk, _session=session, **data)
+
         if obj is None:
           # deleted after task queued, but before task run
           continue
