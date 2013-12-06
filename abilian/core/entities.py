@@ -107,7 +107,9 @@ class Indexable(object):
   """
   __indexation_args__ = {
     'searchable': True,
-    'index_to': (('object_type', (('object_type',
+    'index_to': (('object_key', (('object_key',
+                                  ID(stored=True, unique=False)),)),
+                 ('object_type', (('object_type',
                                    ID(stored=True, unique=False)),)),
                  ),
     }
@@ -119,6 +121,10 @@ class Indexable(object):
   @property
   def object_type(self):
     return self._object_type
+
+  @property
+  def object_key(self):
+    return u'{}:{}'.format(self.object_type, self.id)
 
 
 class TimestampedMixin(object):
@@ -273,7 +279,8 @@ class Entity(Indexable, BaseMixin, db.Model):
   __metaclass__ = EntityMeta
   __mapper_args__ = {'polymorphic_on': '_entity_type'}
 
-  name = Column('name', UnicodeText(), info=EDITABLE|SEARCHABLE)
+  name = Column('name', UnicodeText(),
+                info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'text')))
 
   _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None

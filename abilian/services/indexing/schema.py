@@ -22,7 +22,8 @@ class DefaultSearchSchema(SchemaClass):
   """
   General search schema
   """
-  id = NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True)
+  object_key = ID(stored=True, unique=True)
+  id = NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=False)
   object_type = ID(stored=True, unique=False)
   created_at = DATETIME(stored=True, sortable=True)
   updated_at = DATETIME(stored=True, sortable=True)

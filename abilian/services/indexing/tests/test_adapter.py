@@ -61,11 +61,13 @@ class TestSAAdapter(TestCase):
     adapter = SAAdapter(Entity, schema)
     self.assertEquals(adapter.indexable, True)
     self.assertEquals(set(adapter.doc_attrs),
-                      set(('id', 'name', 'object_type', 'created_at', 'updated_at')))
+                      set(('object_key', 'id', 'name', 'object_type',
+                           'text', 'created_at', 'updated_at')))
     self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
 
     self.assertEquals(set(schema.names()),
-                      set(('id', 'object_type', 'name', 'created_at', 'updated_at')))
+                      set(('object_key', 'id', 'object_type', 'name',
+                           'text', 'created_at', 'updated_at')))
 
     schema = Schema(
       id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True),
@@ -92,6 +94,8 @@ class TestSAAdapter(TestCase):
     )
     obj = Entity(**expected)
     expected['object_type'] = u'None'
+    expected['object_key'] = u'None:2'
+    expected['text'] = u'entity'
     self.assertEquals(adapter.get_document(obj), expected)
 
     schema = Schema(
