@@ -320,12 +320,28 @@ class Application(Flask, ServiceManager, PluginManager):
         and self.config.get('DEBUG_TB_ENABLED')
         and 'debugtoolbar' not in self.blueprints):
       try:
-        from flask.ext.debugtoolbar import DebugToolbarExtension
+        from flask.ext.debugtoolbar import DebugToolbarExtension, DebugToolbar
       except ImportError:
         logger.warning('DEBUG_TOOLBAR is on but flask.ext.debugtoolbar is not '
                        'installed.')
       else:
-        DebugToolbarExtension(self)
+        try:
+          default_config = DebugToolbar.config
+          init_dbt = DebugToolbarExtension
+        except AttributeError:
+          # debugtoolbar > 0.8.0
+          dbt = DebugToolbarExtension()
+          default_config = dbt._default_config(self)
+          init_dbt = dbt.init_app
+
+        if not 'DEBUG_TB_PANELS' in self.config:
+          # add our panels to default ones
+          self.config['DEBUG_TB_PANELS'] = list(default_config['DEBUG_TB_PANELS'])
+          self.config['DEBUG_TB_PANELS'].append(
+            'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel'
+          )
+        init_dbt(self)
+
 
   def init_extensions(self):
     """
