@@ -157,9 +157,9 @@ class SecurityService(Service):
     q = RoleAssignment.query.filter_by(role=role)
 
     if not users:
-      q = q.filter(RoleAssignment.user is None)
+      q = q.filter(RoleAssignment.user == None)
     elif not groups:
-      q = q.filter(RoleAssignment.group is None)
+      q = q.filter(RoleAssignment.group == None)
 
     if object:
       assert isinstance(object, Entity)
