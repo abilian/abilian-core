@@ -13,6 +13,7 @@ Babel >= 1.3
 Flask-Babel>=0.9
 Flask-Assets
 Flask-Mail
+coaster
 
 # Flask extensions not used (yet?)
 #Flask-Themes

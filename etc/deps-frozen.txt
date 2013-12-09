@@ -10,6 +10,7 @@ bleach==1.2.2
 blinker==1.2
 celery==3.0.21
 closure==20121212
+coaster==0.3.13
 cssmin==0.1.4
 distribute==0.6.34
 feedparser==5.1.3
