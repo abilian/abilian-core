@@ -1,6 +1,8 @@
-#
-# Field filters
-#
+"""
+Field filters for WTForm.
+"""
+
+
 def strip(data):
     """
     Strip data if data is a string
@@ -14,4 +16,3 @@ def uppercase(data):
     if not isinstance(data, basestring):
         return data
     return data.upper()
-

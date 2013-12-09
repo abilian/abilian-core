@@ -106,7 +106,7 @@ def step_db():
 
 def step_db_form():
   return render_template('setupwizard/step_db.html',
-                         data=session_get('db',  {}))
+                         data=session_get('db', {}))
 
 def step_db_validate():
   form = request.form

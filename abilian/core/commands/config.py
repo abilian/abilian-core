@@ -51,7 +51,7 @@ class DefaultConfig(object):
   CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
 
   CELERYD_PREFETCH_MULTIPLIER = 1
-  CELERY_ALWAYS_EAGER = True # run tasks locally, no async
+  CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
   CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
   WHOOSH_BASE = 'whoosh'
@@ -130,4 +130,3 @@ def init(filename='config.py', logging_config='logging.yml'):
   config = DefaultConfig(logging_file=logging_config)
   write_config(config_file, config)
   maybe_write_logging(logging_file)
-

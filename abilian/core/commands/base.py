@@ -43,7 +43,7 @@ def print_config(config):
       prefix = '  * '
     indent = len(k) + 3
     width = 80 - indent
-    v = pformat(v, width=width).replace('\n', '\n'+ ' '*indent)
+    v = pformat(v, width=width).replace('\n', '\n' + ' ' * indent)
     lines.append("{}{}: {}".format(prefix, k, v))
   logger.info('\n'.join(lines))
 

@@ -208,4 +208,3 @@ def JSONList(*args, **kwargs):
     pass
 
   return MutationList.as_mutable(type_(*args, **kwargs))
-

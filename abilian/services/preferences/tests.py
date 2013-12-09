@@ -42,4 +42,3 @@ class PreferencesTestCase(BaseTestCase):
     self.session.flush()
     preferences = preference_service.get_preferences(user)
     self.assertEquals(preferences, {'some_int': 1, 'some_bool': True})
-

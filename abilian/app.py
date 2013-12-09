@@ -189,8 +189,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     self._assets_bundles = {
       'css': {'options': dict(filters='cssimporter, cssrewrite',
-                              output='style-%(version)s.min.css'),
-      },
+                              output='style-%(version)s.min.css')},
       'js-top': {'options': dict(output='top-%(version)s.min.js')},
       'js': {'options': dict(output='app-%(version)s.min.js')},
     }
@@ -297,8 +296,8 @@ class Application(Flask, ServiceManager, PluginManager):
     return config
 
   def setup_logging(self):
-    self.logger # force flask to create application logger before logging
-    # configuration; else, flask will overwrite our settings
+    self.logger  # force flask to create application logger before logging
+                 # configuration; else, flask will overwrite our settings
 
     logging_file = self.config.get('LOGGING_CONFIG_FILE')
     if logging_file:
@@ -315,7 +314,6 @@ class Application(Flask, ServiceManager, PluginManager):
       logging_cfg = yaml.load(open(logging_file, 'r'))
       logging_cfg.setdefault('version', 1)
       logging.config.dictConfig(logging_cfg)
-
 
   def init_debug_toolbar(self):
     if (not self.testing
@@ -364,13 +362,13 @@ class Application(Flask, ServiceManager, PluginManager):
     if self.debug:
       # during dev, one can go to /http_error/403 to see rendering of 403
       http_error_pages = Blueprint('http_error_pages', __name__)
+
       @http_error_pages.route('/<int:code>')
       def error_page(code):
         """ Helper for development to show 403, 404, 500..."""
         abort(code)
 
       self.register_blueprint(http_error_pages, url_prefix='/http_error')
-
 
   def register_plugins(self):
     """
@@ -565,7 +563,6 @@ class Application(Flask, ServiceManager, PluginManager):
     # setup static url for our assets
     from abilian.web import assets as core_bundles
 
-
     assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
     self.add_static_url('abilian', core_bundles.RESOURCES_DIR,
                         endpoint='abilian_static', )
@@ -582,7 +579,6 @@ class Application(Flask, ServiceManager, PluginManager):
       options = data.get('options', {})
       if bundles:
         assets.register(name, Bundle(*bundles, **options))
-
 
   def register_asset(self, type_, asset):
     """
@@ -611,7 +607,6 @@ class Application(Flask, ServiceManager, PluginManager):
     order to allow applications to redefins it at will.
     """
     from abilian.web import assets as bundles
-
 
     debug = self.config.get('DEBUG')
     self.register_asset('css', bundles.CSS if not debug else bundles.CSS_DEBUG)
@@ -643,8 +638,8 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     if (code / 100) == 5:
       # 5xx code: error on server side
-      db.session.rollback() # ensure rollback if needed, else error page may
-      # have an error, too, resulting in raw 500 page :-()
+      db.session.rollback()  # ensure rollback if needed, else error page may
+                             # have an error, too, resulting in raw 500 page :-()
 
     template = 'error{:d}.html'.format(code)
     return render_template(template, error=error), code

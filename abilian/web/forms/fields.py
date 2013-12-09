@@ -85,7 +85,7 @@ class DateTimeField(Field):
       locale = get_locale()
       date_fmt = locale.date_formats['short']
       date_fmt = babel2datetime(date_fmt)
-      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m') # force numerical months
+      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m')  # force numerical months
 
       time_fmt = locale.time_formats['short']
       time_fmt = babel2datetime(time_fmt)
@@ -118,7 +118,7 @@ class DateField(DateTimeField):
       date_str = ' '.join(valuelist)
       date_fmt = get_locale().date_formats['short']
       date_fmt = babel2datetime(date_fmt)
-      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m') # force numerical months
+      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m')  # force numerical months
 
       try:
         self.data = datetime.datetime.strptime(date_str, date_fmt).date()
@@ -342,4 +342,3 @@ class JsonSelect2Field(SelectFieldBase):
 #          break
 #      else:
 #        raise ValidationError(self.gettext('Not a valid choice'))
-

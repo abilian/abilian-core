@@ -13,6 +13,7 @@ import re
 from babel.dates import LOCALTZ
 from flask import request
 
+
 def local_dt(dt):
   """ Return an aware datetime in system timezone, from a naive or aware
   datetime. Naive datetime are assumed to be in UTC TZ.

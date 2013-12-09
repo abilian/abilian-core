@@ -13,6 +13,7 @@ from jinja2 import Template, Markup
 from flask import url_for
 from .action import Action
 
+
 class NavItem(Action):
   """ A single navigation item
   """
@@ -51,8 +52,10 @@ class NavGroup(NavItem):
   def append(self, item):
     self.items.append(item)
 
+
 class Endpoint(object):
 
+  # FIXME: *args doesn't seem to be relevant.
   def __init__(self, name, *args, **kwargs):
     self.name = name
     self.args = args
@@ -106,4 +109,3 @@ class BreadcrumbItem(object):
 
   def render(self):
     return Markup(self.__template.render(item=self))
-

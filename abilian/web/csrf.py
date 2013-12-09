@@ -13,21 +13,24 @@ def field():
 
 
 def name():
-  """ Field name expected to have CSRF token. Useful for passing it to
+  """
+  Field name expected to have CSRF token. Useful for passing it to
   JavaScript for instance.
   """
   return u'csrf_token'
 
 
 def token():
-  """ Value of current csrf token. Useful for passing it to JavaScript for
+  """
+  Value of current csrf token. Useful for passing it to JavaScript for
   instance.
   """
   return field().current_token or u''
 
 
 def protect(view):
-  """ Protect a view agains CSRF attacks by checking `csrf_token` value in
+  """
+  Protects a view agains CSRF attacks by checking `csrf_token` value in
   submitted values. Do nothing if `config.CSRF_ENABLED` is not set.
 
   Raises `werkzeug.exceptions.Forbidden` if validation fails.

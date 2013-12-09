@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from babel.dates import DateTimePattern, parse_pattern
 
+
 def babel2datetime(pattern):
   """Convert date format from babel
   (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
@@ -19,7 +20,7 @@ def babel2datetime(pattern):
     'dd'   : '%d',
     'EEE'  : '%a',
     'EEEE' : '%A',
-    'EEEEE': '%a', # narrow name => short name
+    'EEEEE': '%a',  # narrow name => short name
     # months
     'M'   : '%m',
     'MM'  : '%m',

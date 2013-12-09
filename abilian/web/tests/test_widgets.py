@@ -33,6 +33,7 @@ class WidgetTestModel(db.Model):
     self._display_value_called = True
     return getattr(self, attr)
 
+
 class DummyForm(Form):
   name = TextField(u'Nom du véhicule')
   price = IntegerField(u"Prix du véhicule")
@@ -84,7 +85,7 @@ class ModelViewTestCase(BaseTestCase):
       panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
       view = SingleView(DummyForm, *panels)
       model = WidgetTestModel(name="Renault Megane",
-                         price=10000, email="joe@example.com")
+                              price=10000, email="joe@example.com")
       form = DummyForm(obj=model)
       res = view.render(model, form)
 

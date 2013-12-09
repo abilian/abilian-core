@@ -84,7 +84,6 @@ class Admin(object):
     self.app = app
     app.extensions['admin'] = self
 
-
   def register_panel(self, panel):
     if self.app:
       raise ValueError("Extension already initialized for app, cannot add more panel")
@@ -141,4 +140,3 @@ class Admin(object):
   def build_breadcrumbs(self, endpoint, view_args):
     g.breadcrumb.append(self.root_breadcrumb_item)
     g.breadcrumb.append(self.breadcrumb_items[endpoint])
-

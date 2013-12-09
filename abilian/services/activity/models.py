@@ -23,6 +23,7 @@ __all__ = ['ActivityEntry']
 
 logger = logging.getLogger(__name__)
 
+
 def _default_from(column):
   """ Helper for default and onupdates parameters in a Column definitions.
 

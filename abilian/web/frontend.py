@@ -14,7 +14,7 @@ from time import strftime, gmtime
 import re
 
 from flask import (session, redirect, request, g, render_template, flash,
-  Blueprint, jsonify, abort, make_response, url_for)
+                   Blueprint, jsonify, abort, make_response, url_for)
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
@@ -36,6 +36,7 @@ from .forms.widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
 
 logger = logging.getLogger(__name__)
+
 
 def add_to_recent_items(entity, type=None):
   if not type:
@@ -127,10 +128,10 @@ class Module(object):
   list_view_columns = []
   single_view = None
   edit_form_class = None
-  view_form_class = None # by default, same as edit_form_class
+  view_form_class = None  # by default, same as edit_form_class
   url = None
   name = None
-  view_new_save_and_add = False # show 'save and add new' button in /new form
+  view_new_save_and_add = False  # show 'save and add new' button in /new form
   static_folder = None
   view_template = None
   view_options = None
@@ -354,9 +355,9 @@ class Module(object):
         elif isinstance(value, date):
           style = DATE_STYLE
         if style:
-          ws.write(r+1, c, value, style)
+          ws.write(r + 1, c, value, style)
         else:
-          ws.write(r+1, c, value)
+          ws.write(r + 1, c, value)
 
     fd = StringIO.StringIO()
     wb.save(fd)
@@ -517,7 +518,7 @@ class Module(object):
     entity = self.managed_class()
     action = request.form.get('_action')
 
-    if action == 'cancel': #FIXME: what if action is None?
+    if action == 'cancel':  # FIXME: what if action is None?
       return redirect("%s/" % self.url)
 
     if form.validate():
@@ -536,7 +537,7 @@ class Module(object):
               "error")
       else:
         flash(_(u"Entity successfully added"), "success")
-        if self.view_new_save_and_add and  action == 'save_and_add_new':
+        if self.view_new_save_and_add and action == 'save_and_add_new':
           return redirect(url_for('.entity_new'))
         return redirect(url_for('.entity_view', entity_id=entity.id))
 
@@ -595,6 +596,7 @@ class Module(object):
     """
     return re.sub(r'(?<=.)([A-Z])', r' \1', name)
 
+
 class RelatedView(object):
   """ A base class for related views
   """
@@ -602,6 +604,7 @@ class RelatedView(object):
     """ Return a dict with keys 'label', 'attr_name', 'rendered', 'size'
     """
     raise NotImplementedError
+
 
 class DefaultRelatedView(RelatedView):
   """ Default view used by Module for items directly related to entity

@@ -37,4 +37,3 @@ class ActivityTestCase(BaseTestCase):
     self.assertEquals(entry.object, message)
     self.assertEquals(entry.object_type, message.entity_type)
     self.assertEquals(entry.object_id, message.id)
-

@@ -1,8 +1,4 @@
-from sqlalchemy import event
 from sqlalchemy.orm import object_session
-from sqlalchemy.orm.session import Session
-
-from flask import g
 
 from abilian.services import Service
 from abilian.core.signals import activity
@@ -35,7 +31,6 @@ class ActivityService(Service):
         entry.target_type = target.entity_type
 
     object_session(object).add(entry)
-
 
   @staticmethod
   def entries_for_actor(actor, limit=50):

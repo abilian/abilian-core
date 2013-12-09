@@ -8,6 +8,7 @@ from flask.views import MethodView as BaseView
 
 from ..action import actions
 
+
 class View(BaseView):
   """
   Base class to use for all class based views.

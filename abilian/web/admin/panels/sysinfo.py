@@ -11,6 +11,7 @@ from flask import render_template
 
 from ..panel import AdminPanel
 
+
 class SysinfoPanel(AdminPanel):
   id = 'sysinfo'
   label = 'System information'

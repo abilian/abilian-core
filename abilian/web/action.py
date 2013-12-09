@@ -166,6 +166,7 @@ class ModalActionMixin(object):
     u'</a>'
   )
 
+
 class ButtonAction(Action):
   template_string = (
     u'<button type="submit" class="btn btn-{{ action.btn_class }}" '
@@ -177,7 +178,7 @@ class ButtonAction(Action):
 
   btn_class = 'default'
 
-  def __init__(self, category, name, submit_name="__action", btn_class= 'default',
+  def __init__(self, category, name, submit_name="__action", btn_class='default',
                *args, **kwargs):
         Action.__init__(self, category, name, *args, **kwargs)
         self.submit_name = submit_name
@@ -211,7 +212,7 @@ class ActionRegistry(object):
   def installed(self, app=None):
     """ Return `True` if the registry has been installed in current applications
     """
-    if app == None:
+    if app is None:
       app = current_app
     return self.__EXTENSION_NAME in app.extensions
 

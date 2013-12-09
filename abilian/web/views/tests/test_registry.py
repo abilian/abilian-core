@@ -16,11 +16,14 @@ from abilian.core.subjects import User
 
 from abilian.web.views import Registry, default_view
 
+
 class RegEntity(Entity):
   name = sa.Column(sa.Unicode, default=u'')
 
+
 class NonEntity(object):
   pass
+
 
 class TestRegistry(FlaskTestCase):
 
@@ -83,4 +86,3 @@ class TestRegistry(FlaskTestCase):
     self.app.register_blueprint(bp)
     self.assertEquals(self.app.default_view.url_for(obj),
                       '/blueprint/1')
-

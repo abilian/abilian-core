@@ -39,4 +39,3 @@ class TestViews(BaseTestCase):
   def test_settings(self):
     response = self.client.get(url_for("admin.settings"))
     self.assert_200(response)
-

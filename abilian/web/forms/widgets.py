@@ -19,8 +19,7 @@ from flask.ext.babel import gettext as _, format_date, format_datetime, get_loca
 import wtforms
 from wtforms.widgets import (
     HTMLString, Input, html_params, Select,
-    TextArea as BaseTextArea,
-    )
+    TextArea as BaseTextArea)
 from wtforms_alchemy import ModelFieldList
 
 from abilian.core.entities import Entity
@@ -182,16 +181,16 @@ class BaseTableView(object):
         value = ""
       if column_name == make_link_on or column_name == '_name' or \
          col.get('linkable'):
-        cell = Markup('<a href="%s">%s</a>'\
+        cell = Markup('<a href="%s">%s</a>'
                       % (url_for(entity), cgi.escape(unicode(value))))
       elif isinstance(value, Entity):
-        cell = Markup('<a href="%s">%s</a>'\
+        cell = Markup('<a href="%s">%s</a>'
                       % (url_for(value), cgi.escape(value._name)))
       elif isinstance(value, basestring) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
       elif value in (True, False):
-        cell = u'\u2713' if value else u'' # Unicode "Check mark"
+        cell = u'\u2713' if value else u''  # Unicode "Check mark"
       elif isinstance(value, list):
         cell = "; ".join(value)
       else:
@@ -241,7 +240,7 @@ class AjaxMainTableView(object):
       if type(col) == str:
         col = dict(name=col, width=default_width)
       assert type(col) == dict
-      if not col.has_key('label'):
+      if not 'label' in col:
         col['label'] = labelize(col['name'])
       self.columns.append(col)
 
@@ -303,16 +302,16 @@ class AjaxMainTableView(object):
         value = col['display_fmt'](value)
 
       if column_name == '_name':
-        cell = Markup('<a href="%s">%s</a>'\
+        cell = Markup('<a href="%s">%s</a>'
                       % (url_for(entity), cgi.escape(value)))
       elif isinstance(value, Entity):
-        cell = Markup('<a href="%s">%s</a>'\
+        cell = Markup('<a href="%s">%s</a>'
                       % (url_for(value), cgi.escape(value._name)))
       elif isinstance(value, basestring)\
         and (value.startswith("http://") or value.startswith("www.")):
           cell = Markup(linkify_url(value))
       elif col.get('linkable'):
-        cell = Markup('<a href="%s">%s</a>'\
+        cell = Markup('<a href="%s">%s</a>'
                       % (url_for(entity), cgi.escape(unicode(value))))
       else:
         cell = unicode(value)
@@ -362,7 +361,7 @@ class SingleView(object):
           continue
 
         label = self.label_for(field, mapper, name)
-        data[name] = (label,value,)
+        data[name] = (label, value)
 
       if data:
         panels.append((panel, data,))
@@ -512,6 +511,7 @@ class FileInput(object):
       u'</div>'.format(label=label)
     )
 
+
 class ImageInput(object):
   """
   An image widget with client-side preview. To show current image field
@@ -607,7 +607,7 @@ class DateInput(Input):
     else:
       date_fmt = get_locale().date_formats['short'].pattern
       date_fmt = babel2datepicker(date_fmt)
-      date_fmt = date_fmt.replace('M', 'm') # force numerical months
+      date_fmt = date_fmt.replace('M', 'm')  # force numerical months
 
     s = u'<div {}>\n'.format(html_params(
       **{'class': "input-group date",
@@ -631,7 +631,6 @@ class TimeInput(Input):
   https://github.com/jdewit/bootstrap-timepicker
   """
   template = 'widgets/timepicker.html'
-
 
   def __init__(self, template=None, widget_mode='dropdown', h24_mode=True, minuteStep=1,
                showSeconds=False, secondStep=1, showInputs=False,
@@ -698,7 +697,7 @@ class DateTimeInput(object):
     locale = get_locale()
     date_fmt = locale.date_formats['short'].pattern
     date_fmt = babel2datetime(date_fmt)
-    date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m') # force numerical months
+    date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m')  # force numerical months
     time_fmt = u'%H:%M'
     datetime_fmt = '{} | {}'.format(date_fmt, time_fmt)
 
@@ -726,19 +725,20 @@ class DateTimeInput(object):
                   value=time_value)
       )
 
+
 class DefaultViewWidget(object):
   def render_view(self, field, **kwargs):
     value = field.object_data
     if isinstance(value, basestring):
       return text2html(value)
     else:
-      return unicode(value or u'') # [], None and other must be rendered using
-                                   # empty string
+      return unicode(value or u'')  # [], None and other must be rendered using
+                                    # empty string
 
 
 class BooleanWidget(wtforms.widgets.CheckboxInput):
   def render_view(self, field):
-    return u'\u2713' if field.object_data else u'' # Unicode "Check mark"
+    return u'\u2713' if field.object_data else u''  # Unicode "Check mark"
 
 
 class FloatWidget(wtforms.widgets.TextInput):
@@ -871,7 +871,7 @@ class ModelListWidget(object):
     assert isinstance(field, ModelFieldList)
     value = field.object_data
     if not value:
-      return render_template(self.template, field=field,  labels=(),
+      return render_template(self.template, field=field, labels=(),
                              rows=(), **kwargs)
 
     mapper = value[0].__mapper__
@@ -901,7 +901,7 @@ class ModelListWidget(object):
 
       rows.append(Data(*row))
 
-    rendered = render_template(self.template, field=field,  labels=labels,
+    rendered = render_template(self.template, field=field, labels=labels,
                                rows=rows, **kwargs)
     return rendered
 
@@ -920,7 +920,7 @@ class Select2(Select):
     return Select.__call__(self, *args, **kwargs)
 
   def render_view(self, field, **kwargs):
-    labels  = [label for v, label, checked in field.iter_choices() if checked]
+    labels = [label for v, label, checked in field.iter_choices() if checked]
     return u'; '.join(labels)
 
 
@@ -942,7 +942,7 @@ class Select2Ajax(object):
 
     extra_args = Markup(html_params(**kwargs))
     url = field.ajax_source
-    data = field.data # accessor / obj lookup
+    data = field.data  # accessor / obj lookup
     object_name = data._name if data else ""
     object_id = data.id if data else ""
 

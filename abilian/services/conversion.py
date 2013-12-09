@@ -502,7 +502,9 @@ class UnoconvPdfHandler(Handler):
     return out
 
   def convert(self, blob, **kw):
-    "Unoconv converter called"
+    """
+    Unoconv converter called.
+    """
     in_fn = make_temp_file(blob)
     out_fd, out_fn = mkstemp(prefix='tmp-unoconv-', suffix=".pdf", dir=TMP_DIR)
     os.close(out_fd)

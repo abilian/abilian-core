@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 def is_anonymous(context):
   return current_user.is_anonymous()
 
+
 def is_authenticated(context):
   return not is_anonymous(context)
 
@@ -37,7 +38,7 @@ user_menu = NavGroup(
       NavItem('user', 'logout', title=_l(u'Logout'), icon='log-out',
               url=lambda context: url_for('login.logout'),
               divider=True),
-))
+  ))
 
 
 _ACTIONS = (
@@ -46,6 +47,7 @@ _ACTIONS = (
           condition=is_anonymous),
   user_menu,
 )
+
 
 class AuthService(Service):
   name = 'auth'

@@ -75,7 +75,7 @@ class User(Principal, UserMixin, db.Model):
   email = Column(UnicodeText, nullable=False)
   can_login = Column(Boolean, nullable=False, default=True)
   password = Column(UnicodeText, default=u"*",
-                    info={'audit_hide_content': True,})
+                    info={'audit_hide_content': True})
 
   photo = deferred(Column(LargeBinary))
 

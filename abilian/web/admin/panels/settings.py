@@ -3,15 +3,14 @@
 """
 from __future__ import absolute_import
 
-from flask import (
-    current_app, render_template, request, flash,
-    redirect, url_for
-    )
+from flask import (current_app, render_template, request, flash,
+                   redirect, url_for)
 from flask.ext.babel import gettext as _, lazy_gettext as _l
 from abilian.web import csrf
 
 
 from ..panel import AdminPanel
+
 
 class Key(object):
   def __init__(self, id, type_, label=None, description=None):
@@ -44,7 +43,6 @@ class SettingsPanel(AdminPanel):
     return render_template('admin/settings.html', keys=self._keys,
                            csrf=csrf.field())
 
-
   @csrf.protect
   def post(self):
     action = request.form.get("action")
@@ -64,4 +62,3 @@ class SettingsPanel(AdminPanel):
       flash(_(u'Changes saved.'))
 
     return redirect(url_for('.settings'))
-

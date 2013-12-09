@@ -44,7 +44,7 @@ class TagApplication(db.Model, IdMixin):
   actor_id = Column(Integer, ForeignKey("user.id"))
 
   #: The entity (object) on which the tag has been applied.
-  entity_id = Column(Integer) # must point to a valid entity
+  entity_id = Column(Integer)  # must point to a valid entity
 
   #: The time when the tag was applied.
   created_at = Column(DateTime, nullable=False)

@@ -59,6 +59,7 @@ SYSTEM = Info(editable=False, auditable=False)
 class ValidationError(Exception):
   pass
 
+
 def validation_listener(mapper, connection, target):
   if hasattr(target, "_validate"):
     target._validate()
@@ -74,9 +75,11 @@ def before_insert_listener(mapper, connection, target):
   if hasattr(target, "_before_insert"):
     target._before_insert()
 
+
 def before_update_listener(mapper, connection, target):
   if hasattr(target, "_before_update"):
     target._before_update()
+
 
 def before_delete_listener(mapper, connection, target):
   if hasattr(target, "_before_delete"):
@@ -148,7 +151,6 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   def column_names(self):
     return [ col.name for col in class_mapper(self.__class__).mapped_table.c ]
 
-
   def to_dict(self):
     if hasattr(self, "__exportable__"):
       exported = self.__exportable__ + ['id']
@@ -198,10 +200,11 @@ class _EntityInherit(object):
   @declared_attr
   def __mapper_args__(cls):
     return {'polymorphic_identity': cls.entity_type,
-            'inherit_condition': cls.id == Entity.id,}
+            'inherit_condition': cls.id == Entity.id}
 
 
 BaseMeta = db.Model.__class__
+
 
 class EntityMeta(BaseMeta):
   """
@@ -239,7 +242,7 @@ class Entity(BaseMixin, db.Model):
   __metaclass__ = EntityMeta
   __mapper_args__ = {'polymorphic_on': '_entity_type'}
 
-  _entity_type =  Column('entity_type', String(1000), nullable=False)
+  _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None
 
   @property
@@ -298,6 +301,7 @@ def polymorphic_update_timestamp(session, flush_context, instances):
     history = state.get_history('updated_at', state.dict)
     if not any((history.added, history.deleted)):
       obj.updated_at = datetime.utcnow()
+
 
 @memoized
 def all_entity_classes():

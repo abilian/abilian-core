@@ -25,7 +25,7 @@ from abilian.core.extensions import db
 CREATION = 0
 UPDATE   = 1
 DELETION = 2
-RELATED = 1 << 7
+RELATED  = 1 << 7
 
 
 class AuditEntry(db.Model):
@@ -34,7 +34,7 @@ class AuditEntry(db.Model):
   """
   id = Column(Integer, primary_key=True)
   happened_at = Column(DateTime, default=datetime.utcnow)
-  type = Column(Integer) # CREATION / UPDATE / DELETION
+  type = Column(Integer)  # CREATION / UPDATE / DELETION
 
   # 2 entity_id columns: 1 to keep even if entity is deleted, 1 to set up
   # relation (and all audit entries will have it set to null if entity is

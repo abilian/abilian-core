@@ -21,7 +21,8 @@ user_menu.items.insert(
   NavItem('user', 'preferences', title=_l(u'Preferences'), icon='cog',
           url=lambda context: request.url_root + 'preferences',
           condition=lambda context: not current_user.is_anonymous()
-  ))
+          ))
+
 
 class PreferenceState(ServiceState):
   panels = None
@@ -31,6 +32,7 @@ class PreferenceState(ServiceState):
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
     self.panels = []
+
 
 class PreferenceService(Service):
   """
@@ -47,7 +49,6 @@ class PreferenceService(Service):
       self.setup_blueprint(app)
       for panel in panels:
         self.register_panel(panel)
-
 
   def get_preferences(self, user=None):
     """Returns a string->value dictionnary representing the given user

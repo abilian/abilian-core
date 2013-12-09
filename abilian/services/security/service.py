@@ -157,9 +157,9 @@ class SecurityService(Service):
     q = RoleAssignment.query.filter_by(role=role)
 
     if not users:
-      q = q.filter(RoleAssignment.user == None)
+      q = q.filter(RoleAssignment.user is None)
     elif not groups:
-      q = q.filter(RoleAssignment.group == None)
+      q = q.filter(RoleAssignment.group is None)
 
     if object:
       assert isinstance(object, Entity)
@@ -248,7 +248,7 @@ class SecurityService(Service):
     q = q.filter(sql.or_(*filter_cond))
     ra_users = {}
     ra_groups = {}
-    for ra in  q.all():
+    for ra in q.all():
       if ra.user:
         all_roles = ra_users.setdefault(ra.user, {})
       else:
@@ -440,7 +440,7 @@ class SecurityService(Service):
     if isinstance(user, User) and user.id == 0:
       return True
 
-    roles = ['manager', 'admin'] # have 'manage' permission
+    roles = ['manager', 'admin']  # have 'manage' permission
 
     if permission in ('read', 'write'):
       roles.append('writer')

@@ -63,7 +63,7 @@ def login_post():
     return (render_template("login/login.html", next_url=next_url,), 401)
 
   try:
-    user = User.query.filter(User.email == email, User.can_login == True).one()
+    user = User.query.filter(User.email == email, User.can_login is True).one()
   except NoResultFound:
     flash(_(u"Sorry, we couldn't find an account for "
             "email '{email}'.").format(email=email), 'error')
@@ -84,6 +84,7 @@ def login_post():
 def logout():
   logout_user()
   return redirect(request.url_root)
+
 
 #
 # Code to deal with forgotten passwords or initial password generation
@@ -110,7 +111,7 @@ def forgotten_pw(new_user=False):
     return render_template("login/forgotten_password.html")
 
   try:
-    user = User.query.filter(User.email == email, User.can_login == True).one()
+    user = User.query.filter(User.email == email, User.can_login is True).one()
   except NoResultFound:
     flash(_(u"Sorry, we couldn't find an account for "
             "email '{email}'.").format(email=email), 'error')
@@ -298,13 +299,14 @@ def log_session_end(app, user):
 user_logged_in.connect(log_session_start)
 user_logged_out.connect(log_session_end)
 
+
 # login redirect utilities
 #  from http://flask.pocoo.org/snippets/62/
 def is_safe_url(target):
   ref_url = urlparse(request.host_url)
   test_url = urlparse(urljoin(request.host_url, target))
   return test_url.scheme in ('http', 'https') and \
-    ref_url.netloc == test_url.netloc
+      ref_url.netloc == test_url.netloc
 
 
 def get_redirect_target():

@@ -5,9 +5,6 @@ SRC=abilian
 # The package name
 PKG=abilian
 
-# Additional parameters
-PEP8IGNORE=E111,E121,E201,E225,E501
-
 
 all: test doc
 
@@ -24,11 +21,23 @@ test-with-coverage:
 tox:
 	tox
 
+#
+# Various Checkers
+#
 pep8:
-	pep8 -r --ignore $(PEP8IGNORE) *.py $(SRC) tests
+	pep8 -r $(SRC)
+
+pep8-stats:
+	pep8 -r --statistics -qq $(SRC) | sort -nr
+
+flake8:
+	flake8 $(SRC)
 
 pylama:
 	pylama -o etc/pylama.ini
+
+pylint:
+	pylint --rcfile=etc/pylint.rc $(SRC)
 
 check-docs:
 	sphinx-build -W -b html docs/ docs/_build/html

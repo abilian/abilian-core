@@ -14,4 +14,3 @@ def nocache(view):
         return resp
 
     return _nocache
-

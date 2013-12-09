@@ -13,9 +13,10 @@ from abilian.core.extensions import db
 
 __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity']
 
+
 class RoleAssignment(db.Model):
   __tablename__ = "roleassignment"
-  __table_args__ =  (
+  __table_args__ = (
     CheckConstraint("(user_id IS NOT NULL AND group_id IS NULL)"
                     " OR "
                     "(user_id IS NULL AND group_id IS NOT NULL)",
@@ -51,17 +52,17 @@ def _get_postgres_indexes():
 
   return [
     Index('roleassignment_idx_user_role_unique', user_id, role, unique=True,
-          postgresql_where=(group_id==None) & (obj==None)
+          postgresql_where=(group_id is None) & (obj is None)
           ),
     Index('roleassignment_idx_group_role_unique', group_id, role, unique=True,
-          postgresql_where=(user_id==None) & (obj==None)
-        ),
+          postgresql_where=(user_id is None) & (obj is None)
+          ),
     Index('roleassignment_idx_user_role_object_unique', user_id, role, obj,
-          unique=True, postgresql_where=(group_id==None) & (obj!=None)
-        ),
+          unique=True, postgresql_where=(group_id is None) & (obj is not None)
+          ),
     Index('roleassignment_idx_group_role_object_unique', group_id, role, obj,
-          unique=True, postgresql_where=(user_id==None) & (obj!=None)
-        ),
+          unique=True, postgresql_where=(user_id is None) & (obj is not None)
+          ),
   ]
 
 _pg_indexes = []
@@ -100,7 +101,7 @@ class SecurityAudit(db.Model):
   UNSET_INHERIT = u'UNSET_INHERIT'
 
   __tablename__ = "securityaudit"
-  __table_args__ =  (
+  __table_args__ = (
   # constraint: either a inherit/no_inherit op on an object AND no user no group
   #             either a grant/revoke on a user XOR a group.
     CheckConstraint(
@@ -138,6 +139,4 @@ class InheritSecurity(object):
   """Mixin for objects with a parent relation and security inheritance.
   """
   inherit_security = Column(Boolean, default=True, nullable=False,
-                            info={'auditable': False,})
-
-
+                            info={'auditable': False})

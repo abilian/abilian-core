@@ -10,6 +10,7 @@ from abilian.core.extensions import db
 from abilian.core.subjects import User
 from abilian.core.sqlalchemy import JSON
 
+
 class UserPreference(db.Model):
   """An atom of user preference."""
   __tablename__ = 'user_preference'

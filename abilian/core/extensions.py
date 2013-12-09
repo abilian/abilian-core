@@ -9,8 +9,6 @@ Create all standard extensions.
 
 from __future__ import absolute_import
 
-import os
-import importlib
 from flask import _request_ctx_stack
 
 __all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager']

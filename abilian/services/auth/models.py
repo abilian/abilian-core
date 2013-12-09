@@ -16,25 +16,27 @@ from abilian.core.subjects import User
 
 _MARK = object()
 
+
 class LoginSessionQuery(BaseQuery):
 
   def get_active_for(self, user, user_agent=_MARK, ip_address=_MARK):
-    """ Return last known session for user
+    """
+    Returns last known session for user
 
-      :param user: user session
-      :type user: `abilian.core.subjects.User`
+    :param user: user session
+    :type user: `abilian.core.subjects.User`
 
-      :param user_agent: *exact* user agent string to lookup, or `None` to have
-      user_agent extracted from request object. If not provided at all, no
-      filtering on user_agent.
-      :type user_agent: string or None, or absent
+    :param user_agent: *exact* user agent string to lookup, or `None` to have
+    user_agent extracted from request object. If not provided at all, no
+    filtering on user_agent.
+    :type user_agent: string or None, or absent
 
-      :param ip_address: client IP, or `None` to have ip_address extracted from
-      request object (requires header 'X-Forwarded-For'). If not provided at
-      all, no filtering on ip_address.
-      :type ip_address: string or None, or absent
+    :param ip_address: client IP, or `None` to have ip_address extracted from
+    request object (requires header 'X-Forwarded-For'). If not provided at
+    all, no filtering on ip_address.
+    :type ip_address: string or None, or absent
 
-      :rtype: `LoginSession` or `None` if no session is found.
+    :rtype: `LoginSession` or `None` if no session is found.
     """
     conditions = [LoginSession.user == user]
 
@@ -88,4 +90,3 @@ class LoginSession(db.Model):
     session = LoginSession(user=current_user, user_agent=user_agent,
                            ip_address=ip_address)
     return session
-

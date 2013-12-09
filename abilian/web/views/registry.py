@@ -2,9 +2,9 @@
 from __future__ import absolute_import
 
 import inspect
-from functools import partial
 from flask import url_for, Blueprint
 from abilian.core.entities import Entity
+
 
 class Registry(object):
   """

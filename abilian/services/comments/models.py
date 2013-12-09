@@ -25,7 +25,7 @@ class Comment(Entity):
 
   @property
   def target(self):
-    cls = None # get the class somehow
+    cls = None  # get the class somehow
     return cls.query.get(self.target_id)
 
   def __repr__(self):
@@ -33,4 +33,4 @@ class Comment(Entity):
     mod_ = class_.__module__
     classname = class_.__name__
     return '<{}.{} instance at 0x{:x} entity id={}'\
-      .format(mod_, classname, id(self), self.entity_id)
+        .format(mod_, classname, id(self), self.entity_id)

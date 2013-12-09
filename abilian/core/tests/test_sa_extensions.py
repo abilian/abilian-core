@@ -28,7 +28,6 @@ class SAExtensionTestCase(BaseTestCase):
     del model2.list_attr[0]
     assert model2.list_attr == [2, 3, 4]
 
-
   def test_dict_attribute(self):
     model = DummyModel2(dict_attr=dict(a=3, b=4))
     db.session.add(model)

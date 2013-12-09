@@ -19,12 +19,12 @@ class BaseCriterion(object):
 
   def _get_model(self):
     if self._model is None:
-      raise ValueError, "Model not set"
+      raise ValueError("Model not set")
     return self._model
 
   def _set_model(self, model):
     if self._model is not None:
-      raise ValueError, "Model already set"
+      raise ValueError("Model already set")
 
     self._model = model
 

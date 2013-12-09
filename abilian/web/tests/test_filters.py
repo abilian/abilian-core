@@ -12,8 +12,10 @@ from ..filters import init_filters, filesize, date_age
 env = Environment()
 init_filters(env)
 
+
 def en_locale():
   return 'en'
+
 
 def user_tz():
   # This one is GMT+8 and has no DST (tests should pass any time in year)

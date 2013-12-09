@@ -81,9 +81,9 @@ CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
                    ABILIAN_CSS,)
 
 TOP_JS = Bundle(JQUERY,
-                ABILIAN_JS_NS);
+                ABILIAN_JS_NS)
 TOP_JS_DEBUG = Bundle(JQUERY_DEBUG,
-                      ABILIAN_JS_NS);
+                      ABILIAN_JS_NS)
 
 JS = Bundle(BOOTSTRAP_JS,
             TYPEAHEAD_JS,
@@ -93,8 +93,7 @@ JS = Bundle(BOOTSTRAP_JS,
             BOOTSTRAP_TIMEPICKER_JS,
             DATATABLE_JS,
             FILEAPI_JS,
-            ABILIAN_JS,
-            )
+            ABILIAN_JS,)
 JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
                   TYPEAHEAD_JS_DEBUG,
                   SELECT2_JS_DEBUG,
@@ -103,8 +102,7 @@ JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
                   BOOTSTRAP_TIMEPICKER_JS,
                   DATATABLE_JS_DEBUG,
                   FILEAPI_JS_DEBUG,
-                  ABILIAN_JS,
-)
+                  ABILIAN_JS,)
 
 
 class ImportCSSFilter(Filter):

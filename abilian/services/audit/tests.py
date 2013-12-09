@@ -2,10 +2,9 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
-from sqlalchemy.orm.attributes import NO_VALUE, NEVER_SET
+from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy import (Column, Unicode, UnicodeText, Text, Date, ForeignKey,
-  Integer,
-)
+                        Integer)
 
 from abilian.core.entities import Entity, SEARCHABLE, AUDITABLE_HIDDEN
 from abilian.core.extensions import db
@@ -119,13 +118,13 @@ class TestAudit(BaseTestCase):
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[4]
     assert entry.type == DELETION
     assert entry.entity_id == account.id
-    assert entry.entity == None
+    assert entry.entity is None
 
     # check all entries are still present (but have lost reference to entity)
     entries = AuditEntry.query.all()
     assert len(entries) == 5
     assert all(e.entity_id == account.id for e in entries)
-    assert all(e.entity == None for e in entries)
+    assert all(e.entity is None for e in entries)
 
   def test_audit_related(self):
     AuditEntry.query.delete()
@@ -135,6 +134,7 @@ class TestAudit(BaseTestCase):
     #  helper
     audit_idx = count()
     audit_query = AuditEntry.query.order_by(AuditEntry.happened_at)
+
     def next_entry():
       return audit_query.all()[audit_idx.next()]
 
@@ -207,5 +207,3 @@ class TestAudit(BaseTestCase):
     assert entry.entity_id == account.id
     # entity not deleted: audit should still have reference to it
     assert entry.entity == account
-
-

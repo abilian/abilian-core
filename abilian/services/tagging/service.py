@@ -2,6 +2,7 @@
 
 """
 
+
 class Taggable(object):
   """
   Mixin trait for taggable objects.

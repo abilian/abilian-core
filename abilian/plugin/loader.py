@@ -18,8 +18,9 @@ class AppLoader(ModuleLoader):
     self._cache = filter(self._meta, self._cache)
 
   def register(self, app, *args, **kwargs):
-    " Load and register modules. "
-
+    """
+    Loads and registers modules.
+    """
     result = []
 
     submodule = kwargs.pop('submodule', None)

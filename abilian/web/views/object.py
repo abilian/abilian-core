@@ -22,6 +22,7 @@ from .base import View
 
 logger = logging.getLogger(__name__)
 
+
 class BaseObjectView(View):
   """
   Base class common to all database objects views
@@ -100,6 +101,7 @@ class BaseObjectView(View):
     """
     return {}
 
+
 class ObjectView(BaseObjectView):
   """
   View objects
@@ -140,6 +142,7 @@ class ObjectView(BaseObjectView):
 CANCEL_BUTTON = ButtonAction('form', 'cancel', title=_l(u'Cancel'))
 EDIT_BUTTON = ButtonAction('form', 'edit', btn_class='primary', title=_l(u'Save'))
 
+
 class ObjectEdit(ObjectView):
   """
   Edit objects
@@ -175,7 +178,6 @@ class ObjectEdit(ObjectView):
   def put(self):
     return self.post()
 
-
   def prepare_args(self, args, kwargs):
     args, kwargs = super(ObjectEdit, self).prepare_args(args, kwargs)
     self._buttons = self.get_form_buttons(*args, **kwargs)
@@ -194,7 +196,6 @@ class ObjectEdit(ObjectView):
   def buttons(self):
     return (button for button in self._buttons
             if button.available(actions.context))
-
 
   def view_url(self):
     kw = { self.pk: self.obj.id }
@@ -305,6 +306,7 @@ class ObjectCreate(ObjectEdit):
 
 
 DELETE_BUTTON = ButtonAction('form', 'delete', title=_l(u'Delete'))
+
 
 class ObjectDelete(ObjectEdit):
   """

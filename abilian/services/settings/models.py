@@ -9,6 +9,7 @@ from abilian.core.extensions import db
 
 __all__ = ['Setting']
 
+
 class TransformerRegistry(object):
 
   def __init__(self):
@@ -35,6 +36,7 @@ class TransformerRegistry(object):
 
 _transformers = TransformerRegistry()
 
+
 class _EmptyValue(object):
 
   def __nonzero__(self):
@@ -45,6 +47,7 @@ class _EmptyValue(object):
 
 #: marker for emptyness, to distinguish from None
 EmptyValue = _EmptyValue()
+
 
 class Setting(db.Model):
   """A Setting is a very simple key/value object, key being a string
@@ -71,7 +74,6 @@ class Setting(db.Model):
         'Invalid type "{}": not encoder and/or decoder registered'.format(type_))
     self._type = type_
 
-
   _value = sa.Column('value', sa.Text())
 
   @property
@@ -89,19 +91,25 @@ class Setting(db.Model):
 register = _transformers.register
 register('int', bytes, int)
 
+
 def from_bool(b):
   return 'true' if b else 'false'
+
+
 def to_bool(s):
   return s == 'true'
+
 register('bool', from_bool, to_bool)
+
 
 def from_unicode(s):
   return unicode(s).encode('utf-8')
+
+
 def to_unicode(s):
   return s.decode('utf-8')
 
 register('string', from_unicode, to_unicode)
-register('json', json.dumps, json.loads) #FIXME: checks for dump/load?
-
+register('json', json.dumps, json.loads)  # FIXME: checks for dump/load?
 
 del register

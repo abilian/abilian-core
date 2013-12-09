@@ -1,8 +1,6 @@
 # coding=utf-8
 
 from flask import Flask
-from flask.ext.testing import TestCase
-
 from abilian.web.action import actions, Action
 from abilian.testing import BaseTestCase
 
@@ -26,7 +24,7 @@ class TestActions(BaseTestCase):
     actions.context['show_all'] = True
 
   def test_installed(self):
-    assert actions.installed() # test current_app (==self.app)
+    assert actions.installed()  # test current_app (==self.app)
     assert actions.installed(self.app)
     assert not actions.installed(Flask('dummyapp'))
 

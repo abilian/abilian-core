@@ -8,6 +8,7 @@ from unittest import TestCase
 from abilian.testing import BaseTestCase
 from .models import Setting, EmptyValue
 
+
 class SettingTestCase(TestCase):
 
   def test_type_set(self):

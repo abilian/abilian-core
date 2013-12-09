@@ -99,6 +99,7 @@ def age(dt, now=None):
                           threshold=0.9,
                           add_direction=True)
 
+
 def date_age(dt, now=None):
   # Fail silently for now XXX
   if not dt:
@@ -130,7 +131,7 @@ def babel2datepicker(pattern):
     'dd'   : 'dd',
     'EEE'  : 'D',
     'EEEE' : 'DD',
-    'EEEEE': 'D', # narrow name => short name
+    'EEEEE': 'D',  # narrow name => short name
     # months
     'M'   : 'mm',
     'MM'  : 'mm',
@@ -175,9 +176,11 @@ def abbrev(s, max_size):
     h = max_size / 2 - 1
     return s[0:h] + "..." + s[-h:]
 
+
 @autoescape
 def linkify(s):
   return Markup(bleach.linkify(s))
+
 
 def init_filters(env):
   if isinstance(env, Flask):
@@ -196,4 +199,3 @@ def init_filters(env):
   env.filters['filesize'] = filesize
   env.filters['labelize'] = labelize
   env.filters['linkify'] = linkify
-

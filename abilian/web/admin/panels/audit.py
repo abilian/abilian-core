@@ -74,12 +74,12 @@ class AuditPanel(AdminPanel):
     else:
       all_entries = all_entries[-LIMIT:]
 
-    all_entries.reverse() # event are presented from most to least recent
+    all_entries.reverse()  # event are presented from most to least recent
 
     AuditEntryPresenter.prefetch([e for e in all_entries
-                             if isinstance(e, AuditEntryPresenter)])
+                                  if isinstance(e, AuditEntryPresenter)])
     SecurityEntryPresenter.prefetch([e for e in all_entries
-                                if isinstance(e, SecurityEntryPresenter)])
+                                     if isinstance(e, SecurityEntryPresenter)])
 
     # group entries by day
     entries = []

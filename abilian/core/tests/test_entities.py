@@ -23,8 +23,8 @@ class EntityTestCase(TestCase):
     Session = sa.orm.sessionmaker(bind=engine)
     session = Session()
 
-    setattr(session, '_model_changes', {}) # flask-sqlalchemy as listeners
-                                           #looking for this
+    setattr(session, '_model_changes', {})  # flask-sqlalchemy as listeners
+                                            # looking for this
 
     DummyContact.metadata.create_all(engine)
     contact = DummyContact()
@@ -39,6 +39,7 @@ class EntityTestCase(TestCase):
 
     assert isinstance(contact.updated_at, datetime)
     assert contact.updated_at > updated
+
 
 class InfoTestCase(TestCase):
 

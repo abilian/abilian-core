@@ -11,7 +11,6 @@ from abilian.testing import BaseTestCase
 from . import security, RoleAssignment, InheritSecurity
 
 
-
 TEST_EMAIL = u"joe@example.com"
 TEST_PASSWORD = "tototiti"
 
