@@ -52,16 +52,16 @@ def _get_postgres_indexes():
 
   return [
     Index('roleassignment_idx_user_role_unique', user_id, role, unique=True,
-          postgresql_where=(group_id is None) & (obj is None)
+          postgresql_where=(group_id == None) & (obj == None)  # noqa
           ),
     Index('roleassignment_idx_group_role_unique', group_id, role, unique=True,
-          postgresql_where=(user_id is None) & (obj is None)
+          postgresql_where=(user_id == None) & (obj == None)  # noqa
           ),
     Index('roleassignment_idx_user_role_object_unique', user_id, role, obj,
-          unique=True, postgresql_where=(group_id is None) & (obj is not None)
+          unique=True, postgresql_where=(group_id == None) & (obj != None)  # noqa
           ),
     Index('roleassignment_idx_group_role_object_unique', group_id, role, obj,
-          unique=True, postgresql_where=(user_id is None) & (obj is not None)
+          unique=True, postgresql_where=(user_id == None) & (obj != None)  # noqa
           ),
   ]
 
