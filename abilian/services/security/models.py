@@ -7,31 +7,42 @@ from sqlalchemy.schema import (
 from sqlalchemy.types import Integer, Text, Enum, DateTime, String, Boolean
 from sqlalchemy.event import listen
 
-from abilian.core.subjects import User
+from abilian.core.entities import Entity
+from abilian.core.subjects import User, Group
 from abilian.core.extensions import db
 
 
-__all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity']
+__all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity', 'Anonymous']
 
+#: marker for role assigned to 'Anonymous'
+Anonymous = type('AnonymousRole', (object,), {})()
 
 class RoleAssignment(db.Model):
   __tablename__ = "roleassignment"
-  __table_args__ = (
-    CheckConstraint("(user_id IS NOT NULL AND group_id IS NULL)"
-                    " OR "
-                    "(user_id IS NULL AND group_id IS NOT NULL)",
-                    name="roleassignment_ck_user_xor_group"),
-    UniqueConstraint('user_id', 'group_id', 'role', 'object',
+  __table_args__ =  (
+    CheckConstraint(
+      "(CAST(anonymous AS INTEGER) = 1)"
+      " OR "
+      "((CAST(anonymous AS INTEGER) = 0)"
+      " AND "
+      " ((user_id IS NOT NULL AND group_id IS NULL)"
+      "  OR "
+      "  (user_id IS NULL AND group_id IS NOT NULL)))",
+      name="roleassignment_ck_user_xor_group"),
+    UniqueConstraint('anonymous', 'user_id', 'group_id', 'role', 'object_id',
                      name='assignment_mapped_role_unique'),
     )
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
   role = Column(Text, index=True, nullable=False)
+  anonymous = Column('anonymous', Boolean, nullable=True, default=False)
   user_id = Column(Integer, ForeignKey('user.id'))
-  user = relationship("User", lazy='joined')
+  user = relationship(User, lazy='joined')
   group_id = Column(Integer, ForeignKey('group.id'))
-  group = relationship("Group", lazy='joined')
-  object = Column(Text)
+  group = relationship(Group, lazy='joined')
+
+  object_id = Column(Integer, ForeignKey(Entity.id))
+  object = relationship(Entity, lazy='select')
 
 
 # On postgres the UniqueConstraint will not be effective because at least 1
@@ -48,20 +59,31 @@ def _get_postgres_indexes():
   role = RoleAssignment.role
   user_id = RoleAssignment.user_id
   group_id = RoleAssignment.group_id
-  obj = RoleAssignment.object
+  obj = RoleAssignment.object_id
+  anonymous = RoleAssignment.anonymous
 
   return [
     Index('roleassignment_idx_user_role_unique', user_id, role, unique=True,
-          postgresql_where=(group_id == None) & (obj == None)  # noqa
+          postgresql_where=(anonymous == False) & (group_id == None) & (obj == None)
           ),
     Index('roleassignment_idx_group_role_unique', group_id, role, unique=True,
-          postgresql_where=(user_id == None) & (obj == None)  # noqa
+          postgresql_where=(anonymous == False) & (user_id == None) & (obj == None)
+        ),
+    Index('roleassignment_idx_anonymous_role_unique', role, unique=True,
+          postgresql_where=((anonymous == True)
+                            & (user_id == None) & (group_id == None) & (obj == None))
           ),
     Index('roleassignment_idx_user_role_object_unique', user_id, role, obj,
-          unique=True, postgresql_where=(group_id == None) & (obj != None)  # noqa
-          ),
+          unique=True,
+          postgresql_where=(anonymous == False) & (group_id == None) & (obj != None)
+        ),
     Index('roleassignment_idx_group_role_object_unique', group_id, role, obj,
-          unique=True, postgresql_where=(user_id == None) & (obj != None)  # noqa
+          unique=True,
+          postgresql_where=(anonymous == False) & (user_id == None) & (obj != None)
+        ),
+    Index('roleassignment_idx_anonymous_role_unique', role, obj, unique=True,
+          postgresql_where=((anonymous == True)
+                            & (user_id == None) & (group_id == None) & (obj != None))
           ),
   ]
 
@@ -105,14 +127,16 @@ class SecurityAudit(db.Model):
   # constraint: either a inherit/no_inherit op on an object AND no user no group
   #             either a grant/revoke on a user XOR a group.
     CheckConstraint(
-      "(op IN ('{grant}', '{revoke}') AND object IS NOT NULL"
-      " AND user_id IS NULL AND group_id IS NULL)"
+      "(op IN ('{grant}', '{revoke}') AND object_id IS NOT NULL"
+      " AND user_id IS NULL AND group_id IS NULL AND (CAST(anonymous AS INTEGER) = 0))"
       " OR "
       "(op NOT IN ('{grant}', '{revoke}')"
       " AND "
-      " ((user_id IS NOT NULL AND group_id IS NULL)"
+      "(((CAST(anonymous AS INTEGER) = 1) AND user_id IS NULL AND group_id IS NULL)"
+      " OR "
+      " ((CAST(anonymous AS INTEGER) = 0) AND ((user_id IS NOT NULL AND group_id IS NULL)"
       "  OR "
-      "  (user_id IS NULL AND group_id IS NOT NULL)"
+      "  (user_id IS NULL AND group_id IS NOT NULL)))"
       "))".format(grant=SET_INHERIT, revoke=UNSET_INHERIT),
         name="securityaudit_ck_user_xor_group"),
     )
@@ -126,13 +150,15 @@ class SecurityAudit(db.Model):
   manager_id = Column(Integer, ForeignKey(User.id))
   manager = relationship(User,
                          primaryjoin='SecurityAudit.manager_id == User.id')
+  anonymous = Column('anonymous', Boolean, nullable=True, default=False)
   user_id = Column(Integer, ForeignKey('user.id'))
   user = relationship("User", lazy='joined',
                       primaryjoin='SecurityAudit.user_id == User.id')
   group_id = Column(Integer, ForeignKey('group.id'))
   group = relationship("Group", lazy='joined')
 
-  object = Column(String(length=100), index=True)
+  object_id = Column(Integer, ForeignKey(Entity.id))
+  object = relationship(Entity, lazy='select')
 
 
 class InheritSecurity(object):

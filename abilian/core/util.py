@@ -14,6 +14,12 @@ from babel.dates import LOCALTZ
 from flask import request
 
 
+def fqcn(cls):
+  """
+  Fully Qualified Class Name
+  """
+  return unicode(cls.__module__ + '.' + cls.__name__)
+
 def local_dt(dt):
   """ Return an aware datetime in system timezone, from a naive or aware
   datetime. Naive datetime are assumed to be in UTC TZ.
