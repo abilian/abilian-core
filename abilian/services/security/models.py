@@ -81,7 +81,7 @@ def _get_postgres_indexes():
           unique=True,
           postgresql_where=(anonymous == False) & (user_id == None) & (obj != None)
         ),
-    Index('roleassignment_idx_anonymous_role_unique', role, obj, unique=True,
+    Index('roleassignment_idx_anonymous_role_object_unique', role, obj, unique=True,
           postgresql_where=((anonymous == True)
                             & (user_id == None) & (group_id == None) & (obj != None))
           ),
