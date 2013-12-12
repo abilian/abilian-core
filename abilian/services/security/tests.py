@@ -26,7 +26,7 @@ class IntegrationTestCase(BaseTestCase):
 
   def setUp(self):
     BaseTestCase.setUp(self)
-    init_user()
+    # init_user()
     security.init_app(self.app)
     security.start()
 
