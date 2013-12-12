@@ -2,9 +2,49 @@
 """ Data types for sqlalchemy
 """
 from __future__ import absolute_import
+from distutils.version import StrictVersion
+import pkg_resources
+from functools import partial
 import json
 import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
+
+from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
+
+flask_sa_version = pkg_resources.get_distribution('Flask-SQLAlchemy').version
+
+if StrictVersion(flask_sa_version) <= StrictVersion('1.0'):
+  # SA extension's scoped session supports 'bind' parameter only after 1.0. This
+  # is a fix for it. This is required to ensure transaction rollback during
+  # tests, but it's useful in some use cases too.
+  from flask.ext.sqlalchemy import _SignallingSession as BaseSession
+
+  class SignallingSession(BaseSession):
+    def __init__(self, db, autocommit=False, autoflush=True, **options):
+      self.app = db.get_app()
+      self._model_changes = {}
+      bind = options.pop('bind', None) or db.engine
+      # actually we are overriding BaseSession.__init__, so we don't want to
+      # call it! Directly call BaseSession parent __init__
+      sa.orm.Session.__init__(self, autocommit=autocommit, autoflush=autoflush,
+                          bind=bind, binds=db.get_binds(self.app), **options)
+
+
+  class SQLAlchemy(SAExtension):
+    def create_scoped_session(self, options=None):
+      """Helper factory method that creates a scoped session."""
+      # override needed to use our SignallingSession implementation
+      if options is None:
+        options = {}
+      scopefunc=options.pop('scopefunc', None)
+      return sa.orm.scoped_session(partial(SignallingSession, self, **options),
+                                   scopefunc=scopefunc)
+
+else:
+  # Flask-SQLAlchemy > 1.0: bind parameter is supported
+  SQLAlchemy = SAExtension
+
+del flask_sa_version
 
 
 def filter_cols(model, *filtered_columns):

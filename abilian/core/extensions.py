@@ -30,7 +30,7 @@ from flask.ext.mail import Mail
 mail = Mail()
 
 import sqlalchemy as sa
-from flask.ext.sqlalchemy import SQLAlchemy
+from .sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
