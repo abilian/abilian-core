@@ -34,7 +34,7 @@ Contents
    installing
    contributing
    api
-   ../CHANGES
+   changelog
    credits
 
 Indices and tables
