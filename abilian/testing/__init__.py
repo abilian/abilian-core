@@ -32,6 +32,9 @@ class TestConfig(object):
   CSRF_ENABLED = False
   WTF_CSRF_ENABLED = False
 
+  CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
+  CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+
   BABEL_DEFAULT_LOCALE = 'en'
 
   # It's a good idea to test with a timezone that's not your system timezone nor
@@ -130,7 +133,7 @@ class BaseTestCase(TestCase):
 
   def setUp(self):
     TestCase.setUp(self)
-    self.session = self.db.session
+    self.session = self.db.session()
 
     if self.db.engine.name == 'postgresql':
       # ensure we are on a clean DB: let's use our own schema
@@ -145,6 +148,7 @@ class BaseTestCase(TestCase):
             'ALTER ROLE {username} SET search_path TO {schema}'
             ''.format(username=username, schema=self.__pg_schema))
         conn.execute('COMMIT')
+
     self.app.create_db()
 
   def tearDown(self):
