@@ -18,7 +18,8 @@ from ..core.util import local_dt, utc_dt
 
 
 def autoescape(filter_func):
-  """ Decorator to autoescape result from filters
+  """
+  Decorator to autoescape result from filters.
   """
   @evalcontextfilter
   @wraps(filter_func)
@@ -32,7 +33,8 @@ def autoescape(filter_func):
 
 @autoescape
 def nl2br(value):
-  """ Replace newlines with <br />
+  """
+  Replace newlines with <br />.
   """
   result = escape(value).replace(u'\n', Markup(u'<br />\n'))
   return result
@@ -42,7 +44,8 @@ _PARAGRAPH_RE = re.compile(r'(?:\r\n|\r|\n){2,}')
 
 @autoescape
 def paragraphs(value):
-  """ Blank lines delimitates paragraphs
+  """
+  Blank lines delimitates paragraphs.
   """
   result = u'\n\n'.join(
     (u'<p>{}</p>'.format(p.strip().replace('\n', Markup('<br />\n')))
@@ -118,7 +121,8 @@ def date(value):
 
 
 def babel2datepicker(pattern):
-  """ Convert date format from babel
+  """
+  Converts date format from babel
   (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
   bootstrap-datepicker.
   """

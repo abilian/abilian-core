@@ -1,5 +1,6 @@
 # coding=utf-8
-""" Navigation elements.
+"""
+Navigation elements.
 
 Abilian define theses categories:
   `section`:
@@ -15,7 +16,8 @@ from .action import Action
 
 
 class NavItem(Action):
-  """ A single navigation item
+  """
+  A single navigation item.
   """
   divider = False
 
@@ -26,7 +28,8 @@ class NavItem(Action):
 
 
 class NavGroup(NavItem):
-  """ A navigation group renders a list of items
+  """
+  A navigation group renders a list of items.
   """
   template_string = '''
     <ul class="nav navbar-nav">
@@ -73,7 +76,8 @@ class Endpoint(object):
 
 
 class BreadcrumbItem(object):
-  """ A breadcrumb element has at least a label or an icon.
+  """
+  A breadcrumb element has at least a label or an icon.
   """
   #: Label shown to user. May be an i18n string instance
   label = None

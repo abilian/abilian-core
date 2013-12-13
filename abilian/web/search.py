@@ -49,7 +49,8 @@ class BaseCriterion(object):
 
 
 class TextSearchCriterion(BaseCriterion):
-  """ Fulltext search on given attributes
+  """
+  Fulltext search on given attributes.
   """
 
   def __init__(self, name, label=u'', attributes=None,
@@ -134,9 +135,10 @@ class TextSearchCriterion(BaseCriterion):
     return query
 
   def get_rel_attr(self, attr_name, model):
-    """ for a related attribute specification, return (related model,
-    attribute).  return (None, None) if model is not found, or (model, None) if
-    attribute is not found
+    """
+    For a related attribute specification, returns (related model,
+    attribute).  Returns (None, None) if model is not found, or (model, None) if
+    attribute is not found.
     """
     rel_attr_name, attr_name = attr_name.split('.', 1)
     rel_attr = getattr(self.model, rel_attr_name, None)
@@ -150,7 +152,8 @@ class TextSearchCriterion(BaseCriterion):
     return (rel_model, attr)
 
   def is_excluded(self, attr_name, request):
-    """ To be overriden by subclasses that want to filter searched attributes
+    """
+    To be overriden by subclasses that want to filter searched attributes.
     """
     return False
 

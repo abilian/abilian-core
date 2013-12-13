@@ -32,7 +32,7 @@ def get_long_description():
 setuptools.setup(
   name='Abilian-Core',
   version='0.1',
-  url='http://www.abilian.com/',
+  url='http://docs.abilian.com/',
   license='LGPL',
   author='Abilian SAS',
   author_email='contact@abilian.com',
@@ -45,7 +45,7 @@ setuptools.setup(
     'Development Status :: 3 - Alpha',
     'Environment :: Web Environment',
     'Intended Audience :: Developers',
-    'License :: OSI Approved :: BSD License',
+    'License :: OSI Approved :: LGPL License',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     ],

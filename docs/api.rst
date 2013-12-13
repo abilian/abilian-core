@@ -4,13 +4,13 @@ API
 Package ``abilian``
 -------------------
 
-:mod:`abilian.app`
-^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.app`
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.app
 
-:mod:`abilian.i18n`
-^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.i18n`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: abilian.i18n
 
    .. autodata:: _
@@ -21,75 +21,82 @@ Package ``abilian``
        :no-undoc-members:
    .. autodata:: babel
 
+
+Package ``abilian.plugin``
+--------------------------
+
+.. automodule:: abilian.plugin
+
+
 Package ``abilian.core``
 ------------------------
 
-:mod:`abilian.core.commands`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.commands`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.commands
 
-:mod:`abilian.core.entities`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.entities`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.entities
 
-:mod:`abilian.core.extensions`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.extensions`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.extensions
 
-:mod:`abilian.core.signals`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.signals`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.signals
 
-:mod:`abilian.core.sqlalchemy`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.sqlalchemy`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.sqlalchemy
 
-:mod:`abilian.core.subjects`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.subjects`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.subjects
 
-:mod:`abilian.core.util`
-^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.util`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.util
 
 Package ``abilian.services``
 ----------------------------
 
-:mod:`abilian.services.base`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.services.base`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.services.base
 
-:mod:`abilian.services.activity`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.services.activity`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.services.activity
 
 
-:mod:`abilian.services.audit`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.services.audit`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.services.audit
 
-:mod:`abilian.services.conversion`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.services.conversion`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.services.conversion
 
-:mod:`abilian.services.image`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.services.image`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.services.image
 
-:mod:`abilian.services.indexing`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.services.indexing`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.services.indexing
 
@@ -97,18 +104,18 @@ Package ``abilian.services``
 Package ``abilian.web``
 -----------------------
 
-:mod:`abilian.web.decorators`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.decorators`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.decorators
 
-:mod:`abilian.web.filters`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.filters`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.filters
 
-:mod:`abilian.web.action`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.action`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.action
 
@@ -116,28 +123,28 @@ Package ``abilian.web``
       :members:
       :undoc-members:
 
-:mod:`abilian.web.nav`
-^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.nav`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.nav
 
-:mod:`abilian.web.forms`
-^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.forms`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.forms
 
-:mod:`abilian.web.views`
-^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.views`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.views   
 
-:mod:`abilian.web.frontend`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.frontend`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.frontend
 
-:mod:`abilian.web.util`
-^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.web.util`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.web.util
 

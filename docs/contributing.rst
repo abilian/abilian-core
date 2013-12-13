@@ -1,5 +1,5 @@
-Constributing to Abilian
-========================
+Constributing to Abilian Core
+=============================
 
 Project on GitHub
 -----------------

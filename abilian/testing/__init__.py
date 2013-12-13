@@ -1,4 +1,5 @@
-""" Elements to build test cases of an :class:`abilian.app.Application`
+"""
+Elements to build test cases for an :class:`abilian.app.Application`
 """
 import os
 from time import time
@@ -20,10 +21,11 @@ __all__ = ['TestConfig', 'BaseTestCase']
 
 
 class TestConfig(object):
-  """ Base class config settings for test cases.
+  """
+  Base class config settings for test cases.
 
-    Environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
-    test against different databases.
+  The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
+  test against different databases.
   """
   SQLALCHEMY_DATABASE_URI = "sqlite://"
   SQLALCHEMY_ECHO = False
@@ -44,7 +46,7 @@ class TestConfig(object):
   # For example this one is GMT+8 and has no DST (tests should pass any time in
   # year)
   # BABEL_DEFAULT_TIMEZONE = 'Asia/Hong_Kong'
-  BABEL_DEFAULT_TIMEZONE = 'UTC' # this is flask-babel default
+  BABEL_DEFAULT_TIMEZONE = 'UTC'  # this is flask-babel default
 
   def __init__(self):
     db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
@@ -53,7 +55,8 @@ class TestConfig(object):
 
 
 class BaseTestCase(TestCase):
-  """ Base test case to test an :class:`abilian.app.Application`.
+  """
+  Base test case to test an :class:`abilian.app.Application`.
 
   It will create an instance path that will be used and shared for all tests
   defined in this test case.
@@ -72,21 +75,19 @@ class BaseTestCase(TestCase):
   #: Application class to instantiate.
   application_class = Application
 
+  #: Path to instance folder.  Mostly set for internal use, since you should
+  #: access the value on the application (see `Flask instance folders
+  #: <http://flask.pocoo.org/docs/config/#instance-folders>`_)
+  #: This parameter is set by :meth:`setUpClass`
   TEST_INSTANCE_PATH = None
-  """ Path to instance folder.  Mostly set for internal use, since you should
-  access the value on the application (see `Flask instance folders
-  <http://flask.pocoo.org/docs/config/#instance-folders>`_)
 
-  This parameter is set by :meth:`setUpClass`
-  """
 
+  #: By default sqlalchemy treats warnings as info. This settings makes
+  #: sqlalchemy warnings treated as errors (and thus making test fail). The
+  #: rationale is that it improves code quality (for example most frequent warnings
+  #: are non-unicode string assigned on a Unicode column; this setting force you to
+  #: be explicit and ensure unicode where appropriate)
   SQLALCHEMY_WARNINGS_AS_ERROR = True
-  """ By default sqlalchemy treats warnings as info. This settings makes
-  sqlalchemy warnings treated as errors (and thus making test fail). The
-  rationale is that it improves code quality (for example most frequent warnings
-  are non-unicode string assigned on a Unicode column; this setting force you to
-  be explicit and ensure unicode where appropriate)
-  """
 
   @classmethod
   def setUpClass(cls):
@@ -115,7 +116,8 @@ class BaseTestCase(TestCase):
     TestCase.tearDownClass()
 
   def get_setup_config(self):
-    """ Called by :meth:`create_app` Override this if you want to tweak the config
+    """
+    Called by :meth:`create_app` Override this if you want to tweak the config
     before :attr:`application_class` is instanciated.
 
     :return: an instance of :attr:`config_class`, or anything that is a valid
@@ -171,7 +173,8 @@ class BaseTestCase(TestCase):
 
   @property
   def db(self):
-    """ Shortcut to the application db object.
+    """
+    Shortcut to the application db object.
     """
     return self.app.extensions['sqlalchemy'].db
 
@@ -179,7 +182,8 @@ class BaseTestCase(TestCase):
     self.assert_status(response, 302)
 
   def get(self, url, validate=True):
-    """ Validates HTML if asked by the config or the Unix environment.
+    """
+    Validates HTML if asked by the config or the Unix environment.
     """
     response = self.client.get(url)
     if validate and response == 200:
@@ -190,7 +194,8 @@ class BaseTestCase(TestCase):
   # TODO: post(), put(), etc.
 
   def assert_valid(self, response):
-    """ Validate `response.data` as HTML using validator provided by
+    """
+    Validate `response.data` as HTML using validator provided by
     `config.VALIDATOR_URL`.
     """
     # FIXME: put this and document in TestConfig class

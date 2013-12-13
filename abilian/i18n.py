@@ -89,6 +89,7 @@ class Babel(BabelBase):
 
       self._translations_paths.append(path)
 
+
 def _get_translations_multi_paths():
   """
   Returns the correct gettext translations that should be used for this

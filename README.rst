@@ -1,5 +1,19 @@
-About Abilian Core
-==================
+About
+=====
+
+.. image:: http://jenkins.abilian.com/job/Abilian-Core/badge/icon
+   :target: http://jenkins.abilian.com/job/Abilian-Core/
+.. image:: https://drone.io/github.com/abilian/abilian-core/status.png
+   :target: https://drone.io/github.com/abilian/abilian-core/latest
+.. image:: https://api.travis-ci.org/abilian/abilian-core.png
+   :target: https://travis-ci.org/abilian/abilian-core
+.. image:: https://coveralls.io/repos/abilian/abilian-core/badge.png?branch=master
+   :target: https://coveralls.io/r/abilian/abilian-core?branch=master
+.. image:: https://pypip.in/v/abilian-core/badge.png
+   :target: https://pypi.python.org/pypi/abilian-core
+.. image:: https://pypip.in/d/abilian-core/badge.png
+   :target: https://pypi.python.org/pypi/abilian-core
+
 
 Abilian Core is an enterprise application development platform based on the `Flask micro-framework <http://flask.pocoo.org/>`_, the `SQLAlchemy ORM <http://www.sqlalchemy.org/>`_, good intentions and best practices (for some value of "best").
 
@@ -34,8 +48,8 @@ Infrastructure
 
 -  Security model and service
 
-Domain model and services
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Domain model and dservices
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -  Domain object model, based on SQLAlchemy
 
@@ -128,13 +142,52 @@ For features and bug requests (or is it the other way around?), we
 recommend that you use the `GitHub issue
 tracker <https://github.com/abilian/abilian-core/issues>`_.
 
+Install
+=======
+
+If you are a Python web developer (which is the primary target for this
+project), you probably already know about:
+
+-  Python 2.7
+-  Virtualenv
+-  Pip
+
+So, after you have created and activated a virtualenv for the project,
+just run::
+
+    pip install -r etc/deps.txt
+
+or::
+
+    python setup.py develop
+
+To use some features of the library, namely document and images
+transformation, you will need to install the additional native packages,
+using our operating system's package management tools (``dpkg``,
+``yum``, ``brew``...):
+
+-  A few image manipulation libraries (``libpng``, ``libjpeg``)
+-  The ``poppler-utils``, ``unoconv``, ``LibreOffice``, ``ImageMagick``
+   utilities
+
+Look at the ``fabfile.py`` for the exact list.
+
+Testing
+=======
+
+Abilian Core come with a full unit and integration testing suite. You
+can run it with ``make test`` (once your virtualenv has been activated).
+
+Alternatively, you can use ``tox`` to run the full test suite in an
+isolated environment.
+
 Licence
--------
+=======
 
 Abilian Core is licensed under the LGPL.
 
 Credits
--------
+=======
 
 Abilian Core has been created by the development team at Abilian
 (currently: Stefane and Bertrand), with financial support from our

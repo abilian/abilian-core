@@ -1,7 +1,7 @@
 :orphan:
 
-Welcome to Abilian Core
-=======================
+Welcome to the Abilian Core documentation
+=========================================
 
 .. image:: images/abilian-logo-baseline.png
    :alt: Abilian - Connected we work
@@ -11,22 +11,18 @@ Welcome to Abilian Core
 
 Welcome to Abilian Core's documentation.
 
-Abilian is a platform for enterprise social networking and other social
-applications.
+Abilian Core is an enterprise application development platform based on the `Flask micro-framework <http://flask.pocoo.org/>`_, the `SQLAlchemy ORM <http://www.sqlalchemy.org/>`_, good intentions and best practices (for some value of "best").
 
-Abilian Core (the only publicly released package of the Abilian suite, so far),
-is the foundation of the Abilian platform.
+The full documentation is available on http://docs.abilian.com/.
 
-It builds on powerful and well documented Python librairies, so this
-documentation will assume that a developer already has some knowledge of these
-librairies.
-
-The main building blocks of Abilian Core are:
+It builds on powerful and well documented Python librairies, mainly:
 
 - `Flask <http://flask.pocoo.org/>`_
 - `SQLAlchemy <http://www.sqlalchemy.org/>`_
 - `WTForms <http://wtforms.simplecodes.com/>`_
 
+This documentation will assume that a developer already has some knowledge of
+these librairies.
 
 Contents
 --------
@@ -36,7 +32,6 @@ Contents
 
    introduction
    installing
-   quickstart
    contributing
    api
    changelog

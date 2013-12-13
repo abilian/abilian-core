@@ -9,12 +9,23 @@ from flask.helpers import send_from_directory
 
 
 def url_for(obj, **kw):
+  """
+  Polymorphic variant of Flask's `url_for` function.
+
+  Behaves like the original function when the first argument is a string.
+  When it's an object, it
+
+  """
   if isinstance(obj, str):
     return flask_url_for(obj, **kw)
   elif hasattr(obj, "_url"):
     return obj._url
+
+  # XXX: do we keep this case?
   elif hasattr(obj, "url"):
     return obj.url
+
+  # TODO: use also the default view registry.
 
 
 def get_object_or_404(cls, *args):
