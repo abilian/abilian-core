@@ -13,6 +13,24 @@ from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
 
 flask_sa_version = pkg_resources.get_distribution('Flask-SQLAlchemy').version
 
+class AbilianBaseSAExtension(SAExtension):
+  """
+  Base subclass of :class:`flask.ext.sqlalchemy.SQLAlchemy`. Add
+  our custom driver hacks.
+  """
+  def apply_driver_hacks(self, app, info, options):
+    SAExtension.apply_driver_hacks(self, app, info, options)
+
+    if info.drivername == 'sqlite':
+      connect_args = options.setdefault('connect_args', {})
+
+      if 'isolation_level' not in connect_args:
+        # required to support savepoints/rollback without error. It disables
+        # implicit BEGIN/COMMIT statements made by pysqlite (a COMMIT kills all
+        # savepoints made).
+        connect_args['isolation_level'] = None
+
+
 if StrictVersion(flask_sa_version) <= StrictVersion('1.0'):
   # SA extension's scoped session supports 'bind' parameter only after 1.0. This
   # is a fix for it. This is required to ensure transaction rollback during
@@ -20,6 +38,7 @@ if StrictVersion(flask_sa_version) <= StrictVersion('1.0'):
   from flask.ext.sqlalchemy import _SignallingSession as BaseSession
 
   class SignallingSession(BaseSession):
+
     def __init__(self, db, autocommit=False, autoflush=True, **options):
       self.app = db.get_app()
       self._model_changes = {}
@@ -30,7 +49,8 @@ if StrictVersion(flask_sa_version) <= StrictVersion('1.0'):
                           bind=bind, binds=db.get_binds(self.app), **options)
 
 
-  class SQLAlchemy(SAExtension):
+  class SQLAlchemy(AbilianBaseSAExtension):
+
     def create_scoped_session(self, options=None):
       """Helper factory method that creates a scoped session."""
       # override needed to use our SignallingSession implementation
@@ -40,9 +60,10 @@ if StrictVersion(flask_sa_version) <= StrictVersion('1.0'):
       return sa.orm.scoped_session(partial(SignallingSession, self, **options),
                                    scopefunc=scopefunc)
 
+
 else:
   # Flask-SQLAlchemy > 1.0: bind parameter is supported
-  SQLAlchemy = SAExtension
+  SQLAlchemy = AbilianBaseSAExtension
 
 del flask_sa_version
 
