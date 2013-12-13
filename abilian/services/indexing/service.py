@@ -17,12 +17,10 @@ from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 
 import whoosh.index
-from whoosh import sorting
 from whoosh.writing import AsyncWriter
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 import whoosh.query as wq
-from whoosh import sorting
 from whoosh.support.charset import accent_map
 
 from flask import (
@@ -36,7 +34,7 @@ from abilian.core.util import fqcn
 from abilian.core.entities import all_entity_classes
 from abilian.core.extensions import celery, db
 
-from .adapter import SchemaAdapter, SAAdapter
+from .adapter import SAAdapter
 from .schema import DefaultSearchSchema
 
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
@@ -245,7 +243,12 @@ class WhooshIndexService(Service):
     we update the whoosh index for the model. If no index exists, it will be
     created here; this could impose a penalty on the initial commit of a model.
     """
-    if not self.running or session is not db.session():
+    if (not self.running
+        or session.transaction.nested # inside a sub-transaction: not yet written in DB
+        or session is not db.session()):
+      # note: we have not tested too far if session is enclosed in a transaction
+      # at connection level. For now it's not a standard use case, it would most
+      # likely happens during tests (which don't do that for now)
       return
 
     primary_field = 'id'
