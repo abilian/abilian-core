@@ -45,7 +45,7 @@ setuptools.setup(
     'Development Status :: 3 - Alpha',
     'Environment :: Web Environment',
     'Intended Audience :: Developers',
-    'License :: OSI Approved :: LGPL License',
+    'License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     ],
