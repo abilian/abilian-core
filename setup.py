@@ -30,7 +30,7 @@ def get_long_description():
 
 
 setuptools.setup(
-  name='Abilian-Core',
+  name='abilian-core',
   version='0.1',
   url='http://docs.abilian.com/',
   license='LGPL',
