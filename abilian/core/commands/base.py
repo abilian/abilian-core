@@ -7,7 +7,7 @@ from pprint import pformat
 import sqlalchemy as sa
 
 from flask import current_app
-from flask.ext.script import Manager
+from flask.ext.script import Manager, prompt_pass
 from abilian.core.extensions import db
 from abilian.core.subjects import User
 from abilian.services import get_service
@@ -118,11 +118,14 @@ def createadmin(email, password, name=None, first_name=None):
 
 
 @manager.command
-def changepassword(email, password):
+def passwd(email, password=None):
   """
   Changes the password for the given user.
   """
   user = User.query.filter(User.email==email).one()
-  user.password = password
+  if password is None:
+    password = prompt_pass(u'New password: ')
+
+  user.set_password(password)
   db.session.commit()
   print "Password updated for user {}".format(email)
