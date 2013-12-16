@@ -301,60 +301,6 @@ class WhooshIndexService(Service):
     return attrs
 
 
-class Searcher(object):
-  """
-  Assigned to a Model class as ``search_query``, which enables text-querying.
-  """
-
-  def __init__(self, model_class, primary, index):
-    self.model_class = model_class
-    self.primary = primary
-    self.index = index
-    self.searcher = index.searcher()
-    fields = set(index.schema._fields.keys()) - set([self.primary])
-    self.parser = MultifieldParser(list(fields), schema=index.schema)
-
-  def search(self, query, limit=None, get_models=False):
-    """
-    Returns a standard Whoosh search query result set. Optionally, if
-    `get_models` is True, will add the original SQLA models to the Whoosh
-    records, using only one SQL query.
-    """
-
-    hits = self.index.searcher().search(self.parser.parse(query), limit=limit)
-
-    if not get_models:
-      return hits
-
-    ids = [ hit[self.primary] for hit in hits ]
-
-    if not ids:
-      # don't query with empty 'in_(ids)'
-      return []
-
-    primary_column = getattr(self.model_class, self.primary)
-    session = self.model_class.query.session
-    query = session.query(self.model_class)
-
-    # Don't remove. Loads all the models at once in session identity map, so one
-    # can perform a `get` later on the session without issuing a query.
-    models = query.filter(primary_column.in_(ids)).all()
-
-    hits_with_models = []
-    for hit in hits:
-      pk = hit[self.primary]
-      try:
-        # session identity lookup needs exact type, else DB is issued
-        pk = int(pk)
-      except:
-        pass
-      model = query.get(pk)
-      if model:
-        hit.model = model
-        hits_with_models.append(hit)
-
-    return hits_with_models
-
 service = WhooshIndexService()
 
 
