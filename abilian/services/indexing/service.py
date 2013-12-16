@@ -266,43 +266,31 @@ class WhooshIndexService(Service):
     index_update.apply_async(kwargs=dict(index='default', items=items))
     self.clear_update_queue()
 
-  def index_objects(self, objects):
+  def index_objects(self, objects, index='default'):
     """
-    Bulk index a list of objets, that must be not indexed yet, and all of the
-    same class.
+    Bulk index a list of objects.
     """
     if not objects:
       return
 
-    model_class = objects[0].__class__
-    assert all(m.__class__ is model_class for m in objects),\
-      "All objects must be of the same class."
+    index_name = index
+    index = self.app_state.indexes[index_name]
 
-    index = self.index_for_model_class(model_class)
     with index.writer() as writer:
-      primary_field = model_class.search_query.primary
-      indexed_fields = model_class.whoosh_schema.names()
+      for obj in objects:
+        model_name = fqcn(obj.__class__)
+        adapter = self.adapted.get(model_name)
 
-      for model in objects:
-        document = self.make_document(model, indexed_fields, primary_field)
+        if adapter is None or not adapter.indexable:
+          continue
+
+        document = adapter.get_document(obj)
+        object_key = document['object_key']
+        writer.delete_by_term('object_key', object_key)
         writer.add_document(**document)
-
-  def make_document(self, model, indexed_fields, primary_field):
-    attrs = {}
-    for key in indexed_fields:
-      value = getattr(model, key)
-      if hasattr(value, '_name'):
-        value = value._name
-      elif isinstance(value, (str, int, db.Model)):
-        value = unicode(value)
-
-      attrs[key] = value
-    attrs[primary_field] = unicode(getattr(model, primary_field))
-    return attrs
 
 
 service = WhooshIndexService()
-
 
 @celery.task(ignore_result=True)
 def index_update(index, items):
