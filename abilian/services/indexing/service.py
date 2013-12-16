@@ -296,24 +296,23 @@ service = WhooshIndexService()
 def index_update(index, items):
   """
   :param:index: index name
-  :param:items: list of (operation, model key, primary key, data) tuples.
+  :param:items: list of (operation, full class name, primary key, data) tuples.
   """
   index_name = index
   index = service.app_state.indexes[index_name]
   adapted = service.adapted
-  # indexed_fields = index.schema.names()
 
-  primary_field = 'id'
   session = Session(bind=db.session.get_bind(None, None), autocommit=True)
 
   with AsyncWriter(index) as writer:
     for op, cls_name, pk, data in items:
       if pk is None:
         continue
-      # delete everything. stuff that's updated or inserted will get
-      # added as a new doc. Could probably replace this with a whoosh
-      # update.
-      writer.delete_by_term(primary_field, pk)
+
+      # always delete. Whoosh manual says that 'update' is actually delete + add
+      # operation
+      object_key = u'{}:{}'.format(cls_name, pk)
+      writer.delete_by_term('object_key', object_key)
 
       adapter = adapted.get(cls_name)
       if not adapter:
