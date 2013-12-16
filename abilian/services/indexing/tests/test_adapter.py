@@ -9,7 +9,7 @@ from datetime import datetime
 import sqlalchemy as sa
 from whoosh.fields import (
   Schema,
-  ID, DATETIME, TEXT, NUMERIC
+  TEXT, NUMERIC
 )
 
 from abilian.services.indexing.adapter import SAAdapter
