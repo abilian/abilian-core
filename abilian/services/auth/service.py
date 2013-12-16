@@ -55,7 +55,7 @@ class AuthService(Service):
   def init_app(self, app):
     login_manager.init_app(app)
     Service.init_app(self, app)
-    self.login_url_prefix = app.config.get('LOGIN_URL', '/login')
+    self.login_url_prefix = app.config.get('LOGIN_URL', '/user')
     app.before_request(self.before_request)
     app.register_blueprint(login_views, url_prefix=self.login_url_prefix)
     with app.app_context():

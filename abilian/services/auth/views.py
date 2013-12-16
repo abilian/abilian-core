@@ -37,7 +37,7 @@ from .models import LoginSession
 __all__ = []
 
 login = Blueprint("login", __name__,
-                  url_prefix="/login",
+                  url_prefix="/user",
                   template_folder='templates')
 route = login.route
 
@@ -45,7 +45,7 @@ route = login.route
 #
 # Login / Logout
 #
-@route("/")
+@route("/login")
 def login_form():
   """Display the login form."""
   next_url = get_redirect_target()
@@ -63,7 +63,7 @@ def login_post():
     return (render_template("login/login.html", next_url=next_url,), 401)
 
   try:
-    user = User.query.filter(User.email == email, User.can_login is True).one()
+    user = User.query.filter(User.email == email, User.can_login == True).one()
   except NoResultFound:
     flash(_(u"Sorry, we couldn't find an account for "
             "email '{email}'.").format(email=email), 'error')
