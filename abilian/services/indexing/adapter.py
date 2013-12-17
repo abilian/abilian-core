@@ -176,7 +176,10 @@ class SAAdapter(SchemaAdapter):
             continue
           else:
             cached[a] = val
-        values.append(cached[a])
+
+        val = cached[a]
+        if val is not None:
+          values.append(val)
 
       if values:
         if len(values) == 1:
