@@ -303,7 +303,7 @@ def index_update(index, items):
   adapted = service.adapted
 
   session = Session(bind=db.session.get_bind(None, None), autocommit=True)
-
+  updated = set()
   with AsyncWriter(index) as writer:
     for op, cls_name, pk, data in items:
       if pk is None:
@@ -317,6 +317,12 @@ def index_update(index, items):
       adapter = adapted.get(cls_name)
       if not adapter:
         # FIXME: log to sentry?
+        continue
+
+      if object_key in updated:
+        # don't add twice the same document in same transaction. The writer will
+        # not delete previous records, ending in duplicate records for same
+        # document.
         continue
 
       if op in ("new", "changed"):
@@ -335,5 +341,6 @@ def index_update(index, items):
 
         document = adapter.get_document(obj)
         writer.add_document(**document)
+        updated.add(object_key)
 
   session.close()
