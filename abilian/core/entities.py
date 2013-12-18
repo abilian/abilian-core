@@ -105,10 +105,10 @@ class Indexable(object):
   """
   Mixin with sensible defaults for indexable objects.
   """
+  __indexable__ = True
   __indexation_args__ = {
-    'searchable': True,
     'index_to': (('object_key', (('object_key',
-                                  ID(stored=True, unique=False)),)),
+                                  ID(stored=True, unique=True)),)),
                  ('object_type', (('object_type',
                                    ID(stored=True, unique=False)),)),
                  ),
@@ -226,6 +226,8 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
 
 class _EntityInherit(object):
+  __indexable__ = True
+
   @declared_attr
   def id(cls):
     return Column(
@@ -278,6 +280,7 @@ class Entity(Indexable, BaseMixin, db.Model):
   """
   __metaclass__ = EntityMeta
   __mapper_args__ = {'polymorphic_on': '_entity_type'}
+  __indexable__ = False
 
   name = Column('name', UnicodeText(),
                 info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'text')))

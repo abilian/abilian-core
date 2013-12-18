@@ -87,8 +87,8 @@ class SAAdapter(SchemaAdapter):
     """
     assert issubclass(Model, db.Model)
     self.Model = Model
+    self.indexable = getattr(Model, '__indexable__', False)
     self.index_args = getattr(Model, '__indexation_args__', {})
-    self.indexable = bool(self.index_args.get('searchable'))
     self.doc_attrs = {}
     if self.indexable:
       self._build_doc_attrs(Model, schema)
@@ -111,7 +111,8 @@ class SAAdapter(SchemaAdapter):
             or field_definitions[field_name] is False):
           field_definitions[field_name] = field_def
 
-      # attrgetter offers dotted name support
+      # attrgetter offers dotted name support. Useful for attributes on related
+      # objects.
       args.setdefault(field_name, {})[name] = attrgetter(name)
 
 

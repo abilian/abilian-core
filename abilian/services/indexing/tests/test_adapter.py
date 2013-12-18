@@ -24,13 +24,11 @@ class SANotAdaptable(object):
 
 class SANotIndexable(IdMixin, db.Model):
   __tablename__ = 'sa_not_indexable'
-  __indexation_args__ = dict(searchable=False)
-
+  __indexable__ = False
 
 class Indexable(IdMixin, CoreIndexable, db.Model):
   __tablename__ = 'sa_indexable'
   __indexation_args__ = dict(
-    searchable=True,
     index_to=(('related.name', ('name', 'text')),
               ('related.description', 'text'),
               ),
@@ -43,6 +41,8 @@ class Indexable(IdMixin, CoreIndexable, db.Model):
       ),
   )
 
+class SubclassEntityIndexable(Entity):
+  pass
 
 class TestSAAdapter(TestCase):
 
@@ -59,6 +59,9 @@ class TestSAAdapter(TestCase):
     self.assertEquals(adapter.doc_attrs, {})
 
     adapter = SAAdapter(Entity, schema)
+    self.assertEquals(adapter.indexable, False)
+
+    adapter = SAAdapter(SubclassEntityIndexable, schema)
     self.assertEquals(adapter.indexable, True)
     self.assertEquals(set(adapter.doc_attrs),
                       set(('object_key', 'id', 'name', 'object_type',
@@ -85,19 +88,20 @@ class TestSAAdapter(TestCase):
 
   def test_get_document(self):
     schema = Schema()
-    adapter = SAAdapter(Entity, schema)
+    adapter = SAAdapter(SubclassEntityIndexable, schema)
     expected = dict(
       id=2,
       name=u'entity',
       created_at=datetime(2013, 11, 28, 16, 17, 0),
       updated_at=datetime(2013, 11, 29, 12, 17, 58)
     )
-    obj = Entity(**expected)
-    expected['object_type'] = u'None'
-    expected['object_key'] = u'None:2'
+    obj = SubclassEntityIndexable(**expected)
+    expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
+    expected['object_key'] = u'test_adapter.SubclassEntityIndexable:2'
     expected['text'] = u'entity'
     self.assertEquals(adapter.get_document(obj), expected)
 
+    # test retrieve related attributes
     schema = Schema(
       id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True),
     )
