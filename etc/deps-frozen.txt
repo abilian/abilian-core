@@ -46,6 +46,7 @@ passlib==1.6.1
 pep8==1.4.6
 phonenumbers==5.4b1
 Pillow==2.0.0
+progressbar >= 2.3
 psycopg2==2.4.6
 py-bcrypt==0.3
 py==1.4.18

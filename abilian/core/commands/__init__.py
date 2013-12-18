@@ -34,6 +34,7 @@ from __future__ import absolute_import
 from .base import manager
 from .assets import ManageAssets
 from .config import manager as config_manager
+from . import indexing
 
 __all__ = ['manager', 'setup_abilian_commands']
 
