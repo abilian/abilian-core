@@ -49,7 +49,6 @@ class IndexingTestCase(IntegrationTestCase):
     assert contact.id == found['id']
     assert contact.name == found['name']
 
-    search_result = index_service.search(u"john", get_models=True)
+    search_result = index_service.search(u"john")
     assert len(search_result) == 1
     assert contact.id == int(search_result[0]['id'])
-    assert contact == search_result[0].model

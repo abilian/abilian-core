@@ -18,7 +18,7 @@ from sqlalchemy.orm.session import Session
 
 import whoosh.index
 from whoosh.writing import AsyncWriter
-from whoosh.qparser import MultifieldParser
+from whoosh.qparser import DisMaxParser
 from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 import whoosh.query as wq
 from whoosh.support.charset import accent_map
@@ -140,23 +140,45 @@ class WhooshIndexService(Service):
     state.indexed_classes = set()
     self.clear_update_queue()
 
-  def search(self, q, index='default', Models=(), get_models=False, **search_args):
+  @property
+  def default_search_fields(self):
+    """
+    Return default field names and boosts to be used for searching. Can be
+    configured with `SEARCH_DEFAULT_BOOSTS`
+    """
+    config = current_app.config.get('SEARCH_DEFAULT_BOOSTS')
+    if not config:
+     config = dict(
+         name=1.5,
+         description=1.3,
+         text=1.0,)
+     return config
+
+  def search(self, q, index='default', fields=None, Models=(),
+             object_types=(),
+             **search_args):
     """
     Interface to search indexes.
 
     :param q: unparsed search string.
     :param index: name of index to use for search.
+    :param fields: optionnal mapping of field names -> boost factor?
     :param Models: list of Model classes to limit search on.
-    :param limit: maximum number of results.
+    :param object_types: same as `Models`, but directly the model string.
     :param search_args: any valid parameter for
-        :meth:`whoosh.searching.Search.search`.
+        :meth:`whoosh.searching.Search.search`. This includes `limit`,
+        `groupedby` and `sortedby`
     """
     index = self.app_state.indexes[index]
-    fields = set(index.schema.names()) - set(['id'])
-    if Models:
-      fields.discard('object_type')
+    valid_fields = set(index.schema.names())
 
-    parser = MultifieldParser(list(fields), index.schema)
+    if not fields:
+      fields = self.default_search_fields
+
+    for invalid in set(fields) - valid_fields:
+      del fields[invalid]
+
+    parser = DisMaxParser(fields, index.schema)
     query = parser.parse(q)
 
     if Models:
@@ -172,25 +194,17 @@ class WhooshIndexService(Service):
         filtered_models = (wq.Or(*filtered_models)
                            if len(filtered_models) > 1
                            else filtered_models[0])
-        query = wq.And(query, filtered_models)
+        filter_q = search_args.get('filter')
+        search_args['filter'] = (wq.And(filter_q, filtered_models)
+                                 if filter_q
+                                 else filtered_models)
+
+    # FIXME: include allowed_roles_and_users filter here
 
     with index.searcher(closereader=False) as searcher:
       # 'closereader' is needed, else results cannot by used outside 'with'
       # statement
-      results = searcher.search(query, **search_args)
-
-      if get_models:
-        # FIXME: get_models is not a good idea in the general case (inefficient,
-        # potentially many results), search results should be self-sufficients
-        res = []
-        for r in results:
-          adapter = self.adapted.get(r['object_type'])
-          if adapter:
-            r.model = adapter.retrieve(r['id'])
-            res.append(r)
-        results = res
-
-    return results
+      return searcher.search(query, **search_args)
 
   def search_for_class(self, query, cls, index='default', **search_args):
     return self.search(query, Models=(fqcn(cls),), index=index, **search_args)
