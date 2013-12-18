@@ -40,13 +40,13 @@ class Registry(object):
     and that accepts `object_id=entity.id` to generates an url.
 
     :param entity: a instance of a subclass of
-    :class:`abilian.core.entities.Entity`, or an object type string.
+        :class:`abilian.core.entities.Entity`, or an object type string.
 
     :param object_id: if `entity` is not an instance, this parameter
-    must be set to target id. This is usefull when you know the type and
-    id of an object but don't want to retrieve it from DB.
+        must be set to target id. This is usefull when you know the type and
+        id of an object but don't want to retrieve it from DB.
 
-    :raise:KeyError if no view can be found for the given entity.
+    :raise KeyError: if no view can be found for the given entity.
     """
     object_type = entity
 
