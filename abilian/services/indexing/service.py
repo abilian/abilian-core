@@ -191,9 +191,7 @@ class WhooshIndexService(Service):
         filtered_models.append(wq.Term('object_type', object_type))
 
       if filtered_models:
-        filtered_models = (wq.Or(*filtered_models)
-                           if len(filtered_models) > 1
-                           else filtered_models[0])
+        filtered_models = wq.Or(filtered_models)
         filter_q = search_args.get('filter')
         search_args['filter'] = (wq.And(filter_q, filtered_models)
                                  if filter_q
