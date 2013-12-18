@@ -30,27 +30,40 @@ class Registry(object):
     assert issubclass(entity, Entity)
     self._map[entity.entity_type] = url_func
 
-  def url_for(self, entity):
+  def url_for(self, entity, object_id=None):
     """
     Returns canonical view for given entity instance.
 
 
-    If no view has been registered the registry will try to find an endpoint
-    named with entity's class lowercased followed by '.view' and that
-    accepts `object_id=entity.id` to generates an url.
+    If no view has been registered the registry will try to find an
+    endpoint named with entity's class lowercased followed by '.view'
+    and that accepts `object_id=entity.id` to generates an url.
+
+    :param entity: a instance of a subclass of
+    :class:`abilian.core.entities.Entity`, or an object type string.
+
+    :param object_id: if `entity` is not an instance, this parameter
+    must be set to target id. This is usefull when you know the type and
+    id of an object but don't want to retrieve it from DB.
 
     :raise:KeyError if no view can be found for the given entity.
     """
-    assert isinstance(entity, Entity)
-    url_func = self._map.get(entity.entity_type)
+    object_type = entity
+
+    if not isinstance(object_type, basestring):
+      assert isinstance(entity, Entity)
+      object_id = entity.id
+      object_type = entity.object_type
+
+    url_func = self._map.get(object_type)
     if url_func is not None:
-      return url_func(entity)
+      return url_func(entity, object_type, object_id)
 
     try:
-      return url_for('{}.view'.format(entity.__class__.__name__.lower()),
-                     object_id=entity.id)
+      return url_for('{}.view'.format(object_type.rsplit('.')[-1].lower()),
+                     object_id=object_id)
     except:
-      raise KeyError(entity.entity_type)
+      raise KeyError(object_type)
 
 
 class default_view(object):
@@ -76,8 +89,8 @@ class default_view(object):
     if endpoint[0] == '.':
       endpoint = self.app_or_blueprint.name + endpoint
 
-    def default_url(obj):
-      kwargs = { self.id_attr: obj.id }
+    def default_url(obj, obj_type, obj_id):
+      kwargs = { self.id_attr: obj_id }
       return url_for(endpoint, **kwargs)
 
     if self.is_bp:

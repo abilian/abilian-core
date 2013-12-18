@@ -50,14 +50,20 @@ class TestRegistry(FlaskTestCase):
 
   def test_custom_url_func(self):
     name = u'obj'
-    obj = RegEntity(name=name)
+    obj = RegEntity(id=1, name=name)
     registry = self.app.default_view
 
-    def custom_url(obj):
+    def custom_url(obj, obj_type, obj_id):
       return obj.name
 
     registry.register(obj, custom_url)
     self.assertEquals(registry.url_for(obj), name)
+
+    def url_from_type_and_id(obj, obj_type, obj_id):
+      return u'{}:{}'.format(obj_type, obj_id)
+
+    registry.register(obj, url_from_type_and_id)
+    self.assertEquals(registry.url_for(obj), u'test_registry.RegEntity:1')
 
   def test_default_url_func(self):
     obj = RegEntity(id=1)
