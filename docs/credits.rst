@@ -4,9 +4,7 @@ Credits
 Design, programming
 -------------------
 
-Stefane Fermigier: 2012.
-
-Abilian development team (Stefane Fermigier, Bertrand Mathieu): 2012-2013.
+Abilian development team: 2012-2013.
 
 
 Art (images, icons)

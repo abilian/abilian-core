@@ -36,7 +36,7 @@ setuptools.setup(
   license='LGPL',
   author='Abilian SAS',
   author_email='contact@abilian.com',
-  description='Base framework for social business applications',
+  description='A framework for social business applications, based on Flask and SQLAlchemy',
   long_description=get_long_description(),
   packages=['abilian'],
   platforms='any',

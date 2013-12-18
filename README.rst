@@ -48,8 +48,8 @@ Infrastructure
 
 -  Security model and service
 
-Domain model and dservices
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Domain model and services
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -  Domain object model, based on SQLAlchemy
 
@@ -115,7 +115,7 @@ by `Abilian <http://www.abilian.com/>`_ over the last two years:
 -  Abilian EMS (Event Management System)
 
 -  Abilian CRM (Customer / Contact / Community Relationship Management
-   Systemt)
+   System)
 
 -  Abilian Le MOOC - a MOOC prototype
 
