@@ -1,0 +1,46 @@
+{% extends "search/_base.html" %}
+
+{% from "macros/box.html" import m_box_menu %}
+
+{% block content %}
+  <div class="row">
+    <form class="col-md-10 col-md-offset-1" role="search" method="GET" action="{{ url_for('search.search_main') }}">
+      <div class="input-group">
+        <input type="search" name="q" class="search-query form-control" value="{{ q }}"
+               placeholder="{{ _('Search') }}" autocomplete="off" id="search-box" />
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+
+  {%- if not results %}
+    <p class="lead">{{ _("Your query didn't find any results.") }}</p>
+  {%- else %}
+    {%- for hit in results %}
+      <a href="{{ url_for_hit(hit) }}"><strong>{{ hit['name'] }}</strong></a>
+      {%- if (filtered_by_type|length) != 1 %}
+        <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span>
+      {%- endif %}
+      <p>{{ hit['updated_at']|datetimeformat }}
+        {{ hit['description'] }}
+      </p>
+    {%- endfor %}
+  {%- endif %}
+{% endblock %}
+
+{% block sidebar %}
+  {%- if by_object_type %}
+    {% call m_box_menu(title=_('Filter by types')) %}
+      <ul class="nav nav-list">
+        {%- for name, count, link in by_object_type %}
+          <li><a href="{{ link }}">{{ name }} ({{ count }})</a></li>
+        {%- endfor %}
+      </ul>
+    {% endcall %}
+  {%- endif %}
+
+{% endblock %}
