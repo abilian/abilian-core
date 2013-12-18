@@ -263,7 +263,8 @@ class WhooshIndexService(Service):
       if sa.orm.object_session(obj) is not None: # safeguard against DetachedInstanceError
         items.append((op, model_name, getattr(obj, primary_field), {}))
 
-    index_update.apply_async(kwargs=dict(index='default', items=items))
+    if items:
+      index_update.apply_async(kwargs=dict(index='default', items=items))
     self.clear_update_queue()
 
   def index_objects(self, objects, index='default'):
