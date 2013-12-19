@@ -12,10 +12,48 @@ from abilian.core.subjects import User, Group
 from abilian.core.extensions import db
 
 
-__all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity', 'Anonymous']
+__all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
+           'Anonymous', 'Authenticated', 'Admin']
+
+class RoleSingleton(type):
+
+  def __new__(cls, name, bases, dct):
+    dct['_instances'] = {}
+    return type.__new__(cls, name, bases, dct)
+
+  def __call__(cls, role, *args, **kwargs):
+    if role not in cls._instances:
+      cls._instances[role] = type.__call__(cls, role, *args, **kwargs)
+    return cls._instances[role]
+
+
+class Role(object):
+  """
+  Defines role by name. Roles instances are unique by name.
+  """
+  __metaclass__ = RoleSingleton
+
+  def __init__(self, role):
+    self.role = unicode(role).lower()
+
+  def __repr__(self):
+    return 'Role(u"{}")'.format(self.role.encode('utf-8'))
+
+  def __unicode__(self):
+    return self.role
+
+  def __str__(self):
+    return str(self.role)
+
 
 #: marker for role assigned to 'Anonymous'
-Anonymous = type('AnonymousRole', (object,), {})()
+Anonymous = Role('anonymous')
+
+#: marker for role assigned to 'Authenticated'
+Authenticated = Role('authenticated')
+
+#: marker for `Admin` role
+Admin = Role('admin')
 
 class RoleAssignment(db.Model):
   __tablename__ = "roleassignment"
