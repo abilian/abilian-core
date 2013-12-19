@@ -65,12 +65,14 @@ class TestSAAdapter(TestCase):
     self.assertEquals(adapter.indexable, True)
     self.assertEquals(set(adapter.doc_attrs),
                       set(('object_key', 'id', 'name', 'object_type',
-                           'text', 'created_at', 'updated_at')))
+                           'text', 'created_at', 'updated_at',
+                           'owner', 'owner_name', 'creator_name', 'creator')))
     self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
 
     self.assertEquals(set(schema.names()),
                       set(('object_key', 'id', 'object_type', 'name',
-                           'text', 'created_at', 'updated_at')))
+                           'text', 'created_at', 'updated_at',
+                           'owner', 'owner_name', 'creator_name', 'creator')))
 
     schema = Schema(
       id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True),
@@ -96,6 +98,8 @@ class TestSAAdapter(TestCase):
       updated_at=datetime(2013, 11, 29, 12, 17, 58)
     )
     obj = SubclassEntityIndexable(**expected)
+    expected['creator_name'] = u''
+    expected['owner_name'] = u''
     expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
     expected['object_key'] = u'test_adapter.SubclassEntityIndexable:2'
     expected['text'] = u'entity'

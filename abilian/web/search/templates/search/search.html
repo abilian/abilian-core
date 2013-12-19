@@ -21,15 +21,17 @@
     <p class="lead">{{ _("Your query didn't find any results.") }}</p>
   {%- else %}
     {%- for hit in results %}
-      <a href="{{ url_for_hit(hit) }}"><strong>{{ hit['name'] }}</strong></a>
+      <div class="row">
+      <a href="{{ url_for_hit(hit) }}"><strong>{{ hit.highlights('name')|safe or hit['name']}}</strong></a>
       {%- if (filtered_by_type|length) != 1 %}
         <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span>
       {%- endif %}
-      <p>{{ hit['updated_at']|datetimeformat }}<br />
+      <p><i>By {{ hit['creator_name'] }} - Last modification: {{ hit['updated_at']|datetimeformat }}</i><br />
         {%- if 'description' in hit %}
           {{ hit.highlights('description')|safe }}
         {%- endif %}
       </p>
+      </div>
     {%- endfor %}
   {%- endif %}
 {% endblock %}

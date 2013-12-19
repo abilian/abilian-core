@@ -18,7 +18,7 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime, String, UnicodeText
 from sqlalchemy import event
 
-from whoosh.fields import ID
+from whoosh.fields import ID, STORED
 
 from .extensions import db
 from .util import memoized, fqcn
@@ -137,6 +137,14 @@ class TimestampedMixin(object):
 
 class OwnedMixin(object):
 
+  __indexation_args__ = {
+    'index_to': (('creator', ('creator',)),
+                 ('creator_name', (('creator_name', STORED),)),
+                 ('owner', ('owner',)),
+                 ('owner_name', (('owner_name', STORED),)),
+      ),
+    }
+
   def __init__(self, *args, **kwargs):
     if hasattr(g, 'user'):
       if not self.creator and not g.user.is_anonymous():
@@ -154,6 +162,10 @@ class OwnedMixin(object):
     return relationship("User", primaryjoin=pj, lazy='joined', uselist=False,
                         info=SYSTEM|SEARCHABLE)
 
+  @property
+  def creator_name(self):
+    return unicode(self.creator) if self.creator else u''
+
   @declared_attr
   def owner_id(cls):
     return Column(ForeignKey("user.id"), info=SYSTEM)
@@ -163,6 +175,10 @@ class OwnedMixin(object):
     pj = "User.id == %s.owner_id" % cls.__name__
     return relationship("User", primaryjoin=pj, lazy='joined', uselist=False,
                         info=SYSTEM|SEARCHABLE)
+
+  @property
+  def owner_name(self):
+    return unicode(self.owner) if self.owner else u''
 
 
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
@@ -281,6 +297,12 @@ class Entity(Indexable, BaseMixin, db.Model):
   __metaclass__ = EntityMeta
   __mapper_args__ = {'polymorphic_on': '_entity_type'}
   __indexable__ = False
+  __indexation_args__ = {}
+  __indexation_args__.update(Indexable.__indexation_args__)
+  index_to = __indexation_args__.setdefault('index_to', ())
+  index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
+  __indexation_args__['index_to'] = index_to
+  del index_to
 
   name = Column('name', UnicodeText(),
                 info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'text')))
