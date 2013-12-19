@@ -61,12 +61,12 @@ class IndexedTermsDebugPanel(DebugPanel):
 
     adapter = svc.adapted.get(fqcn(obj.__class__))
     if adapter and adapter.indexable:
-      doc = context['current_document'] = adapter.get_document(obj)
+      doc = context['current_document'] = svc.get_document(obj, adapter)
       indexed = {}
       for name, field in schema.items():
         value = doc.get(name)
         indexed[name] = None
-        if value:
+        if value and field.format:
           indexed[name] = list(field.process_text(value))
       context['current_indexed'] = indexed
       context['current_keys'] = sorted(set(doc) | set(indexed))
