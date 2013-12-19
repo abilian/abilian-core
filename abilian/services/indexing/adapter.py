@@ -4,6 +4,7 @@ Objects to schema adapters
 """
 from __future__ import absolute_import
 
+import logging
 from abc import ABCMeta, abstractmethod
 from operator import attrgetter
 
@@ -16,6 +17,8 @@ from abilian.core.extensions import db
 from .schema import accent_folder
 
 __all__ = ['SchemaAdapter', 'SAAdapter']
+
+logger = logging.getLogger(__name__)
 
 class SchemaAdapter(object):
   """
@@ -145,6 +148,11 @@ class SAAdapter(SchemaAdapter):
 
       if field_def is False:
         field_def = TEXT(stored=True, analyzer=accent_folder)
+
+      logger.debug('Adding field to schema:\n'
+                    '  Model: %s\n'
+                    '  Field: "%s" %s',
+                    Model._object_type(), field_name, field_def)
       schema.add(field_name, field_def)
 
   def retrieve(self, pk, _session=None, **data):
