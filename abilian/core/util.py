@@ -11,7 +11,17 @@ import unicodedata
 import re
 
 from babel.dates import LOCALTZ
+from werkzeug.local import LocalProxy
+
 from flask import request
+
+def noproxy(obj):
+  """ Unwrap obj from werkzeug.local.LocalProxy if needed. This is required if
+  one want to test `isinstance(obj, SomeClass)`.
+  """
+  if isinstance(obj, LocalProxy):
+    obj = obj._get_current_object()
+  return obj
 
 
 def fqcn(cls):

@@ -14,7 +14,6 @@ try:
   from flask.ext.login import AnonymousUserMixin
 except ImportError:
   from flask.ext.login import AnonymousUser as AnonymousUserMixin
-from werkzeug.local import LocalProxy
 
 from sqlalchemy.orm import subqueryload, object_session
 from sqlalchemy import sql
@@ -22,19 +21,13 @@ from sqlalchemy import sql
 from abilian.core.subjects import User, Group, Principal
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
+from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
   SecurityAudit, RoleAssignment, Anonymous,
   InheritSecurity
 )
 
-def noproxy(obj):
-  """ Unwrap obj from werkzeug.local.LocalProxy if needed. This is required if
-  one want to test `isinstance(obj, SomeClass)`.
-  """
-  if isinstance(obj, LocalProxy):
-    obj = obj._get_current_object()
-  return obj
 
 
 # Currently hardcoded.
