@@ -6,7 +6,9 @@ import logging
 from datetime import datetime, timedelta
 
 from flask import current_app, g, request, url_for, _request_ctx_stack
-from flask.ext.login import current_user
+from flask.ext.login import (
+  current_user, user_logged_in,  user_logged_out
+)
 from flask.ext.babel import lazy_gettext as _l
 
 from abilian.services import Service
@@ -57,6 +59,8 @@ class AuthService(Service):
     Service.init_app(self, app)
     self.login_url_prefix = app.config.get('LOGIN_URL', '/user')
     app.before_request(self.before_request)
+    user_logged_in.connect(self.user_logged_in, sender=app)
+    user_logged_out.connect(self.user_logged_out, sender=app)
     app.register_blueprint(login_views, url_prefix=self.login_url_prefix)
     with app.app_context():
       actions.register(*_ACTIONS)
@@ -79,6 +83,8 @@ class AuthService(Service):
 
       return None
 
+
+  def user_logged_in(self, app, user):
     # `g.user` is used as `current_user`, but `current_user` is actually looking
     # for `request.user` whereas `g` is on app local stack.
     #
@@ -86,7 +92,16 @@ class AuthService(Service):
     # a manager to see site as another user (impersonate), or propose a "see as
     # anonymous" function
     g.user = g.logged_user = user
-    return user
+    security = current_app.services.get('security')
+
+    g.is_manager = (not user.is_anonymous()
+                    and ((security.has_role(user, 'admin')
+                          or security.has_role(user, 'manager'))))
+
+  def user_logged_out(self, app, user):
+    del g.user
+    del g.logged_user
+    del g.is_manager
 
   def before_request(self):
     if current_app.testing and current_app.config.get("NO_LOGIN"):
@@ -94,13 +109,7 @@ class AuthService(Service):
       # current_user points to _request_ctx_stack.top.user
       user = _request_ctx_stack.top.user = g.user = User.query.first()
     else:
-      user = g.user = current_user
-
-    security = current_app.services.get('security')
-
-    g.is_manager = (not user.is_anonymous()
-                    and ((security.has_role(user, 'admin')
-                          or security.has_role(user, 'manager'))))
+      user = current_user
 
     # ad-hoc security test based on requested path
     #
