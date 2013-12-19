@@ -9,9 +9,12 @@ import requests
 import tempfile
 import shutil
 import warnings
+from contextlib import contextmanager
 
 from sqlalchemy.exc import SAWarning
 from flask.ext.testing import TestCase
+from flask.ext.login import login_user, logout_user
+from abilian.core.subjects import User
 from abilian.app import Application
 
 assert not 'twill' in subprocess.__file__
@@ -170,6 +173,44 @@ class BaseTestCase(TestCase):
 
     self.db.engine.dispose()
     TestCase.tearDown(self)
+
+  def login(self, user, remember=False, force=False):
+    """
+    Perform user login for `user`, so that code needing a logged-in user can
+    work.
+
+    This method can also be used as a context manager, so that logout is
+    performed automatically::
+
+        with self.login(user):
+            self.assertEquals(...)
+
+    .. seealso:: :meth:`logout`
+    """
+    login_user(user, remember, force)
+
+    @contextmanager
+    def with_logout():
+      yield
+      self.logout()
+
+    return with_logout
+
+  def logout(self):
+    """
+    Perform user logout.
+
+    .. seealso:: :meth:`login`
+    """
+    logout_user()
+
+  def login_system(self):
+    """
+    Perform login with SYSTEM user. Can be used as a context manager.
+
+    .. seealso:: :meth:`login`, :meth:`logout`
+    """
+    return self.login(User.query.get(0), force=True)
 
   @property
   def db(self):
