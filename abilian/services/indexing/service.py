@@ -30,7 +30,8 @@ from flask.ext.login import current_user
 from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
-from abilian.services.security import Anonymous, Authenticated
+from abilian.services.security import Role, Anonymous, Authenticated
+from abilian.core.subjects import User, Group
 from abilian.core.util import fqcn
 from abilian.core.entities import all_entity_classes
 from abilian.core.extensions import celery, db
@@ -307,6 +308,10 @@ class WhooshIndexService(Service):
       return None
 
     document = adapter.get_document(obj)
+
+    for k,v in document.items():
+      if isinstance(v, (User, Group, Role)):
+        document[k] = indexable_role(v)
 
     if not document.get('allowed_roles_and_users'):
       # no data for security: assume anybody can access the document
