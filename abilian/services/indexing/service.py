@@ -310,6 +310,9 @@ class WhooshIndexService(Service):
     document = adapter.get_document(obj)
 
     for k,v in document.items():
+      if v is None:
+        del document[k]
+        continue
       if isinstance(v, (User, Group, Role)):
         document[k] = indexable_role(v)
 
