@@ -98,7 +98,23 @@ Module :mod:`abilian.services.image`
 Module :mod:`abilian.services.indexing`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: abilian.services.indexing
+.. autodata:: abilian.services.indexing.service
+   :annotation:
+
+.. autoclass:: abilian.services.indexing.service.WhooshIndexService
+.. autofunction:: abilian.services.indexing.indexable_role
+
+Module :mod:`abilian.services.security`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autodata:: abilian.services.security.service
+   :annotation:
+
+.. autoclass:: abilian.services.security.service.SecurityServiceState
+.. autodata:: abilian.services.security.Anonymous
+   :annotation:
+.. autodata:: abilian.services.security.Authenticated
+   :annotation:
 
 
 Package ``abilian.web``
