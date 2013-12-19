@@ -23,19 +23,20 @@ from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 import whoosh.query as wq
 from whoosh.support.charset import accent_map
 
-from flask import (
-    current_app,
+from flask import (current_app, g,
     _app_ctx_stack, appcontext_pushed,
 )
+from flask.ext.login import current_user
 from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
+from abilian.services.security import Anonymous, Authenticated
 from abilian.core.util import fqcn
 from abilian.core.entities import all_entity_classes
 from abilian.core.extensions import celery, db
 
 from .adapter import SAAdapter
-from .schema import DefaultSearchSchema
+from .schema import DefaultSearchSchema, indexable_role
 
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
@@ -181,6 +182,23 @@ class WhooshIndexService(Service):
     parser = DisMaxParser(fields, index.schema)
     query = parser.parse(q)
 
+
+
+    if not hasattr(g, 'is_manager') or not g.is_manager:
+      # security access filter
+      user = current_user
+      roles = [indexable_role(user)]
+      if not user.is_anonymous():
+        roles.append(indexable_role(Anonymous))
+        roles.append(indexable_role(Authenticated))
+        roles.extend([indexable_role(group) for group in user.groups])
+
+      filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
+                        for role in roles])
+      if 'filter' in search_args:
+        filter_q = wq.And(search_args['filter'], filter_q)
+      search_args['filter'] = filter_q
+
     if Models:
       # limit object_type
       filtered_models = []
@@ -192,12 +210,11 @@ class WhooshIndexService(Service):
 
       if filtered_models:
         filtered_models = wq.Or(filtered_models)
-        filter_q = search_args.get('filter')
-        search_args['filter'] = (wq.And(filter_q, filtered_models)
-                                 if filter_q
-                                 else filtered_models)
+        filter_q = wq.And(search_args['filter'], filtered_models)
 
-    # FIXME: include allowed_roles_and_users filter here
+        if 'filter' in search_args:
+          filter_q = wq.And(search_args['filter'], filter_q)
+        search_args['filter'] = filter_q
 
     with index.searcher(closereader=False) as searcher:
       # 'closereader' is needed, else results cannot by used outside 'with'

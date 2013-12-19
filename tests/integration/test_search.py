@@ -38,6 +38,7 @@ class IndexingTestCase(IntegrationTestCase):
     IntegrationTestCase.tearDown(self)
 
   def test_contacts_are_indexed(self):
+    self.login_system()
     contact = DummyContact1(first_name=u"John", last_name=u"Test User",
                             email=u"test@example.com")
     self.session.add(contact)
