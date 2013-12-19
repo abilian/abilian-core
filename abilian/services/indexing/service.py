@@ -296,6 +296,24 @@ class WhooshIndexService(Service):
       index_update.apply_async(kwargs=dict(index='default', items=items))
     self.clear_update_queue()
 
+  def get_document(self, obj, adapter=None):
+    """
+    """
+    if adapter is None:
+      class_name = fqcn(obj.__class__)
+      adapter = self.adapted.get(class_name)
+
+    if adapter is None or not adapter.indexable:
+      return None
+
+    document = adapter.get_document(obj)
+
+    if not document.get('allowed_roles_and_users'):
+      # no data for security: assume anybody can access the document
+      document['allowed_roles_and_users'] = indexable_role(Anonymous)
+
+    return document
+
   def index_objects(self, objects, index='default'):
     """
     Bulk index a list of objects.
@@ -305,19 +323,21 @@ class WhooshIndexService(Service):
 
     index_name = index
     index = self.app_state.indexes[index_name]
+    indexed = set()
 
     with index.writer() as writer:
       for obj in objects:
-        model_name = fqcn(obj.__class__)
-        adapter = self.adapted.get(model_name)
-
-        if adapter is None or not adapter.indexable:
+        document = self.get_document(obj)
+        if document is None:
           continue
 
-        document = adapter.get_document(obj)
         object_key = document['object_key']
+        if object_key in indexed:
+          continue
+
         writer.delete_by_term('object_key', object_key)
         writer.add_document(**document)
+        indexed.add(object_key)
 
 
 service = WhooshIndexService()
@@ -369,7 +389,7 @@ def index_update(index, items):
         # for key in indexed_fields:
         #   getattr(obj, key, None)
 
-        document = adapter.get_document(obj)
+        document = service.get_document(obj, adapter)
         writer.add_document(**document)
         updated.add(object_key)
 

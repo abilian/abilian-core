@@ -65,23 +65,23 @@ def reindex(clear=False):
         progress.start()
         count_current = 0
 
-        with writer.group():
-          for obj in q.yield_per(1000):
-            if obj.object_type != current_object_type:
-              # may happen if obj is a subclass and mother class is indexable
-              continue
+        for obj in q.yield_per(1000):
+          if obj.object_type != current_object_type:
+            # may happen if obj is a subclass and its parent class is also
+            # indexable
+            continue
 
-            object_key = obj.object_key
+          object_key = obj.object_key
 
-            if object_key in indexed:
-              continue
-            document = adapter.get_document(obj)
-            writer.add_document(**document)
-            indexed.add(object_key)
-            count_current += 1
-            try:
-              progress.update(count_current)
-            except ValueError:
-              pass
+          if object_key in indexed:
+            continue
+          document = svc.get_document(obj, adapter)
+          writer.add_document(**document)
+          indexed.add(object_key)
+          count_current += 1
+          try:
+            progress.update(count_current)
+          except ValueError:
+            pass
 
         progress.finish()
