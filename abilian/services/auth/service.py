@@ -59,7 +59,6 @@ class AuthService(Service):
     Service.init_app(self, app)
     self.login_url_prefix = app.config.get('LOGIN_URL', '/user')
     app.before_request(self.before_request)
-    user_logged_in.connect(self.user_logged_in, sender=app)
     user_logged_out.connect(self.user_logged_out, sender=app)
     app.register_blueprint(login_views, url_prefix=self.login_url_prefix)
     with app.app_context():
@@ -83,8 +82,6 @@ class AuthService(Service):
 
       return None
 
-
-  def user_logged_in(self, app, user):
     # `g.user` is used as `current_user`, but `current_user` is actually looking
     # for `request.user` whereas `g` is on app local stack.
     #
@@ -97,6 +94,7 @@ class AuthService(Service):
     g.is_manager = (not user.is_anonymous()
                     and ((security.has_role(user, 'admin')
                           or security.has_role(user, 'manager'))))
+    return user
 
   def user_logged_out(self, app, user):
     del g.user
