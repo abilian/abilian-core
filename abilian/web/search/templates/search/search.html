@@ -25,8 +25,10 @@
       {%- if (filtered_by_type|length) != 1 %}
         <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span>
       {%- endif %}
-      <p>{{ hit['updated_at']|datetimeformat }}
-        {{ hit['description'] }}
+      <p>{{ hit['updated_at']|datetimeformat }}<br />
+        {%- if 'description' in hit %}
+          {{ hit.highlights('description')|safe }}
+        {%- endif %}
       </p>
     {%- endfor %}
   {%- endif %}
