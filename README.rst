@@ -207,3 +207,10 @@ We are also specially grateful to:
    even more inspiration.
 -  The whole Python community.
 
+Links
+=====
+
+- `Documentation <http://docs.abilian.com/>`_
+- `GitHub repository <https://github.com/abilian/abilian-core>`_
+- `Corporate support <http://www.abilian.com>`_
+
