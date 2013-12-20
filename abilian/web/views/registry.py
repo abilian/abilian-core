@@ -2,6 +2,9 @@
 from __future__ import absolute_import
 
 import inspect
+from operator import attrgetter, itemgetter
+
+from whoosh.searching import Hit
 from flask import url_for, Blueprint
 from abilian.core.entities import Entity
 
@@ -30,7 +33,7 @@ class Registry(object):
     assert issubclass(entity, Entity)
     self._map[entity.entity_type] = url_func
 
-  def url_for(self, entity, object_id=None):
+  def url_for(self, entity=None, object_type=None, object_id=None, **kwargs):
     """
     Returns canonical view for given entity instance.
 
@@ -48,16 +51,15 @@ class Registry(object):
 
     :raise KeyError: if no view can be found for the given entity.
     """
-    object_type = entity
-
-    if not isinstance(object_type, basestring):
-      assert isinstance(entity, Entity)
-      object_id = entity.id
-      object_type = entity.object_type
+    if object_type is None:
+      assert isinstance(entity, (Entity, Hit))
+      getter = attrgetter if isinstance(entity, Entity) else itemgetter
+      object_id = getter('id')(entity)
+      object_type = getter('object_type')(entity)
 
     url_func = self._map.get(object_type)
     if url_func is not None:
-      return url_func(entity, object_type, object_id)
+      return url_func(entity, object_type, object_id, **kwargs)
 
     try:
       return url_for('{}.view'.format(object_type.rsplit('.')[-1].lower()),
@@ -69,14 +71,21 @@ class Registry(object):
 class default_view(object):
   """
   Decorator to register a view as default view for given entity class.
-  """
 
-  def __init__(self, app_or_blueprint, entity, id_attr='object_id', endpoint=None):
+  :param id_attr: url parameter name for object id.
+  :param endpoint: endpoint to use, defaults to view function's name.
+  :param kw_func: function to process keywords to be passed to url_for. Useful
+       for additional keywords. This function receives: kw, obj, obj_type,
+       obj_id, **kwargs. It must return kw.
+  """
+  def __init__(self, app_or_blueprint, entity, id_attr='object_id',
+               endpoint=None, kw_func=None):
     self.app_or_blueprint = app_or_blueprint
     self.is_bp = isinstance(app_or_blueprint, Blueprint)
     self.entity = entity
     self.id_attr = id_attr
     self.endpoint = endpoint
+    self.kw_func = kw_func
 
   def __call__(self, view):
     endpoint = self.endpoint
@@ -89,9 +98,15 @@ class default_view(object):
     if endpoint[0] == '.':
       endpoint = self.app_or_blueprint.name + endpoint
 
-    def default_url(obj, obj_type, obj_id):
-      kwargs = { self.id_attr: obj_id }
-      return url_for(endpoint, **kwargs)
+    def default_url(obj, obj_type, obj_id, **kwargs):
+      kw = {}
+      if self.id_attr is not None:
+        # some objects have url with GET parameters only
+        kw[self.id_attr] = obj_id
+
+      if self.kw_func:
+        kw = self.kw_func(kw, obj, obj_type, obj_id, **kwargs)
+      return url_for(endpoint, **kw)
 
     if self.is_bp:
       @self.app_or_blueprint.record_once
