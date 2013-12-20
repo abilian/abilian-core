@@ -68,7 +68,7 @@ def install_hit_to_url():
     object_type = hit['object_type']
     object_id = int(hit['id'])
     try:
-      return current_app.default_view.url_for(object_type, object_id)
+      return current_app.default_view.url_for(hit, object_type, object_id)
     except KeyError:
       return u'#'
 
