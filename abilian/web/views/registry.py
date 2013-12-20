@@ -76,7 +76,7 @@ class default_view(object):
   :param endpoint: endpoint to use, defaults to view function's name.
   :param kw_func: function to process keywords to be passed to url_for. Useful
        for additional keywords. This function receives: kw, obj, obj_type,
-       obj_id, **kwargs. It must return kw.
+       obj_id, \*\*kwargs. It must return kw.
   """
   def __init__(self, app_or_blueprint, entity, id_attr='object_id',
                endpoint=None, kw_func=None):
