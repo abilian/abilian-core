@@ -305,7 +305,8 @@ class Entity(Indexable, BaseMixin, db.Model):
   del index_to
 
   name = Column('name', UnicodeText(),
-                info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'text')))
+                info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'name_prefix',
+                                                        'text')))
 
   _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None

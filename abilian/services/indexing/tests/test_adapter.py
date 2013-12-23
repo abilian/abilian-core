@@ -65,13 +65,13 @@ class TestSAAdapter(TestCase):
     self.assertEquals(adapter.indexable, True)
     self.assertEquals(set(adapter.doc_attrs),
                       set(('object_key', 'id', 'name', 'object_type',
-                           'text', 'created_at', 'updated_at',
+                           'text', 'created_at', 'updated_at', 'name_prefix',
                            'owner', 'owner_name', 'creator_name', 'creator')))
     self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
 
     self.assertEquals(set(schema.names()),
                       set(('object_key', 'id', 'object_type', 'name',
-                           'text', 'created_at', 'updated_at',
+                           'text', 'created_at', 'updated_at', 'name_prefix',
                            'owner', 'owner_name', 'creator_name', 'creator')))
 
     schema = Schema(
@@ -103,6 +103,7 @@ class TestSAAdapter(TestCase):
     expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
     expected['object_key'] = u'test_adapter.SubclassEntityIndexable:2'
     expected['text'] = u'entity'
+    expected['name_prefix'] = u'entity'
     self.assertEquals(adapter.get_document(obj), expected)
 
     # test retrieve related attributes

@@ -152,12 +152,13 @@ class WhooshIndexService(Service):
     if not config:
      config = dict(
          name=1.5,
+         name_prefix=1.3,
          description=1.3,
          text=1.0,)
      return config
 
   def search(self, q, index='default', fields=None, Models=(),
-             object_types=(),
+             object_types=(), prefix=True,
              **search_args):
     """
     Interface to search indexes.
@@ -167,23 +168,22 @@ class WhooshIndexService(Service):
     :param fields: optionnal mapping of field names -> boost factor?
     :param Models: list of Model classes to limit search on.
     :param object_types: same as `Models`, but directly the model string.
+    :param prefix: enable or disable search by prefix
     :param search_args: any valid parameter for
         :meth:`whoosh.searching.Search.search`. This includes `limit`,
         `groupedby` and `sortedby`
     """
     index = self.app_state.indexes[index]
-    valid_fields = set(index.schema.names())
-
     if not fields:
       fields = self.default_search_fields
+
+    valid_fields = set(index.schema.names(check_names=fields))
 
     for invalid in set(fields) - valid_fields:
       del fields[invalid]
 
     parser = DisMaxParser(fields, index.schema)
     query = parser.parse(q)
-
-
 
     if not hasattr(g, 'is_manager') or not g.is_manager:
       # security access filter
