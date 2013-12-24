@@ -30,6 +30,16 @@ def fqcn(cls):
   """
   return unicode(cls.__module__ + '.' + cls.__name__)
 
+def friendly_fqcn(cls_name):
+  """
+  Friendly name of fully qualified class name.
+  :param cls_name: a string or a class
+  """
+  if isinstance(cls_name, type):
+    cls_name = fqcn(cls_name)
+
+  return cls_name.rsplit('.', 1)[-1]
+
 def local_dt(dt):
   """ Return an aware datetime in system timezone, from a naive or aware
   datetime. Naive datetime are assumed to be in UTC TZ.

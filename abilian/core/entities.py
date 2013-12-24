@@ -21,7 +21,7 @@ from sqlalchemy import event
 from whoosh.fields import ID, STORED
 
 from .extensions import db
-from .util import memoized, fqcn
+from .util import memoized, fqcn, friendly_fqcn
 
 
 __all__ = ['Entity', 'all_entity_classes', 'db', 'ValidationError']
@@ -317,7 +317,7 @@ class Entity(Indexable, BaseMixin, db.Model):
 
   @property
   def entity_class(self):
-    return self.entity_type and self.entity_type.rsplit('.', 1)[-1]
+    return self.entity_type and friendly_fqcn(self.entity_type)
 
   # Default magic metadata, should not be necessary
   # TODO: remove
