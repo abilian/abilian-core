@@ -4,6 +4,7 @@ A few utility functions.
 See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for more ideas
 of stuff to implement.
 """
+from werkzeug.routing import BuildError
 from flask import current_app, url_for as flask_url_for
 from flask.helpers import send_from_directory
 
@@ -16,16 +17,18 @@ def url_for(obj, **kw):
   When it's an object, it
 
   """
-  if isinstance(obj, str):
+  if isinstance(obj, basestring):
     return flask_url_for(obj, **kw)
-  elif hasattr(obj, "_url"):
-    return obj._url
 
-  # XXX: do we keep this case?
-  elif hasattr(obj, "url"):
-    return obj.url
+  try:
+    return current_app.default_view.url_for(obj, **kw)
+  except KeyError:
+    if hasattr(obj, "_url"):
+      return obj._url
+    elif hasattr(obj, "url"):
+      return obj.url
 
-  # TODO: use also the default view registry.
+  raise BuildError(repr(obj), kw, 'GET')
 
 
 def get_object_or_404(cls, *args):
