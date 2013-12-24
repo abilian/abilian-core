@@ -58,6 +58,7 @@ TYPEAHEAD_JS = Bundle('typeahead/typeahead.min.js',
                       'typeahead/hogan-2.0.0.js',)
 TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js',
                             'typeahead/hogan-2.0.0.js')
+TYPEAHEAD_CSS = Bundle('typeahead/typeahead.js-bootstrap.css')
 
 ABILIAN_CSS = Bundle('css/abilian.css')
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
@@ -68,6 +69,7 @@ ABILIAN_JS = Bundle('js/abilian.js',
 CSS = Bundle(BOOTSTRAP_CSS,
              FONTAWESOME_CSS,
              SELECT2_CSS,
+             TYPEAHEAD_CSS,
              BOOTSTRAP_DATEPICKER_CSS,
              BOOTSTRAP_TIMEPICKER_CSS,
              DATATABLE_CSS,
@@ -75,6 +77,7 @@ CSS = Bundle(BOOTSTRAP_CSS,
 CSS_DEBUG = Bundle(BOOTSTRAP_CSS_DEBUG,
                    FONTAWESOME_CSS_DEBUG,
                    SELECT2_CSS,
+                   TYPEAHEAD_CSS,
                    BOOTSTRAP_DATEPICKER_CSS,
                    BOOTSTRAP_TIMEPICKER_CSS,
                    DATATABLE_CSS,
