@@ -120,7 +120,7 @@ class Indexable(object):
 
   @property
   def object_type(self):
-    return self._object_type
+    return self._object_type()
 
   @property
   def object_key(self):
