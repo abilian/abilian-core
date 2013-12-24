@@ -6,7 +6,7 @@ from operator import attrgetter, itemgetter
 
 from whoosh.searching import Hit
 from flask import url_for, Blueprint
-from abilian.core.entities import Entity
+from abilian.core.extensions import db
 
 
 class Registry(object):
@@ -22,7 +22,7 @@ class Registry(object):
     """
     Associates a `url_func` with entity's type.
 
-    :param:entity: an :class:`abilian.core.entities.Entity` class or
+    :param:entity: an :class:`abilian.core.extensions.db.Model` class or
     instance.
 
     :param:url_func: any callable that accepts an entity instance and
@@ -30,7 +30,7 @@ class Registry(object):
     """
     if not inspect.isclass(entity):
       entity = entity.__class__
-    assert issubclass(entity, Entity)
+    assert issubclass(entity, db.Model)
     self._map[entity.entity_type] = url_func
 
   def url_for(self, entity=None, object_type=None, object_id=None, **kwargs):
@@ -43,7 +43,8 @@ class Registry(object):
     and that accepts `object_id=entity.id` to generates an url.
 
     :param entity: a instance of a subclass of
-        :class:`abilian.core.entities.Entity`, or an object type string.
+        :class:`abilian.core.extensions.db.Model`, :class:`whoosh.searching.Hit`,
+        :class:`python:dict`
 
     :param object_id: if `entity` is not an instance, this parameter
         must be set to target id. This is usefull when you know the type and
@@ -52,8 +53,8 @@ class Registry(object):
     :raise KeyError: if no view can be found for the given entity.
     """
     if object_type is None:
-      assert isinstance(entity, (Entity, Hit))
-      getter = attrgetter if isinstance(entity, Entity) else itemgetter
+      assert isinstance(entity, (db.Model, Hit, dict))
+      getter = attrgetter if isinstance(entity, db.Model) else itemgetter
       object_id = getter('id')(entity)
       object_type = getter('object_type')(entity)
 
