@@ -438,6 +438,7 @@ class Application(Flask, ServiceManager, PluginManager):
       app=current_app,
       get_locale=babel_get_locale,
       local_dt=abilian.core.util.local_dt,
+      url_for=url_for,
       NO_VALUE=NO_VALUE,
     )
     init_filters(env)
@@ -493,11 +494,6 @@ class Application(Flask, ServiceManager, PluginManager):
     loaders.append(Flask.jinja_loader.func(self))
     loaders.reverse()
     return jinja2.ChoiceLoader(loaders)
-
-  def setup_context_processor(self):
-    @self.context_processor
-    def inject():
-      return dict(url_for=url_for)
 
   # Error handling
   def handle_user_exception(self, e):
