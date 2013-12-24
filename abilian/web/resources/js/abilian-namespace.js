@@ -23,6 +23,11 @@
      Abilian.events.appInit = 'abilian.app-init';
 
 
+    /**
+     * Abilian remote API
+     */
+    Abilian.api = {};
+
      /**
       * Abilian fonctions. Use this to register convenient functions
       */     
