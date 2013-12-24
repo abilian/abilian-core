@@ -177,7 +177,7 @@ class WhooshIndexService(Service):
     return [(name, friendly_fqcn(name)) for name in indexed]
 
   def search(self, q, index='default', fields=None, Models=(),
-             object_types=(), prefix=True,
+             object_types=(), prefix=True, facet_by_type=None,
              **search_args):
     """
     Interface to search indexes.
@@ -188,6 +188,8 @@ class WhooshIndexService(Service):
     :param Models: list of Model classes to limit search on.
     :param object_types: same as `Models`, but directly the model string.
     :param prefix: enable or disable search by prefix
+    :param facet_by_type: if set, returns a dict of object_type: results with a
+         max of `limit` matches for each type.
     :param search_args: any valid parameter for
         :meth:`whoosh.searching.Search.search`. This includes `limit`,
         `groupedby` and `sortedby`
@@ -196,7 +198,8 @@ class WhooshIndexService(Service):
     if not fields:
       fields = self.default_search_fields
 
-    valid_fields = set(index.schema.names(check_names=fields))
+    valid_fields = set(f for f in index.schema.names(check_names=fields)
+                       if prefix or not f.endswith('_prefix'))
 
     for invalid in set(fields) - valid_fields:
       del fields[invalid]
