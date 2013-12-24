@@ -91,8 +91,9 @@
 
          $(Abilian.api.search.object_types).each(
              function(idx, info) {
+                 var name = info[0].replace(/\./g, '-');
                  var d = {
-                     name: info[0],
+                     name: name,
                      remote: {
                          url: Abilian.api.search.live,
                          filter: function(response) {
