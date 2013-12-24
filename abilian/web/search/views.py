@@ -133,8 +133,9 @@ def live(q=u'', page=None):
   datasets = {}
   for typename, docs in results.iteritems():
     dataset = []
-    for d in docs:
-      url = url_for_hit(d, None)
+    for doc in docs:
+      d = dict(name=doc['name'])
+      url = url_for_hit(doc, None)
       if url is not None:
         d['url'] = url
       dataset.append(d)
