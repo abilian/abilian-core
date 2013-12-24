@@ -18,7 +18,7 @@ from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTime, Text
 
-from .entities import db, IdMixin, TimestampedMixin, SEARCHABLE, SYSTEM
+from .entities import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
 
 
 __all__ = ['User', 'Group', 'Principal']
@@ -52,7 +52,7 @@ class UserQuery(Query):
     return self.filter_by(email=email).one()
 
 
-class Principal(IdMixin, TimestampedMixin):
+class Principal(IdMixin, TimestampedMixin, Indexable):
   """A principal is either a User or a Group."""
   pass
 

@@ -11,6 +11,7 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 """
 import os
 from shutil import rmtree
+from inspect import isclass
 
 import sqlalchemy as sa
 from sqlalchemy import event
@@ -32,8 +33,8 @@ from flask.globals import _lookup_app_object
 from abilian.services import Service, ServiceState
 from abilian.services.security import Role, Anonymous, Authenticated
 from abilian.core.subjects import User, Group
-from abilian.core.util import fqcn
-from abilian.core.entities import all_entity_classes
+from abilian.core.util import fqcn, friendly_fqcn
+from abilian.core.entities import Indexable
 from abilian.core.extensions import celery, db
 
 from .adapter import SAAdapter
@@ -142,6 +143,9 @@ class WhooshIndexService(Service):
     state.indexed_classes = set()
     self.clear_update_queue()
 
+  def index(self, name='default'):
+    return self.app_state.indexes[name]
+
   @property
   def default_search_fields(self):
     """
@@ -156,6 +160,21 @@ class WhooshIndexService(Service):
          description=1.3,
          text=1.0,)
      return config
+
+  def searchable_object_types(self):
+    """
+    List of (object_types, friendly name) present in the index.
+    """
+    try:
+      idx = self.index()
+    except KeyError:
+      # index does not exists: service never started, may happens during tests
+      return []
+
+    with idx.reader() as r:
+      indexed = sorted(set(r.field_terms('object_type')))
+
+    return [(name, friendly_fqcn(name)) for name in indexed]
 
   def search(self, q, index='default', fields=None, Models=(),
              object_types=(), prefix=True,
@@ -200,34 +219,54 @@ class WhooshIndexService(Service):
         filter_q = wq.And(search_args['filter'], filter_q)
       search_args['filter'] = filter_q
 
-    if Models:
+    object_types = set(object_types)
+    for m in Models:
+      object_type = m.object_type
+      if not object_type:
+        continue
+      object_types.add(object_type)
+
+    if object_types:
       # limit object_type
-      filtered_models = []
-      for m in Models:
-        object_type = m.object_type
-        if not object_type:
-          continue
-        filtered_models.append(wq.Term('object_type', object_type))
+      filtered_models = wq.Or(wq.Term('object_type', t)
+                              for t in object_types)
+      filter_q = wq.And(search_args['filter'], filtered_models)
 
-      if filtered_models:
-        filtered_models = wq.Or(filtered_models)
-        filter_q = wq.And(search_args['filter'], filtered_models)
+      if 'filter' in search_args:
+        filter_q = wq.And(search_args['filter'], filter_q)
+      search_args['filter'] = filter_q
 
-        if 'filter' in search_args:
-          filter_q = wq.And(search_args['filter'], filter_q)
-        search_args['filter'] = filter_q
+    if facet_by_type:
+      if not object_types:
+        object_types = [t[0] for t in self.searchable_object_types()]
+
+      # limit number of documents to score, per object type
+      search_args['groupedby'] = 'object_type'
+      search_args['collapse'] = 'object_type'
+      search_args['collapse_limit'] = 5
+      search_args['limit'] = search_args['collapse_limit'] * len(object_types)
 
     with index.searcher(closereader=False) as searcher:
       # 'closereader' is needed, else results cannot by used outside 'with'
       # statement
-      return searcher.search(query, **search_args)
+      results = searcher.search(query, **search_args)
+
+      if facet_by_type:
+        search_results = results
+        results = {}
+        for typename, doc_ids in search_results.groups('object_type').items():
+          results[typename] = [searcher.stored_fields(oid) for oid in doc_ids]
+
+      return results
 
   def search_for_class(self, query, cls, index='default', **search_args):
     return self.search(query, Models=(fqcn(cls),), index=index, **search_args)
 
   def register_classes(self):
     state = self.app_state
-    for cls in all_entity_classes():
+    classes = (cls for cls in db.Model._decl_class_registry.values()
+               if isclass(cls) and issubclass(cls, Indexable))
+    for cls in classes:
       if not cls in state.indexed_classes:
         self.register_class(cls, app_state=state)
 
