@@ -87,15 +87,28 @@
      };
 
      function initLiveSearch() {
-         var datasets = [
-             { name: 'documents',
-               remote: '/search/live?type=documents&q=%QUERY',
-               limit: 15,
-               engine: Hogan,
-               header: '<b><i>Documents</i></b>',
-               template: '<img src="{{icon}}" width="16" height="16" /> {{value}}'
-             }
-         ];
+         var datasets = []
+
+         $(Abilian.api.search.object_types).each(
+             function(idx, info) {
+                 var d = {
+                     name: info[0],
+                     remote: {
+                         url: Abilian.api.search.live,
+                         filter: function(response) {
+                             return response.results[info[0]] || []
+                         },
+                         cache: false
+                     },
+                     limit: 15,
+                     engine: Hogan,
+                     header: '<b><i>' + info[1] + '</i></b>',
+                     valueKey: 'name',
+                     template: '{{name}}'
+                 }
+                 datasets.push(d);
+             });
+
          var search_box = $("#search-box");
          search_box.typeahead(datasets)
              .on('typeahead:selected', function (e, data) {

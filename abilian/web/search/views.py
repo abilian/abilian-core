@@ -7,7 +7,10 @@ from functools import partial
 from collections import OrderedDict
 
 import whoosh.sorting
-from flask import Blueprint, request, g, render_template, current_app, url_for
+from flask import (
+  Blueprint, request, g, render_template, current_app, url_for,
+  jsonify,
+)
 
 from abilian.i18n import _
 from abilian.web import nav
@@ -62,16 +65,16 @@ def init_search(endpoint, values):
   values['q'] = q
   values['page'] = page
 
+def url_for_hit(hit, default=u'#'):
+  object_type = hit['object_type']
+  object_id = int(hit['id'])
+  try:
+    return current_app.default_view.url_for(hit, object_type, object_id)
+  except KeyError:
+    return default
+
 @search.context_processor
 def install_hit_to_url():
-  def url_for_hit(hit):
-    object_type = hit['object_type']
-    object_id = int(hit['id'])
-    try:
-      return current_app.default_view.url_for(hit, object_type, object_id)
-    except KeyError:
-      return u'#'
-
   return dict(url_for_hit=url_for_hit)
 
 @route('')
@@ -120,3 +123,22 @@ def search_main(q=u'', page=1):
                          prev_page=prev_page,
                          next_page=next_page,
                          friendly_fqcn=friendly_fqcn,)
+
+@route('/live')
+def live(q=u'', page=None):
+  svc = current_app.services['indexing']
+  search_kwargs = {'facet_by_type': 5}
+  response = {}
+  results = svc.search(q, **search_kwargs)
+  datasets = {}
+  for typename, docs in results.iteritems():
+    dataset = []
+    for d in docs:
+      url = url_for_hit(d, None)
+      if url is not None:
+        d['url'] = url
+      dataset.append(d)
+    datasets[typename] = dataset
+
+  response['results'] =  datasets
+  return jsonify(response)

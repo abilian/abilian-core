@@ -7,6 +7,15 @@ window.onbeforeprint = Abilian.fn.before_print;
 Abilian.DEBUG = {{ config.DEBUG|tojson }};
 Abilian.locale = {{ locale.language|tojson }};
 
+
+{%- set indexing_svc = app.services['indexing'] %}
+Abilian.api.search = {
+    'live': {{ url_for('search.live')|tojson }} + '?q=%QUERY',
+    'object_types': {{ indexing_svc.searchable_object_types()|tojson }}
+};
+
+/* set up various libraries */
+
 bootbox.setDefaults({ 'locale': Abilian.locale });
 
 {#- load select2 locale file #}
