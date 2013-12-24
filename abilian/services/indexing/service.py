@@ -255,10 +255,12 @@ class WhooshIndexService(Service):
       results = searcher.search(query, **search_args)
 
       if facet_by_type:
+        positions = { doc_id: pos
+                      for pos, doc_id in enumerate(i[1] for i in results.top_n)}
         search_results = results
         results = {}
         for typename, doc_ids in search_results.groups('object_type').items():
-          results[typename] = [searcher.stored_fields(oid) for oid in doc_ids]
+          results[typename] = [search_results[positions[oid]] for oid in doc_ids]
 
       return results
 
