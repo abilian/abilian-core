@@ -1,8 +1,14 @@
 Changelog for Abilian Core
 ==========================
 
-HEAD
-----
+0.1.2 (unreleased)
+------------------
+
+- Nothing yet.
+
+
+0.1.1 (2013-12-26)
+------------------
 
 - Redesigned indexing:
 
@@ -11,14 +17,9 @@ HEAD
   * index security information, used for filtering search results
   * Added "reindex" shell command
 
-0.1.2 (unreleased)
-------------------
 
-- Nothing changed yet.
-
-
-0.1.1 (2013-12-26)
-------------------
+0.1 (2013-12-13)
+----------------
 
 - Initial release.
 
