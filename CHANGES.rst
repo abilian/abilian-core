@@ -11,8 +11,8 @@ HEAD
   * index security information, used for filtering search results
   * Added "reindex" shell command
 
-0.1 (2013-12-13)
-----------------
+0.1.1 (2013-12-26)
+------------------
 
 - Initial release.
 
