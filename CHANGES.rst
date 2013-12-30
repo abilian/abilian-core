@@ -4,7 +4,7 @@ Changelog for Abilian Core
 0.1.2 (unreleased)
 ------------------
 
-- Nothing yet.
+- Added Flask-Migrate
 
 
 0.1.1 (2013-12-26)

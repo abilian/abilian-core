@@ -9,6 +9,7 @@ Flask-WTF
 Flask-Script
 Flask-DebugToolbar
 Flask-Uploads
+Flask-Migrate
 Babel >= 1.3
 Flask-Babel>=0.9
 Flask-Assets
@@ -22,6 +23,7 @@ coaster
 
 # Other
 SQLAlchemy>=0.8,<0.9
+alembic
 redis>=2.6.0
 
 # specify min versions for "phonenumbers" because for now all releases are

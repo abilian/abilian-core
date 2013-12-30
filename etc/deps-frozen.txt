@@ -1,6 +1,4 @@
--e git://github.com/tobiasandtobias/flask-alembic.git@d0f4d3523e115d6376aeba3b0b0cbba3af888add#egg=Flask_Alembic-dev
-
-alembic==0.6.0
+alembic==0.6.2
 amqp==1.0.13
 anyjson==0.3.3
 argparse==1.2.1
@@ -20,6 +18,7 @@ Flask-DebugToolbar==0.8.0
 Flask-LinkTester==0.2.1
 Flask-Login==0.2.3
 Flask-Mail==0.8.2
+Flask-Migrate==1.1.0
 Flask-Principal==0.4.0
 Flask-Security==1.6.9
 Flask-Script==0.6.2

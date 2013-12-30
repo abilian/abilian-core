@@ -25,6 +25,7 @@ from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
 from flask.ext.babel import get_locale as babel_get_locale
+from flask.ext.migrate import Migrate
 
 import abilian.i18n
 from abilian.core import extensions, signals
@@ -360,6 +361,9 @@ class Application(Flask, ServiceManager, PluginManager):
     abilian.i18n.babel.add_translations('abilian')
     abilian.i18n.babel.localeselector(get_locale)
     abilian.i18n.babel.timezoneselector(get_timezone)
+
+    # Flask-Migrate
+    Migrate(self, self.db)
 
     # Abilian Core services
     auth_service.init_app(self)
