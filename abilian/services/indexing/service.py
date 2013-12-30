@@ -10,7 +10,7 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :license: BSD (see LICENSE.txt)
 """
 import os
-from shutil import rmtree
+import logging
 from inspect import isclass
 
 import sqlalchemy as sa
@@ -18,7 +18,7 @@ from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 
 import whoosh.index
-from whoosh.writing import AsyncWriter
+from whoosh.writing import AsyncWriter, CLEAR
 from whoosh.qparser import DisMaxParser
 from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 import whoosh.query as wq
@@ -40,6 +40,7 @@ from abilian.core.extensions import celery, db
 from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
 
+logger = logging.getLogger(__name__)
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
 _pending_indexation_attr = 'abilian_pending_indexation'
@@ -127,17 +128,12 @@ class WhooshIndexService(Service):
       state.indexes[name] = index
 
   def clear(self):
-    current_app.logger.info("Resetting indexes")
-    assert not self.running
-
+    logger.info('Resetting indexes')
     state = self.app_state
 
-    for cls in state.indexed_classes:
-      index_path = os.path.join(state.whoosh_base, cls.__name__)
-      try:
-        rmtree(index_path)
-      except OSError:
-        pass
+    for name, idx in state.indexes.iteritems():
+      writer = AsyncWriter(idx)
+      writer.commit(merge=True, optimize=True, mergetype=CLEAR)
 
     state.indexes = {}
     state.indexed_classes = set()
