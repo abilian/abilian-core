@@ -18,6 +18,7 @@ from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 
 import whoosh.index
+from whoosh.filedb.filestore import RamStorage, FileStorage
 from whoosh.writing import AsyncWriter, CLEAR
 from whoosh.qparser import DisMaxParser
 from whoosh.analysis import StemmingAnalyzer, CharsetFilter
@@ -116,15 +117,15 @@ class WhooshIndexService(Service):
     state = self.app_state
 
     for name, schema in self.schemas.iteritems():
-      index_path = os.path.join(state.whoosh_base, name)
-
-      if whoosh.index.exists_in(index_path):
-        index = whoosh.index.open_dir(index_path)
+      if current_app.testing:
+        storage = RamStorage()
       else:
+        index_path = os.path.join(state.whoosh_base, name)
         if not os.path.exists(index_path):
           os.makedirs(index_path)
-        index = whoosh.index.create_in(index_path, schema)
+        storage = FileStorage(index_path)
 
+      index = whoosh.index.FileIndex.create(storage, schema, name)
       state.indexes[name] = index
 
   def clear(self):
