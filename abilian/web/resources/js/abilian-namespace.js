@@ -49,8 +49,8 @@
          var element = document.createElement("script");
          element.type = 'text/javascript';
          element.src = url;
-         document.write(element.outerHTML);
-         element = null;         
+         document.body.appendChild(element);
+         element = null;
      };
 
      /**
