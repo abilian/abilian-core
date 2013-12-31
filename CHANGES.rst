@@ -5,7 +5,7 @@ Changelog for Abilian Core
 ------------------
 
 - Added Flask-Migrate
-
+- added basic javascript to prevent double submission
 
 0.1.1 (2013-12-26)
 ------------------

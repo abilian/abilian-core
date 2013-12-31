@@ -12,6 +12,18 @@
                         });
      };
 
+
+    /**
+     * Prevent double form submit.
+     */
+    Abilian.fn.prevent_double_submit = function () {
+        $(document).on('click', '[type="submit"]', function(e) {
+            var $elements = $(e.target.form.elements);
+            $elements.addClass('disabled');
+        });
+    };
+    Abilian.fn.onAppInit(Abilian.fn.prevent_double_submit);
+
      /**
       * This function is to be set on window.onbeforeprint.
       */
