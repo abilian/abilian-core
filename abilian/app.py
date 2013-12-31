@@ -352,6 +352,10 @@ class Application(Flask, ServiceManager, PluginManager):
     extensions.mail.init_app(self)
     actions.init_app(self)
 
+
+    from abilian.core.jinjaext import DeferredJS
+    DeferredJS(self)
+
     # webassets
     self._setup_asset_extension()
     self._register_base_assets()
@@ -451,6 +455,11 @@ class Application(Flask, ServiceManager, PluginManager):
   @property
   def jinja_options(self):
     options = dict(Flask.jinja_options)
+
+    extensions = options.setdefault('extensions', [])
+    ext = 'abilian.core.jinjaext.DeferredJSExtension'
+    if ext not in extensions:
+      extensions.append(ext)
 
     if 'bytecode_cache' not in options:
       cache_dir = os.path.join(self.instance_path, 'cache', 'jinja')

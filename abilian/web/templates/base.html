@@ -83,11 +83,13 @@
 {%- block js %}{%- endblock %} {# this block should be used to load additional libraries #}
 
 <script type="text/javascript">
-  {%- include "abilian_init.js" %}
+ {% deferredJS %}{% enddeferredJS %}
 
-  {%- if inline_js %}
-    {{ inline_js }}
-  {%- endif %}
+ {%- include "abilian_init.js" %}
+
+ {%- if inline_js %}
+   {{ inline_js }}
+ {%- endif %}
 </script>
 
 </body>

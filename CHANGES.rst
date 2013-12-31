@@ -4,8 +4,10 @@ Changelog for Abilian Core
 0.1.2 (unreleased)
 ------------------
 
-- Added Flask-Migrate
+- added jinja extension to collect JS snippets during page generation and put
+  them at end of document ("deferred")
 - added basic javascript to prevent double submission
+- Added Flask-Migrate
 
 0.1.1 (2013-12-26)
 ------------------
