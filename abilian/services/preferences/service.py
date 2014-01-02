@@ -5,12 +5,13 @@ Notes:
 - Preferences are user-specific
 - For global setting, there should be a SettingService
 """
-from flask import Blueprint, url_for, request, redirect, abort
+from flask import Blueprint, url_for, request, redirect, abort, g
 from flask.ext.login import current_user
-from flask.ext.babel import lazy_gettext as _l
+
+from abilian.i18n import _, _l
 from abilian.core.extensions import db
 from abilian.core import signals
-from abilian.web.nav import NavItem
+from abilian.web.nav import NavItem, BreadcrumbItem, Endpoint
 from abilian.services.auth.service import user_menu
 
 from abilian.services.base import Service, ServiceState
@@ -32,6 +33,7 @@ class PreferenceState(ServiceState):
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
     self.panels = []
+    self.breadcrumb_items = {}
 
 
 class PreferenceService(Service):
@@ -94,11 +96,19 @@ class PreferenceService(Service):
     panel.preferences = self
     rule = "/" + getattr(panel, 'path', panel.id)
     endpoint = panel.id
+    abs_endpoint = 'preferences.{}'.format(endpoint)
+
     if hasattr(panel, 'get'):
       state.blueprint.add_url_rule(rule, endpoint, panel.get)
     if hasattr(panel, 'post'):
       endpoint += "_post"
       state.blueprint.add_url_rule(rule, endpoint, panel.post, methods=['POST'])
+
+    self.app_state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
+      label=panel.label,
+      icon=None,
+      url=Endpoint(abs_endpoint),
+      )
 
   def setup_blueprint(self, app):
     bp = self.app_state.blueprint = Blueprint("preferences", __name__,
@@ -118,6 +128,11 @@ class PreferenceService(Service):
     #     return
     #   else:
     #     abort(403)
+    self.app_state.root_breadcrumb_item = BreadcrumbItem(
+      label=_(u'Preferences'),
+      url=Endpoint('preferences.index'))
+
+    bp.url_value_preprocessor(self.build_breadcrumbs)
 
     @bp.context_processor
     def inject_menu():
@@ -146,6 +161,12 @@ class PreferenceService(Service):
       else:
         # Should not happen.
         abort(500)
+
+  def build_breadcrumbs(self, endpoint, view_args):
+    state = self.app_state
+    g.breadcrumb.append(state.root_breadcrumb_item)
+    if endpoint in state.breadcrumb_items:
+      g.breadcrumb.append(state.breadcrumb_items[endpoint])
 
 
 preferences = PreferenceService()
