@@ -2,6 +2,7 @@
 {%- if view.options.allow_delete is defined and view.options.allow_delete() %}
 <a class="btn btn-danger" id="delete-button"><i class="icon-trash icon-white"></i>{{ _("Delete") }}</a>
 
+{%- deferJS %}
 <script type="text/javascript">
   $(function () {
     $("#delete-button").click(function () {
@@ -26,6 +27,7 @@
     });
   });
 </script>
+{%- enddeferJS %}
 {%- endif %}
 
 {%- for panel, data in panels %}

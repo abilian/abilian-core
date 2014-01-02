@@ -53,11 +53,13 @@
     </table>
   </form>
 
+  {%- deferJS %}
   <script type="text/javascript">
     $(document).ready(function() {
       {{ js }}
     });
   </script>
+  {%- enddeferJS %}
 
 {%- else %}
   No data. {# <a href="new">{{ _("Create new") }}</a>. #}

@@ -53,6 +53,18 @@ class BaseTestCase(TestCase):
       'CSRF_ENABLED': False,
       'WTF_CSRF_ENABLED': False,
       })
+
+    # install 'deferJS' extension
+    jinja_opts = {}
+    jinja_opts.update(self.app.jinja_options)
+    jinja_exts = []
+    jinja_exts.extend(jinja_opts.setdefault('extensions', []))
+    jinja_exts.append('abilian.core.jinjaext.DeferredJSExtension')
+    jinja_opts['extensions'] = jinja_exts
+    self.app.jinja_options = jinja_opts
+
+    from abilian.core.jinjaext import DeferredJS
+    DeferredJS(self.app)
     babel.init_app(self.app)
 
 
@@ -60,6 +72,7 @@ class TableViewTestCase(BaseTestCase):
 
   def test_table_view(self):
     with self.app.test_request_context():
+      self.app.preprocess_request() # run before_request handlers: needed for deferJS
       columns = ['name', 'price']
       view = MainTableView(columns)
 
