@@ -6,6 +6,7 @@ from __future__ import absolute_import
 
 from functools import partial
 
+import lxml.html
 from jinja2.ext import Extension
 from jinja2 import nodes
 
@@ -39,6 +40,9 @@ class DeferredJS(object):
 class DeferredJSExtension(Extension):
   """
   Put JS fragment at the end of the document in a script tag.
+
+  The JS fragment can contains <script> tag so that your favorite editor
+  keeps doing proper indentation, syntax highlighting...
   """
   tags = set(['deferJS', 'deferredJS'])
 
@@ -56,7 +60,20 @@ class DeferredJSExtension(Extension):
                            [], [], body).set_lineno(lineno)
 
   def defer_nodes(self, caller):
-    body = caller()
+    body = u'<div>{}</div>'.format(caller().strip())
+
+    # remove 'script' tag in immediate children, if any
+    fragment = lxml.html.fragment_fromstring(body)
+    for child in fragment:
+      if child.tag == 'script':
+        child.drop_tag() # side effect on fragment.text or previous_child.tail!
+
+    body = [fragment.text]
+    for child in fragment:
+      body.append(lxml.html.tostring(child))
+      body.append(child.tail)
+    body = u''.join(body)
+
     deferred_js.append(body)
     return u''
 
