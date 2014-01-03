@@ -25,8 +25,10 @@ search = Blueprint('search', __name__, url_prefix="/search",
                    template_folder='templates')
 route = search.route
 
+
 def friendly_fqcn(fqcn):
   return fqcn.rsplit(u'.', 1)[-1]
+
 
 @search.url_value_preprocessor
 def init_search(endpoint, values):
@@ -65,6 +67,7 @@ def init_search(endpoint, values):
   values['q'] = q
   values['page'] = page
 
+
 def url_for_hit(hit, default=u'#'):
   object_type = hit['object_type']
   object_id = int(hit['id'])
@@ -73,14 +76,16 @@ def url_for_hit(hit, default=u'#'):
   except KeyError:
     return default
 
+
 @search.context_processor
 def install_hit_to_url():
   return dict(url_for_hit=url_for_hit)
 
+
 @route('')
 def search_main(q=u'', page=1):
   svc = current_app.services['indexing']
-  search_kwargs = {'limit': page * PAGE_SIZE,}
+  search_kwargs = {'limit': page * PAGE_SIZE}
   page_url_kw = OrderedDict(q=q)
 
   filtered_by_type = request.args.getlist('object_type')
@@ -110,10 +115,9 @@ def search_main(q=u'', page=1):
 
   # paginate results
   results = whoosh.searching.ResultsPage(results, page, PAGE_SIZE)
-
   page = results.pagenum
-  prev_page = page_url(page=page-1) if page > 0 else None
-  next_page = page_url(page=+1) if page < results.pagecount else None
+  prev_page = page_url(page=page - 1) if page > 0 else None
+  next_page = page_url(page=page + 1) if page < results.pagecount else None
 
   return render_template('search/search.html',
                          q=q,
@@ -123,6 +127,7 @@ def search_main(q=u'', page=1):
                          prev_page=prev_page,
                          next_page=next_page,
                          friendly_fqcn=friendly_fqcn,)
+
 
 @route('/live')
 def live(q=u'', page=None):
@@ -141,5 +146,5 @@ def live(q=u'', page=None):
       dataset.append(d)
     datasets[typename] = dataset
 
-  response['results'] =  datasets
+  response['results'] = datasets
   return jsonify(response)
