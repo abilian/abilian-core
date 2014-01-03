@@ -91,7 +91,8 @@ class AuthService(Service):
     g.user = g.logged_user = user
     security = current_app.services.get('security')
 
-    g.is_manager = (not user.is_anonymous()
+    g.is_manager = (user
+                    and not user.is_anonymous()
                     and ((security.has_role(user, 'admin')
                           or security.has_role(user, 'manager'))))
     return user
