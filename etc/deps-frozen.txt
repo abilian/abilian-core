@@ -1,5 +1,5 @@
 # will not install with pip 1.5, because of some dependencies from some libs.
-pip>=1.4<1.5
+pip >=1.4, <1.5
 
 alembic==0.6.2
 amqp==1.0.13
