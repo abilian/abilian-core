@@ -1,3 +1,6 @@
+# will not install with pip 1.5, because of some dependencies from some libs.
+pip >= 1.4, < 1.5
+
 #: PRODUCTION
 # Flask and Flask extensions
 Flask>=0.10
@@ -42,7 +45,6 @@ passlib
 py-bcrypt
 pillow
 python-magic
-twill
 guess-language
 wtforms==1.0.4
 wtforms-alchemy==0.7.15
