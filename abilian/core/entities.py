@@ -230,10 +230,10 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   #FIXME: we can do better than that
   @property
   def _name(self):
-    if hasattr(self, 'name'):
-      return self.name
-    elif hasattr(self, 'title'):
+    if hasattr(self, 'title'):
       return self.title
+    elif hasattr(self, 'name'):
+      return self.name
     else:
       raise NotImplementedError()
 
