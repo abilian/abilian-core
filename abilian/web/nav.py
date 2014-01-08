@@ -34,7 +34,7 @@ class NavGroup(NavItem):
   template_string = '''
     <ul class="nav navbar-nav">
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">
           {%- if action.icon %}<i class="glyphicon glyphicon-{{ action.icon }}"></i>{% endif %}
           {{ action.title }} <b class="caret"></b>
         </a>
