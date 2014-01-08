@@ -51,7 +51,7 @@ Infrastructure
 Domain model and services
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
--  Domain object model, based on SQLAlchemy
+-  Persistent momain object model, based on SQLAlchemy
 
 -  Audit
 
@@ -133,6 +133,11 @@ maintaining and improving it in the foreseeable future.
 
 Roadmap & getting involved
 --------------------------
+
+If you need help or for general discussions about the Abilian Platform, we
+recommend joing the `Abilian Users
+<https://groups.google.com/forum/#!forum/abilian-users>`_ forum on Google
+Groups.
 
 We have a `roadmap on Pivotal
 Tracker <https://www.pivotaltracker.com/s/projects/878951>`_ that we use

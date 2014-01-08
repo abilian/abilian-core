@@ -84,7 +84,6 @@ class BaseTestCase(TestCase):
   #: This parameter is set by :meth:`setUpClass`
   TEST_INSTANCE_PATH = None
 
-
   #: By default sqlalchemy treats warnings as info. This settings makes
   #: sqlalchemy warnings treated as errors (and thus making test fail). The
   #: rationale is that it improves code quality (for example most frequent warnings

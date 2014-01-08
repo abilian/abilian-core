@@ -15,8 +15,10 @@ from werkzeug.local import LocalProxy
 
 from flask import request
 
+
 def noproxy(obj):
-  """ Unwrap obj from werkzeug.local.LocalProxy if needed. This is required if
+  """
+  Unwrap obj from werkzeug.local.LocalProxy if needed. This is required if
   one want to test `isinstance(obj, SomeClass)`.
   """
   if isinstance(obj, LocalProxy):
@@ -30,6 +32,7 @@ def fqcn(cls):
   """
   return unicode(cls.__module__ + '.' + cls.__name__)
 
+
 def friendly_fqcn(cls_name):
   """
   Friendly name of fully qualified class name.
@@ -39,6 +42,7 @@ def friendly_fqcn(cls_name):
     cls_name = fqcn(cls_name)
 
   return cls_name.rsplit('.', 1)[-1]
+
 
 def local_dt(dt):
   """ Return an aware datetime in system timezone, from a naive or aware
@@ -77,7 +81,6 @@ class timer(object):
   """
   Decorator that mesures the time it takes to run a function.
   """
-
   __instances = {}
 
   def __init__(self, f):
@@ -180,7 +183,8 @@ def slugify(value, separator="-"):
 
 
 class BasePresenter(object):
-  """A presenter wraps a model an adds specific (often, web-centric) accessors.
+  """
+  A presenter wraps a model an adds specific (often, web-centric) accessors.
   subclass to make it useful. Presenters are immutable.
   """
   def __init__(self, model):
