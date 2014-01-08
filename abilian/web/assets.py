@@ -43,8 +43,10 @@ DATATABLE_CSS = Bundle('datatables/css/jquery.dataTables.css',
 DATATABLE_JS = Bundle('datatables/js/jquery.dataTables.min.js')
 DATATABLE_JS_DEBUG = Bundle('datatables/js/jquery.dataTables.js')
 
-FILEAPI_JS = Bundle('fileapi/FileAPI.min.js')
-FILEAPI_JS_DEBUG = Bundle('fileapi/FileAPI.js')
+FILEAPI_JS = Bundle('fileapi/FileAPI.min.js',
+                    'fileapi/plugins/jquery.fileapi.min.js')
+FILEAPI_JS_DEBUG = Bundle('fileapi/FileAPI.js',
+                          'fileapi/plugins/jquery.fileapi.js')
 
 FONTAWESOME_CSS = Bundle('font-awesome/css/font-awesome.min.css')
 FONTAWESOME_CSS_DEBUG = Bundle('font-awesome/css/font-awesome.css')
