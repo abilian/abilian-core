@@ -39,7 +39,12 @@
         return this.each(
             function() {
                 var node = $(this);
-                this.image_input = new ImageInput(node, opts);
+                var input = node.data('image-input');
+                if (input === undefined) {
+                    input = new ImageInput(node, opts);
+                    node.data('image-input', input);
+                }
+                return input;
         });
     };
 
