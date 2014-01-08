@@ -28,7 +28,6 @@
   display: block;
 }
 
-.file-input input[readonly] {
-  background-color: white !important;
-  cursor: text !important;
+.file-input .selected-files {
+  display: inline-block;
 }

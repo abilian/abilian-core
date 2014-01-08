@@ -22,6 +22,7 @@ from wtforms.widgets import (
     TextArea as BaseTextArea)
 from wtforms_alchemy import ModelFieldList
 
+from abilian.i18n import _
 from abilian.core.entities import Entity
 from abilian.web.filters import labelize, babel2datepicker
 from abilian.web import csrf, url_for
@@ -500,16 +501,17 @@ class FileInput(object):
   """
   def __call__(self, field, **kwargs):
     kwargs.setdefault('id', field.id)
-    input_elem = u'<input {}>'.format(html_params(name=field.name, type='file',
-                                                  **kwargs))
-    label = _(u'Browse &hellip; {input}').format(input=input_elem)
-    return HTMLString(
-      u'<div class="input-group file-input">'
-      u'<span class="input-group-btn"><span class="btn btn-default btn-file">'
-      u'{label}</span></span>'
-      u'<input type="text" class="form-control" readonly>'
-      u'</div>'.format(label=label)
-    )
+    kwargs['name'] = field.name
+    kwargs['type'] = 'file'
+    input_elem = u'<input {}>'.format(html_params(**kwargs))
+    button_label = _(u'Add file') if 'multiple' in kwargs else _(u'Select file')
+
+    return Markup(
+      render_template('widgets/file_input.html',
+                      id=field.id,
+                      input=input_elem,
+                      button_label=button_label,
+                      ))
 
 
 class ImageInput(object):

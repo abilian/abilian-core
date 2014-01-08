@@ -1,0 +1,16 @@
+{#
+<div class="input-group file-input">
+  <span class="input-group-btn"><span class="btn btn-default btn-file">
+    {{ input }}</span></span>
+
+</div>
+#}
+<div class="file-input">
+  <span class="js-fileapi-wrapper upload-btn">
+    <span class="btn btn-default btn-file">
+      {{ button_label }}
+      {{ input|safe }}
+    </span>
+  </span>
+  <ul class="selected-files list-inline"></ul>
+</div>

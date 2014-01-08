@@ -64,6 +64,7 @@ ABILIAN_CSS = Bundle('css/abilian.css')
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
 ABILIAN_JS = Bundle('js/abilian.js',
                     'js/datatables-setup.js',
+                    'js/widgets/file.js',
                     'js/widgets/image.js')
 
 CSS = Bundle(BOOTSTRAP_CSS,
