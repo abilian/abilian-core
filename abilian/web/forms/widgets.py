@@ -739,6 +739,17 @@ class DefaultViewWidget(object):
 
 
 class BooleanWidget(wtforms.widgets.CheckboxInput):
+
+  def __init__(self, *args, **kwargs):
+    self.on_off_mode = kwargs.pop('on_off_mode')
+    super(BooleanWidget, self).__init__(*args, **kwargs)
+
+  def __call__(self, field, **kwargs):
+    if self.on_off_mode:
+      kwargs['data-toggle'] = u'on-off'
+
+    return super(BooleanWidget, self).__call__(field, **kwargs)
+
   def render_view(self, field):
     return u'\u2713' if field.object_data else u''  # Unicode "Check mark"
 

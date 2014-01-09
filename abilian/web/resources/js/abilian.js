@@ -39,7 +39,7 @@
 
      Abilian.fn.init_widgets = function() {
          $('[data-toggle="select2"]').select2();
-
+         $('[data-toggle="on-off"]').bootstrapSwitch();
          $(".timepicker").timepicker()
             .on('click.timepicker',
                 function(e) {
