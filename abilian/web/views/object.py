@@ -155,6 +155,12 @@ class ObjectEdit(ObjectView):
   #: submitted form data
   data = None
 
+  #: action name from form data
+  action = None
+
+  #: button clicked, corresponding to :attr:`action`.
+  button = None
+
   _message_success = _l(u"Entity successfully edited")
 
   def __init__(self, Model=None, pk=None, Form=None, template=None,
