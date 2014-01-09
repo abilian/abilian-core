@@ -6,7 +6,8 @@ window.onbeforeprint = Abilian.fn.before_print;
 
 Abilian.DEBUG = {{ config.DEBUG|tojson }};
 Abilian.locale = {{ locale.language|tojson }};
-
+Abilian.csrf_fieldname = {{ csrf.name()|tojson }};
+Abilian.csrf_token = {{ csrf.token()|tojson }};
 
 {%- set indexing_svc = app.services['indexing'] %}
 Abilian.api.search = {

@@ -22,6 +22,16 @@
      Abilian.events = {};
      Abilian.events.appInit = 'abilian.app-init';
 
+    
+    /**
+     * CSRF field name to use, if CSRF is used
+     */
+    Abilian.csrf_fieldname = '';
+
+    /**
+     * CSRF token to use, if defined.
+     */
+    Abilian.csrf_token = '';
 
     /**
      * Abilian remote API
