@@ -5,7 +5,7 @@
 {% block content %}
   {%- call m_box(title=_("Settings")) %}
   <form method="POST" role="form">
-    {{ csrf }}
+    {{ csrf.field() }}
 
     {%- for k in keys %}
       <div class="form-group">

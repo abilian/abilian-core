@@ -36,6 +36,7 @@ from abilian.web.nav import BreadcrumbItem
 from abilian.web.filters import init_filters
 from abilian.web.util import send_file_from_directory, url_for
 from abilian.web.admin import Admin
+from abilian.web import csrf
 from abilian.plugin.loader import AppLoader
 from abilian.services import (audit_service, index_service, activity_service,
                               auth_service, settings_service, security_service)
@@ -444,6 +445,7 @@ class Application(Flask, ServiceManager, PluginManager):
     env = Flask.create_jinja_environment(self)
     env.globals.update(
       app=current_app,
+      csrf=csrf,
       get_locale=babel_get_locale,
       local_dt=abilian.core.util.local_dt,
       url_for=url_for,

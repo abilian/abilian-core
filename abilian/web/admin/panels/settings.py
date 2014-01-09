@@ -40,8 +40,7 @@ class SettingsPanel(AdminPanel):
     return current_app.services.get('settings').namespace('config')
 
   def get(self):
-    return render_template('admin/settings.html', keys=self._keys,
-                           csrf=csrf.field())
+    return render_template('admin/settings.html', keys=self._keys,)
 
   @csrf.protect
   def post(self):
