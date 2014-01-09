@@ -31,3 +31,7 @@
 .file-input .selected-files {
   display: inline-block;
 }
+
+.file-item {
+  margin-bottom: 0px;
+}

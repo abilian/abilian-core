@@ -3,7 +3,7 @@
  * File input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
  */
     var file_item_template = Hogan.compile(
-        '<li class="file-item">{{ name }} ({{ size }}) '
+        '<li class="file-item well well-sm">{{ name }} ({{ size }}) '
         + '<a class="close" href="#">&times;</a>'
         + '</li>'
     );
