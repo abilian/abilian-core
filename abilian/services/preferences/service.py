@@ -120,6 +120,7 @@ class PreferenceService(Service):
     @signals.components_registered.connect_via(app)
     def register_bp(app):
         app.register_blueprint(bp)
+        app.extensions[self.name].blueprint_registered = True
 
     # @bp.before_request
     # def check_security():
