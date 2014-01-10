@@ -7,7 +7,8 @@
     <form class="col-md-10 col-md-offset-1" role="search" method="GET" action="{{ url_for('search.search_main') }}">
       <div class="input-group">
         <input type="search" name="q" class="search-query form-control" value="{{ q }}"
-               placeholder="{{ _('Search') }}" autocomplete="off" id="search-box" />
+               placeholder="{{ _('Search') }}" autocomplete="off" id="search-box"
+               autofocus="autofocus" />
         <span class="input-group-btn">
           <button class="btn btn-default" type="submit">
             <span class="glyphicon glyphicon-search"></span>
