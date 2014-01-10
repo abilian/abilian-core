@@ -41,7 +41,9 @@
 
     <!-- breadcrumbs -->
     <div class="row">
-    {% include "breadcrumbs.html" %}
+      <div class="col-md-12">
+        {% include "breadcrumbs.html" %}
+      </div>
     </div>
 
     <!-- flash messages -->
@@ -50,7 +52,7 @@
     </div>
 
     <div class="row">
-      <header>
+      <header class="col-md-12">
         {% block header %}
         {%- endblock %}
       </header>

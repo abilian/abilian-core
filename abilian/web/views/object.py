@@ -42,7 +42,7 @@ class BaseObjectView(View):
   #: template to render
   template = None
 
-  #: default templates inherit from "base_template". This allows to used generic
+  #: default templates inherit from "base_template". This allows to use generic
   #: templates with a custom base
   base_template = "base.html"
 
