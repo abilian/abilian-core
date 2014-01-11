@@ -36,7 +36,6 @@ phonenumbers>=5.8b1
 
 whoosh>=2.5
 markdown
-feedparser
 blinker
 requests
 bleach
