@@ -1,7 +1,7 @@
 Changelog for Abilian Core
 ==========================
 
-0.1.2 (unreleased)
+0.1.2 (2014-01-11)
 ------------------
 
 - added jinja extension to collect JS snippets during page generation and put
