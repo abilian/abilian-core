@@ -1,6 +1,12 @@
 Changelog for Abilian Core
 ==========================
 
+0.1.3 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 0.1.2 (2014-01-11)
 ------------------
 
