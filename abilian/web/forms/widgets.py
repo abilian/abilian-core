@@ -19,7 +19,9 @@ from flask.ext.babel import gettext as _, format_date, format_datetime, get_loca
 import wtforms
 from wtforms.widgets import (
     HTMLString, Input, html_params, Select,
-    TextArea as BaseTextArea)
+    TextArea as BaseTextArea,
+    PasswordInput as BasePasswordInput,
+)
 from wtforms_alchemy import ModelFieldList
 
 from abilian.i18n import _
@@ -752,6 +754,22 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 
   def render_view(self, field):
     return u'\u2713' if field.object_data else u''  # Unicode "Check mark"
+
+
+class PasswordInput(BasePasswordInput):
+  """
+  Supports setting 'autocomplete' at instanciation time
+  """
+  def __init__(self, *args, **kwargs):
+    self.autocomplete = kwargs.pop('autocomplete', None)
+    BasePasswordInput.__init__(self, *args, **kwargs)
+
+  def __call__(self, field, **kwargs):
+    kwargs.setdefault('autocomplete', self.autocomplete)
+    return BasePasswordInput.__call__(self, field, **kwargs)
+
+  def render_view(self, field):
+    return u'*****'
 
 
 class FloatWidget(wtforms.widgets.TextInput):
