@@ -38,8 +38,9 @@ from abilian.web.util import send_file_from_directory, url_for
 from abilian.web.admin import Admin
 from abilian.web import csrf
 from abilian.plugin.loader import AppLoader
-from abilian.services import (audit_service, index_service, activity_service,
-                              auth_service, settings_service, security_service)
+from abilian.services import (
+    audit_service, index_service, activity_service, auth_service,
+    settings_service, security_service, preferences_service)
 
 
 logger = logging.getLogger(__name__)
@@ -375,6 +376,10 @@ class Application(Flask, ServiceManager, PluginManager):
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)
+    preferences_service.init_app(self)
+
+    from .web.preferences.user import UserPreferencesPanel
+    preferences_service.register_panel(UserPreferencesPanel(), self)
 
     from .web.coreviews import users
     self.register_blueprint(users.bp)

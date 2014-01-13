@@ -12,6 +12,7 @@ from .base import Service, ServiceState
 from .audit import audit_service
 from .indexing import service as index_service
 from .security import security as security_service
+from .preferences import preferences as preferences_service
 from .conversion import converter
 from .activity import ActivityService
 from .auth import AuthService
@@ -19,7 +20,7 @@ from .settings import SettingsService
 
 __all__ = ['Service', 'ServiceState', 'get_service',
            'audit_service', 'index_service', 'activity_service', 'auth_service',
-           'settings_service', 'security_service']
+           'settings_service', 'security_service', 'preferences_service']
 
 auth_service = AuthService()
 activity_service = ActivityService()
