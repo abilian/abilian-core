@@ -353,7 +353,6 @@ class Application(Flask, ServiceManager, PluginManager):
     extensions.mail.init_app(self)
     actions.init_app(self)
 
-
     from abilian.core.jinjaext import DeferredJS
     DeferredJS(self)
 
@@ -376,6 +375,9 @@ class Application(Flask, ServiceManager, PluginManager):
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)
+
+    from .web.coreviews import users
+    self.register_blueprint(users.bp)
 
     # Admin interface
     Admin().init_app(self)
