@@ -87,8 +87,8 @@ class PreferenceService(Service):
     #  http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html#deleting-from-collections
     user.preferences = []
 
-  def register_panel(self, panel):
-    state = self.app_state
+  def register_panel(self, panel, app=None):
+    state = self.app_state if app is None else app.extensions[self.name]
     if state.blueprint_registered:
       raise ValueError("Extension already initialized for app, cannot add more panel")
 
@@ -104,7 +104,7 @@ class PreferenceService(Service):
       endpoint += "_post"
       state.blueprint.add_url_rule(rule, endpoint, panel.post, methods=['POST'])
 
-    self.app_state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
+    state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
       label=panel.label,
       icon=None,
       url=Endpoint(abs_endpoint),
