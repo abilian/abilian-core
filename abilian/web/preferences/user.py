@@ -12,7 +12,7 @@ from wtforms.validators import ValidationError
 from flask import (
     g, current_app, abort, request, redirect, url_for, render_template,
     flash)
-from flask.ext.wtf import FileField
+from flask.ext.wtf.file import FileField
 
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
