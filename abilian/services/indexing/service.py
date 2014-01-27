@@ -402,6 +402,11 @@ def index_update(index, items):
   adapted = service.adapted
 
   session = Session(bind=db.session.get_bind(None, None), autocommit=True)
+
+  if not getattr(session, '_model_changes', None):
+    # Flask-Sqlalchemy up to 1.0 needs this
+    setattr(session, '_model_changes', {})
+
   updated = set()
   with AsyncWriter(index) as writer:
     for op, cls_name, pk, data in items:
