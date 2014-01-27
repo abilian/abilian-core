@@ -103,18 +103,27 @@ def dumproutes():
 
 
 @manager.command
-def createadmin(email, password, name=None, first_name=None):
+def createuser(email, password, role=None, name=None, first_name=None):
   """
   Adds an admin user with given email and password.
   """
   user = User(email=email, password=password,
               last_name=name, first_name=first_name,
               can_login=True)
-  security = get_service('security')
-  security.grant_role(user, "admin")
   db.session.add(user)
+
+  if role in ('admin',):
+    # FIXME: add other valid roles
+    security = get_service('security')
+    security.grant_role(user, role)
+
   db.session.commit()
   print "User {} added".format(email)
+
+
+@manager.command
+def createadmin(email, password, name=None, first_name=None):
+  createuser(email, password, role='admin', name=name, first_name=first_name)
 
 
 @manager.command

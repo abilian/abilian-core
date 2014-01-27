@@ -4,7 +4,7 @@ Changelog for Abilian Core
 0.1.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added 'createuser' command
 
 
 0.1.2 (2014-01-11)
