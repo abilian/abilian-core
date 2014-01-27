@@ -20,6 +20,8 @@ from flask import (
   render_template, request, Blueprint, redirect, url_for,
   flash, current_app
 )
+from flask.json import jsonify
+
 from flask.ext.login import (
   login_user, logout_user, user_logged_in,
   user_logged_out,
@@ -52,32 +54,63 @@ def login_form():
   return render_template("login/login.html", next_url=next_url)
 
 
-@route("/login", methods=['POST'])
-def login_post():
-  email = request.form.get('email', "").lower()
-  password = request.form.get('password')
-  next_url = request.form.get('next', u'')
+def do_login(form):
+  email = form.get('email', "").lower()
+  password = form.get('password')
+  next_url = form.get('next', u'')
+  res = dict(email=email, next_url=next_url)
 
   if not email or not password:
-    flash(_(u"You must provide your email and password."), 'error')
-    return (render_template("login/login.html", next_url=next_url,), 401)
+    res['error'] = _(u"You must provide your email and password.")
+    res['code'] = 401
+    return res
 
   try:
     user = User.query.filter(User.email == email, User.can_login == True).one()
   except NoResultFound:
-    flash(_(u"Sorry, we couldn't find an account for "
-            "email '{email}'.").format(email=email), 'error')
-    return render_template("login/login.html", email=email), 401
+    res['error'] = _(u"Sorry, we couldn't find an account for "
+                     u"email '{email}'.").format(email=email)
+    res['code'] = 401
+    return res
 
   if user and not user.authenticate(password):
-    flash(_(u"Sorry, wrong password."), 'error')
-    return (render_template("login/login.html",
-                            next_url=next_url, email=email),
-            401)
+    res['error'] = _(u"Sorry, wrong password.")
+    res['code'] = 401
+    return res
 
   # Login successful
   login_user(user)
+  res['user'] = user
+  return res
+
+
+@route("/login", methods=['POST'])
+def login_post():
+  res = do_login(request.form)
+  if 'error' in res:
+    code = res.pop('code')
+    flash(res['error'], 'error')
+    return (render_template("login/login.html", **res), code)
+
   return redirect_back(url=request.url_root)
+
+
+@route("/api/login", methods=['POST'])
+def login_json():
+  res = do_login(request.json)
+  code = None
+
+  if 'error' in res:
+    code = res.pop('code')
+  else:
+    user = res.pop('user')
+    res['username'] = user.email
+    res['fullname'] = user.name
+
+  response = jsonify(**res)
+  if code:
+    response.status_code = code
+  return response
 
 
 @route("/logout", methods=['GET', 'POST'])
@@ -85,6 +118,11 @@ def logout():
   logout_user()
   return redirect(request.url_root)
 
+
+@route("/api/logout", methods=['POST'])
+def logout_json():
+  logout_user()
+  return  u'Logged out, ok.', 200
 
 #
 # Code to deal with forgotten passwords or initial password generation

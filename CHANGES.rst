@@ -4,6 +4,7 @@ Changelog for Abilian Core
 0.1.3 (unreleased)
 ------------------
 
+- Added login/logout via JSON api
 - Added 'createuser' command
 
 
