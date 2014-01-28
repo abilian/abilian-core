@@ -12,6 +12,7 @@ import warnings
 from contextlib import contextmanager
 
 from sqlalchemy.exc import SAWarning
+from flask import url_for
 from flask.ext.testing import TestCase
 from flask.ext.login import login_user, logout_user
 from abilian.core.subjects import User
@@ -186,14 +187,21 @@ class BaseTestCase(TestCase):
 
     .. seealso:: :meth:`logout`
     """
-    login_user(user, remember, force)
+    success = login_user(user, remember, force)
+    if not success:
+      raise ValueError(u'User is not active, cannot login; or use force=True')
 
-    @contextmanager
-    def with_logout():
-      yield
-      self.logout()
+    class LoginContext(object):
+      def __init__(self, testcase):
+        self.testcase = testcase
 
-    return with_logout
+      def __enter__(self):
+        return None
+
+      def __exit__(self, type, value, traceback):
+        self.testcase.logout()
+
+    return LoginContext(self)
 
   def logout(self):
     """
@@ -210,6 +218,37 @@ class BaseTestCase(TestCase):
     .. seealso:: :meth:`login`, :meth:`logout`
     """
     return self.login(User.query.get(0), force=True)
+
+  def client_login(self, email, password):
+    """
+    Like :meth:`login` but with a web login request. Can be used as
+    contextmanager.
+
+    All subsequent request made with `self.client` will be authentifed until
+    :meth:`client_logout` is called or exit of `with` block.
+    """
+    r = self.client.post(url_for('login.login_post'),
+                         data={'email': email, 'password': password})
+    self.assertEquals(r.status_code, 302)
+
+    class LoginContext(object):
+      def __init__(self, testcase):
+        self.testcase = testcase
+
+      def __enter__(self):
+        return None
+
+      def __exit__(self, type, value, traceback):
+        self.testcase.client_logout()
+
+    return LoginContext(self)
+
+
+  def client_logout(self):
+    """
+    Like :meth:`logout` but with a web logout
+    """
+    self.client.post(url_for('login.logout'))
 
   @property
   def db(self):
