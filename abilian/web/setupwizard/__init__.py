@@ -212,7 +212,7 @@ def step_redis_validate():
     raise e
 
   try:
-    r.client_list()
+    r.info()
   except redis.exceptions.InvalidResponse:
     error = (u"Connection error: doesn't look like it's a redis server. "
              u"Verify host and port are those of your redis server.")
