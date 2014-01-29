@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from flask import current_app, g, request, url_for, _request_ctx_stack
 from flask.ext.login import (
-  current_user, user_logged_in,  user_logged_out
+  current_user, user_logged_out
 )
 from flask.ext.babel import lazy_gettext as _l
 
@@ -56,6 +56,7 @@ class AuthService(Service):
 
   def init_app(self, app):
     login_manager.init_app(app)
+    login_manager.login_view = 'login.login_form'
     Service.init_app(self, app)
     self.login_url_prefix = app.config.get('LOGIN_URL', '/user')
     app.before_request(self.before_request)
@@ -90,7 +91,6 @@ class AuthService(Service):
     # anonymous" function
     g.user = g.logged_user = user
     security = current_app.services.get('security')
-
     g.is_manager = (user
                     and not user.is_anonymous()
                     and ((security.has_role(user, 'admin')
