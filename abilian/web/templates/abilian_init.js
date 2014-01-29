@@ -11,7 +11,9 @@ Abilian.csrf_token = {{ csrf.token()|tojson }};
 
 {%- set indexing_svc = app.services['indexing'] %}
 Abilian.api.search = {
+    {%- if 'abilian.web.search' in app.APP_PLUGINS %}
     'live': {{ url_for('search.live')|tojson }} + '?q=%QUERY',
+  {%- endif %}
     'object_types': {{ indexing_svc.searchable_object_types()|tojson }}
 };
 
@@ -39,7 +41,7 @@ $.extend(
 {%- set short_time = locale.time_formats['short'].format %}
 $.extend(
     $.fn.timepicker.defaults,
-    { 'showMeridian': {{ ('%(h)s' in short_time or '%(K)s' in short_time)|tojson }} 
+    { 'showMeridian': {{ ('%(h)s' in short_time or '%(K)s' in short_time)|tojson }}
     });
 
 if (window.FileAPI) {
