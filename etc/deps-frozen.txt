@@ -22,7 +22,7 @@ Flask-Mail==0.8.2
 Flask-Migrate==1.1.0
 Flask-Principal==0.4.0
 Flask-Security==1.6.9
-Flask-Script==0.6.2
+Flask-Script==0.6.6
 Flask-SQLAlchemy==0.16
 Flask-Testing==0.4
 Flask-Uploads==0.1.3
