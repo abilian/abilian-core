@@ -1,7 +1,7 @@
 Changelog for Abilian Core
 ==========================
 
-0.1.3 (unreleased)
+0.1.3 (2014-02-03)
 ------------------
 
 - Update some dependencies
