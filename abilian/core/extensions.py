@@ -11,7 +11,7 @@ from __future__ import absolute_import
 
 from flask import _request_ctx_stack
 
-__all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager']
+__all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf']
 
 # celery
 #
@@ -33,6 +33,10 @@ import sqlalchemy as sa
 from .sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
+
+# csrf
+from flask.ext.wtf.csrf import CsrfProtect
+csrf = CsrfProtect()
 
 def get_extension(name):
   """Get the named extension from the current app, returning None if not found.

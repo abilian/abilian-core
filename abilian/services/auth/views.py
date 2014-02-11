@@ -30,7 +30,7 @@ from flask.ext.security.utils import md5
 from flask.ext.mail import Message
 from flask.ext.babel import gettext as _
 
-from abilian.core.extensions import db
+from abilian.core.extensions import db, csrf
 from abilian.core.subjects import User
 
 from .models import LoginSession
@@ -84,6 +84,7 @@ def do_login(form):
   return res
 
 
+@csrf.exempt
 @route("/login", methods=['POST'])
 def login_post():
   res = do_login(request.form)
@@ -94,7 +95,7 @@ def login_post():
 
   return redirect_back(url=request.url_root)
 
-
+@csrf.exempt
 @route("/api/login", methods=['POST'])
 def login_json():
   res = do_login(request.json)
@@ -112,13 +113,13 @@ def login_json():
     response.status_code = code
   return response
 
-
+@csrf.exempt
 @route("/logout", methods=['GET', 'POST'])
 def logout():
   logout_user()
   return redirect(request.url_root)
 
-
+@csrf.exempt
 @route("/api/logout", methods=['POST'])
 def logout_json():
   logout_user()
@@ -169,7 +170,6 @@ def forgotten_pw(new_user=False):
 @route("/reset_password/<token>")
 def reset_password(token):
   expired, invalid, user = reset_password_token_status(token)
-
   if invalid:
     flash(_(u"Invalid reset password token."), "error")
   elif expired:

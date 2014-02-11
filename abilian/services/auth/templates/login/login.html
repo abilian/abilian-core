@@ -20,7 +20,7 @@
           <input type="hidden" name="next" value="{{ next_url or '' }}" />
           <button class="btn btn-primary" type="submit" style="float: left">{{ _("Sign in") }}</button>
           <span style="display: inline-block; float:right; text-align: right;">
-            <a href="/login/forgotten_pw">{{ _("Forgot password?") }}</a>
+            <a href="{{ url_for('.forgotten_pw_form') }}">{{ _("Forgot password?") }}</a>
           </span>
       </div>      
     </form>

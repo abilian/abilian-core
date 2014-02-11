@@ -370,6 +370,11 @@ class Application(Flask, ServiceManager, PluginManager):
     # Flask-Migrate
     Migrate(self, self.db)
 
+    # CSRF by default
+    if self.config.get('CSRF_ENABLED'):
+      extensions.csrf.init_app(self)
+      self.extensions['csrf'] = extensions.csrf
+
     # Abilian Core services
     auth_service.init_app(self)
     security_service.init_app(self)
