@@ -44,7 +44,6 @@ bleach
 py-bcrypt
 pillow
 python-magic
-guess-language
 wtforms==1.0.4
 wtforms-alchemy==0.12.0
 PyYAML
