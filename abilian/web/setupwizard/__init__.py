@@ -16,6 +16,7 @@ from flask import (
 )
 
 from abilian.core.commands import config as cmd_config
+from abilian.core.extensions import csrf
 
 logger = logging.getLogger(__name__)
 setup = Blueprint('setup', __name__, template_folder='templates')
@@ -98,6 +99,7 @@ def step_validated(step_endpoint, valid=True):
   session_set('validated', tuple(validated))
 
 # DB Setup ####################
+@csrf.exempt
 @setup.route('', methods=['GET', 'POST'])
 def step_db():
   if request.method == 'POST':
@@ -177,6 +179,7 @@ def step_db_validate():
   return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
 
 # Redis ####################
+@csrf.exempt
 @setup.route('/redis', methods=['GET', 'POST'])
 def step_redis():
   if request.method == 'POST':
@@ -231,6 +234,7 @@ def step_redis_validate():
 
 
 # Site info ####################
+@csrf.exempt
 @setup.route('/site_info', methods=['GET', 'POST'])
 def step_site_info():
   if request.method == 'POST':
@@ -273,6 +277,7 @@ def step_site_info_validate():
   return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
 
 # Finalize ####################
+@csrf.exempt
 @setup.route('/finalize', methods=['GET', 'POST'])
 def finalize():
   validated = session_get('validated')
