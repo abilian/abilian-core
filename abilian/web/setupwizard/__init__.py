@@ -311,6 +311,7 @@ def finalize_validate():
   is_production = d['server_mode'] == u'production'
   config.PRODUCTION = is_production
   config.DEBUG = not is_production
+  config.DEBUG_TB_ENABLED = config.DEBUG
   config.CELERY_ALWAYS_EAGER = not is_production
 
   cmd_config.write_config(config_file, config)
