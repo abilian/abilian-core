@@ -255,8 +255,8 @@ def get_possible_hostnames():
     for a in aliases:
       names.setdefault(a, []).extend(ips)
 
-    return sorted(u'{} ({})'.format(name, u', '.join(sorted(set(ips))))
-                  for name, ips in names.iteritems())
+  return sorted(u'{} ({})'.format(name, u', '.join(sorted(set(ips))))
+                for name, ips in names.iteritems())
 
 def step_site_info_form():
   return render_template('setupwizard/step_site_info.html',

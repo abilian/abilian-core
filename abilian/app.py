@@ -204,7 +204,7 @@ class Application(Flask, ServiceManager, PluginManager):
     self.register_plugins()
     self.maybe_register_setup_wizard()
     self._finalize_assets_setup()
-    # at this point all models should have been imported: time to configure
+    # At this point all models should have been imported: time to configure
     # mappers. Normally Sqlalchemy does it when needed but mappers may be
     # configured inside sa.orm.class_mapper() which hides a misconfiguration: if
     # a mapper is misconfigured its exception is swallowed by
