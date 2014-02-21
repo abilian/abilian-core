@@ -10,6 +10,7 @@ before_install:
 
 # Install Python dependencies
 install:
+  - pip install pip==1.4.1
   - pip install -r etc/deps-frozen.txt --use-mirrors
   - pip install -r etc/deps-devel.txt --use-mirrors
 
