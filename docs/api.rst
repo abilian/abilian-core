@@ -56,10 +56,13 @@ Module :mod:`abilian.core.sqlalchemy`
 
 .. automodule:: abilian.core.sqlalchemy
 
-Module :mod:`abilian.core.subjects`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Module :mod:`abilian.core.models`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: abilian.core.subjects
+.. automodule:: abilian.core.models.base
+.. automodule:: abilian.core.models.subjects
+.. automodule:: abilian.core.models.owned
+.. automodule:: abilian.core.models
 
 Module :mod:`abilian.core.util`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
