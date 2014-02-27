@@ -31,7 +31,7 @@ from flask.ext.mail import Message
 from flask.ext.babel import gettext as _
 
 from abilian.core.extensions import db, csrf
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 
 from .models import LoginSession
 

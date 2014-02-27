@@ -1,6 +1,6 @@
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.testing import BaseTestCase
 
 from .service import ActivityService

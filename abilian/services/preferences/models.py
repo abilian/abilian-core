@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relation, backref
 
 from abilian.core.extensions import db
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.core.sqlalchemy import JSON
 
 

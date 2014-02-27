@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from datetime import datetime, timedelta
 from flask import render_template
 from flask.ext.babel import lazy_gettext as _l
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.services.audit import AuditEntry, CREATION
 
 from ..panel import AdminPanel

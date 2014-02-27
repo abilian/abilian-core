@@ -1,4 +1,4 @@
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.testing import BaseTestCase
 
 from .service import PreferenceService

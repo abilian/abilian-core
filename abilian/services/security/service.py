@@ -18,7 +18,7 @@ except ImportError:
 from sqlalchemy.orm import subqueryload, object_session
 from sqlalchemy import sql
 
-from abilian.core.subjects import User, Group, Principal
+from abilian.core.models.subjects import User, Group, Principal
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.util import noproxy

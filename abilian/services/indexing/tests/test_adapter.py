@@ -14,9 +14,8 @@ from whoosh.fields import (
 
 from abilian.services.indexing.adapter import SAAdapter
 from abilian.core.extensions import db
-from abilian.core.entities import (
-  Entity, IdMixin, Indexable as CoreIndexable, SEARCHABLE,
-)
+from abilian.core.models.base import IdMixin, Indexable as CoreIndexable, SEARCHABLE
+from abilian.core.entities import Entity
 
 class SANotAdaptable(object):
   pass

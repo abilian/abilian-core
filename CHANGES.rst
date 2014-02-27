@@ -4,7 +4,8 @@ Changelog for Abilian Core
 0.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- refactored abilian.core.entities, abilian.core.subjects. New module
+  abilian.core.models containing modules: base, subjects, owned.
 
 
 0.1.3 (2014-02-03)

@@ -5,7 +5,7 @@ from flask.ext.login import AnonymousUserMixin
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
-from abilian.core.subjects import User, Group
+from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
 from . import security, RoleAssignment, InheritSecurity

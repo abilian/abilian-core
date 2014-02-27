@@ -17,7 +17,7 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, DateTime, Text, String
 
 from abilian.core.entities import db, Entity
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 
 __all__ = ['ActivityEntry']
 

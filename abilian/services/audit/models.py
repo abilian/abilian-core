@@ -18,7 +18,7 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, Unicode, DateTime, Binary, String
 
 from abilian.core.entities import Entity
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.core.extensions import db
 
 

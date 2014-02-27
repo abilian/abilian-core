@@ -2,8 +2,8 @@ from unittest import TestCase
 from datetime import datetime
 import sqlalchemy as sa
 
-from abilian.core.entities import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE, Info
-from abilian.core.subjects import User
+from abilian.core.models.base import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE, Info
+from abilian.core.models.subjects import User
 
 from .dummy import DummyContact
 

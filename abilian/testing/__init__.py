@@ -15,7 +15,7 @@ from sqlalchemy.exc import SAWarning
 from flask import url_for
 from flask.ext.testing import TestCase
 from flask.ext.login import login_user, logout_user
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.app import Application
 
 assert not 'twill' in subprocess.__file__

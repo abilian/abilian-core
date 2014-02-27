@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 
 
 class SubjectTestCase(TestCase):

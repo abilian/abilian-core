@@ -6,7 +6,8 @@ from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy import (Column, Unicode, UnicodeText, Text, Date, ForeignKey,
                         Integer)
 
-from abilian.core.entities import Entity, SEARCHABLE, AUDITABLE_HIDDEN
+from abilian.core.models.base import SEARCHABLE, AUDITABLE_HIDDEN
+from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.testing import BaseTestCase
 

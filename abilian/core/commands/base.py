@@ -9,7 +9,7 @@ import sqlalchemy as sa
 from flask import current_app
 from flask.ext.script import Manager, prompt_pass
 from abilian.core.extensions import db
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.services import get_service
 
 __all__ = ['manager', 'logger']

@@ -17,7 +17,7 @@ from whoosh.fields import (
 
 from abilian.services.security.models import Role, Anonymous
 from abilian.core.util import noproxy
-from abilian.core.subjects import User, Group
+from abilian.core.models.subjects import User, Group
 
 #: A Whoosh analyzer split on word boundaries and folds accents and case.
 accent_folder = (RegexTokenizer(r'\w+') # defaults doesn't split on '.'

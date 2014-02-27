@@ -33,7 +33,7 @@ from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
 from abilian.services.security import Role, Anonymous, Authenticated
-from abilian.core.subjects import User, Group
+from abilian.core.models.subjects import User, Group
 from abilian.core.util import fqcn, friendly_fqcn
 from abilian.core.entities import Indexable
 from abilian.core.extensions import celery, db

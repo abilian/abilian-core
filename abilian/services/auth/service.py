@@ -12,7 +12,7 @@ from flask.ext.login import (
 from flask.ext.babel import lazy_gettext as _l
 
 from abilian.services import Service
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 from abilian.core.extensions import db, login_manager
 from abilian.web.action import actions
 from abilian.web.nav import NavItem, NavGroup

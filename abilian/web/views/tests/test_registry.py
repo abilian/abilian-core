@@ -12,7 +12,7 @@ from abilian.core.entities import Entity
 
 # needed if running only this test, else SA won't have registered this mapping
 # required by Entity.owner_id, etc
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 
 from abilian.web.views import Registry, default_view
 

@@ -12,7 +12,7 @@ from sqlalchemy import ForeignKey, Column, DateTime, Integer, String
 from sqlalchemy.orm import relation
 
 from abilian.core.extensions import db
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 
 _MARK = object()
 
@@ -24,7 +24,7 @@ class LoginSessionQuery(BaseQuery):
     Returns last known session for user
 
     :param user: user session
-    :type user: `abilian.core.subjects.User`
+    :type user: `abilian.core.models.subjects.User`
 
     :param user_agent: *exact* user agent string to lookup, or `None` to have
     user_agent extracted from request object. If not provided at all, no

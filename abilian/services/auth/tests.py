@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 import json
 from abilian.testing import BaseTestCase
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 
 class TestAuth(BaseTestCase):
 

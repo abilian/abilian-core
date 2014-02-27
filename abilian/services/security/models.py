@@ -8,7 +8,7 @@ from sqlalchemy.types import Integer, Text, Enum, DateTime, String, Boolean
 from sqlalchemy.event import listen
 
 from abilian.core.entities import Entity
-from abilian.core.subjects import User, Group
+from abilian.core.models.subjects import User, Group
 from abilian.core.extensions import db
 
 

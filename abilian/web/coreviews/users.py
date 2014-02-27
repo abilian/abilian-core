@@ -8,7 +8,7 @@ import hashlib
 from flask import (
     Blueprint, abort, make_response, request, g, Response
     )
-from abilian.core.subjects import User
+from abilian.core.models.subjects import User
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 

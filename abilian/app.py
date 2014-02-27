@@ -573,7 +573,7 @@ class Application(Flask, ServiceManager, PluginManager):
     return self.extensions['sqlalchemy'].db
 
   def create_db(self):
-    from abilian.core.subjects import User
+    from abilian.core.models.subjects import User
 
     db.create_all()
     if User.query.get(0) is None:

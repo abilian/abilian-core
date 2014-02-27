@@ -18,8 +18,8 @@ from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, DateTime, Text
 
-from .entities import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
-
+from abilian.core.extensions import db
+from .base import IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
 
 __all__ = ['User', 'Group', 'Principal']
 
