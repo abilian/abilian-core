@@ -369,10 +369,10 @@ class SingleView(object):
       if data:
         panels.append((panel, data,))
 
-    view_template = filter(bool, (self.options.get('view_template'),
-                                  'widgets/render_single.html'))
+    template = filter(bool, (self.options.get('view_template'),
+                             'widgets/render_single.html'))
 
-    return Markup(render_template(view_template,
+    return Markup(render_template(template,
                                   view=self,
                                   csrf_token=csrf.field(),
                                   entity=item, panels=panels))
@@ -394,7 +394,10 @@ class SingleView(object):
     else:
       rules = None
 
-    return Markup(render_template('widgets/render_for_edit.html',
+    template = filter(bool, (self.options.get('edit_template'),
+                             'widgets/render_for_edit.html'))
+
+    return Markup(render_template(template,
                                   view=self,
                                   form=form,
                                   for_new=for_new,
@@ -961,10 +964,14 @@ class Select2Ajax(object):
   The code below is probably very fragile, since it depends on the internal
   structure of a Select2 widget.
   """
-  def __init__(self, template='widgets/select2ajax.html'):
+  def __init__(self, template='widgets/select2ajax.html', multiple=False):
     self.template = template
+    self.multiple = multiple
 
   def __call__(self, field, **kwargs):
+    if self.multiple:
+      kwargs['multiple'] = True
+
     css_class = kwargs.setdefault('class', u'')
     if 'js-widget' not in css_class:
       css_class += u' js-widget'
