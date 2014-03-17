@@ -12,7 +12,8 @@ from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax
 
 
 __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
-           'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field']
+           'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',
+           'JsonSelect2MultipleField']
 
 
 class ModelFieldList(BaseModelFieldList):
@@ -286,3 +287,6 @@ class JsonSelect2Field(SelectFieldBase):
 #      else:
 #        raise ValidationError(self.gettext('Not a valid choice'))
 
+
+class JsonSelect2MultipleField(JsonSelect2Field):
+  widget = Select2Ajax(multiple=True)
