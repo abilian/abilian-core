@@ -6,6 +6,8 @@ Changelog for Abilian Core
 
 - refactored abilian.core.entities, abilian.core.subjects. New module
   abilian.core.models containing modules: base, subjects, owned.
+- Fixed or cleaned up dependencies.
+- Fixed setupwizard.
 
 
 0.1.3 (2014-02-03)
