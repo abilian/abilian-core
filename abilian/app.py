@@ -191,8 +191,8 @@ class Application(Flask, ServiceManager, PluginManager):
       jinja2.PackageLoader('abilian.web', 'templates'))
 
     self._assets_bundles = {
-      'css': {'options': dict(filters='cssimporter, cssrewrite',
-                              output='style-%(version)s.min.css')},
+      'css': {'options': dict(filters='less, cssimporter, cssmin',
+                              output='style-%(version)s.min.css',)},
       'js-top': {'options': dict(output='top-%(version)s.min.js')},
       'js': {'options': dict(output='app-%(version)s.min.js')},
     }
@@ -598,6 +598,9 @@ class Application(Flask, ServiceManager, PluginManager):
     manifest_file = os.path.join(assets_base_dir, 'manifest.json')
     assets.manifest = 'json:{}'.format(manifest_file)
 
+    # filters options
+    assets.config['less_extra_args'] = ['-ru']
+
     # setup static url for our assets
     from abilian.web import assets as core_bundles
 
@@ -607,6 +610,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # static minified are here
     assets.url = self.static_url_path + '/min'
+    assets.append_path(assets_dir, assets.url)
     self.add_static_url('min', assets_dir, endpoint='webassets_static', )
 
   def _finalize_assets_setup(self):
@@ -617,6 +621,7 @@ class Application(Flask, ServiceManager, PluginManager):
       options = data.get('options', {})
       if bundles:
         assets.register(name, Bundle(*bundles, **options))
+
 
   def register_asset(self, type_, asset):
     """
@@ -647,7 +652,7 @@ class Application(Flask, ServiceManager, PluginManager):
     from abilian.web import assets as bundles
 
     debug = self.config.get('DEBUG')
-    self.register_asset('css', bundles.CSS if not debug else bundles.CSS_DEBUG)
+    self.register_asset('css', bundles.LESS)
     self.register_asset('js-top',
                         bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG)
     self.register_asset('js', bundles.JS if not debug else bundles.JS_DEBUG)
