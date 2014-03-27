@@ -599,7 +599,10 @@ class Application(Flask, ServiceManager, PluginManager):
     assets.manifest = 'json:{}'.format(manifest_file)
 
     # filters options
-    assets.config['less_extra_args'] = ['-ru']
+    less_args = ['-ru']
+    if assets.debug:
+      less_args.append('--source-map-map-inline')
+    assets.config['less_extra_args'] = less_args
 
     # setup static url for our assets
     from abilian.web import assets as core_bundles
