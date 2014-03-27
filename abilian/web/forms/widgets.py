@@ -367,6 +367,7 @@ class SingleView(object):
 
     return Markup(render_template(template,
                                   view=self,
+                                  form=form,
                                   csrf_token=csrf.field(),
                                   entity=item, panels=panels))
 
