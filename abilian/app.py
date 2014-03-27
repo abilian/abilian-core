@@ -96,6 +96,7 @@ default_config = dict(Flask.default_config)
 default_config.update(
   TEMPLATE_DEBUG=False,
   CSRF_ENABLED=True,
+  BABEL_ACCEPT_LANGUAGES=('en', 'fr',),
   PLUGINS=(),
   ADMIN_PANELS=(
     'abilian.web.admin.panels.dashboard.DashboardPanel',
@@ -696,10 +697,11 @@ def get_locale():
     if locale:
       return locale
 
-  # Otherwise, try to guess the language from the user accept
-  # header the browser transmits.  We support de/fr/en in this
-  # example.  The best match wins.
-  return request.accept_languages.best_match(['en', 'fr'])
+  # Otherwise, try to guess the language from the user accept header the browser
+  # transmits.  By default we support en/fr. The best match wins.
+  return request.accept_languages.best_match(
+    current_app.config['BABEL_ACCEPT_LANGUAGES']
+  )
 
 
 def get_timezone():

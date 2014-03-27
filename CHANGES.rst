@@ -14,7 +14,8 @@ Changelog for Abilian Core
   abilian.core.models containing modules: base, subjects, owned.
 - Fixed or cleaned up dependencies.
 - Fixed setupwizard.
-
+- added config value: BABEL_ACCEPT_LANGUAGES, to limit supported languages and
+  change order during negociation
 
 0.1.3 (2014-02-03)
 ------------------
