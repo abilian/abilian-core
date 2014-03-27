@@ -1,7 +1,7 @@
 Changelog for Abilian Core
 ==========================
 
-0.1.4 (unreleased)
+0.1.4 (2014-03-27)
 ------------------
 
 - refactored abilian.core.entities, abilian.core.subjects. New module
