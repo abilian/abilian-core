@@ -112,8 +112,7 @@ def date_age(dt, now=None):
   return u"{} ({})".format(formatted_date, age(dt, now))
 
 
-def date(value):
-  format = "EE, d MMMM y"
+def date(value, format="EE, d MMMM y"):
   if isinstance(value, datetime.date):
     return babel.format_date(value, format)
   else:
