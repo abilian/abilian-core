@@ -191,7 +191,7 @@ class Application(Flask, ServiceManager, PluginManager):
       jinja2.PackageLoader('abilian.web', 'templates'))
 
     self._assets_bundles = {
-      'css': {'options': dict(filters='less, cssimporter, cssmin',
+      'css': {'options': dict(filters='less, cssmin',
                               output='style-%(version)s.min.css',)},
       'js-top': {'options': dict(output='top-%(version)s.min.js')},
       'js': {'options': dict(output='app-%(version)s.min.js')},
@@ -600,9 +600,9 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # filters options
     less_args = ['-ru']
-    if assets.debug:
-      less_args.append('--source-map-map-inline')
     assets.config['less_extra_args'] = less_args
+    if assets.debug:
+      assets.config['less_source_map_file'] = 'style.map'
 
     # setup static url for our assets
     from abilian.web import assets as core_bundles
@@ -624,7 +624,6 @@ class Application(Flask, ServiceManager, PluginManager):
       options = data.get('options', {})
       if bundles:
         assets.register(name, Bundle(*bundles, **options))
-
 
   def register_asset(self, type_, asset):
     """

@@ -6,7 +6,9 @@ from __future__ import absolute_import
 import logging
 import os
 from os.path import isabs
+import json
 import re
+from functools import partial
 from cStringIO import StringIO
 
 from webassets.filter import Filter, register_filter, get_filter, ExternalTool
@@ -98,7 +100,6 @@ class ImportCSSFilter(Filter):
         continue
 
       filename = import_match.group('filename')
-      self.logger.debug('Import "%s" line: |%s|', filename, line.strip())
       abs_filename = os.path.abspath(os.path.join(base_dir, filename))
       rel_filename= os.path.normpath(os.path.join(rel_dir, filename))
 
@@ -143,15 +144,19 @@ class LessImportFilter(Filter):
   name = 'less_import'
   max_debug_level = None
 
-  logger = logging.getLogger(__name__ + '.ImportCssFilter')
+  logger = logging.getLogger(__name__ + '.LessImportFilter')
 
   def input(self, _in, out, **kwargs):
     output = kwargs['output_path']
     out_dir = os.path.dirname(output)
     filepath = kwargs['source_path'] # abs path
     rel_path = os.path.relpath(filepath, out_dir)
-    import_mode = 'less' if not rel_path.endswith('css') else 'css'
 
+    # note: when import as CSS, import statement is put at the top of the
+    # generated file (order of import is not preserved, less content will be
+    # after pure css one). If we use "inline" the lessc will not rewrite
+    # url(). So we better have all our css imported as less content.
+    import_mode = 'less' # if not rel_path.endswith('css') else 'css'
     out.write('@import ({}) "{}";'.format(import_mode, rel_path))
 
 
@@ -237,6 +242,7 @@ class Less(ExternalTool):
       'extra_args': 'LESS_EXTRA_ARGS',
       'paths': 'LESS_PATHS',
       'as_output': 'LESS_AS_OUTPUT',
+      'source_map_file': 'less_source_map_file'
   }
   max_debug_level = None
 
@@ -259,6 +265,13 @@ class Less(ExternalTool):
                for path in self.pathsep]
       args.append('--include-path={0}'.format(os.pathsep.join(paths)))
 
+    source_map = self.source_map_file and self.env.debug
+    if source_map:
+      source_map_dest = os.path.join(self.env.directory, self.source_map_file)
+      self.logger.debug('Generate source map to "%s"', source_map_dest)
+      args.append('--source-map={}'.format(source_map_dest))
+      args.append('--source-map-url={}'.format(self.source_map_file))
+
     if self.extra_args:
       args.extend(self.extra_args)
 
@@ -267,21 +280,11 @@ class Less(ExternalTool):
     with working_directory(filename=source_path):
       self.subprocess(args, buf, in_)
 
+    if source_map:
+      self.fix_source_map_urls(source_map_dest)
 
-    def replace_url(url):
-      cur_path = os.path.dirname(kw['output_path'])
-      src_path = os.path.normpath(os.path.abspath(os.path.join(cur_path, url)))
-      possible_paths = [p for p in self.env.url_mapping.keys()
-                        if src_path.startswith(p)]
-      if not possible_paths:
-        return url
-
-      if len(possible_paths) > 1:
-        possible_paths.sort(lambda p: -len(p))
-      path = possible_paths[0]
-      return self.env.url_mapping[path] + src_path[len(path):]
-
-
+    # rewrite css url()
+    replace_url = partial(self.fix_url, os.path.dirname(kw['output_path']))
     buf.seek(0)
     url_rewriter = get_filter('cssrewrite', replace=replace_url)
     url_rewriter.set_environment(self.env)
@@ -289,5 +292,33 @@ class Less(ExternalTool):
     url_rewriter.input(buf, out,
                        source=kw['output'], source_path=kw['output_path'],
                        output=kw['output'], output_path=kw['output_path'])
+
+  def fix_url(self, cur_path, url):
+    src_path = os.path.normpath(os.path.abspath(os.path.join(cur_path, url)))
+    possible_paths = [p for p in self.env.url_mapping.keys()
+                      if src_path.startswith(p)]
+    if not possible_paths:
+      return url
+
+    if len(possible_paths) > 1:
+      possible_paths.sort(lambda p: -len(p))
+
+    path = possible_paths[0]
+    return self.env.url_mapping[path] + src_path[len(path):]
+
+  def fix_source_map_urls(self, filename):
+    with open(filename, 'r') as f:
+      data = json.load(f)
+
+    for idx, path in enumerate(data['sources']):
+      if path == u'-':
+        data['sources'][idx] = u'-'
+        continue
+
+      path = os.path.join('..', path) # apparently less is stripping first part
+      data['sources'][idx] = self.fix_url(self.env.directory, path)
+
+    with open(filename, 'w') as f:
+      json.dump(data, f)
 
 register_filter(Less)
