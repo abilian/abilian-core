@@ -1,48 +1,44 @@
 /* Alternative activity stream */
-ul.activities {
+.activities {
   margin: 0;
+
+  li {
+    list-style: none;
+    padding: 5px 0;
+    margin: 10px auto;
+    font-size: 12px;
+
+    .entry {
+      text-align: left;
+      border-left: 2px solid #FF7F66;
+      margin-left: 65px;
+      background: #fafafa;
+      display: block;
+      padding: 5px;
+      position: relative;
+    
+      .message { display: block; }
+
+      .body {
+        font-style: italic;
+        color: #777;
+        a {
+          text-decoration: none;
+          color: #777;
+          }
+      }
+    }
+
+    img.avatar {
+      float: left;
+      margin-right: 10px;
+      height: 45px;
+      width: 45px;
+      border-radius: 50% !important;
+    }
+  }
 }
 
-.activities li {
-  list-style: none;
-  padding: 5px 0;
-  margin: 10px auto;
-  font-size: 12px;
-}
-
-.activities li .entry {
-  text-align: left;
-  border-left: 2px solid #FF7F66;
-  margin-left: 65px;
-  background: #fafafa;
-  display: block;
-  padding: 5px;
-  position: relative;
-}
-
-.activities li .entry .message {
-  display: block;
-}
-
-.activities li img.avatar {
-  float: left;
-  margin-right: 10px;
-  height: 45px;
-  width: 45px;
-  border-radius: 50% !important;
-  -webkit-border-radius: 50% !important;
-  -moz-border-radius: 50% !important;
-}
-
-.activities li .entry .body {
-  font-style: italic;
-  color: #777;
-}
-
-.activities li .entry .body a {
-  text-decoration: none;
-  color: #777;
-}
 
 /* Stream */
 .stream-body {
