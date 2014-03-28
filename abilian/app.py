@@ -190,11 +190,15 @@ class Application(Flask, ServiceManager, PluginManager):
     self.register_jinja_loaders(
       jinja2.PackageLoader('abilian.web', 'templates'))
 
+    js_filters = 'closure_js' if self.config.get('PRODUCTION', False) else None
+
     self._assets_bundles = {
       'css': {'options': dict(filters='less, cssmin',
                               output='style-%(version)s.min.css',)},
-      'js-top': {'options': dict(output='top-%(version)s.min.js')},
-      'js': {'options': dict(output='app-%(version)s.min.js')},
+      'js-top': {'options': dict(output='top-%(version)s.min.js',
+                                 filters=js_filters)},
+      'js': {'options': dict(output='app-%(version)s.min.js',
+                             filters=js_filters)},
     }
 
     for http_error_code in (403, 404, 500):
@@ -604,6 +608,11 @@ class Application(Flask, ServiceManager, PluginManager):
     if assets.debug:
       assets.config['less_source_map_file'] = 'style.map'
 
+    # assets.config['CLOSURE_EXTRA_ARGS'] = [
+    #   '--source_map_format', 'V3',
+    #   '--create_source_map', os.path.join(assets.directory, 'js.map')
+    # ]
+
     # setup static url for our assets
     from abilian.web import assets as core_bundles
 
@@ -653,11 +662,9 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     from abilian.web import assets as bundles
 
-    debug = self.config.get('DEBUG')
     self.register_asset('css', bundles.LESS)
-    self.register_asset('js-top',
-                        bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG)
-    self.register_asset('js', bundles.JS if not debug else bundles.JS_DEBUG)
+    self.register_asset('js-top', bundles.TOP_JS)
+    self.register_asset('js', bundles.JS)
 
   def install_default_handler(self, http_error_code):
     """

@@ -10,19 +10,13 @@ from .filters import SubBundle
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 
-JQUERY = Bundle('jquery/js/jquery-1.10.2.min.js',
-                'jquery/js/jquery-migrate-1.2.1.min.js')
+JQUERY = Bundle('jquery/js/jquery-1.10.2.js',
+                'jquery/js/jquery-migrate-1.2.1.js')
 
-JQUERY_DEBUG = Bundle('jquery/js/jquery-1.10.2.js',
-                      'jquery/js/jquery-migrate-1.2.1.js')
-
-BOOTBOX_JS = Bundle('bootbox/bootbox.min.js')
-BOOTBOX_JS_DEBUG = Bundle('bootbox/bootbox.js')
-
-BOOTSTRAP_JS = Bundle('bootstrap/js/bootstrap.min.js')
-BOOTSTRAP_JS_DEBUG = Bundle('bootstrap/js/bootstrap.js')
+BOOTBOX_JS = Bundle('bootbox/bootbox.js')
 
 BOOTSTRAP_LESS = 'bootstrap/less/bootstrap.less'
+BOOTSTRAP_JS = Bundle('bootstrap/js/bootstrap.js')
 
 BOOTSTRAP_DATEPICKER_LESS = 'bootstrap-datepicker/less/datepicker.less'
 BOOTSTRAP_DATEPICKER_JS = Bundle('bootstrap-datepicker/js/bootstrap-datepicker.js')
@@ -35,26 +29,20 @@ BOOTSTRAP_TIMEPICKER_JS = Bundle('bootstrap-timepicker/js/bootstrap-timepicker.j
 
 DATATABLE_LESS = ('datatables/css/jquery.dataTables.css',
                   'datatables/css/jquery.dataTables_themeroller.css')
-DATATABLE_JS = Bundle('datatables/js/jquery.dataTables.min.js')
-DATATABLE_JS_DEBUG = Bundle('datatables/js/jquery.dataTables.js')
+DATATABLE_JS = Bundle('datatables/js/jquery.dataTables.js')
 
-FILEAPI_JS = Bundle('fileapi/FileAPI.min.js',
-                    'fileapi/plugins/jquery.fileapi.min.js')
-FILEAPI_JS_DEBUG = Bundle('fileapi/FileAPI.js',
-                          'fileapi/plugins/jquery.fileapi.js')
+FILEAPI_JS = Bundle('fileapi/FileAPI.js',
+                    'fileapi/plugins/jquery.fileapi.js')
 
 FONTAWESOME_LESS = 'font-awesome/less/font-awesome.less'
 
 SELECT2_LESS = ('select2/select2.css',
                 'select2/select2-bootstrap.css',)
-SELECT2_JS = Bundle('select2/select2.min.js')
-SELECT2_JS_DEBUG = Bundle('select2/select2.js')
+SELECT2_JS = Bundle('select2/select2.js')
 
 TYPEAHEAD_LESS = 'typeahead/typeahead.js-bootstrap.less'
-TYPEAHEAD_JS = Bundle('typeahead/typeahead.min.js',
-                      'typeahead/hogan-2.0.0.js',)
-TYPEAHEAD_JS_DEBUG = Bundle('typeahead/typeahead.js',
-                            'typeahead/hogan-2.0.0.js')
+TYPEAHEAD_JS = Bundle('typeahead/typeahead.js',
+                      'typeahead/hogan-2.0.0.js')
 
 ABILIAN_LESS = 'less/abilian.less'
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
@@ -91,8 +79,6 @@ LESS = SubBundle(*LESS, filters='less_import')
 
 TOP_JS = Bundle(JQUERY,
                 ABILIAN_JS_NS)
-TOP_JS_DEBUG = Bundle(JQUERY_DEBUG,
-                      ABILIAN_JS_NS)
 
 JS = Bundle(BOOTSTRAP_JS,
             TYPEAHEAD_JS,
@@ -104,13 +90,3 @@ JS = Bundle(BOOTSTRAP_JS,
             DATATABLE_JS,
             FILEAPI_JS,
             ABILIAN_JS,)
-JS_DEBUG = Bundle(BOOTSTRAP_JS_DEBUG,
-                  TYPEAHEAD_JS_DEBUG,
-                  SELECT2_JS_DEBUG,
-                  BOOTBOX_JS_DEBUG,
-                  BOOTSTRAP_DATEPICKER_JS,
-                  BOOTSTRAP_SWITCH_JS,
-                  BOOTSTRAP_TIMEPICKER_JS,
-                  DATATABLE_JS_DEBUG,
-                  FILEAPI_JS_DEBUG,
-                  ABILIAN_JS,)
