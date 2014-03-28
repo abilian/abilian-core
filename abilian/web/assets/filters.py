@@ -142,9 +142,18 @@ class LessImportFilter(Filter):
   can be overridden by application.
   """
   name = 'less_import'
+  options = {
+    'run_in_debug': 'LESS_RUN_IN_DEBUG', # use same option as less filter
+  }
   max_debug_level = None
 
   logger = logging.getLogger(__name__ + '.LessImportFilter')
+
+  def setup(self):
+    super(LessImportFilter, self).setup()
+    if self.run_in_debug is False:
+      # Disable running in debug mode for this instance.
+        self.max_debug_level = False
 
   def input(self, _in, out, **kwargs):
     output = kwargs['output_path']
