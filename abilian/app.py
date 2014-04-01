@@ -605,6 +605,7 @@ class Application(Flask, ServiceManager, PluginManager):
     # filters options
     less_args = ['-ru']
     assets.config['less_extra_args'] = less_args
+    assets.config['less_as_output'] = True
     if assets.debug:
       assets.config['less_source_map_file'] = 'style.map'
 

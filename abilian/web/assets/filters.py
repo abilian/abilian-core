@@ -155,11 +155,14 @@ class LessImportFilter(Filter):
       # Disable running in debug mode for this instance.
         self.max_debug_level = False
 
-  def input(self, _in, out, **kwargs):
-    output = kwargs['output_path']
-    out_dir = os.path.dirname(output)
-    filepath = kwargs['source_path'] # abs path
-    rel_path = os.path.relpath(filepath, out_dir)
+  def input(self, _in, out, source_path, output_path, **kwargs):
+    if not os.path.isfile(source_path):
+      # we are not processing files but webassets intermediate hunks
+      out.write(_in.read())
+      return
+
+    out_dir = os.path.dirname(output_path)
+    rel_path = os.path.relpath(source_path, out_dir)
 
     # note: when import as CSS, import statement is put at the top of the
     # generated file (order of import is not preserved, less content will be
@@ -248,9 +251,9 @@ class Less(ExternalTool):
       'less': ('binary', 'LESS_BIN'),
       'run_in_debug': 'LESS_RUN_IN_DEBUG',
       'line_numbers': 'LESS_LINE_NUMBERS',
-      'extra_args': 'LESS_EXTRA_ARGS',
+      'extra_args': 'less_extra_args',
       'paths': 'LESS_PATHS',
-      'as_output': 'LESS_AS_OUTPUT',
+      'as_output': 'less_as_output',
       'source_map_file': 'less_source_map_file'
   }
   max_debug_level = None
@@ -263,7 +266,21 @@ class Less(ExternalTool):
       # Disable running in debug mode for this instance.
         self.max_debug_level = False
 
-  def input(self, in_, out, source_path, **kw):
+  def input(self, in_, out, **kw):
+    if self.as_output:
+      importer = get_filter('less_import')
+      importer.input(in_, out, **kw)
+    else:
+      self._apply_less(in_, out, **kw)
+
+  def output(self, in_, out, **kw):
+    if not self.as_output:
+      out.write(in_.read())
+    else:
+      self._apply_less(in_, out, **kw)
+
+
+  def _apply_less(self, in_, out, output_path, output, **kw):
     # Set working directory to the source file so that includes are found
     args = [self.less or 'lessc']
     if self.line_numbers:
@@ -286,21 +303,21 @@ class Less(ExternalTool):
 
     args.append('-')
     buf = StringIO()
-    with working_directory(filename=source_path):
+    with working_directory(filename=output_path):
       self.subprocess(args, buf, in_)
 
     if source_map:
       self.fix_source_map_urls(source_map_dest)
 
     # rewrite css url()
-    replace_url = partial(self.fix_url, os.path.dirname(kw['output_path']))
+    replace_url = partial(self.fix_url, os.path.dirname(output_path))
     buf.seek(0)
     url_rewriter = get_filter('cssrewrite', replace=replace_url)
     url_rewriter.set_environment(self.env)
     url_rewriter.setup()
     url_rewriter.input(buf, out,
-                       source=kw['output'], source_path=kw['output_path'],
-                       output=kw['output'], output_path=kw['output_path'])
+                       source=output, source_path=output_path,
+                       output=output, output_path=output_path)
 
   def fix_url(self, cur_path, url):
     src_path = os.path.normpath(os.path.abspath(os.path.join(cur_path, url)))
@@ -329,5 +346,6 @@ class Less(ExternalTool):
 
     with open(filename, 'w') as f:
       json.dump(data, f)
+
 
 register_filter(Less)
