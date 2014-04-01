@@ -25,6 +25,20 @@ using our operating system's package management tools (``dpkg``,
 -  A few image manipulation libraries (``libpng``, ``libjpeg``)
 -  The ``poppler-utils``, ``unoconv``, ``LibreOffice``, ``ImageMagick``
    utilities
+- `lesscss <http://lesscss.org/>`_:
+
+  For Debian/Ubuntu the package is named `node-less`. If your distribution's
+  package is too old, you may install `node-js <http://nodejs.org/>`_ >= 0.10 and
+  `npm <https://www.npmjs.org/>`_. Lesscss can then be installed with:
+
+.. code-block:: sh
+
+    $ sudo npm install -g less
+    npm http GET https://registry.npmjs.org/less
+    npm http 200 https://registry.npmjs.org/less
+    ...
+    $ which lessc
+    /usr/bin/lessc
 
 
 Testing
