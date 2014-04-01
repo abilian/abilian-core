@@ -18,54 +18,6 @@ from webassets.utils import working_directory
 from flask.ext.assets import Bundle
 
 
-
-class SubBundle(Bundle):
-  """
-  A SubBundle is a bundle that apply parent's filter only after it has
-  computed its result. Normal case is that parents filters may apply
-  directly on subfile.
-  """
-  # def iterbuild(self, ctx):
-  #   yield self, self.filters, ctx
-
-  def _merge_and_apply(self, ctx, output, force, parent_debug=None,
-                       parent_filters=[], extra_filters=[],
-                       disable_cache=None):
-    res = Bundle._merge_and_apply(self, ctx, output, force,
-                                  parent_debug=parent_debug,
-                                  parent_filters=[], extra_filters=[],
-                                  disable_cache=disable_cache)
-
-    if not res or not parent_filters:
-      return res
-
-    # apply parent filters
-    #
-    # this code is borrowed from webassets.bundle.Bundle._merge_and_apply
-    # without the comments.
-    parent_debug = parent_debug if parent_debug is not None else ctx.debug
-    current_debug_level = _effective_debug_level(
-      ctx, self, extra_filters, default=parent_debug)
-
-    if current_debug_level is True:
-      current_debug_level = False
-
-    filters = parent_filters
-    for filter in filters:
-      filter.set_environment(ctx)
-
-    filters_to_run = select_filters(filters, current_debug_level)
-    actually_skip_cache_here = disable_cache or bool(self.resolve_depends(ctx))
-    filtertool = FilterTool(
-      ctx.cache, no_cache_read=actually_skip_cache_here,
-      kwargs={'output': output[0],
-              'output_path': output[1]})
-
-    item_data = { 'source_path': output[1], }
-    res = filtertool.apply(res, filters_to_run, 'input', kwargs=item_data)
-    return res
-
-
 class ImportCSSFilter(Filter):
   """
   This filter searches (recursively) '@import' rules and replaces them by
