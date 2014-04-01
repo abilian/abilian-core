@@ -635,14 +635,14 @@ class Application(Flask, ServiceManager, PluginManager):
       if bundles:
         assets.register(name, Bundle(*bundles, **options))
 
-  def register_asset(self, type_, asset):
+  def register_asset(self, type_, *assets):
     """
     Registers webassets bundle to be served on all pages.
 
     :param type_: `"css"`, `"js-top"` or `"js""`.
-    :param asset: a `webassets.Bundle
-                  <http://elsdoerfer.name/docs/webassets/bundles.html>`_
-                  instance or a callable that returns a Bundle instance.
+    :param *asset: a path to file, a `webassets.Bundle
+                   <http://elsdoerfer.name/docs/webassets/bundles.html>`_
+                   instance or a callable that returns a Bundle instance.
     :raises KeyError: if `type_` is not supported.
     """
     supported = self._assets_bundles.keys()
@@ -650,11 +650,11 @@ class Application(Flask, ServiceManager, PluginManager):
       raise KeyError("Invalid type: %s. Valid types: ",
                      repr(type_), ', '.join(sorted(supported)))
 
-    if not isinstance(asset, Bundle) and callable(asset):
-      asset = asset()
-    assert isinstance(asset, Bundle)
+    for asset in assets:
+      if not isinstance(asset, Bundle) and callable(asset):
+        asset = asset()
 
-    self._assets_bundles[type_].setdefault('bundles', []).append(asset)
+      self._assets_bundles[type_].setdefault('bundles', []).append(asset)
 
   def _register_base_assets(self):
     """
