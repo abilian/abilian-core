@@ -13,7 +13,6 @@ table.dataTable {
 table.dataTable thead th {
 	padding: 3px 0px 3px 10px;
 	cursor: pointer;
-	*cursor: hand;
 }
 
 table.dataTable tfoot th {
@@ -98,14 +97,12 @@ table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
 .paging_two_button .ui-button {
 	float: left;
 	cursor: pointer;
-	* cursor: hand;
 }
 
 .paging_full_numbers .ui-button {
 	padding: 2px 6px;
 	margin: 0;
 	cursor: pointer;
-	* cursor: hand;
 	color: #333 !important;
 }
 
@@ -117,7 +114,6 @@ table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
 	height: 19px;
 	float: left;
 	cursor: pointer;
-	*cursor: hand;
 	color: #111 !important;
 }
 .paginate_disabled_previous:hover,
@@ -172,7 +168,6 @@ table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
 	padding: 2px 5px;
 	margin: 0 3px;
 	cursor: pointer;
-	*cursor: hand;
 	color: #333 !important;
 }
 

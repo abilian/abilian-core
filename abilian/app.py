@@ -191,11 +191,15 @@ class Application(Flask, ServiceManager, PluginManager):
     self.register_jinja_loaders(
       jinja2.PackageLoader('abilian.web', 'templates'))
 
+    js_filters = 'closure_js' if self.config.get('PRODUCTION', False) else None
+
     self._assets_bundles = {
-      'css': {'options': dict(filters='cssimporter, cssrewrite',
-                              output='style-%(version)s.min.css')},
-      'js-top': {'options': dict(output='top-%(version)s.min.js')},
-      'js': {'options': dict(output='app-%(version)s.min.js')},
+      'css': {'options': dict(filters='less, cssmin',
+                              output='style-%(version)s.min.css',)},
+      'js-top': {'options': dict(output='top-%(version)s.min.js',
+                                 filters=js_filters)},
+      'js': {'options': dict(output='app-%(version)s.min.js',
+                             filters=js_filters)},
     }
 
     for http_error_code in (403, 404, 500):
@@ -599,6 +603,18 @@ class Application(Flask, ServiceManager, PluginManager):
     manifest_file = os.path.join(assets_base_dir, 'manifest.json')
     assets.manifest = 'json:{}'.format(manifest_file)
 
+    # filters options
+    less_args = ['-ru']
+    assets.config['less_extra_args'] = less_args
+    assets.config['less_as_output'] = True
+    if assets.debug:
+      assets.config['less_source_map_file'] = 'style.map'
+
+    # assets.config['CLOSURE_EXTRA_ARGS'] = [
+    #   '--source_map_format', 'V3',
+    #   '--create_source_map', os.path.join(assets.directory, 'js.map')
+    # ]
+
     # setup static url for our assets
     from abilian.web import assets as core_bundles
 
@@ -608,6 +624,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # static minified are here
     assets.url = self.static_url_path + '/min'
+    assets.append_path(assets_dir, assets.url)
     self.add_static_url('min', assets_dir, endpoint='webassets_static', )
 
   def _finalize_assets_setup(self):
@@ -619,14 +636,17 @@ class Application(Flask, ServiceManager, PluginManager):
       if bundles:
         assets.register(name, Bundle(*bundles, **options))
 
-  def register_asset(self, type_, asset):
+  def register_asset(self, type_, *assets):
     """
     Registers webassets bundle to be served on all pages.
 
     :param type_: `"css"`, `"js-top"` or `"js""`.
-    :param asset: a `webassets.Bundle
-                  <http://elsdoerfer.name/docs/webassets/bundles.html>`_
-                  instance or a callable that returns a Bundle instance.
+
+    :param \*asset:
+        a path to file, a :ref:`webassets.Bundle <webassets:bundles>` instance
+        or a callable that returns a :ref:`webassets.Bundle <webassets:bundles>`
+        instance.
+
     :raises KeyError: if `type_` is not supported.
     """
     supported = self._assets_bundles.keys()
@@ -634,11 +654,11 @@ class Application(Flask, ServiceManager, PluginManager):
       raise KeyError("Invalid type: %s. Valid types: ",
                      repr(type_), ', '.join(sorted(supported)))
 
-    if not isinstance(asset, Bundle) and callable(asset):
-      asset = asset()
-    assert isinstance(asset, Bundle)
+    for asset in assets:
+      if not isinstance(asset, Bundle) and callable(asset):
+        asset = asset()
 
-    self._assets_bundles[type_].setdefault('bundles', []).append(asset)
+      self._assets_bundles[type_].setdefault('bundles', []).append(asset)
 
   def _register_base_assets(self):
     """
@@ -647,11 +667,9 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     from abilian.web import assets as bundles
 
-    debug = self.config.get('DEBUG')
-    self.register_asset('css', bundles.CSS if not debug else bundles.CSS_DEBUG)
-    self.register_asset('js-top',
-                        bundles.TOP_JS if not debug else bundles.TOP_JS_DEBUG)
-    self.register_asset('js', bundles.JS if not debug else bundles.JS_DEBUG)
+    self.register_asset('css', bundles.LESS)
+    self.register_asset('js-top', bundles.TOP_JS)
+    self.register_asset('js', bundles.JS)
 
   def install_default_handler(self, http_error_code):
     """
