@@ -8,7 +8,7 @@ Changelog for Abilian Core
   abilian.core.models containing modules: base, subjects, owned.
 - Fixed or cleaned up dependencies.
 - Fixed setupwizard.
-
+- Switched CSS to LESS.
 
 0.1.3 (2014-02-03)
 ------------------
