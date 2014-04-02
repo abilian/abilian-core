@@ -17,6 +17,7 @@ Changelog for Abilian Core
 - added config value: BABEL_ACCEPT_LANGUAGES, to limit supported languages and
   change order during negociation
 - Switched CSS to LESS.
+- Updated to Bootstrap 3.1.1
 
 0.1.3 (2014-02-03)
 ------------------
