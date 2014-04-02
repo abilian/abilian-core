@@ -45,7 +45,8 @@ intersphinx_mapping = {
     'python': ('http://docs.python.org/', None,),
     'flask': ('http://flask.pocoo.org/docs/', None),
     'flaskbabel': ('http://pythonhosted.org/Flask-Babel/', None),
-    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_0_8/', None)
+    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_0_8/', None),
+    'webassets': ('http://elsdoerfer.name/docs/webassets', None),
     }
 
 # Add any paths that contain templates here, relative to this directory.

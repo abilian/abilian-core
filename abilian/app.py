@@ -642,9 +642,8 @@ class Application(Flask, ServiceManager, PluginManager):
     :param type_: `"css"`, `"js-top"` or `"js""`.
 
     :param \*asset:
-        a path to file, a
-        `webassets.Bundle <http://elsdoerfer.name/docs/webassets/bundles.html>`_
-        instance or a callable that returns a Bundle
+        a path to file, a :ref:`webassets.Bundle <webassets:bundles>` instance
+        or a callable that returns a :ref:`webassets.Bundle <webassets:bundles>`
         instance.
 
     :raises KeyError: if `type_` is not supported.
