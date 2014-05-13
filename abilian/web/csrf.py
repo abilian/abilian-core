@@ -1,7 +1,16 @@
 # coding=utf-8
 from functools import wraps
+
 from werkzeug.exceptions import Forbidden as HTTPForbidden
+from flask import Blueprint, jsonify
 from flask.ext.wtf import Form
+
+blueprint = Blueprint('csrf', __name__, url_prefix='/csrf')
+
+
+@blueprint.route('/token', endpoint='json_token')
+def json_token_view():
+  return jsonify(token=token())
 
 
 def field():
@@ -10,6 +19,13 @@ def field():
   rendering. Renders an empty string if config.CSRF_ENABLED is not set.
   """
   return Form().csrf_token
+
+
+def time_limit():
+  """
+  return current time limit for CSRF token.
+  """
+  return int(Form().TIME_LIMIT.total_seconds())
 
 
 def name():
