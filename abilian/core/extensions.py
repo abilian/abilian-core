@@ -13,6 +13,7 @@ import os
 import importlib
 from gettext import NullTranslations
 from babel.support import Translations
+from redis import StrictRedis
 from flask import _request_ctx_stack
 import flask.ext.babel
 
@@ -163,3 +164,28 @@ babel = Babel()
 from flask.ext.login import LoginManager
 login_manager = LoginManager()
 
+
+class Redis(object):
+  """
+  Extension for redis connection
+  """
+  def __init__(self, app=None):
+    if app:
+      self.init_app(app)
+
+  def init_app(self, app):
+    self.app = app
+    app.extensions['redis'] = self
+    uri = app.config.get('REDIS_URI')
+    if not uri:
+      # fallback on celery broker
+      uri = app.config.get('BROKER_URL')
+
+    if not (uri and
+            (uri.startswith('redis://') or uri.startswith('unix://'))):
+      raise ValueError('REDIS_URI not set in config, cannot setup redis'
+                       ' connection')
+
+    self.conn = StrictRedis.from_url(uri)
+
+redis = Redis()

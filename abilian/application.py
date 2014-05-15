@@ -14,7 +14,7 @@ from flask import Flask, g, request, current_app, has_app_context
 from flask.helpers import locked_cached_property
 import jinja2
 
-from abilian.core.extensions import mail, db, celery, babel
+from abilian.core.extensions import mail, db, celery, babel, redis
 import abilian.core.util
 from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
@@ -150,6 +150,10 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     db.init_app(self)
     mail.init_app(self)
+
+    if ('REDIS_URI' in self.config
+        or 'BROKER_URL' in self.config):
+      redis.init_app(self)
 
     # Babel (for i18n)
     babel.init_app(self)
