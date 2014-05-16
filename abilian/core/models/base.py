@@ -10,7 +10,11 @@ from sqlalchemy.types import Integer, DateTime
 
 from whoosh.fields import ID
 
+from ..extensions import db
 from ..util import fqcn
+
+#: Base Model class.
+Model = db.Model
 
 class Info(dict):
 
@@ -79,4 +83,3 @@ class TimestampedMixin(object):
                       onupdate=datetime.utcnow,
                       info=SYSTEM|SEARCHABLE)
   deleted_at = Column(DateTime, default=None, info=SYSTEM)
-

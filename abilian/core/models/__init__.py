@@ -8,7 +8,7 @@ import json
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.ext.declarative import declared_attr
 
-from .base import IdMixin, TimestampedMixin
+from .base import Model, IdMixin, TimestampedMixin
 from .owned import OwnedMixin
 
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
