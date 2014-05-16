@@ -10,6 +10,7 @@ import logging.config
 from itertools import chain
 from functools import partial
 from pkg_resources import resource_filename
+from pathlib import Path
 
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
@@ -259,28 +260,36 @@ class Application(Flask, ServiceManager, PluginManager):
 
     :raises: OSError with relevant errno
     """
-    path = self.instance_path
+    path = Path(self.instance_path)
     err = None
 
-    if not os.path.exists(path):
+    if not path.exists():
       if create:
         logger.info('Create instance folder: {}'.format(path.encode('utf-8')))
-        os.makedirs(path, 0775)
+        path.mkdir(0775, parents=True)
       else:
         err = 'Instance folder does not exists'
         eno = errno.ENOENT
-    elif not os.path.isdir(path):
-      err = 'Instance folder not a directory'
+    elif not path.is_dir():
+      err = 'Instance folder is not a directory'
       eno = errno.ENOTDIR
-    elif not os.access(path, os.R_OK | os.W_OK | os.X_OK):
+    elif not os.access(str(path), os.R_OK | os.W_OK | os.X_OK):
       err = 'Require "rwx" access rights, please verify permissions'
       eno = errno.EPERM
 
     if err:
-      raise OSError(eno, err, path)
+      raise OSError(eno, err, str(path))
+
+    if not self.DATA_DIR.exists():
+      self.DATA_DIR.mkdir(0775, parents=True)
+
 
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
+
+    # during testing DATA_DIR is not created by instance app, but we still need
+    # this attribute to be set
+    self.DATA_DIR = Path(self.instance_path, 'data')
 
     if self._ABILIAN_INIT_TESTING_FLAG:
       # testing: don't load any config file!
@@ -481,11 +490,11 @@ class Application(Flask, ServiceManager, PluginManager):
       extensions.append(ext)
 
     if 'bytecode_cache' not in options:
-      cache_dir = os.path.join(self.instance_path, 'cache', 'jinja')
-      if not os.path.exists(cache_dir):
-        os.makedirs(cache_dir, 0775)
+      cache_dir = Path(self.instance_path, 'cache', 'jinja')
+      if not cache_dir.exists():
+        cache_dir.mkdir(0775, parents=True)
 
-      options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(cache_dir,
+      options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(str(cache_dir),
                                                                  '%s.cache')
 
     if (self.config.get('DEBUG', False)
@@ -591,17 +600,17 @@ class Application(Flask, ServiceManager, PluginManager):
     assets = self.extensions['webassets'] = AssetsEnv(self)
     assets.debug = not self.config.get('PRODUCTION', False)
 
-    assets_base_dir = os.path.join(self.instance_path, 'webassets')
-    assets_dir = os.path.join(assets_base_dir, 'compiled')
-    assets_cache_dir = os.path.join(assets_base_dir, 'cache')
+    assets_base_dir = Path(self.instance_path, 'webassets')
+    assets_dir = assets_base_dir / 'compiled'
+    assets_cache_dir = assets_base_dir / 'cache'
     for path in (assets_base_dir, assets_dir, assets_cache_dir):
-      if not os.path.exists(path):
-        os.mkdir(path)
+      if not path.exists():
+        path.mkdir()
 
-    assets.directory = assets_dir
-    assets.cache = assets_cache_dir
-    manifest_file = os.path.join(assets_base_dir, 'manifest.json')
-    assets.manifest = 'json:{}'.format(manifest_file)
+    assets.directory = str(assets_dir)
+    assets.cache = str(assets_cache_dir)
+    manifest_file = assets_base_dir / 'manifest.json'
+    assets.manifest = 'json:{}'.format(str(manifest_file))
 
     # filters options
     less_args = ['-ru']
@@ -624,8 +633,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # static minified are here
     assets.url = self.static_url_path + '/min'
-    assets.append_path(assets_dir, assets.url)
-    self.add_static_url('min', assets_dir, endpoint='webassets_static', )
+    assets.append_path(str(assets_dir), assets.url)
+    self.add_static_url('min', str(assets_dir), endpoint='webassets_static', )
 
   def _finalize_assets_setup(self):
     assets = self.extensions['webassets']

@@ -19,12 +19,11 @@ Flask-Assets
 Flask-Mail
 coaster
 
+# pathlib is included in python 3.4, and very useful
+pathlib
+
 lxml
 psycopg2
-# Flask extensions not used (yet?)
-#Flask-Themes
-#Flask-OpenID
-#Flask-Cache
 
 # Other
 SQLAlchemy>=0.8,<0.9
