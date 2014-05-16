@@ -54,7 +54,7 @@ class Service(object):
     state = self.app_state
     run_state = bool(run_state)
     if not ignore_state:
-        assert run_state ^ state.running
+      assert run_state ^ state.running
     state.running = run_state
 
   @property
@@ -76,4 +76,3 @@ class Service(object):
     except RuntimeError:
       # current_app is None: working outside application context
       return False
-
