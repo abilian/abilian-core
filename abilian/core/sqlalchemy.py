@@ -11,7 +11,7 @@ from sqlalchemy.ext.mutable import Mutable
 
 from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
 
-flask_sa_version = pkg_resources.get_distribution('Flask-SQLAlchemy').version
+FLASK_SA_VERSION = pkg_resources.get_distribution('Flask-SQLAlchemy').version
 
 class AbilianBaseSAExtension(SAExtension):
   """
@@ -31,7 +31,7 @@ class AbilianBaseSAExtension(SAExtension):
         connect_args['isolation_level'] = None
 
 
-if StrictVersion(flask_sa_version) <= StrictVersion('1.0'):
+if StrictVersion(FLASK_SA_VERSION) <= StrictVersion('1.0'):
   # SA extension's scoped session supports 'bind' parameter only after 1.0. This
   # is a fix for it. This is required to ensure transaction rollback during
   # tests, but it's useful in some use cases too.
@@ -65,7 +65,7 @@ else:
   # Flask-SQLAlchemy > 1.0: bind parameter is supported
   SQLAlchemy = AbilianBaseSAExtension
 
-del flask_sa_version
+del FLASK_SA_VERSION
 
 
 def filter_cols(model, *filtered_columns):
@@ -122,7 +122,7 @@ class MutationDict(Mutable, dict):
 
   def setdefault(self, key, failobj=None):
     if not key in self.data:
-        self.changed()
+      self.changed()
     return dict.setdefault(self, key, failobj)
 
   def pop(self, key, *args):
