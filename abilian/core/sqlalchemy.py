@@ -3,6 +3,7 @@
 """
 from __future__ import absolute_import
 import json
+import uuid
 import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
 
@@ -209,3 +210,34 @@ def JSONList(*args, **kwargs):
 
   return MutationList.as_mutable(type_(*args, **kwargs))
 
+
+class UUID(sa.types.TypeDecorator):
+  """
+  Platform-independent UUID type.
+
+  Uses Postgresql's UUID type, otherwise uses
+  CHAR(32), storing as stringified hex values.
+
+  From SQLAlchemy documentation.
+  """
+  impl = sa.types.CHAR
+
+  def load_dialect_impl(self, dialect):
+    if dialect.name == 'postgresql':
+      return dialect.type_descriptor(sa.dialects.postgresql.UUID())
+    else:
+      return dialect.type_descriptor(sa.types.CHAR(32))
+
+  def process_bind_param(self, value, dialect):
+    if value is None:
+      return value
+    elif dialect.name == 'postgresql':
+      return str(value)
+    else:
+      if not isinstance(value, uuid.UUID):
+        value = uuid.UUID(value)
+      # hexstring
+      return "%.32x" % value
+
+  def process_result_value(self, value, dialect):
+    return value if value is None else uuid.UUID(value)
