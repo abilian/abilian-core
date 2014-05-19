@@ -21,6 +21,7 @@ Flask-Mail
 # Other
 SQLAlchemy>=0.8,<0.9
 redis
+lxml
 phonenumbers
 whoosh
 markdown

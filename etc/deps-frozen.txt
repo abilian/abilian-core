@@ -19,6 +19,7 @@ Pygments==1.6
 SQLAlchemy==0.8.2
 SQLAlchemy-Utils==0.16.9
 redis==2.9.1
+lxml==3.2.3
 WTForms==1.0.4
 WTForms-Alchemy==0.7.15
 WTForms-Components==0.7.0
