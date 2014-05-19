@@ -8,6 +8,8 @@ import requests
 import tempfile
 import shutil
 import warnings
+from pathlib import Path
+from contextlib import contextmanager
 
 from sqlalchemy.exc import SAWarning
 
@@ -45,24 +47,22 @@ class BaseTestCase(TestCase):
   def setUpClass(cls):
     TestCase.setUpClass()
     join = os.path.join
-    tmp_dir = cls.TEST_INSTANCE_PATH = tempfile.mkdtemp(
-      prefix='tmp-py-unittest-',
-      suffix='-' + cls.__name__,
-    )
-    os.mkdir(join(tmp_dir, 'tmp'))
-    os.mkdir(join(tmp_dir, 'cache'))
+    tmp_dir = Path(tempfile.mkdtemp(prefix='tmp-py-unittest-',
+                                    suffix='-' + cls.__name__,))
+    cls.TEST_INSTANCE_PATH = str(tmp_dir)
+    for p in  (tmp_dir/'tmp', tmp_dir/'cache', tmp_dir/'data'):
+      p.mkdir()
 
     sa_warn = 'error' if cls.SQLALCHEMY_WARNINGS_AS_ERROR else 'default'
     warnings.simplefilter(sa_warn, SAWarning)
 
   @classmethod
   def tearDownClass(cls):
-    tmp_dir = cls.TEST_INSTANCE_PATH
-    if tmp_dir:
-      is_dir = os.path.isdir(tmp_dir)
-      basename = os.path.basename(tmp_dir)
-      if is_dir and basename.startswith('tmp-py-unittest'):
-        shutil.rmtree(tmp_dir)
+    if cls.TEST_INSTANCE_PATH:
+      tmp_dir = Path(cls.TEST_INSTANCE_PATH)
+      basename = tmp_dir.name
+      if tmp_dir.is_dir() and basename.startswith('tmp-py-unittest'):
+        shutil.rmtree(cls.TEST_INSTANCE_PATH)
         cls.TEST_INSTANCE_PATH = None
 
     TestCase.tearDownClass()
@@ -173,4 +173,3 @@ class BaseTestCase(TestCase):
           message['message'])
         self.fail((u'Got a validation error for %r:\n%s' %
                    (url, detail)).encode('utf-8'))
-

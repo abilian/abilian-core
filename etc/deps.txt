@@ -13,15 +13,15 @@ Flask-Babel
 Flask-Assets
 Flask-Mail
 
-# Flask extensions not used (yet?)
-#Flask-Themes
-#Flask-OpenID
-#Flask-Cache
+# pathlib is included in python 3.4, and very useful
+pathlib
+
+lxml
+psycopg2
 
 # Other
 SQLAlchemy>=0.8,<0.9
 redis
-lxml
 phonenumbers
 whoosh
 markdown

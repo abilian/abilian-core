@@ -13,6 +13,7 @@ from werkzeug.datastructures import ImmutableDict
 from flask import Flask, g, request, current_app, has_app_context
 from flask.helpers import locked_cached_property
 import jinja2
+from pathlib import Path
 
 from abilian.core.extensions import mail, db, celery, babel, redis
 import abilian.core.util
@@ -117,11 +118,18 @@ class Application(Flask, ServiceManager, PluginManager):
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
 
+    # during testing DATA_DIR is not created by instance app, but we still need
+    # this attribute to be set
+    self.DATA_DIR = Path(self.instance_path, 'data')
+
     if self._ABILIAN_INIT_TESTING_FLAG:
       # testing: don't load any config file!
       return config
 
     if instance_relative:
+      if not self.DATA_DIR.exists():
+        self.DATA_DIR.mkdir(0775, parents=True)
+
       cfg_path = os.path.join(self.instance_path, 'config.py')
       config.from_pyfile(cfg_path, silent=True)
 
