@@ -20,6 +20,7 @@ Flask-Mail
 
 # Other
 SQLAlchemy>=0.8,<0.9
+redis
 phonenumbers
 whoosh
 markdown
