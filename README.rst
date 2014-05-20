@@ -51,7 +51,7 @@ Infrastructure
 Domain model and services
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
--  Persistent momain object model, based on SQLAlchemy
+-  Persistent domain object model, based on SQLAlchemy
 
 -  Audit
 
