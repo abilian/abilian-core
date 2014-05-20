@@ -21,7 +21,7 @@ from abilian.web.filters import init_filters
 from abilian.plugin.loader import AppLoader
 from abilian.services import (
   audit_service, index_service, activity_service,
-  repository_service,
+  repository_service, session_repository_service
   )
 
 logger = logging.getLogger(__name__)
@@ -173,6 +173,7 @@ class Application(Flask, ServiceManager, PluginManager):
     babel.timezoneselector(get_timezone)
 
     repository_service.init_app(self)
+    session_repository_service.init_app(self)
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)
