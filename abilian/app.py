@@ -42,7 +42,7 @@ from abilian.plugin.loader import AppLoader
 from abilian.services import (
     audit_service, index_service, activity_service, auth_service,
     settings_service, security_service, preferences_service,
-    repository_service,
+    repository_service, session_repository_service
 )
 
 
@@ -395,6 +395,7 @@ class Application(Flask, ServiceManager, PluginManager):
     auth_service.init_app(self)
     security_service.init_app(self)
     repository_service.init_app(self)
+    session_repository_service.init_app(self)
     audit_service.init_app(self)
     index_service.init_app(self)
     activity_service.init_app(self)
