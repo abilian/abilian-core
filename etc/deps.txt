@@ -37,7 +37,6 @@ python-magic
 twill
 guess-language
 wtforms==1.0.4
-<<<<<<< HEAD
 wtforms-alchemy==0.7.15
 # required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
 SQLAlchemy-Utils<0.24.0
