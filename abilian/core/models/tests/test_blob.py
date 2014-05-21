@@ -6,9 +6,14 @@ from __future__ import absolute_import
 from unittest import TestCase
 import uuid
 
+from abilian.testing import BaseTestCase as AbilianTestCase
+from abilian.services import (
+  repository_service as repository,
+  session_repository_service as session_repository
+)
 from ..blob import Blob
 
-class BlobTestCase(TestCase):
+class BlobUnitTestCase(TestCase):
 
   def test_auto_uuid(self):
     b = Blob()
@@ -20,3 +25,58 @@ class BlobTestCase(TestCase):
     b = Blob(uuid=u)
     self.assertTrue(isinstance(b.uuid, uuid.UUID))
     self.assertEquals(b.uuid, u)
+
+class BlobTestCase(AbilianTestCase):
+
+  def setUp(self):
+    repository.start()
+    session_repository.start()
+    AbilianTestCase.setUp(self)
+
+  def tearDown(self):
+    AbilianTestCase.tearDown(self)
+    if session_repository.running:
+      session_repository.stop()
+
+    if repository.running:
+      repository.stop()
+
+
+  def test_value(self):
+    session = self.session
+    content = b'content'
+    b = Blob(content)
+
+    tr = session.begin(nested=True)
+    session.add(b)
+    tr.commit()
+
+    self.assertIs(repository.get(b.uuid), None)
+    self.assertEquals(session_repository.get(b.uuid).open('rb').read(), content)
+    self.assertEquals(b.value, content)
+
+    session.commit()
+    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
+    self.assertEquals(b.value, content)
+
+    tr = session.begin(nested=True)
+    session.delete(b)
+    # object marked for deletion, but instance attribute should still be
+    # readable
+    self.assertEquals(session_repository.get(b.uuid).open('rb').read(),
+                      content)
+    tr.commit()
+
+    self.assertIs(session_repository.get(b.uuid), None)
+    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
+
+    session.rollback()
+    self.assertEquals(session_repository.get(b.uuid).open('rb').read(), content)
+
+    session.delete(b)
+    session.flush()
+    self.assertIs(session_repository.get(b.uuid), None)
+    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
+
+    session.commit()
+    self.assertIs(repository.get(b.uuid), None)

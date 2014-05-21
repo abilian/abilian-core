@@ -15,7 +15,7 @@ from flask import current_app
 
 from abilian.core.sqlalchemy import UUID, JSONDict
 from abilian.core.models.base import Model
-from abilian.services import repository_service as repository
+from abilian.services import session_repository_service as repository
 
 
 class Blob(Model):
@@ -55,8 +55,27 @@ class Blob(Model):
     return v.open('rb').read() if v is not None else v
 
   @value.setter
-  def value(self, value):
+  def value(self, value, encoding='utf-8'):
     """
     Store binary content to applications's repository
+
+    :param:content: string, bytes, or any object with a `read()` method
+    :param:encoding: encoding to use when content is unicode
     """
     return repository.set(self.uuid, value)
+
+  @value.deleter
+  def value(self):
+    """
+    remove value from repository
+    """
+    return repository.delete(self.uuid)
+
+
+@sa.event.listens_for(sa.orm.Session, 'after_flush')
+def _blob_propagate_delete_content(session, flush_context):
+  """
+  """
+  deleted = (obj for obj in session.deleted if isinstance(obj, Blob))
+  for blob in deleted:
+    del blob.value
