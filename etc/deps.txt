@@ -17,6 +17,7 @@ Flask-Mail
 pathlib
 
 lxml
+cssselect
 psycopg2
 
 # Other
