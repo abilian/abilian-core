@@ -23,6 +23,7 @@ coaster
 pathlib
 
 lxml
+cssselect
 psycopg2
 
 # Other

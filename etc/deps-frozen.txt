@@ -35,6 +35,7 @@ Jinja2==2.7.1
 jsmin==2.0.3
 kombu==2.5.12
 lxml==3.2.3
+cssselect==0.9.1
 Mako==0.8.1
 Markdown==2.3.1
 MarkupSafe==0.18
