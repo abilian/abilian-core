@@ -4,14 +4,15 @@
 from __future__ import absolute_import
 
 from uuid import UUID, uuid1
+import weakref
 import shutil
 from pathlib import Path
 import logging
 
 import sqlalchemy as sa
 from sqlalchemy.orm.session import Session
-from flask import _app_ctx_stack
-from flask.signals import appcontext_tearing_down
+from flask import current_app, _app_ctx_stack
+
 try:
   from flask.globals import _lookup_app_object
 except ImportError:
@@ -22,8 +23,6 @@ except ImportError:
       raise RuntimeError(_app_ctx_err_msg)
     return getattr(top, name)
 
-
-from abilian.core.extensions import db
 from abilian.services import Service, ServiceState
 
 log = logging.getLogger(__name__)
@@ -59,7 +58,8 @@ class RepositoryService(Service):
   # data management: paths and accessors
   def rel_path(self, uuid):
     """
-    contruct relative path from repository top directory to the file named after this uuid.
+    contruct relative path from repository top directory to the file named
+    after this uuid.
 
     :param:uuid: :class:`UUID` instance
     """
@@ -145,64 +145,82 @@ class RepositoryService(Service):
 repository = RepositoryService()
 
 
-_REPOSITORY_TRANSACTION = 'abilian_repository_transaction'
+_REPOSITORY_TRANSACTION = 'abilian_repository_transactions'
 
 
 class SessionRepositoryState(ServiceState):
   path = None
 
-  def setup(self, app):
-    self.transaction = None
-    sa.event.listen(Session, "after_transaction_create", self.create_transaction)
-    sa.event.listen(Session, "after_transaction_end", self.end_transaction)
-    sa.event.listen(Session, "after_commit", self.commit)
-    sa.event.listen(Session, "after_flush", self.flush)
-    sa.event.listen(Session, "after_rollback", self.rollback)
-    appcontext_tearing_down.connect(self.clear_transaction, app)
-
   @property
-  def transaction(self):
+  def transactions(self):
     try:
       return _lookup_app_object(_REPOSITORY_TRANSACTION)
     except AttributeError:
-      return None
+      reg = dict()
+      setattr(_app_ctx_stack.top, _REPOSITORY_TRANSACTION, reg)
+      return reg
 
-  @transaction.setter
-  def transaction(self, value):
+  @transactions.setter
+  def transactions(self, value):
     top = _app_ctx_stack.top
     if top is None:
       raise RuntimeError('working outside of application context')
 
     setattr(top, _REPOSITORY_TRANSACTION, value)
 
-  # transaction management
-  def clear_transaction(self, app=None, exc=None):
-    self.transaction = None
+  # transaction <-> db session accessors
+  def get_transaction(self, session):
+    if isinstance(session, sa.orm.scoped_session):
+      session = session()
 
+    s_id = id(session)
+    default = (weakref.ref(session), None)
+    s_ref, transaction = self.transactions.get(s_id, default)
+    s = s_ref()
+
+    if s is None or s is not session:
+      # old session with same id, maybe not yet garbage collected
+      transaction = None
+    return transaction
+
+  def set_transaction(self, session, transaction):
+    """
+    :param:session: :class:`sqlalchemy.orm.session.Session` instance
+    :param:transaction: :class:`RepositoryTransaction` instance
+    """
+    if isinstance(session, sa.orm.scoped_session):
+      session = session()
+
+    s_id = id(session)
+    self.transactions[s_id] = (weakref.ref(session), transaction)
+
+  # transaction management
+  # def clear_transaction(self, app=None, exc=None):
+  #   self.transactions = {}
 
   def create_transaction(self, session, transaction):
     if not self.running:
       return
 
-    parent = self.transaction
+    parent = self.get_transaction(session)
     root_path = self.path
-    self.transaction = RepositoryTransaction(root_path, parent)
-
+    transaction = RepositoryTransaction(root_path, parent)
+    self.set_transaction(session, transaction)
 
   def end_transaction(self, session, transaction):
     if not self.running:
       return
 
-    tr = self.transaction
+    tr = self.get_transaction(session)
     if tr is not None:
-      self.transaction = tr._parent
+      self.set_transaction(session, tr._parent)
 
 
   def commit(self, session):
     if not self.running:
       return
 
-    tr = self.transaction
+    tr = self.get_transaction(session)
     if tr is None:
       return
 
@@ -218,7 +236,7 @@ class SessionRepositoryState(ServiceState):
     if not self.running:
       return
 
-    tr = self.transaction
+    tr = self.get_transaction(session)
     if tr is None:
       return
 
@@ -235,6 +253,10 @@ class SessionRepositoryService(Service):
   name = 'session_repository'
   AppStateClass = SessionRepositoryState
 
+  def __init__(self, *args, **kwargs):
+    self.__listening = False
+    Service.__init__(self, *args, **kwargs)
+
   def init_app(self, app):
     Service.init_app(self, app)
 
@@ -244,11 +266,49 @@ class SessionRepositoryService(Service):
 
     with app.app_context():
       self.app_state.path = path.resolve()
-      self.app_state.setup(app)
+
+    if not self.__listening:
+      self.__listening = True
+      listen = sa.event.listen
+      listen(Session, "after_transaction_create", self.create_transaction)
+      listen(Session, "after_transaction_end", self.end_transaction)
+      listen(Session, "after_commit", self.commit)
+      listen(Session, "after_flush", self.flush)
+      listen(Session, "after_rollback", self.rollback)
+      #appcontext_tearing_down.connect(self.clear_transaction, app)
+
+
+  def _session_for(self, model_or_session):
+    """
+    Return session instance for object parameter.
+
+    If parameter is a session instance, it is return as is.
+    If parameter is a registered model instance, its session will be used.
+
+    If parameter is a detached model instance, or None, application scoped
+    session will be used (app.db.session())
+
+    If parameter is a scoped_session instance, a new session will be
+    instanciated.
+    """
+    session = model_or_session
+    if not isinstance(session, (Session, sa.orm.scoped_session)):
+      if session is not None:
+        session = sa.orm.object_session(model_or_session)
+
+      if session is None:
+        session = current_app.db.session
+
+    if isinstance(session, sa.orm.scoped_session):
+      session = session()
+
+    return session
+
 
   # repository interface
-  def get(self, uuid, default=None):
-    tr = self.app_state.transaction
+  def get(self, session, uuid, default=None):
+    session = self._session_for(session)
+    tr = self.app_state.get_transaction(session)
     try:
       val = tr.get(uuid)
     except KeyError:
@@ -259,26 +319,32 @@ class SessionRepositoryService(Service):
 
     return val
 
-  def set(self, uuid, content, encoding='utf-8'):
-    tr = self.app_state.transaction
+  def set(self, session, uuid, content, encoding='utf-8'):
+    session = self._session_for(session)
+    tr = self.app_state.get_transaction(session)
     tr.set(uuid, content, encoding)
 
-  def delete(self, uuid):
-    tr = self.app_state.transaction
-    if self.get(uuid) is not None:
+  def delete(self, session, uuid):
+    session = self._session_for(session)
+    tr = self.app_state.get_transaction(session)
+    if self.get(session, uuid) is not None:
       tr.delete(uuid)
 
-  def __getitem__(self, uuid):
-    v = self.get(uuid, _NULL_MARK)
-    if v is _NULL_MARK:
-      raise KeyError('No file can be found for this uuid', uuid)
-    return v
+  # session event handlers
+  def create_transaction(self, session, transaction):
+    return self.app_state.create_transaction(session, transaction)
 
-  def __setitem__(self, uuid, content):
-    self.set(uuid, content)
+  def end_transaction(self, session, transaction):
+    return self.app_state.end_transaction(session, transaction)
 
-  def __delitem__(self, uuid):
-    self.delete(uuid)
+  def commit(self, session):
+    return self.app_state.commit(session)
+
+  def flush(self, session, flush_context):
+    return self.app_state.flush(session, flush_context)
+
+  def rollback(self, session):
+    return self.app_state.rollback(session)
 
 
 session_repository = SessionRepositoryService()
@@ -289,10 +355,18 @@ class RepositoryTransaction(object):
   def __init__(self, root_path, parent=None):
     self.path = root_path / str(uuid1())
     self.path.mkdir(0700)
+
+    # if parent is not None and parent.cleared:
+    #   parent = None
+
     self._parent = parent
     self._deleted = set()
     self._set = set()
     self.__cleared = False
+
+  @property
+  def cleared(self):
+    return self.__cleared
 
   def __del__(self):
     self._clear()

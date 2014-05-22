@@ -118,8 +118,6 @@ class TestSessionRepository(BaseTestCase):
     session_repository.start()
     BaseTestCase.setUp(self)
     self.svc = session_repository
-    self.session() # side-effect: instanciate a session. Seems required with
-                   # flask-sqlalchemy < 1.0
 
   def tearDown(self):
     BaseTestCase.tearDown(self)
@@ -131,88 +129,89 @@ class TestSessionRepository(BaseTestCase):
 
   def test_transaction_lifetime(self):
     state = self.svc.app_state
-    root_transaction = state.transaction
+    root_transaction = state.get_transaction(self.session)
     self.assertTrue(isinstance(root_transaction, RepositoryTransaction))
     self.assertIs(root_transaction._parent, None)
 
     # create sub-transaction
     self.session.begin(nested=True)
-    self.assertTrue(isinstance(state.transaction, RepositoryTransaction))
-    self.assertIs(state.transaction._parent, root_transaction)
+    transaction = state.get_transaction(self.session)
+    self.assertTrue(isinstance(transaction, RepositoryTransaction))
+    self.assertIs(transaction._parent, root_transaction)
 
     self.session.commit()
-    self.assertIs(state.transaction, root_transaction)
+    transaction = state.get_transaction(self.session)
+    self.assertIs(transaction, root_transaction)
 
 
   def test_accessors(self):
-    self.assertRaises(ValueError, self.svc.get, self.UUID_STR)
-    self.assertRaises(ValueError, self.svc.__getitem__, self.UUID_STR)
-    self.assertRaises(ValueError, self.svc.set, self.UUID_STR, '')
-    self.assertRaises(ValueError, self.svc.__setitem__, self.UUID_STR, '')
-    self.assertRaises(ValueError, self.svc.delete, self.UUID_STR)
-    self.assertRaises(ValueError, self.svc.__delitem__, self.UUID_STR)
+    session = self.session()
+    self.assertRaises(ValueError, self.svc.get, session, self.UUID_STR)
+    self.assertRaises(ValueError, self.svc.set, session, self.UUID_STR, '')
+    self.assertRaises(ValueError, self.svc.delete, session, self.UUID_STR)
 
     # non-existent
     u = uuid.UUID('bcdc32ac-498d-4544-9e7f-fb2c75097011')
     null = object()
-    self.assertIs(self.svc.get(u), None)
-    self.assertIs(self.svc.get(u, default=null), null)
+    self.assertIs(self.svc.get(session, u), None)
+    self.assertIs(self.svc.get(session, u, default=null), null)
 
     # set
-    self.svc.set(self.UUID, b'my file content')
-    self.assertEquals(self.svc.get(self.UUID).open('rb').read(),
+    self.svc.set(session, self.UUID, b'my file content')
+    self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(),
                       b'my file content')
     self.assertIs(repository.get(self.UUID), None)
 
     # delete
-    self.svc.delete(self.UUID)
-    self.assertIs(self.svc.get(self.UUID), None)
+    self.svc.delete(session, self.UUID)
+    self.assertIs(self.svc.get(session, self.UUID), None)
 
     u = uuid.UUID('2532e752-611d-469c-999a-74f651757dff')
     repository.set(u, b'existing content')
-    self.assertIsNot(self.svc.get(u), None)
-    self.svc.delete(u)
-    self.assertIs(self.svc.get(u), None)
+    self.assertIsNot(self.svc.get(session, u), None)
+    self.svc.delete(session, u)
+    self.assertIs(self.svc.get(session, u), None)
     self.assertIsNot(repository.get(u), None)
 
 
   def test_transaction(self):
+    session = self.session()
     repository.set(self.UUID, b'first draft')
-    self.assertEquals(self.svc.get(self.UUID).open('rb').read(),
+    self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(),
                       b'first draft')
 
-    self.svc.set(self.UUID, b'new content')
+    self.svc.set(session, self.UUID, b'new content')
 
     # delete content but rollback transaction
-    db_tr = self.session.begin(nested=True)
-    self.svc.delete(self.UUID)
-    self.assertIs(self.svc.get(self.UUID), None)
+    db_tr = session.begin(nested=True)
+    self.svc.delete(session, self.UUID)
+    self.assertIs(self.svc.get(session, self.UUID), None)
     db_tr.rollback()
-    self.assertEquals(self.svc.get(self.UUID).open('rb').read(),
+    self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(),
                       b'new content')
 
     # delete and commit
-    with self.session.begin(nested=True) as tr:
-      self.svc.delete(self.UUID)
-      self.assertIs(self.svc.get(self.UUID), None)
+    with session.begin(nested=True) as tr:
+      self.svc.delete(session, self.UUID)
+      self.assertIs(self.svc.get(session, self.UUID), None)
 
-    self.assertIs(self.svc.get(self.UUID), None)
+    self.assertIs(self.svc.get(session, self.UUID), None)
     self.assertIsNot(repository.get(self.UUID), None)
     self.session.commit()
     self.assertIs(repository.get(self.UUID), None)
 
     # now test 'set'
-    self.svc.set(self.UUID, b'new content')
+    self.svc.set(session, self.UUID, b'new content')
     self.session.commit()
     self.assertIsNot(repository.get(self.UUID), None)
 
     # test "set" in two nested transactions. This tests a specific code branch,
     # when a subtranscation overwrite data set in parent transaction
     with self.session.begin(nested=True):
-      self.svc.set(self.UUID, b'transaction 1')
+      self.svc.set(session, self.UUID, b'transaction 1')
 
       with self.session.begin(nested=True):
-        self.svc.set(self.UUID, b'transaction 2')
+        self.svc.set(session, self.UUID, b'transaction 2')
 
-      self.assertEquals(self.svc.get(self.UUID).open('rb').read(),
+      self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(),
                         b'transaction 2')
