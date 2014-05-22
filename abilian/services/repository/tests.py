@@ -146,7 +146,7 @@ class TestSessionRepository(BaseTestCase):
 
 
   def test_accessors(self):
-    session = self.session()
+    session = self.session
     self.assertRaises(ValueError, self.svc.get, session, self.UUID_STR)
     self.assertRaises(ValueError, self.svc.set, session, self.UUID_STR, '')
     self.assertRaises(ValueError, self.svc.delete, session, self.UUID_STR)
@@ -176,7 +176,7 @@ class TestSessionRepository(BaseTestCase):
 
 
   def test_transaction(self):
-    session = self.session()
+    session = self.session
     repository.set(self.UUID, b'first draft')
     self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(),
                       b'first draft')
