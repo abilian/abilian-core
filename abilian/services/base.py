@@ -3,7 +3,12 @@
 """
 from __future__ import absolute_import
 
+from functools import wraps
+
 from flask import current_app
+
+class ServiceNotRegistered(Exception):
+  pass
 
 
 class ServiceState(object):
@@ -63,16 +68,35 @@ class Service(object):
 
     :raise:RuntimeError if working outside application context.
     """
-    return current_app.extensions[self.name]
+    try:
+      return current_app.extensions[self.name]
+    except KeyError:
+      raise ServiceNotRegistered(self.name)
 
   @property
   def running(self):
     """
-    :returns: `False` if working outside application context or if service is
-              halted for current application.
+    :returns: `False` if working outside application context, if service is
+    not registered on current application,  or if service is halted
+    for current application.
     """
     try:
       return self.app_state.running
-    except RuntimeError:
-      # current_app is None: working outside application context
+    except (RuntimeError, ServiceNotRegistered):
+      # RuntimeError: happens when current_app is None: working outside
+      # application context
       return False
+
+  @staticmethod
+  def if_running(meth):
+    """
+    Decorator for service methods that must be ran only if service is in
+    running state.
+    """
+    @wraps(meth)
+    def check_running(self, *args, **kwargs):
+      if not self.running:
+        return
+      return meth(self, *args, **kwargs)
+
+    return check_running
