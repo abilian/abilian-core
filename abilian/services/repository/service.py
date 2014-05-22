@@ -11,10 +11,9 @@ import logging
 
 import sqlalchemy as sa
 from sqlalchemy.orm.session import Session
-from flask import _app_ctx_stack, appcontext_tearing_down
+from flask import _app_ctx_stack, current_app
 from flask.globals import _lookup_app_object
 
-from abilian.core.extensions import db
 from abilian.services import Service, ServiceState
 
 log = logging.getLogger(__name__)
@@ -323,18 +322,23 @@ class SessionRepositoryService(Service):
       tr.delete(uuid)
 
   # session event handlers
+  @Service.if_running
   def create_transaction(self, session, transaction):
     return self.app_state.create_transaction(session, transaction)
 
+  @Service.if_running
   def end_transaction(self, session, transaction):
     return self.app_state.end_transaction(session, transaction)
 
+  @Service.if_running
   def commit(self, session):
     return self.app_state.commit(session)
 
+  @Service.if_running
   def flush(self, session, flush_context):
     return self.app_state.flush(session, flush_context)
 
+  @Service.if_running
   def rollback(self, session):
     return self.app_state.rollback(session)
 
