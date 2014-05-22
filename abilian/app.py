@@ -545,22 +545,22 @@ class Application(Flask, ServiceManager, PluginManager):
     # If session.transaction._parent is None, then exception has occured in
     # after_commit(): doing a rollback() raises an error and would hide actual
     # error
-    if db.session().transaction._parent is not None:
+    session = db.session()
+    if session.is_active and session.transaction._parent is not None:
       # inconditionally forget all DB changes, and ensure clean session during
       # exception handling
-      db.session.rollback()
+      session.rollback()
+    else:
+      db.session.remove()
 
     return Flask.handle_user_exception(self, e)
 
   def handle_exception(self, e):
     session = db.session()
-    if not session.is_active and session.transaction._parent is not None:
-      # something happened in error handlers and session is not usable, rollback
-      # will restore a usable session.
-      #
-      # "session.transaction._parent is not None": see comment in
-      # handle_user_exception()
-      session.rollback()
+    if not session.is_active:
+      # something happened in error handlers and session is not usable anymore
+      db.session.remove()
+
     return Flask.handle_exception(self, e)
 
   def log_exception(self, exc_info):
