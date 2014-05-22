@@ -222,14 +222,16 @@ class Application(Flask, ServiceManager, PluginManager):
   def handle_user_exception(self, e):
     # inconditionally forget all DB changes, and ensure clean session during
     # exception handling
-    db.session.rollback()
+    session = db.session()
+    if session.is_active:
+      session.rollback()
     return Flask.handle_user_exception(self, e)
 
   def handle_exception(self, e):
-    if not db.session().is_active:
-      # something happened in error handlers and session is not usable, rollback
-      # will restore a usable session
-      db.session().rollback()
+    session = db.session()
+    if not session.is_active:
+      # something happened in error handlers and session is not usable anymore
+      db.session.remove()
     return Flask.handle_exception(self, e)
 
 
