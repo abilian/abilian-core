@@ -44,7 +44,7 @@ class Blob(Model):
     """
     Return :class:`pathlib.Path` object used for storing value
     """
-    return repository.get(self.uuid)
+    return repository.get(self, self.uuid)
 
   @property
   def value(self):
@@ -62,14 +62,14 @@ class Blob(Model):
     :param:content: string, bytes, or any object with a `read()` method
     :param:encoding: encoding to use when content is unicode
     """
-    return repository.set(self.uuid, value)
+    return repository.set(self, self.uuid, value)
 
   @value.deleter
   def value(self):
     """
     remove value from repository
     """
-    return repository.delete(self.uuid)
+    return repository.delete(self, self.uuid)
 
 
 @sa.event.listens_for(sa.orm.Session, 'after_flush')

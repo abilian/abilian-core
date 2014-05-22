@@ -52,7 +52,8 @@ class BlobTestCase(AbilianTestCase):
     tr.commit()
 
     self.assertIs(repository.get(b.uuid), None)
-    self.assertEquals(session_repository.get(b.uuid).open('rb').read(), content)
+    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
+                      content)
     self.assertEquals(b.value, content)
 
     session.commit()
@@ -63,19 +64,20 @@ class BlobTestCase(AbilianTestCase):
     session.delete(b)
     # object marked for deletion, but instance attribute should still be
     # readable
-    self.assertEquals(session_repository.get(b.uuid).open('rb').read(),
+    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
                       content)
     tr.commit()
 
-    self.assertIs(session_repository.get(b.uuid), None)
+    self.assertIs(session_repository.get(b, b.uuid), None)
     self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
 
     session.rollback()
-    self.assertEquals(session_repository.get(b.uuid).open('rb').read(), content)
+    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
+                      content)
 
     session.delete(b)
     session.flush()
-    self.assertIs(session_repository.get(b.uuid), None)
+    self.assertIs(session_repository.get(b, b.uuid), None)
     self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
 
     session.commit()
