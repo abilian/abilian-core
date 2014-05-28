@@ -208,8 +208,9 @@ class Application(Flask, ServiceManager, PluginManager):
     for http_error_code in (403, 404, 500):
       self.install_default_handler(http_error_code)
 
-    self.init_extensions()
-    self.register_plugins()
+    with self.app_context():
+      self.init_extensions()
+      self.register_plugins()
     self.maybe_register_setup_wizard()
     self._finalize_assets_setup()
     # At this point all models should have been imported: time to configure
