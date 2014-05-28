@@ -1,7 +1,6 @@
 # will not install with pip 1.5, because of some dependencies from some libs.
 pip >= 1.4, < 1.5
 
-#: PRODUCTION
 # Flask and Flask extensions
 Flask>=0.10
 Flask-SQLAlchemy
@@ -44,8 +43,8 @@ bleach
 py-bcrypt
 pillow
 python-magic
-wtforms==1.0.4
-wtforms-alchemy==0.12.0
+WTForms
+wtforms-alchemy==0.12.4
 # required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
 SQLAlchemy-Utils<0.24.0
 PyYAML
@@ -57,7 +56,7 @@ celery==3.0.21
 straight.plugin==1.4.0-post-1
 
 # progressbar >= 2.3
--e https://code.google.com/p/python-progressbar/downloads/detail?name=progressbar-2.3.tar.gz#egg=progressbar
+https://code.google.com/p/python-progressbar/downloads/detail?name=progressbar-2.3.tar.gz#egg=progressbar
 
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
