@@ -1,5 +1,6 @@
 # coding=utf-8
 from functools import wraps
+from datetime import timedelta
 from werkzeug.exceptions import Forbidden
 
 from flask import Blueprint, jsonify
@@ -25,7 +26,10 @@ def time_limit():
   """
   return current time limit for CSRF token.
   """
-  return int(Form().TIME_LIMIT.total_seconds())
+  limit = Form().TIME_LIMIT
+  if isinstance(limit, timedelta):
+    limit = limit.total_seconds
+  return limit
 
 
 def name():
