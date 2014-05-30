@@ -619,6 +619,11 @@ class Application(Flask, ServiceManager, PluginManager):
     manifest_file = assets_base_dir / 'manifest.json'
     assets.manifest = 'json:{}'.format(str(manifest_file))
 
+    # set up load_path for application static dir. This is required since we are
+    # setting Environment.load_path for other assets (like core_bundle below),
+    # in this case Flask-Assets uses webasssets resolvers instead of Flask's one
+    assets.append_path(self.static_folder, self.static_url_path)
+
     # filters options
     less_args = ['-ru']
     assets.config['less_extra_args'] = less_args
@@ -679,7 +684,7 @@ class Application(Flask, ServiceManager, PluginManager):
   def _register_base_assets(self):
     """
     Registers assets needed by Abilian. This is done in a separate method in
-    order to allow applications to redefins it at will.
+    order to allow applications to redefine it at will.
     """
     from abilian.web import assets as bundles
 
