@@ -392,6 +392,8 @@ class Application(Flask, ServiceManager, PluginManager):
       extensions.csrf.init_app(self)
       self.extensions['csrf'] = extensions.csrf
 
+    self.register_blueprint(csrf.blueprint)
+
     # Abilian Core services
     auth_service.init_app(self)
     security_service.init_app(self)
