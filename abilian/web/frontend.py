@@ -274,8 +274,6 @@ class Module(object):
   @expose("/")
   @templated("crm/list_view.html")
   def list_view(self):
-    bc = self.bread_crumbs()
-
     # TODO: should be an instance variable.
     table_view = AjaxMainTableView(
       name=self.managed_class.__name__.lower(),
@@ -284,7 +282,7 @@ class Module(object):
       search_criterions=self.search_criterions,)
     rendered_table = table_view.render()
 
-    return dict(rendered_table=rendered_table, breadcrumbs=bc, module=self)
+    return dict(rendered_table=rendered_table, module=self)
 
   @expose("/json")
   def list_json(self):
