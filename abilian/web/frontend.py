@@ -434,7 +434,6 @@ class Module(object):
     if entity is None:
       abort(404)
 
-    bc = self.bread_crumbs(entity._name)
     add_to_recent_items(entity)
 
     rendered_entity = self.render_entity_view(entity)
@@ -444,7 +443,6 @@ class Module(object):
     return dict(rendered_entity=rendered_entity,
                 related_views=related_views,
                 audit_entries=audit_entries,
-                breadcrumbs=bc,
                 module=self)
 
   @expose("/<int:entity_id>/edit")
@@ -452,14 +450,12 @@ class Module(object):
   def entity_edit(self, entity_id):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
-    bc = self.bread_crumbs(entity._name)
     add_to_recent_items(entity)
 
     form = self.edit_form_class(obj=entity)
     rendered_entity = self.single_view.render_form(form)
 
     return dict(rendered_entity=rendered_entity,
-                breadcrumbs=bc,
                 module=self)
 
   @expose("/<int:entity_id>/edit", methods=['POST'])
@@ -491,17 +487,13 @@ class Module(object):
 
     # All unhappy path should end here
     rendered_entity = self.single_view.render_form(form)
-    bc = self.bread_crumbs(entity._name)
     return render_template('crm/single_view.html',
                            rendered_entity=rendered_entity,
-                           breadcrumbs=bc,
                            module=self)
 
   @expose("/new")
   @templated("crm/single_view.html")
   def entity_new(self):
-    bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
-
     form = self.edit_form_class()
     rendered_entity = self.single_view.render_form(
       form,
@@ -509,7 +501,6 @@ class Module(object):
       has_save_and_add_new=self.view_new_save_and_add,)
 
     return dict(rendered_entity=rendered_entity,
-                breadcrumbs=bc,
                 module=self)
 
   @expose("/new", methods=['PUT', 'POST'])
@@ -546,10 +537,8 @@ class Module(object):
 
     # All unhappy paths should here here
     rendered_entity = self.single_view.render_form(form, for_new=True)
-    bc = self.bread_crumbs("New %s" % self.managed_class.__name__)
     return render_template('crm/single_view.html',
                            rendered_entity=rendered_entity,
-                           breadcrumbs=bc,
                            module=self)
 
   @expose("/<int:entity_id>/delete", methods=['POST'])
@@ -568,18 +557,6 @@ class Module(object):
   #
   def is_current(self):
     return request.path.startswith(self.url)
-
-  # FIXME: breadcrumb is handled with g.breadcrumbs, which is a list of
-  # abilian.web.nav.BreadCrumbItem instances
-  #
-  # def bread_crumbs(self, label=None):
-  #   bc = BreadCrumbs([("/", "Home"), ("/crm/", "CRM")])
-  #   if label:
-  #     bc.add("/crm/%s/" % self.endpoint, self.label)
-  #     bc.add("", label)
-  #   else:
-  #     bc.add("", self.label)
-  #   return bc
 
   def render_entity_view(self, entity):
     form = self.view_form_class(obj=entity)
@@ -639,7 +616,3 @@ class CRUDApp(object):
 
   def add_module(self, module):
     self.app.register_blueprint(module.create_blueprint(self))
-
-  @property
-  def breadcrumbs(self):
-    return [dict(path='/', label='Home')]
