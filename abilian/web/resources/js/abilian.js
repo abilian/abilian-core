@@ -106,6 +106,12 @@
              });
 
          var search_box = $("#search-box");
+
+         if (datasets.length == 0) {
+             search_box.attr('disabled', true);
+             return;
+         }
+
          search_box.typeahead(datasets)
              .on('typeahead:selected', function (e, data) {
                      if (data.url) {
