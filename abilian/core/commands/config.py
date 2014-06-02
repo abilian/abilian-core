@@ -13,7 +13,8 @@ from flask.ext.script import Manager
 from .base import print_config, logger
 
 #: sub-manager for config commands
-manager = Manager()
+manager = Manager(description='Show config / create default config',
+                  help='Show config / create default config')
 
 
 @manager.command
