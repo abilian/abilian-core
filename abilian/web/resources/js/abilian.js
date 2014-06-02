@@ -92,7 +92,7 @@
                      remote: {
                          url: Abilian.api.search.live,
                          filter: function(response) {
-                             return response.results[info[0]] || []
+                             return response.results[info[0]] || [];
                          },
                          cache: false
                      },
@@ -101,7 +101,7 @@
                      header: '<b><i>' + info[1] + '</i></b>',
                      valueKey: 'name',
                      template: '{{name}}'
-                 }
+                 };
                  datasets.push(d);
              });
 
