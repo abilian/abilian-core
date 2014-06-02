@@ -342,8 +342,8 @@ class Application(Flask, ServiceManager, PluginManager):
       try:
         from flask.ext.debugtoolbar import DebugToolbarExtension, DebugToolbar
       except ImportError:
-        logger.warning('DEBUG_TOOLBAR is on but flask.ext.debugtoolbar is not '
-                       'installed.')
+        logger.warning('DEBUG_TB_ENABLED is on but flask.ext.debugtoolbar '
+                       'is not installed.')
       else:
         try:
           default_config = DebugToolbar.config
