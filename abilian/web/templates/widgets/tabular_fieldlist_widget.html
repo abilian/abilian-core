@@ -17,7 +17,7 @@
           {%- endfor %}
         {%- endif %}
         {%- set attrs={'data-short-name': subfield.short_name} %}
-        {{ subfield(class="span1", **attrs) }}
+        {{ subfield(**attrs) }}
       </td>
       {%- endfor %}
     </tr>
