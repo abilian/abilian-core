@@ -14,13 +14,16 @@ from .base import manager
 @manager.command
 def reindex(clear=False):
   """
-  Reindex all content; optionally clear index before. All is done in a single transaction.
+  Reindex all content; optionally clear index before. All is done in a
+  single transaction.
   """
   svc = current_app.services['indexing']
   adapted = svc.adapted
   index = svc.app_state.indexes['default']
   session = Session(bind=current_app.db.session.get_bind(None, None),
                     autocommit=True)
+
+  setattr(session, '_model_changes', {}) # please flask-sqlalchemy <= 1.0
 
   indexed = set()
   cleared = set()
