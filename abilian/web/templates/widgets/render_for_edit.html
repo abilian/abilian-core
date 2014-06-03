@@ -1,23 +1,4 @@
-{% macro render_field(field) %}
-  {%- set css_class = kwargs.pop('class', '') %}
-  {%- set error_css = '' %}
-  {%- if field.flags.required %}
-    {% set css_class = '{} required'.format(css_class) %}
-  {%- endif %}
-  {%- if field.errors %}
-    {% set css_class = '{} has_error'.format(css_class) %}
-    {%- set error_css = 'error' %}
-  {%- endif %}
-  <div class="control-group {{ error_css }}">
-    {{ field.label(class="control-label"+error_css) }}
-    <div class="controls">
-        {{ field(class=css_class, **kwargs) }}
-        {%- if field.errors %}
-          <span class="help-inline">{% for error in field.errors %}{{ error|e }}. {% endfor %}</span>
-        {%- endif %}
-    </div>
-  </div>
-{% endmacro %}
+{% from "macros/form.html" import  m_field with context %}
 
 <form action="{{ request.path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="edit-form">
   {{ form.csrf_token }}
@@ -27,7 +8,7 @@
     {%- if label %}<legend>{{ label }}</legend>{%- endif %}
     <fieldset>
       {%- for field_name in field_names %}
-        {{ render_field(form[field_name], widget_options=options.get(field_name, {})) }}
+        {{ m_field(form[field_name], horizontal=True, label_width=3, field_width=6) }}
       {%- endfor %}
     </fieldset>
   {% endfor %}
