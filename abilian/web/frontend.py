@@ -31,6 +31,7 @@ from abilian.core.extensions import db
 from abilian.services import audit_service
 
 from . import search
+from .nav import BreadcrumbItem, Endpoint
 from .decorators import templated
 from .views import default_view
 from .forms.fields import ModelFieldList
@@ -214,9 +215,26 @@ class Module(object):
                  self.managed_class,
                  id_attr='entity_id')(self.entity_view)
 
-    self.managed_class.base_url = self.url
+    self.managed_class.base_url = self.url # legacy
+
+    # delay registration of our breadcrumbs to when registered on app; thus
+    # 'parents' blueprint can register theirs befores ours
+    self.blueprint.record_once(self._setup_breadcrumb_preprocessors)
 
     return self.blueprint
+
+  def _setup_breadcrumb_preprocessors(self, state):
+    self.blueprint.url_value_preprocessor(self._add_breadcrumb)
+
+  def _add_breadcrumb(self, endpoint, values):
+    g.breadcrumb.append(BreadcrumbItem(label=self.name,
+                        url=Endpoint('.list_view')))
+
+  def _add_entity_breadcrumb(self, entity):
+    g.breadcrumb.append(
+      BreadcrumbItem(label=entity.name or entity._name or entity.id,
+                     url=Endpoint('.entity_view', entity_id=entity.id))
+    )
 
   def query(self, request):
     """ Return filtered query based on request args
@@ -441,6 +459,7 @@ class Module(object):
       abort(404)
 
     add_to_recent_items(entity)
+    self._add_entity_breadcrumb(entity)
 
     rendered_entity = self.render_entity_view(entity)
     related_views = [v.render(entity) for v in self.related_views]
@@ -457,6 +476,7 @@ class Module(object):
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
     add_to_recent_items(entity)
+    self._add_entity_breadcrumb(entity)
 
     form = self.edit_form_class(obj=entity)
     rendered_entity = self.single_view.render_form(form)
@@ -621,4 +641,7 @@ class CRUDApp(object):
       self.add_module(module)
 
   def add_module(self, module):
-    self.app.register_blueprint(module.create_blueprint(self))
+    self.app.register_blueprint(self.create_blueprint(module))
+
+  def create_blueprint(self, module):
+    return module.create_blueprint(self)
