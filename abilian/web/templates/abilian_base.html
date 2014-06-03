@@ -59,10 +59,12 @@
     </div>
 
     <div class="row">
-      {% block main %}
-        {% block content %}
-        {% endblock %}
-      {%- endblock %}   
+      <div class="col-md-12">
+        {% block main %}
+          {% block content %}
+          {% endblock %}
+        {%- endblock %}   
+      </div>
     </div>     
   </div>
 
