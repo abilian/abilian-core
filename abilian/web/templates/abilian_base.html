@@ -19,8 +19,8 @@
   <![endif]-->
 
   <!-- Le fav and touch icons -->
-  <link rel="shortcut icon" type="image/png" href="{{ url_for('abilian_static', filename='img/logo-abilian-32x32.png') }}" />
-  <link rel="apple-touch-icon" type="image/png" href="{{ url_for('abilian_static', filename='img/logo-abilian.png') }}" />
+  <link rel="shortcut icon" type="image/png" href="{{ app.config['FAVICO_URL'] | string }}" />
+  <link rel="apple-touch-icon" type="image/png" href="{{ app.config['FAVICO_URL'] | string }}" />
 
   {%- assets "js-top" %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>

@@ -7,7 +7,9 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="{{ request.url_root }}"><img src="{{ url_for('abilian_static', filename='img/logo-abilian-32x32.png') }}" /></a>
+    <a class="navbar-brand" href="{{ request.url_root }}">
+      <img src="{{ app.config['LOGO_URL'] | string }}" />
+    </a>
   </div>
 
   <div class="collapse navbar-collapse navbar-ex1-collapse">

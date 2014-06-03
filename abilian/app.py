@@ -33,7 +33,7 @@ from abilian.core import extensions, signals
 import abilian.core.util
 from abilian.web.action import actions
 from abilian.web.views import Registry as ViewRegistry
-from abilian.web.nav import BreadcrumbItem
+from abilian.web.nav import BreadcrumbItem, Endpoint
 from abilian.web.filters import init_filters
 from abilian.web.util import send_file_from_directory, url_for
 from abilian.web.admin import Admin
@@ -109,6 +109,7 @@ default_config.update(
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
   ),
   SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
+  LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png')
 )
 default_config = ImmutableDict(default_config)
 
@@ -189,6 +190,9 @@ class Application(Flask, ServiceManager, PluginManager):
           self.db.session.rollback()
         else:
           self.config.update(settings)
+
+    if not self.config.get('FAVICO_URL'):
+      self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
 
     self._jinja_loaders = list()
     self.register_jinja_loaders(
