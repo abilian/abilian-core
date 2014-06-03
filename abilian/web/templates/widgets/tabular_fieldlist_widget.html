@@ -1,5 +1,5 @@
 {%- if labels %}
-<table class="dynamic-row-widget span{{ labels|length }}" data-prefix="{{ field.name }}">
+<table class="dynamic-row-widget col-sm-{{ labels|length }}" data-prefix="{{ field.name }}">
   <thead>
     {%- for label in labels %}
       <th>{{ label }}</th>
