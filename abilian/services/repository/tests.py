@@ -16,15 +16,6 @@ class TestRepository(BaseTestCase):
   UUID_STR = '4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9'
   UUID = uuid.UUID(UUID_STR)
 
-  def setUp(self):
-    repository.start()
-    BaseTestCase.setUp(self)
-
-  def tearDown(self):
-    BaseTestCase.tearDown(self)
-    if repository.running:
-      repository.stop()
-
   def test_rel_path(self):
     self.assertRaises(ValueError, repository.rel_path, self.UUID_STR)
     p = repository.rel_path(self.UUID)
@@ -114,19 +105,8 @@ class TestSessionRepository(BaseTestCase):
   UUID = uuid.UUID(UUID_STR)
 
   def setUp(self):
-    repository.start()
-    session_repository.start()
     BaseTestCase.setUp(self)
-
     self.svc = session_repository
-
-  def tearDown(self):
-    BaseTestCase.tearDown(self)
-    if session_repository.running:
-      session_repository.stop()
-
-    if repository.running:
-      repository.stop()
 
   def test_transaction_lifetime(self):
     state = self.svc.app_state

@@ -28,20 +28,6 @@ class BlobUnitTestCase(TestCase):
 
 class BlobTestCase(AbilianTestCase):
 
-  def setUp(self):
-    repository.start()
-    session_repository.start()
-    AbilianTestCase.setUp(self)
-
-  def tearDown(self):
-    AbilianTestCase.tearDown(self)
-    if session_repository.running:
-      session_repository.stop()
-
-    if repository.running:
-      repository.stop()
-
-
   def test_value(self):
     session = self.session
     content = b'content'

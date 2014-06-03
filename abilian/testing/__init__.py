@@ -137,6 +137,10 @@ class BaseTestCase(TestCase):
 
   def setUp(self):
     TestCase.setUp(self)
+    # session_repository must be started before session is created, as it must
+    # receive all transactions events. It also requires 'repository'.
+    self.app.services['repository'].start()
+    self.app.services['session_repository'].start()
     self.session = self.db.session()
 
     if self.db.engine.name == 'postgresql':
@@ -171,6 +175,7 @@ class BaseTestCase(TestCase):
       del self.__pg_schema
 
     self.db.engine.dispose()
+    self.app.services['session_repository'].stop()
     TestCase.tearDown(self)
 
   def login(self, user, remember=False, force=False):
