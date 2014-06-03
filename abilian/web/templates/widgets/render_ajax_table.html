@@ -43,7 +43,7 @@
 
   {%- deferJS %}
   <script type="text/javascript">
-    $(document).ready(function() {
+    Abilian.fn.onAppInit(function() {
 
       var tbl = $("#listing_{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
 
