@@ -32,6 +32,7 @@ from abilian.services import audit_service
 
 from . import search
 from .decorators import templated
+from .views import default_view
 from .forms.fields import ModelFieldList
 from .forms.widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
@@ -207,6 +208,11 @@ class Module(object):
                                   name,
                                   getattr(self, name),
                                   methods=methods)
+
+    # run default_view decorator
+    default_view(self.blueprint,
+                 self.managed_class,
+                 id_attr='entity_id')(self.entity_view)
 
     self.managed_class.base_url = self.url
 
