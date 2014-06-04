@@ -18,6 +18,7 @@ import logging
 from tempfile import mktemp, mkstemp
 import traceback
 from abc import ABCMeta, abstractmethod
+from pathlib import Path
 from magic import Magic
 import os
 import subprocess
@@ -59,14 +60,14 @@ class Cache(object):
 
   def _path(self, key):
     """ file path for `key`"""
-    return os.path.join(self.CACHE_DIR, "{}.blob".format(key))
+    return self.CACHE_DIR / "{}.blob".format(key)
 
   def __contains__(self, key):
-    return os.path.exists(self._path(key))
+    return self._path(key).exists()
 
   def get(self, key):
     if key in self:
-      value = open(self._path(key), 'rb').read()
+      value = self._path(key).open('rb').read()
       if key.startswith("txt:"):
         value = unicode(value, encoding="utf8")
       return value
@@ -78,7 +79,7 @@ class Cache(object):
   def set(self, key, value):
     # if not os.path.exists(self.CACHE_DIR):
     #   os.mkdir(CACHE_DIR)
-    fd = open(self._path(key), "wbc")
+    fd = self._path(key).open("wb")
     if key.startswith("txt:"):
       fd.write(value.encode("utf8"))
     else:
@@ -98,26 +99,27 @@ class Converter(object):
 
   def init_app(self, app):
     self.init_work_dirs(
-      cache_dir=os.path.join(app.instance_path, CACHE_DIR),
-      tmp_dir=os.path.join(app.instance_path, TMP_DIR),)
+      cache_dir=Path(app.instance_path, CACHE_DIR),
+      tmp_dir=Path(app.instance_path, TMP_DIR),)
 
     for handler in self.handlers:
       handler.init_app(app)
 
   def init_work_dirs(self, cache_dir, tmp_dir):
-    self.TMP_DIR = tmp_dir
-    self.CACHE_DIR = cache_dir
+    self.TMP_DIR = Path(tmp_dir)
+    self.CACHE_DIR = Path(cache_dir)
     self.cache.CACHE_DIR = self.CACHE_DIR
 
-    if not os.path.exists(self.TMP_DIR):
-      os.mkdir(self.TMP_DIR)
-    if not os.path.exists(self.CACHE_DIR):
-      os.mkdir(self.CACHE_DIR)
+    if not self.TMP_DIR.exists():
+      self.TMP_DIR.mkdir()
+    if not self.CACHE_DIR.exists():
+      self.CACHE_DIR.mkdir()
 
   def clear(self):
     self.cache.clear()
-    shutil.rmtree(self.TMP_DIR)
-    shutil.rmtree(self.CACHE_DIR)
+    for d in (self.TMP_DIR, self.CACHE_DIR):
+      shutil.rmtree(str(d))
+      d.mkdir()
 
   def register_handler(self, handler):
     self.handlers.append(handler)
@@ -301,7 +303,7 @@ class PdfToTextHandler(Handler):
 
   def convert(self, blob, **kw):
     in_fn = make_temp_file(blob)
-    fd, out_fn = mkstemp(dir=TMP_DIR)
+    fd, out_fn = mkstemp(dir=str(TMP_DIR))
     os.close(fd)
 
     try:
