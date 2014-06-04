@@ -182,13 +182,16 @@ class WhooshIndexService(Service):
     schema = {}
     primary = None
 
-    for field in cls.__table__.columns:
-      if field.primary_key:
-        schema[field.name] = whoosh.fields.ID(stored=True, unique=True)
-        primary = field.name
-      if field.name in cls.__searchable__:
-        if type(field.type) in (sa.types.Text, sa.types.UnicodeText):
-          schema[field.name] = whoosh.fields.TEXT(analyzer=_TEXT_ANALYZER)
+    INDEXABLE_TYPES = frozenset((sa.types.Text, sa.types.UnicodeText))
+
+    for prop in sa.inspect(cls).column_attrs:
+      key = prop.key
+      if all(c.primary_key for c in prop.columns):
+        schema[key] = whoosh.fields.ID(stored=True, unique=True)
+        primary = key
+      if key in cls.__searchable__:
+        if {type(c.type) for c in prop.columns} <= INDEXABLE_TYPES:
+          schema[key] = whoosh.fields.TEXT(analyzer=_TEXT_ANALYZER)
 
     return Schema(**schema), primary
 
