@@ -272,6 +272,10 @@ class Less(ExternalTool):
                        output=output, output_path=output_path)
 
   def fix_url(self, cur_path, url):
+    if url.startswith(u'data:'):
+      # base64 embeded
+      return url
+
     src_path = os.path.normpath(os.path.abspath(os.path.join(cur_path, url)))
     possible_paths = [p for p in self.env.url_mapping.keys()
                       if src_path.startswith(p)]
