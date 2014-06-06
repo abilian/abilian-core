@@ -3,6 +3,7 @@
 {% from "macros/box.html" import m_box, m_box_menu with context %}
 
 {% block main %}
+  <div class="row">
     <div class="col-md-9">
       {% block content %}
       {% endblock %}
@@ -17,4 +18,5 @@
         </ul>
       {%- endcall %}
     </div>
+  </div>
 {% endblock %}
