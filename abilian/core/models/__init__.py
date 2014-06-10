@@ -57,11 +57,6 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
   def to_json(self):
     return json.dumps(self.to_dict())
 
-  #FIXME: remove when all entities will have a default view registered
-  @property
-  def _url(self):
-    return self.base_url + "/%d" % self.id
-
   def _icon(self, size=12):
     return "/static/icons/%s-%d.png" % (self.__class__.__name__.lower(), size)
 

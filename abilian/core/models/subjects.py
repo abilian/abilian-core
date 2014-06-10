@@ -62,6 +62,8 @@ class User(Principal, UserMixin, db.Model):
   __editable__ = ['first_name', 'last_name', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
+  entity_type = u'{}.{}'.format(__module__, 'User')
+
   query_class = UserQuery
 
   # Basic information
@@ -176,16 +178,13 @@ class User(Principal, UserMixin, db.Model):
       id=repr(self.id), email=repr(self.email), addr=id(self)
       )
 
-  # XXX: Should entities know about their own URL? Eventually, no.
-  @property
-  def _url(self):
-    return "/social/users/%d" % self.id
-
 
 class Group(Principal, db.Model):
   __tablename__ = 'group'
   __editable__ = ['name', 'description']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
+
+  entity_type = u'{}.{}'.format(__module__, 'Group')
 
   name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
   description = Column(UnicodeText, info=SEARCHABLE)
@@ -197,8 +196,3 @@ class Group(Principal, db.Model):
   photo = deferred(Column(LargeBinary))
 
   public = Column(Boolean, default=False, nullable=False)
-
-  # XXX: Should entities know about their own URL? Eventually, no.
-  @property
-  def _url(self):
-    return "/social/groups/%d" % self.id

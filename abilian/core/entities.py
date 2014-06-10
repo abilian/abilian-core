@@ -143,8 +143,6 @@ class Entity(Indexable, BaseMixin, db.Model):
   __searchable__ = frozenset()
   __auditable__ = frozenset()
 
-  base_url = None
-
   def __init__(self, *args, **kwargs):
     db.Model.__init__(self, *args, **kwargs)
     BaseMixin.__init__(self)

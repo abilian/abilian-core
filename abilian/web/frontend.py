@@ -215,8 +215,6 @@ class Module(object):
                  self.managed_class,
                  id_attr='entity_id')(self.entity_view)
 
-    self.managed_class.base_url = self.url # legacy
-
     # delay registration of our breadcrumbs to when registered on app; thus
     # 'parents' blueprint can register theirs befores ours
     self.blueprint.record_once(self._setup_breadcrumb_preprocessors)
