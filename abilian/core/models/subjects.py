@@ -169,6 +169,13 @@ class User(Principal, UserMixin, db.Model):
   def __unicode__(self):
     return self.name
 
+  def __repr__(self):
+    cls = self.__class__
+    return '<{mod}.{cls} id={id} email={email} at 0x{addr:x}>'.format(
+      mod=cls.__module__, cls=cls.__name__,
+      id=repr(self.id), email=repr(self.email), addr=id(self)
+      )
+
   # XXX: Should entities know about their own URL? Eventually, no.
   @property
   def _url(self):
