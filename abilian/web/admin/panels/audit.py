@@ -10,6 +10,7 @@ import pytz
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
 
+from werkzeug.routing import BuildError
 from flask import request, render_template, render_template_string, \
   get_template_attribute
 from flask.ext.babel import gettext as _
@@ -19,6 +20,7 @@ from abilian.core.entities import Entity
 from abilian.core.util import local_dt
 from abilian.services.audit import AuditEntry
 from abilian.services.security import SecurityAudit
+from abilian.web.util import url_for
 
 from ..panel import AdminPanel
 
@@ -161,29 +163,6 @@ class AuditEntryPresenter(BaseEntryPresenter):
     assert isinstance(entry, AuditEntry)
     super(AuditEntryPresenter, self).__init__(entry.user, entry.happened_at)
     self.entry = entry
-    self.entity = None
-
-  @staticmethod
-  def prefetch(entries):
-    """ @param entries: AuditEntryPresenter instances
-    """
-    # if not entries:
-    #   return
-
-    # # retrieve all entities in sqlalchemy session identity map ('cache')
-    # _cls_ids = {}
-    # for e in entries:
-    #   if e.entry.entity_class and e.entry.entity_id:
-    #     _cls_ids.setdefault(e.entry.entity_class, []).append(e.entry.entity_id)
-
-    # for cls_name, ids in _cls_ids.items():
-    #   if (cls_name and ids):
-    #     model = AuditEntryPresenter.model(cls_name)
-    #     _cls_ids[cls_name] = model.query.filter(model.id.in_(ids)).all()
-
-    # for e in entries:
-    #   if e.entry.entity_class and e.entry.entity_id:
-    #     e.entity = e.model(e.entry.entity_class).query.get(e.entry.entity_id)
 
   def render(self):
     render = render_template_string
@@ -191,20 +170,22 @@ class AuditEntryPresenter(BaseEntryPresenter):
     user = render(self._USER_FMT, user=e.user)
     self.changes = []
     # entity = e.entity_name or u''
-    self.entity_deleted = True
+    self.entity_deleted = e.entity is None
+    entity_html = e.entity_name
 
-    # if self.entity:
-    #   self.entity_deleted = False
-    #   try:
-    #     entity = render(
-    #     u'<a href="{{ entity._url }}">{{ entity.path or entity._name }}</a>',
-    #     entity=self.entity)
-    #   except (TypeError, NotImplementedError):
-    #     # some entities have no name nor url
-    #     pass
+    if not self.entity_deleted:
+      try:
+        entity_url = url_for(e.entity)
+      except (BuildError, ValueError):
+        pass
+      else:
+        entity_html = Markup(render(
+          u'<a href="{{ url }}">{{ entity.path or entity.name }}</a>',
+          url=entity_url,
+          entity=e.entity))
 
     if e.type == 0:
-        msg = _(u'{user} created {entity_type} {entity_id} "{entity}"')
+      msg = _(u'{user} created {entity_type} {entity_id} "{entity}"')
     elif e.related or e.op == 1:
       msg = _(u'{user} made changes on {entity_type} {entity_id} "{entity}"')
       self.changes.extend(self.format_model_changes(e.changes))
@@ -213,7 +194,7 @@ class AuditEntryPresenter(BaseEntryPresenter):
     else:
       raise Exception("Bad entry type: {}".format(e.type))
 
-    self.msg = Markup(msg.format(user=user, entity=e.entity_name,
+    self.msg = Markup(msg.format(user=user, entity=entity_html,
                                  entity_type=e.entity_type.rsplit('.', 1)[-1],
                                  entity_id=e.entity_id,))
     tmpl = get_template_attribute('admin/_macros.html', 'm_audit_entry')
