@@ -136,7 +136,12 @@ class Application(Flask, ServiceManager, PluginManager):
       cfg_path = os.path.join(self.instance_path, 'config.py')
       config.from_pyfile(cfg_path, silent=True)
 
-    config.from_envvar(self.CONFIG_ENVVAR, silent=True)
+    # If the ennvar specifies a configuration file, it must exist
+    # (and execute with no exceptions) - we don't want the application
+    # to run with an unprecised or insecure configuration.
+    if self.CONFIG_ENVVAR in os.environ:
+        config.from_envvar(self.CONFIG_ENVVAR, silent=False)
+
     return config
 
   def setup_logging(self):
