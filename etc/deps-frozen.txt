@@ -55,7 +55,7 @@ python-magic==0.4.6
 pytz==2013b
 PyYAML==3.10
 raven==3.6.0
-redis==2.9.0
+redis==2.10.1
 requests==1.2.0
 SAValidation==0.2.1
 sh==1.09
