@@ -304,7 +304,7 @@ class AjaxMainTableView(object):
       elif 'display_fmt' in col:
         value = col['display_fmt'](value)
 
-      if column_name == '_name':
+      if column_name == 'name':
         cell = Markup('<a href="%s">%s</a>'
                       % (url_for(entity), cgi.escape(value)))
       elif isinstance(value, Entity):
