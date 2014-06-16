@@ -5,8 +5,7 @@ See: http://activitystrea.ms/specs/json/1.0/
 See: http://activitystrea.ms/specs/atom/1.0/#activity
 See: http://stackoverflow.com/questions/1443960/how-to-implement-the-activity-stream-in-a-social-network
 
-TODO: replace `subject` by `target`. Also look wether other attributes from
-the spec need to be implemented.
+TODO: Look wether other attributes from the spec need to be implemented.
 """
 
 from datetime import datetime
