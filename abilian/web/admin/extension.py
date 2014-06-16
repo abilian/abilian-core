@@ -139,4 +139,6 @@ class Admin(object):
 
   def build_breadcrumbs(self, endpoint, view_args):
     g.breadcrumb.append(self.root_breadcrumb_item)
-    g.breadcrumb.append(self.breadcrumb_items[endpoint])
+    endpoint_bc = self.breadcrumb_items.get(endpoint)
+    if endpoint_bc:
+      g.breadcrumb.append(endpoint_bc)
