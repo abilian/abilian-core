@@ -6,27 +6,30 @@ import sqlalchemy as sa
 from flask import Flask
 from wtforms import Form, TextField, IntegerField
 
+from abilian.testing import BaseTestCase
 # Import for side-effects (monkey-patch)
 import abilian.web.forms
 
 from abilian.i18n import babel
 from abilian.core.extensions import db
+from abilian.core.entities import Entity
+from abilian.web.views import default_view
 
 from ..forms.widgets import MainTableView, SingleView, Panel, Row, \
   linkify_url, text2html, EmailWidget
 
 
-class WidgetTestModel(db.Model):
+class WidgetTestModel(Entity):
   """
   Mock model.
   """
   __tablename__ = 'widget_test_model'
   id = sa.Column(sa.Integer, primary_key=True)
+  price = sa.Column(sa.Integer)
+  email = sa.Column(sa.Text)
 
-  def __init__(self, **kw):
-    for k, v in kw.items():
-      setattr(self, k, v)
-
+  def __init__(self, *args, **kw):
+    Entity.__init__(self, *args, **kw)
     self._display_value_called = False
 
   def display_value(self, attr):
@@ -40,44 +43,22 @@ class DummyForm(Form):
   email = TextField(u'email', view_widget=EmailWidget())
 
 
-class BaseTestCase(TestCase):
-  # TODO: use abilian.testing.BaseTestCase instead
-
-  def setUp(self):
-    # Hack to set up the template folder properly.
-    template_dir = os.path.dirname(__file__) + "/../../web/templates"
-    template_dir = os.path.normpath(template_dir)
-    self.app = Flask(__name__, template_folder=template_dir)
-    self.app.config.update({
-      'TESTING': True,
-      'CSRF_ENABLED': False,
-      'WTF_CSRF_ENABLED': False,
-      })
-
-    # install 'deferJS' extension
-    jinja_opts = {}
-    jinja_opts.update(self.app.jinja_options)
-    jinja_exts = []
-    jinja_exts.extend(jinja_opts.setdefault('extensions', []))
-    jinja_exts.append('abilian.core.jinjaext.DeferredJSExtension')
-    jinja_opts['extensions'] = jinja_exts
-    self.app.jinja_options = jinja_opts
-
-    from abilian.core.jinjaext import DeferredJS
-    DeferredJS(self.app)
-    babel.init_app(self.app)
-
-
 class TableViewTestCase(BaseTestCase):
 
   def test_table_view(self):
+
+    @default_view(self.app, WidgetTestModel)
+    @self.app.route('/dummy_view/<object_id>')
+    def dummy_view():
+      pass
+
     with self.app.test_request_context():
       self.app.preprocess_request() # run before_request handlers: needed for deferJS
       columns = ['name', 'price']
       view = MainTableView(columns)
 
-      model1 = WidgetTestModel(name="Renault Megane", _name="toto", price=10000)
-      model2 = WidgetTestModel(name="Peugeot 308", _name="titi", price=12000)
+      model1 = WidgetTestModel(id=1, name="Renault Megane", price=10000)
+      model2 = WidgetTestModel(id=2, name="Peugeot 308", price=12000)
 
       models = [model1, model2]
 
