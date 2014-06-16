@@ -130,9 +130,9 @@ class AuditPanel(AdminPanel):
 class BaseEntryPresenter(object):
 
   _USER_FMT = (u'<a href="{{ url_for("social.user", user_id=user.id) }}">'
-               '{{ user._name }}</a>')
+               '{{ user.name }}</a>')
   _GROUP_FMT = (u'<a href="{{ url_for("social.group_home", group_id=group.id)'
-                ' }}">{{ group._name }}</a>')
+                ' }}">{{ group.name }}</a>')
 
   def __init__(self, user, date):
     self.user = user
@@ -278,7 +278,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
     entity = u''
     if e.object:
       entity = render(
-        u'<a href="{{ url_for(entity) }}">{{ entity.path or entity._name }}</a>',
+        u'<a href="{{ url_for(entity) }}">{{ entity.path or entity.name }}</a>',
         entity=self.object)
 
       if e.op == e.SET_INHERIT:

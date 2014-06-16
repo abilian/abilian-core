@@ -182,13 +182,13 @@ class BaseTableView(object):
       # Manual massage.
       if value is None:
         value = ""
-      if column_name == make_link_on or column_name == '_name' or \
+      if column_name == make_link_on or column_name == 'name' or \
          col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'
                       % (url_for(entity), cgi.escape(unicode(value))))
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'
-                      % (url_for(value), cgi.escape(value._name)))
+                      % (url_for(value), cgi.escape(value.name)))
       elif isinstance(value, basestring) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
@@ -309,7 +309,7 @@ class AjaxMainTableView(object):
                       % (url_for(entity), cgi.escape(value)))
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'
-                      % (url_for(value), cgi.escape(value._name)))
+                      % (url_for(value), cgi.escape(value.name)))
       elif isinstance(value, basestring)\
         and (value.startswith("http://") or value.startswith("www.")):
           cell = Markup(linkify_url(value))
@@ -805,7 +805,7 @@ class DateTimeWidget(DateWidget):
 class EntityWidget(object):
   def render_view(self, field):
     obj = field.object_data
-    return (u'<a href="{}">{}</a>'.format(url_for(obj), cgi.escape(obj._name))
+    return (u'<a href="{}">{}</a>'.format(url_for(obj), cgi.escape(obj.name))
             if obj else u'')
 
 
@@ -980,7 +980,7 @@ class Select2Ajax(object):
     extra_args = Markup(html_params(**kwargs))
     url = field.ajax_source
     data = field.data  # accessor / obj lookup
-    object_name = data._name if data else ""
+    object_name = data.name if data else ""
     object_id = data.id if data else ""
 
     return Markup(render_template(self.template,

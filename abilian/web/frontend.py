@@ -230,7 +230,7 @@ class Module(object):
 
   def _add_entity_breadcrumb(self, entity):
     g.breadcrumb.append(
-      BreadcrumbItem(label=entity.name or entity._name or entity.id,
+      BreadcrumbItem(label=entity.name or entity.id,
                      url=Endpoint('.entity_view', entity_id=entity.id))
     )
 
@@ -260,7 +260,7 @@ class Module(object):
     sort_col_def = self.list_view_columns[sort_col]
     sort_col_name = sort_col_def['name']
 
-    if sort_col_name == '_name':
+    if sort_col_name == 'name':
       sort_col_name = 'nom'
 
     sort_col = getattr(self.managed_class, sort_col_name)
@@ -366,12 +366,12 @@ class Module(object):
         value = obj.display_value(col_name)
 
         if isinstance(value, Entity):
-          value = value._name
+          value = value.name
         elif isinstance(value, list):
           if all(isinstance(x, basestring) for x in value):
             value = "; ".join(value)
           elif all(isinstance(x, Entity) for x in value):
-            value = "; ".join([x._name for x in value])
+            value = "; ".join([x.name for x in value])
           else:
             raise Exception("I don't know how to export column {}".format(col_name))
         elif isinstance(value, date):

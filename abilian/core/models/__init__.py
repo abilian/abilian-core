@@ -29,7 +29,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     OwnedMixin.__init__(self)
 
   def __repr__(self):
-    name = self._name
+    name = self.name
 
     # Just in case....
     if isinstance(name, unicode):
@@ -71,4 +71,4 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
       raise NotImplementedError()
 
   def __unicode__(self):
-    return self._name
+    return self.name

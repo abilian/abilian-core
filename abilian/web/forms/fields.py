@@ -208,8 +208,8 @@ class QuerySelect2Field(SelectFieldBase):
       formdata = set(formdata)
       data = [obj for pk, obj in self._get_object_list()
               if pk in formdata]
-      if all(hasattr(x, '_name') for x in data):
-        data = sorted(data, key=lambda x: x._name)
+      if all(hasattr(x, 'name') for x in data):
+        data = sorted(data, key=lambda x: x.name)
       else:
         data = sorted(data)
       if data:
@@ -347,4 +347,3 @@ class JsonSelect2Field(SelectFieldBase):
 
 class JsonSelect2MultipleField(JsonSelect2Field):
   widget = Select2Ajax(multiple=True)
-

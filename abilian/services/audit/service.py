@@ -237,7 +237,7 @@ class AuditService(Service):
     entry.entity_type = entity.entity_type
 
     entity_name = u''
-    for attr_name in ('_name', 'path', '__path_before_delete'):
+    for attr_name in ('name', 'path', '__path_before_delete'):
       if hasattr(entity, attr_name):
         entity_name = getattr(entity, attr_name)
     entry.entity_name = entity_name
