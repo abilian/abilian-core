@@ -273,7 +273,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     if not path.exists():
       if create:
-        logger.info('Create instance folder: {}'.format(path.encode('utf-8')))
+        logger.info('Create instance folder: %s', unicode(path).encode('utf-8'))
         path.mkdir(0775, parents=True)
       else:
         err = 'Instance folder does not exists'
