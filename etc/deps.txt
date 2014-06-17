@@ -56,7 +56,7 @@ celery==3.0.21
 straight.plugin==1.4.0-post-1
 
 # progressbar >= 2.3
-https://code.google.com/p/python-progressbar/downloads/detail?name=progressbar-2.3.tar.gz#egg=progressbar
+https://python-progressbar.googlecode.com/files/progressbar-2.3.tar.gz#egg=progressbar
 
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
