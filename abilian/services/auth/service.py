@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from flask import current_app, g, request, url_for, _request_ctx_stack
 from flask.ext.login import (
-  current_user, user_logged_out
+  current_user, user_logged_out, user_logged_in
 )
 from flask.ext.babel import lazy_gettext as _l
 
@@ -60,6 +60,7 @@ class AuthService(Service):
     Service.init_app(self, app)
     self.login_url_prefix = app.config.get('LOGIN_URL', '/user')
     app.before_request(self.before_request)
+    user_logged_in.connect(self.user_logged_in, sender=app)
     user_logged_out.connect(self.user_logged_out, sender=app)
     app.register_blueprint(login_views, url_prefix=self.login_url_prefix)
     with app.app_context():
@@ -83,6 +84,11 @@ class AuthService(Service):
 
       return None
 
+    app = current_app._get_current_object()
+    app.services[AuthService.name].user_logged_in(app, user)
+    return user
+
+  def user_logged_in(self, app, user):
     # `g.user` is used as `current_user`, but `current_user` is actually looking
     # for `request.user` whereas `g` is on app local stack.
     #
@@ -90,12 +96,11 @@ class AuthService(Service):
     # a manager to see site as another user (impersonate), or propose a "see as
     # anonymous" function
     g.user = g.logged_user = user
-    security = current_app.services.get('security')
+    security = app.services.get('security')
     g.is_manager = (user
                     and not user.is_anonymous()
                     and ((security.has_role(user, 'admin')
                           or security.has_role(user, 'manager'))))
-    return user
 
   def user_logged_out(self, app, user):
     del g.user
