@@ -125,7 +125,11 @@ class WhooshIndexService(Service):
           os.makedirs(index_path)
         storage = FileStorage(index_path)
 
-      index = whoosh.index.FileIndex.create(storage, schema, name)
+      FileIndex = whoosh.index.FileIndex
+      if not storage.index_exists(name):
+        FileIndex = whoosh.index.FileIndex.create
+
+      index = FileIndex(storage, schema, name)
       state.indexes[name] = index
 
   def clear(self):
@@ -244,7 +248,8 @@ class WhooshIndexService(Service):
       search_args['groupedby'] = 'object_type'
       search_args['collapse'] = 'object_type'
       search_args['collapse_limit'] = 5
-      search_args['limit'] = search_args['collapse_limit'] * len(object_types)
+      search_args['limit'] = (search_args['collapse_limit']
+                              * max(len(object_types), 1))
 
     with index.searcher(closereader=False) as searcher:
       # 'closereader' is needed, else results cannot by used outside 'with'
