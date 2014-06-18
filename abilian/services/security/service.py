@@ -271,7 +271,7 @@ class SecurityService(Service):
     True if `principal` has `role` (either globally, if `object` is None, or on
     the specific `object`).
 
-    `role` can be a list or tuple of strings
+    :param:role:  can be a list or tuple of strings
 
     `object` can be an Entity, a string, or `None`.
 
