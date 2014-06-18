@@ -245,9 +245,10 @@ class WhooshIndexService(Service):
         object_types = [t[0] for t in self.searchable_object_types()]
 
       # limit number of documents to score, per object type
+      collapse_limit = 5
       search_args['groupedby'] = 'object_type'
       search_args['collapse'] = 'object_type'
-      search_args['collapse_limit'] = 5
+      search_args['collapse_limit'] = collapse_limit
       search_args['limit'] = (search_args['collapse_limit']
                               * max(len(object_types), 1))
 
@@ -259,10 +260,11 @@ class WhooshIndexService(Service):
       if facet_by_type:
         positions = { doc_id: pos
                       for pos, doc_id in enumerate(i[1] for i in results.top_n)}
-        search_results = results
+        sr = results
         results = {}
-        for typename, doc_ids in search_results.groups('object_type').items():
-          results[typename] = [search_results[positions[oid]] for oid in doc_ids]
+        for typename, doc_ids in sr.groups('object_type').items():
+          results[typename] = [sr[positions[oid]]
+                               for oid in doc_ids[:collapse_limit]]
 
       return results
 
