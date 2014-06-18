@@ -35,7 +35,7 @@ redis>=2.10.1
 # see http://www.pip-installer.org/en/latest/logic.html#pre-release-versions
 phonenumbers>=5.8b1
 
-whoosh>=2.5
+whoosh>=2.5,<2.6
 markdown
 blinker
 requests
