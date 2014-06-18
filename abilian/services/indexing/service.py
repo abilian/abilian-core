@@ -50,11 +50,13 @@ class IndexServiceState(ServiceState):
   whoosh_base = None
   indexes = None
   indexed_classes = None
+  indexed_fqcn = None
 
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
     self.indexes = {}
     self.indexed_classes = set()
+    self.indexed_fqcn = set()
 
   @property
   def to_update(self):
@@ -142,6 +144,7 @@ class WhooshIndexService(Service):
 
     state.indexes = {}
     state.indexed_classes = set()
+    state.indexed_fqcn = set()
     self.clear_update_queue()
 
   def index(self, name='default'):
@@ -174,8 +177,10 @@ class WhooshIndexService(Service):
 
     with idx.reader() as r:
       indexed = sorted(set(r.field_terms('object_type')))
+    app_indexed = self.app_state.indexed_fqcn
 
-    return [(name, friendly_fqcn(name)) for name in indexed]
+    return [(name, friendly_fqcn(name)) for name in indexed
+            if name in app_indexed]
 
   def search(self, q, index='default', fields=None, Models=(),
              object_types=(), prefix=True, facet_by_type=None,
@@ -231,14 +236,17 @@ class WhooshIndexService(Service):
       object_types.add(object_type)
 
     if object_types:
-      # limit object_type
-      filtered_models = wq.Or(wq.Term('object_type', t)
-                              for t in object_types)
-      filter_q = wq.And(search_args['filter'], filtered_models)
+      object_types &= self.app_state.indexed_fqcn
+    else:
+      # don't show content previously indexed but not cleaned from index
+      object_types = self.app_state.indexed_fqcn
 
-      if 'filter' in search_args:
-        filter_q = wq.And(search_args['filter'], filter_q)
-      search_args['filter'] = filter_q
+    # limit object_type
+    filter_q = wq.Or([wq.Term('object_type', t) for t in object_types])
+
+    if 'filter' in search_args:
+      filter_q = wq.And(search_args['filter'], filter_q)
+    search_args['filter'] = filter_q
 
     if facet_by_type:
       if not object_types:
@@ -274,7 +282,8 @@ class WhooshIndexService(Service):
   def register_classes(self):
     state = self.app_state
     classes = (cls for cls in db.Model._decl_class_registry.values()
-               if isclass(cls) and issubclass(cls, Indexable))
+               if isclass(cls) and issubclass(cls, Indexable)
+               and cls.__indexable__)
     for cls in classes:
       if not cls in state.indexed_classes:
         self.register_class(cls, app_state=state)
@@ -293,6 +302,7 @@ class WhooshIndexService(Service):
 
     self.adapted[fqcn(cls)] = Adapter(cls, self.schemas['default'])
     state.indexed_classes.add(cls)
+    state.indexed_fqcn.add(fqcn(cls))
 
   def after_flush(self, session, flush_context):
     if not self.running or session is not db.session():
