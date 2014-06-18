@@ -23,6 +23,9 @@ class RoleSingleton(type):
     return type.__new__(cls, name, bases, dct)
 
   def __call__(cls, role, *args, **kwargs):
+    if isinstance(role, Role):
+      return role
+
     if role not in cls._instances:
       cls._instances[role] = type.__call__(cls, role, *args, **kwargs)
     return cls._instances[role]
