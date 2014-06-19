@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from flask import current_app, g, request, url_for, _request_ctx_stack
 from flask.ext.login import (
-  current_user, user_logged_out, user_logged_in
+  current_user, user_logged_out, user_logged_in, login_user
 )
 from flask.ext.babel import lazy_gettext as _l
 
@@ -110,10 +110,10 @@ class AuthService(Service):
   def before_request(self):
     if current_app.testing and current_app.config.get("NO_LOGIN"):
       # Special case for tests
-      # current_user points to _request_ctx_stack.top.user
-      user = _request_ctx_stack.top.user = g.user = User.query.first()
+      user = User.query.get(0)
+      login_user(user, False, True)
     else:
-      user = current_user
+      user = current_user._get_current_object()
 
     # ad-hoc security test based on requested path
     #
