@@ -5,7 +5,7 @@ from sqlalchemy.schema import (
   Column, ForeignKey, Index, UniqueConstraint, CheckConstraint
   )
 from sqlalchemy.types import (
-  Integer, Text, Enum, DateTime, String, Boolean, TypeDecorator,
+  Integer, Enum, DateTime, String, Boolean, TypeDecorator,
   )
 from sqlalchemy.event import listens_for
 
@@ -61,9 +61,12 @@ class RoleType(TypeDecorator):
 
   Usage::
     RoleType()
-    Takes same parameters as sqlalchemy.types.Text
   """
-  impl = Text
+  impl = String
+
+  def __init__(self, *args, **kwargs):
+    kwargs['length'] = 100
+    TypeDecorator.__init__(self, *args, **kwargs)
 
   def process_bind_param(self, value, dialect):
     if value is not None:
@@ -212,7 +215,7 @@ class SecurityAudit(db.Model):
   happened_at = Column(DateTime, default=datetime.utcnow)
   op = Column(Enum(GRANT, REVOKE, SET_INHERIT, UNSET_INHERIT,
                    name='securityaudit_enum_op'))
-  role = Column(RoleType(length=100))
+  role = Column(RoleType)
 
   manager_id = Column(Integer, ForeignKey(User.id))
   manager = relationship(User,
