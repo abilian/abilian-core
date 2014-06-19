@@ -4,7 +4,7 @@
 
 {% block content %}
   <div class="row">
-    <form class="col-md-10 col-md-offset-1" role="search" method="GET" action="{{ url_for('search.search_main') }}">
+    <form class="col-md-7 col-md-offset-3" role="search" method="GET" action="{{ url_for('search.search_main') }}">
       <div class="input-group">
         <input type="search" name="q" class="search-query form-control" value="{{ q }}"
                placeholder="{{ _('Search') }}" autocomplete="off" id="search-box"
