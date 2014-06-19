@@ -25,7 +25,7 @@ class LoginSessionsPanel(AdminPanel):
 
     for session in sessions:
       country = "Country unknown"
-      if geoip:
+      if geoip and session.ip_address:
         country = geoip.country_name_by_addr(session.ip_address) or country
       session.country = country
 
