@@ -4,8 +4,10 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.schema import (
   Column, ForeignKey, Index, UniqueConstraint, CheckConstraint
   )
-from sqlalchemy.types import Integer, Text, Enum, DateTime, String, Boolean
-from sqlalchemy.event import listen
+from sqlalchemy.types import (
+  Integer, Text, Enum, DateTime, String, Boolean, TypeDecorator,
+  )
+from sqlalchemy.event import listens_for
 
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import User, Group
@@ -49,6 +51,30 @@ class Role(object):
   def __str__(self):
     return str(self.role)
 
+  def __eq__(self, other):
+    return self.role == unicode(other)
+
+
+class RoleType(TypeDecorator):
+  """
+  Store :class:`Role`
+
+  Usage::
+    RoleType()
+    Takes same parameters as sqlalchemy.types.Text
+  """
+  impl = Text
+
+  def process_bind_param(self, value, dialect):
+    if value is not None:
+      value = str(value)
+    return value
+
+  def process_result_value(self, value, dialect):
+    if value is not None:
+      value = Role(value)
+    return value
+
 
 #: marker for role assigned to 'Anonymous'
 Anonymous = Role('anonymous')
@@ -76,7 +102,7 @@ class RoleAssignment(db.Model):
     )
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-  role = Column(Text, index=True, nullable=False)
+  role = Column(RoleType, index=True, nullable=False)
   anonymous = Column('anonymous', Boolean, nullable=True, default=False)
   user_id = Column(Integer, ForeignKey('user.id'))
   user = relationship(User, lazy='joined')
@@ -186,7 +212,7 @@ class SecurityAudit(db.Model):
   happened_at = Column(DateTime, default=datetime.utcnow)
   op = Column(Enum(GRANT, REVOKE, SET_INHERIT, UNSET_INHERIT,
                    name='securityaudit_enum_op'))
-  role = Column(String(length=100))
+  role = Column(RoleType(length=100))
 
   manager_id = Column(Integer, ForeignKey(User.id))
   manager = relationship(User,

@@ -8,7 +8,7 @@ from werkzeug.utils import import_string
 from flask import Blueprint, abort, url_for, request, g
 from flask.ext.babel import lazy_gettext as _l
 from flask.ext.login import current_user
-from abilian.services.security import security
+from abilian.services.security import security, Admin
 from abilian.web.action import actions
 from abilian.web.nav import NavGroup, NavItem, BreadcrumbItem, Endpoint
 
@@ -36,7 +36,7 @@ class Admin(object):
       'admin', 'root', title=_l(u'Admin'),
       endpoint=None,
       condition=lambda context: (not current_user.is_anonymous()
-                                 and security.has_role(current_user, "admin"))
+                                 and security.has_role(current_user, Admin))
     )
 
     for panel in panels:

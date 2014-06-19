@@ -25,7 +25,7 @@ from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
   SecurityAudit, RoleAssignment, Anonymous,
-  InheritSecurity
+  InheritSecurity, Role
 )
 
 
@@ -296,7 +296,7 @@ class SecurityService(Service):
       return True
 
     # admin & manager always have role
-    if isinstance(role, basestring):
+    if isinstance(role, (Role, basestring)):
       role = (role,)
     valid_roles = frozenset(('admin', 'manager') + tuple(role))
 
@@ -413,6 +413,8 @@ class SecurityService(Service):
   @require_flush
   def get_role_assignements(self, object):
     session = object_session(object) if object is not None else db.session
+    if not session:
+      session = db.session()
     q = session.query(RoleAssignment)
     q = q.filter(RoleAssignment.object == object)\
          .options(subqueryload('user.groups'))

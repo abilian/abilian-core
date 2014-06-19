@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+import unittest
+
 from flask.ext.login import AnonymousUserMixin
 
 from abilian.core.entities import Entity
@@ -8,7 +10,8 @@ from abilian.core.extensions import db
 from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
-from . import security, RoleAssignment, InheritSecurity
+from . import (security, RoleAssignment, InheritSecurity, Role,
+               Anonymous, Authenticated, Admin)
 
 
 TEST_EMAIL = u"joe@example.com"
@@ -20,6 +23,20 @@ def init_user():
               password=TEST_PASSWORD)
   db.session.add(user)
   db.session.flush()
+
+
+class RoleTestCase(unittest.TestCase):
+
+  def test_singleton(self):
+    admin = Role('admin')
+    other_admin = Role('admin')
+    self.assertIs(admin, other_admin)
+    self.assertEquals(id(admin), id(other_admin))
+
+  def test_equality(self):
+    admin = Role('admin')
+    self.assertEquals(admin, 'admin')
+    self.assertEquals(admin, u'admin')
 
 
 class IntegrationTestCase(BaseTestCase):
@@ -55,13 +72,13 @@ class SecurityTestCase(IntegrationTestCase):
     """ Root user always has any role, any permission
     """
     root = User.query.get(0)
-    assert security.has_role(root, 'admin')
+    assert security.has_role(root, Admin)
     assert security.has_permission(root, 'manage')
 
     obj = DummyModel()
     self.session.add(obj)
     self.session.flush()
-    assert security.has_role(root, 'admin', obj)
+    assert security.has_role(root, Admin, obj)
     assert security.has_permission(root, 'manage', obj)
 
   def test_grant_basic_roles(self):
@@ -69,10 +86,10 @@ class SecurityTestCase(IntegrationTestCase):
     self.session.add(user)
     self.session.flush()
 
-    security.grant_role(user, "admin")
-    assert security.has_role(user, "admin")
+    security.grant_role(user, Admin)
+    assert security.has_role(user, Admin)
+    assert security.get_roles(user) == [Admin]
     assert security.get_roles(user) == ['admin']
-
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
     assert security.has_permission(user, "manage")
