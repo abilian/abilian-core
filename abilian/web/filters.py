@@ -10,12 +10,13 @@ from calendar import timegm
 from babel.dates import DateTimePattern, format_timedelta, parse_pattern
 import bleach
 
+from werkzeug.routing import BuildError
 from jinja2 import Markup, escape, evalcontextfilter
 from flask import Flask
 from flask.ext import babel
 
 from ..core.util import local_dt, utc_dt
-
+from .util import url_for
 
 def autoescape(filter_func):
   """
@@ -184,6 +185,18 @@ def abbrev(s, max_size):
 def linkify(s):
   return Markup(bleach.linkify(s))
 
+def obj_to_url(obj):
+  """
+  Find url for obj using :func:`url_for`, return empty string is not found.
+
+  :func:`url_for` is also provided in jinja context, the filtering version is
+  forgiving when `obj` has no default view set.
+  """
+  try:
+    return url_for(obj)
+  except BuildError:
+    return u''
+
 
 def init_filters(env):
   if isinstance(env, Flask):
@@ -197,7 +210,7 @@ def init_filters(env):
   env.filters['date'] = date
   env.filters['babel2datepicker'] = babel2datepicker
   env.filters['to_timestamp'] = to_timestamp
-
+  env.filters['url_for'] = obj_to_url
   env.filters['abbrev'] = abbrev
   env.filters['filesize'] = filesize
   env.filters['labelize'] = labelize
