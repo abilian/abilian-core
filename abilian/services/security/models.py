@@ -103,27 +103,28 @@ def _get_postgres_indexes():
   group_id = RoleAssignment.group_id
   obj = RoleAssignment.object_id
   anonymous = RoleAssignment.anonymous
+  name = 'roleassignment_idx_{}_unique'.format
 
   return [
-    Index('roleassignment_idx_user_role_unique', user_id, role, unique=True,
+    Index(name('user_role'), user_id, role, unique=True,
           postgresql_where=(anonymous == False) & (group_id == None) & (obj == None)
           ),
-    Index('roleassignment_idx_group_role_unique', group_id, role, unique=True,
+    Index(name('group_role'), group_id, role, unique=True,
           postgresql_where=(anonymous == False) & (user_id == None) & (obj == None)
         ),
-    Index('roleassignment_idx_anonymous_role_unique', role, unique=True,
+    Index(name('anonymous_role'), role, unique=True,
           postgresql_where=((anonymous == True)
                             & (user_id == None) & (group_id == None) & (obj == None))
           ),
-    Index('roleassignment_idx_user_role_object_unique', user_id, role, obj,
+    Index(name('user_role_object'), user_id, role, obj,
           unique=True,
           postgresql_where=(anonymous == False) & (group_id == None) & (obj != None)
         ),
-    Index('roleassignment_idx_group_role_object_unique', group_id, role, obj,
+    Index(name('group_role_object'), group_id, role, obj,
           unique=True,
           postgresql_where=(anonymous == False) & (user_id == None) & (obj != None)
         ),
-    Index('roleassignment_idx_anonymous_role_object_unique', role, obj, unique=True,
+    Index(name('anonymous_role_object'), role, obj, unique=True,
           postgresql_where=((anonymous == True)
                             & (user_id == None) & (group_id == None) & (obj != None))
           ),
@@ -132,6 +133,7 @@ def _get_postgres_indexes():
 _pg_indexes = []
 
 
+@listens_for(RoleAssignment.__table__, "after_create")
 def _create_postgres_indexes(target, connection, **kw):
   if connection.engine.name != 'postgresql':
     return
@@ -143,17 +145,14 @@ def _create_postgres_indexes(target, connection, **kw):
     for idx in _pg_indexes:
       idx.create(connection)
 
-listen(RoleAssignment.__table__, "after_create", _create_postgres_indexes)
 
-
+@listens_for(RoleAssignment.__table__, "before_drop")
 def _drop_postgres_indexes(target, connection, **kw):
   if connection.engine.name != 'postgresql':
     return
 
   for idx in _pg_indexes:
     idx.drop(connection)
-
-listen(RoleAssignment.__table__, "before_drop", _drop_postgres_indexes)
 
 
 class SecurityAudit(db.Model):
