@@ -31,9 +31,25 @@ __all__ = ['get_extension', 'db', 'babel', 'mail', 'celery', 'login_manager']
 # (i.e. celery.config_from_object, etc)
 from .celery import celery
 
+from flask import current_app
+
 # Standard extensions.
-from flask.ext.mail import Mail
-mail = Mail()
+import flask.ext.mail as flask_mail
+
+# patch flask.ext.mail.Message.send to always set enveloppe_from default mail
+# sender
+def _message_send(self, connection):
+  sender = current_app.config['MAIL_SENDER']
+  enveloppe_from = current_app.config['MAIL_SENDER']
+  if not self.extra_headers:
+    self.extra_headers = {}
+  self.extra_headers['Sender'] = sender
+  connection.send(self, sender)
+
+flask_mail.Message.send = _message_send
+
+mail = flask_mail.Mail()
+del flask_mail
 
 import sqlalchemy as sa
 from flask.ext.sqlalchemy import SQLAlchemy
