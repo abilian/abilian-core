@@ -1,6 +1,8 @@
+/* jshint camelcase: false */
 // Tweaks for integrating datatables + bootstrap
 /* Default class modification */
 (function($) {
+    'use strict';
      $.extend($.fn.dataTableExt.oStdClasses, {
        "sWrapper": "dataTables_wrapper form-inline"
      });

@@ -1,7 +1,9 @@
+/* jshint camelcase: false */
 (function($, api) {
-/**
- * File input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
- */
+    'use strict';
+    /**
+     * File input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
+     */
     var file_item_template = Hogan.compile(
         '<li class="file-item well well-sm">{{ name }} ({{ size }}) '
         + '<a class="close" href="#">&times;</a>'

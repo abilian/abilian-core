@@ -1,4 +1,6 @@
+/* jshint camelcase: false */
 (function($) {
+    'use strict';
      /**
       * For form inputs: disable form submission on 'enter' key
       * We put this function in jQuery.fn so that it is callable on any $()
@@ -82,7 +84,7 @@
      };
 
      function initLiveSearch() {
-         var datasets = []
+         var datasets = [];
 
          $(Abilian.api.search.object_types).each(
              function(idx, info) {

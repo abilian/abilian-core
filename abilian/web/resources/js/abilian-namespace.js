@@ -1,6 +1,8 @@
 /* Abilian namespace */
-(function(Abilian, $) {
+/* jshint camelcase: false */
 
+(function(Abilian, $) {
+    'use strict';
      /**
       * @define {?boolean} null if not set, false or true if explicitely set by
       * application. This variable should be set as soon as possible.

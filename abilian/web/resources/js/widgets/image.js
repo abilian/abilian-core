@@ -1,7 +1,9 @@
+/* jshint camelcase: false */
 (function($) {
-/** 
- * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
- */
+    'use strict';
+    /** 
+     * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
+     */
     function ImageInput(node, options) {
         var self = this;
         self.root_node = node;
