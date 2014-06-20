@@ -15,7 +15,8 @@ from abilian.core.extensions import db
 
 
 __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
-           'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager']
+           'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
+           'RoleType']
 
 
 class RoleSingleton(type):
