@@ -16,7 +16,7 @@ Babel >= 1.3
 Flask-Babel>=0.9
 Flask-Assets
 #Flask-Mail
-git+https://github.com/mattupstate/flask-mail.git@b8ab0858f86bbb215f5b8a11c843b71bcb8ab3b5#egg=Flask-Mail
+https://github.com/mattupstate/flask-mail/archive/b8ab0858f86bbb215f5b8a11c843b71bcb8ab3b5.zip#egg=Flask-Mail
 
 
 # pathlib is included in python 3.4, and very useful
