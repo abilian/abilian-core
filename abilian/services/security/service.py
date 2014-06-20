@@ -24,7 +24,7 @@ from abilian.core.extensions import db
 from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
-  SecurityAudit, RoleAssignment, Anonymous,
+  SecurityAudit, RoleAssignment, Anonymous, Admin, Manager,
   InheritSecurity, Role
 )
 
@@ -142,13 +142,13 @@ class SecurityService(Service):
                      object=None):
     """ Return all users which are assigned given role
     """
-    assert isinstance(role, basestring)
-    role = role.strip()
+    if not isinstance(role, Role):
+      role = Role(role)
     assert role
     assert (users or groups)
     q = RoleAssignment.query.filter_by(role=role)
 
-    if not Anonymous:
+    if not anonymous:
       q = q.filter(RoleAssignment.anonymous == False)
     if not users:
       q = q.filter(RoleAssignment.user == None)
@@ -180,7 +180,7 @@ class SecurityService(Service):
         object_key = None
       else:
         object_key = u'{}:{}'.format(object_type, object_id)
-      all_roles.setdefault(object_key, set()).add(str(role))
+      all_roles.setdefault(object_key, set()).add(role)
 
     return all_roles
 
@@ -252,7 +252,7 @@ class SecurityService(Service):
         all_roles = ra_groups.setdefault(ra.group, {})
 
       object_key = u'{}:{:d}'.format(ra.object.entity_type, ra.object_id)
-      all_roles.setdefault(object_key, set()).add(str(ra.role))
+      all_roles.setdefault(object_key, set()).add(ra.role)
 
     for group, all_roles in ra_groups.iteritems():
       self._set_role_cache(group, all_roles)
@@ -271,9 +271,9 @@ class SecurityService(Service):
     True if `principal` has `role` (either globally, if `object` is None, or on
     the specific `object`).
 
-    :param:role:  can be a list or tuple of strings
+    :param:role:  can be a list or tuple of strings or a :class:`Role` instance
 
-    `object` can be an Entity, a string, or `None`.
+    `object` can be an :class:`Entity`, a string, or `None`.
 
     Note: we're using a cache for efficiency here. TODO: check that we're not
     over-caching.
@@ -298,7 +298,7 @@ class SecurityService(Service):
     # admin & manager always have role
     if isinstance(role, (Role, basestring)):
       role = (role,)
-    valid_roles = frozenset(('admin', 'manager') + tuple(role))
+    valid_roles = frozenset((Admin, Manager) + tuple(role))
 
     if object:
       assert isinstance(object, Entity)
@@ -309,7 +309,7 @@ class SecurityService(Service):
     if self.app_state.use_cache:
       cache = self._fill_role_cache(principal)
 
-      if 'admin' in cache.get(None, ()):
+      if Admin in cache.get(None, ()):
         # user is a global admin
         return True
 
@@ -320,7 +320,7 @@ class SecurityService(Service):
 
     all_roles = self._all_roles(principal)
 
-    if 'admin' in all_roles.get(None, ()):
+    if Admin in all_roles.get(None, ()):
       # user is a global admin
       return True
 
@@ -447,13 +447,13 @@ class SecurityService(Service):
     if isinstance(user, User) and user.id == 0:
       return True
 
-    roles = ['manager', 'admin']  # have 'manage' permission
+    roles = [Manager, Admin]  # have 'manage' permission
 
     if permission in ('read', 'write'):
-      roles.append('writer')
+      roles.append(Role('writer'))
 
     if permission == 'read':
-      roles.append('reader')
+      roles.append(Role('reader'))
 
     checked_objs = [obj]
 

@@ -15,7 +15,7 @@ from abilian.core.extensions import db
 
 
 __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
-           'Role', 'Anonymous', 'Authenticated', 'Admin']
+           'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager']
 
 
 class RoleSingleton(type):
@@ -29,7 +29,8 @@ class RoleSingleton(type):
       return role
 
     if role not in cls._instances:
-      cls._instances[role] = type.__call__(cls, role, *args, **kwargs)
+      role_instance = type.__call__(cls, role, *args, **kwargs)
+      cls._instances[role_instance.role] = role_instance
     return cls._instances[role]
 
 
@@ -40,7 +41,11 @@ class Role(object):
   __metaclass__ = RoleSingleton
 
   def __init__(self, role):
-    self.role = unicode(role).lower()
+    self.__role = unicode(role).strip().lower()
+
+  @property
+  def role(self):
+    return self.__role
 
   def __repr__(self):
     return 'Role(u"{}")'.format(self.role.encode('utf-8'))
@@ -53,6 +58,9 @@ class Role(object):
 
   def __eq__(self, other):
     return self.role == unicode(other)
+
+  def __hash__(self):
+    return hash(self.__role)
 
 
 class RoleType(TypeDecorator):
@@ -87,6 +95,8 @@ Authenticated = Role('authenticated')
 
 #: marker for `Admin` role
 Admin = Role('admin')
+
+Manager = Role('manager')
 
 class RoleAssignment(db.Model):
   __tablename__ = "roleassignment"
