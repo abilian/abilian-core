@@ -144,7 +144,7 @@ def forgotten_pw(new_user=False):
 
   action = request.form.get('action')
   if action == "cancel":
-    return redirect(url_for(".login_form"))
+    return redirect(url_for("login.login_form"))
 
   if not email:
     flash(_(u"You must provide your email address."), 'error')
@@ -165,7 +165,7 @@ def forgotten_pw(new_user=False):
   flash(_("Password reset instructions have been sent to your email address."),
         'info')
 
-  return redirect(url_for(".login_form"))
+  return redirect(url_for("login.login_form"))
 
 
 @route("/reset_password/<token>")
@@ -176,7 +176,7 @@ def reset_password(token):
   elif expired:
     flash(_(u"Password reset expired"), "error")
   if invalid or expired:
-    return redirect(url_for('.forgotten_pw'))
+    return redirect(url_for('login.forgotten_pw'))
 
   return render_template("login/password_reset.html")
 
@@ -195,27 +195,27 @@ def reset_password_post(token):
   elif expired:
     flash(_(u"Password reset expired"), "error")
   if invalid or expired or not user:
-    return redirect(url_for('.forgotten_pw'))
+    return redirect(url_for('login.forgotten_pw'))
 
   password = request.form.get('password')
 
   if not password:
     flash(_(u"You must provide a password."), "error")
-    return redirect(url_for(".reset_password_post", token=token))
+    return redirect(url_for("login.reset_password_post", token=token))
 
   # TODO: check entropy
   if len(password) < 7:
     flash(_(u"Your new password must be at least 8 characters long"), "error")
-    return redirect(url_for(".reset_password_post", token=token))
+    return redirect(url_for("login.reset_password_post", token=token))
 
   if password.lower() == password:
     flash(_(u"Your new password must contain upper case and lower case "
             "letters"), "error")
-    return redirect(url_for(".reset_password_post", token=token))
+    return redirect(url_for("login.reset_password_post", token=token))
 
   if not len([x for x in password if x.isdigit()]) > 0:
     flash(_(u"Your new password must contain at least one digit"), "error")
-    return redirect(url_for(".reset_password_post", token=token))
+    return redirect(url_for("login.reset_password_post", token=token))
 
   user.set_password(password)
   db.session.commit()
@@ -223,7 +223,7 @@ def reset_password_post(token):
   flash(_(u"Your password has been reset. You can now login with your new password"),
         "info")
 
-  return redirect(url_for(".login_form", next_url=request.url_root))
+  return redirect(url_for("login.login_form", next_url=request.url_root))
 
 
 def random_password():
@@ -246,7 +246,7 @@ def send_reset_password_instructions(user):
   :param user: The user to send the instructions to
   """
   token = generate_reset_password_token(user)
-  url = url_for('.reset_password', token=token)
+  url = url_for('login.reset_password', token=token)
   reset_link = request.url_root[:-1] + url
 
   subject = _(u"Password reset instruction for {site_name}"
