@@ -4,7 +4,7 @@
 {% from "macros/form.html" import m_field %}
 
 {% block content %}
-  {% call m_box_content(_("Community email digests")) %}
+  {% call m_box_content(title) %}
 
   <form method="post" action="{{ url_for("preferences.user") }}" role="form" enctype="multipart/form-data">
     {{ csrf.field() }}

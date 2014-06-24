@@ -93,7 +93,7 @@ class UserPreferencesPanel(PreferencePanel):
       data['photo'] = photo
 
     form = UserPreferencesForm(formdata=None, prefix=self.id, **data)
-    return render_template('preferences/user.html', form=form)
+    return render_template('preferences/user.html', form=form, title=self.label)
 
   @csrf.protect
   def post(self):
