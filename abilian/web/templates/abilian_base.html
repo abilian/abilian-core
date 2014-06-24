@@ -102,9 +102,8 @@
 <script type="text/javascript">
  {% deferredJS %}{% enddeferredJS %}
 
- {%- if inline_js %}
-   {{ inline_js }}
- {%- endif %}
+ {% block inline_js %}
+ {% endblock %}
 </script>
 
 </body>
