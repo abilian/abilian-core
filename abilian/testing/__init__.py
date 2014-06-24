@@ -32,6 +32,7 @@ class TestConfig(object):
   The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
   test against different databases.
   """
+  SITE_NAME = u'Abilian Test'
   SQLALCHEMY_DATABASE_URI = "sqlite://"
   SQLALCHEMY_ECHO = False
   TESTING = True
@@ -41,6 +42,8 @@ class TestConfig(object):
 
   CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
   CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+
+  MAIL_SENDER = 'test@testcase.app.tld'
 
   BABEL_DEFAULT_LOCALE = 'en'
 
