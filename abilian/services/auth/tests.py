@@ -48,3 +48,24 @@ class TestAuth(BaseTestCase):
 
     rv = self.client.post('/user/api/logout')
     self.assertEquals(rv.status_code, 200, "expected 200, got:" + rv.status)
+
+  def test_forgotten_pw(self):
+    mail = self.app.extensions['mail']
+    kwargs = dict(email=u'user@domain.tld', password='azerty', can_login=True)
+    u = User(**kwargs)
+    self.session.add(u)
+    self.session.commit()
+
+    payload = dict()
+    payload.update(kwargs)
+    del payload['password']
+
+    with mail.record_messages() as outbox:
+      rv = self.client.post('/user/forgotten_pw', data=kwargs)
+      self.assertEquals(rv.status_code, 302, "expected 302, got:" + rv.status)
+      self.assertEquals(len(outbox), 1)
+      msg = outbox[0]
+      self.assertEquals(msg.subject,
+                        u'Password reset instruction for Abilian Test')
+      self.assertEquals(msg.recipients, [u'user@domain.tld'])
+      self.assertEquals(msg.cc, [])

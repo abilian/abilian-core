@@ -150,7 +150,7 @@ def forgotten_pw(new_user=False):
     return render_template("login/forgotten_password.html")
 
   try:
-    user = User.query.filter(User.email == email, User.can_login is True).one()
+    user = User.query.filter(User.email == email, User.can_login == True).one()
   except NoResultFound:
     flash(_(u"Sorry, we couldn't find an account for "
             "email '{email}'.").format(email=email), 'error')
