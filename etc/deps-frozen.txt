@@ -18,7 +18,8 @@ Flask-Babel==0.9
 Flask-DebugToolbar==0.9.0
 Flask-LinkTester==0.2.1
 Flask-Login==0.2.3
-Flask-Mail==0.8.2
+#Flask-Mail==0.8.2
+https://github.com/mattupstate/flask-mail/archive/b8ab0858f86bbb215f5b8a11c843b71bcb8ab3b5.zip#egg=Flask-Mail==0.9.0
 Flask-Migrate==1.1.0
 Flask-Principal==0.4.0
 Flask-Security==1.6.9
