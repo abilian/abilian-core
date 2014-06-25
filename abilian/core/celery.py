@@ -31,8 +31,14 @@ class FlaskLoader(BaseLoader):
   def flask_app(self):
     if self._flask_app is None:
       self.flask_app_factory = symbol_by_name(self.flask_app_factory)
-      self._flask_app = self.flask_app_factory()
-      self.app_context = self.flask_app.app_context()
+      app = self._flask_app = self.flask_app_factory()
+      self.app_context = app.app_context()
+
+      if 'sentry' in app.extensions:
+        from raven.contrib.celery import register_signal, register_logger_signal
+        client = app.extensions['sentry'].client
+        register_signal(client)
+        register_logger_signal(client)
 
     return self._flask_app
 
