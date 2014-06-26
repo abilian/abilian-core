@@ -197,21 +197,22 @@ class TestSessionRepository(BaseTestCase):
 
     self.assertIs(self.svc.get(session, self.UUID), None)
     self.assertIsNot(repository.get(self.UUID), None)
-    self.session.commit()
+    session.commit()
     self.assertIs(repository.get(self.UUID), None)
 
     # now test 'set'
     self.svc.set(session, self.UUID, b'new content')
-    self.session.commit()
+    session.commit()
     self.assertIsNot(repository.get(self.UUID), None)
 
     # test "set" in two nested transactions. This tests a specific code branch,
     # when a subtranscation overwrite data set in parent transaction
-    with self.session.begin(nested=True):
+    with session.begin(nested=True):
       self.svc.set(session, self.UUID, b'transaction 1')
 
-      with self.session.begin(nested=True):
+      with session.begin(nested=True):
         self.svc.set(session, self.UUID, b'transaction 2')
 
-      self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(),
-                        b'transaction 2')
+      self.assertEquals(
+          self.svc.get(session, self.UUID).open('rb').read(),
+          b'transaction 2')
