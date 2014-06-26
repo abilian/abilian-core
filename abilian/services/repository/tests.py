@@ -114,12 +114,21 @@ class TestSessionRepository(BaseTestCase):
     self.assertTrue(isinstance(root_transaction, RepositoryTransaction))
     self.assertIs(root_transaction._parent, None)
 
-    # create sub-transaction
+    # create sub-transaction (db savepoint)
     self.session.begin(nested=True)
     transaction = state.get_transaction(self.session)
     self.assertTrue(isinstance(transaction, RepositoryTransaction))
     self.assertIs(transaction._parent, root_transaction)
 
+    self.session.commit()
+    transaction = state.get_transaction(self.session)
+    self.assertIs(transaction, root_transaction)
+
+    # create subtransaction (sqlalchemy)
+    self.session.begin(subtransactions=True)
+    transaction = state.get_transaction(self.session)
+    self.assertTrue(isinstance(transaction, RepositoryTransaction))
+    self.assertIs(transaction._parent, root_transaction)
     self.session.commit()
     transaction = state.get_transaction(self.session)
     self.assertIs(transaction, root_transaction)
@@ -163,6 +172,7 @@ class TestSessionRepository(BaseTestCase):
 
     self.svc.set(session, self.UUID, b'new content')
 
+    # test nested (savepoint)
     # delete content but rollback transaction
     db_tr = session.begin(nested=True)
     self.svc.delete(session, self.UUID)
@@ -181,13 +191,32 @@ class TestSessionRepository(BaseTestCase):
     session.commit()
     self.assertIs(repository.get(self.UUID), None)
 
+    # delete: now test subtransactions (sqlalchemy)
+    repository.set(self.UUID, b'first draft')
+    db_tr = session.begin(subtransactions=True)
+    self.svc.delete(session, self.UUID)
+    self.assertIs(self.svc.get(session, self.UUID), None)
+    db_tr.rollback()
+    self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(),
+                      b'first draft')
+    session.rollback()
+
+    with session.begin(subtransactions=True) as tr:
+      self.svc.delete(session, self.UUID)
+      self.assertIs(self.svc.get(session, self.UUID), None)
+
+    self.assertIs(self.svc.get(session, self.UUID), None)
+    self.assertIsNot(repository.get(self.UUID), None)
+    session.commit()
+    self.assertIs(repository.get(self.UUID), None)
+
     # now test 'set'
     self.svc.set(session, self.UUID, b'new content')
     session.commit()
     self.assertIsNot(repository.get(self.UUID), None)
 
     # test "set" in two nested transactions. This tests a specific code branch,
-    # when a subtranscation overwrite data set in parent transaction
+    # when a subtransaction overwrite data set in parent transaction
     with session.begin(nested=True):
       self.svc.set(session, self.UUID, b'transaction 1')
 

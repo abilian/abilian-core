@@ -198,6 +198,9 @@ class SessionRepositoryState(ServiceState):
 
     tr = self.get_transaction(session)
     if tr is not None:
+      if not tr.cleared:
+        # root and nested transactions emit "commit", but subtransactions don't
+        tr.commit(session)
       self.set_transaction(session, tr._parent)
 
   def begin(self, session):
