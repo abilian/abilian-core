@@ -3,9 +3,11 @@
 """
 from __future__ import absolute_import
 
+import logging
 from functools import wraps
 
 from flask import current_app
+from abilian.core.util import fqcn
 
 class ServiceNotRegistered(Exception):
   pass
@@ -23,6 +25,7 @@ class ServiceState(object):
   def __init__(self, service, running=False):
     self.service = service
     self.running = running
+    self.logger = logging.getLogger(fqcn(self.__class__))
 
 
 class Service(object):
@@ -36,6 +39,7 @@ class Service(object):
   name = None
 
   def __init__(self, app=None):
+    self.logger = logging.getLogger(fqcn(self.__class__))
     if app:
       self.init_app(app)
 
@@ -47,12 +51,14 @@ class Service(object):
     """
     Starts the service.
     """
+    self.logger.debug('Start service')
     self._toggle_running(True, ignore_state)
 
   def stop(self, ignore_state=False):
     """
     Stops the service.
     """
+    self.logger.debug('Stop service')
     self._toggle_running(False, ignore_state)
 
   def _toggle_running(self, run_state, ignore_state=False):
