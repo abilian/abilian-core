@@ -366,6 +366,10 @@ class Application(Flask, ServiceManager, PluginManager):
             'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel'
           )
         init_dbt(self)
+        for view_name in self.view_functions:
+          if view_name.startswith('debugtoolbar.'):
+            extensions.csrf.exempt(self.view_functions[view_name])
+
 
 
   def init_extensions(self):
