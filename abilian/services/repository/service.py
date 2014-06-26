@@ -25,8 +25,6 @@ except ImportError:
 
 from abilian.services import Service, ServiceState
 
-log = logging.getLogger(__name__)
-
 _NULL_MARK = object()
 
 def _assert_uuid(uuid):
