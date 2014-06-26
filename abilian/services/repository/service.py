@@ -192,10 +192,6 @@ class SessionRepositoryState(ServiceState):
     s_id = id(session)
     self.transactions[s_id] = (weakref.ref(session), transaction)
 
-  # transaction management
-  # def clear_transaction(self, app=None, exc=None):
-  #   self.transactions = {}
-
   def create_transaction(self, session, transaction):
     if not self.running:
       return
@@ -212,6 +208,17 @@ class SessionRepositoryState(ServiceState):
     tr = self.get_transaction(session)
     if tr is not None:
       self.set_transaction(session, tr._parent)
+
+  def begin(self, session):
+    if not self.running:
+      return
+
+    tr = self.get_transaction(session)
+    if tr is None:
+      # FIXME: return or create a new one?
+      return
+
+    return tr.begin(session)
 
 
   def commit(self, session):
@@ -270,6 +277,7 @@ class SessionRepositoryService(Service):
       listen = sa.event.listen
       listen(Session, "after_transaction_create", self.create_transaction)
       listen(Session, "after_transaction_end", self.end_transaction)
+      listen(Session, "after_begin", self.begin)
       listen(Session, "after_commit", self.commit)
       listen(Session, "after_flush", self.flush)
       listen(Session, "after_rollback", self.rollback)
@@ -335,6 +343,9 @@ class SessionRepositoryService(Service):
   def end_transaction(self, session, transaction):
     return self.app_state.end_transaction(session, transaction)
 
+  def begin(self, session, transaction, connection):
+    return self.app_state.begin(session)
+
   def commit(self, session):
     return self.app_state.commit(session)
 
@@ -352,8 +363,6 @@ class RepositoryTransaction(object):
 
   def __init__(self, root_path, parent=None):
     self.path = root_path / str(uuid1())
-    self.path.mkdir(0700)
-
     # if parent is not None and parent.cleared:
     #   parent = None
 
@@ -367,11 +376,13 @@ class RepositoryTransaction(object):
     return self.__cleared
 
   def __del__(self):
-    self._clear()
+    if not self.cleared:
+      self._clear()
 
   def _clear(self):
     if self.__cleared:
       return
+
     # make sure transaction is not usable anymore
     if self.path.exists():
       shutil.rmtree(str(self.path))
@@ -380,6 +391,10 @@ class RepositoryTransaction(object):
     del self._deleted
     del self._set
     self.__cleared = True
+
+  def begin(self, session=None):
+    if not self.path.exists():
+      self.path.mkdir(0700)
 
   def rollback(self, session=None):
     self._clear()
@@ -422,6 +437,10 @@ class RepositoryTransaction(object):
 
     p._set |= self._set
     p._set -= self._deleted
+
+    if self._set:
+      p.begin() # ensure p.path exists
+
     for uuid in self._set:
       content_path = self.path / str(uuid)
       # content_path.replace is not available with python < 3.3.
@@ -442,6 +461,7 @@ class RepositoryTransaction(object):
     self._add_to(uuid, self._deleted, self._set)
 
   def set(self, uuid, content, encoding='utf-8'):
+    self.begin()
     self._add_to(uuid, self._set, self._deleted)
 
     mode = 'tw'

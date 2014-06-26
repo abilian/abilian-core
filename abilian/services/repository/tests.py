@@ -216,3 +216,23 @@ class TestSessionRepository(BaseTestCase):
       self.assertEquals(
           self.svc.get(session, self.UUID).open('rb').read(),
           b'transaction 2')
+
+  def test_transaction_path(self):
+    """
+    Test RepositoryTransaction create storage only when needed
+    """
+    session = self.session
+    state = self.svc.app_state
+    root_transaction = state.get_transaction(self.session)
+
+    self.assertFalse(root_transaction.path.exists())
+
+    with session.begin(subtransactions=True):
+      transaction = state.get_transaction(self.session)
+      self.assertFalse(transaction.path.exists())
+      self.svc.set(session, self.UUID, b'my file content')
+      self.assertTrue(transaction.path.exists())
+
+    self.assertTrue(root_transaction.path.exists())
+    self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(), b'my file content')
+    self.assertTrue(root_transaction.path.exists())
