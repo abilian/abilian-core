@@ -2,6 +2,9 @@
 """ Data types for sqlalchemy
 """
 from __future__ import absolute_import
+
+import sys
+import logging
 from distutils.version import StrictVersion
 import pkg_resources
 from functools import partial
@@ -11,6 +14,8 @@ import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
 
 from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
+
+logger = logging.getLogger(__name__)
 
 FLASK_SA_VERSION = pkg_resources.get_distribution('Flask-SQLAlchemy').version
 
@@ -68,10 +73,47 @@ else:
 
 del FLASK_SA_VERSION
 
+# PATCH flask_sqlalchemy for proper info in debug toolbar.
+#
+# Original code works only when current app code is involved. If using 3rd party
+# app the query is logged but source is marked "unknown". Our patch is a "best
+# guess".
+def _calling_context(app_path):
+  frm = sys._getframe(1)
+  entered_sa_code = exited_sa_code = False
+  sa_caller = '<unknown>'
+  format_name = ('{frm.f_code.co_filename}:{frm.f_lineno} '
+                 '({frm.f_code.co_name})'.format)
+
+  while frm.f_back is not None:
+    name = frm.f_globals.get('__name__')
+    if name and (name == app_path or name.startswith(app_path + '.')):
+      return format_name(frm=frm)
+
+    if not exited_sa_code:
+      in_sa_code = (name == 'sqlalchemy' or name.startswith('sqlalchemy.'))
+      if not entered_sa_code:
+        entered_sa_code = in_sa_code
+      elif not in_sa_code:
+        # exited from sa stack: retain name
+        sa_caller = format_name(frm=frm)
+        exited_sa_code = True
+
+    frm = frm.f_back
+
+  return sa_caller
+
+import flask.ext.sqlalchemy as flask_sa
+logger.info('PATCH flask.ext.sqlalchemy._calling_context')
+flask_sa._calling_context = _calling_context
+del flask_sa
+## END PATCH
+
 
 def filter_cols(model, *filtered_columns):
-  """ Return columnsnames for a model except named ones. Useful for defer() for
-  example to retain only columns of interest
+  """
+  Return columnsnames for a model except named ones. Useful for defer()
+  for example to retain only columns of interest
   """
   m = sa.orm.class_mapper(model)
   return list(set(p.key for p in m.iterate_properties
@@ -80,8 +122,7 @@ def filter_cols(model, *filtered_columns):
 
 
 class MutationDict(Mutable, dict):
-  """ Provides a dictionary type with mutability support.
-  """
+  """Provides a dictionary type with mutability support."""
   @classmethod
   def coerce(cls, key, value):
     """Convert plain dictionaries to MutationDict."""
