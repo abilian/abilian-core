@@ -26,7 +26,8 @@ logger = logging.getLogger(__name__)
 def _default_from(column):
   """ Helper for default and onupdates parameters in a Column definitions.
 
-  Returns a `context-sensitive default function <http://docs.sqlalchemy.org/en/rel_0_8/core/defaults.html#context-sensitive-default-functions>`_ to set value from another column
+  Returns a `context-sensitive default function <http://docs.sqlalchemy.org/en/rel_0_8/core/defaults.html#context-sensitive-default-functions>`_
+  to set value from another column.
   """
   def _default_value(context):
     return context.current_parameters[column]
