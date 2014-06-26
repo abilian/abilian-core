@@ -16,8 +16,6 @@ from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
 
-log = logging.getLogger(__name__)
-
 _NULL_MARK = object()
 
 def _assert_uuid(uuid):
