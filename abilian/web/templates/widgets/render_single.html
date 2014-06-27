@@ -1,4 +1,4 @@
-<a class="btn" href="{{ request.path }}/edit"><i class="icon-edit"></i>{{ _("Edit") }}</a>
+<a class="btn btn-default" href="{{ request.path }}/edit"><i class="icon-edit"></i>{{ _("Edit") }}</a>
 {%- if view.options.allow_delete is defined and view.options.allow_delete() %}
 <a class="btn btn-danger" id="delete-button"><i class="icon-trash icon-white"></i>{{ _("Delete") }}</a>
 
