@@ -32,7 +32,7 @@ from flask.ext.login import current_user
 from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
-from abilian.services.security import Role, Anonymous, Authenticated
+from abilian.services.security import Role, Anonymous, Authenticated, security
 from abilian.core.models.subjects import User, Group
 from abilian.core.util import fqcn, friendly_fqcn
 from abilian.core.entities import Indexable
@@ -221,6 +221,7 @@ class WhooshIndexService(Service):
         roles.append(indexable_role(Anonymous))
         roles.append(indexable_role(Authenticated))
         roles.extend([indexable_role(group) for group in user.groups])
+        roles.extend([indexable_role(r) for r in security.get_roles(user)])
 
       filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
                         for role in roles])
