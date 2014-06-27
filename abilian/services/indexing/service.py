@@ -225,7 +225,7 @@ class WhooshIndexService(Service):
       filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
                         for role in roles])
       if 'filter' in search_args:
-        filter_q = wq.And(search_args['filter'], filter_q)
+        filter_q = wq.And([search_args['filter'], filter_q])
       search_args['filter'] = filter_q
 
     object_types = set(object_types)
@@ -245,7 +245,7 @@ class WhooshIndexService(Service):
     filter_q = wq.Or([wq.Term('object_type', t) for t in object_types])
 
     if 'filter' in search_args:
-      filter_q = wq.And(search_args['filter'], filter_q)
+      filter_q = wq.And([search_args['filter'], filter_q])
     search_args['filter'] = filter_q
 
     if facet_by_type:
