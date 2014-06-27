@@ -37,7 +37,7 @@ class IndexedTermsDebugPanel(DebugPanel):
     """Subtitle showing until title in toolbar"""
     obj = self.current_obj
     if not obj:
-      return u''
+      return _(u'No current object')
 
     try:
       return u'{}(id={})'.format(obj.__class__.__name__, obj.id)
@@ -88,4 +88,3 @@ class IndexedTermsDebugPanel(DebugPanel):
       'debug_panels/indexing_panel.html'
     )
     return template.render(context)
-
