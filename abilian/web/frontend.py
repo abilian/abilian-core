@@ -31,6 +31,7 @@ from abilian.core.extensions import db
 from abilian.services import audit_service
 
 from . import search
+from .action import actions
 from .nav import BreadcrumbItem, Endpoint
 from .decorators import templated
 from .views import default_view
@@ -456,6 +457,7 @@ class Module(object):
     if entity is None:
       abort(404)
 
+    actions.context['object'] = entity
     add_to_recent_items(entity)
     self._add_entity_breadcrumb(entity)
 
