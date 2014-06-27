@@ -16,7 +16,7 @@
 
           {% set body = entry.body() %}
           {% if body %}
-            <span class="body">"<a href="{{ entry.object_url }}">{{ body }}"</a></span>
+            <span class="body">"<a href="{{ entry.object_url |safe }}">{{ body }}"</a></span>
           {% endif %}
         </div>
       </li>
