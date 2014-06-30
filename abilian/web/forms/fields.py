@@ -20,8 +20,12 @@ from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 
 from flask.ext.wtf.file import FileField as BaseFileField
-from flask.ext.babel import get_locale, format_date, format_datetime
+from flask.ext.babel import (
+  get_locale, get_timezone,
+  format_date, format_datetime
+  )
 
+from abilian.core.util import utc_dt
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
 
@@ -78,7 +82,13 @@ class DateTimeField(Field):
     if self.raw_data:
       return ' '.join(self.raw_data)
     else:
-      return format_datetime(self.data) if self.data else ''
+      locale = get_locale()
+      date_fmt = locale.date_formats['short'].pattern
+      date_fmt = date_fmt.replace('MMMM', 'MM')\
+                         .replace('MMM', 'MM')  # force numerical months
+      time_fmt = locale.time_formats['short']
+      dt_fmt = locale.datetime_formats['short'].format(time_fmt, date_fmt)
+      return format_datetime(self.data, dt_fmt) if self.data else ''
 
   def process_formdata(self, valuelist):
     if valuelist:
@@ -86,7 +96,8 @@ class DateTimeField(Field):
       locale = get_locale()
       date_fmt = locale.date_formats['short']
       date_fmt = babel2datetime(date_fmt)
-      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m')  # force numerical months
+      date_fmt = date_fmt.replace('%B', '%m')\
+                         .replace('%b', '%m')  # force numerical months
 
       time_fmt = locale.time_formats['short']
       time_fmt = babel2datetime(time_fmt)
@@ -94,6 +105,8 @@ class DateTimeField(Field):
       datetime_fmt = u'{} | {}'.format(date_fmt, time_fmt)
       try:
         self.data = datetime.datetime.strptime(date_str, datetime_fmt)
+        if not self.data.tzinfo:
+          self.data = utc_dt(get_timezone().localize(self.data))
       except ValueError:
         self.data = None
         raise ValueError(self.gettext('Not a valid datetime value'))
@@ -112,14 +125,18 @@ class DateField(DateTimeField):
     if self.raw_data:
       return ' '.join(self.raw_data)
     else:
-      return format_date(self.data) if self.data else ''
+      date_fmt = get_locale().date_formats['short'].pattern
+      date_fmt = date_fmt.replace('MMMM', 'MM')\
+                         .replace('MMM', 'MM')  # force numerical months
+      return format_date(self.data, date_fmt) if self.data else ''
 
   def process_formdata(self, valuelist):
     if valuelist:
       date_str = ' '.join(valuelist)
       date_fmt = get_locale().date_formats['short']
       date_fmt = babel2datetime(date_fmt)
-      date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m')  # force numerical months
+      date_fmt = date_fmt.replace('%B', '%m')\
+                         .replace('%b', '%m')  # force numerical months
 
       try:
         self.data = datetime.datetime.strptime(date_str, date_fmt).date()

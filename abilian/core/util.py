@@ -49,7 +49,7 @@ def local_dt(dt):
   datetime. Naive datetime are assumed to be in UTC TZ.
   """
   if not dt.tzinfo:
-    dt = dt.replace(tzinfo=pytz.utc)
+    dt = pytz.utc.localize(dt)
   return dt.astimezone(LOCALTZ)
 
 
@@ -58,7 +58,7 @@ def utc_dt(dt):
   in UTC TZ
   """
   if not dt.tzinfo:
-    return dt.replace(tzinfo=pytz.utc)
+    return pytz.utc.localize(dt)
   return dt.astimezone(pytz.utc)
 
 
