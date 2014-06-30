@@ -1,8 +1,12 @@
 import operator
 from functools import partial
 
-from wtforms import ValidationError, SelectMultipleField, SelectField, \
-  DateField, SelectFieldBase, FormField, DateTimeField
+from wtforms import (
+  ValidationError, SelectMultipleField, SelectField,
+  SelectFieldBase, FormField,
+  DateField as BaseDateField,
+  DateTimeField as BaseDateTimeField
+  )
 from wtforms.compat import string_types, text_type
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
@@ -51,16 +55,43 @@ class FileField(BaseFileField):
     return BaseFileField.__call__(self, **kwargs)
 
 
-class DateTimeField(DateTimeField):
+class _Fix_DTField(object):
+  """
+  Mixin to fix _value of wtforms DateFields: datetime.strftime doesn't work with
+  year < 1900
+  """
+  def _fix_format(self):
+    if hasattr(self, '_strf_format'):
+      return
+
+    self._strf_format = self.format.replace('%Y', '{year:d}')\
+                                   .replace('%y', '{short_year:d}')
+
+  def _value(self):
+    if self.raw_data:
+      return ' '.join(self.raw_data)
+    else:
+      formatted = u''
+      if self.data:
+        dt = self.data.replace(year=2010) # use dummy year > 1900
+        formatted = dt.strftime(self._strf_format)\
+                      .format(year=self.data.year,
+                              short_year=self.data.year % 100)
+
+      return formatted or u''
+
+
+class DateTimeField(_Fix_DTField, BaseDateTimeField):
   """
   """
   widget = DateTimeInput()
 
   def __init__(self, label=None, validators=None, format='%d/%m/%Y %H:%M', **kwargs):
     super(DateTimeField, self).__init__(label, validators, format=format, **kwargs)
+    self._fix_format()
 
 
-class DateField(DateField):
+class DateField(_Fix_DTField, BaseDateField):
   """
   A text field which stores a `datetime.datetime` matching a format.
   """
@@ -68,7 +99,7 @@ class DateField(DateField):
 
   def __init__(self, label=None, validators=None, format='%d/%m/%Y', **kwargs):
     super(DateField, self).__init__(label, validators, format=format, **kwargs)
-    self.format = format
+    self._fix_format()
 
 
 class Select2Field(SelectField):
