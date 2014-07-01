@@ -6,23 +6,36 @@
 <script type="text/javascript">
   $(function () {
     $("#delete-button").click(function () {
-      bootbox.dialog("Do you really want to delete this entity?", [{
-        "label" : "Delete",
-        "class" : "btn-danger",   // or btn-primary, or btn-danger, or nothing at all
-        "callback": function() {
-          // Hack to provoke a POST instead of a GET.
-          var path = "{{ request.path }}/delete";
-          var form = document.createElement("form");
-          form.setAttribute("method", "POST");
-          form.setAttribute("action", path);
-          document.body.appendChild(form);
-          form.submit();
-        }
-      }, {
-        "label" : "Cancel",
-        "class" : ""   // or btn-primary, or btn-danger, or nothing at all
-      }], {
-        'keyboard': true
+      bootbox.dialog({
+       title: '<strong class="text-danger"><i class="glyphicon glyphicon-warning-sign"></i> La suppression est irréversible</strong>',
+       message: '<p class="lead">Do you really want to delete this entity?</p>',
+       closeButton: true,
+       buttons: {
+         confirm: {
+           "label" : "Delete",
+           "className" : "btn-danger",   // or btn-primary, or btn-danger, or nothing at all
+           "callback": function() {
+             // Hack to provoke a POST instead of a GET.
+             var path = "{{ request.path }}/delete";
+             var form = document.createElement("form");
+             form.setAttribute("method", "POST");
+             form.setAttribute("action", path);
+             form.setAttribute('enctype', 'multipart/form-data');
+             var input = document.createElement('input');
+             input.setAttribute('type', 'hidden');
+             input.setAttribute('name', Abilian.csrf_fieldname);
+             input.setAttribute('value', Abilian.csrf_token);
+             form.appendChild(input);
+             document.body.appendChild(form);
+             form.submit();
+           }
+         },
+         cancel: {
+           "label" : "Cancel",
+           "className" : ""   // or btn-primary, or btn-danger, or nothing at all
+         }
+       },
+       'keyboard': true
       });
     });
   });
