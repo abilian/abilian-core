@@ -104,6 +104,11 @@
 
  {% block inline_js %}
  {% endblock %}
+
+ {# template can also use an 'inline_js' variable #}
+ {%- if inline_js %}
+   {{ inline_js }}
+ {%- endif %}
 </script>
 
 </body>
