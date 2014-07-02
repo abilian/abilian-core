@@ -1,5 +1,5 @@
 {%- if labels %}
-<table class="dynamic-row-widget col-sm-{{ labels|length }}" data-prefix="{{ field.name }}">
+<table class="dynamic-row-widget" data-prefix="{{ field.name }}">
   <thead>
     {%- for label in labels %}
       <th>{{ label }}</th>
@@ -16,7 +16,7 @@
             {{ subfield(id=subfield.name, **attrs) }}
           {%- endfor %}
         {%- endif %}
-        {%- set attrs={'data-short-name': subfield.short_name} %}
+        {%- set attrs={'data-short-name': subfield.short_name, 'class': 'form-control'} %}
         {{ subfield(**attrs) }}
       </td>
       {%- endfor %}
