@@ -338,6 +338,7 @@ class Application(Flask, ServiceManager, PluginManager):
       # yml config file
       logging_cfg = yaml.load(open(logging_file, 'r'))
       logging_cfg.setdefault('version', 1)
+      logging_cfg.setdefault('disable_existing_loggers', False)
       logging.config.dictConfig(logging_cfg)
 
   def init_debug_toolbar(self):
