@@ -1,6 +1,8 @@
+# coding=utf-8
 """
 Various tools that don't belong some place specific.
 """
+from __future__ import absolute_import
 
 import functools
 import logging
