@@ -50,6 +50,7 @@ class AuditPanel(AdminPanel):
     def before_query(model, date):
       return model.query.filter(model.happened_at < date)\
                         .order_by(model.happened_at.desc())
+
     if after:
       after = datetime.strptime(after, u'%Y-%m-%dT%H:%M:%S.%f')
       audit_q = after_query(AuditEntry, after)
@@ -60,12 +61,8 @@ class AuditPanel(AdminPanel):
       audit_q = before_query(AuditEntry, before)
       security_q = before_query(SecurityAudit, before)
 
-    audit_q.options(sa.orm.contains_eager('entity'))\
-      .outerjoin(sa.orm.with_polymorphic(Entity, [], aliased=True),
-                 AuditEntry._fk_entity_id == Entity.id)
-
-    audit_entries = audit_q.limit(LIMIT).all()
-    security_entries = security_q.limit(LIMIT).all()
+    audit_entries = audit_q.options(sa.orm.joinedload(AuditEntry.entity)).limit(LIMIT).all()
+    security_entries = security_q.options(sa.orm.joinedload(SecurityAudit.object)).limit(LIMIT).all()
 
     all_entries = list(chain((AuditEntryPresenter(e) for e in audit_entries),
                              (SecurityEntryPresenter(e) for e in security_entries)))
@@ -77,11 +74,6 @@ class AuditPanel(AdminPanel):
       all_entries = all_entries[-LIMIT:]
 
     all_entries.reverse()  # event are presented from most to least recent
-
-    AuditEntryPresenter.prefetch([e for e in all_entries
-                                  if isinstance(e, AuditEntryPresenter)])
-    SecurityEntryPresenter.prefetch([e for e in all_entries
-                                     if isinstance(e, SecurityEntryPresenter)])
 
     # group entries by day
     entries = []
@@ -151,10 +143,6 @@ class BaseEntryPresenter(object):
 
   def render(self):
     raise NotImplementedError
-
-  @staticmethod
-  def prefetch(entries):
-    pass
 
 
 class AuditEntryPresenter(BaseEntryPresenter):
@@ -234,30 +222,6 @@ class SecurityEntryPresenter(BaseEntryPresenter):
     super(SecurityEntryPresenter, self).__init__(entry.manager, entry.happened_at)
     self.entry = entry
 
-  @staticmethod
-  def prefetch(entries):
-    pass
-    _cls_ids = {}
-    _oids = {}
-    for e in entries:
-      if e.entry.object:
-        model_name, oid = e.entry.object.split(':', 1)
-        oid = int(oid)
-        _oids[e.entry.object] = (model_name, oid,)
-        _cls_ids.setdefault(model_name, []).append(oid)
-
-    for cls_name, ids in _cls_ids.items():
-      if not (cls_name and ids):
-        pass
-      model = SecurityEntryPresenter.model(cls_name)
-      _cls_ids[cls_name] = model.query.filter(model.id.in_(ids)).all()
-
-    for e in entries:
-      oid = _oids.get(e.entry.object)
-      if oid is not None:
-        model_name, oid = oid
-        e.object = e.model(model_name).query.get(oid)
-
   def render(self):
     render = render_template_string
     e = self.entry
@@ -279,7 +243,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
     if e.object:
       entity = render(
         u'<a href="{{ url_for(entity) }}">{{ entity.path or entity.name }}</a>',
-        entity=self.object)
+        entity=e.object)
 
       if e.op == e.SET_INHERIT:
         msg = _(u'{manager} has activated inheritance on {entity}')
