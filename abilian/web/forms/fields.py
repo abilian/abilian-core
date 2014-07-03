@@ -17,6 +17,7 @@ from wtforms import (
 )
 from wtforms.compat import string_types, text_type
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
+import wtforms_alchemy
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 
 from flask.ext.wtf.file import FileField as BaseFileField
@@ -26,6 +27,7 @@ from flask.ext.babel import (
   )
 
 from abilian.core.util import utc_dt
+from abilian.core.logging import patch_logger
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
 
@@ -33,6 +35,38 @@ __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
            'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',
            'JsonSelect2MultipleField']
 
+# monkey patch wtforms_alchemy.utils.find_entity for wtf_sa <= 0.12.6
+def find_entity(coll, model, data):
+    """
+    Find object in `coll` that matches `data`
+    """
+    mapper = sa.inspect(model)
+
+    def match_pk(obj, col):
+        data_val = data.get(col.name)
+        if not data_val:
+            # name not in data, or null value
+            return False
+        value = getattr(obj, col.name)
+        try:
+            return value == col.type.python_type(data_val)
+        except ValueError:
+            # coerce failed
+            return False
+
+    for obj in coll:
+        if all(match_pk(obj, col) for col in mapper.primary_key):
+            return obj
+
+    return None
+
+fe = wtforms_alchemy.utils.find_entity
+patch_logger.info(fe)
+fe.func_code = find_entity.func_code
+fe.__module__ = find_entity.__module__
+del fe
+del find_entity
+# end monkey patch
 
 class ModelFieldList(BaseModelFieldList):
   """ Filter empty entries
