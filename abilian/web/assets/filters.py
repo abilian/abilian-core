@@ -64,7 +64,7 @@ class ImportCSSFilter(Filter):
         # rewrite url() statements
         buf = StringIO()
         url_rewriter = get_filter('cssrewrite')
-        url_rewriter.set_environment(self.env)
+        url_rewriter.set_context(self.ctx)
         url_rewriter.setup()
         url_rewriter.input(included, buf,
                            source=rel_filename,
@@ -239,13 +239,13 @@ class Less(ExternalTool):
       args.append('--line-numbers=%s' % self.line_numbers)
 
     if self.paths:
-      paths = [path if isabs(path) else self.env.resolver.resolve_source(path)
+      paths = [path if isabs(path) else self.ctx.resolver.resolve_source(path)
                for path in self.pathsep]
       args.append('--include-path={0}'.format(os.pathsep.join(paths)))
 
-    source_map = self.source_map_file and self.env.debug
+    source_map = self.source_map_file and self.ctx.debug
     if source_map:
-      source_map_dest = os.path.join(self.env.directory, self.source_map_file)
+      source_map_dest = os.path.join(self.ctx.directory, self.source_map_file)
       self.logger.debug('Generate source map to "%s"', source_map_dest)
       args.append('--source-map={}'.format(source_map_dest))
       args.append('--source-map-url={}'.format(self.source_map_file))
@@ -265,7 +265,7 @@ class Less(ExternalTool):
     replace_url = partial(self.fix_url, os.path.dirname(output_path))
     buf.seek(0)
     url_rewriter = get_filter('cssrewrite', replace=replace_url)
-    url_rewriter.set_environment(self.env)
+    url_rewriter.set_context(self.ctx)
     url_rewriter.setup()
     url_rewriter.input(buf, out,
                        source=output, source_path=output_path,
@@ -277,7 +277,7 @@ class Less(ExternalTool):
       return url
 
     src_path = os.path.normpath(os.path.abspath(os.path.join(cur_path, url)))
-    possible_paths = [p for p in self.env.url_mapping.keys()
+    possible_paths = [p for p in self.ctx.url_mapping.keys()
                       if src_path.startswith(p)]
     if not possible_paths:
       return url
@@ -286,7 +286,7 @@ class Less(ExternalTool):
       possible_paths.sort(lambda p: -len(p))
 
     path = possible_paths[0]
-    return self.env.url_mapping[path] + src_path[len(path):]
+    return self.ctx.url_mapping[path] + src_path[len(path):]
 
   def fix_source_map_urls(self, filename):
     with open(filename, 'r') as f:
@@ -298,7 +298,7 @@ class Less(ExternalTool):
         continue
 
       path = os.path.join('..', path) # apparently less is stripping first part
-      data['sources'][idx] = self.fix_url(self.env.directory, path)
+      data['sources'][idx] = self.fix_url(self.ctx.directory, path)
 
     with open(filename, 'w') as f:
       json.dump(data, f)
