@@ -31,6 +31,10 @@ SQLAlchemy>=0.8,<0.9
 alembic
 redis>=2.10.1
 
+# requirement of jinja2; > 0.21 has an important fix for string format. See
+# https://github.com/mitsuhiko/markupsafe/issues/28
+MarkupSafe>0.21
+
 # specify min versions for "phonenumbers" because for now all releases are
 # "pre-releases".
 # see http://www.pip-installer.org/en/latest/logic.html#pre-release-versions
