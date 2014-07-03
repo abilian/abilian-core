@@ -223,7 +223,7 @@ class SecurityAudit(db.Model):
     )
 
   id = Column(Integer, primary_key=True)
-  happened_at = Column(DateTime, default=datetime.utcnow)
+  happened_at = Column(DateTime, default=datetime.utcnow, index=True)
   op = Column(Enum(GRANT, REVOKE, SET_INHERIT, UNSET_INHERIT,
                    name='securityaudit_enum_op'))
   role = Column(RoleType)

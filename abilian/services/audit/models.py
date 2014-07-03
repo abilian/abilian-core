@@ -33,7 +33,7 @@ class AuditEntry(db.Model):
   Logs modifications to auditable classes.
   """
   id = Column(Integer, primary_key=True)
-  happened_at = Column(DateTime, default=datetime.utcnow)
+  happened_at = Column(DateTime, default=datetime.utcnow, index=True)
   type = Column(Integer)  # CREATION / UPDATE / DELETION
 
   # 2 entity_id columns: 1 to keep even if entity is deleted, 1 to set up
