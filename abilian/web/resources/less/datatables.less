@@ -1,0 +1,26 @@
+.table-striped.dataTable {
+  tr {
+    &.odd {
+      > td,
+      > th {
+        background-color: @table-bg-accent;
+      }
+      > td {
+        &.sorting_1,
+        &.sorting_2,
+        &.sorting_3 {
+          background-color: @table-bg-accent;
+        }
+      }
+    }
+
+    &.even > td {
+      background-color: white;
+      &.sorting_1,
+      &.sorting_2,
+      &.sorting_3 {
+        background-color: white;
+      }
+    }
+  }
+};
