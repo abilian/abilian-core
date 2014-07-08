@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-06-24 14:42+0200\n"
-"PO-Revision-Date: 2014-06-24 14:42+0200\n"
+"POT-Creation-Date: 2014-07-07 20:23+0200\n"
+"PO-Revision-Date: 2014-07-07 20:22+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -29,7 +29,7 @@ msgstr "Connexion"
 msgid "You must provide your email and password."
 msgstr ""
 
-#: abilian/services/auth/views.py:71 abilian/services/auth/views.py:155
+#: abilian/services/auth/views.py:71 abilian/services/auth/views.py:156
 msgid "Sorry, we couldn't find an account for email '{email}'."
 msgstr ""
 
@@ -37,44 +37,44 @@ msgstr ""
 msgid "Sorry, wrong password."
 msgstr ""
 
-#: abilian/services/auth/views.py:149
+#: abilian/services/auth/views.py:150
 #, fuzzy
 msgid "You must provide your email address."
 msgstr "Adresse email non valide"
 
-#: abilian/services/auth/views.py:164
+#: abilian/services/auth/views.py:165
 msgid "Password reset instructions have been sent to your email address."
 msgstr ""
 
-#: abilian/services/auth/views.py:174 abilian/services/auth/views.py:192
+#: abilian/services/auth/views.py:175 abilian/services/auth/views.py:194
 msgid "Invalid reset password token."
 msgstr ""
 
-#: abilian/services/auth/views.py:176 abilian/services/auth/views.py:194
+#: abilian/services/auth/views.py:177 abilian/services/auth/views.py:196
 msgid "Password reset expired"
 msgstr ""
 
-#: abilian/services/auth/views.py:201
+#: abilian/services/auth/views.py:203
 msgid "You must provide a password."
 msgstr ""
 
-#: abilian/services/auth/views.py:206
+#: abilian/services/auth/views.py:208
 msgid "Your new password must be at least 8 characters long"
 msgstr ""
 
-#: abilian/services/auth/views.py:210
+#: abilian/services/auth/views.py:212
 msgid "Your new password must contain upper case and lower case letters"
 msgstr ""
 
-#: abilian/services/auth/views.py:215
+#: abilian/services/auth/views.py:217
 msgid "Your new password must contain at least one digit"
 msgstr ""
 
-#: abilian/services/auth/views.py:221
+#: abilian/services/auth/views.py:223
 msgid "Your password has been reset. You can now login with your new password"
 msgstr ""
 
-#: abilian/services/auth/views.py:250
+#: abilian/services/auth/views.py:252
 msgid "Password reset instruction for {site_name}"
 msgstr ""
 
@@ -121,34 +121,38 @@ msgstr "Annuler"
 msgid "Indexed Terms"
 msgstr "Termes indexés"
 
+#: abilian/services/indexing/debug_toolbar.py:40
+msgid "No current object"
+msgstr ""
+
 #: abilian/services/preferences/service.py:22
 #: abilian/services/preferences/service.py:133
 #: abilian/web/templates/preferences/_base.html:8
 msgid "Preferences"
 msgstr "Préférences"
 
-#: abilian/web/frontend.py:499 abilian/web/views/object.py:164
+#: abilian/web/frontend.py:501 abilian/web/views/object.py:164
 msgid "Entity successfully edited"
 msgstr "Édition réussie"
 
-#: abilian/web/frontend.py:507 abilian/web/views/object.py:254
+#: abilian/web/frontend.py:509 abilian/web/views/object.py:254
 msgid "An entity with this name already exists in the database."
 msgstr "Il y a déjà une entité avec ce nom dans la base de donnée."
 
-#: abilian/web/frontend.py:510 abilian/web/frontend.py:560
+#: abilian/web/frontend.py:512 abilian/web/frontend.py:562
 #: abilian/web/views/object.py:261
 msgid "Please fix the error(s) below"
 msgstr "Veuillez corriger la ou les erreurs ci-dessous"
 
-#: abilian/web/frontend.py:551
+#: abilian/web/frontend.py:553
 msgid "An entity with this name already exists in the database"
 msgstr "Il y a déjà une entité avec ce nom dans la base de donnée"
 
-#: abilian/web/frontend.py:554 abilian/web/views/object.py:293
+#: abilian/web/frontend.py:556 abilian/web/views/object.py:293
 msgid "Entity successfully added"
 msgstr "Ajout réussi"
 
-#: abilian/web/frontend.py:576 abilian/web/views/object.py:332
+#: abilian/web/frontend.py:578 abilian/web/views/object.py:321
 msgid "Entity deleted"
 msgstr "Entité supprimée"
 
@@ -156,51 +160,51 @@ msgstr "Entité supprimée"
 msgid "Admin"
 msgstr "Admin"
 
-#: abilian/web/admin/panels/audit.py:188
+#: abilian/web/admin/panels/audit.py:176
 msgid "{user} created {entity_type} {entity_id} \"{entity}\""
 msgstr "{user} a créé: {entity_type} {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:190
+#: abilian/web/admin/panels/audit.py:178
 msgid "{user} made changes on {entity_type} {entity_id} \"{entity}\""
 msgstr "{user} a modifié {entity_type} {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:193
+#: abilian/web/admin/panels/audit.py:181
 msgid "{user} has deleted {entity_type}: {entity_id} \"{entity}\""
 msgstr "{user} a supprimé {entity_type}: {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:214
+#: abilian/web/admin/panels/audit.py:202
 msgid "{key} changed:"
 msgstr "{key} modifié:"
 
-#: abilian/web/admin/panels/audit.py:219
+#: abilian/web/admin/panels/audit.py:207
 msgid "{key} changed from {old_value} to {new_value}"
 msgstr "{key} modifié de «{old_value}» en «{new_value}»"
 
-#: abilian/web/admin/panels/audit.py:221
+#: abilian/web/admin/panels/audit.py:209
 msgid "{key} set to {new_value}"
 msgstr "{key} initialisé à «{new_value}»"
 
-#: abilian/web/admin/panels/audit.py:285
+#: abilian/web/admin/panels/audit.py:249
 msgid "{manager} has activated inheritance on {entity}"
 msgstr "{manager} a activé l'héritage sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:287
+#: abilian/web/admin/panels/audit.py:251
 msgid "{manager} has deactivated inheritance on {entity}"
 msgstr "{manager} a désactivé l'héritage sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:289
+#: abilian/web/admin/panels/audit.py:253
 msgid "{manager} has given role \"{role}\" to {principal} on {entity}"
 msgstr "{manager} a donné le rôle «{role}» à {principal} sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:292
+#: abilian/web/admin/panels/audit.py:256
 msgid "{manager} has revoked role \"{role}\" from {principal} on {entity}"
 msgstr "{manager} a retiré le rôle \"{role}\" à {principal} sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:298
+#: abilian/web/admin/panels/audit.py:262
 msgid "{manager} has given role \"{role}\" to {principal}"
 msgstr "{manager} a donné le rôle \"{role}\" à {principal}"
 
-#: abilian/web/admin/panels/audit.py:300
+#: abilian/web/admin/panels/audit.py:264
 msgid "{manager} has revoked role \"{role}\" from {principal}"
 msgstr "{manager} a retiré le rôle \"{role}\" à {principal}"
 
@@ -259,11 +263,11 @@ msgstr "Suivant"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: abilian/web/forms/fields.py:99 abilian/web/forms/fields.py:128
+#: abilian/web/forms/fields.py:146 abilian/web/forms/fields.py:179
 msgid "Not a valid datetime value"
 msgstr ""
 
-#: abilian/web/forms/fields.py:262
+#: abilian/web/forms/fields.py:313
 msgid "Not a valid choice"
 msgstr ""
 
@@ -329,16 +333,21 @@ msgstr "À propos de moi"
 msgid "Preferences saved."
 msgstr ""
 
-#: abilian/web/search/templates/search/search.html:10
+#: abilian/web/search/templates/search/search.html:11
 #: abilian/web/templates/navbar.html:33
 msgid "Search"
 msgstr "Rechercher"
 
-#: abilian/web/search/templates/search/search.html:23
+#: abilian/web/search/templates/search/search.html:25
 msgid "Your query didn't find any results."
 msgstr "Votre recherche n'a donné aucun résultats"
 
-#: abilian/web/search/templates/search/search.html:43
+#: abilian/web/search/templates/search/search.html:30
+#, python-format
+msgid "%(count)d corresponding items"
+msgstr "%(count)d éléments correspondants"
+
+#: abilian/web/search/templates/search/search.html:55
 msgid "Filter by types"
 msgstr "Filtrer par types"
 
@@ -383,7 +392,7 @@ msgstr "Créer"
 msgid "Create and add new"
 msgstr "Créer et ajouter un nouveau"
 
-#: abilian/web/views/object.py:325
+#: abilian/web/views/object.py:314
 msgid "Delete"
 msgstr "Supprimer"
 

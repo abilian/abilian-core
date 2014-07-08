@@ -2,9 +2,10 @@
 
 {% from "macros/box.html" import m_box_menu %}
 
-{% block content %}
-  <div class="row">
-    <form class="col-md-7 col-md-offset-3" role="search" method="GET" action="{{ url_for('search.search_main') }}">
+{% block content %}  
+
+  <div id="search-input" class="row">
+    <form class="col-xs-8 col-sm-offset-2" role="search" method="GET" action="{{ url_for('search.search_main') }}">
       <div class="input-group">
         <input type="search" name="q" class="search-query form-control" value="{{ q }}"
                placeholder="{{ _('Search') }}" autocomplete="off" id="search-box"
@@ -17,24 +18,79 @@
       </div>
     </form>
   </div>
-  
-  <hr />
+
+  <div class="clearfix visible-xs-block"></div>
+
   {%- if not results %}
     <p class="lead">{{ _("Your query didn't find any results.") }}</p>
   {%- else %}
+
+    <div class="row">
+      <p class="col-xs-8 col-sm-offset-2">
+        {{ _('%(count)d corresponding items', count=results_count) }}
+      </p>
+    </div>
+
     {%- for hit in results %}
       <div>
-        <a href="{{ url_for_hit(hit) }}"><strong>{{ hit.highlights('name')|safe or hit['name']}}</strong></a>
+        <a href="{{ url_for_hit(hit)|safe }}"><strong>{{ hit.highlights('name')|safe or hit['name']}}</strong></a>
         {%- if (filtered_by_type|length) != 1 %}
-          <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span>
+        &nbsp; <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span>
         {%- endif %}
-        <p><i>By {{ hit['creator_name'] }} - Last modification: {{ hit['updated_at']|datetimeformat }}</i><br />
-          {%- if 'description' in hit %}
-            {{ hit.highlights('description')|safe }}
-          {%- endif %}
+
+        {%- if 'description' in hit %}
+          <p>{{ hit.highlights('description')|safe }}</p>
+        {%- endif %}
+
+        <p class="small">
+          <i>By {{ hit['creator_name'] }} &ndash; {{ _('Last modification: %(date)s', date=hit['updated_at']|datetimeformat) }}</i><br />
         </p>
       </div>
     {%- endfor %}
+
+    {%- if pagecount > 1 %}
+      <ul class="pagination">
+
+       {%- if next_pages_numbered and next_pages_numbered[0][0] > 2 %}
+        <li><a href="{{ first_page }}">
+          <i class="glyphicon glyphicon-step-backward"></i>
+        </a></li>
+        <li class="disabled"><span>…</span></li>
+        {%- endif %}
+
+
+        <li{% if not prev_page %} class="disabled"{%- endif %}>
+          {%- if prev_page %}<a href="{{ prev_page }}">{%- endif %}
+          <span>&laquo;</span>
+          {%- if prev_page %}</a>{%- endif %}
+        </li>
+
+        {%- for page_number, page_url in next_pages_numbered %}
+          {%- set is_current = (page_number == results.pagenum) %}
+        <li{% if is_current %} class="active"{%- endif %}>
+          {%- if not is_current %}<a href="{{ page_url }}">{%- endif %}
+          <span>{{ page_number }}</span>
+          {%- if not is_current %}</a>{%- endif %}
+        {%- endfor %}
+
+        <li {%- if not next_page %}class="disabled"{%- endif %}>
+          <span>
+            {%- if next_page %}<a href="{{ next_page }}">{%- endif %}
+            &raquo;
+            {%- if next_page %}</a>{%- endif %}
+          </span>
+        </li>
+
+        {%- if next_pages_numbered and next_pages_numbered[-1][0] < (pagecount-4) %}
+        <li class="disabled"><span>…</span></li>
+        <li><a href="{{ last_page }}">
+          <i class="glyphicon glyphicon-step-forward"></i>
+        </a></li>
+        {%- endif %}
+
+      </ul>
+    {%- endif %}
+
   {%- endif %}
 {% endblock %}
 
@@ -43,7 +99,7 @@
     {% call m_box_menu(title=_('Filter by types')) %}
       <ul class="nav nav-list">
         {%- for name, count, link in by_object_type %}
-          <li><a href="{{ link }}">{{ name }} ({{ count }})</a></li>
+        <li><a href="{{ link }}">{{ name }} <span class="pull-right badge">{{ count|roughsize }}</span></a></li>
         {%- endfor %}
       </ul>
     {% endcall %}

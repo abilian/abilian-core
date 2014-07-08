@@ -83,6 +83,17 @@ def filesize(d):
 
   return Markup(s)
 
+def roughsize(size, above=20, mod=10):
+  """
+  6 -> '6'
+  15 -> '15'
+  134 -> '130+'
+  """
+  if size < above:
+    return unicode(size)
+
+  return u'{:d}+'.format(size - size % mod)
+
 
 def age(dt, now=None):
   # Fail silently for now XXX
@@ -213,5 +224,6 @@ def init_filters(env):
   env.filters['url_for'] = obj_to_url
   env.filters['abbrev'] = abbrev
   env.filters['filesize'] = filesize
+  env.filters['roughsize'] = roughsize
   env.filters['labelize'] = labelize
   env.filters['linkify'] = linkify
