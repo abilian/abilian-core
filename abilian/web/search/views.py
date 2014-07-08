@@ -99,19 +99,14 @@ def search_main(q=u'', page=1):
   search_kwargs = {'limit': page * PAGE_SIZE}
   page_url_kw = OrderedDict(q=q)
 
-  filtered_by_type = request.args.getlist('object_type')
-  if filtered_by_type:
-    #FIXME: sanitize input
-    types = [whoosh.query.Term('object_type', t) for t in filtered_by_type]
-    search_kwargs['filter'] = whoosh.query.Or(types)
-    page_url_kw['object_type'] = filtered_by_type
-  else:
-    search_kwargs['groupedby'] = whoosh.sorting.FieldFacet("object_type",
-                                                           maptype=whoosh.sorting.Count)
-
+  search_kwargs['groupedby'] = whoosh.sorting.FieldFacet("object_type",
+                                                         maptype=whoosh.sorting.Count)
   results = svc.search(q, **search_kwargs)
-  results.formatter = BOOTSTRAP_MARKUP_HIGHLIGHTER
-  results.fragmenter = RESULTS_FRAGMENTER
+
+  filtered_by_type = sorted(request.args.getlist('object_type'))
+  if filtered_by_type:
+    page_url_kw['object_type'] = filtered_by_type
+
   page_url = partial(url_for, '.search_main', **page_url_kw)
 
   # get facets groups
@@ -122,10 +117,30 @@ def search_main(q=u'', page=1):
     pass
   else:
     for typename, count in facet_group.items():
+      is_active = typename in filtered_by_type
       classname = friendly_fqcn(typename)
       link = page_url(object_type=typename)
-      by_object_type.append((classname, count, link))
+      by_object_type.append((classname, count, link, is_active))
+
     by_object_type.sort(key=lambda t: t[0])
+
+  if by_object_type:
+    # Insert 'all' to clear all filters
+    is_active = len(filtered_by_type) == 0
+    by_object_type.insert(
+      0,
+      (_(u'All'), None, page_url(object_type=(),), is_active),)
+
+  if filtered_by_type:
+    #FIXME: sanitize input
+    types = [whoosh.query.Term('object_type', t) for t in filtered_by_type]
+    search_kwargs['filter'] = whoosh.query.Or(types)
+    del search_kwargs['groupedby']
+    results = svc.search(q, **search_kwargs)
+
+
+  results.formatter = BOOTSTRAP_MARKUP_HIGHLIGHTER
+  results.fragmenter = RESULTS_FRAGMENTER
 
   # paginate results
   results_count = len(results) - results.filtered_count
