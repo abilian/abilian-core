@@ -51,37 +51,22 @@
     {%- if pagecount > 1 %}
       <ul class="pagination">
 
-       {%- if next_pages_numbered and next_pages_numbered[0][0] > 2 %}
-        <li><a href="{{ first_page }}">
-          <i class="glyphicon glyphicon-step-backward"></i>
-        </a></li>
-        <li class="disabled"><span>…</span></li>
+        {%- if next_pages_numbered and next_pages_numbered[0][0] > 1 %}
+          <li><a href="{{ first_page }}">
+            <i class="glyphicon glyphicon-step-backward"></i>
+          </a></li>
+          <li class="disabled"><span>…</span></li>
         {%- endif %}
-
-
-        <li{% if not prev_page %} class="disabled"{%- endif %}>
-          {%- if prev_page %}<a href="{{ prev_page }}">{%- endif %}
-          <span>&laquo;</span>
-          {%- if prev_page %}</a>{%- endif %}
-        </li>
 
         {%- for page_number, page_url in next_pages_numbered %}
           {%- set is_current = (page_number == results.pagenum) %}
-        <li{% if is_current %} class="active"{%- endif %}>
+          <li{% if is_current %} class="active"{%- endif %}>
           {%- if not is_current %}<a href="{{ page_url }}">{%- endif %}
           <span>{{ page_number }}</span>
           {%- if not is_current %}</a>{%- endif %}
         {%- endfor %}
 
-        <li {%- if not next_page %}class="disabled"{%- endif %}>
-          <span>
-            {%- if next_page %}<a href="{{ next_page }}">{%- endif %}
-            &raquo;
-            {%- if next_page %}</a>{%- endif %}
-          </span>
-        </li>
-
-        {%- if next_pages_numbered and next_pages_numbered[-1][0] < (pagecount-4) %}
+        {%- if next_pages_numbered and next_pages_numbered[-1][0] < pagecount %}
         <li class="disabled"><span>…</span></li>
         <li><a href="{{ last_page }}">
           <i class="glyphicon glyphicon-step-forward"></i>

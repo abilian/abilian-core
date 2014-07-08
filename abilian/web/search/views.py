@@ -152,14 +152,14 @@ def search_main(q=u'', page=1):
   results = whoosh.searching.ResultsPage(results, page, PAGE_SIZE)
   page = results.pagenum
   first_page = page_url(page=1)
-  last_page = page_url(page=results.pagenum)
+  last_page = page_url(page=pagecount)
   prev_page = page_url(page=page - 1) if page > 1 else None
   next_page = page_url(page=page + 1) if page < pagecount else None
 
   page_min = max(page - 2, 1)
   page_max = min(page + 4, pagecount)
   next_pages_numbered = [(index, page_url(page=index))
-                         for index in range(page_min, page_max)]
+                         for index in range(page_min, page_max+1)]
 
   return render_template('search/search.html',
                          q=q,
