@@ -20,16 +20,20 @@
 <!-- end box "{{ title }}" -->
 {%- endmacro %}
 
-{%- macro m_box_menu(title=None, color="green") %}
+{%- macro m_box_menu(title=None, color="green", omit_body=False) %}
 <!-- begin menu box "{{ title }}" -->
   <div class="panel panel-{{ color_map.get(color, 'default') }}">
     <div class="panel-heading">
       <h5 class="panel-title">{{ title or _('Menu') }}</h5>
     </div>
 
+    {%- if not omit_body %}
     <div class="panel-body">
+    {%- endif %}
       {{ caller() }}
+    {%- if not omit_body %}
     </div>
+    {%- endif %}
   </div>
 <!-- end menu box "{{ title }}" -->
 {%- endmacro %}
