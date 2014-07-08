@@ -81,18 +81,17 @@
 
 {% block sidebar %}
   {%- if by_object_type %}
-    {% call m_box_menu(title=_('Filter by types')) %}
-      <ul class="nav nav-pills nav-stacked">
+    {% call m_box_menu(title=_('Filter by types'), omit_body=True) %}
+      <div class="list-group">
         {%- for name, count, link, is_active in by_object_type %}
-        <li{% if is_active %} class="active"{%- endif %}>
-          <a href="{{ link }}">{{ name }}
+          <a class="list-group-item{% if is_active %} active"{%- endif %}"
+             href="{{ link }}">{{ name }}
             {%- if count %}
-            <span class="pull-right badge">{{ count|roughsize }}</span>
+            <span class="badge">{{ count|roughsize }}</span>
             {%- endif %}
           </a>
-        </li>
         {%- endfor %}
-      </ul>
+      </div>
     {% endcall %}
   {%- endif %}
 
