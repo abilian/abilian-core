@@ -8,6 +8,14 @@
 @import 'activities.less';
 @import 'admin.less';
 
+mark {
+  background-color: #fff8bb; /* boostrap uses state-warning-bg, but it's too light to be seen */
+}
+a mark {
+  /* in normalize.less there is a rule for changing 'mark' color, but we don't want that in links */
+  color: inherit;
+}
+
 // Flask debugtoolbar
 #flDebug #flDebugToolbarHandle {
   /* align handle at bottom of navigation bar */
