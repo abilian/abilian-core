@@ -5,7 +5,7 @@
 {% block content %}  
 
   <div id="search-input" class="row">
-    <form class="col-xs-8 col-sm-offset-2" role="search" method="GET" action="{{ url_for('search.search_main') }}">
+    <form class="col-xs-12 col-sm-8 col-sm-offset-2" role="search" method="GET" action="{{ url_for('search.search_main') }}">
       <div class="input-group">
         <input type="search" name="q" class="search-query form-control" value="{{ q }}"
                placeholder="{{ _('Search') }}" autocomplete="off" id="search-box"
@@ -26,13 +26,14 @@
   {%- else %}
 
     <div class="row">
-      <p class="col-xs-8 col-sm-offset-2">
+      <p class="col-xs-12 col-sm-8 col-sm-offset-2">
         {{ _('%(count)d corresponding items', count=results_count) }}
       </p>
     </div>
 
+    <div class="row">
     {%- for hit in results %}
-      <div>
+      <div class="col-xs-12 col-sm-11 col-sm-offset-1">
         <a href="{{ url_for_hit(hit)|safe }}"><strong>{{ hit.highlights('name')|safe or hit['name']}}</strong></a>
         {%- if (filtered_by_type|length) != 1 %}
         &nbsp; <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span>
@@ -47,6 +48,7 @@
         </p>
       </div>
     {%- endfor %}
+    </div>
 
     {%- if pagecount > 1 %}
       <ul class="pagination">
