@@ -127,9 +127,9 @@ def search_main(q=u'', page=1):
   if by_object_type:
     # Insert 'all' to clear all filters
     is_active = len(filtered_by_type) == 0
-    by_object_type.insert(
-      0,
-      (_(u'All'), None, page_url(object_type=(),), is_active),)
+    all_types = (_(u'All'), len(results), page_url(object_type=(),),
+                 is_active,)
+    by_object_type.insert(0, all_types)
 
   if filtered_by_type:
     #FIXME: sanitize input
