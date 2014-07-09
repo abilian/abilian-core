@@ -91,6 +91,12 @@ def install_hit_to_url():
   return dict(url_for_hit=url_for_hit)
 
 
+_COUNT_OBJECT_TYPE_FACET = whoosh.sorting.FieldFacet(
+  "object_type",
+  maptype=whoosh.sorting.Count,
+)
+
+
 @route('')
 def search_main(q=u'', page=1):
   svc = current_app.services['indexing']
@@ -99,8 +105,7 @@ def search_main(q=u'', page=1):
   search_kwargs = {'limit': page * PAGE_SIZE}
   page_url_kw = OrderedDict(q=q)
 
-  search_kwargs['groupedby'] = whoosh.sorting.FieldFacet("object_type",
-                                                         maptype=whoosh.sorting.Count)
+  search_kwargs['groupedby'] = _COUNT_OBJECT_TYPE_FACET
   results = svc.search(q, **search_kwargs)
 
   filtered_by_type = sorted(request.args.getlist('object_type'))
@@ -133,17 +138,13 @@ def search_main(q=u'', page=1):
 
   if filtered_by_type:
     #FIXME: sanitize input
-    types = [whoosh.query.Term('object_type', t) for t in filtered_by_type]
-    search_kwargs['filter'] = whoosh.query.Or(types)
-    del search_kwargs['groupedby']
-    results = svc.search(q, **search_kwargs)
-
+    results = svc.search(q, object_types=filtered_by_type, **search_kwargs)
 
   results.formatter = BOOTSTRAP_MARKUP_HIGHLIGHTER
   results.fragmenter = RESULTS_FRAGMENTER
 
   # paginate results
-  results_count = len(results) - results.filtered_count
+  results_count = len(results)
 
   # results.pagecount must be ignored when query is filtered: it ignores
   # filtered_count
