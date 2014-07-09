@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-07-07 20:23+0200\n"
+"POT-Creation-Date: 2014-07-09 10:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -332,6 +332,10 @@ msgstr ""
 msgid "Preferences saved."
 msgstr ""
 
+#: abilian/web/search/views.py:132
+msgid "All"
+msgstr ""
+
 #: abilian/web/search/templates/search/search.html:11
 #: abilian/web/templates/navbar.html:33
 msgid "Search"
@@ -346,7 +350,12 @@ msgstr ""
 msgid "%(count)d corresponding items"
 msgstr ""
 
-#: abilian/web/search/templates/search/search.html:55
+#: abilian/web/search/templates/search/search.html:46
+#, python-format
+msgid "Last modification: %(date)s"
+msgstr ""
+
+#: abilian/web/search/templates/search/search.html:84
 msgid "Filter by types"
 msgstr ""
 

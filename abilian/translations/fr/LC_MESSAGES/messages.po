@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-07-07 20:23+0200\n"
-"PO-Revision-Date: 2014-07-07 20:22+0200\n"
+"POT-Creation-Date: 2014-07-09 10:14+0200\n"
+"PO-Revision-Date: 2014-07-09 10:17+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -27,20 +27,19 @@ msgstr "Connexion"
 
 #: abilian/services/auth/views.py:64
 msgid "You must provide your email and password."
-msgstr ""
+msgstr "Vous devez entrez votre email et votre mot de passe."
 
 #: abilian/services/auth/views.py:71 abilian/services/auth/views.py:156
 msgid "Sorry, we couldn't find an account for email '{email}'."
-msgstr ""
+msgstr "Nous n'avons pas trouvé de compte correspondant à l'email '{email}'"
 
 #: abilian/services/auth/views.py:77
 msgid "Sorry, wrong password."
-msgstr ""
+msgstr "Mauvais mot de passe."
 
 #: abilian/services/auth/views.py:150
-#, fuzzy
 msgid "You must provide your email address."
-msgstr "Adresse email non valide"
+msgstr "Vous devez entrez votre adresse email de connexion."
 
 #: abilian/services/auth/views.py:165
 msgid "Password reset instructions have been sent to your email address."
@@ -56,36 +55,38 @@ msgstr ""
 
 #: abilian/services/auth/views.py:203
 msgid "You must provide a password."
-msgstr ""
+msgstr "Vous devez entrez un mot de passe."
 
 #: abilian/services/auth/views.py:208
 msgid "Your new password must be at least 8 characters long"
-msgstr ""
+msgstr "Le nouveau mot de passe doit comporter au moins 8 caractères"
 
 #: abilian/services/auth/views.py:212
 msgid "Your new password must contain upper case and lower case letters"
-msgstr ""
+msgstr "Le nouveau mot de passe doit comporter des majuscules et des minuscules"
 
 #: abilian/services/auth/views.py:217
 msgid "Your new password must contain at least one digit"
-msgstr ""
+msgstr "Le nouveau mot de passe doit comporter au moins 1 chiffre"
 
 #: abilian/services/auth/views.py:223
 msgid "Your password has been reset. You can now login with your new password"
 msgstr ""
+"Votre mot de passe a été enregistré. Vous pouvez maintenant vous "
+"connecter avec ce mot de passe."
 
 #: abilian/services/auth/views.py:252
 msgid "Password reset instruction for {site_name}"
-msgstr ""
+msgstr "Réinitialisation de votre mot de passe pour {site_name}"
 
 #: abilian/services/auth/templates/login/forgotten_password.html:8
 #: abilian/services/auth/templates/login/login.html:23
 msgid "Forgot password?"
-msgstr ""
+msgstr "Mot de passe oublié?"
 
 #: abilian/services/auth/templates/login/forgotten_password.html:17
 msgid "Send me a new password"
-msgstr ""
+msgstr "Envoyez-moi un nouveau mot de passe"
 
 #: abilian/services/auth/templates/login/login.html:8
 #, python-format
@@ -99,7 +100,7 @@ msgstr "Mot de passe"
 
 #: abilian/services/auth/templates/login/login.html:21
 msgid "Sign in"
-msgstr ""
+msgstr "Me connecter"
 
 #: abilian/services/auth/templates/login/password_reset.html:8
 msgid "Please choose a new password"
@@ -227,23 +228,23 @@ msgstr "Expéditeur des mails"
 
 #: abilian/web/admin/panels/settings.py:61
 msgid "Changes saved."
-msgstr ""
+msgstr "Changement enregistrés."
 
 #: abilian/web/admin/templates/admin/_macros.html:25
 msgid "active users"
-msgstr ""
+msgstr "utilisateurs actifs"
 
 #: abilian/web/admin/templates/admin/_macros.html:30
 msgid "new members"
-msgstr ""
+msgstr "nouveaux membres"
 
 #: abilian/web/admin/templates/admin/_macros.html:35
 msgid "new documents"
-msgstr ""
+msgstr "nouveaux documents"
 
 #: abilian/web/admin/templates/admin/_macros.html:40
 msgid "new messages"
-msgstr ""
+msgstr "nouveaux messages"
 
 #: abilian/web/admin/templates/admin/audit.html:9
 #: abilian/web/admin/templates/admin/audit.html:26
@@ -265,11 +266,11 @@ msgstr "Enregistrer"
 
 #: abilian/web/forms/fields.py:146 abilian/web/forms/fields.py:179
 msgid "Not a valid datetime value"
-msgstr ""
+msgstr "N'est pas une date valide"
 
 #: abilian/web/forms/fields.py:313
 msgid "Not a valid choice"
-msgstr ""
+msgstr "N'est pas un choix valide"
 
 #: abilian/web/forms/validators.py:15
 msgid "Invalid email address."
@@ -331,7 +332,11 @@ msgstr "À propos de moi"
 
 #: abilian/web/preferences/user.py:118
 msgid "Preferences saved."
-msgstr ""
+msgstr "Préférences enregistrées."
+
+#: abilian/web/search/views.py:132
+msgid "All"
+msgstr "Tous"
 
 #: abilian/web/search/templates/search/search.html:11
 #: abilian/web/templates/navbar.html:33
@@ -347,7 +352,12 @@ msgstr "Votre recherche n'a donné aucun résultats"
 msgid "%(count)d corresponding items"
 msgstr "%(count)d éléments correspondants"
 
-#: abilian/web/search/templates/search/search.html:55
+#: abilian/web/search/templates/search/search.html:46
+#, python-format
+msgid "Last modification: %(date)s"
+msgstr "Dernière modification: %(date)s"
+
+#: abilian/web/search/templates/search/search.html:84
 msgid "Filter by types"
 msgstr "Filtrer par types"
 
@@ -365,7 +375,7 @@ msgstr "Menu"
 #: abilian/web/templates/macros.html:126
 #: abilian/web/templates/macros/audit.html:25
 msgid "Audit Log"
-msgstr ""
+msgstr "Journal d'audit"
 
 #: abilian/web/templates/macros.html:175
 #: abilian/web/templates/macros/recent.html:5
@@ -395,43 +405,4 @@ msgstr "Créer et ajouter un nouveau"
 #: abilian/web/views/object.py:314
 msgid "Delete"
 msgstr "Supprimer"
-
-#~ msgid "Edit"
-#~ msgstr "Éditer"
-
-#~ msgid "a minute ago"
-#~ msgstr "il y a une minute"
-
-#~ msgid "%(num)d minutes ago"
-#~ msgstr "il y a %(num)d minutes"
-
-#~ msgid "an hour ago"
-#~ msgstr "il y a une heure"
-
-#~ msgid "%(num)d hours ago"
-#~ msgstr "il y a %(num)d heures"
-
-#~ msgid "yesterday"
-#~ msgstr "hier"
-
-#~ msgid "%(num)d days ago"
-#~ msgstr "il y a %(num)d jours"
-
-#~ msgid "a month ago"
-#~ msgstr "il y a un mois"
-
-#~ msgid "%(num)d months ago"
-#~ msgstr "il y a %(num)d mois"
-
-#~ msgid "last year"
-#~ msgstr "l'année dernière"
-
-#~ msgid "%(num)d years ago"
-#~ msgstr "il y a %(num)d ans"
-
-#~ msgid "My profile"
-#~ msgstr ""
-
-#~ msgid "Log out"
-#~ msgstr ""
 
