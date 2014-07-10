@@ -51,12 +51,16 @@ class IndexServiceState(ServiceState):
   indexes = None
   indexed_classes = None
   indexed_fqcn = None
+  search_filter_funcs = None
+  value_provider_funcs = None
 
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
     self.indexes = {}
     self.indexed_classes = set()
     self.indexed_fqcn = set()
+    self.search_filter_funcs = []
+    self.value_provider_funcs = []
 
   @property
   def to_update(self):
@@ -102,6 +106,27 @@ class WhooshIndexService(Service):
       self._listening = True
 
     appcontext_pushed.connect(self.clear_update_queue, app)
+
+  def register_search_filter(self, func):
+    """
+    Register a function that returns a query used for filtering search
+    results. This query is And'ed with other filters.
+
+    If no filtering should be performed the function must return None.
+    """
+    self.app_state.search_filter_funcs.append(func)
+
+  def register_value_provider(self, func):
+    """
+    Register a function that may alter content of indexable document.
+
+    It is used in :meth:`get_document` and called after adapter has built
+    document.
+
+    The function must accept (document, obj) as arguments, and return
+    the new document object.
+    """
+    self.app_state.value_provider_funcs.append(func)
 
   def clear_update_queue(self, app=None):
     self.app_state.to_update = []
@@ -213,6 +238,10 @@ class WhooshIndexService(Service):
     parser = DisMaxParser(fields, index.schema)
     query = parser.parse(q)
 
+    filters = search_args.setdefault('filter', None)
+    filters = [filters] if filters is not None else []
+    del search_args['filter']
+
     if not hasattr(g, 'is_manager') or not g.is_manager:
       # security access filter
       user = current_user
@@ -225,9 +254,7 @@ class WhooshIndexService(Service):
 
       filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
                         for role in roles])
-      if 'filter' in search_args:
-        filter_q = wq.And([search_args['filter'], filter_q])
-      search_args['filter'] = filter_q
+      filters.append(filter_q)
 
     object_types = set(object_types)
     for m in Models:
@@ -244,10 +271,16 @@ class WhooshIndexService(Service):
 
     # limit object_type
     filter_q = wq.Or([wq.Term('object_type', t) for t in object_types])
+    filters.append(filter_q)
 
-    if 'filter' in search_args:
-      filter_q = wq.And([search_args['filter'], filter_q])
-    search_args['filter'] = filter_q
+    for func in self.app_state.search_filter_funcs:
+      filter_q = func()
+      if filter_q is not None:
+        filters.append(filter_q)
+
+    if filters:
+      filter_q = wq.And(filters) if len(filters) > 1 else filters[0]
+      search_args['filter'] = filter_q
 
     if facet_by_type:
       if not object_types:
@@ -378,6 +411,11 @@ class WhooshIndexService(Service):
     if not document.get('allowed_roles_and_users'):
       # no data for security: assume anybody can access the document
       document['allowed_roles_and_users'] = indexable_role(Anonymous)
+
+    for func in self.app_state.value_provider_funcs:
+      res = func(document, obj)
+      if res is not None:
+        document = res
 
     return document
 
