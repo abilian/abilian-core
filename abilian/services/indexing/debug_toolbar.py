@@ -66,7 +66,7 @@ class IndexedTermsDebugPanel(DebugPanel):
       for name, field in schema.items():
         value = doc.get(name)
         indexed[name] = None
-        if value and field.format:
+        if value and field.analyzer and field.format:
           indexed[name] = list(field.process_text(value))
       context['current_indexed'] = indexed
       context['current_keys'] = sorted(set(doc) | set(indexed))
