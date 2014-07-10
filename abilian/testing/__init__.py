@@ -96,9 +96,20 @@ class BaseTestCase(TestCase):
   #: be explicit and ensure unicode where appropriate)
   SQLALCHEMY_WARNINGS_AS_ERROR = True
 
+  #: list services names that should be started during setUp. 'repository' and
+  #'session_repository' services are always started, do not list them here.
+  SERVICES = ()
+
   @classmethod
   def setUpClass(cls):
     TestCase.setUpClass()
+
+    if not isinstance(cls.SERVICES, tuple):
+      if isinstance(cls.SERVICES, basestring):
+        cls.SERVICES = (cls.SERVICES,)
+      else:
+        cls.SERVICES = tuple(cls.SERVICES)
+
     join = os.path.join
     tmp_dir = Path(tempfile.mkdtemp(prefix='tmp-py-unittest-',
                                     suffix='-' + cls.__name__,))
@@ -162,7 +173,14 @@ class BaseTestCase(TestCase):
 
     self.app.create_db()
 
+    for svc in self.SERVICES:
+      self.app.services[svc].start()
+
+
   def tearDown(self):
+    for svc in self.SERVICES:
+      self.app.services[svc].stop()
+
     self.db.session.remove()
     self.db.drop_all()
 
@@ -179,6 +197,7 @@ class BaseTestCase(TestCase):
 
     self.db.engine.dispose()
     self.app.services['session_repository'].stop()
+    self.app.services['repository'].stop()
     TestCase.tearDown(self)
 
   def login(self, user, remember=False, force=False):
