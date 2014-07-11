@@ -16,7 +16,7 @@ test:
 
 test-with-coverage:
 	py.test --cov $(PKG) --cov-config etc/coverage.rc \
-	  --cov-report term-missing $(PKG) tests
+	  --cov-report annotate,term-missing $(PKG) tests
 
 tox:
 	tox
