@@ -1,5 +1,6 @@
 import datetime
 import mock
+import html5lib
 from jinja2 import Environment
 from pytz import timezone, utc
 
@@ -86,10 +87,15 @@ class TestFilters(FlaskTestCase):
 
   def test_linkify(self):
     tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
+    rendered = tmpl.render()
+    el = html5lib.parseFragment(rendered)
+    self.assertEquals(len(el.getchildren()), 1)
+    el = el.getchildren()[0]
+    self.assertEquals(el.tag, u'{http://www.w3.org/1999/xhtml}a')
+    self.assertEquals(el.text, u'http://test.example.com')
     self.assertEquals(
-      tmpl.render(),
-      u'<a href="http://test.example.com" rel="nofollow">'
-      u'http://test.example.com</a>'
+      sorted(el.items()),
+      [(u'href', u'http://test.example.com'), (u'rel', u'nofollow')]
     )
 
   def test_nl2br(self):
