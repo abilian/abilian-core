@@ -55,7 +55,7 @@ def paragraphs(value):
 
 
 def labelize(s):
-  return " ".join([ w.capitalize() for w in s.split("_") ])
+  return u" ".join([ w.capitalize() for w in s.split(u"_") ])
 
 
 def filesize(d):

@@ -1,5 +1,5 @@
 import datetime
-from nose.tools import eq_
+import mock
 from jinja2 import Environment
 from pytz import timezone, utc
 
@@ -7,10 +7,10 @@ from flask import Flask
 from flask.ext.testing import TestCase as FlaskTestCase
 from flask.ext.babel import Babel
 
-from ..filters import init_filters, filesize, date_age
+from .. import filters
 
 env = Environment()
-init_filters(env)
+filters.init_filters(env)
 
 
 def en_locale():
@@ -33,28 +33,69 @@ class TestFilters(FlaskTestCase):
     babel.timezoneselector(user_tz)
     return app
 
+  def test_labelize(self):
+    labelize = filters.labelize
+    self.assertEquals(u'Test Case', labelize(u'test_case'))
+
   def test_filesize(self):
-    eq_("100&nbsp;B", str(filesize(100)))
-    eq_("1.0&nbsp;kB", str(filesize(1000)))
-    eq_("1.1&nbsp;kB", str(filesize(1100)))
-    eq_("10&nbsp;kB", str(filesize(10000)))
+    filesize = filters.filesize
+    self.assertEquals("100&nbsp;B", str(filesize('100')))
+    self.assertEquals("100&nbsp;B", str(filesize(100)))
+    self.assertEquals("1.0&nbsp;kB", str(filesize(1000)))
+    self.assertEquals("1.1&nbsp;kB", str(filesize(1100)))
+    self.assertEquals("10&nbsp;kB", str(filesize(10000)))
+    self.assertEquals("1.1&nbsp;MB", str(filesize(1100100)))
+    self.assertEquals("10&nbsp;MB", str(filesize(10000000)))
+    self.assertEquals("1.1&nbsp;GB", str(filesize(1100100000)))
+    self.assertEquals("100&nbsp;GB", str(filesize(100000000000)))
+
+  def test_roughsize(self):
+    roughsize = filters.roughsize
+    self.assertEquals(u'6', roughsize(6))
+    self.assertEquals(u'15', roughsize(15))
+    self.assertEquals(u'130+', roughsize(134))
+    self.assertEquals(u'10+', roughsize(15, above=10))
+    self.assertEquals(u'55+', roughsize(57, mod=5))
 
   def test_date_age(self):
+    date_age = filters.date_age
     now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
 
+    self.assertEquals("", date_age(None))
     dt = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
-    eq_("2012-06-10 18:10 (1 minute ago)", date_age(dt, now))
+    self.assertEquals("2012-06-10 18:10 (1 minute ago)", date_age(dt, now))
 
     dt = datetime.datetime(2012, 6, 10, 10, 8, 10, tzinfo=utc)
-    eq_("2012-06-10 18:08 (2 minutes ago)", date_age(dt, now))
+    self.assertEquals("2012-06-10 18:08 (2 minutes ago)", date_age(dt, now))
 
     dt = datetime.datetime(2012, 6, 10, 8, 30, 10, tzinfo=utc)
-    eq_("2012-06-10 16:30 (2 hours ago)", date_age(dt, now))
+    self.assertEquals("2012-06-10 16:30 (2 hours ago)", date_age(dt, now))
+
+    # for coverage: test when using default parameter now=None
+    dt_patcher = mock.patch.object(filters.datetime, 'datetime',
+                                   mock.Mock(wraps=datetime.datetime))
+    with dt_patcher as mocked:
+      mocked.utcnow.return_value = now
+      self.assertEquals("2012-06-10 16:30 (2 hours ago)", date_age(dt))
+
+  def test_abbrev(self):
+    abbrev = filters.abbrev
+    self.assertEquals(u'test', abbrev(u'test', 20))
+    self.assertEquals(u'Longer test...e truncated',
+                      abbrev(u'Longer test. it should be truncated', 25))
+
+  def test_linkify(self):
+    tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
+    self.assertEquals(
+      tmpl.render(),
+      u'<a href="http://test.example.com" rel="nofollow">'
+      u'http://test.example.com</a>'
+    )
 
   def test_nl2br(self):
     tmpl = env.from_string(
       '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}')
-    eq_(tmpl.render(),
+    self.assertEquals(tmpl.render(),
         u'first line<br />\nsecond line<br />\n<br />\n  third, indented')
 
   def test_paragraphs(self):
@@ -69,7 +110,7 @@ class TestFilters(FlaskTestCase):
     Last one - a single line" | paragraphs }}
     ''')
 
-    eq_(tmpl.render(),
+    self.assertEquals(tmpl.render(),
         u'''<p>First paragraph<br />
     some text<br />
     with line return</p>
