@@ -2,8 +2,15 @@ language: python
 python:
   - "2.7"
 
+env:
+  - SQLALCHEMY_DATABASE_URI="sqlite://"
+  - SQLALCHEMY_DATABASE_URI="postgres://abilian_core_test:test_pw@localhost:5432/abilian_core_test_db"
+
 services:
   - redis-server
+
+addons:
+  postgresql: "9.3"
 
 # Install dependencies
 before_install:
@@ -19,6 +26,11 @@ install:
   - pip install pip==1.4.1
   - pip install -r etc/deps-frozen.txt --use-mirrors
   - pip install -r etc/deps-devel.txt --use-mirrors
+
+before_script:
+  - createuser -w -U postgres -DRS abilian_core_test
+  - psql -w -U postgres -c "ALTER USER abilian_core_test WITH ENCRYPTED PASSWORD 'test_pw';"
+  - createdb -w -U postgres -E utf-8 -O abilian_core_test abilian_core_test_db
 
 # Run tests
 script:
