@@ -41,6 +41,7 @@ Mako==0.8.1
 Markdown==2.3.1
 MarkupSafe==0.18
 paramiko==1.11.0
+pathlib==1.0
 passlib==1.6.2
 pep8==1.4.6
 phonenumbers==5.4b1
