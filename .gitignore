@@ -6,6 +6,7 @@
 .vagrant
 .cache
 .coveralls.yml
+*,cover
 
 env
 whoosh*
