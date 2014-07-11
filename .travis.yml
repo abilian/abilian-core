@@ -7,6 +7,7 @@ before_install:
  - sudo apt-get update
  - sudo apt-get install -y poppler-utils
  - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
+ - sudo npm install -g less
 
 # Install Python dependencies
 install:
@@ -16,7 +17,7 @@ install:
 
 # Run tests
 script:
-  - py.test -q --cov abilian --cov-report term-missing tests abilian
+  - py.test --tb=short -q --cov abilian --cov-report term-missing abilian tests
   - sphinx-build -W -b html docs/ docs/_build/
 
 after_success:
