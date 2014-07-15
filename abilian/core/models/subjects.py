@@ -159,10 +159,6 @@ class User(Principal, UserMixin, db.Model):
   # Other properties
   #
   @property
-  def username(self):
-    return (self.first_name or "") + (self.last_name or "")
-
-  @property
   def name(self):
     name = u'{first_name} {last_name}'.format(first_name=self.first_name or u'',
                                               last_name=self.last_name or u'')
