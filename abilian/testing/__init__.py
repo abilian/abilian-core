@@ -17,12 +17,22 @@ from flask import url_for
 from flask.ext.testing import TestCase
 from flask.ext.login import login_user, logout_user
 from abilian.core.models.subjects import User
+from flask.ext.assets import Bundle
 from abilian.app import Application
 
 assert not 'twill' in subprocess.__file__
 
 
 __all__ = ['TestConfig', 'BaseTestCase']
+
+
+class NullBundle(Bundle):
+  """
+  This bundle class emits no url, thus avoid any asset build. Saves a lot of
+  time during tests.
+  """
+  def urls(self):
+    return []
 
 
 class TestConfig(object):
@@ -100,6 +110,8 @@ class BaseTestCase(TestCase):
   #'session_repository' services are always started, do not list them here.
   SERVICES = ()
 
+  #: enable assets building during tests. False by default.
+  TESTING_BUILD_ASSETS = False
   @classmethod
   def setUpClass(cls):
     TestCase.setUpClass()
@@ -151,6 +163,11 @@ class BaseTestCase(TestCase):
 
   def setUp(self):
     TestCase.setUp(self)
+    if not self.TESTING_BUILD_ASSETS:
+      extensions = self.app.jinja_env.extensions
+      assets_ext = extensions['webassets.ext.jinja2.AssetsExtension']
+      assets_ext.BundleClass = NullBundle
+
     # session_repository must be started before session is created, as it must
     # receive all transactions events. It also requires 'repository'.
     self.app.services['repository'].start()
