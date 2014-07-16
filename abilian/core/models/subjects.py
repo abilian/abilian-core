@@ -8,6 +8,7 @@ else, like "people" or "principal" ?
 """
 from __future__ import absolute_import
 
+from abc import ABCMeta, abstractmethod, abstractproperty
 import bcrypt
 from datetime import datetime, timedelta
 
@@ -47,6 +48,77 @@ administratorship = Table(
 )
 
 
+class PasswordStrategy(object):
+  """
+
+  """
+  __metaclass__ = ABCMeta
+
+  @abstractproperty
+  def name(self):
+    """
+    Strategy name.
+    """
+
+  @abstractmethod
+  def authenticate(self, user, password):
+    """
+    Predicate to tell wether password match user's or not.
+    """
+
+  @abstractmethod
+  def process(self, user, password):
+    """
+    Return a string to be stored as user password
+    """
+
+class ClearPasswordStrategy(PasswordStrategy):
+  """
+  Don't encrypt at all.
+
+  This strategy should not ever be used elsewhere than in tests. It's useful
+  in tests since a hash like bcrypt is designed to be slow.
+  """
+  @property
+  def name(self):
+    return "clear"
+
+  def authenticate(self, user, password):
+    return user.password == password
+
+  def process(self, user, password):
+    if not isinstance(password, unicode):
+      password = password.decode('utf-8')
+    return password
+
+
+class BcryptPasswordStrategy(PasswordStrategy):
+  """
+  Hash passwords using bcrypt.
+  """
+
+  @property
+  def name(self):
+    return 'bcrypt'
+
+  def authenticate(self, user, password):
+    current_passwd = user.password
+    # crypt work only on str, not unicode
+    if isinstance(current_passwd, unicode):
+      current_passwd = current_passwd.encode('utf-8')
+    if isinstance(password, unicode):
+      password = password.encode('utf-8')
+
+    return bcrypt.hashpw(password, current_passwd) == current_passwd
+
+
+  def process(self, user, password):
+    if isinstance(password, unicode):
+      password = password.encode('utf-8')
+
+    return bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
+
+
 class UserQuery(Query):
   def get_by_email(self, email):
     return self.filter_by(email=email).one()
@@ -61,6 +133,8 @@ class User(Principal, UserMixin, db.Model):
   __tablename__ = 'user'
   __editable__ = ['first_name', 'last_name', 'email', 'password']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
+
+  __password_strategy__ = BcryptPasswordStrategy()
 
   entity_type = u'{}.{}'.format(__module__, 'User')
 
@@ -99,24 +173,14 @@ class User(Principal, UserMixin, db.Model):
       self.set_password(password)
 
   def authenticate(self, password):
-    # crypt work only on str, not unicode
     if self.password and self.password != "*":
-      current_passwd = self.password
-      if isinstance(current_passwd, unicode):
-        current_passwd = self.password.encode('utf-8')
-      if isinstance(password, unicode):
-        password = password.encode('utf-8')
-
-      return bcrypt.hashpw(password, current_passwd) == current_passwd
+      return self.__password_strategy__.authenticate(self, password)
     else:
       return False
 
   def set_password(self, password):
     """Encrypts and sets password."""
-    if isinstance(password, unicode):
-      password = password.encode('utf-8')
-
-    self.password = bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
+    self.password = self.__password_strategy__.process(self, password)
 
   def follow(self, followee):
     if followee == self:

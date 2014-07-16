@@ -16,15 +16,17 @@ from sqlalchemy.exc import SAWarning
 from flask import url_for
 from flask.ext.testing import TestCase
 from flask.ext.login import login_user, logout_user
-from abilian.core.models.subjects import User
 from flask.ext.assets import Bundle
 from abilian.app import Application
+from abilian.core.models.subjects import User, ClearPasswordStrategy
 
 assert not 'twill' in subprocess.__file__
 
 
 __all__ = ['TestConfig', 'BaseTestCase']
 
+_CLEAR_PWD = ClearPasswordStrategy()
+_DEFAULT_PWD = User.__password_strategy__
 
 class NullBundle(Bundle):
   """
@@ -112,6 +114,11 @@ class BaseTestCase(TestCase):
 
   #: enable assets building during tests. False by default.
   TESTING_BUILD_ASSETS = False
+
+  #: set to False to use cryptographic scheme (standard) for user password. By
+  #: default the testcase switches to clear text to avoid longer running.
+  CLEAR_PASSWORDS = True
+
   @classmethod
   def setUpClass(cls):
     TestCase.setUpClass()
@@ -163,6 +170,9 @@ class BaseTestCase(TestCase):
 
   def setUp(self):
     TestCase.setUp(self)
+
+    User.__password_strategy__ = _CLEAR_PWD if self.CLEAR_PASSWORDS else _DEFAULT_PWD
+
     if not self.TESTING_BUILD_ASSETS:
       extensions = self.app.jinja_env.extensions
       assets_ext = extensions['webassets.ext.jinja2.AssetsExtension']
@@ -215,6 +225,9 @@ class BaseTestCase(TestCase):
     self.db.engine.dispose()
     self.app.services['session_repository'].stop()
     self.app.services['repository'].stop()
+
+    User.__password_strategy__ = _DEFAULT_PWD
+
     TestCase.tearDown(self)
 
   def login(self, user, remember=False, force=False):

@@ -19,6 +19,8 @@ class TestAuth(BaseTestCase):
 
   config_class = AuthTestConfig
 
+  CLEAR_PASSWORDS = False
+
   def test_login_post(self):
     kwargs = dict(email=u'user@domain.tld', password='azerty', can_login=True)
     u = User(**kwargs)
