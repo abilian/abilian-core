@@ -170,18 +170,21 @@ class Pagination(object):
         yield num
         last = num
 
+_NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
 
-def slugify(value, separator="-"):
-  """Slugify an unicode string, to make it URL friendly."""
-  if not isinstance(value, unicode):
-    value = unicode(value)
+def slugify(value, separator=u"-"):
+  """
+    Slugify an unicode string, to make it URL friendly.
+  """
+  value = unicode(value)
+  separator = unicode(separator)
+  value = _NOT_WORD_RE.sub(u' ', value)
   value = unicodedata.normalize('NFKD', value)
   value = value.encode('ascii', 'ignore')
   value = value.decode('ascii')
-  value = re.sub('[^\w\s-]', ' ', value)
   value = value.strip().lower()
-  value = re.sub('[%s\s]+' % separator, separator, value)
-  return str(value)
+  value = re.sub(r'[%s_\s]+' % separator, separator, value)
+  return value
 
 
 class BasePresenter(object):

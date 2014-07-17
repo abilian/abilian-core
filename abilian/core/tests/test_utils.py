@@ -45,12 +45,30 @@ class TestPagination(TestCase):
 
 class TestSlugify(TestCase):
 
-  def test1(self):
-    slug = slugify(u"a b c")
-    assert slug == 'a-b-c'
-    assert isinstance(slug, str)
+  def test_basic(self):
+    slug = slugify(u'a b c')
+    assert slug == u'a-b-c'
+    assert isinstance(slug, unicode)
+    assert slugify(slug) == u'a-b-c' # idempotent
 
-  def test2(self):
-    slug = slugify(u"C'est l'été")
-    assert slug == 'c-est-l-ete'
-    assert isinstance(slug, str)
+  def test_separator(self):
+    slug = slugify(u"a-b++ c-+", u'+')
+    assert slug == u'a+b+c'
+
+  def test_non_unicode_input(self):
+    slug = slugify(b"a b c")
+    assert slug == u'a-b-c'
+    assert isinstance(slug, unicode)
+
+  def test_non_ascii(self):
+    slug = slugify(u"C'est l'été !")
+    assert slug == u'c-est-l-ete'
+
+    # with a special space character
+    slug = slugify(u"a_b\u205fc") # U+205F: MEDIUM MATHEMATICAL SPACE
+    assert slug == u'a-b-c'
+
+    # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH
+    # U+2014 (—).
+    # this test fails if regexp subst is done after unicode normalization
+    assert slugify(u'a\u2013b\u2014c') == u'a-b-c'
