@@ -37,3 +37,4 @@ abilian/static/placeholders
 *.prof
 *.stats
 *.mo
+.cov2emacs.log
