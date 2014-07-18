@@ -15,10 +15,10 @@ from sqlalchemy.types import Integer, String, UnicodeText
 from sqlalchemy import event
 
 from .extensions import db
-from .util import memoized, friendly_fqcn
+from .util import memoized, friendly_fqcn, slugify
 from .models import BaseMixin
 from .models.base import (
-  Indexable, SYSTEM, SEARCHABLE, EDITABLE
+  Indexable, SYSTEM, SEARCHABLE, EDITABLE, NOT_SEARCHABLE
 )
 
 __all__ = ['Entity', 'all_entity_classes', 'db', 'ValidationError']
@@ -59,7 +59,28 @@ event.listen(mapper, 'before_update', before_update_listener)
 event.listen(mapper, 'before_delete', before_delete_listener)
 
 
+def auto_slug_on_insert(mapper, connection, target):
+  """
+  Generates a slug from :prop:`Entity.auto_slug` for new entities, unless slug
+  is already set.
+  """
+  if target.slug is None and target.name:
+    target.slug = target.auto_slug
+
+def auto_slug_after_insert(mapper, connection, target):
+  """
+  Generates a slug from entity_type and id, unless slug is already set.
+  """
+  if target.slug is None:
+    target.slug = u'{name}{sep}{id}'.format(name=target.entity_class.lower(),
+                                            sep=target.SLUG_SEPARATOR,
+                                            id=target.id)
+
 class _EntityInherit(object):
+  """
+  Mixin for Entity subclasses. Entity meta-class takes care of inserting it in
+  base classes.
+  """
   __indexable__ = True
 
   @declared_attr
@@ -96,7 +117,13 @@ class EntityMeta(BaseMeta):
       if d.get('entity_type') is None:
         d['entity_type'] = d['__module__'] + '.' + classname
 
-    return BaseMeta.__new__(mcs, classname, bases, d)
+      d['SLUG_SEPARATOR'] = unicode(d.get('SLUG_SEPARATOR',
+                                          Entity.SLUG_SEPARATOR))
+
+    cls = BaseMeta.__new__(mcs, classname, bases, d)
+    event.listen(cls, 'before_insert', auto_slug_on_insert)
+    event.listen(cls, 'after_insert', auto_slug_after_insert)
+    return cls
 
   def __init__(cls, classname, bases, d):
     bases = cls.__bases__
@@ -111,6 +138,18 @@ class Entity(Indexable, BaseMixin, db.Model):
   <http://docs.sqlalchemy.org/en/rel_0_8/orm/inheritance.html#joined-table-inheritance>`_,
   thus entities subclasses cannot use inheritance themselves (as of 2013
   Sqlalchemy does not support multi-level inheritance)
+
+  The name is a string that is shown to the user; it could be a title
+  for document, a folder name, etc.
+
+  The slug attribute may be used in URLs to reference the entity, but
+  uniqueness is not enforced, even within same entity type. For example
+  if an entity class represent folders, one could want uniqueness only
+  within same parent folder.
+
+  If slug is empty at first creation, its is derived from the name. When name
+  changes the slug is not updated. If name is also empty, the slug will be the
+  friendly entity_type with concatenated with entity's id.
   """
   __metaclass__ = EntityMeta
   __mapper_args__ = {'polymorphic_on': '_entity_type'}
@@ -122,9 +161,13 @@ class Entity(Indexable, BaseMixin, db.Model):
   __indexation_args__['index_to'] = index_to
   del index_to
 
+  SLUG_SEPARATOR = u'-' # \x2d \u002d HYPHEN-MINUS
+
   name = Column('name', UnicodeText(),
                 info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'name_prefix',
                                                         'text')))
+
+  slug = Column('slug', UnicodeText(), info=NOT_SEARCHABLE)
 
   _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None
@@ -147,6 +190,16 @@ class Entity(Indexable, BaseMixin, db.Model):
     db.Model.__init__(self, *args, **kwargs)
     BaseMixin.__init__(self)
 
+  @property
+  def auto_slug(self):
+    """
+    This property is used to auto-generate a slug from the name attribute.
+    It can be customized by subclasses.
+    """
+    slug = self.name
+    if slug is not None:
+      slug = slugify(slug, separator=self.SLUG_SEPARATOR)
+    return slug
 
 # TODO: make this unecessary
 @event.listens_for(Entity, 'class_instrument', propagate=True)
