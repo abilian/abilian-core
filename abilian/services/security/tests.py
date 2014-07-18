@@ -11,7 +11,7 @@ from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
 from . import (security, RoleAssignment, InheritSecurity, Role,
-               Anonymous, Authenticated, Admin)
+               Admin)
 
 
 TEST_EMAIL = u"joe@example.com"
