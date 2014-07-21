@@ -20,7 +20,7 @@ class TestActions(BaseTestCase):
     BaseTestCase.setUp(self)
     actions.init_app(self.app)
     actions.register(BASIC, CONDITIONAL, OTHER_CAT)
-    actions._before_request()
+    actions._init_context(self.app)
     actions.context['show_all'] = True
 
   def test_installed(self):

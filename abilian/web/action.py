@@ -2,6 +2,7 @@
 import logging
 from jinja2 import Template, Markup
 from flask import current_app, g, url_for
+from flask.signals import appcontext_pushed
 
 log = logging.getLogger(__name__)
 
@@ -203,7 +204,7 @@ class ActionRegistry(object):
       return
 
     app.extensions[self.__EXTENSION_NAME] = dict(categories=dict())
-    app.before_request(self._before_request)
+    appcontext_pushed.connect(self._init_context, app)
 
     @app.context_processor
     def add_registry_to_jinja_context():
@@ -268,7 +269,7 @@ class ActionRegistry(object):
   def _state(self):
     return current_app.extensions[self.__EXTENSION_NAME]
 
-  def _before_request(self):
+  def _init_context(self, sender):
     g.action_context = {}
 
   @property
