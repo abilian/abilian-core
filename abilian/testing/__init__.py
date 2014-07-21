@@ -52,6 +52,11 @@ class TestConfig(object):
   CSRF_ENABLED = False
   WTF_CSRF_ENABLED = False
 
+  # during tests let httpexceptions be raised
+  TRAP_HTTP_EXCEPTIONS = False
+  TRAP_BAD_REQUEST_ERRORS = True
+
+
   CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
   CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
