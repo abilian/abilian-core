@@ -12,6 +12,7 @@ from jinja2 import nodes
 
 from werkzeug.local import LocalProxy
 from flask import current_app
+from flask.signals import request_started, got_request_exception
 from flask.globals import _request_ctx_stack, _lookup_req_object
 
 deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
@@ -31,7 +32,11 @@ class DeferredJS(object):
       return
 
     app.extensions[self.name] = self
-    app.before_request(self.reset_deferred)
+    request_started.connect(self.reset_request, app)
+    got_request_exception.connect(self.reset_request, app)
+
+  def reset_request(self, sender, **extra):
+    self.reset_deferred()
 
   def reset_deferred(self):
     _request_ctx_stack.top.deferred_js = []
