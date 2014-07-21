@@ -4,6 +4,7 @@ import os
 from unittest import TestCase, skip
 import sqlalchemy as sa
 from flask import Flask
+from flask.signals import request_started
 from wtforms import Form, TextField, IntegerField
 
 from abilian.testing import BaseTestCase
@@ -53,7 +54,7 @@ class TableViewTestCase(BaseTestCase):
       pass
 
     with self.app.test_request_context():
-      self.app.preprocess_request() # run before_request handlers: needed for deferJS
+      request_started.send(self.app) # needed for deferJS tag
       columns = ['name', 'price']
       view = MainTableView(columns)
 
