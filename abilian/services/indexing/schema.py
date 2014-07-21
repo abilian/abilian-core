@@ -50,6 +50,7 @@ class _DefaultSearchSchema(SchemaClass):
                          stored=True, unique=False)
 
   name = TEXT(stored=True, analyzer=accent_folder)
+  slug = ID(stored=True)
   description = TEXT(stored=True, analyzer=accent_folder)
   text = TEXT(stored=False, analyzer=accent_folder)
 

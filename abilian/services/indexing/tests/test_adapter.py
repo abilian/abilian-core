@@ -63,13 +63,13 @@ class TestSAAdapter(TestCase):
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     self.assertEquals(adapter.indexable, True)
     self.assertEquals(set(adapter.doc_attrs),
-                      set(('object_key', 'id', 'name', 'object_type',
+                      set(('object_key', 'id', 'name', 'slug', 'object_type',
                            'text', 'created_at', 'updated_at', 'name_prefix',
                            'owner', 'owner_name', 'creator_name', 'creator')))
     self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
 
     self.assertEquals(set(schema.names()),
-                      set(('object_key', 'id', 'object_type', 'name',
+                      set(('object_key', 'id', 'object_type', 'name', 'slug',
                            'text', 'created_at', 'updated_at', 'name_prefix',
                            'owner', 'owner_name', 'creator_name', 'creator')))
 
@@ -92,17 +92,19 @@ class TestSAAdapter(TestCase):
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     expected = dict(
       id=2,
-      name=u'entity',
+      name=u'entity name',
       created_at=datetime(2013, 11, 28, 16, 17, 0),
       updated_at=datetime(2013, 11, 29, 12, 17, 58)
     )
     obj = SubclassEntityIndexable(**expected)
+    obj.slug = obj.auto_slug
     expected['creator_name'] = u''
     expected['owner_name'] = u''
     expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
     expected['object_key'] = u'test_adapter.SubclassEntityIndexable:2'
-    expected['text'] = u'entity'
-    expected['name_prefix'] = u'entity'
+    expected['text'] = u'entity name'
+    expected['slug'] = 'entity-name'
+    expected['name_prefix'] = u'entity name'
     self.assertEquals(adapter.get_document(obj), expected)
 
     # test retrieve related attributes

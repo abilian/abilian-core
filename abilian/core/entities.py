@@ -167,7 +167,7 @@ class Entity(Indexable, BaseMixin, db.Model):
                 info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'name_prefix',
                                                         'text')))
 
-  slug = Column('slug', UnicodeText(), info=NOT_SEARCHABLE)
+  slug = Column('slug', UnicodeText(), info=SEARCHABLE)
 
   _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None
@@ -200,6 +200,7 @@ class Entity(Indexable, BaseMixin, db.Model):
     if slug is not None:
       slug = slugify(slug, separator=self.SLUG_SEPARATOR)
     return slug
+
 
 # TODO: make this unecessary
 @event.listens_for(Entity, 'class_instrument', propagate=True)
