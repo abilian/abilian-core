@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Indexing service for Abilian.
 
@@ -9,6 +10,8 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :copyright: (c) 2012 by Karl Gyllstrom
 :license: BSD (see LICENSE.txt)
 """
+from __future__ import absolute_import
+
 import os
 import logging
 from inspect import isclass
@@ -18,6 +21,7 @@ from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 
 import whoosh.index
+from whoosh.collectors import WrappingCollector
 from whoosh.filedb.filestore import RamStorage, FileStorage
 from whoosh.writing import AsyncWriter, CLEAR
 from whoosh.qparser import DisMaxParser
@@ -45,6 +49,22 @@ logger = logging.getLogger(__name__)
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
 _pending_indexation_attr = 'abilian_pending_indexation'
+
+# as of whoosh 2.5.7, a method is missing on WrappingCollector. See
+# https://bitbucket.org/mchaput/whoosh/issue/394/error-when-searching-with-groupedby-and
+_PATCHED = False
+
+if not _PATCHED:
+  def wrapping_collector_remove(self, global_docnum):
+    return self.child.remove(global_docnum)
+
+  from abilian.core.logging import patch_logger
+  patch_logger.info(WrappingCollector.remove)
+  WrappingCollector.remove = wrapping_collector_remove
+  _PATCHED = True
+  del patch_logger
+  del wrapping_collector_remove
+## END PATCH
 
 class IndexServiceState(ServiceState):
   whoosh_base = None
@@ -290,7 +310,8 @@ class WhooshIndexService(Service):
 
     if filters:
       filter_q = wq.And(filters) if len(filters) > 1 else filters[0]
-      search_args['filter'] = filter_q
+      #search_args['filter'] = filter_q
+      query = filter_q & query
 
     if facet_by_type:
       if not object_types:
