@@ -8,9 +8,10 @@ from collections import OrderedDict
 
 import whoosh
 import whoosh.sorting
+
 from flask import (
   Blueprint, request, g, render_template, current_app, url_for,
-  jsonify,
+  json, jsonify, render_template_string
 )
 
 from abilian.i18n import _
@@ -176,6 +177,25 @@ def search_main(q=u'', page=1):
                          next_pages_numbered=next_pages_numbered,
                          friendly_fqcn=friendly_fqcn,)
 
+_JSON_HTML = u'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="{{ url_for('abilian_static', filename="highlightjs/default.min.css") }}" />
+</head>
+<body>
+  <pre>
+  <code class="json">
+{{ content }}
+  </code>
+  </pre>
+
+  <script src="{{ url_for('abilian_static', filename="highlightjs/highlight.min.js")  }}" ></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
+'''
 
 @route('/live')
 def live(q=u'', page=None):
@@ -195,4 +215,12 @@ def live(q=u'', page=None):
     datasets[typename] = dataset
 
   response['results'] = datasets
-  return jsonify(response)
+
+  best_mime = request.accept_mimetypes.best_match(['text/html',
+                                                   'application/json'])
+  if best_mime == 'application/json':
+    return jsonify(response)
+
+  # dev requesting from browser? serve html, let debugtoolbar show up, etc...
+  content = json.dumps(response, indent=2)
+  return render_template_string(_JSON_HTML, content=content)
