@@ -42,7 +42,8 @@ load-plugins=
 
 # R0201: Method could be a function
 # W0142: used * or ** magic
-disable=R0201,W0142
+# R0903: Too few public methods
+disable=R0201,W0142,R0903
 
 
 [REPORTS]
