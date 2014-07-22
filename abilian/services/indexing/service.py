@@ -200,7 +200,9 @@ class WhooshIndexService(Service):
     state.indexed_classes = set()
     state.indexed_fqcn = set()
     self.clear_update_queue()
-    self.stop()
+
+    if self.running:
+      self.stop()
 
   def index(self, name='default'):
     return self.app_state.indexes[name]
