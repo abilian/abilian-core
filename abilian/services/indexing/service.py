@@ -163,6 +163,12 @@ class WhooshIndexService(Service):
       state.indexes[name] = index
 
   def clear(self):
+    """
+    Remove all content from indexes, and unregister all classes.
+
+    After clear() the service is stopped. It must be started again to create
+    new indexes and register classes.
+    """
     logger.info('Resetting indexes')
     state = self.app_state
 
@@ -174,6 +180,7 @@ class WhooshIndexService(Service):
     state.indexed_classes = set()
     state.indexed_fqcn = set()
     self.clear_update_queue()
+    self.stop()
 
   def index(self, name='default'):
     return self.app_state.indexes[name]
