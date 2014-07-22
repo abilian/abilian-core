@@ -240,6 +240,7 @@ class User(Principal, UserMixin, db.Model):
 
 
 class Group(Principal, db.Model):
+  __indexable__ = False
   __tablename__ = 'group'
   __editable__ = ['name', 'description']
   __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
