@@ -76,6 +76,9 @@ class IndexServiceState(ServiceState):
 
 
 class WhooshIndexService(Service):
+  """
+  Index documents using whoosh
+  """
   name = 'indexing'
   AppStateClass = IndexServiceState
 
@@ -145,7 +148,7 @@ class WhooshIndexService(Service):
 
     for name, schema in self.schemas.iteritems():
       if current_app.testing:
-        storage = RamStorage()
+        storage = TestingStorage()
       else:
         index_path = os.path.join(state.whoosh_base, name)
         if not os.path.exists(index_path):
@@ -504,3 +507,18 @@ def index_update(index, items):
         updated.add(object_key)
 
   session.close()
+
+
+class TestingStorage(RamStorage):
+  """
+  RamStorage whoses temp_storage method returns another TestingStorage
+  instead of a FileStorage.
+
+  Reason is that FileStorage.temp_storage() creates temp file in
+
+  /tmp/index_name.tmp/, which is subject to race conditions when many
+  tests are ran in parallel, including different abilian-based packages.
+  """
+
+  def temp_storage(self, name=None):
+    return TestingStorage()
