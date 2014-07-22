@@ -23,6 +23,9 @@ _patch_logger.propagate = False
 class PatchLoggerAdapter(logging.LoggerAdapter):
 
   def process(self, msg, kwargs):
+    if isinstance(msg, basestring):
+      return super(PatchLoggerAdapter, self).process(msg, kwargs)
+
     func = msg
     return '{}.{}'.format(func.__module__, func.__name__), kwargs
 

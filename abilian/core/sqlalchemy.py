@@ -15,6 +15,7 @@ from sqlalchemy.ext.mutable import Mutable
 
 from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
 
+from .logging import patch_logger
 logger = logging.getLogger(__name__)
 
 FLASK_SA_VERSION = pkg_resources.get_distribution('Flask-SQLAlchemy').version
@@ -104,7 +105,7 @@ def _calling_context(app_path):
   return sa_caller
 
 import flask.ext.sqlalchemy as flask_sa
-logger.info('PATCH flask.ext.sqlalchemy._calling_context')
+patch_logger.info(flask_sa._calling_context)
 flask_sa._calling_context = _calling_context
 del flask_sa
 ## END PATCH

@@ -12,6 +12,8 @@ from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from flask.ext.wtf.form import Form as BaseForm
 
+from abilian.core.logging import patch_logger
+
 from .fields import *
 from .filters import *
 from .validators import *
@@ -41,7 +43,6 @@ class Form(BaseForm):
 _PATCHED = False
 
 if not _PATCHED:
-  logger.debug('Patching %s', repr(Field))
   Field.view_template = None
 
   _wtforms_Field_init = Field.__init__
@@ -56,6 +57,7 @@ if not _PATCHED:
 
     self.view_widget = view_widget
 
+  patch_logger.info(Field.__init__)
   Field.__init__ = _core_field_init
   del _core_field_init
 
@@ -67,6 +69,7 @@ if not _PATCHED:
 
     return _wtforms_Field_render(self, **kwargs)
 
+  patch_logger.info(Field.__call__)
   Field.__call__ = _core_field_render
   del _core_field_render
 
@@ -82,6 +85,7 @@ if not _PATCHED:
 
     return DefaultViewWidget().render_view(self, **kwargs)
 
+  patch_logger.info('Add method %s.Field.render_view' % Field.__module__)
   Field.render_view = render_view
   del render_view
 
@@ -93,10 +97,9 @@ if not _PATCHED:
     return (self.flags.hidden
             or isinstance(self, HiddenField))
 
+  patch_logger.info('Add method %s.Field.is_hidden' % Field.__module__)
   Field.is_hidden = property(is_hidden)
   del is_hidden
 
   _PATCHED = True
 ### END PATCH wtforms.field.core.Field #################
-
-

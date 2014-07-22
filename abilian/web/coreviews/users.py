@@ -48,13 +48,12 @@ def photo(user):
   r = make_response(data)
   r.headers['content-type'] = 'image/jpeg'
 
-  if not user.id == g.user.id:
+  if not self_photo:
     r.headers.add('Cache-Control', 'public, max-age=600')
   else:
-    # user always checks its own mugshot is up-to-date, in order to seeing old
-    # one immediatly after having uploaded of a new picture.
+    # user always checks its own mugshot is up-to-date, in order to avoid seeing
+    # old one immediatly after having uploaded of a new picture.
     r.headers.add('Cache-Control', 'private, must-revalidate')
     r.set_etag(etag)
 
   return r
-
