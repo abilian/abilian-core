@@ -140,6 +140,7 @@ class Action(object):
     self.condition = condition
 
     self._active = True
+    self.template = None
 
   #: Boolean. Inactive actions are unconditionnaly skipped.
   @getset
@@ -235,8 +236,10 @@ class Action(object):
     params.update(actions.context)
     params.update(kwargs)
     params['url'] = self.url(params)
-    tmpl = Template(self.template_string)
-    return Markup(tmpl.render(params))
+    if not self.template:
+      self.template = Template(self.template_string)
+
+    return Markup(self.template.render(params))
 
   def url(self, context=None):
     if callable(self._url):
