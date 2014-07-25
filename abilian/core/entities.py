@@ -115,7 +115,17 @@ class EntityMeta(BaseMeta):
         d['id'] = _EntityInherit.id
 
       if d.get('entity_type') is None:
-        d['entity_type'] = d['__module__'] + '.' + classname
+        entity_type_base = d.get('ENTITY_TYPE_BASE')
+        if not entity_type_base:
+          for base in bases:
+            entity_type_base = getattr(base, 'ENTITY_TYPE_BASE', None)
+            if entity_type_base:
+              break
+          else:
+            # no break happened during loop: use default type base
+            entity_type_base = d['__module__']
+
+        d['entity_type'] = entity_type_base + '.' + classname
 
       d['SLUG_SEPARATOR'] = unicode(d.get('SLUG_SEPARATOR',
                                           Entity.SLUG_SEPARATOR))

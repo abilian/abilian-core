@@ -9,7 +9,7 @@ import sqlalchemy as sa
 
 from abilian.core.models.base import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE, Info
 from abilian.core.models.subjects import User
-
+from abilian.core.entities import Entity
 from .dummy import DummyContact
 
 
@@ -84,6 +84,32 @@ class EntityTestCase(TestCase):
     session.flush()
     expected = u'dummycontact-{}'.format(contact.id)
     self.assertEquals(contact.slug, expected)
+
+  def test_entity_type(self):
+    class MyType(Entity):
+      pass
+
+    expected = __name__ + '.MyType'
+    self.assertEquals(MyType.entity_type, expected)
+
+    class Fixed(Entity):
+      entity_type = 'some.fixed.module.fixed_type'
+
+    self.assertEquals(Fixed.entity_type, 'some.fixed.module.fixed_type')
+
+    class OtherBase(Entity):
+      ENTITY_TYPE_BASE = 'some.module'
+
+    self.assertEquals(OtherBase.entity_type, 'some.module.OtherBase')
+
+    # test when ENTITY_TYPE_BASE is in ancestors
+    class Base(object):
+      ENTITY_TYPE_BASE = 'from.ancestor'
+
+    class InheritedBase(Base, Entity):
+      pass
+
+    self.assertEquals(InheritedBase.entity_type, 'from.ancestor.InheritedBase')
 
 
 class InfoTestCase(TestCase):
