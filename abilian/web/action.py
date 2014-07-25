@@ -15,6 +15,55 @@ def getset(f):
   return property(f, f)
 
 
+class Icon(object):
+  """
+  Base abstract class for icons
+  """
+  def __html__(self):
+    raise NotImplementedError
+
+  def __unicode__(self):
+    return self.__html__()
+
+
+class Glyphicon(Icon):
+  """
+  Renders markup for bootstrap's glyphicons
+  """
+  template = Template(u'<i class="glyphicon glyphicon-{{ name }}"></i>')
+
+  def __init__(self, name):
+    self.name = name
+
+  def __html__(self):
+    return self.template.render(name=self.name)
+
+
+class StaticIcon(Icon):
+  """
+  Renders markup for icon located in static folder served by `endpoint`.
+
+  Default endpoint is application static folder.
+  """
+  template = Template(u'<img src="{{ url }}" '
+                      u'width="{{ width }}" height="{{ height }}" />')
+
+  def __init__(self, filename, endpoint='static', width=12, height=12, size=None):
+    self.filename = filename
+    self.endpoint = endpoint
+
+    if size is not None:
+      width = height = size
+
+    self.width = width
+    self.height = height
+
+  def __html__(self):
+    return self.template.render(
+      url=url_for(self.endpoint, filename=self.filename),
+      width=self.width,
+      height=self.height)
+
 class Action(object):
   """ Action interface.
   """
@@ -36,7 +85,7 @@ class Action(object):
 
   template_string = (
     u'<a href="{{ url }}">'
-    u'{%- if action.icon %}<i class="glyphicon glyphicon-{{ action.icon }}"></i> {% endif %}'
+    u'{%- if action.icon %}{{ action.icon }} {% endif %}'
     u'{{ action.title }}'
     u'</a>'
   )
@@ -48,6 +97,8 @@ class Action(object):
 
     self.title = title
     self.description = description
+    if isinstance(icon, basestring):
+      icon = Glyphicon(icon)
     self.icon = icon
     self._url = url
     self.endpoint = endpoint
@@ -162,7 +213,7 @@ class Action(object):
 class ModalActionMixin(object):
   template_string = (
     u'<a href="{{ url }}" data-toggle="modal">'
-    u'{%- if action.icon %}<i class="glyphicon glyphicon-{{ action.icon }}"></i> {% endif %}'
+    u'{%- if action.icon %}{{ action.icon}} {% endif %}'
     u'{{ action.title }}'
     u'</a>'
   )
@@ -173,7 +224,7 @@ class ButtonAction(Action):
     u'<button type="submit" class="btn btn-{{ action.btn_class }}" '
     u'name="{{ action.submit_name }}" '
     u'value="{{ action.name }}">'
-    u'{%- if action.icon %}<i class="glyphicon glyphicon-{{ action.icon }}"></i> {% endif %}'
+    u'{%- if action.icon %}{{ action.icon }} {% endif %}'
     u'{{ action.title }}</button>'
   )
 

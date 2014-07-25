@@ -12,7 +12,7 @@ from __future__ import absolute_import
 
 from jinja2 import Template, Markup
 from flask import url_for
-from .action import Action
+from .action import Action, Glyphicon
 
 
 class NavItem(Action):
@@ -35,7 +35,7 @@ class NavGroup(NavItem):
     <ul class="nav navbar-nav">
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
-          {%- if action.icon %}<i class="glyphicon glyphicon-{{ action.icon }}"></i>{% endif %}
+          {%- if action.icon %}{{ action.icon }}{% endif %}
           {{ action.title }} <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
@@ -93,8 +93,7 @@ class BreadcrumbItem(object):
 
   template_string = (
     u'<a href="{{ item.url }}">'
-    u'{%- if item.icon %}<i class="glyphicon glyphicon-{{ item.icon }}">'
-    u'</i> {%- endif %}'
+    u'{%- if item.icon %}{{ item.icon }} {%- endif %}'
     u'{{ item.label }}'
     u'</a>'
     )
@@ -102,6 +101,9 @@ class BreadcrumbItem(object):
   def __init__(self, label=u'', url=u'#', icon=None, description=None):
     assert label or icon
     self.label = label
+    if isinstance(icon, basestring):
+      icon = Glyphicon(icon)
+
     self.icon = icon
     self.description = description
     self._url = url
