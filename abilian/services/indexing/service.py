@@ -298,7 +298,8 @@ class WhooshIndexService(Service):
     if object_types:
       object_types &= self.app_state.indexed_fqcn
     else:
-      # don't show content previously indexed but not cleaned from index
+      # ensure we don't show content types previously indexed but not yet
+      # cleaned from index
       object_types = self.app_state.indexed_fqcn
 
     # limit object_type
