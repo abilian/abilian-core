@@ -73,7 +73,7 @@ class Admin(object):
 
     self.root_breadcrumb_item = BreadcrumbItem(
       label=self.nav_root.title,
-      url=Endpoint(self.nav_root.endpoint[0], **self.nav_root.endpoint[1])
+      url=self.nav_root.endpoint,
     )
 
     app.register_blueprint(self.blueprint)

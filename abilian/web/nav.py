@@ -12,7 +12,7 @@ from __future__ import absolute_import
 
 from jinja2 import Template, Markup
 from flask import url_for
-from .action import Action, Glyphicon
+from .action import Action, Endpoint, Glyphicon
 
 
 class NavItem(Action):
@@ -54,25 +54,6 @@ class NavGroup(NavItem):
 
   def append(self, item):
     self.items.append(item)
-
-
-class Endpoint(object):
-
-  # FIXME: *args doesn't seem to be relevant.
-  def __init__(self, name, *args, **kwargs):
-    self.name = name
-    self.args = args
-    self.kwargs = kwargs
-
-  def __unicode__(self):
-    return unicode(url_for(self.name, *self.args, **self.kwargs))
-
-  def __repr__(self):
-    return 'Endpoint({name}, *{args}, **{kwargs})'.format(
-      name=repr(self.name),
-      args=repr(self.args),
-      kwargs=repr(self.kwargs),
-      )
 
 
 class BreadcrumbItem(object):

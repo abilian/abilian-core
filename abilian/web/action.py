@@ -64,9 +64,41 @@ class StaticIcon(Icon):
       width=self.width,
       height=self.height)
 
+
+class Endpoint(object):
+
+  # FIXME: *args doesn't seem to be relevant.
+  def __init__(self, name, *args, **kwargs):
+    self.name = name
+    self.args = args
+    self.kwargs = kwargs
+
+  def get_kwargs(self):
+    """
+    Hook for subclasses.
+
+    The key and values in the returned dictionnary can be safely changed
+    without side effects on self.kwargs (provided you don't alter
+    mutable values, like calling list.pop()).
+    """
+    return self.kwargs.copy()
+
+  def __unicode__(self):
+    return unicode(url_for(self.name, *self.args, **self.get_kwargs()))
+
+  def __repr__(self):
+    return '{cls}({name}, *{args}, **{kwargs})'.format(
+      cls=self.__class__.__name__,
+      name=repr(self.name),
+      args=repr(self.args),
+      kwargs=repr(self.kwargs),
+      )
+
+
 class Action(object):
   """ Action interface.
   """
+  Endpoint = Endpoint
   category = None
   name = None
   title = None
@@ -74,9 +106,9 @@ class Action(object):
   icon = None
   _url = None
 
-  #: A string for a simple endpoint, a tuple ``(endpoint_name, kwargs)`` to be
-  #: passed to ``url_for(endpoint_name, **kwargs)`` or a callable which accept a
-  #: context dict and returns a valid value.
+  #: A :class:`Endpoint` instance, a string for a simple endpoint, a tuple
+  #: ``(endpoint_name, kwargs)``  or a callable which accept a : context dict
+  #: and returns one of those a valid values.
   endpoint = None
 
   #: A boolean (or something that can be converted to boolean), or a callable
@@ -102,6 +134,9 @@ class Action(object):
     self.icon = icon
     self._url = url
     self.endpoint = endpoint
+    if not callable(endpoint) and not isinstance(endpoint, Endpoint):
+    # property getter will make it and Endpoint instance
+      self.endpoint = self.endpoint
     self.condition = condition
 
     self._active = True
@@ -152,14 +187,17 @@ class Action(object):
     if endpoint is None:
       return
 
-    if isinstance(endpoint, basestring):
-      endpoint = (endpoint, {})
-    elif isinstance(endpoint, (tuple, list)):
-      assert len(endpoint) == 2
-      assert isinstance(endpoint[0], basestring)
-      assert isinstance(endpoint[1], dict)
-    else:
-      raise ValueError('Invalid endpoint specifier: "%s"' % repr(endpoint))
+    if not isinstance(endpoint, Endpoint):
+      if isinstance(endpoint, basestring):
+        endpoint = self.Endpoint(endpoint)
+      elif isinstance(endpoint, (tuple, list)):
+        assert len(endpoint) == 2
+        endpoint, kwargs = endpoint
+        assert isinstance(endpoint, basestring)
+        assert isinstance(kwargs, dict)
+        endpoint = self.Endpoint(endpoint, **kwargs)
+      else:
+        raise ValueError('Invalid endpoint specifier: "%s"' % repr(endpoint))
 
     return endpoint
 
@@ -206,7 +244,7 @@ class Action(object):
 
     endpoint = self.endpoint
     if endpoint:
-      return url_for(endpoint[0], **endpoint[1])
+      return unicode(endpoint)
     return self._url
 
 
