@@ -9,6 +9,7 @@ from sqlalchemy.types import (
   )
 from sqlalchemy.event import listens_for
 
+from abilian.core.singleton import UniqueName
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import User, Group
 from abilian.core.extensions import db
@@ -18,50 +19,10 @@ __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
            'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
            'RoleType']
 
-
-class RoleSingleton(type):
-
-  def __new__(cls, name, bases, dct):
-    dct['_instances'] = {}
-    return type.__new__(cls, name, bases, dct)
-
-  def __call__(cls, role, *args, **kwargs):
-    if isinstance(role, Role):
-      return role
-
-    if role not in cls._instances:
-      role_instance = type.__call__(cls, role, *args, **kwargs)
-      cls._instances[role_instance.role] = role_instance
-    return cls._instances[role]
-
-
-class Role(object):
+class Role(UniqueName):
   """
   Defines role by name. Roles instances are unique by name.
   """
-  __metaclass__ = RoleSingleton
-
-  def __init__(self, role):
-    self.__role = unicode(role).strip().lower()
-
-  @property
-  def role(self):
-    return self.__role
-
-  def __repr__(self):
-    return 'Role(u"{}")'.format(self.role.encode('utf-8'))
-
-  def __unicode__(self):
-    return self.role
-
-  def __str__(self):
-    return str(self.role)
-
-  def __eq__(self, other):
-    return self.role == unicode(other)
-
-  def __hash__(self):
-    return hash(self.__role)
 
 
 class RoleType(TypeDecorator):
