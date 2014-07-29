@@ -156,17 +156,17 @@ class Action(object):
       self.endpoint = self.endpoint
     self.condition = condition
 
-    self._active = True
+    self._enabled = True
     self.template = None
 
-  #: Boolean. Inactive actions are unconditionnaly skipped.
+  #: Boolean. Disabled actions are unconditionnaly skipped.
   @getset
-  def active(self, value=None):
-    active = self._active
+  def enabled(self, value=None):
+    enabled = self._enabled
     if value is not None:
       assert isinstance(value, bool)
-      self._active = active = value
-    return active
+      self._enabled = enabled = value
+    return enabled
 
   def _get_and_call(self, attr):
     attr = '_' + attr
@@ -224,18 +224,23 @@ class Action(object):
     self._endpoint = endpoint
 
   def available(self, context):
-    """ Determine if this actions is available in this `context`. `context`
-    is a dict whose content is left to application needs; if :attr:`.condition`
-    is a callable it receives `context` in parameter.
     """
-    if not self._active:
+    Determine if this actions is available in this `context`.
+
+    :param:`context`: a dict whose content is left to application needs; if
+    :attr:`.condition` is a callable it receives `context` in parameter.
+    """
+    if not self._enabled:
       return False
     return self.pre_condition(context) and self._check_condition(context)
 
   def pre_condition(self, context):
-    """ Called by :meth:`.available` before checking condition. Subclasses may
-    override it to ease creating actions with repetitive check (for example:
-    actions that apply on a given content type only).
+    """
+    Called by :meth:`.available` before checking condition.
+
+    Subclasses may override it to ease creating actions with repetitive
+    check (for example: actions that apply on a given content type
+    only).
     """
     return True
 

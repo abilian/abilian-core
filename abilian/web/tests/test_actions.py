@@ -17,6 +17,7 @@ OTHER_CAT = Action('cat_2', 'other', 'Other Action',
                    url=lambda ctx: 'http://count?%d' % len(ctx),
                    icon=StaticIcon('icons/other.png', size=14))
 
+ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 
 class TestActions(BaseTestCase):
   """ Test Action and ActionRegistry.
@@ -24,7 +25,9 @@ class TestActions(BaseTestCase):
   def setUp(self):
     BaseTestCase.setUp(self)
     actions.init_app(self.app)
-    actions.register(BASIC, CONDITIONAL, OTHER_CAT)
+    for a in ALL_ACTIONS:
+      a.enabled = True
+    actions.register(*ALL_ACTIONS)
     actions._init_context(self.app)
     actions.context['show_all'] = True
 
@@ -48,6 +51,13 @@ class TestActions(BaseTestCase):
 
   def test_conditional(self):
     actions.context['show_all'] = False
+    assert actions.for_category('cat_1') == [BASIC]
+
+  def test_enabled(self):
+    assert CONDITIONAL.enabled == True
+    assert actions.for_category('cat_1') == [BASIC, CONDITIONAL]
+    CONDITIONAL.enabled = False
+    assert CONDITIONAL.enabled == False
     assert actions.for_category('cat_1') == [BASIC]
 
   def test_action_url_from_context(self):
