@@ -206,12 +206,16 @@ class BaseTestCase(TestCase):
     self.app.create_db()
 
     for svc in self.SERVICES:
-      self.app.services[svc].start()
+      svc = self.app.services[svc]
+      if not svc.running:
+        svc.start()
 
 
   def tearDown(self):
     for svc in self.SERVICES:
-      self.app.services[svc].stop()
+      svc = self.app.services[svc]
+      if svc.running:
+        svc.stop()
 
     self.db.session.remove()
     self.db.drop_all()
