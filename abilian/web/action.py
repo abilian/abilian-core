@@ -251,8 +251,9 @@ class Action(object):
     """
     Determine if this actions is available in this `context`.
 
-    :param:`context`: a dict whose content is left to application needs; if
-    :attr:`.condition` is a callable it receives `context` in parameter.
+    :param context: a dict whose content is left to application needs; if
+                    :attr:`.condition` is a callable it receives `context`
+                    in parameter.
     """
     if not self._enabled:
       return False
