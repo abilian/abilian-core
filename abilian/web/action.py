@@ -10,7 +10,24 @@ __all__ = ('Action', 'ModalActionMixin', 'actions')
 
 
 def getset(f):
-  """ Shortcut for a custom getter/ standard setter
+  """
+  Shortcut for a custom getter/ standard setter.
+
+  Usage::
+      @getset
+      def my_property(self, value=None):
+          if value is None:
+              return getter_value
+          set_value(value)
+
+  Default value for `value` should be any marker that helps distinguish
+  between getter or setter mode. If None is not appropriate a good approach is
+  to use a unique object instance::
+
+      MARK = object()
+      # test like this
+      if value is MARK:
+        # getter mode
   """
   return property(f, f)
 
