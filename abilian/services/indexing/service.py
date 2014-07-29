@@ -38,8 +38,8 @@ from flask.globals import _lookup_app_object
 from abilian.services import Service, ServiceState
 from abilian.services.security import Role, Anonymous, Authenticated, security
 from abilian.core.models.subjects import User, Group
-from abilian.core.util import fqcn, friendly_fqcn
-from abilian.core.entities import Indexable
+from abilian.core.util import fqcn as base_fqcn, friendly_fqcn
+from abilian.core.entities import Entity, Indexable
 from abilian.core.extensions import celery, db
 
 from .adapter import SAAdapter
@@ -65,6 +65,11 @@ if not _PATCHED:
   del patch_logger
   del wrapping_collector_remove
 ## END PATCH
+
+def fqcn(cls):
+  if issubclass(cls, Entity):
+    return cls.entity_type
+  return base_fqcn(cls)
 
 class IndexServiceState(ServiceState):
   whoosh_base = None
@@ -290,7 +295,7 @@ class WhooshIndexService(Service):
 
     object_types = set(object_types)
     for m in Models:
-      object_type = m.object_type
+      object_type = m.entity_type
       if not object_type:
         continue
       object_types.add(object_type)
@@ -368,9 +373,10 @@ class WhooshIndexService(Service):
     else:
       return
 
-    self.adapted[fqcn(cls)] = Adapter(cls, self.schemas['default'])
+    cls_fqcn = fqcn(cls)
+    self.adapted[cls_fqcn] = Adapter(cls, self.schemas['default'])
     state.indexed_classes.add(cls)
-    state.indexed_fqcn.add(fqcn(cls))
+    state.indexed_fqcn.add(cls_fqcn)
 
   def after_flush(self, session, flush_context):
     if not self.running or session is not db.session():
