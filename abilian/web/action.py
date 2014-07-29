@@ -4,9 +4,23 @@ from jinja2 import Template, Markup
 from flask import current_app, g, url_for
 from flask.signals import appcontext_pushed
 
+from abilian.core.singleton import UniqueName
+
 log = logging.getLogger(__name__)
 
 __all__ = ('Action', 'ModalActionMixin', 'actions')
+
+class Status(UniqueName):
+  """
+  Action UI status names
+  """
+
+#: default action status: show in UID, usable, not marked "current"
+ENABLED = Status(u'enabled')
+#: action is "active" or "current". For example the current navigation item.
+ACTIVE = Status(u'active')
+#: action should be shown in a disabled state
+DISABLED = Status(u'disabled')
 
 
 def getset(f):
@@ -65,7 +79,8 @@ class StaticIcon(Icon):
   template = Template(u'<img src="{{ url }}" '
                       u'width="{{ width }}" height="{{ height }}" />')
 
-  def __init__(self, filename, endpoint='static', width=12, height=12, size=None):
+  def __init__(self, filename, endpoint='static', width=12, height=12,
+               size=None):
     self.filename = filename
     self.endpoint = endpoint
 
@@ -129,7 +144,7 @@ class Action(object):
   endpoint = None
 
   #: A boolean (or something that can be converted to boolean), or a callable
-  #: which accepts a context dict as parameter.
+  #: which accepts a context dict as parameter. See :meth:`available`.
   condition = None
 
   template_string = (
@@ -140,7 +155,7 @@ class Action(object):
   )
 
   def __init__(self, category, name, title=None, description=None, icon=None,
-               url=None, endpoint=None, condition=None):
+               url=None, endpoint=None, condition=None, status=None):
     self.category = category
     self.name = name
 
@@ -150,6 +165,7 @@ class Action(object):
       icon = Glyphicon(icon)
     self.icon = icon
     self._url = url
+    self._status = Status(status) if status is not None else ENABLED
     self.endpoint = endpoint
     if not callable(endpoint) and not isinstance(endpoint, Endpoint):
     # property getter will make it and Endpoint instance
@@ -158,6 +174,14 @@ class Action(object):
 
     self._enabled = True
     self.template = None
+
+  #: ui status. A :class:`Status` instance
+  @getset
+  def status(self, value=None):
+    status = self._status
+    if value is not None:
+      self._status = status = Status(value)
+    return status
 
   #: Boolean. Disabled actions are unconditionnaly skipped.
   @getset
