@@ -13,3 +13,24 @@
   /* ensure search box width vary */
   width: 100%
 }
+
+#navigation-sections li {
+  /* navigation sections: we want dropdowns main section items to show active, too */
+  &.active > .navbar-nav > .dropdown > a.dropdown-toggle {
+    &,
+    &:hover,
+    &:focus {
+      color: @navbar-default-link-active-color;
+      background-color: @navbar-default-link-active-bg;
+    }
+  }
+
+  &.disabled > .navbar-nav > .dropdown > a.dropdown-toggle {
+    &,
+    &:hover,
+    &:focus {
+      color: @navbar-default-link-disabled-color;
+      background-color: @navbar-default-link-disabled-bg;
+      }
+    }
+}

@@ -10,9 +10,9 @@ Abilian define theses categories:
 """
 from __future__ import absolute_import
 
+from flask import g
 from jinja2 import Template, Markup
-from flask import url_for
-from .action import Action, Endpoint, Glyphicon
+from .action import Action, Endpoint, Glyphicon, ENABLED, ACTIVE, getset
 
 
 class NavItem(Action):
@@ -25,6 +25,22 @@ class NavItem(Action):
     category = 'navigation:' + category
     Action.__init__(self, category, name, *args, **kwargs)
     self.divider = divider
+
+  @getset
+  def status(self, value=None):
+    current = g.nav.get('active')
+    if current is None:
+      return ENABLED
+
+    if not current.startswith('navigation:'):
+      current = 'navigation:' + current
+
+    status = ACTIVE if current == self.path else ENABLED
+    return status
+
+  @property
+  def path(self):
+    return self.category + ':' + self.name
 
 
 class NavGroup(NavItem):
@@ -41,7 +57,7 @@ class NavGroup(NavItem):
         <ul class="dropdown-menu">
           {%- for item in action.items %}
           {%- if item.divider %}<li class="divider"></li>{%- endif %}
-          <li>{{ item.render() }}</li>
+          <li class="{{ item.status|safe }}">{{ item.render() }}</li>
           {%- endfor %}
         </ul>
       </li>
@@ -51,9 +67,28 @@ class NavGroup(NavItem):
   def __init__(self, category, name, items=(), *args, **kwargs):
     NavItem.__init__(self, category, name, *args, **kwargs)
     self.items = list(items)
+    self._paths = set((self.path,))
+    for i in self.items:
+      self._paths.add(i.path)
 
   def append(self, item):
     self.items.append(item)
+    self._paths.add(item.path)
+
+  def insert(self, pos, item):
+    self.items.insert(pos, item)
+    self._paths.add(item.path)
+
+  @getset
+  def status(self, value=None):
+    current = g.nav.get('active')
+    if current is None:
+      return ENABLED
+
+    if not current.startswith('navigation:'):
+      current = 'navigation:' + current
+    status = ACTIVE if current in self._paths else ENABLED
+    return status
 
 
 class BreadcrumbItem(object):

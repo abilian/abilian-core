@@ -12,18 +12,18 @@
     </a>
   </div>
 
-  <div class="collapse navbar-collapse navbar-ex1-collapse">
+  <div id="navigation-sections" class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
       {%- for navitem in actions.for_category('navigation:section') %}
         {%- if navitem.divider %}<li class="divider"></li>{%- endif %}
-        <li>{{ navitem.render() }}</li>
+        <li class="{{ navitem.status }}">{{ navitem.render() }}</li>
       {%- endfor %}
     </ul>
 
     <ul id="nav-menu-user" class="nav navbar-nav navbar-right">
       {%- for action in actions.for_category('navigation:user') %}
         {%- if action.divider %}<li class="divider"></li>{%- endif %}
-        <li>{{ action.render() }}</li>
+        <li class="{{ action.status }}">{{ action.render() }}</li>
       {%- endfor %}
     </ul>
 
@@ -38,7 +38,7 @@
     {%- if admin_nav %}
       <ul id="nav-menu-admin" class="nav navbar-nav navbar-right">
         {%- for action in admin_nav %}
-        <li>{{ action.render() }}</li>
+        <li class="{{ action.status }}">{{ action.render() }}</li>
       {%- endfor %}
       </ul>
     {%- endif %}

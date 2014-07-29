@@ -11,9 +11,9 @@
 
     <div class="col-md-3">
       {%- call m_box_menu() %}
-        <ul class="nav nav-list">
+        <ul class="nav nav-pills nav-stacked">
           {%- for action in actions.for_category('navigation:admin:panel') %}
-            <li>{{ action.render() }}</li>
+            <li class="{{ action.status }}">{{ action.render() }}</li>
           {%- endfor %}
         </ul>
       {%- endcall %}

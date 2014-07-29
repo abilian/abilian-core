@@ -6,7 +6,7 @@ import logging
 
 from werkzeug.utils import import_string
 from flask import Blueprint, abort, url_for, request, g
-from flask.ext.babel import lazy_gettext as _l
+from abilian.i18n import _l
 from flask.ext.login import current_user
 from abilian.services.security import security, Admin as AdminRole
 from abilian.web.action import actions
@@ -29,6 +29,7 @@ class Admin(object):
   def __init__(self, *panels, **kwargs):
     self.app = None
     self.panels = []
+    self.nav_paths = {}
     self.breadcrumb_items = {}
     self.setup_blueprint()
 
@@ -105,6 +106,7 @@ class Admin(object):
                   title=panel.label, icon=panel.icon, divider=False,
                   endpoint=abs_endpoint)
     self.nav_root.append(nav)
+    self.nav_paths[abs_endpoint] = nav.path
     self.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
       label=panel.label,
       icon=panel.icon,
@@ -124,21 +126,9 @@ class Admin(object):
       if not security.has_role(user, "admin"):
         abort(403)
 
-    @self.blueprint.context_processor
-    def inject_menu():
-      menu = []
-      for panel in self.panels:
-        endpoint = 'admin.' + panel.id
-        active = endpoint == request.endpoint
-        entry = {'endpoint': endpoint,
-                 'label': panel.label,
-                 'url': url_for(endpoint),
-                 'active': active}
-        menu.append(entry)
-      return dict(menu=menu)
-
   def build_breadcrumbs(self, endpoint, view_args):
     g.breadcrumb.append(self.root_breadcrumb_item)
+    g.nav['active'] = self.nav_paths.get(endpoint, self.nav_root.path)
     endpoint_bc = self.breadcrumb_items.get(endpoint)
     if endpoint_bc:
       g.breadcrumb.append(endpoint_bc)

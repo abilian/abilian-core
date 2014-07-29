@@ -1,10 +1,15 @@
-"""User preference service. (Currently brainstorming the API).
+# coding=utf-8
+"""
+User preference service.
 
 Notes:
 
-- Preferences are user-specific
-- For global setting, there should be a SettingService
+- Preferences are user-specific.
+- For application settings use
+  :class:`abilian.services.settings.SettingsService`.
 """
+from __future__ import absolute_import
+
 from flask import Blueprint, url_for, request, redirect, abort, g
 from flask.ext.login import current_user
 
@@ -17,12 +22,12 @@ from abilian.services.auth.service import user_menu
 from abilian.services.base import Service, ServiceState
 from .models import UserPreference
 
-user_menu.items.insert(
-  0,
-  NavItem('user', 'preferences', title=_l(u'Preferences'), icon='cog',
-          url=lambda context: request.url_root + 'preferences',
-          condition=lambda context: not current_user.is_anonymous()
-          ))
+_PREF_NAV_ITEM = NavItem(
+  'user', 'preferences', title=_l(u'Preferences'), icon='cog',
+  url=lambda context: request.url_root + 'preferences',
+  condition=lambda context: not current_user.is_anonymous(),)
+
+user_menu.insert(0, _PREF_NAV_ITEM)
 
 
 class PreferenceState(ServiceState):
@@ -33,6 +38,7 @@ class PreferenceState(ServiceState):
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
     self.panels = []
+    self.nav_paths = {}
     self.breadcrumb_items = {}
 
 
@@ -119,16 +125,9 @@ class PreferenceService(Service):
     # initialization
     @signals.components_registered.connect_via(app)
     def register_bp(app):
-        app.register_blueprint(bp)
-        app.extensions[self.name].blueprint_registered = True
+      app.register_blueprint(bp)
+      app.extensions[self.name].blueprint_registered = True
 
-    # @bp.before_request
-    # def check_security():
-    #   user = current_user._get_current_object()
-    #   if security.has_role(user, "admin"):
-    #     return
-    #   else:
-    #     abort(403)
     self.app_state.root_breadcrumb_item = BreadcrumbItem(
       label=_(u'Preferences'),
       url=Endpoint('preferences.index'))
@@ -165,6 +164,7 @@ class PreferenceService(Service):
 
   def build_breadcrumbs(self, endpoint, view_args):
     state = self.app_state
+    g.nav['active'] = _PREF_NAV_ITEM.path
     g.breadcrumb.append(state.root_breadcrumb_item)
     if endpoint in state.breadcrumb_items:
       g.breadcrumb.append(state.breadcrumb_items[endpoint])

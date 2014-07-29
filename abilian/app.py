@@ -228,7 +228,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     signals.components_registered.send(self)
 
-    request_started.connect(self._setup_breadcrumbs)
+    request_started.connect(self._setup_nav_and_breadcrumbs)
 
     # Initialize Abilian core services.
     # Must come after all entity classes have been declared.
@@ -240,13 +240,14 @@ class Application(Flask, ServiceManager, PluginManager):
         with self.app_context():
           self.start_services()
 
-  def _setup_breadcrumbs(self, app=None):
+  def _setup_nav_and_breadcrumbs(self, app=None):
     """
     Listener for `request_started` event.
 
     If you want to customize first items of breadcrumbs, override
     :meth:`init_breadcrumbs`
     """
+    g.nav = {'active': None} # active section
     g.breadcrumb = []
     self.init_breadcrumbs()
 
