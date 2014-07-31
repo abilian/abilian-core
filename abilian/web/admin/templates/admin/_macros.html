@@ -1,16 +1,16 @@
 {# XXX: not used ? #}
 
-{% macro m_audit_entry(e) %}
+{%- macro m_audit_entry(e) %}
   <img src="{{ url_for("social.user_mugshot", user_id=e.user.id, s=16) }}" alt="" />
   {{ e.msg }}
-  {% if e.entity_deleted %}<i class="icon-trash"></i>{% endif %}
+  {%- if e.entity_deleted %}<i class="icon-trash"></i>{% endif %}
   {%- if e.changes %}
     <ul>
       {%- for msg in e.changes %}
-        <li>{{ msg }}</li>
-      {% endfor %}
+      <li>{{ msg }}</li>
+      {%- endfor %}
     </ul>
-  {% endif %}
+  {%- endif %}
 {% endmacro %}
 
 {% macro m_security_entry(e) %}

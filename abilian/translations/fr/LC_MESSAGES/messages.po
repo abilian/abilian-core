@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-07-09 10:14+0200\n"
-"PO-Revision-Date: 2014-07-09 10:17+0200\n"
+"POT-Creation-Date: 2014-08-01 11:18+0200\n"
+"PO-Revision-Date: 2014-08-01 11:18+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -126,8 +126,8 @@ msgstr "Termes indexés"
 msgid "No current object"
 msgstr ""
 
-#: abilian/services/preferences/service.py:22
-#: abilian/services/preferences/service.py:133
+#: abilian/services/preferences/service.py:26
+#: abilian/services/preferences/service.py:132
 #: abilian/web/templates/preferences/_base.html:8
 msgid "Preferences"
 msgstr "Préférences"
@@ -157,55 +157,55 @@ msgstr "Ajout réussi"
 msgid "Entity deleted"
 msgstr "Entité supprimée"
 
-#: abilian/web/admin/extension.py:36
+#: abilian/web/admin/extension.py:38
 msgid "Admin"
 msgstr "Admin"
 
-#: abilian/web/admin/panels/audit.py:176
+#: abilian/web/admin/panels/audit.py:290
 msgid "{user} created {entity_type} {entity_id} \"{entity}\""
 msgstr "{user} a créé: {entity_type} {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:178
+#: abilian/web/admin/panels/audit.py:292
 msgid "{user} made changes on {entity_type} {entity_id} \"{entity}\""
 msgstr "{user} a modifié {entity_type} {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:181
+#: abilian/web/admin/panels/audit.py:295
 msgid "{user} has deleted {entity_type}: {entity_id} \"{entity}\""
 msgstr "{user} a supprimé {entity_type}: {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:202
+#: abilian/web/admin/panels/audit.py:316
 msgid "{key} changed:"
 msgstr "{key} modifié:"
 
-#: abilian/web/admin/panels/audit.py:207
+#: abilian/web/admin/panels/audit.py:321
 msgid "{key} changed from {old_value} to {new_value}"
 msgstr "{key} modifié de «{old_value}» en «{new_value}»"
 
-#: abilian/web/admin/panels/audit.py:209
+#: abilian/web/admin/panels/audit.py:323
 msgid "{key} set to {new_value}"
 msgstr "{key} initialisé à «{new_value}»"
 
-#: abilian/web/admin/panels/audit.py:249
+#: abilian/web/admin/panels/audit.py:363
 msgid "{manager} has activated inheritance on {entity}"
 msgstr "{manager} a activé l'héritage sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:251
+#: abilian/web/admin/panels/audit.py:365
 msgid "{manager} has deactivated inheritance on {entity}"
 msgstr "{manager} a désactivé l'héritage sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:253
+#: abilian/web/admin/panels/audit.py:367
 msgid "{manager} has given role \"{role}\" to {principal} on {entity}"
 msgstr "{manager} a donné le rôle «{role}» à {principal} sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:256
+#: abilian/web/admin/panels/audit.py:370
 msgid "{manager} has revoked role \"{role}\" from {principal} on {entity}"
 msgstr "{manager} a retiré le rôle \"{role}\" à {principal} sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:262
+#: abilian/web/admin/panels/audit.py:376
 msgid "{manager} has given role \"{role}\" to {principal}"
 msgstr "{manager} a donné le rôle \"{role}\" à {principal}"
 
-#: abilian/web/admin/panels/audit.py:264
+#: abilian/web/admin/panels/audit.py:378
 msgid "{manager} has revoked role \"{role}\" from {principal}"
 msgstr "{manager} a retiré le rôle \"{role}\" à {principal}"
 
@@ -246,17 +246,21 @@ msgstr "nouveaux documents"
 msgid "new messages"
 msgstr "nouveaux messages"
 
-#: abilian/web/admin/templates/admin/audit.html:9
-#: abilian/web/admin/templates/admin/audit.html:26
-#: abilian/web/forms/widgets.py:261
-msgid "Previous"
-msgstr "Précédent"
+#: abilian/web/admin/templates/admin/audit.html:8
+msgid "Newer"
+msgstr "Plus récents"
 
-#: abilian/web/admin/templates/admin/audit.html:11
-#: abilian/web/admin/templates/admin/audit.html:28
-#: abilian/web/forms/widgets.py:262
-msgid "Next"
-msgstr "Suivant"
+#: abilian/web/admin/templates/admin/audit.html:12
+msgid "Older"
+msgstr "Plus anciens"
+
+#: abilian/web/admin/templates/admin/audit.html:38
+msgid "All contents"
+msgstr "Tous les contenus"
+
+#: abilian/web/admin/templates/admin/audit.html:87
+msgid "Select user"
+msgstr "Filtrer sur un utilisateur"
 
 #: abilian/web/admin/templates/admin/settings.html:17
 #: abilian/web/templates/preferences/user.html:16
@@ -279,6 +283,14 @@ msgstr "Adresse email non valide"
 #: abilian/web/forms/widgets.py:148 abilian/web/forms/widgets.py:260
 msgid "Filter records:"
 msgstr "Filtrer les entrées:"
+
+#: abilian/web/forms/widgets.py:261
+msgid "Previous"
+msgstr "Précédent"
+
+#: abilian/web/forms/widgets.py:262
+msgid "Next"
+msgstr "Suivant"
 
 #: abilian/web/forms/widgets.py:263
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
@@ -334,7 +346,7 @@ msgstr "À propos de moi"
 msgid "Preferences saved."
 msgstr "Préférences enregistrées."
 
-#: abilian/web/search/views.py:132
+#: abilian/web/search/views.py:136
 msgid "All"
 msgstr "Tous"
 
@@ -352,14 +364,27 @@ msgstr "Votre recherche n'a donné aucun résultats"
 msgid "%(count)d corresponding items"
 msgstr "%(count)d éléments correspondants"
 
-#: abilian/web/search/templates/search/search.html:46
+#: abilian/web/search/templates/search/search.html:50
+msgid "by"
+msgstr "par"
+
+#: abilian/web/search/templates/search/search.html:53
 #, python-format
 msgid "Last modification: %(date)s"
 msgstr "Dernière modification: %(date)s"
 
-#: abilian/web/search/templates/search/search.html:84
+#: abilian/web/search/templates/search/search.html:54
+#, python-format
+msgid "%(date)s at %(time)s"
+msgstr "%(date)s à %(time)s"
+
+#: abilian/web/search/templates/search/search.html:95
 msgid "Filter by types"
 msgstr "Filtrer par types"
+
+#: abilian/web/templates/abilian_base.html:36
+msgid "Skip to content"
+msgstr "Aller au contenu"
 
 #: abilian/web/templates/error404.html:7
 msgid ""
@@ -394,6 +419,15 @@ msgstr "Créer et ajouter un nouveau"
 msgid "Save changes"
 msgstr "Sauvegarder"
 
+#: abilian/web/templates/widgets/render_single.html:1
+msgid "Edit"
+msgstr "Éditer"
+
+#: abilian/web/templates/widgets/render_single.html:3
+#: abilian/web/views/object.py:314
+msgid "Delete"
+msgstr "Supprimer"
+
 #: abilian/web/views/object.py:281
 msgid "Create"
 msgstr "Créer"
@@ -401,8 +435,4 @@ msgstr "Créer"
 #: abilian/web/views/object.py:283
 msgid "Create and add new"
 msgstr "Créer et ajouter un nouveau"
-
-#: abilian/web/views/object.py:314
-msgid "Delete"
-msgstr "Supprimer"
 

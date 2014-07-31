@@ -13,16 +13,60 @@ from sqlalchemy.orm.attributes import NO_VALUE
 from werkzeug.routing import BuildError
 from flask import request, render_template, render_template_string, \
   get_template_attribute
-from flask.ext.babel import gettext as _
+from flask.ext.babel import gettext as _, format_date, get_locale
 
 from abilian.core.extensions import db
-from abilian.core.entities import Entity
+from abilian.core.models.subjects import User
 from abilian.core.util import local_dt
+from abilian.core.entities import Entity, all_entity_classes
 from abilian.services.audit import AuditEntry
 from abilian.services.security import SecurityAudit
 from abilian.web.util import url_for
+from abilian.web.views.base import JSONView
 
 from ..panel import AdminPanel
+
+
+def format_date_for_input(date):
+  date_fmt = get_locale().date_formats['short'].pattern
+  date_fmt = date_fmt.replace('MMMM', 'MM')\
+      .replace('MMM', 'MM')  # force numerical months
+  return format_date(date, date_fmt)
+
+
+class JSONUserSearch(JSONView):
+  """
+  Search users by fullname
+  """
+  def data(self, q, *args, **kwargs):
+    q = q.replace(u'%', u' ').strip().lower()
+
+    if not q or len(q) < 2:
+      abort(500)
+
+    query = User.query
+    lower = sa.sql.func.lower
+    filters = []
+    for part in q.split(u' '):
+      filters.append(sa.sql.or_(lower(User.first_name).like(part + "%"),
+                                lower(User.last_name).like(part + "%")))
+
+    filters = sa.sql.and_(*filters) if len(filters) > 1 else filters[0]
+
+    if u'@' in q:
+      filters = sa.sql.or_(lower(User.email).like('%' + part + '%'),
+                           filters)
+
+    query = query.filter(filters)\
+                 .order_by(User.last_name, User.first_name)
+
+    result = {'results': [
+      {'id': obj.id,
+       'text': u'{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)}
+      for obj in query.values(User.id, User.first_name,
+                              User.last_name, User.email)]
+    }
+    return result
 
 
 class AuditPanel(AdminPanel):
@@ -37,35 +81,81 @@ class AuditPanel(AdminPanel):
   label = 'Audit trail'
   icon = 'list-alt'
 
+  def install_additional_rules(self, add_url_rule):
+    add_url_rule('/search_users',
+                 view_func=JSONUserSearch.as_view('search_users'))
+
   def get(self):
     LIMIT = 30
+
+    base_audit_q = AuditEntry.query
+    base_security_q = SecurityAudit.query
 
     before = request.args.get('before')
     after = request.args.get('after')
 
-    def after_query(model, date):
-      return model.query.filter(model.happened_at > date)\
-                        .order_by(model.happened_at.asc())
+    # filter on user
+    filter_user = None
+    user_id = request.args.get('user')
+    if user_id:
+      user_id = int(user_id)
+      filter_user = User.query.get(user_id)
+      base_audit_q = base_audit_q.filter(AuditEntry.user == filter_user)
+      base_security_q = base_security_q.filter(
+        SecurityAudit.manager == filter_user)
 
-    def before_query(model, date):
-      return model.query.filter(model.happened_at < date)\
-                        .order_by(model.happened_at.desc())
+    # filter by types
+    all_classes = sorted(all_entity_classes(), key=lambda c: c.__name__)
+    all_types = set(e.entity_type for e in all_classes)
+    filter_types = set(request.args.getlist('types')) & all_types
+    if filter_types:
+      if len(filter_types) == 1:
+        t = list(filter_types)[0]
+        audit_expr = AuditEntry.entity_type == t
+        sec_expr = sa.sql.or_(SecurityAudit.object == None,
+                              Entity._entity_type == t)
+      else:
+        audit_expr = AuditEntry.entity_type.in_(filter_types)
+        sec_expr = sa.sql.or_(SecurityAudit.object == None,
+                              Entity._entity_type.in_(filter_types))
+
+      base_audit_q = base_audit_q.filter(audit_expr)
+      base_security_q = base_security_q\
+          .join(SecurityAudit.object)\
+          .filter(sec_expr)\
+          .reset_joinpoint()
+
+
+    def after_query(q, model, date):
+      return q.filter(model.happened_at > date)\
+          .order_by(model.happened_at.asc())
+
+    def before_query(q, model, date):
+      return q.filter(model.happened_at < date)\
+          .order_by(model.happened_at.desc())
 
     if after:
       after = datetime.strptime(after, u'%Y-%m-%dT%H:%M:%S.%f')
-      audit_q = after_query(AuditEntry, after)
-      security_q = after_query(SecurityAudit, after)
+      audit_q = after_query(base_audit_q, AuditEntry, after)
+      security_q = after_query(base_security_q, SecurityAudit, after)
     else:
       before = (datetime.strptime(before, u'%Y-%m-%dT%H:%M:%S.%f')
                 if before else datetime.utcnow())
-      audit_q = before_query(AuditEntry, before)
-      security_q = before_query(SecurityAudit, before)
+      audit_q = before_query(base_audit_q, AuditEntry, before)
+      security_q = before_query(base_security_q, SecurityAudit, before)
 
-    audit_entries = audit_q.options(sa.orm.joinedload(AuditEntry.entity)).limit(LIMIT).all()
-    security_entries = security_q.options(sa.orm.joinedload(SecurityAudit.object)).limit(LIMIT).all()
-
-    all_entries = list(chain((AuditEntryPresenter(e) for e in audit_entries),
-                             (SecurityEntryPresenter(e) for e in security_entries)))
+    audit_entries = audit_q\
+        .options(sa.orm.joinedload(AuditEntry.entity))\
+        .limit(LIMIT)\
+        .all()
+    security_entries = security_q\
+        .options(sa.orm.joinedload(SecurityAudit.object))\
+        .limit(LIMIT)\
+        .all()
+    #audit_entries = []
+    all_entries = list(
+      chain((AuditEntryPresenter(e) for e in audit_entries),
+            (SecurityEntryPresenter(e) for e in security_entries)))
     all_entries.sort()
 
     if after:
@@ -100,20 +190,44 @@ class AuditPanel(AdminPanel):
       lowest_date = entries[-1][1][-1].date.astimezone(pytz.utc)\
                                             .replace(tzinfo=None)
 
-      if not (after_query(AuditEntry, top_date).limit(1).first() is not None
-              or after_query(SecurityAudit, top_date).limit(1).first() is not None):
+      after_queries = (
+        after_query(base_audit_q, AuditEntry, top_date),
+        after_query(base_security_q, SecurityAudit, top_date),)
+
+      before_queries = (
+        before_query(base_audit_q, AuditEntry, lowest_date),
+        before_query(base_security_q, SecurityAudit, lowest_date).limit(1),)
+
+      if not any(q.limit(1).first() is not None for q in after_queries):
         top_date = u''
       else:
         top_date = top_date.isoformat()
 
-      if not (before_query(AuditEntry, lowest_date).limit(1).first() is not None
-              or before_query(SecurityAudit, lowest_date).limit(1).first() is not None):
+      if not any(q.first() is not None for q in before_queries):
         lowest_date = u''
       else:
         lowest_date = lowest_date.isoformat()
 
-    return render_template("admin/audit.html", entries=entries,
-                           top_date=top_date, lowest_date=lowest_date)
+    current_date = None
+    if entries:
+      current_date = format_date_for_input(entries[0][0])
+
+    # build prev/next urls
+    url_params = {}
+    if filter_user:
+      url_params['user'] = filter_user.id
+    if filter_types:
+      url_params['types'] = list(filter_types)[0]
+
+    return render_template(
+        "admin/audit.html",
+        entries=entries,
+        filter_user=filter_user,
+        all_classes=[(c.__name__, c.entity_type) for c in all_classes],
+        filter_types=filter_types,
+        url_params=url_params,
+        current_date=current_date,
+        top_date=top_date, lowest_date=lowest_date)
 
 
 #
