@@ -21,12 +21,6 @@ Abilian.api.search = {
 
 bootbox.setDefaults({ 'locale': Abilian.locale });
 
-{#- load select2 locale file #}
-Abilian.fn.loadScript('{{ url_for('abilian_static', filename='select2/select2_locale_' + locale.language + '.js') }}');
-
-{#- bootstrap-datepicker locale #}
-Abilian.fn.loadScript('{{ url_for('abilian_static', filename='bootstrap-datepicker/js/locales/bootstrap-datepicker.' + locale.language + '.js') }}');
-
 $.extend(
     $.fn.datepicker.defaults,
     { 'todayHighlight': true,

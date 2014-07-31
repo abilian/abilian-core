@@ -1,3 +1,4 @@
+{%- set locale = get_locale() %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,11 +91,18 @@
 
 {%- block js %}{%- endblock %} {# this block should be used to load additional libraries #}
 
+<!-- i18n -->
+{#- load select2 locale file #}
+<script type="text/javascript" src="{{ url_for('abilian_static', filename='select2/select2_locale_' + locale.language + '.js') }}"></script>
+{#- bootstrap-datepicker locale #}
+<script type="text/javascript" src="{{ url_for('abilian_static', filename='bootstrap-datepicker/js/locales/bootstrap-datepicker.' + locale.language + '.js') }}"></script>
+
+<!-- app init -->
 <script type="text/javascript">
  {%- include "abilian_init.js" %}
 </script>
 
-{# 'abilian_init.js' will load additional libraries by writing new 'script'
+{#- 'abilian_init.js' will load additional libraries by writing new 'script'
    tags.  We put deferred JS and inline_js in a separate script tag so that the
    code is executed after thoses libraries have been loaded.
 #}
@@ -105,7 +113,7 @@
  {% block inline_js %}
  {% endblock %}
 
- {# template can also use an 'inline_js' variable #}
+ {#- template can also use an 'inline_js' variable #}
  {%- if inline_js %}
    {{ inline_js }}
  {%- endif %}

@@ -23,7 +23,6 @@
       */
      Abilian.events = {};
      Abilian.events.appInit = 'abilian.app-init';
-
     
     /**
      * CSRF field name to use, if CSRF is used
@@ -51,18 +50,6 @@
       */
      Abilian.fn.onAppInit = function(callback) {
        $(window).on(Abilian.events.appInit, callback);
-     };
-
-
-     /**
-      * emit a 'script' tag to load additional javascript files
-      */
-     Abilian.fn.loadScript = function(url) {
-         var element = document.createElement("script");
-         element.type = 'text/javascript';
-         element.src = url;
-         document.body.appendChild(element);
-         element = null;
      };
 
      /**
