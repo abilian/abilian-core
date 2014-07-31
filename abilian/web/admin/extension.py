@@ -5,7 +5,8 @@ from __future__ import absolute_import
 import logging
 
 from werkzeug.utils import import_string
-from flask import Blueprint, abort, url_for, request, g
+from flask import Blueprint, abort, g
+from flask.helpers import _endpoint_from_view_func
 from abilian.i18n import _l
 from flask.ext.login import current_user
 from abilian.services.security import security, Admin as AdminRole
@@ -102,6 +103,9 @@ class Admin(object):
       endpoint += "_post"
       self.blueprint.add_url_rule(rule, endpoint, panel.post, methods=['POST'])
 
+    panel.install_additional_rules(
+      self.get_panel_url_rule_adder(panel.id, endpoint))
+
     nav = NavItem('admin:panel', nav_id,
                   title=panel.label, icon=panel.icon, divider=False,
                   endpoint=abs_endpoint)
@@ -112,6 +116,25 @@ class Admin(object):
       icon=panel.icon,
       url=Endpoint(abs_endpoint)
     )
+
+  def get_panel_url_rule_adder(self, base_url, base_endpoint):
+    def add_url_rule(rule, endpoint=None, view_func=None, *args, **kwargs):
+      if not rule:
+        # '' is already used for panel get/post
+        raise ValueError('Invalid additional url rule: {}'.format(repr(rule)))
+
+      if endpoint is None:
+        endpoint = _endpoint_from_view_func(view_func)
+
+      if not endpoint.startswith(base_endpoint):
+        endpoint = base_endpoint + '_' + endpoint
+
+      return self.blueprint.add_url_rule(
+        base_url + rule,
+        endpoint=endpoint,
+        view_func=view_func,
+        *args, **kwargs)
+    return add_url_rule
 
   def setup_blueprint(self):
     self.blueprint = Blueprint("admin", __name__,
