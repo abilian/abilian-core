@@ -7,6 +7,8 @@ import errno
 import yaml
 import logging
 import logging.config
+import importlib
+
 from itertools import chain
 from functools import partial
 from pkg_resources import resource_filename
@@ -90,8 +92,6 @@ class PluginManager(object):
     Loads and registers a plugin given its package name.
     """
     logger.info("Registering plugin: " + name)
-    import importlib
-
     module = importlib.import_module(name)
     module.register_plugin(self)
 
@@ -324,6 +324,10 @@ class Application(Flask, ServiceManager, PluginManager):
   def setup_logging(self):
     self.logger  # force flask to create application logger before logging
                  # configuration; else, flask will overwrite our settings
+
+    log_level = self.config.get("LOG_LEVEL")
+    if log_level:
+      self.logger.setLevel(log_level)
 
     logging_file = self.config.get('LOGGING_CONFIG_FILE')
     if logging_file:
