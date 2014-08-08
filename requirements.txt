@@ -61,7 +61,8 @@ xlrd
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
 cssmin
-closure
+# Version needed for some reason. Anyway.
+closure==20140110
 cssselect
 lxml
 
