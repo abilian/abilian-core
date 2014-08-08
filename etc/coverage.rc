@@ -1,3 +1,7 @@
 [run]
+source = abilian
+
+[report]
+precision = 2
 omit = tests/*, **/tests/*, **/tests.py
 

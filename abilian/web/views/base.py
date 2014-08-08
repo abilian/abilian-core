@@ -69,7 +69,7 @@ class JSONView(View):
   from browser.
   """
   def prepare_args(self, args, kwargs):
-    kwargs.update({k:v for k,v in request.args.items()})
+    kwargs.update({k: v for k, v in request.args.items()})
     return args, kwargs
 
   def data(self, *args, **kwargs):
@@ -88,3 +88,4 @@ class JSONView(View):
     # dev requesting from browser? serve html, let debugtoolbar show up, etc...
     content = json.dumps(data, indent=2)
     return render_template_string(_JSON_HTML, content=content)
+
