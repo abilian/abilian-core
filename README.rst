@@ -31,7 +31,7 @@ Goals & principles
 
 - It must lower errors, bugs, project's time to deliver. It's intended to be a rapid application development tool
 
-- It must promote best practices in software development, specially Test-Driven Development (as advocated by the `GOOS book <http://www.amazon.com/gp/product/0321503627/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0321503627&linkCode=as2&tag=fermigiercom-20>`_)
+- It must promote best practices in software development, specially Test-Driven Development (as advocated by the `GOOS book <http://www.amazon.com/gp/product/0321503627/>`_)
 
 
 Features
@@ -57,6 +57,8 @@ Domain model and services
 
 Content management and services
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+-  Simple file-based content repository
 
 -  Indexing service
 
@@ -147,6 +149,7 @@ For features and bug requests (or is it the other way around?), we
 recommend that you use the `GitHub issue
 tracker <https://github.com/abilian/abilian-core/issues>`_.
 
+
 Install
 =======
 
@@ -160,11 +163,13 @@ project), you probably already know about:
 So, after you have created and activated a virtualenv for the project,
 just run::
 
-    pip install -r etc/deps.txt
+    pip install -r requirements.txt
 
-or::
+If you need to work on the project, first install the requirements as above,
+then type:
 
-    python setup.py develop
+    pip install -e '.[dev]'
+
 
 To use some features of the library, namely document and images
 transformation, you will need to install the additional native packages,
@@ -177,19 +182,23 @@ using our operating system's package management tools (``dpkg``,
 
 Look at the ``fabfile.py`` for the exact list.
 
+
 Testing
 =======
 
 Abilian Core come with a full unit and integration testing suite. You
-can run it with ``make test`` (once your virtualenv has been activated).
+can run it with ``make test`` (once your virtualenv has been activated and
+all required dependencies have been installed, see above).
 
 Alternatively, you can use ``tox`` to run the full test suite in an
 isolated environment.
+
 
 Licence
 =======
 
 Abilian Core is licensed under the LGPL.
+
 
 Credits
 =======

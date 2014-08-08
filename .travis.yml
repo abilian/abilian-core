@@ -23,10 +23,10 @@ before_install:
 
 # Install Python dependencies
 install:
-  - pip install pip==1.4.1
-  - pip install -r etc/deps-frozen.txt --use-mirrors
-  - pip install -r etc/deps-devel.txt --use-mirrors
+  - pip install -r requirements.txt --use-mirrors
+  - pip install -e '.[dev]' --use-mirrors
 
+# Create DB
 before_script:
   - createuser -w -U postgres -DRS abilian_core_test
   - psql -w -U postgres -c "ALTER USER abilian_core_test WITH ENCRYPTED PASSWORD 'test_pw';"
@@ -37,5 +37,6 @@ script:
   - py.test --tb=short -q --cov abilian --cov-report term-missing abilian tests
   - sphinx-build -W -b html docs/ docs/_build/
 
+# Report coverage
 after_success:
   - coveralls

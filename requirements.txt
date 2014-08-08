@@ -1,6 +1,3 @@
-# will not install with pip 1.5, because of some dependencies from some libs.
-#pip >= 1.4, < 1.5
-
 # Flask and Flask extensions
 Flask>=0.10
 Flask-SQLAlchemy
@@ -12,23 +9,20 @@ Flask-Script
 Flask-DebugToolbar
 Flask-Uploads
 Flask-Migrate
-Babel >= 1.3
 Flask-Babel>=0.9
+Babel >= 1.3
 Flask-Assets>=0.10
 
-# We need a more recent version than the version on PyPI
+# We really need a more recent version than the version on PyPI
 #Flask-Mail>=0.9
 https://github.com/mattupstate/flask-mail/archive/b8ab0858f86bbb215f5b8a11c843b71bcb8ab3b5.zip#egg=Flask-Mail>=0.9
 
 # pathlib is included in python 3.4, and very useful
 pathlib
 
-lxml
-cssselect
-psycopg2
-
-# Other
+# Databases / persistence
 SQLAlchemy>=0.8,<0.9
+psycopg2
 alembic
 redis>=2.10.1
 
@@ -36,45 +30,38 @@ redis>=2.10.1
 # https://github.com/mitsuhiko/markupsafe/issues/28
 MarkupSafe>0.21
 
-# specify min versions for "phonenumbers" because for now all releases are
-# "pre-releases".
-# see http://www.pip-installer.org/en/latest/logic.html#pre-release-versions
-phonenumbers>=5.8b1
-
-whoosh>=2.5,<2.6
-markdown
-blinker
-requests
-bleach
-py-bcrypt
-pillow
-python-magic
-WTForms
-wtforms-alchemy==0.12.6
-# required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
-SQLAlchemy-Utils<0.24.0
-PyYAML
-pygeoip
-
-xlwt
-xlrd
+Whoosh>=2.5,<2.6
 celery==3.0.21
 straight.plugin==1.4.0-post-1
 
-# progressbar >= 2.3
-progressbar-latest >= 2.4
+Markdown
+blinker
+requests
+bleach
+phonenumbers
+py-bcrypt
+Pillow
+PyYAML
+pygeoip
+
+# "fork" of progressbar which is not installable with pip > 1.5
+progressbar-latest
+
+# Forms
+WTForms
+WTForms-Alchemy==0.12.6
+# required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
+SQLAlchemy-Utils<0.24.0
+
+# Content detection / transformation
+python-magic
+xlwt
+xlrd
 
 # Assets management (might not be necessary if distributing compiled assets)
 jsmin
 cssmin
+closure
+cssselect
+lxml
 
-# specify min versions for "closure" because for now all releases are
-# "pre-releases".
-# see http://www.pip-installer.org/en/latest/logic.html#pre-release-versions
-closure>=20121212
-
-#: DEVELOPMENT
-coverage==3.6
-nose
-pytest>=2.4.2
-Sphinx==1.2

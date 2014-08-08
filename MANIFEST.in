@@ -1,4 +1,4 @@
-include *.md *.txt *.ini
+include *.rst *.txt *.ini *.py
 recursive-include doc *
 recursive-include abilian *
 

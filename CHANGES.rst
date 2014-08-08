@@ -4,13 +4,14 @@ Changelog for Abilian Core
 0.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Dependencies: moved deps to ./requirements.txt + cleanup / update.
+- Testing: Tox and Travis config updates.
 
 
 0.2.0 (2014-08-07)
 ------------------
 
-- Nothing changed yet.
+- Too long to list.
 
 
 0.1.4 (2014-03-27)
@@ -24,6 +25,7 @@ Changelog for Abilian Core
   change order during negociation
 - Switched CSS to LESS.
 - Updated to Bootstrap 3.1.1
+
 
 0.1.3 (2014-02-03)
 ------------------
@@ -40,6 +42,7 @@ Changelog for Abilian Core
   them at end of document ("deferred")
 - added basic javascript to prevent double submission
 - Added Flask-Migrate
+
 
 0.1.1 (2013-12-26)
 ------------------
