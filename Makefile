@@ -4,6 +4,8 @@
 SRC=abilian
 # The package name
 PKG=abilian
+# Number of CPU (or less)
+NCPU=2
 
 
 all: test doc
@@ -12,10 +14,10 @@ all: test doc
 # testing & checking
 #
 test:
-	py.test --tb=short $(PKG) tests
+	py.test -n $(NCPU) --tb=short $(PKG) tests
 
 test-with-coverage:
-	py.test --cov $(PKG) --cov-config etc/coverage.rc \
+	py.test -n $(NCPU) --cov $(PKG) --cov-config etc/coverage.rc \
 	  --cov-report term-missing $(PKG) tests
 
 tox:

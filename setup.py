@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-#sys.path.append(".")
-
 import setuptools
 from setuptools.command.test import test as TestCommand
 from setup_util import parse_requirements, parse_dependency_links
@@ -13,17 +11,21 @@ dependency_links = parse_dependency_links([u'requirements.txt'])
 
 tests_require = [
   "pytest",
+  "pytest-xdist",
   "mock",
   "nose",
 ]
 
 dev_requires = tests_require + [
+  # To build docs
   "Sphinx",
   "sphinx-rtd-theme",
-  "cov-core",
+  # For coverage
   "coverage",
   "coveralls",
   "pytest-cov",
+  "cov-core",
+  # Static code analysis
   "pylama",
 ]
 
