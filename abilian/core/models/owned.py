@@ -13,15 +13,14 @@ from whoosh.fields import STORED
 from .base import SYSTEM, SEARCHABLE
 from .subjects import User
 
+
 class OwnedMixin(object):
 
   __indexation_args__ = {
     'index_to': (('creator', ('creator',)),
                  ('creator_name', (('creator_name', STORED),)),
                  ('owner', ('owner',)),
-                 ('owner_name', (('owner_name', STORED),)),
-      ),
-    }
+                 ('owner_name', (('owner_name', STORED))))}
 
   def __init__(self, *args, **kwargs):
     if hasattr(g, 'user'):
@@ -38,7 +37,7 @@ class OwnedMixin(object):
   def creator(cls):
     pj = "User.id == %s.creator_id" % cls.__name__
     return relationship(User, primaryjoin=pj, lazy='joined', uselist=False,
-                        info=SYSTEM|SEARCHABLE)
+                        info=SYSTEM | SEARCHABLE)
 
   @property
   def creator_name(self):
@@ -52,7 +51,7 @@ class OwnedMixin(object):
   def owner(cls):
     pj = "User.id == %s.owner_id" % cls.__name__
     return relationship(User, primaryjoin=pj, lazy='joined', uselist=False,
-                        info=SYSTEM|SEARCHABLE)
+                        info=SYSTEM | SEARCHABLE)
 
   @property
   def owner_name(self):

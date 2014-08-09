@@ -6,6 +6,7 @@ Adds Whoosh indexing capabilities to SQLAlchemy models.
 
 Based on Flask-whooshalchemy by Karl Gyllstrom.
 
+:copyright: (c) 2013-2014 by Abilian SAS
 :copyright: (c) 2012 by Stefane Fermigier
 :copyright: (c) 2012 by Karl Gyllstrom
 :license: BSD (see LICENSE.txt)
@@ -29,9 +30,7 @@ from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 import whoosh.query as wq
 from whoosh.support.charset import accent_map
 
-from flask import (current_app, g,
-    _app_ctx_stack, appcontext_pushed,
-)
+from flask import current_app, g, _app_ctx_stack, appcontext_pushed
 from flask.ext.login import current_user
 from flask.globals import _lookup_app_object
 
@@ -64,12 +63,14 @@ if not _PATCHED:
   _PATCHED = True
   del patch_logger
   del wrapping_collector_remove
-## END PATCH
+# END PATCH
+
 
 def fqcn(cls):
   if issubclass(cls, Entity):
     return cls.entity_type
   return base_fqcn(cls)
+
 
 class IndexServiceState(ServiceState):
   whoosh_base = None
@@ -113,7 +114,7 @@ class WhooshIndexService(Service):
     Service.__init__(self, *args, **kwargs)
     self.adapters_cls = [SAAdapter]
     self.adapted = {}
-    self.schemas = { 'default': DefaultSearchSchema() }
+    self.schemas = {'default': DefaultSearchSchema()}
 
   def init_app(self, app):
     Service.init_app(self, app)
@@ -418,11 +419,13 @@ class WhooshIndexService(Service):
     items = []
     for op, obj in state.to_update:
       model_name = fqcn(obj.__class__)
-      if model_name not in self.adapted or not self.adapted[model_name].indexable:
+      if model_name not in self.adapted or \
+          not self.adapted[model_name].indexable:
         # safeguard
         continue
 
-      if sa.orm.object_session(obj) is not None: # safeguard against DetachedInstanceError
+      # safeguard against DetachedInstanceError
+      if sa.orm.object_session(obj) is not None:
         items.append((op, model_name, getattr(obj, primary_field), {}))
 
     if items:
@@ -441,7 +444,7 @@ class WhooshIndexService(Service):
 
     document = adapter.get_document(obj)
 
-    for k,v in document.items():
+    for k, v in document.items():
       if v is None:
         del document[k]
         continue
@@ -486,6 +489,7 @@ class WhooshIndexService(Service):
 
 
 service = WhooshIndexService()
+
 
 @celery.task(ignore_result=True)
 def index_update(index, items):

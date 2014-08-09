@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import unittest
 from abilian.core.singleton import UniqueName
 
+
 class UniqueNameTestCase(unittest.TestCase):
 
   def setUp(self):

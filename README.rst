@@ -9,9 +9,9 @@ About
    :target: https://travis-ci.org/abilian/abilian-core
 .. image:: https://coveralls.io/repos/abilian/abilian-core/badge.png?branch=master
    :target: https://coveralls.io/r/abilian/abilian-core?branch=master
-.. image:: https://pypip.in/v/abilian-core/badge.png
+.. image:: https://pypip.in/v/abilian-core/badge.png?style=flat
    :target: https://pypi.python.org/pypi/abilian-core
-.. image:: https://pypip.in/d/abilian-core/badge.png
+.. image:: https://pypip.in/d/abilian-core/badge.png?style=flat
    :target: https://pypi.python.org/pypi/abilian-core
 
 
@@ -227,4 +227,3 @@ Links
 - `Documentation <http://docs.abilian.com/>`_
 - `GitHub repository <https://github.com/abilian/abilian-core>`_
 - `Corporate support <http://www.abilian.com>`_
-

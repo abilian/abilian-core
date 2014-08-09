@@ -42,14 +42,14 @@ class EntityTestCase(TestCase):
     self.assertEquals(obj.auto_slug, u'c-est-l-ete')
 
     # with a special space character
-    obj.name = u"a_b\u205fc" # U+205F: MEDIUM MATHEMATICAL SPACE
+    obj.name = u"a_b\u205fc"  # U+205F: MEDIUM MATHEMATICAL SPACE
     self.assertEquals(obj.auto_slug, u'a-b-c')
 
     # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH
     # U+2014 (—). Standard separator is \u002d (\x2d) "-" HYPHEN-MINUS.
     # this test may fails depending on how  unicode normalization + char
     # substitution is done (order matters).
-    obj.name = u'a\u2013b\u2014c' # u'a–b—c'
+    obj.name = u'a\u2013b\u2014c'  # u'a–b—c'
     slug = obj.auto_slug
     self.assertEquals(slug, u'a-b-c')
     self.assertTrue(u'\u2013' not in slug)

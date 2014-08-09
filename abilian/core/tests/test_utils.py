@@ -49,7 +49,7 @@ class TestSlugify(TestCase):
     slug = slugify(u'a b c')
     assert slug == u'a-b-c'
     assert isinstance(slug, unicode)
-    assert slugify(slug) == u'a-b-c' # idempotent
+    assert slugify(slug) == u'a-b-c'  # idempotent
 
   def test_separator(self):
     slug = slugify(u"a-b++ c-+", u'+')
@@ -65,7 +65,7 @@ class TestSlugify(TestCase):
     assert slug == u'c-est-l-ete'
 
     # with a special space character
-    slug = slugify(u"a_b\u205fc") # U+205F: MEDIUM MATHEMATICAL SPACE
+    slug = slugify(u"a_b\u205fc")  # U+205F: MEDIUM MATHEMATICAL SPACE
     assert slug == u'a-b-c'
 
     # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH

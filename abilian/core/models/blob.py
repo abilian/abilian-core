@@ -5,13 +5,10 @@ Blob. References to files stored in a on-disk repository
 from __future__ import absolute_import
 
 import uuid
-from pathlib import Path
 
 import sqlalchemy as sa
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer
-
-from flask import current_app
 
 from abilian.core.sqlalchemy import UUID, JSONDict
 from abilian.core.models.base import Model

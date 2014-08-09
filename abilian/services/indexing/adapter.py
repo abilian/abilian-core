@@ -20,6 +20,7 @@ __all__ = ['SchemaAdapter', 'SAAdapter']
 
 logger = logging.getLogger(__name__)
 
+
 class SchemaAdapter(object):
   """
   Base class for objects to schema adapter. The purpose of adapters is
@@ -79,6 +80,7 @@ class SAAdapter(SchemaAdapter):
   and `description` to a `_full_text` field
     * define new fields on schema
   """
+
   @staticmethod
   def can_adapt(obj_cls):
     return issubclass(obj_cls, db.Model)
@@ -117,7 +119,6 @@ class SAAdapter(SchemaAdapter):
       # attrgetter offers dotted name support. Useful for attributes on related
       # objects.
       args.setdefault(field_name, {})[name] = attrgetter(name)
-
 
     # model level definitions
     for name, field_names in self.index_args.get('index_to', ()):
@@ -168,7 +169,7 @@ class SAAdapter(SchemaAdapter):
     # cache because the same attribute may be needed by many fields, i.e
     # "title" on "title" field and "full_text" field for example
     cached = {}
-    missed = set() # negative cache. Might be used especially with dotted names
+    missed = set()  # negative cache. Might be used especially with dotted names
 
     for field, attrs in self.doc_attrs.iteritems():
       values = []
@@ -197,4 +198,3 @@ class SAAdapter(SchemaAdapter):
           kwargs[field] = u' '.join(values)
 
     return kwargs
-

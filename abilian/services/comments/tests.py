@@ -5,7 +5,6 @@ from .service import CommentService, Commentable
 
 
 class Message(Entity, Commentable):
-
     __repr__ = object.__repr__
 
 

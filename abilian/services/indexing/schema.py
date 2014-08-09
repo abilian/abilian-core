@@ -5,27 +5,27 @@ from __future__ import absolute_import
 
 from whoosh.analysis import (
     CharsetFilter, RegexTokenizer, LowercaseFilter,
-    PathTokenizer, NgramFilter
-    )
+    PathTokenizer, NgramFilter)
 
 from whoosh.support.charset import accent_map
 from whoosh.formats import Existence
 from whoosh.fields import (
     SchemaClass, FieldType,
-    ID, KEYWORD, DATETIME, TEXT, NUMERIC
-    )
+    ID, KEYWORD, DATETIME, TEXT, NUMERIC)
 
 from abilian.services.security.models import Role, Anonymous
 from abilian.core.util import noproxy
 from abilian.core.models.subjects import User, Group
 
+
 #: A Whoosh analyzer split on word boundaries and folds accents and case.
-accent_folder = (RegexTokenizer(r'\w+') # defaults doesn't split on '.'
+accent_folder = (RegexTokenizer(r'\w+')  # defaults doesn't split on '.'
                  | LowercaseFilter()
                  | CharsetFilter(accent_map))
 
 # Analyzer for edge-ngrams, from 2 to 6 characters long
 edge_ngram = accent_folder | NgramFilter(minsize=2, maxsize=6, at='start')
+
 
 def EdgeNgramField():
   return TEXT(stored=False, analyzer=edge_ngram)
@@ -58,7 +58,8 @@ class _DefaultSearchSchema(SchemaClass):
 _default_dyn_fields = {
     '*_prefix': EdgeNgramField(),
     '*_at': DATETIME(stored=True, sortable=True),
-    }
+  }
+
 
 def DefaultSearchSchema(*args, **kwargs):
   schema = _DefaultSearchSchema()

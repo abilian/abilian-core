@@ -111,11 +111,9 @@ class BcryptPasswordStrategy(PasswordStrategy):
 
     return bcrypt.hashpw(password, current_passwd) == current_passwd
 
-
   def process(self, user, password):
     if isinstance(password, unicode):
       password = password.encode('utf-8')
-
     return bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
 
 
@@ -194,7 +192,7 @@ class User(Principal, UserMixin, db.Model):
     del self.followees[i]
 
   def join(self, group):
-    if not group in self.groups:
+    if group not in self.groups:
       self.groups.append(group)
 
   def leave(self, group):
@@ -235,8 +233,7 @@ class User(Principal, UserMixin, db.Model):
     cls = self.__class__
     return '<{mod}.{cls} id={id} email={email} at 0x{addr:x}>'.format(
       mod=cls.__module__, cls=cls.__name__,
-      id=repr(self.id), email=repr(self.email), addr=id(self)
-      )
+      id=repr(self.id), email=repr(self.email), addr=id(self))
 
 
 class Group(Principal, db.Model):

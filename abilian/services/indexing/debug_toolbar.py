@@ -9,6 +9,7 @@ from abilian.core.util import fqcn
 from abilian.i18n import _
 from abilian.web.action import actions
 
+
 class IndexedTermsDebugPanel(DebugPanel):
   """
   A panel to display term values found in index for "current" object
@@ -76,15 +77,10 @@ class IndexedTermsDebugPanel(DebugPanel):
 
     sorted_keys = sorted(document) if document is not None else None
 
-    context.update({
-      'document': document,
-      'sorted_keys': sorted_keys,
-      })
-
+    context.update({'document': document, 'sorted_keys': sorted_keys})
 
     jinja_env = current_app.jinja_env
     jinja_env.filters.update(self.jinja_env.filters)
     template = jinja_env.get_or_select_template(
-      'debug_panels/indexing_panel.html'
-    )
+      'debug_panels/indexing_panel.html')
     return template.render(context)

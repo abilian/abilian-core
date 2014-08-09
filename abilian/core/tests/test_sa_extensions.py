@@ -13,6 +13,7 @@ class DummyModel2(Entity):
   dict_attr = Column(JSONDict())
   uuid = Column(UUID())
 
+
 class SAExtensionTestCase(BaseTestCase):
 
   def test_list_attribute(self):
