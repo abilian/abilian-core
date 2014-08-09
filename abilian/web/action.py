@@ -10,10 +10,12 @@ log = logging.getLogger(__name__)
 
 __all__ = ('Action', 'ModalActionMixin', 'actions')
 
+
 class Status(UniqueName):
   """
   Action UI status names
   """
+
 
 #: default action status: show in UID, usable, not marked "current"
 ENABLED = Status(u'enabled')

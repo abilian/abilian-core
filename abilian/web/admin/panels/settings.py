@@ -33,7 +33,7 @@ class SettingsPanel(AdminPanel):
   _keys = (
     Key('SITE_NAME', 'string', _l(u'Site name')),
     Key('MAIL_SENDER', 'string', _l(u'Mail sender')),
-    )
+  )
 
   @property
   def settings(self):

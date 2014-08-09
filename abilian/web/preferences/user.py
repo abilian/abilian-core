@@ -19,6 +19,7 @@ from abilian.web import csrf
 from abilian.web.forms import Form, widgets
 from abilian.i18n import _l, _
 
+
 class UserPreferencesForm(Form):
 
   password = TextField(_l(u'New Password'),
@@ -37,7 +38,6 @@ class UserPreferencesForm(Form):
       raise ValidationError(
         _(u'Passwords differ. Ensure you have typed same password in both'
           u' "password" field and "confirm password" field.'))
-
 
   def validate_photo(self, field):
     data = request.files.get(field.name)

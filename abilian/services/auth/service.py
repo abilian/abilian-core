@@ -5,7 +5,7 @@ from __future__ import absolute_import
 import logging
 from datetime import datetime, timedelta
 
-from flask import current_app, g, request, url_for, _request_ctx_stack
+from flask import current_app, g, request, url_for
 from flask.ext.login import (
   current_user, user_logged_out, user_logged_in, login_user
 )

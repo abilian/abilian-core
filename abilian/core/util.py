@@ -169,6 +169,7 @@ class Pagination(object):
 
 _NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
 
+
 def slugify(value, separator=u"-"):
   """
     Slugify an unicode string, to make it URL friendly.

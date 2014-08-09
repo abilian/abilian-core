@@ -25,13 +25,13 @@ class DummyAccount(Entity):
 
 class AccountRelated(db.Model):
   __tablename__ = 'account_related'
-  __auditable_entity__ = ('account', 'datas', ('id',))
+  __auditable_entity__ = ('account', 'data', ('id',))
   id = Column(Integer, primary_key=True)
 
   account_id = Column(Integer, ForeignKey(DummyAccount.id), nullable=False)
   account = sa.orm.relationship(
     DummyAccount,
-    backref=sa.orm.backref('datas',
+    backref=sa.orm.backref('data',
                            order_by='AccountRelated.id',
                            cascade='all, delete-orphan'))
 
@@ -41,7 +41,7 @@ class AccountRelated(db.Model):
 class CommentRelated(db.Model):
   __tablename__ = 'account_related_comment'
   __auditable_entity__ = ('related.account',
-                          'datas.comments',
+                          'data.comments',
                           ('related.id', 'id'))
   id = Column(Integer, primary_key=True)
 
@@ -65,7 +65,8 @@ class TestAudit(BaseTestCase):
       audit_service.stop()
 
   def test_audit(self):
-    # creation of system user(0) should have created one entry. We clear it for this test
+    # Creation of system user(0) should have created one entry.
+    # We clear it for this test.
     AuditEntry.query.delete()
     db.session.flush()
     assert len(AuditEntry.query.all()) == 0
@@ -158,8 +159,8 @@ class TestAudit(BaseTestCase):
 
     changes = entry.changes
     assert len(changes) == 1
-    assert 'datas 1' in changes
-    changes = changes['datas 1']
+    assert 'data 1' in changes
+    changes = changes['data 1']
     assert changes == {'text': (NEVER_SET, u'text 1'),
                        'account_id': (NEVER_SET, 1),
                        'id': (None, 1), }
@@ -175,8 +176,8 @@ class TestAudit(BaseTestCase):
 
     changes = entry.changes
     assert len(changes) == 1
-    assert 'datas.comments 1 1' in changes
-    changes = changes['datas.comments 1 1']
+    assert 'data.comments 1 1' in changes
+    changes = changes['data.comments 1 1']
     assert changes == {'text': (NEVER_SET, u'comment'),
                        'related_id': (NEVER_SET, 1),
                        'id': (None, 1), }
@@ -192,8 +193,8 @@ class TestAudit(BaseTestCase):
 
     changes = entry.changes
     assert len(changes) == 1
-    assert 'datas.comments 1 2' in changes
-    changes = changes['datas.comments 1 2']
+    assert 'data.comments 1 2' in changes
+    changes = changes['data.comments 1 2']
     assert changes == {'text': (NEVER_SET, u'comment 2'),
                        'related_id': (NEVER_SET, 1),
                        'id': (None, 2), }

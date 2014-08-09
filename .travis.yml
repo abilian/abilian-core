@@ -23,8 +23,8 @@ before_install:
 
 # Install Python dependencies
 install:
-  - pip install -r requirements.txt --use-mirrors
-  - pip install -e '.[dev]' --use-mirrors
+  - pip install -r requirements.txt
+  - pip install -e '.[dev]'
 
 # Create DB
 before_script:

@@ -17,6 +17,7 @@ from flask.globals import _request_ctx_stack, _lookup_req_object
 
 deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
 
+
 class DeferredJS(object):
   """
   Flask extentions for use with DeferredJSExtension for jinja
@@ -71,7 +72,7 @@ class DeferredJSExtension(Extension):
     fragment = lxml.html.fragment_fromstring(body)
     for child in fragment:
       if child.tag == 'script':
-        child.drop_tag() # side effect on fragment.text or previous_child.tail!
+        child.drop_tag()  # side effect on fragment.text or previous_child.tail!
 
     body = [fragment.text]
     for child in fragment:

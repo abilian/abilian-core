@@ -53,8 +53,8 @@ def init_search(endpoint, values):
       label=u'"{}"'.format(q),
       icon="search",
       url=nav.Endpoint('search.search_main', q=q)
-      )
     )
+  )
 
   page_kw = OrderedDict(q=q)
   object_types = request.args.getlist('object_type')
@@ -71,8 +71,7 @@ def init_search(endpoint, values):
   if page > 1:
     g.breadcrumb.append(nav.BreadcrumbItem(
       label=unicode(page),
-      url=nav.Endpoint('search.search_main', page=page, **page_kw)
-      ))
+      url=nav.Endpoint('search.search_main', page=page, **page_kw)))
 
   values['q'] = q
   values['page'] = page
@@ -176,6 +175,7 @@ def search_main(q=u'', page=1):
                          last_page=last_page,
                          next_pages_numbered=next_pages_numbered,
                          friendly_fqcn=friendly_fqcn,)
+
 
 _JSON_HTML = u'''
 <!DOCTYPE html>

@@ -9,10 +9,7 @@ Create all standard extensions.
 
 from __future__ import absolute_import
 
-from flask import _request_ctx_stack
-
 __all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf']
-
 # celery
 #
 # for defining a task:
@@ -29,6 +26,7 @@ from flask import current_app
 
 # Standard extensions.
 import flask.ext.mail as flask_mail
+
 
 # patch flask.ext.mail.Message.send to always set enveloppe_from default mail
 # sender
@@ -53,6 +51,7 @@ db = SQLAlchemy()
 # csrf
 from flask.ext.wtf.csrf import CsrfProtect
 csrf = CsrfProtect()
+
 
 def get_extension(name):
   """Get the named extension from the current app, returning None if not found.

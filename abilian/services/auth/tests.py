@@ -7,10 +7,10 @@ import json
 from abilian.testing import BaseTestCase, TestConfig
 from abilian.core.models.subjects import User
 
-class AuthTestConfig(TestConfig):
 
-  # most views should not be protected by crsf. Let it fail if @csrf.exempt is
-  # forgotten on a view
+class AuthTestConfig(TestConfig):
+  # Most views should not be protected by crsf. Let it fail if @csrf.exempt is
+  # forgotten on a view.
   CSRF_ENABLED = True
   WTF_CSRF_ENABLED = True
 
@@ -42,7 +42,6 @@ class TestAuth(BaseTestCase):
     rv = self.client.post('/user/login', data=kwargs)
     self.assertEquals(rv.status_code, 401, "expected 401, got:" + rv.status)
 
-
   def test_api_post(self):
     kwargs = dict(email=u'user@domain.tld', password='azerty', can_login=True)
     u = User(**kwargs)
@@ -56,7 +55,6 @@ class TestAuth(BaseTestCase):
                                     username=u'user@domain.tld',
                                     fullname=u'Unknown',
                                     next_url=u''))
-
 
     rv = self.client.post('/user/api/logout')
     self.assertEquals(rv.status_code, 200, "expected 200, got:" + rv.status)

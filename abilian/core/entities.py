@@ -17,11 +17,10 @@ from sqlalchemy import event
 from .extensions import db
 from .util import memoized, friendly_fqcn, slugify
 from .models import BaseMixin
-from .models.base import (
-  Indexable, SYSTEM, SEARCHABLE, EDITABLE, NOT_SEARCHABLE
-)
+from .models.base import Indexable, SYSTEM, SEARCHABLE, EDITABLE
 
 __all__ = ['Entity', 'all_entity_classes', 'db', 'ValidationError']
+
 
 #
 # Manual validation
@@ -36,6 +35,7 @@ def validation_listener(mapper, connection, target):
 
 event.listen(mapper, 'before_insert', validation_listener)
 event.listen(mapper, 'before_update', validation_listener)
+
 
 #
 # CRUD events. TODO: connect to signals instead?
@@ -67,6 +67,7 @@ def auto_slug_on_insert(mapper, connection, target):
   if target.slug is None and target.name:
     target.slug = target.auto_slug
 
+
 def auto_slug_after_insert(mapper, connection, target):
   """
   Generates a slug from entity_type and id, unless slug is already set.
@@ -75,6 +76,7 @@ def auto_slug_after_insert(mapper, connection, target):
     target.slug = u'{name}{sep}{id}'.format(name=target.entity_class.lower(),
                                             sep=target.SLUG_SEPARATOR,
                                             id=target.id)
+
 
 class _EntityInherit(object):
   """
@@ -89,7 +91,7 @@ class _EntityInherit(object):
       Integer,
       ForeignKey('entity.id', use_alter=True, name='fk_inherited_entity_id'),
       primary_key=True,
-      info=SYSTEM|SEARCHABLE)
+      info=SYSTEM | SEARCHABLE)
 
   @declared_attr
   def __mapper_args__(cls):
@@ -171,11 +173,11 @@ class Entity(Indexable, BaseMixin, db.Model):
   __indexation_args__['index_to'] = index_to
   del index_to
 
-  SLUG_SEPARATOR = u'-' # \x2d \u002d HYPHEN-MINUS
+  SLUG_SEPARATOR = u'-'  # \x2d \u002d HYPHEN-MINUS
 
-  name = Column('name', UnicodeText(),
-                info=EDITABLE|SEARCHABLE|dict(index_to=('name', 'name_prefix',
-                                                        'text')))
+  name = Column('name', UnicodeText())
+  name.info = (EDITABLE | SEARCHABLE
+               | dict(index_to=('name', 'name_prefix', 'text')))
 
   slug = Column('slug', UnicodeText(), info=SEARCHABLE)
 
@@ -215,14 +217,13 @@ class Entity(Indexable, BaseMixin, db.Model):
 # TODO: make this unecessary
 @event.listens_for(Entity, 'class_instrument', propagate=True)
 def register_metadata(cls):
-  #print "register_metadata called for class", cls
   cls.__editable__ = set()
 
   # TODO: use SQLAlchemy 0.8 introspection
   if hasattr(cls, '__table__'):
     columns = cls.__table__.columns
   else:
-    columns = [ v for k, v in vars(cls).items() if isinstance(v, Column) ]
+    columns = [v for k, v in vars(cls).items() if isinstance(v, Column)]
 
   for column in columns:
     name = column.name
@@ -258,8 +259,8 @@ def all_entity_classes():
   """
   persistent_classes = Entity._decl_class_registry.values()
   # with sqlalchemy 0.8 _decl_class_registry holds object that are not classes
-  return [ cls for cls in persistent_classes
-           if isclass(cls) and issubclass(cls, Entity) ]
+  return [cls for cls in persistent_classes
+          if isclass(cls) and issubclass(cls, Entity)]
 
 
 def register_all_entity_classes():

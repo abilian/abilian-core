@@ -18,6 +18,7 @@ from flask.ext import babel
 from ..core.util import local_dt, utc_dt
 from .util import url_for
 
+
 def autoescape(filter_func):
   """
   Decorator to autoescape result from filters.
@@ -142,38 +143,37 @@ def babel2datepicker(pattern):
 
   map_fmt = {
     # days
-    'd'    : 'dd',
-    'dd'   : 'dd',
-    'EEE'  : 'D',
-    'EEEE' : 'DD',
+    'd': 'dd',
+    'dd': 'dd',
+    'EEE': 'D',
+    'EEEE': 'DD',
     'EEEEE': 'D',  # narrow name => short name
     # months
-    'M'   : 'mm',
-    'MM'  : 'mm',
-    'MMM' : 'M',
+    'M': 'mm',
+    'MM': 'mm',
+    'MMM': 'M',
     'MMMM': 'MM',
     # years
-    'y'   : 'yyyy',
-    'yy'  : 'yyyy',
-    'yyy' : 'yyyy',
+    'y': 'yyyy',
+    'yy': 'yyyy',
+    'yyy': 'yyyy',
     'yyyy': 'yyyy',
 
     # time picker format
     # hours
-    'h' : '%I',
+    'h': '%I',
     'hh': '%I',
-    'H' : '%H',
+    'H': '%H',
     'HH': '%H',
     # minutes,
-    'm' : '%M',
+    'm': '%M',
     'mm': '%M',
     # seconds
-    's' : '%S',
+    's': '%S',
     'ss': '%S',
     # am/pm
     'a': '%p',
-
-    }
+  }
 
   return pattern.format % map_fmt
 

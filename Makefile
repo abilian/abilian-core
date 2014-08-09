@@ -32,6 +32,9 @@ pep8:
 pep8-stats:
 	pep8 -r --statistics -qq $(SRC) | sort -nr
 
+pytest-pep8:
+	py.test --pep8 -m pep8 $(SRC) tests
+
 flake8:
 	flake8 $(SRC)
 

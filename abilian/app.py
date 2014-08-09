@@ -732,8 +732,8 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     if (code / 100) == 5:
       # 5xx code: error on server side
-      db.session.rollback() # ensure rollback if needed, else error page may
-                            # have an error, too, resulting in raw 500 page :-(
+      db.session.rollback()  # ensure rollback if needed, else error page may
+                             # have an error, too, resulting in raw 500 page :-(
     template = 'error{:d}.html'.format(code)
     return render_template(template, error=error), code
 

@@ -31,5 +31,6 @@ auth_service = AuthService()
 activity_service = ActivityService()
 settings_service = SettingsService()
 
+
 def get_service(service):
   return current_app.services.get(service)

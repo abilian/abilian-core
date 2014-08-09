@@ -20,6 +20,7 @@ _patch_logger.setLevel(logging.INFO)
 _patch_logger.addHandler(_patch_handler)
 _patch_logger.propagate = False
 
+
 class PatchLoggerAdapter(logging.LoggerAdapter):
 
   def process(self, msg, kwargs):

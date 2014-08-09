@@ -33,7 +33,7 @@ class TestRegistry(FlaskTestCase):
       'TESTING': True,
       'CSRF_ENABLED': False,
       'WTF_CSRF_ENABLED': False,
-      })
+    })
 
     app.default_view = Registry()
     return app
@@ -81,7 +81,7 @@ class TestRegistry(FlaskTestCase):
 
     @default_view(bp, RegEntity)
     @bp.route('/<int:object_id>')
-    def view(obj):
+    def view(object_id):
       pass
 
     obj = RegEntity(id=1)

@@ -7,6 +7,7 @@ from abilian.web.action import Glyphicon, StaticIcon
 
 from abilian.testing import BaseTestCase
 
+
 class TestIcons(BaseTestCase):
   """
   test abilian.web.actions icons
@@ -15,30 +16,25 @@ class TestIcons(BaseTestCase):
     icon = Glyphicon('ok')
     self.assertEquals(
       icon.__html__(),
-      u'<i class="glyphicon glyphicon-ok"></i>'
-      )
+      u'<i class="glyphicon glyphicon-ok"></i>')
 
   def test_staticicon(self):
     icon = StaticIcon('path/to/icon.png')
     self.assertEquals(
       icon.__html__(),
-      u'<img src="/static/path/to/icon.png" width="12" height="12" />'
-      )
+      u'<img src="/static/path/to/icon.png" width="12" height="12" />')
 
     icon = StaticIcon('path/to/icon.png', width=14)
     self.assertEquals(
       icon.__html__(),
-      u'<img src="/static/path/to/icon.png" width="14" height="12" />'
-      )
+      u'<img src="/static/path/to/icon.png" width="14" height="12" />')
 
     icon = StaticIcon('path/to/icon.png', height=14)
     self.assertEquals(
       icon.__html__(),
-      u'<img src="/static/path/to/icon.png" width="12" height="14" />'
-      )
+      u'<img src="/static/path/to/icon.png" width="12" height="14" />')
 
     icon = StaticIcon('path/to/icon.png', size=14)
     self.assertEquals(
       icon.__html__(),
-      u'<img src="/static/path/to/icon.png" width="14" height="14" />'
-      )
+      u'<img src="/static/path/to/icon.png" width="14" height="14" />')

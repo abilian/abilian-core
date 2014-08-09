@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 FLASK_SA_VERSION = pkg_resources.get_distribution('Flask-SQLAlchemy').version
 
+
 class AbilianBaseSAExtension(SAExtension):
   """
   Base subclass of :class:`flask.ext.sqlalchemy.SQLAlchemy`. Add
@@ -53,8 +54,8 @@ if StrictVersion(FLASK_SA_VERSION) <= StrictVersion('1.0'):
       # actually we are overriding BaseSession.__init__, so we don't want to
       # call it! Directly call BaseSession parent __init__
       sa.orm.Session.__init__(self, autocommit=autocommit, autoflush=autoflush,
-                          bind=bind, binds=db.get_binds(self.app), **options)
-
+                              bind=bind, binds=db.get_binds(self.app),
+                              **options)
 
   class SQLAlchemy(AbilianBaseSAExtension):
 
@@ -63,7 +64,7 @@ if StrictVersion(FLASK_SA_VERSION) <= StrictVersion('1.0'):
       # override needed to use our SignallingSession implementation
       if options is None:
         options = {}
-      scopefunc=options.pop('scopefunc', None)
+      scopefunc = options.pop('scopefunc', None)
       return sa.orm.scoped_session(partial(SignallingSession, self, **options),
                                    scopefunc=scopefunc)
 
@@ -73,6 +74,7 @@ else:
   SQLAlchemy = AbilianBaseSAExtension
 
 del FLASK_SA_VERSION
+
 
 # PATCH flask_sqlalchemy for proper info in debug toolbar.
 #
@@ -108,7 +110,7 @@ import flask.ext.sqlalchemy as flask_sa
 patch_logger.info(flask_sa._calling_context)
 flask_sa._calling_context = _calling_context
 del flask_sa
-## END PATCH
+# END PATCH
 
 
 def filter_cols(model, *filtered_columns):
@@ -118,12 +120,12 @@ def filter_cols(model, *filtered_columns):
   """
   m = sa.orm.class_mapper(model)
   return list(set(p.key for p in m.iterate_properties
-              if hasattr(p, 'columns')).difference(filtered_columns)
-              )
+              if hasattr(p, 'columns')).difference(filtered_columns))
 
 
 class MutationDict(Mutable, dict):
   """Provides a dictionary type with mutability support."""
+
   @classmethod
   def coerce(cls, key, value):
     """Convert plain dictionaries to MutationDict."""
@@ -164,7 +166,7 @@ class MutationDict(Mutable, dict):
     self.changed()
 
   def setdefault(self, key, failobj=None):
-    if not key in self.data:
+    if key not in self.data:
       self.changed()
     return dict.setdefault(self, key, failobj)
 
@@ -178,7 +180,7 @@ class MutationDict(Mutable, dict):
 
 
 class MutationList(Mutable, list):
-  """ Provide a list type with mutability support.
+  """ Provides a list type with mutability support.
   """
   @classmethod
   def coerce(cls, key, value):

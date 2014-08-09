@@ -241,6 +241,7 @@ def step_site_info():
     return step_site_info_validate()
   return step_site_info_form()
 
+
 def get_possible_hostnames():
   hostname = socket.gethostname()
   fqdn = socket.getfqdn()
@@ -258,10 +259,12 @@ def get_possible_hostnames():
   return sorted(u'{} ({})'.format(name, u', '.join(sorted(set(ips))))
                 for name, ips in names.iteritems())
 
+
 def step_site_info_form():
   return render_template('setupwizard/step_site_info.html',
                          data=session_get('site_info', {}),
                          suggested_hosts=get_possible_hostnames())
+
 
 def step_site_info_validate():
   form = request.form
@@ -276,6 +279,7 @@ def step_site_info_validate():
   next_step = request.setup_step_progress['next_step']
   return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
 
+
 # Finalize ####################
 @csrf.exempt
 @setup.route('/finalize', methods=['GET', 'POST'])
@@ -287,10 +291,12 @@ def finalize():
     return finalize_validate()
   return finalize_form()
 
+
 def finalize_form():
   file_location = os.path.join(current_app.instance_path, 'config.py')
   return render_template('setupwizard/finalize.html',
                          file_location=file_location)
+
 
 def finalize_validate():
   config_file = os.path.join(current_app.instance_path, 'config.py')

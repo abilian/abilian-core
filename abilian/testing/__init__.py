@@ -138,7 +138,7 @@ class BaseTestCase(TestCase):
     tmp_dir = Path(tempfile.mkdtemp(prefix='tmp-py-unittest-',
                                     suffix='-' + cls.__name__,))
     cls.TEST_INSTANCE_PATH = str(tmp_dir)
-    for p in  (tmp_dir/'tmp', tmp_dir/'cache', tmp_dir/'data'):
+    for p in (tmp_dir/'tmp', tmp_dir/'cache', tmp_dir/'data'):
       p.mkdir()
 
     sa_warn = 'error' if cls.SQLALCHEMY_WARNINGS_AS_ERROR else 'default'

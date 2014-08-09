@@ -44,7 +44,7 @@ class FlaskLoader(BaseLoader):
 
   def read_configuration(self):
     app = self.flask_app
-    cfg = {k: v for k,v in app.config.items() if is_celery_setting(k)}
+    cfg = {k: v for k, v in app.config.items() if is_celery_setting(k)}
     self.configured = True
     return cfg
 

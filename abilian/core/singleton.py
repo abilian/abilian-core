@@ -3,6 +3,7 @@
 """
 from __future__ import absolute_import
 
+
 class ValueSingletonMeta(type):
 
   def __new__(cls, name, bases, dct):
@@ -13,11 +14,11 @@ class ValueSingletonMeta(type):
     if priv_attr not in slots:
       slots += (priv_attr,)
     dct['__slots__'] = slots
-    
+
     new_type = type.__new__(cls, name, bases, dct)
     if not hasattr(new_type, 'attr'):
       setattr(new_type, 'attr', attr)
-      
+
     return new_type
 
   def __call__(cls, value, *args, **kwargs):
@@ -39,7 +40,7 @@ class UniqueName(object):
   __metaclass__ = ValueSingletonMeta
   __slots__ = ('_hash',)
   attr = 'name'
-  
+
   def __init__(self, name):
     self.__name = unicode(name).strip().lower()
     self._hash = hash(self.__name)
@@ -64,14 +65,3 @@ class UniqueName(object):
 
   def __hash__(self):
     return self._hash
-  
-
-
-
-
-
-
-
-
-
-

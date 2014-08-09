@@ -17,15 +17,11 @@ from sqlalchemy.orm.exc import NoResultFound
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 from flask import (
-  render_template, request, Blueprint, redirect, url_for,
-  flash, current_app
-)
+  render_template, request, Blueprint, redirect, url_for, flash, current_app)
 from flask.json import jsonify
 
 from flask.ext.login import (
-  login_user, logout_user, user_logged_in,
-  user_logged_out,
-)
+  login_user, logout_user, user_logged_in, user_logged_out,)
 from flask.ext.security.utils import md5
 from flask.ext.mail import Message
 from flask.ext.babel import gettext as _
@@ -95,6 +91,7 @@ def login_post():
 
   return redirect_back(url=request.url_root)
 
+
 @csrf.exempt
 @route("/api/login", methods=['POST'])
 def login_json():
@@ -113,17 +110,20 @@ def login_json():
     response.status_code = code
   return response
 
+
 @csrf.exempt
 @route("/logout", methods=['GET', 'POST'])
 def logout():
   logout_user()
   return redirect(request.url_root)
 
+
 @csrf.exempt
 @route("/api/logout", methods=['POST'])
 def logout_json():
   logout_user()
   return  u'Logged out, ok.', 200
+
 
 #
 # Code to deal with forgotten passwords or initial password generation
@@ -363,5 +363,5 @@ def redirect_back(endpoint=None, url=None, **values):
     if endpoint:
       target = url_for(endpoint, **values)
     else:
-      target=url
+      target = url
   return redirect(target)
