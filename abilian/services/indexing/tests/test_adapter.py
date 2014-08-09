@@ -17,6 +17,7 @@ from abilian.core.extensions import db
 from abilian.core.models.base import IdMixin, Indexable as CoreIndexable, SEARCHABLE
 from abilian.core.entities import Entity
 
+
 class SANotAdaptable(object):
   pass
 
@@ -24,6 +25,7 @@ class SANotAdaptable(object):
 class SANotIndexable(IdMixin, db.Model):
   __tablename__ = 'sa_not_indexable'
   __indexable__ = False
+
 
 class Indexable(IdMixin, CoreIndexable, db.Model):
   __tablename__ = 'sa_indexable'
@@ -63,15 +65,15 @@ class TestSAAdapter(TestCase):
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     self.assertEquals(adapter.indexable, True)
     self.assertEquals(set(adapter.doc_attrs),
-                      set(('object_key', 'id', 'name', 'slug', 'object_type',
-                           'text', 'created_at', 'updated_at', 'name_prefix',
-                           'owner', 'owner_name', 'creator_name', 'creator')))
+                      {'object_key', 'id', 'name', 'slug', 'object_type',
+                       'text', 'created_at', 'updated_at', 'name_prefix',
+                       'owner', 'owner_name', 'creator_name', 'creator'})
     self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
 
     self.assertEquals(set(schema.names()),
-                      set(('object_key', 'id', 'object_type', 'name', 'slug',
-                           'text', 'created_at', 'updated_at', 'name_prefix',
-                           'owner', 'owner_name', 'creator_name', 'creator')))
+                      {'object_key', 'id', 'object_type', 'name', 'slug',
+                       'text', 'created_at', 'updated_at', 'name_prefix',
+                       'owner', 'owner_name', 'creator_name', 'creator'})
 
     schema = Schema(
       id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True),
@@ -79,11 +81,11 @@ class TestSAAdapter(TestCase):
     adapter = SAAdapter(Indexable, schema)
     self.assertEquals(adapter.indexable, True)
     self.assertEquals(set(adapter.doc_attrs),
-                      set(('id', 'text', 'num', 'name')))
+                      {'id', 'text', 'num', 'name'})
     self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
 
     self.assertEquals(set(schema.names()),
-                      set(('id', 'text', 'num', 'name')))
+                      {'id', 'text', 'num', 'name'})
     self.assertTrue(isinstance(schema['text'], TEXT))
     self.assertTrue(isinstance(schema['num'], NUMERIC))
 
@@ -120,7 +122,7 @@ class TestSAAdapter(TestCase):
     expected['text'] = obj.related.name + u' ' + obj.related.description
     doc = adapter.get_document(obj)
 
-    self.assertEquals(set(doc), set(('id', 'name', 'num', 'text')))
+    self.assertEquals(set(doc), {'id', 'name', 'num', 'text'})
     self.assertEquals(doc['id'], 1)
     self.assertEquals(doc['num'], 42)
     self.assertEquals(doc['name'], u'related name')

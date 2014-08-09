@@ -15,12 +15,14 @@ from .subjects import User
 
 
 class OwnedMixin(object):
-
   __indexation_args__ = {
-    'index_to': (('creator', ('creator',)),
-                 ('creator_name', (('creator_name', STORED),)),
-                 ('owner', ('owner',)),
-                 ('owner_name', (('owner_name', STORED))))}
+    'index_to': (
+      ('creator', ('creator',)),
+      ('creator_name', (('creator_name', STORED),)),
+      ('owner', ('owner',)),
+      ('owner_name', (('owner_name', STORED),)),
+    )
+  }
 
   def __init__(self, *args, **kwargs):
     if hasattr(g, 'user'):
