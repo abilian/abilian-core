@@ -109,7 +109,6 @@ class SAAdapter(SchemaAdapter):
     def setup_field(attr_name, field_name):
       field_def = False
       if not isinstance(field_name, basestring):
-        print field_name
         field_name, field_def = field_name
 
       if field_name not in schema:
