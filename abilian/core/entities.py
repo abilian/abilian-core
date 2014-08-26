@@ -188,6 +188,11 @@ class Entity(Indexable, BaseMixin, db.Model):
   def object_type(self):
     return unicode(self.entity_type)
 
+  @classmethod
+  def _object_type(cls):
+    # overriden from Indexable
+    return cls.entity_type
+
   @property
   def entity_class(self):
     return self.entity_type and friendly_fqcn(self.entity_type)

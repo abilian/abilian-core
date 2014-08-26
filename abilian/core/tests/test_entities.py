@@ -91,16 +91,19 @@ class EntityTestCase(TestCase):
 
     expected = __name__ + '.MyType'
     self.assertEquals(MyType.entity_type, expected)
+    self.assertEquals(MyType._object_type(), expected)
 
     class Fixed(Entity):
       entity_type = 'some.fixed.module.fixed_type'
 
     self.assertEquals(Fixed.entity_type, 'some.fixed.module.fixed_type')
+    self.assertEquals(Fixed._object_type(), 'some.fixed.module.fixed_type')
 
     class OtherBase(Entity):
       ENTITY_TYPE_BASE = 'some.module'
 
     self.assertEquals(OtherBase.entity_type, 'some.module.OtherBase')
+    self.assertEquals(OtherBase._object_type(), 'some.module.OtherBase')
 
     # test when ENTITY_TYPE_BASE is in ancestors
     class Base(object):
@@ -110,6 +113,7 @@ class EntityTestCase(TestCase):
       pass
 
     self.assertEquals(InheritedBase.entity_type, 'from.ancestor.InheritedBase')
+    self.assertEquals(InheritedBase._object_type(), 'from.ancestor.InheritedBase')
 
 
 class InfoTestCase(TestCase):
