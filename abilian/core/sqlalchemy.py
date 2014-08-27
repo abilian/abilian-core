@@ -37,6 +37,8 @@ class AbilianBaseSAExtension(SAExtension):
         # implicit BEGIN/COMMIT statements made by pysqlite (a COMMIT kills all
         # savepoints made).
         connect_args['isolation_level'] = None
+    elif info.drivername.startswith('postgres'):
+      options.setdefault('client_encoding', 'utf8')
 
 
 if StrictVersion(FLASK_SA_VERSION) <= StrictVersion('1.0'):
