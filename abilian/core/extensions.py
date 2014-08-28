@@ -89,7 +89,7 @@ patch_logger.info(flask_mail.Connection.send)
 flask_mail.Connection.send = _connection_send
 
 mail = flask_mail.Mail()
-del flask_mail
+
 
 import sqlalchemy as sa
 from .sqlalchemy import SQLAlchemy
