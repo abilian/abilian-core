@@ -69,8 +69,8 @@ def _connection_send(self, message, envelope_from=None):
       flask_mail.sanitize_address(envelope_from or message.sender),
       message.send_to,
       message.as_string(),
-      message.mail_options,
-      message.rcpt_options)
+      getattr(message, 'mail_options', []),
+      getattr(message, 'rcpt_options', []))
 
   flask_mail.email_dispatched.send(
     message,
