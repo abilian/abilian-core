@@ -11,7 +11,9 @@ from __future__ import absolute_import
 
 __all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf']
 
+import time
 from .logging import patch_logger
+
 # celery
 #
 # for defining a task:
@@ -57,17 +59,18 @@ def _connection_send(self, message, envelope_from=None):
     "has not been configured")
 
   if message.has_bad_headers():
-    raise BadHeaderError
+    raise flask_mail.BadHeaderError
 
   if message.date is None:
     message.date = time.time()
 
   if self.host:
-    self.host.sendmail(sanitize_address(envelope_from or message.sender),
-                       message.send_to,
-                       message.as_string(),
-                       message.mail_options,
-                       message.rcpt_options)
+    self.host.sendmail(
+      flask_mail.sanitize_address(envelope_from or message.sender),
+      message.send_to,
+      message.as_string(),
+      message.mail_options,
+      message.rcpt_options)
 
   flask_mail.email_dispatched.send(
     message,
@@ -80,6 +83,7 @@ def _connection_send(self, message, envelope_from=None):
     if self.host:
       self.host.quit()
       self.host = self.configure_host()
+
 
 patch_logger.info(flask_mail.Connection.send)
 flask_mail.Connection.send = _connection_send
