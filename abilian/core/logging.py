@@ -28,7 +28,13 @@ class PatchLoggerAdapter(logging.LoggerAdapter):
       return super(PatchLoggerAdapter, self).process(msg, kwargs)
 
     func = msg
-    return '{}.{}'.format(func.__module__, func.__name__), kwargs
+    location = func.__module__
+    if hasattr(func, 'im_class'):
+      cls = func.im_class
+      func = func.im_func
+      location = '{}.{}'.format(cls.__module__, cls.__name__)
+
+    return '{}.{}'.format(location, func.func_name), kwargs
 
 #: logger for monkey patchs. use like this:
 #: patch_logger.info(<func>`patched_func`)
