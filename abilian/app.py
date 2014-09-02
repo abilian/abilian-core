@@ -577,8 +577,17 @@ class Application(Flask, ServiceManager, PluginManager):
   def handle_exception(self, e):
     session = db.session()
     if not session.is_active:
-      # something happened in error handlers and session is not usable anymore
+      # something happened in error handlers and session is not usable anymore.
+      #
+      # Before destroying the session, get all instances to be attached to the
+      # new session. Without this, we get DetachedInstance errors, like when
+      # tryin to get user's attribute in the error page...
+      objs = [state.object for state in session.identity_map.all_states()
+              if state.object is not None]
       db.session.remove()
+      session = db.session()
+      for obj in objs:
+        session.merge(obj, load=False)
 
     return Flask.handle_exception(self, e)
 
