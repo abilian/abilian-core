@@ -56,9 +56,11 @@ class ActivityEntry(db.Model):
   target = relationship(Entity, foreign_keys=_fk_target_id)
 
   def __repr__(self):
-    return '<%s.ActivityEntry id=%s actor="%s" verb="%s" object="%s" target="%s">' % (
-      self.__class__.__module__, self.id,
-      unicode(self.actor).encode('utf-8'),
-      self.verb,
-      unicode(self.object).encode('utf-8'),
-      unicode(self.target).encode('utf-8'))
+    return ('<{}.ActivityEntry id={} actor={} verb={} object={} '
+            'target={}>'.format(
+        self.__class__.__module__, self.id,
+        repr(unicode(self.actor)),
+        repr(self.verb),
+        repr(unicode(self.object)),
+        repr(unicode(self.target)))
+    )

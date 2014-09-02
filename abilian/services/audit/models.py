@@ -52,10 +52,10 @@ class AuditEntry(db.Model):
   changes_pickle = Column(Binary)
 
   def __repr__(self):
-    return "<AuditEntry id=%s type=%s user=%s %sentity=<%s id=%s>>" % (
-      self.id,
+    return '<AuditEntry id={} op={} user={} {}entity=<{} id={}>>'.format(
+      repr(self.id),
       {CREATION: "CREATION", DELETION: "DELETION", UPDATE: "UPDATE"}[self.op],
-      self.user,
+      repr(unicode(self.user)),
       'related ' if self.related else '',
       self.entity_type, self.entity_id)
 

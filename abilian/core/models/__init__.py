@@ -29,13 +29,10 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     OwnedMixin.__init__(self)
 
   def __repr__(self):
-    name = self.name
-
-    # Just in case....
-    if isinstance(name, unicode):
-      name = name.encode("ascii", errors="ignore")
-
-    return "<%s %s id=%s>" % (self.__class__.__name__, name, str(self.id))
+    return '<{} instance at 0x{:x} name={} id={}>'.format(
+        self.__class__.__name__, id(self),
+        repr(self.name),
+        str(self.id))
 
   @property
   def column_names(self):
