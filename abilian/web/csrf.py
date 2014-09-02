@@ -3,7 +3,7 @@ from functools import wraps
 from datetime import timedelta
 from werkzeug.exceptions import Forbidden
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, current_app
 from flask.ext.wtf import Form
 
 blueprint = Blueprint('csrf', __name__, url_prefix='/csrf')
@@ -26,11 +26,7 @@ def time_limit():
   """
   return current time limit for CSRF token.
   """
-  limit = Form().TIME_LIMIT
-  if isinstance(limit, timedelta):
-    limit = limit.total_seconds
-  return limit
-
+  return current_app.config.get('WTF_CSRF_TIME_LIMIT', 3600)
 
 def name():
   """
