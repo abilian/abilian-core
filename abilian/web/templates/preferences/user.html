@@ -6,7 +6,7 @@
 {% block content %}
   {% call m_box_content(title) %}
 
-  <form method="post" action="{{ url_for("preferences.user") }}" role="form" enctype="multipart/form-data">
+  <form id="user-preferences" method="post" action="{{ url_for("preferences.user") }}" role="form" enctype="multipart/form-data">
     {{ csrf.field() }}
     {% for field in form %}
       {{ m_field(field) }}
@@ -19,6 +19,14 @@
       {{ _("Cancel") }}
     </button>
   </form>
+
+{%- deferJS %}
+  <script type="text/javascript">
+   Abilian.fn.onAppInit(function() {
+     $('#user-preferences input[type="password"]').preventEnterKey();
+   });
+  </script>
+{%- enddeferJS %}
 
   {% endcall %}
 {% endblock %}
