@@ -621,7 +621,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
   @property
   def redis(self):
-    return self.extensions['redis']
+    return self.extensions['redis'].client
 
   def create_db(self):
     from abilian.core.models.subjects import User
