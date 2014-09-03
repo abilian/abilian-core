@@ -97,6 +97,9 @@
 {#- bootstrap-datepicker locale #}
 <script type="text/javascript" src="{{ url_for('abilian_static', filename='bootstrap-datepicker/js/locales/bootstrap-datepicker.' + locale.language + '.js') }}"></script>
 
+{% block locale_js %}
+{% endblock %}
+
 <!-- app init -->
 <script type="text/javascript">
  {%- include "abilian_init.js" %}
