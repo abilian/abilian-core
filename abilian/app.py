@@ -31,7 +31,7 @@ from flask.ext.babel import get_locale as babel_get_locale
 from flask.ext.migrate import Migrate
 
 import abilian.i18n
-from abilian.core import extensions, signals
+from abilian.core import extensions, signals, redis
 import abilian.core.util
 from abilian.web.action import actions
 from abilian.web.views import Registry as ViewRegistry
@@ -383,6 +383,7 @@ class Application(Flask, ServiceManager, PluginManager):
     Initializes flask extensions, helpers and services.
     """
     self.init_debug_toolbar()
+    redis.Extension(self)
     extensions.mail.init_app(self)
     actions.init_app(self)
 
@@ -617,6 +618,10 @@ class Application(Flask, ServiceManager, PluginManager):
   @property
   def db(self):
     return self.extensions['sqlalchemy'].db
+
+  @property
+  def redis(self):
+    return self.extensions['redis']
 
   def create_db(self):
     from abilian.core.models.subjects import User
