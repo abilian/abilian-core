@@ -251,7 +251,11 @@ class SecurityService(Service):
       else:
         all_roles = ra_groups.setdefault(ra.group, {})
 
-      object_key = u'{}:{:d}'.format(ra.object.entity_type, ra.object_id)
+      object_key = (
+        u'{}:{:d}'.format(ra.object.entity_type, ra.object_id)
+        if ra.object is not None
+        else None
+      )
       all_roles.setdefault(object_key, set()).add(ra.role)
 
     for group, all_roles in ra_groups.iteritems():

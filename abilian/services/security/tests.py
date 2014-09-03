@@ -90,6 +90,10 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.has_role(user, Admin)
     assert security.get_roles(user) == [Admin]
     assert security.get_roles(user) == ['admin']
+
+    # clear roles cache for better coverage: has_permission uses
+    # _fill_role_cache_batch(), get_roles uses _fill_role_cache()
+    delattr(user, '__roles_cache__')
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
     assert security.has_permission(user, "manage")
@@ -168,71 +172,3 @@ class SecurityTestCase(IntegrationTestCase):
     security.grant_role(user, "reader", obj)
     self.session.flush()
     assert RoleAssignment.query.count() == 2
-
-
-# class FolderSecurityTestCase(IntegrationTestCase):
-#   @skip
-#   def test_security_inheritance(self):
-#     """
-#     user rights:
-#
-#     . (r,w)
-#     └── l1_folder (r)
-#         └── l2_folder ()
-#     """
-#     user = User(email=u"john@example.com", password="x")
-#     repository = self.app.extensions['content_repository']
-#     root = FolderishModel(name=u"")
-#     l1_folder = root.create_subfolder(u'level1')
-#     l2_folder = l1_folder.create_subfolder(u'level2')
-#     self.session.add_all([user, root, l1_folder, l2_folder])
-#     self.session.flush()
-#     security.grant_role(user, "reader", root)
-#     security.grant_role(user, "writer", root)
-#     security.grant_role(user, "reader", l1_folder)
-#     self.session.commit()
-#
-#     # inherit_security is True by default
-#     assert root.inherit_security is True
-#     assert l1_folder.inherit_security is True
-#     assert l2_folder.inherit_security is True
-#
-#     # root rights are propagated: (r,w) on all
-#     assert repository.has_permission(user, "read", root)
-#     assert repository.has_permission(user, "write", root)
-#     assert repository.has_permission(user, "read", l1_folder)
-#     assert repository.has_permission(user, "write", l1_folder)
-#     assert repository.has_permission(user, "read", l2_folder)
-#     assert repository.has_permission(user, "write", l2_folder)
-#
-#     # remove inheritance on l1
-#     l1_folder.inherit_security = False
-#     self.session.add(l1_folder)
-#     self.session.commit()
-#
-#     # /: (r,w), l1_folder: (r), l2_folder: (r)
-#     assert repository.has_permission(user, "read", root)
-#     assert repository.has_permission(user, "write", root)
-#     assert repository.has_permission(user, "read", l1_folder)
-#     assert not repository.has_permission(user, "write", l1_folder)
-#     assert repository.has_permission(user, "read", l2_folder)
-#     assert not repository.has_permission(user, "write", l2_folder)
-#
-#   def test_web_permisions(self):
-#     d = dict(email=TEST_EMAIL, password=TEST_PASSWORD)
-#     response = self.client.post("/login/", data=d)
-#     self.assertEquals(response.status_code, 302)
-#
-#     response = self.get("/crm/")
-#     self.assertEquals(response.status_code, 403)
-#
-#     response = self.get("/admin/")
-#     self.assertEquals(response.status_code, 403)
-#
-#     # Try again after granting role "admin"
-#     user = User.query.filter(User.email == TEST_EMAIL).one()
-#     security.grant_role(user, "admin")
-#
-#     response = self.get("/admin/")
-#     self.assertEquals(response.status_code, 200)
-#
