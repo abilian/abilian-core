@@ -49,7 +49,7 @@ progressbar-latest
 
 # Forms
 WTForms
-WTForms-Alchemy==0.12.6
+WTForms-Alchemy==0.12.9
 # required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
 SQLAlchemy-Utils<0.24.0
 
