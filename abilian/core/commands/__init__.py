@@ -36,7 +36,7 @@ from flask.ext.migrate import MigrateCommand
 from .base import manager
 from .assets import ManageAssets
 from .config import manager as config_manager
-from . import indexing
+from . import indexing, routes
 
 __all__ = ['manager', 'setup_abilian_commands']
 
