@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 from redis import from_url as redis_from_url
+from flask import current_app
 
 class Extension(object):
   """
@@ -17,9 +18,11 @@ class Extension(object):
 
   def init_app(self, app):
     app.extensions['redis'] = self
-    self.setup_client()
+    self.setup_client(app)
 
-  def setup_client(self, uri=None):
+  def setup_client(self, app=None, uri=None):
+    if app is None:
+      app = current_app
     if uri is None:
       uri = app.config.get('REDIS_URI')
     if uri:
