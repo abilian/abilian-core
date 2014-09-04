@@ -4,8 +4,10 @@ A few utility functions.
 See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for more ideas
 of stuff to implement.
 """
+import logging
+from functools import wraps
 from werkzeug.routing import BuildError
-from flask import current_app, url_for as flask_url_for
+from flask import current_app, url_for as flask_url_for, stream_with_context
 from flask.helpers import send_from_directory
 
 
@@ -56,3 +58,30 @@ def send_file_from_directory(filename, directory, app=None):
   cache_timeout = app.get_send_file_max_age(filename)
   return send_from_directory(directory, filename,
                              cache_timeout=cache_timeout)
+
+def capture_stream_errors(logger, msg):
+  """
+  Decorator that capture and log errors during streamed response.
+
+  Decorated function is automatically decorated with
+  :func:<`Flask.stream_with_context`>.
+
+  @param logger: a logger name or logger instance
+  @param msg: message to log
+  """
+  if isinstance(logger, basestring):
+    logger = logging.getLogger(logger)
+
+  def decorator(fun):
+    @stream_with_context
+    def wrapper(*args, **kwargs):
+      try:
+        generator = fun(*args, **kwargs)
+        for chunk in generator:
+          yield chunk
+      except:
+        logger.error(msg, exc_info=True)
+        raise
+
+    return wrapper
+  return decorator
