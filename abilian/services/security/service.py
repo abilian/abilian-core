@@ -369,6 +369,15 @@ class SecurityService(Service):
     ra = RoleAssignment(**args)
     session.add(ra)
     audit = SecurityAudit(manager=manager, op=SecurityAudit.GRANT, **args)
+    if obj is not None:
+      audit.object_id = obj.id
+      audit.object_type = obj.entity_type
+      object_name = u''
+      for attr_name in ('name', 'path', '__path_before_delete'):
+        if hasattr(obj, attr_name):
+          object_name = getattr(obj, attr_name)
+      audit.object_name = object_name
+
     session.add(audit)
     self._needs_flush()
 

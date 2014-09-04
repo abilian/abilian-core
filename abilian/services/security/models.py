@@ -5,7 +5,7 @@ from sqlalchemy.schema import (
   Column, ForeignKey, Index, UniqueConstraint, CheckConstraint
   )
 from sqlalchemy.types import (
-  Integer, Enum, DateTime, String, Boolean, TypeDecorator,
+  Integer, Enum, DateTime, String, Boolean, TypeDecorator, UnicodeText
   )
 from sqlalchemy.event import listens_for
 
@@ -79,12 +79,12 @@ class RoleAssignment(db.Model):
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
   role = Column(RoleType, index=True, nullable=False)
   anonymous = Column('anonymous', Boolean, nullable=True, default=False)
-  user_id = Column(Integer, ForeignKey('user.id'))
+  user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
   user = relationship(User, lazy='joined')
-  group_id = Column(Integer, ForeignKey('group.id'))
+  group_id = Column(Integer, ForeignKey('group.id', ondelete='CASCADE'))
   group = relationship(Group, lazy='joined')
 
-  object_id = Column(Integer, ForeignKey(Entity.id))
+  object_id = Column(Integer, ForeignKey(Entity.id, ondelete='CASCADE'))
   object = relationship(Entity, lazy='select')
 
 
@@ -190,17 +190,20 @@ class SecurityAudit(db.Model):
   role = Column(RoleType)
 
   manager_id = Column(Integer, ForeignKey(User.id))
-  manager = relationship(User,
-                         primaryjoin='SecurityAudit.manager_id == User.id')
+  manager = relationship(User, foreign_keys=manager_id)
   anonymous = Column('anonymous', Boolean, nullable=True, default=False)
   user_id = Column(Integer, ForeignKey('user.id'))
-  user = relationship("User", lazy='joined',
-                      primaryjoin='SecurityAudit.user_id == User.id')
+  user = relationship("User", lazy='joined', foreign_keys=user_id)
   group_id = Column(Integer, ForeignKey('group.id'))
   group = relationship("Group", lazy='joined')
 
-  object_id = Column(Integer, ForeignKey(Entity.id))
+  _fk_object_id = Column(Integer,
+                         ForeignKey(Entity.id, ondelete="SET NULL"))
   object = relationship(Entity, lazy='select')
+
+  object_id = Column(Integer)
+  object_type = Column(String(1000))
+  object_name = Column(UnicodeText)
 
 
 class InheritSecurity(object):
