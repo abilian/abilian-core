@@ -40,6 +40,7 @@ class DefaultConfig(object):
 
   #SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
   SQLALCHEMY_ECHO = False
+  REDIS_URI = 'redis://localhost:6379/1'
 
   DEBUG = True
   ASSETS_DEBUG = True
