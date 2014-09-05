@@ -5,6 +5,7 @@ See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for more ideas
 of stuff to implement.
 """
 import logging
+import sys
 from functools import wraps
 from werkzeug.routing import BuildError
 from flask import current_app, url_for as flask_url_for, stream_with_context
@@ -79,8 +80,16 @@ def capture_stream_errors(logger, msg):
         generator = fun(*args, **kwargs)
         for chunk in generator:
           yield chunk
-      except:
-        logger.error(msg, exc_info=True)
+      except Exception:
+        # Anonymous "except" would also capture GeneratorExit that is not a
+        # subclass of Exception. GeneratorExit happens when user stop download
+        # during generation: it's not an error that should be logged
+        type_, value, tb = sys.exc_info()
+        if tb.tb_next is not None:
+          # error has happened inside decorated function, remove us from top
+          # stack: better readability in logs, accurate label in sentry
+          tb = tb.tb_next
+        logger.error(msg, exc_info=(type_, value, tb))
         raise
 
     return wrapper
