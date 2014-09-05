@@ -27,7 +27,10 @@ from base64 import encodestring, decodestring
 from xmlrpclib import ServerProxy
 import mimetypes
 import re
-import StringIO
+import cStringIO as StringIO
+from contextlib import contextmanager
+
+from flask import current_app
 
 from PIL import Image
 from PIL.ExifTags import TAGS
@@ -48,6 +51,9 @@ CACHE_DIR = "cache"
 
 mime_sniffer = Magic(mime=True)
 encoding_sniffer = Magic(mime_encoding=True)
+
+def get_tmp_dir():
+  return converter.TMP_DIR
 
 
 class ConversionError(Exception):
@@ -101,6 +107,8 @@ class Converter(object):
     self.init_work_dirs(
       cache_dir=Path(app.instance_path, CACHE_DIR),
       tmp_dir=Path(app.instance_path, TMP_DIR),)
+
+    app.extensions['conversion'] = self
 
     for handler in self.handlers:
       handler.init_app(app)
@@ -241,15 +249,15 @@ class Converter(object):
       if mime_type != "application/pdf":
         content = self.to_pdf(digest, content, mime_type)
 
-      in_fn = make_temp_file(content)
-      output = subprocess.check_output(['pdfinfo', in_fn])
+      with make_temp_file(content) as in_fn:
+        output = subprocess.check_output(['pdfinfo', in_fn])
+
       ret = {}
       for line in output.split("\n"):
         if ":" in line:
           key, value = line.strip().split(":", 1)
           ret["PDF:" + key] = unicode(value.strip(), errors="replace")
 
-      os.remove(in_fn)
       return ret
 
   @staticmethod
@@ -273,6 +281,10 @@ class Handler(object):
 
   def init_app(self, app):
     pass
+
+  @property
+  def TMP_DIR(self):
+    return get_tmp_dir()
 
   def accept(self, source_mime_type, target_mime_type):
     """Generic matcher based on patterns."""
@@ -302,11 +314,10 @@ class PdfToTextHandler(Handler):
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
-    in_fn = make_temp_file(blob)
-    fd, out_fn = mkstemp(dir=str(TMP_DIR))
+    fd, out_fn = mkstemp(dir=str(self.TMP_DIR))
     os.close(fd)
 
-    try:
+    with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
       try:
         subprocess.check_call(['pdftotext', in_fn, out_fn])
       except Exception, e:
@@ -315,18 +326,15 @@ class PdfToTextHandler(Handler):
       converted = open(out_fn).read()
       encoding = encoding_sniffer.from_file(out_fn)
 
-      if encoding in ("binary", None):
-        encoding = "ascii"
-      try:
-        converted_unicode = unicode(converted, encoding, errors="ignore")
-      except:
-        traceback.print_exc()
-        converted_unicode = unicode(converted, errors="ignore")
+    if encoding in ("binary", None):
+      encoding = "ascii"
+    try:
+      converted_unicode = unicode(converted, encoding, errors="ignore")
+    except:
+      traceback.print_exc()
+      converted_unicode = unicode(converted, errors="ignore")
 
-      return converted_unicode
-    finally:
-      os.remove(in_fn)
-      os.remove(out_fn)
+    return converted_unicode
 
 
 class AbiwordTextHandler(Handler):
@@ -334,15 +342,16 @@ class AbiwordTextHandler(Handler):
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
-    in_fn = make_temp_file(blob, suffix=".doc")
-    out_fn = mktemp(dir=TMP_DIR, suffix='.txt')
-
+    tmp_dir = self.TMP_DIR
     cur_dir = os.getcwd()
-    try:
+    with make_temp_file(blob, suffix=".doc") as in_fn,\
+         make_temp_file(suffix='.txt') as out_fn:
       try:
-        os.chdir(TMP_DIR)
+        os.chdir(str(tmp_dir))
         subprocess.check_call(
-          ['abiword', '--to', os.path.basename(out_fn), os.path.basename(in_fn)])
+          ['abiword',
+           '--to', os.path.basename(out_fn),
+          os.path.basename(in_fn)])
       except Exception, e:
         raise ConversionError(e)
       finally:
@@ -351,19 +360,15 @@ class AbiwordTextHandler(Handler):
       converted = open(out_fn).read()
       encoding = encoding_sniffer.from_file(out_fn)
 
-      if encoding in ("binary", None):
-        encoding = "ascii"
-      try:
-        converted_unicode = unicode(converted, encoding, errors="ignore")
-      except:
-        traceback.print_exc()
-        converted_unicode = unicode(converted, errors="ignore")
+    if encoding in ("binary", None):
+      encoding = "ascii"
+    try:
+      converted_unicode = unicode(converted, encoding, errors="ignore")
+    except:
+      traceback.print_exc()
+      converted_unicode = unicode(converted, errors="ignore")
 
-      return converted_unicode
-    finally:
-      os.remove(in_fn)
-      if os.path.exists(out_fn):
-        os.remove(out_fn)
+    return converted_unicode
 
 
 class AbiwordPDFHandler(Handler):
@@ -373,15 +378,16 @@ class AbiwordPDFHandler(Handler):
   produces_mime_types = ['application/pdf']
 
   def convert(self, blob, **kw):
-    in_fn = make_temp_file(blob, suffix=".doc")
-    out_fn = mktemp(dir=TMP_DIR, suffix='.pdf')
-
+    tmp_dir = self.TMP_DIR
     cur_dir = os.getcwd()
-    try:
+    with make_temp_file(blob, suffix=".doc") as in_fn,\
+         make_temp_file(suffix='.pdf') as out_fn:
       try:
         os.chdir(TMP_DIR)
         subprocess.check_call(
-          ['abiword', '--to', os.path.basename(out_fn), os.path.basename(in_fn)])
+          ['abiword',
+           '--to', os.path.basename(out_fn),
+          os.path.basename(in_fn)])
       except Exception, e:
         raise ConversionError(e)
       finally:
@@ -389,10 +395,6 @@ class AbiwordPDFHandler(Handler):
 
       converted = open(out_fn).read()
       return converted
-    finally:
-      os.remove(in_fn)
-      if os.path.exists(out_fn):
-        os.remove(out_fn)
 
 
 class ImageMagickHandler(Handler):
@@ -400,20 +402,13 @@ class ImageMagickHandler(Handler):
   produces_mime_types = ['application/pdf']
 
   def convert(self, blob, **kw):
-    in_fn = make_temp_file(blob)
-    out_fn = mktemp(dir=TMP_DIR)
-
-    try:
-      subprocess.check_call(['convert', in_fn, "pdf:" + out_fn])
-
-      converted = open(out_fn).read()
-      return converted
-    except Exception, e:
-      raise ConversionError(e)
-    finally:
-      os.remove(in_fn)
-      if os.path.exists(out_fn):
-        os.remove(out_fn)
+    with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
+      try:
+        subprocess.check_call(['convert', in_fn, "pdf:" + out_fn])
+        converted = open(out_fn).read()
+        return converted
+      except Exception, e:
+        raise ConversionError(e)
 
 
 class PdfToPpmHandler(Handler):
@@ -422,29 +417,26 @@ class PdfToPpmHandler(Handler):
 
   def convert(self, blob, size=500):
     """Size is the maximum horizontal size."""
-
-    in_fn = make_temp_file(blob)
-    out_fn = mktemp(dir=TMP_DIR)
     l = []
+    with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
+      try:
+        subprocess.check_call(['pdftoppm', '-jpeg', in_fn, out_fn])
+        l = glob.glob("%s-*.jpg" % out_fn)
+        l.sort()
 
-    try:
-      subprocess.check_call(['pdftoppm', '-jpeg', in_fn, out_fn])
+        converted_images = []
+        for fn in l:
+          converted = resize(open(fn).read(), size)
+          converted_images.append(converted)
 
-      l = glob.glob("%s-*.jpg" % out_fn)
-      l.sort()
-      converted_images = []
-      for fn in l:
-        converted = resize(open(fn).read(), size)
-        converted_images.append(converted)
-
-      return converted_images
-    except Exception, e:
-      raise ConversionError(e)
-    finally:
-      for fn in itertools.chain([in_fn, out_fn], l):
-        try:
-          os.remove(fn)
-        except OSError:
+        return converted_images
+      except Exception, e:
+        raise ConversionError(e)
+      finally:
+        for fn in l:
+          try:
+            os.remove(fn)
+          except OSError:
             pass
 
 
@@ -507,45 +499,42 @@ class UnoconvPdfHandler(Handler):
     """
     Unoconv converter called.
     """
-    in_fn = make_temp_file(blob)
-    out_fd, out_fn = mkstemp(prefix='tmp-unoconv-', suffix=".pdf", dir=TMP_DIR)
-    os.close(out_fd)
+    timeout = self.run_timeout
+    with make_temp_file(blob) as in_fn,\
+        make_temp_file(prefix='tmp-unoconv-', suffix=".pdf") as out_fn:
 
-    # Hack for my Mac, FIXME later
-    if os.path.exists("/Applications/LibreOffice.app/Contents/program/python"):
-      cmd = ['/Applications/LibreOffice.app/Contents/program/python',
-             '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn]
-    else:
-      cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
+      # Hack for my Mac, FIXME later
+      if os.path.exists("/Applications/LibreOffice.app/Contents/program/python"):
+        cmd = ['/Applications/LibreOffice.app/Contents/program/python',
+               '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn]
+      else:
+        cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
 
-    def run_uno():
-      self._process = subprocess.Popen(cmd, close_fds=True, cwd=TMP_DIR)
+      def run_uno():
+        self._process = subprocess.Popen(cmd, close_fds=True, cwd=TMP_DIR)
+        try:
+          self._process.communicate()
+        except Exception, e:
+          raise ConversionError(e)
+
+      run_thread = threading.Thread(target=run_uno)
+      run_thread.start()
+      run_thread.join(timeout)
+
       try:
-        self._process.communicate()
-      except Exception, e:
-        raise ConversionError(e)
+        if run_thread.is_alive():
+          # timeout reached
+          self._process.terminate()
+          if not self._process.poll() is None:
+            self._process.kill()
 
-    run_thread = threading.Thread(target=run_uno)
-    run_thread.start()
-    run_thread.join(self.run_timeout)
+          self._process = None
+          raise ConversionError("Conversion timeout ({})".format(timeout))
 
-    try:
-      if run_thread.is_alive():
-        # timeout reached
-        self._process.terminate()
-        if not self._process.poll() is None:
-          self._process.kill()
-
+        converted = open(out_fn).read()
+        return converted
+      finally:
         self._process = None
-        raise ConversionError("Conversion timeout ({})".format(self.run_timeout))
-
-      converted = open(out_fn).read()
-      return converted
-
-    finally:
-      self._process = None
-      os.remove(in_fn)
-      os.remove(out_fn)
 
 
 class CloudoooPdfHandler(Handler):
@@ -599,10 +588,8 @@ class WvwareTextHandler(Handler):
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
-    in_fn = make_temp_file(blob)
-    out_fn = mktemp(dir=TMP_DIR)
 
-    try:
+    with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
       try:
         subprocess.check_call(['wvText', in_fn, out_fn])
       except Exception, e:
@@ -620,19 +607,26 @@ class WvwareTextHandler(Handler):
         converted_unicode = unicode(converted, errors="ignore")
 
       return converted_unicode
-    finally:
-      os.remove(in_fn)
-      os.remove(out_fn)
 
 # Utils
-def make_temp_file(blob, prefix='tmp', suffix=""):
-  if not os.path.exists(TMP_DIR):
-    os.mkdir(TMP_DIR)
-  fd, in_fn = mkstemp(dir=TMP_DIR, prefix=prefix, suffix=suffix)
-  fd = os.fdopen(fd, 'wb')
-  fd.write(blob)
-  fd.close()
-  return in_fn
+@contextmanager
+def make_temp_file(blob=None, prefix='tmp', suffix="", tmp_dir=None):
+  if tmp_dir is None:
+    tmp_dir = get_tmp_dir()
+
+  fd, filename = mkstemp(dir=str(tmp_dir), prefix=prefix, suffix=suffix)
+  if blob is not None:
+    fd = os.fdopen(fd, 'wb')
+    fd.write(blob)
+    fd.close()
+  else:
+    os.close(fd)
+
+  yield filename
+  try:
+    os.remove(filename)
+  except OSError:
+    pass
 
 
 # Singleton, yuck!
