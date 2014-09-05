@@ -9,10 +9,13 @@ Create all standard extensions.
 
 from __future__ import absolute_import
 
-__all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf']
+__all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf',
+           'upstream']
 
 import time
-from .logging import patch_logger
+from abilian.core.logging import patch_logger
+
+from . import upstream_info
 
 # celery
 #
@@ -24,7 +27,7 @@ from .logging import patch_logger
 #
 # Application should set flask_app and configure celery
 # (i.e. celery.config_from_object, etc)
-from .celery import celery
+from ..celery import celery
 
 from flask import current_app
 
@@ -92,7 +95,7 @@ mail = flask_mail.Mail()
 
 
 import sqlalchemy as sa
-from .sqlalchemy import SQLAlchemy
+from ..sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 

@@ -110,7 +110,8 @@ default_config.update(
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
   ),
   SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
-  LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png')
+  LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
+  ABILIAN_UPSTREAM_INFO_ENABLED = False
 )
 default_config = ImmutableDict(default_config)
 
@@ -385,6 +386,7 @@ class Application(Flask, ServiceManager, PluginManager):
     self.init_debug_toolbar()
     redis.Extension(self)
     extensions.mail.init_app(self)
+    extensions.upstream_info.extension.init_app(self)
     actions.init_app(self)
 
     from abilian.core.jinjaext import DeferredJS

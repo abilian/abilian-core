@@ -12,6 +12,7 @@ from flask.ext.login import (
 from flask.ext.babel import lazy_gettext as _l
 
 from abilian.services import Service
+from abilian.core.signals import user_loaded
 from abilian.core.models.subjects import User
 from abilian.core.extensions import db, login_manager
 from abilian.web.action import actions
@@ -86,6 +87,7 @@ class AuthService(Service):
 
     app = current_app._get_current_object()
     app.services[AuthService.name].user_logged_in(app, user)
+    user_loaded.send(app, user=user)
     return user
 
   def user_logged_in(self, app, user):

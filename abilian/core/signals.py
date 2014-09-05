@@ -23,6 +23,9 @@ components_registered = signals.signal("app:components:registered")
 #: This signal is used by the activity streams service and its clients.
 activity = signals.signal("activity")
 
+#: This signal is sent when user object has been loaded. g.user and current_user
+#: are available.
+user_loaded = signals.signal('user_loaded')
 
 #: Currently not used and subject to change.
 entity_created = signals.signal("entity:created")
