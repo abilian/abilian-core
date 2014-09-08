@@ -870,7 +870,7 @@ class ListWidget(wtforms.widgets.ListWidget):
 
     return render_template_string(
       '''{%- for obj in data %}
-      <span class="label">{{ obj }}</span>
+      <span class="badge">{{ obj }}</span>
       {%- endfor %}''',
       data=data)
 
