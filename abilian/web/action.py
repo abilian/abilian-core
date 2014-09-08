@@ -281,14 +281,18 @@ class Action(object):
       return bool(self.condition)
 
   def render(self, **kwargs):
+    if not self.template:
+      self.template = Template(self.template_string)
+
+    params = self.get_render_args(**kwargs)
+    return Markup(self.template.render(params))
+
+  def get_render_args(self, **kwargs):
     params = dict(action=self)
     params.update(actions.context)
     params.update(kwargs)
     params['url'] = self.url(params)
-    if not self.template:
-      self.template = Template(self.template_string)
-
-    return Markup(self.template.render(params))
+    return params
 
   def url(self, context=None):
     if callable(self._url):

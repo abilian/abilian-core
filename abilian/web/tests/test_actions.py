@@ -2,7 +2,7 @@
 
 from jinja2 import Markup
 from flask import Flask
-from abilian.web.action import actions, Action, Icon, Glyphicon, StaticIcon
+from abilian.web.action import actions, Action, Glyphicon, StaticIcon
 from abilian.testing import BaseTestCase
 
 

@@ -55,7 +55,7 @@ class NavGroup(NavItem):
           {{ action.title }} <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
-          {%- for item in action.items %}
+          {%- for item in action_items %}
           {%- if item.divider %}<li class="divider"></li>{%- endif %}
           <li class="{{ item.status|safe }}">{{ item.render() }}</li>
           {%- endfor %}
@@ -78,6 +78,11 @@ class NavGroup(NavItem):
   def insert(self, pos, item):
     self.items.insert(pos, item)
     self._paths.add(item.path)
+
+  def get_render_args(self, **kwargs):
+    params = super(NavGroup, self).get_render_args(**kwargs)
+    params['action_items'] = [a for a in self.items if a.available(params)]
+    return params
 
   @getset
   def status(self, value=None):
