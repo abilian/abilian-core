@@ -15,6 +15,7 @@ from __future__ import absolute_import
 
 import os
 import logging
+import pprint
 from inspect import isclass
 
 import sqlalchemy as sa
@@ -544,7 +545,25 @@ def index_update(index, items):
         #   getattr(obj, key, None)
 
         document = service.get_document(obj, adapter)
-        writer.add_document(**document)
+        try:
+          writer.add_document(**document)
+        except ValueError as exc:
+          # added to find a flipping failure in testcases, thought it could be
+          # useful in prod too
+          doc_kw = {}
+          for k, v in document.items():
+            if isinstance(v, basestring) and len(v) > 200:
+              ellipsis = '...'
+              if isinstance(v, unicode):
+                ellipsis = u'...'
+              v = v[:197] + ellipsis
+            doc_kw[k] = v
+            logging.error(
+                'add_document failed object_key=%s\n\n**document=%s\n\n',
+                repr(object_key),
+                pprint.pformat(doc_kw, indent=2))
+          raise
+
         updated.add(object_key)
 
   session.close()
