@@ -117,17 +117,18 @@ class AuthService(Service):
     else:
       user = current_user._get_current_object()
 
-    # ad-hoc security test based on requested path
-    #
-    # FIXME: those security checks should be made by concerned modules
-    path = request.path
+    # ad-hoc security test based on requested path to decide if we update
+    # user.last_active
+    if user.is_anonymous():
+      # no `last_active` to update
+      return
 
     # No need for authentication and loginsession time update on the login
     # screen or the static assets
-    if (path.startswith(self.login_url_prefix + '/')
-        or path.startswith(current_app.static_url_path + '/')):
+    path = request.path
+    if (path.startswith(current_app.static_url_path + '/')
+        or request.blueprint == 'login'):
       return
-
     # if you really want login required anywhere, put this in a
     # app.before_request handler:
     #
@@ -136,8 +137,6 @@ class AuthService(Service):
 
     # Update last_active every 60 seconds only so as to not stress the database
     # too much.
-    if user.is_anonymous():
-      return
 
     now = datetime.utcnow()
     if (user.last_active is None or

@@ -215,7 +215,7 @@ class User(Principal, UserMixin, db.Model):
   def is_online(self):
     if self.last_active is None:
       return False
-    return datetime.utcnow() - self.last_active <= timedelta(0, 60)
+    return datetime.utcnow() - self.last_active <= timedelta(minutes=1)
 
   #
   # Other properties
