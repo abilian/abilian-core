@@ -10,7 +10,7 @@ Create all standard extensions.
 from __future__ import absolute_import
 
 __all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf',
-           'upstream']
+           'upstream_info']
 
 import time
 from abilian.core.logging import patch_logger
