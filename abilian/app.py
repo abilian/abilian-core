@@ -573,7 +573,7 @@ class Application(Flask, ServiceManager, PluginManager):
       # exception handling
       session.rollback()
     else:
-      db.session.remove()
+      self._remove_session_save_objects()
 
     return Flask.handle_user_exception(self, e)
 
@@ -582,17 +582,35 @@ class Application(Flask, ServiceManager, PluginManager):
     if not session.is_active:
       # something happened in error handlers and session is not usable anymore.
       #
-      # Before destroying the session, get all instances to be attached to the
-      # new session. Without this, we get DetachedInstance errors, like when
-      # tryin to get user's attribute in the error page...
-      objs = [state.object for state in session.identity_map.all_states()
-              if state.object is not None]
-      db.session.remove()
-      session = db.session()
-      for obj in objs:
-        session.merge(obj, load=False)
+      self._remove_session_save_objects()
 
     return Flask.handle_exception(self, e)
+
+  def _remove_session_save_objects(self):
+    """
+    Used during exception handling in case we need to remove() session: keep
+    instances and merge them in the new session.
+    """
+    if self.testing:
+      return
+    # Before destroying the session, get all instances to be attached to the
+    # new session. Without this, we get DetachedInstance errors, like when
+    # tryin to get user's attribute in the error page...
+    old_session = db.session()
+    g_objs = []
+    for key in iter(g):
+      obj = getattr(g, key)
+      if (isinstance(obj, db.Model) and
+          sa.orm.object_session(obj) in (None, old_session)):
+        g_objs.append((key, obj))
+
+    db.session.remove()
+    session = db.session()
+
+    for key, obj in g_objs:
+      # replace obj instance in bad session by new instance in fresh session
+      setattr(g, key, session.merge(obj, load=False))
+
 
   def log_exception(self, exc_info):
     """
