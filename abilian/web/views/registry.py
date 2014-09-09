@@ -64,7 +64,7 @@ class Registry(object):
 
     try:
       return url_for('{}.view'.format(object_type.rsplit('.')[-1].lower()),
-                     object_id=object_id)
+                     object_id=object_id, **kwargs)
     except:
       raise KeyError(object_type)
 
@@ -101,6 +101,7 @@ class default_view(object):
 
     def default_url(obj, obj_type, obj_id, **kwargs):
       kw = {}
+      kw.update(kwargs)
       if self.id_attr is not None:
         # some objects have url with GET parameters only
         kw[self.id_attr] = obj_id
