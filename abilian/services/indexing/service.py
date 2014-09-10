@@ -548,8 +548,27 @@ def index_update(index, items):
         try:
           writer.add_document(**document)
         except ValueError as exc:
-          # added to find a flipping failure in testcases, thought it could be
-          # useful in prod too
+          if not current_app.testing:
+            raise
+
+          # added to find a flipping failure in testcases during CI
+          import sys
+          Exc_cls, exc_instance, tb = sys.exc_info()
+
+          while(tb.tb_next):  # go to first tb
+            tb = tb.tb_next
+
+          # find if this is the case we want to debug
+          frame = tb.tb_frame
+          if (frame.f_globals.get('__name__', None) == 'whoosh.fields'
+              and frame.f_code.co_name == 'index'):
+            frame = frame.f_back
+
+          if (frame.f_globals.get('__name__', None) == 'whoosh.writing'
+              and frame.f_code.co_name == 'add_document'):
+            fieldname = frame.f_locals['fieldname']
+            logger.error('Field name: %s', fieldname)
+
           doc_kw = {}
           for k, v in document.items():
             if isinstance(v, basestring) and len(v) > 200:
@@ -558,7 +577,7 @@ def index_update(index, items):
                 ellipsis = u'...'
               v = v[:197] + ellipsis
             doc_kw[k] = v
-            logging.error(
+            logger.error(
                 'Exception: %s: %s\n\nadd_document failed object_key=%s\n\n**document=%s\n\n',
                 exc.__class__.__name__, exc.message,
                 repr(object_key),
