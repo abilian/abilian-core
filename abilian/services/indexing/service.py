@@ -559,7 +559,8 @@ def index_update(index, items):
               v = v[:197] + ellipsis
             doc_kw[k] = v
             logging.error(
-                'add_document failed object_key=%s\n\n**document=%s\n\n',
+                'Exception: %s: %s\n\nadd_document failed object_key=%s\n\n**document=%s\n\n',
+                exc.__class__.__name__, exc.message,
                 repr(object_key),
                 pprint.pformat(doc_kw, indent=2))
           raise
