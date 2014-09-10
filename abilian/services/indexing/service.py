@@ -97,7 +97,7 @@ class IndexServiceState(ServiceState):
   def to_update(self, value):
     top = _app_ctx_stack.top
     if top is None:
-        raise RuntimeError('working outside of application context')
+      raise RuntimeError('working outside of application context')
 
     setattr(top, _pending_indexation_attr, value)
 
