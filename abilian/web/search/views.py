@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from functools import partial
 from collections import OrderedDict
+import logging
 
 import whoosh
 import whoosh.sorting
@@ -17,13 +18,14 @@ from flask import (
 from abilian.i18n import _
 from abilian.web import nav
 
+logger = logging.getLogger(__name__)
+
 BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(
   tagname=u'mark', classname=u'', termclass=u'term-',
   between=u'[…]'
 )
 
-RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter(
-)
+RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter()
 
 #
 # Some hardcoded settings (for now)
@@ -83,6 +85,9 @@ def url_for_hit(hit, default=u'#'):
   try:
     return current_app.default_view.url_for(hit, object_type, object_id)
   except KeyError:
+    return default
+  except Exception as exc:
+    logger.error('Error building URL for search result', exc_info=True)
     return default
 
 
@@ -211,7 +216,7 @@ def live(q=u'', page=None):
       url = url_for_hit(doc, None)
       if url is not None:
         d['url'] = url
-      dataset.append(d)
+        dataset.append(d)
     datasets[typename] = dataset
 
   response['results'] = datasets
