@@ -509,7 +509,8 @@ def index_update(index, items):
     setattr(session, '_model_changes', {})
 
   updated = set()
-  with AsyncWriter(index) as writer:
+  writer = AsyncWriter(index)
+  try:
     for op, cls_name, pk, data in items:
       if pk is None:
         continue
@@ -538,55 +539,22 @@ def index_update(index, items):
           # deleted after task queued, but before task run
           continue
 
-        # # Hack: Load lazy fields
-        # # This prevents a transaction error in get_document
-        # # FIXME: really required?
-        # for key in indexed_fields:
-        #   getattr(obj, key, None)
-
         document = service.get_document(obj, adapter)
-        try:
-          writer.add_document(**document)
-        except ValueError as exc:
-          if not current_app.testing:
-            raise
-
-          # added to find a flipping failure in testcases during CI
-          import sys
-          Exc_cls, exc_instance, tb = sys.exc_info()
-
-          while(tb.tb_next):  # go to first tb
-            tb = tb.tb_next
-
-          # find if this is the case we want to debug
-          frame = tb.tb_frame
-          if (frame.f_globals.get('__name__', None) == 'whoosh.fields'
-              and frame.f_code.co_name == 'index'):
-            frame = frame.f_back
-
-          if (frame.f_globals.get('__name__', None) == 'whoosh.writing'
-              and frame.f_code.co_name == 'add_document'):
-            fieldname = frame.f_locals['fieldname']
-            logger.error('Field name: %s', fieldname)
-
-          doc_kw = {}
-          for k, v in document.items():
-            if isinstance(v, basestring) and len(v) > 200:
-              ellipsis = '...'
-              if isinstance(v, unicode):
-                ellipsis = u'...'
-              v = v[:197] + ellipsis
-            doc_kw[k] = v
-            logger.error(
-                'Exception: %s: %s\n\nadd_document failed object_key=%s\n\n**document=%s\n\n',
-                exc.__class__.__name__, exc.message,
-                repr(object_key),
-                pprint.pformat(doc_kw, indent=2))
-          raise
-
+        writer.add_document(**document)
         updated.add(object_key)
+  except:
+    writer.cancel()
+    raise
 
   session.close()
+  writer.commit()
+  try:
+    # async thread: wait for its termination
+    writer.join()
+  except RuntimeError:
+    # happens when actual writer was alraedy available: asyncwriter needn't to
+    # start a thread
+    pass
 
 
 class TestingStorage(RamStorage):
