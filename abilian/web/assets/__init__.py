@@ -75,3 +75,8 @@ JS = Bundle(BOOTSTRAP_JS,
             DATATABLE_JS,
             FILEAPI_JS,
             ABILIAN_JS,)
+
+JS_I18N = (
+  'select2/select2_locale_{lang}.js',
+  'bootstrap-datepicker/js/locales/bootstrap-datepicker.{lang}.js',
+  )

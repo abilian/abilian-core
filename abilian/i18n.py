@@ -33,6 +33,7 @@ import os
 import importlib
 from flask import _request_ctx_stack
 
+from babel.localedata import locale_identifiers
 from babel.support import Translations
 import flask.ext.babel
 from flask.ext.babel import (
@@ -45,6 +46,7 @@ __all__ = [
   'gettext', '_',
   'lazy_gettext', '_l',
   'ngettext', '_n',
+  'VALID_LANGUAGES_CODE'
 ]
 
 #:gettext alias
@@ -55,6 +57,9 @@ _l = lazy_gettext
 #: ngettext alias
 _n = ngettext
 
+#: accepted languages codes
+VALID_LANGUAGES_CODE = frozenset(lang for lang in locale_identifiers()
+                                 if len(lang) == 2)
 
 class Babel(BabelBase):
   """

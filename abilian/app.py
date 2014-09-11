@@ -100,7 +100,7 @@ default_config = dict(Flask.default_config)
 default_config.update(
   TEMPLATE_DEBUG=False,
   CSRF_ENABLED=True,
-  BABEL_ACCEPT_LANGUAGES=('en', 'fr',),
+  BABEL_ACCEPT_LANGUAGES=None,
   PLUGINS=(),
   ADMIN_PANELS=(
     'abilian.web.admin.panels.dashboard.DashboardPanel',
@@ -196,6 +196,14 @@ class Application(Flask, ServiceManager, PluginManager):
     if not self.config.get('FAVICO_URL'):
       self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
 
+    languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
+    if languages is None:
+      languages = abilian.i18n.VALID_LANGUAGES_CODE
+    else:
+      languages = tuple(lang for lang in languages
+                        if lang in abilian.i18n.VALID_LANGUAGES_CODE)
+    self.config['BABEL_ACCEPT_LANGUAGES'] = languages
+
     self._jinja_loaders = list()
     self.register_jinja_loaders(
       jinja2.PackageLoader('abilian.web', 'templates'))
@@ -203,13 +211,22 @@ class Application(Flask, ServiceManager, PluginManager):
     js_filters = 'closure_js' if self.config.get('PRODUCTION', False) else None
 
     self._assets_bundles = {
-      'css': {'options': dict(filters='less, cssmin',
-                              output='style-%(version)s.min.css',)},
-      'js-top': {'options': dict(output='top-%(version)s.min.js',
-                                 filters=js_filters)},
-      'js': {'options': dict(output='app-%(version)s.min.js',
-                             filters=js_filters)},
+        'css': {'options': dict(filters='less, cssmin',
+                                output='style-%(version)s.min.css',)},
+        'js-top': {'options': dict(output='top-%(version)s.min.js',
+                                   filters=js_filters)},
+        'js': {'options': dict(output='app-%(version)s.min.js',
+                               filters=js_filters)},
     }
+
+    # bundles for JS translations
+    for lang in languages:
+      code = 'js-i18n-' + lang
+      filename = 'lang-' + lang + '-%(version)s.min.js'
+      self._assets_bundles[code] = {
+          'options': dict(output=filename, filters=js_filters),
+      }
+
 
     for http_error_code in (403, 404, 500):
       self.install_default_handler(http_error_code)
@@ -681,10 +698,11 @@ class Application(Flask, ServiceManager, PluginManager):
     if assets.debug:
       assets.config['less_source_map_file'] = 'style.map'
 
-    # assets.config['CLOSURE_EXTRA_ARGS'] = [
+    assets.config['CLOSURE_EXTRA_ARGS'] = [
+      '--jscomp_warning', 'internetExplorerChecks',
     #   '--source_map_format', 'V3',
     #   '--create_source_map', os.path.join(assets.directory, 'js.map')
-    # ]
+    ]
 
     # setup static url for our assets
     from abilian.web import assets as core_bundles
@@ -731,6 +749,26 @@ class Application(Flask, ServiceManager, PluginManager):
 
       self._assets_bundles[type_].setdefault('bundles', []).append(asset)
 
+  def register_i18n_js(self, *paths):
+    """
+    register templates path translations files, like
+    `select2/select2_locale_{lang}.js`.
+
+    Only existing files are registered.
+    """
+    languages = self.config['BABEL_ACCEPT_LANGUAGES']
+    assets  = self.extensions['webassets']
+
+    for path in paths:
+      for lang in languages:
+        filename = path.format(lang=lang)
+        try:
+          assets.resolver.search_for_source(assets, filename)
+        except IOError:
+          logger.debug('i18n JS not found, skipped: "%s"', filename)
+        else:
+          self.register_asset('js-i18n-'+lang, filename)
+
   def _register_base_assets(self):
     """
     Registers assets needed by Abilian. This is done in a separate method in
@@ -741,6 +779,7 @@ class Application(Flask, ServiceManager, PluginManager):
     self.register_asset('css', bundles.LESS)
     self.register_asset('js-top', bundles.TOP_JS)
     self.register_asset('js', bundles.JS)
+    self.register_i18n_js(*bundles.JS_I18N)
 
   def install_default_handler(self, http_error_code):
     """
