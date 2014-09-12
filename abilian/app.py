@@ -623,14 +623,14 @@ class Application(Flask, ServiceManager, PluginManager):
       obj = getattr(g, key)
       if (isinstance(obj, db.Model) and
           sa.orm.object_session(obj) in (None, old_session)):
-        g_objs.append((key, obj))
+        g_objs.append((key, obj, obj in old_session.dirty))
 
     db.session.remove()
     session = db.session()
 
-    for key, obj in g_objs:
+    for key, obj, load in g_objs:
       # replace obj instance in bad session by new instance in fresh session
-      setattr(g, key, session.merge(obj, load=False))
+      setattr(g, key, session.merge(obj, load=load))
 
 
   def log_exception(self, exc_info):
