@@ -48,7 +48,7 @@ class NavGroup(NavItem):
   A navigation group renders a list of items.
   """
   template_string = '''
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav {{ action.css_class }}">
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
           {%- if action.icon %}{{ action.icon }}{% endif %}
@@ -113,11 +113,10 @@ class BreadcrumbItem(object):
   _url = None
 
   template_string = (
-    u'<a href="{{ item.url }}">'
-    u'{%- if item.icon %}{{ item.icon }} {%- endif %}'
-    u'{{ item.label }}'
-    u'</a>'
-    )
+      u'<a href="{{ item.url }}">'
+      u'{%- if item.icon %}{{ item.icon }} {%- endif %}'
+      u'{{ item.label }}'
+      u'</a>')
 
   def __init__(self, label=u'', url=u'#', icon=None, description=None):
     assert label or icon

@@ -1,5 +1,10 @@
 # coding=utf-8
+"""
+"""
+from __future__ import absolute_import
+
 import logging
+import re
 from jinja2 import Template, Markup
 from flask import current_app, g, url_for
 from flask.signals import appcontext_pushed
@@ -139,6 +144,7 @@ class Action(object):
   description = None
   icon = None
   _url = None
+  CSS_CLASS = u'action action-{category} action-{category}-{name}'
 
   #: A :class:`Endpoint` instance, a string for a simple endpoint, a tuple
   #: ``(endpoint_name, kwargs)``  or a callable which accept a : context dict
@@ -150,16 +156,17 @@ class Action(object):
   condition = None
 
   template_string = (
-    u'<a href="{{ url }}">'
-    u'{%- if action.icon %}{{ action.icon }} {% endif %}'
-    u'{{ action.title }}'
-    u'</a>'
+      u'<a class="{{ action.css_class }}" href="{{ url }}">'
+      u'{%- if action.icon %}{{ action.icon }} {% endif %}'
+      u'{{ action.title }}'
+      u'</a>'
   )
 
   def __init__(self, category, name, title=None, description=None, icon=None,
                url=None, endpoint=None, condition=None, status=None):
     self.category = category
     self.name = name
+    self._build_css_class()
 
     self.title = title
     self.description = description
@@ -208,6 +215,13 @@ class Action(object):
   @title.setter
   def title(self, title):
     self._title = title
+
+
+  def _build_css_class(self):
+    css_cat = self.CSS_CLASS.format(action=self, category=self.category,
+                                    name=self.name)
+    css_cat = re.sub(r'[^ _a-zA-Z0-9-]', '-', css_cat)
+    self.css_class = css_cat
 
   @property
   def description(self):
@@ -306,29 +320,30 @@ class Action(object):
 
 class ModalActionMixin(object):
   template_string = (
-    u'<a href="{{ url }}" data-toggle="modal">'
-    u'{%- if action.icon %}{{ action.icon}} {% endif %}'
-    u'{{ action.title }}'
-    u'</a>'
+      u'<a class="{{ action.css_class }}" href="{{ url }}" data-toggle="modal">'
+      u'{%- if action.icon %}{{ action.icon}} {% endif %}'
+      u'{{ action.title }}'
+      u'</a>'
   )
 
 
 class ButtonAction(Action):
   template_string = (
-    u'<button type="submit" class="btn btn-{{ action.btn_class }}" '
-    u'name="{{ action.submit_name }}" '
-    u'value="{{ action.name }}">'
-    u'{%- if action.icon %}{{ action.icon }} {% endif %}'
-    u'{{ action.title }}</button>'
+      u'<button type="submit" '
+      u'class="btn btn-{{ action.btn_class }} {{ action.css_class}}"'
+      u'name="{{ action.submit_name }}" '
+      u'value="{{ action.name }}">'
+      u'{%- if action.icon %}{{ action.icon }} {% endif %}'
+      u'{{ action.title }}</button>'
   )
 
   btn_class = 'default'
 
   def __init__(self, category, name, submit_name="__action", btn_class='default',
                *args, **kwargs):
-        Action.__init__(self, category, name, *args, **kwargs)
-        self.submit_name = submit_name
-        self.btn_class = btn_class
+    Action.__init__(self, category, name, *args, **kwargs)
+    self.submit_name = submit_name
+    self.btn_class = btn_class
 
 
 class ActionRegistry(object):

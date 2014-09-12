@@ -13,7 +13,7 @@ CONDITIONAL = Action('cat_1', 'conditional', 'Conditional Action',
                      condition=lambda ctx: ctx['show_all'],
                      icon=Glyphicon('hand-right'))
 
-OTHER_CAT = Action('cat_2', 'other', 'Other Action',
+OTHER_CAT = Action('cat_2:sub', 'other', 'Other Action',
                    url=lambda ctx: 'http://count?%d' % len(ctx),
                    icon=StaticIcon('icons/other.png', size=14))
 
@@ -39,14 +39,14 @@ class TestActions(BaseTestCase):
   def test_actions(self):
     all_actions = actions.actions()
     assert 'cat_1' in all_actions
-    assert 'cat_2' in all_actions
+    assert 'cat_2:sub' in all_actions
     assert all_actions['cat_1'] == [BASIC, CONDITIONAL]
-    assert all_actions['cat_2'] == [OTHER_CAT]
+    assert all_actions['cat_2:sub'] == [OTHER_CAT]
 
   def test_for_category(self):
     cat_1 = actions.for_category('cat_1')
     assert cat_1 == [BASIC, CONDITIONAL]
-    cat_2 = actions.for_category('cat_2')
+    cat_2 = actions.for_category('cat_2:sub')
     assert cat_2 == [OTHER_CAT]
 
   def test_conditional(self):
@@ -68,17 +68,20 @@ class TestActions(BaseTestCase):
   def test_render(self):
     self.assertEquals(
       BASIC.render(),
-      Markup(u'<a href="http://some.where">'
+      Markup(u'<a class="action action-cat_1 action-cat_1-basic" '
+             u'href="http://some.where">'
              u'<i class="glyphicon glyphicon-ok"></i> Basic Action</a>'))
 
     self.assertEquals(
       CONDITIONAL.render(),
-      Markup(u'<a href="http://condition.al">'
+      Markup(u'<a class="action action-cat_1 action-cat_1-conditional" '
+             u'href="http://condition.al">'
              u'<i class="glyphicon glyphicon-hand-right"></i> '
              u'Conditional Action</a>'))
 
     self.assertEquals(
       OTHER_CAT.render(),
-      Markup(u'<a href="http://count?2">'
+      Markup(u'<a class="action action-cat_2-sub action-cat_2-sub-other" '
+             u'href="http://count?2">'
              u'<img src="/static/icons/other.png" width="14" height="14" /> '
              u'Other Action</a>'))
