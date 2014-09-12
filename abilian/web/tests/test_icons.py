@@ -38,3 +38,9 @@ class TestIcons(BaseTestCase):
     self.assertEquals(
       icon.__html__(),
       u'<img src="/static/path/to/icon.png" width="14" height="14" />')
+
+    icon = StaticIcon('path/to/icon.png', size=14, css='avatar')
+    self.assertEquals(
+        icon.__html__(),
+        u'<img class="avatar" src="/static/path/to/icon.png" width="14" '
+        u'height="14" />')

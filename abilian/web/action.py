@@ -6,9 +6,10 @@ from __future__ import absolute_import
 import logging
 import re
 from jinja2 import Template, Markup
-from flask import current_app, g, url_for
+from flask import current_app, g
 from flask.signals import appcontext_pushed
 
+from abilian.web.util import url_for
 from abilian.core.singleton import UniqueName
 
 log = logging.getLogger(__name__)
@@ -76,20 +77,21 @@ class Glyphicon(Icon):
   def __html__(self):
     return self.template.render(name=self.name)
 
-
-class StaticIcon(Icon):
+class DynamicIcon(Icon):
   """
-  Renders markup for icon located in static folder served by `endpoint`.
 
-  Default endpoint is application static folder.
   """
-  template = Template(u'<img src="{{ url }}" '
+  template = Template(u'<img {%- if css %} class="{{ css }}"{% endif %} '
+                      u'src="{{ url }}" '
                       u'width="{{ width }}" height="{{ height }}" />')
 
-  def __init__(self, filename, endpoint='static', width=12, height=12,
-               size=None):
-    self.filename = filename
+  def __init__(self, endpoint=None, width=12, height=12, css=u'',
+               size=None, url_args=None, **fixed_url_args):
     self.endpoint = endpoint
+    self.css = css
+    self.fixed_url_args = dict()
+    self.fixed_url_args.update(fixed_url_args)
+    self.url_args_callback = url_args
 
     if size is not None:
       width = height = size
@@ -97,11 +99,37 @@ class StaticIcon(Icon):
     self.width = width
     self.height = height
 
+  def get_url_args(self):
+    kw = dict()
+    kw.update(self.fixed_url_args)
+    return kw
+
   def __html__(self):
+    endpoint = self.endpoint
+    if callable(endpoint):
+      endpoint = endpoint()
+
+    url_args = self.get_url_args()
+    if self.url_args_callback is not None:
+      url_args = self.url_args_callback(self, url_args)
+
     return self.template.render(
-      url=url_for(self.endpoint, filename=self.filename),
+      url=url_for(endpoint, **url_args),
       width=self.width,
-      height=self.height)
+      height=self.height,
+      css=self.css)
+
+
+class StaticIcon(DynamicIcon):
+  """
+  Renders markup for icon located in static folder served by `endpoint`.
+
+  Default endpoint is application static folder.
+  """
+  def __init__(self, filename, endpoint='static', width=12, height=12, css=u'',
+               size=None):
+    DynamicIcon.__init__(self, endpoint, width, height, css, size,
+                         filename=filename)
 
 
 class Endpoint(object):
