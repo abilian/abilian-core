@@ -354,10 +354,18 @@ class SecurityEntryPresenter(BaseEntryPresenter):
       principal = u''
 
     entity = u''
-    if e.object:
+    if e.object_id:
+      entity_url = None
+      entity_name = e.object_name
+      if e.object:
+        entity_name = e.object.path or e.object.name
+        entity_url = url_for(e.object)
+
       entity = render(
-        u'<a href="{{ url_for(entity) }}">{{ entity.path or entity.name }}</a>',
-        entity=e.object)
+          u'{%- if url %}<a href="{{ url_for(entity) }}">{%- endif %}}'
+          u'{{ name }}{%- if url %}</a>{%- endif %}',
+          url=entity_url,
+          name=entity_name)
 
       if e.op == e.SET_INHERIT:
         msg = _(u'{manager} has activated inheritance on {entity}')
