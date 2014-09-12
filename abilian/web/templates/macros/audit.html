@@ -28,7 +28,7 @@
         {%- if entry.related or entry.op == 1 %}
           <div>
             <img
-                src="{{ url_for("social.user_mugshot", user_id=entry.user.id, s=16) }}"
+                src="{{ url_for("images.user_avatar", user_id=entry.user.id, s=16) }}"
                 alt=""/>
             <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
             made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
@@ -37,7 +37,7 @@
         {%- elif entry.type == 0 %}
           <div>
             <img
-                src="{{ url_for("social.user_mugshot", user_id=entry.user.id, s=16) }}"
+                src="{{ url_for("images.user_avatar", user_id=entry.user.id, s=16) }}"
                 alt=""/>
             <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
             created this record

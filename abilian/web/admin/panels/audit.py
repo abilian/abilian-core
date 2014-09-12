@@ -341,10 +341,11 @@ class SecurityEntryPresenter(BaseEntryPresenter):
     e = self.entry
 
     manager = render(
-      u'<img src="{{ url_for("social.user_mugshot", user_id=e.manager_id, '
-      's=16) }}" alt="" />'
-      '<a href="''{{ url_for("social.user", user_id=e.manager_id) }}">'
-      '{{ e.manager.name }}</a>', e=e)
+        u'<img class="avatar" '
+        u'src="{{ url_for("images.user_avatar", user_id=e.manager_id, '
+        u's=16) }}" alt="" />'
+        u'<a href="''{{ url_for("social.user", user_id=e.manager_id) }}">'
+        u'{{ e.manager.name }}</a>', e=e)
 
     if self.entry.user:
       principal = render(self._USER_FMT, user=self.entry.user)

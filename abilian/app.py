@@ -429,6 +429,10 @@ class Application(Flask, ServiceManager, PluginManager):
 
     self.register_blueprint(csrf.blueprint)
 
+    # images blueprint
+    from .web.views.images import blueprint as images_bp
+    self.register_blueprint(images_bp)
+
     # Abilian Core services
     auth_service.init_app(self)
     security_service.init_app(self)
