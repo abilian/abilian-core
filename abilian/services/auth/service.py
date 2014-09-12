@@ -15,7 +15,7 @@ from abilian.services import Service
 from abilian.core.signals import user_loaded
 from abilian.core.models.subjects import User
 from abilian.core.extensions import db, login_manager
-from abilian.web.action import actions
+from abilian.web.action import actions, DynamicIcon
 from abilian.web.nav import NavItem, NavGroup
 
 from .views import login as login_views
@@ -33,9 +33,17 @@ def is_anonymous(context):
 def is_authenticated(context):
   return not is_anonymous(context)
 
+def _user_photo_icon_args(icon, url_args):
+  url_args['user_id'] = (current_user.id
+                         if not current_user.is_anonymous() else None)
+  url_args['s'] = max(icon.width, icon.height)
+  return url_args
+
 user_menu = NavGroup(
   'user', 'authenticated', title=lambda c: current_user.name,
-  icon='user',
+  icon=DynamicIcon(endpoint='images.user_avatar', css='avatar',
+                   size=20,
+                   url_args=_user_photo_icon_args),
   condition=is_authenticated,
   items=(
       NavItem('user', 'logout', title=_l(u'Logout'), icon='log-out',
