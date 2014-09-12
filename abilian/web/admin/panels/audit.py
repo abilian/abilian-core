@@ -363,7 +363,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
         entity_url = url_for(e.object)
 
       entity = render(
-          u'{%- if url %}<a href="{{ url_for(entity) }}">{%- endif %}}'
+          u'{%- if url %}<a href="{{ url }}">{%- endif %}'
           u'{{ name }}{%- if url %}</a>{%- endif %}',
           url=entity_url,
           name=entity_name)
