@@ -8,8 +8,8 @@ import hashlib
 
 import sqlalchemy as sa
 
-from flask import Blueprint, request, abort, make_response, g
-from abilian.core.models.subjects import User, Group
+from flask import Blueprint, request, abort, make_response, g, Response
+from abilian.core.models.subjects import User
 from abilian.services.image import crop_and_resize
 
 blueprint = Blueprint('images', __name__, url_prefix='/images')
