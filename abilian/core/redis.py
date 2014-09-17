@@ -27,6 +27,6 @@ class Extension(object):
       uri = app.config.get('REDIS_URI')
     if uri:
       self.client = redis_from_url(uri)
-    elif not (app.configured or app.testing):
+    elif app.configured and not app.testing:
       raise ValueError('Redis extension: REDIS_URI is not defined in '
                        'application configuration')
