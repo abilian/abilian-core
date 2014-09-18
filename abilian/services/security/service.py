@@ -114,7 +114,10 @@ class SecurityService(Service):
     manager = self._current_user_manager()
     op = (SecurityAudit.SET_INHERIT if inherit_security
           else SecurityAudit.UNSET_INHERIT)
-    audit = SecurityAudit(manager=manager, op=op, object=obj)
+    audit = SecurityAudit(manager=manager, op=op, object=obj,
+                          object_id=obj.id,
+                          object_type=obj.entity_type,
+                          object_name=obj.name)
     db.session.add(audit)
     self._needs_flush()
 

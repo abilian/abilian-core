@@ -10,7 +10,7 @@ from abilian.core.extensions import db
 from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
-from . import (security, RoleAssignment, InheritSecurity, Role,
+from . import (security, RoleAssignment, InheritSecurity, SecurityAudit, Role,
                Admin)
 
 
@@ -172,3 +172,21 @@ class SecurityTestCase(IntegrationTestCase):
     security.grant_role(user, "reader", obj)
     self.session.flush()
     assert RoleAssignment.query.count() == 2
+
+  def test_inherit(self):
+    folder = FolderishModel()
+    self.session.add(folder)
+    self.session.flush()
+
+    self.assertEquals(SecurityAudit.query.count(), 0)
+
+    security.set_inherit_security(folder, False)
+    self.session.flush()
+    self.assertFalse(folder.inherit_security)
+    self.assertEquals(SecurityAudit.query.count(), 1)
+
+
+    security.set_inherit_security(folder, True)
+    self.session.flush()
+    self.assertTrue(folder.inherit_security)
+    self.assertEquals(SecurityAudit.query.count(), 2)
