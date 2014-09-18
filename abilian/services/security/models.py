@@ -166,22 +166,28 @@ class SecurityAudit(db.Model):
 
   __tablename__ = "securityaudit"
   __table_args__ = (
-  # constraint: either a inherit/no_inherit op on an object AND no user no group
-  #             either a grant/revoke on a user XOR a group.
+    # constraint: either a inherit/no_inherit op on an object AND no user no group
+    #             either a grant/revoke on a user XOR a group.
     CheckConstraint(
-      "(op IN ('{grant}', '{revoke}') AND object_id IS NOT NULL"
-      " AND user_id IS NULL AND group_id IS NULL AND (CAST(anonymous AS INTEGER) = 0))"
-      " OR "
-      "(op NOT IN ('{grant}', '{revoke}')"
-      " AND "
-      "(((CAST(anonymous AS INTEGER) = 1) AND user_id IS NULL AND group_id IS NULL)"
-      " OR "
-      " ((CAST(anonymous AS INTEGER) = 0) AND ((user_id IS NOT NULL AND group_id IS NULL)"
-      "  OR "
-      "  (user_id IS NULL AND group_id IS NOT NULL)))"
-      "))".format(grant=SET_INHERIT, revoke=UNSET_INHERIT),
+        "(op IN ('{grant}', '{revoke}') "
+        " AND object_id IS NOT NULL"
+        " AND user_id IS NULL "
+        " AND group_id IS NULL "
+        " AND (CAST(anonymous AS INTEGER) = 0)"
+        ")"
+        " OR "
+        "(op NOT IN ('{grant}', '{revoke}')"
+        " AND "
+        " (((CAST(anonymous AS INTEGER) = 1) "
+        "   AND user_id IS NULL AND group_id IS NULL)"
+        "  OR "
+        "  ((CAST(anonymous AS INTEGER) = 0) "
+        "   AND ((user_id IS NOT NULL AND group_id IS NULL)"
+        "  OR "
+        "  (user_id IS NULL AND group_id IS NOT NULL)))"
+        "))".format(grant=SET_INHERIT, revoke=UNSET_INHERIT),
         name="securityaudit_ck_user_xor_group"),
-    )
+      )
 
   id = Column(Integer, primary_key=True)
   happened_at = Column(DateTime, default=datetime.utcnow, index=True)
