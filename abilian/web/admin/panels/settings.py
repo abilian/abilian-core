@@ -3,6 +3,9 @@
 """
 from __future__ import absolute_import
 
+from datetime import timedelta
+
+from jinja2 import Template
 from flask import (current_app, render_template, request, flash,
                    redirect, url_for)
 from flask.ext.babel import gettext as _, lazy_gettext as _l
@@ -13,11 +16,75 @@ from ..panel import AdminPanel
 
 
 class Key(object):
+
+  template = Template(u'<input type="text" class="form-control" '
+                      u'name="{{ key.id }}" value="{{ config[key.id] }}" />')
+
   def __init__(self, id, type_, label=None, description=None):
     self.id = id
     self.type = type_
     self.label = label
     self.description = description
+
+  def __html__(self):
+    return render_template(self.template, key=self, config=current_app.config)
+
+  def value_from_request(self):
+    return request.form.get(self.id).strip()
+
+
+class SessionLifeTimeKey(Key):
+
+  template = 'admin/settings_session_lifetime.html'
+
+  def __init__(self):
+    Key.__init__(self, 'PERMANENT_SESSION_LIFETIME', 'timedelta',
+                 label=_l(u'Session lifetime'),
+                 description=_l(
+                     u'Session expiration time after last visit. '
+                     u'When session is expired user must login again.'))
+
+  def value_from_request(self):
+    f = request.form
+    days = max(0, int(f.get(self.id + ':days') or 0))
+    hours = min(23, max(0, int(f.get(self.id + ':hours') or 0)))
+    minutes = min(59, max(0, int(f.get(self.id + ':minutes') or 0)))
+
+    if (days + hours) == 0 and minutes < 10:
+      # avoid dummy sessions durations: minimum is 10 minutes
+      flash(_(u'Minimum session lifetime is 10 minutes. '
+              u'Value has been adjusted.'),
+            'warning',)
+      minutes = 10
+
+    d = dict(days=days,
+             hours=hours,
+             minutes=minutes
+             )
+    return timedelta(**d)
+
+  def _get_current(self, field):
+    td = current_app.config.get(self.id)
+    if td:
+      if field == 'days':
+        return td.days
+      elif field == 'hours':
+        return td.seconds / 3600
+      elif field == 'minutes':
+        return td.seconds % 3600 / 60
+    return 0
+
+  @property
+  def days(self):
+    return self._get_current('days')
+
+  @property
+  def hours(self):
+    return self._get_current('hours')
+
+  @property
+  def minutes(self):
+    return self._get_current('minutes')
 
 
 #FIXME: the settings panel should offer hooks for external modules and thus
@@ -33,6 +100,7 @@ class SettingsPanel(AdminPanel):
   _keys = (
     Key('SITE_NAME', 'string', _l(u'Site name')),
     Key('MAIL_SENDER', 'string', _l(u'Mail sender')),
+    SessionLifeTimeKey(),
   )
 
   @property
@@ -49,7 +117,7 @@ class SettingsPanel(AdminPanel):
     if action == u'save':
       settings = self.settings
       for key in self._keys:
-        value = request.form.get(key.id).strip()
+        value = key.value_from_request()
         settings.set(key.id, value, key.type)
 
       current_app.db.session.commit()

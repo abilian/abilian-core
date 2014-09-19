@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import json
+from datetime import timedelta
 import sqlalchemy as sa
 from abilian.core.extensions import db
 
@@ -112,4 +113,10 @@ def to_unicode(s):
 register('string', from_unicode, to_unicode)
 register('json', json.dumps, json.loads)  # FIXME: checks for dump/load?
 
-del register
+def from_timedelta(s):
+  return json.dumps(dict(days=s.days, seconds =s.seconds))
+
+def to_timedelta(s):
+  return timedelta(**json.loads(s))
+
+register('timedelta', from_timedelta, to_timedelta)

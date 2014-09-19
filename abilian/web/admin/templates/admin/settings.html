@@ -10,7 +10,10 @@
     {%- for k in keys %}
       <div class="form-group">
         <label for="{{ k.id }}">{{ k.label or k.id }}</label>
-        <input type="text" class="form-control" name="{{ k.id }}" value="{{ config[k.id] }}" />
+        {%-if k.description %}
+        <p class="help-block">{{ k.description }}</p>
+        {%- endif %}
+        {{ k }}
       </div>
     {%- endfor %}
 

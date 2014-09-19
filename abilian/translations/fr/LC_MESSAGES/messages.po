@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-08 22:31+0200\n"
-"PO-Revision-Date: 2014-08-01 11:18+0200\n"
+"POT-Creation-Date: 2014-09-19 11:54+0200\n"
+"PO-Revision-Date: 2014-09-19 11:54+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: abilian/services/auth/service.py:40
+#: abilian/services/auth/service.py:49
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: abilian/services/auth/service.py:47
+#: abilian/services/auth/service.py:56
 msgid "Login"
 msgstr "Connexion"
 
-#: abilian/services/auth/views.py:64
+#: abilian/services/auth/views.py:60
 msgid "You must provide your email and password."
 msgstr "Vous devez entrez votre email et votre mot de passe."
 
-#: abilian/services/auth/views.py:71 abilian/services/auth/views.py:156
+#: abilian/services/auth/views.py:67 abilian/services/auth/views.py:156
 msgid "Sorry, we couldn't find an account for email '{email}'."
 msgstr "Nous n'avons pas trouvé de compte correspondant à l'email '{email}'"
 
-#: abilian/services/auth/views.py:77
+#: abilian/services/auth/views.py:73
 msgid "Sorry, wrong password."
 msgstr "Mauvais mot de passe."
 
@@ -117,12 +117,12 @@ msgstr "Changer le mot de passe"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: abilian/services/indexing/debug_toolbar.py:34
-#: abilian/services/indexing/debug_toolbar.py:48
+#: abilian/services/indexing/debug_toolbar.py:35
+#: abilian/services/indexing/debug_toolbar.py:49
 msgid "Indexed Terms"
 msgstr "Termes indexés"
 
-#: abilian/services/indexing/debug_toolbar.py:40
+#: abilian/services/indexing/debug_toolbar.py:41
 msgid "No current object"
 msgstr ""
 
@@ -185,27 +185,27 @@ msgstr "{key} modifié de «{old_value}» en «{new_value}»"
 msgid "{key} set to {new_value}"
 msgstr "{key} initialisé à «{new_value}»"
 
-#: abilian/web/admin/panels/audit.py:363
+#: abilian/web/admin/panels/audit.py:372
 msgid "{manager} has activated inheritance on {entity}"
 msgstr "{manager} a activé l'héritage sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:365
+#: abilian/web/admin/panels/audit.py:374
 msgid "{manager} has deactivated inheritance on {entity}"
 msgstr "{manager} a désactivé l'héritage sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:367
+#: abilian/web/admin/panels/audit.py:376
 msgid "{manager} has given role \"{role}\" to {principal} on {entity}"
 msgstr "{manager} a donné le rôle «{role}» à {principal} sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:370
+#: abilian/web/admin/panels/audit.py:379
 msgid "{manager} has revoked role \"{role}\" from {principal} on {entity}"
 msgstr "{manager} a retiré le rôle \"{role}\" à {principal} sur {entity}"
 
-#: abilian/web/admin/panels/audit.py:376
+#: abilian/web/admin/panels/audit.py:385
 msgid "{manager} has given role \"{role}\" to {principal}"
 msgstr "{manager} a donné le rôle \"{role}\" à {principal}"
 
-#: abilian/web/admin/panels/audit.py:378
+#: abilian/web/admin/panels/audit.py:387
 msgid "{manager} has revoked role \"{role}\" from {principal}"
 msgstr "{manager} a retiré le rôle \"{role}\" à {principal}"
 
@@ -213,20 +213,38 @@ msgstr "{manager} a retiré le rôle \"{role}\" à {principal}"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: abilian/web/admin/panels/settings.py:28
+#: abilian/web/admin/panels/settings.py:42
+msgid "Session lifetime"
+msgstr "Durée de vie des sessions"
+
+#: abilian/web/admin/panels/settings.py:43
+msgid ""
+"Session expiration time after last visit. When session is expired user "
+"must login again."
+msgstr ""
+"Temps d'expiration de la session après la dernière visite. Lorsque la "
+"session est expirée l'utilisateur doit se reconnecter."
+
+#: abilian/web/admin/panels/settings.py:55
+msgid "Minimum session lifetime is 10 minutes. Value has been adjusted."
+msgstr ""
+"La durée de vie des sessions ne peut-être inférieure à 10 minutes. La "
+"valeur a été ajustée."
+
+#: abilian/web/admin/panels/settings.py:95
 #: abilian/web/admin/templates/admin/settings.html:6
 msgid "Settings"
 msgstr "Paramètres"
 
-#: abilian/web/admin/panels/settings.py:34
+#: abilian/web/admin/panels/settings.py:101
 msgid "Site name"
 msgstr "Nom du site"
 
-#: abilian/web/admin/panels/settings.py:35
+#: abilian/web/admin/panels/settings.py:102
 msgid "Mail sender"
 msgstr "Expéditeur des mails"
 
-#: abilian/web/admin/panels/settings.py:61
+#: abilian/web/admin/panels/settings.py:129
 msgid "Changes saved."
 msgstr "Changement enregistrés."
 
@@ -262,17 +280,29 @@ msgstr "Tous les contenus"
 msgid "Select user"
 msgstr "Filtrer sur un utilisateur"
 
-#: abilian/web/admin/templates/admin/settings.html:17
+#: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:16
 #: abilian/web/views/object.py:143
 msgid "Save"
 msgstr "Enregistrer"
 
-#: abilian/web/forms/fields.py:146 abilian/web/forms/fields.py:179
+#: abilian/web/admin/templates/admin/settings_session_lifetime.html:3
+msgid "Days"
+msgstr "Jours"
+
+#: abilian/web/admin/templates/admin/settings_session_lifetime.html:8
+msgid "Hours"
+msgstr "Heures"
+
+#: abilian/web/admin/templates/admin/settings_session_lifetime.html:13
+msgid "Minutes"
+msgstr "Minutes"
+
+#: abilian/web/forms/fields.py:111 abilian/web/forms/fields.py:144
 msgid "Not a valid datetime value"
 msgstr "N'est pas une date valide"
 
-#: abilian/web/forms/fields.py:313
+#: abilian/web/forms/fields.py:278
 msgid "Not a valid choice"
 msgstr "N'est pas un choix valide"
 
@@ -312,19 +342,19 @@ msgstr "Ajouter un fichier"
 msgid "Select file"
 msgstr "Selectionner un fichier"
 
-#: abilian/web/preferences/user.py:24
+#: abilian/web/preferences/user.py:25
 msgid "New Password"
 msgstr "Nouveau mot de passe"
 
-#: abilian/web/preferences/user.py:26
+#: abilian/web/preferences/user.py:27
 msgid "Confirm new password"
 msgstr "Confirmer le nouveau mot de passe"
 
-#: abilian/web/preferences/user.py:29
+#: abilian/web/preferences/user.py:30
 msgid "Photo"
 msgstr "Photo"
 
-#: abilian/web/preferences/user.py:38
+#: abilian/web/preferences/user.py:39
 msgid ""
 "Passwords differ. Ensure you have typed same password in both "
 "\"password\" field and \"confirm password\" field."
@@ -342,11 +372,11 @@ msgstr "Impossible de lire l'image"
 msgid "About me"
 msgstr "À propos de moi"
 
-#: abilian/web/preferences/user.py:118
+#: abilian/web/preferences/user.py:121
 msgid "Preferences saved."
 msgstr "Préférences enregistrées."
 
-#: abilian/web/search/views.py:136
+#: abilian/web/search/views.py:140
 msgid "All"
 msgstr "Tous"
 
