@@ -55,10 +55,11 @@ def require_flush(fun):
   @wraps(fun)
   def ensure_flushed(service, *args, **kwargs):
     if service.app_state.needs_db_flush:
-      session = current_app.db.session
-      if any(isinstance(m, (RoleAssignment, SecurityAudit))
-             for models in (session.new, session.dirty, session.deleted)
-             for m in models):
+      session = current_app.db.session()
+      if (not session._flushing
+          and any(isinstance(m, (RoleAssignment, SecurityAudit))
+                  for models in (session.new, session.dirty, session.deleted)
+                  for m in models)):
         session.flush()
       service.app_state.needs_db_flush = False
 
