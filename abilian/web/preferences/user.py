@@ -67,7 +67,7 @@ class UserPreferencesForm(Form):
     # convert to jpeg
     #FIXME: better do this at model level?
     jpeg = StringIO()
-    im.save(jpeg, 'JPEG')
+    im.convert('RGBA').save(jpeg, 'JPEG')
     field.data = jpeg.getvalue()
 
 
