@@ -13,6 +13,7 @@ import random
 import string
 from urlparse import urlparse, urljoin
 
+from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
@@ -24,8 +25,8 @@ from flask.ext.login import (
   login_user, logout_user, user_logged_in, user_logged_out,)
 from flask.ext.security.utils import md5
 from flask.ext.mail import Message
-from flask.ext.babel import gettext as _
 
+from abilian.i18n import _
 from abilian.core.extensions import db, csrf
 from abilian.core.models.subjects import User
 
@@ -54,7 +55,7 @@ def do_login(form):
   email = form.get('email', "").lower()
   password = form.get('password')
   next_url = form.get('next', u'')
-  res = dict(email=email, next_url=next_url)
+  res = dict(username=email, email=email, next_url=next_url)
 
   if not email or not password:
     res['error'] = _(u"You must provide your email and password.")
@@ -62,7 +63,10 @@ def do_login(form):
     return res
 
   try:
-    user = User.query.filter(User.email == email, User.can_login == True).one()
+    user = User.query\
+        .filter(sql.func.lower(User.email) == email,
+                User.can_login == True)\
+        .one()
   except NoResultFound:
     res['error'] = _(u"Sorry, we couldn't find an account for "
                      u"email '{email}'.").format(email=email)
@@ -77,6 +81,7 @@ def do_login(form):
   # Login successful
   login_user(user)
   res['user'] = user
+  res['email'] = user.email
   return res
 
 
@@ -102,7 +107,6 @@ def login_json():
     code = res.pop('code')
   else:
     user = res.pop('user')
-    res['username'] = user.email
     res['fullname'] = user.name
 
   response = jsonify(**res)
@@ -151,7 +155,10 @@ def forgotten_pw(new_user=False):
     return render_template("login/forgotten_password.html")
 
   try:
-    user = User.query.filter(User.email == email, User.can_login == True).one()
+    user = User.query\
+        .filter(sql.func.lower(User.email) == email,
+                User.can_login == True)\
+        .one()
   except NoResultFound:
     flash(_(u"Sorry, we couldn't find an account for "
             "email '{email}'.").format(email=email), 'error')
