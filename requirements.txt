@@ -23,7 +23,7 @@ pathlib
 # Databases / persistence
 SQLAlchemy>=0.8,<0.9
 psycopg2
-alembic
+alembic>=0.6.7
 redis>=2.10.1
 
 # requirement of jinja2; > 0.21 has an important fix for string format. See
