@@ -572,8 +572,8 @@ class Module(object):
     # TODO: don't really delete, switch state to "deleted"
     entity = self.managed_class.query.get(entity_id)
     assert entity is not None
-    db.session.delete(entity)
     activity.send(self, actor=g.user, verb="delete", object=entity)
+    db.session.delete(entity)
     db.session.commit()
     flash(_(u"Entity deleted"), "success")
     return redirect(self.url)

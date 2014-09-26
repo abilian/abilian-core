@@ -1,3 +1,9 @@
+# coding=utf-8
+"""
+"""
+from __future__ import absolute_import
+
+import sqlalchemy as sa
 from sqlalchemy.orm import object_session
 
 from abilian.services import Service
@@ -24,13 +30,26 @@ class ActivityService(Service):
 
   def log_activity(self, sender, actor, verb, object, target=None):
     assert self.running
-    entry = ActivityEntry(actor=actor, verb=verb, object=object, target=target)
-    entry.object_type = object.entity_type
+    session = object_session(object)
+    kwargs = dict(actor=actor, verb=verb, object_type=object.entity_type)
+
+    if sa.inspect(object).deleted:
+      # object is in deleted state: flush has occurred, don't reference it or
+      # we'll have an error when adding entry to session
+      kwargs['object_id'] = object.id
+    else:
+      kwargs['object'] = object
 
     if target is not None:
-        entry.target_type = target.entity_type
+      kwargs['target_type'] = target.entity_type
+      if sa.inspect(target).deleted:
+        kwargs['target_id'] = target.id
+      else:
+        kwargs['target'] = target
 
-    object_session(object).add(entry)
+    entry = ActivityEntry(**kwargs)
+    entry.object_type = object.entity_type
+    session.add(entry)
 
   @staticmethod
   def entries_for_actor(actor, limit=50):
