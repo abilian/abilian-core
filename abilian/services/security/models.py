@@ -98,62 +98,53 @@ class RoleAssignment(db.Model):
 # constrained columns."
 #
 # The solution is to build specific UNIQUE indexes, only for postgres
-def _get_postgres_indexes():
+def _postgres_indexes():
   role = RoleAssignment.role
   user_id = RoleAssignment.user_id
   group_id = RoleAssignment.group_id
   obj = RoleAssignment.object_id
   anonymous = RoleAssignment.anonymous
   name = 'roleassignment_idx_{}_unique'.format
-
+  engines = ('postgresql',)
   return [
-    Index(name('user_role'), user_id, role, unique=True,
-          postgresql_where=(anonymous == False) & (group_id == None) & (obj == None)
-          ),
-    Index(name('group_role'), group_id, role, unique=True,
-          postgresql_where=(anonymous == False) & (user_id == None) & (obj == None)
-        ),
-    Index(name('anonymous_role'), role, unique=True,
-          postgresql_where=((anonymous == True)
-                            & (user_id == None) & (group_id == None) & (obj == None))
-          ),
-    Index(name('user_role_object'), user_id, role, obj,
-          unique=True,
-          postgresql_where=(anonymous == False) & (group_id == None) & (obj != None)
-        ),
-    Index(name('group_role_object'), group_id, role, obj,
-          unique=True,
-          postgresql_where=(anonymous == False) & (user_id == None) & (obj != None)
-        ),
-    Index(name('anonymous_role_object'), role, obj, unique=True,
-          postgresql_where=((anonymous == True)
-                            & (user_id == None) & (group_id == None) & (obj != None))
-          ),
+    Index(
+        name('user_role'), user_id, role, unique=True, engines=engines,
+        postgresql_where=((anonymous == False) & (group_id == None)
+                          & (obj == None))
+    ),
+    Index(
+        name('group_role'), group_id, role, unique=True, engines=engines,
+        postgresql_where=((anonymous == False) & (user_id == None)
+                          & (obj == None))
+    ),
+    Index(
+        name('anonymous_role'), role, unique=True, engines=engines,
+        postgresql_where=((anonymous == True)
+                          & (user_id == None) & (group_id == None)
+                          & (obj == None)),
+    ),
+    Index(
+        name('user_role_object'), user_id, role, obj, engines=engines,
+        unique=True,
+        postgresql_where=((anonymous == False)
+                          & (group_id == None) & (obj != None))
+    ),
+    Index(
+        name('group_role_object'), group_id, role, obj, engines=engines,
+        unique=True,
+        postgresql_where=((anonymous == False)
+                          & (user_id == None) & (obj != None))
+    ),
+    Index(
+        name('anonymous_role_object'), role, obj, unique=True, engines=engines,
+        postgresql_where=((anonymous == True)
+                          & (user_id == None) & (group_id == None)
+                          & (obj != None))
+    ),
   ]
 
-_pg_indexes = []
-
-
-@listens_for(RoleAssignment.__table__, "after_create")
-def _create_postgres_indexes(target, connection, **kw):
-  if connection.engine.name != 'postgresql':
-    return
-
-  if not _pg_indexes:
-    _pg_indexes.extend(_get_postgres_indexes())
-    # no need to do call 'create' later (especially during tests): once
-    # instanciated 'create' statement will be made automatically
-    for idx in _pg_indexes:
-      idx.create(connection)
-
-
-@listens_for(RoleAssignment.__table__, "before_drop")
-def _drop_postgres_indexes(target, connection, **kw):
-  if connection.engine.name != 'postgresql':
-    return
-
-  for idx in _pg_indexes:
-    idx.drop(connection)
+_postgres_indexes()
+del _postgres_indexes
 
 
 class SecurityAudit(db.Model):

@@ -98,6 +98,26 @@ import sqlalchemy as sa
 from ..sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
+@sa.event.listens_for(db.metadata, 'before_create')
+@sa.event.listens_for(db.metadata, 'before_drop')
+def _filter_metadata_for_connection(target, connection, **kw):
+  """
+  listener to control what indexes get created.
+
+  Useful for skipping postgres-specific indexes on a sqlite for example.
+
+  It's looking for kwargs `engines` on index
+  (`Index(engines=['postgresql'])`), an iterable of engine names.
+  """
+  engine = connection.engine.name
+  default_engines = (engine,)
+  tables = target if isinstance(target, sa.Table) else kw.get('tables', [])
+  for table in tables:
+    indexes = list(table.indexes)
+    for idx in indexes:
+      if engine not in idx.kwargs.get('engines', default_engines):
+        table.indexes.remove(idx)
+
 
 # csrf
 from flask.ext.wtf.csrf import CsrfProtect
