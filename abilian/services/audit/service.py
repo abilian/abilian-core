@@ -230,7 +230,8 @@ class AuditService(Service):
 
     entry = AuditEntry(type=op_type, user_id=user_id)
     if op_type != DELETION:
-      # DELETION of a related model is ok: entity is still here
+      # DELETION|RELATED: deletion of a related model is ok: entity is still
+      # here
       entry.entity = entity
 
     entry.entity_id = entity.id
