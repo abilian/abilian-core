@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 
 from flask.ext.login import UserMixin
 
+import sqlalchemy as sa
 from sqlalchemy.orm import relationship, backref, deferred
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
@@ -234,6 +235,18 @@ class User(Principal, UserMixin, db.Model):
     return '<{mod}.{cls} id={id} email={email} at 0x{addr:x}>'.format(
       mod=cls.__module__, cls=cls.__name__,
       id=repr(self.id), email=repr(self.email), addr=id(self))
+
+
+@sa.event.listens_for(User,  "mapper_configured", propagate=True)
+def _add_user_indexes(mapper, class_):
+  # this is a functional index (indexes on a function result), we cannot define
+  # it in __table_args__.
+  #
+  # see: https://groups.google.com/d/msg/sqlalchemy/CgSJUlelhGs/_Nj3f201hs4J
+  sa.schema.Index('user_unique_lowercase_email',
+                  sa.sql.func.lower(class_.email),
+                  unique=True,
+                  engines=['postgresql'],)
 
 
 class Group(Principal, db.Model):
