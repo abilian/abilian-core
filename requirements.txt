@@ -12,10 +12,7 @@ Flask-Migrate
 Flask-Babel>=0.9
 Babel >= 1.3
 Flask-Assets>=0.10
-
-# We really need a more recent version than the version on PyPI
-#Flask-Mail>=0.9
-https://github.com/mattupstate/flask-mail/archive/b8ab0858f86bbb215f5b8a11c843b71bcb8ab3b5.zip#egg=Flask-Mail>=0.9
+Flask-Mail>=0.9.1
 
 # pathlib is included in python 3.4, and very useful
 pathlib
