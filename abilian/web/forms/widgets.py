@@ -298,7 +298,7 @@ class AjaxMainTableView(object):
 
       value = entity.display_value(column_name)
       cell = None
-
+      has_custom_display = False
       # Manual massage.
       # 'display_fun' gets value *and* entity: useful to perform
       # specific markup based on other entity values.
@@ -307,11 +307,14 @@ class AjaxMainTableView(object):
       if value is None:
         value = ""
       elif 'display_fun' in col:
+        has_custom_display = True
         value = col['display_fun'](entity, value)
       elif 'display_fmt' in col:
         value = col['display_fmt'](value)
 
-      if column_name == 'name':
+      if has_custom_display:
+        cell = value
+      elif column_name == 'name':
         cell = Markup('<a href="%s">%s</a>'
                       % (url_for(entity), cgi.escape(value)))
       elif isinstance(value, Entity):
