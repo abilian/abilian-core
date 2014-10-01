@@ -248,9 +248,9 @@ class AjaxMainTableView(object):
       self.columns.append(col)
 
   def render(self):
-    aoColumns = [{'asSorting': [] }] if self.show_controls else []
-    aoColumns += [ { 'asSorting': [ "asc", "desc" ] }
-                   for i in range(0, len(self.columns)) ]
+    aoColumns = [{'asSorting': []}] if self.show_controls else []
+    aoColumns += [{'asSorting': ["asc", "desc"]}
+                  for i in range(0, len(self.columns))]
 
     datatable_options = {
       'sDom': 'lfFrtip',
@@ -297,10 +297,17 @@ class AjaxMainTableView(object):
         column_name = col['name']
 
       value = entity.display_value(column_name)
+      cell = None
 
       # Manual massage.
+      # 'display_fun' gets value *and* entity: useful to perform
+      # specific markup based on other entity values.
+      # 'display_fmt' is for simple value formatting (format_date from
+      # babel for example)
       if value is None:
         value = ""
+      elif 'display_fun' in col:
+        value = col['display_fun'](entity, value)
       elif 'display_fmt' in col:
         value = col['display_fmt'](value)
 
@@ -310,9 +317,9 @@ class AjaxMainTableView(object):
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'
                       % (url_for(value), cgi.escape(value.name)))
-      elif isinstance(value, basestring)\
-        and (value.startswith("http://") or value.startswith("www.")):
-          cell = Markup(linkify_url(value))
+      elif (isinstance(value, basestring)
+            and (value.startswith("http://") or value.startswith("www."))):
+        cell = Markup(linkify_url(value))
       elif col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'
                       % (url_for(entity), cgi.escape(unicode(value))))
