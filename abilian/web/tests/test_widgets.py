@@ -105,7 +105,7 @@ class ModelViewTestCase(BaseTestCase):
 
 class TestLinkify(TestCase):
 
-  EXPECTED = '<a href="http://example.com">example.com</a><i class="icon-share-alt"></i>'
+  EXPECTED = '<a href="http://example.com">example.com</a><i class="fa fa-share-alt"></i>'
 
   def test_http(self):
     value = "http://example.com"

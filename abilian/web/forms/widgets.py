@@ -69,7 +69,7 @@ def linkify_url(value):
   if value.count("/") == 1 and value.endswith("/"):
     value = value[0:-1]
 
-  return '<a href="%s">%s</a><i class="icon-share-alt"></i>' % (url, value)
+  return '<a href="%s">%s</a><i class="fa fa-share-alt"></i>' % (url, value)
 
 
 def text2html(text):
@@ -634,7 +634,7 @@ class DateInput(Input):
 
     s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
         html_params(name=field_name, id=field_id, value=value))
-    s += u'  <span class="input-group-addon"><i class="icon-calendar"></i></span>\n'
+    s += u'  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
     s += u'</div>\n'
     return Markup(s)
 
@@ -843,7 +843,7 @@ class MoneyWidget(wtforms.widgets.Input):
 class EmailWidget(object):
   def render_view(self, field):
     link = bleach.linkify(field.object_data, parse_email=True)
-    return (u'{}&nbsp;<i class="icon-envelope"></i>'.format(link)
+    return (u'{}&nbsp;<i class="fa fa-envelope"></i>'.format(link)
             if link else u'')
 
 
