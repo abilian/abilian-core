@@ -70,8 +70,8 @@ def _filter_metadata_for_connection(target, connection, **kw):
 
   Useful for skipping postgres-specific indexes on a sqlite for example.
 
-  It's looking for kwargs `engines` on index
-  (`Index(engines=['postgresql'])`), an iterable of engine names.
+  It's looking for info entry `engines` on an index
+  (`Index(info=dict(engines=['postgresql']))`), an iterable of engine names.
   """
   engine = connection.engine.name
   default_engines = (engine,)
@@ -79,7 +79,7 @@ def _filter_metadata_for_connection(target, connection, **kw):
   for table in tables:
     indexes = list(table.indexes)
     for idx in indexes:
-      if engine not in idx.kwargs.get('engines', default_engines):
+      if engine not in idx.info.get('engines', default_engines):
         table.indexes.remove(idx)
 
 

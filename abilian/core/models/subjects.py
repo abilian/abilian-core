@@ -243,10 +243,10 @@ def _add_user_indexes(mapper, class_):
   # it in __table_args__.
   #
   # see: https://groups.google.com/d/msg/sqlalchemy/CgSJUlelhGs/_Nj3f201hs4J
-  sa.schema.Index('user_unique_lowercase_email',
-                  sa.sql.func.lower(class_.email),
-                  unique=True,
-                  engines=['postgresql'],)
+  idx = sa.schema.Index('user_unique_lowercase_email',
+                        sa.sql.func.lower(class_.email),
+                        unique=True)
+  idx.info['engines'] = ('postgresql',)
 
 
 class Group(Principal, db.Model):

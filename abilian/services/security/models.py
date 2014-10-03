@@ -106,42 +106,47 @@ def _postgres_indexes():
   anonymous = RoleAssignment.anonymous
   name = 'roleassignment_idx_{}_unique'.format
   engines = ('postgresql',)
-  return [
+  indexes = [
     Index(
-        name('user_role'), user_id, role, unique=True, engines=engines,
+        name('user_role'), user_id, role, unique=True,
         postgresql_where=((anonymous == False) & (group_id == None)
                           & (obj == None))
     ),
     Index(
-        name('group_role'), group_id, role, unique=True, engines=engines,
+        name('group_role'), group_id, role, unique=True,
         postgresql_where=((anonymous == False) & (user_id == None)
                           & (obj == None))
     ),
     Index(
-        name('anonymous_role'), role, unique=True, engines=engines,
+        name('anonymous_role'), role, unique=True,
         postgresql_where=((anonymous == True)
                           & (user_id == None) & (group_id == None)
                           & (obj == None)),
     ),
     Index(
-        name('user_role_object'), user_id, role, obj, engines=engines,
+        name('user_role_object'), user_id, role, obj,
         unique=True,
         postgresql_where=((anonymous == False)
                           & (group_id == None) & (obj != None))
     ),
     Index(
-        name('group_role_object'), group_id, role, obj, engines=engines,
+        name('group_role_object'), group_id, role, obj,
         unique=True,
         postgresql_where=((anonymous == False)
                           & (user_id == None) & (obj != None))
     ),
     Index(
-        name('anonymous_role_object'), role, obj, unique=True, engines=engines,
+        name('anonymous_role_object'), role, obj, unique=True,
         postgresql_where=((anonymous == True)
                           & (user_id == None) & (group_id == None)
                           & (obj != None))
     ),
   ]
+
+  for idx in indexes:
+    idx.info['engines'] = engines
+
+  return indexes
 
 _postgres_indexes()
 del _postgres_indexes
