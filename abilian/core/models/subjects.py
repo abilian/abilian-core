@@ -261,7 +261,7 @@ class Group(Principal, db.Model):
   description = Column(UnicodeText, info=SEARCHABLE)
 
   members = relationship("User", secondary=membership,
-                         backref=backref('groups', lazy='lazy'))
+                         backref=backref('groups', lazy='select'))
   admins = relationship("User", secondary=administratorship)
 
   photo = deferred(Column(LargeBinary))
