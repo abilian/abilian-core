@@ -77,6 +77,7 @@ class BaseObjectView(View):
     object_id = kwargs.pop(self.pk, None)
     if object_id is not None:
       self.obj = self.Model.query.get(object_id)
+      actions.context['object'] = self.obj
 
     return args, kwargs
 
