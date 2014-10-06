@@ -65,17 +65,32 @@ class Icon(object):
     return self.__html__()
 
 
-class Glyphicon(Icon):
+class NamedIconBase(Icon):
+  """
+  Renders markup for named icons set
+  """
+  template = None
+
+  def __init__(self, name=u''):
+    self.name = name
+
+  def __html__(self):
+    return self.template.render(name=self.name)
+
+
+class Glyphicon(NamedIconBase):
   """
   Renders markup for bootstrap's glyphicons
   """
   template = Template(u'<i class="glyphicon glyphicon-{{ name }}"></i>')
 
-  def __init__(self, name):
-    self.name = name
 
-  def __html__(self):
-    return self.template.render(name=self.name)
+class FAIcon(NamedIconBase):
+  """
+  Renders markup for FontAwesome icons
+  """
+  template = Template(u'<i class="fa fa-{{ name }}"></i>')
+
 
 class DynamicIcon(Icon):
   """

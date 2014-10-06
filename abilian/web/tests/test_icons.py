@@ -3,7 +3,7 @@
 """
 from __future__ import absolute_import
 
-from abilian.web.action import Glyphicon, StaticIcon
+from abilian.web.action import Glyphicon, FAIcon, StaticIcon
 
 from abilian.testing import BaseTestCase
 
@@ -17,6 +17,12 @@ class TestIcons(BaseTestCase):
     self.assertEquals(
       icon.__html__(),
       u'<i class="glyphicon glyphicon-ok"></i>')
+
+  def test_faicons(self):
+    icon = FAIcon('check')
+    self.assertEquals(
+      icon.__html__(),
+      u'<i class="fa fa-check"></i>')
 
   def test_staticicon(self):
     icon = StaticIcon('path/to/icon.png')
