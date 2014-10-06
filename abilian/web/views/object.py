@@ -81,7 +81,7 @@ class BaseObjectView(View):
 
     return args, kwargs
 
-  def get(self):
+  def get(self, *args, **kwargs):
     bc = self.breadcrumb()
     if bc is not None:
       bc = [bc] if isinstance(bc, nav.BreadcrumbItem) else list(bc)
@@ -178,7 +178,7 @@ class ObjectEdit(ObjectView):
       self._message_success = message_success
 
   @csrf.protect
-  def post(self):
+  def post(self, *args, **kwargs):
     # conservative: no action submitted -> cancel
     action = self.data.get('__action', u'cancel')
     if action == u'cancel':
