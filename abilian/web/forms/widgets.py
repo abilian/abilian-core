@@ -488,8 +488,9 @@ class TextArea(BaseTextArea):
   """
   _resizeable_valid = ("vertical", "horizontal", "both", None)
   resizeable = None
+  rows = None
 
-  def __init__(self, resizeable=None, *args, **kwargs):
+  def __init__(self, resizeable=None, rows=None, *args, **kwargs):
     BaseTextArea.__init__(self, *args, **kwargs)
 
     if not resizeable in self._resizeable_valid:
@@ -502,10 +503,17 @@ class TextArea(BaseTextArea):
     if resizeable:
       self.resizeable = 'resizeable-' + resizeable
 
+    if rows:
+      self.rows = int(rows)
+
   def __call__(self, *args, **kwargs):
     if self.resizeable:
       css = kwargs.get('class_', '')
       kwargs['class_'] = css + ' ' + self.resizeable
+
+    if self.rows and 'rows' not in kwargs:
+      kwargs['rows'] = self.rows
+
     return super(TextArea, self).__call__(*args, **kwargs)
 
 
