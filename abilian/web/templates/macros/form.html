@@ -1,5 +1,5 @@
 {%- macro m_field(field, horizontal=False, label_width=2, field_width=8) %}
-  {%- set with_label = kwargs.pop('with_label', True) %}
+  {%- set with_label = kwargs.pop('with_label', not field.flags.hidden) %}
   {%- set placeholder = '' %}
   {%- if not with_label %}
     {%- set placeholder = field.label.text %}
@@ -13,7 +13,7 @@
     {%- set css_class = css_class + ' required' %}
   {%- endif %}
   <div class="form-group{% if field.errors %} has-error {% endif %}">
-    {%- if with_label and not field.type in ('BooleanField', 'CSRFTokenField') %}
+    {%- if with_label and not field.type in ('BooleanField', 'CSRFTokenField', 'HiddenField') %}
       <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}{% if field.flags.required %} *{% endif %}:</label>
     {%- endif %}
 
