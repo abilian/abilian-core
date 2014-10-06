@@ -3,10 +3,14 @@
 """
 from __future__ import absolute_import
 
-from flask import request, g, json, jsonify, render_template_string
+from werkzeug.exceptions import HTTPException
+from flask import request, g, json, jsonify, render_template_string, redirect
 from flask.views import MethodView as BaseView
 
 from ..action import actions
+
+class Redirect(HTTPException):
+  pass
 
 
 class View(BaseView):
@@ -26,8 +30,11 @@ class View(BaseView):
       assert meth is not None, 'Unimplemented method %r' % request.method
 
     g.view = actions.context['view'] = self
-    args, kwargs = self.prepare_args(args, kwargs)
-    return meth(*args, **kwargs)
+    try:
+      args, kwargs = self.prepare_args(args, kwargs)
+      return meth(*args, **kwargs)
+    except Redirect as exc:
+      return exc.response
 
   def prepare_args(self, args, kwargs):
     """
@@ -38,6 +45,15 @@ class View(BaseView):
     identifier by object in arguments.
     """
     return args, kwargs
+
+
+  def redirect(self, url):
+    """
+    Shortcut all call stack and return response.
+
+    usage: `self.response(url_for(...))`
+    """
+    raise Redirect(response=redirect(url))
 
 
 _JSON_HTML = u'''
@@ -88,4 +104,3 @@ class JSONView(View):
     # dev requesting from browser? serve html, let debugtoolbar show up, etc...
     content = json.dumps(data, indent=2)
     return render_template_string(_JSON_HTML, content=content)
-
