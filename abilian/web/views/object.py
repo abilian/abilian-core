@@ -161,6 +161,10 @@ class ObjectEdit(ObjectView):
   #: button clicked, corresponding to :attr:`action`.
   button = None
 
+  #: verb used to describe activity
+  activity_verb = 'update'
+
+  #: UI flash message
   _message_success = _l(u"Entity successfully edited")
 
   def __init__(self, Model=None, pk=None, Form=None, template=None,
@@ -243,7 +247,10 @@ class ObjectEdit(ObjectView):
       session.add(self.obj)
       try:
         session.flush()
-        activity.send(self, actor=g.user, verb="update", object=self.obj)
+        activity.send(self, actor=g.user, verb=self.activity_verb,
+                      object=self.obj,
+                      target=self.activity_target
+        )
         session.commit()
       except ValidationError, e:
         session.rollback()
@@ -277,6 +284,10 @@ class ObjectEdit(ObjectView):
     """
     pass
 
+  @property
+  def activity_target(self):
+    return None
+
 
 CREATE_BUTTON = ButtonAction('form', 'create', btn_class='primary', title=_l(u'Create'))
 CHAIN_CREATE_BUTTON = ButtonAction(
@@ -290,6 +301,7 @@ class ObjectCreate(ObjectEdit):
   """
   Create a new object
   """
+  activity_verb = 'post'
   _message_success = _l(u"Entity successfully added")
 
   #: set to `True` to show 'Save and add new' button
@@ -318,6 +330,7 @@ class ObjectDelete(ObjectEdit):
   """
   Delete object. Supports DELETE verb.
   """
+  activity_verb = 'delete'
   _message_success = _l(u"Entity deleted")
 
   init_object = BaseObjectView.init_object
