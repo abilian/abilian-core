@@ -124,7 +124,8 @@ class ObjectView(BaseObjectView):
     self.template = template if template is not None else cls.template
 
   def prepare_args(self, args, kwargs):
-    """ :attr:`form` is initialized here. See also :meth:`View.prepare_args`.
+    """
+    :attr:`form` is initialized here. See also :meth:`View.prepare_args`.
     """
     args, kwargs = super(ObjectView, self).prepare_args(args, kwargs)
     self.form = self.Form(**self.get_form_kwargs())
@@ -241,31 +242,12 @@ class ObjectEdit(ObjectView):
 
   def edit(self):
     if self.form.validate():
-      self.before_populate_obj()
-      self.form.populate_obj(self.obj)
-
-      session = current_app.db.session()
-      session.add(self.obj)
-      try:
-        session.flush()
-        activity.send(self, actor=g.user, verb=self.activity_verb,
-                      object=self.obj,
-                      target=self.activity_target
-        )
-        session.commit()
-      except ValidationError, e:
-        session.rollback()
-        flash(e.message, "error")
-      except sa.exc.IntegrityError, e:
-        session.rollback()
-        logger.error(e)
-        flash(_(u"An entity with this name already exists in the database."),
-              "error")
-      else:
-        flash(self.message_success(), "success")
-        return self.redirect_to_view()
-
+      return self.form_valid()
     else:
+      resp = self.form_invalid()
+      if resp:
+        return resp
+
       flash(_(u"Please fix the error(s) below"), "error")
 
     # if we end here then something wrong has happened: show form with error
@@ -285,8 +267,56 @@ class ObjectEdit(ObjectView):
     """
     pass
 
+  def form_valid(self):
+    """
+    Save object.
+
+    Called when form is validated.
+    """
+    self.before_populate_obj()
+    self.form.populate_obj(self.obj)
+
+    session = current_app.db.session()
+    session.add(self.obj)
+    try:
+      session.flush()
+      activity.send(self,
+                    actor=g.user,
+                    verb=self.activity_verb,
+                    object=self.obj,
+                    target=self.activity_target)
+      session.commit()
+    except ValidationError, e:
+      session.rollback()
+      flash(e.message, "error")
+    except sa.exc.IntegrityError, e:
+      session.rollback()
+      logger.error(e)
+      flash(_(u"An entity with this name already exists in the database."),
+            "error")
+    else:
+      flash(self.message_success(), "success")
+      return self.redirect_to_view()
+
+  def form_invalid(self):
+    """
+    When a form doesn't validate this method is called.
+
+    It may return a :class:`Flask.Response` instance, to handle specific
+    errors in custom screens.
+
+    Else the edit form screen is returned with error(s) highlighted.
+
+    This method is useful for detecting edition conflict using hidden fields
+    and show a specific screen to help resolve the conflict.
+    """
+    return None
+
   @property
   def activity_target(self):
+    """
+    Return `target` to use when creating activity.
+    """
     return None
 
 
