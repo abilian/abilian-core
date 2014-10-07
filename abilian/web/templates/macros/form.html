@@ -40,7 +40,7 @@
     {%- endif %}
 
     {%- if field.errors %}
-      <span class="help-inline text-danger">{{ field.errors|join(', ') }}</span>
+      <span class="help-inline text-danger">{{ field.errors|join('<br />'|safe) }}</span>
     {% endif %}
 
     {%- if field.description %}
