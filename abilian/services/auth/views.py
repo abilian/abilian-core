@@ -20,6 +20,7 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask import (
   render_template, request, Blueprint, redirect, url_for, flash, current_app)
 from flask.json import jsonify
+from flask.globals import _request_ctx_stack
 
 from flask.ext.login import (
   login_user, logout_user, user_logged_in, user_logged_out,)
@@ -351,9 +352,25 @@ user_logged_out.connect(log_session_end)
 #  from http://flask.pocoo.org/snippets/62/
 def is_safe_url(target):
   ref_url = urlparse(request.host_url)
-  test_url = urlparse(urljoin(request.host_url, target))
+  test_url = urlparse(urljoin(request.url_root, target))
   return test_url.scheme in ('http', 'https') and \
       ref_url.netloc == test_url.netloc
+
+
+def check_for_redirect(target):
+  target = urljoin(request.url_root, target)
+  url = urlparse(target)
+  reqctx = _request_ctx_stack.top
+  try:
+    endpoint, ignored = reqctx.url_adapter.match(url.path, 'GET')
+    if '.' in endpoint and endpoint.rsplit('.', 1)[0] == 'login':
+      # don't redirect to any login view after successful login
+      return None
+  except Exception as e:
+    # exceptions may happen if route is not found for example
+    pass
+
+  return target
 
 
 def get_redirect_target():
@@ -361,7 +378,7 @@ def get_redirect_target():
     if not target:
       continue
     if is_safe_url(target):
-      return target
+      return check_for_redirect(target)
 
 
 def redirect_back(endpoint=None, url=None, **values):
@@ -371,4 +388,4 @@ def redirect_back(endpoint=None, url=None, **values):
       target = url_for(endpoint, **values)
     else:
       target = url
-  return redirect(target)
+  return redirect(check_for_redirect(target))

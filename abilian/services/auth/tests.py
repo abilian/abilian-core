@@ -4,8 +4,12 @@
 from __future__ import absolute_import
 
 import json
+from functools import partial
+from flask import url_for, request
 from abilian.testing import BaseTestCase, TestConfig
 from abilian.core.models.subjects import User
+
+from abilian.services.auth import views
 
 
 class AuthTestConfig(TestConfig):
@@ -20,6 +24,42 @@ class TestAuth(BaseTestCase):
   config_class = AuthTestConfig
 
   CLEAR_PASSWORDS = False
+
+  def test_get_redirect_target(self):
+    get_redirect_target = views.get_redirect_target
+    form_url = partial(url_for, 'login.login_form')
+
+    with self.app.test_request_context(form_url()):
+      assert get_redirect_target() is None
+      url_root = request.url_root[:-1]
+
+    with self.app.test_request_context(form_url(next=u'/')):
+      assert get_redirect_target() == url_root + u'/'
+
+    # test "next" from referer
+    referrer = url_root + u'/some/path'
+    with self.app.test_request_context(
+        form_url(),
+        headers=[('Referer', referrer)]):
+      assert get_redirect_target() == referrer
+
+    # don't cycle if coming from 'login.*' page, like this kind of cycle:
+    # forgot password form ->  login page -> success
+    # -> redirect(next = forgot password form) -> ...
+    referrer = url_root + url_for('login.forgotten_pw')
+    with self.app.test_request_context(
+        form_url(),
+        headers=[('Referer', referrer)]):
+      assert get_redirect_target() is None
+
+    # test open redirect is forbidden
+    with self.app.test_request_context(form_url(next=u'http://google.com/test')):
+      assert get_redirect_target() is None
+
+    # open redirect through malicious construct and browser not checking Location
+    with self.app.test_request_context(form_url(next=u'/////google.com')):
+      assert get_redirect_target() == url_root + u'///google.com'
+
 
   def test_login_post(self):
     kwargs = dict(email=u'User@domain.tld', password='azerty', can_login=True)
