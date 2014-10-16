@@ -56,7 +56,7 @@
     <ul class="unstyled"><h2>{{ day.strftime('%d-%m-%Y') }}</h2>
       {%- for entry in entries %}
       <li>
-        {{ entry.date.strftime('%H:%M') }} {{ entry.render() }}
+        {{ entry.date.strftime('%H:%M:%S') }} {{ entry.render() }}
       </li>
       {%- endfor %}
     </ul>
