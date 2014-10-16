@@ -4,12 +4,13 @@ Base class for entities, objects that are managed by the Abilian framwework
 """
 from __future__ import absolute_import
 
+import re
 from inspect import isclass
 from datetime import datetime
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import mapper, Session
+from sqlalchemy.orm import mapper, Session, object_session
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String, UnicodeText
 from sqlalchemy import event
@@ -216,6 +217,22 @@ class Entity(Indexable, BaseMixin, db.Model):
     slug = self.name
     if slug is not None:
       slug = slugify(slug, separator=self.SLUG_SEPARATOR)
+      session = sa.orm.object_session(self)
+      if not session:
+        return None
+      q = session.query(Entity.slug)\
+          .filter(Entity._entity_type == self.object_type)
+      if self.id is not None:
+        q = q.filter(Entity.id != self.id)
+      slug_re = re.compile(re.escape(slug) + r'-?(-\d+)?')
+      results = [int(m.group(1) or 0)  # 0: for the unnumbered slug
+                 for m in (slug_re.match(s.slug) for s in q.all()
+                           if s.slug)
+                 if m]
+
+      max_id = max(-1, -1, *results) + 1
+      if max_id:
+        slug = u'{}-{}'.format(slug, max_id)
     return slug
 
 

@@ -99,7 +99,7 @@ class TestSAAdapter(TestCase):
       updated_at=datetime(2013, 11, 29, 12, 17, 58)
     )
     obj = SubclassEntityIndexable(**expected)
-    obj.slug = obj.auto_slug
+    obj.slug = u'entity-name'
     expected['creator_name'] = u''
     expected['owner_name'] = u''
     expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
@@ -107,7 +107,7 @@ class TestSAAdapter(TestCase):
     expected['text'] = u'entity name'
     expected['slug'] = 'entity-name'
     expected['name_prefix'] = u'entity name'
-    self.assertEquals(adapter.get_document(obj), expected)
+    assert adapter.get_document(obj) == expected
 
     # test retrieve related attributes
     schema = Schema(

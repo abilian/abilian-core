@@ -36,7 +36,10 @@ class EntityTestCase(TestCase):
     contact.creator = user
 
   def test_auto_slug_property(self):
+    session = self.get_session()
     obj = DummyContact(name=u'a b c')
+    session.add(obj)
+    session.flush()
     self.assertEquals(obj.auto_slug, u'a-b-c')
     obj.name = u"C'est l'été !"
     self.assertEquals(obj.auto_slug, u'c-est-l-ete')
@@ -72,7 +75,7 @@ class EntityTestCase(TestCase):
 
   def test_auto_slug(self):
     session = self.get_session()
-    contact = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+    c1 = contact = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
 
     session.add(contact)
     session.flush()
@@ -84,6 +87,13 @@ class EntityTestCase(TestCase):
     session.flush()
     expected = u'dummycontact-{}'.format(contact.id)
     self.assertEquals(contact.slug, expected)
+
+    # test numbering if slug already exists:
+    c2 = contact = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+    session.add(contact)
+    session.flush()
+    self.assertEquals(contact.slug, u'pacome-hegesippe-adelard-ladislas-1')
+
 
   def test_entity_type(self):
     class MyType(Entity):
