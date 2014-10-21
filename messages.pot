@@ -1,14 +1,15 @@
-# Translations template for PROJECT.
+# Translations template for abilian-core.
 # Copyright (C) 2014 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
+# This file is distributed under the same license as the abilian-core
+# project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version: abilian-core 0.2.1.dev0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-19 11:54+0200\n"
+"POT-Creation-Date: 2014-10-21 14:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,55 +26,55 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: abilian/services/auth/views.py:60
+#: abilian/services/auth/views.py:62
 msgid "You must provide your email and password."
 msgstr ""
 
-#: abilian/services/auth/views.py:67 abilian/services/auth/views.py:156
+#: abilian/services/auth/views.py:72 abilian/services/auth/views.py:164
 msgid "Sorry, we couldn't find an account for email '{email}'."
 msgstr ""
 
-#: abilian/services/auth/views.py:73
+#: abilian/services/auth/views.py:78
 msgid "Sorry, wrong password."
 msgstr ""
 
-#: abilian/services/auth/views.py:150
+#: abilian/services/auth/views.py:155
 msgid "You must provide your email address."
 msgstr ""
 
-#: abilian/services/auth/views.py:165
+#: abilian/services/auth/views.py:173
 msgid "Password reset instructions have been sent to your email address."
 msgstr ""
 
-#: abilian/services/auth/views.py:175 abilian/services/auth/views.py:194
+#: abilian/services/auth/views.py:183 abilian/services/auth/views.py:202
 msgid "Invalid reset password token."
 msgstr ""
 
-#: abilian/services/auth/views.py:177 abilian/services/auth/views.py:196
+#: abilian/services/auth/views.py:185 abilian/services/auth/views.py:204
 msgid "Password reset expired"
 msgstr ""
 
-#: abilian/services/auth/views.py:203
+#: abilian/services/auth/views.py:211
 msgid "You must provide a password."
 msgstr ""
 
-#: abilian/services/auth/views.py:208
+#: abilian/services/auth/views.py:216
 msgid "Your new password must be at least 8 characters long"
 msgstr ""
 
-#: abilian/services/auth/views.py:212
+#: abilian/services/auth/views.py:220
 msgid "Your new password must contain upper case and lower case letters"
 msgstr ""
 
-#: abilian/services/auth/views.py:217
+#: abilian/services/auth/views.py:225
 msgid "Your new password must contain at least one digit"
 msgstr ""
 
-#: abilian/services/auth/views.py:223
+#: abilian/services/auth/views.py:231
 msgid "Your password has been reset. You can now login with your new password"
 msgstr ""
 
-#: abilian/services/auth/views.py:252
+#: abilian/services/auth/views.py:260
 msgid "Password reset instruction for {site_name}"
 msgstr ""
 
@@ -111,7 +112,7 @@ msgstr ""
 #: abilian/services/auth/templates/login/password_reset.html:23
 #: abilian/web/templates/preferences/user.html:19
 #: abilian/web/templates/widgets/render_for_edit.html:25
-#: abilian/web/views/object.py:142
+#: abilian/web/views/object.py:144
 msgid "Cancel"
 msgstr ""
 
@@ -130,16 +131,16 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: abilian/web/frontend.py:501 abilian/web/views/object.py:164
+#: abilian/web/frontend.py:501 abilian/web/views/object.py:170
 msgid "Entity successfully edited"
 msgstr ""
 
-#: abilian/web/frontend.py:509 abilian/web/views/object.py:254
+#: abilian/web/frontend.py:509 abilian/web/views/object.py:295
 msgid "An entity with this name already exists in the database."
 msgstr ""
 
 #: abilian/web/frontend.py:512 abilian/web/frontend.py:562
-#: abilian/web/views/object.py:261
+#: abilian/web/views/object.py:251
 msgid "Please fix the error(s) below"
 msgstr ""
 
@@ -147,11 +148,11 @@ msgstr ""
 msgid "An entity with this name already exists in the database"
 msgstr ""
 
-#: abilian/web/frontend.py:556 abilian/web/views/object.py:293
+#: abilian/web/frontend.py:556 abilian/web/views/object.py:336
 msgid "Entity successfully added"
 msgstr ""
 
-#: abilian/web/frontend.py:578 abilian/web/views/object.py:321
+#: abilian/web/frontend.py:578 abilian/web/views/object.py:365
 msgid "Entity deleted"
 msgstr ""
 
@@ -276,7 +277,7 @@ msgstr ""
 
 #: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:16
-#: abilian/web/views/object.py:143
+#: abilian/web/views/object.py:145
 msgid "Save"
 msgstr ""
 
@@ -292,11 +293,11 @@ msgstr ""
 msgid "Minutes"
 msgstr ""
 
-#: abilian/web/forms/fields.py:111 abilian/web/forms/fields.py:144
+#: abilian/web/forms/fields.py:159 abilian/web/forms/fields.py:192
 msgid "Not a valid datetime value"
 msgstr ""
 
-#: abilian/web/forms/fields.py:278
+#: abilian/web/forms/fields.py:326
 msgid "Not a valid choice"
 msgstr ""
 
@@ -304,35 +305,35 @@ msgstr ""
 msgid "Invalid email address."
 msgstr ""
 
-#: abilian/web/forms/widgets.py:148 abilian/web/forms/widgets.py:260
+#: abilian/web/forms/widgets.py:150 abilian/web/forms/widgets.py:262
 msgid "Filter records:"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:261
+#: abilian/web/forms/widgets.py:263
 msgid "Previous"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:262
+#: abilian/web/forms/widgets.py:264
 msgid "Next"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:263
+#: abilian/web/forms/widgets.py:265
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:264
+#: abilian/web/forms/widgets.py:266
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:265
+#: abilian/web/forms/widgets.py:267
 msgid "Advanced filtering"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:512
+#: abilian/web/forms/widgets.py:532
 msgid "Add file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:512
+#: abilian/web/forms/widgets.py:532
 msgid "Select file"
 msgstr ""
 
@@ -375,7 +376,7 @@ msgid "All"
 msgstr ""
 
 #: abilian/web/search/templates/search/search.html:11
-#: abilian/web/templates/navbar.html:33
+#: abilian/web/templates/navbar.html:31
 msgid "Search"
 msgstr ""
 
@@ -431,6 +432,10 @@ msgstr ""
 msgid "Recent items"
 msgstr ""
 
+#: abilian/web/templates/widgets/image_input.html:5
+msgid "Delete image"
+msgstr ""
+
 #: abilian/web/templates/widgets/render_for_edit.html:18
 msgid "Add new"
 msgstr ""
@@ -448,15 +453,15 @@ msgid "Edit"
 msgstr ""
 
 #: abilian/web/templates/widgets/render_single.html:3
-#: abilian/web/views/object.py:314
+#: abilian/web/views/object.py:357
 msgid "Delete"
 msgstr ""
 
-#: abilian/web/views/object.py:281
+#: abilian/web/views/object.py:323
 msgid "Create"
 msgstr ""
 
-#: abilian/web/views/object.py:283
+#: abilian/web/views/object.py:325
 msgid "Create and add new"
 msgstr ""
 

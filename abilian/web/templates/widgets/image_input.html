@@ -2,6 +2,9 @@
   <div class="upload_preview" data-width="{{ width }}" data-height="{{ height }}">
     {%- if image_url %}
       <image src="{{ image_url }}" class="img-thumbnail" style="max-width: {{ width }}px; max-height: {{ height }}px" />
+      {%- if field.allow_delete %}
+        <label><input type="checkbox" name="__{{ field.name }}_delete__" value="delete" /> {{ _('Delete image') }}</label>
+      {%- endif %}
     {%- endif %}
   </div>
   <div class="js-fileapi-wrapper upload-btn">

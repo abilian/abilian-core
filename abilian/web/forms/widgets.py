@@ -8,6 +8,7 @@ NOTE: code is currently quite messy. Needs to be refactored.
 import cgi
 import urlparse
 import re
+import base64
 from datetime import datetime
 from itertools import ifilter
 from collections import namedtuple
@@ -26,6 +27,7 @@ from wtforms_alchemy import ModelFieldList
 
 from abilian.i18n import _
 from abilian.core.entities import Entity
+from abilian.services import image
 from abilian.web.filters import labelize, babel2datepicker
 from abilian.web import csrf, url_for
 from .util import babel2datetime
@@ -552,10 +554,13 @@ class ImageInput(object):
   def __call__(self, field, **kwargs):
     field_id = kwargs.pop('id', field.id)
     image_url = None
-    value = kwargs.get('value', field.object_data)
+    value = kwargs.get('value', field.data)
 
-    if hasattr(value, 'url'):
-      image_url = value.url
+    if value:
+      if hasattr(value, 'url'):
+        image_url = value.url
+      else:
+        image_url = self.get_b64_thumb_url(value)
 
     pattern = '.*\.({ext})'.format(ext='|'.join(self.valid_extensions))
     return Markup(
@@ -568,6 +573,21 @@ class ImageInput(object):
                       height=self.height,
                       pattern=pattern,))
 
+  def get_b64_thumb_url(self, data):
+    thumb = image.crop_and_resize(data, self.width, self.height)
+    fmt = image.get_format(thumb).lower()
+    thumb = base64.b64encode(thumb)
+    return u'data:image/{format};base64,{img}'.format(format=fmt, img=thumb)
+
+  def render_view(self, field, **kwargs):
+    data = field.data
+    if not data:
+      return u''
+
+    tmpl = u'<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
+    return render_template_string(tmpl,
+                                  url=self.get_b64_thumb_url(data),
+                                  width=self.width, height=self.height)
 
 class Chosen(Select):
   """
