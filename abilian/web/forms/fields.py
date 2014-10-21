@@ -7,6 +7,8 @@ import operator
 from functools import partial
 import datetime
 
+import sqlalchemy as sa
+
 from wtforms import (
     ValidationError,
     Field,
@@ -26,6 +28,8 @@ from flask.ext.babel import (
   )
 
 from abilian.core.util import utc_dt
+from abilian.core.extensions import db
+from abilian.core.models.blob import Blob
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
 
@@ -50,10 +54,18 @@ class ModelFieldList(BaseModelFieldList):
 
 
 class FileField(BaseFileField):
-  """ support 'multiple' attribute, enabling html5 multiple file input in widget
+  """
+  support 'multiple' attribute, enabling html5 multiple file input in widget.
+
+  can store file using a related model
+
+  :param blob_attr: attribute name to store / retrieve value on related model.
+      Used if `name` is a relationship on model. Defauts to `'value'`
   """
   multiple = False
   widget = FileInput()
+  blob_attr = 'value'
+  allow_delete = True
 
   def __init__(self, *args, **kwargs):
     try:
@@ -61,12 +73,52 @@ class FileField(BaseFileField):
     except KeyError:
       pass
 
+    self.blob_attr = kwargs.pop('blob_attr', self.__class__.blob_attr)
+    self.allow_delete = kwargs.pop('allow_delete', self.__class__.allow_delete)
+
     BaseFileField.__init__(self, *args, **kwargs)
 
   def __call__(self, **kwargs):
     if 'multiple' not in kwargs and self.multiple:
       kwargs['multiple'] = 'multiple'
     return BaseFileField.__call__(self, **kwargs)
+
+  def process(self, formdata, *args, **kwargs):
+    delete_arg = u'__{name}_delete__'.format(name=self.name)
+    self._delete_file = formdata and delete_arg in formdata
+
+    return super(FileField, self).process(formdata, *args, **kwargs)
+
+  def process_data(self, value):
+    if isinstance(value, db.Model):
+      value = getattr(value, self.blob_attr)
+
+    return super(FileField, self).process_data(value)
+
+  def populate_obj(self, obj, name):
+    """
+    Store file
+    """
+    if not self.has_file() and not (self.allow_delete and self._delete_file):
+      return
+
+    state = sa.inspect(obj)
+    mapper = state.mapper
+    if name not in mapper.relationships:
+      # directly store in database
+      return super(FileField, self).populate_obj(obj, name)
+
+    rel = getattr(mapper.relationships, name)
+    if rel.uselist:
+      raise ValueError("Only single target supported; else use ModelFieldList")
+
+    val = getattr(obj, name)
+    if val is None:
+      val = rel.mapper.class_()
+      setattr(obj, name, val)
+
+    data = self.data.read() if self.has_file() else u''
+    setattr(val, self.blob_attr, data)
 
 
 class DateTimeField(Field):
