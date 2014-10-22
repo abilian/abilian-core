@@ -196,11 +196,6 @@ class ObjectEdit(ObjectView):
     self.data = request.form
     return args, kwargs
 
-  def get_form_kwargs(self):
-    kw = super(ObjectEdit, self).get_form_kwargs()
-    kw['formdata'] = request.form
-    return kw
-
   def get_form_buttons(self, *args, **kwargs):
     return [EDIT_BUTTON, CANCEL_BUTTON]
 
