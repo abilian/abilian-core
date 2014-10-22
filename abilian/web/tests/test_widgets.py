@@ -105,17 +105,18 @@ class ModelViewTestCase(BaseTestCase):
 
 class TestLinkify(TestCase):
 
-  EXPECTED = '<a href="http://example.com">example.com</a><i class="fa fa-share-alt"></i>'
+  EXPECTED = (u'<a href="http://example.com">example.com</a>'
+              u'&nbsp;<i class="fa fa-external-link"></i>')
 
   def test_http(self):
     value = "http://example.com"
     result = linkify_url(value)
-    self.assertEquals(result, self.EXPECTED)
+    assert result == self.EXPECTED
 
   def test_no_http(self):
     value = "example.com"
     result = linkify_url(value)
-    self.assertEquals(result, self.EXPECTED)
+    assert result == self.EXPECTED
 
 
 class TestText2Html(TestCase):
