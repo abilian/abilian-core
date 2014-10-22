@@ -46,11 +46,14 @@ class BaseObjectView(View):
   #: templates with a custom base
   base_template = "base.html"
 
-  def __init__(self, Model=None, pk=None, *args, **kwargs):
+  def __init__(self, Model=None, pk=None, base_template=None, *args, **kwargs):
     View.__init__(self, *args, **kwargs)
     cls = self.__class__
     self.pk = pk if pk is not None else cls.pk
     self.Model = Model if Model is not None else cls.Model
+    self.base_template = (base_template
+                          if base_template is not None
+                          else cls.base_template)
 
   def prepare_args(self, args, kwargs):
     args, kwargs = self.init_object(args, kwargs)
@@ -332,6 +335,10 @@ class ObjectCreate(ObjectEdit):
 
   #: set to `True` to show 'Save and add new' button
   chain_create_allowed = False
+
+  def __init__(self, chain_create_allowed=False, *args, **kwargs):
+    self.chain_create_allowed = chain_create_allowed
+    ObjectEdit.__init__(self, *args, **kwargs)
 
   def init_object(self, args, kwargs):
       self.obj = self.Model()
