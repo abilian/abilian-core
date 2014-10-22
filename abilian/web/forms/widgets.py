@@ -71,7 +71,7 @@ def linkify_url(value):
   if value.count("/") == 1 and value.endswith("/"):
     value = value[0:-1]
 
-  return '<a href="%s">%s</a><i class="fa fa-share-alt"></i>' % (url, value)
+  return '<a href="%s">%s</a>&nbsp;<i class="fa fa-external-link"></i>' % (url, value)
 
 
 def text2html(text):
