@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-21 14:59+0200\n"
-"PO-Revision-Date: 2014-10-21 14:59+0200\n"
+"POT-Creation-Date: 2014-10-22 17:12+0200\n"
+"PO-Revision-Date: 2014-10-22 17:12+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -111,9 +111,10 @@ msgid "Change password"
 msgstr "Changer le mot de passe"
 
 #: abilian/services/auth/templates/login/password_reset.html:23
+#: abilian/web/templates/default/list_view.html:58
 #: abilian/web/templates/preferences/user.html:19
-#: abilian/web/templates/widgets/render_for_edit.html:25
-#: abilian/web/views/object.py:144
+#: abilian/web/templates/widgets/render_single.html:42
+#: abilian/web/views/object.py:147
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -131,31 +132,6 @@ msgstr ""
 #: abilian/web/templates/preferences/_base.html:8
 msgid "Preferences"
 msgstr "Préférences"
-
-#: abilian/web/frontend.py:501 abilian/web/views/object.py:170
-msgid "Entity successfully edited"
-msgstr "Édition réussie"
-
-#: abilian/web/frontend.py:509 abilian/web/views/object.py:295
-msgid "An entity with this name already exists in the database."
-msgstr "Il y a déjà une entité avec ce nom dans la base de donnée."
-
-#: abilian/web/frontend.py:512 abilian/web/frontend.py:562
-#: abilian/web/views/object.py:251
-msgid "Please fix the error(s) below"
-msgstr "Veuillez corriger la ou les erreurs ci-dessous"
-
-#: abilian/web/frontend.py:553
-msgid "An entity with this name already exists in the database"
-msgstr "Il y a déjà une entité avec ce nom dans la base de donnée"
-
-#: abilian/web/frontend.py:556 abilian/web/views/object.py:336
-msgid "Entity successfully added"
-msgstr "Ajout réussi"
-
-#: abilian/web/frontend.py:578 abilian/web/views/object.py:365
-msgid "Entity deleted"
-msgstr "Entité supprimée"
 
 #: abilian/web/admin/extension.py:38
 msgid "Admin"
@@ -282,7 +258,7 @@ msgstr "Filtrer sur un utilisateur"
 
 #: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:16
-#: abilian/web/views/object.py:145
+#: abilian/web/views/object.py:148
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -298,11 +274,11 @@ msgstr "Heures"
 msgid "Minutes"
 msgstr "Minutes"
 
-#: abilian/web/forms/fields.py:159 abilian/web/forms/fields.py:192
+#: abilian/web/forms/fields.py:163 abilian/web/forms/fields.py:196
 msgid "Not a valid datetime value"
 msgstr "N'est pas une date valide"
 
-#: abilian/web/forms/fields.py:326
+#: abilian/web/forms/fields.py:330
 msgid "Not a valid choice"
 msgstr "N'est pas un choix valide"
 
@@ -437,36 +413,101 @@ msgstr "Journal d'audit"
 msgid "Recent items"
 msgstr "Éléments récents"
 
-#: abilian/web/templates/widgets/image_input.html:5
+#: abilian/web/templates/default/list_view.html:9
+msgid "Create New"
+msgstr "Créer un nouveau"
+
+#: abilian/web/templates/default/list_view.html:24
+msgid "Export to Excel"
+msgstr "Export Excel"
+
+#: abilian/web/templates/default/list_view.html:35
+msgid "Import from Excel"
+msgstr "Import Excel"
+
+#: abilian/web/templates/default/list_view.html:37
+msgid "Download a file suitable for importing new objects"
+msgstr "Télécharger le fichier permettant d'importer de nouveaux enregistrements"
+
+#: abilian/web/templates/default/list_view.html:37
+msgid "Download import template"
+msgstr "Télécharger le modèle pour import"
+
+#: abilian/web/templates/default/list_view.html:49
+msgid "Upload Excel file"
+msgstr "Importer depuis un fichier excel"
+
+#: abilian/web/templates/default/list_view.html:60
+msgid "Upload"
+msgstr "Déposer"
+
+#: abilian/web/templates/default/list_view.html:71
+msgid "Export XML"
+msgstr "Export XML"
+
+#: abilian/web/templates/default/list_view.html:77
+msgid "Send an email to selected contacts"
+msgstr "Envoyer un mail aux contacts sélectionnés"
+
+#: abilian/web/templates/default/list_view.html:77
+msgid "Send an email"
+msgstr "Envoyer un email"
+
+#: abilian/web/templates/widgets/image_input.html:6
 msgid "Delete image"
 msgstr "Supprimer l'image"
-
-#: abilian/web/templates/widgets/render_for_edit.html:18
-msgid "Add new"
-msgstr "Créer"
-
-#: abilian/web/templates/widgets/render_for_edit.html:20
-msgid "Save and add new"
-msgstr "Créer et ajouter un nouveau"
-
-#: abilian/web/templates/widgets/render_for_edit.html:23
-msgid "Save changes"
-msgstr "Sauvegarder"
 
 #: abilian/web/templates/widgets/render_single.html:1
 msgid "Edit"
 msgstr "Éditer"
 
 #: abilian/web/templates/widgets/render_single.html:3
-#: abilian/web/views/object.py:357
+#: abilian/web/templates/widgets/render_single.html:15
+#: abilian/web/views/object.py:363
 msgid "Delete"
 msgstr "Supprimer"
 
-#: abilian/web/views/object.py:323
+#: abilian/web/templates/widgets/render_single.html:11
+msgid "Do you really want to delete this entity?"
+msgstr "Voulez-vous vraiment supprimer cet object?"
+
+#: abilian/web/views/object.py:173
+msgid "Entity successfully edited"
+msgstr "Édition réussie"
+
+#: abilian/web/views/object.py:249
+msgid "Please fix the error(s) below"
+msgstr "Veuillez corriger la ou les erreurs ci-dessous"
+
+#: abilian/web/views/object.py:293
+msgid "An entity with this name already exists in the database."
+msgstr "Il y a déjà une entité avec ce nom dans la base de donnée."
+
+#: abilian/web/views/object.py:321
 msgid "Create"
 msgstr "Créer"
 
-#: abilian/web/views/object.py:325
+#: abilian/web/views/object.py:323
 msgid "Create and add new"
 msgstr "Créer et ajouter un nouveau"
+
+#: abilian/web/views/object.py:334
+msgid "Entity successfully added"
+msgstr "Ajout réussi"
+
+#: abilian/web/views/object.py:371
+msgid "Entity deleted"
+msgstr "Entité supprimée"
+
+#~ msgid "An entity with this name already exists in the database"
+#~ msgstr "Il y a déjà une entité avec ce nom dans la base de donnée"
+
+#~ msgid "Add new"
+#~ msgstr "Créer"
+
+#~ msgid "Save and add new"
+#~ msgstr "Créer et ajouter un nouveau"
+
+#~ msgid "Save changes"
+#~ msgstr "Sauvegarder"
 

@@ -8,11 +8,11 @@
     $("#delete-button").click(function () {
       bootbox.dialog({
        title: '<strong class="text-danger"><i class="glyphicon glyphicon-warning-sign"></i> La suppression est irréversible</strong>',
-       message: '<p class="lead">Do you really want to delete this entity?</p>',
+       message: '<p class="lead">{{ _('Do you really want to delete this entity?') }}</p>',
        closeButton: true,
        buttons: {
          confirm: {
-           "label" : "Delete",
+           "label" : {{ _('Delete')|tojson }},
            "className" : "btn-danger",   // or btn-primary, or btn-danger, or nothing at all
            "callback": function() {
              // Hack to provoke a POST instead of a GET.
@@ -21,17 +21,25 @@
              form.setAttribute("method", "POST");
              form.setAttribute("action", path);
              form.setAttribute('enctype', 'multipart/form-data');
+             // csrf
              var input = document.createElement('input');
              input.setAttribute('type', 'hidden');
              input.setAttribute('name', Abilian.csrf_fieldname);
-             input.setAttribute('value', Abilian.csrf_token);
+             input.setAttribute('value', Abilian.csrf_token);             
              form.appendChild(input);
+             // action value
+             input = document.createElement('input');
+             input.setAttribute('type', 'hidden');
+             input.setAttribute('name', '__action');
+             input.setAttribute('value', 'delete');
+             form.appendChild(input);
+
              document.body.appendChild(form);
              form.submit();
            }
          },
          cancel: {
-           "label" : "Cancel",
+           "label" : {{ _('Cancel')|tojson }},
            "className" : ""   // or btn-primary, or btn-danger, or nothing at all
          }
        },

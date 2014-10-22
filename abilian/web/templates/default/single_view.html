@@ -1,0 +1,22 @@
+{% extends base_template %}
+{% from "macros/audit.html" import m_audit_log with context %}
+
+{% block content %}
+  {% if title %}<h1>{{ title }}</h1>{% endif %}
+
+  {{ rendered_entity }}
+
+  <div class="collapsable">
+
+    {%- for view in related_views %}
+      <h3 class="collapsed" data-toggle="collapse" href="#panel_{{ loop.index }}">{{ view.label }} ({{ view.size }})</h3>
+
+      <div id="panel_{{ loop.index }}" class="collapse" style="margin-bottom: 25px;">
+        {{ view.rendered }}
+      </div>
+    {%- endfor %}
+
+    {{ m_audit_log(audit_entries) }}
+  </div>
+
+{% endblock %}

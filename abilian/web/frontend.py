@@ -23,7 +23,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import orm
 from xlwt import Workbook, XFStyle
 
-from flask.ext.babel import gettext as _
+from abilian.i18n import _
 
 from abilian.core.entities import ValidationError, Entity
 from abilian.core.signals import activity
@@ -34,7 +34,10 @@ from . import search
 from .action import actions
 from .nav import BreadcrumbItem, Endpoint
 from .decorators import templated
-from .views import default_view
+from .views import (
+  default_view,
+  ObjectView, ObjectEdit, ObjectCreate, ObjectDelete,
+)
 from .forms.fields import ModelFieldList
 from .forms.widgets import Panel, Row, SingleView, RelatedTableView,\
   AjaxMainTableView
@@ -92,6 +95,83 @@ def make_single_view(form, **options):
   return SingleView(form, *panels, **options)
 
 
+class BaseEntityView(object):
+  module = None
+  pk = 'entity_id'
+
+  def __init__(self, module, *args, **kwargs):
+    self.module = module
+    for cls in self.__class__.__bases__:
+      if not issubclass(cls, BaseEntityView):
+        cls.__init__(self, *args, **kwargs)
+
+  def breadcrumb(self):
+    return BreadcrumbItem(label=self.obj.name or self.obj.id,
+                          url=Endpoint('.entity_view', entity_id=self.obj.id))
+
+  def init_object(self, args, kwargs):
+    for cls in self.__class__.__bases__:
+      if not issubclass(cls, BaseEntityView):
+        args, kwargs = cls.init_object(self, args, kwargs)
+        break
+    else:
+      raise ValueError
+
+    add_to_recent_items(self.obj)
+    return args, kwargs
+
+  def redirect_to_index(self):
+    return redirect(self.module.url)
+
+
+class EntityView(BaseEntityView, ObjectView):
+  template = 'default/single_view.html'
+
+  @property
+  def template_kwargs(self):
+    module = self.module
+    rendered_entity = module.render_entity_view(self.obj)
+    related_views = [v.render(self.obj) for v in module.related_views]
+    audit_entries = audit_service.entries_for(self.obj)
+
+    return dict(rendered_entity=rendered_entity,
+                related_views=related_views,
+                audit_entries=audit_entries,
+                module=self.module)
+
+
+class EntityEdit(BaseEntityView, ObjectEdit):
+  template = 'default/single_view.html'
+
+  @property
+  def template_kwargs(self):
+    module = self.module
+    rendered_entity = module.single_view.render_form(self.form)
+
+    return dict(rendered_entity=rendered_entity,
+                module=self.module)
+
+
+class EntityCreate(BaseEntityView, ObjectCreate):
+  template = 'default/single_view.html'
+
+  init_object = ObjectCreate.init_object
+  breadcrumb = ObjectCreate.breadcrumb
+
+  @property
+  def template_kwargs(self):
+    module = self.module
+    rendered_entity = module.single_view.render_form(self.form)
+
+    return dict(rendered_entity=rendered_entity,
+                for_new=True,
+                module=self.module)
+
+
+class EntityDelete(BaseEntityView, ObjectDelete):
+  pass
+
+
 class ModuleMeta(type):
   """
   Module metaclass.
@@ -132,8 +212,19 @@ class Module(object):
   list_view = None
   list_view_columns = []
   single_view = None
+
+  # class based views. If not provided will be automaticaly created from
+  # EntityView etc defined above
+  base_template = None
+  view_cls = EntityView
+  edit_cls = EntityEdit
+  create_cls = EntityCreate
+  delete_cls = EntityDelete
+
+  # form_class. Used when view_cls/edit_cls are not provided
   edit_form_class = None
   view_form_class = None  # by default, same as edit_form_class
+
   url = None
   name = None
   view_new_save_and_add = False  # show 'save and add new' button in /new form
@@ -157,6 +248,10 @@ class Module(object):
     if self.id is None:
       self.id = self.managed_class.__name__.lower()
 
+    # If name is not provided, use capitalized endpoint name
+    if self.name is None:
+      self.name = self._prettify_name(self.__class__.__name__)
+
     view_options = self.view_options if self.view_options is not None else {}
     self.single_view = make_single_view(self.edit_form_class,
                                         view_template=self.view_template,
@@ -164,6 +259,40 @@ class Module(object):
     if self.view_form_class is None:
       self.view_form_class = self.edit_form_class
 
+    # init class based views
+    kw = dict(Model=self.managed_class,
+              pk='entity_id',
+              module=self,
+              base_template=self.base_template)
+    self._setup_view("/<int:entity_id>",
+                     'entity_view',
+                     self.view_cls,
+                     Form=self.view_form_class,
+                     **kw)
+    view_endpoint = self.endpoint + '.entity_view'
+
+    self._setup_view("/<int:entity_id>/edit",
+                     'entity_edit',
+                     self.edit_cls,
+                     Form=self.edit_form_class,
+                     view_endpoint=view_endpoint,
+                     **kw)
+
+    self._setup_view("/new",
+                     'entity_new',
+                     self.create_cls,
+                     Form=self.edit_form_class,
+                     chain_create_allowed=self.view_new_save_and_add,
+                     view_endpoint=view_endpoint,
+                     **kw)
+
+    self._setup_view("/<int:entity_id>/delete",
+                     'entity_delete',
+                     self.delete_cls,
+                     Form=self.edit_form_class,
+                     **kw)
+
+    # related views
     self.init_related_views()
 
     # copy criterions instances; without that they may be shared by subclasses
@@ -171,6 +300,15 @@ class Module(object):
                                     for c in self.search_criterions))
     for sc in self.search_criterions:
       sc.model = self.managed_class
+
+  def _setup_view(self, url, attr, cls, *args, **kwargs):
+    """
+    Register class based views
+    """
+    view = cls.as_view(attr, *args, **kwargs)
+    setattr(self, attr, view)
+    self._urls.append((url, attr, view.methods))
+
 
   def init_related_views(self):
     related_views = []
@@ -195,15 +333,9 @@ class Module(object):
       if not self.url.startswith('/'):
         self.url = '%s/%s' % (self.crud_app.url, self.url)
 
-    # If name is not provided, use capitalized endpoint name
-    if self.name is None:
-      self.name = self._prettify_name(self.__class__.__name__)
-
     # Create blueprint and register rules
     self.blueprint = Blueprint(self.endpoint, __name__,
-                               url_prefix=self.url,
-                               template_folder='templates/crm',
-                               static_folder=self.static_folder)
+                               url_prefix=self.url)
 
     for url, name, methods in self._urls:
       self.blueprint.add_url_rule(url,
@@ -229,11 +361,6 @@ class Module(object):
     g.breadcrumb.append(BreadcrumbItem(label=self.name,
                         url=Endpoint('.list_view')))
 
-  def _add_entity_breadcrumb(self, entity):
-    g.breadcrumb.append(
-      BreadcrumbItem(label=entity.name or entity.id,
-                     url=Endpoint('.entity_view', entity_id=entity.id))
-    )
 
   def query(self, request):
     """ Return filtered query based on request args
@@ -295,7 +422,7 @@ class Module(object):
   # Exposed views
   #
   @expose("/")
-  @templated("crm/list_view.html")
+  @templated("default/list_view.html")
   def list_view(self):
     # TODO: should be an instance variable.
     table_view = AjaxMainTableView(
@@ -450,133 +577,7 @@ class Module(object):
     result = {'results': [ { 'id': r[0], 'text': r[1]} for r in all ] }
     return jsonify(result)
 
-  @expose("/<int:entity_id>")
-  @templated("crm/single_view.html")
-  def entity_view(self, entity_id):
-    entity = self.managed_class.query.get(entity_id)
-    if entity is None:
-      abort(404)
 
-    actions.context['object'] = entity
-    add_to_recent_items(entity)
-    self._add_entity_breadcrumb(entity)
-
-    rendered_entity = self.render_entity_view(entity)
-    related_views = [v.render(entity) for v in self.related_views]
-    audit_entries = audit_service.entries_for(entity)
-
-    return dict(rendered_entity=rendered_entity,
-                related_views=related_views,
-                audit_entries=audit_entries,
-                module=self)
-
-  @expose("/<int:entity_id>/edit")
-  @templated("crm/single_view.html")
-  def entity_edit(self, entity_id):
-    entity = self.managed_class.query.get(entity_id)
-    assert entity is not None
-    add_to_recent_items(entity)
-    self._add_entity_breadcrumb(entity)
-
-    form = self.edit_form_class(obj=entity)
-    rendered_entity = self.single_view.render_form(form)
-
-    return dict(rendered_entity=rendered_entity,
-                module=self)
-
-  @expose("/<int:entity_id>/edit", methods=['POST'])
-  def entity_edit_post(self, entity_id):
-    entity = self.managed_class.query.get(entity_id)
-    assert entity is not None
-    form = self.edit_form_class(obj=entity)
-
-    if request.form.get('_action') == 'cancel':
-      return redirect("%s/%d" % (self.url, entity_id))
-    elif form.validate():
-      form.populate_obj(entity)
-      try:
-        db.session.flush()
-        activity.send(self, actor=g.user, verb="update", object=entity)
-        db.session.commit()
-        flash(_(u"Entity successfully edited"), "success")
-        return redirect("%s/%d" % (self.url, entity_id))
-      except ValidationError, e:
-        db.session.rollback()
-        flash(e.message, "error")
-      except IntegrityError, e:
-        db.session.rollback()
-        logger.error(e)
-        flash(_(u"An entity with this name already exists in the database."),
-              "error")
-    else:
-      flash(_(u"Please fix the error(s) below"), "error")
-
-    # All unhappy path should end here
-    rendered_entity = self.single_view.render_form(form)
-    return render_template('crm/single_view.html',
-                           rendered_entity=rendered_entity,
-                           module=self)
-
-  @expose("/new")
-  @templated("crm/single_view.html")
-  def entity_new(self):
-    form = self.edit_form_class()
-    rendered_entity = self.single_view.render_form(
-      form,
-      for_new=True,
-      has_save_and_add_new=self.view_new_save_and_add,)
-
-    return dict(rendered_entity=rendered_entity,
-                module=self)
-
-  @expose("/new", methods=['PUT', 'POST'])
-  def entity_new_put(self):
-    form = self.edit_form_class()
-    entity = self.managed_class()
-    action = request.form.get('_action')
-
-    if action == 'cancel':  # FIXME: what if action is None?
-      return redirect("%s/" % self.url)
-
-    if form.validate():
-      form.populate_obj(entity)
-      db.session.add(entity)
-      try:
-        db.session.flush()
-        activity.send(self, actor=g.user, verb="post", object=entity)
-        db.session.commit()
-      except ValidationError, e:
-        db.session.rollback()
-        flash(e.message, "error")
-      except IntegrityError, e:
-        db.session.rollback()
-        flash(_(u"An entity with this name already exists in the database"),
-              "error")
-      else:
-        flash(_(u"Entity successfully added"), "success")
-        if self.view_new_save_and_add and action == 'save_and_add_new':
-          return redirect(url_for('.entity_new'))
-        return redirect(url_for('.entity_view', entity_id=entity.id))
-
-    else:
-      flash(_(u"Please fix the error(s) below"), "error")
-
-    # All unhappy paths should here here
-    rendered_entity = self.single_view.render_form(form, for_new=True)
-    return render_template('crm/single_view.html',
-                           rendered_entity=rendered_entity,
-                           module=self)
-
-  @expose("/<int:entity_id>/delete", methods=['POST'])
-  def entity_delete(self, entity_id):
-    # TODO: don't really delete, switch state to "deleted"
-    entity = self.managed_class.query.get(entity_id)
-    assert entity is not None
-    activity.send(self, actor=g.user, verb="delete", object=entity)
-    db.session.delete(entity)
-    db.session.commit()
-    flash(_(u"Entity deleted"), "success")
-    return redirect(self.url)
 
   #
   # Utils
