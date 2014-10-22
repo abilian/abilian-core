@@ -347,6 +347,10 @@ class ObjectCreate(ObjectEdit):
   def get_form_buttons(self, *args, **kwargs):
     return [CREATE_BUTTON, CHAIN_CREATE_BUTTON, CANCEL_BUTTON]
 
+  def breadcrumb(self):
+    return nav.BreadcrumbItem(label=CREATE_BUTTON.title)
+
+  # actions
   def create(self):
     return self.edit()
 
