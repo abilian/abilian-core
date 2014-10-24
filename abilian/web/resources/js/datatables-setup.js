@@ -1,6 +1,20 @@
 /* jshint camelcase: false */
 // Tweaks for integrating datatables + bootstrap
 /* Default class modification */
+(function(window, document, undefined) {
+
+(function(factory) {
+	"use strict";
+
+	// Using requirejs?
+	if ( typeof define === 'function' && define.amd )
+	{
+		requirejs(['jquery', 'jquery.dataTables'], factory );
+	}
+	else {
+		factory(jQuery);
+	}
+}
 (function($) {
     'use strict';
      $.extend($.fn.dataTableExt.oStdClasses, {
@@ -131,4 +145,6 @@
                   }
               });
 
-})(jQuery);
+}));
+
+}(window, document));
