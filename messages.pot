@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abilian-core 0.2.1.dev0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-22 17:12+0200\n"
+"POT-Creation-Date: 2014-10-27 12:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -464,6 +464,63 @@ msgstr ""
 
 #: abilian/web/templates/widgets/render_single.html:11
 msgid "Do you really want to delete this entity?"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:9
+#: abilian/web/templates/widgets/richtext.html:12
+msgid "Paragraph"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:13
+msgid "Heading 1"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:14
+msgid "Heading 2"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:15
+msgid "Heading 3"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:20
+msgid "bold"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:21
+msgid "italic"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:22
+msgid "underline"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:37
+msgid "bulleted list"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:38
+msgid "numbered list"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:42
+msgid "Add link"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:45
+msgid "Remove link"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:46
+msgid "cite"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:50
+msgid "undo"
+msgstr ""
+
+#: abilian/web/templates/widgets/richtext.html:53
+msgid "redo"
 msgstr ""
 
 #: abilian/web/views/object.py:173

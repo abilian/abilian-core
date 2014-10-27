@@ -1,0 +1,20 @@
+{
+  "name": "scribe-plugin-formatter-plain-text-convert-new-lines-to-html",
+  "version": "0.1.1",
+  "main": "./scribe-plugin-formatter-plain-text-convert-new-lines-to-html.js",
+  "authors": [
+    "Oliver Joseph Ash <oliverjash@icloud.com>"
+  ],
+  "license": "Apache 2.0",
+  "homepage": "https://github.com/guardian/scribe-plugin-formatter-plain-text-convert-new-lines-to-html",
+  "_release": "0.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.1",
+    "commit": "205771361946335f3fc0e1ca48d2df31423e73f5"
+  },
+  "_source": "git://github.com/guardian/scribe-plugin-formatter-plain-text-convert-new-lines-to-html.git",
+  "_target": "~0.1.1",
+  "_originalSource": "scribe-plugin-formatter-plain-text-convert-new-lines-to-html",
+  "_direct": true
+}

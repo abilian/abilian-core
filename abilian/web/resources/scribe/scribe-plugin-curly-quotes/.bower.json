@@ -1,0 +1,21 @@
+{
+  "name": "scribe-plugin-curly-quotes",
+  "version": "0.1.8",
+  "main": "./scribe-plugin-curly-quotes.js",
+  "authors": [
+    "Oliver Joseph Ash <oliverjash@icloud.com>",
+    "Sébastien Cevey <seb.cevey@guardian.co.uk>"
+  ],
+  "license": "Apache 2.0",
+  "homepage": "https://github.com/guardian/scribe-plugin-curly-quotes",
+  "_release": "0.1.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.8",
+    "commit": "9ff3b31dddda6cf9aa44b784ec5c1c76f70c531c"
+  },
+  "_source": "git://github.com/guardian/scribe-plugin-curly-quotes.git",
+  "_target": "~0.1.8",
+  "_originalSource": "scribe-plugin-curly-quotes",
+  "_direct": true
+}
