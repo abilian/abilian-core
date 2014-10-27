@@ -16,7 +16,7 @@ import bleach
 
 import sqlalchemy as sa
 from flask import render_template, json, Markup, render_template_string
-from flask.ext.babel import gettext as _, format_date, format_datetime, get_locale
+from flask.ext.babel import format_date, format_datetime, get_locale
 import wtforms
 from wtforms.widgets import (
     HTMLString, Input, html_params, Select,
@@ -39,7 +39,7 @@ __all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',
            'DateInput', 'DefaultViewWidget', 'BooleanWidget', 'FloatWidget',
            'DateTimeWidget', 'DateWidget', 'MoneyWidget', 'EmailWidget',
            'URLWidget', 'ListWidget', 'TabularFieldListWidget',
-           'ModelListWidget', 'Select2', 'Select2Ajax']
+           'ModelListWidget', 'Select2', 'Select2Ajax', 'RichTextWidget']
 
 
 def linkify_url(value):
@@ -879,6 +879,38 @@ class URLWidget(object):
   def render_view(self, field):
     return (linkify_url(field.object_data)
             if field.object_data else u'')
+
+class RichTextWidget(object):
+  template = 'widgets/richtext.html'
+  allowed_tags = {
+      'a': {'href': True, 'title': True},
+      'abbr': {'title': True},
+      'acronym': {'title': True},
+      'b': True,
+      'blockquote': True,
+      'br': True,
+      'code': True,
+      'em': True,
+      'h1': True, 'h2': True, 'h3': True, 'h4': True, 'h5': True, 'h6': True,
+      'i': True,
+      'img': {'src': True},
+      'li': True,
+      'ol': True,
+      'strong': True,
+      'ul': True,
+      'p': True,
+      'u': True
+  }
+
+  def __init__(self, allowed_tags=None, template=None):
+    if allowed_tags is not None:
+      self.allowed_tags = allowed_tags
+    if template is not None:
+      self.template = template
+
+  def __call__(self, field, **kwargs):
+    value = kwargs.pop('value') if 'value' in kwargs else field._value()
+    return render_template(self.template, field=field, value=value, kw=kwargs)
 
 
 class ListWidget(wtforms.widgets.ListWidget):

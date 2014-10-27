@@ -51,7 +51,7 @@
                );
 
          datetimePickerSetup();
-
+         
          /* file / image input */
          $('.file-input').fileInput();
          $('.image-input').imageInput();
@@ -134,3 +134,9 @@
      Abilian.fn.onAppInit(initLiveSearch);
 
 }(jQuery));
+
+requirejs(
+    ['abilian-init-scribe-widget'],
+    function(initScribeWidgets) { 
+        Abilian.fn.onAppInit(initScribeWidgets);
+    });
