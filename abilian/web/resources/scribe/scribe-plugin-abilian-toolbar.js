@@ -1,4 +1,4 @@
-define('scribe-plugin-abilian-toolbar', [], function () {
+define('scribe-plugin-abilian-toolbar', ['jquery'], function ($) {
 
     return function (toolbarNode) {
         return function (scribe) {
@@ -109,6 +109,17 @@ define('scribe-plugin-abilian-toolbar', [], function () {
                 if (d.inactiveIcon) {
                     d.activeIcon = 'fa-' + d.activeIcon;
                     d.inactiveIcon = 'fa-' + d.inactiveIcon;
+                }
+                if (button.dataset.toggle !== 'tooltip' 
+                    && 'title' in button.attributes 
+                    && button.title) {
+                    $(button).tooltip({
+                        animation: false,
+                        delay: 0,
+                        placement: 'top',
+                        container: 'body' // required when tooltip used in btn
+                                          // groups, see bootstrap documentation
+                    });
                 }
                 button.addEventListener('click', onClick(button));
             });
