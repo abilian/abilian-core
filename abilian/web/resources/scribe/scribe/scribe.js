@@ -3795,6 +3795,9 @@ function (elementHelper) {
     }
 
     Selection.prototype.getContaining = function (nodeFilter) {
+      var range = this.range;
+      if (!range) { return; }
+
       var node = new scribe.api.Node(this.range.commonAncestorContainer);
       var isTopContainerElement = node.node && node.node.attributes
          && node.node.attributes.getNamedItem('contenteditable');
