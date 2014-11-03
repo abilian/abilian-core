@@ -1,0 +1,20 @@
+# For running tests
+pytest
+pytest-xdist
+mock
+
+# For coverage
+coverage
+coveralls
+pytest-cov
+cov-core
+
+# Static code analysis
+pylama
+pylint
+pep8
+
+# To build docs
+Sphinx
+sphinx-rtd-theme
+
