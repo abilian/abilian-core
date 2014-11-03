@@ -5,7 +5,6 @@ import fix_path
 
 from os.path import join, dirname
 from unittest import TestCase
-from nose.tools import eq_
 from magic import Magic, os
 
 from abilian.services.conversion import converter
@@ -62,17 +61,17 @@ class Test(TestCase):
   def XXXtest_odt_to_pdf(self):
     blob = self.read_file("test.odt")
     pdf = converter.to_pdf("", blob, "application/vnd.oasis.opendocument.text")
-    eq_("application/pdf", mime_sniffer.from_buffer(pdf))
+    assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
   def XXXtest_word_to_pdf(self):
     blob = self.read_file("test.doc")
     pdf = converter.to_pdf("", blob, "application/msword")
-    eq_("application/pdf", mime_sniffer.from_buffer(pdf))
+    assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
   def test_image_to_pdf(self):
     blob = self.read_file("picture.jpg")
     pdf = converter.to_pdf("", blob, "image/jpeg")
-    eq_("application/pdf", mime_sniffer.from_buffer(pdf))
+    assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
   # To images
   def test_pdf_to_images(self):
@@ -81,9 +80,9 @@ class Test(TestCase):
       return
     blob = self.read_file("onepage.pdf")
     image = converter.to_image("", blob, "application/pdf", 0)
-    eq_("image/jpeg", mime_sniffer.from_buffer(image))
+    assert "image/jpeg" == mime_sniffer.from_buffer(image)
 
   def XXXtest_word_to_images(self):
     blob = self.read_file("test.doc")
     image = converter.to_image("", blob, "application/msword", 0)
-    eq_("image/jpeg", mime_sniffer.from_buffer(image))
+    assert "image/jpeg" == mime_sniffer.from_buffer(image)
