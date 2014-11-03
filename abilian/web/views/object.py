@@ -341,8 +341,8 @@ class ObjectCreate(ObjectEdit):
     ObjectEdit.__init__(self, *args, **kwargs)
 
   def init_object(self, args, kwargs):
-      self.obj = self.Model()
-      return args, kwargs
+    self.obj = self.Model()
+    return args, kwargs
 
   def get_form_buttons(self, *args, **kwargs):
     return [CREATE_BUTTON, CHAIN_CREATE_BUTTON, CANCEL_BUTTON]
