@@ -8,7 +8,7 @@ from .registry import Registry, default_view
 from .object import BaseObjectView, ObjectView, ObjectEdit, ObjectCreate, ObjectDelete
 
 __all__ = [
-    'View', 'JSONView'
+    'View', 'JSONView',
     'Registry', 'default_view',
     'BaseObjectView', 'ObjectView', 'ObjectEdit', 'ObjectCreate', 'ObjectDelete',
     ]
