@@ -67,8 +67,10 @@ TYPEAHEAD_LESS = Bundle('typeahead/typeahead.js-bootstrap.less')
 TYPEAHEAD_JS = Bundle('typeahead/typeahead.js',
                       'typeahead/hogan-2.0.0.js')
 
+# FIXME: less/base/print.less comes from SBE !
 ABILIAN_LESS = Bundle('less/abilian.less',
                       'less/base/print.less')
+
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
 ABILIAN_JS = Bundle('js/abilian.js',
                     'js/datatables-setup.js',

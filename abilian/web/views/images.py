@@ -19,6 +19,7 @@ import pkg_resources
 
 DEFAULT_AVATAR = pkg_resources.resource_filename('abilian.web', 'resources/img/avatar-default.png')
 
+
 def get_default_picture(type):
   path = join(dirname(__file__), "..", "..", "static", "images", "user-%s.png" % type)
   photo = open(path).read()
@@ -57,7 +58,6 @@ def user_avatar(user_id):
 
     if request.if_none_match and etag in request.if_none_match:
       return Response(status=304)
-
 
   if size:
     photo = crop_and_resize(photo, size)

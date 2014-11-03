@@ -39,7 +39,8 @@ __all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',
            'DateInput', 'DefaultViewWidget', 'BooleanWidget', 'FloatWidget',
            'DateTimeWidget', 'DateWidget', 'MoneyWidget', 'EmailWidget',
            'URLWidget', 'ListWidget', 'TabularFieldListWidget',
-           'ModelListWidget', 'Select2', 'Select2Ajax', 'RichTextWidget']
+           'ModelListWidget', 'Select2', 'Select2Ajax', 'RichTextWidget',
+           'FileInput']
 
 
 def linkify_url(value):

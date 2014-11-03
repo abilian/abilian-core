@@ -8,11 +8,10 @@ from flask.signals import request_started
 from wtforms import Form, TextField, IntegerField
 
 from abilian.testing import BaseTestCase
+
 # Import for side-effects (monkey-patch)
 import abilian.web.forms
 
-from abilian.i18n import babel
-from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.web.views import default_view
 

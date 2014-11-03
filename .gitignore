@@ -1,5 +1,6 @@
 .idea
 .tox
+.dox
 .travis-solo
 .DS_Store
 .coverage

@@ -382,6 +382,6 @@ class ObjectDelete(ObjectEdit):
     activity.send(self, actor=g.user, verb="delete", object=self.obj)
     session.commit()
     flash(self.message_success(), 'success')
-    #FIXME: for DELETE verb response in case of success should be 200, 202
-    #(accepted) or 204 (no content)
+    # FIXME: for DELETE verb response in case of success should be 200, 202
+    # (accepted) or 204 (no content)
     return self.redirect_to_index()
