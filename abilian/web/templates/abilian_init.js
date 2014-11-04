@@ -8,14 +8,7 @@ Abilian.DEBUG = {{ config.DEBUG|tojson }};
 Abilian.locale = {{ locale.language|tojson }};
 Abilian.csrf_fieldname = {{ csrf.name()|tojson }};
 Abilian.csrf_token = {{ csrf.token()|tojson }};
-
-{%- set indexing_svc = app.services['indexing'] %}
-Abilian.api.search = {
-    {%- if 'abilian.web.search' in app.APP_PLUGINS %}
-    'live': {{ url_for('search.live')|tojson }} + '?q=%QUERY',
-  {%- endif %}
-    'object_types': {{ indexing_svc.searchable_object_types()|tojson }}
-};
+Abilian.api = {{ app.js_api | tojson }};
 
 /* set up various libraries */
 

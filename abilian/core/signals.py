@@ -20,6 +20,10 @@ signals = Namespace()
 #: been loaded
 components_registered = signals.signal("app:components:registered")
 
+#: Trigger when JS api must be registered. At this time :func:`flask.url_for` is
+#: usable
+register_js_api = signals.signal('app:register-js-api')
+
 #: This signal is used by the activity streams service and its clients.
 activity = signals.signal("activity")
 

@@ -37,6 +37,7 @@ from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
 from abilian.services.security import Role, Anonymous, Authenticated, security
+from abilian.core import signals
 from abilian.core.models.subjects import User, Group
 from abilian.core.util import fqcn as base_fqcn, friendly_fqcn
 from abilian.core.entities import Entity, Indexable
@@ -136,6 +137,13 @@ class WhooshIndexService(Service):
       self._listening = True
 
     appcontext_pushed.connect(self.clear_update_queue, app)
+    signals.register_js_api.connect(self._do_register_js_api)
+
+  def _do_register_js_api(self, sender):
+    app = sender
+    js_api = app.js_api.setdefault('search', {})
+    js_api['object_types'] = self.searchable_object_types()
+
 
   def register_search_filter(self, func):
     """

@@ -137,6 +137,9 @@ class Application(Flask, ServiceManager, PluginManager):
   #: instance of :class:`.web.views.registry.Registry`.
   default_view = None
 
+  #: json serializable dict to land in Javascript under Abilian.api
+  js_api = None
+
   def __init__(self, name=None, config=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
     name = name or __name__
@@ -151,6 +154,7 @@ class Application(Flask, ServiceManager, PluginManager):
     ServiceManager.__init__(self)
     PluginManager.__init__(self)
     self.default_view = ViewRegistry()
+    self.js_api = dict()
 
     if config:
       self.config.from_object(config)
@@ -245,6 +249,9 @@ class Application(Flask, ServiceManager, PluginManager):
     sa.orm.configure_mappers()
 
     signals.components_registered.send(self)
+    self.before_first_request(
+        lambda: signals.register_js_api.send(self)
+    )
 
     request_started.connect(self._setup_nav_and_breadcrumbs)
 
