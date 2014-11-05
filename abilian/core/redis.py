@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from redis import from_url as redis_from_url
 from flask import current_app
 
+
 class Extension(object):
   """
   Redis extension for flask

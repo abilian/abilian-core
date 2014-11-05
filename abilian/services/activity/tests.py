@@ -3,10 +3,7 @@
 """
 from __future__ import absolute_import
 
-import sqlalchemy as sa
-
 from abilian.core.entities import Entity
-from abilian.core.extensions import db
 from abilian.core.models.subjects import User
 from abilian.testing import BaseTestCase
 

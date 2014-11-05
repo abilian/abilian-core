@@ -16,6 +16,7 @@ from flask import current_app
 from abilian.core.extensions import db
 from .schema import accent_folder
 
+
 __all__ = ['SchemaAdapter', 'SAAdapter']
 
 logger = logging.getLogger(__name__)

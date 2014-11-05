@@ -7,7 +7,6 @@ from uuid import UUID, uuid1
 import weakref
 import shutil
 from pathlib import Path
-import logging
 
 import sqlalchemy as sa
 from sqlalchemy.orm.session import Session
@@ -16,11 +15,14 @@ from flask.globals import _lookup_app_object
 
 from abilian.services import Service, ServiceState
 
+
 _NULL_MARK = object()
+
 
 def _assert_uuid(uuid):
   if not isinstance(uuid, UUID):
     raise ValueError('Not an uuid.UUID instance', uuid)
+
 
 class RepositoryServiceState(ServiceState):
   #: :class:`Path` path to application repository
@@ -68,7 +70,6 @@ class RepositoryService(Service):
     assert top in dest.parents
     return dest
 
-
   def get(self, uuid, default=None):
     """
     Return absolute :class:`Path` object for given uuid, if this uuid exists in
@@ -81,7 +82,6 @@ class RepositoryService(Service):
     if not path.exists():
       return default
     return path
-
 
   def set(self, uuid, content, encoding='utf-8'):
     """
@@ -107,7 +107,7 @@ class RepositoryService(Service):
 
   def delete(self, uuid):
     """
-    Delete file uuid.
+    Delete file with given uuid.
 
     :param:uuid: :class:`UUID` instance
     :raises:KeyError if file does not exists
@@ -117,7 +117,6 @@ class RepositoryService(Service):
       raise KeyError('No file can be found for this uuid', uuid)
 
     dest.unlink()
-
 
   def __getitem__(self, uuid):
     v = self.get(uuid, default=_NULL_MARK)
@@ -214,7 +213,6 @@ class SessionRepositoryState(ServiceState):
 
     return tr.begin(session)
 
-
   def commit(self, session):
     if not self.running:
       return
@@ -277,7 +275,6 @@ class SessionRepositoryService(Service):
       listen(Session, "after_rollback", self.rollback)
       #appcontext_tearing_down.connect(self.clear_transaction, app)
 
-
   def _session_for(self, model_or_session):
     """
     Return session instance for object parameter.
@@ -303,7 +300,6 @@ class SessionRepositoryService(Service):
       session = session()
 
     return session
-
 
   # repository interface
   def get(self, session, uuid, default=None):

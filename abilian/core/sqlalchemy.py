@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Data types for sqlalchemy
+""" Additional data types for sqlalchemy
 """
 from __future__ import absolute_import
 
@@ -10,12 +10,14 @@ import pkg_resources
 from functools import partial
 import json
 import uuid
+
+from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
 import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
 
-from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
-
 from .logging import patch_logger
+
+
 logger = logging.getLogger(__name__)
 
 FLASK_SA_VERSION = pkg_resources.get_distribution('Flask-SQLAlchemy').version

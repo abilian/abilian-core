@@ -9,17 +9,17 @@ TODO: In the future, we may decide to:
 import logging
 from inspect import isclass
 
+from flask import g, current_app
 import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 
-from flask import g, current_app
-
 from abilian.services import Service, ServiceState
 from abilian.core.entities import Entity
 
 from .models import AuditEntry, CREATION, UPDATE, DELETION, RELATED
+
 
 log = logging.getLogger(__name__)
 

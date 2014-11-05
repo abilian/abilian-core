@@ -6,13 +6,13 @@ from datetime import datetime
 
 from flask import request
 from flask.ext.login import current_user
-
 from flask.ext.sqlalchemy import BaseQuery
 from sqlalchemy import ForeignKey, Column, DateTime, Integer, String
 from sqlalchemy.orm import relation
 
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User
+
 
 _MARK = object()
 

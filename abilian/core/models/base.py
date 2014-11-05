@@ -7,7 +7,6 @@ from datetime import datetime
 
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer, DateTime
-
 from whoosh.fields import ID
 
 from ..extensions import db

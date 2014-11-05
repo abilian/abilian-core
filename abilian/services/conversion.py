@@ -13,9 +13,8 @@ TODO: rename Converter into ConversionService ?
 import glob
 import hashlib
 import shutil
-import itertools
 import logging
-from tempfile import mktemp, mkstemp
+from tempfile import mkstemp
 import traceback
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
@@ -30,12 +29,11 @@ import re
 import cStringIO as StringIO
 from contextlib import contextmanager
 
-from flask import current_app
-
 from PIL import Image
 from PIL.ExifTags import TAGS
 
 from abilian.services.image import resize
+
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +49,7 @@ CACHE_DIR = "cache"
 
 mime_sniffer = Magic(mime=True)
 encoding_sniffer = Magic(mime_encoding=True)
+
 
 def get_tmp_dir():
   return converter.TMP_DIR
@@ -378,7 +377,6 @@ class AbiwordPDFHandler(Handler):
   produces_mime_types = ['application/pdf']
 
   def convert(self, blob, **kw):
-    tmp_dir = self.TMP_DIR
     cur_dir = os.getcwd()
     with make_temp_file(blob, suffix=".doc") as in_fn,\
          make_temp_file(suffix='.pdf') as out_fn:

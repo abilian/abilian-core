@@ -8,10 +8,11 @@ import logging
 
 import sqlalchemy as sa
 from flask import (
-    g, request, render_template, abort, redirect, url_for, current_app,
+    g, request, render_template, redirect, url_for, current_app,
     flash,
 )
 from flask.ext.babel import gettext as _, lazy_gettext as _l
+from werkzeug.exceptions import NotFound
 
 from abilian.core.signals import activity
 from abilian.core.entities import ValidationError
@@ -59,7 +60,7 @@ class BaseObjectView(View):
     args, kwargs = self.init_object(args, kwargs)
 
     if self.obj is None:
-      abort(404)
+      raise NotFound()
 
     return args, kwargs
 

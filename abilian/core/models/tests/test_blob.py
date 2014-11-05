@@ -13,6 +13,7 @@ from abilian.services import (
 )
 from ..blob import Blob
 
+
 class BlobUnitTestCase(TestCase):
 
   def test_auto_uuid(self):
@@ -25,6 +26,7 @@ class BlobUnitTestCase(TestCase):
     b = Blob(uuid=u)
     self.assertTrue(isinstance(b.uuid, uuid.UUID))
     self.assertEquals(b.uuid, u)
+
 
 class BlobTestCase(AbilianTestCase):
 

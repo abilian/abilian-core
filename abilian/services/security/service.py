@@ -9,12 +9,7 @@ from functools import wraps
 from itertools import chain
 
 from flask import g, current_app
-# Work around API change
-try:
-  from flask.ext.login import AnonymousUserMixin
-except ImportError:
-  from flask.ext.login import AnonymousUser as AnonymousUserMixin
-
+from flask.ext.login import AnonymousUserMixin
 from sqlalchemy.orm import subqueryload, object_session
 from sqlalchemy import sql
 
@@ -27,7 +22,6 @@ from abilian.services.security.models import (
   SecurityAudit, RoleAssignment, Anonymous, Admin, Manager,
   InheritSecurity, Role
 )
-
 
 
 # Currently hardcoded.
@@ -139,7 +133,6 @@ class SecurityService(Service):
       q = q.filter(RoleAssignment.object == object)
 
     return [i[0] for i in q.all()]
-
 
   @require_flush
   def get_principals(self, role, anonymous=True, users=True, groups=True,

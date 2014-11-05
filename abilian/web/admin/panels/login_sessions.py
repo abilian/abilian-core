@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import pygeoip
 from flask import render_template
+
 from abilian.services.auth.models import LoginSession
 
 from ..panel import AdminPanel

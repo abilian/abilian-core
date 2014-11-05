@@ -13,6 +13,7 @@ from .config import TestConfig
 
 BASEDIR = os.path.dirname(__file__)
 
+
 class IntegrationTestCase(BaseTestCase):
   config_class = TestConfig
   no_login = False

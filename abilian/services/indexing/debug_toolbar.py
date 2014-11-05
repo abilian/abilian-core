@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from flask import current_app
 from flask_debugtoolbar.panels import DebugPanel
+
 from abilian.core.util import fqcn
 from abilian.i18n import _
 from abilian.web.action import actions

@@ -7,13 +7,13 @@ from itertools import chain
 from markupsafe import Markup
 import pytz
 
-import sqlalchemy as sa
-from sqlalchemy.orm.attributes import NO_VALUE
-
-from werkzeug.routing import BuildError
 from flask import request, render_template, render_template_string, \
   get_template_attribute
 from flask.ext.babel import gettext as _, format_date, get_locale
+import sqlalchemy as sa
+from sqlalchemy.orm.attributes import NO_VALUE
+from werkzeug.exceptions import InternalServerError
+from werkzeug.routing import BuildError
 
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User
@@ -42,7 +42,7 @@ class JSONUserSearch(JSONView):
     q = q.replace(u'%', u' ').strip().lower()
 
     if not q or len(q) < 2:
-      abort(500)
+      raise InternalServerError()
 
     query = User.query
     lower = sa.sql.func.lower

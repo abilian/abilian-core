@@ -13,40 +13,34 @@ from datetime import date
 from time import strftime, gmtime
 import re
 
-from flask import (session, redirect, request, g, render_template, flash,
-                   Blueprint, jsonify, abort, make_response, url_for,
+from flask import (session, redirect, request, g,
+                   Blueprint, jsonify, make_response, url_for,
                    current_app)
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy import orm
+from werkzeug.exceptions import InternalServerError
 from xlwt import Workbook, XFStyle
 
-from abilian.i18n import _
 
-from abilian.core.entities import ValidationError, Entity
-from abilian.core.signals import activity
+from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.services import audit_service
 
 from . import search
-from .action import actions
 from .nav import BreadcrumbItem, Endpoint
 from .decorators import templated
-from .views import (
-  default_view,
-  ObjectView, ObjectEdit, ObjectCreate, ObjectDelete,
-)
+from .views import default_view, ObjectView, ObjectEdit, ObjectCreate, \
+    ObjectDelete
 from .forms.fields import ModelFieldList
-from .forms.widgets import Panel, Row, SingleView, RelatedTableView,\
-  AjaxMainTableView
+from .forms.widgets import Panel, Row, SingleView, RelatedTableView, \
+    AjaxMainTableView
 
 logger = logging.getLogger(__name__)
 
 
 def add_to_recent_items(entity, type='ignored'):
-
   object_type = entity.object_type
   url = current_app.default_view.url_for(entity)
   if not hasattr(g, 'recent_items'):
@@ -568,7 +562,7 @@ class Module(object):
 
     q = args.get("q").replace("%", " ")
     if not q or len(q) < 2:
-      abort(500)
+      raise InternalServerError()
 
     query = db.session.query(cls.id, cls.nom)
     query = query.filter(cls.nom.like("%" + q + "%"))

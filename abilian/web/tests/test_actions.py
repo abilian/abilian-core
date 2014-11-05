@@ -2,6 +2,7 @@
 
 from jinja2 import Markup
 from flask import Flask
+
 from abilian.web.action import actions, Action, Glyphicon, StaticIcon
 from abilian.testing import BaseTestCase
 
@@ -18,6 +19,7 @@ OTHER_CAT = Action('cat_2:sub', 'other', 'Other Action',
                    icon=StaticIcon('icons/other.png', size=14))
 
 ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
+
 
 class TestActions(BaseTestCase):
   """ Test Action and ActionRegistry.

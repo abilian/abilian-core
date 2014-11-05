@@ -39,7 +39,7 @@ flake8:
 	flake8 $(SRC)
 
 pylama:
-	pylama -o etc/pylama.ini
+	pylama $(SRC)
 
 pylint:
 	pylint --rcfile=etc/pylint.rc $(SRC)

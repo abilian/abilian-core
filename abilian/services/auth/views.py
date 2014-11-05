@@ -21,7 +21,6 @@ from flask import (
   render_template, request, Blueprint, redirect, url_for, flash, current_app)
 from flask.json import jsonify
 from flask.globals import _request_ctx_stack
-
 from flask.ext.login import (
   login_user, logout_user, user_logged_in, user_logged_out,)
 from flask.ext.security.utils import md5

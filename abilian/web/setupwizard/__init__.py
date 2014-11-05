@@ -49,6 +49,7 @@ _setup_steps = (
   Step('finalize', 'finalize', 'Finalize', None)
   )
 
+
 @setup.before_request
 def step_progress():
   current_step = next_step = prev_step = None
@@ -69,6 +70,7 @@ def step_progress():
     'next_step': next_step,
   }
 
+
 @setup.context_processor
 def common_context():
   ctx = {
@@ -81,12 +83,15 @@ def common_context():
   ctx.update(request.setup_step_progress)
   return ctx
 
+
 # session helpers
 def session_set(key, data):
   session.setdefault('abilian_setup', {})[key] = data
 
+
 def session_get(key, default=None):
   return session.setdefault('abilian_setup', {}).get(key, default)
+
 
 def step_validated(step_endpoint, valid=True):
   validated = set(session_get('validated', ()))
@@ -98,13 +103,17 @@ def step_validated(step_endpoint, valid=True):
 
   session_set('validated', tuple(validated))
 
-# DB Setup ####################
+
+#
+# DB Setup
+#
 @csrf.exempt
 @setup.route('', methods=['GET', 'POST'])
 def step_db():
   if request.method == 'POST':
     return step_db_validate()
   return step_db_form()
+
 
 def step_db_form():
   return render_template('setupwizard/step_db.html',
@@ -178,7 +187,10 @@ def step_db_validate():
   next_step = request.setup_step_progress['next_step']
   return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
 
-# Redis ####################
+
+#
+# Redis
+#
 @csrf.exempt
 @setup.route('/redis', methods=['GET', 'POST'])
 def step_redis():
@@ -186,9 +198,11 @@ def step_redis():
     return step_redis_validate()
   return step_redis_form()
 
+
 def step_redis_form():
   return render_template('setupwizard/step_redis.html',
                          data=session_get('redis', {}))
+
 
 def step_redis_validate():
   form = request.form
@@ -233,7 +247,9 @@ def step_redis_validate():
   return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
 
 
-# Site info ####################
+#
+# Site info
+#
 @csrf.exempt
 @setup.route('/site_info', methods=['GET', 'POST'])
 def step_site_info():
@@ -280,7 +296,9 @@ def step_site_info_validate():
   return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
 
 
-# Finalize ####################
+#
+# Finalize
+#
 @csrf.exempt
 @setup.route('/finalize', methods=['GET', 'POST'])
 def finalize():
@@ -331,7 +349,7 @@ def finalize_validate():
   # secret key changes with new config, and maybe cookie name, so we clear
   # session made with temporary key with current cookie name
   #
-  # FIXME: this is not working actually. The session stuff sets the cookie durint after_request
+  # FIXME: this is not working currently. The session stuff sets the cookie durint after_request
   response.delete_cookie(current_app.session_cookie_name)
 
   return response

@@ -6,7 +6,6 @@ from __future__ import absolute_import
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
-
 from flask import g
 from whoosh.fields import STORED
 

@@ -5,17 +5,20 @@ from __future__ import absolute_import
 
 import datetime
 import unittest
+import pytz
 
 from abilian.testing import BaseTestCase
 from wtforms.form import Form
-import pytz
+
 from . import fields, filters
+
 
 def user_tz():
   # This one is GMT+8 and has no DST (tests should pass any time in year)
   return 'Asia/Hong_Kong'
 
 USER_TZ = pytz.timezone(user_tz())
+
 
 class FiltersTestCase(unittest.TestCase):
 
@@ -69,7 +72,6 @@ class FieldsTestCase(BaseTestCase):
       self.assertEquals(
         f.data,
         datetime.datetime(2011, 1, 11, 2, 42, tzinfo=pytz.utc))
-
 
   def test_date_field(self):
     """

@@ -28,6 +28,7 @@ def time_limit():
   """
   return current_app.config.get('WTF_CSRF_TIME_LIMIT', 3600)
 
+
 def name():
   """
   Field name expected to have CSRF token. Useful for passing it to

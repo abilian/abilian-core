@@ -49,7 +49,7 @@ class TableViewTestCase(BaseTestCase):
 
     @default_view(self.app, WidgetTestModel)
     @self.app.route('/dummy_view/<object_id>')
-    def dummy_view():
+    def dummy_view(object_id):
       pass
 
     with self.app.test_request_context():

@@ -4,7 +4,6 @@
 from __future__ import absolute_import
 
 from abilian.web.action import Glyphicon, FAIcon, StaticIcon
-
 from abilian.testing import BaseTestCase
 
 

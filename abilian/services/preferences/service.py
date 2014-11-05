@@ -18,9 +18,10 @@ from abilian.core.extensions import db
 from abilian.core import signals
 from abilian.web.nav import NavItem, BreadcrumbItem, Endpoint
 from abilian.services.auth.service import user_menu
-
 from abilian.services.base import Service, ServiceState
+
 from .models import UserPreference
+
 
 _PREF_NAV_ITEM = NavItem(
   'user', 'preferences', title=_l(u'Preferences'), icon='cog',

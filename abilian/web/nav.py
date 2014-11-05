@@ -67,7 +67,7 @@ class NavGroup(NavItem):
   def __init__(self, category, name, items=(), *args, **kwargs):
     NavItem.__init__(self, category, name, *args, **kwargs)
     self.items = list(items)
-    self._paths = set((self.path,))
+    self._paths = {self.path}
     for i in self.items:
       self._paths.add(i.path)
 

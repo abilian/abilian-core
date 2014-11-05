@@ -174,7 +174,7 @@ class Endpoint(object):
       name=repr(self.name),
       args=repr(self.args),
       kwargs=repr(self.kwargs),
-      )
+    )
 
 
 class Action(object):

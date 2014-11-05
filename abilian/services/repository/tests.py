@@ -5,11 +5,11 @@ from __future__ import absolute_import
 import uuid
 from pathlib import Path
 
-import sqlalchemy as sa
-
 from abilian.testing import BaseTestCase
+
 from . import repository, session_repository
 from .service import RepositoryTransaction
+
 
 class TestRepository(BaseTestCase):
 
@@ -62,7 +62,6 @@ class TestRepository(BaseTestCase):
     # __getitem__ non-existent
     self.assertRaises(KeyError, repository.__getitem__, u)
 
-
   def test_set(self):
     self.assertRaises(ValueError, repository.set, self.UUID_STR, '')
     self.assertRaises(ValueError, repository.__setitem__,
@@ -78,7 +77,6 @@ class TestRepository(BaseTestCase):
     repository[self.UUID] = b'my file content'
     self.assertEquals(p.open('rb').read(), b'my file content')
     # FIXME: test unicode content
-
 
   def test_delete(self):
     self.assertRaises(ValueError, repository.delete, self.UUID_STR)
@@ -140,7 +138,6 @@ class TestSessionRepository(BaseTestCase):
     transaction = state.get_transaction(self.session)
     self.assertIs(transaction, root_transaction)
 
-
   def test_accessors(self):
     session = self.session
     self.assertRaises(ValueError, self.svc.get, session, self.UUID_STR)
@@ -169,7 +166,6 @@ class TestSessionRepository(BaseTestCase):
     self.svc.delete(session, u)
     self.assertIs(self.svc.get(session, u), None)
     self.assertIsNot(repository.get(u), None)
-
 
   def test_transaction(self):
     session = self.session

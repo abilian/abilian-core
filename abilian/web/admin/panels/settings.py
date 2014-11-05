@@ -5,12 +5,12 @@ from __future__ import absolute_import
 
 from datetime import timedelta
 
-from jinja2 import Template
 from flask import (current_app, render_template, request, flash,
                    redirect, url_for)
 from flask.ext.babel import gettext as _, lazy_gettext as _l
-from abilian.web import csrf
+from jinja2 import Template
 
+from abilian.web import csrf
 
 from ..panel import AdminPanel
 
@@ -45,10 +45,10 @@ class SessionLifeTimeKey(Key):
                      u'When session is expired user must login again.'))
 
   def value_from_request(self):
-    f = request.form
-    days = max(0, int(f.get(self.id + ':days') or 0))
-    hours = min(23, max(0, int(f.get(self.id + ':hours') or 0)))
-    minutes = min(59, max(0, int(f.get(self.id + ':minutes') or 0)))
+    form = request.form
+    days = max(0, int(form.get(self.id + ':days') or 0))
+    hours = min(23, max(0, int(form.get(self.id + ':hours') or 0)))
+    minutes = min(59, max(0, int(form.get(self.id + ':minutes') or 0)))
 
     if (days + hours) == 0 and minutes < 10:
       # avoid dummy sessions durations: minimum is 10 minutes
@@ -57,11 +57,7 @@ class SessionLifeTimeKey(Key):
             'warning',)
       minutes = 10
 
-    d = dict(days=days,
-             hours=hours,
-             minutes=minutes
-             )
-    return timedelta(**d)
+    return timedelta(days=days, hours=hours, minutes=minutes)
 
   def _get_current(self, field):
     td = current_app.config.get(self.id)

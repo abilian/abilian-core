@@ -9,6 +9,7 @@ from flask.signals import request_started, request_finished
 
 from abilian.core.signals import user_loaded
 
+
 class UpstreamInfo(object):
   """
   Extension for sending informations to upstream server

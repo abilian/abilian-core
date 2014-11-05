@@ -59,14 +59,14 @@ class Blob(Model):
     :param:content: string, bytes, or any object with a `read()` method
     :param:encoding: encoding to use when content is unicode
     """
-    return repository.set(self, self.uuid, value)
+    repository.set(self, self.uuid, value)
 
   @value.deleter
   def value(self):
     """
-    remove value from repository
+    Remove value from repository
     """
-    return repository.delete(self, self.uuid)
+    repository.delete(self, self.uuid)
 
 
 @sa.event.listens_for(sa.orm.Session, 'after_flush')

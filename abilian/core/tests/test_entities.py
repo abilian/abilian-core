@@ -10,6 +10,7 @@ import sqlalchemy as sa
 from abilian.core.models.base import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE, Info
 from abilian.core.models.subjects import User
 from abilian.core.entities import Entity
+
 from .dummy import DummyContact
 
 
@@ -93,7 +94,6 @@ class EntityTestCase(TestCase):
     session.add(contact)
     session.flush()
     self.assertEquals(contact.slug, u'pacome-hegesippe-adelard-ladislas-1')
-
 
   def test_entity_type(self):
     class MyType(Entity):

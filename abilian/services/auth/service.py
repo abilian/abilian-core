@@ -21,6 +21,7 @@ from abilian.web.nav import NavItem, NavGroup
 from .views import login as login_views
 from .models import LoginSession
 
+
 __all__ = ['AuthService', 'user_menu']
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,7 @@ def is_anonymous(context):
 
 def is_authenticated(context):
   return not is_anonymous(context)
+
 
 def _user_photo_icon_args(icon, url_args):
   url_args['user_id'] = (current_user.id

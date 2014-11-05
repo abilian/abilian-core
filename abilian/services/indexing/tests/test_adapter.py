@@ -7,14 +7,12 @@ from unittest import TestCase
 from datetime import datetime
 
 import sqlalchemy as sa
-from whoosh.fields import (
-  Schema,
-  TEXT, NUMERIC
-)
+from whoosh.fields import Schema, TEXT, NUMERIC
 
 from abilian.services.indexing.adapter import SAAdapter
 from abilian.core.extensions import db
-from abilian.core.models.base import IdMixin, Indexable as CoreIndexable, SEARCHABLE
+from abilian.core.models.base import IdMixin, Indexable as CoreIndexable, \
+    SEARCHABLE
 from abilian.core.entities import Entity
 
 
@@ -42,8 +40,10 @@ class Indexable(IdMixin, CoreIndexable, db.Model):
       ),
   )
 
+
 class SubclassEntityIndexable(Entity):
   pass
+
 
 class TestSAAdapter(TestCase):
 

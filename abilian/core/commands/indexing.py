@@ -9,15 +9,16 @@ import time
 import progressbar as pb
 import sqlalchemy as sa
 from sqlalchemy.orm.session import Session
-
 import whoosh
 from whoosh.writing import AsyncWriter, CLEAR
 from flask import current_app
 
 from .base import manager
 
+
 STOP = object()
 COMMIT = object()
+
 
 @manager.command
 def reindex(clear=False, progressive=False, batch_size=None):

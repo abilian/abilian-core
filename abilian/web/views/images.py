@@ -8,7 +8,8 @@ import hashlib
 
 import sqlalchemy as sa
 
-from flask import Blueprint, request, abort, make_response, g, Response
+from flask import Blueprint, request, make_response, g, Response
+from werkzeug.exceptions import BadRequest, NotFound
 from abilian.core.models.subjects import User
 from abilian.services.image import crop_and_resize
 
@@ -31,7 +32,7 @@ def user_avatar(user_id):
   try:
     size = int(request.args.get('s', 0))
   except:
-    abort(400)
+    raise BadRequest()
 
   if size > 500:
     raise Exception("Error, size = %d" % size)
@@ -41,7 +42,7 @@ def user_avatar(user_id):
     .get(user_id)
 
   if user is None:
-    abort(404)
+    raise NotFound()
 
   is_self = user.id == g.user.id
 

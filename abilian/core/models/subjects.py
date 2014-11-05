@@ -13,13 +13,12 @@ import bcrypt
 from datetime import datetime, timedelta
 
 from flask.ext.login import UserMixin
-
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship, backref, deferred
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, \
-  DateTime, Text
+    DateTime, Text
 
 from .base import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
 

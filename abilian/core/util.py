@@ -12,10 +12,9 @@ from math import ceil
 import unicodedata
 import re
 
+from flask import request
 from babel.dates import LOCALTZ
 from werkzeug.local import LocalProxy
-
-from flask import request
 
 
 def noproxy(obj):

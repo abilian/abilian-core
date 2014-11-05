@@ -7,12 +7,12 @@ from cStringIO import StringIO
 import imghdr
 import PIL.Image
 
+from flask import g, current_app, request, redirect, url_for, render_template, \
+    flash
+from flask.ext.wtf.file import FileField
+from werkzeug.exceptions import InternalServerError
 from wtforms.fields import TextField
 from wtforms.validators import ValidationError
-from flask import (
-    g, current_app, abort, request, redirect, url_for, render_template,
-    flash)
-from flask.ext.wtf.file import FileField
 
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
@@ -81,7 +81,7 @@ class UserPreferencesPanel(PreferencePanel):
   def get(self):
     # Manual security check, should be done by the framework instead.
     if not self.is_accessible():
-      abort(500)
+      raise InternalServerError()
 
     data = {}
     photo = g.user.photo
@@ -99,7 +99,7 @@ class UserPreferencesPanel(PreferencePanel):
   def post(self):
     # Manual security check, should be done by the framework instead.
     if not self.is_accessible():
-      abort(500)
+      raise InternalServerError()
 
     if request.form['_action'] == 'cancel':
       return redirect(url_for('.user'))

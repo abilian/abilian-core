@@ -1,4 +1,5 @@
 from sqlalchemy import Column, UnicodeText, Text
+
 from abilian.core.entities import Entity, SEARCHABLE
 
 

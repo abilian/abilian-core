@@ -9,6 +9,7 @@ from functools import wraps
 from flask import current_app
 from abilian.core.util import fqcn
 
+
 class ServiceNotRegistered(Exception):
   pass
 

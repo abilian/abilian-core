@@ -12,8 +12,8 @@ import base64
 from datetime import datetime
 from itertools import ifilter
 from collections import namedtuple
-import bleach
 
+import bleach
 import sqlalchemy as sa
 from flask import render_template, json, Markup, render_template_string
 from flask.ext.babel import format_date, format_datetime, get_locale
@@ -30,6 +30,7 @@ from abilian.core.entities import Entity
 from abilian.services import image
 from abilian.web.filters import labelize, babel2datepicker
 from abilian.web import csrf, url_for
+
 from .util import babel2datetime
 
 

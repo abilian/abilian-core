@@ -18,6 +18,7 @@ from flask import (
 from abilian.i18n import _
 from abilian.web import nav
 
+
 logger = logging.getLogger(__name__)
 
 BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(

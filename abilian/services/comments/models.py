@@ -8,6 +8,7 @@ from sqlalchemy import Column, Unicode, Integer, ForeignKey
 
 from abilian.core.entities import Entity
 
+
 # Local constants
 MAX_COMMENT_LENGTH = 8000
 

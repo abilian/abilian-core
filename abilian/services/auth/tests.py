@@ -5,10 +5,11 @@ from __future__ import absolute_import
 
 import json
 from functools import partial
+
 from flask import url_for, request
+
 from abilian.testing import BaseTestCase, TestConfig
 from abilian.core.models.subjects import User
-
 from abilian.services.auth import views
 
 

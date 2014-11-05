@@ -8,6 +8,7 @@ from PIL import Image
 
 import hashlib
 
+
 __all__ = ['resize', 'crop_and_resize']
 
 # TODO: cache to file
@@ -17,6 +18,7 @@ cache = {}
 def get_format(img):
   image = Image.open(StringIO(img))
   return image.format
+
 
 def resize(orig, hsize):
   cache_key = (hashlib.md5(orig).digest(), hsize, hsize)

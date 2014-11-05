@@ -5,10 +5,11 @@ from __future__ import absolute_import
 
 import hashlib
 
-from flask import (
-    Blueprint, abort, make_response, request, g, Response
-    )
+from flask import Blueprint, make_response, request, g, Response
+from werkzeug.exceptions import NotFound
+
 from abilian.core.models.subjects import User
+
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -20,7 +21,7 @@ def get_user(endpoint, values):
     if user:
       values['user'] = user
     else:
-      abort(404)
+      raise NotFound()
   except KeyError:
     # this endpoint is not looking for a specific user
     pass
@@ -29,7 +30,7 @@ def get_user(endpoint, values):
 @bp.route('/<int:user_id>/photo')
 def photo(user):
   if not user.photo:
-    abort(404)
+    raise NotFound()
 
   data = user.photo
   self_photo = (user.id == g.user.id)

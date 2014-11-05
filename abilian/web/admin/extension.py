@@ -3,12 +3,14 @@
 """
 from __future__ import absolute_import
 import logging
+from werkzeug.exceptions import Forbidden
 
 from werkzeug.utils import import_string
-from flask import Blueprint, abort, g
+from flask import Blueprint, g
 from flask.helpers import _endpoint_from_view_func
-from abilian.i18n import _l
 from flask.ext.login import current_user
+
+from abilian.i18n import _l
 from abilian.services.security import security, Admin as AdminRole
 from abilian.web.action import actions
 from abilian.web.nav import NavGroup, NavItem, BreadcrumbItem, Endpoint
@@ -147,7 +149,7 @@ class Admin(object):
     def check_security():
       user = current_user._get_current_object()
       if not security.has_role(user, "admin"):
-        abort(403)
+        raise Forbidden()
 
   def build_breadcrumbs(self, endpoint, view_args):
     g.breadcrumb.append(self.root_breadcrumb_item)

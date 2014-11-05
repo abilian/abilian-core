@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
 
 from abilian.testing import TestConfig as BaseConfig
+
 
 class TestConfig(BaseConfig):
 

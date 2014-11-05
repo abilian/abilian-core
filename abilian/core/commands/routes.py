@@ -4,9 +4,10 @@
 from __future__ import absolute_import
 import urllib
 
-from flask import current_app, url_for
+from flask import current_app
 
 from .base import manager
+
 
 @manager.command
 def list_routes():

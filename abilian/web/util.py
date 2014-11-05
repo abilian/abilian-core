@@ -6,7 +6,6 @@ of stuff to implement.
 """
 import logging
 import sys
-from functools import wraps
 from werkzeug.routing import BuildError
 from flask import current_app, url_for as flask_url_for, stream_with_context
 from flask.helpers import send_from_directory

@@ -29,13 +29,14 @@ from flask.ext.babel import (
 
 from abilian.core.util import utc_dt
 from abilian.core.extensions import db
-from abilian.core.models.blob import Blob
+
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
 
 __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
            'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',
            'JsonSelect2MultipleField']
+
 
 class ModelFieldList(BaseModelFieldList):
   """ Filter empty entries

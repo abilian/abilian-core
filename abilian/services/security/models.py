@@ -7,7 +7,6 @@ from sqlalchemy.schema import (
 from sqlalchemy.types import (
   Integer, Enum, DateTime, String, Boolean, TypeDecorator, UnicodeText
   )
-from sqlalchemy.event import listens_for
 
 from abilian.core.singleton import UniqueName
 from abilian.core.entities import Entity
@@ -18,6 +17,7 @@ from abilian.core.extensions import db
 __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
            'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
            'RoleType']
+
 
 class Role(UniqueName):
   """
@@ -55,10 +55,12 @@ Anonymous = Role('anonymous')
 #: marker for role assigned to 'Authenticated'
 Authenticated = Role('authenticated')
 
-#: marker for `Admin` role
+#: marker for `admin` role
 Admin = Role('admin')
 
+#: marker for `manager` role
 Manager = Role('manager')
+
 
 class RoleAssignment(db.Model):
   __tablename__ = "roleassignment"

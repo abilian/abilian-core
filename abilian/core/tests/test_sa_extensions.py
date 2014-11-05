@@ -1,6 +1,6 @@
 import uuid
-from sqlalchemy import Column
 
+from sqlalchemy import Column
 
 from abilian.core.extensions import db
 from abilian.core.entities import Entity
