@@ -17,7 +17,9 @@
       <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}{% if field.flags.required %} *{% endif %}:</label>
     {%- endif %}
 
-    {%- if horizontal and standard_field %}<div class="col-sm-{{ field_width }}">{%- endif %}
+    {%- if horizontal and standard_field %}
+      <div class="col-sm-{{ field_width }}">
+    {%- endif %}
 
     {%- if field.type == 'CSRFTokenField' %}
       {{ field() }}
@@ -36,7 +38,7 @@
       {%- elif field.type == 'FileField' %}
         {%- set css_class = css_class + ' input-file' %}
       {%- endif %}
-      {{ field(class_=css_class, placeholder=placeholder, **kwargs)|safe }}
+        {{ field(class_=css_class, placeholder=placeholder, **kwargs)|safe }}
     {%- endif %}
 
     {%- if field.errors %}
@@ -47,7 +49,9 @@
       <span class="help-block">{{ field.description|safe }}</span>
     {%- endif %}
 
-    {%- if horizontal and standard_field %}</div>{%- endif %}
+    {%- if horizontal and standard_field %}
+      </div>
+    {%- endif %}
   </div>
 {%- endmacro %}
 
