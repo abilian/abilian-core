@@ -363,8 +363,8 @@ class SingleView(object):
         if field.is_hidden:
           continue
 
-        value = field.object_data
-        if value in _to_skip:
+        value = field.data
+        if value in _to_skip and not field.flags.render_empty:
           continue
 
         value = Markup(field.render_view())
