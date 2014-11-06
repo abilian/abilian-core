@@ -360,7 +360,7 @@ class SingleView(object):
 
       for name in field_name_iter:
         field = form._fields[name]
-        if field.flags.hidden:
+        if field.is_hidden:
           continue
 
         value = field.object_data
