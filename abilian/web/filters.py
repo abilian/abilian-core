@@ -15,7 +15,7 @@ from jinja2 import Markup, escape, evalcontextfilter
 from flask import Flask
 from flask.ext import babel
 
-from ..core.util import local_dt, utc_dt
+from ..core.util import local_dt, utc_dt, slugify
 from .util import url_for
 
 
@@ -227,3 +227,4 @@ def init_filters(env):
   env.filters['roughsize'] = roughsize
   env.filters['labelize'] = labelize
   env.filters['linkify'] = linkify
+  env.filters['toslug'] = slugify
