@@ -4,10 +4,8 @@ pytest-xdist
 mock
 
 # For coverage
-coverage
-coveralls
 pytest-cov
-cov-core
+coveralls
 
 # Static code analysis
 pylama
