@@ -1,6 +1,23 @@
 /* jshint camelcase: false */
 (function($) {
     'use strict';
+    
+    var navbar = document.querySelector('nav.navbar-fixed-top');
+    /**
+     * Compensate scroll with navbar height if fixed navbar
+     */
+    function fixScroll() {
+        var offset = navbar.clientHeight;
+        scrollBy(0, -offset);
+    }
+    if (navbar) {
+        if (location.hash) {
+            /* fix scrolling when loading page with anchor */
+            window.addEventListener('load', fixScroll);
+        }
+        window.addEventListener("hashchange", fixScroll);
+    }
+
      /**
       * For form inputs: disable form submission on 'enter' key
       * We put this function in jQuery.fn so that it is callable on any $()
