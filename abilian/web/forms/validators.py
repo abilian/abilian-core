@@ -23,6 +23,8 @@ class Email(Email):
 
 
 class Required(Required):
+  field_flags = ('required',)
+
   @property
   def rule(self):
     return {"required": True}
