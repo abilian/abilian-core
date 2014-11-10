@@ -57,7 +57,10 @@
 
 
      Abilian.fn.init_widgets = function() {
-         $('[data-toggle="select2"]').select2();
+         $('[data-toggle="select2"]').each(function () {
+             var el = $(this);
+             el.select2({allowClear: !el.hasClass('required')});
+         });
          $('[data-toggle="on-off"]').bootstrapSwitch();
          $(".timepicker").timepicker()
             .on('click.timepicker',
