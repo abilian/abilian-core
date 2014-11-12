@@ -74,7 +74,10 @@ class DeferredJSExtension(Extension):
       if child.tag == 'script':
         child.drop_tag()  # side effect on fragment.text or previous_child.tail!
 
-    body = [fragment.text]
+    body = []
+    if fragment.text:
+      body.append(fragment.text)
+
     for child in fragment:
       body.append(lxml.html.tostring(child))
       body.append(child.tail)
