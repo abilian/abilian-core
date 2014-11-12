@@ -38,6 +38,19 @@ class Form(BaseForm):
   def _get_translations(self):
     return BabelTranslation
 
+  _groups = ()
+
+  def _has_required(self, group=None, fields=()):
+    if group is not None:
+      for g, field_names in self._groups:
+        if group == g:
+          fields = field_names
+          break
+      else:
+        raise ValueError("Group %s not found", repr(group))
+
+    return any(self[f].flags.required for f in fields)
+
 
 ### PATCH wtforms.field.core.Field ####################
 _PATCHED = False

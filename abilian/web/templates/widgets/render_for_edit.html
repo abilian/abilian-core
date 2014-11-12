@@ -3,25 +3,51 @@
 <form action="{{ request.path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="edit-form" role="form">
   {{ form.csrf_token }}
 
-  {%- set options = form._widgets_options|default({}) %}
-  {%- for label, field_names in form._groups %}
-    {%- if label %}<legend>{{ label }}</legend>{%- endif %}
-    <fieldset>
-      {%- for field_name in field_names %}
-        {%- set field = form[field_name] %}
-        {%- if field.is_hidden %}
-          {{ field() }}
-        {%- else %}
-          {{ m_field(form[field_name], horizontal=True, label_width=3, field_width=6) }}
-        {%- endif %}
-      {%- endfor %}
-    </fieldset>
-  {% endfor %}
+  <div class="row">
+    {%- set options = form._widgets_options|default({}) %}
+    <div class="col-sm-3">
+      <ul class="nav nav-pills nav-stacked" role="tablist">
+        {%- for label, field_names in form._groups %}
+          {%- set label_id = label | toslug %}
+          {%- set has_required = form._has_required
+                                 and form._has_required(fields=field_names) %}
+          <li role="presentation" {%- if loop.first %} class="active"{%- endif %}>
+            <a href="#{{ label_id }}" role="tab" data-toggle="tab">
+              {{ label }}
+              {%- if has_required %}*{%- endif %}
+            </a>
+          </li>
+        {%- endfor %}
+      </ul>
+    </div>
 
-  <div class="form-actions">
-    {%- for button in g.view.buttons %}
-      {{ button.render() }}
-    {%- endfor %}
+    <div class="tab-content col-sm-9" id="form-panel">
+      {%- for label, field_names in form._groups %}
+        {%- set label_id = label | toslug %}
+        {%- set collapsed_state = 'active' if loop.first else '' %}
+        <div id="{{ label_id }}" class="tab-pane {{ collapsed_state }}" role="tabpanel">
+          <legend>{{ label }}</legend>
+          <fieldset>
+            {%- for field_name in field_names %}
+              {%- set field = form[field_name] %}
+              {%- if field.is_hidden %}
+                {{ field() }}
+              {%- else %}
+                {{ m_field(form[field_name], horizontal=True, label_width=3, field_width=6) }}
+              {%- endif %}
+            {%- endfor %}
+          </fieldset>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-actions text-right col-sm-9 col-sm-push-3">
+      {%- for button in g.view.buttons %}
+        {{ button.render() }}
+      {%- endfor %}
+    </div>
   </div>
 
 </form>
