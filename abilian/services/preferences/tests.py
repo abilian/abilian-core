@@ -1,11 +1,47 @@
+# coding=utf-8
+"""
+"""
+from __future__ import absolute_import
+
+from flask import current_app
+from flask.ext.login import current_user
+
 from abilian.core.models.subjects import User
 from abilian.testing import BaseTestCase
 
 from .service import PreferenceService
 from .models import UserPreference
+from .panel import PreferencePanel
+
+class VisiblePanel(PreferencePanel):
+  id = label = 'visible'
+  def is_accessible(self):
+    return True
+
+  def get(self):
+    return u'Visible'
+
+class AdminPanel(PreferencePanel):
+  id = label = 'admin'
+  def is_accessible(self):
+    return current_app.services['security'].has_role(current_user, "admin")
+
+  def get(self):
+    return u'Admin'
+
+class App(BaseTestCase.application_class):
+
+  def init_extensions(self):
+    super(App, self).init_extensions()
+    prefs = self.services['preferences']
+    prefs.app_state.panels = []
+    prefs.register_panel(VisiblePanel(), self)
+    prefs.register_panel(AdminPanel(), self)
 
 
 class PreferencesTestCase(BaseTestCase):
+
+  application_class = App
 
   def test_preferences(self):
     user = User(email=u"test@example.com")
@@ -42,3 +78,22 @@ class PreferencesTestCase(BaseTestCase):
     self.session.flush()
     preferences = preference_service.get_preferences(user)
     self.assertEquals(preferences, {'some_int': 1, 'some_bool': True})
+
+
+  def test_visible_panels(self):
+    user = User(email=u"test@example.com")
+    app = self.app
+    security = app.services['security']
+    security.start()
+
+    for cp in app.template_context_processors['preferences']:
+      ctx = cp()
+      if 'menu' in ctx:
+        break
+
+    with self.login(user):
+      assert [p['endpoint'] for p in ctx['menu']] == ['preferences.visible']
+      security.grant_role(user, 'admin')
+      ctx = cp()
+      assert [p['endpoint'] for p in ctx['menu']] == ['preferences.visible',
+                                                      'preferences.admin']

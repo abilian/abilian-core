@@ -67,7 +67,7 @@ class PreferenceService(Service):
     """
     if user is None:
       user = current_user
-    return { pref.key: pref.value for pref in user.preferences }
+    return {pref.key: pref.value for pref in user.preferences}
 
   def set_preferences(self, user=None, **kwargs):
     """Sets preferences from keyword arguments.
@@ -75,7 +75,7 @@ class PreferenceService(Service):
     if user is None:
       user = current_user
 
-    d = { pref.key: pref for pref in user.preferences }
+    d = {pref.key: pref for pref in user.preferences}
     for k, v in kwargs.items():
       if k in d:
         d[k].value = v
@@ -97,7 +97,8 @@ class PreferenceService(Service):
   def register_panel(self, panel, app=None):
     state = self.app_state if app is None else app.extensions[self.name]
     if state.blueprint_registered:
-      raise ValueError("Extension already initialized for app, cannot add more panel")
+      raise ValueError("Extension already initialized for app, "
+                       "cannot add more panel")
 
     state.panels.append(panel)
     panel.preferences = self
@@ -130,8 +131,8 @@ class PreferenceService(Service):
       app.extensions[self.name].blueprint_registered = True
 
     self.app_state.root_breadcrumb_item = BreadcrumbItem(
-      label=_(u'Preferences'),
-      url=Endpoint('preferences.index'))
+        label=_(u'Preferences'),
+        url=Endpoint('preferences.index'))
 
     bp.url_value_preprocessor(self.build_breadcrumbs)
 
@@ -139,6 +140,8 @@ class PreferenceService(Service):
     def inject_menu():
       menu = []
       for panel in self.app_state.panels:
+        if not panel.is_accessible():
+          continue
         endpoint = 'preferences.' + panel.id
         active = endpoint == request.endpoint
         entry = {'endpoint': endpoint,
