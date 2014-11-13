@@ -64,11 +64,8 @@ doc-pdf:
 
 clean:
 	find . -name "*.pyc" | xargs rm -f
+	find . -name __pycache__ | xargs rm -rf
 	find . -name abilian.db | xargs rm -f
-	rm -f maxid.data
-	rm -rf data tests/data tests/integration/data
-	rm -rf tmp tests/tmp tests/integration/tmp
-	rm -rf cache tests/cache tests/integration/cache
 	rm -rf *.egg-info *.egg .coverage
 	rm -rf whoosh tests/whoosh tests/integration/whoosh
 	rm -rf docs/_build docs/cache docs/tmp
