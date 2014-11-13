@@ -40,10 +40,13 @@ load-plugins=
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 
+# C0111: Missing class docstring
 # R0201: Method could be a function
 # W0142: used * or ** magic
-# R0903: Too few public methods
-disable=R0201,W0142,R0903
+# W0232: Class has no __init__ method
+# W0613: unused argument
+
+disable=C0111,R0201,W0142,W0232,W0613
 
 
 [REPORTS]
