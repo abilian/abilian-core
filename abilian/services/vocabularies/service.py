@@ -6,6 +6,7 @@ from __future__ import absolute_import
 
 from inspect import isclass
 
+import jinja2
 from abilian.services.base import Service
 
 from .models import BaseVocabulary
@@ -15,6 +16,10 @@ class VocabularyService(Service):
   """
   """
   name = 'vocabularies'
+
+  def init_app(self, app):
+    Service.init_app(self, app)
+    app.register_jinja_loaders(jinja2.PackageLoader(__name__, 'templates'))
 
   @property
   def vocabularies(self):

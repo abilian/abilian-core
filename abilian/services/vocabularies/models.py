@@ -10,6 +10,7 @@ from flask.ext.sqlalchemy import BaseQuery
 from abilian.core.extensions import db
 from abilian.core.util import slugify
 
+
 _BaseMeta = db.Model.__class__
 
 class VocabularyQuery(BaseQuery):

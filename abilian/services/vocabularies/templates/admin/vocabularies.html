@@ -1,0 +1,46 @@
+{%- extends "admin/_base.html" %}
+
+{% from "macros/box.html" import m_box %}
+
+{%- block content %}
+  {%- for group in vocabularies |sort %}
+    <h2>{{ group or _('Global') }}</h2>
+    
+    {%- for voc in vocabularies[group] %}
+      {%- call m_box(title=voc.Meta.label) %}
+        {%- set items = voc.query.all() %}
+        {%- if items %}
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>{{ _('Label') }}</th>
+                <th>{{ _('Default') }}</th>
+                <th>{{ _('Active') }}</th>
+            </thead>
+            <tbody>
+              {%- for item in items %}
+                <tr>
+                  <td><a href="{{ url_for_voc_edit(item) }}">{{ item.label }}</a></td>
+                  <td>{%- if item.default %}{{ icon_checked }}{%- endif %}</td>
+                  <td>{%- if item.active %}{{ icon_checked }}{%- endif %}</td>
+                </tr>
+              {%- endfor %}
+            </tbody>
+          </table>
+        {%- else %}
+          <p class="text-muted text-center h3">
+            <i>{{ _('No item in this vocabulary') }}</i>
+          </p>
+        {%- endif %}
+
+        <div class="text-right">
+          <a href="{{ url_for('.vocabularies_new', group=group, Model=voc.Meta.name) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-plus"></i>
+            {{ _('Add new value') }}
+          </a>
+        </div>
+      {%- endcall %}
+    {%- endfor %} {# voc in groups #}
+
+  {%- endfor %} {# groups #}
+{%- endblock %}

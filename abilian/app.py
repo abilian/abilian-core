@@ -108,6 +108,7 @@ default_config.update(
     'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
     'abilian.web.admin.panels.settings.SettingsPanel',
     'abilian.web.admin.panels.sysinfo.SysinfoPanel',
+    'abilian.services.vocabularies.admin.VocabularyPanel',
   ),
   SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
   LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
