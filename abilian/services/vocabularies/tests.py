@@ -39,10 +39,14 @@ class TestVocabularies(BaseTestCase):
              PriorityVoc(label=u'Normal', position=3, default=True),
              PriorityVoc(label=u'Urgent', position=1),
              PriorityVoc(label=u'High', position=2),
-             PriorityVoc(label=u'Low', position=4)
             ]
     map(self.session.add, items)
     self.session.flush()
+
+    low_item = PriorityVoc(label=u'Low') # position=4 set automatically
+    self.session.add(low_item)
+    self.session.flush()
+    assert low_item.position == 4
 
     # test default ordering
     assert ([i.label for i in PriorityVoc.query.active().all()]

@@ -80,6 +80,18 @@ class BaseVocabulary(db.Model):
     group = None
 
 
+@sa.event.listens_for(BaseVocabulary, "before_insert", propagate=True)
+def _before_insert(mapper, connection, target):
+  """
+  Set item to last position if position not defined
+  """
+  if target.position is None:
+    func = sa.sql.func
+    stmt = sa.select([func.coalesce(func.max(mapper.mapped_table.c.position),
+                                    -1)])
+    target.position = connection.execute(stmt).scalar() + 1
+
+
 def Vocabulary(name, label=None, group=None):
   name = 'Vocabulary' + name.capitalize()
   Meta = type('Meta', (object,), dict(label=label, group=group))
