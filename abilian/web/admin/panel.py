@@ -23,6 +23,8 @@ class AdminPanel(object):
 
     This method is called only if the endpoint is for `get()`, `post()`, or
     one of the views installed with `install_additional_rules`.
+
+    This is also the right place to add items to the breadcrumbs.
     """
     pass
 

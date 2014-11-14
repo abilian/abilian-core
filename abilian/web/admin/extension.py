@@ -104,21 +104,21 @@ class Admin(object):
 
     if hasattr(panel, 'get'):
       self.blueprint.add_url_rule(rule, endpoint, panel.get)
-      self._panels_endpoints[endpoint] = panel
+      self._panels_endpoints[abs_endpoint] = panel
     if hasattr(panel, 'post'):
       endpoint += "_post"
       self.blueprint.add_url_rule(rule, endpoint, panel.post, methods=['POST'])
-      self._panels_endpoints[endpoint] = panel
+      self._panels_endpoints['admin.' + endpoint] = panel
 
     panel.install_additional_rules(
-      self.get_panel_url_rule_adder(panel, panel.id, endpoint))
+        self.get_panel_url_rule_adder(panel, rule, endpoint))
 
     nav = NavItem('admin:panel', nav_id,
                   title=panel.label, icon=panel.icon, divider=False,
                   endpoint=abs_endpoint)
     self.nav_root.append(nav)
     self.nav_paths[abs_endpoint] = nav.path
-    self.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
+    self.breadcrumb_items[panel] = BreadcrumbItem(
       label=panel.label,
       icon=panel.icon,
       url=Endpoint(abs_endpoint)
@@ -137,7 +137,7 @@ class Admin(object):
       if not endpoint.startswith(base_endpoint):
         endpoint = base_endpoint + '_' + endpoint
 
-      extension._panels_endpoints[endpoint] = panel
+      extension._panels_endpoints['admin.' + endpoint] = panel
       return self.blueprint.add_url_rule(
         base_url + rule,
         endpoint=endpoint,
@@ -168,6 +168,8 @@ class Admin(object):
   def build_breadcrumbs(self, endpoint, view_args):
     g.breadcrumb.append(self.root_breadcrumb_item)
     g.nav['active'] = self.nav_paths.get(endpoint, self.nav_root.path)
-    endpoint_bc = self.breadcrumb_items.get(endpoint)
+    panel = self._panels_endpoints.get(endpoint)
+    if panel:
+      endpoint_bc = self.breadcrumb_items.get(panel)
     if endpoint_bc:
       g.breadcrumb.append(endpoint_bc)
