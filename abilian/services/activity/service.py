@@ -8,6 +8,7 @@ from sqlalchemy.orm import object_session
 
 from abilian.services import Service
 from abilian.core.signals import activity
+from abilian.core.entities import Entity
 
 from .models import ActivityEntry
 
@@ -30,6 +31,11 @@ class ActivityService(Service):
 
   def log_activity(self, sender, actor, verb, object, target=None):
     assert self.running
+    if not isinstance(object, Entity):
+      # generic forms may send signals inconditionnaly. For now we have activity
+      # only for Entities
+      return
+
     session = object_session(object)
     kwargs = dict(actor=actor, verb=verb, object_type=object.entity_type)
 
