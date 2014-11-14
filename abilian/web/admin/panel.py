@@ -17,6 +17,15 @@ class AdminPanel(object):
   label = None
   icon = None
 
+  def url_value_preprocess(self, endpoint, view_args):
+    """
+    Panel can preprocess values for their views.
+
+    This method is called only if the endpoint is for `get()`, `post()`, or
+    one of the views installed with `install_additional_rules`.
+    """
+    pass
+
   def install_additional_rules(self, add_url_rule):
     """
     This method can be redefined in subclasses to install custom url rules
