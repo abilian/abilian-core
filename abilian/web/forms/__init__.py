@@ -10,6 +10,7 @@ from flask.ext.babel import gettext as _, ngettext as _n
 
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
+from wtforms_alchemy import model_form_factory
 from flask.ext.wtf.form import Form as BaseForm
 
 from abilian.core.logging import patch_logger
@@ -51,6 +52,8 @@ class Form(BaseForm):
 
     return any(self[f].flags.required for f in fields)
 
+
+ModelForm = model_form_factory(Form)
 
 ### PATCH wtforms.field.core.Field ####################
 _PATCHED = False
