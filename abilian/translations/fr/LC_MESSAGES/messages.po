@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-27 12:41+0100\n"
-"PO-Revision-Date: 2014-10-27 12:41+0100\n"
+"POT-Creation-Date: 2014-11-17 15:10+0100\n"
+"PO-Revision-Date: 2014-11-17 15:10+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -17,65 +17,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: abilian/services/auth/service.py:49
+#: abilian/services/auth/service.py:51
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: abilian/services/auth/service.py:56
+#: abilian/services/auth/service.py:58
 msgid "Login"
 msgstr "Connexion"
 
-#: abilian/services/auth/views.py:62
+#: abilian/services/auth/views.py:61
 msgid "You must provide your email and password."
 msgstr "Vous devez entrez votre email et votre mot de passe."
 
-#: abilian/services/auth/views.py:72 abilian/services/auth/views.py:164
+#: abilian/services/auth/views.py:71 abilian/services/auth/views.py:163
 msgid "Sorry, we couldn't find an account for email '{email}'."
 msgstr "Nous n'avons pas trouvé de compte correspondant à l'email '{email}'"
 
-#: abilian/services/auth/views.py:78
+#: abilian/services/auth/views.py:77
 msgid "Sorry, wrong password."
 msgstr "Mauvais mot de passe."
 
-#: abilian/services/auth/views.py:155
+#: abilian/services/auth/views.py:154
 msgid "You must provide your email address."
 msgstr "Vous devez entrez votre adresse email de connexion."
 
-#: abilian/services/auth/views.py:173
+#: abilian/services/auth/views.py:172
 msgid "Password reset instructions have been sent to your email address."
 msgstr ""
 
-#: abilian/services/auth/views.py:183 abilian/services/auth/views.py:202
+#: abilian/services/auth/views.py:182 abilian/services/auth/views.py:201
 msgid "Invalid reset password token."
 msgstr ""
 
-#: abilian/services/auth/views.py:185 abilian/services/auth/views.py:204
+#: abilian/services/auth/views.py:184 abilian/services/auth/views.py:203
 msgid "Password reset expired"
 msgstr ""
 
-#: abilian/services/auth/views.py:211
+#: abilian/services/auth/views.py:210
 msgid "You must provide a password."
 msgstr "Vous devez entrez un mot de passe."
 
-#: abilian/services/auth/views.py:216
+#: abilian/services/auth/views.py:215
 msgid "Your new password must be at least 8 characters long"
 msgstr "Le nouveau mot de passe doit comporter au moins 8 caractères"
 
-#: abilian/services/auth/views.py:220
+#: abilian/services/auth/views.py:219
 msgid "Your new password must contain upper case and lower case letters"
 msgstr "Le nouveau mot de passe doit comporter des majuscules et des minuscules"
 
-#: abilian/services/auth/views.py:225
+#: abilian/services/auth/views.py:224
 msgid "Your new password must contain at least one digit"
 msgstr "Le nouveau mot de passe doit comporter au moins 1 chiffre"
 
-#: abilian/services/auth/views.py:231
+#: abilian/services/auth/views.py:230
 msgid "Your password has been reset. You can now login with your new password"
 msgstr ""
 "Votre mot de passe a été enregistré. Vous pouvez maintenant vous "
 "connecter avec ce mot de passe."
 
-#: abilian/services/auth/views.py:260
+#: abilian/services/auth/views.py:259
 msgid "Password reset instruction for {site_name}"
 msgstr "Réinitialisation de votre mot de passe pour {site_name}"
 
@@ -114,26 +114,61 @@ msgstr "Changer le mot de passe"
 #: abilian/web/templates/default/list_view.html:58
 #: abilian/web/templates/preferences/user.html:19
 #: abilian/web/templates/widgets/render_single.html:42
-#: abilian/web/views/object.py:147
+#: abilian/web/views/object.py:148
 msgid "Cancel"
 msgstr "Annuler"
 
-#: abilian/services/indexing/debug_toolbar.py:35
-#: abilian/services/indexing/debug_toolbar.py:49
+#: abilian/services/indexing/debug_toolbar.py:36
+#: abilian/services/indexing/debug_toolbar.py:50
 msgid "Indexed Terms"
 msgstr "Termes indexés"
 
-#: abilian/services/indexing/debug_toolbar.py:41
+#: abilian/services/indexing/debug_toolbar.py:42
 msgid "No current object"
 msgstr ""
 
-#: abilian/services/preferences/service.py:26
-#: abilian/services/preferences/service.py:132
+#: abilian/services/preferences/service.py:27
+#: abilian/services/preferences/service.py:134
 #: abilian/web/templates/preferences/_base.html:8
 msgid "Preferences"
 msgstr "Préférences"
 
-#: abilian/web/admin/extension.py:38
+#: abilian/services/vocabularies/admin.py:18
+msgid "Vocabulary entry"
+msgstr "Entrée du vocabulaire"
+
+#: abilian/services/vocabularies/admin.py:60
+msgid "Vocabularies"
+msgstr "Vocabulaires"
+
+#: abilian/services/vocabularies/forms.py:16
+#: abilian/services/vocabularies/templates/admin/vocabularies.html:21
+msgid "Label"
+msgstr "Label"
+
+#: abilian/services/vocabularies/forms.py:17
+#: abilian/services/vocabularies/templates/admin/vocabularies.html:22
+msgid "Default"
+msgstr "Défaut"
+
+#: abilian/services/vocabularies/forms.py:18
+#: abilian/services/vocabularies/templates/admin/vocabularies.html:23
+msgid "Active"
+msgstr "Actif"
+
+#: abilian/services/vocabularies/templates/admin/vocabularies.html:7
+msgid "Global"
+msgstr "Global"
+
+#: abilian/services/vocabularies/templates/admin/vocabularies.html:49
+msgid "No item in this vocabulary"
+msgstr "Aucun élement pour ce vocabulaire"
+
+#: abilian/services/vocabularies/templates/admin/vocabularies.html:56
+msgid "Add new value"
+msgstr "Ajouter une nouvelle valeur"
+
+#: abilian/web/admin/extension.py:42
 msgid "Admin"
 msgstr "Admin"
 
@@ -207,20 +242,20 @@ msgstr ""
 "La durée de vie des sessions ne peut-être inférieure à 10 minutes. La "
 "valeur a été ajustée."
 
-#: abilian/web/admin/panels/settings.py:95
+#: abilian/web/admin/panels/settings.py:91
 #: abilian/web/admin/templates/admin/settings.html:6
 msgid "Settings"
 msgstr "Paramètres"
 
-#: abilian/web/admin/panels/settings.py:101
+#: abilian/web/admin/panels/settings.py:97
 msgid "Site name"
 msgstr "Nom du site"
 
-#: abilian/web/admin/panels/settings.py:102
+#: abilian/web/admin/panels/settings.py:98
 msgid "Mail sender"
 msgstr "Expéditeur des mails"
 
-#: abilian/web/admin/panels/settings.py:129
+#: abilian/web/admin/panels/settings.py:125
 msgid "Changes saved."
 msgstr "Changement enregistrés."
 
@@ -258,7 +293,7 @@ msgstr "Filtrer sur un utilisateur"
 
 #: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:16
-#: abilian/web/views/object.py:148
+#: abilian/web/views/object.py:149
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -274,11 +309,11 @@ msgstr "Heures"
 msgid "Minutes"
 msgstr "Minutes"
 
-#: abilian/web/forms/fields.py:163 abilian/web/forms/fields.py:196
+#: abilian/web/forms/fields.py:164 abilian/web/forms/fields.py:197
 msgid "Not a valid datetime value"
 msgstr "N'est pas une date valide"
 
-#: abilian/web/forms/fields.py:330
+#: abilian/web/forms/fields.py:331
 msgid "Not a valid choice"
 msgstr "N'est pas un choix valide"
 
@@ -286,35 +321,35 @@ msgstr "N'est pas un choix valide"
 msgid "Invalid email address."
 msgstr "Adresse email non valide"
 
-#: abilian/web/forms/widgets.py:150 abilian/web/forms/widgets.py:262
+#: abilian/web/forms/widgets.py:152 abilian/web/forms/widgets.py:264
 msgid "Filter records:"
 msgstr "Filtrer les entrées:"
 
-#: abilian/web/forms/widgets.py:263
+#: abilian/web/forms/widgets.py:265
 msgid "Previous"
 msgstr "Précédent"
 
-#: abilian/web/forms/widgets.py:264
+#: abilian/web/forms/widgets.py:266
 msgid "Next"
 msgstr "Suivant"
 
-#: abilian/web/forms/widgets.py:265
+#: abilian/web/forms/widgets.py:267
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
 
-#: abilian/web/forms/widgets.py:266
+#: abilian/web/forms/widgets.py:268
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtré sur un total de _MAX_ entrées)"
 
-#: abilian/web/forms/widgets.py:267
+#: abilian/web/forms/widgets.py:269
 msgid "Advanced filtering"
 msgstr "Filtrage avancé"
 
-#: abilian/web/forms/widgets.py:532
+#: abilian/web/forms/widgets.py:534
 msgid "Add file"
 msgstr "Ajouter un fichier"
 
-#: abilian/web/forms/widgets.py:532
+#: abilian/web/forms/widgets.py:534
 msgid "Select file"
 msgstr "Selectionner un fichier"
 
@@ -352,7 +387,7 @@ msgstr "À propos de moi"
 msgid "Preferences saved."
 msgstr "Préférences enregistrées."
 
-#: abilian/web/search/views.py:140
+#: abilian/web/search/views.py:141
 msgid "All"
 msgstr "Tous"
 
@@ -463,7 +498,7 @@ msgstr "Éditer"
 
 #: abilian/web/templates/widgets/render_single.html:3
 #: abilian/web/templates/widgets/render_single.html:15
-#: abilian/web/views/object.py:363
+#: abilian/web/views/object.py:364
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -528,31 +563,31 @@ msgstr "défaire"
 msgid "redo"
 msgstr "refaire"
 
-#: abilian/web/views/object.py:173
+#: abilian/web/views/object.py:174
 msgid "Entity successfully edited"
 msgstr "Édition réussie"
 
-#: abilian/web/views/object.py:249
+#: abilian/web/views/object.py:250
 msgid "Please fix the error(s) below"
 msgstr "Veuillez corriger la ou les erreurs ci-dessous"
 
-#: abilian/web/views/object.py:293
+#: abilian/web/views/object.py:294
 msgid "An entity with this name already exists in the database."
 msgstr "Il y a déjà une entité avec ce nom dans la base de donnée."
 
-#: abilian/web/views/object.py:321
+#: abilian/web/views/object.py:322
 msgid "Create"
 msgstr "Créer"
 
-#: abilian/web/views/object.py:323
+#: abilian/web/views/object.py:324
 msgid "Create and add new"
 msgstr "Créer et ajouter un nouveau"
 
-#: abilian/web/views/object.py:334
+#: abilian/web/views/object.py:335
 msgid "Entity successfully added"
 msgstr "Ajout réussi"
 
-#: abilian/web/views/object.py:371
+#: abilian/web/views/object.py:372
 msgid "Entity deleted"
 msgstr "Entité supprimée"
 
