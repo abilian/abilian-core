@@ -4,7 +4,7 @@ Admin panel for vocabularies
 """
 from __future__ import absolute_import
 
-from flask import g, current_app, render_template
+from flask import g, request, current_app, render_template
 
 from abilian.i18n import _l
 from abilian.web.admin import AdminPanel
@@ -66,13 +66,12 @@ class VocabularyPanel(AdminPanel):
 
   def voc_edit_url(self, item):
     return url_for('.' + self.id + '_edit',
-                   group=item.Meta.group,
+                   group=item.Meta.group or u'',
                    Model=item.Meta.name,
                    object_id=item.id)
 
   def get(self):
     svc = self.svc
-
     return render_template(
         'admin/vocabularies.html',
         service=svc,
@@ -81,6 +80,59 @@ class VocabularyPanel(AdminPanel):
         vocabularies=svc.grouped_vocabularies,
     )
 
+  def post(self):
+    data = request.form
+    group = data.get('group', u'').strip()
+    Model = data.get('Model', u'').strip()
+    cmp_op = None
+    cmp_order = None
+    object_id = None
+
+    if not Model:
+      return self.get()
+
+    if not group:
+      # default group
+      group = None
+
+    svc = self.svc
+    Model = svc.get_vocabulary(name=Model, group=group)
+    if not Model:
+      return self.get()
+
+    if 'up' in data:
+      cmp_op = Model.position.__lt__
+      cmp_order = Model.position.desc()
+      object_id = int(data.get('up'))
+    elif 'down' in data:
+      cmp_op = Model.position.__gt__
+      cmp_order = Model.position.asc()
+      object_id = int(data.get('down'))
+    else:
+      return self.get()
+
+    session = current_app.db.session()
+    query = Model.query.with_lockmode('update')
+    item = query.get(object_id)
+    other = query\
+        .filter(cmp_op(item.position))\
+        .order_by(cmp_order)\
+        .first()
+
+    if other is not None:
+      # switch positions
+      # we have to work around unique constraint on 'position', since we cannot
+      # write new positions simultaneously
+      # "-1" is added to avoid breaking when one position==0
+      pos = other.position
+      other.position = -item.position - 1
+      item.position = -pos - 1
+      session.flush()
+      item.position = pos
+      other.position = -other.position - 1
+      session.commit()
+
+    return self.get()
 
   def install_additional_rules(self, add_url_rule):
     panel_endpoint = '.' + self.id
