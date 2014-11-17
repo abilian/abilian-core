@@ -19,6 +19,18 @@ a mark {
   color: inherit;
 }
 
+.caret-down {
+  /* this is bootstrap's standard caret. Synonym is added for markup clarity
+  when using .carret-down/.carret-up together */
+  .caret();
+}
+.caret-up {
+  .caret();
+  border-top: 0;
+  border-bottom: @caret-width-base solid;
+  content: "";
+}
+
 // Flask debugtoolbar
 #flDebug #flDebugToolbarHandle {
   /* align handle at bottom of navigation bar */
