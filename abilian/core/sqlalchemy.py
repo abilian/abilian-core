@@ -299,13 +299,15 @@ class JSONUniqueListType(JSON):
 
 
 def JSONDict(*args, **kwargs):
-  """ Stores a dict as JSON on database, with mutability support.
+  """
+  Stores a dict as JSON on database, with mutability support.
   """
   return MutationDict.as_mutable(JSON(*args, **kwargs))
 
 
 def JSONList(*args, **kwargs):
-  """ Stores a list as JSON on database, with mutability support.
+  """
+  Stores a list as JSON on database, with mutability support.
 
   If kwargs has a param `unique_sorted` (which evaluated to True), list values
   are made unique and sorted.

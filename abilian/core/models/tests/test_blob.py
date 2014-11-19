@@ -27,6 +27,10 @@ class BlobUnitTestCase(TestCase):
     self.assertTrue(isinstance(b.uuid, uuid.UUID))
     self.assertEquals(b.uuid, u)
 
+  def test_meta(self):
+    b = Blob()
+    assert b.meta == dict()
+
 
 class BlobTestCase(AbilianTestCase):
 

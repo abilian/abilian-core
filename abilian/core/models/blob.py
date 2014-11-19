@@ -26,12 +26,15 @@ class Blob(Model):
 
   id = Column(Integer(), primary_key=True, autoincrement=True)
   uuid = Column(UUID(), unique=True, nullable=False, default=uuid.uuid4)
-  meta = Column(JSONDict())
+  meta = Column(JSONDict(), nullable=False, default=dict)
 
   def __init__(self, value=None, *args, **kwargs):
     super(Blob, self).__init__(*args, **kwargs)
     if self.uuid is None:
       self.uuid = uuid.uuid4()
+
+    if self.meta is None:
+      self.meta = dict()
 
     if value is not None:
       self.value = value
