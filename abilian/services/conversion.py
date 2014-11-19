@@ -47,10 +47,6 @@ os.environ['PATH'] += ":/usr/local/bin"
 TMP_DIR = "tmp"
 CACHE_DIR = "cache"
 
-mime_sniffer = Magic(mime=True)
-encoding_sniffer = Magic(mime_encoding=True)
-
-
 def get_tmp_dir():
   return converter.TMP_DIR
 
@@ -285,6 +281,14 @@ class Handler(object):
   def TMP_DIR(self):
     return get_tmp_dir()
 
+  @property
+  def mime_sniffer(self):
+    return Magic(mime=True)
+
+  @property
+  def encoding_sniffer(self):
+    return Magic(mime_encoding=True)
+
   def accept(self, source_mime_type, target_mime_type):
     """Generic matcher based on patterns."""
 
@@ -323,7 +327,7 @@ class PdfToTextHandler(Handler):
         raise ConversionError(e)
 
       converted = open(out_fn).read()
-      encoding = encoding_sniffer.from_file(out_fn)
+      encoding = self.encoding_sniffer.from_file(out_fn)
 
     if encoding in ("binary", None):
       encoding = "ascii"
@@ -357,7 +361,7 @@ class AbiwordTextHandler(Handler):
         os.chdir(cur_dir)
 
       converted = open(out_fn).read()
-      encoding = encoding_sniffer.from_file(out_fn)
+      encoding = self.encoding_sniffer.from_file(out_fn)
 
     if encoding in ("binary", None):
       encoding = "ascii"
@@ -595,7 +599,7 @@ class WvwareTextHandler(Handler):
 
       converted = open(out_fn).read()
 
-      encoding = encoding_sniffer.from_file(out_fn)
+      encoding = self.encoding_sniffer.from_file(out_fn)
       if encoding in ("binary", None):
         encoding = "ascii"
       try:
