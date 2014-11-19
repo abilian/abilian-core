@@ -22,12 +22,14 @@ from .activity import ActivityService
 from .auth import AuthService
 from .settings import SettingsService
 from .vocabularies import vocabularies as vocabularies_service
+from .antivirus import service as antivirus
 
 __all__ = ['Service', 'ServiceState', 'get_service',
            'audit_service', 'index_service', 'activity_service', 'auth_service',
            'settings_service', 'security_service', 'preferences_service',
            'repository_service', 'session_repository_service',
-           'vocabularies_service', 'converter']
+           'vocabularies_service', 'converter', 'antivirus']
+
 
 auth_service = AuthService()
 activity_service = ActivityService()

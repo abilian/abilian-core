@@ -5,8 +5,20 @@
 # NOTE: the `rule` property is supposed to be useful for generating client-side
 # validation code.
 
-from wtforms.validators import EqualTo, Length, NumberRange, Optional, Required,\
+from wtforms.validators import (
+  ValidationError,
+  EqualTo, Length, NumberRange, Optional, Required,\
   Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf
+)
+
+from abilian.i18n import _
+from abilian.services import get_service
+
+
+class Rule(object):
+  @property
+  def rule(self):
+    return None
 
 
 class Email(Email):
@@ -30,46 +42,32 @@ class Required(Required):
     return {"required": True}
 
 
-class EqualTo(EqualTo):
-  @property
-  def rule(self):
-    return None
+class EqualTo(EqualTo, Rule):
+  pass
 
 
-class Length(Length):
-  @property
-  def rule(self):
-    return None
+class Length(Length, Rule):
+  pass
 
 
-class NumberRange(NumberRange):
-  @property
-  def rule(self):
-    return None
+class NumberRange(NumberRange, Rule):
+  pass
 
 
-class Optional(Optional):
-  @property
-  def rule(self):
-    return None
+class Optional(Optional, Rule):
+  pass
 
 
-class Regexp(Regexp):
-  @property
-  def rule(self):
-    return None
+class Regexp(Regexp, Rule):
+  pass
 
 
-class IPAddress(IPAddress):
-  @property
-  def rule(self):
-    return None
+class IPAddress(IPAddress, Rule):
+  pass
 
 
-class MacAddress(MacAddress):
-  @property
-  def rule(self):
-    return None
+class MacAddress(MacAddress, Rule):
+  pass
 
 
 class URL(URL):
@@ -78,25 +76,18 @@ class URL(URL):
     return {"url": True}
 
 
-class UUID(UUID):
-  @property
-  def rule(self):
-    return None
+class UUID(UUID, Rule):
+  pass
 
 
-class AnyOf(AnyOf):
-  @property
-  def rule(self):
-    return None
+class AnyOf(AnyOf, Rule):
+  pass
+
+class NoneOf(NoneOf, Rule):
+  pass
 
 
-class NoneOf(NoneOf):
-  @property
-  def rule(self):
-    return None
-
-
-class FlagHidden(object):
+class FlagHidden(Rule):
   """ Flag the field as hidden
   """
   field_flags = ('hidden',)
@@ -104,9 +95,20 @@ class FlagHidden(object):
   def __call__(self, form, field):
     pass
 
-  @property
-  def rule(self):
-    return None
+class AntiVirus(Rule):
+  """
+  check content for viruses
+  """
+  field_flags = ('antivirus',)
+
+  def __call__(self, form, field):
+    svc = get_service('antivirus')
+    if not svc:
+      return
+
+    res = svc.scan(field.data)
+    if res is False:
+      raise ValidationError(_(u'Virus detected!'))
 
 
 # These are the canonical names that should be used.

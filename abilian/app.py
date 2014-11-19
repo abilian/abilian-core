@@ -45,7 +45,7 @@ from abilian.services import (
     audit_service, index_service, activity_service, auth_service,
     settings_service, security_service, preferences_service,
     repository_service, session_repository_service,
-    converter as conversion_service, vocabularies_service
+    converter as conversion_service, vocabularies_service, antivirus
 )
 
 
@@ -449,6 +449,7 @@ class Application(Flask, ServiceManager, PluginManager):
     preferences_service.init_app(self)
     conversion_service.init_app(self)
     vocabularies_service.init_app(self)
+    antivirus.init_app(self)
 
     from .web.preferences.user import UserPreferencesPanel
     preferences_service.register_panel(UserPreferencesPanel(), self)
