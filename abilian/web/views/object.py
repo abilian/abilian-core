@@ -18,7 +18,7 @@ from abilian.core.signals import activity
 from abilian.core.entities import ValidationError
 
 from .. import nav, csrf
-from ..action import ButtonAction, actions
+from ..action import ButtonAction, Endpoint, actions
 from .base import View
 
 logger = logging.getLogger(__name__)
@@ -216,7 +216,7 @@ class ObjectEdit(ObjectView):
     if self.button:
       url = self.button.url(actions.context)
       if url:
-        return url
+        return redirect(url)
     return redirect(self.view_url())
 
   def message_success(self):
@@ -321,8 +321,9 @@ class ObjectEdit(ObjectView):
 
 CREATE_BUTTON = ButtonAction('form', 'create', btn_class='primary', title=_l(u'Create'))
 CHAIN_CREATE_BUTTON = ButtonAction(
-    'form', 'chain_create', btn_class='primary', title=_l(u'Create and add new'),
-    endpoint=lambda ctx: request.endpoint,
+    'form', 'chain_create', btn_class='primary',
+    title=_l(u'Create and add new'),
+    endpoint=lambda ctx: Endpoint(request.endpoint, **request.view_args),
     condition=lambda ctx: getattr(ctx['view'], 'chain_create_allowed', False)
 )
 
