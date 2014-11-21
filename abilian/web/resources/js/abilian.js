@@ -38,8 +38,22 @@
     Abilian.fn.prevent_double_submit = function () {
         $(document).on('click', '[type="submit"]', function(e) {
             var $elements = $(e.target.form.elements);
-            $elements.addClass('disabled');
+            $elements.each(function () {
+                if (!this.classList.contains('disabled')) {
+                    this.classList.add('disabled');
+                    $(this).data('preventDoubleSubmit', true);
+                }
+            });
         });
+        
+        window.addEventListener('unload', function() {
+            var $elements = $('[data-prevent-double-submit]');
+            $elements.each(function () {
+                this.classList.remove('disabled');
+                $(this).data('preventDoubleSubmit', false);
+            });
+        });
+
     };
     Abilian.fn.onAppInit(Abilian.fn.prevent_double_submit);
 
