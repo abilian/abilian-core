@@ -145,8 +145,13 @@ class ObjectView(BaseObjectView):
     return redirect(self.index_url())
 
 
-CANCEL_BUTTON = ButtonAction('form', 'cancel', title=_l(u'Cancel'))
-EDIT_BUTTON = ButtonAction('form', 'edit', btn_class='primary', title=_l(u'Save'))
+CANCEL_BUTTON = ButtonAction(
+  'form', 'cancel', title=_l(u'Cancel'),
+    btn_class='default cancel' # .cancel: if jquery.validate is used it will
+)                              # properly skip validation
+
+EDIT_BUTTON = ButtonAction('form', 'edit', btn_class='primary',
+                           title=_l(u'Save'))
 
 
 class ObjectEdit(ObjectView):
