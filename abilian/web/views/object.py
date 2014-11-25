@@ -271,6 +271,19 @@ class ObjectEdit(ObjectView):
     """
     pass
 
+  def handle_commit_exception(self, exc):
+    """
+    hook point to handle exception that may happen during commit.
+
+    It is the responsability of this method to perform a rollback if it is
+    required for handling `exc`. If the method does not handle `exc` if should
+    do nothing and return None.
+
+    :returns: * a valid :class:`Response` if exception is handled.
+              * `None` if exception is not handled. Default handling happens.
+    """
+    return None
+
   def form_valid(self):
     """
     Save object.
@@ -291,13 +304,21 @@ class ObjectEdit(ObjectView):
                     target=self.activity_target)
       session.commit()
     except ValidationError, e:
+      rv = self.handle_commit_exception(e)
+      if rv is not None:
+        return rv
       session.rollback()
       flash(e.message, "error")
+      return self.get()
     except sa.exc.IntegrityError, e:
+      rv = self.handle_commit_exception(e)
+      if rv is not None:
+        return rv
       session.rollback()
       logger.error(e)
       flash(_(u"An entity with this name already exists in the database."),
             "error")
+      return self.get()
     else:
       flash(self.message_success(), "success")
       return self.redirect_to_view()
