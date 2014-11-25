@@ -663,7 +663,8 @@ class Application(Flask, ServiceManager, PluginManager):
           'installed.')
         return
 
-      Sentry(self, logging=True, level=logging.ERROR)
+      ext = Sentry(self, logging=True, level=logging.ERROR)
+      ext.client.tags['process_type'] = 'web'
 
   @property
   def db(self):
