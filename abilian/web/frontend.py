@@ -524,7 +524,13 @@ class Module(object):
     csvfile = StringIO.StringIO()
     writer = csv.writer(csvfile)
 
-    objects = self.ordered_query(request)
+    objects = self.ordered_query(request).all()
+
+    # Return empty file if there is no result (should not happen often).
+    if not objects:
+      response = make_response("")
+      response.headers['content-type'] = 'application/csv'
+      return response
 
     form = self.edit_form_class()
     headers = ['id']
