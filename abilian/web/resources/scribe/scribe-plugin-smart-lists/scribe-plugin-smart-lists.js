@@ -1141,9 +1141,6 @@ define('scribe-plugin-smart-lists',['scribe-common/src/element'], function (elem
         currentChar = keys[event.charCode];
 
         var selection = new scribe.api.Selection();
-        if (!selection.range) {
-            return;
-        }
 
         // TODO: if a <p> with just this content
         var container = selection.range.commonAncestorContainer;
