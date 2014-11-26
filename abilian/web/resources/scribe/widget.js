@@ -30,9 +30,9 @@ define(
         'use strict';
 
         var defaultAllowedTags = {
-            'a': ['href', 'title'],
-            'abbr': ['title'],
-            'acronym': ['title'],
+            'a': {'href': true, 'title': true},
+            'abbr': {'title': true},
+            'acronym': {'title': true},
             'b': true,
             'blockquote': true,
             'br': true,
@@ -40,12 +40,12 @@ define(
             'em': true,
             'h1': true, 'h2': true, 'h3': true, 'h4': true, 'h5': true, 'h6': true,
             'i': true,
-            'img': ['src'],
+            'img': {'src': true},
             'li': true,
             'ol': true,
             'strong': true,
             'ul': true,
-            'p': ['align'],
+            'p': {'align': true},
             'u': true
         };
 
