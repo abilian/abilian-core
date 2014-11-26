@@ -912,6 +912,7 @@ class RichTextWidget(object):
 
   def __call__(self, field, **kwargs):
     value = kwargs.pop('value') if 'value' in kwargs else field._value()
+    kwargs.setdefault('allowed_tags', self.allowed_tags)
     return render_template(self.template, field=field, value=value, kw=kwargs)
 
 

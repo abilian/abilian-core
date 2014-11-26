@@ -1,8 +1,7 @@
 <div class="scribe-widget" data-name="{{ field.name }}"
-    {%- if kw.allowed_tags %}
-      data-allowed-tags="{{ kw.allowed_tag | tojson }}"{%- endif %}
-    {%- if kw.rows %} data-rows="{{ kw.rows }}"{%- endif %}>
-  <input type="hidden" name="{{ field.name }}" value="{{ value }}"/>
+     {%- if kw.allowed_tags %} data-allowed-tags="{{ kw.allowed_tags | tojson |forceescape }}"{%- endif %}
+     {%- if kw.rows %} data-rows="{{ kw.rows }}"{%- endif %}>
+  <input type="hidden" name="{{ field.name }}" value="{{ value }}" />
 
   <div class="btn-toolbar" role="toolbar">
     <div class="btn-group">
