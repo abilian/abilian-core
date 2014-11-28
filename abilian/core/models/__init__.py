@@ -19,6 +19,7 @@ from .base import (
 
 from .owned import OwnedMixin
 
+
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
   @declared_attr

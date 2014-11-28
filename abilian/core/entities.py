@@ -10,7 +10,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import mapper, Session, object_session
+from sqlalchemy.orm import mapper, Session
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String, UnicodeText
 from sqlalchemy import event

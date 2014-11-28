@@ -11,6 +11,7 @@ coveralls
 pylama
 pylint
 pep8
+pytest-flakes
 
 # To build docs
 Sphinx

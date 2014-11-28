@@ -87,7 +87,7 @@ def url_for_hit(hit, default=u'#'):
     return current_app.default_view.url_for(hit, object_type, object_id)
   except KeyError:
     return default
-  except Exception as exc:
+  except Exception:
     logger.error('Error building URL for search result', exc_info=True)
     return default
 

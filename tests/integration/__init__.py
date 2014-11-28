@@ -4,4 +4,4 @@ os.environ['PATH'] = "/usr/local/bin:" + os.environ['PATH']
 
 # Hack around the fact that twill (a requirement for Flask-Testing) embeds
 # an older version of subprocess.
-import subprocess
+import subprocess  # noqa

@@ -4,15 +4,14 @@ Create all standard extensions.
 
 """
 
-# Note: Because of issues with circular dependencies, Abilian-specific extensions are
-# created later.
+# Note: Because of issues with circular dependencies, Abilian-specific
+# extensions are created later.
 
 from __future__ import absolute_import
 
 __all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf',
            'upstream_info']
 
-import time
 from abilian.core.logging import patch_logger
 
 from . import upstream_info

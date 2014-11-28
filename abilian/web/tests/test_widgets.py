@@ -1,16 +1,14 @@
 # coding=utf-8
-import os
 
 from unittest import TestCase, skip
 import sqlalchemy as sa
-from flask import Flask
 from flask.signals import request_started
-from wtforms import Form, TextField, IntegerField
+from wtforms import Form, IntegerField, StringField
 
 from abilian.testing import BaseTestCase
 
 # Import for side-effects (monkey-patch)
-import abilian.web.forms
+import abilian.web.forms  # noqa
 
 from abilian.core.entities import Entity
 from abilian.web.views import default_view
@@ -38,9 +36,9 @@ class WidgetTestModel(Entity):
 
 
 class DummyForm(Form):
-  name = TextField(u'Nom du véhicule')
+  name = StringField(u'Nom du véhicule')
   price = IntegerField(u"Prix du véhicule")
-  email = TextField(u'email', view_widget=EmailWidget())
+  email = StringField(u'email', view_widget=EmailWidget())
 
 
 class TableViewTestCase(BaseTestCase):

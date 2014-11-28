@@ -6,7 +6,6 @@ from __future__ import absolute_import
 import pkg_resources
 from flask.ext.assets import Bundle
 
-from . import filters
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 

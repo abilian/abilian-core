@@ -10,7 +10,6 @@ import tempfile
 import shutil
 import warnings
 from pathlib import Path
-from contextlib import contextmanager
 
 from sqlalchemy.exc import SAWarning
 from flask import url_for
@@ -27,6 +26,7 @@ __all__ = ['TestConfig', 'BaseTestCase']
 
 _CLEAR_PWD = ClearPasswordStrategy()
 _DEFAULT_PWD = User.__password_strategy__
+
 
 class NullBundle(Bundle):
   """

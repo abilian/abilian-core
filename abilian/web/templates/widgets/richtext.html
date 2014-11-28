@@ -1,25 +1,34 @@
 <div class="scribe-widget" data-name="{{ field.name }}"
-     {%- if kw.allowed_tags %} data-allowed-tags="kw.allowed_tag | tojson"{%- endif %}
-     {%- if kw.rows %} data-rows="{{ kw.rows }}"{%- endif %}>
-  <input type="hidden" name="{{ field.name }}" value="{{ value }}" />
+    {%- if kw.allowed_tags %}
+      data-allowed-tags="{{ kw.allowed_tag | tojson }}"{%- endif %}
+    {%- if kw.rows %} data-rows="{{ kw.rows }}"{%- endif %}>
+  <input type="hidden" name="{{ field.name }}" value="{{ value }}"/>
 
   <div class="btn-toolbar" role="toolbar">
     <div class="btn-group">
-      <button type="button" class="btn btn-default dropdown-toggle select" data-toggle="dropdown">
+      <button type="button" class="btn btn-default dropdown-toggle select"
+          data-toggle="dropdown">
         {{ _('Paragraph') }}
       </button>
       <ul class="dropdown-menu" role="menu">
-        <li><a href="#" data-command-name="formatBlock" data-command-value="&lt;p&gt;">{{ _('Paragraph') }}</a></li>
-        <li><a href="#" class="h1" data-command-name="h1">{{ _('Heading 1') }}</a></li>
-        <li><a href="#" class="h2" data-command-name="h2">{{ _('Heading 2') }}</a></li>
-        <li><a href="#" class="h3" data-command-name="h3">{{ _('Heading 3') }}</a></li>
+        <li><a href="#" data-command-name="formatBlock"
+            data-command-value="&lt;p&gt;">{{ _('Paragraph') }}</a></li>
+        <li><a href="#" class="h1"
+            data-command-name="h1">{{ _('Heading 1') }}</a></li>
+        <li><a href="#" class="h2"
+            data-command-name="h2">{{ _('Heading 2') }}</a></li>
+        <li><a href="#" class="h3"
+            data-command-name="h3">{{ _('Heading 3') }}</a></li>
       </ul>
     </div>
 
     <div class="btn-group">
-      <button type="button" class="btn btn-default" title="{{ _('bold') }}" data-command-name="bold"><i class="fa fa-bold"></i></button>
-      <button type="button" class="btn btn-default" title="{{ _('italic') }}" data-command-name="italic"><i class="fa fa-italic"></i></button>
-      <button type="button" class="btn btn-default" title="{{ _('underline') }}" data-command-name="underline"><i class="fa fa-underline"></i></button>
+      <button type="button" class="btn btn-default" title="{{ _('bold') }}"
+          data-command-name="bold"><i class="fa fa-bold"></i></button>
+      <button type="button" class="btn btn-default" title="{{ _('italic') }}"
+          data-command-name="italic"><i class="fa fa-italic"></i></button>
+      <button type="button" class="btn btn-default" title="{{ _('underline') }}"
+          data-command-name="underline"><i class="fa fa-underline"></i></button>
     </div>
 
     {# default implementation (native) uses style=""; we could implement a

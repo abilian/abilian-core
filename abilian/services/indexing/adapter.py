@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 
 class SchemaAdapter(object):
   """
-  Base class for objects to schema adapter. The purpose of adapters is
-  that given an object they return kwargs for document
+  Abstract base class for objects to schema adapter. The purpose of adapters is
+  that given an object they return kwargs for document.
   """
   __metaclass__ = ABCMeta
 

@@ -5,11 +5,11 @@ from __future__ import absolute_import
 
 from abilian.core.signals import register_js_api
 from abilian.web import url_for
-from abilian.web.action import Endpoint
 
 from .criterion import BaseCriterion, TextSearchCriterion
 
 __all__ = ['BaseCriterion', 'TextSearchCriterion']
+
 
 def _do_register_js_api(sender):
   app = sender

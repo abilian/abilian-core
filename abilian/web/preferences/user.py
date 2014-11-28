@@ -11,7 +11,7 @@ from flask import g, current_app, request, redirect, url_for, render_template, \
     flash
 from flask.ext.wtf.file import FileField
 from werkzeug.exceptions import InternalServerError
-from wtforms.fields import TextField
+from wtforms.fields import StringField
 from wtforms.validators import ValidationError
 
 from abilian.services.preferences.panel import PreferencePanel
@@ -22,10 +22,10 @@ from abilian.i18n import _l, _
 
 class UserPreferencesForm(Form):
 
-  password = TextField(_l(u'New Password'),
-                       widget=widgets.PasswordInput(autocomplete='off'))
-  confirm_password= TextField(_l(u'Confirm new password'),
-                              widget=widgets.PasswordInput(autocomplete='off'))
+  password = StringField(_l(u'New Password'),
+                         widget=widgets.PasswordInput(autocomplete='off'))
+  confirm_password= StringField(_l(u'Confirm new password'),
+                                widget=widgets.PasswordInput(autocomplete='off'))
 
   photo = FileField(label=_l('Photo'),
                     widget=widgets.ImageInput(width=55, height=55))

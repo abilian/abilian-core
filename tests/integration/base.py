@@ -3,7 +3,7 @@ Base TestCase for integration tests.
 """
 
 # Don't remove
-import fix_path
+import fix_path  # noqa
 
 import os
 

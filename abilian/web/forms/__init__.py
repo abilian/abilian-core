@@ -15,10 +15,10 @@ from flask.ext.wtf.form import Form as BaseForm
 
 from abilian.core.logging import patch_logger
 
-from .fields import *
-from .filters import *
-from .validators import *
-from .widgets import *
+from .fields import *  # noqa
+from .filters import *  # noqa
+from .validators import *  # noqa
+from .widgets import *  # noqa
 
 logger = logging.getLogger(__name__)
 

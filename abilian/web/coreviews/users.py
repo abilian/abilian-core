@@ -13,6 +13,7 @@ from abilian.core.models.subjects import User
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
+
 @bp.url_value_preprocessor
 def get_user(endpoint, values):
   try:

@@ -33,6 +33,7 @@ Contents
    introduction
    installing
    contributing
+   coding-standard
    api
    changelog
    credits

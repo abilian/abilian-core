@@ -12,7 +12,7 @@
       <td>
         {%- if loop.first %}
           {%- for subfield in fieldform if subfield.is_hidden %}
-          {%- set attrs={'data-short-name': subfield.short_name} %}
+            {%- set attrs={'data-short-name': subfield.short_name} %}
             {{ subfield(id=subfield.name, **attrs) }}
           {%- endfor %}
         {%- endif %}

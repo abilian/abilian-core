@@ -12,10 +12,7 @@ from functools import partial
 from cStringIO import StringIO
 
 from webassets.filter import Filter, register_filter, get_filter, ExternalTool
-from webassets.bundle import _effective_debug_level
-from webassets.merge import select_filters, FilterTool
 from webassets.utils import working_directory
-from flask.ext.assets import Bundle
 
 
 class ImportCSSFilter(Filter):

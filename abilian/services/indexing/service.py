@@ -15,7 +15,6 @@ from __future__ import absolute_import
 
 import os
 import logging
-import pprint
 from inspect import isclass
 
 import sqlalchemy as sa
@@ -45,6 +44,7 @@ from abilian.core.extensions import celery, db
 
 from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
+
 
 logger = logging.getLogger(__name__)
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)

@@ -18,12 +18,12 @@ from abilian.core.util import noproxy
 from abilian.core.models.subjects import User, Group
 
 
-#: A Whoosh analyzer split on word boundaries and folds accents and case.
+#: A Whoosh analyzer that splits on word boundaries and folds accents and case.
 accent_folder = (RegexTokenizer(r'\w+')  # defaults doesn't split on '.'
                  | LowercaseFilter()
                  | CharsetFilter(accent_map))
 
-# Analyzer for edge-ngrams, from 2 to 6 characters long
+#: Analyzer for edge-ngrams, from 2 to 6 characters long
 edge_ngram = accent_folder | NgramFilter(minsize=2, maxsize=6, at='start')
 
 

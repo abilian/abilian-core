@@ -6,3 +6,5 @@ in web application, specially CRM-like applications.
 from __future__ import absolute_import
 
 from .util import url_for
+
+__all__ = ['url_for']

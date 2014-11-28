@@ -35,6 +35,9 @@ pep8-stats:
 pytest-pep8:
 	py.test --pep8 -m pep8 $(SRC) tests
 
+pytest-flake:
+	py.test --flakes -m flakes $(SRC) tests
+
 flake8:
 	flake8 $(SRC)
 
@@ -76,7 +79,7 @@ clean:
 	rm -f junit-py27.xml
 
 tidy: clean
-	rm -rf .tox .travis-solo
+	rm -rf .tox .dox .travis-solo
 
 update-pot:
 	# _n => ngettext, _l => lazy_gettext

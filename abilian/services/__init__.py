@@ -27,7 +27,7 @@ __all__ = ['Service', 'ServiceState', 'get_service',
            'audit_service', 'index_service', 'activity_service', 'auth_service',
            'settings_service', 'security_service', 'preferences_service',
            'repository_service', 'session_repository_service',
-           'vocabularies_service',]
+           'vocabularies_service', 'converter']
 
 auth_service = AuthService()
 activity_service = ActivityService()

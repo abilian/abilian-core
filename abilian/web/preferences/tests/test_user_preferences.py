@@ -32,7 +32,7 @@ class TestUserPreferences(BaseTestCase):
         method='POST',
         data={'photo': photo,},
       )
-    with self.app.test_request_context(url, **kwargs) as req:
+    with self.app.test_request_context(url, **kwargs):
       form = UserPreferencesForm(request.form)
       form.validate()
       assert form.photo.data is not None

@@ -12,7 +12,7 @@ from __future__ import absolute_import
 
 from flask import g
 from jinja2 import Template, Markup
-from .action import Action, Endpoint, Glyphicon, ENABLED, ACTIVE, getset
+from .action import Action, Glyphicon, ENABLED, ACTIVE, getset, Endpoint
 
 
 class NavItem(Action):
