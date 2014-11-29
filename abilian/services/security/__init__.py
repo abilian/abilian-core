@@ -1,3 +1,3 @@
-from .service import security
+from .service import security  # noqa
+from .models import *  # noqa
 
-from .models import *

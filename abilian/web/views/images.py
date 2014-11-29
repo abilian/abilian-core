@@ -7,24 +7,17 @@ from __future__ import absolute_import
 import hashlib
 
 import sqlalchemy as sa
-
+import pkg_resources
 from flask import Blueprint, request, make_response, g, Response
 from werkzeug.exceptions import BadRequest, NotFound
 from abilian.core.models.subjects import User
 from abilian.services.image import crop_and_resize
 
+
 blueprint = Blueprint('images', __name__, url_prefix='/images')
 route = blueprint.route
 
-import pkg_resources
-
 DEFAULT_AVATAR = pkg_resources.resource_filename('abilian.web', 'resources/img/avatar-default.png')
-
-
-def get_default_picture(type):
-  path = join(dirname(__file__), "..", "..", "static", "images", "user-%s.png" % type)
-  photo = open(path).read()
-  return photo
 
 
 @route("/users/<int:user_id>/mugshot")

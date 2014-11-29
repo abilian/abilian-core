@@ -1,4 +1,2 @@
-__author__ = 'fermigier'
-
-from .models import *
-from .service import *
+from .models import *  # noqa
+from .service import *  # noqa

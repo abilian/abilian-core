@@ -15,7 +15,7 @@ import re
 
 from flask import (session, redirect, request, g,
                    Blueprint, jsonify, make_response, url_for,
-                   current_app)
+                   current_app, render_template)
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
@@ -30,7 +30,6 @@ from abilian.services import audit_service
 
 from . import search
 from .nav import BreadcrumbItem, Endpoint
-from .decorators import templated
 from .views import default_view, ObjectView, ObjectEdit, ObjectCreate, \
     ObjectDelete
 from .forms.fields import ModelFieldList
@@ -416,7 +415,6 @@ class Module(object):
   # Exposed views
   #
   @expose("/")
-  @templated("default/list_view.html")
   def list_view(self):
     # TODO: should be an instance variable.
     table_view = AjaxMainTableView(
@@ -426,7 +424,8 @@ class Module(object):
       search_criterions=self.search_criterions,)
     rendered_table = table_view.render()
 
-    return dict(rendered_table=rendered_table, module=self)
+    ctx = dict(rendered_table=rendered_table, module=self)
+    return render_template("default/list_view.html", **ctx)
 
   @expose("/json")
   def list_json(self):

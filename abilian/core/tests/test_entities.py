@@ -76,24 +76,23 @@ class EntityTestCase(TestCase):
 
   def test_auto_slug(self):
     session = self.get_session()
-    c1 = contact = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
-
-    session.add(contact)
+    contact1 = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+    session.add(contact1)
     session.flush()
-    self.assertEquals(contact.slug, u'pacome-hegesippe-adelard-ladislas')
+    self.assertEquals(contact1.slug, u'pacome-hegesippe-adelard-ladislas')
 
     # test when name is None
-    contact = DummyContact()
-    session.add(contact)
+    contact2 = DummyContact()
+    session.add(contact2)
     session.flush()
-    expected = u'dummycontact-{}'.format(contact.id)
-    self.assertEquals(contact.slug, expected)
+    expected = u'dummycontact-{}'.format(contact2.id)
+    self.assertEquals(contact2.slug, expected)
 
     # test numbering if slug already exists:
-    c2 = contact = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
-    session.add(contact)
+    contact3 = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+    session.add(contact3)
     session.flush()
-    self.assertEquals(contact.slug, u'pacome-hegesippe-adelard-ladislas-1')
+    self.assertEquals(contact3.slug, u'pacome-hegesippe-adelard-ladislas-1')
 
   def test_entity_type(self):
     class MyType(Entity):

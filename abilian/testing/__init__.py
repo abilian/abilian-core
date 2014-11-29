@@ -1,9 +1,9 @@
 """
 Elements to build test cases for an :class:`abilian.app.Application`
 """
+
 import os
 from time import time
-
 import subprocess
 import requests
 import tempfile
@@ -114,7 +114,7 @@ class BaseTestCase(TestCase):
   SQLALCHEMY_WARNINGS_AS_ERROR = True
 
   #: list services names that should be started during setUp. 'repository' and
-  #'session_repository' services are always started, do not list them here.
+  #: 'session_repository' services are always started, do not list them here.
   SERVICES = ()
 
   #: enable assets building during tests. False by default.
@@ -134,7 +134,6 @@ class BaseTestCase(TestCase):
       else:
         cls.SERVICES = tuple(cls.SERVICES)
 
-    join = os.path.join
     tmp_dir = Path(tempfile.mkdtemp(prefix='tmp-py-unittest-',
                                     suffix='-' + cls.__name__,))
     cls.TEST_INSTANCE_PATH = str(tmp_dir)
@@ -362,7 +361,7 @@ class BaseTestCase(TestCase):
 
     for message in body['messages']:
       if message['type'] == 'error':
-        detail = u'on line %s [%s]\n%s' % (
+        detail = u'on line {0} [{1}]\n{2}'.format(
           message['lastLine'],
           message['extract'],
           message['message'])

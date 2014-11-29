@@ -14,6 +14,8 @@ def templated(template=None):
   The idea of this decorator is that you return a dictionary with the values
   passed to the template from the view function and the template
   is automatically rendered.
+
+  @deprecated
   """
   def decorator(f):
     @wraps(f)

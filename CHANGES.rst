@@ -1,11 +1,13 @@
 Changelog for Abilian Core
 ==========================
 
-0.2.1 (unreleased)
+0.3.0 (unreleased)
 ------------------
 
 - Dependencies: moved deps to ./requirements.txt + cleanup / update.
 - Testing: Tox and Travis config updates.
+- Fixed many pyflakes warnings.
+- Deprecated the @templated decorator (will be removed in 0.4.0).
 
 
 0.2.0 (2014-08-07)
