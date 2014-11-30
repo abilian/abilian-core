@@ -50,6 +50,10 @@ pylint:
 check-docs:
 	sphinx-build -W -b html docs/ docs/_build/html
 
+vagrant-tests:
+	vagrant up
+	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
+
 #
 # Everything else
 #
