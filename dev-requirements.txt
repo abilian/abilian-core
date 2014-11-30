@@ -1,19 +1,27 @@
+-r requirements.txt
+
 # For running tests
-pytest
+pytest>=2.4.0
 pytest-xdist
-mock
+
+# Backport of Python 3 mocking library
+mock>=1.0.1
 
 # For coverage
 pytest-cov
+
+# Client for the coveralls.io web service (coverage reporting)
 coveralls
 
 # Static code analysis
 pylama
 pylint
-pep8
+pytest-pep8
 pytest-flakes
 
 # To build docs
 Sphinx
+
+# Standard theme for readthedocs.com
 sphinx-rtd-theme
 
