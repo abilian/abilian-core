@@ -29,8 +29,8 @@ class EntityTestCase(TestCase):
 
   def test(self):
     contact = DummyContact(first_name=u"John")
-    self.assertEquals(None, contact.creator)
-    self.assertEquals(None, contact.owner)
+    assert contact.creator is None
+    assert contact.owner is None
 
     user = User()
     contact.owner = user
@@ -41,13 +41,13 @@ class EntityTestCase(TestCase):
     obj = DummyContact(name=u'a b c')
     session.add(obj)
     session.flush()
-    self.assertEquals(obj.auto_slug, u'a-b-c')
+    assert obj.auto_slug == u'a-b-c'
     obj.name = u"C'est l'été !"
-    self.assertEquals(obj.auto_slug, u'c-est-l-ete')
+    assert obj.auto_slug == u'c-est-l-ete'
 
     # with a special space character
     obj.name = u"a_b\u205fc"  # U+205F: MEDIUM MATHEMATICAL SPACE
-    self.assertEquals(obj.auto_slug, u'a-b-c')
+    assert obj.auto_slug == u'a-b-c'
 
     # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH
     # U+2014 (—). Standard separator is \u002d (\x2d) "-" HYPHEN-MINUS.
@@ -55,9 +55,9 @@ class EntityTestCase(TestCase):
     # substitution is done (order matters).
     obj.name = u'a\u2013b\u2014c'  # u'a–b—c'
     slug = obj.auto_slug
-    self.assertEquals(slug, u'a-b-c')
-    self.assertTrue(u'\u2013' not in slug)
-    self.assertTrue(u'\u002d' in slug)
+    assert slug == u'a-b-c'
+    assert u'\u2013' not in slug
+    assert u'\u002d' in slug
 
   def test_updated_at(self):
     session = self.get_session()
@@ -79,20 +79,20 @@ class EntityTestCase(TestCase):
     contact1 = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
     session.add(contact1)
     session.flush()
-    self.assertEquals(contact1.slug, u'pacome-hegesippe-adelard-ladislas')
+    assert contact1.slug == u'pacome-hegesippe-adelard-ladislas'
 
     # test when name is None
     contact2 = DummyContact()
     session.add(contact2)
     session.flush()
     expected = u'dummycontact-{}'.format(contact2.id)
-    self.assertEquals(contact2.slug, expected)
+    assert contact2.slug == expected
 
     # test numbering if slug already exists:
     contact3 = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
     session.add(contact3)
     session.flush()
-    self.assertEquals(contact3.slug, u'pacome-hegesippe-adelard-ladislas-1')
+    assert contact3.slug == u'pacome-hegesippe-adelard-ladislas-1'
 
   def test_entity_type(self):
     class MyType(Entity):
@@ -105,14 +105,14 @@ class EntityTestCase(TestCase):
     class Fixed(Entity):
       entity_type = 'some.fixed.module.fixed_type'
 
-    self.assertEquals(Fixed.entity_type, 'some.fixed.module.fixed_type')
-    self.assertEquals(Fixed._object_type(), 'some.fixed.module.fixed_type')
+    assert Fixed.entity_type == 'some.fixed.module.fixed_type'
+    assert Fixed._object_type() == 'some.fixed.module.fixed_type'
 
     class OtherBase(Entity):
       ENTITY_TYPE_BASE = 'some.module'
 
-    self.assertEquals(OtherBase.entity_type, 'some.module.OtherBase')
-    self.assertEquals(OtherBase._object_type(), 'some.module.OtherBase')
+    assert OtherBase.entity_type == 'some.module.OtherBase'
+    assert OtherBase._object_type() == 'some.module.OtherBase'
 
     # test when ENTITY_TYPE_BASE is in ancestors
     class Base(object):
@@ -121,25 +121,23 @@ class EntityTestCase(TestCase):
     class InheritedBase(Base, Entity):
       pass
 
-    self.assertEquals(InheritedBase.entity_type, 'from.ancestor.InheritedBase')
-    self.assertEquals(InheritedBase._object_type(), 'from.ancestor.InheritedBase')
+    assert InheritedBase.entity_type == 'from.ancestor.InheritedBase'
+    assert InheritedBase._object_type() == 'from.ancestor.InheritedBase'
 
 
-class InfoTestCase(TestCase):
+def test_info():
+  info = SEARCHABLE
+  assert info['searchable']
 
-  def test(self):
-    info = SEARCHABLE
-    assert info['searchable']
+  info = NOT_SEARCHABLE
+  assert not info['searchable']
 
-    info = NOT_SEARCHABLE
-    assert not info['searchable']
+  info = SEARCHABLE + AUDITABLE
+  assert info['searchable']
+  assert info['auditable']
+  assert isinstance(info, Info)
 
-    info = SEARCHABLE + AUDITABLE
-    assert info['searchable']
-    assert info['auditable']
-    assert isinstance(info, Info)
-
-    info = SEARCHABLE | AUDITABLE
-    assert info['searchable']
-    assert info['auditable']
-    assert isinstance(info, Info)
+  info = SEARCHABLE | AUDITABLE
+  assert info['searchable']
+  assert info['auditable']
+  assert isinstance(info, Info)

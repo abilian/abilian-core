@@ -11,6 +11,7 @@ from abilian.testing import BaseTestCase
 from .models import Vocabulary, BaseVocabulary
 from .service import vocabularies
 
+
 class TestVocabularies(BaseTestCase):
 
   DefaultVoc = Vocabulary('defaultstates', label=u'States')
@@ -54,12 +55,12 @@ class TestVocabularies(BaseTestCase):
 
     # test default ordering
     assert ([i.label for i in PriorityVoc.query.active().all()]
-            == [u'Immediate', u'Urgent', u'High', u'Normal', u'Low',])
+            == [u'Immediate', u'Urgent', u'High', u'Normal', u'Low'])
 
     # no default ordering when using .values(): explicit ordering required
     query = PriorityVoc.query.active().order_by(PriorityVoc.position.asc())
     assert ([i.label for i in query.values(PriorityVoc.label)]
-            == [u'Immediate', u'Urgent', u'High', u'Normal', u'Low',])
+            == [u'Immediate', u'Urgent', u'High', u'Normal', u'Low'])
 
     # test db-side constraint for non-empty labels
     try:
@@ -75,12 +76,11 @@ class TestVocabularies(BaseTestCase):
     item = PriorityVoc.query.by_position(1)
     item.active = False
     assert ([i.label for i in PriorityVoc.query.active().all()]
-            == [u'Immediate', u'High', u'Normal', u'Low',])
+            == [u'Immediate', u'High', u'Normal', u'Low'])
 
     # test by_position with no results
     item = PriorityVoc.query.active().by_position(1)
     assert item is None
-
 
   def test_admin_panel_reorder(self):
     Voc = self.DefaultVoc

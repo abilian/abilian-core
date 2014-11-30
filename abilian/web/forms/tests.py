@@ -29,13 +29,13 @@ class FiltersTestCase(unittest.TestCase):
     assert filters.strip(u' voilà ') == u'voilà'
 
   def test_uppercase(self):
-    assert filters.uppercase(None) == None
+    assert filters.uppercase(None) is None
     assert filters.uppercase(4) == 4
     assert filters.uppercase(' a string ') == ' A STRING '
     assert filters.uppercase(u' Voilà ') == u' VOILÀ '
 
   def test_lowercase(self):
-    assert filters.lowercase(None) == None
+    assert filters.lowercase(None) is None
     assert filters.lowercase(4) == 4
     assert filters.lowercase(' A STRING ') == ' a string '
     assert filters.lowercase(u' VOILÀ ') == u' voilà '

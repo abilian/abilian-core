@@ -127,6 +127,7 @@ class Admin(object):
 
   def get_panel_url_rule_adder(self, panel, base_url, base_endpoint):
     extension = self
+
     def add_url_rule(rule, endpoint=None, view_func=None, *args, **kwargs):
       if not rule:
         # '' is already used for panel get/post
@@ -164,7 +165,6 @@ class Admin(object):
     panel = self._panels_endpoints.get(endpoint)
     if panel is not None:
       panel.url_value_preprocess(endpoint, view_args)
-
 
   def build_breadcrumbs(self, endpoint, view_args):
     g.breadcrumb.append(self.root_breadcrumb_item)

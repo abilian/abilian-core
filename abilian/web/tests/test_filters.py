@@ -126,5 +126,4 @@ class TestFilters(FlaskTestCase):
     ... lorem</p>
 
 <p>Last one - a single line</p>
-    '''
-        )
+    ''')

@@ -104,7 +104,7 @@ class SettingsNamespace(object):
   def keys(self, prefix=''):
     prefix = ':'.join((self.name, prefix))
     start = len(self.name) + 1  # +1 for colon
-    return [ k[start:] for k in self.service.keys(prefix=prefix)]
+    return [k[start:] for k in self.service.keys(prefix=prefix)]
 
   def iteritems(self, prefix=''):
     prefix = ':'.join((self.name, prefix))

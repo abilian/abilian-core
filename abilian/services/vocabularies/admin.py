@@ -14,10 +14,12 @@ from abilian.web.action import Glyphicon
 
 from .forms import EditForm
 
+
 class ViewBase(object):
   title = _l(u'Vocabulary entry')
   base_template = "admin/_base.html"
   Form = EditForm
+  Model = None
 
   def prepare_args(self, args, kwargs):
     if self.Model is None:
@@ -43,9 +45,8 @@ class Edit(ViewBase, views.ObjectEdit):
 class Create(views.ObjectCreate, Edit):
   def init_object(self, args, kwargs):
     args, kwargs = super(Create, self).init_object(args, kwargs)
-    self.obj.active = True # do this because default value seems ignored?
+    self.obj.active = True  # do this because default value seems ignored?
     return args, kwargs
-
 
 
 class Delete(ViewBase, views.ObjectDelete):

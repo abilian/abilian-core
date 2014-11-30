@@ -33,7 +33,6 @@ class VocabularyService(Service):
       by_group.setdefault(voc.Meta.group, []).append(voc)
     return by_group
 
-
   def get_vocabulary(self, name, group=None):
     vocs = self.grouped_vocabularies
     for voc in vocs.get(group, ()):

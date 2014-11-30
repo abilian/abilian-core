@@ -7,6 +7,7 @@
 .vagrant
 .cache
 .coveralls.yml
+.ropeproject
 *,cover
 
 env

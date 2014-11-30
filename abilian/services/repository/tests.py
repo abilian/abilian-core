@@ -31,9 +31,9 @@ class TestRepository(BaseTestCase):
     self.assertTrue(isinstance(p, Path))
 
     # FIXME: fails on a Mac due to symlinks /var@ -> /private/var
-    #expected = Path(self.app.instance_path, 'data', 'files',
-    #                '4f', '80', '4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
-    #self.assertEquals(p, expected)
+    # expected = Path(self.app.instance_path, 'data', 'files',
+    #                 '4f', '80', '4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
+    # self.assertEquals(p, expected)
 
   def test_get(self):
     self.assertRaises(ValueError, repository.get, self.UUID_STR)
@@ -238,14 +238,15 @@ class TestSessionRepository(BaseTestCase):
     state = self.svc.app_state
     root_transaction = state.get_transaction(self.session)
 
-    self.assertFalse(root_transaction.path.exists())
+    assert not root_transaction.path.exists()
 
     with session.begin(subtransactions=True):
       transaction = state.get_transaction(self.session)
-      self.assertFalse(transaction.path.exists())
+      assert not transaction.path.exists()
       self.svc.set(session, self.UUID, b'my file content')
-      self.assertTrue(transaction.path.exists())
+      assert transaction.path.exists()
 
-    self.assertTrue(root_transaction.path.exists())
-    self.assertEquals(self.svc.get(session, self.UUID).open('rb').read(), b'my file content')
-    self.assertTrue(root_transaction.path.exists())
+    assert root_transaction.path.exists()
+    content = self.svc.get(session, self.UUID).open('rb').read()
+    assert content == b'my file content'
+    assert root_transaction.path.exists()

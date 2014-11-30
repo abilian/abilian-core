@@ -73,10 +73,9 @@ class RepositoryService(Service):
   def get(self, uuid, default=None):
     """
     Return absolute :class:`Path` object for given uuid, if this uuid exists in
-    repository.
+    repository, or `default` if it doesn't.
 
     :param:uuid: :class:`UUID` instance
-    :raises:KeyError if file does not exists
     """
     path = self.abs_path(uuid)
     if not path.exists():
@@ -273,7 +272,7 @@ class SessionRepositoryService(Service):
       listen(Session, "after_commit", self.commit)
       listen(Session, "after_flush", self.flush)
       listen(Session, "after_rollback", self.rollback)
-      #appcontext_tearing_down.connect(self.clear_transaction, app)
+      # appcontext_tearing_down.connect(self.clear_transaction, app)
 
   def _session_for(self, model_or_session):
     """
@@ -435,7 +434,7 @@ class RepositoryTransaction(object):
     p._set -= self._deleted
 
     if self._set:
-      p.begin() # ensure p.path exists
+      p.begin()  # ensure p.path exists
 
     for uuid in self._set:
       content_path = self.path / str(uuid)
@@ -444,7 +443,7 @@ class RepositoryTransaction(object):
 
   def _add_to(self, uuid, dest, other):
     """
-    Add `item` to `dest` set, ensuring `item` is not present in `other` set
+    Add `item` to `dest` set, ensuring `item` is not present in `other` set.
     """
     _assert_uuid(uuid)
     try:

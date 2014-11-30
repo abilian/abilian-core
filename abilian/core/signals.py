@@ -40,7 +40,7 @@ entity_updated = signals.signal("entity:updated")
 #: Currently not used and subject to change.
 entity_deleted = signals.signal("entity:deleted")
 
-#user_created = signals.signal("user:created")
-#user_deleted = signals.signal("user:deleted")
+# user_created = signals.signal("user:created")
+# user_deleted = signals.signal("user:deleted")
 
 # More signals ?

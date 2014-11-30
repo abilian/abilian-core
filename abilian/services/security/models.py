@@ -64,7 +64,7 @@ Manager = Role('manager')
 
 class RoleAssignment(db.Model):
   __tablename__ = "roleassignment"
-  __table_args__ =  (
+  __table_args__ = (
     CheckConstraint(
       "(CAST(anonymous AS INTEGER) = 1)"
       " OR "
@@ -100,6 +100,8 @@ class RoleAssignment(db.Model):
 # constrained columns."
 #
 # The solution is to build specific UNIQUE indexes, only for postgres
+#
+# noinspection PyComparisonWithNone
 def _postgres_indexes():
   role = RoleAssignment.role
   user_id = RoleAssignment.user_id

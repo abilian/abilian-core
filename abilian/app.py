@@ -232,7 +232,6 @@ class Application(Flask, ServiceManager, PluginManager):
           'options': dict(output=filename, filters=js_filters),
       }
 
-
     for http_error_code in (403, 404, 500):
       self.install_default_handler(http_error_code)
 
@@ -297,6 +296,7 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     path = Path(self.instance_path)
     err = None
+    eno = 0
 
     if not path.exists():
       if create:
@@ -317,7 +317,6 @@ class Application(Flask, ServiceManager, PluginManager):
 
     if not self.DATA_DIR.exists():
       self.DATA_DIR.mkdir(0775, parents=True)
-
 
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
@@ -401,8 +400,6 @@ class Application(Flask, ServiceManager, PluginManager):
         for view_name in self.view_functions:
           if view_name.startswith('debugtoolbar.'):
             extensions.csrf.exempt(self.view_functions[view_name])
-
-
 
   def init_extensions(self):
     """
@@ -771,7 +768,7 @@ class Application(Flask, ServiceManager, PluginManager):
     Only existing files are registered.
     """
     languages = self.config['BABEL_ACCEPT_LANGUAGES']
-    assets  = self.extensions['webassets']
+    assets = self.extensions['webassets']
 
     for path in paths:
       for lang in languages:

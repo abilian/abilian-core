@@ -13,19 +13,19 @@ from abilian.core.util import slugify
 
 _BaseMeta = db.Model.__class__
 
+
 class VocabularyQuery(BaseQuery):
   """
   """
   def active(self):
     """
-    returns only valid vocabulary items
+    Returns only valid vocabulary items
     """
     return self.filter_by(active=True)
 
-
   def by_position(self, position):
     """
-    Like .get(), but by position number
+    Like `.get()`, but by position number
     """
     # don't use .first(), so that MultipleResultsFound can be raised
     try:
@@ -36,7 +36,7 @@ class VocabularyQuery(BaseQuery):
 
 class _VocabularyMeta(_BaseMeta):
   """
-  Metaclass for vocabularies. Enforce __tablename__
+  Metaclass for vocabularies. Enforces `__tablename__`.
   """
   def __new__(cls, name, bases, d):
     meta = d.get('Meta')

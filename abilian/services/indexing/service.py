@@ -416,7 +416,8 @@ class WhooshIndexService(Service):
     created here; this could impose a penalty on the initial commit of a model.
     """
     if (not self.running
-        or session.transaction.nested # inside a sub-transaction: not yet written in DB
+        or session.transaction.nested  # inside a sub-transaction:
+                                       # not yet written in DB
         or session is not db.session()):
       # note: we have not tested too far if session is enclosed in a transaction
       # at connection level. For now it's not a standard use case, it would most

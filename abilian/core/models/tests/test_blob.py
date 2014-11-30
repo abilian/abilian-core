@@ -3,7 +3,6 @@
 """
 from __future__ import absolute_import
 
-from unittest import TestCase
 import uuid
 
 from abilian.testing import BaseTestCase as AbilianTestCase
@@ -13,25 +12,29 @@ from abilian.services import (
 )
 from ..blob import Blob
 
+#
+# Unit tests
+#
+def test_auto_uuid():
+  b = Blob()
+  assert b.uuid is not None
+  assert isinstance(b.uuid, uuid.UUID)
 
-class BlobUnitTestCase(TestCase):
-
-  def test_auto_uuid(self):
-    b = Blob()
-    self.assertIsNot(b.uuid, None)
-    self.assertTrue(isinstance(b.uuid, uuid.UUID))
-
-    # test provided uuid is not replaced by a new one
-    u = uuid.UUID('4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
-    b = Blob(uuid=u)
-    self.assertTrue(isinstance(b.uuid, uuid.UUID))
-    self.assertEquals(b.uuid, u)
-
-  def test_meta(self):
-    b = Blob()
-    assert b.meta == dict()
+  # test provided uuid is not replaced by a new one
+  u = uuid.UUID('4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
+  b = Blob(uuid=u)
+  assert isinstance(b.uuid, uuid.UUID)
+  assert b.uuid, u
 
 
+def test_meta():
+  b = Blob()
+  assert b.meta == dict()
+
+
+#
+# Integration tests
+#
 class BlobTestCase(AbilianTestCase):
 
   def test_value(self):

@@ -117,7 +117,7 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.has_role(group, "admin")
 
     # FIXME
-    #assert security.get_roles(group) == ['admin']
+    # assert security.get_roles(group) == ['admin']
 
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
@@ -125,7 +125,7 @@ class SecurityTestCase(IntegrationTestCase):
 
     security.ungrant_role(group, "admin")
     assert not security.has_role(group, "admin")
-    #assert security.get_roles(group) == []
+    # assert security.get_roles(group) == []
 
     assert not security.has_permission(user, "read")
     assert not security.has_permission(user, "write")
@@ -184,7 +184,6 @@ class SecurityTestCase(IntegrationTestCase):
     self.session.flush()
     self.assertFalse(folder.inherit_security)
     self.assertEquals(SecurityAudit.query.count(), 1)
-
 
     security.set_inherit_security(folder, True)
     self.session.flush()

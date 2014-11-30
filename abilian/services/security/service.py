@@ -62,6 +62,7 @@ def require_flush(fun):
   return ensure_flushed
 
 
+# noinspection PyComparisonWithNone
 class SecurityService(Service):
   """ """
   name = 'security'
@@ -183,7 +184,7 @@ class SecurityService(Service):
 
   def _role_cache(self, principal):
     if not self._has_role_cache(principal):
-      #FIXME: should call _fill_role_cache?
+      # FIXME: should call _fill_role_cache?
       principal.__roles_cache__ = {}
 
     return principal.__roles_cache__

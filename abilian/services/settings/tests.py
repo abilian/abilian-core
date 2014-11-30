@@ -51,15 +51,15 @@ class SettingTestCase(TestCase):
   def test_json(self):
     s = Setting(key='key', type='json')
     s.value = [1, 2, u'été', {1: '1', 2: '2'}]
-    self.assertEqual(s._value, '[1, 2, "\\u00e9t\\u00e9", {"1": "1", "2": "2"}]')
+    assert s._value == '[1, 2, "\\u00e9t\\u00e9", {"1": "1", "2": "2"}]'
 
     s.value = None
-    self.assertEqual(s._value, 'null')
+    assert s._value == 'null'
 
   def test_empty_value(self):
     s = Setting(key='key', type='json')
     s._value = None
-    self.assertEqual(s.value, EmptyValue)
+    assert s.value == EmptyValue
 
 
 class SettingsServiceTestCase(BaseTestCase):
