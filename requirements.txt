@@ -45,7 +45,6 @@ pygeoip
 progressbar-latest
 
 # Forms
-WTForms
 WTForms-Alchemy==0.12.9
 # required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
 SQLAlchemy-Utils<0.24.0
@@ -55,7 +54,9 @@ python-magic
 xlwt
 xlrd
 
+#
 # Assets management (might not be necessary if distributing compiled assets)
+#
 jsmin
 cssmin
 # Version needed for some reason. Anyway.
