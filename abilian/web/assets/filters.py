@@ -213,7 +213,7 @@ class Less(ExternalTool):
     super(Less, self).setup()
     if self.run_in_debug is False:
       # Disable running in debug mode for this instance.
-        self.max_debug_level = False
+      self.max_debug_level = False
 
   def input(self, in_, out, **kw):
     if self.as_output:
