@@ -389,7 +389,7 @@ class SingleView(object):
     return Markup(render_template(template,
                                   view=self,
                                   csrf_token=csrf.field(),
-                                  entity=item, panels=panels))
+                                  entity=item, panels=panels, form=form))
 
   def render_form(self, form, for_new=False, has_save_and_add_new=False):
     # Client-side rules for jQuery.validate
