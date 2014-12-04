@@ -42,27 +42,27 @@
 
     <!-- breadcrumbs -->
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-sm-12">
         {% include "breadcrumbs.html" %}
       </div>
     </div>
 
     <!-- flash messages -->
     <div class="row" id="flash-messages">
-      <div class="col-md-12">
+      <div class="col-xs-12">
         {%- include "flash-messages.html" %}
       </div>
     </div>
 
     <div class="row">
-      <header class="col-md-12">
+      <header class="col-xs-12">
         {% block header %}
         {%- endblock %}
       </header>
     </div>
 
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-xs-12">
         {% block main %}
           {% block content %}
           {% endblock %}
