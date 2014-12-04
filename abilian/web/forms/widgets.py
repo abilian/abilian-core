@@ -157,7 +157,17 @@ class BaseTableView(object):
       'bLengthChange': False,
       'iDisplayLength': self.options.get('paginate_length', 50)
     }
-    js = "$('#%s').dataTable(%s);" % (self.name, json.dumps(datatable_options))
+    js = render_template_string(
+        '''
+        requirejs(
+            ['jquery', 'jquery.dataTables'],
+            function() {
+                $('#{{ table_id  }}').dataTable({{ options|tojson|safe }});
+            });
+        ''',
+        table_id=self.name,
+        options=datatable_options,
+    )
 
     table = []
     for entity in entities:
