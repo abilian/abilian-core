@@ -1,7 +1,7 @@
 /* jshint camelcase: false */
 (function($) {
     'use strict';
-    
+
     var navbar = document.querySelector('nav.navbar-fixed-top');
     /**
      * Compensate scroll with navbar height if fixed navbar
@@ -24,7 +24,7 @@
       * wrapped element.
       */
      $.fn.preventEnterKey = function() {
-         return $(this).on('keypress', function(e) {                              
+         return $(this).on('keypress', function(e) {
                             if (e.keyCode == 13) {
                                 e.preventDefault();
                             }
@@ -45,7 +45,7 @@
                 }
             });
         });
-        
+
         window.addEventListener('unload', function() {
             var $elements = $('[data-prevent-double-submit]');
             $elements.each(function () {
@@ -66,11 +66,12 @@
          $(document.body).find('fieldset').each(
              function() {
                  $(this).replaceWith('<div class="fieldset">' + $(this).html() + '</div>');
-             });         
+             });
      };
 
 
      Abilian.fn.init_widgets = function() {
+         $('.js-widget').each(Abilian.initJsWidget);
          $('[data-toggle="select2"]').each(function () {
              var el = $(this);
              el.select2({allowClear: !el.hasClass('required')});
@@ -85,7 +86,7 @@
                );
 
          datetimePickerSetup();
-         
+
          /* file / image input */
          $('.file-input').fileInput();
          $('.image-input').imageInput();
@@ -99,7 +100,7 @@
                  var $self = $(this);
                  var $datepicker = $('#'+ this.id + '-date');
                  var $timepicker = $('#'+ this.id + '-time');
-                 
+
                  $datepicker.parent().on(
                      'changeDate',
                      function updateDateTime(e) {
@@ -171,6 +172,6 @@
 
 requirejs(
     ['abilian-init-scribe-widget'],
-    function(initScribeWidgets) { 
+    function(initScribeWidgets) {
         Abilian.fn.onAppInit(initScribeWidgets);
     });
