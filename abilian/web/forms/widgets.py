@@ -1019,11 +1019,20 @@ class Select2(Select):
   """
   Transforms a Select widget into a Select2 widget. Depends on global JS code.
   """
-  def __call__(self, *args, **kwargs):
-    # Just add a select2 css class to the widget and let JQuery do the rest.
-    kwargs = kwargs.copy()
-    kwargs['data-toggle'] = 'select2'
-    return Select.__call__(self, *args, **kwargs)
+  def __call__(self, field, *args, **kwargs):
+    # 'placeholder' option presence is required for 'allowClear'
+    params = {'placeholder': u''}
+    if not field.flags.required:
+      params['allowClear'] = True
+
+    css_class = kwargs.setdefault('class', u'')
+    if 'js-widget' not in css_class:
+      css_class += u' js-widget'
+      kwargs['class'] = css_class
+
+    kwargs['data-init-with'] = 'select2'
+    kwargs['data-init-params'] = json.dumps(params)
+    return Select.__call__(self, field, *args, **kwargs)
 
   def render_view(self, field, **kwargs):
     labels = [label for v, label, checked in field.iter_choices() if checked]
