@@ -50,10 +50,12 @@ class AntiVirusService(Service):
 
     res = None
     try:
-      res = scan(content) is None
+      res = scan(content)
     except clamd.ClamdError as e:
       self.logger.warning('Error during content scan: %s', repr(e))
-    return res
+
+    res = res[content]
+    return res[0] == u'OK'
 
 
 service = AntiVirusService()
