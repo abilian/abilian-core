@@ -48,46 +48,44 @@ class SubclassEntityIndexable(Entity):
 class TestSAAdapter(TestCase):
 
   def test_can_adapt(self):
-    self.assertFalse(SAAdapter.can_adapt(SANotAdaptable))
-    self.assertTrue(SAAdapter.can_adapt(SANotIndexable))
-    self.assertTrue(SAAdapter.can_adapt(Indexable))
-    self.assertTrue(SAAdapter.can_adapt(Entity))
+    assert not SAAdapter.can_adapt(SANotAdaptable)
+    assert SAAdapter.can_adapt(SANotIndexable)
+    assert SAAdapter.can_adapt(Indexable)
+    assert SAAdapter.can_adapt(Entity)
 
   def test_build_attrs(self):
     schema = Schema()
     adapter = SAAdapter(SANotIndexable, schema)
-    self.assertEquals(adapter.indexable, False)
-    self.assertEquals(adapter.doc_attrs, {})
+    assert not adapter.indexable
+    assert adapter.doc_attrs == {}
 
     adapter = SAAdapter(Entity, schema)
-    self.assertEquals(adapter.indexable, False)
+    assert adapter.indexable == False
 
     adapter = SAAdapter(SubclassEntityIndexable, schema)
-    self.assertEquals(adapter.indexable, True)
-    self.assertEquals(set(adapter.doc_attrs),
-                      {'object_key', 'id', 'name', 'slug', 'object_type',
-                       'text', 'created_at', 'updated_at', 'name_prefix',
-                       'owner', 'owner_name', 'creator_name', 'creator'})
-    self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
+    assert adapter.indexable
+    assert set(adapter.doc_attrs) == {
+      'object_key', 'id', 'name', 'slug', 'object_type',
+      'text', 'created_at', 'updated_at', 'name_prefix',
+      'owner', 'owner_name', 'creator_name', 'creator'}
+    assert all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues())
 
-    self.assertEquals(set(schema.names()),
-                      {'object_key', 'id', 'object_type', 'name', 'slug',
-                       'text', 'created_at', 'updated_at', 'name_prefix',
-                       'owner', 'owner_name', 'creator_name', 'creator'})
+    assert set(schema.names()) == {
+      'object_key', 'id', 'object_type', 'name', 'slug',
+      'text', 'created_at', 'updated_at', 'name_prefix',
+      'owner', 'owner_name', 'creator_name', 'creator'}
 
     schema = Schema(
       id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True),
     )
     adapter = SAAdapter(Indexable, schema)
-    self.assertEquals(adapter.indexable, True)
-    self.assertEquals(set(adapter.doc_attrs),
-                      {'id', 'text', 'num', 'name'})
-    self.assert_(all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues()))
+    assert adapter.indexable
+    assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
+    assert all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues())
 
-    self.assertEquals(set(schema.names()),
-                      {'id', 'text', 'num', 'name'})
-    self.assertTrue(isinstance(schema['text'], TEXT))
-    self.assertTrue(isinstance(schema['num'], NUMERIC))
+    assert set(schema.names()) == {'id', 'text', 'num', 'name'}
+    assert isinstance(schema['text'], TEXT)
+    assert isinstance(schema['num'], NUMERIC)
 
   def test_get_document(self):
     schema = Schema()
@@ -122,9 +120,9 @@ class TestSAAdapter(TestCase):
     expected['text'] = obj.related.name + u' ' + obj.related.description
     doc = adapter.get_document(obj)
 
-    self.assertEquals(set(doc), {'id', 'name', 'num', 'text'})
-    self.assertEquals(doc['id'], 1)
-    self.assertEquals(doc['num'], 42)
-    self.assertEquals(doc['name'], u'related name')
-    self.assertTrue(u'related name' in doc['text'])
-    self.assertTrue(u'description text' in doc['text'])
+    assert set(doc) == {'id', 'name', 'num', 'text'}
+    assert doc['id'] == 1
+    assert doc['num'] == 42
+    assert doc['name'] == u'related name'
+    assert u'related name' in doc['text']
+    assert u'description text' in doc['text']

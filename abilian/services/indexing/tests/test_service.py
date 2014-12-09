@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from abilian.core.entities import Entity
 from abilian.testing import BaseTestCase
 
+
 class IndexedContact(Entity):
   # default is 'test_service.IndexedContact'
   entity_type = 'abilian.services.indexing.IndexedContact'
@@ -13,7 +14,6 @@ class IndexedContact(Entity):
 
 
 class IndexingServiceTestCase(BaseTestCase):
-
   SERVICES = ('indexing',)
 
   def setUp(self):
@@ -27,9 +27,9 @@ class IndexingServiceTestCase(BaseTestCase):
 
   def test_app_state(self):
     state = self.svc.app_state
-    self.assertTrue(IndexedContact in state.indexed_classes)
-    self.assertTrue(IndexedContact.entity_type in self.svc.adapted)
-    self.assertTrue(IndexedContact.entity_type in state.indexed_fqcn)
+    assert IndexedContact in state.indexed_classes
+    assert IndexedContact.entity_type in self.svc.adapted
+    assert IndexedContact.entity_type in state.indexed_fqcn
 
   def test_index_only_after_final_commit(self):
     contact = IndexedContact(name=u'John Doe')
@@ -41,15 +41,15 @@ class IndexingServiceTestCase(BaseTestCase):
 
     # no commit: model is in wait queue
     self.session.flush()
-    self.assertEquals(state.to_update, [('new', contact)])
+    assert state.to_update == [('new', contact)]
 
     # commit but in a sub transaction: model still in wait queue
     self.session.commit()
-    self.assertEquals(state.to_update, [('new', contact)])
+    assert state.to_update == [('new', contact)]
 
     # 'final' commit: models sent for indexing update
     self.session.commit()
-    self.assertEquals(state.to_update, [])
+    assert state.to_update == []
 
   def test_clear(self):
     # just check no exception happens

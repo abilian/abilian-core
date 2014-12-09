@@ -42,6 +42,7 @@ class EntityTestCase(TestCase):
     session.add(obj)
     session.flush()
     assert obj.auto_slug == u'a-b-c'
+
     obj.name = u"C'est l'été !"
     assert obj.auto_slug == u'c-est-l-ete'
 
@@ -64,13 +65,11 @@ class EntityTestCase(TestCase):
     contact = DummyContact()
     session.add(contact)
     session.commit()
-
     assert isinstance(contact.updated_at, datetime)
-    updated = contact.updated_at
 
+    updated = contact.updated_at
     contact.first_name = u'John'
     session.commit()
-
     assert isinstance(contact.updated_at, datetime)
     assert contact.updated_at > updated
 

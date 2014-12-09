@@ -44,8 +44,8 @@ class Registry(object):
     and that accepts `object_id=entity.id` to generates an url.
 
     :param entity: a instance of a subclass of
-        :class:`abilian.core.extensions.db.Model`, :class:`whoosh.searching.Hit`,
-        :class:`python:dict`
+        :class:`abilian.core.extensions.db.Model`,
+        :class:`whoosh.searching.Hit` or :class:`python:dict`
 
     :param object_id: if `entity` is not an instance, this parameter
         must be set to target id. This is usefull when you know the type and

@@ -17,7 +17,8 @@ from abilian.services.image import crop_and_resize
 blueprint = Blueprint('images', __name__, url_prefix='/images')
 route = blueprint.route
 
-DEFAULT_AVATAR = pkg_resources.resource_filename('abilian.web', 'resources/img/avatar-default.png')
+DEFAULT_AVATAR = pkg_resources.resource_filename('abilian.web',
+                                                 'resources/img/avatar-default.png')
 
 
 @route("/users/<int:user_id>/mugshot")

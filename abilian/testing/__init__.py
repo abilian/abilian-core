@@ -19,7 +19,7 @@ from flask.ext.assets import Bundle
 from abilian.app import Application
 from abilian.core.models.subjects import User, ClearPasswordStrategy
 
-assert not 'twill' in subprocess.__file__
+assert 'twill' not in subprocess.__file__
 
 
 __all__ = ['TestConfig', 'BaseTestCase']
@@ -55,7 +55,6 @@ class TestConfig(object):
   # during tests let httpexceptions be raised
   TRAP_HTTP_EXCEPTIONS = False
   TRAP_BAD_REQUEST_ERRORS = True
-
 
   CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
   CELERY_EAGER_PROPAGATES_EXCEPTIONS = True

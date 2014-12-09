@@ -43,9 +43,9 @@ assert not 'twill' in subprocess.__file__
 # Hack for Mac OS + homebrew
 os.environ['PATH'] += ":/usr/local/bin"
 
-
 TMP_DIR = "tmp"
 CACHE_DIR = "cache"
+
 
 def get_tmp_dir():
   return converter.TMP_DIR

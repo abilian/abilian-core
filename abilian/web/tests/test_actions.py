@@ -48,6 +48,7 @@ class TestActions(BaseTestCase):
   def test_for_category(self):
     cat_1 = actions.for_category('cat_1')
     assert cat_1 == [BASIC, CONDITIONAL]
+
     cat_2 = actions.for_category('cat_2:sub')
     assert cat_2 == [OTHER_CAT]
 
@@ -58,6 +59,7 @@ class TestActions(BaseTestCase):
   def test_enabled(self):
     assert CONDITIONAL.enabled == True
     assert actions.for_category('cat_1') == [BASIC, CONDITIONAL]
+
     CONDITIONAL.enabled = False
     assert CONDITIONAL.enabled == False
     assert actions.for_category('cat_1') == [BASIC]
