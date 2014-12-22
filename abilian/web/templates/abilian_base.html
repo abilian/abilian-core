@@ -125,5 +125,9 @@
  {%- endif %}
 </script>
 
+
+{%- if config.TRACKING_CODE_SNIPPET %}
+ {{ config.TRACKING_CODE_SNIPPET | safe }}
+{%- endif %}
 </body>
 </html>
