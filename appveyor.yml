@@ -10,8 +10,8 @@ init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
 
 install:
-  - "appveyor/setup_build_env.cmd"
-  - "powershell appveyor/install.ps1"
+  - "tools/appveyor/setup_build_env.cmd"
+  - "powershell tools/appveyor/install.ps1"
 
 build: false  # Not a C# project, build stuff at the test step instead.
 
