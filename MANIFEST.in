@@ -1,5 +1,5 @@
-include *.rst *.txt *.ini *.py *.cfg
-recursive-include doc *
+include *.rst *.txt *.ini *.py *.cfg *.yml
+recursive-include docs *
 recursive-include abilian *
 recursive-include tools *
 
