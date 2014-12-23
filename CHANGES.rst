@@ -4,10 +4,26 @@ Changelog for Abilian Core
 0.3.0 (unreleased)
 ------------------
 
+Features
+^^^^^^^^
+
+- Added a virus scanner.
+- Changed the WYSIWYG editor to Scribe.
+- Vocabularies
+
+API changes
+^^^^^^^^^^^
+
+- Deprecated the @templated decorator (will be removed in 0.4.0).
+
+Building, tests
+^^^^^^^^^^^^^^^
+
+- Build: Use pbr to simplify setup.py.
 - Dependencies: moved deps to ./requirements.txt + cleanup / update.
 - Testing: Tox and Travis config updates.
-- Fixed many pyflakes warnings.
-- Deprecated the @templated decorator (will be removed in 0.4.0).
+- Testing: Run tests under Vagrant.
+- QA: Fixed many pyflakes warnings.
 
 
 0.2.0 (2014-08-07)
