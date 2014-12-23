@@ -55,3 +55,24 @@ You can check the build status:
 You can also check the coverage reports:
 
 - `On coveralls.io <https://coveralls.io/r/abilian/abilian-core?branch=master>`_
+
+Releasing
+---------
+
+We've switched to PBR (<http://docs.openstack.org/developer/pbr/>) recently
+to manage our project metadata.
+
+It comes with some conventions on its own when it comes to releasing.
+
+Here's what you should do to make a new release on PyPI:
+
+1. Check that the CHANGES.rst file is correct.
+
+2. Commit.
+
+3. Tag, using the `-s` option (ex: `tag -s 0.3.0`), using numbers that are
+consistent with semantic versionning. Note that you will need to sign the
+tag with your GPG key.
+
+4. Run `python setup.py sdist upload`.
+
