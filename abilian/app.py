@@ -111,6 +111,7 @@ default_config.update(
         'abilian.services.vocabularies.admin.VocabularyPanel',
     ),
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
+    SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False, # upstream info extension
     TRACKING_CODE_SNIPPET=u'', # tracking code to insert before </body>
