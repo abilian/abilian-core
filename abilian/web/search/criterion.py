@@ -47,6 +47,10 @@ class BaseCriterion(object):
   def form_filter_args(self):
     raise NotImplementedError
 
+  @property
+  def form_unset_value(self):
+    raise NotImplementedError
+
 
 class TextSearchCriterion(BaseCriterion):
   """

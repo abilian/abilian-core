@@ -292,7 +292,8 @@ class AjaxMainTableView(object):
     advanced_search_filters = [dict(name=c.name,
                                     label=unicode(c.label),
                                     type=c.form_filter_type,
-                                    args=c.form_filter_args)
+                                    args=c.form_filter_args,
+                                    unset=c.form_unset_value,)
                                for c in self.search_criterions
                                if c.has_form_filter]
     if advanced_search_filters:
