@@ -10,6 +10,12 @@ Abilian.csrf_fieldname = {{ csrf.name()|tojson }};
 Abilian.csrf_token = {{ csrf.token()|tojson }};
 Abilian.api = {{ app.js_api | tojson }};
 
+{%- if not current_user.is_anonymous() %}
+Abilian.current_user.anonymous = false;
+Abilian.current_user.id = {{ current_user.id | tojson }};
+Abilian.current_user.email = {{ current_user.email |tojson }};
+{%- endif %}
+
 /* set up various libraries */
 
 bootbox.setDefaults({ 'locale': Abilian.locale });
