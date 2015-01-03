@@ -23,6 +23,21 @@ develop:
 	@echo ""
 
 #
+# Setup
+#
+develop: setup-git
+	@echo "--> Installing dependencies"
+	pip install -U setuptools
+	pip install -e .
+
+setup-git:
+	@echo "--> Configuring git and installing hooks"
+	git config branch.autosetuprebase always
+	cd .git/hooks && ln -sf ../../tools/hooks/* ./
+	@echo ""
+
+
+#
 # testing & checking
 #
 test-all: test test-readme
@@ -41,7 +56,6 @@ vagrant-tests:
 	vagrant up
 	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
 
-
 lint: lint-python
 
 lint-python:
@@ -55,6 +69,13 @@ test-readme:
 #
 # Various Checkers
 #
+lint: lint-js lint-python
+
+lint-js:
+	@echo "No JavaScript files to check"
+
+lint-python: flake8
+	
 pep8:
 	pep8 -r $(SRC)
 
