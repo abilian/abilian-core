@@ -112,6 +112,8 @@ default_config.update(
     ),
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
     SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
+    SENTRY_JS_VERSION='1.1.16',
+    SENTRY_JS_PLUGINS=('jquery', 'native', 'require'),
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False, # upstream info extension
     TRACKING_CODE_SNIPPET=u'', # tracking code to insert before </body>

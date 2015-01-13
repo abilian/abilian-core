@@ -28,8 +28,9 @@
   {%- endassets %}
 
   {%- if app.config.get('SENTRY_INSTALL_CLIENT_JS', True) and app.extensions.get('sentry') %}
-    <script src="//cdn.ravenjs.com/1.1.16/jquery,native,require/raven.min.js"></script>
-    <script>Raven.config({{ app.extensions['sentry'].client.get_public_dsn() |tojson }}).install();</script>
+    {%- set ext = app.extensions['sentry'] %}
+    <script src="{{ ext.raven_js_url }}"></script>
+    <script>Raven.config({{ ext.client.get_public_dsn() |tojson }}).install();</script>
   {%- endif %}
   {%- block top_js %}{%- endblock %}
 </head>
