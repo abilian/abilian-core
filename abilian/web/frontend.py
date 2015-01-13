@@ -30,8 +30,10 @@ from abilian.services import audit_service
 
 from . import search
 from .nav import BreadcrumbItem, Endpoint
-from .views import default_view, ObjectView, ObjectEdit, ObjectCreate, \
-    ObjectDelete
+from .views import (
+    default_view, ObjectView, ObjectEdit, ObjectCreate,\
+    ObjectDelete, JSONView,
+)
 from .forms.fields import ModelFieldList
 from .forms.widgets import Panel, Row, SingleView, RelatedTableView, \
     AjaxMainTableView
@@ -165,6 +167,41 @@ class EntityDelete(BaseEntityView, ObjectDelete):
   pass
 
 
+class ListJson(JSONView):
+  """
+  JSON endpoint, for AJAX-backed table views.
+  """
+  def __init__(self, module, *args, **kwargs):
+    JSONView.__init__(self, *args, **kwargs)
+    self.module = module
+
+  def data(self, *args, **kwargs):
+    echo = int(kwargs.get("sEcho", 0))
+    length = int(kwargs.get("iDisplayLength", 10))
+    start = int(kwargs.get("iDisplayStart", 0))
+    end = start + length
+
+    total_count = self.module.managed_class.query.count()
+    q = self.module.query(request)
+    count = q.count()
+    q = self.module.ordered_query(request, q)
+
+    entities = q.slice(start, end).all()
+    table_view = AjaxMainTableView(
+        columns=self.module.list_view_columns,
+        name=self.module.managed_class.__name__.lower(),
+        ajax_source=url_for('.list_json'))
+
+    data = [table_view.render_line(e) for e in entities]
+    result = {
+        "sEcho": echo,
+        "iTotalRecords": total_count,
+        "iTotalDisplayRecords": count,
+        "aaData": data,
+    }
+    return result
+
+
 class ModuleMeta(type):
   """
   Module metaclass.
@@ -284,6 +321,8 @@ class Module(object):
                      self.delete_cls,
                      Form=self.edit_form_class,
                      **kw)
+
+    self._setup_view("/json", 'list_json', ListJson, module=self)
 
     # related views
     self.init_related_views()
@@ -426,38 +465,6 @@ class Module(object):
 
     ctx = dict(rendered_table=rendered_table, module=self)
     return render_template("default/list_view.html", **ctx)
-
-  @expose("/json")
-  def list_json(self):
-    """
-    JSON endpoint, for AJAX-backed table views.
-    """
-    args = request.args
-    echo = int(args.get("sEcho", 0))
-    length = int(args.get("iDisplayLength", 10))
-    start = int(args.get("iDisplayStart", 0))
-    end = start + length
-
-    total_count = self.managed_class.query.count()
-    q = self.query(request)
-    count = q.count()
-    q = self.ordered_query(request, q)
-
-    entities = q.slice(start, end).all()
-
-    # TODO: should be an instance variable.
-    table_view = AjaxMainTableView(columns=self.list_view_columns,
-                                   name=self.managed_class.__name__.lower(),
-                                   ajax_source=url_for('.list_json'))
-
-    data = [table_view.render_line(e) for e in entities]
-    result = {
-      "sEcho": echo,
-      "iTotalRecords": total_count,
-      "iTotalDisplayRecords": count,
-      "aaData": data,
-    }
-    return jsonify(result)
 
   @expose("/export_xls")
   def export_to_xls(self):
