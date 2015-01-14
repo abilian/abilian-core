@@ -13,11 +13,26 @@
     <pre>{{ python_version }}</pre>
 
     <h2>Installed Python packages</h2>
-    <pre>
-{%- for package in packages -%}
-  {{ package.name }} ({{ package.version }})
-{% endfor -%}
-  </pre>
+
+    <table class="table table-striped table-bordered table-condensed">
+      <tbody>
+      {%- for package in packages -%}
+        <tr>
+          <td>{{ package.name }}</td>
+          <td>{{ package.version }}</td>
+          <td>
+            {%- if package.vcs %}
+              <span title="{{ package.vcs.url }}@{{ package.vcs.revision }}">
+                <span class="label label-info">{{ package.vcs.name }}</span>
+                <samp>{{ package.vcs.revision }}</samp>
+              </span>
+            {%- endif %}
+          </td>
+        </tr>
+      {% endfor -%}
+      </tbody>
+    </table>
+
 
   {% endcall %}
 
