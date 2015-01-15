@@ -31,7 +31,7 @@ from __future__ import absolute_import
 
 import os
 import importlib
-from flask import _request_ctx_stack
+from flask import _request_ctx_stack, current_app
 
 from babel.localedata import locale_identifiers
 from babel.support import Translations
@@ -60,6 +60,24 @@ _n = ngettext
 #: accepted languages codes
 VALID_LANGUAGES_CODE = frozenset(lang for lang in locale_identifiers()
                                  if len(lang) == 2)
+
+def __gettext_territory(code):
+  locale = flask.ext.babel.get_locale()
+  if locale is None:
+    locale = current_app.extensions['babel'].default_locale.territories.get(code)
+  return (
+      locale.territories.get(code)
+      or current_app.extensions['babel'].default_locale.territories.get(code))
+
+#: get localized territory name
+def country_name(code):
+  return __gettext_territory(code)
+
+#: lazy version of :func:`country_name`
+def lazy_country_name(code):
+  from speaklater import make_lazy_string
+  return make_lazy_string(__gettext_territory, code)
+
 
 class Babel(BabelBase):
   """
