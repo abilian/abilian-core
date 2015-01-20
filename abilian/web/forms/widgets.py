@@ -1046,7 +1046,9 @@ class Select2(Select):
     return Select.__call__(self, field, *args, **kwargs)
 
   def render_view(self, field, **kwargs):
-    labels = [label for v, label, checked in field.iter_choices() if checked]
+    labels = [unicode(label)
+              for v, label, checked in field.iter_choices()
+              if checked]
     return u'; '.join(labels)
 
 
