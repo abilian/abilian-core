@@ -80,6 +80,9 @@ class BaseVocabulary(db.Model):
     label = None
     group = None
 
+  def __unicode__(self):
+    return self.label
+
   def __repr__(self):
     fmt = ('<{module}.{cls} id={id} label={label} position={position} '
            'active={active} default={default} at 0x{addr:x}')
