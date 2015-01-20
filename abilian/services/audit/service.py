@@ -18,7 +18,7 @@ from sqlalchemy.orm.session import Session
 from abilian.services import Service, ServiceState
 from abilian.core.entities import Entity
 
-from .models import AuditEntry, CREATION, UPDATE, DELETION, RELATED
+from .models import AuditEntry, Changes, CREATION, UPDATE, DELETION, RELATED
 
 
 log = logging.getLogger(__name__)
@@ -30,6 +30,7 @@ class AuditableMeta(object):
   related = None
   backref_attr = None
   audited_attrs = None
+  collection_attrs = None
   enduser_ids = None
 
   def __init__(self, name=None, id_attr=None, related=False):
@@ -37,6 +38,7 @@ class AuditableMeta(object):
     self.id_attr = id_attr
     self.related = related
     self.audited_attrs = set()
+    self.collection_attrs = set()
 
 
 class AuditServiceState(ServiceState):
@@ -112,6 +114,14 @@ class AuditService(Service):
         entity_class.__auditable__.audited_attrs.add(attr)
         event.listen(attr, "set", self.set_attribute, active_history=True)
 
+    for relation in mapper.relationships:
+      if relation.direction is not sa.orm.interfaces.MANYTOMANY:
+        continue
+      attr = getattr(entity_class, relation.key)
+      entity_class.__auditable__.collection_attrs.add(attr)
+      event.listen(attr, "append", self.collection_append, active_history=True)
+      event.listen(attr, "remove", self.collection_remove, active_history=True)
+
   def setup_auditable_entity(self, entity_class):
     meta = AuditableMeta(entity_class.__name__, 'id')
     entity_class.__auditable__ = meta
@@ -156,6 +166,12 @@ class AuditService(Service):
     meta.backref_attr = backref_attr
     meta.enduser_ids = [attr_name.split('.') for attr_name in enduser_ids]
 
+  def _get_changes_for(self, entity):
+    changes = getattr(entity, "__changes__", None)
+    if not changes:
+      changes = entity.__changes__ = Changes()
+    return changes
+
   def set_attribute(self, entity, new_value, old_value, initiator):
     attr_name = initiator.key
     if old_value == new_value:
@@ -165,11 +181,9 @@ class AuditService(Service):
     if not old_value and not new_value:
       return
 
-    changes = getattr(entity, "__changes__", None)
-    if not changes:
-      changes = entity.__changes__ = {}
-    if attr_name in changes:
-      old_value = changes[attr_name][0]
+    changes = self._get_changes_for(entity)
+    if attr_name in changes.columns:
+      old_value = changes.columns[attr_name][0]
 
     # Hide content if needed (like password columns)
     # FIXME: we can only handle the simplest case: 1 attribute => 1 column
@@ -180,7 +194,15 @@ class AuditService(Service):
 
     old_value = format_large_value(old_value)
     new_value = format_large_value(new_value)
-    changes[attr_name] = (old_value, new_value)
+    changes.set_column_changes(attr_name, old_value, new_value)
+
+  def collection_append(self, entity, value, initiator):
+    changes = self._get_changes_for(entity)
+    changes.collection_append(initiator.key, value)
+
+  def collection_remove(self, entity, value, initiator):
+    changes = self._get_changes_for(entity)
+    changes.collection_remove(initiator.key, value)
 
   def create_audit_entries(self, session, flush_context):
     if not self.running or self.app_state.creating_entries:
@@ -243,15 +265,20 @@ class AuditService(Service):
         entity_name = getattr(entity, attr_name)
     entry.entity_name = entity_name
 
-    changes = {}
+    changes = Changes()
     op = entry.op
     if op == CREATION:
       for instrumented_attr in meta.audited_attrs:
         value = getattr(model, instrumented_attr.key)
         self.set_attribute(model, value, NEVER_SET, instrumented_attr.impl)
-      changes = getattr(model, '__changes__', {})
+
+      for instrumented_attr in meta.collection_attrs:
+        for obj in getattr(model, instrumented_attr.key):
+          self.collection_append(model, obj, instrumented_attr.impl)
+
+      changes = getattr(model, '__changes__', changes)
     elif op == UPDATE:
-      changes = getattr(model, '__changes__', {})
+      changes = getattr(model, '__changes__', changes)
       if not changes:
         return
 
@@ -267,11 +294,12 @@ class AuditService(Service):
         enduser_ids.append(unicode(item))
 
       related_name = u'{} {}'.format(meta.backref_attr, u' '.join(enduser_ids))
-      log.debug('related changes: %s', repr(changes))
-      changes = {related_name: changes}
+      related_changes = changes
+      log.debug('related changes: %s', repr(related_changes))
+      changes = Changes()
+      changes.set_related_changes(related_name, related_changes)
 
     entry.changes = changes
-
     return entry
 
   def entries_for(self, entity, limit=None):
@@ -282,6 +310,7 @@ class AuditService(Service):
       q = q.limit(limit)
 
     return q.all()
+
 
 audit_service = AuditService()
 

@@ -1,3 +1,8 @@
+# coding=utf-8
+"""
+"""
+from __future__ import absolute_import
+
 import datetime
 from itertools import count
 
@@ -12,7 +17,15 @@ from abilian.core.extensions import db
 from abilian.testing import BaseTestCase
 
 from . import audit_service
-from . import AuditEntry, CREATION, UPDATE, DELETION
+from . import AuditEntry, Changes, CREATION, UPDATE, DELETION
+
+
+class IntegerCollection(db.Model):
+  __tablename__ = 'integer_collection'
+  id = Column(Integer, primary_key=True)
+
+  def __unicode__(self):
+    return unicode(self.id)
 
 
 class DummyAccount(Entity):
@@ -21,6 +34,18 @@ class DummyAccount(Entity):
   website = Column(Text, default=u"")
   office_phone = Column(UnicodeText, default=u"")
   birthday = Column(Date)
+
+  @sa.ext.declarative.declared_attr
+  def integers(cls):
+    secondary_tbl = sa.Table(
+        'account_integers',
+        db.Model.metadata,
+        Column('integer_id', ForeignKey(IntegerCollection.id)),
+        Column('account_id', ForeignKey(cls.id)),
+        sa.schema.UniqueConstraint('account_id', 'integer_id'),)
+
+    return sa.orm.relationship(IntegerCollection, secondary=secondary_tbl)
+
 
 
 class AccountRelated(db.Model):
@@ -89,7 +114,7 @@ class TestAudit(BaseTestCase):
     assert entry.type == UPDATE
     assert entry.entity_id == account.id
     assert entry.entity == account
-    assert entry.changes == {u'website': (u'', u'http://www.john.com/')}
+    assert entry.changes.columns == {u'website': (u'', u'http://www.john.com/')}
 
     account.birthday = datetime.date(2012, 12, 25)
     db.session.commit()
@@ -99,18 +124,18 @@ class TestAudit(BaseTestCase):
     assert entry.type == UPDATE
     assert entry.entity_id == account.id
     assert entry.entity == account
-    assert entry.changes == {u'birthday': (None, datetime.date(2012, 12, 25))}
+    assert entry.changes.columns == {u'birthday': (None, datetime.date(2012, 12, 25))}
 
     # content hiding
     account.password = u'new super secret password'
-    assert account.__changes__ == {u'password': (u'******', u'******')}
+    assert account.__changes__.columns == {u'password': (u'******', u'******')}
     db.session.commit()
 
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[3]
     assert entry.type == UPDATE
     assert entry.entity_id == account.id
     assert entry.entity == account
-    assert entry.changes == {u'password': (u'******', u'******')}
+    assert entry.changes.columns == {u'password': (u'******', u'******')}
 
     # deletion
     db.session.delete(account)
@@ -157,13 +182,13 @@ class TestAudit(BaseTestCase):
     assert entry.entity_id == account.id
     assert entry.entity == account
 
-    changes = entry.changes
+    changes = entry.changes.columns
     assert len(changes) == 1
     assert 'data 1' in changes
     changes = changes['data 1']
-    assert changes == {'text': (NEVER_SET, u'text 1'),
-                       'account_id': (NEVER_SET, 1),
-                       'id': (None, 1), }
+    assert changes.columns == {'text': (NEVER_SET, u'text 1'),
+                               'account_id': (NEVER_SET, 1),
+                               'id': (None, 1),}
 
     comment = CommentRelated(related=data, text=u'comment')
     db.session.add(comment)
@@ -174,13 +199,13 @@ class TestAudit(BaseTestCase):
     assert entry.entity_type == account.entity_type
     assert entry.entity_id == account.id
 
-    changes = entry.changes
+    changes = entry.changes.columns
     assert len(changes) == 1
     assert 'data.comments 1 1' in changes
     changes = changes['data.comments 1 1']
-    assert changes == {'text': (NEVER_SET, u'comment'),
-                       'related_id': (NEVER_SET, 1),
-                       'id': (None, 1), }
+    assert changes.columns == {'text': (NEVER_SET, u'comment'),
+                               'related_id': (NEVER_SET, 1),
+                               'id': (None, 1),}
 
     comment = CommentRelated(related=data, text=u'comment 2')
     db.session.add(comment)
@@ -191,13 +216,13 @@ class TestAudit(BaseTestCase):
     assert entry.entity_type == account.entity_type
     assert entry.entity_id == account.id
 
-    changes = entry.changes
+    changes = entry.changes.columns
     assert len(changes) == 1
     assert 'data.comments 1 2' in changes
     changes = changes['data.comments 1 2']
-    assert changes == {'text': (NEVER_SET, u'comment 2'),
-                       'related_id': (NEVER_SET, 1),
-                       'id': (None, 2), }
+    assert changes.columns == {'text': (NEVER_SET, u'comment 2'),
+                               'related_id': (NEVER_SET, 1),
+                               'id': (None, 2), }
 
     # deletion
     db.session.delete(comment)
@@ -209,3 +234,19 @@ class TestAudit(BaseTestCase):
     assert entry.entity_id == account.id
     # entity not deleted: audit should still have reference to it
     assert entry.entity == account
+
+  def test_audit_collections(self):
+    I1 = IntegerCollection(id=1)
+    I2 = IntegerCollection(id=2)
+    self.session.add(I1)
+    self.session.add(I2)
+    self.session.flush()
+
+    account = DummyAccount(name=u'John')
+    account.integers.append(I1)
+    self.session.add(account)
+    self.session.flush()
+
+    entry = AuditEntry.query.one()
+    changes = entry.changes
+    assert changes.collections == {'integers': (['1'], [],)}

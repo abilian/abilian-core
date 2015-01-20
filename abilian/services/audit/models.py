@@ -28,6 +28,56 @@ DELETION = 2
 RELATED  = 1 << 7
 
 
+class Changes(object):
+  """
+  Trace object modifications
+  """
+  def __init__(self):
+    self.columns = {}
+    self.collections = {}
+
+  @staticmethod
+  def from_legacy(changes):
+    c = Changes()
+    c.columns = changes
+    # upgrade related change objects
+    for key in c.columns:
+      value = c.columns[key]
+      if isinstance(value, dict):
+        value = Changes.from_legacy(value)
+        c.columns[key] = value
+
+    return c
+
+  def set_column_changes(self, name, old_value, new_value):
+    self.columns[name] = (old_value, new_value)
+
+  def set_related_changes(self, name, changes):
+    assert isinstance(changes, Changes)
+    self.columns[name] = changes
+
+  def _collection_change(self, name, value, add=True):
+    colls = self.collections
+    to_add, to_remove = colls.setdefault(name, (set(), set()))
+    if not add:
+      tmp = to_remove
+      to_remove = to_add
+      to_add = tmp
+
+    to_add.add(value)
+    if value in to_remove:
+      to_remove.remove(value)
+
+  def collection_append(self, name, value):
+    self._collection_change(name, value, add=True)
+
+  def collection_remove(self, name, value):
+    self._collection_change(name, value, add=False)
+
+  def __nonzero__(self):
+    return bool(self.columns) or bool(self.collections)
+
+
 class AuditEntry(db.Model):
   """
   Logs modifications to auditable classes.
@@ -72,22 +122,29 @@ class AuditEntry(db.Model):
     # Using Pickle here instead of JSON because we need to pickle values
     # such as dates. This could make schema migration more difficult, though.
     if self.changes_pickle:
-      return pickle.loads(self.changes_pickle)
+      changes = pickle.loads(self.changes_pickle)
+      if isinstance(changes, dict):
+        changes = Changes.from_legacy(changes)
     else:
-      return {}
+      changes = Changes()
+
+    return changes
 
   def set_changes(self, changes):
     changes = self._format_changes(changes)
-    self.changes_pickle = pickle.dumps(changes)
+    self.changes_pickle = pickle.dumps(changes, protocol=2)
 
   changes = property(get_changes, set_changes)
 
   def _format_changes(self, changes):
-    uchanges = {}
-    for k, v in changes.iteritems():
+    uchanges = Changes()
+    if isinstance(changes, dict):
+      changes = Changes.from_legacy(changes)
+
+    for k, v in changes.columns.iteritems():
       k = unicode(k)
       uv = []
-      if isinstance(v, dict):
+      if isinstance(v, Changes):
         # field k is a related model with its own changes
         uv = self._format_changes(v)
       else:
@@ -102,5 +159,11 @@ class AuditEntry(db.Model):
               val = u"[[Somme error occurred. Working on it]]"
           uv.append(val)
         uv = tuple(uv)
-      uchanges[k] = uv
+      uchanges.columns[k] = uv
+
+    for attr_name, (appended, removed) in changes.collections.iteritems():
+      appended = sorted(unicode(i) for i in appended)
+      removed = sorted(unicode(i) for i in removed)
+      uchanges.collections[attr_name] = (appended, removed)
+
     return uchanges

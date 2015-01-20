@@ -1,8 +1,8 @@
 {% macro _m_audit_field_changes(changes) %}
   <ul>
-    {%- for key, values in changes.items() %}
+    {%- for key, values in changes.columns.items() %}
       <li>
-        {%- if values.items %}
+        {%- if values.columns %}
           Field <b>{{ key }}</b> changed:
           {{ _m_audit_field_changes(values) }}
         {%- else %}
@@ -13,6 +13,17 @@
           {%- else %}
             Field <b>{{ key }}</b> set to <em>{{ new_value }}</em>
           {%- endif %}
+        {%- endif %}
+      </li>
+    {%- endfor %}
+    {%- for key, (appended, removed) in changes.collections.iteritems() %}
+      <li>
+        <b>{{ key }}</b>:
+        {%- if appended %}
+          Added {%- for label in appended %} <span class="badge">{{ label }}</span>{%- endfor %}
+        {%- endif %}
+        {%- if removed %}
+          Removed {%- for label in removed %} <span class="badge">{{ label }}</span>{%- endfor %}
         {%- endif %}
       </li>
     {%- endfor %}
