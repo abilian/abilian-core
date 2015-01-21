@@ -1051,6 +1051,12 @@ class Select2(Select):
               if checked]
     return u'; '.join(labels)
 
+  @classmethod
+  def render_option(cls, value, label, selected, **kwargs):
+    if value is None:
+      return HTMLString('<option></option>')
+    return Select.render_option(value, label, selected, **kwargs)
+
 
 class Select2Ajax(object):
   """

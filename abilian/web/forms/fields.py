@@ -30,6 +30,7 @@ from flask.ext.babel import (
 from abilian.core.util import utc_dt
 from abilian.core.extensions import db
 
+from .validators import required
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
 
@@ -232,10 +233,7 @@ class QuerySelect2Field(SelectFieldBase):
   model instance and expected to return the label text. Otherwise, the model
   object's `__str__` or `__unicode__` will be used.
 
-  If `allow_blank` is set to `True`, then a blank choice will be added to the
-  top of the list. Selecting this choice will result in the `data` property
-  being `None`. The label for this blank choice can be set by specifying the
-  `blank_text` parameter.
+  :param allow_blank: DEPRECATED. Use optional()/required() validators instead.
   """
   def __init__(self, label=None, validators=None, query_factory=None,
                get_pk=None, get_label=None, allow_blank=False,
@@ -244,6 +242,11 @@ class QuerySelect2Field(SelectFieldBase):
       widget = Select2(multiple=multiple)
     kwargs['widget'] = widget
     self.multiple = multiple
+    if not allow_blank:
+      validators = list(validators) if validators is not None else []
+      if not any(isinstance(v, required) for v in validators):
+        validators.append(required())
+
     super(QuerySelect2Field, self).__init__(label, validators, **kwargs)
 
     # PATCHED!
@@ -301,8 +304,10 @@ class QuerySelect2Field(SelectFieldBase):
     return self._object_list
 
   def iter_choices(self):
-    if self.allow_blank:
-      yield ('__None', self.blank_text, self.data is None)
+    if not self.flags.required:
+      yield (None,
+             None,
+             self.data == [] if self.multiple else self.data is None,)
 
     predicate = (operator.contains
                  if (self.multiple and self.data is not None)
@@ -315,7 +320,7 @@ class QuerySelect2Field(SelectFieldBase):
       yield (pk, self.get_label(obj), predicate(obj))
 
   def process_formdata(self, valuelist):
-    if not valuelist or valuelist[0] == '__None':
+    if not valuelist:
       self.data = [] if self.multiple else None
     else:
       self._data = None
