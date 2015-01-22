@@ -24,6 +24,8 @@ class ViewBase(object):
   def prepare_args(self, args, kwargs):
     if self.Model is None:
       self.Model = kwargs.get('Model')
+      if hasattr(self.Model, '__form__'):
+        self.Form = getattr(self.Model, '__form__')
     return args, kwargs
 
   def index_url(self):
