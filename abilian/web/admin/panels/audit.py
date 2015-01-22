@@ -9,17 +9,18 @@ import pytz
 
 from flask import request, render_template, render_template_string, \
   get_template_attribute
-from flask.ext.babel import gettext as _, format_date, get_locale
+from flask.ext.babel import format_date, get_locale
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
 from werkzeug.exceptions import InternalServerError
 from werkzeug.routing import BuildError
 
+from abilian.i18n import _
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User
 from abilian.core.util import local_dt
 from abilian.core.entities import Entity, all_entity_classes
-from abilian.services.audit import AuditEntry
+from abilian.services.audit import AuditEntry, Changes
 from abilian.services.security import SecurityAudit
 from abilian.web.util import url_for
 from abilian.web.views.base import JSONView
@@ -271,8 +272,6 @@ class AuditEntryPresenter(BaseEntryPresenter):
     render = render_template_string
     e = self.entry
     user = render(self._USER_FMT, user=e.user)
-    self.changes = []
-    # entity = e.entity_name or u''
     self.entity_deleted = e.entity is None
     entity_html = e.entity_name
 
@@ -291,7 +290,6 @@ class AuditEntryPresenter(BaseEntryPresenter):
       msg = _(u'{user} created {entity_type} {entity_id} "{entity}"')
     elif e.related or e.op == 1:
       msg = _(u'{user} made changes on {entity_type} {entity_id} "{entity}"')
-      self.changes.extend(self.format_model_changes(e.changes))
     elif e.op == 2:
       msg = _(u'{user} has deleted {entity_type}: {entity_id} "{entity}"')
     else:
@@ -302,32 +300,6 @@ class AuditEntryPresenter(BaseEntryPresenter):
                                  entity_id=e.entity_id,))
     tmpl = get_template_attribute('admin/_macros.html', 'm_audit_entry')
     return tmpl(self)
-
-  def format_model_changes(self, changes):
-    formatted_items = []
-    render = render_template_string
-    for key, value in changes.items():
-      key = render(u'<strong>{{ key }}</strong>', key=key)
-      value_fmt = u'<em>{{ value }}</em>'
-
-      if isinstance(value, dict):
-        submodel_changes = u'\n'.join(
-          u'<li>{}</li>'.format(msg) for msg in self.format_model_changes(value))
-        submodel_changes = u'<ul>{}</ul>'.format(submodel_changes)
-        change_msg = _(u'{key} changed:').format(key=key) + submodel_changes
-      else:
-        old_value, new_value = value
-        if old_value and old_value is not NO_VALUE:
-          old_value = render(value_fmt, value=old_value)
-          change_msg = _(u'{key} changed from {old_value} to {new_value}')
-        else:
-          change_msg = _(u'{key} set to {new_value}')
-
-        change_msg = change_msg.format(key=key, old_value=old_value,
-                                       new_value=new_value)
-
-      formatted_items.append(Markup(change_msg))
-    return formatted_items
 
 
 class SecurityEntryPresenter(BaseEntryPresenter):

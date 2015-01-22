@@ -1,17 +1,19 @@
-{% macro _m_audit_field_changes(changes) %}
+{% macro _key_fmt(key) %}<strong>{{ key }}</strong>{% endmacro %}
+{% macro _value_fmt(value) %}<em>{{ value }}</em>{% endmacro %}
+
+{% macro m_audit_field_changes(changes) %}
   <ul>
     {%- for key, values in changes.columns.items() %}
       <li>
         {%- if values.columns %}
-          Field <b>{{ key }}</b> changed:
+          {{ _('{key} changed:').format(key=_key_fmt(key)) }}
           {{ _m_audit_field_changes(values) }}
         {%- else %}
           {%- set old_value, new_value = values %}
           {%- if old_value and old_value != NO_VALUE %}
-            Field <b>{{ key }}</b> changed from <em>{{ old_value }}</em>
-            to <em>{{ new_value }}</em>
+            {{ _('{key} changed from {old_value} to {new_value}').format(key=_key_fmt(key), old_value=_value_fmt(old_value), new_value=_value_fmt(new_value)) }}
           {%- else %}
-            Field <b>{{ key }}</b> set to <em>{{ new_value }}</em>
+            {{ _('{key} set to {new_value}').format(key=_key_fmt(key), new_value=_value_fmt(new_value)) }}
           {%- endif %}
         {%- endif %}
       </li>
@@ -30,31 +32,27 @@
   </ul>
 {% endmacro %}
 
+{% macro m_audit_entry(entry) %}
+    <div>
+      {#- FIXME: use macro for user avatar #}
+      <img src="{{ url_for("images.user_avatar", user_id=entry.user.id, s=16) }}" alt=""/>
+      <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
+      {%- if entry.related or entry.op == 1 %}
+        made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
+        {{ m_audit_field_changes(entry.changes) }}
+      {%- elif entry.type == 0 %}
+        created this record on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
+      {%- endif %}
+    </div>
+{% endmacro %}
+
 {% macro m_audit_log(entries) %}
   {%- if entries %}
     <h3 class="main collapsed" data-toggle="collapse"
         href="#audit_log_entries">{{ _("Audit Log") }}</h3>
     <div id="audit_log_entries" class="collapse" style="margin-bottom: 25px;">
       {%- for entry in entries %}
-        {%- if entry.related or entry.op == 1 %}
-          <div>
-            <img
-                src="{{ url_for("images.user_avatar", user_id=entry.user.id, s=16) }}"
-                alt=""/>
-            <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
-            made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
-            {{ _m_audit_field_changes(entry.changes) }}
-          </div>
-        {%- elif entry.type == 0 %}
-          <div>
-            <img
-                src="{{ url_for("images.user_avatar", user_id=entry.user.id, s=16) }}"
-                alt=""/>
-            <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
-            created this record
-            on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
-          </div>
-        {%- endif %}
+        {{ m_audit_entry(entry) }}
       {%- endfor %}
     </div>
   {%- endif %}

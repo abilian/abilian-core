@@ -1,15 +1,12 @@
-{# XXX: not used ? #}
+{% from "macros/audit.html" import m_audit_field_changes %}
 
 {%- macro m_audit_entry(e) %}
+  {#- FIXME: use macro for user avatar #}
   <img class="avatar" src="{{ url_for("images.user_avatar", user_id=e.user.id, s=16) }}" alt="" />
   {{ e.msg }}
   {%- if e.entity_deleted %}<i class="fa fa-trash"></i>{% endif %}
-  {%- if e.changes %}
-    <ul>
-      {%- for msg in e.changes %}
-      <li>{{ msg }}</li>
-      {%- endfor %}
-    </ul>
+  {%- if e.entry.changes %}
+    {{ m_audit_field_changes(e.entry.changes) }}
   {%- endif %}
 {% endmacro %}
 
