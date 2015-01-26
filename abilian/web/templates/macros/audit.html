@@ -7,7 +7,7 @@
       <li>
         {%- if values.columns %}
           {{ _('{key} changed:').format(key=_key_fmt(key)) }}
-          {{ _m_audit_field_changes(values) }}
+          {{ m_audit_field_changes(values) }}
         {%- else %}
           {%- set old_value, new_value = values %}
           {%- if old_value and old_value != NO_VALUE %}
