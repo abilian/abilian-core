@@ -15,6 +15,7 @@ from collections import namedtuple
 
 import bleach
 import sqlalchemy as sa
+import werkzeug.datastructures
 from flask import render_template, json, Markup, render_template_string
 from flask.ext.babel import format_date, format_datetime, get_locale
 import wtforms
@@ -568,6 +569,14 @@ class ImageInput(object):
     field_id = kwargs.pop('id', field.id)
     image_url = None
     value = kwargs.get('value', field.data)
+
+    if value and isinstance(value, werkzeug.datastructures.FileStorage):
+      # happens during POST with a validation error: value is the submitted
+      # value. Generally the get() page is rendered, but in the case of file
+      # inputs it will not work: user has to re-select the file to upload.  Thus
+      # we restore object value, so that user is aware that the file has not
+      # changed.
+      value = field.object_data
 
     if value:
       if hasattr(value, 'url'):
