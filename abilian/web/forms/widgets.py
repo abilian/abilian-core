@@ -948,9 +948,15 @@ class ListWidget(wtforms.widgets.ListWidget):
     return wtforms.widgets.HTMLString(''.join(html))
 
   def render_view(self, field):
-    data = ([label for v, label, checked in field.iter_choices() if checked]
-            if hasattr(field, 'iter_choices') and callable(field.iter_choices)
-            else field.object_data)
+    data = field.data
+    is_empty = data == [] if field.multiple else data is None
+
+    if not is_empty:
+      data = ([label for v, label, checked in field.iter_choices() if checked]
+              if hasattr(field, 'iter_choices') and callable(field.iter_choices)
+              else field.object_data)
+    else:
+      data = []
 
     return render_template_string(
       '''{%- for obj in data %}
