@@ -6,7 +6,7 @@ from __future__ import absolute_import
 
 from flask import g, request, current_app, render_template
 
-from abilian.i18n import _l
+from abilian.i18n import _, _l
 from abilian.web.admin import AdminPanel
 from abilian.web import views, url_for
 from abilian.web.nav import BreadcrumbItem
@@ -69,7 +69,7 @@ class VocabularyPanel(AdminPanel):
 
   def voc_edit_url(self, item):
     return url_for('.' + self.id + '_edit',
-                   group=item.Meta.group or u'',
+                   group=item.Meta.group or u'_',
                    Model=item.Meta.name,
                    object_id=item.id)
 
@@ -94,7 +94,7 @@ class VocabularyPanel(AdminPanel):
     if not Model:
       return self.get()
 
-    if not group:
+    if not group or group == u'_':
       # default group
       group = None
 
@@ -149,9 +149,15 @@ class VocabularyPanel(AdminPanel):
     Model = view_args.pop('Model', None)
     group = view_args.pop('group', None)
 
+    if group == u'_':
+      # "General" group
+      group = None
+
     if Model is not None:
       svc = self.svc
       Model = svc.get_vocabulary(name=Model, group=group)
-      g.breadcrumb.append(BreadcrumbItem(label=Model.Meta.group))
+      g.breadcrumb.append(BreadcrumbItem(
+          label=Model.Meta.group if group else _('Global')
+      ))
       g.breadcrumb.append(BreadcrumbItem(label=Model.Meta.label))
       view_args['Model'] = Model
