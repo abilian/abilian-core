@@ -40,18 +40,25 @@ class TestVocabularies(BaseTestCase):
 
     self.app.db.create_all()
 
-    items = [PriorityVoc(label=u'Immediate', position=0),
-             PriorityVoc(label=u'Normal', position=3, default=True),
-             PriorityVoc(label=u'Urgent', position=1),
-             PriorityVoc(label=u'High', position=2),
-            ]
+    IMMEDIATE = PriorityVoc(label=u'Immediate', position=0)
+    NORMAL = PriorityVoc(label=u'Normal', position=3, default=True)
+    URGENT = PriorityVoc(label=u'Urgent', position=1)
+    HIGH = PriorityVoc(label=u'High', position=2)
+    items = (IMMEDIATE, NORMAL, URGENT, HIGH)
     map(self.session.add, items)
     self.session.flush()
 
-    low_item = PriorityVoc(label=u'Low') # position=4 set automatically
+    # test position=4 set automatically; Label stripped
+    low_item = PriorityVoc(label=u' Low  ')
     self.session.add(low_item)
     self.session.flush()
     assert low_item.position == 4
+    assert low_item.label == u'Low'
+
+    # test strip label on update
+    IMMEDIATE.label = u'  Immediate  '
+    self.session.flush()
+    assert IMMEDIATE.label == u'Immediate'
 
     # test default ordering
     assert ([i.label for i in PriorityVoc.query.active().all()]
@@ -73,14 +80,43 @@ class TestVocabularies(BaseTestCase):
     else:
       self.fail("Could insert an item with empty label")
 
-    item = PriorityVoc.query.by_position(1)
+    # test unique labels constraint
+    try:
+      with self.session.begin_nested():
+        v = PriorityVoc(label=u'Immediate')
+        self.session.add(v)
+        self.session.flush()
+    except sa.exc.IntegrityError:
+      pass
+    else:
+      self.fail("Could insert duplicate label")
+
+    # test unique position constraint
+    try:
+      with self.session.begin_nested():
+        v = PriorityVoc(label=u'New one', position=1)
+        self.session.add(v)
+        self.session.flush()
+    except sa.exc.IntegrityError:
+      pass
+    else:
+      self.fail("Could insert duplicate position")
+
+    # test by_position without results
+    item = PriorityVoc.query.by_position(42)
+    assert item is None
+
+    # test by_position() and active()
+    item = PriorityVoc.query.by_position(URGENT.position)
+    assert item is URGENT
     item.active = False
     assert ([i.label for i in PriorityVoc.query.active().all()]
             == [u'Immediate', u'High', u'Normal', u'Low'])
+    assert PriorityVoc.query.active().by_position(URGENT.position) is None
 
-    # test by_position with no results
-    item = PriorityVoc.query.active().by_position(1)
-    assert item is None
+    # test by_label()
+    item = PriorityVoc.query.by_label(NORMAL.label)
+    assert item is NORMAL
 
   def test_admin_panel_reorder(self):
     Voc = self.DefaultVoc

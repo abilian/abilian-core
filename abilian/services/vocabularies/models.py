@@ -23,6 +23,16 @@ class VocabularyQuery(BaseQuery):
     """
     return self.filter_by(active=True)
 
+  def by_label(self, label):
+    """
+    Like `.get()`, but by label
+    """
+    # don't use .first(), so that MultipleResultsFound can be raised
+    try:
+      return self.filter_by(label=label).one()
+    except sa.orm.exc.NoResultFound:
+      return None
+
   def by_position(self, position):
     """
     Like `.get()`, but by position number
@@ -61,7 +71,7 @@ class BaseVocabulary(db.Model):
   query_class = VocabularyQuery
 
   id = Column(sa.Integer(), primary_key=True, autoincrement=True)
-  label = Column(sa.UnicodeText(), nullable=False)
+  label = Column(sa.UnicodeText(), nullable=False, unique=True)
   active = Column(sa.Boolean(), nullable=False, server_default=sa.sql.true(),
                   default=True)
   default = Column(sa.Boolean(), nullable=False, server_default=sa.sql.false(),
@@ -95,6 +105,15 @@ class BaseVocabulary(db.Model):
                       active=repr(self.active),
                       default=repr(self.default),
                       addr=id(self),)
+
+@sa.event.listens_for(BaseVocabulary, "before_insert", propagate=True)
+@sa.event.listens_for(BaseVocabulary, "before_update", propagate=True)
+def strip_label(mapper, connection, target):
+  """
+  Strip labels at ORM level so the unique=True means something
+  """
+  if target.label is not None:
+    target.label = target.label.strip()
 
 
 @sa.event.listens_for(BaseVocabulary, "before_insert", propagate=True)
