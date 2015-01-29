@@ -6,8 +6,19 @@ of stuff to implement.
 """
 import logging
 import sys
+
+try:
+  import ipdb as pdb
+except ImportError:
+  import pdb
+
 from werkzeug.routing import BuildError
-from flask import current_app, url_for as flask_url_for, stream_with_context
+from flask import (
+    current_app,
+    session,
+    url_for as flask_url_for,
+    stream_with_context,
+)
 from flask.helpers import send_from_directory
 
 
@@ -75,6 +86,9 @@ def capture_stream_errors(logger, msg):
   def decorator(fun):
     @stream_with_context
     def wrapper(*args, **kwargs):
+      # this is for developpers convenience. The debugger middleware doesn't
+      # work when using streamed responses.
+      should_pdb = current_app.debug and session.get('pdb_streamed_responses')
       try:
         generator = fun(*args, **kwargs)
         for chunk in generator:
@@ -88,7 +102,11 @@ def capture_stream_errors(logger, msg):
           # error has happened inside decorated function, remove us from top
           # stack: better readability in logs, accurate label in sentry
           tb = tb.tb_next
+
         logger.error(msg, exc_info=(type_, value, tb))
+        if should_pdb:
+          pdb.post_mortem(tb)
+
         raise
 
     return wrapper
