@@ -129,6 +129,16 @@ def _before_insert(mapper, connection, target):
     target.position = connection.execute(stmt).scalar() + 1
 
 
+# this is used to hold a reference to Vocabularies generated from
+# :func:`Vocabulary`. We use BaseVocabulary._decl_class_registry to find
+# existing vocabulary, but it's a WeakValueDictionary. When using model
+# generators and reloader the weak ref may be lost, leading to errors such as::
+#
+# InvalidRequestError: Table 'vocabulary_xxxx' is already defined for this
+# MetaData instance.  Specify 'extend_existing=True' to redefine options and
+# columns on an existing Table object.
+_generated_vocabularies = []
+
 def Vocabulary(name, label=None, group=None):
   cls_name = 'Vocabulary' + name.capitalize()
   Meta = type('Meta', (object,), dict(name=name.lower(), label=label,
