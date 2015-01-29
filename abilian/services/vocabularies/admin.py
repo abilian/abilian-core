@@ -4,7 +4,7 @@ Admin panel for vocabularies
 """
 from __future__ import absolute_import
 
-from flask import g, request, current_app, render_template
+from flask import g, request, current_app, render_template, redirect
 
 from abilian.i18n import _, _l
 from abilian.web.admin import AdminPanel
@@ -14,6 +14,7 @@ from abilian.web.action import Glyphicon
 
 from .forms import EditForm
 
+_MARKER = object()
 
 class ViewBase(object):
   title = _l(u'Vocabulary entry')
@@ -38,10 +39,9 @@ class Edit(ViewBase, views.ObjectEdit):
     return views.ObjectEdit.prepare_args(self, args, kwargs)
 
   def view_url(self):
-    return self.index_url()
-
-  def redirect_to_view(self):
-    return self.redirect_to_index()
+    return url_for('.vocabularies_model',
+                   group=self.Model.Meta.group or '_',
+                   Model=self.Model.Meta.name,)
 
 
 class Create(views.ObjectCreate, Edit):
@@ -87,12 +87,21 @@ class VocabularyPanel(AdminPanel):
     data = request.form
     group = data.get('group', u'').strip()
     Model = data.get('Model', u'').strip()
+    return_to = data.get('return_to', None)
+    return_endpoint = '.vocabularies'
+    return_args = {}
     cmp_op = None
     cmp_order = None
     object_id = None
 
+    if return_to not in (None, 'group', 'model'):
+      return_to = None
+
+    def do_return():
+      return redirect(url_for(return_endpoint, **return_args))
+
     if not Model:
-      return self.get()
+      return do_return()
 
     if not group or group == u'_':
       # default group
@@ -101,7 +110,16 @@ class VocabularyPanel(AdminPanel):
     svc = self.svc
     Model = svc.get_vocabulary(name=Model, group=group)
     if not Model:
-      return self.get()
+      return do_return()
+
+    if return_to is not None:
+      return_endpoint += '_' + return_to
+
+    if return_to == 'group':
+      return_args['group'] = group or '_'
+    elif return_to == 'model':
+      return_args['group'] = Model.Meta.group or '_'
+      return_args['Model'] = Model.Meta.name
 
     if 'up' in data:
       cmp_op = Model.position.__lt__
@@ -112,7 +130,7 @@ class VocabularyPanel(AdminPanel):
       cmp_order = Model.position.asc()
       object_id = int(data.get('down'))
     else:
-      return self.get()
+      return do_return()
 
     session = current_app.db.session()
     query = Model.query.with_lockmode('update')
@@ -135,29 +153,68 @@ class VocabularyPanel(AdminPanel):
       other.position = -other.position - 1
       session.commit()
 
-    return self.get()
+    return do_return()
+
+  def group_view(self, group):
+    groups = self.svc.grouped_vocabularies
+    vocabularies = groups.get(group)
+
+    return render_template(
+        'admin/vocabularies.html',
+        service=self.svc,
+        url_for_voc_edit=self.voc_edit_url,
+        icon_checked=Glyphicon('check'),
+        vocabularies={group: vocabularies},
+        edit_return_to='group',
+    )
+
+  def model_view(self, Model, group=None):
+    return render_template(
+        'admin/vocabularies.html',
+        service=self.svc,
+        url_for_voc_edit=self.voc_edit_url,
+        icon_checked=Glyphicon('check'),
+        vocabularies={Model.Meta.group: [Model]},
+        edit_return_to='model',
+      )
 
   def install_additional_rules(self, add_url_rule):
     panel_endpoint = '.' + self.id
-    base = '/<string:group>/<string:Model>'
+    group_base = '/<string:group>/'
+    add_url_rule(group_base, endpoint='group',
+                 view_func=self.group_view)
+    # models
+    base = group_base + '<string:Model>/'
+    add_url_rule(base, endpoint='model',
+                 view_func=self.model_view)
+
     edit_view = Edit.as_view('edit', view_endpoint=panel_endpoint)
-    add_url_rule(base + '/<int:object_id>', view_func=edit_view)
-    add_url_rule(base + '/new',
+    add_url_rule(base + '<int:object_id>', view_func=edit_view)
+    add_url_rule(base + 'new',
                  view_func=Create.as_view('new', view_endpoint=panel_endpoint))
 
   def url_value_preprocess(self, endpoint, view_args):
     Model = view_args.pop('Model', None)
-    group = view_args.pop('group', None)
+    group = view_args.pop('group', _MARKER)
 
     if group == u'_':
       # "General" group
       group = None
 
+    if group is not _MARKER:
+      view_args['group'] = group
+
     if Model is not None:
       svc = self.svc
       Model = svc.get_vocabulary(name=Model, group=group)
       g.breadcrumb.append(BreadcrumbItem(
-          label=Model.Meta.group if group else _('Global')
+          label=Model.Meta.group if group else _('Global'),
+          url=url_for('.vocabularies_group', group=group or u'_'),
       ))
-      g.breadcrumb.append(BreadcrumbItem(label=Model.Meta.label))
+      g.breadcrumb.append(BreadcrumbItem(
+          label=Model.Meta.label,
+          url=url_for('.vocabularies_model',
+                      group=group or u'_',
+                      Model=Model.Meta.name),
+      ))
       view_args['Model'] = Model

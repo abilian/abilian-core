@@ -1,55 +1,13 @@
 {%- extends "admin/_base.html" %}
 
-{% from "macros/box.html" import m_box %}
+{% from "admin/macros/vocabularies.html" import m_vocabulary with context %}
 
 {%- block content %}
   {%- for group in vocabularies |sort %}
-    <h2>{{ group or _('Global') }}</h2>
+    <h2><a href="{{ url_for('.vocabularies_group', group=group or '_') }}">{{ group or _('Global') }}</a></h2>
     
     {%- for voc in vocabularies[group] %}
-      {%- call m_box(title=voc.Meta.label) %}
-        {%- set items = voc.query.all() %}
-        {%- if items %}
-          <form class="form" method="POST">
-            {{ csrf.field() }}
-            <input type="hidden" name="group" value="{{ voc.Meta.group }}" />
-            <input type="hidden" name="Model" value="{{ voc.Meta.name }}" />
-
-            <table class="table table-condensed table-striped">
-              <thead>
-                <tr>
-                  <th>{{ _('Label') }}</th>
-                  <th>{{ _('Default') }}</th>
-                  <th>{{ _('Active') }}</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {%- for item in items %}
-                  <tr>
-                    <td><a href="{{ url_for_voc_edit(item) }}">{{ item.label }}</a></td>
-                    <td>{%- if item.default %}{{ icon_checked }}{%- endif %}</td>
-                    <td>{%- if item.active %}{{ icon_checked }}{%- endif %}</td>
-                    <td>
-                       <button type="submit" name="down" value="{{ item.id }}" class="btn btn-inline{%- if loop.last %} disabled{%- endif %}">
-                         <span class="caret-down"></span>
-                       </button>
-
-                       <button type="submit" name="up" value="{{ item.id }}" class="btn btn-inline{%- if loop.first %} disabled{%- endif %}">
-                         <span class="caret-up"</span>
-                       </button>
-                    </td>
-                  </tr>
-                {%- endfor %}
-              </tbody>
-            </table>
-          </form>
-        {%- else %}
-          <p class="text-muted text-center h3">
-            <i>{{ _('No item in this vocabulary') }}</i>
-          </p>
-        {%- endif %}
-
+      {% call m_vocabulary(voc) %}
         <div class="text-right">
           <a href="{{ url_for('.vocabularies_new', group=group or '', Model=voc.Meta.name) }}" class="btn btn-default">
             <i class="glyphicon glyphicon-plus"></i>

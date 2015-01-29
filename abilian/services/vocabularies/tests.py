@@ -134,33 +134,39 @@ class TestVocabularies(BaseTestCase):
 
     first, second, third = items
     url = url_for('admin.vocabularies')
-    base_data = {'group': '', 'Model': Voc.Meta.name}
+    base_data = {'Model': Voc.Meta.name}
     data = {'down': first.id}
     data.update(base_data)
     r = self.client.post(url, data=data)
-    assert r.status_code == 200
+    assert r.status_code == 302
+    assert r.headers['Location'] == u'http://localhost/admin/vocabularies'
     assert Voc.query.order_by(Voc.position).all() == [second, first, third]
 
-    data = {'up': first.id}
+    data = {'up': first.id, 'return_to': 'group'}
     data.update(base_data)
     r = self.client.post(url, data=data)
-    assert r.status_code == 200
+    assert r.status_code == 302
+    assert r.headers['Location'] == u'http://localhost/admin/vocabularies/_/'
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
-    data = {'up': first.id}
+    data = {'up': first.id, 'return_to': 'model'}
     data.update(base_data)
     r = self.client.post(url, data=data)
-    assert r.status_code == 200
+    assert r.status_code == 302
+    assert (r.headers['Location']
+            == u'http://localhost/admin/vocabularies/_/defaultstates/')
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
     data = {'down': third.id}
     data.update(base_data)
     r = self.client.post(url, data=data)
-    assert r.status_code == 200
+    assert r.status_code == 302
+    assert r.headers['Location'] == u'http://localhost/admin/vocabularies'
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
     data = {'up': third.id}
     data.update(base_data)
     r = self.client.post(url, data=data)
-    assert r.status_code == 200
+    assert r.status_code == 302
+    assert r.headers['Location'] == u'http://localhost/admin/vocabularies'
     assert Voc.query.order_by(Voc.position).all() == [first, third, second]
