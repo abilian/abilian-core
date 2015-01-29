@@ -4,12 +4,16 @@
                          primary="primary", info="info", success="success", 
                          warning="warning", danger="danger") %}
 
-{%- macro m_box(title, color="info") %}
+{%- macro m_box(title, color="info", href=None) %}
 <!-- begin box "{{ title }}" -->
   <div class="panel panel-{{ color_map.get(color, 'default') }}">
     {%- if title %}
       <div class="panel-heading">
-        <h5 class="panel-title">{{ title }}</h5>
+        <h5 class="panel-title">
+          {%- if href %}<a href="{{ href }}">{%- endif %}
+            {{ title }}
+            {%- if href %}</a>{%- endif %}        
+        </h5>
       </div>
     {%- endif %}
 
