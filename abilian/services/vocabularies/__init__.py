@@ -3,6 +3,7 @@
 """
 from __future__ import absolute_import
 
-from .service import vocabularies
+from .models import Vocabulary
+from .service import vocabularies, get_vocabulary
 
 __all__ = ['vocabularies']
