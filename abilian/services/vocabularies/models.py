@@ -56,9 +56,10 @@ class _VocabularyMeta(_BaseMeta):
     if group:
       tblprefix += group + '_'
 
-    vocname = name.lower().replace('vocabulary', '')
-    meta.name = vocname
-    d['__tablename__'] = tblprefix + vocname
+    if not hasattr(meta, 'name'):
+      vocname = name.lower().replace('vocabulary', '')
+      meta.name = vocname
+    d['__tablename__'] = tblprefix + meta.name
     return _BaseMeta.__new__(cls, name, bases, d)
 
 
@@ -129,6 +130,9 @@ def _before_insert(mapper, connection, target):
 
 
 def Vocabulary(name, label=None, group=None):
-  name = 'Vocabulary' + name.capitalize()
-  Meta = type('Meta', (object,), dict(label=label, group=group))
-  return type(name, (BaseVocabulary,), dict(Meta=Meta))
+  cls_name = 'Vocabulary' + name.capitalize()
+  Meta = type('Meta', (object,), dict(name=name.lower(), label=label,
+                                      group=group))
+  cls = type(cls_name, (BaseVocabulary,), dict(Meta=Meta))
+  _generated_vocabularies.append(cls)
+  return cls

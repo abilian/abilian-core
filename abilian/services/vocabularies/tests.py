@@ -20,6 +20,7 @@ class TestVocabularies(BaseTestCase):
     PriorityVoc = Vocabulary('priorities', label=u'Priorities')
     assert PriorityVoc.__name__ == 'VocabularyPriorities'
     assert PriorityVoc.__tablename__ == 'vocabulary_priorities'
+    assert PriorityVoc.Meta.name == u'priorities'
     assert PriorityVoc.Meta.label == u'Priorities'
     assert PriorityVoc.Meta.group is None
     assert issubclass(PriorityVoc, BaseVocabulary)
