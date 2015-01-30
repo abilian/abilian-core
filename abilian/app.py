@@ -9,7 +9,7 @@ import logging
 import logging.config
 import importlib
 
-from itertools import chain
+from itertools import chain, count
 from functools import partial
 from pkg_resources import resource_filename
 from pathlib import Path
@@ -22,7 +22,7 @@ from babel.dates import LOCALTZ
 import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
-  request_started, Blueprint, abort
+  request_started, Blueprint, abort, appcontext_pushed, appcontext_popped,
   )
 from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
@@ -156,6 +156,7 @@ class Application(Flask, ServiceManager, PluginManager):
     Flask.__init__(self, name, *args, **kwargs)
     del self._ABILIAN_INIT_TESTING_FLAG
 
+    appcontext_pushed.connect(self._install_id_generator)
     ServiceManager.__init__(self)
     PluginManager.__init__(self)
     self.default_view = ViewRegistry()
@@ -268,6 +269,9 @@ class Application(Flask, ServiceManager, PluginManager):
       else:
         with self.app_context():
           self.start_services()
+
+  def _install_id_generator(self, sender, **kwargs):
+    g.id_generator = count(start=1)
 
   def _setup_nav_and_breadcrumbs(self, app=None):
     """
