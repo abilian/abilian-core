@@ -16,7 +16,7 @@ from collections import namedtuple
 import bleach
 import sqlalchemy as sa
 import werkzeug.datastructures
-from flask import render_template, json, Markup, render_template_string
+from flask import g, render_template, json, Markup, render_template_string
 from flask.ext.babel import format_date, format_datetime, get_locale
 import wtforms
 from wtforms.widgets import (
@@ -111,7 +111,8 @@ class BaseTableView(object):
       self.show_search = self.show_controls
 
     self.init_columns(columns)
-    self.name = id(self)
+    self.name = u'{}-{:d}'.format(self.__class__.__name__.lower(),
+                                  next(g.id_generator))
     if options is not None:
       self.options = options
       self.show_controls = self.options.get('show_controls', self.show_controls)
