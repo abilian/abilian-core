@@ -144,6 +144,10 @@
 
          var search_box = $("#search-box");
 
+         if (search_box.length == 0) {
+             return;
+         }
+
          if (datasets.length == 0) {
              search_box.attr('disabled', true);
              return;
