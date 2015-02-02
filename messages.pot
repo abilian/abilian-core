@@ -1,15 +1,15 @@
 # Translations template for abilian-core.
-# Copyright (C) 2014 ORGANIZATION
+# Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the abilian-core
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: abilian-core 0.2.1.dev0.dev165.g846b82f\n"
+"Project-Id-Version: abilian-core 0.3.2.post27\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-11-30 18:38+0100\n"
+"POT-Creation-Date: 2015-01-30 12:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -132,90 +132,79 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: abilian/services/vocabularies/admin.py:19
+#: abilian/services/vocabularies/admin.py:20
 msgid "Vocabulary entry"
 msgstr ""
 
-#: abilian/services/vocabularies/admin.py:61
+#: abilian/services/vocabularies/admin.py:63
 msgid "Vocabularies"
 msgstr ""
 
-#: abilian/services/vocabularies/forms.py:16
-#: abilian/services/vocabularies/templates/admin/vocabularies.html:21
-msgid "Label"
-msgstr ""
-
-#: abilian/services/vocabularies/forms.py:17
-#: abilian/services/vocabularies/templates/admin/vocabularies.html:22
-msgid "Default"
-msgstr ""
-
-#: abilian/services/vocabularies/forms.py:18
-#: abilian/services/vocabularies/templates/admin/vocabularies.html:23
-msgid "Active"
-msgstr ""
-
+#: abilian/services/vocabularies/admin.py:211
 #: abilian/services/vocabularies/templates/admin/vocabularies.html:7
 msgid "Global"
 msgstr ""
 
-#: abilian/services/vocabularies/templates/admin/vocabularies.html:49
-msgid "No item in this vocabulary"
+#: abilian/services/vocabularies/forms.py:16
+#: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:23
+msgid "Label"
 msgstr ""
 
-#: abilian/services/vocabularies/templates/admin/vocabularies.html:56
+#: abilian/services/vocabularies/forms.py:17
+#: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:24
+msgid "Default"
+msgstr ""
+
+#: abilian/services/vocabularies/forms.py:18
+#: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:25
+msgid "Active"
+msgstr ""
+
+#: abilian/services/vocabularies/templates/admin/vocabularies.html:14
 msgid "Add new value"
+msgstr ""
+
+#: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:51
+msgid "No item in this vocabulary"
 msgstr ""
 
 #: abilian/web/admin/extension.py:42
 msgid "Admin"
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:291
+#: abilian/web/admin/panels/audit.py:290
 msgid "{user} created {entity_type} {entity_id} \"{entity}\""
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:293
+#: abilian/web/admin/panels/audit.py:292
 msgid "{user} made changes on {entity_type} {entity_id} \"{entity}\""
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:296
+#: abilian/web/admin/panels/audit.py:294
 msgid "{user} has deleted {entity_type}: {entity_id} \"{entity}\""
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:317
-msgid "{key} changed:"
-msgstr ""
-
-#: abilian/web/admin/panels/audit.py:322
-msgid "{key} changed from {old_value} to {new_value}"
-msgstr ""
-
-#: abilian/web/admin/panels/audit.py:324
-msgid "{key} set to {new_value}"
-msgstr ""
-
-#: abilian/web/admin/panels/audit.py:373
+#: abilian/web/admin/panels/audit.py:345
 msgid "{manager} has activated inheritance on {entity}"
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:375
+#: abilian/web/admin/panels/audit.py:347
 msgid "{manager} has deactivated inheritance on {entity}"
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:377
+#: abilian/web/admin/panels/audit.py:349
 msgid "{manager} has given role \"{role}\" to {principal} on {entity}"
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:380
+#: abilian/web/admin/panels/audit.py:352
 msgid "{manager} has revoked role \"{role}\" from {principal} on {entity}"
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:386
+#: abilian/web/admin/panels/audit.py:358
 msgid "{manager} has given role \"{role}\" to {principal}"
 msgstr ""
 
-#: abilian/web/admin/panels/audit.py:388
+#: abilian/web/admin/panels/audit.py:360
 msgid "{manager} has revoked role \"{role}\" from {principal}"
 msgstr ""
 
@@ -254,19 +243,19 @@ msgstr ""
 msgid "Changes saved."
 msgstr ""
 
-#: abilian/web/admin/templates/admin/_macros.html:25
+#: abilian/web/admin/templates/admin/_macros.html:22
 msgid "active users"
 msgstr ""
 
-#: abilian/web/admin/templates/admin/_macros.html:30
+#: abilian/web/admin/templates/admin/_macros.html:27
 msgid "new members"
 msgstr ""
 
-#: abilian/web/admin/templates/admin/_macros.html:35
+#: abilian/web/admin/templates/admin/_macros.html:32
 msgid "new documents"
 msgstr ""
 
-#: abilian/web/admin/templates/admin/_macros.html:40
+#: abilian/web/admin/templates/admin/_macros.html:37
 msgid "new messages"
 msgstr ""
 
@@ -304,47 +293,51 @@ msgstr ""
 msgid "Minutes"
 msgstr ""
 
-#: abilian/web/forms/fields.py:164 abilian/web/forms/fields.py:197
+#: abilian/web/forms/fields.py:165 abilian/web/forms/fields.py:198
 msgid "Not a valid datetime value"
 msgstr ""
 
-#: abilian/web/forms/fields.py:331
+#: abilian/web/forms/fields.py:336
 msgid "Not a valid choice"
 msgstr ""
 
-#: abilian/web/forms/validators.py:15
+#: abilian/web/forms/validators.py:27
 msgid "Invalid email address."
 msgstr ""
 
-#: abilian/web/forms/widgets.py:152 abilian/web/forms/widgets.py:264
+#: abilian/web/forms/validators.py:111
+msgid "Virus detected!"
+msgstr ""
+
+#: abilian/web/forms/widgets.py:154 abilian/web/forms/widgets.py:276
 msgid "Filter records:"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:265
+#: abilian/web/forms/widgets.py:277
 msgid "Previous"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:266
+#: abilian/web/forms/widgets.py:278
 msgid "Next"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:267
+#: abilian/web/forms/widgets.py:279
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:268
+#: abilian/web/forms/widgets.py:280
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:269
+#: abilian/web/forms/widgets.py:281
 msgid "Advanced filtering"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:534
+#: abilian/web/forms/widgets.py:547
 msgid "Add file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:534
+#: abilian/web/forms/widgets.py:547
 msgid "Select file"
 msgstr ""
 
@@ -418,7 +411,7 @@ msgstr ""
 msgid "Filter by types"
 msgstr ""
 
-#: abilian/web/templates/abilian_base.html:36
+#: abilian/web/templates/abilian_base.html:41
 msgid "Skip to content"
 msgstr ""
 
@@ -429,12 +422,12 @@ msgid ""
 msgstr ""
 
 #: abilian/web/templates/macros.html:44
-#: abilian/web/templates/macros/box.html:27
+#: abilian/web/templates/macros/box.html:31
 msgid "Menu"
 msgstr ""
 
 #: abilian/web/templates/macros.html:126
-#: abilian/web/templates/macros/audit.html:25
+#: abilian/web/templates/macros/audit.html:52
 msgid "Audit Log"
 msgstr ""
 
@@ -483,6 +476,18 @@ msgstr ""
 msgid "Send an email"
 msgstr ""
 
+#: abilian/web/templates/macros/audit.html:9
+msgid "{key} changed:"
+msgstr ""
+
+#: abilian/web/templates/macros/audit.html:14
+msgid "{key} changed from {old_value} to {new_value}"
+msgstr ""
+
+#: abilian/web/templates/macros/audit.html:16
+msgid "{key} set to {new_value}"
+msgstr ""
+
 #: abilian/web/templates/widgets/image_input.html:6
 msgid "Delete image"
 msgstr ""
@@ -501,60 +506,60 @@ msgstr ""
 msgid "Do you really want to delete this entity?"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:11
-#: abilian/web/templates/widgets/richtext.html:15
+#: abilian/web/templates/widgets/richtext.html:10
+#: abilian/web/templates/widgets/richtext.html:14
 msgid "Paragraph"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:17
+#: abilian/web/templates/widgets/richtext.html:16
 msgid "Heading 1"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:19
+#: abilian/web/templates/widgets/richtext.html:18
 msgid "Heading 2"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:21
+#: abilian/web/templates/widgets/richtext.html:20
 msgid "Heading 3"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:26
+#: abilian/web/templates/widgets/richtext.html:25
 msgid "bold"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:28
+#: abilian/web/templates/widgets/richtext.html:27
 msgid "italic"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:30
+#: abilian/web/templates/widgets/richtext.html:29
 msgid "underline"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:46
+#: abilian/web/templates/widgets/richtext.html:45
 msgid "bulleted list"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:47
+#: abilian/web/templates/widgets/richtext.html:46
 msgid "numbered list"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:51
+#: abilian/web/templates/widgets/richtext.html:50
 msgid "Add link"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:54
+#: abilian/web/templates/widgets/richtext.html:53
 msgid "Remove link"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:55
+#: abilian/web/templates/widgets/richtext.html:54
 msgid "cite"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:59
+#: abilian/web/templates/widgets/richtext.html:58
 msgid "undo"
 msgstr ""
 
-#: abilian/web/templates/widgets/richtext.html:62
+#: abilian/web/templates/widgets/richtext.html:61
 msgid "redo"
 msgstr ""
 
