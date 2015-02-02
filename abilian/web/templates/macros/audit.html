@@ -5,7 +5,7 @@
   <ul>
     {%- for key, values in changes.columns.items() %}
       <li>
-        {%- if values.columns %}
+        {%- if values.columns|default(None) != None %}
           {{ _('{key} changed:').format(key=_key_fmt(key)) }}
           {{ m_audit_field_changes(values) }}
         {%- else %}
