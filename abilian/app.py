@@ -428,6 +428,9 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # Babel (for i18n)
     abilian.i18n.babel.init_app(self)
+    abilian.i18n.babel.add_translations('wtforms',
+                                        translations_dir='locale',
+                                        domain='wtforms')
     abilian.i18n.babel.add_translations('abilian')
     abilian.i18n.babel.localeselector(get_locale)
     abilian.i18n.babel.timezoneselector(get_timezone)
