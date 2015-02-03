@@ -5,7 +5,6 @@
   (py-continuation-offset . 4)
   (py-smart-indentation)
   (py-indent-offset . 2)
-  (flycheck-checker . python-pylint)
   (flycheck-pylintrc . "pylintrc")))
 
 
