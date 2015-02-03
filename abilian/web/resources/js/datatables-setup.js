@@ -127,21 +127,6 @@
                       else if (!x) { return 1; }
                       else if (!y) { return -1; }
                       return $.fn.dataTableExt.oSort['string-desc'](x, y);
-                  },
-               'cmistype-pre': $.fn.dataTableExt.oSort['string-pre'],
-               'cmistype-asc': function(x, y)
-                  {
-                      if (x === y) { return 0; }
-                      else if (x === 'folder') { return -1;}
-                      else if (y === 'folder') { return 1;}
-                      return 0;
-                  },
-               'cmistype-desc': function(x, y)
-                  {
-                      if (x == y) { return 0; }
-                      else if (x === 'folder') { return -1;}
-                      else if (y === 'folder') { return 1;}
-                      return 0;
                   }
               });
 
