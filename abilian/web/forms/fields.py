@@ -368,10 +368,13 @@ class JsonSelect2Field(SelectFieldBase):
   being `None`. The label for this blank choice can be set by specifying the
   `blank_text` parameter.
   """
-  widget = Select2Ajax()
-
-  def __init__(self, label=None, validators=None, ajax_source=None,
+  def __init__(self, label=None, validators=None, ajax_source=None, widget=None,
                blank_text='', model_class=None, **kwargs):
+
+    if widget is None:
+      widget = Select2Ajax()
+
+    kwargs['widget'] = widget
     super(JsonSelect2Field, self).__init__(label, validators, **kwargs)
     self.ajax_source = ajax_source
     self.model_class = model_class
