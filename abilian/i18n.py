@@ -31,6 +31,7 @@ from __future__ import absolute_import
 
 import os
 import importlib
+from pathlib import Path
 from flask import _request_ctx_stack, current_app
 
 from babel.localedata import locale_identifiers
@@ -90,9 +91,13 @@ class Babel(BabelBase):
 
   def init_app(self, app):
     super(Babel, self).init_app(app)
-    self._translations_paths = [os.path.join(app.root_path, 'translations')]
+    self._translations_paths = [
+      (os.path.join(app.root_path, 'translations'), 'messages')
+    ]
 
-  def add_translations(self, module_name):
+  def add_translations(self, module_name,
+                       translations_dir='translations',
+                       domain='messages'):
     """
     Adds translations from external module. For example::
 
@@ -101,16 +106,19 @@ class Babel(BabelBase):
     Will add translations files from `abilian.core` module.
     """
     module = importlib.import_module(module_name)
-    for path in (os.path.join(p, 'translations') for p in module.__path__):
-      if not (os.path.exists(path) and os.path.isdir(path)):
+    for path in (Path(p, translations_dir) for p in module.__path__):
+      if not (path.exists() and path.is_dir()):
         continue
 
-      if not os.access(path, os.R_OK):
-        self.app.logger.warning("Babel translations: read access not "
-                                "allowed \"{}\", skipping.".format(path))
+      if not os.access(unicode(path), os.R_OK):
+        self.app.logger.warning(
+          "Babel translations: read access not allowed {}, skipping."
+         "".format(
+           repr(unicode((path)).encode('utf-8')))
+        )
         continue
 
-      self._translations_paths.append(path)
+      self._translations_paths.append((unicode(path), domain))
 
 
 def _get_translations_multi_paths():
@@ -130,8 +138,10 @@ def _get_translations_multi_paths():
 
     # reverse order: thus the application catalog is loaded last, so that
     # translations from libraries can be overriden
-    for dirname in reversed(ctx.app.extensions['babel']._translations_paths):
-      trs = Translations.load(dirname, [flask.ext.babel.get_locale()])
+    for (dirname, domain) in reversed(ctx.app.extensions['babel']._translations_paths):
+      trs = Translations.load(dirname,
+                              locales=[flask.ext.babel.get_locale()],
+                              domain=domain)
 
       # babel.support.Translations is a subclass of
       # babel.support.NullTranslations, so we test if object has a 'merge'
