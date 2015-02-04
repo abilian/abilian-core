@@ -5,6 +5,7 @@ Blob. References to files stored in a on-disk repository
 from __future__ import absolute_import
 
 import uuid
+import hashlib
 
 import sqlalchemy as sa
 from sqlalchemy.schema import Column
@@ -57,12 +58,14 @@ class Blob(Model):
   @value.setter
   def value(self, value, encoding='utf-8'):
     """
-    Store binary content to applications's repository
+    Store binary content to applications's repository and update
+    `self.meta['md5']`.
 
     :param:content: string, bytes, or any object with a `read()` method
     :param:encoding: encoding to use when content is unicode
     """
     repository.set(self, self.uuid, value)
+    self.meta['md5'] = unicode(hashlib.md5(value).hexdigest())
 
   @value.deleter
   def value(self):
@@ -70,6 +73,18 @@ class Blob(Model):
     Remove value from repository
     """
     repository.delete(self, self.uuid)
+
+
+  @property
+  def md5(self):
+    """
+    Return md5 from meta, or compute it if absent
+    """
+    md5 = self.meta.get('md5')
+    if md5 is None:
+      md5 = unicode(hashlib.md5(self.value).hexdigest())
+
+    return md5
 
 
 @sa.event.listens_for(sa.orm.Session, 'after_flush')

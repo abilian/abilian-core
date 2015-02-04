@@ -31,11 +31,15 @@ def test_meta():
   b = Blob()
   assert b.meta == dict()
 
-
 #
 # Integration tests
 #
 class BlobTestCase(AbilianTestCase):
+
+  def test_md5(self):
+    b = Blob(u'test md5')
+    assert 'md5' in b.meta
+    assert b.meta['md5'] == u'0e4e3b2681e8931c067a23c583c878d5'
 
   def test_value(self):
     session = self.session
