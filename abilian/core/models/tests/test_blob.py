@@ -41,6 +41,28 @@ class BlobTestCase(AbilianTestCase):
     assert 'md5' in b.meta
     assert b.meta['md5'] == u'0e4e3b2681e8931c067a23c583c878d5'
 
+  def test_nonzero(self):
+    b = Blob(u'test md5')
+    assert bool(b)
+
+    # change uuid: repository will return None for blob.file
+    b.uuid = uuid.uuid4()
+    assert not bool(b)
+
+  def test_query(self):
+    session = self.session
+    content = b'content'
+    b = Blob(content)
+    session.add(b)
+    session.flush()
+
+    b.uuid
+    assert Blob.query.by_uuid(b.uuid) is b
+    assert Blob.query.by_uuid(unicode(b.uuid)) is b
+
+    u = uuid.uuid4()
+    assert Blob.query.by_uuid(u) is None
+
   def test_value(self):
     session = self.session
     content = b'content'

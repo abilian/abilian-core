@@ -10,10 +10,27 @@ import hashlib
 import sqlalchemy as sa
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer
+from flask.ext.sqlalchemy import BaseQuery
 
 from abilian.core.sqlalchemy import UUID, JSONDict
 from abilian.core.models.base import Model
 from abilian.services import session_repository_service as repository
+
+
+class BlobQuery(BaseQuery):
+  """
+  Query class for :class:`Blob` objects
+  """
+  def by_uuid(self, uuid):
+    """
+    Like `.get()` but by uuid
+
+    :param uuid: a `string` or an `uuid`.
+    """
+    try:
+      return self.filter_by(uuid=uuid).one()
+    except sa.orm.exc.NoResultFound:
+      return None
 
 
 class Blob(Model):
@@ -24,6 +41,7 @@ class Blob(Model):
   instance folder/data/files.
   """
   __tablename__ = "blob"
+  query_class = BlobQuery
 
   id = Column(Integer(), primary_key=True, autoincrement=True)
   uuid = Column(UUID(), unique=True, nullable=False, default=uuid.uuid4)
@@ -85,6 +103,13 @@ class Blob(Model):
       md5 = unicode(hashlib.md5(self.value).hexdigest())
 
     return md5
+
+
+  def __nonzero__(self):
+    """
+    A blob is considered null if it has no file
+    """
+    return self.file is not None and self.file.exists()
 
 
 @sa.event.listens_for(sa.orm.Session, 'after_flush')
