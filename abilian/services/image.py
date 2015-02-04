@@ -16,7 +16,9 @@ cache = {}
 
 
 def get_format(img):
-  image = Image.open(StringIO(img))
+  if isinstance(img, basestring):
+    img = StringIO(img)
+  image = Image.open(img)
   return image.format
 
 
@@ -25,12 +27,16 @@ def resize(orig, hsize):
   if cache_key in cache:
     return cache[cache_key]
 
-  image = Image.open(StringIO(orig))
+  if isinstance(orig, basestring):
+    orig = StringIO(orig)
+
+  image = Image.open(orig)
   format = image.format
   x, y = image.size
 
   if x <= hsize:
-    return orig
+    orig.seek(0)
+    return orig.read()
 
   x1 = hsize
   y1 = int(1.0 * y * hsize / x)
@@ -48,13 +54,16 @@ def resize(orig, hsize):
 
 
 def crop_and_resize(orig, hsize, vsize=0):
+  if isinstance(orig, basestring):
+    orig = StringIO(orig)
   if not vsize:
     vsize = hsize
-  cache_key = (hashlib.md5(orig).digest(), hsize, vsize)
+  cache_key = (hashlib.md5(orig.read()).digest(), hsize, vsize)
+  orig.seek(0)
   if cache_key in cache:
     return cache[cache_key]
 
-  image = Image.open(StringIO(orig))
+  image = Image.open(orig)
   format = image.format
 
   # Compute cropping coordinates
