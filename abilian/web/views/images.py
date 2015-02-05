@@ -103,6 +103,8 @@ class BaseImageView(View):
 
     if size:
       image = crop_and_resize(image, size)
+    else:
+      image = image.read()
 
     response = make_response(image)
     response.headers['content-type'] = content_type
