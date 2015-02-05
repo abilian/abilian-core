@@ -35,6 +35,7 @@ from abilian.core import extensions, signals, redis
 import abilian.core.util
 from abilian.web.action import actions
 from abilian.web.views import Registry as ViewRegistry
+from abilian.web.views.images import user_photo_url
 from abilian.web.nav import BreadcrumbItem, Endpoint
 from abilian.web.filters import init_filters
 from abilian.web.util import send_file_from_directory, url_for
@@ -535,12 +536,13 @@ class Application(Flask, ServiceManager, PluginManager):
   def create_jinja_environment(self):
     env = Flask.create_jinja_environment(self)
     env.globals.update(
-      app=current_app,
-      csrf=csrf,
-      get_locale=babel_get_locale,
-      local_dt=abilian.core.util.local_dt,
-      url_for=url_for,
-      NO_VALUE=NO_VALUE,
+        app=current_app,
+        csrf=csrf,
+        get_locale=babel_get_locale,
+        local_dt=abilian.core.util.local_dt,
+        url_for=url_for,
+        user_photo_url=user_photo_url,
+        NO_VALUE=NO_VALUE,
     )
     init_filters(env)
     return env

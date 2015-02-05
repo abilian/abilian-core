@@ -74,7 +74,7 @@
   <ul class="activities">
     {% for entry in entries %}
       {% set actor_href = url_for("social.user", user_id=entry.actor.id) %}
-      {% set actor_img = url_for("images.user_avatar", user_id=entry.actor.id, s=45) %}
+      {% set actor_img = user_photo_url(entry.actor, size=45) %}
 
       <li>
         <a href="{{ actor_href }}"><img class="avatar" alt=""
@@ -129,7 +129,7 @@
         {%- if entry.related or entry.op == 1 %}
           <div>
             <img
-                src="{{ url_for("images.user_avatar", user_id=entry.user.id, s=16) }}"
+                src="{{ user_photo_url(entry.user, size=16) }}"
                 alt=""/>
             <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
             made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
@@ -137,9 +137,7 @@
           </div>
         {%- elif entry.type == 0 %}
           <div>
-            <img
-                src="{{ url_for("images.user_avatar", user_id=entry.user.id, s=16) }}"
-                alt=""/>
+            <img src="{{ user_photo_url(entry.user, size=16) }}" alt=""/>
             <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
             created this record
             on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}

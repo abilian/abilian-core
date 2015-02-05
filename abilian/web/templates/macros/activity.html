@@ -3,7 +3,7 @@
   <ul class="activities">
     {%- for entry in entries %}
       {%- set actor_href = url_for("social.user", user_id=entry.actor.id) %}
-      {%- set actor_img = url_for("images.user_avatar", user_id=entry.actor.id, s=45) %}
+      {%- set actor_img = user_photo_url(entry.actor, size=45) %}
 
       <li>
         <a href="{{ actor_href }}"><img class="avatar" alt="" src="{{ actor_img }}"></a>

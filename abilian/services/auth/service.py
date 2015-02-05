@@ -17,6 +17,7 @@ from abilian.core.models.subjects import User
 from abilian.core.extensions import db, login_manager
 from abilian.web.action import actions, DynamicIcon
 from abilian.web.nav import NavItem, NavGroup
+from abilian.web.views import images as image_views
 
 from .views import login as login_views
 from .models import LoginSession
@@ -35,16 +36,17 @@ def is_authenticated(context):
   return not is_anonymous(context)
 
 
+def _user_photo_endpoint():
+  return image_views.user_url_args(current_user, 16)[0]
+
 def _user_photo_icon_args(icon, url_args):
-  url_args['user_id'] = (current_user.id
-                         if not current_user.is_anonymous() else None)
-  url_args['s'] = max(icon.width, icon.height)
-  return url_args
+  return image_views.user_url_args(current_user,
+                                   max(icon.width, icon.height))[1]
 
 user_menu = NavGroup(
   'user', 'authenticated', title=lambda c: current_user.name,
-  icon=DynamicIcon(endpoint='images.user_avatar', css='avatar',
-                   size=20,
+  icon=DynamicIcon(endpoint=_user_photo_endpoint,
+                   css='avatar', size=20,
                    url_args=_user_photo_icon_args),
   condition=is_authenticated,
   items=(

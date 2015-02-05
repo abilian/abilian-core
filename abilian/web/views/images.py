@@ -10,11 +10,12 @@ from pathlib import Path
 
 import sqlalchemy as sa
 import pkg_resources
-from flask import Blueprint, request, make_response, g, Response
+from flask import Blueprint, request, make_response
 from werkzeug.exceptions import BadRequest, NotFound
 from abilian.core.util import utc_dt
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
+from abilian.web.util import url_for
 from abilian.services.image import crop_and_resize, get_format
 
 from .base import View
@@ -27,7 +28,6 @@ DEFAULT_AVATAR = Path(
         'abilian.web',
         'resources/img/avatar-default.png')
 )
-
 DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
 
 
@@ -128,10 +128,9 @@ class StaticImageView(BaseImageView):
   """
   expire_vary_arg = 'md5'
 
-  def __init__(self, image, md5, *args, **kwargs):
+  def __init__(self, image, *args, **kwargs):
     """
     :param image: path to image file
-    :param md5: md5 hexdigest of image file
     """
     BaseImageView.__init__(self, *args, **kwargs)
     self.image_path = Path(image)
@@ -139,11 +138,8 @@ class StaticImageView(BaseImageView):
       p = unicode(self.image_path)
       raise ValueError('Invalid image path: {}'.format(repr(p)))
 
-    self.md5 = md5
-
   def prepare_args(self, args, kwargs):
     kwargs['image'] = self.image_path.open('rb')
-    kwargs[self.expire_vary_arg] = self.md5
     return BaseImageView.prepare_args(self, args, kwargs)
 
 
@@ -188,6 +184,7 @@ route("/files/<int:object_id>")(blob_image)
 
 
 class UserMugshot(BaseImageView):
+  expire_vary_arg = 'md5'
 
   def prepare_args(self, args, kwargs):
     args, kwargs = BaseImageView.prepare_args(self, args, kwargs)
@@ -200,42 +197,31 @@ class UserMugshot(BaseImageView):
     if user is None:
       raise NotFound()
 
-    image = user.photo
-    if not image:
-      # FIXME: redirect to a unique url for default avatar
-      image = DEFAULT_AVATAR.open('rb').read()
-
-    kwargs['image'] = image
-    self.is_self = user.id == g.user.id
-
-    if self.is_self:
-      self.etag = hashlib.md5(image).hexdigest()
-
+    kwargs['image'] = user.photo
     return args, kwargs
 
-  def get(self, *args, **kwargs):
-    if (self.is_self
-        and request.if_none_match and
-        self.etag in request.if_none_match):
-      return Response(status=304)
 
-    return BaseImageView.get(self, *args, **kwargs)
-
-  def set_cache_headers(self, response):
-    if not self.is_self:
-      response.cache_control.max_age = 600
-      response.cache_control.public = True
-    else:
-      # current user's photo. It *must* be revalidated, so that it changes
-      # immediately after upload of a new one.
-      response.cache_control.private = True
-      response.cache_control.must_revalidate = True
-      response.set_etag(self.etag)
-
-
-user_avatar = UserMugshot.as_view('user_avatar', max_size=500)
-route("/users/<int:user_id>/mugshot")(user_avatar)
-
+user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
+route("/users/<int:user_id>")(user_photo)
 route('/users/default')(StaticImageView.as_view('user_default',
-                                                image=DEFAULT_AVATAR,
-                                                md5=DEFAULT_AVATAR_MD5))
+                                                set_expire=True,
+                                                image=DEFAULT_AVATAR,))
+
+def user_url_args(user, size):
+  endpoint = 'images.user_default'
+  kwargs = {'s': size,
+            'md5': DEFAULT_AVATAR_MD5,}
+
+  if not user.is_anonymous() and user.photo:
+    endpoint = 'images.user_photo'
+    kwargs['user_id'] = user.id
+    kwargs['md5'] = hashlib.md5(user.photo).hexdigest()
+
+  return endpoint, kwargs
+
+def user_photo_url(user, size):
+  """
+  Return url to use for this user
+  """
+  endpoint, kwargs = user_url_args(user, size)
+  return url_for(endpoint, **kwargs)

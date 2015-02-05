@@ -315,9 +315,8 @@ class SecurityEntryPresenter(BaseEntryPresenter):
 
     manager = render(
         u'<img class="avatar" '
-        u'src="{{ url_for("images.user_avatar", user_id=e.manager_id, '
-        u's=16) }}" alt="" />'
-        u'<a href="''{{ url_for("social.user", user_id=e.manager_id) }}">'
+        u'src="{{ user_photo_url(user=e.manager, size=16) }}" alt="" />'
+        u'<a href="''{{ url_for("social.user", user_id=e.manager.id) }}">'
         u'{{ e.manager.name }}</a>', e=e)
 
     if self.entry.user:
