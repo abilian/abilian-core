@@ -14,7 +14,6 @@ from flask.ext.sqlalchemy import BaseQuery
 
 from abilian.core.sqlalchemy import UUID, JSONDict
 from abilian.core.models.base import Model
-from abilian.services.repository import session_repository as repository
 
 
 class BlobQuery(BaseQuery):
@@ -63,6 +62,7 @@ class Blob(Model):
     """
     Return :class:`pathlib.Path` object used for storing value
     """
+    from abilian.services.repository import session_repository as repository
     return repository.get(self, self.uuid)
 
   @property
@@ -82,6 +82,7 @@ class Blob(Model):
     :param:content: string, bytes, or any object with a `read()` method
     :param:encoding: encoding to use when content is unicode
     """
+    from abilian.services.repository import session_repository as repository
     repository.set(self, self.uuid, value)
     self.meta['md5'] = unicode(hashlib.md5(value).hexdigest())
 
@@ -90,6 +91,7 @@ class Blob(Model):
     """
     Remove value from repository
     """
+    from abilian.services.repository import session_repository as repository
     repository.delete(self, self.uuid)
 
 

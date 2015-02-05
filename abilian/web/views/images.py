@@ -16,7 +16,6 @@ from abilian.core.util import utc_dt
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
 from abilian.web.util import url_for
-from abilian.services.image import crop_and_resize, get_format
 
 from .base import View
 
@@ -98,7 +97,14 @@ class BaseImageView(View):
     :param image: image as bytes
     :param s: requested maximum width/height size
     """
-    fmt = get_format(image)
+    from abilian.services.image import crop_and_resize, get_format
+
+    try:
+      fmt = get_format(image)
+    except IOError:
+      # not a known image file
+      raise NotFound()
+
     content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
 
     if size:
@@ -165,14 +171,7 @@ class BlobView(BaseImageView):
       raise BadRequest('Invalid image id: {}'.format(repr(b_id)))
 
     blob = Blob.query.get(b_id)
-    if blob is None:
-      raise NotFound()
-
-    try:
-      with blob.file.open('rb') as f:
-        get_format(f)
-    except IOError:
-      # this blob is not a known image file
+    if not blob:
       raise NotFound()
 
     kwargs['image'] = blob.file.open('rb')
