@@ -14,7 +14,7 @@ from flask.ext.sqlalchemy import BaseQuery
 
 from abilian.core.sqlalchemy import UUID, JSONDict
 from abilian.core.models.base import Model
-from abilian.services import session_repository_service as repository
+from abilian.services.repository import session_repository as repository
 
 
 class BlobQuery(BaseQuery):
