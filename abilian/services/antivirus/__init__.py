@@ -53,6 +53,7 @@ class AntiVirusService(Service):
       res = scan(content)
     except clamd.ClamdError as e:
       self.logger.warning('Error during content scan: %s', repr(e))
+      return None
 
     if content not in res:
       # may happen if file doesn't exists
