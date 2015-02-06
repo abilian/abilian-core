@@ -423,6 +423,12 @@ class Application(Flask, ServiceManager, PluginManager):
     from abilian.core.jinjaext import DeferredJS
     DeferredJS(self)
 
+    # auth_service installs a `before_request` handler (actually it's
+    # flask-login). We want to authenticate user ASAP, so that sentry and logs
+    # can report which user encountered any error happening later, in particular
+    # in a before_request handler (like csrf validator)
+    auth_service.init_app(self)
+
     # webassets
     self._setup_asset_extension()
     self._register_base_assets()
@@ -451,7 +457,6 @@ class Application(Flask, ServiceManager, PluginManager):
     self.register_blueprint(images_bp)
 
     # Abilian Core services
-    auth_service.init_app(self)
     security_service.init_app(self)
     repository_service.init_app(self)
     session_repository_service.init_app(self)
