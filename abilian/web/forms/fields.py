@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import operator
+import logging
 from functools import partial
 import datetime
 
@@ -17,6 +18,7 @@ from wtforms import (
     SelectFieldBase,
     FormField,
 )
+from wtforms.validators import required, optional
 from wtforms.compat import string_types, text_type
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
@@ -30,7 +32,6 @@ from flask.ext.babel import (
 from abilian.core.util import utc_dt
 from abilian.core.extensions import db
 
-from .validators import required
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
 
@@ -242,10 +243,12 @@ class QuerySelect2Field(SelectFieldBase):
       widget = Select2(multiple=multiple)
     kwargs['widget'] = widget
     self.multiple = multiple
-    if not allow_blank:
-      validators = list(validators) if validators is not None else []
-      if not any(isinstance(v, required) for v in validators):
-        validators.append(required())
+
+    if (validators is None
+        or not any(isinstance(v, (optional, required)) for v in validators)):
+      logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
+      logger.warning('Use deprecated paramater `allow_blank`.')
+      validators.append(optional() if allow_blank else required())
 
     super(QuerySelect2Field, self).__init__(label, validators, **kwargs)
 
