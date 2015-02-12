@@ -136,14 +136,7 @@ class ObjectView(BaseObjectView):
     return args, kwargs
 
   def get_form_kwargs(self):
-    kw = dict(obj=self.obj)
-    if request.method == 'GET':
-      # when GET allow form prefill instead of empty/current object data
-      # FIXME: filter allowed parameters on given a field flags (could be
-      # 'allow_from_get'?)
-      # FIXME: should do this only on ObjectCreate?
-      kw['formdata'] = request.args
-    return kw
+    return dict(obj=self.obj)
 
   def index_url(self):
     return url_for('.index')
@@ -386,6 +379,16 @@ class ObjectCreate(ObjectEdit):
   def init_object(self, args, kwargs):
     self.obj = self.Model()
     return args, kwargs
+
+  def get_form_kwargs(self):
+    kw = super(ObjectCreate, self).get_form_kwargs()
+    if request.method == 'GET':
+      # when GET allow form prefill instead of empty/current object data
+      # FIXME: filter allowed parameters on given a field flags (could be
+      # 'allow_from_get'?)
+      kw['formdata'] = request.args
+
+    return kw
 
   def get_form_buttons(self, *args, **kwargs):
     return [CREATE_BUTTON, CHAIN_CREATE_BUTTON, CANCEL_BUTTON]
