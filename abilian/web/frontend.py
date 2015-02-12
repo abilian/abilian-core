@@ -96,22 +96,14 @@ class BaseEntityView(object):
 
   def __init__(self, module, *args, **kwargs):
     self.module = module
-    for cls in self.__class__.__bases__:
-      if not issubclass(cls, BaseEntityView):
-        cls.__init__(self, *args, **kwargs)
+    super(BaseEntityView, self).__init__(*args, **kwargs)
 
   def breadcrumb(self):
     return BreadcrumbItem(label=self.obj.name or self.obj.id,
                           url=Endpoint('.entity_view', entity_id=self.obj.id))
 
   def init_object(self, args, kwargs):
-    for cls in self.__class__.__bases__:
-      if not issubclass(cls, BaseEntityView):
-        args, kwargs = cls.init_object(self, args, kwargs)
-        break
-    else:
-      raise ValueError
-
+    args, kwargs = super(BaseEntityView, self).init_object(args, kwargs)
     add_to_recent_items(self.obj)
     return args, kwargs
 
