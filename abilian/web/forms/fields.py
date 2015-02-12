@@ -205,7 +205,7 @@ class Select2Field(SelectField):
 
 class Select2MultipleField(SelectMultipleField):
   widget = Select2(multiple=True)
-
+  multiple = True
 
 class QuerySelect2Field(SelectFieldBase):
   """
