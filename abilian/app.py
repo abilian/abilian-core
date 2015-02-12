@@ -23,6 +23,7 @@ import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
   request_started, Blueprint, abort, appcontext_pushed, appcontext_popped,
+  _request_ctx_stack,
   )
 from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
@@ -657,6 +658,10 @@ class Application(Flask, ServiceManager, PluginManager):
       # replace obj instance in bad session by new instance in fresh session
       setattr(g, key, session.merge(obj, load=load))
 
+    # refresh `current_user`
+    user = getattr(_request_ctx_stack.top, 'user')
+    if user is not None and isinstance(user, db.Model):
+      _request_ctx_stack.top.user = session.merge(user, load=load)
 
   def log_exception(self, exc_info):
     """
