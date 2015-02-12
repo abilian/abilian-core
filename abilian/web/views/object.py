@@ -271,6 +271,13 @@ class ObjectEdit(ObjectView):
     """
     pass
 
+  def after_populate_obj(self):
+    """
+    Called after `self.obj` values have been updated, and `self.obj`
+    attached to an ORM session.
+    """
+    pass
+
   def handle_commit_exception(self, exc):
     """
     hook point to handle exception that may happen during commit.
@@ -290,11 +297,12 @@ class ObjectEdit(ObjectView):
 
     Called when form is validated.
     """
+    session = current_app.db.session()
     self.before_populate_obj()
     self.form.populate_obj(self.obj)
-
-    session = current_app.db.session()
     session.add(self.obj)
+    self.after_populate_obj()
+
     try:
       session.flush()
       activity.send(self,
