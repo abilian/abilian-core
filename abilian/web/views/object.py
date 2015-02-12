@@ -136,7 +136,14 @@ class ObjectView(BaseObjectView):
     return args, kwargs
 
   def get_form_kwargs(self):
-    return dict(obj=self.obj)
+    kw = dict(obj=self.obj)
+    if request.method == 'GET':
+      # when GET allow form prefill instead of empty/current object data
+      # FIXME: filter allowed parameters on given a field flags (could be
+      # 'allow_from_get'?)
+      # FIXME: should do this only on ObjectCreate?
+      kw['formdata'] = request.args
+    return kw
 
   def index_url(self):
     return url_for('.index')
