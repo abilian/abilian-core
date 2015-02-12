@@ -1080,10 +1080,16 @@ class Select2Ajax(object):
 
   The code below is probably very fragile, since it depends on the internal
   structure of a Select2 widget.
+
+  :param format_result: `formatResult` arg of Select2. Must be a valid
+  javascript expression. It is recommanded to not use an inlined anonymous
+  function, but rather a reference (like `Abilian.my_format_function`)
   """
-  def __init__(self, template='widgets/select2ajax.html', multiple=False):
+  def __init__(self, template='widgets/select2ajax.html', multiple=False,
+               format_result=None):
     self.template = template
     self.multiple = multiple
+    self.s2_params = dict(format_result=format_result)
 
   def __call__(self, field, **kwargs):
     if self.multiple:
@@ -1105,4 +1111,5 @@ class Select2Ajax(object):
                                   id=field.id,
                                   value=object_id, label=object_name, url=url,
                                   required=not field.allow_blank,
+                                  s2_params=self.s2_params,
                                   extra_args=extra_args))

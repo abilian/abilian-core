@@ -1,5 +1,6 @@
 <input type="text" size="10" name="{{ name }}" value="{{ value }}" {{ extra_args }} />
 
+{%- deferJS %}
 <script type="text/javascript">
 (function() {
    var init_params = {
@@ -13,6 +14,7 @@
          callback(data);
        }
      },
+     {%- if s2_params.format_result %}formatResult: {{ s2_params.format_result }},{%- endif %}
      ajax: {
        url: "{{ url }}",
        dataType: 'json',
@@ -31,3 +33,4 @@
   );
 })();
 </script>
+{%- enddeferJS %}
