@@ -23,6 +23,29 @@ logger = logging.getLogger(__name__)
 FLASK_SA_VERSION = pkg_resources.get_distribution('Flask-SQLAlchemy').version
 
 
+@sa.event.listens_for(sa.pool.Pool, "checkout")
+def ping_connection(dbapi_connection, connection_record, connection_proxy):
+  """
+  Ensure connections are valid.
+
+  From: `http://docs.sqlalchemy.org/en/rel_0_8/core/pooling.html`
+
+  In case db has been restarted pool may return invalid connections.
+  """
+  cursor = dbapi_connection.cursor()
+  try:
+    cursor.execute("SELECT 1")
+  except:
+    # optional - dispose the whole pool
+    # instead of invalidating one at a time
+    # connection_proxy._pool.dispose()
+
+    # raise DisconnectionError - pool will try
+    # connecting again up to three times before raising.
+    raise sa.exc.DisconnectionError()
+    cursor.close()
+
+
 class AbilianBaseSAExtension(SAExtension):
   """
   Base subclass of :class:`flask.ext.sqlalchemy.SQLAlchemy`. Add
