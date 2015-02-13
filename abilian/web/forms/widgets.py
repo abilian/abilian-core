@@ -650,7 +650,7 @@ class TagInput(Input):
 class DateInput(Input):
   """
   Renders date inputs using the fancy Bootstrap Datepicker:
-  http://www.eyecon.ro/bootstrap-datepicker/ .
+  https://github.com/eternicode/bootstrap-datepicker
   """
   input_type = 'date'
 
@@ -677,11 +677,15 @@ class DateInput(Input):
       date_fmt = babel2datepicker(date_fmt)
       date_fmt = date_fmt.replace('M', 'm')  # force numerical months
 
-    s = u'<div {}>\n'.format(html_params(
-      **{'class': "input-group date",
-         'data-provide': 'datepicker',
-         'data-date': value,
-         'data-date-format': date_fmt}))
+    attributes = {
+        'class': "input-group date",
+        'data-provide': 'datepicker',
+        'data-date': value,
+        'data-date-format': date_fmt,
+        'data-date-autoclose': 'true',
+    }
+
+    s = u'<div {}>\n'.format(html_params(**attributes))
 
     s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
         html_params(name=field_name, id=field_id, value=value))
