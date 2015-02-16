@@ -42,11 +42,14 @@ autodoc_default_flags = ['members', 'undoc-members']
 
 # sphinx.ext.intersphinx configuration
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/', None,),
-    'flask': ('http://flask.pocoo.org/docs/', None),
-    'flaskbabel': ('http://pythonhosted.org/Flask-Babel/', None),
-    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_0_8/', None),
-    'webassets': ('http://webassets.readthedocs.org/en/latest', None),
+    'python': ('http://docs.python.org/2.7/', 'inventories/python27.inv',),
+    'flask': ('http://flask.pocoo.org/docs/', 'inventories/flask.inv'),
+    'flaskbabel': ('http://pythonhosted.org/Flask-Babel/',
+                   'inventories/flask_babel.inv'),
+    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_0_8/',
+                    'inventories/sqlalchemy_0_8.inv'),
+    'webassets': ('http://webassets.readthedocs.org/en/latest',
+                  'inventories/webassets.inv'),
     }
 
 # Add any paths that contain templates here, relative to this directory.
