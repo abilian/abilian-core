@@ -7,6 +7,7 @@ PKG=abilian
 # Number of CPU (or less)
 NCPU=2
 
+PYTEST_MULTI=-n $(NCPU) -p no:sugar
 
 all: test doc
 
@@ -14,11 +15,13 @@ all: test doc
 # testing & checking
 #
 test:
-	py.test -n $(NCPU) --tb=short $(PKG) tests
+	py.test $(PYTEST_MULTI) $(PKG) tests
 
 test-with-coverage:
-	py.test -n $(NCPU) --cov $(PKG) --cov-config etc/coverage.rc \
-	  --cov-report term-missing $(PKG) tests
+	py.test $(PYTEST_MULTI)							\
+		    --cov $(PKG)							\
+	        --cov-config etc/coverage.rc			\
+	  	    --cov-report term-missing $(PKG) tests
 
 tox:
 	tox
@@ -45,7 +48,7 @@ pylama:
 	pylama $(SRC)
 
 pylint:
-	pylint --rcfile=etc/pylint.rc $(SRC)
+	pylint --rcfile=pylintrc $(SRC)
 
 check-docs:
 	sphinx-build -W -b html docs/ docs/_build/html
