@@ -101,7 +101,8 @@ class Converter(object):
   def init_app(self, app):
     self.init_work_dirs(
       cache_dir=Path(app.instance_path, CACHE_DIR),
-      tmp_dir=Path(app.instance_path, TMP_DIR),)
+      tmp_dir=Path(app.instance_path, TMP_DIR),
+    )
 
     app.extensions['conversion'] = self
 
@@ -385,7 +386,7 @@ class AbiwordPDFHandler(Handler):
     with make_temp_file(blob, suffix=".doc") as in_fn,\
          make_temp_file(suffix='.pdf') as out_fn:
       try:
-        os.chdir(TMP_DIR)
+        os.chdir(self.TMP_DIR)
         subprocess.check_call(
           ['abiword',
            '--to', os.path.basename(out_fn),
@@ -513,7 +514,7 @@ class UnoconvPdfHandler(Handler):
         cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
 
       def run_uno():
-        self._process = subprocess.Popen(cmd, close_fds=True, cwd=TMP_DIR)
+        self._process = subprocess.Popen(cmd, close_fds=True, cwd=self.TMP_DIR)
         try:
           self._process.communicate()
         except Exception, e:
