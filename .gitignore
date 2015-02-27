@@ -40,3 +40,4 @@ abilian/static/placeholders
 *.stats
 *.mo
 .cov2emacs.log
+/.eggs/
