@@ -11,7 +11,7 @@ from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
 from . import (security, RoleAssignment, InheritSecurity, SecurityAudit, Role,
-               Admin)
+               Admin, Anonymous)
 
 
 TEST_EMAIL = u"joe@example.com"
@@ -67,6 +67,7 @@ class SecurityTestCase(IntegrationTestCase):
     # specifically to avoid tracebacks
     anon = AnonymousUserMixin()
     assert not security.has_role(anon, 'read')
+    assert security.get_roles(anon) == [Anonymous]
 
   def test_root_user(self):
     """ Root user always has any role, any permission

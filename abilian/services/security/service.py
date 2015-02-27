@@ -126,6 +126,8 @@ class SecurityService(Service):
     Gets all the roles attached to given `user`, on a given `object`.
     """
     assert user
+    if user.is_anonymous():
+      return [Anonymous]
 
     q = db.session.query(RoleAssignment.role)
     q = q.filter(RoleAssignment.user == user)
