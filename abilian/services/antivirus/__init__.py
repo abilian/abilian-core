@@ -3,6 +3,9 @@
 """
 from __future__ import absolute_import
 
+import os
+import io
+
 try:
   import clamd
   cd = clamd.ClamdUnixSocket()
@@ -40,14 +43,17 @@ class AntiVirusService(Service):
 
     content = file_or_stream
     if isinstance(file_or_stream, Blob):
-      scan = cd.scan
       # py3 compat: bytes == py2 str(). Pathlib uses os.fsencode()
-      content = bytes(file_or_stream.file)
-    elif isinstance(file_or_stream, (str, unicode)):
-      scan = cd.scan
-    else:
-      scan = cd.instream
+      file_or_stream = bytes(file_or_stream.file)
+    elif isinstance(file_or_stream, unicode):
+      file_or_stream = file_or_stream.encode(os.fsencode)
 
+    if isinstance(file_or_stream, bytes):
+      content = io.open(file_or_stream, 'rb')
+
+    # use stream scan. When using scan by filename, clamd runnnig user must have
+    # access to file, which we cannot guarantee
+    scan = cd.instream
     res = None
     try:
       res = scan(content)
@@ -55,11 +61,11 @@ class AntiVirusService(Service):
       self.logger.warning('Error during content scan: %s', repr(e))
       return None
 
-    if content not in res:
+    if 'stream' not in res:
       # may happen if file doesn't exists
       return False
 
-    res = res[content]
+    res = res['stream']
     return res[0] == u'OK'
 
 
