@@ -122,7 +122,7 @@ class Converter(object):
   def clear(self):
     self.cache.clear()
     for d in (self.TMP_DIR, self.CACHE_DIR):
-      shutil.rmtree(str(d))
+      shutil.rmtree(bytes(d))
       d.mkdir()
 
   def register_handler(self, handler):
@@ -318,7 +318,7 @@ class PdfToTextHandler(Handler):
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
-    fd, out_fn = mkstemp(dir=str(self.TMP_DIR))
+    fd, out_fn = mkstemp(dir=bytes(self.TMP_DIR))
     os.close(fd)
 
     with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
@@ -386,7 +386,7 @@ class AbiwordPDFHandler(Handler):
     with make_temp_file(blob, suffix=".doc") as in_fn,\
          make_temp_file(suffix='.pdf') as out_fn:
       try:
-        os.chdir(self.TMP_DIR)
+        os.chdir(bytes(self.TMP_DIR))
         subprocess.check_call(
           ['abiword',
            '--to', os.path.basename(out_fn),
@@ -514,10 +514,13 @@ class UnoconvPdfHandler(Handler):
         cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
 
       def run_uno():
-        self._process = subprocess.Popen(cmd, close_fds=True, cwd=self.TMP_DIR)
         try:
+          self._process = subprocess.Popen(cmd,
+                                           close_fds=True,
+                                           cwd=bytes(self.TMP_DIR))
           self._process.communicate()
         except Exception, e:
+          logger.error('run_uno error: %s', bytes(e), exc_info=True)
           raise ConversionError(e)
 
       run_thread = threading.Thread(target=run_uno)
