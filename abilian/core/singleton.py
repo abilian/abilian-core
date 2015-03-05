@@ -8,17 +8,8 @@ class ValueSingletonMeta(type):
 
   def __new__(cls, name, bases, dct):
     dct['__instances__'] = {}
-    attr = dct.get('attr', 'value')
-    priv_attr = '__' + attr
-    slots = dct.get('__slots__', ())
-    if priv_attr not in slots:
-      slots += (priv_attr,)
-    dct['__slots__'] = slots
-
+    dct.setdefault('__slots__', ())
     new_type = type.__new__(cls, name, bases, dct)
-    if not hasattr(new_type, 'attr'):
-      setattr(new_type, 'attr', attr)
-
     return new_type
 
   def __call__(cls, value, *args, **kwargs):
@@ -38,7 +29,7 @@ class UniqueName(object):
   A subclass of :class:`UniqueName` defines a namespace.
   """
   __metaclass__ = ValueSingletonMeta
-  __slots__ = ('_hash',)
+  __slots__ = ('_hash', '__name')
   attr = 'name'
 
   def __init__(self, name):
