@@ -41,7 +41,9 @@ class Role(UniqueName):
     UniqueName.__init__(self, name)
     if label is None:
       label = u'role_' + unicode(name)
-    self.label = _l(label)
+    if isinstance(label, unicode):
+      label = _l(label)
+    self.label = label
     self.assignable = assignable
 
   def __unicode__(self):
@@ -82,16 +84,16 @@ class RoleType(TypeDecorator):
 
 
 #: marker for role assigned to 'Anonymous'
-Anonymous = Role('anonymous', assignable=False)
+Anonymous = Role('anonymous', _l(u'role_anonymous'), assignable=False)
 
 #: marker for role assigned to 'Authenticated'
-Authenticated = Role('authenticated', assignable=False)
+Authenticated = Role('authenticated', _l(u'role_authenticated'), assignable=False)
 
 #: marker for `admin` role
-Admin = Role('admin')
+Admin = Role('admin', _l(u'role_administrator'))
 
 #: marker for `manager` role
-Manager = Role('manager', assignable=False)
+Manager = Role('manager', _l(u'role_manager'), assignable=False)
 
 
 class RoleAssignment(db.Model):
