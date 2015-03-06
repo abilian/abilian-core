@@ -245,7 +245,7 @@ class ObjectEdit(ObjectView):
     return self.redirect_to_view()
 
   def edit(self):
-    if self.form.validate():
+    if self.validate():
       return self.form_valid()
     else:
       resp = self.form_invalid()
@@ -290,6 +290,9 @@ class ObjectEdit(ObjectView):
               * `None` if exception is not handled. Default handling happens.
     """
     return None
+
+  def validate(self):
+    return self.form.validate()
 
   def form_valid(self):
     """
