@@ -375,8 +375,11 @@ class ObjectCreate(ObjectEdit):
   #: set to `True` to show 'Save and add new' button
   chain_create_allowed = False
 
-  def __init__(self, chain_create_allowed=False, *args, **kwargs):
-    self.chain_create_allowed = chain_create_allowed
+  def __init__(self, *args, **kwargs):
+    chain_create_allowed = kwargs.pop('chain_create_allowed', None)
+    if chain_create_allowed is not None:
+      self.chain_create_allowed = bool(chain_create_allowed)
+
     ObjectEdit.__init__(self, *args, **kwargs)
 
   def init_object(self, args, kwargs):
