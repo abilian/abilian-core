@@ -110,6 +110,7 @@ default_config.update(
         'abilian.web.admin.panels.audit.AuditPanel',
         'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
         'abilian.web.admin.panels.settings.SettingsPanel',
+        'abilian.web.admin.panels.users.UsersPanel',
         'abilian.web.admin.panels.sysinfo.SysinfoPanel',
         'abilian.services.vocabularies.admin.VocabularyPanel',
     ),
