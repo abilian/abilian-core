@@ -10,8 +10,10 @@ import json
 import re
 from functools import partial
 from cStringIO import StringIO
+from pathlib import Path
 
 from webassets.filter import Filter, register_filter, get_filter, ExternalTool
+from webassets.filter.closure import ClosureJS as BaseClosureJS
 from webassets.utils import working_directory
 
 
@@ -302,3 +304,66 @@ class Less(ExternalTool):
 
 
 register_filter(Less)
+
+
+class ClosureJS(BaseClosureJS):
+
+  def setup(self):
+    super(ClosureJS, self).setup()
+    self.source_files = []
+
+  def input(self, _in, out, source_path, output_path, **kwargs):
+    if not os.path.isfile(source_path):
+      # we are not processing files but webassets intermediate hunks
+      return
+    self.source_files.append(source_path)
+
+
+  def output(self, _in, out, **kw):
+    for source_file in self.source_files:
+      self.extra_args.append('--js')
+      self.extra_args.append(source_file)
+
+    super(ClosureJS, self).output(_in, out, **kw)
+    try:
+      smap_idx = self.extra_args.index('--create_source_map')
+      smap_path = Path(self.extra_args[smap_idx + 1])
+    except (ValueError, IndexError,):
+      return
+
+    if not smap_path.exists():
+      return
+
+    name = smap_path.name
+    out.write('//# sourceMappingURL={}'.format(str(name)))
+    self.fix_source_map_urls(str(smap_path))
+
+
+  def fix_url(self, cur_path, src_path):
+    possible_paths = [p for p in self.ctx.url_mapping.keys()
+                      if src_path.startswith(p)]
+    if not possible_paths:
+      return url
+
+    if len(possible_paths) > 1:
+      possible_paths.sort(lambda p: -len(p))
+
+    path = possible_paths[0]
+    return self.ctx.url_mapping[path] + src_path[len(path):]
+
+  def fix_source_map_urls(self, filename):
+    with open(filename, 'r') as f:
+      data = json.load(f)
+
+    for idx, path in enumerate(data['sources']):
+      if path == u'-':
+        data['sources'][idx] = u'-'
+        continue
+
+      data['sources'][idx] = self.fix_url(self.ctx.directory, path)
+
+    with open(filename, 'w') as f:
+      json.dump(data, f)
+
+
+register_filter(ClosureJS)

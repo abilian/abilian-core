@@ -50,6 +50,7 @@ from abilian.services import (
     converter as conversion_service, vocabularies_service, antivirus
 )
 
+from abilian.web.assets.filters import ClosureJS
 
 logger = logging.getLogger(__name__)
 db = extensions.db
@@ -221,13 +222,15 @@ class Application(Flask, ServiceManager, PluginManager):
     self.register_jinja_loaders(
       jinja2.PackageLoader('abilian.web', 'templates'))
 
-    js_filters = 'closure_js' if self.config.get('PRODUCTION', False) else None
+    js_filters = (('closure_js',)
+                  if self.config.get('PRODUCTION', False)
+                  else None)
 
     self._assets_bundles = {
-        'css': {'options': dict(filters='less, cssmin',
+        'css': {'options': dict(filters=('less', 'cssmin'),
                                 output='style-%(version)s.min.css',)},
         'js-top': {'options': dict(output='top-%(version)s.min.js',
-                                   filters=js_filters)},
+                                   filters=js_filters,)},
         'js': {'options': dict(output='app-%(version)s.min.js',
                                filters=js_filters)},
     }
@@ -734,12 +737,6 @@ class Application(Flask, ServiceManager, PluginManager):
     if assets.debug:
       assets.config['less_source_map_file'] = 'style.map'
 
-    assets.config['CLOSURE_EXTRA_ARGS'] = [
-      '--jscomp_warning', 'internetExplorerChecks',
-    #   '--source_map_format', 'V3',
-    #   '--create_source_map', os.path.join(assets.directory, 'js.map')
-    ]
-
     # setup static url for our assets
     from abilian.web import assets as core_bundles
 
@@ -754,10 +751,27 @@ class Application(Flask, ServiceManager, PluginManager):
 
   def _finalize_assets_setup(self):
     assets = self.extensions['webassets']
+    assets_dir = Path(assets.directory)
+    closure_base_args = [
+        '--jscomp_warning', 'internetExplorerChecks',
+        '--source_map_format', 'V3',
+        '--create_source_map',
+    ]
 
     for name, data in self._assets_bundles.items():
       bundles = data.get('bundles', [])
       options = data.get('options', {})
+      filters = options.get('filters', None) or []
+      options['filters'] = []
+      for f in filters:
+        if f == 'closure_js':
+           js_map_file = str(assets_dir / '{}.map'.format(name))
+           f = ClosureJS(extra_args=closure_base_args + [js_map_file])
+        options['filters'].append(f)
+
+      if not options['filters']:
+        options['filters'] = None
+
       if bundles:
         assets.register(name, Bundle(*bundles, **options))
 
