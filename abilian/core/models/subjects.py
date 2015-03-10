@@ -11,6 +11,8 @@ from __future__ import absolute_import
 from abc import ABCMeta, abstractmethod, abstractproperty
 import bcrypt
 from datetime import datetime, timedelta
+import string
+import random
 
 from flask.ext.login import UserMixin
 import sqlalchemy as sa
@@ -46,6 +48,16 @@ administratorship = Table(
   Column('group_id', Integer, ForeignKey('group.id')),
   UniqueConstraint('user_id', 'group_id'),
 )
+
+_RANDOM_PASSWORD_CHARS = (string.ascii_letters
+                          + string.digits
+                          + string.punctuation)
+
+def gen_random_password(length=15):
+  """
+  """
+  rg = random.SystemRandom()
+  return u''.join(rg.choice(_RANDOM_PASSWORD_CHARS) for i in range(length))
 
 
 class PasswordStrategy(object):

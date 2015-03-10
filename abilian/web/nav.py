@@ -113,10 +113,10 @@ class BreadcrumbItem(object):
   _url = None
 
   template_string = (
-      u'<a href="{{ item.url }}">'
+      u'{%- if url %}<a href="{{ url }}">{%- endif %}'
       u'{%- if item.icon %}{{ item.icon }} {%- endif %}'
       u'{{ item.label }}'
-      u'</a>')
+      u'{%- if url %}</a>{%- endif %}')
 
   def __init__(self, label=u'', url=u'#', icon=None, description=None):
     assert label or icon
@@ -134,4 +134,4 @@ class BreadcrumbItem(object):
     return unicode(self._url)
 
   def render(self):
-    return Markup(self.__template.render(item=self))
+    return Markup(self.__template.render(item=self, url=self.url))

@@ -11,7 +11,7 @@ from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
 from . import (security, RoleAssignment, InheritSecurity, SecurityAudit, Role,
-               Admin, Anonymous)
+               Admin, Anonymous, Authenticated)
 
 
 TEST_EMAIL = u"joe@example.com"
@@ -37,6 +37,14 @@ class RoleTestCase(unittest.TestCase):
     admin = Role('admin')
     self.assertEquals(admin, 'admin')
     self.assertEquals(admin, u'admin')
+
+  def test_ordering(self):
+    roles = [Authenticated, Admin, Anonymous]
+    roles.sort()
+    assert roles == [Admin, Anonymous, Authenticated]
+
+  def test_enumerate_assignables(self):
+    assert Role.assignable_roles() == [Admin]
 
 
 class IntegrationTestCase(BaseTestCase):

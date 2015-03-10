@@ -245,7 +245,7 @@ class ObjectEdit(ObjectView):
     return self.redirect_to_view()
 
   def edit(self):
-    if self.form.validate():
+    if self.validate():
       return self.form_valid()
     else:
       resp = self.form_invalid()
@@ -290,6 +290,9 @@ class ObjectEdit(ObjectView):
               * `None` if exception is not handled. Default handling happens.
     """
     return None
+
+  def validate(self):
+    return self.form.validate()
 
   def form_valid(self):
     """
@@ -372,8 +375,11 @@ class ObjectCreate(ObjectEdit):
   #: set to `True` to show 'Save and add new' button
   chain_create_allowed = False
 
-  def __init__(self, chain_create_allowed=False, *args, **kwargs):
-    self.chain_create_allowed = chain_create_allowed
+  def __init__(self, *args, **kwargs):
+    chain_create_allowed = kwargs.pop('chain_create_allowed', None)
+    if chain_create_allowed is not None:
+      self.chain_create_allowed = bool(chain_create_allowed)
+
     ObjectEdit.__init__(self, *args, **kwargs)
 
   def init_object(self, args, kwargs):

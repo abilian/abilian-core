@@ -1,3 +1,9 @@
+# coding=utf-8
+"""
+"""
+from __future__ import absolute_import
+
+from functools import total_ordering
 from datetime import datetime
 
 from sqlalchemy.orm import relationship
@@ -8,6 +14,7 @@ from sqlalchemy.types import (
   Integer, Enum, DateTime, String, Boolean, TypeDecorator, UnicodeText
   )
 
+from abilian.i18n import _l
 from abilian.core.singleton import UniqueName
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import User, Group
@@ -19,10 +26,37 @@ __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
            'RoleType']
 
 
+@total_ordering
 class Role(UniqueName):
   """
   Defines role by name. Roles instances are unique by name.
+
+  :param assignable: this role is can be assigned through security service.
+  Non-assignable roles are roles automatically given depending on context (ex:
+  Anonymous/Authenticated).
   """
+  __slots__ = ('label', 'assignable')
+
+  def __init__(self, name, label=None, assignable=True):
+    UniqueName.__init__(self, name)
+    if label is None:
+      label = u'role_' + unicode(name)
+    if isinstance(label, unicode):
+      label = _l(label)
+    self.label = label
+    self.assignable = assignable
+
+  def __unicode__(self):
+    return unicode(self.label)
+
+  def __lt__(self, other):
+    return unicode(self).__lt__(unicode(other))
+
+  @classmethod
+  def assignable_roles(cls):
+    roles = [r for r in cls.__instances__.values() if r.assignable]
+    roles.sort()
+    return roles
 
 
 class RoleType(TypeDecorator):
@@ -50,16 +84,16 @@ class RoleType(TypeDecorator):
 
 
 #: marker for role assigned to 'Anonymous'
-Anonymous = Role('anonymous')
+Anonymous = Role('anonymous', _l(u'role_anonymous'), assignable=False)
 
 #: marker for role assigned to 'Authenticated'
-Authenticated = Role('authenticated')
+Authenticated = Role('authenticated', _l(u'role_authenticated'), assignable=False)
 
 #: marker for `admin` role
-Admin = Role('admin')
+Admin = Role('admin', _l(u'role_administrator'))
 
 #: marker for `manager` role
-Manager = Role('manager')
+Manager = Role('manager', _l(u'role_manager'), assignable=False)
 
 
 class RoleAssignment(db.Model):
