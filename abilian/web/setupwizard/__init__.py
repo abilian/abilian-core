@@ -13,7 +13,7 @@ import sqlalchemy as sa
 import redis
 
 from flask import (
-  Blueprint, render_template, request, flash, session, redirect, url_for,
+  render_template, request, flash, session, redirect, url_for,
   current_app, make_response
 )
 
@@ -22,9 +22,13 @@ from abilian.services.security import Admin
 from abilian.core.models.subjects import User
 from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf
+from abilian.services.security import Anonymous
+from abilian.web.blueprints import Blueprint
 
 logger = logging.getLogger(__name__)
-setup = Blueprint('setup', __name__, template_folder='templates')
+setup = Blueprint('setup', __name__,
+                  allowed_roles=Anonymous,
+                  template_folder='templates')
 
 # list supported dialects and detect unavailable ones due to missing dbapi
 # module ('psycopg2' missing for example)
