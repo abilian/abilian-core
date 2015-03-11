@@ -1,0 +1,69 @@
+# Flask and Flask extensions
+Flask>=0.10
+Flask-SQLAlchemy
+Flask-Testing>=0.4.2
+Flask-Security
+Flask-Login==0.2.3
+Flask-WTF>=0.9.4
+Flask-Script
+Flask-DebugToolbar
+Flask-Uploads
+Flask-Migrate
+Flask-Babel>=0.9
+Babel >= 1.3
+Flask-Assets>=0.10
+Flask-Mail>=0.9.1
+
+# pathlib is included in python 3.4, and very useful
+pathlib
+
+# Databases / persistence
+SQLAlchemy>=0.8,<0.9
+psycopg2
+alembic>=0.6.7
+redis>=2.10.1
+
+# requirement of jinja2; > 0.21 has an important fix for string format. See
+# https://github.com/mitsuhiko/markupsafe/issues/28
+MarkupSafe>0.21
+
+Whoosh>=2.5,<2.6
+celery==3.0.21
+straight.plugin==1.4.0-post-1
+
+Markdown
+blinker
+requests
+bleach
+phonenumbers
+py-bcrypt
+Pillow
+PyYAML
+pygeoip
+
+# "fork" of progressbar which is not installable with pip > 1.5
+progressbar-latest
+
+# Forms
+WTForms-Alchemy==0.12.9
+# required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
+SQLAlchemy-Utils<0.24.0
+
+# antivirus interface
+clamd
+
+# Content detection / transformation
+python-magic
+xlwt
+xlrd
+
+#
+# Assets management (might not be necessary if distributing compiled assets)
+#
+jsmin
+cssmin
+# Version needed for some reason. Anyway.
+closure==20140110
+cssselect
+lxml
+

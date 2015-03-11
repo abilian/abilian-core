@@ -48,7 +48,7 @@ pylama:
 	pylama $(SRC)
 
 pylint:
-	pylint --rcfile=pylintrc $(SRC)
+	pylint --rcfile=etc/pylintrc $(SRC)
 
 check-docs:
 	sphinx-build -W -b html docs/ docs/_build/html
@@ -81,7 +81,7 @@ clean:
 	rm -rf docs/_build docs/cache docs/tmp
 	rm -rf $(SRC)/static/gen
 	rm -rf dist build
-	rm -rf htmlcov
+	rm -rf htmlcov coverage.xml
 	rm -rf docs/_build
 	rm -f junit-py27.xml
 
