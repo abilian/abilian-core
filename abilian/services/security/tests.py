@@ -146,6 +146,7 @@ class SecurityTestCase(IntegrationTestCase):
     self.session.add_all([user, obj])
     self.session.flush()
 
+    security.grant_role(user, 'global_role')
     security.grant_role(user, "manager", obj)
     assert security.has_role(user, "manager", obj)
     assert security.get_roles(user, obj) == ['manager']
@@ -153,6 +154,9 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.has_permission(user, "read", obj)
     assert security.has_permission(user, "write", obj)
     assert security.has_permission(user, "manage", obj)
+
+    # test get_roles "global": object roles should not appear
+    assert security.get_roles(user) == ['global_role']
 
     security.ungrant_role(user, "manager", obj)
     assert not security.has_role(user, "manager", obj)

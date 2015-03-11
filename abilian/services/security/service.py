@@ -133,8 +133,8 @@ class SecurityService(Service):
     q = q.filter(RoleAssignment.user == user)
     if object:
       assert isinstance(object, Entity)
-      q = q.filter(RoleAssignment.object == object)
 
+    q = q.filter(RoleAssignment.object == object)
     return [i[0] for i in q.all()]
 
   @require_flush
