@@ -23,3 +23,5 @@ Sphinx
 # Standard theme for readthedocs.com
 sphinx-rtd-theme
 
+# Used by functional tests
+requests
