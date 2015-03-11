@@ -4,12 +4,14 @@
 SRC=abilian
 # The package name
 PKG=abilian
-# Number of CPU (or less)
+
+# On a 4 core laptop, 2 is optimal
 NCPU=2
 
+# pytest-sugar seems to be incompatible with pytest-xdist
 PYTEST_MULTI=-n $(NCPU) -p no:sugar
 
-all: test doc
+all: test
 
 #
 # testing & checking
