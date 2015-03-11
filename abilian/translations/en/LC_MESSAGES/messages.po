@@ -1,18 +1,18 @@
-# Translations template for abilian-core.
+# English translations for abilian-core.
 # Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the abilian-core
 # project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: abilian-core 0.3.3.dev88+ng11c50b5.d20150311\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-03-11 17:49+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2015-03-11 17:49+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -135,19 +135,19 @@ msgstr ""
 
 #: abilian/services/security/models.py:87
 msgid "role_anonymous"
-msgstr ""
+msgstr "Anonymous"
 
 #: abilian/services/security/models.py:90
 msgid "role_authenticated"
-msgstr ""
+msgstr "Authenticated"
 
 #: abilian/services/security/models.py:93
 msgid "role_administrator"
-msgstr ""
+msgstr "Administrator"
 
 #: abilian/services/security/models.py:96
 msgid "role_manager"
-msgstr ""
+msgstr "Manager"
 
 #: abilian/services/vocabularies/admin.py:20
 msgid "Vocabulary entry"
