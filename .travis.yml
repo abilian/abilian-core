@@ -22,8 +22,7 @@ before_install:
 
 # Install Python dependencies
 install:
-  - pip install -r dev-requirements.txt
-  - pip install -e .
+  - pip install -e '.[dev]'
 
 # Create DB
 before_script:
