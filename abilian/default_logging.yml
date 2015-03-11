@@ -1,7 +1,7 @@
 disable_existing_loggers: false
 
 root:
-  level: INFO
+  level: WARNING
   handlers: [console]
 
 formatters:
@@ -39,7 +39,7 @@ handlers:
 loggers:
 
   abilian:
-    level: INFO
+    level: WARNING
 
   webassets:
     level: ERROR
@@ -55,4 +55,5 @@ loggers:
   # HTTP access log
   werkzeug:
     propagate: false
+    level: INFO
     handlers: [console_msg_only]

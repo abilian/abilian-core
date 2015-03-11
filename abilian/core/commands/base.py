@@ -26,7 +26,7 @@ logger = logging.getLogger('')
 manager = Manager(usage='Abilian base commands')
 
 
-def print_config(config):
+def _log_config(config):
   lines = ["Application configuration:"]
 
   if config.get('CONFIGURED'):
@@ -58,13 +58,22 @@ def print_config(config):
       version=conversion._unoconv_handler.unoconv_version))
 
 
+def log_config(config):
+  original_level = logger.level
+  logger.setLevel(logging.INFO)
+  try:
+    return _log_config(config)
+  finally:
+    logger.setLevel(original_level)
+
+
 @manager.command
 def run(port=None):
   """
   Like runserver, also print application configuration.
   """
   app = current_app
-  print_config(app.config)
+  log_config(app.config)
 
   # TODO: pass host and debug as params to
   host = "0.0.0.0"

@@ -1,6 +1,17 @@
 # coding=utf-8
 """
-Preset loggers
+Special loggers
+---------------
+
+Changing `patch_logger` logging level must be done very early, because it may
+emit logging during imports. Ideally, it's should be the very first action in
+your entry point before anything has been imported:
+
+.. code-block:: python
+
+ import logging
+ logging.getLogger('PATCH').setLevel(logging.INFO)
+
 """
 from __future__ import absolute_import
 
@@ -16,10 +27,11 @@ _mk_format = logging.Formatter(fmt=_mk_fmt)
 _patch_handler = logging.StreamHandler()
 _patch_handler.setFormatter(_mk_format)
 _patch_logger = logging.getLogger('PATCH')
-_patch_logger.setLevel(logging.INFO)
 _patch_logger.addHandler(_patch_handler)
 _patch_logger.propagate = False
 
+if _patch_logger.level is logging.NOTSET:
+  _patch_logger.setLevel(logging.WARNING)
 
 class PatchLoggerAdapter(logging.LoggerAdapter):
 

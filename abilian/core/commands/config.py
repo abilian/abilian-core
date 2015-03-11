@@ -5,12 +5,13 @@ from __future__ import absolute_import
 
 import os
 import sys
+import logging
 
 from jinja2 import Environment, PackageLoader, Markup
 from flask import current_app
 from flask.ext.script import Manager
 
-from .base import print_config, logger
+from .base import log_config, logger
 
 #: sub-manager for config commands
 manager = Manager(description='Show config / create default config',
@@ -22,6 +23,7 @@ def show(only_path=False):
   """
   Shows the current config.
   """
+  logger.setLevel(logging.INFO)
   infos = ['\n']
   infos.append('Instance path: "{}"'.format(current_app.instance_path))
   infos.append('CONFIG_ENVVAR: "{}"'.format(current_app.CONFIG_ENVVAR))
@@ -29,7 +31,7 @@ def show(only_path=False):
   logger.info('\n  '.join(infos))
 
   if not only_path:
-    print_config(current_app.config)
+    log_config(current_app.config)
 
 
 class DefaultConfig(object):

@@ -46,6 +46,12 @@ Module :mod:`abilian.core.extensions`
 
 .. automodule:: abilian.core.extensions
 
+Module :mod:`abilian.core.logging`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.core.logging
+
+
 Module :mod:`abilian.core.signals`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
