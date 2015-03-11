@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-03-11 17:49+0100\n"
-"PO-Revision-Date: 2015-03-11 17:47+0100\n"
+"PO-Revision-Date: 2015-03-11 17:53+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -269,9 +269,8 @@ msgstr "Changement enregistrés."
 
 #: abilian/web/admin/panels/users/__init__.py:19
 #: abilian/web/admin/templates/admin/users.html:8
-#, fuzzy
 msgid "Users"
-msgstr "Heures"
+msgstr "Utilisateurs"
 
 #: abilian/web/admin/panels/users/__init__.py:47
 #: abilian/web/forms/widgets.py:154 abilian/web/forms/widgets.py:276
