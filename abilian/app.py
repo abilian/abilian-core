@@ -18,6 +18,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
 
 from werkzeug.datastructures import ImmutableDict
+from werkzeug.utils import import_string
 from babel.dates import LOCALTZ
 import jinja2
 from flask import (
@@ -30,6 +31,7 @@ from flask.helpers import locked_cached_property
 from flask.ext.assets import Bundle, Environment as AssetsEnv
 from flask.ext.babel import get_locale as babel_get_locale
 from flask.ext.migrate import Migrate
+from flask.ext.script import Manager as ScriptManager
 
 import abilian.i18n
 from abilian.core import extensions, signals, redis
@@ -150,6 +152,10 @@ class Application(Flask, ServiceManager, PluginManager):
   #: json serializable dict to land in Javascript under Abilian.api
   js_api = None
 
+  #: :class:`flask.ext.script.Manager` instance for shell commands of this app.
+  #: defaults to `.commands.manager`, relative to app name.
+  script_manager = '.commands.manager'
+
   def __init__(self, name=None, config=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
     name = name or __name__
@@ -161,6 +167,7 @@ class Application(Flask, ServiceManager, PluginManager):
     Flask.__init__(self, name, *args, **kwargs)
     del self._ABILIAN_INIT_TESTING_FLAG
 
+    self._setup_script_manager()
     appcontext_pushed.connect(self._install_id_generator)
     ServiceManager.__init__(self)
     PluginManager.__init__(self)
@@ -276,6 +283,26 @@ class Application(Flask, ServiceManager, PluginManager):
       else:
         with self.app_context():
           self.start_services()
+
+  def _setup_script_manager(self):
+    manager = self.script_manager
+
+    if manager is None or isinstance(manager, ScriptManager):
+      return
+
+    if isinstance(manager, (bytes, unicode)):
+      manager = str(manager)
+      if manager.startswith('.'):
+        manager = self.import_name + manager
+
+      manager = import_string(manager, silent=True)
+      if manager is None:
+        # fallback on abilian-core's
+        from abilian.core.commands import setup_abilian_commands
+        manager = ScriptManager()
+        setup_abilian_commands(manager)
+
+      self.script_manager = manager
 
   def _install_id_generator(self, sender, **kwargs):
     g.id_generator = count(start=1)
