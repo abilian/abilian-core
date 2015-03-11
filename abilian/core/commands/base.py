@@ -9,6 +9,7 @@ import sqlalchemy as sa
 from flask import current_app
 from flask.ext.script import Manager, prompt_pass
 
+from abilian.core.logging import patch_logger
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User
 from abilian.services import get_service
@@ -21,6 +22,19 @@ __all__ = ['manager', 'logger']
 # Allow "print" statements to be replaced by a logging statements
 logging.basicConfig()
 logger = logging.getLogger('')
+
+# PATCH flask.ext.script.Manager.run to force creation of app before run() is
+# called. In default implementation, the arg parser is created before the Flask
+# application. So we can't use app.script_manager to add commands from
+# plugins. If app is created before the arg parser, plugin commands are properly
+# registered
+_flask_script_manager_run = Manager.run
+def _manager_run(self, *args, **kwargs):
+  self()
+  return _flask_script_manager_run(self, *args, **kwargs)
+
+patch_logger.info(Manager.run)
+Manager.run = _manager_run
 
 #: ``flask.ext.script.Manager`` instance for abilian commands
 manager = Manager(usage='Abilian base commands')
