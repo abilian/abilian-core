@@ -31,7 +31,7 @@ MarkupSafe>0.21
 Whoosh>=2.5,<2.6
 
 # Task queue
-celery==3.0.21
+celery==3.0.25
 redis>=2.10.1
 
 # Plugins (TODO: replace)
