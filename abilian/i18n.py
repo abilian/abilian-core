@@ -32,11 +32,13 @@ from __future__ import absolute_import
 import os
 import importlib
 from pathlib import Path
-from flask import g, request, _request_ctx_stack, current_app
+from contextlib import contextmanager
 
+from babel import Locale
 from babel.localedata import locale_identifiers
 from babel.support import Translations
 from babel.dates import LOCALTZ
+from flask import g, request, _request_ctx_stack, current_app
 import flask.ext.babel
 from flask.ext.babel import (
     Babel as BabelBase,
@@ -134,12 +136,13 @@ def _get_translations_multi_paths():
 
   translations = getattr(ctx, 'babel_translations', None)
   if translations is None:
+    babel_ext = ctx.app.extensions['babel']
     translations = None
     trs = None
 
     # reverse order: thus the application catalog is loaded last, so that
     # translations from libraries can be overriden
-    for (dirname, domain) in reversed(ctx.app.extensions['babel']._translations_paths):
+    for (dirname, domain) in reversed(babel_ext._translations_paths):
       trs = Translations.load(dirname,
                               locales=[flask.ext.babel.get_locale()],
                               domain=domain)
@@ -188,3 +191,25 @@ def localeselector():
 
 def timezoneselector():
   return LOCALTZ
+
+
+@contextmanager
+def set_locale(locale):
+  """
+  Change current locale.
+
+  Can be used as a context manager to temporary change locale.
+
+  :param locale: a :class:`Locale` instance, or a valid locale string
+  """
+  ctx = _request_ctx_stack.top
+  if ctx is None:
+    yield
+
+  if not isinstance(locale, Locale):
+    locale = Locale.parse(locale)
+
+  current_locale = getattr(ctx, 'babel_locale', None)
+  ctx.babel_locale = locale
+  yield locale
+  ctx.babel_locale = current_locale
