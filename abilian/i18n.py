@@ -32,10 +32,11 @@ from __future__ import absolute_import
 import os
 import importlib
 from pathlib import Path
-from flask import _request_ctx_stack, current_app
+from flask import g, request, _request_ctx_stack, current_app
 
 from babel.localedata import locale_identifiers
 from babel.support import Translations
+from babel.dates import LOCALTZ
 import flask.ext.babel
 from flask.ext.babel import (
     Babel as BabelBase,
@@ -168,3 +169,22 @@ flask.ext.babel.get_translations = _get_translations_multi_paths
 
 #: importable instance of :class:`Babel`
 babel = Babel()
+
+
+def localeselector():
+  # if a user is logged in, use the locale from the user settings
+  user = getattr(g, 'user', None)
+  if user is not None:
+    locale = getattr(user, 'locale', None)
+    if locale:
+      return locale
+
+  # Otherwise, try to guess the language from the user accept header the browser
+  # transmits.  By default we support en/fr. The best match wins.
+  return request.accept_languages.best_match(
+    current_app.config['BABEL_ACCEPT_LANGUAGES']
+  )
+
+
+def timezoneselector():
+  return LOCALTZ

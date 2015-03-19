@@ -19,11 +19,10 @@ from sqlalchemy.orm.attributes import NO_VALUE
 
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
-from babel.dates import LOCALTZ
 import jinja2
 from flask import (
   Flask, g, request, current_app, has_app_context, render_template,
-  request_started, Blueprint, abort, appcontext_pushed, appcontext_popped,
+  request_started, Blueprint, abort, appcontext_pushed,
   _request_ctx_stack,
   )
 from flask.config import ConfigAttribute
@@ -474,8 +473,8 @@ class Application(Flask, ServiceManager, PluginManager):
                                         translations_dir='locale',
                                         domain='wtforms')
     abilian.i18n.babel.add_translations('abilian')
-    abilian.i18n.babel.localeselector(get_locale)
-    abilian.i18n.babel.timezoneselector(get_timezone)
+    abilian.i18n.babel.localeselector(abilian.i18n.localeselector)
+    abilian.i18n.babel.timezoneselector(abilian.i18n.timezoneselector)
 
     # Flask-Migrate
     Migrate(self, self.db)
@@ -893,23 +892,3 @@ class Application(Flask, ServiceManager, PluginManager):
 
 def create_app(config=None):
   return Application(config)
-
-
-# Additional config for Babel
-def get_locale():
-  # if a user is logged in, use the locale from the user settings
-  user = getattr(g, 'user', None)
-  if user is not None:
-    locale = getattr(user, 'locale', None)
-    if locale:
-      return locale
-
-  # Otherwise, try to guess the language from the user accept header the browser
-  # transmits.  By default we support en/fr. The best match wins.
-  return request.accept_languages.best_match(
-    current_app.config['BABEL_ACCEPT_LANGUAGES']
-  )
-
-
-def get_timezone():
-  return LOCALTZ
