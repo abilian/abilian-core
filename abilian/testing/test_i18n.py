@@ -29,3 +29,20 @@ class I18NTestCase(BaseTestCase):
           assert get_locale() == en
         assert get_locale() == fr
       assert get_locale() == en
+
+  def test_get_template_i18n(self):
+    template_path = '/myfile.txt'
+    en = Locale('en')
+    result = i18n.get_template_i18n(template_path, locale=en)
+    self.assertIn('/myfile.en.txt', result)
+    self.assertIn('/myfile.txt', result)
+
+    en = Locale('en_US')
+    result = i18n.get_template_i18n(template_path, locale=en)
+    self.assertIn('/myfile.en_US.txt', result)
+    self.assertIn('/myfile.txt', result)
+
+    with i18n.set_locale('fr'):
+        result = i18n.get_template_i18n(template_path, get_locale())
+        self.assertIn('/myfile.fr.txt', result)
+        self.assertIn('/myfile.txt', result)

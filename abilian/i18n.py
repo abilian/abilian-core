@@ -57,7 +57,7 @@ from babel import Locale
 from babel.localedata import locale_identifiers
 from babel.support import Translations
 from babel.dates import LOCALTZ
-from flask import g, request, _request_ctx_stack, current_app
+from flask import g, request, _request_ctx_stack, current_app, render_template
 import flask.ext.babel
 from flask.ext.babel import (
     Babel as BabelBase,
@@ -72,6 +72,7 @@ __all__ = [
   'set_locale',
   'timezoneselector',
   'VALID_LANGUAGES_CODE',
+  'render_template_i18n'
 ]
 
 #: gettext alias
@@ -137,8 +138,8 @@ class Babel(BabelBase):
       if not os.access(unicode(path), os.R_OK):
         self.app.logger.warning(
           "Babel translations: read access not allowed {}, skipping."
-         "".format(
-           repr(unicode((path)).encode('utf-8')))
+          "".format(
+            repr(unicode((path)).encode('utf-8')))
         )
         continue
 
@@ -247,3 +248,51 @@ def set_locale(locale):
   ctx.babel_locale = locale
   yield locale
   ctx.babel_locale = current_locale
+
+
+def get_template_i18n(template_name, locale):
+  """
+    Build template list with preceding locale if found
+  """
+  if locale is None:
+    return template_name
+
+  template_list = []
+  parts = template_name.rsplit('.', 1)
+  root = parts[0]
+  suffix = parts[1]
+
+  if locale.territory is not None:
+    locale_string = '_'.join([locale.language, locale.territory])
+    localized_template_path = u'.'.join([root, locale_string, suffix])
+    template_list.append(localized_template_path)
+
+  localized_template_path = u'.'.join([root, locale.language, suffix])
+  template_list.append(localized_template_path)
+
+  # append the default
+  template_list.append(template_name)
+  return template_list
+
+
+def render_template_i18n(template_name_or_list, **context):
+  """
+    Try to build an ordered list of template to satisfy the current locale
+  """
+  template_list = []
+  # Use locale if present in **context
+  if 'locale' in context:
+    locale = Locale.parse(context['locale'])
+  else:
+    # Use get_locale() or default_locale
+    locale = flask.ext.babel.get_locale()
+
+  if isinstance(template_name_or_list, (str, unicode)):
+    template_list = get_template_i18n(template_name_or_list, locale)
+  else:
+    # Search for locale for each member of the list, do not bypass
+    for template in template_name_or_list:
+        template_list.append(get_template_i18n(template, locale))
+
+  with set_locale(locale):
+    return render_template(template_list, **context)
