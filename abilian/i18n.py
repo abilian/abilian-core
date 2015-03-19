@@ -26,6 +26,25 @@ following "`-k`" parameters:
 
     $ pybabel extract -F babel.cfg -k "_n:1,2" -k "_l" -o "msg.pot" "src"
 
+
+This can be made easier by placing in `setup.cfg`:
+
+.. code-block:: ini
+
+    [extract_messages]
+    mapping_file = babel.cfg
+    keywords = _n:1,2 _l
+    output-file = msg.pot
+    input-dirs = src
+
+
+And just type:
+
+.. code-block:: bash
+
+    $ python setup.py extract_messages
+
+
 """
 from __future__ import absolute_import
 
@@ -48,12 +67,14 @@ from flask.ext.babel import (
 __all__ = [
   'babel',
   'gettext', '_',
-  'lazy_gettext', '_l',
+  'lazy_gettext', '_l', 'localeselector',
   'ngettext', '_n',
-  'VALID_LANGUAGES_CODE'
+  'set_locale',
+  'timezoneselector',
+  'VALID_LANGUAGES_CODE',
 ]
 
-#:gettext alias
+#: gettext alias
 _ = gettext
 
 #: lazy_gettext alias
@@ -175,6 +196,9 @@ babel = Babel()
 
 
 def localeselector():
+  """
+  Default locale selector used in abilian applications
+  """
   # if a user is logged in, use the locale from the user settings
   user = getattr(g, 'user', None)
   if user is not None:
@@ -190,6 +214,9 @@ def localeselector():
 
 
 def timezoneselector():
+  """
+  Default timezone selector used in abilian applications
+  """
   return LOCALTZ
 
 
@@ -198,9 +225,16 @@ def set_locale(locale):
   """
   Change current locale.
 
-  Can be used as a context manager to temporary change locale.
+  Can be used as a context manager to temporary change locale::
 
-  :param locale: a :class:`Locale` instance, or a valid locale string
+      with set_locale('fr') as fr_locale:
+          ...
+
+  :type locale: :class:`babel.core.Locale` or `str`
+  :param locale: locale to use. If it's a string if must be a valid locale
+                 specification
+  :rtype: :class:`babel.core.Locale`
+  :return: locale set
   """
   ctx = _request_ctx_stack.top
   if ctx is None:
