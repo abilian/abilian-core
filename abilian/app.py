@@ -116,6 +116,7 @@ default_config.update(
         'abilian.web.admin.panels.sysinfo.SysinfoPanel',
         'abilian.services.vocabularies.admin.VocabularyPanel',
     ),
+    CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml'],
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
     SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
     SENTRY_JS_VERSION='1.1.16',
