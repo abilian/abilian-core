@@ -125,7 +125,7 @@ default_config.update(
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False, # upstream info extension
     TRACKING_CODE_SNIPPET=u'', # tracking code to insert before </body>
-    MAIL_ADDRESS_TAG_CHAR = None,
+    MAIL_ADDRESS_TAG_CHAR=None,
 )
 default_config = ImmutableDict(default_config)
 
