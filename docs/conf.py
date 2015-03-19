@@ -44,6 +44,7 @@ autodoc_default_flags = ['members', 'undoc-members']
 intersphinx_mapping = {
     'python': ('http://docs.python.org/2.7/', 'inventories/python27.inv',),
     'flask': ('http://flask.pocoo.org/docs/', 'inventories/flask.inv'),
+    'babel': ('http://babel.pocoo.org/docs/', 'inventories/babel.inv'),
     'flaskbabel': ('http://pythonhosted.org/Flask-Babel/',
                    'inventories/flask_babel.inv'),
     'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_0_8/',
