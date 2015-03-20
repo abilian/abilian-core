@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abilian-core 0.3.3.dev88+ng11c50b5.d20150311\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-11 17:49+0100\n"
-"PO-Revision-Date: 2015-03-11 17:49+0100\n"
+"POT-Creation-Date: 2015-03-20 15:17+0100\n"
+"PO-Revision-Date: 2015-03-20 15:19+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -94,7 +94,7 @@ msgstr ""
 
 #: abilian/services/auth/templates/login/login.html:16
 #: abilian/services/auth/templates/login/password_reset.html:18
-#: abilian/web/admin/panels/users/forms.py:60
+#: abilian/web/admin/panels/users/forms.py:65
 msgid "Password"
 msgstr ""
 
@@ -296,50 +296,66 @@ msgid "Advanced filtering"
 msgstr ""
 
 #: abilian/web/admin/panels/users/forms.py:19
-msgid "Last Name"
-msgstr ""
-
-#: abilian/web/admin/panels/users/forms.py:22
-msgid "First Name"
-msgstr ""
-
-#: abilian/web/admin/panels/users/forms.py:25
 #: abilian/web/admin/templates/admin/users.html:18
 msgid "Email"
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:30
+#: abilian/web/admin/panels/users/forms.py:20
+msgid "Users log in with their email address."
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:24
+msgid "Last Name"
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:25
+msgid "ex: Smith"
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:28
+msgid "First Name"
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:29
+msgid "ex: John"
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:34
 #: abilian/web/admin/templates/admin/users.html:19
 msgid "Login enabled"
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:34
+#: abilian/web/admin/panels/users/forms.py:35
+msgid "If unchecked, user will not be able to connect."
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:39
 #: abilian/web/admin/templates/admin/users.html:20
 msgid "Roles"
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:39
+#: abilian/web/admin/panels/users/forms.py:44
 #: abilian/web/preferences/user.py:25
 msgid "New Password"
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:40
+#: abilian/web/admin/panels/users/forms.py:45
 msgid "If empty the current password will not be changed."
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:43
+#: abilian/web/admin/panels/users/forms.py:48
 #: abilian/web/preferences/user.py:27
 msgid "Confirm new password"
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:52
+#: abilian/web/admin/panels/users/forms.py:57
 #: abilian/web/preferences/user.py:39
 msgid ""
 "Passwords differ. Ensure you have typed same password in both "
 "\"password\" field and \"confirm password\" field."
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:61
+#: abilian/web/admin/panels/users/forms.py:66
 msgid "If empty a random password will be generated."
 msgstr ""
 
@@ -409,11 +425,11 @@ msgstr ""
 msgid "Last connection"
 msgstr ""
 
-#: abilian/web/forms/fields.py:166 abilian/web/forms/fields.py:199
+#: abilian/web/forms/fields.py:168 abilian/web/forms/fields.py:205
 msgid "Not a valid datetime value"
 msgstr ""
 
-#: abilian/web/forms/fields.py:339
+#: abilian/web/forms/fields.py:345
 msgid "Not a valid choice"
 msgstr ""
 

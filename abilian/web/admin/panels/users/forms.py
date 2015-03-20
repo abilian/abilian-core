@@ -16,20 +16,25 @@ from abilian.web.forms.validators import required
 
 class UserAdminForm(Form):
 
+  email = TextField(_l(u'Email'),
+                      description=_l(u'Users log in with their email address.'),
+                      view_widget=widgets.EmailWidget(),
+                      filters=(strip,),
+                      validators=[required()])
   last_name = StringField(_l(u'Last Name'),
+                          description=_l(u'ex: Smith'),
                           filters=(strip,),
                           validators=[required()])
   first_name = StringField(_l(u'First Name'),
+                           description=_l(u'ex: John'),
                            filters=(strip,),
                            validators=[required()])
-  email = TextField(_l(u'Email'),
-                    view_widget=widgets.EmailWidget(),
-                    filters=(strip,),
-                    validators=[required()])
 
-  can_login = BooleanField(_l(u'Login enabled'),
-                           widget=widgets.BooleanWidget())
-    
+  can_login = BooleanField(
+      _l(u'Login enabled'),
+      description=_l(u'If unchecked, user will not be able to connect.'),
+      widget=widgets.BooleanWidget())
+
   roles = Select2MultipleField(
       _l(u'Roles'),
       choices=[(r.name, r.label) for r in Role.assignable_roles()],
@@ -51,8 +56,8 @@ class UserAdminForm(Form):
       raise ValidationError(
         _(u'Passwords differ. Ensure you have typed same password in both'
           u' "password" field and "confirm password" field.'))
-  
-  
+
+
 
 class UserCreateForm(UserAdminForm):
 
@@ -60,5 +65,5 @@ class UserCreateForm(UserAdminForm):
     _l(u'Password'),
     description=_l(u'If empty a random password will be generated.'),
     widget=widgets.PasswordInput(autocomplete='off'))
-  
+
   confirm_password = HiddenField()
