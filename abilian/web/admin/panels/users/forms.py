@@ -21,14 +21,14 @@ class UserAdminForm(Form):
                       view_widget=widgets.EmailWidget(),
                       filters=(strip,),
                       validators=[required()])
-  last_name = StringField(_l(u'Last Name'),
-                          description=_l(u'ex: Smith'),
-                          filters=(strip,),
-                          validators=[required()])
   first_name = StringField(_l(u'First Name'),
                            description=_l(u'ex: John'),
                            filters=(strip,),
                            validators=[required()])
+  last_name = StringField(_l(u'Last Name'),
+                          description=_l(u'ex: Smith'),
+                          filters=(strip,),
+                          validators=[required()])
 
   can_login = BooleanField(
       _l(u'Login enabled'),
