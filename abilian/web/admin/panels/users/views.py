@@ -36,19 +36,19 @@ class JsonUsersList(base.JSONView):
     echo = int(kw.get("sEcho", 0))
     search = kw.get("sSearch", "").replace("%", "").strip().lower()
 
-    end = start + length    
+    end = start + length
     q = User.query\
         .options(sa.orm.noload('*'))\
         .filter(User.id != 0)
     total_count = q.count()
-    
+
     if search:
       # TODO: gérer les accents
       filter = or_(func.lower(User.first_name).like("%" + search + "%"),
                    func.lower(User.last_name).like("%" + search + "%"),
                    func.lower(User.email).like("%" + search + "%"))
       q = q.filter(filter)
-      
+
     count = q.count()
     SORT_COLS = {
       1: [],  # [User.last_name, User.first_name] will be added anyway
@@ -93,13 +93,13 @@ class JsonUsersList(base.JSONView):
             <span class="badge badge-default">{{ role}}</span>
             {%- endfor %}''',
             roles=roles))
-      
+
       if user.last_active:
         last_active = format_datetime(user.last_active)
       else:
         last_active = _(u'Never logged in')
       columns.append(last_active)
-      
+
       data.append(columns)
 
     return {
@@ -120,15 +120,15 @@ class UserBase(object):
     return url_for('.users')
 
   view_url = index_url
-  
-  
+
+
 class UserEdit(UserBase, views.ObjectEdit):
 
   def breadcrumb(self):
     label = render_template_string(u'<em>{{ u.email }}</em>', u=self.obj)
     return BreadcrumbItem(label=label, url=u'', description=self.obj.name)
-  
-  def get_form_kwargs(self):    
+
+  def get_form_kwargs(self):
     kw = super(UserEdit, self).get_form_kwargs()
     security = current_app.services['security']
     roles = security.get_roles(self.obj)
@@ -148,30 +148,30 @@ class UserEdit(UserBase, views.ObjectEdit):
     return True
 
   def form_valid(self):
-    del self.form.confirm_password    
+    del self.form.confirm_password
     if self.form.password.data:
       self.obj.set_password(self.form.password.data)
     del self.form.password
     return super(UserEdit, self).form_valid()
 
-  
+
 class UserCreate(UserBase, views.ObjectCreate):
   Form = UserCreateForm
   chain_create_allowed = True
 
   def get_form_kwargs(self):
     kw = super(UserCreate, self).get_form_kwargs()
-    
+
     if request.method == 'GET':
       # ensure formdata is not ImmutableMultiDict (request.args)
       data = MultiDict(kw.setdefault('formdata', {}))
       kw['formdata'] = data
-      data['can_login'] = True      
+      data['can_login'] = True
 
     return kw
-  
+
   def form_valid(self):
     if not self.form.password.data:
       self.form.password.data = gen_random_password()
-      
-    return super(UserCreate).form_valid()
+
+    return super(UserCreate, self).form_valid()
