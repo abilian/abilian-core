@@ -138,8 +138,12 @@ class DateTimeField(Field):
     else:
       locale = get_locale()
       date_fmt = locale.date_formats['short'].pattern
+      # force numerical months and 4 digit years
       date_fmt = date_fmt.replace('MMMM', 'MM')\
-                         .replace('MMM', 'MM')  # force numerical months
+                         .replace('MMM', 'MM')\
+                         .replace('yyyy', 'y')\
+                         .replace('yy', 'y')\
+                         .replace('y', 'yyyy')
       time_fmt = locale.time_formats['short']
       dt_fmt = locale.datetime_formats['short'].format(time_fmt, date_fmt)
       return format_datetime(self.data, dt_fmt) if self.data else ''
@@ -152,10 +156,8 @@ class DateTimeField(Field):
       date_fmt = babel2datetime(date_fmt)
       date_fmt = date_fmt.replace('%B', '%m')\
                          .replace('%b', '%m')  # force numerical months
-
       time_fmt = locale.time_formats['short']
       time_fmt = babel2datetime(time_fmt)
-
       datetime_fmt = u'{} | {}'.format(date_fmt, time_fmt)
       try:
         self.data = datetime.datetime.strptime(date_str, datetime_fmt)
@@ -180,8 +182,12 @@ class DateField(DateTimeField):
       return ' '.join(self.raw_data)
     else:
       date_fmt = get_locale().date_formats['short'].pattern
+      # force numerical months and 4 digit years
       date_fmt = date_fmt.replace('MMMM', 'MM')\
-                         .replace('MMM', 'MM')  # force numerical months
+                         .replace('MMM', 'MM')\
+                         .replace('yyyy', 'y')\
+                         .replace('yy', 'y')\
+                         .replace('y', 'yyyy')
       return format_date(self.data, date_fmt) if self.data else ''
 
   def process_formdata(self, valuelist):
@@ -190,7 +196,7 @@ class DateField(DateTimeField):
       date_fmt = get_locale().date_formats['short']
       date_fmt = babel2datetime(date_fmt)
       date_fmt = date_fmt.replace('%B', '%m')\
-                         .replace('%b', '%m')  # force numerical months
+                         .replace('%b', '%m')
 
       try:
         self.data = datetime.datetime.strptime(date_str, date_fmt).date()

@@ -68,10 +68,18 @@ class FieldsTestCase(BaseTestCase):
 
       # test
       # more recent date: offset is GMT+8
-      f.process_formdata(['11/01/2011 | 10:42'])
+      f.process_formdata(['23/01/2011 | 10:42'])
       self.assertEquals(
         f.data,
-        datetime.datetime(2011, 1, 11, 2, 42, tzinfo=pytz.utc))
+        datetime.datetime(2011, 1, 23, 2, 42, tzinfo=pytz.utc))
+
+  def test_datetimefield_force_4digit_year(self):
+    # use 'en': short date pattern is u'M/d/yy'
+    headers={ 'Accept-Language': 'en' }
+    with self.app.test_request_context(headers=headers):
+      f = fields.DateTimeField().bind(Form(), 'dt')
+      f.data = datetime.datetime(2011, 1, 23, 10, 42, tzinfo=pytz.utc)
+      assert f._value() == u'1/23/2011, 6:42 PM'
 
   def test_date_field(self):
     """
@@ -82,3 +90,11 @@ class FieldsTestCase(BaseTestCase):
       f.process_formdata(['17/06/1789'])
       self.assertEquals(f.data, datetime.date(1789, 06, 17))
       self.assertEquals(f._value(), u'17/06/1789')
+
+  def test_datefield_force_4digit_year(self):
+    # use 'en': short date pattern is u'M/d/yy'
+    headers={ 'Accept-Language': 'en' }
+    with self.app.test_request_context(headers=headers):
+      f = fields.DateField().bind(Form(), 'dt')
+      f.data = datetime.date(2011, 1, 23)
+      assert f._value() == u'1/23/2011'
