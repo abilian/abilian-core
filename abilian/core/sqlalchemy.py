@@ -11,6 +11,7 @@ from functools import partial
 import json
 import uuid
 
+import pytz
 import babel
 from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
 import sqlalchemy as sa
@@ -409,3 +410,30 @@ class Locale(sa.types.TypeDecorator):
 
   def process_result_value(self, value, dialect):
     return None if value is None else babel.Locale.parse(value)
+
+
+class Timezone(sa.types.TypeDecorator):
+  """
+  Store a :class:`pytz.tzfile.DstTzInfo` instance
+  """
+  impl = sa.types.UnicodeText
+
+  @property
+  def python_type(self):
+    return pytz.tzfile.DstTzInfo
+
+  def process_bind_param(self, value, dialect):
+    if value is None:
+      return None
+
+    if not isinstance(value, pytz.tzfile.DstTzInfo):
+      if not isinstance(value, (str, unicode)):
+        raise ValueError("Unknown timezone value: %s" % repr(value))
+      if not value.strip():
+        return None
+      value = babel.dates.get_timezone(value)
+
+    return value.zone
+
+  def process_result_value(self, value, dialect):
+    return None if value is None else babel.dates.get_timezone(value)
