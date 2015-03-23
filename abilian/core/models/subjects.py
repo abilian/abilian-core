@@ -166,6 +166,7 @@ class User(Principal, UserMixin, db.Model):
 
   last_active = Column(DateTime, info=SYSTEM)
   locale = Column(sa_types.Locale, nullable=True, default=None)
+  timezone = Column(sa_types.Timezone, nullable=True, default=None)
 
   __table_args__ = (UniqueConstraint('email'),)
 
