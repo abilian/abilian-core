@@ -22,6 +22,7 @@ from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, \
     DateTime, Text
 
+from abilian.core import sqlalchemy as sa_types
 from .base import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
 
 __all__ = ['User', 'Group', 'Principal']
@@ -156,8 +157,6 @@ class User(Principal, UserMixin, db.Model):
   # Should we add gender, salutation ?
 
   # System information
-  locale = Column(Text)
-
   email = Column(UnicodeText, nullable=False)
   can_login = Column(Boolean, nullable=False, default=True)
   password = Column(UnicodeText, default=u"*",
@@ -166,6 +165,7 @@ class User(Principal, UserMixin, db.Model):
   photo = deferred(Column(LargeBinary))
 
   last_active = Column(DateTime, info=SYSTEM)
+  locale = Column(sa_types.Locale, nullable=True, default=None)
 
   __table_args__ = (UniqueConstraint('email'),)
 
