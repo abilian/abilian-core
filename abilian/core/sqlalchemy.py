@@ -11,6 +11,7 @@ from functools import partial
 import json
 import uuid
 
+import babel
 from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
 import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
@@ -375,3 +376,36 @@ class UUID(sa.types.TypeDecorator):
 
   def process_result_value(self, value, dialect):
     return value if value is None else uuid.UUID(value)
+
+
+class Locale(sa.types.TypeDecorator):
+  """
+  Store a :class:`babel.Locale` instance
+  """
+  impl = sa.types.UnicodeText
+
+  @property
+  def python_type(self):
+    return babel.Locale
+
+  def process_bind_param(self, value, dialect):
+    if value is None:
+      return None
+
+    if not isinstance(value, babel.Locale):
+      if not isinstance(value, (str, unicode)):
+        raise ValueError("Unknown locale value: %s" % repr(value))
+      if not value.strip():
+        return None
+      value = babel.Locale.parse(value)
+
+    code = unicode(value.language)
+    if value.territory:
+      code += u'_' + unicode(value.territory)
+    elif value.script:
+      code += u'_' + unicode(value.territory)
+
+    return code
+
+  def process_result_value(self, value, dialect):
+    return None if value is None else babel.Locale.parse(value)
