@@ -52,14 +52,16 @@ import os
 import importlib
 from pathlib import Path
 from contextlib import contextmanager
+from datetime import datetime
 
+import pytz
 from babel import Locale
 from babel.localedata import locale_identifiers
 from babel.support import Translations
-from babel.dates import LOCALTZ
+from babel.dates import LOCALTZ, get_timezone, get_timezone_gmt
 from flask import g, request, _request_ctx_stack, current_app, render_template
-import flask.ext.babel
-from flask.ext.babel import (
+import flask_babel
+from flask_babel import (
     Babel as BabelBase,
     gettext, lazy_gettext, ngettext,
 )
@@ -87,13 +89,22 @@ _n = ngettext
 VALID_LANGUAGES_CODE = frozenset(lang for lang in locale_identifiers()
                                  if len(lang) == 2)
 
-def __gettext_territory(code):
-  locale = flask.ext.babel.get_locale()
+def get_default_locale():
+  return current_app.extensions['babel'].default_locale
+
+
+def _get_locale():
+  locale = flask_babel.get_locale()
   if locale is None:
-    locale = current_app.extensions['babel'].default_locale.territories.get(code)
+    locale = get_default_locale()
+  return locale
+
+
+def __gettext_territory(code):
+  locale = _get_locale()
   return (
       locale.territories.get(code)
-      or current_app.extensions['babel'].default_locale.territories.get(code))
+      or get_default_locale().territories.get(code))
 
 #: get localized territory name
 def country_name(code):
@@ -103,6 +114,35 @@ def country_name(code):
 def lazy_country_name(code):
   from speaklater import make_lazy_string
   return make_lazy_string(__gettext_territory, code)
+
+
+def supported_app_locales():
+  """
+  language codes and labels supported by current application
+
+  :return: an iterable of `(:class:`babel.Locale`, label)`, label being the
+  locale language human name in current locale.
+  """
+  locale = _get_locale()
+  codes = current_app.config['BABEL_ACCEPT_LANGUAGES']
+  return ((Locale.parse(code), locale.languages.get(code, code))
+          for code in codes)
+
+
+def timezones_choices():
+  """
+  Timezones values and their labels for current locale.
+
+  :return: an iterable of `(code, label)`, code being a timezone code and label
+  the timezone name in current locale.
+  """
+  utcnow = pytz.utc.localize(datetime.utcnow())
+  locale = _get_locale()
+  for tz in sorted(pytz.common_timezones):
+    tz = get_timezone(tz)
+    now = tz.normalize(utcnow.astimezone(tz))
+    label = u'({}) {}'.format(get_timezone_gmt(now, locale=locale), tz.zone)
+    yield (tz, label) #get_timezone_name(tz, locale=locale))
 
 
 class Babel(BabelBase):
@@ -166,7 +206,7 @@ def _get_translations_multi_paths():
     # translations from libraries can be overriden
     for (dirname, domain) in reversed(babel_ext._translations_paths):
       trs = Translations.load(dirname,
-                              locales=[flask.ext.babel.get_locale()],
+                              locales=[flask_babel.get_locale()],
                               domain=domain)
 
       # babel.support.Translations is a subclass of
@@ -190,7 +230,7 @@ def _get_translations_multi_paths():
   return translations
 
 # monkey patch flask-babel
-flask.ext.babel.get_translations = _get_translations_multi_paths
+flask_babel.get_translations = _get_translations_multi_paths
 
 #: importable instance of :class:`Babel`
 babel = Babel()
@@ -285,7 +325,7 @@ def render_template_i18n(template_name_or_list, **context):
     locale = Locale.parse(context['locale'])
   else:
     # Use get_locale() or default_locale
-    locale = flask.ext.babel.get_locale()
+    locale = flask_babel.get_locale()
 
   if isinstance(template_name_or_list, (str, unicode)):
     template_list = get_template_i18n(template_name_or_list, locale)

@@ -22,13 +22,16 @@ from wtforms.validators import required, optional
 from wtforms.compat import string_types, text_type
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
+import babel
 
+from flask import current_app
 from flask.ext.wtf.file import FileField as BaseFileField
 from flask.ext.babel import (
   get_locale, get_timezone,
   format_date, format_datetime
   )
 
+from abilian import i18n
 from abilian.core.util import utc_dt
 from abilian.core.extensions import db
 
@@ -433,3 +436,36 @@ class JsonSelect2Field(SelectFieldBase):
 
 class JsonSelect2MultipleField(JsonSelect2Field):
   widget = Select2Ajax(multiple=True)
+
+
+class LocaleSelectField(SelectField):
+  widget = Select2()
+
+  def __init__(self, *args, **kwargs):
+    kwargs['coerce'] = babel.Locale.parse
+    kwargs['choices'] = (locale_info
+                         for locale_info in i18n.supported_app_locales())
+    super(LocaleSelectField, self).__init__(*args, **kwargs)
+
+  def iter_choices(self):
+    if not self.flags.required:
+      yield (None, None, self.data is None,)
+
+    for locale, label in i18n.supported_app_locales():
+      yield (locale.language, label.capitalize(), locale == self.data)
+
+
+class TimezoneField(SelectField):
+  widget = Select2()
+
+  def __init__(self, *args, **kwargs):
+    kwargs['coerce'] = babel.dates.get_timezone
+    kwargs['choices'] = (tz_info for tz_info in i18n.timezones_choices())
+    super(TimezoneField, self).__init__(*args, **kwargs)
+
+  def iter_choices(self):
+    if not self.flags.required:
+      yield (None, None, self.data is None,)
+
+    for tz, label in i18n.timezones_choices():
+      yield (tz.zone, label, tz == self.data)

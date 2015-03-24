@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abilian-core 0.3.3.dev88+ng11c50b5.d20150311\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-20 15:17+0100\n"
+"POT-Creation-Date: 2015-03-24 13:03+0100\n"
 "PO-Revision-Date: 2015-03-20 15:19+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -305,19 +305,19 @@ msgid "Users log in with their email address."
 msgstr ""
 
 #: abilian/web/admin/panels/users/forms.py:24
-msgid "Last Name"
-msgstr ""
-
-#: abilian/web/admin/panels/users/forms.py:25
-msgid "ex: Smith"
-msgstr ""
-
-#: abilian/web/admin/panels/users/forms.py:28
 msgid "First Name"
 msgstr ""
 
-#: abilian/web/admin/panels/users/forms.py:29
+#: abilian/web/admin/panels/users/forms.py:25
 msgid "ex: John"
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:28
+msgid "Last Name"
+msgstr ""
+
+#: abilian/web/admin/panels/users/forms.py:29
+msgid "ex: Smith"
 msgstr ""
 
 #: abilian/web/admin/panels/users/forms.py:34
@@ -335,7 +335,7 @@ msgid "Roles"
 msgstr ""
 
 #: abilian/web/admin/panels/users/forms.py:44
-#: abilian/web/preferences/user.py:25
+#: abilian/web/preferences/user.py:26
 msgid "New Password"
 msgstr ""
 
@@ -344,12 +344,12 @@ msgid "If empty the current password will not be changed."
 msgstr ""
 
 #: abilian/web/admin/panels/users/forms.py:48
-#: abilian/web/preferences/user.py:27
+#: abilian/web/preferences/user.py:28
 msgid "Confirm new password"
 msgstr ""
 
 #: abilian/web/admin/panels/users/forms.py:57
-#: abilian/web/preferences/user.py:39
+#: abilian/web/preferences/user.py:50
 msgid ""
 "Passwords differ. Ensure you have typed same password in both "
 "\"password\" field and \"confirm password\" field."
@@ -425,11 +425,11 @@ msgstr ""
 msgid "Last connection"
 msgstr ""
 
-#: abilian/web/forms/fields.py:168 abilian/web/forms/fields.py:205
+#: abilian/web/forms/fields.py:171 abilian/web/forms/fields.py:208
 msgid "Not a valid datetime value"
 msgstr ""
 
-#: abilian/web/forms/fields.py:345
+#: abilian/web/forms/fields.py:348
 msgid "Not a valid choice"
 msgstr ""
 
@@ -468,23 +468,31 @@ msgstr ""
 msgid "Select file"
 msgstr ""
 
-#: abilian/web/preferences/user.py:30
+#: abilian/web/preferences/user.py:31
 msgid "Photo"
 msgstr ""
 
-#: abilian/web/preferences/user.py:52 abilian/web/preferences/user.py:57
+#: abilian/web/preferences/user.py:35
+msgid "Preferred Language"
+msgstr ""
+
+#: abilian/web/preferences/user.py:40
+msgid "Time zone"
+msgstr ""
+
+#: abilian/web/preferences/user.py:63 abilian/web/preferences/user.py:68
 msgid "Only PNG or JPG image files are accepted"
 msgstr ""
 
-#: abilian/web/preferences/user.py:65
+#: abilian/web/preferences/user.py:76
 msgid "Could not decode image file"
 msgstr ""
 
-#: abilian/web/preferences/user.py:76
+#: abilian/web/preferences/user.py:87
 msgid "About me"
 msgstr ""
 
-#: abilian/web/preferences/user.py:121
+#: abilian/web/preferences/user.py:132
 msgid "Preferences saved."
 msgstr ""
 

@@ -7,6 +7,7 @@ from cStringIO import StringIO
 import imghdr
 import PIL.Image
 
+import babel
 from flask import g, current_app, request, redirect, url_for, render_template, \
     flash
 from flask.ext.wtf.file import FileField
@@ -16,8 +17,8 @@ from wtforms.validators import ValidationError
 
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
-from abilian.web.forms import Form, widgets
-from abilian.i18n import _l, _
+from abilian.web.forms import Form, fields, widgets
+from abilian.i18n import _l, _, get_default_locale
 
 
 class UserPreferencesForm(Form):
@@ -29,6 +30,16 @@ class UserPreferencesForm(Form):
 
   photo = FileField(label=_l('Photo'),
                     widget=widgets.ImageInput(width=55, height=55))
+
+  locale = fields.LocaleSelectField(
+    label=_l(u'Preferred Language'),
+    default=lambda: get_default_locale(),
+  )
+
+  timezone = fields.TimezoneField(
+    label=_l(u'Time zone'),
+    default=babel.dates.LOCALTZ,
+  )
 
   def validate_password(self, field):
     pwd = field.data
@@ -92,7 +103,7 @@ class UserPreferencesPanel(PreferencePanel):
                         url=url_for('users.photo', user_id=g.user.id)))
       data['photo'] = photo
 
-    form = UserPreferencesForm(formdata=None, prefix=self.id, **data)
+    form = UserPreferencesForm(obj=g.user, formdata=None, prefix=self.id, **data)
     return render_template('preferences/user.html', form=form, title=self.label)
 
   @csrf.protect
