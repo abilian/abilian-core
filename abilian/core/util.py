@@ -51,7 +51,7 @@ def local_dt(dt):
   """
   if not dt.tzinfo:
     dt = pytz.utc.localize(dt)
-  return dt.astimezone(LOCALTZ)
+  return LOCALTZ.normalize(dt.astimezone(LOCALTZ))
 
 
 def utc_dt(dt):
