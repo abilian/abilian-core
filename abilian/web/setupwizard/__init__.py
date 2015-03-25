@@ -325,6 +325,7 @@ def finalize_validate():
   config.SQLALCHEMY_DATABASE_URI = session_get('db')['uri']
 
   redis_uri = session_get('redis')['uri']
+  config.REDIS_URI = redis_uri
   config.BROKER_URL = redis_uri
   config.CELERY_RESULT_BACKEND = redis_uri
 
