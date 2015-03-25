@@ -237,7 +237,7 @@ class Module(object):
 
   # class based views. If not provided will be automaticaly created from
   # EntityView etc defined above
-  base_template = None
+  base_template = 'base.html'
   view_cls = EntityView
   edit_cls = EntityEdit
   create_cls = EntityCreate
@@ -455,7 +455,10 @@ class Module(object):
       search_criterions=self.search_criterions,)
     rendered_table = table_view.render()
 
-    ctx = dict(rendered_table=rendered_table, module=self)
+    ctx = dict(rendered_table=rendered_table,
+               module=self,
+               base_template=self.base_template
+    )
     return render_template("default/list_view.html", **ctx)
 
   @expose("/export_xls")
