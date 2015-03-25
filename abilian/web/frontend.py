@@ -411,10 +411,6 @@ class Module(object):
     sort_dir = args.get("sSortDir_0", "asc")
     sort_col_def = self.list_view_columns[sort_col]
     sort_col_name = sort_col_def['name']
-
-    if sort_col_name == 'name':
-      sort_col_name = 'nom'
-
     sort_col = getattr(self.managed_class, sort_col_name)
 
     if isinstance(sort_col.property, orm.properties.RelationshipProperty):
