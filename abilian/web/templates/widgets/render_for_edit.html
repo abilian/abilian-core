@@ -13,8 +13,7 @@
                                  and form._has_required(fields=field_names) %}
           <li role="presentation" {%- if loop.first %} class="active"{%- endif %}>
             <a href="#{{ label_id }}" role="tab" data-toggle="tab">
-              {{ label }}
-              {%- if has_required %}*{%- endif %}
+              <span{% if has_required %} class="required"{%- endif %}>{{ label }}</span>
             </a>
           </li>
         {%- endfor %}

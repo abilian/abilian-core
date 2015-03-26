@@ -15,6 +15,15 @@
 // }
 
 
+form [role="tablist"] .required:after,
+label.required:after {
+  content: '\2605'; // U+2605: BLACK STAR ★
+  vertical-align: super;
+  font-size: 85%;
+  margin-left: 0.25ex;
+  color: #B00;
+}
+
 /* to disable resize on textareas */
 .not-resizeable {
   resize: none;
