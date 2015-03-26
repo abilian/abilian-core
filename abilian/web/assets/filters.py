@@ -9,7 +9,7 @@ from os.path import isabs
 import json
 import re
 from functools import partial
-from cStringIO import StringIO
+from StringIO import StringIO
 from pathlib import Path
 
 from webassets.filter import Filter, register_filter, get_filter, ExternalTool
