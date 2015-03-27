@@ -81,13 +81,18 @@ def log_config(config):
     logger.setLevel(original_level)
 
 
-@manager.command
-def run(port=None):
+@manager.option('-p', '--port', dest='port', help='listening port',
+                default=5000)
+@manager.option('--hide-config', dest='hide_config', action='store_const',
+                 const=True, default=False,
+                help='don\'t show application configuration on startup')
+def run(port, hide_config):
   """
   Like runserver, also print application configuration.
   """
   app = current_app
-  log_config(app.config)
+  if not hide_config:
+    log_config(app.config)
 
   # TODO: pass host and debug as params to
   host = "0.0.0.0"
