@@ -35,9 +35,23 @@
     /**
      * Prevent double form submit.
      */
+    function reEnableSubmitControls() {
+        var $elements = $('[data-prevent-double-submit]');
+        $elements.each(function () {
+            this.classList.remove('disabled');
+            $(this).data('preventDoubleSubmit', false);
+        });
+    }
+
     Abilian.fn.prevent_double_submit = function () {
         $(document).on('click', '[type="submit"]', function(e) {
-            var $elements = $(e.target.form.elements);
+            var form = e.target.form;
+            if (form.checkValidity !== undefined && !form.checkValidity()) {
+                // HTML5 constraint API. form will not validate, so will not be
+                // submitted: don't disable buttons.
+                return;
+            }
+            var $elements = $(form.elements);
             $elements.each(function () {
                 if (!this.classList.contains('disabled')) {
                     this.classList.add('disabled');
@@ -46,14 +60,7 @@
             });
         });
 
-        window.addEventListener('unload', function() {
-            var $elements = $('[data-prevent-double-submit]');
-            $elements.each(function () {
-                this.classList.remove('disabled');
-                $(this).data('preventDoubleSubmit', false);
-            });
-        });
-
+        window.addEventListener('unload', reEnableSubmitControls);
     };
     Abilian.fn.onAppInit(Abilian.fn.prevent_double_submit);
 
