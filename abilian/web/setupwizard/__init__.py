@@ -280,8 +280,13 @@ def get_possible_hostnames():
 
 
 def step_site_info_form():
+  cfg = current_app.config
+  default_data = {
+      'sitename': cfg.get('SITE_NAME', u'') or u'',
+      'mailsender': cfg.get('MAIL_SENDER', u'') or u'',
+  }
   return render_template('setupwizard/step_site_info.html',
-                         data=session_get('site_info', {}),
+                         data=session_get('site_info', default_data),
                          suggested_hosts=get_possible_hostnames())
 
 
