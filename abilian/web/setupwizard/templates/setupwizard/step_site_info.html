@@ -49,26 +49,27 @@
   <div class="form-group">
     <label for="server_mode" class="col-sm-2 control-label">Server mode</label>
     <div class="col-sm-10">
-      <div class="input-group">
         <div class="radio">
           <label>
-            <input type="radio" class="form-control" name="server_mode" value="production"
+            <input type="radio" name="server_mode" value="production"
                    required
                    {%- if not data.get('server_mode') or data['server_mode'] == "production" %} checked{%- endif %}>
             Production
           </label>
+          <p class="help-block">Serves minified JS & CSS; interactive debugger disabled</p>
         </div>
 
         <div class="radio">
           <label>
-            <input type="radio" class="form-control" name="server_mode" value="development"
+            <input type="radio" name="server_mode" value="development"
                    required
                    {%- if data['server_mode'] == "development" %} checked{%- endif %}>
             Development
           </label>
+          <p class="help-block">Serves sources JS & CSS; interactive debugger enabled </p>
         </div>
 
-      </div>
+
     </div>
   </div>
 
