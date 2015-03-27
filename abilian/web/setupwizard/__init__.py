@@ -7,6 +7,8 @@ import os
 import socket
 import logging
 from collections import OrderedDict, namedtuple
+from pathlib import Path
+
 import sqlalchemy as sa
 import redis
 
@@ -148,8 +150,8 @@ def step_db_validate():
 
   db_uri += u'/'
 
-  if dialect == u'sqlite' and not database:
-    database = u':memory:'
+  if dialect == u'sqlite' and (not database or database == u':memory:'):
+    database = unicode(Path(current_app.instance_path) / u'data'/ u'sqlite.db')
 
   db_uri += database
 

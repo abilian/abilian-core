@@ -67,6 +67,10 @@
     <div class="col-sm-10">
       <input type="text" class="form-control" name="database"
              value="{{ data['database']|default("") }}">
+      <p class="help-block">
+        If sqlite is selected, default database file will be at:<br />
+        <i>{{ app.instance_path }}/app/sqlite.db</i>
+      </p>
     </div>
   </div>
 {% endblock %}
