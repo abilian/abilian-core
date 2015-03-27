@@ -54,6 +54,7 @@ _setup_steps = (
 
 @setup.before_request
 def step_progress():
+  session.permanent = False # limit lifetime to browser session
   current_step = next_step = prev_step = None
 
   for step in _setup_steps:
