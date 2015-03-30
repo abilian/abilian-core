@@ -111,7 +111,7 @@ def step_validated(step_endpoint, valid=True):
 # DB Setup
 #
 @csrf.exempt
-@setup.route('', methods=['GET', 'POST'])
+@setup.route('/', methods=['GET', 'POST'])
 def step_db():
   if request.method == 'POST':
     return step_db_validate()
