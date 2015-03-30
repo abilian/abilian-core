@@ -1,0 +1,81 @@
+{% extends "setupwizard/_base.html" %}
+
+{% block content_title %}Admin account creation{% endblock %}
+
+{% block formfields %}
+  <div class="form-group required">
+    <label for="email" class="col-sm-2 control-label">Email</label>
+    <div class="col-sm-10">
+      <span class="input-group">
+        <span class="input-group-addon">@</span>
+        <input type="email" class="form-control" name="email"
+               value="{{ data['email']|default('') }}" required />
+      </span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="name" class="col-sm-2 control-label">Name</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="name"
+             value="{{ data['name']|default('') }}" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="firstname" class="col-sm-2 control-label">First Name</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="firstname"
+             value="{{ data['firstname']|default('') }}" />
+    </div>
+  </div>
+
+
+  <div class="form-group required">
+    <label for="password" class="col-sm-2 control-label">Password</label>
+    <div class="col-sm-10">
+      <input type="password" class="form-control" name="password" 
+             value="{{ data['password']|default('') }}"
+             required />
+    </div>
+  </div>
+
+  <div class="form-group required">
+    <label for="confirm_password" class="col-sm-2 control-label">Confirm password</label>
+    <div class="col-sm-10">
+      <input type="password" class="form-control" name="confirm_password" 
+             value="{{ data['confirm_password']|default('') }}"
+             required />
+    </div>
+  </div>
+
+  <script type="text/javascript">
+   {
+       var passwordInput = $('input[name="password"]'),
+           passwordConfirm = $('input[name="confirm_password"]');
+
+       passwordInput.on(
+           'change',
+           function onPasswordFill() { 
+               passwordConfirm.val('');
+               passwordConfirm.focus();
+           });
+
+       passwordConfirm.on(
+           'change',
+           function () {
+               var pass = passwordInput.val(),
+                   confirm = passwordConfirm.val();
+
+               if (pass !== confirm) {
+                   passwordConfirm.val('');
+                   passwordInput.focus();
+                   passwordInput.get(0).setCustomValidity('Passwords Don\'t Match');
+               } else {
+                   passwordInput.get(0).setCustomValidity('');
+               }
+           }
+       );
+   }
+  </script>
+{% endblock %}

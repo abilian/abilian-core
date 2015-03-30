@@ -2,13 +2,22 @@
 
 {% from "macros/box.html" import m_box %}
 
-{% block content_title %}Ready to create configuration file{%- endblock %}
+{% block content_title %}Ready to finalize{%- endblock %}
 
 {% block pre_form %}
   
-  {%- call m_box(title="Location") %}
-    {{ file_location }}
-  {%- endcall %}
+  Click on "Next" will:
+
+  <ol>
+    <li>Create the configuration file:
+      {%- call m_box(title="Location") %}
+        {{ file_location }}
+      {%- endcall %}
+    </li>
+    <li>Create the database structure</li>
+    <li>Create the admin user account <em>{{ session['abilian_setup']['admin_account']['email'] }}</em>
+    </li>
+  </ol>
 
   <p> Click "Next" button to proceed</p>
 

@@ -15,16 +15,8 @@
     </div>
   {%- endcall %}
   
-  <p>For the final steps you will have to run the following commands from command line:
-    <ol>
-      <li>Initialize the database:
-        <pre>{{ cmd }} initdb</pre>
-      </li>
-      <li>
-        Create the admin account. The email is used for login:
-        <pre>{{ cmd }} createadmin -n admin [-f FIRST_NAME] email password</pre>
-      </li>
-      <li>restart the server</li>
-    </ol>
+  <p>
+    Now you have to restart the application in order to be able to login with
+    the admin account.
   </p>
 {% endblock %}

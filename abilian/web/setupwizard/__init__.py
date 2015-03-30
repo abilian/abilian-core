@@ -17,6 +17,9 @@ from flask import (
   current_app, make_response
 )
 
+from abilian.services import get_service
+from abilian.services.security import Admin
+from abilian.core.models.subjects import User
 from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf
 
@@ -48,6 +51,8 @@ _setup_steps = (
   Step('redis', 'step_redis', 'Setup Redis', 'Redis connection'),
   Step('site_info', 'step_site_info',
        'Basic site informations', 'Site name, admin email...'),
+  Step('admin_account', 'step_admin_account',
+       u'Admin account', None),
   Step('finalize', 'finalize', 'Finalize', None)
   )
 
@@ -94,6 +99,11 @@ def session_set(key, data):
 
 def session_get(key, default=None):
   return session.setdefault('abilian_setup', {}).get(key, default)
+
+
+def session_clear():
+  if 'abilian_setup' in session:
+    del session['abilian_setup']
 
 
 def step_validated(step_endpoint, valid=True):
@@ -303,6 +313,41 @@ def step_site_info_validate():
   next_step = request.setup_step_progress['next_step']
   return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
 
+#
+# Admin account creation
+#
+@csrf.exempt
+@setup.route('/admin_account', methods=['GET', 'POST'])
+def step_admin_account():
+  if request.method == 'POST':
+    return step_admin_account_validate()
+  return step_admin_account_form()
+
+
+def step_admin_account_form():
+  return render_template('setupwizard/step_admin_account.html',
+                         data=session_get('admin_account', {}))
+
+
+def step_admin_account_validate():
+  form = request.form
+  password = form.get('password', u'').strip()
+  confirm_password = form.get('confirm_password', u'').strip()
+  admin_user = dict(email=form.get('email', u'').strip(),
+                    name=form.get('name', u'').strip(),
+                    firstname=form.get('firstname', u'').strip(),
+                    password=password,
+                    confirm_password=confirm_password)
+  session_set('admin_account', admin_user)
+
+  if password != confirm_password:
+    flash('Password fields don\'t match', 'error')
+    return step_admin_account_form()
+
+  step_validated('admin_account')
+  next_step = request.setup_step_progress['next_step']
+  return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
+
 
 #
 # Finalize
@@ -350,15 +395,34 @@ def finalize_validate():
   cmd_config.write_config(config_file, config)
   cmd_config.maybe_write_logging(logging_file)
 
+  admin_account = session_get('admin_account')
+  # create a new app that will be configured with new config, to create database
+  # and admin_user
+  setup_app = current_app._get_current_object()
+  app = setup_app.__class__(
+      setup_app.import_name,
+      static_url_path=setup_app.static_url_path,
+      static_folder=setup_app.static_folder,
+      template_folder=setup_app.template_folder,
+      instance_path=setup_app.instance_path,
+  )
+  with app.test_request_context('/setup/finalize'):
+    app.create_db()
+    db_session = app.db.session()
+    admin = User(email=admin_account['email'],
+                 password=admin_account['password'],
+                 last_name=admin_account['name'],
+                 first_name=admin_account['firstname'],
+                 can_login=True)
+    db_session.add(admin)
+    security = get_service('security')
+    security.grant_role(admin, Admin)
+    db_session.commit()
+
+  session_clear()
+
   response = make_response(
     render_template('setupwizard/done.html', config_file=config_file,
                     logging_file=logging_file),
     200)
-
-  # secret key changes with new config, and maybe cookie name, so we clear
-  # session made with temporary key with current cookie name
-  #
-  # FIXME: this is not working currently. The session stuff sets the cookie durint after_request
-  response.delete_cookie(current_app.session_cookie_name)
-
   return response
