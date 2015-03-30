@@ -280,11 +280,8 @@ class Application(Flask, ServiceManager, PluginManager):
     # Must come after all entity classes have been declared.
     # Inherited from ServiceManager. Will need some configuration love later.
     if not self.config.get('TESTING', False):
-      if has_app_context():
+      with self.app_context():
         self.start_services()
-      else:
-        with self.app_context():
-          self.start_services()
 
   def _setup_script_manager(self):
     manager = self.script_manager
