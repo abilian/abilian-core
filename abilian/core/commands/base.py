@@ -1,7 +1,9 @@
 # coding=utf-8
 from __future__ import absolute_import
+
 import os
 import logging
+import runpy
 from pprint import pformat
 
 import sqlalchemy as sa
@@ -167,3 +169,11 @@ def passwd(email, password=None):
   user.set_password(password)
   db.session.commit()
   print "Password updated for user {}".format(email)
+
+
+@manager.command
+def script(path):
+  """
+  Run given script in the app context.
+  """
+  runpy.run_path(path, run_name='__main__')
