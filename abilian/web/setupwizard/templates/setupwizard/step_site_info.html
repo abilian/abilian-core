@@ -31,6 +31,9 @@
     <div class="col-sm-10">
       <input type="text" class="form-control" name="sitename" required
              value="{{ data['sitename']|default("") }}">
+      <p class="help-block">
+        The name that appear on login page and browser window's title.
+      </p>
     </div>
   </div>
 
@@ -43,6 +46,9 @@
                required
                value="{{ data['mailsender']|default("") }}">
       </div>
+      <p class="help-block">
+        This is the sender address used by the application.
+      </p>
     </div>
   </div>
 
