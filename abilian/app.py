@@ -120,6 +120,7 @@ default_config.update(
     SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
     SENTRY_JS_VERSION='1.1.16',
     SENTRY_JS_PLUGINS=('jquery', 'native', 'require'),
+    SESSION_COOKIE_NAME=None,
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False, # upstream info extension
@@ -143,7 +144,7 @@ class Application(Flask, ServiceManager, PluginManager):
   #: configured instance.
   CONFIG_ENVVAR = 'ABILIAN_CONFIG'
 
-  #: True if application as a config file and can be considered configured for
+  #: True if application has a config file and can be considered configured for
   #: site.
   configured = ConfigAttribute('CONFIGURED')
 
@@ -363,6 +364,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
+    if not config.get('SESSION_COOKIE_NAME'):
+      config['SESSION_COOKIE_NAME'] = self.name + '-session'
 
     # during testing DATA_DIR is not created by instance app, but we still need
     # this attribute to be set
