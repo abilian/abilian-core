@@ -7,11 +7,16 @@ import setuptools
 from distutils.command.build import build as _build
 from setuptools.command.sdist import sdist as _sdist
 from setuptools.command.develop import develop as _develop
-import setup_util as deps
 
-install_requires = deps.parse_requirements([u'etc/requirements.txt'])
-dependency_links = deps.parse_dependency_links([u'etc/requirements.txt'])
-dev_requires = deps.parse_requirements([u'etc/dev-requirements.txt'])
+import pip
+
+session = session=pip.download.PipSession()
+_install_requires = pip.req.parse_requirements(
+    'requirements.txt', session=session)
+install_requires = [str(ir.req) for ir in _install_requires]
+_dev_requires = pip.req.parse_requirements(
+    'etc/dev-requirements.txt', session=session)
+dev_requires = [str(ir.req) for ir in _dev_requires]
 
 LONG_DESCRIPTION = open('README.rst', 'r').read()
 
@@ -50,7 +55,6 @@ setuptools.setup(
     'tests': dev_requires,
     'dev': dev_requires,
   },
-  dependency_links=dependency_links,
   include_package_data=True,
   classifiers=[
     'Development Status :: 3 - Alpha',
