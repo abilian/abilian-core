@@ -15,6 +15,7 @@ from abilian.core.logging import patch_logger
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User
 from abilian.services import get_service
+from abilian.services.security import Role
 
 __all__ = ['manager', 'logger']
 
@@ -133,15 +134,38 @@ def dumproutes():
     print "{} ({}) -> {}".format(rule, " ".join(rule.methods), rule.endpoint)
 
 
-@manager.command
+# user commands
+email_opt = manager.option('email', help='user\'s email')
+password_opt = manager.option(
+    '-p', '--password', dest='password', default=None,
+    help='If absent, a prompt will ask for password',)
+role_opt = manager.option(
+    '-r', '--role', dest='role',
+    choices=[r.name for r in Role.assignable_roles()],
+)
+name_opt = manager.option(
+    '-n', '--name', dest='name', default=None,
+    help='Last name (e.g "Smith")')
+firstname_opt = manager.option(
+    '-f', '--firstname', dest='first_name', default=None,
+    help='Fist name (e.g. "John")')
+
+@email_opt
+@password_opt
+@role_opt
+@name_opt
+@firstname_opt
 def createuser(email, password, role=None, name=None, first_name=None):
   """
-  Adds an admin user with given email and password.
+  Create new user.
   """
   user = User(email=email, password=password,
               last_name=name, first_name=first_name,
               can_login=True)
   db.session.add(user)
+
+  if password is None:
+    password = prompt_pass(u'Password: ')
 
   if role in ('admin',):
     # FIXME: add other valid roles
@@ -152,12 +176,21 @@ def createuser(email, password, role=None, name=None, first_name=None):
   print "User {} added".format(email)
 
 
-@manager.command
+@email_opt
+@password_opt
+@name_opt
+@firstname_opt
 def createadmin(email, password, name=None, first_name=None):
+  """
+  Create new administrator.
+
+  Same as `createuser --role='admin'`.
+  """
   createuser(email, password, role='admin', name=name, first_name=first_name)
 
 
-@manager.command
+@email_opt
+@password_opt
 def passwd(email, password=None):
   """
   Changes the password for the given user.
