@@ -1,10 +1,26 @@
 Changelog for Abilian Core
 ==========================
 
-0.3.1 (unreleased)
+0.3.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Features
+~~~~~~~~
+
+- Use ravenjs to monitor JS errors with Sentry
+- Vocabularies
+
+
+0.3.2 (2014-12-23)
+------------------
+
+- Minor bugfixes
+
+
+0.3.1 (2014-12-23)
+------------------
+
+- Minor bugfixes
 
 
 0.3.0 (2014-12-23)
