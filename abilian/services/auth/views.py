@@ -26,7 +26,7 @@ from flask.ext.login import (
 from flask.ext.security.utils import md5
 from flask.ext.mail import Message
 
-from abilian.i18n import _
+from abilian.i18n import _, render_template_i18n
 from abilian.core.extensions import db, csrf
 from abilian.core.models.subjects import User
 
@@ -185,7 +185,7 @@ def reset_password(token):
   if invalid or expired:
     return redirect(url_for('login.forgotten_pw'))
 
-  return render_template("login/password_reset.html")
+  return render_template_i18n("login/password_reset.html")
 
 
 @route("/reset_password/<token>", methods=['POST'])
@@ -319,7 +319,7 @@ def send_mail(subject, recipient, template, **context):
                 recipients=[recipient])
 
   ctx = ('login/email', template)
-  msg.body = render_template('%s/%s.txt' % ctx, **context)
+  msg.body = render_template_i18n('%s/%s.txt' % ctx, **context)
   #msg.html = render_template('%s/%s.html' % ctx, **context)
 
   mail = current_app.extensions.get('mail')
