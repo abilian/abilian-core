@@ -318,9 +318,6 @@ class PdfToTextHandler(Handler):
   produces_mime_types = ['text/plain']
 
   def convert(self, blob, **kw):
-    fd, out_fn = mkstemp(dir=bytes(self.TMP_DIR))
-    os.close(fd)
-
     with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
       try:
         subprocess.check_call(['pdftotext', in_fn, out_fn])
