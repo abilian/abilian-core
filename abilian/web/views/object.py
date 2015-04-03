@@ -19,7 +19,7 @@ from abilian.core.entities import ValidationError
 
 from .. import nav, csrf
 from ..action import ButtonAction, Endpoint, actions
-from .base import View
+from .base import View, JSONView
 
 logger = logging.getLogger(__name__)
 
@@ -437,3 +437,69 @@ class ObjectDelete(ObjectEdit):
     # FIXME: for DELETE verb response in case of success should be 200, 202
     # (accepted) or 204 (no content)
     return self.redirect_to_index()
+
+
+class JSONModelSearch(JSONView):
+  """
+  Base class for json model search, as used by select2 widgets for example
+  """
+  Model = None
+  minimum_input_length = 2
+
+  def __init__(self, *args, **kwargs):
+    Model = kwargs.pop('Model', self.Model)
+    minimum_input_length = kwargs.pop('minimum_input_length',
+                                      self.minimum_input_length)
+    super(JSONModelSearch, self).__init__(*args, **kwargs)
+    self.Model = Model
+    self.minimum_input_length = minimum_input_length
+
+  def prepare_args(self, args, kwargs):
+    args, kwargs = JSONView.prepare_args(self, args, kwargs)
+    kwargs['q'] = kwargs.get("q", u'').replace(u"%", u" ").lower()
+    return args, kwargs
+
+  def data(self, q, *args, **kwargs):
+    query = self.Model.query
+
+    if self.minimum_input_length and len(q) < self.minimum_input_length:
+      abort(
+        400,
+        'Minimum query length is {:d}'.format(self.minimum_input_length),
+      )
+
+    query = self.options(query)
+    query = self.filter(query, q, **kwargs)
+    query = self.order_by(query)
+
+    if not q and not self.minimum_input_length:
+      query = query.limit(50)
+
+    results = []
+    for obj in query.all():
+      results.append(self.get_item(obj))
+
+    return dict(results=results)
+
+  def options(self, query):
+    return query.options(sa.orm.noload('*'))
+
+  def filter(self, query, q, **kwargs):
+    if not q:
+      return query
+    return query.filter(sa.func.lower(self.Model.name).like(q + "%"))
+
+  def order_by(self, query):
+    return query.order_by(self.Model.name)
+
+  def get_label(self, obj):
+    return obj.name
+
+  def get_item(self, obj):
+    """
+    Return a result item
+
+    :param obj: Instance object
+    :returns: a dictionnary with at least `id` and `text` values
+    """
+    return dict(id=obj.id, text=self.get_label(obj), name=obj.name)

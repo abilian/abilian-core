@@ -32,7 +32,7 @@ from . import search
 from .nav import BreadcrumbItem, Endpoint
 from .views import (
     default_view, ObjectView, ObjectEdit, ObjectCreate,\
-    ObjectDelete, JSONView,
+    ObjectDelete, JSONView, JSONModelSearch,
 )
 from .forms.fields import ModelFieldList
 from .forms.widgets import Panel, Row, SingleView, RelatedTableView, \
@@ -315,6 +315,8 @@ class Module(object):
                      **kw)
 
     self._setup_view("/json", 'list_json', ListJson, module=self)
+    self._setup_view('/json_search', 'json_search', JSONModelSearch,
+                     Model=self.managed_class)
 
     # related views
     self.init_related_views()

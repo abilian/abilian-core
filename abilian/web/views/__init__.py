@@ -7,10 +7,12 @@ from .base import View, JSONView
 from .registry import Registry, default_view
 from .object import (
     BaseObjectView, ObjectView, ObjectEdit, ObjectCreate, ObjectDelete,
+    JSONModelSearch,
 )
 
 __all__ = [
     'View', 'JSONView',
     'Registry', 'default_view',
-    'BaseObjectView', 'ObjectView', 'ObjectEdit', 'ObjectCreate', 'ObjectDelete',
-    ]
+    'BaseObjectView', 'ObjectView', 'ObjectEdit', 'ObjectCreate',
+    'ObjectDelete', 'JSONModelSearch',
+]
