@@ -25,6 +25,7 @@ from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 import babel
 
 from flask import current_app
+from flask.helpers import locked_cached_property
 from flask.ext.wtf.file import FileField as BaseFileField
 from flask.ext.babel import (
   get_locale, get_timezone,
@@ -379,6 +380,11 @@ class JsonSelect2Field(SelectFieldBase):
   top of the list. Selecting this choice will result in the `data` property
   being `None`. The label for this blank choice can be set by specifying the
   `blank_text` parameter.
+
+  :param model_class: can be an sqlalchemy model, or a string with model
+  name. The model will be looked up in sqlalchemy class registry on first
+  access. This allows to use a model when it cannot be imported during field
+  declaration.
   """
   def __init__(self, label=None, validators=None, ajax_source=None, widget=None,
                blank_text='', model_class=None, **kwargs):
@@ -389,11 +395,21 @@ class JsonSelect2Field(SelectFieldBase):
     kwargs['widget'] = widget
     super(JsonSelect2Field, self).__init__(label, validators, **kwargs)
     self.ajax_source = ajax_source
-    self.model_class = model_class
+    self._model_class = model_class
 
     self.allow_blank = not self.is_required()
     self.blank_text = blank_text
     self._object_list = None
+
+  @locked_cached_property
+  def model_class(self):
+    cls = self._model_class
+    if isinstance(cls, type) and issubclass(cls, db.Model):
+      return cls
+
+    reg = db.Model._decl_class_registry
+    return reg[cls]
+
 
   # Another ad-hoc hack.
   def is_required(self):
