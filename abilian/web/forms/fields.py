@@ -386,19 +386,20 @@ class JsonSelect2Field(SelectFieldBase):
   declaration.
   """
   def __init__(self, label=None, validators=None, ajax_source=None, widget=None,
-               blank_text='', model_class=None, **kwargs):
+               blank_text='', model_class=None, multiple=False, **kwargs):
+
+    self.multiple = multiple
 
     if widget is None:
-      widget = Select2Ajax()
+      widget = Select2Ajax(self.multiple)
 
     kwargs['widget'] = widget
     super(JsonSelect2Field, self).__init__(label, validators, **kwargs)
     self.ajax_source = ajax_source
     self._model_class = model_class
 
-    self.allow_blank = not self.is_required()
+    self.allow_blank = not self.flags.required
     self.blank_text = blank_text
-    self._object_list = None
 
   @locked_cached_property
   def model_class(self):
@@ -409,20 +410,30 @@ class JsonSelect2Field(SelectFieldBase):
     reg = db.Model._decl_class_registry
     return reg[cls]
 
+  def iter_choices(self):
+    if not self.flags.required:
+      yield (None, None, self.data is None,)
 
-  # Another ad-hoc hack.
-  def is_required(self):
-    for validator in self.validators:
-      rule = getattr(validator, "rule", {})
-      if rule is not None and 'required' in rule:
-        return True
-    return False
+    data = self.data
+    if not self.multiple:
+      if data is None:
+        raise StopIteration
+      data = [data]
+    elif not data:
+      raise StopIteration
+
+    for obj in data:
+      yield(obj.id, obj.name, True)
 
   def _get_data(self):
-    if self._formdata:
-      id = int(self._formdata)
-      obj = self.model_class.query.get(id)
-      self._set_data(obj)
+    formdata = self._formdata
+    if formdata:
+      if not self.multiple:
+        formdata = [formdata]
+      data = [self.model_class.query.get(int(pk)) for pk in formdata]
+      if not self.multiple:
+        data = data[0] if data else None
+      self._set_data(data)
     return self._data
 
   def _set_data(self, data):
@@ -432,25 +443,24 @@ class JsonSelect2Field(SelectFieldBase):
   data = property(_get_data, _set_data)
 
   def process_formdata(self, valuelist):
-    if valuelist:
-      if self.allow_blank and valuelist[0] == '':
-        self.data = None
-      else:
-        self._data = None
-        self._formdata = valuelist[0]
+    if not valuelist:
+      self.data = [] if self.multiple else None
+    else:
+      self._data = None
 
-   # TODO really validate.
-#  def pre_validate(self, form):
-#    if not self.allow_blank or self.data is not None:
-#      for pk, obj in self._get_object_list():
-#        if self.data == obj:
-#          break
-#      else:
-#        raise ValidationError(self.gettext('Not a valid choice'))
+      if hasattr(self.widget, 'process_formdata'):
+        # might need custom deserialization, i.e  Select2 3.x with multiple +
+        # ajax
+        valuelist = self.widget.process_formdata(valuelist)
+
+      if not self.multiple:
+        valuelist = valuelist[0]
+      self._formdata = valuelist
 
 
 class JsonSelect2MultipleField(JsonSelect2Field):
-  widget = Select2Ajax(multiple=True)
+  # legacy class, now use JsonSelect2Field(multiple=True)
+  pass
 
 
 class LocaleSelectField(SelectField):

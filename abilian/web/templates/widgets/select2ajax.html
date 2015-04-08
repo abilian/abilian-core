@@ -8,9 +8,13 @@
      containerCssClass: 'form-control',
      {%- if not required %}allowClear: true,{%- endif %}
      placeholder: '',
+     multiple: {{ s2_params.multiple |tojson }},
      initSelection : function (element, callback) {
-       var data = {id: element.val(), text: '{{ label }}'};
-       if (data.id) {
+       var data = [{% for oid, label in values %}
+                   {id: {{ oid|tojson }}, text: {{ label|tojson }}}{% if not loop.last %},{%- endif %}{% endfor %}
+       ];
+       
+       if (data.length > 0) {
          callback(data);
        }
      },

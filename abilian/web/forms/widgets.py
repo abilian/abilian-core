@@ -1097,7 +1097,17 @@ class Select2Ajax(object):
                format_result=None):
     self.template = template
     self.multiple = multiple
-    self.s2_params = dict(format_result=format_result)
+    self.s2_params = dict(format_result=format_result,
+                          multiple=self.multiple)
+
+  def process_formdata(self, valuelist):
+    """
+    field helper: as of select2 3.x, multiple values are passed as a single
+    string.
+    """
+    if self.multiple:
+      valuelist = valuelist[0].split(u',')
+    return valuelist
 
   def __call__(self, field, **kwargs):
     if self.multiple:
@@ -1110,14 +1120,17 @@ class Select2Ajax(object):
 
     extra_args = Markup(html_params(**kwargs))
     url = field.ajax_source
-    data = field.data  # accessor / obj lookup
-    object_name = data.name if data else ""
-    object_id = data.id if data else ""
+
+    data = field.data
+    if not self.multiple:
+      data = [data]
+
+    values = [(o.id, o.name) for o in data if o]
 
     return Markup(render_template(self.template,
                                   name=field.name,
                                   id=field.id,
-                                  value=object_id, label=object_name, url=url,
+                                  values=values, url=url,
                                   required=not field.allow_blank,
                                   s2_params=self.s2_params,
-                                  extra_args=extra_args))
+                                  extra_args=extra_args,))
