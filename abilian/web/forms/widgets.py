@@ -869,9 +869,13 @@ class DateTimeWidget(DateWidget):
 
 class EntityWidget(object):
   def render_view(self, field):
-    obj = field.object_data
-    return (u'<a href="{}">{}</a>'.format(url_for(obj), cgi.escape(obj.name))
-            if obj else u'')
+    objs = field.object_data
+    if not field.multiple:
+      objs = [objs]
+    return u', '.join(
+      u'<a href="{}">{}</a>'.format(url_for(o), cgi.escape(o.name))
+      for o in objs
+      if o)
 
 
 class MoneyWidget(wtforms.widgets.Input):
