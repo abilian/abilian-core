@@ -24,10 +24,9 @@ from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 import babel
 
-from flask import current_app
 from flask.helpers import locked_cached_property
-from flask.ext.wtf.file import FileField as BaseFileField
-from flask.ext.babel import (
+from flask_wtf.file import FileField as BaseFileField
+from flask_babel import (
   get_locale, get_timezone,
   format_date, format_datetime
   )
