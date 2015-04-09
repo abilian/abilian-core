@@ -66,18 +66,6 @@
          $(e).addClass("required");
        }
      });
-
-     // Activate valitation plugin
-     $("#edit-form").validate({
-       /* debug: true, */
-       rules: rules,
-       highlight: function(label) {
-         $(label).closest('.control-group').addClass('error');
-       },
-       unhighlight: function(label) {
-         $(label).closest('.control-group').removeClass('error');
-       }
-     });
    });
   </script>
 {%- endif %}
