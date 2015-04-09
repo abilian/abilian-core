@@ -1,4 +1,4 @@
-<input type="text" size="10" name="{{ name }}" value="{{ value }}" {{ extra_args }} />
+<input type="text" size="10" name="{{ name }}" value="{{ input_value }}" {{ extra_args }} />
 
 {%- deferJS %}
 <script type="text/javascript">
@@ -9,15 +9,17 @@
      {%- if not required %}allowClear: true,{%- endif %}
      placeholder: '',
      multiple: {{ s2_params.multiple |tojson }},
+     {%- if values %}
      initSelection : function (element, callback) {
        var data = [{% for oid, label in values %}
                    {id: {{ oid|tojson }}, text: {{ label|tojson }}}{% if not loop.last %},{%- endif %}{% endfor %}
        ];
-       
+       if (data.length > 1) debugger;
        if (data.length > 0) {
-         callback(data);
+         callback(data{%- if not s2_params.multiple %}[0]{%- endif %});
        }
      },
+     {%- endif %}
      {%- if s2_params.format_result %}formatResult: {{ s2_params.format_result }},{%- endif %}
      ajax: {
        url: "{{ url }}",

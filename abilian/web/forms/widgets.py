@@ -1126,10 +1126,11 @@ class Select2Ajax(object):
       data = [data]
 
     values = [(o.id, o.name) for o in data if o]
-
+    input_value = u','.join(unicode(o.id) for o in data if o)
     return Markup(render_template(self.template,
                                   name=field.name,
                                   id=field.id,
+                                  input_value=input_value,
                                   values=values, url=url,
                                   required=not field.allow_blank,
                                   s2_params=self.s2_params,
