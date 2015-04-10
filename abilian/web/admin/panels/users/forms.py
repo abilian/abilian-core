@@ -37,7 +37,7 @@ class UserAdminForm(Form):
 
   roles = Select2MultipleField(
       _l(u'Roles'),
-      choices=[(r.name, r.label) for r in Role.assignable_roles()],
+      choices=lambda: [(r.name, r.label) for r in Role.assignable_roles()],
   )
 
   password = StringField(
