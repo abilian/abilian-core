@@ -209,12 +209,32 @@ class DateField(DateTimeField):
 
 
 class Select2Field(SelectField):
+  """
+  Allow choices to be a function instead of an iterable
+  """
   widget = Select2()
+
+  def iter_choices(self):
+    choices = self.choices
+    if callable(choices):
+      choices = choices()
+
+    for value, label in choices:
+      yield (value, label, self.coerce(value) == self.data)
 
 
 class Select2MultipleField(SelectMultipleField):
   widget = Select2(multiple=True)
   multiple = True
+
+  def iter_choices(self):
+    choices = self.choices
+    if callable(choices):
+      choices = choices()
+
+    for value, label in choices:
+      yield (value, label, self.coerce(value) == self.data)
+
 
 class QuerySelect2Field(SelectFieldBase):
   """
