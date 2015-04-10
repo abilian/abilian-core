@@ -214,26 +214,28 @@ class Select2Field(SelectField):
   """
   widget = Select2()
 
-  def iter_choices(self):
-    choices = self.choices
-    if callable(choices):
-      choices = choices()
+  @property
+  def choices(self):
+    choices = self._choices
+    return choices() if callable(choices) else choices
 
-    for value, label in choices:
-      yield (value, label, self.coerce(value) == self.data)
+  @choices.setter
+  def choices(self, choices):
+    self._choices = choices
 
 
 class Select2MultipleField(SelectMultipleField):
   widget = Select2(multiple=True)
   multiple = True
 
-  def iter_choices(self):
-    choices = self.choices
-    if callable(choices):
-      choices = choices()
+  @property
+  def choices(self):
+    choices = self._choices
+    return choices() if callable(choices) else choices
 
-    for value, label in choices:
-      yield (value, label, self.coerce(value) == self.data)
+  @choices.setter
+  def choices(self, choices):
+    self._choices = choices
 
 
 class QuerySelect2Field(SelectFieldBase):
