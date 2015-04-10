@@ -13,7 +13,7 @@ from flask import request, current_app, render_template_string
 from flask.ext.login import current_user
 from flask.ext.babel import format_datetime
 
-from abilian.services.security.models import Admin
+from abilian.services.security.models import Role, Admin
 from abilian.i18n import _
 from abilian.core.models.subjects import User, gen_random_password
 from abilian.web.util import url_for
@@ -152,7 +152,21 @@ class UserEdit(UserBase, views.ObjectEdit):
     if self.form.password.data:
       self.obj.set_password(self.form.password.data)
     del self.form.password
+
     return super(UserEdit, self).form_valid()
+
+  def after_populate_obj(self):
+    security = current_app.services['security']
+    current_roles = set(security.get_roles(self.obj))
+    new_roles = { Role(r) for r in self.form.roles.data }
+
+    for r in (current_roles - new_roles):
+      security.ungrant_role(self.obj, r)
+
+    for r in (new_roles - current_roles):
+      security.grant_role(self.obj, r)
+
+    return super(UserEdit, self).after_populate_obj()
 
 
 class UserCreate(UserBase, views.ObjectCreate):
