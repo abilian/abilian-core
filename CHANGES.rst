@@ -1,6 +1,9 @@
 Changelog for Abilian Core
 ==========================
 
+0.3.4 (2015-04-14)
+------------------
+
 - updated Select2 to 3.5.2
 - enhanced fields and widgets
 - set default SQLALCHEMY_POOL_RECYCLE to 30 minutes
