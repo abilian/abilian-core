@@ -32,7 +32,6 @@ class FlaskLoader(BaseLoader):
     if self._flask_app is None:
       self.flask_app_factory = symbol_by_name(self.flask_app_factory)
       app = self._flask_app = self.flask_app_factory()
-      self.app_context = app.app_context()
 
       if 'sentry' in app.extensions:
         from raven.contrib.celery import register_signal, register_logger_signal
@@ -51,15 +50,17 @@ class FlaskLoader(BaseLoader):
 
   def on_task_init(self, task_id, task):
     """This method is called before a task is executed."""
-    if self.app_context:
-      # when CELERY_ALWAYS_EAGER is True: we are not in a worker process but in
-      # application process, app_context is not managed by us
-      self.app_context.push()
+    if not task.request.is_eager:
+      # if is_eager is True, we are not in a worker process but in application
+      # process, app_context is not managed by us
+      self.app_context = self.flask_app.app_context().push()
 
   def on_process_cleanup(self):
     """This method is called after a task is executed."""
-    if self.app_context:
-      self.app_context.pop()
+    if self.app_context is not None:
+      ctx = self.app_context
+      self.app_context = None
+      ctx.pop()
 
   def on_worker_init(self):
     """This method is called when the worker (:program:`celeryd`)
