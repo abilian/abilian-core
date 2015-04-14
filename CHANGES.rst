@@ -1,6 +1,12 @@
 Changelog for Abilian Core
 ==========================
 
+- updated Select2 to 3.5.2
+- enhanced fields and widgets
+- set default SQLALCHEMY_POOL_RECYCLE to 30 minutes
+- Users admin panel: fix roles not set; fix all assignable roles not listed; fix
+  cannot set password during user creation.
+
 0.3.3 (2015-03-31)
 ------------------
 
