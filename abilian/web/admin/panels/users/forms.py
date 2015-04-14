@@ -3,7 +3,7 @@
 """
 from __future__ import absolute_import
 
-from wtforms.fields import StringField, BooleanField, TextField, HiddenField
+from wtforms.fields import StringField, BooleanField, TextField
 from wtforms.validators import ValidationError
 
 from abilian.i18n import _, _l
@@ -14,7 +14,7 @@ from abilian.web.forms.fields import Select2MultipleField
 from abilian.web.forms.filters import strip
 from abilian.web.forms.validators import required
 
-class UserAdminForm(Form):
+class BaseUserAdminForm(Form):
 
   email = TextField(_l(u'Email'),
                       description=_l(u'Users log in with their email address.'),
@@ -45,6 +45,10 @@ class UserAdminForm(Form):
     description=_l(u'If empty the current password will not be changed.'),
     widget=widgets.PasswordInput(autocomplete='off')
   )
+
+
+class UserAdminForm(BaseUserAdminForm):
+
   confirm_password = StringField(_l(u'Confirm new password'),
                                  widget=widgets.PasswordInput(autocomplete='off'))
 
@@ -59,11 +63,9 @@ class UserAdminForm(Form):
 
 
 
-class UserCreateForm(UserAdminForm):
+class UserCreateForm(BaseUserAdminForm):
 
   password = StringField(
     _l(u'Password'),
     description=_l(u'If empty a random password will be generated.'),
     widget=widgets.PasswordInput(autocomplete='off'))
-
-  confirm_password = HiddenField()
