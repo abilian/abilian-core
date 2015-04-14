@@ -10,7 +10,7 @@
           {{ m_audit_field_changes(values) }}
         {%- else %}
           {%- set old_value, new_value = values %}
-          {%- if old_value and old_value != NO_VALUE %}
+          {%- if old_value and old_value not in (NEVER_SET, NO_VALUE) %}
             {{ _('{key} changed from {old_value} to {new_value}').format(key=_key_fmt(key), old_value=_value_fmt(old_value), new_value=_value_fmt(new_value)) }}
           {%- else %}
             {{ _('{key} set to {new_value}').format(key=_key_fmt(key), new_value=_value_fmt(new_value)) }}

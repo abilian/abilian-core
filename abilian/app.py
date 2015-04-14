@@ -15,7 +15,7 @@ from pkg_resources import resource_filename
 from pathlib import Path
 
 import sqlalchemy as sa
-from sqlalchemy.orm.attributes import NO_VALUE
+from sqlalchemy.orm.attributes import NO_VALUE, NEVER_SET
 
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
@@ -582,6 +582,7 @@ class Application(Flask, ServiceManager, PluginManager):
         url_for=url_for,
         user_photo_url=user_photo_url,
         NO_VALUE=NO_VALUE,
+        NEVER_SET=NEVER_SET,
     )
     init_filters(env)
     return env
