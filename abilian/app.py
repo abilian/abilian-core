@@ -121,6 +121,7 @@ default_config.update(
     SENTRY_JS_VERSION='1.1.16',
     SENTRY_JS_PLUGINS=('jquery', 'native', 'require'),
     SESSION_COOKIE_NAME=None,
+    SQLALCHEMY_POOL_RECYCLE=1800, # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False, # upstream info extension
