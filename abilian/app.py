@@ -720,7 +720,11 @@ class Application(Flask, ServiceManager, PluginManager):
         return
 
       ext = Sentry(self, logging=True, level=logging.ERROR)
+      ext.client.tags['app_name'] = self.name
       ext.client.tags['process_type'] = 'web'
+      server_name = str(self.config.get('SERVER_NAME', None))
+      ext.client.tags['configured_server_name'] = server_name
+
 
   @property
   def db(self):
