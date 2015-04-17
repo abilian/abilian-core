@@ -188,4 +188,6 @@ class UserCreate(UserBase, views.ObjectCreate):
     if not self.form.password.data:
       self.form.password.data = gen_random_password()
 
+    self.obj.set_password(self.form.password.data)
+    del self.form.password
     return super(UserCreate, self).form_valid()
