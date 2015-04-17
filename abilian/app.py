@@ -1,7 +1,10 @@
+# coding=utf-8
 """
 Base Flask application class, used by tests or to be extended
 in real applications.
 """
+from __future__ import absolute_import
+
 import os
 import errno
 import yaml
@@ -16,14 +19,15 @@ from pathlib import Path
 
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE, NEVER_SET
+import celery
 
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
 import jinja2
 from flask import (
-  Flask, g, request, current_app, has_app_context, render_template,
+  Flask, g, request, current_app, render_template,
   request_started, Blueprint, abort, appcontext_pushed,
-  _request_ctx_stack,
+  _request_ctx_stack
   )
 from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
@@ -34,6 +38,7 @@ from flask.ext.script import Manager as ScriptManager
 
 import abilian.i18n
 from abilian.core import extensions, signals, redis
+from abilian.core.celery import FlaskCelery
 import abilian.core.util
 from abilian.web.action import actions
 from abilian.web.views import Registry as ViewRegistry
@@ -62,7 +67,6 @@ class ServiceManager(object):
   """
   Mixin that provides lifecycle (register/start/stop) support for services.
   """
-
   def __init__(self):
     self.services = {}
 
@@ -79,7 +83,6 @@ class PluginManager(object):
   """
   Mixin that provides support for loading plugins.
   """
-
   def load_plugins(self):
     """
     Discovers and loads plugins.
@@ -158,6 +161,10 @@ class Application(Flask, ServiceManager, PluginManager):
   #: :class:`flask.ext.script.Manager` instance for shell commands of this app.
   #: defaults to `.commands.manager`, relative to app name.
   script_manager = '.commands.manager'
+
+  #: celery app class
+  celery_app_cls = FlaskCelery
+
 
   def __init__(self, name=None, config=None, *args, **kwargs):
     kwargs.setdefault('instance_relative_config', True)
@@ -271,6 +278,7 @@ class Application(Flask, ServiceManager, PluginManager):
     sa.orm.configure_mappers()
 
     signals.components_registered.send(self)
+    self.before_first_request(self._set_current_celery_app)
     self.before_first_request(
         lambda: signals.register_js_api.send(self)
     )
@@ -306,6 +314,14 @@ class Application(Flask, ServiceManager, PluginManager):
 
   def _install_id_generator(self, sender, **kwargs):
     g.id_generator = count(start=1)
+
+  def _set_current_celery_app(self):
+    """
+    Listener for `before_first_request`. Set our celery app as current, so that
+    task use the correct config. Without that tasks may use their default set
+    app.
+    """
+    self.extensions['celery'].set_current()
 
   def _setup_nav_and_breadcrumbs(self, app=None):
     """
@@ -513,7 +529,9 @@ class Application(Flask, ServiceManager, PluginManager):
     Admin().init_app(self)
 
     # Celery async service
-    extensions.celery.config_from_object(self.config)
+    # this allows all shared tasks to use this celery app
+    celery_app = self.extensions['celery'] = self.celery_app_cls()
+    celery_app.set_default()
 
     # dev helper
     if self.debug:

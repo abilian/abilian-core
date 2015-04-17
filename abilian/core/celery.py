@@ -3,9 +3,14 @@
 """
 from __future__ import absolute_import
 
-from celery import Celery
+from celery import task, Celery
+from celery.app.task import Task
+from celery.task import PeriodicTask as CeleryPeriodicTask
 from celery.loaders.base import BaseLoader
 from celery.utils.imports import symbol_by_name
+
+from flask import has_app_context, current_app as flask_current_app
+from flask.helpers import locked_cached_property
 
 
 def default_app_factory():
@@ -24,23 +29,24 @@ class FlaskLoader(BaseLoader):
   #: override this in your project
   #: this can be a function or a class
   flask_app_factory = "abilian.core.celery.default_app_factory"
-  _flask_app = None
   app_context = None
 
-  @property
+  @locked_cached_property
   def flask_app(self):
-    if self._flask_app is None:
-      self.flask_app_factory = symbol_by_name(self.flask_app_factory)
-      app = self._flask_app = self.flask_app_factory()
+    if has_app_context():
+      return flask_current_app._get_current_object()
 
-      if 'sentry' in app.extensions:
-        from raven.contrib.celery import register_signal, register_logger_signal
-        client = app.extensions['sentry'].client
-        client.tags['process_type'] = 'celery task'
-        register_signal(client)
-        register_logger_signal(client)
+    self.flask_app_factory = symbol_by_name(self.flask_app_factory)
+    app = self.flask_app_factory()
 
-    return self._flask_app
+    if 'sentry' in app.extensions:
+      from raven.contrib.celery import register_signal, register_logger_signal
+      client = app.extensions['sentry'].client
+      client.tags['process_type'] = 'celery task'
+      register_signal(client)
+      register_logger_signal(client)
+
+    return app
 
   def read_configuration(self):
     app = self.flask_app
@@ -48,41 +54,44 @@ class FlaskLoader(BaseLoader):
     self.configured = True
     return cfg
 
-  def on_task_init(self, task_id, task):
-    """This method is called before a task is executed."""
-    if not task.request.is_eager:
-      # if is_eager is True, we are not in a worker process but in application
-      # process, app_context is not managed by us
-      self.app_context = self.flask_app.app_context().push()
 
-  def on_process_cleanup(self):
-    """This method is called after a task is executed."""
-    if self.app_context is not None:
-      ctx = self.app_context
-      self.app_context = None
-      ctx.pop()
+class FlaskTask(Task):
+  """
+  Base Task class for :FlaskCelery: based applications.
+  """
+  abstract = True
+  def __call__(self, *args, **kwargs):
+    if self.request.is_eager:
+      # this is here mainly because flask_sqlalchemy (as of 2.0) will remove
+      # session on app context teardown.
+      #
+      # Unfortunatly when using eager tasks (during dev and tests, mostly),
+      # calling apply_async() during after_commit() will remove session because
+      # app_context would be pushed and popped. The TB looks like:
+      #
+      # sqlalchemy/orm/session.py: in transaction.commit:
+      #     if self.session._enable_transaction_accounting:
+      # AttributeError: 'NoneType' object has no attribute
+      #                 '_enable_transaction_accounting'
+      #
+      # FIXME: also test has_app_context()?
+      return super(FlaskTask, self).__call__(*args, **kwargs)
 
-  def on_worker_init(self):
-    """This method is called when the worker (:program:`celeryd`)
-    starts."""
+    with self.app.loader.flask_app.app_context():
+      return super(FlaskTask, self).__call__(*args, **kwargs)
 
-  def on_worker_process_init(self):
-    """This method is called when a child process starts."""
-    pass
+
+class PeriodicTask(FlaskTask, CeleryPeriodicTask):
+  __doc__ = CeleryPeriodicTask.__doc__
+  abstract = True
+
+
+def periodic_task(*args, **options):
+  """Deprecated decorator, please use :setting:`CELERYBEAT_SCHEDULE`."""
+  return task(**dict({'base': PeriodicTask}, **options))
 
 
 class FlaskCelery(Celery):
   # can be overriden on command line with --loader
-  loader_cls = __name__ + '.' + FlaskLoader.__name__
-
-# celery
-#
-# for defining a task:
-#
-# from abilian.core.extensions import celery
-# @celery.task
-# def ...
-#
-# Application should set flask_app and configure celery
-# (i.e. celery.config_from_object, etc)
-celery = FlaskCelery()
+  loader_cls = FlaskLoader
+  task_cls = FlaskTask

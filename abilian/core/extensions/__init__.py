@@ -9,29 +9,17 @@ Create all standard extensions.
 
 from __future__ import absolute_import
 
-__all__ = ['get_extension', 'db', 'mail', 'celery', 'login_manager', 'csrf',
+__all__ = ['get_extension', 'db', 'mail', 'login_manager', 'csrf',
            'upstream_info']
 
 from abilian.core.logging import patch_logger
 
 from . import upstream_info
 
-# celery
-#
-# for defining a task:
-#
-# from abilian.core.extensions import celery
-# @celery.task
-# def ...
-#
-# Application should set flask_app and configure celery
-# (i.e. celery.config_from_object, etc)
-from ..celery import celery
-
 from flask import current_app
 
 # Standard extensions.
-import flask.ext.mail as flask_mail
+import flask_mail
 
 
 # patch flask.ext.mail.Message.send to always set enveloppe_from default mail
