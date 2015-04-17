@@ -413,7 +413,7 @@ class JsonSelect2Field(SelectFieldBase):
     self.multiple = multiple
 
     if widget is None:
-      widget = Select2Ajax(self.multiple)
+      widget = Select2Ajax(multiple=self.multiple)
 
     kwargs['widget'] = widget
     super(JsonSelect2Field, self).__init__(label, validators, **kwargs)
