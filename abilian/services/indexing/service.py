@@ -30,6 +30,7 @@ from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 import whoosh.query as wq
 from whoosh.support.charset import accent_map
 
+from celery import shared_task
 from flask import current_app, g, _app_ctx_stack, appcontext_pushed
 from flask.ext.login import current_user
 from flask.globals import _lookup_app_object
@@ -40,7 +41,7 @@ from abilian.core import signals
 from abilian.core.models.subjects import User, Group
 from abilian.core.util import fqcn as base_fqcn, friendly_fqcn
 from abilian.core.entities import Entity, Indexable
-from abilian.core.extensions import celery, db
+from abilian.core.extensions import db
 
 from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
@@ -501,7 +502,7 @@ class WhooshIndexService(Service):
 service = WhooshIndexService()
 
 
-@celery.task(ignore_result=True)
+@shared_task(ignore_result=True)
 def index_update(index, items):
   """
   :param:index: index name
