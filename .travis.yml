@@ -38,3 +38,6 @@ script:
 # Report coverage
 after_success:
   - coveralls --rcfile=etc/coverage.rc
+
+notifications:
+  slack: abilian:dTtRD7DHS4Dw3jfRrqytQWU6
