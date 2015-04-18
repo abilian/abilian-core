@@ -40,4 +40,9 @@ after_success:
   - coveralls --rcfile=etc/coverage.rc
 
 notifications:
-  slack: abilian:dTtRD7DHS4Dw3jfRrqytQWU6
+  slack: 
+    rooms:
+      - abilian:dTtRD7DHS4Dw3jfRrqytQWU6#code
+    on_success: change
+    on_failure: always
+
