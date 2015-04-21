@@ -33,9 +33,6 @@
 
     <div class="row">
     {%- for hit in results %}
-      {%- set author_type, author_id = hit['creator'].split(':') %}
-      {%- set author_href = url_for('social.' + author_type, **{(author_type + '_id'): author_id}) %}
-
       <div class="col-xs-12 col-sm-11 col-sm-offset-1">
         <a href="{{ url_for_hit(hit)|safe }}"><strong>{{ hit.highlights('name')|safe or hit['name']}}</strong></a>
         {%- if (filtered_by_type|length) != 1 %}
@@ -46,6 +43,9 @@
           <p>{{ hit.highlights('description')|safe }}</p>
         {%- endif %}
 
+      {%- if 'creator' in hit %}
+      {%- set author_type, author_id = hit['creator'].split(':') %}
+      {%- set author_href = url_for('social.' + author_type, **{(author_type + '_id'): author_id}) %}
         <p class="small">
           <i>{{ _('by') }}
             <a href="{{ author_href }}">{{hit['creator_name'] }}</a>
@@ -55,6 +55,7 @@
                                                 time=hit['updated_at']|timeformat('short'))) }}
           </i><br />
         </p>
+      {%- endif %}
       </div>
     {%- endfor %}
     </div>

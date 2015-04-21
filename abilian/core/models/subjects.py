@@ -54,6 +54,7 @@ _RANDOM_PASSWORD_CHARS = (string.ascii_letters
                           + string.digits
                           + string.punctuation)
 
+
 def gen_random_password(length=15):
   """
   """
@@ -84,6 +85,7 @@ class PasswordStrategy(object):
     """
     Return a string to be stored as user password
     """
+
 
 class ClearPasswordStrategy(PasswordStrategy):
   """
@@ -137,7 +139,14 @@ class UserQuery(Query):
 
 class Principal(IdMixin, TimestampedMixin, Indexable):
   """A principal is either a User or a Group."""
-  pass
+
+  __indexation_args__ = {}
+  __indexation_args__.update(Indexable.__indexation_args__)
+  index_to = __indexation_args__.setdefault('index_to', ())
+  __indexation_args__['index_to'] += (
+      ('name', ('name', 'name_prefix', 'text')),
+    )
+  del index_to
 
 
 class User(Principal, UserMixin, db.Model):
@@ -249,7 +258,7 @@ class User(Principal, UserMixin, db.Model):
       id=repr(self.id), email=repr(self.email), addr=id(self))
 
 
-@sa.event.listens_for(User,  "mapper_configured", propagate=True)
+@sa.event.listens_for(User, "mapper_configured", propagate=True)
 def _add_user_indexes(mapper, class_):
   # this is a functional index (indexes on a function result), we cannot define
   # it in __table_args__.
