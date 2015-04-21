@@ -14,9 +14,9 @@
           <span class="datetime">{{ entry.happened_at|datetimeformat }}</span>
           <span class="message">{{ entry.message(ignore_communities)|safe }}</span>
 
-          {%- set body = entry.body() %}
+          {%- set body = entry.body %}
           {%- if body %}
-            <span class="body">"<a href="{{ entry.object_url |safe }}">{{ body }}"</a></span>
+            {{ body }}
           {%- endif %}
         </div>
       </li>
