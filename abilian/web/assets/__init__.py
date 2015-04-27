@@ -76,7 +76,9 @@ ABILIAN_JS = Bundle('js/abilian.js',
                     'js/datatables-setup.js',
                     'js/widgets/base.js',
                     'js/widgets/file.js',
-                    'js/widgets/image.js')
+                    'js/widgets/image.js',
+                    'js/widgets/dynamic-row.js',
+            )
 
 LESS = Bundle(BOOTSTRAP_LESS,
               FONTAWESOME_LESS,

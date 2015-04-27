@@ -1,5 +1,5 @@
 {%- if labels %}
-<table class="dynamic-row-widget" data-prefix="{{ field.name }}">
+<table class="js-widget" data-init-with="dynamicRowWidget" data-prefix="{{ field.name }}">
   <thead>
     {%- for label in labels %}
       <th>{{ label }}</th>
