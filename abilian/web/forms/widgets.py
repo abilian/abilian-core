@@ -1015,20 +1015,17 @@ class ModelListWidget(object):
       return render_template(self.template, field=field, labels=(),
                              rows=(), **kwargs)
 
-    mapper = value[0].__mapper__
     field_names = []
     labels = []
 
-    for f in field.entries[0].form:
+    fieldsubform = field.unbound_field.bind(form=None, name='dummy', _meta=field.meta)
+    subform = fieldsubform.form_class()
+    for f in subform:
       if f.is_hidden:
         continue
       name = f.short_name
       field_names.append(name)
-      col_label = u''
-      col = mapper.c.get(name)
-      if col is not None:
-        col_label = col.info.get('label', name)
-      labels.append(f.label.text if f.label else col_label)
+      labels.append(f.label.text if f.label else f.name)
 
     data_type = field.entries[0].object_data.__class__.__name__ + 'Data'
     Data = namedtuple(data_type, field_names)
