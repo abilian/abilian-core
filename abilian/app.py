@@ -712,7 +712,7 @@ class Application(Flask, ServiceManager, PluginManager):
       setattr(g, key, session.merge(obj, load=load))
 
     # refresh `current_user`
-    user = getattr(_request_ctx_stack.top, 'user')
+    user = getattr(_request_ctx_stack.top, 'user', None)
     if user is not None and isinstance(user, db.Model):
       _request_ctx_stack.top.user = session.merge(user, load=load)
 
