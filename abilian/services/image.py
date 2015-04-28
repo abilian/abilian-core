@@ -43,7 +43,7 @@ def resize(orig, hsize):
   image.thumbnail((x1, y1), Image.ANTIALIAS)
   output = StringIO()
 
-  if format == 'PNG':
+  if format in ('GIF', 'PNG'):
     image.save(output, "PNG")
   else:
     image.save(output, "JPEG")
@@ -82,7 +82,7 @@ def crop_and_resize(orig, hsize, vsize=0):
   image.thumbnail((hsize, vsize), Image.ANTIALIAS)
 
   output = StringIO()
-  if format == 'PNG':
+  if format in ('GIF', 'PNG'):
     image.save(output, "PNG")
   else:
     image.save(output, "JPEG")
