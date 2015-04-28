@@ -71,7 +71,6 @@ class FileField(BaseFileField):
   multiple = False
   widget = FileInput()
   blob_attr = 'value'
-  allow_delete = True
 
   def __init__(self, *args, **kwargs):
     try:
@@ -80,9 +79,26 @@ class FileField(BaseFileField):
       pass
 
     self.blob_attr = kwargs.pop('blob_attr', self.__class__.blob_attr)
-    self.allow_delete = kwargs.pop('allow_delete', self.__class__.allow_delete)
+    allow_delete = kwargs.pop('allow_delete', True)
+    validators = list(kwargs.get('validators', []))
 
+    if any(isinstance(v, required if allow_delete else optional)
+           for v in validators):
+      raise ValueError(
+        "Field validators are conflicting with `allow_delete`,"
+        "validators={!r}, allow_delete={!r}".format(validators, allow_delete)
+      )
+
+    validators.append(optional() if allow_delete else required())
+    kwargs['validators'] = validators
     BaseFileField.__init__(self, *args, **kwargs)
+
+  @property
+  def allow_delete(self):
+    """
+    propery for legacy code. Test `field.flags.required` instead.
+    """
+    return not self.flags.required
 
   def __call__(self, **kwargs):
     if 'multiple' not in kwargs and self.multiple:
@@ -118,6 +134,7 @@ class FileField(BaseFileField):
     if rel.uselist:
       raise ValueError("Only single target supported; else use ModelFieldList")
 
+    #FIXME: propose option to always create a new blob
     val = getattr(obj, name)
     if val is None:
       val = rel.mapper.class_()
