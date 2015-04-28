@@ -79,17 +79,20 @@ class FileField(BaseFileField):
       pass
 
     self.blob_attr = kwargs.pop('blob_attr', self.__class__.blob_attr)
-    allow_delete = kwargs.pop('allow_delete', True)
+    allow_delete = kwargs.pop('allow_delete', None)
     validators = list(kwargs.get('validators', []))
 
-    if any(isinstance(v, required if allow_delete else optional)
-           for v in validators):
-      raise ValueError(
-        "Field validators are conflicting with `allow_delete`,"
-        "validators={!r}, allow_delete={!r}".format(validators, allow_delete)
-      )
+    if allow_delete is not None:
+      if any(isinstance(v, required if allow_delete else optional)
+             for v in validators):
+        raise ValueError(
+          "Field validators are conflicting with `allow_delete`,"
+          "validators={!r}, allow_delete={!r}".format(validators, allow_delete)
+        )
+      validators.append(optional() if allow_delete else required())
+    elif not any(isinstance(v, (required, optional)) for v in validators):
+      validators.append(optional())
 
-    validators.append(optional() if allow_delete else required())
     kwargs['validators'] = validators
     BaseFileField.__init__(self, *args, **kwargs)
 
