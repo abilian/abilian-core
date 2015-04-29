@@ -20,7 +20,7 @@ import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from sqlalchemy import orm
-from werkzeug.exceptions import InternalServerError
+from werkzeug.exceptions import BadRequest
 from xlwt import Workbook, XFStyle
 
 
@@ -567,10 +567,13 @@ class Module(object):
 
     q = args.get("q").replace("%", " ")
     if not q or len(q) < 2:
-      raise InternalServerError()
+      raise BadRequest()
 
-    query = db.session.query(cls.id, cls.nom)
-    query = query.filter(cls.nom.like("%" + q + "%"))
+    query = db.session.query(cls.id, cls.name)
+    query = query.filter(cls.name.ilike("%" + q + "%"))\
+                 .distinct()\
+                 .order_by(cls.name)\
+                 .limit(50)
     all = query.all()
 
     result = {'results': [ { 'id': r[0], 'text': r[1]} for r in all ] }
