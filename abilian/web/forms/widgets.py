@@ -498,6 +498,13 @@ class Row(object):
     return len(self.cols)
 
 
+class ModelWidget(object):
+
+  def __call__(self, field, *args, **kwargs):
+    return render_template('widgets/model_widget_edit.html',
+                           form=field,
+    )
+
 # Form field widgets ###########################################################
 class TextArea(BaseTextArea):
   """
