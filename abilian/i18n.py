@@ -49,7 +49,9 @@ And just type:
 from __future__ import absolute_import
 
 import os
+import re
 import importlib
+import unicodedata
 from pathlib import Path
 from contextlib import contextmanager
 from datetime import datetime
@@ -114,6 +116,26 @@ def country_name(code):
 def lazy_country_name(code):
   from speaklater import make_lazy_string
   return make_lazy_string(__gettext_territory, code)
+
+
+def country_choices(first=None):
+  """
+  Return a list of (code, countries), alphabetically sorted on localized
+  country name.
+
+  :param first: Country code to be placed at the top
+  """
+  locale = _get_locale()
+  territories = [(code, name) for code, name in locale.territories.iteritems()
+                 if len(code) == 2] # skip 3-digit regions
+
+  def sortkey(item):
+    if first is not None and item[0] == first:
+      return u'0'
+    return to_lower_ascii(item[1])
+
+  territories.sort(key=sortkey)
+  return territories
 
 
 def supported_app_locales():
@@ -336,3 +358,17 @@ def render_template_i18n(template_name_or_list, **context):
 
   with set_locale(locale):
     return render_template(template_list, **context)
+
+
+_NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
+
+
+def to_lower_ascii(value):
+  value = unicode(value)
+  value = _NOT_WORD_RE.sub(u' ', value)
+  value = unicodedata.normalize('NFKD', value)
+  value = value.encode('ascii', 'ignore')
+  value = value.decode('ascii')
+  value = value.strip().lower()
+  value = re.sub(r'[_\s]+', u' ', value)
+  return value
