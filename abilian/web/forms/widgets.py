@@ -510,15 +510,15 @@ class TextArea(BaseTextArea):
   def __init__(self, resizeable=None, rows=None, *args, **kwargs):
     BaseTextArea.__init__(self, *args, **kwargs)
 
-    if not resizeable in self._resizeable_valid:
+    if resizeable not in self._resizeable_valid:
       raise ValueError(
-        'Invalid value for resizeable: {}, valid values are: {}'.format(
-          repr(resizeable),
-          ','.join(repr(v) for v in self._resizeable_valid)
-          )
+        'Invalid value for resizeable: {}, valid values are: {!r}'
+        ''.format(self._resizeable_valid)
       )
     if resizeable:
       self.resizeable = 'resizeable-' + resizeable
+    else:
+      self.resizeable = 'not-resizeable'
 
     if rows:
       self.rows = int(rows)
