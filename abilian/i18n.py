@@ -118,7 +118,11 @@ def lazy_country_name(code):
   return make_lazy_string(__gettext_territory, code)
 
 
-def country_choices(first=None):
+def default_country():
+  return current_app.config.get('DEFAULT_COUNTRY')
+
+
+def country_choices(first=None, default_country_first=True):
   """
   Return a list of (code, countries), alphabetically sorted on localized
   country name.
@@ -128,6 +132,9 @@ def country_choices(first=None):
   locale = _get_locale()
   territories = [(code, name) for code, name in locale.territories.iteritems()
                  if len(code) == 2] # skip 3-digit regions
+
+  if first is None and default_country_first:
+    first = default_country()
 
   def sortkey(item):
     if first is not None and item[0] == first:

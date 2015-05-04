@@ -108,6 +108,7 @@ default_config.update(
     TEMPLATE_DEBUG=False,
     CSRF_ENABLED=True,
     BABEL_ACCEPT_LANGUAGES=None,
+    DEFAULT_COUNTRY=None,
     PLUGINS=(),
     ADMIN_PANELS=(
         'abilian.web.admin.panels.dashboard.DashboardPanel',

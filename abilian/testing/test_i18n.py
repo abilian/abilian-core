@@ -46,3 +46,15 @@ class I18NTestCase(BaseTestCase):
         result = i18n.get_template_i18n(template_path, get_locale())
         self.assertIn('/myfile.fr.txt', result)
         self.assertIn('/myfile.txt', result)
+
+
+  def test_default_country(self):
+    assert 'DEFAULT_COUNTRY' in self.app.config
+    assert self.app.config['DEFAULT_COUNTRY'] is None
+    assert i18n.default_country() is None
+    assert i18n.country_choices()[0][0] == u'AF'
+
+    self.app.config['DEFAULT_COUNTRY'] = u'FR'
+    assert i18n.default_country() == u'FR'
+    assert i18n.country_choices()[0][0] == u'FR'
+    assert i18n.country_choices(default_country_first=False)[0][0] == u'AF'
