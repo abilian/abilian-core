@@ -505,6 +505,35 @@ class ModelWidget(object):
                            form=field,
     )
 
+  def render_view(self, field, *args, **kwargs):
+    _to_skip = (None, False, 0, 0.0, '', u'-')
+    rows = []
+    for f in field.form:
+      if f.is_hidden:
+        continue
+
+      value = f.data
+      if value in _to_skip and not f.flags.render_empty:
+        continue
+
+      value = Markup(f.render_view())
+      if value == u'':
+        # related models may have [] as value, but we don't discard this type
+        # of value in order to let widget a chance to render something useful
+        # like an 'add model' button.
+        #
+        # if it renders an empty string, there's really no point in rendering
+        # a line for this empty field
+        continue
+
+      label = f.label
+      rows.append((label, value))
+
+    return render_template('widgets/model_widget_view.html',
+                           field=field,
+                           rows=rows)
+
+
 # Form field widgets ###########################################################
 class TextArea(BaseTextArea):
   """
