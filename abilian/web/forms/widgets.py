@@ -500,8 +500,17 @@ class Row(object):
 
 class ModelWidget(object):
 
+  edit_template = 'widgets/model_widget_edit.html'
+  view_template = 'widgets/model_widget_view.html'
+
+  def __init__(self, edit_template=None, view_template=None):
+    if edit_template is not None:
+      self.edit_template = edit_template
+    if view_template is not None:
+      self.view_template = view_template
+
   def __call__(self, field, *args, **kwargs):
-    return render_template('widgets/model_widget_edit.html',
+    return render_template(self.edit_template,
                            form=field,
     )
 
@@ -529,7 +538,7 @@ class ModelWidget(object):
       label = f.label
       rows.append((label, value))
 
-    return render_template('widgets/model_widget_view.html',
+    return render_template(self.view_template,
                            field=field,
                            rows=rows)
 
