@@ -41,16 +41,24 @@ class Form(BaseForm):
 
   _groups = ()
 
-  def _has_required(self, group=None, fields=()):
-    if group is not None:
+  def _fields_for_group(self, group):
       for g, field_names in self._groups:
         if group == g:
           fields = field_names
           break
       else:
         raise ValueError("Group %s not found", repr(group))
+      return fields
 
+  def _has_required(self, group=None, fields=()):
+    if group is not None:
+      fields = self._fields_for_group(group)
     return any(self[f].flags.required for f in fields)
+
+  def _count_errors(self, group=None, fields=()):
+    if group is not None:
+      fields = self._fields_for_group(group)
+    return len([1 for f in fields if self[f].errors])
 
 
 ModelForm = model_form_factory(Form)

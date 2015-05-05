@@ -11,9 +11,12 @@
           {%- set label_id = label | toslug %}
           {%- set has_required = form._has_required
                                  and form._has_required(fields=field_names) %}
+            {%- set error_count = form._count_errors
+                                  and form._count_errors(fields=field_names) %}
           <li role="presentation" {%- if loop.first %} class="active"{%- endif %}>
             <a href="#{{ label_id }}" role="tab" data-toggle="tab">
               <span{% if has_required %} class="required"{%- endif %}>{{ label }}</span>
+              {%- if error_count %}<span class="label label-danger pull-right">{{ error_count  }}</span>{%- endif %}
             </a>
           </li>
         {%- endfor %}
