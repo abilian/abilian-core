@@ -12,7 +12,7 @@
   {%- if field.flags.required %}
     {%- set css_class = css_class + ' required' %}
   {%- endif %}
-  <div class="form-group{% if field.errors %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
+  <div class="form-group{% if field.errors and not field.form %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
     {%- if with_label and not (field.is_hidden or field.type in ('BooleanField', 'CSRFTokenField', 'HiddenField')) %}
       <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}</label>
     {%- endif %}
