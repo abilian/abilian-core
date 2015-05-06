@@ -16,12 +16,16 @@ from wtforms import (
     SelectMultipleField,
     SelectField,
     SelectFieldBase,
-    FormField,
+    FormField as BaseFormField,
 )
 from wtforms.validators import required, optional
 from wtforms.compat import string_types, text_type
+from wtforms.ext.csrf import SecureForm
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
-from wtforms_alchemy import ModelFieldList as BaseModelFieldList
+from wtforms_alchemy import (
+  ModelFieldList as BaseModelFieldList,
+  ModelFormField as BaseModelFormField,
+)
 import babel
 
 from flask.helpers import locked_cached_property
@@ -40,7 +44,36 @@ from .util import babel2datetime
 
 __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
            'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',
-           'JsonSelect2MultipleField']
+           'JsonSelect2MultipleField', 'FormField']
+
+
+class FormField(BaseFormField):
+  """
+  discard csrf_token on subform
+  """
+  def process(self, *args, **kwargs):
+    super(FormField, self).process(*args, **kwargs)
+    if isinstance(self.form, SecureForm):
+      # don't create errors because of subtoken
+      self._subform_csrf = self.form['csrf_token']
+      del self.form['csrf_token']
+
+  @property
+  def data(self):
+    if not isinstance(self.form, SecureForm):
+      return self.form.data
+
+    # SecureForm will try to pop 'csrf_token', but we removed it during process
+    self.form._fields['csrf_token'] = self._subform_csrf
+    data  = self.form.data
+    del self.form['csrf_token']
+    return data
+
+
+class ModelFormField(FormField, BaseModelFormField):
+  """
+  discard csrf_token on subform
+  """
 
 
 class ModelFieldList(BaseModelFieldList):
@@ -49,7 +82,7 @@ class ModelFieldList(BaseModelFieldList):
 
   def validate(self, form, extra_validators=tuple()):
     for field in self.entries:
-      is_subform = isinstance(field, FormField)
+      is_subform = isinstance(field, BaseFormField)
       data = field.data.values() if is_subform else [field.data]
 
       if not any(data):

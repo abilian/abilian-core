@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-24 13:03+0100\n"
-"PO-Revision-Date: 2015-03-24 12:09+0100\n"
+"POT-Creation-Date: 2015-05-06 11:00+0200\n"
+"PO-Revision-Date: 2015-05-06 11:00+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -16,6 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: abilian/core/extensions/csrf.py:26
+msgid ""
+"Security informations are missing or expired. This may happen if you have"
+" opened the form for a long time. <br /><br />Please try to resubmit the "
+"form."
+msgstr ""
+"Des informations de sécurité sont manquantes ou expirées. Cela peut "
+"arriver si vous avez ouvert le formulaire depuis un bon moment. <br /><br"
+" />Essayez de soumettre à nouveau le formulaire.\n"
 
 #: abilian/services/auth/service.py:53
 msgid "Logout"
@@ -96,8 +106,9 @@ msgid "Login to %(site_name)s"
 msgstr "Connexion à %(site_name)s"
 
 #: abilian/services/auth/templates/login/login.html:16
+#: abilian/services/auth/templates/login/password_reset.fr.html:18
 #: abilian/services/auth/templates/login/password_reset.html:18
-#: abilian/web/admin/panels/users/forms.py:65
+#: abilian/web/admin/panels/users/forms.py:69
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -105,19 +116,22 @@ msgstr "Mot de passe"
 msgid "Sign in"
 msgstr "Me connecter"
 
+#: abilian/services/auth/templates/login/password_reset.fr.html:8
 #: abilian/services/auth/templates/login/password_reset.html:8
 msgid "Please choose a new password"
 msgstr "Veuillez choisir un mot de passe"
 
+#: abilian/services/auth/templates/login/password_reset.fr.html:22
 #: abilian/services/auth/templates/login/password_reset.html:22
 msgid "Change password"
 msgstr "Changer le mot de passe"
 
+#: abilian/services/auth/templates/login/password_reset.fr.html:23
 #: abilian/services/auth/templates/login/password_reset.html:23
 #: abilian/web/templates/default/list_view.html:58
 #: abilian/web/templates/preferences/user.html:19
 #: abilian/web/templates/widgets/render_single.html:42
-#: abilian/web/views/object.py:149
+#: abilian/web/views/object.py:151
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -350,19 +364,19 @@ msgstr "Nouveau mot de passe"
 msgid "If empty the current password will not be changed."
 msgstr "Si vide le mot de passe actuel ne sera pas changé."
 
-#: abilian/web/admin/panels/users/forms.py:48
+#: abilian/web/admin/panels/users/forms.py:52
 #: abilian/web/preferences/user.py:28
 msgid "Confirm new password"
 msgstr "Confirmer le nouveau mot de passe"
 
-#: abilian/web/admin/panels/users/forms.py:57
+#: abilian/web/admin/panels/users/forms.py:61
 #: abilian/web/preferences/user.py:50
 msgid ""
 "Passwords differ. Ensure you have typed same password in both "
 "\"password\" field and \"confirm password\" field."
 msgstr "Assurez vous d'avoir tapé le même mot de passe dans les 2 champs."
 
-#: abilian/web/admin/panels/users/forms.py:66
+#: abilian/web/admin/panels/users/forms.py:70
 msgid "If empty a random password will be generated."
 msgstr "Si vide un mot de passe aléatoire sera généré."
 
@@ -404,7 +418,7 @@ msgstr "Filtrer sur un utilisateur"
 
 #: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:16
-#: abilian/web/views/object.py:154
+#: abilian/web/views/object.py:156
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -432,11 +446,11 @@ msgstr "Nom"
 msgid "Last connection"
 msgstr "Dernière connection"
 
-#: abilian/web/forms/fields.py:171 abilian/web/forms/fields.py:208
+#: abilian/web/forms/fields.py:211 abilian/web/forms/fields.py:248
 msgid "Not a valid datetime value"
 msgstr "N'est pas une date valide"
 
-#: abilian/web/forms/fields.py:348
+#: abilian/web/forms/fields.py:410
 msgid "Not a valid choice"
 msgstr "N'est pas un choix valide"
 
@@ -467,11 +481,11 @@ msgstr "Le champ doit comporter entre %(min)d et %(max)d caractères."
 msgid "Virus detected!"
 msgstr "Virus détecté!"
 
-#: abilian/web/forms/widgets.py:547
+#: abilian/web/forms/widgets.py:592
 msgid "Add file"
 msgstr "Ajouter un fichier"
 
-#: abilian/web/forms/widgets.py:547
+#: abilian/web/forms/widgets.py:592
 msgid "Select file"
 msgstr "Selectionner un fichier"
 
@@ -535,7 +549,7 @@ msgstr "Dernière modification: %(date)s"
 msgid "%(date)s at %(time)s"
 msgstr "%(date)s à %(time)s"
 
-#: abilian/web/search/templates/search/search.html:95
+#: abilian/web/search/templates/search/search.html:96
 msgid "Filter by types"
 msgstr "Filtrer par types"
 
@@ -626,7 +640,7 @@ msgstr "Éditer"
 
 #: abilian/web/templates/widgets/render_single.html:3
 #: abilian/web/templates/widgets/render_single.html:15
-#: abilian/web/views/object.py:415
+#: abilian/web/views/object.py:438
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -691,31 +705,31 @@ msgstr "défaire"
 msgid "redo"
 msgstr "refaire"
 
-#: abilian/web/views/object.py:179
+#: abilian/web/views/object.py:182
 msgid "Entity successfully edited"
 msgstr "Édition réussie"
 
-#: abilian/web/views/object.py:255
+#: abilian/web/views/object.py:265
 msgid "Please fix the error(s) below"
 msgstr "Veuillez corriger la ou les erreurs ci-dessous"
 
-#: abilian/web/views/object.py:330
+#: abilian/web/views/object.py:340
 msgid "An entity with this name already exists in the database."
 msgstr "Il y a déjà une entité avec ce nom dans la base de donnée."
 
-#: abilian/web/views/object.py:359
+#: abilian/web/views/object.py:382
 msgid "Create"
 msgstr "Créer"
 
-#: abilian/web/views/object.py:362
+#: abilian/web/views/object.py:385
 msgid "Create and add new"
 msgstr "Créer et ajouter un nouveau"
 
-#: abilian/web/views/object.py:373
+#: abilian/web/views/object.py:396
 msgid "Entity successfully added"
 msgstr "Ajout réussi"
 
-#: abilian/web/views/object.py:423
+#: abilian/web/views/object.py:446
 msgid "Entity deleted"
 msgstr "Entité supprimée"
 

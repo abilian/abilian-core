@@ -3,8 +3,8 @@
 from functools import wraps
 
 from werkzeug.exceptions import Forbidden
-from flask import Blueprint, jsonify, current_app
-from flask.ext.wtf import Form
+from flask import Blueprint, jsonify, current_app, request
+from flask_wtf import Form
 
 blueprint = Blueprint('csrf', __name__, url_prefix='/csrf')
 
@@ -44,6 +44,19 @@ def token():
   """
   return field().current_token or u''
 
+
+def support_graceful_failure(view):
+  """
+  Decorator to indicate that the view will handle itself the csrf failure.
+
+  View can be a view function or a class based view
+  """
+  setattr(view, 'csrf_support_graceful_failure', True)
+  return view
+
+
+def has_failed():
+  return getattr(request, 'csrf_failed', False)
 
 def protect(view):
   """

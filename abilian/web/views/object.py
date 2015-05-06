@@ -11,9 +11,10 @@ from flask import (
     g, request, render_template, redirect, url_for, current_app,
     flash,
 )
-from flask.ext.babel import gettext as _, lazy_gettext as _l
+
 from werkzeug.exceptions import NotFound
 
+from abilian.i18n import _, _l
 from abilian.core.signals import activity
 from abilian.core.entities import ValidationError
 
@@ -121,7 +122,8 @@ class ObjectView(BaseObjectView):
   #: form instance for this view
   form = None
 
-  def __init__(self, Model=None, pk=None, Form=None, template=None, *args, **kwargs):
+  def __init__(self, Model=None, pk=None, Form=None, template=None,
+               *args, **kwargs):
     BaseObjectView.__init__(self, Model, pk, *args, **kwargs)
     cls = self.__class__
     self.Form = Form if Form is not None else cls.Form
@@ -159,6 +161,7 @@ class ObjectEdit(ObjectView):
   Edit objects
   """
   template = 'default/object_edit.html'
+  decorators = (csrf.support_graceful_failure,)
 
   #: :class:ButtonAction instance to show on form
   _buttons = ()
@@ -187,7 +190,6 @@ class ObjectEdit(ObjectView):
     if message_success:
       self._message_success = message_success
 
-  @csrf.protect
   def post(self, *args, **kwargs):
     # conservative: no action submitted -> cancel
     action = self.data.get('__action', u'cancel')
@@ -232,7 +234,8 @@ class ObjectEdit(ObjectView):
     for button in self._buttons:
       if action == button.name:
         if not button.available(dict(view=self)):
-          raise ValueError('Action "{}" not available'.format(action.encode('utf-8')))
+          raise ValueError('Action "{}" not available'
+                           ''.format(action.encode('utf-8')))
         break
     else:
       raise ValueError('Unknown action: "{}"'.format(action.encode('utf-8')))
@@ -248,6 +251,13 @@ class ObjectEdit(ObjectView):
     if self.validate():
       return self.form_valid()
     else:
+      if request.csrf_failed:
+        errors = self.form.errors
+        csrf_failed = errors.pop('csrf_token', False)
+        if csrf_failed and not errors:
+          # failed only because of invalid/expired csrf, no error on form
+          return self.form_csrf_invalid()
+
       resp = self.form_invalid()
       if resp:
         return resp
@@ -347,6 +357,19 @@ class ObjectEdit(ObjectView):
     and show a specific screen to help resolve the conflict.
     """
     return None
+
+  def form_csrf_invalid(self):
+    """
+    Called when a form doesn't validate *only* because of csrf token expiration.
+
+    This works only if form is an instance of :class:`flask_wtf.form.SecureForm`.
+    Else default CSRF protection (before request) will take place.
+
+    It must return a valid :class:`Flask.Response` instance. By default it
+    returns to edit form screen with an informative message.
+    """
+    current_app.extensions['csrf-handler'].flash_csrf_failed_message()
+    return self.get()
 
   @property
   def activity_target(self):

@@ -501,6 +501,7 @@ class Application(Flask, ServiceManager, PluginManager):
     if self.config.get('CSRF_ENABLED'):
       extensions.csrf.init_app(self)
       self.extensions['csrf'] = extensions.csrf
+      extensions.abilian_csrf.init_app(self)
 
     self.register_blueprint(csrf.blueprint)
 

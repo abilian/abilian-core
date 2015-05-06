@@ -71,8 +71,8 @@ def _filter_metadata_for_connection(target, connection, **kw):
 
 
 # csrf
-from flask.ext.wtf.csrf import CsrfProtect
-csrf = CsrfProtect()
+from .csrf import wtf_csrf as csrf, abilian_csrf
+
 
 
 def get_extension(name):
