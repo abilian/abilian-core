@@ -124,7 +124,7 @@ class ObjectView(BaseObjectView):
 
   def __init__(self, Model=None, pk=None, Form=None, template=None,
                *args, **kwargs):
-    BaseObjectView.__init__(self, Model, pk, *args, **kwargs)
+    super(ObjectView, self).__init__(Model, pk, *args, **kwargs)
     cls = self.__class__
     self.Form = Form if Form is not None else cls.Form
     self.template = template if template is not None else cls.template
@@ -301,6 +301,12 @@ class ObjectEdit(ObjectView):
     """
     return None
 
+  def commit_success(self):
+    """
+    Called after object has been successfully saved to database
+    """
+
+
   def validate(self):
     return self.form.validate()
 
@@ -341,6 +347,7 @@ class ObjectEdit(ObjectView):
             "error")
       return self.get()
     else:
+      self.commit_success()
       flash(self.message_success(), "success")
       return self.redirect_to_view()
 
@@ -450,7 +457,6 @@ class ObjectDelete(ObjectEdit):
   def get_form_buttons(self, *args, **kwargs):
     return [DELETE_BUTTON, CANCEL_BUTTON]
 
-  @csrf.protect
   def delete(self):
     session = current_app.db.session()
     session.delete(self.obj)
