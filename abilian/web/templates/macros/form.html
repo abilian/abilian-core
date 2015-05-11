@@ -5,15 +5,15 @@
     {%- set placeholder = field.label.text %}
   {%- endif %}
   {%- set css_class = kwargs.pop('class_', '') %}
-  {%- set standard_field = field.type not in ('BooleanField', 'CSRFTokenField') %}
-  {%-  if standard_field %}
+  {%- set standard_field = field.type not in ('CSRFTokenField',) %}
+  {%-  if standard_field and field.type not in ('BooleanField',) %}
     {%- set css_class =  'form-control ' + css_class %}
   {%- endif %}
   {%- if field.flags.required %}
     {%- set css_class = css_class + ' required' %}
   {%- endif %}
   <div class="form-group{% if field.errors and not field.form %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
-    {%- if with_label and not (field.is_hidden or field.type in ('BooleanField', 'CSRFTokenField', 'HiddenField')) %}
+    {%- if with_label and not (field.is_hidden or field.type in ('CSRFTokenField', 'HiddenField')) %}
       <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}</label>
     {%- endif %}
 
@@ -25,12 +25,11 @@
       {{ field() }}
 
     {%- elif field.type == 'BooleanField' %}
-        <div class="checkbox {%- if horizontal %} col-sm-offset-{{ label_width }} col-sm-{{ field_width }} {%- endif %}">
-          <label>
-            {{ field(class_=css_class, **kwargs) }}
-            {{ field.label.text|safe }}
-          </label>
-        </div>
+      <label class="checkbox-inline">
+        {# the 'nbsp' after the field is here because without any text bootstrap
+           misalign the checkbox :-( #}
+          {{ field(class_=css_class, **kwargs) }} 
+      </label>
 
     {%- else %}
       {%- if field.type in ('TextField', 'TextAreaField', 'PasswordField') %}
