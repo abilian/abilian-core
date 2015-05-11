@@ -41,9 +41,9 @@
         {{ field(class_=css_class, placeholder=placeholder, **kwargs)|safe }}
     {%- endif %}
 
-    {%- if field.errors %}
+    {%- if field.errors and not field.form %}
       <span class="help-inline text-danger">{{ field.errors|join('<br />'|safe) }}</span>
-    {% endif %}
+    {%- endif %}
 
     {%- if field.description %}
       <span class="help-block">{{ field.description|safe }}</span>
