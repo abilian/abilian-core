@@ -657,6 +657,7 @@ class ImageInput(object):
                                   url=self.get_b64_thumb_url(data),
                                   width=self.width, height=self.height)
 
+
 class Chosen(Select):
   """
   Extends the Select widget using the Chosen jQuery plugin.
@@ -946,15 +947,23 @@ class MoneyWidget(wtforms.widgets.Input):
 
 class EmailWidget(object):
   def render_view(self, field):
-    link = bleach.linkify(field.object_data, parse_email=True)
-    return (u'{}&nbsp;<i class="fa fa-envelope"></i>'.format(link)
-            if link else u'')
+    links = u''
+    if isinstance(field, wtforms.fields.FieldList):
+      for entry in field.entries:
+        link = bleach.linkify(entry.data, parse_email=True)
+        links = links + u' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(link)
+    else:
+      link = bleach.linkify(field.object_data, parse_email=True)
+      if link:
+        links = u'{}&nbsp;<i class="fa fa-envelope"></i>'.format(link)
+    return links
 
 
 class URLWidget(object):
   def render_view(self, field):
     return (linkify_url(field.object_data)
             if field.object_data else u'')
+
 
 class RichTextWidget(object):
   template = 'widgets/richtext.html'
@@ -1028,6 +1037,19 @@ class ListWidget(wtforms.widgets.ListWidget):
       data=data)
 
 
+class FieldListWidget(object):
+  """
+  For list of Fields
+  (using <tr><td>)
+  """
+  def __init__(self, template='widgets/fieldlist.html'):
+    self.template = template
+
+  def __call__(self, field, **kwargs):
+    assert isinstance(field, wtforms.fields.FieldList)
+    return Markup(render_template(self.template, field=field))
+
+
 class TabularFieldListWidget(object):
   """
   For list of formfields
@@ -1038,6 +1060,7 @@ class TabularFieldListWidget(object):
    * widgets/model_fieldlist.html:
      Show sub-forms as a list of forms
   """
+
   def __init__(self, template='widgets/tabular_fieldlist_widget.html'):
     self.template = template
 

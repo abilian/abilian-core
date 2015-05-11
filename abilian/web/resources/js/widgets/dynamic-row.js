@@ -36,8 +36,11 @@
             new_row.find("input").each(
                 function() {
                     var item  = $(this);
-                    var name = item.data("shortName");
-                    name = self.prefix + '-' + self.current_index + '-' + name;
+                    var shortName = item.data("shortName");
+                    var name = self.prefix + '-' + self.current_index
+                    if(shortName) {
+                        name =  name + '-' + shortName;
+                    }
                     item.attr('name', name);
                     item.attr("id", name);
                 });
