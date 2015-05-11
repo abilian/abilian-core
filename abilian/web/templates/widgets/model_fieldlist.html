@@ -1,0 +1,19 @@
+{%- from "macros/form.html" import m_field %}
+<table class="table js-widget" data-init-with="dynamicRowWidget" data-prefix="{{ field.name }}">
+  <thead>
+    <th>{{ field.label }}</th>    
+  </thead>
+  <tbody>
+    {%- for fieldform in field %}
+    <tr>
+      <td>
+        {%- for subfield in fieldform %}
+          {{ m_field(subfield) }}
+          {%- set attrs={'data-short-name': subfield.short_name, 'class': subfield.is_hidden and 'form-control' or ''} %}
+
+        {%- endfor %}
+      </td>
+    </tr>
+    {%- endfor %}
+  </tbody>
+</table>

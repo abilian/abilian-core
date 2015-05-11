@@ -1029,7 +1029,14 @@ class ListWidget(wtforms.widgets.ListWidget):
 
 
 class TabularFieldListWidget(object):
-  """ For list of formfields
+  """
+  For list of formfields
+
+  2 templates are available:
+   * widgets/tabular_fieldlist_widget.html (default):
+     Show sub-forms as a table, one row of inputs per model
+   * widgets/model_fieldlist.html:
+     Show sub-forms as a list of forms
   """
   def __init__(self, template='widgets/tabular_fieldlist_widget.html'):
     self.template = template
