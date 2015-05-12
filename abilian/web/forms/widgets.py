@@ -1060,12 +1060,22 @@ class FieldListWidget(object):
   For list of Fields
   (using <tr><td>)
   """
-  def __init__(self, template='widgets/fieldlist.html'):
-    self.template = template
+  #  view_template = 'widgets/fieldlist_view.html'  #TO CREATE
+  template = 'widgets/fieldlist.html'
+
+  def __init__(self, template=None, view_template=None):
+    if template is not None:
+      self.template = template
+    if view_template is not None:
+      self.view_template = view_template
 
   def __call__(self, field, **kwargs):
     assert isinstance(field, wtforms.fields.FieldList)
     return Markup(render_template(self.template, field=field))
+
+  def render_view(self, field, **kwargs):
+    assert isinstance(field, wtforms.fields.FieldList)
+    return Markup(render_template(self.view_template, field=field))
 
 
 class TabularFieldListWidget(object):
