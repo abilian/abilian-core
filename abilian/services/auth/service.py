@@ -2,16 +2,17 @@
 """
 """
 from __future__ import absolute_import
+
 import logging
 from datetime import datetime, timedelta
 
-from flask import current_app, g, request, url_for
+from flask import current_app, g, request, url_for, redirect
 from flask.ext.login import (
   current_user, user_logged_out, user_logged_in, login_user
 )
 from flask.ext.babel import lazy_gettext as _l
 
-from abilian.services import Service
+from abilian.services import Service, ServiceState
 from abilian.core.signals import user_loaded
 from abilian.core.models.subjects import User
 from abilian.core.extensions import db, login_manager
@@ -63,16 +64,34 @@ _ACTIONS = (
   user_menu,
 )
 
+class AuthServiceState(ServiceState):
+  """
+  State class for :class:`AuthService`
+  """
+  def __init__(self, *args, **kwargs):
+    super(AuthServiceState, self).__init__(*args, **kwargs)
+    self.bp_access_controllers = {None: []}
+    self.endpoint_access_controllers = {}
+
+
+  def add_bp_access_controller(self, blueprint, func):
+    self.bp_access_controllers.setdefault(blueprint, []).append(func)
+
+  def add_endpoint_access_controller(self, endpoint, func):
+    self.endpoint_access_controllers.setdefault(endpoint, []).append(func)
+
 
 class AuthService(Service):
   name = 'auth'
+  AppStateClass = AuthServiceState
 
   def init_app(self, app):
     login_manager.init_app(app)
     login_manager.login_view = 'login.login_form'
     Service.init_app(self, app)
     self.login_url_prefix = app.config.get('LOGIN_URL', '/user')
-    app.before_request(self.before_request)
+    app.before_request(self.do_access_control)
+    app.before_request(self.update_user_session_data)
     user_logged_in.connect(self.user_logged_in, sender=app)
     user_logged_out.connect(self.user_logged_out, sender=app)
     app.register_blueprint(login_views, url_prefix=self.login_url_prefix)
@@ -110,9 +129,10 @@ class AuthService(Service):
     # a manager to see site as another user (impersonate), or propose a "see as
     # anonymous" function
     g.user = g.logged_user = user
+    is_anonymous = user.is_anonymous()
     security = app.services.get('security')
     g.is_manager = (user
-                    and not user.is_anonymous()
+                    and not is_anonymous
                     and ((security.has_role(user, 'admin')
                           or security.has_role(user, 'manager'))))
 
@@ -121,38 +141,63 @@ class AuthService(Service):
     del g.logged_user
     del g.is_manager
 
-  def before_request(self):
+  def redirect_to_login(self, next_url=True):
+    kw = {}
+    if next_url is not False:
+      kw['next'] = request.url if next_url is True else next_url
+
+    return redirect(url_for(login_manager.login_view, **kw))
+
+  def do_access_control(self):
+    """
+    `before_request` handler to check if user should be redirected to login
+    page.
+    """
     if current_app.testing and current_app.config.get("NO_LOGIN"):
       # Special case for tests
       user = User.query.get(0)
       login_user(user, False, True)
-    else:
-      user = current_user._get_current_object()
-
-    # ad-hoc security test based on requested path to decide if we update
-    # user.last_active
-    if user.is_anonymous():
-      # no `last_active` to update
       return
 
-    # No need for authentication and loginsession time update on the login
-    # screen or the static assets
-    path = request.path
-    if (path.startswith(current_app.static_url_path + '/')
-        or request.blueprint == 'login'):
+    state = self.app_state
+    user = current_user._get_current_object()
+    roles = frozenset(current_app.services['security'].get_roles(user))
+    endpoint = request.endpoint
+    bp = request.blueprint
+
+    controllers = []
+    controllers.extend(state.bp_access_controllers.get(None, []))
+
+    if bp and bp in state.bp_access_controllers:
+      controllers.extend(state.bp_access_controllers[bp])
+
+    if endpoint and endpoint in state.endpoint_access_controllers:
+      controllers.extend(state.endpoint_access_controllers[endpoint])
+
+    for ctrl in reversed(controllers):
+      verdict = ctrl(user=user, roles=roles)
+      if verdict is None:
+        continue
+      elif verdict is True:
+        return
+      else:
+        return self.redirect_to_login()
+
+    # default policy
+    if current_app.config.get('PRIVATE_SITE') and user.is_anonymous():
+      return self.redirect_to_login()
+
+
+  def update_user_session_data(self):
+    user = current_user
+    if current_user.is_anonymous():
       return
-    # if you really want login required anywhere, put this in a
-    # app.before_request handler:
-    #
-    # if not user.is_authenticated():
-    #   return redirect(url_for('login.login_form', next=request.url))
 
     # Update last_active every 60 seconds only so as to not stress the database
     # too much.
-
     now = datetime.utcnow()
     if (user.last_active is None or
-        now - user.last_active > timedelta(minutes=1)):
+        (now - user.last_active) > timedelta(minutes=1)):
       user.last_active = now
       db.session.add(user)
       db.session.commit()

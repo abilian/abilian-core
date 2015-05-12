@@ -40,14 +40,6 @@ import abilian.i18n
 from abilian.core import extensions, signals, redis
 from abilian.core.celery import FlaskCelery
 import abilian.core.util
-from abilian.web.action import actions
-from abilian.web.views import Registry as ViewRegistry
-from abilian.web.views.images import user_photo_url
-from abilian.web.nav import BreadcrumbItem, Endpoint
-from abilian.web.filters import init_filters
-from abilian.web.util import send_file_from_directory, url_for
-from abilian.web.admin import Admin
-from abilian.web import csrf
 from abilian.plugin.loader import AppLoader
 from abilian.services import (
     audit_service, index_service, activity_service, auth_service,
@@ -55,8 +47,18 @@ from abilian.services import (
     repository_service, session_repository_service,
     converter as conversion_service, vocabularies_service, antivirus
 )
+from abilian.services.security import Anonymous
 
+from abilian.web.action import actions
+from abilian.web.views import Registry as ViewRegistry
+from abilian.web.views.images import user_photo_url
+from abilian.web.nav import BreadcrumbItem, Endpoint
+from abilian.web.filters import init_filters
 from abilian.web.assets.filters import ClosureJS
+from abilian.web.util import send_file_from_directory, url_for
+from abilian.web.admin import Admin
+from abilian.web import csrf
+from abilian.web.blueprints import allow_access_for_roles
 
 logger = logging.getLogger(__name__)
 db = extensions.db
@@ -105,6 +107,7 @@ class PluginManager(object):
 
 default_config = dict(Flask.default_config)
 default_config.update(
+    PRIVATE_SITE=False,
     TEMPLATE_DEBUG=False,
     CSRF_ENABLED=True,
     BABEL_ACCEPT_LANGUAGES=None,
@@ -268,6 +271,9 @@ class Application(Flask, ServiceManager, PluginManager):
     with self.app_context():
       self.init_extensions()
       self.register_plugins()
+      self.add_access_controller('static', allow_access_for_roles(Anonymous),
+                                 endpoint=True)
+
     self.maybe_register_setup_wizard()
     self._finalize_assets_setup()
     # At this point all models should have been imported: time to configure
@@ -566,7 +572,41 @@ class Application(Flask, ServiceManager, PluginManager):
 
     self.register_blueprint(setupwizard.setup, url_prefix='/setup')
 
-  def add_static_url(self, url_path, directory, endpoint=None):
+  def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
+    """
+    See :meth:`Flask.add_url_rule`.
+
+    If `roles` parameter is present, it must be a
+    :class:`abilian.service.security.models.Role` instance, or a list of
+    Role instances.
+    """
+    roles = options.pop('roles', None)
+    super(Application, self).add_url_rule(rule, endpoint, view_func, **options)
+
+    if roles:
+      self.add_access_controller(endpoint, allow_access_for_roles(roles),
+                                 endpoint=True)
+
+  def add_access_controller(self, name, func, endpoint=False):
+    """
+    Add an access controller.
+
+    If `name` is None it is added at application level, else if is
+    considered as a blueprint name. If `endpoint` is True then it is
+    considered as an endpoint.
+    """
+    auth_state = self.extensions[auth_service.name]
+    adder = auth_state.add_bp_access_controller
+
+    if endpoint:
+      adder = auth_state.add_endpoint_access_controller
+      if not isinstance(name, (str, unicode)):
+        raise ValueError('{} is not a valid endpoint name', repr(name))
+
+    adder(name, func)
+
+  def add_static_url(self, url_path, directory, endpoint=None,
+                     roles=None):
     """
     Adds a new url rule for static files.
 
@@ -588,7 +628,8 @@ class Application(Flask, ServiceManager, PluginManager):
     self.add_url_rule(url_path,
                       endpoint=endpoint,
                       view_func=partial(send_file_from_directory,
-                                        directory=directory))
+                                        directory=directory),
+                      roles=roles)
 
   #
   # Templating and context injection setup
@@ -797,12 +838,14 @@ class Application(Flask, ServiceManager, PluginManager):
 
     assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
     self.add_static_url('abilian', core_bundles.RESOURCES_DIR,
-                        endpoint='abilian_static', )
+                        endpoint='abilian_static',
+                        roles=Anonymous)
 
     # static minified are here
     assets.url = self.static_url_path + '/min'
     assets.append_path(str(assets_dir), assets.url)
-    self.add_static_url('min', str(assets_dir), endpoint='webassets_static', )
+    self.add_static_url('min', str(assets_dir), endpoint='webassets_static',
+                        roles=Anonymous,)
 
   def _finalize_assets_setup(self):
     assets = self.extensions['webassets']

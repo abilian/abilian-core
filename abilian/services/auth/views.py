@@ -18,7 +18,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 from flask import (
-  render_template, request, Blueprint, redirect, url_for, flash, current_app)
+  render_template, request, redirect, url_for, flash, current_app)
 from flask.json import jsonify
 from flask.globals import _request_ctx_stack
 from flask.ext.login import (
@@ -29,7 +29,8 @@ from flask.ext.mail import Message
 from abilian.i18n import _, render_template_i18n
 from abilian.core.extensions import db, csrf
 from abilian.core.models.subjects import User
-
+from abilian.web.blueprints import Blueprint
+from abilian.services.security import Anonymous
 from .models import LoginSession
 
 
@@ -37,6 +38,7 @@ __all__ = []
 
 login = Blueprint("login", __name__,
                   url_prefix="/user",
+                  allowed_roles=Anonymous,
                   template_folder='templates')
 route = login.route
 
