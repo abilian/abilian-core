@@ -83,7 +83,18 @@
              var el = $(this);
              el.select2({allowClear: !el.hasClass('required')});
          });
-         $('[data-toggle="on-off"]').bootstrapSwitch();
+         $('[data-toggle="on-off"]').each(function () {
+             var parent = this.parentNode,
+                 $el = $(this);
+             if (parent.tagName == 'LABEL') {
+                 $el.insertAfter(parent);
+                 parent = $(parent);
+                 if (parent.text().trim().length == 0) {
+                     parent.remove();
+                 }
+             }
+             $el.bootstrapSwitch();
+         });
          $(".timepicker").timepicker()
             .on('click.timepicker',
                 function(e) {
