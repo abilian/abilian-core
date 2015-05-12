@@ -81,7 +81,7 @@ def text2html(text):
   text = text.strip()
   if re.search('<(p|br)>', text.lower()):
     return text
-  if not '\n' in text:
+  if '\n' not in text:
     return text
 
   lines = text.split("\n")
@@ -259,7 +259,7 @@ class AjaxMainTableView(object):
       if type(col) == str:
         col = dict(name=col, width=default_width)
       assert type(col) == dict
-      if not 'label' in col:
+      if 'label' not in col:
         col['label'] = labelize(col['name'])
       self.columns.append(col)
 
@@ -511,8 +511,7 @@ class ModelWidget(object):
 
   def __call__(self, field, *args, **kwargs):
     return render_template(self.edit_template,
-                           form=field,
-    )
+                           form=field,)
 
   def render_view(self, field, *args, **kwargs):
     _to_skip = (None, False, 0, 0.0, '', u'-')
@@ -789,7 +788,7 @@ class TimeInput(Input):
       'data-show-inputs': self.showInputs,
       'data-disable-focus': self.disableFocus,
       'data-modal-backdrop': self.modalBackdrop
-      }
+    }
 
     input_params = {k: Markup(json.dumps(v)) for k, v in input_params.items()}
 
@@ -841,7 +840,7 @@ class DateTimeInput(object):
       self.time(field,
                   id=field_id + '-time', name=field_name + '-time',
                   value=time_value)
-      )
+    )
 
 
 class DefaultViewWidget(object):
@@ -951,7 +950,8 @@ class EmailWidget(object):
     if isinstance(field, wtforms.fields.FieldList):
       for entry in field.entries:
         link = bleach.linkify(entry.data, parse_email=True)
-        links = links + u' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(link)
+        if link:
+          links = links + u' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(link)
     else:
       link = bleach.linkify(field.object_data, parse_email=True)
       if link:

@@ -17,7 +17,7 @@ from wtforms import (
     SelectField,
     SelectFieldBase,
     FormField as BaseFormField,
-)
+    FieldList as BaseFieldList)
 from wtforms.validators import required, optional
 from wtforms.compat import string_types, text_type
 from wtforms.ext.csrf import SecureForm
@@ -33,7 +33,7 @@ from flask_wtf.file import FileField as BaseFileField
 from flask_babel import (
   get_locale, get_timezone,
   format_date, format_datetime
-  )
+)
 
 from abilian import i18n
 from abilian.core.util import utc_dt
@@ -65,7 +65,7 @@ class FormField(BaseFormField):
 
     # SecureForm will try to pop 'csrf_token', but we removed it during process
     self.form._fields['csrf_token'] = self._subform_csrf
-    data  = self.form.data
+    data = self.form.data
     del self.form['csrf_token']
     return data
 
@@ -76,20 +76,31 @@ class ModelFormField(FormField, BaseModelFormField):
   """
 
 
-class ModelFieldList(BaseModelFieldList):
-  """ Filter empty entries
-  """
-
+class FilterFieldListMixin(object):
   def validate(self, form, extra_validators=tuple()):
+    to_remove = []
     for field in self.entries:
       is_subform = isinstance(field, BaseFormField)
       data = field.data.values() if is_subform else [field.data]
 
       if not any(data):
         # all inputs empty: discard row
-        self.entries.remove(field)
+        to_remove.append(field)
 
-    return super(ModelFieldList, self).validate(form, extra_validators)
+    for field in to_remove:
+      self.entries.remove(field)
+    return super(FilterFieldListMixin, self).validate(form, extra_validators)
+
+
+class FieldList(FilterFieldListMixin, BaseFieldList):
+  pass
+
+
+class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
+  """
+  Filter empty entries
+  """
+  pass
 
 
 class FileField(BaseFileField):
@@ -170,7 +181,7 @@ class FileField(BaseFileField):
     if rel.uselist:
       raise ValueError("Only single target supported; else use ModelFieldList")
 
-    #FIXME: propose option to always create a new blob
+    #  FIXME: propose option to always create a new blob
     val = getattr(obj, name)
     if val is None:
       val = rel.mapper.class_()
