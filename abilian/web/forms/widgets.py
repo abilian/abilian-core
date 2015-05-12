@@ -855,13 +855,31 @@ class DefaultViewWidget(object):
 
 class BooleanWidget(wtforms.widgets.CheckboxInput):
 
+  # valid data-* options when using boostrap-switch
+  _ON_OFF_VALID_OPTIONS = frozenset((
+    'animate', 'indeterminate', 'inverse', 'radio-all-off',
+    'on-color', 'off-color', 'on-text', 'off-text', 'label-text',
+    'handle-width', 'label-width', 'base-class', 'wrapper-class',
+  ))
+
   def __init__(self, *args, **kwargs):
     self.on_off_mode = kwargs.pop('on_off_mode', False)
+    self.on_off_options = {}
+    on_off_options = kwargs.pop('on_off_options', {})
+    for k, v in on_off_options.iteritems():
+      if k not in self._ON_OFF_VALID_OPTIONS:
+        continue
+      self.on_off_options['data-' + k] = v
+
+    if self.on_off_mode:
+      self.on_off_options['data-toggle'] = u'on-off'
+
     super(BooleanWidget, self).__init__(*args, **kwargs)
 
   def __call__(self, field, **kwargs):
     if self.on_off_mode:
-      kwargs['data-toggle'] = u'on-off'
+      kwargs.update(self.on_off_options)
+
     return super(BooleanWidget, self).__call__(field, **kwargs)
 
   def render_view(self, field):
