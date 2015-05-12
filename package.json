@@ -1,0 +1,17 @@
+{
+  "name": "abilian-core",
+  "repository": {
+    "type": "git",
+    "url": "TODO"
+  },
+  "description": "TODO",
+  "scripts": {
+    "prestart": "npm install",
+    "lint": "eslint abilian/web/resources/js/ --ext .js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "^0.20.0"
+  }
+}

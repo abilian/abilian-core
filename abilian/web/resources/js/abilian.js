@@ -134,7 +134,7 @@
                  );
              }
          );
-     };
+     }
 
      function initLiveSearch() {
          var datasets = [];

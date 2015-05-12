@@ -10,6 +10,7 @@
 .ropeproject
 *,cover
 
+node_modules
 env
 whoosh*
 abilian.db

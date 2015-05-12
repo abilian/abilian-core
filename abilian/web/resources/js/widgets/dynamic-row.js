@@ -37,8 +37,8 @@
                 function() {
                     var item  = $(this);
                     var shortName = item.data("shortName");
-                    var name = self.prefix + '-' + self.current_index
-                    if(shortName) {
+                    var name = self.prefix + '-' + self.current_index;
+                    if (shortName) {
                         name =  name + '-' + shortName;
                     }
                     item.attr('name', name);

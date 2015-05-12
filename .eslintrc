@@ -1,0 +1,11 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "camelcase": false,
+    "no-trailing-spaces": false,
+    "quotes": 0
+  }
+}

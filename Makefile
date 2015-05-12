@@ -1,4 +1,4 @@
-.PHONY: test pep8 pylama clean docs tox
+.PHONY: test pep8 pylama clean docs tox jslint
 
 # The source director
 SRC=abilian
@@ -28,6 +28,10 @@ test-with-coverage:
 tox:
 	tox
 
+vagrant-tests:
+	vagrant up
+	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
+
 #
 # Various Checkers
 #
@@ -52,12 +56,11 @@ pylama:
 pylint:
 	pylint --rcfile=etc/pylintrc $(SRC)
 
+jslint:
+	npm run lint --silent
+
 check-docs:
 	sphinx-build -W -b html docs/ docs/_build/html
-
-vagrant-tests:
-	vagrant up
-	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
 
 #
 # Everything else

@@ -24,7 +24,7 @@
         self.button.on('change.fileapi', 'input',
                        {fileinput: self},
                        self.addFiles);
-    };
+    }
 
     FileInput.prototype = {
         addFiles: function(evt) {
