@@ -1060,7 +1060,7 @@ class FieldListWidget(object):
   For list of Fields
   (using <tr><td>)
   """
-  #  view_template = 'widgets/fieldlist_view.html'  #TO CREATE
+  view_template = 'widgets/fieldlist_view.html'
   template = 'widgets/fieldlist.html'
 
   def __init__(self, template=None, view_template=None):
