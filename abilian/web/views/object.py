@@ -9,7 +9,7 @@ import logging
 import sqlalchemy as sa
 from flask import (
     g, request, render_template, redirect, url_for, current_app,
-    flash,
+    flash, abort
 )
 
 from werkzeug.exceptions import NotFound
