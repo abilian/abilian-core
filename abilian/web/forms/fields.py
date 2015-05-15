@@ -196,8 +196,14 @@ class DateTimeField(Field):
   """
   widget = DateTimeInput()
 
-  def __init__(self, label=None, validators=None, **kwargs):
+  def __init__(self, label=None, validators=None, use_naive=True, **kwargs):
+    """
+    :param use_naive: if `False`, dates are considered entered using user's
+    timezone; different users with different timezones will see corrected
+    date/time. For storage dates are always stored using UTC.
+    """
     super(DateTimeField, self).__init__(label, validators, **kwargs)
+    self.use_naive = use_naive
 
   def _value(self):
     if self.raw_data:
@@ -215,6 +221,15 @@ class DateTimeField(Field):
       dt_fmt = locale.datetime_formats['short'].format(time_fmt, date_fmt)
       return format_datetime(self.data, dt_fmt) if self.data else ''
 
+  def process_data(self, value):
+    if value is not None:
+      if not value.tzinfo:
+        value = utc_dt(value)
+      if not self.use_naive:
+        value = value.astimezone(get_timezone())
+
+    super(DateTimeField, self).process_data(value)
+
   def process_formdata(self, valuelist):
     if valuelist:
       date_str = ' '.join(valuelist)
@@ -228,11 +243,25 @@ class DateTimeField(Field):
       datetime_fmt = u'{} | {}'.format(date_fmt, time_fmt)
       try:
         self.data = datetime.datetime.strptime(date_str, datetime_fmt)
-        if not self.data.tzinfo:
-          self.data = utc_dt(get_timezone().localize(self.data))
+        if not self.use_naive:
+          tz = get_timezone()
+          if self.data.tzinfo:
+            self.data = self.data.astimezone(tz)
+          else:
+            self.data = tz.localize(self.data)
+
+        # convert to UTC
+        self.data = utc_dt(self.data)
       except ValueError:
         self.data = None
         raise ValueError(self.gettext('Not a valid datetime value'))
+
+  def populate_obj(self, obj, name):
+    dt = self.data
+    if self.use_naive:
+      dt = dt.replace(tzinfo=None)
+
+    setattr(obj, name, dt)
 
 
 class DateField(DateTimeField):

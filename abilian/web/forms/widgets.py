@@ -820,9 +820,7 @@ class DateTimeInput(object):
 
     value = kwargs.pop('value', None)
     if value is None:
-      field_value = field._value()
-      if field_value:
-        value = datetime.strptime(field_value, datetime_fmt)
+      value = field.data
 
     date_value = value.strftime(date_fmt) if value else u''
     time_value = value.strftime(time_fmt) if value else u''
