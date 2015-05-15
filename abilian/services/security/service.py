@@ -475,7 +475,7 @@ class SecurityService(Service):
         obj = obj.parent
         checked_objs.append(obj)
 
-    principals = [user] + user.groups
+    principals = [user] + list(user.groups)
     self._fill_role_cache_batch(principals)
 
     return any((self.has_role(principal, roles, item)

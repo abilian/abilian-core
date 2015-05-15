@@ -118,7 +118,7 @@ class SecurityTestCase(IntegrationTestCase):
   def test_grant_basic_roles_on_groups(self):
     user = User(email=u"john@example.com", password="x")
     group = Group(name=u"Test Group")
-    user.groups.append(group)
+    user.groups.add(group)
     self.session.add(user)
     self.session.flush()
 

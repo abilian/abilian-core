@@ -214,12 +214,11 @@ class User(Principal, UserMixin, db.Model):
     del self.followees[i]
 
   def join(self, group):
-    if group not in self.groups:
-      self.groups.append(group)
+    self.groups.add(group)
 
   def leave(self, group):
     if group in self.groups:
-      del self.groups[self.groups.index(group)]
+      self.groups.remove(group)
 
   #
   # Boolean properties
@@ -281,9 +280,14 @@ class Group(Principal, db.Model):
   name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
   description = Column(UnicodeText, info=SEARCHABLE)
 
-  members = relationship("User", secondary=membership,
-                         backref=backref('groups', lazy='select'))
-  admins = relationship("User", secondary=administratorship)
+  members = relationship(
+    "User",
+    collection_class=set,
+    secondary=membership,
+    backref=backref('groups', lazy='select', collection_class=set)
+  )
+  admins = relationship("User", collection_class=set,
+                        secondary=administratorship)
 
   photo = deferred(Column(LargeBinary))
 
