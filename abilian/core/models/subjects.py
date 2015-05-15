@@ -253,9 +253,9 @@ class User(Principal, UserMixin, db.Model):
 
   def __repr__(self):
     cls = self.__class__
-    return '<{mod}.{cls} id={id} email={email} at 0x{addr:x}>'.format(
+    return '<{mod}.{cls} id={id!r} email={email!r} at 0x{addr:x}>'.format(
       mod=cls.__module__, cls=cls.__name__,
-      id=repr(self.id), email=repr(self.email), addr=id(self))
+      id=self.id, email=self.email, addr=id(self))
 
 
 @sa.event.listens_for(User, "mapper_configured", propagate=True)
