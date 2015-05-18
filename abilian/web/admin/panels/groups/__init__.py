@@ -11,20 +11,23 @@ from abilian.web.admin.panel import AdminPanel
 
 from . import views
 
-class UsersPanel(AdminPanel):
+class GroupsPanel(AdminPanel):
   """
-  User administration panel.
+  Group administration panel.
   """
-  id = 'users'
-  label = _l(u'Users')
-  icon = 'user'
+  id = 'groups'
+  label = _l(u'Groups')
+  icon = 'grain'
 
   def install_additional_rules(self, add_url_rule):
-    add_url_rule('/users', view_func=views.JsonUsersList.as_view('json_list'))
+    add_url_rule('/groups', view_func=views.JsonGroupsList.as_view('json_list'))
     add_url_rule('/new',
-                 view_func=views.UserCreate.as_view('new'))
-    add_url_rule('/<int:user_id>',
-                 view_func=views.UserEdit.as_view('user'))
+                 view_func=views.GroupCreate.as_view('new'))
+    add_url_rule('/<int:group_id>/',
+                 view_func=views.GroupView.as_view('group'))
+    add_url_rule('/<int:group_id>/edit',
+                 view_func=views.GroupEdit.as_view('group_edit',
+                                                   view_endpoint='.groups_group'))
 
   def get(self):
     #FIXME: use widgets.AjaxMainTableView instead
@@ -35,12 +38,8 @@ class UsersPanel(AdminPanel):
           [2, u'desc'],
       ],
       'aoColumns': [
-          dict(asSorting=[]),
-          dict(asSorting=['asc', 'desc']),
           dict(asSorting=['asc', 'desc']),
           dict(asSorting=[]),
-          dict(asSorting=[]),
-          dict(asSorting=['asc', 'desc']),
       ],
       'bFilter': True,
       'oLanguage': {
@@ -58,9 +57,9 @@ class UsersPanel(AdminPanel):
       'iDisplayLength': 30,
       'bProcessing': True,
       'bServerSide': True,
-      'sAjaxSource': url_for('.users_json_list'),
+      'sAjaxSource': url_for('.groups_json_list'),
     }
 
-    return render_template('admin/users.html',
+    return render_template('admin/groups.html',
                            next=next,
                            datatable_options=datatable_options)
