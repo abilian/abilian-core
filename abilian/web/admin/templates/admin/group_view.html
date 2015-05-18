@@ -9,6 +9,14 @@
 
   <p class="lead">{{ form['description'].render_view() }}</p>
 
+  <h2>{{ _('Roles') }}</h2>
+
+  <p>
+    {%- for role in roles %}
+      <span class="badge badge-default">{{ role }}</span>      
+    {%- endfor %}
+  </p>
+  
   <h2>{{ _('Members') }}</h2>
 
   <div id="add-user-role" role="dialog">

@@ -13,6 +13,7 @@ from flask import request, current_app, render_template_string
 from flask.ext.babel import format_datetime
 
 from abilian.i18n import _, _l
+from abilian.services.security.models import Role
 from abilian.core.models.subjects import User, Group
 from abilian.web.util import url_for
 from abilian.web.nav import BreadcrumbItem
@@ -106,10 +107,12 @@ class GroupView(GroupBase, views.ObjectView):
 
   @property
   def template_kwargs(self):
+    security = current_app.services['security']
     kw = super(GroupView, self).template_kwargs
     members = list(self.obj.members)
     members.sort(key=lambda u: (u.last_name, u.first_name))
     kw['members'] = members
+    kw['roles'] = sorted(security.get_roles(self.obj))
     kw['ADD_USER_BUTTON'] = ADD_USER_BUTTON
     kw['REMOVE_USER_BUTTON'] = REMOVE_USER_BUTTON
     return kw
@@ -126,6 +129,27 @@ class GroupEdit(GroupBase, views.ObjectEdit):
     buttons.append(ADD_USER_BUTTON)
     buttons.append(REMOVE_USER_BUTTON)
     return buttons
+
+  def get_form_kwargs(self):
+    kw = super(GroupEdit, self).get_form_kwargs()
+    security = current_app.services['security']
+    roles = security.get_roles(self.obj)
+    kw['roles'] = [r.name for r in roles]
+    return kw
+
+  def after_populate_obj(self):
+    security = current_app.services['security']
+    current_roles = set(security.get_roles(self.obj))
+    new_roles = { Role(r) for r in self.form.roles.data }
+
+    for r in (current_roles - new_roles):
+      security.ungrant_role(self.obj, r)
+
+    for r in (new_roles - current_roles):
+      security.grant_role(self.obj, r)
+
+    return super(GroupEdit, self).after_populate_obj()
+
 
   def add_user(self, *args, **kwargs):
     user_id = int(request.form.get('user'))

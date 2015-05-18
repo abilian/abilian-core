@@ -90,7 +90,7 @@ class JsonUsersList(base.JSONView):
       columns.append(u'\u2713' if user.can_login else u'')
       columns.append(render_template_string(
         u'''{%- for role in roles %}
-            <span class="badge badge-default">{{ role}}</span>
+            <span class="badge badge-default">{{ role }}</span>
             {%- endfor %}''',
             roles=roles))
 
@@ -167,7 +167,6 @@ class UserEdit(UserBase, views.ObjectEdit):
       security.grant_role(self.obj, r)
 
     return super(UserEdit, self).after_populate_obj()
-
 
 class UserCreate(UserBase, views.ObjectCreate):
   Form = UserCreateForm
