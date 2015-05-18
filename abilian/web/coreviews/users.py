@@ -5,10 +5,13 @@ from __future__ import absolute_import
 
 import hashlib
 
+from sqlalchemy.sql.expression import or_, func
 from flask import Blueprint, make_response, request, g, Response
 from werkzeug.exceptions import NotFound
 
 from abilian.core.models.subjects import User
+from abilian.web import url_for
+from abilian.web.views import JSONModelSearch
 
 
 bp = Blueprint('users', __name__, url_prefix='/users')
@@ -59,3 +62,32 @@ def photo(user):
     r.set_etag(etag)
 
   return r
+
+
+# JSON search
+class UserJsonListing(JSONModelSearch):
+  """
+  """
+  Model = User
+  minimum_input_length = 0
+
+  def filter(self, query, q, **kwargs):
+    if q:
+      query = query.filter(
+        or_(func.lower(User.first_name).like(q + "%"),
+            func.lower(User.last_name).like(q + "%"))
+      )
+    return query
+
+  def order_by(self, query):
+    return query.order_by(func.lower(User.last_name),
+                          func.lower(User.first_name))
+
+  def get_item(self, obj):
+    d = super(UserJsonListing, self).get_item(obj)
+    d['email'] = obj.email
+    d['can_login'] = obj.can_login
+    d['photo'] = url_for('users.photo', user_id=obj.id)
+    return d
+
+bp.route('/json/')(UserJsonListing.as_view('json_list'))
