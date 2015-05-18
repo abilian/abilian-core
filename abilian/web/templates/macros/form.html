@@ -13,6 +13,9 @@
     {%- set css_class = css_class + ' required' %}
   {%- endif %}
   <div class="form-group{% if field.errors and not field.form %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
+    {%- if standard_field and not horizontal %}
+      <div class="col-xs-12">
+    {%- endif %}
     {%- if with_label and not (field.is_hidden or field.type in ('CSRFTokenField', 'HiddenField')) %}
       <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}</label>
     {%- endif %}
@@ -48,10 +51,10 @@
       <span class="help-block">{{ field.description|safe }}</span>
     {%- endif %}
 
-    {%- if horizontal and standard_field %}
-      </div>
+    {%- if standard_field %}
+      </div> {# when horizontal: close input div; else closes div.col-xs-12 before label #}
     {%- endif %}
-  </div>
+  </div> {# form-group #}
 {%- endmacro %}
 
 {%- macro m_form(form, fields=(), action="", method="POST", enctype="multipart/form-data", 
