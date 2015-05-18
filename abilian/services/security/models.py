@@ -22,8 +22,31 @@ from abilian.core.extensions import db
 
 
 __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
+           'Permission', 'MANAGE', 'READ', 'WRITE',
            'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
            'RoleType']
+
+
+@total_ordering
+class Permission(UniqueName):
+  """
+  Defines permission by name. Permission instances are unique by name.
+  """
+  __slots__ = ('label',)
+
+  def __init__(self, name, label=None, assignable=True):
+    UniqueName.__init__(self, name)
+    if label is None:
+      label = u'permission_' + unicode(name)
+    if isinstance(label, unicode):
+      label = _l(label)
+    self.label = label
+
+  def __unicode__(self):
+    return unicode(self.label)
+
+  def __lt__(self, other):
+    return unicode(self).__lt__(unicode(other))
 
 
 @total_ordering
@@ -94,6 +117,11 @@ Admin = Role('admin', _l(u'role_administrator'))
 
 #: marker for `manager` role
 Manager = Role('manager', _l(u'role_manager'), assignable=False)
+
+# Permissions
+READ = Permission(u'read')
+WRITE = Permission(u'write')
+MANAGE = Permission(u'manage')
 
 
 class RoleAssignment(db.Model):

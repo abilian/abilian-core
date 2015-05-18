@@ -10,8 +10,10 @@ from abilian.core.extensions import db
 from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
-from . import (security, RoleAssignment, InheritSecurity, SecurityAudit, Role,
-               Admin, Anonymous, Authenticated)
+from . import (
+  security, RoleAssignment, InheritSecurity, SecurityAudit,
+  Role, Permission,
+  Admin, Anonymous, Authenticated)
 
 
 TEST_EMAIL = u"joe@example.com"
@@ -224,3 +226,31 @@ class SecurityTestCase(IntegrationTestCase):
     self.session.flush()
     self.assertTrue(folder.inherit_security)
     self.assertEquals(SecurityAudit.query.count(), 2)
+
+  def test_has_permission_custom_roles(self):
+    user = User(email=u"john@example.com", password="x")
+    self.session.add(user)
+    self.session.flush()
+
+    role = Role('custom_role')
+    permission = Permission('custom permission')
+    assert not security.has_permission(user, permission, roles=role)
+    security.grant_role(user, role)
+    assert not security.has_permission(user, permission)
+    assert security.has_permission(user, permission, roles=role)
+
+    # test convert legacy permission & implicit mapping
+    security.grant_role(user, 'reader')
+    assert security.has_permission(user, 'read')
+    assert not security.has_permission(user, 'write')
+    assert not security.has_permission(user, 'manage')
+
+    security.grant_role(user, 'writer')
+    assert security.has_permission(user, 'read')
+    assert security.has_permission(user, 'write')
+    assert not security.has_permission(user, 'manage')
+
+    security.grant_role(user, 'manager')
+    assert security.has_permission(user, 'read')
+    assert security.has_permission(user, 'write')
+    assert security.has_permission(user, 'manage')

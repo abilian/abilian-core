@@ -20,11 +20,10 @@ from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
   SecurityAudit, RoleAssignment, Anonymous, Admin, Manager,
-  InheritSecurity, Role
+  InheritSecurity, Role, Permission, READ, WRITE, MANAGE
 )
 
 
-# Currently hardcoded.
 PERMISSION = frozenset(['read', 'write', 'manage'])
 
 __all__ = ['security', 'SecurityError', 'SecurityService',
@@ -453,24 +452,39 @@ class SecurityService(Service):
   #
   # Permission API, currently hardcoded
   #
-  def has_permission(self, user, permission, obj=None, inherit=False):
-    """ @param `inherit`: check with permission inheritance. By default, check
-    only local roles.
+  def has_permission(self, user, permission, obj=None, inherit=False,
+                     roles=None):
     """
-    assert permission in PERMISSION
+    @param `obj`: target object to check permissions.
+    @param `inherit`: check with permission inheritance. By default, check only
+    local roles.
+    @param `roles`: additional valid role or iterable of roles having
+                    `permission`.
+    """
+    if not isinstance(permission, Permission):
+      assert permission in PERMISSION
+      permission = Permission(permission)
     user = noproxy(user)
 
     # root always have any permission
     if isinstance(user, User) and user.id == 0:
       return True
 
-    roles = [Manager, Admin]  # have 'manage' permission
+    valid_roles = {Manager, Admin}  # have all permissions
 
-    if permission in ('read', 'write'):
-      roles.append(Role('writer'))
+    if roles is not None:
+      if isinstance(roles, (Role, bytes, unicode)):
+        roles = (roles,)
 
-    if permission == 'read':
-      roles.append(Role('reader'))
+      for r in roles:
+        valid_roles.add(Role(r))
+
+    # implicit role-permission mapping
+    if permission in (READ, WRITE,):
+      valid_roles.add(Role('writer'))
+
+    if permission == READ:
+      valid_roles.add(Role('reader'))
 
     checked_objs = [obj]
 
@@ -482,7 +496,7 @@ class SecurityService(Service):
     principals = [user] + list(user.groups)
     self._fill_role_cache_batch(principals)
 
-    return any((self.has_role(principal, roles, item)
+    return any((self.has_role(principal, valid_roles, item)
                 for principal in principals
                 for item in checked_objs))
 
