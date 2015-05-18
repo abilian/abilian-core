@@ -30,6 +30,7 @@ from abilian.i18n import _
 from abilian.core.entities import Entity
 from abilian.services import image
 from abilian.web.filters import labelize, babel2datepicker
+from abilian.web.action import Icon
 from abilian.web import csrf, url_for
 
 from .util import babel2datetime
@@ -543,6 +544,51 @@ class ModelWidget(object):
 
 
 # Form field widgets ###########################################################
+class TextInput(wtforms.widgets.TextInput):
+  """
+  Support pre and post icons.
+
+  An Icon can be a plain string, or an instance of
+  :class:`abilian.web.action.Icon`.
+  """
+  pre_icon = None
+  post_icon = None
+
+  def __init__(self, input_type=None, pre_icon=None, post_icon=None,
+               *args, **kwargs):
+    super(TextInput, self).__init__(input_type, *args, **kwargs)
+
+    if pre_icon is not None:
+      self.pre_icon = pre_icon
+    if post_icon is not None:
+      self.post_icon = post_icon
+
+
+  def __call__(self, field, *args, **kwargs):
+    if not any((self.pre_icon, self.post_icon)):
+      return super(TextInput, self).__call__(field, *args, **kwargs)
+
+    kwargs.setdefault('type', self.input_type)
+    if 'value' not in kwargs:
+      kwargs['value'] = field._value()
+
+    return render_template_string(
+      u'''
+      <div class="input-group">
+      {%- if widget.pre_icon %}
+      <div class="input-group-addon">{{ widget.pre_icon }}</div>
+      {%- endif %}
+      <input {{ params | safe}}>
+      {%- if widget.post_icon %}
+      <div class="input-group-addon">{{ widget.post_icon }}</div>
+      {%- endif %}
+      </div>
+      ''',
+      widget=self,
+      params=self.html_params(name=field.name, **kwargs)
+    )
+
+
 class TextArea(BaseTextArea):
   """
   Accepts "resizeable" parameter: "vertical", "horizontal", "both", None
