@@ -121,17 +121,21 @@ class SecurityService(Service):
   # Roles-related API.
   #
   @require_flush
-  def get_roles(self, user, object=None):
+  def get_roles(self, principal, object=None):
     """
     Gets all the roles attached to given `user`, on a given `object`.
     """
-    assert user
-    if user.is_anonymous():
+    assert principal
+    if hasattr(principal, 'is_anonymous') and principal.is_anonymous():
       return [Anonymous]
 
     q = db.session.query(RoleAssignment.role)
-    q = q.filter(RoleAssignment.user == user)
-    if object:
+    filter_col = (RoleAssignment.user
+                  if not isinstance(principal, Group)
+                  else RoleAssignment.group)
+    q = q.filter(filter_col == principal)
+
+    if object is not None:
       assert isinstance(object, Entity)
 
     q = q.filter(RoleAssignment.object == object)
@@ -262,8 +266,8 @@ class SecurityService(Service):
       self._set_role_cache(group, all_roles)
 
     for user, all_roles in ra_users.iteritems():
-      for g in user.groups:
-        group_roles = self._fill_role_cache(g)
+      for gr in user.groups:
+        group_roles = self._fill_role_cache(gr)
         for object_key, roles in group_roles.iteritems():
           obj_roles = all_roles.setdefault(object_key, set())
           obj_roles |= roles

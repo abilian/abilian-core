@@ -124,9 +124,7 @@ class SecurityTestCase(IntegrationTestCase):
 
     security.grant_role(group, "admin")
     assert security.has_role(group, "admin")
-
-    # FIXME
-    # assert security.get_roles(group) == ['admin']
+    assert security.get_roles(group) == ['admin']
 
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
@@ -134,7 +132,7 @@ class SecurityTestCase(IntegrationTestCase):
 
     security.ungrant_role(group, "admin")
     assert not security.has_role(group, "admin")
-    # assert security.get_roles(group) == []
+    assert security.get_roles(group) == []
 
     assert not security.has_permission(user, "read")
     assert not security.has_permission(user, "write")
@@ -142,6 +140,8 @@ class SecurityTestCase(IntegrationTestCase):
 
   def test_grant_roles_on_objects(self):
     user = User(email=u"john@example.com", password=u"x")
+    group = Group(name=u"Test Group")
+    user.groups.add(group)
     obj = DummyModel()
     self.session.add_all([user, obj])
     self.session.flush()
@@ -165,6 +165,28 @@ class SecurityTestCase(IntegrationTestCase):
     assert not security.has_permission(user, "read", obj)
     assert not security.has_permission(user, "write", obj)
     assert not security.has_permission(user, "manage", obj)
+
+    security.grant_role(group, "manager", obj)
+    assert security.has_role(group, "manager", obj)
+    assert security.get_roles(group, obj) == ['manager']
+
+    # group membership: user hasn't role set, but has permissions
+    assert security.get_roles(user, obj) == []
+    assert security.has_permission(user, "read", obj)
+    assert security.has_permission(user, "write", obj)
+    assert security.has_permission(user, "manage", obj)
+
+    group.members.remove(user)
+    self.session.flush()
+    assert not security.has_role(user, "manager", obj)
+    assert security.get_roles(user, obj) == []
+    assert not security.has_permission(user, "read", obj)
+    assert not security.has_permission(user, "write", obj)
+    assert not security.has_permission(user, "manage", obj)
+
+    security.ungrant_role(group, "manager", obj)
+    assert not security.has_role(group, "manager", obj)
+    assert security.get_roles(group, obj) == []
 
   def test_grant_roles_unique(self):
     user = User(email=u"john@example.com", password="x")
