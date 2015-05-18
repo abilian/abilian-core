@@ -1006,7 +1006,9 @@ class MoneyWidget(wtforms.widgets.Input):
     return u'{value}\u00A0{unit}'.format(value=val, unit=unit)
 
 
-class EmailWidget(object):
+class EmailWidget(TextInput):
+  pre_icon = u'@'
+
   def render_view(self, field):
     links = u''
     if isinstance(field, wtforms.fields.FieldList):
