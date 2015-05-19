@@ -31,8 +31,8 @@ from abilian.services import audit_service
 from . import search
 from .nav import BreadcrumbItem, Endpoint
 from .views import (
-    default_view, ObjectView, ObjectEdit, ObjectCreate,\
-    ObjectDelete, JSONView, JSONModelSearch,
+    default_view, ObjectView, ObjectEdit, ObjectCreate,
+    ObjectDelete, JSONView, JSONWhooshSearch,
 )
 from .forms.fields import ModelFieldList
 from .forms.widgets import Panel, Row, SingleView, RelatedTableView, \
@@ -242,6 +242,7 @@ class Module(object):
   edit_cls = EntityEdit
   create_cls = EntityCreate
   delete_cls = EntityDelete
+  json_search_cls = JSONWhooshSearch
 
   # form_class. Used when view_cls/edit_cls are not provided
   edit_form_class = None
@@ -315,7 +316,8 @@ class Module(object):
                      **kw)
 
     self._setup_view("/json", 'list_json', ListJson, module=self)
-    self._setup_view('/json_search', 'json_search', JSONModelSearch,
+
+    self._setup_view('/json_search', 'json_search', self.json_search_cls,
                      Model=self.managed_class)
 
     # related views
@@ -334,7 +336,6 @@ class Module(object):
     view = cls.as_view(attr, *args, **kwargs)
     setattr(self, attr, view)
     self._urls.append((url, attr, view.methods))
-
 
   def init_related_views(self):
     related_views = []
@@ -386,7 +387,6 @@ class Module(object):
   def _add_breadcrumb(self, endpoint, values):
     g.breadcrumb.append(BreadcrumbItem(label=self.name,
                         url=Endpoint('.list_view')))
-
 
   def query(self, request):
     """ Return filtered query based on request args
@@ -456,7 +456,7 @@ class Module(object):
     ctx = dict(rendered_table=rendered_table,
                module=self,
                base_template=self.base_template
-    )
+               )
     return render_template("default/list_view.html", **ctx)
 
   @expose("/export_xls")
@@ -578,8 +578,6 @@ class Module(object):
 
     result = {'results': [ { 'id': r[0], 'text': r[1]} for r in all ] }
     return jsonify(result)
-
-
 
   #
   # Utils

@@ -3,7 +3,6 @@
 Class based views
 """
 from __future__ import absolute_import
-
 import logging
 
 import sqlalchemy as sa
@@ -11,13 +10,11 @@ from flask import (
     g, request, render_template, redirect, url_for, current_app,
     flash, abort
 )
-
 from werkzeug.exceptions import NotFound
 
 from abilian.i18n import _, _l
 from abilian.core.signals import activity
 from abilian.core.entities import ValidationError
-
 from .. import nav, csrf
 from ..action import ButtonAction, Endpoint, actions
 from .base import View, JSONView
@@ -149,7 +146,7 @@ class ObjectView(BaseObjectView):
 
 CANCEL_BUTTON = ButtonAction(
   'form', 'cancel', title=_l(u'Cancel'),
-    btn_class='default cancel' # .cancel: if jquery.validate is used it will
+  btn_class='default cancel'  # .cancel: if jquery.validate is used it will
 )                              # properly skip validation
 
 EDIT_BUTTON = ButtonAction('form', 'edit', btn_class='primary',
@@ -305,7 +302,6 @@ class ObjectEdit(ObjectView):
     """
     Called after object has been successfully saved to database
     """
-
 
   def validate(self):
     return self.form.validate()
@@ -468,10 +464,7 @@ class ObjectDelete(ObjectEdit):
     return self.redirect_to_index()
 
 
-class JSONModelSearch(JSONView):
-  """
-  Base class for json model search, as used by select2 widgets for example
-  """
+class JSONBaseSearch(JSONView):
   Model = None
   minimum_input_length = 2
 
@@ -479,7 +472,7 @@ class JSONModelSearch(JSONView):
     Model = kwargs.pop('Model', self.Model)
     minimum_input_length = kwargs.pop('minimum_input_length',
                                       self.minimum_input_length)
-    super(JSONModelSearch, self).__init__(*args, **kwargs)
+    super(JSONBaseSearch, self).__init__(*args, **kwargs)
     self.Model = Model
     self.minimum_input_length = minimum_input_length
 
@@ -489,26 +482,44 @@ class JSONModelSearch(JSONView):
     return args, kwargs
 
   def data(self, q, *args, **kwargs):
-    query = self.Model.query
-
     if self.minimum_input_length and len(q) < self.minimum_input_length:
       abort(
         400,
         'Minimum query length is {:d}'.format(self.minimum_input_length),
       )
 
-    query = self.options(query)
-    query = self.filter(query, q, **kwargs)
-    query = self.order_by(query)
-
-    if not q and not self.minimum_input_length:
-      query = query.limit(50)
-
     results = []
-    for obj in query.all():
+    for obj in self.get_results(q, **kwargs):
       results.append(self.get_item(obj))
 
     return dict(results=results)
+
+  def get_results(self, q, *args, **kwargs):
+    raise NotImplemented
+
+  def get_item(self, obj):
+    """
+    Return a result item
+    :param obj: Instance object
+    :returns: a dictionnary with at least `id` and `text` values
+    """
+    raise NotImplemented
+
+
+class JSONModelSearch(JSONBaseSearch):
+  """
+  Base class for json sqlalchemy model search, as used by select2 widgets for example
+  """
+
+  def get_results(self, q, *args, **kwargs):
+    query = self.Model.query
+
+    query = self.options(query)
+    query = self.filter(query, q, **kwargs)
+    query = self.order_by(query)
+    if not q and not self.minimum_input_length:
+      query = query.limit(50)
+    return query.all()
 
   def options(self, query):
     return query.options(sa.orm.noload('*'))
@@ -532,3 +543,24 @@ class JSONModelSearch(JSONView):
     :returns: a dictionnary with at least `id` and `text` values
     """
     return dict(id=obj.id, text=self.get_label(obj), name=obj.name)
+
+
+class JSONWhooshSearch(JSONBaseSearch):
+  """
+  Base class for json whoosh search, as used by select2 widgets for example
+  """
+
+  def get_results(self, q, *args, **kwargs):
+    svc = current_app.services['indexing']
+    search_kwargs = {'limit': 30, 'Models': (self.Model,)}
+    results = svc.search(q, **search_kwargs)
+    return results
+
+  def get_item(self, hit):
+    """
+    Return a result item
+
+    :param hit: Hit object from Whoosh
+    :returns: a dictionnary with at least `id` and `text` values
+    """
+    return dict(id=hit['id'], text=hit['name'], name=hit['name'])
