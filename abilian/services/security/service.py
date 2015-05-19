@@ -9,11 +9,10 @@ from functools import wraps
 from itertools import chain
 
 from flask import g, current_app
-from flask_login import AnonymousUserMixin
 from sqlalchemy.orm import subqueryload, object_session
 from sqlalchemy import sql
 
-from abilian.core.models.subjects import User, Group, Principal
+from abilian.core.models.subjects import User, Group
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.util import noproxy
@@ -486,7 +485,8 @@ class SecurityService(Service):
     if permission == READ:
       valid_roles.add(Role('reader'))
 
-    checked_objs = [obj]
+    checked_objs = [None, obj] # first test global roles, then object local
+                               # roles
 
     if inherit and obj is not None:
       while (obj.inherit_security and obj.parent is not None):

@@ -10,7 +10,7 @@ from abilian.testing import BaseTestCase
 
 from . import (
   security, RoleAssignment, InheritSecurity, SecurityAudit,
-  Role, Permission,
+  Role, Permission, READ, WRITE, Reader, Writer,
   Admin, Anonymous, Authenticated)
 
 
@@ -148,19 +148,19 @@ class SecurityTestCase(IntegrationTestCase):
     self.session.flush()
 
     security.grant_role(user, 'global_role')
-    security.grant_role(user, "manager", obj)
-    assert security.has_role(user, "manager", obj)
-    assert security.get_roles(user, obj) == ['manager']
+    security.grant_role(user, "reader", obj)
+    assert security.has_role(user, "reader", obj)
+    assert security.get_roles(user, obj) == ['reader']
 
     assert security.has_permission(user, "read", obj)
-    assert security.has_permission(user, "write", obj)
-    assert security.has_permission(user, "manage", obj)
+    assert not security.has_permission(user, "write", obj)
+    assert not security.has_permission(user, "manage", obj)
 
     # test get_roles "global": object roles should not appear
     assert security.get_roles(user) == ['global_role']
 
-    security.ungrant_role(user, "manager", obj)
-    assert not security.has_role(user, "manager", obj)
+    security.ungrant_role(user, "reader", obj)
+    assert not security.has_role(user, "reader", obj)
     assert security.get_roles(user, obj) == []
 
     assert not security.has_permission(user, "read", obj)
@@ -225,6 +225,22 @@ class SecurityTestCase(IntegrationTestCase):
     self.session.flush()
     self.assertTrue(folder.inherit_security)
     self.assertEquals(SecurityAudit.query.count(), 2)
+
+  def test_has_permission_on_objects(self):
+    user = User(email=u"john@example.com", password=u"x")
+    group = Group(name=u"Test Group")
+    user.groups.add(group)
+    obj = DummyModel()
+    self.session.add_all([user, obj])
+    self.session.flush()
+
+    # global role provides permissions on any object
+    security.grant_role(user, Reader)
+    assert security.has_permission(user, READ, obj=obj)
+    assert not security.has_permission(user, WRITE, obj=obj)
+
+    security.grant_role(user, Writer, obj=obj)
+    assert security.has_permission(user, WRITE, obj=obj)
 
   def test_has_permission_custom_roles(self):
     user = User(email=u"john@example.com", password="x")
