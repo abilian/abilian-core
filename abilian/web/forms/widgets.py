@@ -572,7 +572,7 @@ class TextInput(wtforms.widgets.TextInput):
     if 'value' not in kwargs:
       kwargs['value'] = field._value()
 
-    return render_template_string(
+    return Markup(render_template_string(
       u'''
       <div class="input-group">
       {%- if widget.pre_icon %}
@@ -586,7 +586,7 @@ class TextInput(wtforms.widgets.TextInput):
       ''',
       widget=self,
       params=self.html_params(name=field.name, **kwargs)
-    )
+    ))
 
 
 class TextArea(BaseTextArea):
