@@ -5,8 +5,8 @@ from __future__ import absolute_import
 from datetime import datetime
 
 from flask import request
-from flask.ext.login import current_user
-from flask.ext.sqlalchemy import BaseQuery
+from flask_login import current_user
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy import ForeignKey, Column, DateTime, Integer, String
 from sqlalchemy.orm import relation
 
