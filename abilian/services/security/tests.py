@@ -3,8 +3,6 @@ from __future__ import absolute_import
 
 import unittest
 
-from flask.ext.login import AnonymousUserMixin
-
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User, Group
@@ -75,9 +73,10 @@ class SecurityTestCase(IntegrationTestCase):
   def test_anonymous_user(self):
     # anonymous user is not an SQLAlchemy instance and must be handled
     # specifically to avoid tracebacks
-    anon = AnonymousUserMixin()
+    anon = self.app.login_manager.anonymous_user()
     assert not security.has_role(anon, 'read')
     assert security.get_roles(anon) == [Anonymous]
+    assert not security.has_permission(anon, 'read')
 
   def test_root_user(self):
     """ Root user always has any role, any permission

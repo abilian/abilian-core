@@ -9,14 +9,14 @@ Create all standard extensions.
 
 from __future__ import absolute_import
 
-__all__ = ['get_extension', 'db', 'mail', 'login_manager', 'csrf',
-           'upstream_info']
-
 from abilian.core.logging import patch_logger
 
-from . import upstream_info
-
 from flask import current_app
+from . import upstream_info
+from .login import login_manager
+
+__all__ = ['get_extension', 'db', 'mail', 'login_manager', 'csrf',
+           'upstream_info']
 
 # Standard extensions.
 import flask_mail
@@ -119,7 +119,3 @@ def _install_get_display_value(cls):
 
 
 sa.event.listen(db.Model, 'class_instrument', _install_get_display_value)
-
-
-from flask.ext.login import LoginManager
-login_manager = LoginManager()

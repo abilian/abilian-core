@@ -14,13 +14,14 @@ from datetime import datetime, timedelta
 import string
 import random
 
-from flask.ext.login import UserMixin
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship, backref, deferred
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
-from sqlalchemy.types import Integer, UnicodeText, LargeBinary, Boolean, \
-    DateTime, Text
+from sqlalchemy.types import (
+  Integer, UnicodeText, LargeBinary, Boolean, DateTime
+)
+from flask_login import UserMixin, current_app
 
 from abilian.core import sqlalchemy as sa_types
 from .base import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
@@ -147,6 +148,10 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
       ('name', ('name', 'name_prefix', 'text')),
     )
   del index_to
+
+  def has_role(self, role):
+    return current_app.services['security'].has_role(self, role)
+
 
 
 class User(Principal, UserMixin, db.Model):

@@ -9,7 +9,7 @@ from functools import wraps
 from itertools import chain
 
 from flask import g, current_app
-from flask.ext.login import AnonymousUserMixin
+from flask_login import AnonymousUserMixin
 from sqlalchemy.orm import subqueryload, object_session
 from sqlalchemy import sql
 
@@ -20,7 +20,7 @@ from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
   SecurityAudit, RoleAssignment, Anonymous, Admin, Manager,
-  InheritSecurity, Role, Permission, READ, WRITE, MANAGE
+  InheritSecurity, Role, Permission, READ, WRITE
 )
 
 
@@ -504,14 +504,6 @@ class SecurityService(Service):
     user = noproxy(user)
     return [ obj for obj in obj_list
              if self.has_permission(user, permission, obj, inherit) ]
-
-
-# Ugly monkey patch because everything needs to move to Abilian-Core
-def has_role(self, role):
-  return security.has_role(self, role)
-
-Principal.has_role = has_role
-AnonymousUserMixin.has_role = has_role
 
 
 # Instanciate the service
