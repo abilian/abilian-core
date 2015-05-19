@@ -478,6 +478,9 @@ class SecurityService(Service):
       for r in roles:
         valid_roles.add(Role(r))
 
+    if Anonymous in valid_roles:
+      return True
+
     # implicit role-permission mapping
     if permission in (READ, WRITE,):
       valid_roles.add(Role('writer'))

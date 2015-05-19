@@ -254,6 +254,9 @@ class SecurityTestCase(IntegrationTestCase):
     assert not security.has_permission(user, permission)
     assert security.has_permission(user, permission, roles=role)
 
+    # Permission always granted if Anonymous role
+    assert security.has_permission(user, permission, roles=Anonymous)
+
     # test convert legacy permission & implicit mapping
     security.grant_role(user, 'reader')
     assert security.has_permission(user, 'read')
