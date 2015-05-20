@@ -84,7 +84,7 @@ def labelize(s):
 
 def make_single_view(form, **options):
   panels = []
-  for g in form._groups:
+  for g in form._groups.items():
     panel = Panel(g[0], *[ Row(x) for x in g[1] ])
     panels.append(panel)
   return SingleView(form, *panels, **options)
@@ -110,6 +110,12 @@ class BaseEntityView(object):
   def redirect_to_index(self):
     return redirect(self.module.url)
 
+  @property
+  def single_view(self):
+    return make_single_view(self.form,
+                            view_template=self.module.view_template,
+                            **self.module.view_options)
+
 
 class EntityView(BaseEntityView, ObjectView):
   template = 'default/single_view.html'
@@ -117,7 +123,7 @@ class EntityView(BaseEntityView, ObjectView):
   @property
   def template_kwargs(self):
     module = self.module
-    rendered_entity = module.render_entity_view(self.obj)
+    rendered_entity = self.single_view.render(self.obj, self.form)
     related_views = [v.render(self.obj) for v in module.related_views]
     audit_entries = audit_service.entries_for(self.obj)
 
@@ -132,9 +138,7 @@ class EntityEdit(BaseEntityView, ObjectEdit):
 
   @property
   def template_kwargs(self):
-    module = self.module
-    rendered_entity = module.single_view.render_form(self.form)
-
+    rendered_entity = self.single_view.render_form(self.form)
     return dict(rendered_entity=rendered_entity,
                 module=self.module)
 
@@ -147,9 +151,7 @@ class EntityCreate(BaseEntityView, ObjectCreate):
 
   @property
   def template_kwargs(self):
-    module = self.module
-    rendered_entity = module.single_view.render_form(self.form)
-
+    rendered_entity = self.single_view.render_form(self.form)
     return dict(rendered_entity=rendered_entity,
                 for_new=True,
                 module=self.module)
@@ -275,10 +277,12 @@ class Module(object):
     if self.name is None:
       self.name = self._prettify_name(self.__class__.__name__)
 
-    view_options = self.view_options if self.view_options is not None else {}
-    self.single_view = make_single_view(self.edit_form_class,
-                                        view_template=self.view_template,
-                                        **view_options)
+    if self.view_options is None:
+      self.view_options = {}
+
+    # self.single_view = make_single_view(self.edit_form_class,
+    #                                     view_template=self.view_template,
+    #                                     **self.view_options)
     if self.view_form_class is None:
       self.view_form_class = self.edit_form_class
 
@@ -585,9 +589,9 @@ class Module(object):
   def is_current(self):
     return request.path.startswith(self.url)
 
-  def render_entity_view(self, entity):
-    form = self.view_form_class(obj=entity)
-    return self.single_view.render(entity, form)
+  # def render_entity_view(self, entity):
+  #   form = self.view_form_class(obj=entity)
+  #   return self.single_view.render(entity, form)
 
   @staticmethod
   def _prettify_name(name):
