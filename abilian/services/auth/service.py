@@ -18,7 +18,6 @@ from abilian.core.models.subjects import User
 from abilian.core.extensions import db, login_manager
 from abilian.web.action import actions, DynamicIcon
 from abilian.web.nav import NavItem, NavGroup
-from abilian.web.views import images as image_views
 
 from .views import login as login_views
 from .models import LoginSession
@@ -38,11 +37,12 @@ def is_authenticated(context):
 
 
 def _user_photo_endpoint():
-  return image_views.user_url_args(current_user, 16)[0]
+  from abilian.web.views import images # late import: avoid circular import
+  return images.user_url_args(current_user, 16)[0]
 
 def _user_photo_icon_args(icon, url_args):
-  return image_views.user_url_args(current_user,
-                                   max(icon.width, icon.height))[1]
+  from abilian.web.views import images  # late import avoid circular import
+  return images.user_url_args(current_user, max(icon.width, icon.height))[1]
 
 user_menu = NavGroup(
   'user', 'authenticated', title=lambda c: current_user.name,

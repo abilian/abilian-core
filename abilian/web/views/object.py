@@ -13,9 +13,11 @@ from flask import (
 from werkzeug.exceptions import NotFound
 
 from abilian.i18n import _, _l
+from abilian.services.security import READ, WRITE
 from abilian.core.signals import activity
 from abilian.core.entities import ValidationError
-from .. import nav, csrf
+
+from .. import nav, csrf, forms
 from ..action import ButtonAction, Endpoint, actions
 from .base import View, JSONView
 
@@ -110,11 +112,15 @@ class ObjectView(BaseObjectView):
   View objects
   """
 
-  #: FIXME: currently default template renders nothing, only Edit is implemented
+  #: html template
   template = 'default/object_view.html'
 
   #: View form. Form object used to show objects fields
   Form = None
+
+  #: required permission. Must be an instance of
+  #: :class:`abilian.services.security.Permission`
+  permission = READ
 
   #: form instance for this view
   form = None
@@ -135,7 +141,10 @@ class ObjectView(BaseObjectView):
     return args, kwargs
 
   def get_form_kwargs(self):
-    return dict(obj=self.obj)
+    kw = dict(obj=self.obj)
+    if issubclass(self.Form, forms.Form) and self.permission:
+      kw['permission'] = self.permission
+    return kw
 
   def index_url(self):
     return url_for('.index')
@@ -159,6 +168,7 @@ class ObjectEdit(ObjectView):
   """
   template = 'default/object_edit.html'
   decorators = (csrf.support_graceful_failure,)
+  permission = WRITE
 
   #: :class:ButtonAction instance to show on form
   _buttons = ()
