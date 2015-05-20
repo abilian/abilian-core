@@ -7,7 +7,7 @@
     {%- set options = form._widgets_options|default({}) %}
     <div class="col-sm-3">
       <ul class="nav nav-pills nav-stacked" role="tablist">
-        {%- for label, field_names in form._groups %}
+        {%- for label, field_names in form._groups.items() %}
           {%- set label_id = label | toslug %}
           {%- set has_required = form._has_required
                                  and form._has_required(fields=field_names) %}
@@ -24,7 +24,7 @@
     </div>
 
     <div class="tab-content col-sm-9" id="form-panel">
-      {%- for label, field_names in form._groups %}
+      {%- for label, field_names in form._groups.items() %}
         {%- set label_id = label | toslug %}
         {%- set collapsed_state = 'active' if loop.first else '' %}
         <div id="{{ label_id }}" class="tab-pane {{ collapsed_state }}" role="tabpanel">

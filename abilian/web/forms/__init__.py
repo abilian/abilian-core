@@ -5,14 +5,18 @@ Extensions to WTForms fields, widgets and validators.
 from __future__ import absolute_import
 
 import logging
-
-from flask.ext.babel import gettext as _, ngettext as _n
+from functools import partial
+from collections import OrderedDict
 
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from wtforms_alchemy import model_form_factory
-from flask.ext.wtf.form import Form as BaseForm
+from flask import current_app
+from flask_login import current_user
+from flask_wtf.form import Form as BaseForm
 
+from abilian.i18n import _, _n
+from abilian.services.security import READ, WRITE, Role, Anonymous
 from abilian.core.logging import patch_logger
 
 from .fields import *  # noqa
@@ -35,11 +39,96 @@ class _BabelTranslation(object):
 BabelTranslation = _BabelTranslation()
 
 
+class FormPermissions(object):
+  """
+  Form role/permission manager
+  """
+  def __init__(self, default=Anonymous, read=None, write=None,
+               fields_read=None, fields_write=None):
+    """
+    """
+    if isinstance(default, Role):
+      default = (default,)
+
+    self.default = default
+    self.form = dict()
+    self.fields = dict()
+
+    for permission, roles in ((READ, read), (WRITE, write)):
+      if roles is None:
+        continue
+      if isinstance(roles, Role):
+        roles = (roles,)
+      self.form[permission] = roles
+
+    for fields, permission in ((fields_read, READ), (fields_write, WRITE)):
+      if fields:
+        for field_name, allowed_roles in fields.items():
+          if isinstance(allowed_roles, Role):
+            allowed_roles = (allowed_roles,)
+          self.fields.setdefault(field_name, dict())[permission] = allowed_roles
+
+  def has_permission(self, permission, field=None, obj=None):
+    """
+    """
+    allowed_roles = self.default
+    definition = None
+
+    if field is None:
+      definition = self.form
+    else:
+      if isinstance(field, Field):
+        field = field.name
+      if field in self.fields:
+        definition = self.fields[field]
+
+    if definition and permission in definition:
+      allowed_roles = definition[permission]
+
+    if callable(allowed_roles):
+      allowed_roles = allowed_roles(permission=permission,
+                                    field=field,
+                                    obj=obj)
+
+    svc = current_app.services['security']
+    return svc.has_permission(current_user,
+                              permission,
+                              obj=obj,
+                              roles=allowed_roles)
+
 class Form(BaseForm):
+
+  _groups = OrderedDict()
+  #: :class:`FormPermissions` instance
+  _permissions = None
+
+  def __init__(self, *args, **kwargs):
+    permission = kwargs.pop('permission', None)
+    super(Form, self).__init__(*args, **kwargs)
+    self._field_groups = {} # map field -> group
+
+    if not isinstance(self._groups, OrderedDict):
+      self._groups = OrderedDict(self._groups)
+
+    for label, fields in self._groups.items():
+      self._groups[label] = list(fields)
+      self._field_groups.update(dict.fromkeys(fields, label))
+
+    obj = kwargs.get('obj')
+
+    if permission and self._permissions is not None:
+      has_permission = partial(self._permissions.has_permission, permission)
+      empty_form = not has_permission(obj=obj)
+
+      for field_name in list(self._fields):
+        if empty_form or not has_permission(field=field_name, obj=obj):
+          del self[field_name]
+          group = self._field_groups.get(field_name)
+          if group:
+            self._groups[group].remove(field_name)
+
   def _get_translations(self):
     return BabelTranslation
-
-  _groups = ()
 
   def _fields_for_group(self, group):
       for g, field_names in self._groups:
