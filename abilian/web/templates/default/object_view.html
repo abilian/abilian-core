@@ -11,7 +11,7 @@
     {%- for field in form %}
     {%- if field.data or field.flags.render_empty %}
       <tr class="row">
-        <th class="col-sm-4">{{ field.label }}</th>
+        <td class="col-sm-4">{{ field.label }}</td>
         <td class="col-sm-8" colspan="3">{{ field.render_view() | safe }}</td>
       </tr>
     {%- endif %}

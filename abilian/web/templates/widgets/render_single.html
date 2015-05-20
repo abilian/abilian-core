@@ -61,7 +61,7 @@
     {%- if row.cols[0] in data %}
       {%- set label, value = data[row.cols[0]] %}
       <tr class="row">
-        <th class="col-sm-4">{{ label }}</th>
+        <td class="col-sm-4">{{ label }}</td>
         <td class="col-sm-8" colspan="3">{{ value }}</td>
       </tr>
     {%- endif %}
