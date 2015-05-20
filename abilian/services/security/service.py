@@ -19,6 +19,7 @@ from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
   SecurityAudit, RoleAssignment, Anonymous, Admin, Manager,
+  Owner, Creator,
   InheritSecurity, Role, Permission, READ, WRITE
 )
 
@@ -137,12 +138,19 @@ class SecurityService(Service):
       assert isinstance(object, Entity)
 
     q = q.filter(RoleAssignment.object == object)
-    return [i[0] for i in q.all()]
+    roles = {i[0] for i in q.all()}
+
+    if object is not None:
+      for attr, role in (('creator', Creator), ('owner', Owner)):
+        if getattr(object, attr) == principal:
+          roles.add(role)
+    return list(roles)
 
   @require_flush
   def get_principals(self, role, anonymous=True, users=True, groups=True,
                      object=None):
-    """ Return all users which are assigned given role
+    """
+    Return all users which are assigned given role
     """
     if not isinstance(role, Role):
       role = Role(role)
@@ -158,8 +166,14 @@ class SecurityService(Service):
       q = q.filter(RoleAssignment.group == None)
 
     q = q.filter(RoleAssignment.object == object)
+    principals = {(ra.user or ra.group) for ra in q.all()}
 
-    return [(ra.user or ra.group) for ra in q.all()]
+    if object is not None and role in (Creator, Owner):
+      p = object.creator if role == Creator else object.owner
+      if p:
+        principals.add(p)
+
+    return list(principals)
 
   @require_flush
   def _all_roles(self, principal):

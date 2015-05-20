@@ -24,7 +24,7 @@ from abilian.core.extensions import db
 __all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
            'Permission', 'MANAGE', 'READ', 'WRITE',
            'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
-           'Reader', 'Writer',
+           'Creator', 'Owner', 'Reader', 'Writer',
            'RoleType']
 
 
@@ -119,6 +119,8 @@ Admin = Role('admin', _l(u'role_administrator'))
 #: marker for `manager` role
 Manager = Role('manager', _l(u'role_manager'), assignable=False)
 
+Creator = Role('creator', assignable=False)
+Owner = Role('owner', assignable=False)
 Reader = Role('reader', assignable=False)
 Writer = Role('writer', assignable=False)
 

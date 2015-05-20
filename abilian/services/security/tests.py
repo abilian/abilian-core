@@ -10,7 +10,7 @@ from abilian.testing import BaseTestCase
 
 from . import (
   security, RoleAssignment, InheritSecurity, SecurityAudit,
-  Role, Permission, READ, WRITE, Reader, Writer,
+  Role, Permission, READ, WRITE, Reader, Writer, Owner, Creator,
   Admin, Anonymous, Authenticated)
 
 
@@ -100,6 +100,7 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.has_role(user, Admin)
     assert security.get_roles(user) == [Admin]
     assert security.get_roles(user) == ['admin']
+    assert security.get_principals(Admin) == [user]
 
     # clear roles cache for better coverage: has_permission uses
     # _fill_role_cache_batch(), get_roles uses _fill_role_cache()
@@ -111,6 +112,7 @@ class SecurityTestCase(IntegrationTestCase):
     security.ungrant_role(user, "admin")
     assert not security.has_role(user, "admin")
     assert security.get_roles(user) == []
+    assert security.get_principals(Admin) == []
 
     assert not security.has_permission(user, "read")
     assert not security.has_permission(user, "write")
@@ -126,6 +128,7 @@ class SecurityTestCase(IntegrationTestCase):
     security.grant_role(group, "admin")
     assert security.has_role(group, "admin")
     assert security.get_roles(group) == ['admin']
+    assert security.get_principals(Admin) == [group]
 
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
@@ -134,6 +137,7 @@ class SecurityTestCase(IntegrationTestCase):
     security.ungrant_role(group, "admin")
     assert not security.has_role(group, "admin")
     assert security.get_roles(group) == []
+    assert security.get_principals(Admin) == []
 
     assert not security.has_permission(user, "read")
     assert not security.has_permission(user, "write")
@@ -151,6 +155,8 @@ class SecurityTestCase(IntegrationTestCase):
     security.grant_role(user, "reader", obj)
     assert security.has_role(user, "reader", obj)
     assert security.get_roles(user, obj) == ['reader']
+    assert security.get_principals(Reader) == []
+    assert security.get_principals(Reader, object=obj) == [user]
 
     assert security.has_permission(user, "read", obj)
     assert not security.has_permission(user, "write", obj)
@@ -167,6 +173,23 @@ class SecurityTestCase(IntegrationTestCase):
     assert not security.has_permission(user, "write", obj)
     assert not security.has_permission(user, "manage", obj)
 
+    # owner / creator roles
+    assert security.get_principals(Owner, object=obj) == []
+    assert security.get_principals(Creator, object=obj) == []
+    old_owner = obj.owner
+    old_creator = obj.creator
+    obj.owner = user
+    assert security.get_roles(user, obj) == [Owner]
+    assert security.get_principals(Owner, object=obj) == [user]
+    assert security.get_principals(Creator, object=obj) == []
+    obj.owner = old_owner
+    obj.creator = user
+    assert security.get_roles(user, obj) == [Creator]
+    assert security.get_principals(Owner, object=obj) == []
+    assert security.get_principals(Creator, object=obj) == [user]
+    obj.creator = old_creator
+
+    # permissions through group membership
     security.grant_role(group, "manager", obj)
     assert security.has_role(group, "manager", obj)
     assert security.get_roles(group, obj) == ['manager']
