@@ -258,7 +258,7 @@ class DateTimeField(Field):
 
   def populate_obj(self, obj, name):
     dt = self.data
-    if self.use_naive:
+    if dt and self.use_naive:
       dt = dt.replace(tzinfo=None)
 
     setattr(obj, name, dt)
