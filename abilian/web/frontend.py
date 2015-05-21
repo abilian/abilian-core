@@ -102,8 +102,8 @@ class BaseEntityView(object):
     return BreadcrumbItem(label=self.obj.name or self.obj.id,
                           url=Endpoint('.entity_view', entity_id=self.obj.id))
 
-  def init_object(self, args, kwargs):
-    args, kwargs = super(BaseEntityView, self).init_object(args, kwargs)
+  def prepare_args(self, args, kwargs):
+    args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
     add_to_recent_items(self.obj)
     return args, kwargs
 
@@ -146,7 +146,7 @@ class EntityEdit(BaseEntityView, ObjectEdit):
 class EntityCreate(BaseEntityView, ObjectCreate):
   template = 'default/single_view.html'
 
-  init_object = ObjectCreate.init_object
+  prepare_args = ObjectCreate.prepare_args
   breadcrumb = ObjectCreate.breadcrumb
 
   @property
