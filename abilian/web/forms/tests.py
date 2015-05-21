@@ -7,10 +7,12 @@ import datetime
 import mock
 import pytz
 
-from abilian.testing import BaseTestCase
 from wtforms.form import Form
 
-from . import fields, filters
+from abilian.services.security import Role, READ, WRITE, Anonymous, Owner
+from abilian.testing import BaseTestCase
+
+from . import FormPermissions, fields, filters
 
 
 def user_tz():
@@ -42,7 +44,62 @@ def test_lowercase():
   assert filters.lowercase(u' VOILÀ ') == u' voilà '
 
 
+# FormPermissions
+def test_form_permissions_controller():
+  security_mock = mock.Mock()
+  has_permission = security_mock.has_permission = mock.Mock()
+  has_permission.return_value = True
+  current_app_mock = mock.Mock()
+  current_app_mock.services = dict(security=security_mock)
+  MarkRole = Role('tests:mark-role')
+  _MARK = object()
 
+  with mock.patch('abilian.web.forms.current_app', current_app_mock):
+    # default role
+    fp = FormPermissions()
+    assert fp.has_permission(READ) == True
+    assert has_permission.called
+    assert has_permission.call_args[-1]['roles'] == [Anonymous]
+    fp.has_permission(READ, obj=_MARK)
+    assert has_permission.call_args[-1]['obj'] is _MARK
+
+    # change default
+    fp = FormPermissions(default=MarkRole)
+    fp.has_permission(READ)
+    assert has_permission.call_args[-1]['roles'] == [MarkRole]
+    fp.has_permission(READ, field='test')
+    assert has_permission.call_args[-1]['roles'] == [MarkRole]
+
+    fp = FormPermissions(default=MarkRole, read=Anonymous)
+    fp.has_permission(READ)
+    assert has_permission.call_args[-1]['roles'] == [Anonymous]
+    fp.has_permission(READ, field='test')
+    assert has_permission.call_args[-1]['roles'] == [MarkRole]
+    fp.has_permission(WRITE)
+    assert has_permission.call_args[-1]['roles'] == [MarkRole]
+
+    # field roles
+    fp = FormPermissions(default=MarkRole, read=Anonymous,
+                         fields_read={'test': Owner})
+    fp.has_permission(READ)
+    assert has_permission.call_args[-1]['roles'] == [Anonymous]
+    fp.has_permission(READ, field='test')
+    assert has_permission.call_args[-1]['roles'] == [Owner]
+    fp.has_permission(READ, field='test')
+    assert has_permission.call_args[-1]['roles'] == [Owner]
+
+    # dynamic roles
+    dyn_roles = mock.Mock()
+    dyn_roles.return_value = [MarkRole]
+    fp = FormPermissions(read=dyn_roles)
+    fp.has_permission(READ)
+    assert dyn_roles.call_args == [dict(permission=READ, field=None, obj=None)]
+    assert has_permission.call_args[-1]['roles'] == [MarkRole]
+
+    fp = FormPermissions(read=[Owner, dyn_roles])
+    fp.has_permission(READ)
+    assert dyn_roles.call_args == [dict(permission=READ, field=None, obj=None)]
+    assert has_permission.call_args[-1]['roles'] == [Owner, MarkRole]
 
 
 class FieldsTestCase(BaseTestCase):

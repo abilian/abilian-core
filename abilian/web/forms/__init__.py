@@ -73,6 +73,9 @@ class FormPermissions(object):
     """
     allowed_roles = self.default
     definition = None
+    eval_roles = lambda fun: fun(permission=permission,
+                                 field=field,
+                                 obj=obj)
 
     if field is None:
       definition = self.form
@@ -86,15 +89,23 @@ class FormPermissions(object):
       allowed_roles = definition[permission]
 
     if callable(allowed_roles):
-      allowed_roles = allowed_roles(permission=permission,
-                                    field=field,
-                                    obj=obj)
+      allowed_roles = eval_roles(allowed_roles)
+
+    roles = []
+    for r in allowed_roles:
+      if callable(r):
+        r = eval_roles(r)
+
+      if isinstance(r, (Role, bytes, unicode)):
+        roles.append(r)
+      else:
+        roles.extend(r)
 
     svc = current_app.services['security']
     return svc.has_permission(current_user,
                               permission,
                               obj=obj,
-                              roles=allowed_roles)
+                              roles=roles)
 
 class Form(BaseForm):
 
