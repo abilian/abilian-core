@@ -260,6 +260,7 @@ class Module(object):
   blueprint = None
   search_criterions = (search.TextSearchCriterion("name",
                                                   attributes=('name', 'nom')),)
+  tableview_options = {}  # used mostly to change datatable search_label
   _urls = []
 
   def __init__(self):
@@ -454,7 +455,8 @@ class Module(object):
       name=self.managed_class.__name__.lower(),
       columns=self.list_view_columns,
       ajax_source=url_for('.list_json'),
-      search_criterions=self.search_criterions,)
+      search_criterions=self.search_criterions,
+      options=self.tableview_options)
     rendered_table = table_view.render()
 
     ctx = dict(rendered_table=rendered_table,

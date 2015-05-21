@@ -152,7 +152,7 @@ class BaseTableView(object):
       'aoColumns': aoColumns,
       'bFilter': self.show_search,
       'oLanguage': {
-        'sSearch': _("Filter records:"),
+        'sSearch': self.options.get('search_label', _("Filter records:")),
       },
       'bStateSave': False,
       'bPaginate': self.paginate,
@@ -244,13 +244,16 @@ class AjaxMainTableView(object):
   """
   show_controls = False
   paginate = True
+  options = {}
 
-  def __init__(self, columns, ajax_source, search_criterions=(), name=None):
+  def __init__(self, columns, ajax_source, search_criterions=(), name=None, options=None):
     self.init_columns(columns)
     self.ajax_source = ajax_source
     self.search_criterions = search_criterions
     self.name = name if name is not None else id(self)
     self.save_state = name is not None
+    if options is not None:
+      self.options = options
 
   def init_columns(self, columns):
     # TODO: compute the correct width for each column.
@@ -268,13 +271,12 @@ class AjaxMainTableView(object):
     aoColumns = [{'asSorting': []}] if self.show_controls else []
     aoColumns += [{'asSorting': ["asc", "desc"]}
                   for i in range(0, len(self.columns))]
-
     datatable_options = {
       'sDom': 'lfFrtip',
       'aoColumns': aoColumns,
       'bFilter': True,
       'oLanguage': {
-        'sSearch': _("Filter records:"),
+        'sSearch': self.options.get('search_label', _("Filter records:")),
         'sPrevious': _("Previous"),
         'sNext': _("Next"),
         'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
@@ -562,7 +564,6 @@ class TextInput(wtforms.widgets.TextInput):
       self.pre_icon = pre_icon
     if post_icon is not None:
       self.post_icon = post_icon
-
 
   def __call__(self, field, *args, **kwargs):
     if not any((self.pre_icon, self.post_icon)):
