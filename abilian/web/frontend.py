@@ -591,10 +591,6 @@ class Module(object):
   def is_current(self):
     return request.path.startswith(self.url)
 
-  # def render_entity_view(self, entity):
-  #   form = self.view_form_class(obj=entity)
-  #   return self.single_view.render(entity, form)
-
   @staticmethod
   def _prettify_name(name):
     """
