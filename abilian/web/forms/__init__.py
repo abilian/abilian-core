@@ -68,7 +68,7 @@ class FormPermissions(object):
             allowed_roles = (allowed_roles,)
           self.fields.setdefault(field_name, dict())[permission] = allowed_roles
 
-  def has_permission(self, permission, field=None, obj=None):
+  def has_permission(self, permission, field=None, obj=None, user=current_user):
     """
     """
     allowed_roles = self.default
@@ -102,7 +102,7 @@ class FormPermissions(object):
         roles.extend(r)
 
     svc = current_app.services['security']
-    return svc.has_permission(current_user,
+    return svc.has_permission(user,
                               permission,
                               obj=obj,
                               roles=roles)
@@ -115,6 +115,7 @@ class Form(BaseForm):
 
   def __init__(self, *args, **kwargs):
     permission = kwargs.pop('permission', None)
+    user= kwargs.pop('user', current_user)
     super(Form, self).__init__(*args, **kwargs)
     self._field_groups = {} # map field -> group
 
@@ -134,11 +135,13 @@ class Form(BaseForm):
       for label, fields in self.__class__._groups.items():
         self._groups[label] = list(fields)
 
-      has_permission = partial(self._permissions.has_permission, permission)
-      empty_form = not has_permission(obj=obj)
+      has_permission = partial(self._permissions.has_permission,
+                               permission,
+                               obj=obj, user=user)
+      empty_form = not has_permission()
 
       for field_name in list(self._fields):
-        if empty_form or not has_permission(field=field_name, obj=obj):
+        if empty_form or not has_permission(field=field_name):
           logger.debug('{}(permission={!r}): field {!r}: removed'
                        ''.format(self.__class__.__name__, permission,
                                  field_name))
