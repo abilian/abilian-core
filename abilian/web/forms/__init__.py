@@ -118,8 +118,8 @@ class Form(BaseForm):
     super(Form, self).__init__(*args, **kwargs)
     self._field_groups = {} # map field -> group
 
-    if not isinstance(self._groups, OrderedDict):
-      self._groups = OrderedDict(self._groups)
+    if not isinstance(self.__class__._groups, OrderedDict):
+      self.__class__._groups = OrderedDict(self.__class__._groups)
 
     for label, fields in self._groups.items():
       self._groups[label] = list(fields)
@@ -128,11 +128,20 @@ class Form(BaseForm):
     obj = kwargs.get('obj')
 
     if permission and self._permissions is not None:
+      # we are going to alter groups: copy dict on instance to preserve class
+      # definition
+      self._groups = OrderedDict()
+      for label, fields in self.__class__._groups.items():
+        self._groups[label] = list(fields)
+
       has_permission = partial(self._permissions.has_permission, permission)
       empty_form = not has_permission(obj=obj)
 
       for field_name in list(self._fields):
         if empty_form or not has_permission(field=field_name, obj=obj):
+          logger.debug('{}(permission={!r}): field {!r}: removed'
+                       ''.format(self.__class__.__name__, permission,
+                                 field_name))
           del self[field_name]
           group = self._field_groups.get(field_name)
           if group:
