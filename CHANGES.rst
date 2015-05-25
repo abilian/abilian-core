@@ -1,6 +1,8 @@
 Changelog for Abilian Core
 ==========================
 
+- default user avatar is now a circle with their last name initial (#12)
+
 0.3.4 (2015-04-14)
 ------------------
 

@@ -7,10 +7,12 @@ from __future__ import absolute_import
 import hashlib
 from datetime import datetime, timedelta
 from pathlib import Path
+import colorsys
 
 import sqlalchemy as sa
 import pkg_resources
-from flask import Blueprint, request, make_response
+
+from flask import Blueprint, request, make_response, render_template
 from werkzeug.exceptions import BadRequest, NotFound
 from abilian.core.util import utc_dt
 from abilian.core.models.blob import Blob
@@ -196,8 +198,31 @@ class UserMugshot(BaseImageView):
     if user is None:
       raise NotFound()
 
+    kwargs['user'] = user
     kwargs['image'] = user.photo
     return args, kwargs
+
+  def get(self, user, image, *args, **kwargs):
+    if image:
+      # user has set a photo
+      return super(UserMugshot, self).get(image, *args, **kwargs)
+
+    # render svg avatar
+    letter = user.last_name[0] + '.' if user.last_name else user.first_name[0]
+    letter = letter.upper()
+    # generate bg color, pastel: sat=65% in hsl color space
+    id_hash = hash((user.name + user.email).encode('utf-8'))
+    hue = id_hash % 10
+    hue = (hue * 36) / 360.0 # 10 colors: 360 / 10
+    color = colorsys.hsv_to_rgb(hue, 0.65, 1.0)
+    color = [int(x * 255) for x in color]
+    color = u'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
+    svg = render_template('default/avatar.svg', color=color, letter=letter)
+    response = make_response(svg)
+    response.headers['content-type'] = u'image/svg+xml'
+    self.set_cache_headers(response)
+    return response
+
 
 
 user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
@@ -211,10 +236,12 @@ def user_url_args(user, size):
   kwargs = {'s': size,
             'md5': DEFAULT_AVATAR_MD5,}
 
-  if not user.is_anonymous() and user.photo:
+  if not user.is_anonymous():
     endpoint = 'images.user_photo'
     kwargs['user_id'] = user.id
-    kwargs['md5'] = hashlib.md5(user.photo).hexdigest()
+    content = (user.photo if user.photo
+               else (user.name + user.email).encode('utf-8'))
+    kwargs['md5'] = hashlib.md5(content).hexdigest()
 
   return endpoint, kwargs
 
