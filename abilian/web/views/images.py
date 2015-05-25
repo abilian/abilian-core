@@ -202,7 +202,7 @@ class UserMugshot(BaseImageView):
     kwargs['image'] = user.photo
     return args, kwargs
 
-  def get(self, user, image, *args, **kwargs):
+  def get(self, user, image, size, *args, **kwargs):
     if image:
       # user has set a photo
       return super(UserMugshot, self).get(image, *args, **kwargs)
@@ -217,7 +217,8 @@ class UserMugshot(BaseImageView):
     color = colorsys.hsv_to_rgb(hue, 0.65, 1.0)
     color = [int(x * 255) for x in color]
     color = u'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
-    svg = render_template('default/avatar.svg', color=color, letter=letter)
+    svg = render_template('default/avatar.svg',
+                          color=color, letter=letter, size=size)
     response = make_response(svg)
     response.headers['content-type'] = u'image/svg+xml'
     self.set_cache_headers(response)
