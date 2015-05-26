@@ -86,7 +86,3 @@ class FrontendTestCase(BaseTestCase):
 
     # response = self.client.get("/crm/contacts/export_xls")
     # self.assert_200(response)
-
-  def test_export_xls(self):
-    # at least just test dummy empty export is working without error
-    self.crm.modules[0].export_to_xls()

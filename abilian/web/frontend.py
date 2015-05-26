@@ -1,32 +1,26 @@
 # coding=utf-8
-
 """
 Front-end for a CRM app.
 
 This should eventually allow implementing very custom CRM-style application.
 """
-import StringIO
 import logging
 import copy
-import csv
-from datetime import date
-from time import strftime, gmtime
 import re
 
-from flask import (session, redirect, request, g,
-                   Blueprint, jsonify, make_response, url_for,
-                   current_app, render_template)
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from sqlalchemy import orm
 from werkzeug.exceptions import BadRequest
-from xlwt import Workbook, XFStyle
 
+from flask import (session, redirect, request, g,
+                   Blueprint, jsonify, url_for,
+                   current_app, render_template)
 
-from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.services import audit_service
+from .action import actions
 
 from . import search
 from .nav import BreadcrumbItem, Endpoint
@@ -34,9 +28,9 @@ from .views import (
     default_view, ObjectView, ObjectEdit, ObjectCreate,
     ObjectDelete, JSONView, JSONWhooshSearch,
 )
-from .forms.fields import ModelFieldList
-from .forms.widgets import Panel, Row, SingleView, RelatedTableView, \
-    AjaxMainTableView
+from .forms.widgets import (
+  Panel, Row, SingleView, RelatedTableView, AjaxMainTableView,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -84,8 +78,8 @@ def labelize(s):
 
 def make_single_view(form, **options):
   panels = []
-  for g in form._groups.items():
-    panel = Panel(g[0], *[ Row(x) for x in g[1] ])
+  for gr in form._groups.items():
+    panel = Panel(gr[0], *[Row(x) for x in gr[1]])
     panels.append(panel)
   return SingleView(form, *panels, **options)
 
@@ -104,6 +98,7 @@ class BaseEntityView(object):
 
   def prepare_args(self, args, kwargs):
     args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
+    actions.context['module'] = self.module
     add_to_recent_items(self.obj)
     return args, kwargs
 
@@ -450,7 +445,7 @@ class Module(object):
   #
   @expose("/")
   def list_view(self):
-    # TODO: should be an instance variable.
+    actions.context['module'] = self
     table_view = AjaxMainTableView(
       name=self.managed_class.__name__.lower(),
       columns=self.list_view_columns,
@@ -464,102 +459,6 @@ class Module(object):
                base_template=self.base_template
                )
     return render_template("default/list_view.html", **ctx)
-
-  @expose("/export_xls")
-  def export_to_xls(self):
-    # TODO: take care of all the special cases
-    wb = Workbook()
-    ws = wb.add_sheet("Sheet 1")
-
-    objects = self.ordered_query(request)
-    form = self.edit_form_class()
-
-    DATE_STYLE = XFStyle()
-    DATE_STYLE.num_format_str = "DD/MM/YYYY"
-
-    col_names = ['id']
-    for field in form:
-      if isinstance(field, ModelFieldList):
-        continue
-      if hasattr(self.managed_class, field.name):
-        col_names.append(field.name)
-
-    for c, col_name in enumerate(col_names):
-      ws.write(0, c, col_name)
-
-    for r, obj in enumerate(objects):
-      for c, col_name in enumerate(col_names):
-        style = None
-        value = obj.display_value(col_name)
-
-        if isinstance(value, Entity):
-          value = value.name
-        elif isinstance(value, list):
-          if all(isinstance(x, basestring) for x in value):
-            value = "; ".join(value)
-          elif all(isinstance(x, Entity) for x in value):
-            value = "; ".join([x.name for x in value])
-          else:
-            raise Exception("I don't know how to export column {}".format(col_name))
-        elif isinstance(value, date):
-          style = DATE_STYLE
-        if style:
-          ws.write(r + 1, c, value, style)
-        else:
-          ws.write(r + 1, c, value)
-
-    fd = StringIO.StringIO()
-    wb.save(fd)
-
-    debug = request.args.get('debug_sql')
-    if debug:
-      # useful only in DEBUG mode, to get the debug toolbar in browser
-      return '<html><body>Exported</body></html>'
-
-    response = make_response(fd.getvalue())
-    response.headers['content-type'] = 'application/ms-excel'
-    filename = "%s-%s.xls" % (self.managed_class.__name__,
-                              strftime("%d:%m:%Y-%H:%M:%S", gmtime()))
-    response.headers['content-disposition'] = 'attachment;filename="%s"' % filename
-    return response
-
-  @expose("/export")
-  def export_to_csv(self):
-    # TODO: take care of all the special cases
-    csvfile = StringIO.StringIO()
-    writer = csv.writer(csvfile)
-
-    objects = self.ordered_query(request).all()
-
-    # Return empty file if there is no result (should not happen often).
-    if not objects:
-      response = make_response("")
-      response.headers['content-type'] = 'application/csv'
-      return response
-
-    form = self.edit_form_class()
-    headers = ['id']
-    for field in form:
-      if hasattr(objects[0], field.name):
-        headers.append(field.name)
-    writer.writerow(headers)
-
-    for object in objects:
-      row = [object.id]
-      for field in form:
-        if hasattr(object, field.name):
-          value = object.display_value(field.name)
-          if value is None:
-            value = ""
-          row.append(unicode(value).encode('utf8'))
-      writer.writerow(row)
-
-    response = make_response(csvfile.getvalue())
-    response.headers['content-type'] = 'application/csv'
-    filename = "%s-%s.csv" % (self.managed_class.__name__,
-                              strftime("%d:%m:%Y-%H:%M:%S", gmtime()))
-    response.headers['content-disposition'] = 'attachment;filename="%s"' % filename
-    return response
 
   @expose("/json2")
   def list_json2(self):
