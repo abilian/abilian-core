@@ -42,8 +42,8 @@
 
   <!-- navbar -->
   {% include "navbar.html" %}
-  
-  <div id="content" class="container clearfix">
+
+  <div id="content" class="container{%- if full_width %}-fluid {% endif %} clearfix">
 
     <!-- breadcrumbs -->
     <div class="row">
@@ -78,7 +78,7 @@
 
   {%- block footer %}
   <footer>
-    <div class="container">
+    <div class="container{%- if full_width %}-fluid{%- endif %}">
       <div class="row">
         <div class="col-xs-12">
           <hr />
