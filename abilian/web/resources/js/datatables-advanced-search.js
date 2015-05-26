@@ -365,6 +365,65 @@
                       }
                     };
          },
+         'selectAjax': function(name, label, ajax_source, multiple) {
+             var self = this;
+             multiple = multiple || false;
+
+             if (label != "") {
+                 self.append($('<label />')
+                             .attr({'class': 'select inline col-md-3 text-right'})
+                             .css('cursor', 'default')
+                             .append(
+                                 $('<strong />').text(label))
+                            );
+             }
+             var $select = $('<input />')
+                 .attr({'id': name,
+                        'name': name,
+                        'type': 'hidden'});
+             self.append($select);
+
+             $select.select2({
+                              minimumInputLength: 2,
+                              containerCssClass: 'form-control',
+                              placeholder: multiple ? '' : '...',
+                              multiple: multiple,
+                              allowClear: true,
+                              width: '20em',
+                              containerCss: {'margin-left': '0.5em'},
+                              ajax: {
+                                       url: ajax_source,
+                                       dataType: 'json',
+                                       quietMillis: 100,
+                                       data: function (term, page) {
+                                         return { q: term };
+                                       },
+                                       results: function (data, page) {
+                                         return {results: data.results, more: false};
+                                       }
+                                     }
+                             });
+
+             function get_val() {
+                 var val = $select.data('select2').val();
+                 if (!multiple && !val.length) { val = []; }
+                 return val;
+             }
+             function save_val() {
+                 return $select.data('select2').data();
+             }
+
+             return { 'name': name,
+                      'val': get_val,
+                      'save': save_val,
+                      'load': function(vals) {
+                          $select.data('select2').data(vals);
+                      },
+                      'hasValueSet': function () {
+                        return get_val().length > 0;
+                        }
+                    };
+         },
          'optional_criterions': function(name, label) {
              var self = this,
                  arg_len = arguments.length,
