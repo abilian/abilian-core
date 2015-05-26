@@ -13,15 +13,17 @@
           {%- set EXCEL_ACTIONS = module.excel_export_actions %}
           {%- set EXCEL_SUPPORT_IMPORT = module.EXCEL_IMPORT_EXPORT and g.is_manager %}
 
-          {%- if EXCEL_ACTIONS or EXCEL_SUPPORT_IMPORT %}
+          {%- if EXCEL_ACTIONS or EXCEL_SUPPORT_IMPORT or module.export_to_xls %}
             {%- set BUTTON_CLASS = '' %}
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#-">Excel<span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li>
            {%- else %}
               {%- set BUTTON_CLASS = ' btn btn-default' %}
-           {%- endif %}
-        <a class="datatable-export{{ BUTTON_CLASS }}" data-toggle="dropdown" href="{{ url_for('.export_to_xls') }}"><i class="fa fa-align-justify"></i>{{ _("Export to Excel") }}</a>
+          {%- endif %}
+          {%- if module.export_to_xls %}
+            <a class="datatable-export{{ BUTTON_CLASS }}" data-toggle="dropdown" href="{{ url_for('.export_to_xls') }}"><i class="fa fa-align-justify"></i>{{ _("Export to Excel") }}</a>
+          {%- endif %}
         {%- if EXCEL_ACTIONS or EXCEL_SUPPORT_IMPORT %}
               </li>
             {%- for action_url, label in EXCEL_ACTIONS %}
