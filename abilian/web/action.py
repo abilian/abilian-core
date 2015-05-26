@@ -169,11 +169,11 @@ class Endpoint(object):
     return unicode(url_for(self.name, *self.args, **self.get_kwargs()))
 
   def __repr__(self):
-    return '{cls}({name}, *{args}, **{kwargs})'.format(
+    return '{cls}({name!r}, *{args!r}, **{kwargs!r})'.format(
       cls=self.__class__.__name__,
-      name=repr(self.name),
-      args=repr(self.args),
-      kwargs=repr(self.kwargs),
+      name=self.name,
+      args=self.args,
+      kwargs=self.kwargs,
     )
 
 
