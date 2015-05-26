@@ -1,6 +1,6 @@
 {%- set locale = get_locale() %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale.language }}">
 <head>
   <meta charset="utf-8">
   <title>{% block page_title %}{{ config.SITE_NAME }}{% endblock %}</title>
