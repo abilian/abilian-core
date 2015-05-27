@@ -1,4 +1,6 @@
 {%- from "macros/form.html" import  m_field with context %}
 {%- for field in form %} {# form could also be a formfield instance #}
-  {{ m_field(field, label_width=3, field_width=9) }}
+  <div class="col-xs-12">
+    {{ m_field(field, label_width=3, field_width=9) }}
+  </div>
 {%-  endfor %}

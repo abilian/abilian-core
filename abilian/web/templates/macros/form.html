@@ -13,9 +13,6 @@
     {%- set css_class = css_class + ' required' %}
   {%- endif %}
   <div class="form-group{% if field.errors and not field.form %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
-    {%- if standard_field and not horizontal %}
-      <div class="col-xs-12">
-    {%- endif %}
     {%- if with_label and not (field.is_hidden or field.type in ('CSRFTokenField', 'HiddenField')) %}
       <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}</label>
     {%- endif %}
@@ -51,7 +48,7 @@
       <span class="help-block">{{ field.description|safe }}</span>
     {%- endif %}
 
-    {%- if standard_field %}
+    {%- if standard_field and horizontal %}
       </div> {# when horizontal: close input div; else closes div.col-xs-12 before label #}
     {%- endif %}
   </div> {# form-group #}
@@ -66,10 +63,12 @@
       {{ m_field(field, horizontal=horizontal, label_width=label_width, field_width=field_width) }}
     {%- endfor %}
 
-    <div class="form-actions">
+    <div class="form-group form-actions">
+      <div class="{%- if horizontal %}col-sm-{{ field_width }} col-sm-push-{{ label_width }}{%- endif %}">
       {%- for button in g.view.buttons %}
         {{ button.render() }}
       {%- endfor %}
+      </div>
     </div>
 
   </form>
