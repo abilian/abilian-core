@@ -265,6 +265,11 @@ class SecurityTestCase(IntegrationTestCase):
     security.grant_role(user, Writer, obj=obj)
     assert security.has_permission(user, WRITE, obj=obj)
 
+    # test when object is *not* in session (newly created objects have id=None
+    # for instance)
+    obj = DummyModel()
+    assert security.has_role(user, Reader, object=obj) is False
+
   def test_has_permission_custom_roles(self):
     user = User(email=u"john@example.com", password="x")
     self.session.add(user)

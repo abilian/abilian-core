@@ -322,7 +322,7 @@ class SecurityService(Service):
 
     if object:
       assert isinstance(object, Entity)
-      object_key = u"{}:{:d}".format(object.object_type, object.id)
+      object_key = u"{}:{}".format(object.object_type, unicode(object.id))
     else:
       object_key = None
 
