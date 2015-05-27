@@ -78,11 +78,12 @@ def indexable_role(principal):
   """
   principal = noproxy(principal)
 
-  if (principal is Anonymous
-      or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
-    return u'role:anonymous'
-  elif isinstance(principal, Role):
-    return u'role:{}'.format(unicode(principal))
+  if (hasattr(principal, 'is_anonymous') and principal.is_anonymous()):
+    # transform anonymous user to anonymous role
+    principal = Anonymous
+
+  if isinstance(principal, Role):
+    return u'role:{}'.format(principal.name)
   elif isinstance(principal, User):
     fmt = u'user:{:d}'
   elif isinstance(principal, Group):
