@@ -40,7 +40,7 @@ Updates
 ------------------
 
 Features
-^^^^^^^^
+~~~~~~~~
 
 - Use ravenjs to monitor JS errors with Sentry
 - Vocabularies
@@ -62,19 +62,19 @@ Features
 ------------------
 
 Features
-^^^^^^^^
+~~~~~~~~
 
 - Added a virus scanner.
 - Changed the WYSIWYG editor to Scribe.
 - Vocabularies
 
 API changes
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 - Deprecated the @templated decorator (will be removed in 0.4.0).
 
 Building, tests
-^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~
 
 - Build: Use pbr to simplify setup.py.
 - Dependencies: moved deps to ./requirements.txt + cleanup / update.
