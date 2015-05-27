@@ -1,7 +1,31 @@
 Changelog for Abilian Core
 ==========================
 
+0.3.5 (2015-05-27)
+------------------
+
+Features
+~~~~~~~~
+
 - default user avatar is now a circle with their last name initial (#12)
+- add PRIVATE_SITE, app, blueprint and endpoint access controller registration
+- Better handling of CSRF failures
+- add dynamic row widget js
+- js: add datatable advanced search
+
+Fixes
+~~~~~
+
+- CSS (Bootstrap) fixes
+- Permissions fixes
+
+Updates
+-------
+
+- Updated Bootstrap to 3.3.4
+- Updated flask-login to 0.2.11
+- Updated Sentry JS code to 1.1.18
+
 
 0.3.4 (2015-04-14)
 ------------------
