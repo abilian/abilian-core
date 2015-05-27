@@ -41,8 +41,8 @@ class ModuleAction(Action):
   """
   Base action class for :class:`Module` actions.
 
-  Basic condition is simple: :attr:`.category` must match the string
-  `'module:{module.endpoint}'
+  Basic condition is simple: :attr:`category` must match the string
+  `'module:{module.endpoint}'`
   """
   def __init__(self, module, group, name, *args, **kwargs):
     self.group = group
