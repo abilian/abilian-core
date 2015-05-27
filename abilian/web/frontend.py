@@ -7,6 +7,7 @@ This should eventually allow implementing very custom CRM-style application.
 import logging
 import copy
 import re
+from collections import OrderedDict
 
 import sqlalchemy as sa
 from sqlalchemy import func
@@ -18,9 +19,10 @@ from flask import (session, redirect, request, g,
                    Blueprint, jsonify, url_for,
                    current_app, render_template)
 
+from abilian.i18n import _l
 from abilian.core.extensions import db
 from abilian.services import audit_service
-from .action import actions
+from .action import actions, Action, FAIcon
 
 from . import search
 from .nav import BreadcrumbItem, Endpoint
@@ -33,6 +35,26 @@ from .forms.widgets import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class ModuleAction(Action):
+  """
+  Base action class for :class:`Module` actions.
+
+  Basic condition is simple: :attr:`.category` must match the string
+  `'module:{module.endpoint}'
+  """
+  def __init__(self, module, group, name, *args, **kwargs):
+    self.group = group
+    super(ModuleAction, self).__init__(module.action_category, name,
+                                       *args, **kwargs)
+
+  def pre_condition(self, context):
+    module = actions.context.get('module')
+    if not module:
+      return False
+
+    return self.category == module.action_category
 
 
 def add_to_recent_items(entity, type='ignored'):
@@ -320,7 +342,6 @@ class Module(object):
     self._setup_view('/json_search', 'json_search', self.json_search_cls,
                      Model=self.managed_class)
 
-    # related views
     self.init_related_views()
 
     # copy criterions instances; without that they may be shared by subclasses
@@ -344,6 +365,27 @@ class Module(object):
         view = DefaultRelatedView(*view)
       related_views.append(view)
     self.related_views = related_views
+
+  @property
+  def action_category(self):
+    return u'module:{}'.format(self.endpoint)
+
+  def get_grouped_actions(self):
+    items = actions.for_category(self.action_category)
+    groups = OrderedDict()
+    for action in items:
+      groups.setdefault(action.group, []).append(action)
+
+    return groups
+
+  def register_actions(self):
+    ACTIONS = [
+      ModuleAction(self, u'entity', u'create',
+                   title=_l(u'Create New'), icon=FAIcon('plus'),
+                   endpoint=Endpoint(self.endpoint + '.entity_new'),
+                   button='default',),
+    ]
+    actions.register(*ACTIONS)
 
   def create_blueprint(self, crud_app):
     """
@@ -544,6 +586,7 @@ class CRUDApp(object):
 
   def add_module(self, module):
     self.app.register_blueprint(self.create_blueprint(module))
+    module.register_actions()
 
   def create_blueprint(self, module):
     return module.create_blueprint(self)

@@ -1,14 +1,17 @@
 {% extends base_template %}
 
 {% block content %}
-
   <div class="row">
     <div class="col-xs-12">
       <div class="btn-toolbar">
-        <div class="btn-group">
-          <a class="btn btn-default" href="{{ request.url }}new"><i class="fa fa-plus"></i> {{ _("Create New") }}</a>
-        </div>
-
+        {%- for action_items in module.get_grouped_actions().values() %}
+          <div class="btn-group">
+            {%- for item in action_items %}
+              {{ item.render() }}
+            {%- endfor %}
+          </div>
+        {%- endfor %}
+        
         <div class="btn-group">
           {%- set EXCEL_ACTIONS = module.excel_export_actions %}
           {%- set EXCEL_SUPPORT_IMPORT = module.EXCEL_IMPORT_EXPORT and g.is_manager %}
