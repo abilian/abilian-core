@@ -1,6 +1,16 @@
 Changelog for Abilian Core
 ==========================
 
+
+0.3.6 (2015-05-27)
+------------------
+
+Fixes
+~~~~~
+
+- security service: fix exception on has_role()
+
+
 0.3.5 (2015-05-27)
 ------------------
 
@@ -35,6 +45,7 @@ Updates
 - set default SQLALCHEMY_POOL_RECYCLE to 30 minutes
 - Users admin panel: fix roles not set; fix all assignable roles not listed; fix
   cannot set password during user creation.
+
 
 0.3.3 (2015-03-31)
 ------------------
