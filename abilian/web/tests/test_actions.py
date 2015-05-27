@@ -12,11 +12,12 @@ BASIC = Action('cat_1', 'basic', 'Basic Action', url='http://some.where',
 CONDITIONAL = Action('cat_1', 'conditional', 'Conditional Action',
                      url='http://condition.al',
                      condition=lambda ctx: ctx['show_all'],
-                     icon=Glyphicon('hand-right'))
+                     icon=Glyphicon('hand-right'), button='warning')
 
 OTHER_CAT = Action('cat_2:sub', 'other', 'Other Action',
                    url=lambda ctx: 'http://count?%d' % len(ctx),
-                   icon=StaticIcon('icons/other.png', size=14))
+                   icon=StaticIcon('icons/other.png', size=14),
+                   css='custom-class')
 
 ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 
@@ -70,22 +71,25 @@ class TestActions(BaseTestCase):
     assert OTHER_CAT.url({}) == 'http://count?0'
 
   def test_render(self):
-    self.assertEquals(
-      BASIC.render(),
+    assert (
+      BASIC.render() ==
       Markup(u'<a class="action action-cat_1 action-cat_1-basic" '
              u'href="http://some.where">'
-             u'<i class="glyphicon glyphicon-ok"></i> Basic Action</a>'))
+             u'<i class="glyphicon glyphicon-ok"></i> Basic Action</a>')
+    )
 
-    self.assertEquals(
-      CONDITIONAL.render(),
-      Markup(u'<a class="action action-cat_1 action-cat_1-conditional" '
-             u'href="http://condition.al">'
+    assert (
+      CONDITIONAL.render() ==
+      Markup(u'<a class="action action-cat_1 action-cat_1-conditional '
+             u'btn btn-warning" href="http://condition.al">'
              u'<i class="glyphicon glyphicon-hand-right"></i> '
-             u'Conditional Action</a>'))
+             u'Conditional Action</a>')
+    )
 
-    self.assertEquals(
-      OTHER_CAT.render(),
-      Markup(u'<a class="action action-cat_2-sub action-cat_2-sub-other" '
-             u'href="http://count?2">'
+    assert (
+      OTHER_CAT.render() ==
+      Markup(u'<a class="action action-cat_2-sub action-cat_2-sub-other '
+             u'custom-class" href="http://count?2">'
              u'<img src="/static/icons/other.png" width="14" height="14" /> '
-             u'Other Action</a>'))
+             u'Other Action</a>')
+    )

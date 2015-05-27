@@ -206,9 +206,20 @@ class Action(object):
   )
 
   def __init__(self, category, name, title=None, description=None, icon=None,
-               url=None, endpoint=None, condition=None, status=None):
+               url=None, endpoint=None, condition=None, status=None,
+               button=None, css=None):
+    """
+    :param button: if not `None`, a valid `btn` class (i.e `default`,
+    `primary`...)
+    :param css: additional css class string
+    """
     self.category = category
     self.name = name
+
+    if button is not None:
+      self.CSS_CLASS = self.CSS_CLASS + u' btn btn-{}'.format(button)
+    if css is not None:
+      self.CSS_CLASS = self.CSS_CLASS + u' ' + css
     self._build_css_class()
 
     self.title = title
