@@ -13,11 +13,22 @@ PYTEST_MULTI=-n $(NCPU) -p no:sugar
 
 all: test
 
+
+#
+#
+#
+develop:
+	@echo "--> Installing dependencies"
+	pip install -e '.[dev]'
+	@echo ""
+
 #
 # testing & checking
 #
 test:
-	py.test $(PYTEST_MULTI) $(PKG) tests
+	@echo "--> Running Python tests"
+	py.test $(PYTEST_MULTI) .
+	@echo ""
 
 test-with-coverage:
 	py.test $(PYTEST_MULTI)							\
@@ -25,12 +36,17 @@ test-with-coverage:
 	        --cov-config etc/coverage.rc			\
 	  	    --cov-report term-missing $(PKG) tests
 
-tox:
-	tox
-
 vagrant-tests:
 	vagrant up
 	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
+
+
+lint: lint-python
+
+lint-python:
+	@echo "--> Linting Python files"
+	flake8 $(SRC)
+	@echo ""
 
 #
 # Various Checkers
@@ -59,9 +75,6 @@ pylint:
 jslint:
 	npm run lint --silent
 
-check-docs:
-	sphinx-build -W -b html docs/ docs/_build/html
-
 #
 # Everything else
 #
@@ -71,10 +84,10 @@ install:
 doc: doc-html doc-pdf
 
 doc-html:
-	sphinx-build -b html docs/ docs/_build/html
+	sphinx-build -W -b html docs/ docs/_build/html
 
 doc-pdf:
-	sphinx-build -b latex docs/ docs/_build/latex
+	sphinx-build -W -b latex docs/ docs/_build/latex
 	make -C docs/_build/latex all-pdf
 
 clean:
