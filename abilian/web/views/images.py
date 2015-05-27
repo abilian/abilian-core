@@ -104,7 +104,7 @@ class BaseImageView(View):
     try:
       fmt = get_format(image)
     except IOError:
-      # not a known image file
+      #  not a known image file
       raise NotFound()
 
     content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
@@ -192,8 +192,8 @@ class UserMugshot(BaseImageView):
 
     user_id = kwargs['user_id']
     user = User.query\
-      .options(sa.orm.undefer(User.photo))\
-      .get(user_id)
+        .options(sa.orm.undefer(User.photo))\
+        .get(user_id)
 
     if user is None:
       raise NotFound()
@@ -204,7 +204,7 @@ class UserMugshot(BaseImageView):
 
   def get(self, user, image, size, *args, **kwargs):
     if image:
-      # user has set a photo
+      #  user has set a photo
       return super(UserMugshot, self).get(image, *args, **kwargs)
 
     # render svg avatar
@@ -213,7 +213,7 @@ class UserMugshot(BaseImageView):
     # generate bg color, pastel: sat=65% in hsl color space
     id_hash = hash((user.name + user.email).encode('utf-8'))
     hue = id_hash % 10
-    hue = (hue * 36) / 360.0 # 10 colors: 360 / 10
+    hue = (hue * 36) / 360.0  # 10 colors: 360 / 10
     color = colorsys.hsv_to_rgb(hue, 0.65, 1.0)
     color = [int(x * 255) for x in color]
     color = u'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
@@ -225,12 +225,12 @@ class UserMugshot(BaseImageView):
     return response
 
 
-
 user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
 route("/users/<int:user_id>")(user_photo)
 route('/users/default')(StaticImageView.as_view('user_default',
                                                 set_expire=True,
                                                 image=DEFAULT_AVATAR,))
+
 
 def user_url_args(user, size):
   endpoint = 'images.user_default'
@@ -245,6 +245,7 @@ def user_url_args(user, size):
     kwargs['md5'] = hashlib.md5(content).hexdigest()
 
   return endpoint, kwargs
+
 
 def user_photo_url(user, size):
   """
