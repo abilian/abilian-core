@@ -1,4 +1,4 @@
-.PHONY: test pep8 pylama clean docs tox jslint
+.PHONY: develop test pep8 pylama clean docs tox jslint
 
 # The source director
 SRC=abilian
@@ -19,7 +19,7 @@ all: test
 #
 develop:
 	@echo "--> Installing dependencies"
-	pip install -e '.[dev]'
+	pip install -U -e '.[dev]'
 	@echo ""
 
 #
