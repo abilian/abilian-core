@@ -21,6 +21,7 @@ from flask import (session, redirect, request, g,
 
 from abilian.i18n import _l
 from abilian.core.extensions import db
+from abilian.core.entities import Entity
 from abilian.services import audit_service
 from .action import actions, Action, FAIcon
 
@@ -58,6 +59,8 @@ class ModuleAction(Action):
 
 
 def add_to_recent_items(entity, type='ignored'):
+  if not isinstance(entity, Entity):
+    return
   object_type = entity.object_type
   url = current_app.default_view.url_for(entity)
   if not hasattr(g, 'recent_items'):
