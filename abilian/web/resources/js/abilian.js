@@ -192,8 +192,8 @@
 
 }(jQuery));
 
-requirejs(
-    ['abilian-init-scribe-widget'],
-    function(initScribeWidgets) {
-        Abilian.fn.onAppInit(initScribeWidgets);
+Abilian.fn.onAppInit(
+    function() {
+        requirejs(['abilian-init-scribe-widget'],
+                  function(initScribeWidgets) { initScribeWidgets(); });
     });
