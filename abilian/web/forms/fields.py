@@ -264,9 +264,9 @@ class DateTimeField(Field):
     setattr(obj, name, dt)
 
 
-class DateField(DateTimeField):
+class DateField(Field):
   """
-  A text field which stores a `datetime.datetime` matching a format.
+  A text field which stores a `datetime.date` matching a format.
   """
   widget = DateInput()
 
