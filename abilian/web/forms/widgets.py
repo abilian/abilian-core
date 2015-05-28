@@ -199,6 +199,7 @@ class BaseTableView(object):
       # Manual massage.
       if value is None:
         value = ""
+
       if column_name == make_link_on or column_name == 'name' or \
          col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'
@@ -214,7 +215,9 @@ class BaseTableView(object):
       elif isinstance(value, list):
         cell = "; ".join(value)
       else:
-        cell = unicode(value)
+        if not isinstance(value, Markup):
+          value = unicode(value)
+        cell = value
 
       line.append(cell)
     return line
