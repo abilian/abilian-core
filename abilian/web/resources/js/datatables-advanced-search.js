@@ -394,7 +394,7 @@
                               ajax: {
                                        url: ajax_source,
                                        dataType: 'json',
-                                       quietMillis: 100,
+                                       quietMillis: 200,
                                        data: function (term, page) {
                                          return { q: term };
                                        },
