@@ -1,5 +1,5 @@
 define(
-    'abilian-init-scribe-widget',
+    'abilian-init-scribe-widgets',
     ['jquery',
      'scribe',
      'scribe-plugin-blockquote-command',
@@ -110,9 +110,12 @@ define(
                 scribe.commands['formatBlock'] = new scribe.api.Command('formatBlock');
             }
         } //initWidget
-       
-        Array.prototype.forEach.call(
-            document.querySelectorAll('.scribe-widget'), 
-            initWidget);
+
+        function initScribeWidgets() {
+            Array.prototype.forEach.call(
+                document.querySelectorAll('.scribe-widget'),
+                initWidget);
+        }
+        return initScribeWidgets;
     }
 );
