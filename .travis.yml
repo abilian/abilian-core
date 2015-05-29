@@ -37,7 +37,9 @@ script:
 
 # Report coverage
 after_success:
-  - coveralls --rcfile=etc/coverage.rc
+  - pip install codecov coveralls
+  - coveralls
+  - codecov
 
 notifications:
   slack: 
