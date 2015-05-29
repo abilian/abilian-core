@@ -4,22 +4,30 @@ define('scribe-plugin-link-prompt-command',[],function () {
    * This plugin adds a command for creating links, including a basic prompt.
    */
 
-  
+  'use strict';
 
   return function () {
     return function (scribe) {
       var linkPromptCommand = new scribe.api.Command('createLink');
 
+
       linkPromptCommand.nodeName = 'A';
 
-      linkPromptCommand.execute = function () {
+      linkPromptCommand.execute = function (passedLink) {
+        var link;
         var selection = new scribe.api.Selection();
         var range = selection.range;
         var anchorNode = selection.getContaining(function (node) {
           return node.nodeName === this.nodeName;
         }.bind(this));
-        var initialLink = anchorNode ? anchorNode.href : 'http://';
-        var link = window.prompt('Enter a link.', initialLink);
+
+        var initialLink = anchorNode ? anchorNode.href : '';
+
+        if (!passedLink)  {
+          link = window.prompt('Enter a link.', initialLink);
+        } else {
+          link = passedLink;
+        }
 
         if (anchorNode) {
           range.selectNode(anchorNode);
@@ -32,11 +40,12 @@ define('scribe-plugin-link-prompt-command',[],function () {
 
         if (link) {
           // Prepend href protocol if missing
-          // For emails we just look for a `@` symbol as it is easier.
+          // If a http/s or mailto link is provided, then we will trust that an link is valid
           var urlProtocolRegExp = /^https?\:\/\//;
-          // We don't want to match URLs that sort of look like email addresses
-          if (! urlProtocolRegExp.test(link)) {
-            if (! /^mailto\:/.test(link) && /@/.test(link)) {
+          var mailtoProtocolRegExp = /^mailto\:/;
+          if (! urlProtocolRegExp.test(link) && ! mailtoProtocolRegExp.test(link)) {
+            // For emails we just look for a `@` symbol as it is easier.
+            if (/@/.test(link)) {
               var shouldPrefixEmail = window.confirm(
                 'The URL you entered appears to be an email address. ' +
                 'Do you want to add the required “mailto:” prefix?'

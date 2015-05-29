@@ -4,7 +4,7 @@ define('scribe-plugin-toolbar',[],function () {
 
   return function (toolbarNode) {
     return function (scribe) {
-      var buttons = toolbarNode.querySelectorAll('button[data-command-name]');
+      var buttons = toolbarNode.querySelectorAll('[data-command-name]');
 
       Array.prototype.forEach.call(buttons, function (button) {
         button.addEventListener('click', function () {
@@ -19,7 +19,7 @@ define('scribe-plugin-toolbar',[],function () {
            * the command, because it might rely on selection data.
            */
           scribe.el.focus();
-          command.execute();
+          command.execute(button.dataset.commandValue);
           /**
            * Chrome has a bit of magic to re-focus the `contenteditable` when a
            * command is executed.
@@ -46,7 +46,7 @@ define('scribe-plugin-toolbar',[],function () {
           var selection = new scribe.api.Selection();
 
           // TODO: Do we need to check for the selection?
-          if (selection.range && command.queryState()) {
+          if (selection.range && command.queryState(button.dataset.commandValue)) {
             button.classList.add('active');
           } else {
             button.classList.remove('active');
@@ -63,5 +63,6 @@ define('scribe-plugin-toolbar',[],function () {
   };
 
 });
+
 
 //# sourceMappingURL=scribe-plugin-toolbar.js.map
