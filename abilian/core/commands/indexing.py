@@ -24,7 +24,6 @@ COMMIT = object()
 def reindex(clear=False, progressive=False, batch_size=None):
   """
   Reindex all content; optionally clear index before. All is done in a
-
   single transaction by default.
 
   :param clear: clear index content.

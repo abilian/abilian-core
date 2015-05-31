@@ -5,9 +5,9 @@ import os
 import logging
 import runpy
 from pprint import pformat
+import urllib
 
 import sqlalchemy as sa
-
 from flask import current_app
 from flask.ext.script import Manager, prompt_pass
 
@@ -25,6 +25,7 @@ __all__ = ['manager', 'logger']
 # Allow "print" statements to be replaced by a logging statements
 logging.basicConfig()
 logger = logging.getLogger('')
+
 
 # PATCH flask.ext.script.Manager.run to force creation of app before run() is
 # called. In default implementation, the arg parser is created before the Flask
@@ -109,6 +110,7 @@ def initdb():
   """
   Creates application DB.
   """
+  print("Creating DB using engine: {}".format(db))
   current_app.create_db()
 
 
@@ -118,20 +120,27 @@ def dropdb():
   Drops the application DB.
   """
   confirm = raw_input("Are you sure you want to drop the database? (Y/N) ")
+  print("Dropping DB using engine: {}".format(db))
   if confirm.lower() == 'y':
-    with current_app.app_context():
-      current_app.db.drop_all()
+    #with current_app.app_context():
+    db.drop_all()
 
 
 @manager.command
-def dumproutes():
+def routes():
   """
-  Dumps all the routes registered in Flask.
+  Shows all the routes registered in Flask.
   """
-  rules = list(current_app.url_map.iter_rules())
-  rules.sort(key=lambda x: x.rule)
-  for rule in rules:
-    print "{} ({}) -> {}".format(rule, " ".join(rule.methods), rule.endpoint)
+  output = []
+  for rule in current_app.url_map.iter_rules():
+    methods = ','.join(rule.methods)
+    path = urllib.unquote(rule.rule)
+    #line = urllib.unquote()
+    output.append((rule.endpoint, methods, path))
+
+  for endpoint, methods, path in sorted(output):
+    print '{:40s} {:25s} {}'.format(endpoint, methods, path)
+
 
 
 # user commands
@@ -159,13 +168,18 @@ def createuser(email, password, role=None, name=None, first_name=None):
   """
   Create new user.
   """
+  email = unicode(email)
+  if User.query.filter(User.email == email).count() > 0:
+    print("A user with email '{}' already exists, aborting.".format(email))
+    return
+
+  if password is None:
+    password = prompt_pass(u'Password')
+
   user = User(email=email, password=password,
               last_name=name, first_name=first_name,
               can_login=True)
   db.session.add(user)
-
-  if password is None:
-    password = prompt_pass(u'Password: ')
 
   if role in ('admin',):
     # FIXME: add other valid roles

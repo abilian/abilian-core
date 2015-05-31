@@ -38,7 +38,7 @@ from .assets import ManageAssets
 from .config import manager as config_manager
 
 # Additional commands
-from . import indexing, routes  # noqa
+from . import indexing  # noqa
 
 __all__ = ['manager', 'setup_abilian_commands']
 
