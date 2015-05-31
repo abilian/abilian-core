@@ -196,6 +196,7 @@ def abbrev(s, max_size):
 def linkify(s):
   return Markup(bleach.linkify(s))
 
+
 def obj_to_url(obj):
   """
   Find url for obj using :func:`url_for`, return empty string is not found.

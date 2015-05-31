@@ -6,8 +6,10 @@ from __future__ import absolute_import
 from flask import Blueprint as BaseBlueprint
 from abilian.services.security import Role, Anonymous
 
+
 def allow_anonymous(user, roles, **kwargs):
   return True
+
 
 def allow_access_for_roles(roles):
   """
@@ -31,7 +33,6 @@ class Blueprint(BaseBlueprint):
   """
   An enhanced :class:`flask.blueprints.Blueprint` with access control helpers.
   """
-
   def __init__(self, name, import_name, allowed_roles=None, **kwargs):
     """
     :param roles: role or list of roles required to access any view in this
@@ -54,7 +55,6 @@ class Blueprint(BaseBlueprint):
                          self.name,
                          allow_access_for_roles(allowed_roles))
       )
-
 
   def allow_any(self, func):
     pass

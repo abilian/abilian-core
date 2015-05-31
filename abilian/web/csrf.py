@@ -24,7 +24,7 @@ def field():
 
 def time_limit():
   """
-  return current time limit for CSRF token.
+  Return current time limit for CSRF token.
   """
   return current_app.config.get('WTF_CSRF_TIME_LIMIT', 3600)
 
@@ -57,6 +57,7 @@ def support_graceful_failure(view):
 
 def has_failed():
   return getattr(request, 'csrf_failed', False)
+
 
 def protect(view):
   """

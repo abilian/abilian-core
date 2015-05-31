@@ -270,7 +270,6 @@ class Action(object):
   def title(self, title):
     self._title = title
 
-
   def _build_css_class(self):
     css_cat = self.CSS_CLASS.format(action=self, category=self.category,
                                     name=self.name)

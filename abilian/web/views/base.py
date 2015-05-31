@@ -9,6 +9,7 @@ from flask.views import MethodView as BaseView
 
 from ..action import actions
 
+
 class Redirect(HTTPException):
   pass
 

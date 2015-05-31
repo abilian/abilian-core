@@ -70,6 +70,7 @@ def send_file_from_directory(filename, directory, app=None):
   return send_from_directory(directory, filename,
                              cache_timeout=cache_timeout)
 
+
 def capture_stream_errors(logger, msg):
   """
   Decorator that capture and log errors during streamed response.
