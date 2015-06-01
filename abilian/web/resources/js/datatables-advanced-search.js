@@ -319,6 +319,90 @@
                  }
              };
          },
+         'select-radio': function(name, label, s2_args /*, radio_args, ... */) {
+             /*
+             a select box followed by 3 radios (boolean all/True/False)
+             s2_args: contains the select2 data
+             radio_args...: a radio is created for each param after s2_args
+              */
+             var self = this;
+             var checked = false;
+             var len = arguments.length;
+
+             
+             if (label != "") {
+                 self.append($('<label />')
+                             .attr({'class': 'select-radio inline col-md-3 text-right'})
+                             .css('cursor', 'default')
+                             .append(
+                                 $('<strong />').text(label))
+                            );
+             }
+             /* create the select*/
+             var select_id = name + '-select';
+             var $select = $('<input />')
+                 .attr({'id': select_id,
+                        'name': select_id,
+                        'type': 'hidden'});
+             var s2_label = $('<label></label>')
+                     .attr({'class': 'select-inline', 'for': select_id})
+                     .append($select)
+                     .append(document.createTextNode(name));
+             $select.select2({'data': s2_args['select-data'],
+                              'placeholder': (s2_args['select-label'] || ''),
+                              'allowClear': true,
+                              'width': '20em',
+                              'containerCss': {'margin-left': '0.5em'}
+                             });
+             self.append(s2_label);
+
+             /* create the radios*/
+             for (var i=3; i < len; i++) {
+                 var arg = arguments[i];
+                 var id = name + '_' + i;
+                 var $input = $('<input type="radio">')
+                     .attr({'id': id,
+                            'name': name,
+                            'value': arg.value});
+
+                 if (!checked && arg.checked) {
+                     $input.prop('checked', true);
+                     checked = true;
+                 }
+
+                 var radio_label = $('<label></label>')
+                     .attr({'class': 'radio-inline', 'for': id})
+                     .append($input)
+                     .append(document.createTextNode(arg.label));
+
+                 this.append(radio_label);
+             }
+
+             function get_val() {
+                 /*
+                 get value to fill the  /GET : response with the attribute
+                 return: list(select:id, radio:value)
+                  */
+                 var radio_value = self.find('input:checked').val();
+                 var select2_value = $select.select2('val')
+
+                 if ( select2_value || radio_value != 'None') {
+                     return [select2_value, radio_value];
+                 }
+                 return [];
+             }
+
+             return {
+                 'name': name,
+                 'val': get_val,
+                 'save': get_val,
+                 'load': function(vals) {
+                     if (vals.length == 0) { return; }
+                     $input.get(0).setAttribute('checked', true);
+                     $select.select2('val', vals[0]);
+                 }
+             };
+         },
          'select': function(name, label, options, multiple) {
              var self = this;
              var len = arguments.length;

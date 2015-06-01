@@ -989,10 +989,11 @@ class EntityWidget(object):
       if o)
 
 
-class MoneyWidget(wtforms.widgets.Input):
+class MoneyWidget(TextInput):
   """ Widget used to show / enter money amount.
   Currently hardcoded to € / k€
   """
+  post_icon = u'€'
   input_type = 'number'
 
   def render_view(self, field):
