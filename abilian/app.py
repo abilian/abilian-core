@@ -123,7 +123,8 @@ default_config.update(
         'abilian.web.admin.panels.sysinfo.SysinfoPanel',
         'abilian.services.vocabularies.admin.VocabularyPanel',
     ),
-    CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml'],
+    CELERYD_MAX_TASKS_PER_CHILD=1000,
+    CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
     SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
     SENTRY_JS_VERSION='1.1.18',
@@ -540,6 +541,8 @@ class Application(Flask, ServiceManager, PluginManager):
     # Celery async service
     # this allows all shared tasks to use this celery app
     celery_app = self.extensions['celery'] = self.celery_app_cls()
+    celery_app.conf # force reading celery conf now - default celery app will
+                    # also update our config with default settings
     celery_app.set_default()
 
     # dev helper

@@ -18,9 +18,12 @@ def default_app_factory():
   return Application()
 
 
+CELERY_CONF_KEY_PREFIXES = ('CELERY_', 'CELERYD_', 'BROKER_',
+                            'CELERYBEAT_', 'CELERYMON_',)
+
+
 def is_celery_setting(key):
-  return key.startswith('CELERY') \
-    or key in ('BROKER_URL',)
+  return any(key.startswith(prefix) for prefix in CELERY_CONF_KEY_PREFIXES)
 
 
 class FlaskLoader(BaseLoader):
@@ -50,6 +53,12 @@ class FlaskLoader(BaseLoader):
 
   def read_configuration(self):
     app = self.flask_app
+    app.config.setdefault('CELERY_DEFAULT_EXCHANGE', app.name)
+    app.config.setdefault('CELERY_DEFAULT_QUEUE', app.name)
+    app.config.setdefault('CELERY_BROADCAST_EXCHANGE', app.name + 'ctl')
+    app.config.setdefault('CELERY_BROADCAST_QUEUE', app.name + 'ctl')
+    app.config.setdefault('CELERY_RESULT_EXCHANGE', app.name + 'results')
+    app.config.setdefault('CELERY_DEFAULT_ROUTING_KEY', app.name)
     cfg = {k: v for k, v in app.config.items() if is_celery_setting(k)}
     self.configured = True
     return cfg
