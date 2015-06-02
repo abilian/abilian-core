@@ -1,9 +1,9 @@
 {%- set locale = get_locale() %}
 (function(factory) {
     'use strict';
-    define('Abilian', ['AbilianNS', 'jquery', 'FileAPI'], factory);
+    define('Abilian', ['AbilianNS', 'jquery', 'FileAPI', 'bootbox'], factory);
 }
-(function(Abilian, $, FileAPI) {
+(function(Abilian, $, FileAPI, bootbox) {
 
     require(['domReady!'], Abilian.init);
     window.onbeforeprint = Abilian.fn.before_print;
