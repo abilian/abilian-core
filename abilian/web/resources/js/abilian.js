@@ -1,5 +1,9 @@
 /* jshint camelcase: false */
-(function($) {
+(function(factory) {
+    'use strict';
+    require(['AbilianNS', 'jquery', 'Hogan'], factory);
+}
+(function(Abilian, $, Hogan) {
     'use strict';
 
     var navbar = document.querySelector('nav.navbar-fixed-top');
@@ -188,13 +192,11 @@
          $('.tt-hint').addClass('form-control');
      }
 
-     Abilian.fn.onAppInit(initLiveSearch);
-
-}(jQuery));
-
-Abilian.fn.onAppInit(
-    function() {
-        requirejs(['abilian-init-scribe-widgets'],
-                  function(initScribeWidgets) { initScribeWidgets(); });
-    }
-);
+    Abilian.fn.onAppInit(initLiveSearch);
+    Abilian.fn.onAppInit(
+        function() {
+            require(
+                ['abilian-init-scribe-widgets'],
+                function(initScribeWidgets) { initScribeWidgets(); });
+        });
+}));
