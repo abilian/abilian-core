@@ -1,10 +1,29 @@
 /**
- * bootbox.js [v4.1.0]
+ * bootbox.js [v4.4.0]
  *
  * http://bootboxjs.com/license.txt
  */
-// @see https://github.com/makeusabrew/bootbox/issues/71
-window.bootbox = window.bootbox || (function init($, undefined) {
+
+// @see https://github.com/makeusabrew/bootbox/issues/180
+// @see https://github.com/makeusabrew/bootbox/issues/186
+(function (root, factory) {
+
+  "use strict";
+  if (typeof define === "function" && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(["jquery"], factory);
+  } else if (typeof exports === "object") {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory(require("jquery"));
+  } else {
+    // Browser globals (root is window)
+    root.bootbox = factory(root.jQuery);
+  }
+
+}(this, function init($, undefined) {
+
   "use strict";
 
   // the base DOM structure needed to create a modal
@@ -24,29 +43,36 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     footer:
       "<div class='modal-footer'></div>",
     closeButton:
-      "<button type='button' class='bootbox-close-button close'>&times;</button>",
+      "<button type='button' class='bootbox-close-button close' data-dismiss='modal' aria-hidden='true'>&times;</button>",
     form:
       "<form class='bootbox-form'></form>",
     inputs: {
       text:
         "<input class='bootbox-input bootbox-input-text form-control' autocomplete=off type=text />",
+      textarea:
+        "<textarea class='bootbox-input bootbox-input-textarea form-control'></textarea>",
       email:
         "<input class='bootbox-input bootbox-input-email form-control' autocomplete='off' type='email' />",
       select:
         "<select class='bootbox-input bootbox-input-select form-control'></select>",
       checkbox:
-        "<div class='checkbox'><label><input class='bootbox-input bootbox-input-checkbox' type='checkbox' /></label></div>"
+        "<div class='checkbox'><label><input class='bootbox-input bootbox-input-checkbox' type='checkbox' /></label></div>",
+      date:
+        "<input class='bootbox-input bootbox-input-date form-control' autocomplete=off type='date' />",
+      time:
+        "<input class='bootbox-input bootbox-input-time form-control' autocomplete=off type='time' />",
+      number:
+        "<input class='bootbox-input bootbox-input-number form-control' autocomplete=off type='number' />",
+      password:
+        "<input class='bootbox-input bootbox-input-password form-control' autocomplete='off' type='password' />"
     }
   };
-
-  // cache a reference to the jQueryfied body element
-  var appendTo = $("body");
 
   var defaults = {
     // default language
     locale: "en",
-    // show backdrop or not
-    backdrop: true,
+    // show backdrop or not. Default to static so user has to interact with dialog
+    backdrop: "static",
     // animate the modal in/out
     animate: true,
     // additional class string applied to the top level dialog
@@ -54,7 +80,9 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     // whether or not to include a close button
     closeButton: true,
     // show the dialog immediately by default
-    show: true
+    show: true,
+    // dialog container
+    container: "body"
   };
 
   // our public object; augmented after our private API
@@ -69,6 +97,7 @@ window.bootbox = window.bootbox || (function init($, undefined) {
   }
 
   function processCallback(e, dialog, callback) {
+    e.stopPropagation();
     e.preventDefault();
 
     // by default we assume a callback will get rid of the dialog,
@@ -76,7 +105,7 @@ window.bootbox = window.bootbox || (function init($, undefined) {
 
     // so, if the callback can be invoked and it *explicitly returns false*
     // then we'll set a flag to keep the dialog active...
-    var preserveDialog = $.isFunction(callback) && callback(e) === false;
+    var preserveDialog = $.isFunction(callback) && callback.call(dialog, e) === false;
 
     // ... otherwise we'll bin it
     if (!preserveDialog) {
@@ -118,11 +147,6 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     if (!options.buttons) {
       options.buttons = {};
     }
-
-    // we only support Bootstrap's "static" and false backdrop args
-    // supporting true would mean you could dismiss the dialog without
-    // explicitly interacting with it
-    options.backdrop = options.backdrop ? "static" : false;
 
     buttons = options.buttons;
 
@@ -283,7 +307,7 @@ window.bootbox = window.bootbox || (function init($, undefined) {
      */
     options.buttons.ok.callback = options.onEscape = function() {
       if ($.isFunction(options.callback)) {
-        return options.callback();
+        return options.callback.call(this);
       }
       return true;
     };
@@ -300,11 +324,11 @@ window.bootbox = window.bootbox || (function init($, undefined) {
      * overrides; undo anything the user tried to set they shouldn't have
      */
     options.buttons.cancel.callback = options.onEscape = function() {
-      return options.callback(false);
+      return options.callback.call(this, false);
     };
 
     options.buttons.confirm.callback = function() {
-      return options.callback(true);
+      return options.callback.call(this, true);
     };
 
     // confirm specific validation
@@ -358,7 +382,7 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     options.message = form;
 
     options.buttons.cancel.callback = options.onEscape = function() {
-      return options.callback(null);
+      return options.callback.call(this, null);
     };
 
     options.buttons.confirm.callback = function() {
@@ -366,8 +390,13 @@ window.bootbox = window.bootbox || (function init($, undefined) {
 
       switch (options.inputType) {
         case "text":
+        case "textarea":
         case "email":
         case "select":
+        case "date":
+        case "time":
+        case "number":
+        case "password":
           value = input.val();
           break;
 
@@ -384,7 +413,7 @@ window.bootbox = window.bootbox || (function init($, undefined) {
           break;
       }
 
-      return options.callback(value);
+      return options.callback.call(this, value);
     };
 
     options.show = false;
@@ -407,13 +436,22 @@ window.bootbox = window.bootbox || (function init($, undefined) {
 
     switch (options.inputType) {
       case "text":
+      case "textarea":
       case "email":
+      case "date":
+      case "time":
+      case "number":
+      case "password":
         input.val(options.value);
         break;
 
       case "select":
         var groups = {};
         inputOptions = options.inputOptions || [];
+
+        if (!$.isArray(inputOptions)) {
+          throw new Error("Please pass an array of input options");
+        }
 
         if (!inputOptions.length) {
           throw new Error("prompt with select requires options");
@@ -427,7 +465,6 @@ window.bootbox = window.bootbox || (function init($, undefined) {
           if (option.value === undefined || option.text === undefined) {
             throw new Error("given options in wrong format");
           }
-
 
           // ... but override that element if this option sits in a group
 
@@ -486,8 +523,18 @@ window.bootbox = window.bootbox || (function init($, undefined) {
         break;
     }
 
+    // @TODO provide an attributes option instead
+    // and simply map that as keys: vals
     if (options.placeholder) {
       input.attr("placeholder", options.placeholder);
+    }
+
+    if (options.pattern) {
+      input.attr("pattern", options.pattern);
+    }
+
+    if (options.maxlength) {
+      input.attr("maxlength", options.maxlength);
     }
 
     // now place it in our form
@@ -495,6 +542,8 @@ window.bootbox = window.bootbox || (function init($, undefined) {
 
     form.on("submit", function(e) {
       e.preventDefault();
+      // Fix for SammyJS (or similar JS routing library) hijacking the form post.
+      e.stopPropagation();
       // @TODO can we actually click *the* button object instead?
       // e.g. buttons.confirm.click() or similar
       dialog.find(".btn-primary").click();
@@ -507,6 +556,8 @@ window.bootbox = window.bootbox || (function init($, undefined) {
 
     // ...and replace it with one focusing our input, if possible
     dialog.on("shown.bs.modal", function() {
+      // need the closure here since input isn't
+      // an object otherwise
       input.focus();
     });
 
@@ -521,12 +572,21 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     options = sanitize(options);
 
     var dialog = $(templates.dialog);
+    var innerDialog = dialog.find(".modal-dialog");
     var body = dialog.find(".modal-body");
     var buttons = options.buttons;
     var buttonStr = "";
     var callbacks = {
       onEscape: options.onEscape
     };
+
+    if ($.fn.modal === undefined) {
+      throw new Error(
+        "$.fn.modal is not defined; please double check you have included " +
+        "the Bootstrap JavaScript library. See http://getbootstrap.com/javascript/ " +
+        "for more details."
+      );
+    }
 
     each(buttons, function(key, button) {
 
@@ -545,6 +605,12 @@ window.bootbox = window.bootbox || (function init($, undefined) {
 
     if (options.className) {
       dialog.addClass(options.className);
+    }
+
+    if (options.size === "large") {
+      innerDialog.addClass("modal-lg");
+    } else if (options.size === "small") {
+      innerDialog.addClass("modal-sm");
     }
 
     if (options.title) {
@@ -607,6 +673,30 @@ window.bootbox = window.bootbox || (function init($, undefined) {
      * respective triggers
      */
 
+    if (options.backdrop !== "static") {
+      // A boolean true/false according to the Bootstrap docs
+      // should show a dialog the user can dismiss by clicking on
+      // the background.
+      // We always only ever pass static/false to the actual
+      // $.modal function because with `true` we can't trap
+      // this event (the .modal-backdrop swallows it)
+      // However, we still want to sort of respect true
+      // and invoke the escape mechanism instead
+      dialog.on("click.dismiss.bs.modal", function(e) {
+        // @NOTE: the target varies in >= 3.3.x releases since the modal backdrop
+        // moved *inside* the outer dialog rather than *alongside* it
+        if (dialog.children(".modal-backdrop").length) {
+          e.currentTarget = dialog.children(".modal-backdrop").get(0);
+        }
+
+        if (e.target !== e.currentTarget) {
+          return;
+        }
+
+        dialog.trigger("escape.close.bb");
+      });
+    }
+
     dialog.on("escape.close.bb", function(e) {
       if (callbacks.onEscape) {
         processCallback(e, dialog, callbacks.onEscape);
@@ -622,7 +712,6 @@ window.bootbox = window.bootbox || (function init($, undefined) {
       var callbackKey = $(this).data("bb-handler");
 
       processCallback(e, dialog, callbacks[callbackKey]);
-
     });
 
     dialog.on("click", ".bootbox-close-button", function(e) {
@@ -643,10 +732,10 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     // functionality and then giving the resulting object back
     // to our caller
 
-    appendTo.append(dialog);
+    $(options.container).append(dialog);
 
     dialog.modal({
-      backdrop: options.backdrop,
+      backdrop: options.backdrop ? "static": false,
       keyboard: false,
       show: false
     });
@@ -695,6 +784,8 @@ window.bootbox = window.bootbox || (function init($, undefined) {
 
   exports.hideAll = function() {
     $(".bootbox").modal("hide");
+
+    return exports;
   };
 
 
@@ -703,10 +794,20 @@ window.bootbox = window.bootbox || (function init($, undefined) {
    * unlikely to be required. If this gets too large it can be split out into separate JS files.
    */
   var locales = {
+    bg_BG : {
+      OK      : "Ок",
+      CANCEL  : "Отказ",
+      CONFIRM : "Потвърждавам"
+    },
     br : {
       OK      : "OK",
       CANCEL  : "Cancelar",
       CONFIRM : "Sim"
+    },
+    cs : {
+      OK      : "OK",
+      CANCEL  : "Zrušit",
+      CONFIRM : "Potvrdit"
     },
     da : {
       OK      : "OK",
@@ -718,6 +819,11 @@ window.bootbox = window.bootbox || (function init($, undefined) {
       CANCEL  : "Abbrechen",
       CONFIRM : "Akzeptieren"
     },
+    el : {
+      OK      : "Εντάξει",
+      CANCEL  : "Ακύρωση",
+      CONFIRM : "Επιβεβαίωση"
+    },
     en : {
       OK      : "OK",
       CANCEL  : "Cancel",
@@ -727,6 +833,16 @@ window.bootbox = window.bootbox || (function init($, undefined) {
       OK      : "OK",
       CANCEL  : "Cancelar",
       CONFIRM : "Aceptar"
+    },
+    et : {
+      OK      : "OK",
+      CANCEL  : "Katkesta",
+      CONFIRM : "OK"
+    },
+    fa : {
+      OK      : "قبول",
+      CANCEL  : "لغو",
+      CONFIRM : "تایید"
     },
     fi : {
       OK      : "OK",
@@ -738,10 +854,45 @@ window.bootbox = window.bootbox || (function init($, undefined) {
       CANCEL  : "Annuler",
       CONFIRM : "D'accord"
     },
+    he : {
+      OK      : "אישור",
+      CANCEL  : "ביטול",
+      CONFIRM : "אישור"
+    },
+    hu : {
+      OK      : "OK",
+      CANCEL  : "Mégsem",
+      CONFIRM : "Megerősít"
+    },
+    hr : {
+      OK      : "OK",
+      CANCEL  : "Odustani",
+      CONFIRM : "Potvrdi"
+    },
+    id : {
+      OK      : "OK",
+      CANCEL  : "Batal",
+      CONFIRM : "OK"
+    },
     it : {
       OK      : "OK",
       CANCEL  : "Annulla",
       CONFIRM : "Conferma"
+    },
+    ja : {
+      OK      : "OK",
+      CANCEL  : "キャンセル",
+      CONFIRM : "確認"
+    },
+    lt : {
+      OK      : "Gerai",
+      CANCEL  : "Atšaukti",
+      CONFIRM : "Patvirtinti"
+    },
+    lv : {
+      OK      : "Labi",
+      CANCEL  : "Atcelt",
+      CONFIRM : "Apstiprināt"
     },
     nl : {
       OK      : "OK",
@@ -758,10 +909,35 @@ window.bootbox = window.bootbox || (function init($, undefined) {
       CANCEL  : "Anuluj",
       CONFIRM : "Potwierdź"
     },
+    pt : {
+      OK      : "OK",
+      CANCEL  : "Cancelar",
+      CONFIRM : "Confirmar"
+    },
     ru : {
       OK      : "OK",
       CANCEL  : "Отмена",
       CONFIRM : "Применить"
+    },
+    sq : {
+      OK : "OK",
+      CANCEL : "Anulo",
+      CONFIRM : "Prano"
+    },
+    sv : {
+      OK      : "OK",
+      CANCEL  : "Avbryt",
+      CONFIRM : "OK"
+    },
+    th : {
+      OK      : "ตกลง",
+      CANCEL  : "ยกเลิก",
+      CONFIRM : "ยืนยัน"
+    },
+    tr : {
+      OK      : "Tamam",
+      CANCEL  : "İptal",
+      CONFIRM : "Onayla"
     },
     zh_CN : {
       OK      : "OK",
@@ -775,10 +951,35 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     }
   };
 
+  exports.addLocale = function(name, values) {
+    $.each(["OK", "CANCEL", "CONFIRM"], function(_, v) {
+      if (!values[v]) {
+        throw new Error("Please supply a translation for '" + v + "'");
+      }
+    });
+
+    locales[name] = {
+      OK: values.OK,
+      CANCEL: values.CANCEL,
+      CONFIRM: values.CONFIRM
+    };
+
+    return exports;
+  };
+
+  exports.removeLocale = function(name) {
+    delete locales[name];
+
+    return exports;
+  };
+
+  exports.setLocale = function(name) {
+    return exports.setDefaults("locale", name);
+  };
+
   exports.init = function(_$) {
-    window.bootbox = init(_$ || $);
+    return init(_$ || $);
   };
 
   return exports;
-
-}(window.jQuery));
+}));
