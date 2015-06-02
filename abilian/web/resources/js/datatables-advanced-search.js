@@ -1,20 +1,11 @@
 /* datatable: advanced search */
 /* jshint camelcase: false */
 
-(function(window, document, undefined) {
 (function(factory) {
-	"use strict";
-
-	// Using requirejs?
-	if ( typeof define === 'function' && define.amd )
-	{
-		requirejs(['jquery', 'jquery.dataTables'], factory );
-	}
-	else {
-		factory(jQuery);
-	}
+	'use strict';
+	requirejs(['Abilian', 'jquery', 'jquery.dataTables'], factory );
 }
-(function($) {
+(function(Abilian, $) {
     'use strict';
 
     function defaultDatatableConfig() {
@@ -140,10 +131,10 @@
       * @namespace
       */
      AdvancedSearchFilters.oFilters = {
-         "text": function(name, label) {
+         'text': function(name, label) {
              var self = this;
 
-             if (label != "") {
+             if (label !== '') {
                  self.append($('<label />')
                              .attr({'class': 'select inline col-md-3 text-right'})
                              .css('cursor', 'default')
@@ -162,12 +153,12 @@
                       'load': function(vals) { $input.val(vals[0]); }
              };
          },
-         "radio": function(name, label) {
+         'radio': function(name, label) {
              var self = this;
              var checked = false;
              var len = arguments.length;
 
-             if (label != "") {
+             if (label !== '') {
                  this.append($('<label />')
                              .attr({'class': 'radio-inline col-md-3 text-right'})
                              .css('cursor', 'default')
@@ -205,10 +196,10 @@
                  return [self.find('input:checked').val()];
              }
 
-             return { "name": name,
-                      "val": get_val,
-                      "save": get_val,
-                      "load": function(vals) {
+             return { 'name': name,
+                      'val': get_val,
+                      'save': get_val,
+                      'load': function(vals) {
                           self.find('input').each(
                               function() {
                                   this.checked = (this.value == vals[0]);
@@ -221,7 +212,7 @@
              var self = this;
              var len = arguments.length;
 
-             if (label != "") {
+             if (label !== '') {
                  self.append($('<label />')
                              .attr({'class': 'checkbox-inline col-md-3 text-right'})
                              .css('cursor', 'default')
@@ -329,8 +320,8 @@
              var checked = false;
              var len = arguments.length;
 
-             
-             if (label != "") {
+
+             if (label !== '') {
                  self.append($('<label />')
                              .attr({'class': 'select-radio inline col-md-3 text-right'})
                              .css('cursor', 'default')
@@ -408,7 +399,7 @@
              var len = arguments.length;
              multiple = multiple || false;
 
-             if (label != "") {
+             if (label !== '') {
                  self.append($('<label />')
                              .attr({'class': 'select inline col-md-3 text-right'})
                              .css('cursor', 'default')
@@ -453,7 +444,7 @@
              var self = this;
              multiple = multiple || false;
 
-             if (label != "") {
+             if (label !== '') {
                  self.append($('<label />')
                              .attr({'class': 'select inline col-md-3 text-right'})
                              .css('cursor', 'default')
@@ -741,5 +732,3 @@
 
 
 }));
-
-}(window, document));

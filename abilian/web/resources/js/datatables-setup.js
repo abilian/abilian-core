@@ -1,19 +1,9 @@
 /* jshint camelcase: false */
 // Tweaks for integrating datatables + bootstrap
 /* Default class modification */
-(function(window, document, undefined) {
-
 (function(factory) {
-	"use strict";
-
-	// Using requirejs?
-	if ( typeof define === 'function' && define.amd )
-	{
-		requirejs(['jquery', 'jquery.dataTables'], factory );
-	}
-	else {
-		factory(jQuery);
-	}
+	'use strict';
+	requirejs(['jquery', 'jquery.dataTables'], factory );
 }
 (function($) {
     'use strict';
@@ -131,5 +121,3 @@
               });
 
 }));
-
-}(window, document));
