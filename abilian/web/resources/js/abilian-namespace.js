@@ -3,7 +3,9 @@
 
 function setupAbilian($) {
     'use strict';
-    var Abilian = window.Abilian = window.Abilian || {};
+    var Abilian = window.Abilian = window.Abilian || {},
+        initialized = false;
+
      /**
       * @define {?boolean} null if not set, false or true if explicitely set by
       * application. This variable should be set as soon as possible.
@@ -49,8 +51,12 @@ function setupAbilian($) {
       * Shortcut to register a function that must execute when application is
       * initialized. This is the preferred way to register init handlers.
       */
-     Abilian.fn.onAppInit = function(callback) {
-       $(window).on(Abilian.events.appInit, callback);
+    Abilian.fn.onAppInit = function(callback) {
+        if (!initialized) {
+            $(window).on(Abilian.events.appInit, callback);
+        } else {
+            callback();
+        }
      };
 
      /**
@@ -61,7 +67,8 @@ function setupAbilian($) {
          anonymous: true
      };
 
-     Abilian.init = function() {
+    Abilian.init = function() {
+        initialized = true;
          $(window).trigger(Abilian.events.appInit);
      };
 
