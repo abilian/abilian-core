@@ -17,7 +17,7 @@
 
 var Hogan = {};
 
-define(function(require, exports, module) {
+define('Hogan', function(require, exports, module) {
 
 (function (Hogan, useArrayBuffer) {
   Hogan.Template = function (renderFunc, text, compiler, options) {
@@ -26,7 +26,7 @@ define(function(require, exports, module) {
     this.options = options;
     this.text = text || '';
     this.buf = (useArrayBuffer) ? [] : '';
-  }
+  };
 
   Hogan.Template.prototype = {
     // render: replaced by generated code.
