@@ -23,6 +23,7 @@ from abilian.i18n import _l
 from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.services import audit_service
+from abilian.services.vocabularies.models import BaseVocabulary
 from .action import actions, Action, FAIcon
 
 from . import search
@@ -464,8 +465,13 @@ class Module(object):
       # this is a related model: find attribute to filter on
       query = query.join(sort_col_name)
       query.reset_joinpoint()
-      rel_sort_name = sort_col_def.get('sort_on', 'nom')
+
       rel_model = sort_col.property.mapper.class_
+      default_sort_name = 'name'
+      if issubclass(rel_model, BaseVocabulary):
+        default_sort_name = 'label'
+      rel_sort_name = sort_col_def.get('sort_on', default_sort_name)
+
       sort_col = getattr(rel_model, rel_sort_name)
 
     # XXX: Big hack, date are sorted in reverse order by default

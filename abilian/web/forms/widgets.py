@@ -268,12 +268,12 @@ class AjaxMainTableView(object):
       assert type(col) == dict
       if 'label' not in col:
         col['label'] = labelize(col['name'])
+      col.setdefault('sorting', ["asc", "desc"])
       self.columns.append(col)
 
   def render(self):
     aoColumns = [{'asSorting': []}] if self.show_controls else []
-    aoColumns += [{'asSorting': ["asc", "desc"]}
-                  for i in range(0, len(self.columns))]
+    aoColumns += [{'asSorting': col['sorting']} for col in self.columns]
     datatable_options = {
       'sDom': 'lfFrtip',
       'aoColumns': aoColumns,
