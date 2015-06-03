@@ -1085,7 +1085,7 @@ class ListWidget(wtforms.widgets.ListWidget):
 
   def __call__(self, field, **kwargs):
     if self.show_label:
-      return super(ListWidget, self)(field, **kwargs)
+      return super(ListWidget, self).__call__(field, **kwargs)
 
     kwargs.setdefault('id', field.id)
     html = [u'<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs))]
