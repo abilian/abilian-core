@@ -463,15 +463,14 @@ class Module(object):
 
     if isinstance(sort_col.property, orm.properties.RelationshipProperty):
       # this is a related model: find attribute to filter on
-      query = query.join(sort_col_name)
-      query.reset_joinpoint()
+      query = query.join(sort_col_name, aliased=True)
 
       rel_model = sort_col.property.mapper.class_
       default_sort_name = 'name'
       if issubclass(rel_model, BaseVocabulary):
         default_sort_name = 'label'
-      rel_sort_name = sort_col_def.get('sort_on', default_sort_name)
 
+      rel_sort_name = sort_col_def.get('sort_on', default_sort_name)
       sort_col = getattr(rel_model, rel_sort_name)
 
     # XXX: Big hack, date are sorted in reverse order by default
@@ -489,7 +488,9 @@ class Module(object):
       nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
       sort_col = nullsorder(sort_col)
 
-    return query.order_by(sort_col)
+    query = query.order_by(sort_col)
+    query.reset_joinpoint()
+    return query
 
   #
   # Exposed views
