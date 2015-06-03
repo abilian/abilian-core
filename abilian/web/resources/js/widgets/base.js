@@ -1,4 +1,8 @@
 /* Abilian namespace */
+(function(factory) {
+    'use strict';
+    require(['AbilianNS', 'jquery'], factory);
+}
 (function(Abilian, $) {
 
     /**
@@ -44,4 +48,4 @@
             this.select2(initParams);
         });
 
-})(window.Abilian = window.Abilian || {}, jQuery);
+}));

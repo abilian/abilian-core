@@ -1,3 +1,4 @@
+// -*- json -*-
 {
   "camelcase": true,
   "curly": true,
@@ -11,5 +12,12 @@
 
   // environment settings
   "browser": true,
-  "jquery": true
+  "jquery": true,
+
+  "globals": {
+    // requirejs
+    "define": false,
+    "require": false,
+    "requirejs": false
+  }
 }

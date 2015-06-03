@@ -1,7 +1,11 @@
 /* jshint camelcase: false */
-(function($) {
+(function(factory) {
     'use strict';
-    /** 
+    require(['jquery', 'FileAPI'], factory);
+}
+(function($, FileAPI) {
+    'use strict';
+    /**
      * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
      */
     function ImageInput(node, options) {
@@ -26,7 +30,7 @@
             var image = FileAPI.Image(file);
             var preview = image.preview(self.width, self.height, 'max');
             preview.get(function( err/**String*/, img/**HTMLElement*/ ) {
-                while (self.preview_node.firstChild) {                    
+                while (self.preview_node.firstChild) {
                     self.preview_node.removeChild(self.preview_node.firstChild);
                 }
                 self.preview_node.appendChild(img);
@@ -50,4 +54,4 @@
         });
     };
 
-}(jQuery));
+}));

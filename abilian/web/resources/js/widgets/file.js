@@ -1,5 +1,9 @@
 /* jshint camelcase: false */
-(function($, api) {
+(function(factory) {
+    'use strict';
+    require(['jquery', 'FileAPI', 'Hogan'], factory);
+}
+(function($, api, Hogan) {
     'use strict';
     /**
      * File input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
@@ -18,7 +22,7 @@
         self.multiple = Boolean($input.attr('multiple'));
         $input.attr('multiple', null);
         self.input_name = $input.attr('name');
-        self.input_model = $input.clone();        
+        self.input_model = $input.clone();
         self.list_node = node.find('.selected-files');
 
         self.button.on('change.fileapi', 'input',
@@ -38,8 +42,8 @@
             self.addFileNode(evt.target, file);
         },
 
-        addFileNode: function(input, file) {           
-            var infos = { 
+        addFileNode: function(input, file) {
+            var infos = {
                 name: this.sanitizeFilename(file.name),
                 type: file.type,
                 size: this.humanSize(file.size)
@@ -90,7 +94,7 @@
             } else if (size > api.MB) {
                 unit = 'MB'; divider = api.MB;
             } else if (size > api.KB) {
-                unit = 'KB', divider = api.KB;
+                unit = 'KB'; divider = api.KB;
             }
 
             if (divider) {
@@ -114,4 +118,4 @@
                 return input;
             });
     };
-}(jQuery, FileAPI));
+}));

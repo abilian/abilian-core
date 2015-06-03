@@ -1,4 +1,9 @@
-(function($) {
+(function(factory) {
+    'use strict';
+    require(['Abilian', 'jquery'], factory);
+}
+ (function(Abilian, $) {
+     'use strict';
      // multiple row widget
     function DynamicRowWidget(table, options) {
         var self = this;
@@ -65,4 +70,4 @@
         );
     };
 
-})(jQuery);
+}));

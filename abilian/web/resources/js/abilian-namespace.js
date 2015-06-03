@@ -1,8 +1,11 @@
 /* Abilian namespace */
 /* jshint camelcase: false */
 
-(function(Abilian, $) {
+function setupAbilian($) {
     'use strict';
+    var Abilian = window.Abilian = window.Abilian || {},
+        initialized = false;
+
      /**
       * @define {?boolean} null if not set, false or true if explicitely set by
       * application. This variable should be set as soon as possible.
@@ -23,7 +26,7 @@
       */
      Abilian.events = {};
      Abilian.events.appInit = 'abilian.app-init';
-    
+
     /**
      * CSRF field name to use, if CSRF is used
      */
@@ -41,15 +44,19 @@
 
      /**
       * Abilian fonctions. Use this to register convenient functions
-      */     
+      */
      Abilian.fn = {};
 
      /**
       * Shortcut to register a function that must execute when application is
       * initialized. This is the preferred way to register init handlers.
       */
-     Abilian.fn.onAppInit = function(callback) {
-       $(window).on(Abilian.events.appInit, callback);
+    Abilian.fn.onAppInit = function(callback) {
+        if (!initialized) {
+            $(window).on(Abilian.events.appInit, callback);
+        } else {
+            callback();
+        }
      };
 
      /**
@@ -60,8 +67,12 @@
          anonymous: true
      };
 
-     Abilian.init = function() {
+    Abilian.init = function() {
+        initialized = true;
          $(window).trigger(Abilian.events.appInit);
      };
 
-})(window.Abilian = window.Abilian || {}, jQuery);
+    return Abilian;
+}
+
+define('AbilianNS', ['jquery'], setupAbilian);

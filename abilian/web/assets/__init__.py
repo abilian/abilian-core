@@ -11,7 +11,7 @@ from . import filters  # noqa
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 
-JQUERY = Bundle('jquery/js/jquery-1.10.2.js',
+JQUERY = Bundle('jquery/js/jquery-1.11.3.js',
                 'jquery/js/jquery-migrate-1.2.1.js')
 
 BOOTBOX_JS = Bundle('bootbox/bootbox.js')
@@ -37,7 +37,9 @@ FILEAPI_JS = Bundle('fileapi/FileAPI.js',
 
 FONTAWESOME_LESS = Bundle('font-awesome/less/font-awesome.less')
 
-REQUIRE_JS = Bundle('requirejs/require.js')
+REQUIRE_JS = Bundle('requirejs/require.js',
+                    'requirejs/domReady.js')
+
 
 SCRIBE_JS = Bundle( # needs requirejs
     'scribe/scribe/scribe.js',
