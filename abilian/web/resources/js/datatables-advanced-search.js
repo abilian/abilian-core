@@ -329,13 +329,11 @@
              var checked = false;
              var len = arguments.length;
 
-             
              if (label != "") {
                  self.append($('<label />')
                              .attr({'class': 'select-radio inline col-md-3 text-right'})
                              .css('cursor', 'default')
-                             .append(
-                                 $('<strong />').text(label))
+                             .append($('<strong />').text(label))
                             );
              }
              /* create the select*/
@@ -346,8 +344,8 @@
                         'type': 'hidden'});
              var s2_label = $('<label></label>')
                      .attr({'class': 'select-inline', 'for': select_id})
-                     .append($select)
-                     .append(document.createTextNode(name));
+                     .append($select);
+                     //.append(document.createTextNode(name));
              $select.select2({'data': s2_args['select-data'],
                               'placeholder': (s2_args['select-label'] || ''),
                               'allowClear': true,
@@ -359,10 +357,10 @@
              /* create the radios*/
              for (var i=3; i < len; i++) {
                  var arg = arguments[i];
-                 var id = name + '_' + i;
+                 var id = name + '-radio' +'_' + i;
                  var $input = $('<input type="radio">')
                      .attr({'id': id,
-                            'name': name,
+                            'name': name + '-radio',
                             'value': arg.value});
 
                  if (!checked && arg.checked) {
