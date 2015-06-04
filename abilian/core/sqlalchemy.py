@@ -45,7 +45,7 @@ def ping_connection(dbapi_connection, connection_record, connection_proxy):
     # raise DisconnectionError - pool will try
     # connecting again up to three times before raising.
     raise sa.exc.DisconnectionError()
-    cursor.close()
+  cursor.close()
 
 
 class AbilianBaseSAExtension(SAExtension):
