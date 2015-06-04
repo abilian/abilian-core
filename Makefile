@@ -1,6 +1,6 @@
 .PHONY: develop test pep8 pylama clean docs tox jslint
 
-# The source director
+# The source directory
 SRC=abilian
 # The package name
 PKG=abilian
@@ -31,10 +31,9 @@ test:
 	@echo ""
 
 test-with-coverage:
-	py.test $(PYTEST_MULTI)							\
-		    --cov $(PKG)							\
-	        --cov-config etc/coverage.rc			\
-	  	    --cov-report term-missing $(PKG) tests
+	@echo "--> Running Python tests"
+	py.test $(PYTEST_MULTI) --cov $(PKG) $(PKG) tests
+	@echo ""
 
 vagrant-tests:
 	vagrant up
@@ -72,7 +71,7 @@ pylama:
 pylint:
 	pylint --rcfile=etc/pylintrc $(SRC)
 
-jslint:
+js-lint:
 	npm run lint --silent
 
 #

@@ -528,7 +528,7 @@ class UnoconvPdfHandler(Handler):
         if run_thread.is_alive():
           # timeout reached
           self._process.terminate()
-          if not self._process.poll() is None:
+          if self._process.poll() is not None:
             self._process.kill()
 
           self._process = None
@@ -546,6 +546,8 @@ class CloudoooPdfHandler(Handler):
   Highly inefficient since file are serialized in base64 over HTTP.
 
   Deactivated because it's so hard to set up.
+
+  FIXME: needs cleanup, or removal.
   """
 
   accepts_mime_types = [r'application/.*']
@@ -580,9 +582,8 @@ class CloudoooPdfHandler(Handler):
 
     converted = decodestring(data)
     new_key = hashlib.md5(converted).hexdigest()
-    fd = open("data/%s.blob" % new_key, "wcb")
-    fd.write(converted)
-    fd.close()
+    with open("data/%s.blob" % new_key, "cb") as fd:
+      fd.write(converted)
     return new_key
 
 
