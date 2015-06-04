@@ -9,7 +9,7 @@
     {%- for voc in vocabularies[group] %}
       {% call m_vocabulary(voc) %}
         <div class="text-right">
-          <a href="{{ url_for('.vocabularies_new', group=group or '', Model=voc.Meta.name) }}" class="btn btn-default">
+          <a href="{{ url_for('.vocabularies_new', group=group or '_', Model=voc.Meta.name) }}" class="btn btn-default">
             <i class="glyphicon glyphicon-plus"></i>
             {{ _('Add new value') }}
           </a>
