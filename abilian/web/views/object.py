@@ -505,15 +505,16 @@ class JSONBaseSearch(JSONView):
     return dict(results=results)
 
   def get_results(self, q, *args, **kwargs):
-    raise NotImplemented
+    raise NotImplementedError
 
   def get_item(self, obj):
     """
     Return a result item
+
     :param obj: Instance object
     :returns: a dictionnary with at least `id` and `text` values
     """
-    raise NotImplemented
+    raise NotImplementedError
 
 
 class JSONModelSearch(JSONBaseSearch):

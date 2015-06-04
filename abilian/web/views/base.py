@@ -93,7 +93,7 @@ class JSONView(View):
     """
     This method should return data to be serialized using JSON
     """
-    raise NotImplemented
+    raise NotImplementedError
 
   def get(self, *args, **kwargs):
     data = self.data(*args, **kwargs)
