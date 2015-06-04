@@ -13,7 +13,7 @@ import uuid
 
 import pytz
 import babel
-from flask.ext.sqlalchemy import SQLAlchemy as SAExtension
+from flask_sqlalchemy import SQLAlchemy as SAExtension
 import sqlalchemy as sa
 from sqlalchemy.ext.mutable import Mutable
 
@@ -50,7 +50,7 @@ def ping_connection(dbapi_connection, connection_record, connection_proxy):
 
 class AbilianBaseSAExtension(SAExtension):
   """
-  Base subclass of :class:`flask.ext.sqlalchemy.SQLAlchemy`. Add
+  Base subclass of :class:`flask_sqlalchemy.SQLAlchemy`. Add
   our custom driver hacks.
   """
   def apply_driver_hacks(self, app, info, options):
@@ -72,7 +72,7 @@ if StrictVersion(FLASK_SA_VERSION) <= StrictVersion('1.0'):
   # SA extension's scoped session supports 'bind' parameter only after 1.0. This
   # is a fix for it. This is required to ensure transaction rollback during
   # tests, but it's useful in some use cases too.
-  from flask.ext.sqlalchemy import _SignallingSession as BaseSession
+  from flask_sqlalchemy import _SignallingSession as BaseSession
 
   class SignallingSession(BaseSession):
 
@@ -123,7 +123,8 @@ def _calling_context(app_path):
       return format_name(frm=frm)
 
     if not exited_sa_code:
-      in_sa_code = (name == 'sqlalchemy' or name.startswith('sqlalchemy.'))
+      in_sa_code = name and (name == 'sqlalchemy'
+                             or name.startswith('sqlalchemy.'))
       if not entered_sa_code:
         entered_sa_code = in_sa_code
       elif not in_sa_code:
@@ -135,7 +136,7 @@ def _calling_context(app_path):
 
   return sa_caller
 
-import flask.ext.sqlalchemy as flask_sa
+import flask_sqlalchemy as flask_sa
 patch_logger.info(flask_sa._calling_context)
 flask_sa._calling_context = _calling_context
 del flask_sa
