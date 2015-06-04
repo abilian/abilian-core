@@ -110,13 +110,22 @@ def make_single_view(form, **options):
   return SingleView(form, *panels, **options)
 
 
-class BaseEntityView(object):
+class ModuleView(object):
+  """
+  Mixin for module base views.
+
+  Provide :attr:`module`.
+  """
+  #: :class:`Module` instance
   module = None
-  pk = 'entity_id'
 
   def __init__(self, module, *args, **kwargs):
     self.module = module
-    super(BaseEntityView, self).__init__(*args, **kwargs)
+    super(ModuleView, self).__init__(*args, **kwargs)
+
+
+class BaseEntityView(ModuleView):
+  pk = 'entity_id'
 
   def breadcrumb(self):
     return BreadcrumbItem(label=self.obj.name or self.obj.id,
@@ -182,14 +191,10 @@ class EntityDelete(BaseEntityView, ObjectDelete):
   pass
 
 
-class ListJson(JSONView):
+class ListJson(ModuleView, JSONView):
   """
   JSON endpoint, for AJAX-backed table views.
   """
-  def __init__(self, module, *args, **kwargs):
-    JSONView.__init__(self, *args, **kwargs)
-    self.module = module
-
   def data(self, *args, **kwargs):
     echo = int(kwargs.get("sEcho", 0))
     length = int(kwargs.get("iDisplayLength", 10))
