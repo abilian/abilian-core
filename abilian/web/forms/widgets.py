@@ -1133,6 +1133,9 @@ class FieldListWidget(object):
 
   def render_view(self, field, **kwargs):
     assert isinstance(field, wtforms.fields.FieldList)
+    value = field.object_data
+    if not value:
+      return ''
     return Markup(render_template(self.view_template, field=field))
 
 
