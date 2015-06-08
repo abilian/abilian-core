@@ -1215,6 +1215,7 @@ class Select2(Select):
   """
   Transforms a Select widget into a Select2 widget. Depends on global JS code.
   """
+  unescape_html = False
 
   def __init__(self, unescape_html=False, *args, **kwargs):
     super(Select2, self).__init__(*args, **kwargs)
