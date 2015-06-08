@@ -1215,9 +1215,17 @@ class Select2(Select):
   """
   Transforms a Select widget into a Select2 widget. Depends on global JS code.
   """
+
+  def __init__(self, unescape_html=False, *args, **kwargs):
+    super(Select2, self).__init__(*args, **kwargs)
+    if unescape_html:
+      self.unescape_html = True
+
   def __call__(self, field, *args, **kwargs):
     # 'placeholder' option presence is required for 'allowClear'
     params = {'placeholder': u''}
+    if self.unescape_html:
+      params['makeHtml'] = True
     if not field.flags.required:
       params['allowClear'] = True
 

@@ -44,6 +44,32 @@
             var initParams = {
                 'containerCssClass': 'form-control'
             };
+
+            // replace the escaped html with proper tags
+            // to be displayed in the select
+            if('makeHtml' in params){
+
+                var tagsToReplace = {
+                    '&amp;': '&',
+                    '&lt;': '<',
+                    '&gt;': '>'
+                };
+
+                function replaceTag(tag) {
+                    return tagsToReplace[tag] || tag;
+                }
+
+                function safe_tags_replace(element) {
+                    var output =  element.text.replace(/&amp;/g, replaceTag);
+                    output =  output.replace(/&lt;/g, replaceTag);
+                    output =  output.replace(/&gt;/g, replaceTag);
+                    return output
+                }
+                //select2 parameters for formating function
+                initParams['formatResult'] = safe_tags_replace;
+                initParams['formatSelection'] = safe_tags_replace;
+            }
+
             $.extend(initParams, params);
             this.select2(initParams);
         });
