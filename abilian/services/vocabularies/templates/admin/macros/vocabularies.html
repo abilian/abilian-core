@@ -29,7 +29,7 @@
           <tbody>
             {%- for item in items %}
               <tr>
-                <td><a href="{{ url_for_voc_edit(item) }}">{{ item.label }}</a></td>
+                <td><a href="{{ url_for_voc_edit(item) }}">{{ item.label|safe }}</a></td>
                 <td>{%- if item.default %}{{ icon_checked }}{%- endif %}</td>
                 <td>{%- if item.active %}{{ icon_checked }}{%- endif %}</td>
                 <td>
