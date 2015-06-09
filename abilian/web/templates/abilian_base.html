@@ -90,6 +90,11 @@
   {%- endblock footer %}
 {%- endblock body %}
 
+<!-- app init -->
+<script type="text/javascript">
+ {%- include "abilian_init.js" %}
+</script>
+
 {%- assets "js" %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {%- endassets %}  
@@ -107,11 +112,6 @@
 
 {% block locale_js %}
 {% endblock locale_js %}
-
-<!-- app init -->
-<script type="text/javascript">
- {%- include "abilian_init.js" %}
-</script>
 
 {#- 'abilian_init.js' will load additional libraries by writing new 'script'
    tags.  We put deferred JS and inline_js in a separate script tag so that the
