@@ -178,7 +178,8 @@ class Endpoint(object):
 
 
 class Action(object):
-  """ Action interface.
+  """
+  Action interface.
   """
   Endpoint = Endpoint
   category = None

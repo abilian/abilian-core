@@ -24,10 +24,10 @@ from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.services import audit_service
 from abilian.services.vocabularies.models import BaseVocabulary
-from .action import actions, Action, FAIcon
+from .action import actions, Action, FAIcon, Endpoint
 
 from . import search
-from .nav import BreadcrumbItem, Endpoint
+from .nav import BreadcrumbItem
 from .views import (
     default_view, ObjectView, ObjectEdit, ObjectCreate,
     ObjectDelete, JSONView, JSONWhooshSearch,
