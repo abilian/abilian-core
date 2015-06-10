@@ -3,7 +3,7 @@
 
 (function(factory) {
 	'use strict';
-	requirejs(['Abilian', 'jquery', 'jquery.dataTables'], factory );
+	require(['Abilian', 'jquery', 'jquery.dataTables'], factory );
 }
 (function(Abilian, $) {
     'use strict';
@@ -81,38 +81,71 @@
         }
 
         self.aFilters = [];
+        self.oFilters = {};
+
         /* filters container */
         self.$Container = $('<div class="advanced-search-filters"></div>');
-        var toggle_icon = $('<span />', {'class': 'fa fa-caret-left'}),
-            sAdvSearch = oDTSettings.oLanguage.sAdvancedSearch || 'Advanced Search',
-            filters_container = $('<div />');
+        var filterSelectContainer = $('<span />'),
+            filterSelect = $('<select />'),
+            toggle_icon = $('<span />', {'class': 'fa fa-caret-left'}),
+            sAdvSearch = (oDTSettings.oLanguage.sAdvancedSearch
+                          || 'Advanced Search'),
+            filtersContainer = $('<div />'),
+            toggle = $('<span />')
+                .css('cursor', 'pointer')
+                .append(sAdvSearch + '&nbsp;')
+                .append(toggle_icon)
+                .bind('click.DT',
+                      {target: filtersContainer, icon: toggle_icon},
+                      AdvancedSearchFilters.toggle);
 
-        filters_container.hide();
+        filtersContainer.append($('<div class="clearfix"></div>'));
+        filterSelectContainer.append(filterSelect);
+        filterSelect.append($('<option value=""></option>'));
 
-        var toggle = $('<span />')
-            .css('cursor', 'pointer')
-            .append(sAdvSearch + '&nbsp;')
-            .append(toggle_icon)
-            .bind('click.DT',
-                  {target: filters_container, icon: toggle_icon},
-                  AdvancedSearchFilters.toggle);
-
-        self.$Container.append(toggle, filters_container);
+        self.$filtersContainer = filtersContainer;
+        self.$filterSelect = filterSelect;
+        self.$toggle = toggle;
 
         /* create filters */
         var aoasf_len = oDTSettings.oInit.aoAdvancedSearchFilters.length;
         for (var i = 0; i < aoasf_len; i++) {
-            var $criterion_container = $('<div></div>').attr({'class': 'criterion row'}),
+            var $criterionContainer = $('<div></div>').attr({'class': 'criterion row'}),
                 filter = oDTSettings.oInit.aoAdvancedSearchFilters[i],
                 args = [].concat([filter.name, filter.label], filter.args),
                 func = AdvancedSearchFilters.oFilters[filter.type],
-                instance = func.apply($criterion_container, args);
+                instance = func.apply($criterionContainer, args),
+                $option = $('<option>' + filter.label + '</option>')
+                    .attr({'value': filter.name});
+
             instance.type = filter.type;
             instance.unsetValue = filter.unset;
+            instance.$container = $criterionContainer;
             self.aFilters.push(instance);
-            filters_container.append($criterion_container);
+            self.oFilters[filter.name] = instance;
+            filterSelect.append($option);
+            $criterionContainer.hide();
+            filtersContainer.append($criterionContainer);
         }
 
+        filterSelect.select2({
+            'containerCssClass': 'col-xs-4 col-md-3',
+            'placeholder': 'Add a filter...',
+        });
+        filterSelect.on(
+            'change',
+            function() {
+                self.addFilter(this.value);
+                if (!filtersContainer.is(':visible')) {
+                    toggle.click();
+                }
+                $(this).data('select2').clear();
+            }
+        );
+        filtersContainer.hide();
+        self.$Container.append(filterSelectContainer, toggle, filtersContainer);
+
+        /* datatables events callbacks */
         oDTSettings.oInstance.bind('serverParams', {instance: self},
                                    AdvancedSearchFilters.serverParamsCallBack);
         oDTSettings.oInstance.bind('stateSaveParams', {instance: self},
@@ -128,6 +161,15 @@
                                               oDTSettings,
                                               oDTSettings.oLoadedState);
         }
+        self.$Container.on('redraw.DT',
+                           function() {
+                               oDTSettings.oInstance.fnDraw();
+                           });
+        self.$Container.on('change.DT',
+                           'input, select',
+                           function() {
+                               oDTSettings.oInstance.fnDraw();
+                           });
     };
 
      /* filters registry A filter creates required inputs for filter 'name'; the
@@ -619,8 +661,39 @@
 		return this.$Container && this.$Container.get(0);
 	};
 
+    /**
+     * Add a new active filter
+     *
+     * @method
+     */
+    AdvancedSearchFilters.prototype.addFilter = function(filterName) {
+        var instance = this.oFilters[filterName];
+        if (instance === undefined) {
+            return;
+        }
+
+        instance.$container.show();
+        this.$filterSelect.find('option[value="' + filterName + '"]')
+            .prop('disabled', true);
+    };
+
+    /**
+     * Remove a filter
+     *
+     * @method
+     */
+    AdvancedSearchFilters.prototype.removeFilter = function(filterName) {
+        var instance = this.oFilters[filterName];
+        if (instance === undefined) {
+            return;
+        }
+        instance.$container.hide();
+        this.$filterSelect.find('option[value="' + filterName + '"]').
+            prop('disabled', false);
+    };
+
      /**
-      * show / hide filters
+      * show / hide filters container
       */
      AdvancedSearchFilters.toggle = function(e) {
          var target = e.data.target;
@@ -672,7 +745,8 @@
      */
     AdvancedSearchFilters.stateLoaded = function(event, oSettings, oData) {
         var self = event.data.instance,
-            params = oData.oAdvancedSearchFilters || {};
+            params = oData.oAdvancedSearchFilters || {},
+            showFilters = false;
 
         self.aFilters.forEach(
             function(filter, idx) {
@@ -680,8 +754,20 @@
                     return;
                 }
                 filter.load(this[filter.name]);
+                var instance = self.oFilters[filter.name],
+                    $container = instance.$container;
+                if (hasValueSet(instance)) {
+                    $container.show();
+                    showFilters = true;
+                } else {
+                    $container.hide();
+                }
             },
             params);
+
+        if (showFilters && !self.$filtersContainer.is(':visible')) {
+            self.$toggle.click();
+        }
         return true;
     };
 
