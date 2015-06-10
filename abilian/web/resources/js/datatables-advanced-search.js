@@ -757,10 +757,8 @@
                 var instance = self.oFilters[filter.name],
                     $container = instance.$container;
                 if (hasValueSet(instance)) {
-                    $container.show();
+                    self.addFilter(filter.name);
                     showFilters = true;
-                } else {
-                    $container.hide();
                 }
             },
             params);
