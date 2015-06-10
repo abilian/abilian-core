@@ -49,6 +49,21 @@
                     item.attr('name', name);
                     item.attr("id", name);
                 });
+            new_row.find("select").each(
+                function() {
+                    var item  = $(this);
+                    var id_splitted = item.attr("id").split('-');
+
+                    for (var i = 0; i < id_splitted.length; i++) {
+                        if (!isNaN(id_splitted[i])){
+                            id_splitted[i] = self.current_index
+                        }
+                    }
+                    var name = id_splitted.join('-')
+                    item.attr('name', name);
+                    item.attr("id", name);
+                }
+            );
             self.tbody.append(new_row);
             new_row.find('.js-widget').each(Abilian.initJsWidget);
             self.current_index += 1;

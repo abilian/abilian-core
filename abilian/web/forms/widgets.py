@@ -790,7 +790,7 @@ class DateInput(Input):
     s = u'<div {}>\n'.format(html_params(**attributes))
 
     s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
-        html_params(name=field_name, id=field_id, value=value))
+        html_params(name=field_name, id=field_id, value=value, **kwargs))
     s += u'  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
     s += u'</div>\n'
     return Markup(s)
