@@ -83,7 +83,7 @@
         self.aFilters = [];
         /* filters container */
         self.$Container = $('<div class="advanced-search-filters"></div>');
-        var toggle_icon = $('<span />', {'class': 'glyphicon glyphicon-plus'}),
+        var toggle_icon = $('<span />', {'class': 'fa fa-caret-left'}),
             sAdvSearch = oDTSettings.oLanguage.sAdvancedSearch || 'Advanced Search',
             filters_container = $('<div />');
 
@@ -625,10 +625,10 @@
      AdvancedSearchFilters.toggle = function(e) {
          var target = e.data.target;
          var icon = e.data.icon;
-         var should_show = icon.hasClass('glyphicon-plus');
+         var should_show = icon.hasClass('fa-caret-left');
          var is_visible = target.is(':visible');
-         icon.toggleClass('glyphicon-plus', !should_show);
-         icon.toggleClass('glyphicon-minus', should_show);
+         icon.toggleClass('fa-caret-left', !should_show);
+         icon.toggleClass('fa-caret-down', should_show);
 
          // if 'is_visible' differ from 'should_show' (logical XOR)
          if ((is_visible || should_show) && !(is_visible && should_show)) {
