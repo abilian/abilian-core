@@ -83,19 +83,16 @@
         self.aFilters = [];
         /* filters container */
         self.$Container = $('<div class="advanced-search-filters"></div>');
-        self.iconFilterActive = $('<span />', {'class': 'glyphicon glyphicon-filter'});
         var toggle_icon = $('<span />', {'class': 'glyphicon glyphicon-plus'}),
             sAdvSearch = oDTSettings.oLanguage.sAdvancedSearch || 'Advanced Search',
             filters_container = $('<div />');
 
-        self.iconFilterActive.hide();
         filters_container.hide();
 
         var toggle = $('<span />')
             .css('cursor', 'pointer')
             .append(sAdvSearch + '&nbsp;')
             .append(toggle_icon)
-            .append(self.iconFilterActive)
             .bind('click.DT',
                   {target: filters_container, icon: toggle_icon},
                   AdvancedSearchFilters.toggle);
@@ -131,17 +128,6 @@
                                               oDTSettings,
                                               oDTSettings.oLoadedState);
         }
-        self.$Container.on('redraw.DT',
-                           function() {
-                               self.updateFilteringIcon();
-                               oDTSettings.oInstance.fnDraw();
-                           });
-        self.$Container.on('change.DT',
-                           'input, select',
-                           function() {
-                               self.updateFilteringIcon();
-                               oDTSettings.oInstance.fnDraw();
-                           });
     };
 
      /* filters registry A filter creates required inputs for filter 'name'; the
@@ -633,22 +619,6 @@
 		return this.$Container && this.$Container.get(0);
 	};
 
-    /**
-     * Show/hide filtering icon
-     */
-    AdvancedSearchFilters.prototype.updateFilteringIcon = function() {
-        var isFiltering = false;
-        //FIXME: a 'for' loop with a 'break' is enough
-        this.aFilters.forEach(
-            function(filter, idx) {
-                if (hasValueSet(filter)) {
-                    isFiltering = true;
-                }
-            });
-        isFiltering ? this.iconFilterActive.show() : this.iconFilterActive.hide();
-    };
-
-
      /**
       * show / hide filters
       */
@@ -712,7 +682,6 @@
                 filter.load(this[filter.name]);
             },
             params);
-        self.updateFilteringIcon();
         return true;
     };
 
