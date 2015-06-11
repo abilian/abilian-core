@@ -58,7 +58,20 @@
         var output =  element.text.replace(/&amp;/g, replaceTag);
         output =  output.replace(/&lt;/g, replaceTag);
         output =  output.replace(/&gt;/g, replaceTag);
-        return output
+        return output;
+    }
+
+    /*
+     * Create an event handler for a filter 'close' button
+     */
+    function setupCloseButtonHandler(advInstance, filterName, instance) {
+        function closeFilter(e) {
+            e.preventDefault();
+            advInstance.unsetFilter(filterName);
+            advInstance.removeFilter(filterName);
+            instance.$container.trigger('redraw.DT');
+        }
+        return closeFilter;
     }
 
 	/**
@@ -110,14 +123,23 @@
         /* create filters */
         var aoasf_len = oDTSettings.oInit.aoAdvancedSearchFilters.length;
         for (var i = 0; i < aoasf_len; i++) {
-            var $criterionContainer = $('<div></div>').attr({'class': 'criterion row'}),
+            var $criterionContainer = $('<div></div>')
+                    .attr({'class': 'criterion'}),
                 filter = oDTSettings.oInit.aoAdvancedSearchFilters[i],
                 args = [].concat([filter.name, filter.label], filter.args),
                 func = AdvancedSearchFilters.oFilters[filter.type],
                 instance = func.apply($criterionContainer, args),
                 $option = $('<option>' + filter.label + '</option>')
-                    .attr({'value': filter.name});
+                    .attr({'value': filter.name}),
+                $closeButton = $('<button />')
+                    .attr({'class': 'close'})
+                    .append($('<span />')
+                            .attr({'class': 'glyphicon glyphicon-minus'}))
+                    .on('click',
+                        setupCloseButtonHandler(self, filter.name, instance));
 
+
+            $criterionContainer.prepend($closeButton);
             instance.type = filter.type;
             instance.unsetValue = filter.unset;
             instance.$container = $criterionContainer;
@@ -678,6 +700,20 @@
     };
 
     /**
+     * Clear a filter
+     */
+    AdvancedSearchFilters.prototype.unsetFilter = function(filterName) {
+        var instance = this.oFilters[filterName];
+        if (instance === undefined) {
+            return;
+        }
+
+        var unset = instance.unsetValue;
+        if (!Array.isArray(unset)) { unset = [ unset ]; }
+        instance.load(unset);
+    };
+
+    /**
      * Remove a filter
      *
      * @method
@@ -689,7 +725,7 @@
         }
         instance.$container.hide();
         this.$filterSelect.find('option[value="' + filterName + '"]').
-            prop('disabled', false);
+            prop('disabled', null);
     };
 
      /**
