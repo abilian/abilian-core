@@ -43,6 +43,24 @@
         return false;
     }
 
+    //helper function to unescape html
+    var tagsToReplace = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>'
+    };
+
+    function replaceTag(tag) {
+        return tagsToReplace[tag] || tag;
+    }
+
+    function safe_tags_replace(element) {
+        var output =  element.text.replace(/&amp;/g, replaceTag);
+        output =  output.replace(/&lt;/g, replaceTag);
+        output =  output.replace(/&gt;/g, replaceTag);
+        return output
+    }
+
 	/**
 	* Additional search criterias for DataTable with Ajax source
 	*
@@ -422,7 +440,10 @@
                               'multiple': multiple,
                               'allowClear': true,
                               'width': '20em',
-                              'containerCss': {'margin-left': '0.5em'}
+                              'containerCss': {'margin-left': '0.5em'},
+                              // unescape html in labels
+                              'formatResult': safe_tags_replace,
+                              'formatSelection': safe_tags_replace
                              });
 
              function get_val() {
