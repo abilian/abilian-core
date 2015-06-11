@@ -8,7 +8,7 @@
 (function($) {
     'use strict';
      $.extend($.fn.dataTableExt.oStdClasses, {
-         'sWrapper': 'dataTables_wrapper form-inline',
+         'sWrapper': 'dataTables_wrapper',
      });
 
      /* API method to get paging information */
