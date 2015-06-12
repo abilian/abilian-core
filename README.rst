@@ -111,8 +111,9 @@ of API stability.
 It is currently used in several applications that have been developped
 by `Abilian <http://www.abilian.com/>`_ over the last two years:
 
--  Abilian SBE (Social Business Engine) - an enterprise 2.0 (social
-   collaboration) platform
+-  [Abilian SBE (Social Business
+   Engine)](https://github.com/abilian/abilian-sbe) - an enterprise 2.0 (social
+collaboration) platform
 
 -  Abilian EMS (Event Management System)
 
