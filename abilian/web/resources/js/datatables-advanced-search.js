@@ -514,10 +514,10 @@
       * show / hide filters container
       */
      AdvancedSearchFilters.toggle = function(e) {
-         var target = e.data.target;
-         var icon = e.data.icon;
-         var should_show = icon.hasClass('fa-caret-left');
-         var is_visible = target.is(':visible');
+         var target = e.data.target,
+             icon = e.data.icon,
+             should_show = icon.hasClass('fa-caret-left'),
+             is_visible = target.is(':visible');
          icon.toggleClass('fa-caret-left', !should_show);
          icon.toggleClass('fa-caret-down', should_show);
 
@@ -534,8 +534,8 @@
      AdvancedSearchFilters.serverParamsCallBack = function(event, aoData) {
          var self = event.data.instance;
          for(var i=0; i < self.aFilters.length; i++) {
-             var f = self.aFilters[i];
-             var vals = f.val();
+             var f = self.aFilters[i],
+                 vals = f.val();
              if (!(vals instanceof Array)) {
                  vals = [vals];
              }
@@ -568,12 +568,13 @@
 
         self.aFilters.forEach(
             function(filter, idx) {
-                if (filter.load === undefined || this[filter.name] === undefined) {
+                if (filter.load === undefined ||
+                    this[filter.name] === undefined) {
                     return;
                 }
+
                 filter.load(this[filter.name]);
-                var instance = self.oFilters[filter.name],
-                    $container = instance.$container;
+                var instance = self.oFilters[filter.name];
                 if (hasValueSet(instance)) {
                     self.addFilter(filter.name);
                     showFilters = true;
