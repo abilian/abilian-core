@@ -394,7 +394,7 @@ class SingleView(object):
         if value in _to_skip and not field.flags.render_empty:
           continue
 
-        value = Markup(field.render_view())
+        value = Markup(field.render_view(entity=item))
         if value == u'':
           # related models may have [] as value, but we don't discard this type
           # of value in order to let widget a chance to render something useful
@@ -796,7 +796,7 @@ class DateInput(Input):
     s += u'</div>\n'
     return Markup(s)
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     return format_date(field.object_data)
 
 
@@ -938,7 +938,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 
     return super(BooleanWidget, self).__call__(field, **kwargs)
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     return u'\u2713' if field.object_data else u''  # Unicode "Check mark"
 
 
@@ -954,7 +954,7 @@ class PasswordInput(BasePasswordInput):
     kwargs.setdefault('autocomplete', self.autocomplete)
     return BasePasswordInput.__call__(self, field, **kwargs)
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     return u'*****'
 
 
@@ -966,7 +966,7 @@ class FloatWidget(wtforms.widgets.TextInput):
     if precision is not None:
         self._fmt = '.{:d}f'.format(precision)
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     data = field.object_data
     if data is None:
       return u''
@@ -975,19 +975,19 @@ class FloatWidget(wtforms.widgets.TextInput):
 
 
 class DateWidget(wtforms.widgets.TextInput):
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     return (format_date(field.object_data)
             if field.object_data else u'')
 
 
 class DateTimeWidget(DateWidget):
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     return (format_datetime(field.object_data)
             if field.object_data else u'')
 
 
 class EntityWidget(object):
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     objs = field.object_data
     if not field.multiple:
       objs = [objs]
@@ -1004,7 +1004,7 @@ class MoneyWidget(TextInput):
   post_icon = u'€'
   input_type = 'number'
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     val = field.object_data
     unit = u'€'
 
@@ -1022,7 +1022,7 @@ class MoneyWidget(TextInput):
 class EmailWidget(TextInput):
   pre_icon = u'@'
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     links = u''
     if isinstance(field, wtforms.fields.FieldList):
       for entry in field.entries:
@@ -1037,7 +1037,7 @@ class EmailWidget(TextInput):
 
 
 class URLWidget(object):
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     return (linkify_url(field.object_data)
             if field.object_data else u'')
 
@@ -1096,7 +1096,7 @@ class ListWidget(wtforms.widgets.ListWidget):
     html.append(u'</%s>' % self.html_tag)
     return wtforms.widgets.HTMLString(''.join(html))
 
-  def render_view(self, field):
+  def render_view(self, field, **kwargs):
     data = field.data
     is_empty = data == [] if field.multiple else data is None
 
