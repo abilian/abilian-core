@@ -13,8 +13,8 @@ from flask.ext.login import current_user
 
 from abilian.i18n import _l
 from abilian.services.security import security, Admin as AdminRole
-from abilian.web.action import actions
-from abilian.web.nav import NavGroup, NavItem, BreadcrumbItem, Endpoint
+from abilian.web.action import actions, Endpoint
+from abilian.web.nav import NavGroup, NavItem, BreadcrumbItem
 
 from .panel import AdminPanel
 

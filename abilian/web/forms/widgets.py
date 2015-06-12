@@ -280,7 +280,8 @@ class AjaxMainTableView(object):
 
   def render(self):
     aoColumns = [{'asSorting': []}] if self.show_controls else []
-    aoColumns += [{'asSorting': col['sorting'], 'bSortable': col['sortable']} for col in self.columns]
+    aoColumns += [{'asSorting': col['sorting'], 'bSortable': col['sortable']}
+                  for col in self.columns]
     datatable_options = {
       'sDom': 'lfFrtip',
       'aoColumns': aoColumns,
@@ -291,7 +292,7 @@ class AjaxMainTableView(object):
         'sNext': _("Next"),
         'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
         'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
-        'sAdvancedSearch': _("Advanced filtering"),
+        'sAddAdvancedFilter': _("Add a filter"),
       },
       'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",

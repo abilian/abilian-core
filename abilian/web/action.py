@@ -178,7 +178,8 @@ class Endpoint(object):
 
 
 class Action(object):
-  """ Action interface.
+  """
+  Action interface.
   """
   Endpoint = Endpoint
   category = None
@@ -397,6 +398,60 @@ class ButtonAction(Action):
     Action.__init__(self, category, name, *args, **kwargs)
     self.submit_name = submit_name
     self.btn_class = btn_class
+
+
+class ActionGroup(Action):
+  """
+  A group of single actions
+  """
+  template_string = (
+    u'<div class="btn-group" role="group" aria-label="{{ action.name}}">'
+    u'{%- for entry in action_items %}'
+    u'{{ entry.render() }}'
+    u'{%- endfor %}'
+    u'</div>'
+  )
+
+  def __init__(self, category, name, items=(), *args, **kwargs):
+    super(ActionGroup, self).__init__(category, name, *args, **kwargs)
+    self.items = list(items)
+
+  def get_render_args(self, **kwargs):
+    params = super(ActionGroup, self).get_render_args(**kwargs)
+    params['action_items'] = [a for a in self.items if a.available(params)]
+    return params
+
+
+class ActionDropDown(ActionGroup):
+  """
+  Renders as a button dropdown
+  """
+  template_string = u'''
+  <div class="btn-group">
+    <button type="button" class="{{ action.css_class }} dropdown-toggle"
+            data-toggle="dropdown" aria-expanded="false">
+    {%- if action.icon %}{{ action.icon }} {% endif %}
+    {{ action.title }}
+    <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+    {%- for entry in action_items %}
+      {%- if entry.divider %}<li class="divider"></li>{%- endif %}
+      <li>{{ entry.render() }}</a>
+      </li>
+    {%- endfor %}
+    </ul>
+  </div>
+  '''
+
+
+class ActionGroupItem(Action):
+  #: if True, add a divider in dropdowns
+  divider = False
+
+  def __init__(self, category, name, divider=False, *args, **kwargs):
+    super(ActionGroupItem, self).__init__(category, name, *args, **kwargs)
+    self.divider = divider
 
 
 class ActionRegistry(object):

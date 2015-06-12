@@ -1,3 +1,13 @@
+.dataTables_filter > label > input {
+  .form-control();
+
+  @media (min-width: @screen-sm-min) {
+    display: inline-block;
+    width: auto; // Prevent labels from stacking above inputs in `.form-group`
+    vertical-align: middle;
+  }
+}
+
 .table-striped.dataTable {
   tr {
     &.odd {

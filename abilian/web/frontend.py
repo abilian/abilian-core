@@ -24,10 +24,13 @@ from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.services import audit_service
 from abilian.services.vocabularies.models import BaseVocabulary
-from .action import actions, Action, FAIcon
+from .action import (
+  actions, Action, FAIcon, Endpoint,
+  ActionGroup, ActionGroupItem, ActionDropDown,
+)
 
 from . import search
-from .nav import BreadcrumbItem, Endpoint
+from .nav import BreadcrumbItem
 from .views import (
     default_view, ObjectView, ObjectEdit, ObjectCreate,
     ObjectDelete, JSONView, JSONWhooshSearch,
@@ -57,6 +60,18 @@ class ModuleAction(Action):
       return False
 
     return self.category == module.action_category
+
+
+class ModuleActionGroup(ModuleAction, ActionGroup):
+  template_string = ActionGroup.template_string
+
+
+class ModuleActionDropDown(ModuleAction, ActionDropDown):
+  template_string = ActionDropDown.template_string
+
+
+class ModuleActionGroupItem(ModuleAction, ActionGroupItem):
+  pass
 
 
 def add_to_recent_items(entity, type='ignored'):

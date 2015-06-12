@@ -49,10 +49,10 @@ from abilian.services import (
 )
 from abilian.services.security import Anonymous
 
-from abilian.web.action import actions
+from abilian.web.action import actions, Endpoint
 from abilian.web.views import Registry as ViewRegistry
 from abilian.web.views.images import user_photo_url
-from abilian.web.nav import BreadcrumbItem, Endpoint
+from abilian.web.nav import BreadcrumbItem
 from abilian.web.filters import init_filters
 from abilian.web.assets.filters import ClosureJS
 from abilian.web.util import send_file_from_directory, url_for

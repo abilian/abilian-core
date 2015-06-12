@@ -16,7 +16,8 @@ from flask.ext.login import current_user
 from abilian.i18n import _, _l
 from abilian.core.extensions import db
 from abilian.core import signals
-from abilian.web.nav import NavItem, BreadcrumbItem, Endpoint
+from abilian.web.action import Endpoint
+from abilian.web.nav import NavItem, BreadcrumbItem
 from abilian.services.auth.service import user_menu
 from abilian.services.base import Service, ServiceState
 
