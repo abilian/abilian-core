@@ -106,7 +106,7 @@
         self.$Container = $('<div class="advanced-search-filters"></div>');
         var filterSelectContainer = $('<div class="row" />'),
             filterSelect = $('<select />'),
-            sAddAvancedFilter = (oDTSettings.oLanguage.sAddAvancedFilter
+            sAddAdvancedFilter = (oDTSettings.oLanguage.sAddAdvancedFilter
                           || 'Add a filter') + '...',
             filtersContainer = $('<div />').attr({'class': 'form-horizontal'});
 
@@ -159,7 +159,7 @@
 
         filterSelect.select2({
             'containerCssClass': 'col-xs-4 col-md-3',
-            'placeholder': sAddAvancedFilter
+            'placeholder': sAddAdvancedFilter
         });
         filterSelect.on(
             'change',

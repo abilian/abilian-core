@@ -49,7 +49,7 @@ class UsersPanel(AdminPanel):
         'sNext': _("Next"),
         'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
         'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
-        'sAddAvancedFilter': _("Add a filter"),
+        'sAddAdvancedFilter': _("Add a filter"),
       },
       'bStateSave': False,
       'bPaginate': True,
