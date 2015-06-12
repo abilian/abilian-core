@@ -106,24 +106,15 @@
         self.$Container = $('<div class="advanced-search-filters"></div>');
         var filterSelectContainer = $('<div class="row" />'),
             filterSelect = $('<select />'),
-            toggle_icon = $('<span />', {'class': 'fa fa-caret-left'}),
-            sAdvSearch = (oDTSettings.oLanguage.sAdvancedSearch
-                          || 'Advanced Search'),
-            filtersContainer = $('<div />').attr({'class': 'form-horizontal'}),
-            toggle = $('<span />')
-                .css('cursor', 'pointer')
-                .append(sAdvSearch + '&nbsp;')
-                .append(toggle_icon)
-                .bind('click.DT',
-                      {target: filtersContainer, icon: toggle_icon},
-                      AdvancedSearchFilters.toggle);
+            sAddAvancedFilter = (oDTSettings.oLanguage.sAddAvancedFilter
+                          || 'Add a filter') + '...',
+            filtersContainer = $('<div />').attr({'class': 'form-horizontal'});
 
         filterSelectContainer.append(filterSelect);
         filterSelect.append($('<option value=""></option>'));
 
         self.$filtersContainer = filtersContainer;
         self.$filterSelect = filterSelect;
-        self.$toggle = toggle;
 
         var aoasf_len = oDTSettings.oInit.aoAdvancedSearchFilters.length;
         for (var i = 0; i < aoasf_len; i++) {
@@ -168,20 +159,16 @@
 
         filterSelect.select2({
             'containerCssClass': 'col-xs-4 col-md-3',
-            'placeholder': 'Add a filter...'
+            'placeholder': sAddAvancedFilter
         });
         filterSelect.on(
             'change',
             function() {
                 self.addFilter(this.value);
-                if (!filtersContainer.is(':visible')) {
-                    toggle.click();
-                }
                 $(this).data('select2').clear();
             }
         );
-        filtersContainer.hide();
-        self.$Container.append(filterSelectContainer, toggle, filtersContainer);
+        self.$Container.append(filterSelectContainer, filtersContainer);
 
         /* datatables events callbacks */
         oDTSettings.oInstance.bind('serverParams', {instance: self},
@@ -270,38 +257,20 @@
             prop('disabled', null);
     };
 
-     /**
-      * show / hide filters container
-      */
-     AdvancedSearchFilters.toggle = function(e) {
-         var target = e.data.target,
-             icon = e.data.icon,
-             should_show = icon.hasClass('fa-caret-left'),
-             is_visible = target.is(':visible');
-         icon.toggleClass('fa-caret-left', !should_show);
-         icon.toggleClass('fa-caret-down', should_show);
-
-         // if 'is_visible' differ from 'should_show' (logical XOR)
-         if ((is_visible || should_show) && !(is_visible && should_show)) {
-             target.slideToggle(200);
-         }
-         e.preventDefault();
-     };
-
-     /**
-      * Callback to fill server params before ajax request
-      */
-     AdvancedSearchFilters.serverParamsCallBack = function(event, aoData) {
-         var self = event.data.instance;
-         for(var i=0; i < self.aFilters.length; i++) {
-             var f = self.aFilters[i],
-                 vals = f.val();
-             if (!(vals instanceof Array)) {
-                 vals = [vals];
-             }
-             $(vals).each(function() { aoData.push({name: f.name, value: this});});
-         }
-     };
+    /**
+     * Callback to fill server params before ajax request
+     */
+    AdvancedSearchFilters.serverParamsCallBack = function(event, aoData) {
+        var self = event.data.instance;
+        for(var i=0; i < self.aFilters.length; i++) {
+            var f = self.aFilters[i],
+                vals = f.val();
+            if (!(vals instanceof Array)) {
+                vals = [vals];
+            }
+            $(vals).each(function() { aoData.push({name: f.name, value: this});});
+        }
+    };
 
     /**
      * Callback to save filters state
@@ -323,8 +292,7 @@
      */
     AdvancedSearchFilters.stateLoaded = function(event, oSettings, oData) {
         var self = event.data.instance,
-            params = oData.oAdvancedSearchFilters || {},
-            showFilters = false;
+            params = oData.oAdvancedSearchFilters || {};
 
         self.aFilters.forEach(
             function(filter, idx) {
@@ -337,14 +305,10 @@
                 var instance = self.oFilters[filter.name];
                 if (hasValueSet(instance)) {
                     self.addFilter(filter.name);
-                    showFilters = true;
                 }
             },
             params);
 
-        if (showFilters && !self.$filtersContainer.is(':visible')) {
-            self.$toggle.click();
-        }
         return true;
     };
 
