@@ -1,5 +1,4 @@
 /* datatable: advanced search */
-/* jshint camelcase: false */
 
 (function(factory) {
 	'use strict';
@@ -17,6 +16,13 @@
     }
     defaultDatatableConfig();
 
+    /* create new filter instance */
+    function instantiateFilter(filterType, args) {
+        var FilterClass = AdvancedSearchFilters.oFilters[filterType],
+            instance = Object.create(FilterClass.prototype);
+        FilterClass.apply(instance, args);
+        return instance;
+    }
 
     /*
      * Helper to check equality for filter values
@@ -119,14 +125,6 @@
         self.$filterSelect = filterSelect;
         self.$toggle = toggle;
 
-        /* create filters */
-        function instantiateFilter(filterType, args) {
-            var FilterClass = AdvancedSearchFilters.oFilters[filterType],
-                instance = Object.create(FilterClass.prototype);
-            FilterClass.apply(instance, args);
-            return instance;
-        }
-
         var aoasf_len = oDTSettings.oInit.aoAdvancedSearchFilters.length;
         for (var i = 0; i < aoasf_len; i++) {
             var $criterionContainer = $('<div></div>')
@@ -212,248 +210,10 @@
                            });
     };
 
-     /* filters registry A filter creates required inputs for filter 'name'; the
-      * context is the container for this filter
-      * @namespace
-      */
-    AdvancedSearchFilters.oFilters = {
-         'checkbox-select': function(name, label, args) {
-             /* a checkbox with a select box activated only if checkbox is checked */
-             var self = this;
-             var $input = $('<input type="checkbox">')
-                 .attr({'id': name,
-                        'name': name,
-                        'value': name,
-                        'checked': 'checked'});
-             var $label = $('<label></label>')
-                 .attr({'class': 'checkbox-inline', 'for': name})
-                 .append($input)
-                 .append(document.createTextNode(args.label));
-
-             self.append($label);
-
-             var select_id = name + '-select';
-             var $select = $('<input />')
-                 .attr({'id': select_id,
-                        'name': select_id,
-                        'type': 'hidden'});
-             self.append($select);
-             $select.select2({'data': args['select-data'],
-                              'placeholder': (args['select-label'] || ''),
-                              'allowClear': true,
-                              'width': '20em',
-                              'containerCss': {'margin-left': '0.5em'}
-                             });
-
-
-             $input.on('change', function(e) {
-                           $select.select2('enable', this.checked);
-                       });
-
-             function get_val() {
-                 if ($input.get(0).checked) {
-                     return [$select.select2('val') || $input.val()];
-                 }
-                 return [];
-             }
-
-             return {
-                 'name': name,
-                 'val': get_val,
-                 'save': get_val,
-                 'load': function(vals) {
-                     if (vals.length == 0) { return; }
-                     $input.get(0).setAttribute('checked', true);
-                     $select.select2('val', vals[0]);
-                 }
-             };
-         },
-         'select-radio': function(name, label, s2_args /*, radio_args, ... */) {
-             /*
-             a select box followed by 3 radios (boolean all/True/False)
-             s2_args: contains the select2 data
-             radio_args...: a radio is created for each param after s2_args
-              */
-             var self = this;
-             var checked = false;
-             var len = arguments.length;
-
-             if (label !== '') {
-                 self.append($('<label />')
-                             .attr({'class': 'select-radio inline col-md-3 text-right'})
-                             .css('cursor', 'default')
-                             .append($('<strong />').text(label))
-                            );
-             }
-             /* create the select*/
-             var select_id = name + '-select';
-             var $select = $('<input />')
-                 .attr({'id': select_id,
-                        'name': select_id,
-                        'type': 'hidden'});
-             var s2_label = $('<label></label>')
-                     .attr({'class': 'select-inline', 'for': select_id})
-                     .append($select);
-                     //.append(document.createTextNode(name));
-             $select.select2({'data': s2_args['select-data'],
-                              'placeholder': (s2_args['select-label'] || ''),
-                              'allowClear': true,
-                              'width': '20em',
-                              'containerCss': {'margin-left': '0.5em'}
-                             });
-             self.append(s2_label);
-
-             /* create the radios*/
-             for (var i=3; i < len; i++) {
-                 var arg = arguments[i];
-                 var id = name + '-radio' +'_' + i;
-                 var $input = $('<input type="radio">')
-                     .attr({'id': id,
-                            'name': name + '-radio',
-                            'value': arg.value});
-
-                 if (!checked && arg.checked) {
-                     $input.prop('checked', true);
-                     checked = true;
-                 }
-
-                 var radio_label = $('<label></label>')
-                     .attr({'class': 'radio-inline', 'for': id})
-                     .append($input)
-                     .append(document.createTextNode(arg.label));
-
-                 this.append(radio_label);
-             }
-
-             function get_val() {
-                 /*
-                 get value to fill the  /GET : response with the attribute
-                 return: list(select:id, radio:value)
-                  */
-                 var radio_value = self.find('input:checked').val();
-                 var select2_value = $select.select2('val');
-
-                 if ( select2_value || radio_value != 'None') {
-                     return [select2_value, radio_value];
-                 }
-                 return [];
-             }
-
-             return {
-                 'name': name,
-                 'val': get_val,
-                 'save': get_val,
-                 'load': function(vals) {
-                     if (vals.length == 0) { return; }
-                     $input.get(0).setAttribute('checked', true);
-                     $select.select2('val', vals[0]);
-                 }
-             };
-         },
-         'optional_criterions': function(name, label) {
-             var self = this,
-                 arg_len = arguments.length,
-                 criterions = {},
-                 options = {};
-
-             var $container = $('<div />')
-                 .css('margin-bottom', '0.5em')
-                 .append($('<span />').text(label + ':'));
-
-             var $select = $('<select />')
-                 .css('margin-left', '0.5em')
-                 .append($('<option />'));
-
-             for (var i=2; i < arg_len; i++) {
-                 var args = arguments[i];
-                 var $option = $('<option />')
-                    .text(args.label)
-                    .data(args)
-                    .appendTo($select);
-                 options[args.value] = $option.get(0);
-             }
-
-             function installOption(option) {
-                 var $option = $(option);
-                 var args = $option.data();
-                 var $container = $('<div />');
-                 $('<button />')
-                     .attr({'class': 'close'})
-                     .append($('<span />').attr({'class': 'glyphicon glyphicon-remove'}))
-                     .on('click', function(e) {
-                         e.preventDefault();
-                         $container.remove();
-                         $option.show();
-                         delete criterions[args.value];
-                         self.trigger('redraw.DT');
-                     })
-                     .appendTo($container);
-                 $('<input />')
-                     .attr({'type': 'hidden',
-                            'name': name,
-                            'value': args.value})
-                     .appendTo($container);
-
-                 var func = AdvancedSearchFilters.oFilters[args.type];
-                 var filter_name = name + '.' + args.value;
-                 args.checked = true;
-                 criterions[args.value] = func.apply($container, [filter_name, '', args]);
-                 $option.hide();
-                 self.append($container);
-             }
-
-             $select.on(
-                 'change',
-                 function(e) {
-                     e.preventDefault();
-                     if (this.selectedIndex == 0) {
-                         /* this is empty option */
-                         return;
-                     }
-
-                     $(this).children('option:selected')
-                         .each(function() { installOption(this); });
-                     this.selectedIndex = 0;
-                 });
-
-             $container.append($select);
-             self.append($container);
-
-             function get_values() {
-                 var result = {'selected_filters' : [],
-                               'values': {}};
-
-                 for (var filter_name in criterions) {
-                     result.selected_filters.push(filter_name);
-                     result.values[filter_name] = criterions[filter_name].save();
-                 }
-                 return result;
-             }
-
-             return {
-                 'name': name,
-                 'val': function() {
-                     return [JSON.stringify(get_values())];
-                 },
-                 'save': function() {
-                     return [get_values()];
-                 },
-                 'load': function(vals) {
-                     vals = vals[0];
-                     for (var filter_name in vals.values) {
-                         if (!options[filter_name]) {
-                             continue;
-                         }
-                         installOption(options[filter_name]);
-                         criterions[filter_name].load(vals.values[filter_name]);
-                     }
-                 },
-                 'hasValueSet': function () {
-                     return get_values().selected_filters.length > 0;
-                 }
-             };
-         }
-     };
+    /**
+     * Filters registry
+     */
+    AdvancedSearchFilters.oFilters = {};
 
 	/**
 	* Get the container node of the advanced search filters
@@ -746,6 +506,7 @@
         }
 
         function getVal() {
+            /* jshint validthis: true */
             var val = this.$select.data('select2').val();
             if (!this.multiple && !val.length) {
                 val = [];
@@ -790,10 +551,10 @@
                 'allowClear': true,
                 'width': '20em',
                 'max-width': '100%',
-                containerCssClass: 'form-control',
+                'containerCssClass': 'form-control',
                 'containerCss': {'margin-left': '0.5em'},
-                minimumInputLength: 2,
-                ajax: {
+                'minimumInputLength': 2,
+                'ajax': {
                     url: ajax_source,
                     dataType: 'json',
                     quietMillis: 200,
@@ -808,6 +569,7 @@
         }
 
         function getVal() {
+            /* jshint validthis: true */
             var val = this.$select.data('select2').val();
             if (!this.multiple && !val.length) {
                 val = [];
@@ -892,6 +654,7 @@
              get value to fill the  /GET : response with the attribute
              return: list(select:id, radio:value)
              */
+            /* jshint validthis: true */
             var radioValue = this.$elements.find('input:checked').val(),
                 select2Value = this.$select.select2('val');
 
@@ -906,7 +669,7 @@
             'val': getVal,
             'save': getVal,
             'load': function(vals) {
-                if (vals.length == 0) { return; }
+                if (vals.length === 0) { return; }
                 this.$elements.children('label input')
                     .first()
                     .prop('checked', true);
@@ -915,6 +678,187 @@
         };
 
         return SelectRadioFilter;
+    }();
+
+    AdvancedSearchFilters.oFilters['checkbox-select'] = function() {
+        function CheckboxSelectFilter(name, label, args) {
+            var self = this;
+            this.name = name;
+            this.label = label;
+            this.$elements = $('<div>');
+            this.$input = $('<input type="checkbox">')
+                .attr({'id': name,
+                       'name': name,
+                       'value': name,
+                       'checked': 'checked'});
+
+            var select_id = name + '-select',
+                $label = $('<label></label>')
+                 .attr({'class': 'checkbox-inline', 'for': name})
+                 .append(this.$input)
+                 .text(args.label);
+
+            this.$elements.append($label);
+            this.$select = $('<input />')
+                .attr({'id': select_id,
+                       'name': select_id,
+                       'type': 'hidden'});
+            this.$elements.append(this.$select);
+            this.$select.select2({'data': args['select-data'],
+                                  'placeholder': (args['select-label'] || ''),
+                                  'allowClear': true,
+                                  'width': '20em',
+                                  'max-width': '100%',
+                                  'containerCssClass': 'form-control',
+                                  'containerCss': {'margin-left': '0.5em'}
+                                 });
+
+            this.$input.on('change', function() {
+                self.$select.select2('enable', this.checked);
+            });
+        }
+
+        function getVal() {
+            /* jshint validthis: true */
+            if (this.$input.get(0).checked) {
+                return [this.$select.select2('val') || this.$input.val()];
+            }
+            return [];
+        }
+
+        CheckboxSelectFilter.prototype = {
+            'getElements': function () { return this.$elements; },
+            'val': getVal,
+            'save': getVal,
+            'load': function(vals) {
+                if (vals.length === 0) { return; }
+                this.$input.get(0).setAttribute('checked', true);
+                this.$select.select2('val', vals[0]);
+            }
+        };
+        return CheckboxSelectFilter;
+    }();
+
+    AdvancedSearchFilters.oFilters.optional_criterions = function() {
+        /* legacy filter. Current filtering system makes this one obsolete */
+        function OptionalCriterionFilter(name, label) {
+            this.name = name;
+            this.label = label;
+            var self = this,
+                argLen = arguments.length,
+                options = {};
+
+            this.criterions = {},
+            this.$elements = $('<div />')
+                .css('margin-bottom', '0.5em');
+
+            var $select = $('<select />')
+                    .css('margin-left', '0.5em')
+                    .append($('<option />'));
+
+            for (var i=2; i < argLen; i++) {
+                var args = arguments[i];
+                var $option = $('<option />')
+                        .text(args.label)
+                        .data(args)
+                        .appendTo($select);
+                options[args.value] = $option.get(0);
+            }
+
+            $select.on(
+                'change',
+                function(e) {
+                    e.preventDefault();
+                    if (this.selectedIndex === 0) {
+                        /* this is empty option */
+                        return;
+                    }
+
+                    $(this).children('option:selected')
+                        .each(function() { self.installOption(this); });
+                    this.selectedIndex = 0;
+                });
+
+            this.$elements.append($select);
+        }
+
+        function removeCriterion(e) {
+            e.preventDefault();
+            e.data.$container.remove();
+            e.data.$option.show();
+            delete e.data.instance.criterions[e.data.value];
+            e.data.$container.trigger('redraw.DT');
+        }
+
+
+        function getValues(self) {
+            var result = {'selected_filters' : [],
+                          'values': {}};
+
+            for (var filterName in self.criterions) {
+                result.selected_filters.push(filterName);
+                result.values[filterName] = self.criterions[filterName].save();
+            }
+            return result;
+        }
+
+        OptionalCriterionFilter.prototype = {
+            'getElements': function () { return this.$elements; },
+            'installOption': function (option) {
+                var $option = $(option),
+                    args = $option.data(),
+                    $container = $('<div />');
+
+                $('<button />')
+                    .attr({'class': 'close'})
+                    .append($('<span />')
+                            .attr({'class': 'glyphicon glyphicon-minus'}))
+                    .on('click',
+                        {'instance': this,
+                         'value': args.value,
+                         '$option': $option,
+                         '$container': $container
+                        },
+                        removeCriterion)
+                    .appendTo($container);
+                $('<input />')
+                    .attr({'type': 'hidden',
+                           'name': this.name,
+                           'value': args.value})
+                    .appendTo($container);
+
+                args.checked = true;
+                var filterName = this.name + '.' + args.value,
+                    filterInstance = instantiateFilter(args.type,
+                                                       [filterName, '', args]);
+
+                this.criterions[args.value] = filterInstance;
+                $option.hide();
+                this.$elements.append($container);
+            },
+            'val': function() {
+                return [JSON.stringify(getValues(this))];
+            },
+            'save': function() {
+                return [getValues(this)];
+            },
+            'load': function(vals) {
+                vals = vals[0];
+                for (var filterName in vals.values) {
+                    if (!this.options[filterName]) {
+                        continue;
+                    }
+                    this.installOption(this.options[filterName]);
+                    this.criterions[filterName].load(vals.values[filterName]);
+                }
+            },
+            'hasValueSet': function () {
+                /* jshint camelcase: false */
+                return getValues(this).selected_filters.length > 0;
+            }
+        };
+
+        return OptionalCriterionFilter;
     }();
 
 	/*
