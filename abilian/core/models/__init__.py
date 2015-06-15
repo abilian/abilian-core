@@ -30,9 +30,9 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     OwnedMixin.__init__(self)
 
   def __repr__(self):
-    return '<{} instance at 0x{:x} name={} id={}>'.format(
+    return '<{} instance at 0x{:x} name={!r} id={}>'.format(
         self.__class__.__name__, id(self),
-        repr(self.name),
+        self.name,
         str(self.id))
 
   @property

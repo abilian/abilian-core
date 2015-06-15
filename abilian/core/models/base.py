@@ -78,8 +78,10 @@ class Indexable(object):
 
 
 class TimestampedMixin(object):
+  #: creation date
   created_at = Column(DateTime, default=datetime.utcnow,
                       info=SYSTEM | SEARCHABLE)
+  #: last modification date
   updated_at = Column(DateTime, default=datetime.utcnow,
                       onupdate=datetime.utcnow,
                       info=SYSTEM | SEARCHABLE)

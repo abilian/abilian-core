@@ -152,17 +152,17 @@ class Entity(Indexable, BaseMixin, db.Model):
   thus entities subclasses cannot use inheritance themselves (as of 2013
   Sqlalchemy does not support multi-level inheritance)
 
-  The name is a string that is shown to the user; it could be a title
-  for document, a folder name, etc.
+  The metaclass automatically sets up polymorphic inheritance parameters by
+  inserting a mixin class in parent classes. If you need to pass additional
+  parameters to `__mapper_args__`, do it as follow:
 
-  The slug attribute may be used in URLs to reference the entity, but
-  uniqueness is not enforced, even within same entity type. For example
-  if an entity class represent folders, one could want uniqueness only
-  within same parent folder.
+  .. code-block:: python
 
-  If slug is empty at first creation, its is derived from the name. When name
-  changes the slug is not updated. If name is also empty, the slug will be the
-  friendly entity_type with concatenated with entity's id.
+      @sqlalchemy.ext.declarative.declared_attr
+      def __mapper_args__(cls):
+          args = super(MyClass, cls).__mapper_args__
+          args['order_by'] = cls.created_at # for example
+          return args
   """
   __metaclass__ = EntityMeta
   __mapper_args__ = {'polymorphic_on': '_entity_type'}
@@ -176,11 +176,23 @@ class Entity(Indexable, BaseMixin, db.Model):
 
   SLUG_SEPARATOR = u'-'  # \x2d \u002d HYPHEN-MINUS
 
+  #: The name is a string that is shown to the user; it could be a title
+  #: for document, a folder name, etc.
   name = Column('name', UnicodeText())
   name.info = (EDITABLE | SEARCHABLE
                | dict(index_to=('name', 'name_prefix', 'text')))
 
   slug = Column('slug', UnicodeText(), info=SEARCHABLE)
+  """
+  The slug attribute may be used in URLs to reference the entity, but
+  uniqueness is not enforced, even within same entity type. For example
+  if an entity class represent folders, one could want uniqueness only
+  within same parent folder.
+
+  If slug is empty at first creation, its is derived from the name. When name
+  changes the slug is not updated. If name is also empty, the slug will be the
+  friendly entity_type with concatenated with entity's id.
+  """
 
   _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None
