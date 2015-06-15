@@ -2,10 +2,10 @@
 
 {% from "macros/box.html" import m_box_menu %}
 
-{% block content %}  
+{% block content %}
 
-  <div id="search-input" class="row">
-    <form class="col-xs-12 col-sm-8 col-sm-offset-2" role="search" method="GET" action="{{ url_for('search.search_main') }}">
+  <div class="ab-search-input">
+    <form role="search" method="GET" action="{{ url_for('search.search_main') }}">
       <div class="input-group">
         <input type="search" name="q" class="search-query form-control" value="{{ q }}"
                placeholder="{{ _('Search') }}" autocomplete="off" id="search-box"
@@ -22,40 +22,38 @@
   <div class="clearfix visible-xs-block"></div>
 
   {%- if not results %}
-    <p class="lead">{{ _("Your query didn't find any results.") }}</p>
+    <p class="lead">{{ _("Your query didn't match any results.") }}</p>
   {%- else %}
 
-    <div class="row">
-      <p class="col-xs-12 col-sm-8 col-sm-offset-2">
-        {{ _('%(count)d corresponding items', count=results_count) }}
-      </p>
-    </div>
+    <p class="ab-search-results-count">
+      {{ _('%(count)d items found', count=results_count) }}
+    </p>
 
-    <div class="row">
+    <div class="ab-search-results">
     {%- for hit in results %}
-      <div class="col-xs-12 col-sm-11 col-sm-offset-1">
-        <a href="{{ url_for_hit(hit)|safe }}"><strong>{{ hit.highlights('name')|safe or hit['name']}}</strong></a>
+      <div class="ab-search-result">
         {%- if (filtered_by_type|length) != 1 %}
-        &nbsp; <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span>
+        <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span> &nbsp;
         {%- endif %}
+        <a href="{{ url_for_hit(hit)|safe }}"><span class="ab-search-result-title">{{ hit.highlights('name')|safe or hit['name']}}</span></a>
 
         {%- if 'description' in hit %}
           <p>{{ hit.highlights('description')|safe }}</p>
         {%- endif %}
 
-      {%- if 'creator' in hit %}
-      {%- set author_type, author_id = hit['creator'].split(':') %}
-      {%- set author_href = url_for('social.' + author_type, **{(author_type + '_id'): author_id}) %}
-        <p class="small">
-          <i>{{ _('by') }}
-            <a href="{{ author_href }}">{{hit['creator_name'] }}</a>
-            &ndash;
-            {{ _('Last modification: %(date)s', 
-                 date=_('%(date)s at %(time)s', date=hit['updated_at']|dateformat('long'),
-                                                time=hit['updated_at']|timeformat('short'))) }}
-          </i><br />
-        </p>
-      {%- endif %}
+        {%- if 'creator' in hit %}
+        {%- set author_type, author_id = hit['creator'].split(':') %}
+        {%- set author_href = url_for('social.' + author_type, **{(author_type + '_id'): author_id}) %}
+          <p class="">
+            <i>{{ _('by') }}
+              <a href="{{ author_href }}">{{hit['creator_name'] }}</a>
+              &ndash;
+              {{ _('Last modification: %(date)s',
+                   date=_('%(date)s at %(time)s', date=hit['updated_at']|dateformat('long'),
+                                                  time=hit['updated_at']|timeformat('short'))) }}
+            </i><br />
+          </p>
+        {%- endif %}
       </div>
     {%- endfor %}
     </div>
@@ -106,5 +104,4 @@
       </div>
     {% endcall %}
   {%- endif %}
-
 {% endblock %}
