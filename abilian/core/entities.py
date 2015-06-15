@@ -158,14 +158,17 @@ class Entity(Indexable, BaseMixin, db.Model):
 
   .. code-block:: python
 
-      @sqlalchemy.ext.declarative.declared_attr
-      def __mapper_args__(cls):
-          args = super(MyClass, cls).__mapper_args__
-          args['order_by'] = cls.created_at # for example
-          return args
+      class MyContent(Entity):
+
+          @sqlalchemy.ext.declarative.declared_attr
+          def __mapper_args__(cls):
+              # super(Mycontent, cls).__mapper_args__ would be prettier, but
+              # `MyContent` is not defined at this stage.
+              args = Entity.__dict__['__mapper_args__'].fget(cls)
+              args['order_by'] = cls.created_at # for example
+              return args
   """
   __metaclass__ = EntityMeta
-  __mapper_args__ = {'polymorphic_on': '_entity_type'}
   __indexable__ = False
   __indexation_args__ = {}
   __indexation_args__.update(Indexable.__indexation_args__)
@@ -175,6 +178,15 @@ class Entity(Indexable, BaseMixin, db.Model):
   del index_to
 
   SLUG_SEPARATOR = u'-'  # \x2d \u002d HYPHEN-MINUS
+
+  @declared_attr
+  def __mapper_args__(cls):
+    if cls.__module__ == __name__ and  cls.__name__ == 'Entity':
+      return {'polymorphic_on': '_entity_type'}
+
+    else:
+      return {'polymorphic_identity': cls.entity_type,
+              'inherit_condition': cls.id == Entity.id}
 
   #: The name is a string that is shown to the user; it could be a title
   #: for document, a folder name, etc.
