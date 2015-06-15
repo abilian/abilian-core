@@ -4,20 +4,38 @@
 from __future__ import absolute_import
 
 from datetime import datetime, timedelta
+
+import pytest
+
 from abilian.testing import BaseTestCase as AbilianTestCase
 from abilian.core.entities import Entity
 
-from ..comment import Comment
+from ..comment import Comment, is_commentable, register
 
-
-class Commentable(Entity):
+@register
+class CommentableContent(Entity):
   pass
+
+
+def test_commentable_interface():
+  assert is_commentable(CommentableContent)
+  assert is_commentable(CommentableContent(name=u'test instance'))
+  assert not is_commentable(object)
+  assert not is_commentable(object())
+
+
+def test_cannot_register_non_entities():
+  class Dummy(object):
+    pass
+
+  with pytest.raises(ValueError):
+    register(Dummy)
 
 
 class TestComment(AbilianTestCase):
 
   def test_default_ordering(self):
-    commentable = Commentable(name=u'commentable objet')
+    commentable = CommentableContent(name=u'commentable objet')
     self.session.add(commentable)
 
     now = datetime.now()

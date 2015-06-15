@@ -3,11 +3,45 @@
 """
 from __future__ import absolute_import
 
+import abc
+
 import sqlalchemy as sa
 from sqlalchemy import Column, UnicodeText, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
 from abilian.core.entities import Entity
+
+
+class Commentable(object):
+  """
+  """
+  __metaclass__ = abc.ABCMeta
+
+
+def register(cls):
+  """
+  Register an :class:`Entity` as a commentable class.
+
+  Can be used as a class decorator:
+  .. code-block:: python
+
+      @comment.register
+      class MyContent(Entity):
+          ....
+  """
+  if not issubclass(cls, Entity):
+    raise ValueError('Class must be a subclass of abilian.core.entities.Entity')
+
+  Commentable.register(cls)
+  return cls
+
+
+def is_commentable(obj):
+  """
+  :param obj: a class or instance
+  """
+  predicate = issubclass if isinstance(obj, type) else isinstance
+  return predicate(obj, Commentable)
 
 
 class Comment(Entity):
@@ -16,7 +50,12 @@ class Comment(Entity):
   """
   @sa.ext.declarative.declared_attr
   def __mapper_args__(cls):
-    args = super(cls, cls).__mapper_args__
+    # we cannot use super(Comment, cls): declared_attr happens during class
+    # construction. super(cls, cls) could work; as long as `cls` is not a
+    # subclass of `Comment`: it would enter into an infinite loop.
+    #
+    # Entity.__mapper_args__ calls the descriptor with 'Entity', not `cls`.
+    args = Entity.__dict__['__mapper_args__'].fget(cls)
     args['order_by'] = cls.created_at
     return args
 
