@@ -1,4 +1,5 @@
 {%- set locale = get_locale() %}
+{%- set full_width = full_width|default(False) %}
 <!DOCTYPE html>
 <html lang="{{ locale.language }}">
 <head>
@@ -125,6 +126,7 @@
  {% endblock inline_js %}
 
  {#- template can also use an 'inline_js' variable #}
+{%- set inline_js = inline_js|default(None) %}
  {%- if inline_js %}
    {{ inline_js }}
  {%- endif %}
