@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-12 15:02+0200\n"
+"POT-Creation-Date: 2015-06-15 20:44+0200\n"
 "PO-Revision-Date: 2015-06-12 15:02+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -463,24 +463,21 @@ msgid "Edit"
 msgstr "Éditer"
 
 #: abilian/web/admin/templates/admin/group_view.html:20
-#, fuzzy
 msgid "Members"
-msgstr "nouveaux membres"
+msgstr "Membres"
 
 #: abilian/web/admin/templates/admin/group_view.html:27
-#, fuzzy
 msgid "User"
-msgstr "Utilisateurs"
+msgstr "Utilisateur"
 
 #: abilian/web/admin/templates/admin/group_view.html:36
 #: abilian/web/admin/templates/admin/group_view.html:56
 msgid "account disabled"
-msgstr ""
+msgstr "compte utilisateur désactivé"
 
 #: abilian/web/admin/templates/admin/groups.html:10
-#, fuzzy
 msgid "New Group..."
-msgstr "Nouvel utilisateur..."
+msgstr "Nouveau groupe..."
 
 #: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:16
@@ -583,39 +580,39 @@ msgstr "Préférences enregistrées."
 msgid "All"
 msgstr "Tous"
 
-#: abilian/web/search/templates/search/search.html:11
+#: abilian/web/search/templates/search/search.html:14
 #: abilian/web/templates/navbar.html:32
 msgid "Search"
 msgstr "Rechercher"
 
-#: abilian/web/search/templates/search/search.html:25
-msgid "Your query didn't find any results."
-msgstr "Votre recherche n'a donné aucun résultats"
+#: abilian/web/search/templates/search/search.html:26
+msgid "Your query didn't match any results."
+msgstr "Votre recherche n'a donné aucun résultat."
 
-#: abilian/web/search/templates/search/search.html:30
+#: abilian/web/search/templates/search/search.html:29
 #, python-format
-msgid "%(count)d corresponding items"
-msgstr "%(count)d éléments correspondants"
+msgid "%(count)d items found"
+msgstr "%(count)d éléments trouvé"
 
-#: abilian/web/search/templates/search/search.html:50
+#: abilian/web/search/templates/search/search.html:39
+msgid "Filter by type"
+msgstr "Filtrer par type"
+
+#: abilian/web/search/templates/search/search.html:72
 msgid "by"
 msgstr "par"
 
-#: abilian/web/search/templates/search/search.html:53
+#: abilian/web/search/templates/search/search.html:75
 #, python-format
 msgid "Last modification: %(date)s"
 msgstr "Dernière modification: %(date)s"
 
-#: abilian/web/search/templates/search/search.html:54
+#: abilian/web/search/templates/search/search.html:76
 #, python-format
 msgid "%(date)s at %(time)s"
 msgstr "%(date)s à %(time)s"
 
-#: abilian/web/search/templates/search/search.html:96
-msgid "Filter by types"
-msgstr "Filtrer par types"
-
-#: abilian/web/templates/abilian_base.html:41
+#: abilian/web/templates/abilian_base.html:42
 msgid "Skip to content"
 msgstr "Aller au contenu"
 
@@ -667,6 +664,14 @@ msgstr "Déposer"
 #: abilian/web/templates/default/list_view.html:76
 msgid "Export XML"
 msgstr "Export XML"
+
+#: abilian/web/templates/default/list_view.html:82
+msgid "Send an email to selected contacts"
+msgstr ""
+
+#: abilian/web/templates/default/list_view.html:82
+msgid "Send an email"
+msgstr ""
 
 #: abilian/web/templates/macros/audit.html:9
 msgid "{key} changed:"
