@@ -7,13 +7,15 @@
   {{ rendered_entity }}
 
   <div class="collapsable">
-
     {%- for view in related_views %}
-      <h3 class="collapsed" data-toggle="collapse" href="#panel_{{ loop.index }}">{{ view.label }} ({{ view.size }})</h3>
+      {% if view.size %}
+      <h3 class="collapsed" data-toggle="collapse"
+          href="#panel_{{ loop.index }}">{{ view.label }} ({{ view.size }})</h3>
 
       <div id="panel_{{ loop.index }}" class="collapse" style="margin-bottom: 25px;">
         {{ view.rendered }}
       </div>
+      {% endif %}
     {%- endfor %}
 
     {{ m_audit_log(audit_entries) }}
