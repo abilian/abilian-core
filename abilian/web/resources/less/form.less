@@ -18,6 +18,34 @@ label::first-letter {
   text-transform: uppercase;
 }
 
+/*
+form [role="tabpanel"] > .form-group:nth-of-type(even) {
+  margin-top: @form-group-margin-bottom / 2;
+  margin-bottom: @form-group-margin-bottom / 2;
+}
+
+form [role="tabpanel"] > .form-group:nth-of-type(odd) {
+  background-color: @table-bg-accent;
+  padding-top: @form-group-margin-bottom / 2;
+  padding-bottom: @form-group-margin-bottom / 2;
+
+}
+*/
+
+.form-group .form-group {
+  /* fieldform */
+  margin-bottom: 5px;
+
+  > label {
+    /* reset margin bottom when primary form is form-horizontal */
+    margin-bottom: 5px;
+  }
+
+  .help-block {
+    margin-bottom: 0px;
+  }
+}
+
 form [role="tablist"] .required:after,
 .form-group.required > label:after,
 label.required:after {
