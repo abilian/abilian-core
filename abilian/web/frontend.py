@@ -459,7 +459,7 @@ class Module(object):
     """
     args = request.args
     search = args.get("sSearch", "").replace("%", "").lower()
-    q = self.managed_class.query
+    q = self.managed_class.query.distinct()
 
     for crit in self.search_criterions:
       q = crit.filter(q, self, request, search)
