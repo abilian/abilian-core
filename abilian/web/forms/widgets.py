@@ -1281,6 +1281,9 @@ class Select2Ajax(object):
     return valuelist
 
   def __call__(self, field, **kwargs):
+    """
+    Render widget
+    """
     if self.multiple:
       kwargs['multiple'] = True
 
