@@ -81,7 +81,7 @@
      };
 
 
-     Abilian.fn.init_widgets = function() {
+     Abilian.fn.initWidgets = function() {
          $('.js-widget').each(Abilian.initJsWidget);
          $('[data-toggle="select2"]').each(function () {
              var el = $(this);
@@ -113,7 +113,8 @@
          $('.file-input').fileInput();
          $('.image-input').imageInput();
      };
-     Abilian.fn.onAppInit(Abilian.fn.init_widgets);
+    $(window).on(Abilian.events.appAfterInit,
+                 Abilian.fn.initWidgets);
 
      function datetimePickerSetup() {
          /* automatically concat datepicker + timepicker in hidden input */

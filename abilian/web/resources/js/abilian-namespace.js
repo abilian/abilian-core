@@ -24,8 +24,9 @@ function setupAbilian($) {
       * `jQuery(...).on(Abilian.events.event_name, ...)` rather than using
       * string value
       */
-     Abilian.events = {};
-     Abilian.events.appInit = 'abilian.app-init';
+    Abilian.events = {};
+    Abilian.events.appInit = 'abilian.app-init';
+    Abilian.events.appAfterInit = 'abilian.app-after-init';
 
     /**
      * CSRF field name to use, if CSRF is used
@@ -69,7 +70,8 @@ function setupAbilian($) {
 
     Abilian.init = function() {
         initialized = true;
-         $(window).trigger(Abilian.events.appInit);
+        $(window).trigger(Abilian.events.appInit);
+        $(window).trigger(Abilian.events.appAfterInit);
      };
 
     return Abilian;
