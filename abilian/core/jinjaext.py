@@ -88,7 +88,7 @@ class DeferredJSExtension(Extension):
 
   def collect_deferred(self, caller):
     result = u'\n'.join(
-      u'{{\n{}\n}};'.format(js)
+      u'(function(){{\n{}\n}})();'.format(js)
       for js in deferred_js)
     current_app.extensions[DeferredJS.name].reset_deferred()
     return result
