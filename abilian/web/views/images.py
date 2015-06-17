@@ -205,7 +205,7 @@ class UserMugshot(BaseImageView):
   def get(self, user, image, size, *args, **kwargs):
     if image:
       #  user has set a photo
-      return super(UserMugshot, self).get(image, *args, **kwargs)
+      return super(UserMugshot, self).get(image, size, *args, **kwargs)
 
     # render svg avatar
     letter = user.last_name[0] if user.last_name else user.first_name[0]
