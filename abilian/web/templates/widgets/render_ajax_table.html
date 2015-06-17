@@ -43,47 +43,46 @@
 
   {%- deferJS %}
   <script type="text/javascript">
-   function initDatatable($) {
-       var tbl = $("#listing_{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
-         
-        /* export button: setup url args on click, to match current table filtering */
-        tbl.bind('xhr', $.fn.dataTableSetExportArgs);
-        $('.datatable-export').click(
-          { 'table': tbl.get(0) },
-            function(e) {
-                var tbl = e.data.table;
-              var target = $(e.target);
-                var href = target.attr('href');
-                var params = $.data(tbl, 'current-query-args');
-                var concat_char = href.indexOf('?') == -1 ? '?' : '&';
-                window.location = href + concat_char + $.param(params);
-                return false;
-            }
-        );
+ require(['Abilian', 'jquery', 'jquery.dataTables'],
+         function(Abilian, $) {
+   
+             function initDatatable() {
+                 var tbl = $("#listing_{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
+                 
+                 /* export button: setup url args on click, to match current table filtering */
+                 tbl.bind('xhr', $.fn.dataTableSetExportArgs);
+                 $('.datatable-export').click(
+                     { 'table': tbl.get(0) },
+                     function(e) {
+                         var tbl = e.data.table;
+                         var target = $(e.target);
+                         var href = target.attr('href');
+                         var params = $.data(tbl, 'current-query-args');
+                         var concat_char = href.indexOf('?') == -1 ? '?' : '&';
+                         window.location = href + concat_char + $.param(params);
+                         return false;
+                     }
+                 );
 
-         $(document).bind("keydown", keyDown);
+                 $(document).bind("keydown", keyDown);
 
-         function keyDown(e) {
-             var code = e.keyCode;
-             // Note: we prevent default keyboard action
-             if (code == 39) {
-                 $("li.next a").click();
-                 return false;
-             } else if (code == 37) {
-                 $("li.prev a").click();
-                 return false;
+                 function keyDown(e) {
+                     var code = e.keyCode;
+                     // Note: we prevent default keyboard action
+                     if (code == 39) {
+                         $("li.next a").click();
+                         return false;
+                     } else if (code == 37) {
+                         $("li.prev a").click();
+                         return false;
+                     }
+                     return true;
+                 }
              }
-             return true;
+             
+             Abilian.fn.onAppInit(initDatatable)
          }
-     }
-      
-     require(['Abilian'],
-             function(Abilian) {
-                 Abilian.fn.onAppInit(
-                     function() {require(['jquery', 'jquery.dataTables'],
-                                         initDatatable); });
-             }
-     );
+   );
   </script>
   {%- enddeferJS %}
     

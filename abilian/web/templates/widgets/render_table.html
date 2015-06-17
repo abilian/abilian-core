@@ -55,8 +55,14 @@
 
   {%- deferJS %}
   <script type="text/javascript">
-    $(document).ready(function() {
-      {{ js }}
+require(
+    ['Abilian'],
+    function(Abilian) {
+        Abilian.fn.onAppInit(
+            function() {
+                {{ js }}
+            }
+        );
     });
   </script>
   {%- enddeferJS %}

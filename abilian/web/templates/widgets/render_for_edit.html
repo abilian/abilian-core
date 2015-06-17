@@ -57,25 +57,14 @@
 </form>
 
 {%- deferJS %}
-{%- if rules %}
-  <script>
-   $(document).ready(function() {
-     var rules = {{ rules }};
-
-     // Make bold labels for required fields
-     $("label").each(function(i, e) {
-       var for_ = $(e).attr("for");
-       if (rules[for_] && rules[for_].required) {
-         $(e).addClass("required");
-       }
-     });
-   });
-  </script>
-{%- endif %}
-
 {%- if form.js %}
   <script>
-   $(document).ready(function() { {{ form.js|safe }} });
+ require(
+     ['Abilian']
+     function(Abilian) {
+         Abilian.fn.onAppInit(function() { {{ form.js|safe }} });
+     }
+   );
   </script>
 {%- endif %}
 {%- enddeferJS %}

@@ -1,6 +1,6 @@
 (function(factory) {
     'use strict';
-    require(['Abilian', 'jquery'], factory);
+    require(['AbilianWidget', 'jquery'], factory);
 }
  (function(Abilian, $) {
      'use strict';

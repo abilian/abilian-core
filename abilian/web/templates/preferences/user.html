@@ -22,9 +22,14 @@
 
 {%- deferJS %}
   <script type="text/javascript">
-   Abilian.fn.onAppInit(function() {
-     $('#user-preferences input[type="password"]').preventEnterKey();
-   });
+require(
+    ['Abilian', 'jquery'],
+    function(Abilian, $) {       
+        Abilian.fn.onAppInit(
+            function() {
+                $('#user-preferences input[type="password"]').preventEnterKey();
+            });
+    });
   </script>
 {%- enddeferJS %}
 

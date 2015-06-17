@@ -1,9 +1,10 @@
 /* Abilian namespace */
 (function(factory) {
     'use strict';
-    require(['AbilianNS', 'jquery'], factory);
+    define('AbilianWidget', ['AbilianNS', 'jquery'], factory);
 }
 (function(Abilian, $) {
+    'use strict';
 
     /**
      * Initialize application parameters. Must be called when all resources are
@@ -45,6 +46,17 @@
                 'containerCssClass': 'form-control'
             };
 
+            function replaceTag(tag) {
+                return tagsToReplace[tag] || tag;
+            }
+
+            function safeTagsReplace(element) {
+                var output =  element.text.replace(/&amp;/g, replaceTag);
+                output =  output.replace(/&lt;/g, replaceTag);
+                output =  output.replace(/&gt;/g, replaceTag);
+                return output;
+            }
+
             // replace the escaped html with proper tags
             // to be displayed in the select
             if('makeHtml' in params){
@@ -55,23 +67,14 @@
                     '&gt;': '>'
                 };
 
-                function replaceTag(tag) {
-                    return tagsToReplace[tag] || tag;
-                }
-
-                function safe_tags_replace(element) {
-                    var output =  element.text.replace(/&amp;/g, replaceTag);
-                    output =  output.replace(/&lt;/g, replaceTag);
-                    output =  output.replace(/&gt;/g, replaceTag);
-                    return output
-                }
                 //select2 parameters for formating function
-                initParams['formatResult'] = safe_tags_replace;
-                initParams['formatSelection'] = safe_tags_replace;
+                initParams.formatResult = safeTagsReplace;
+                initParams.formatSelection = safeTagsReplace;
             }
 
             $.extend(initParams, params);
             this.select2(initParams);
         });
 
+   return Abilian;
 }));
