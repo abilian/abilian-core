@@ -77,12 +77,6 @@
         </div>
         {% endif %}
 
-        {%- if module.mail_to_contacts %}
-        <div class="btn-group">
-          <a class="btn btn-default datatable-export" href="{{ url_for('.mail_to_contacts') }}" title="{{ _("Send an email to selected contacts") }}"><i class="fa fa-envelope"></i> {{ _("Send an email") }}</a>
-        </div>
-          {%- endif %}
-
       </div>
     </div>
   </div> <!-- row -->
