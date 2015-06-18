@@ -43,8 +43,16 @@ def is_commentable(obj):
   """
   :param obj: a class or instance
   """
-  predicate = issubclass if isinstance(obj, type) else isinstance
-  return predicate(obj, Commentable)
+  if isinstance(obj, type):
+    return issubclass(obj, Commentable)
+
+  if not isinstance(obj, Commentable):
+    return False
+
+  if obj.id is None:
+    return False
+
+  return True
 
 
 def for_entity(obj, check_commentable=False):
