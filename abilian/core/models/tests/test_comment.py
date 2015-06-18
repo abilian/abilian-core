@@ -19,7 +19,10 @@ class CommentableContent(Entity):
 
 def test_commentable_interface():
   assert is_commentable(CommentableContent)
-  assert is_commentable(CommentableContent(name=u'test instance'))
+  instance = CommentableContent(name=u'test instance')
+  assert not is_commentable(instance) # not in DB: no id
+  instance.id = 42
+  assert is_commentable(instance)
   assert not is_commentable(object)
   assert not is_commentable(object())
 
