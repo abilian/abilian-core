@@ -4,8 +4,11 @@
 from __future__ import absolute_import
 
 from datetime import datetime, timedelta
-from flask import render_template
-from flask.ext.babel import lazy_gettext as _l
+import sqlalchemy as sa
+
+from flask import render_template, current_app
+
+from abilian.i18n import _l
 from abilian.core.models.subjects import User
 from abilian.services.audit import AuditEntry, CREATION
 
@@ -29,21 +32,27 @@ class DashboardPanel(AdminPanel):
 
 def stats_since(dt):
   new_members = new_documents = new_messages = 0
+  after_date = datetime.utcnow() - dt
+  session = current_app.db.session()
+  counts_per_type = session\
+    .query(AuditEntry.entity_type.label('type'),
+           sa.func.count(AuditEntry.entity_type).label('count'))\
+    .group_by(AuditEntry.entity_type)\
+    .filter(AuditEntry.happened_at > after_date) \
+    .filter(AuditEntry.type == CREATION)\
+    .all()
 
-  now = datetime.utcnow()
-  entries = AuditEntry.query \
-    .filter(AuditEntry.happened_at > now - dt) \
-    .filter(AuditEntry.type == CREATION).all()
-  for e in entries:
-    entity_class = e.entity_type.split('.')[-1]
+  for entity_type, count in counts_per_type:
+    entity_class = entity_type.split('.')[-1]
     if entity_class == 'User':
-      new_members += 1
+      new_members = count
     elif entity_class == 'Document':
-      new_documents += 1
+      new_documents = count
     elif entity_class == 'Message':
-      new_messages += 1
+      new_messages = count
 
-  active_users = User.query.filter(User.last_active > now - dt).count()
+  active_users = session.query(sa.func.count(User.id))\
+                        .filter(User.last_active > after_date).scalar()
 
   return {
     'new_members': new_members,
