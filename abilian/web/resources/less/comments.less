@@ -1,0 +1,29 @@
+ol.comments {
+  .list-unstyled();
+
+  li {
+    position: relative;
+    padding: 0.5em;
+    padding-left: 55px; /* avatar size: 45px, + 2*5px for spacing */
+    margin-bottom: 0.5em;
+    background-color: @gray-lighter;
+    border-radius: @border-radius-base;
+    
+    .header {
+      margin-bottom: 0.25em;
+      min-height: 50px;
+      
+      .avatar {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+      }
+
+      .author {
+        font-weight: bold;
+      }
+      
+      .date { float: right; }
+    }
+  }
+}

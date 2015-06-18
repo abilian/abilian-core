@@ -38,6 +38,7 @@ from flask.ext.script import Manager as ScriptManager
 
 import abilian.i18n
 from abilian.core import extensions, signals, redis
+from abilian.core.models import comment
 from abilian.core.celery import FlaskCelery
 import abilian.core.util
 from abilian.plugin.loader import AppLoader
@@ -147,7 +148,7 @@ class Application(Flask, ServiceManager, PluginManager):
   default_config = default_config
 
   #: Custom apps may want to always load some plugins: list them here.
-  APP_PLUGINS = ('abilian.web.search',)
+  APP_PLUGINS = ('abilian.web.search', 'abilian.web.comments',)
 
   #: Environment variable used to locate a config file to load last (after
   #: instance config file). Use this if you want to override some settings on a

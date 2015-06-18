@@ -11,6 +11,9 @@ from sqlalchemy.orm import relationship, backref
 
 from abilian.core.entities import Entity
 
+#: name of backref on target :class:`Entity` object
+ATTRIBUTE = '__comments__'
+
 
 class Commentable(object):
   """
@@ -44,6 +47,16 @@ def is_commentable(obj):
   return predicate(obj, Commentable)
 
 
+def for_entity(obj, check_commentable=False):
+  """
+  Return comments on an entity.
+  """
+  if check_commentable and not is_commentable(obj):
+    return []
+
+  return getattr(obj, ATTRIBUTE)
+
+
 class Comment(Entity):
   """
   A Comment related to an :class:`Entity`.
@@ -58,9 +71,6 @@ class Comment(Entity):
     args = Entity.__dict__['__mapper_args__'].fget(cls)
     args['order_by'] = cls.created_at
     return args
-
-  #: name of backref on target :class:`Entity` object
-  ATTRIBUTE = '__comments__'
 
   entity_id = Column(Integer, ForeignKey(Entity.id), nullable=False)
 

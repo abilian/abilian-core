@@ -1,0 +1,15 @@
+{% macro m_user_avatar(user, size=20) %}
+  {%- call m_user_link(user) %}
+    {{ m_user_photo(user, size=size) }}
+    {{ user.name }}
+  {%- endcall %}
+  </a>
+{% endmacro %}
+
+{% macro m_user_photo(user, size=20) %}
+  <img class="avatar" src="{{ user_photo_url(user, size) }}" alt="{{ user.name }}" />
+{% endmacro %}
+
+{% macro m_user_link(user, css="") %}
+  <a href="{{ url_for(user) }}" {%- if css %} class="{{ css }}"{%- endif %}>{{ caller() }}</a>
+{% endmacro %}    
