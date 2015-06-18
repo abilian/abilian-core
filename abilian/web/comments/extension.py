@@ -29,6 +29,9 @@ class CommentExtension(object):
 
   def has_comments(self, obj):
     return bool(comments.for_entity(obj, check_commentable=True))
+
+  def count(self, obj):
+    return len(comments.for_entity(obj, check_commentable=True))
     
   def get_form_context(self, obj):
     """

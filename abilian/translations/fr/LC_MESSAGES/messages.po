@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-15 20:44+0200\n"
-"PO-Revision-Date: 2015-06-12 15:02+0200\n"
+"POT-Creation-Date: 2015-06-18 12:27+0200\n"
+"PO-Revision-Date: 2015-06-18 12:29+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -453,7 +453,7 @@ msgstr "Plus anciens"
 msgid "All contents"
 msgstr "Tous les contenus"
 
-#: abilian/web/admin/templates/admin/audit.html:87
+#: abilian/web/admin/templates/admin/audit.html:89
 msgid "Select user"
 msgstr "Filtrer sur un utilisateur"
 
@@ -504,6 +504,18 @@ msgstr "Nouvel utilisateur..."
 #: abilian/web/admin/templates/admin/users.html:21
 msgid "Last connection"
 msgstr "Dernière connection"
+
+#: abilian/web/comments/views.py:30
+msgid "Send"
+msgstr ""
+
+#: abilian/web/comments/views.py:38
+msgid "Comment added"
+msgstr ""
+
+#: abilian/web/comments/views.py:68
+msgid "New comment on \"{title}\""
+msgstr ""
 
 #: abilian/web/forms/fields.py:257 abilian/web/forms/fields.py:301
 msgid "Not a valid datetime value"
@@ -672,6 +684,11 @@ msgstr ""
 #: abilian/web/templates/default/list_view.html:82
 msgid "Send an email"
 msgstr ""
+
+#: abilian/web/templates/default/single_view.html:28
+#, python-format
+msgid "Comments (%(count)d)"
+msgstr "Commentaires (%(count)d)"
 
 #: abilian/web/templates/macros/audit.html:9
 msgid "{key} changed:"
