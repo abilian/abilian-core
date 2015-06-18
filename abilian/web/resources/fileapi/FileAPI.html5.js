@@ -1,6 +1,96 @@
-/*! fileapi 2.0.2 - BSD | git://github.com/mailru/FileAPI.git
+/*! FileAPI 2.0.11 - BSD | git://github.com/mailru/FileAPI.git
  * FileAPI — a set of  javascript tools for working with files. Multiupload, drag'n'drop and chunked file upload. Images: crop, resize and auto orientation by EXIF.
  */
+
+/*
+ * JavaScript Canvas to Blob 2.0.5
+ * https://github.com/blueimp/JavaScript-Canvas-to-Blob
+ *
+ * Copyright 2012, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ *
+ * Based on stackoverflow user Stoive's code snippet:
+ * http://stackoverflow.com/q/4998908
+ */
+
+/*jslint nomen: true, regexp: true */
+/*global window, atob, Blob, ArrayBuffer, Uint8Array */
+
+(function (window) {
+    'use strict';
+    var CanvasPrototype = window.HTMLCanvasElement &&
+            window.HTMLCanvasElement.prototype,
+        hasBlobConstructor = window.Blob && (function () {
+            try {
+                return Boolean(new Blob());
+            } catch (e) {
+                return false;
+            }
+        }()),
+        hasArrayBufferViewSupport = hasBlobConstructor && window.Uint8Array &&
+            (function () {
+                try {
+                    return new Blob([new Uint8Array(100)]).size === 100;
+                } catch (e) {
+                    return false;
+                }
+            }()),
+        BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder ||
+            window.MozBlobBuilder || window.MSBlobBuilder,
+        dataURLtoBlob = (hasBlobConstructor || BlobBuilder) && window.atob &&
+            window.ArrayBuffer && window.Uint8Array && function (dataURI) {
+                var byteString,
+                    arrayBuffer,
+                    intArray,
+                    i,
+                    mimeString,
+                    bb;
+                if (dataURI.split(',')[0].indexOf('base64') >= 0) {
+                    // Convert base64 to raw binary data held in a string:
+                    byteString = atob(dataURI.split(',')[1]);
+                } else {
+                    // Convert base64/URLEncoded data component to raw binary data:
+                    byteString = decodeURIComponent(dataURI.split(',')[1]);
+                }
+                // Write the bytes of the string to an ArrayBuffer:
+                arrayBuffer = new ArrayBuffer(byteString.length);
+                intArray = new Uint8Array(arrayBuffer);
+                for (i = 0; i < byteString.length; i += 1) {
+                    intArray[i] = byteString.charCodeAt(i);
+                }
+                // Separate out the mime component:
+                mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                // Write the ArrayBuffer (or ArrayBufferView) to a blob:
+                if (hasBlobConstructor) {
+                    return new Blob(
+                        [hasArrayBufferViewSupport ? intArray : arrayBuffer],
+                        {type: mimeString}
+                    );
+                }
+                bb = new BlobBuilder();
+                bb.append(arrayBuffer);
+                return bb.getBlob(mimeString);
+            };
+    if (window.HTMLCanvasElement && !CanvasPrototype.toBlob) {
+        if (CanvasPrototype.mozGetAsFile) {
+            CanvasPrototype.toBlob = function (callback, type, quality) {
+                if (quality && CanvasPrototype.toDataURL && dataURLtoBlob) {
+                    callback(dataURLtoBlob(this.toDataURL(type, quality)));
+                } else {
+                    callback(this.mozGetAsFile('blob', type));
+                }
+            };
+        } else if (CanvasPrototype.toDataURL && dataURLtoBlob) {
+            CanvasPrototype.toBlob = function (callback, type, quality) {
+                callback(dataURLtoBlob(this.toDataURL(type, quality)));
+            };
+        }
+    }
+    window.dataURLtoBlob = dataURLtoBlob;
+})(window);
 
 /*jslint evil: true */
 /*global window, URL, webkitURL, ActiveXObject */
@@ -15,6 +105,7 @@
 		document = window.document,
 		doctype = document.doctype || {},
 		userAgent = window.navigator.userAgent,
+		safari = /safari\//i.test(userAgent) && !/chrome\//i.test(userAgent),
 
 		// https://github.com/blueimp/JavaScript-Load-Image/blob/master/load-image.js#L48
 		apiURL = (window.createObjectURL && window) || (window.URL && URL.revokeObjectURL && URL) || (window.webkitURL && webkitURL),
@@ -29,11 +120,13 @@
 		jQuery = window.jQuery,
 
 		html5 =    !!(File && (FileReader && (window.Uint8Array || FormData || XMLHttpRequest.prototype.sendAsBinary)))
-				&& !(/safari\//i.test(userAgent) && !/chrome\//i.test(userAgent) && /windows/i.test(userAgent)), // BugFix: https://github.com/mailru/FileAPI/issues/25
+				&& !(safari && /windows/i.test(userAgent)), // BugFix: https://github.com/mailru/FileAPI/issues/25
 
 		cors = html5 && ('withCredentials' in (new XMLHttpRequest)),
-		
+
 		chunked = html5 && !!Blob && !!(Blob.prototype.webkitSlice || Blob.prototype.mozSlice || Blob.prototype.slice),
+
+		normalize = ('' + ''.normalize).indexOf('[native code]') > 0,
 
 		// https://github.com/blueimp/JavaScript-Canvas-to-Blob
 		dataURLtoBlob = window.dataURLtoBlob,
@@ -44,6 +137,8 @@
 		_rimgcanvas = /img|canvas/i,
 		_rinput = /input/i,
 		_rdata = /^data:[^,]+,/,
+
+		_toString = {}.toString,
 
 
 		Math = window.Math,
@@ -111,11 +206,11 @@
 					_elEvents[uid] = {};
 				}
 
+				var isFileReader = (FileReader && el) && (el instanceof FileReader);
 				_each(type.split(/\s+/), function (type){
-					if( jQuery ){
+					if( jQuery && !isFileReader){
 						jQuery.event.add(el, type, fn);
-					}
-					else {
+					} else {
 						if( !_elEvents[uid][type] ){
 							_elEvents[uid][type] = [];
 						}
@@ -138,8 +233,9 @@
 			if( el ){
 				var uid = api.uid(el), events = _elEvents[uid] || {};
 
+				var isFileReader = (FileReader && el) && (el instanceof FileReader);
 				_each(type.split(/\s+/), function (type){
-					if( jQuery ){
+					if( jQuery && !isFileReader){
 						jQuery.event.remove(el, type, fn);
 					}
 					else {
@@ -187,12 +283,13 @@
 		 * FileAPI (core object)
 		 */
 		api = {
-			version: '2.0.2',
+			version: '2.0.11',
 
 			cors: false,
 			html5: true,
 			media: false,
 			formData: true,
+			multiPassResize: true,
 
 			debug: false,
 			pingUrl: false,
@@ -222,6 +319,9 @@
 				, 'video/*': 'm4v 3gp nsv ts ty strm rm rmvb m3u ifo mov qt divx xvid bivx vob nrg img iso pva wmv asf asx ogm m2v avi bin dat dvr-ms mpg mpeg mp4 mkv avc vp3 svq3 nuv viv dv fli flv wpl'
 			},
 
+			uploadRetry : 0,
+			networkDownRetryTimeout : 5000, // milliseconds, don't flood when network is down
+
 			chunkSize : 0,
 			chunkUploadRetry : 0,
 			chunkNetworkDownRetryTimeout : 2000, // milliseconds, don't flood when network is down
@@ -230,6 +330,8 @@
 			MB: _SIZE_CONST(2),
 			GB: _SIZE_CONST(3),
 			TB: _SIZE_CONST(4),
+
+			EMPTY_PNG: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIW2NkAAIAAAoAAggA9GkAAAAASUVORK5CYII=',
 
 			expando: 'fileapi' + (new Date).getTime(),
 
@@ -459,13 +561,22 @@
 
 
 			/**
-			 * Is file instance
-			 *
+			 * Is file?
 			 * @param  {File}  file
 			 * @return {Boolean}
 			 */
 			isFile: function (file){
-				return	html5 && file && (file instanceof File);
+				return _toString.call(file) === '[object File]';
+			},
+
+
+			/**
+			 * Is blob?
+			 * @param   {Blob}  blob
+			 * @returns {Boolean}
+			 */
+			isBlob: function (blob) {
+				return this.isFile(blob) || (_toString.call(blob) === '[object Blob]');
 			},
 
 
@@ -687,28 +798,84 @@
 			getDropFiles: function (evt, callback){
 				var
 					  files = []
+					, all = []
+					, items
 					, dataTransfer = _getDataTransfer(evt)
-					, entrySupport = _isArray(dataTransfer.items) && dataTransfer.items[0] && _getAsEntry(dataTransfer.items[0])
-					, queue = api.queue(function (){ callback(files); })
+					, transFiles = dataTransfer.files
+					, transItems = dataTransfer.items
+					, entrySupport = _isArray(transItems) && transItems[0] && _getAsEntry(transItems[0])
+					, queue = api.queue(function (){ callback(files, all); })
 				;
 
-				_each((entrySupport ? dataTransfer.items : dataTransfer.files) || [], function (item){
+				if( entrySupport ){
+					if( normalize && transFiles ){
+						var
+							i = transFiles.length
+							, file
+							, entry
+						;
+
+						items = new Array(i);
+						while( i-- ){
+							file = transFiles[i];
+
+							try {
+								entry = _getAsEntry(transItems[i]);
+							}
+							catch( err ){
+								api.log('[err] getDropFiles: ', err);
+								entry = null;
+							}
+
+							if( _isEntry(entry) ){
+								// OSX filesystems use Unicode Normalization Form D (NFD),
+								// and entry.file(…) can't read the files with the same names
+								if( entry.isDirectory || (entry.isFile && file.name == file.name.normalize('NFC')) ){
+									items[i] = entry;
+								}
+								else {
+									items[i] = file;
+								}
+							}
+							else {
+								items[i] = file;
+							}
+						}
+					}
+					else {
+						items = transItems;
+					}
+				}
+				else {
+					items = transFiles;
+				}
+
+				_each(items || [], function (item){
 					queue.inc();
 
 					try {
-						if( entrySupport ){
-							_readEntryAsFiles(item, function (err, entryFiles){
+						if( entrySupport && _isEntry(item) ){
+							_readEntryAsFiles(item, function (err, entryFiles, allEntries){
 								if( err ){
 									api.log('[err] getDropFiles:', err);
 								} else {
 									files.push.apply(files, entryFiles);
 								}
+								all.push.apply(all, allEntries);
+
 								queue.next();
 							});
 						}
 						else {
-							_isRegularFile(item, function (yes){
-								yes && files.push(item);
+							_isRegularFile(item, function (yes, err){
+								if( yes ){
+									files.push(item);
+								}
+								else {
+									item.error = err;
+								}
+								all.push(item);
+
 								queue.next();
 							});
 						}
@@ -917,7 +1084,8 @@
 
 			upload: function (options){
 				options = _extend({
-					  prepare: api.F
+					  jsonp: 'callback'
+					, prepare: api.F
 					, beforeupload: api.F
 					, upload: api.F
 					, fileupload: api.F
@@ -928,7 +1096,8 @@
 					, pause: api.F
 					, imageOriginal: true
 					, chunkSize: api.chunkSize
-					, chunkUpoloadRetry: api.chunkUploadRetry
+					, chunkUploadRetry: api.chunkUploadRetry
+					, uploadRetry: api.uploadRetry
 				}, options);
 
 
@@ -984,14 +1153,18 @@
 					}
 
 					if( ( proxyXHR.statusText != 'abort' || proxyXHR.current ) && data ){
-					    // Mark active job
-					    _complete = false;
+						// Mark active job
+						_complete = false;
 
 						// Set current upload file
 						proxyXHR.currentFile = _file;
 
 						// Prepare file options
-						_file && options.prepare(_file, _fileOptions);
+						if (_file && options.prepare(_file, _fileOptions) === false) {
+							_nextFile.call(_this);
+							return;
+						}
+						_fileOptions.file = _file;
 
 						_this._getFormData(_fileOptions, data, function (form){
 							if( !_loaded ){
@@ -1008,6 +1181,9 @@
 
 								progress: _file ? function (evt){
 									if( !_fileLoaded ){
+										// For ignore the double calls.
+										_fileLoaded = (evt.loaded === evt.total);
+
 										// emit "fileprogress" event
 										options.fileprogress({
 											  type:   'progress'
@@ -1019,35 +1195,38 @@
 										options.progress({
 											  type:   'progress'
 											, total:  _total
-											, loaded: proxyXHR.loaded = (_loaded + data.size * (evt.loaded/evt.total))|0
+											, loaded: proxyXHR.loaded = (_loaded + data.size * (evt.loaded/evt.total)) || 0
 										}, _file, xhr, _fileOptions);
 									}
 								} : noop,
 
 								complete: function (err){
-									// fixed throttle event
-									_fileLoaded = true;
-
 									_each(_xhrPropsExport, function (name){
 										proxyXHR[name] = xhr[name];
 									});
 
 									if( _file ){
+										data.total = (data.total || data.size);
 										data.loaded	= data.total;
 
-										// emulate 100% "progress"
-										this.progress(data);
+										if( !err ) {
+											// emulate 100% "progress"
+											this.progress(data);
 
-										// bytes loaded
-										_loaded += data.size; // data.size != data.total, it's desirable fix this
-										proxyXHR.loaded = _loaded;
+											// fixed throttle event
+											_fileLoaded = true;
+
+											// bytes loaded
+											_loaded += data.size; // data.size != data.total, it's desirable fix this
+											proxyXHR.loaded = _loaded;
+										}
 
 										// emit "filecomplete" event
 										options.filecomplete(err, xhr, _file, _fileOptions);
 									}
 
 									// upload next file
-									_nextFile.call(_this);
+									setTimeout(function () {_nextFile.call(_this);}, 0);
 								}
 							})); // xhr
 
@@ -1064,7 +1243,8 @@
 						});
 					}
 					else {
-						options.complete(proxyXHR.status == 200 || proxyXHR.status == 201 ? false : (proxyXHR.statusText || 'error'), proxyXHR, options);
+						var successful = proxyXHR.status == 200 || proxyXHR.status == 201 || proxyXHR.status == 204;
+						options.complete(successful ? false : (proxyXHR.statusText || 'error'), proxyXHR, options);
 						// Mark done state
 						_complete = true;
 					}
@@ -1169,6 +1349,18 @@
 					, postNameConcat = api.postNameConcat
 				;
 
+				// Append data
+				_each(options.data, function add(val, name){
+					if( typeof val == 'object' ){
+						_each(val, function (v, i){
+							add(v, postNameConcat(name, i));
+						});
+					}
+					else {
+						Form.append(name, val);
+					}
+				});
+
 				(function _addFile(file/**Object*/){
 					if( file.image ){ // This is a FileAPI.Image
 						queue.inc();
@@ -1227,19 +1419,6 @@
 						Form.append(name, file, filename);
 					}
 				})(file);
-
-
-				// Append data
-				_each(options.data, function add(val, name){
-					if( typeof val == 'object' ){
-						_each(val, function (v, i){
-							add(v, postNameConcat(name, i));
-						});
-					}
-					else {
-						Form.append(name, val);
-					}
-				});
 
 				queue.check();
 			},
@@ -1358,7 +1537,7 @@
 
 		} // api
 	;
-	
+
 
 	function _emit(target, fn, name, res, ext){
 		var evt = {
@@ -1371,13 +1550,13 @@
 	}
 
 
-	function _hasSupportReadAs(as){
-		return	FileReader && !!FileReader.prototype['readAs'+as];
+	function _hasSupportReadAs(method){
+		return	FileReader && !!FileReader.prototype['readAs' + method];
 	}
 
 
-	function _readAs(file, fn, as, encoding){
-		if( api.isFile(file) && _hasSupportReadAs(as) ){
+	function _readAs(file, fn, method, encoding){
+		if( api.isBlob(file) && _hasSupportReadAs(method) ){
 			var Reader = new FileReader;
 
 			// Add event listener
@@ -1399,10 +1578,10 @@
 			try {
 				// ReadAs ...
 				if( encoding ){
-					Reader['readAs'+as](file, encoding);
+					Reader['readAs' + method](file, encoding);
 				}
 				else {
-					Reader['readAs'+as](file);
+					Reader['readAs' + method](file);
 				}
 			}
 			catch (err){
@@ -1410,38 +1589,46 @@
 			}
 		}
 		else {
-			_emit(file, fn, 'error', undef, { error: 'filreader_not_support_'+as });
+			_emit(file, fn, 'error', undef, { error: 'filreader_not_support_' + method });
 		}
 	}
 
 
 	function _isRegularFile(file, callback){
 		// http://stackoverflow.com/questions/8856628/detecting-folders-directories-in-javascript-filelist-objects
-		if( !file.type && (file.size % 4096) === 0 && (file.size <= 102400) ){
+		if( !file.type && (safari || ((file.size % 4096) === 0 && (file.size <= 102400))) ){
 			if( FileReader ){
 				try {
-					var Reader = new FileReader();
+					var reader = new FileReader();
 
-					_one(Reader, _readerEvents, function (evt){
+					_one(reader, _readerEvents, function (evt){
 						var isFile = evt.type != 'error';
-						callback(isFile);
 						if( isFile ){
-							Reader.abort();
+							reader.abort();
+							callback(isFile);
+						}
+						else {
+							callback(false, reader.error);
 						}
 					});
 
-					Reader.readAsDataURL(file);
+					reader.readAsDataURL(file);
 				} catch( err ){
-					callback(false);
+					callback(false, err);
 				}
 			}
 			else {
-				callback(null);
+				callback(null, new Error('FileReader is not supported'));
 			}
 		}
 		else {
 			callback(true);
 		}
+	}
+
+
+	function _isEntry(item){
+		return item && (item.isFile || item.isDirectory);
 	}
 
 
@@ -1456,45 +1643,68 @@
 	function _readEntryAsFiles(entry, callback){
 		if( !entry ){
 			// error
-			callback('invalid entry');
+			var err = new Error('invalid entry');
+			entry = new Object(entry);
+			entry.error = err;
+			callback(err.message, [], [entry]);
 		}
 		else if( entry.isFile ){
 			// Read as file
-			entry.file(function(file){
+			entry.file(function (file){
 				// success
 				file.fullPath = entry.fullPath;
-				callback(false, [file]);
+				callback(false, [file], [file]);
 			}, function (err){
 				// error
-				callback('FileError.code: '+err.code);
+				entry.error = err;
+				callback('FileError.code: ' + err.code, [], [entry]);
 			});
 		}
 		else if( entry.isDirectory ){
-			var reader = entry.createReader(), result = [];
+			var
+				reader = entry.createReader()
+				, firstAttempt = true
+				, files = []
+				, all = [entry]
+			;
 
-			reader.readEntries(function(entries){
-				// success
-				api.afor(entries, function (next, entry){
-					_readEntryAsFiles(entry, function (err, files){
-						if( err ){
-							api.log(err);
-						}
-						else {
-							result = result.concat(files);
-						}
-
-						if( next ){
-							next();
-						}
-						else {
-							callback(false, result);
-						}
-					});
-				});
-			}, function (err){
+			var onerror = function (err){
 				// error
-				callback('directory_reader: ' + err);
-			});
+				entry.error = err;
+				callback('DirectoryError.code: ' + err.code, files, all);
+			};
+			var ondone = function ondone(entries){
+				if( firstAttempt ){
+					firstAttempt = false;
+					if( !entries.length ){
+						entry.error = new Error('directory is empty');
+					}
+				}
+
+				// success
+				if( entries.length ){
+					api.afor(entries, function (next, entry){
+						_readEntryAsFiles(entry, function (err, entryFiles, allEntries){
+							if( !err ){
+								files = files.concat(entryFiles);
+							}
+							all = all.concat(allEntries);
+
+							if( next ){
+								next();
+							}
+							else {
+								reader.readEntries(ondone, onerror);
+							}
+						});
+					});
+				}
+				else {
+					callback(false, files, all);
+				}
+			};
+
+			reader.readEntries(ondone, onerror);
 		}
 		else {
 			_readEntryAsFiles(_getAsEntry(entry), callback);
@@ -1548,6 +1758,7 @@
 					  width:  img.width
 					, height: img.height
 				});
+                img.src = api.EMPTY_PNG;
 				img = null;
 			});
 		}
@@ -1572,7 +1783,8 @@
 		}
 
 		if( FileReader ){
-			_on(el, 'dragenter dragleave dragover', function (evt){
+			// Hover
+			_on(el, 'dragenter dragleave dragover', onHover.ff = onHover.ff || function (evt){
 				var
 					  types = _getDataTransfer(evt).types
 					, i = types && types.length
@@ -1605,14 +1817,16 @@
 				}
 			});
 
-			_on(el, 'drop', function (evt){
+
+			// Drop
+			_on(el, 'drop', onDrop.ff = onDrop.ff || function (evt){
 				evt[preventDefault]();
 
 				_type = 0;
 				onHover.call(evt[currentTarget], false, evt);
 
-				api.getDropFiles(evt, function (files){
-					onDrop.call(evt[currentTarget], files, evt);
+				api.getDropFiles(evt, function (files, all){
+					onDrop.call(evt[currentTarget], files, all, evt);
 				});
 			});
 		}
@@ -1629,8 +1843,8 @@
 	 * @param	{Function}		onDrop
 	 */
 	api.event.dnd.off = function (el, onHover, onDrop){
-		_off(el, 'dragenter dragleave dragover', onHover);
-		_off(el, 'drop', onDrop);
+		_off(el, 'dragenter dragleave dragover', onHover.ff);
+		_off(el, 'drop', onDrop.ff);
 	};
 
 
@@ -1675,18 +1889,21 @@
 
 /*global window, FileAPI, document */
 
-(function (api, document, undef){
+(function (api, document, undef) {
 	'use strict';
 
 	var
 		min = Math.min,
 		round = Math.round,
-		getCanvas = function (){ return document.createElement('canvas'); },
+		getCanvas = function () { return document.createElement('canvas'); },
 		support = false,
 		exifOrientation = {
 			  8:	270
 			, 3:	180
 			, 6:	90
+			, 7:	270
+			, 4:	180
+			, 5:	90
 		}
 	;
 
@@ -1707,6 +1924,8 @@
 		}
 
 		this.file   = file;
+		this.size   = file.size || 100;
+
 		this.matrix	= {
 			sx: 0,
 			sy: 0,
@@ -1742,13 +1961,13 @@
 			return	this.set({ sx: x, sy: y, sw: w, sh: h || w });
 		},
 
-		resize: function (w, h, type){
-			if( typeof h == 'string' ){
-				type = h;
+		resize: function (w, h, strategy){
+			if( /min|max|height|width/.test(h) ){
+				strategy = h;
 				h = w;
 			}
 
-			return	this.set({ dw: w, dh: h, resize: type });
+			return	this.set({ dw: w, dh: h || w, resize: strategy });
 		},
 
 		preview: function (w, h){
@@ -1800,14 +2019,17 @@
 				, copy // canvas copy
 				, buffer = image
 				, overlay = m.overlay
-				, queue = api.queue(function (){ fn(false, canvas); })
+				, queue = api.queue(function (){ image.src = api.EMPTY_PNG; fn(false, canvas); })
 				, renderImageToCanvas = api.renderImageToCanvas
 			;
+
+			// Normalize angle
+			deg = deg - Math.floor(deg/360)*360;
 
 			// For `renderImageToCanvas`
 			image._type = this.file.type;
 
-			while( min(w/dw, h/dh) > 2 ){
+			while(m.multipass && min(w/dw, h/dh) > 2 ){
 				w = (w/2 + 0.5)|0;
 				h = (h/2 + 0.5)|0;
 
@@ -1834,7 +2056,7 @@
 			canvas.quality = m.quality;
 
 			ctx.rotate(deg * Math.PI / 180);
-			renderImageToCanvas(canvas, buffer
+			renderImageToCanvas(ctx.canvas, buffer
 				, m.sx, m.sy
 				, m.sw || buffer.width
 				, m.sh || buffer.height
@@ -1842,7 +2064,6 @@
 				, (deg == 90 || deg == 180 ? -dh : 0)
 				, dw, dh
 			);
-
 			dw = canvas.width;
 			dh = canvas.height;
 
@@ -1900,10 +2121,10 @@
 				, dw = m.dw = m.dw || sw
 				, dh = m.dh = m.dh || sh
 				, sf = sw/sh, df = dw/dh
-				, type = m.resize
+				, strategy = m.resize
 			;
 
-			if( type == 'preview' ){
+			if( strategy == 'preview' ){
 				if( dw != sw || dh != sh ){
 					// Make preview
 					var w, h;
@@ -1924,12 +2145,18 @@
 					}
 				}
 			}
-			else if( type ){
+			else if( strategy == 'height' ){
+				dw = dh * sf;
+			}
+			else if( strategy == 'width' ){
+				dh = dw / sf;
+			}
+			else if( strategy ){
 				if( !(sw > dw || sh > dh) ){
 					dw = sw;
 					dh = sh;
 				}
-				else if( type == 'min' ){
+				else if( strategy == 'min' ){
 					dw = round(sf < df ? min(sw, dw) : dh*sf);
 					dh = round(sf < df ? dw/sf : min(sh, dh));
 				}
@@ -1943,7 +2170,7 @@
 			m.sh = sh;
 			m.dw = dw;
 			m.dh = dh;
-
+			m.multipass = api.multiPassResize;
 			return	m;
 		},
 
@@ -1953,7 +2180,12 @@
 					fn(err);
 				}
 				else {
-					this._apply(image, fn);
+					try {
+						this._apply(image, fn);
+					} catch (err){
+						api.log('[err] FileAPI.Image.fn._apply:', err);
+						fn(err);
+					}
 				}
 			});
 		},
@@ -1977,11 +2209,13 @@
 			else {
 				fn('not_support_transform');
 			}
+
+			return this;
 		},
 
 
 		toData: function (fn){
-			this.get(fn);
+			return this.get(fn);
 		}
 
 	};
@@ -2003,13 +2237,13 @@
 			if( !err ){
 				api.each(transform, function (params, name){
 					if( !queue.isFail() ){
-						var ImgTrans = new Image(img.nodeType ? img : file);
+						var ImgTrans = new Image(img.nodeType ? img : file), isFn = typeof params == 'function';
 
-						if( typeof params == 'function' ){
+						if( isFn ){
 							params(img, ImgTrans);
 						}
 						else if( params.width ){
-							ImgTrans[params.preview ? 'preview' : 'resize'](params.width, params.height, params.type);
+							ImgTrans[params.preview ? 'preview' : 'resize'](params.width, params.height, params.strategy);
 						}
 						else {
 							if( params.maxWidth && (img.width > params.maxWidth || img.height > params.maxHeight) ){
@@ -2026,13 +2260,16 @@
 							params.rotate = 'auto';
 						}
 
-						ImgTrans.set({
-							  deg: params.rotate
-							, type: params.type || file.type || 'image/png'
-							, quality: params.quality || 1
-							, overlay: params.overlay
-							, filter: params.filter
-						});
+						ImgTrans.set({ type: ImgTrans.matrix.type || params.type || file.type || 'image/png' });
+
+						if( !isFn ){
+							ImgTrans.set({
+								  deg: params.rotate
+								, overlay: params.overlay
+								, filter: params.filter
+								, quality: params.quality || 1
+							});
+						}
 
 						queue.inc();
 						ImgTrans.toData(function (err, image){
@@ -2131,8 +2368,12 @@
 	 * For load-image-ios.js
 	 */
 	api.renderImageToCanvas = function (canvas, img, sx, sy, sw, sh, dx, dy, dw, dh){
-		canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
-		return canvas;
+		try {
+			return canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+		} catch (ex) {
+			api.log('renderImageToCanvas failed');
+			throw ex;
+		}
 	};
 
 
@@ -2140,6 +2381,182 @@
 	api.support.canvas = api.support.transform = support;
 	api.Image = Image;
 })(FileAPI, document);
+
+/*
+ * JavaScript Load Image iOS scaling fixes 1.0.3
+ * https://github.com/blueimp/JavaScript-Load-Image
+ *
+ * Copyright 2013, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * iOS image scaling fixes based on
+ * https://github.com/stomita/ios-imagefile-megapixel
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+/*jslint nomen: true, bitwise: true */
+/*global FileAPI, window, document */
+
+(function (factory) {
+	'use strict';
+	factory(FileAPI);
+}(function (loadImage) {
+    'use strict';
+
+    // Only apply fixes on the iOS platform:
+    if (!window.navigator || !window.navigator.platform ||
+             !(/iP(hone|od|ad)/).test(window.navigator.platform)) {
+        return;
+    }
+
+    var originalRenderMethod = loadImage.renderImageToCanvas;
+
+    // Detects subsampling in JPEG images:
+    loadImage.detectSubsampling = function (img) {
+        var canvas,
+            context;
+        if (img.width * img.height > 1024 * 1024) { // only consider mexapixel images
+            canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 1;
+            context = canvas.getContext('2d');
+            context.drawImage(img, -img.width + 1, 0);
+            // subsampled image becomes half smaller in rendering size.
+            // check alpha channel value to confirm image is covering edge pixel or not.
+            // if alpha value is 0 image is not covering, hence subsampled.
+            return context.getImageData(0, 0, 1, 1).data[3] === 0;
+        }
+        return false;
+    };
+
+    // Detects vertical squash in JPEG images:
+    loadImage.detectVerticalSquash = function (img, subsampled) {
+        var naturalHeight = img.naturalHeight || img.height,
+            canvas = document.createElement('canvas'),
+            context = canvas.getContext('2d'),
+            data,
+            sy,
+            ey,
+            py,
+            alpha;
+        if (subsampled) {
+            naturalHeight /= 2;
+        }
+        canvas.width = 1;
+        canvas.height = naturalHeight;
+        context.drawImage(img, 0, 0);
+        data = context.getImageData(0, 0, 1, naturalHeight).data;
+        // search image edge pixel position in case it is squashed vertically:
+        sy = 0;
+        ey = naturalHeight;
+        py = naturalHeight;
+        while (py > sy) {
+            alpha = data[(py - 1) * 4 + 3];
+            if (alpha === 0) {
+                ey = py;
+            } else {
+                sy = py;
+            }
+            py = (ey + sy) >> 1;
+        }
+        return (py / naturalHeight) || 1;
+    };
+
+    // Renders image to canvas while working around iOS image scaling bugs:
+    // https://github.com/blueimp/JavaScript-Load-Image/issues/13
+    loadImage.renderImageToCanvas = function (
+        canvas,
+        img,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        destX,
+        destY,
+        destWidth,
+        destHeight
+    ) {
+        if (img._type === 'image/jpeg') {
+            var context = canvas.getContext('2d'),
+                tmpCanvas = document.createElement('canvas'),
+                tileSize = 1024,
+                tmpContext = tmpCanvas.getContext('2d'),
+                subsampled,
+                vertSquashRatio,
+                tileX,
+                tileY;
+            tmpCanvas.width = tileSize;
+            tmpCanvas.height = tileSize;
+            context.save();
+            subsampled = loadImage.detectSubsampling(img);
+            if (subsampled) {
+                sourceX /= 2;
+                sourceY /= 2;
+                sourceWidth /= 2;
+                sourceHeight /= 2;
+            }
+            vertSquashRatio = loadImage.detectVerticalSquash(img, subsampled);
+            if (subsampled || vertSquashRatio !== 1) {
+                sourceY *= vertSquashRatio;
+                destWidth = Math.ceil(tileSize * destWidth / sourceWidth);
+                destHeight = Math.ceil(
+                    tileSize * destHeight / sourceHeight / vertSquashRatio
+                );
+                destY = 0;
+                tileY = 0;
+                while (tileY < sourceHeight) {
+                    destX = 0;
+                    tileX = 0;
+                    while (tileX < sourceWidth) {
+                        tmpContext.clearRect(0, 0, tileSize, tileSize);
+                        tmpContext.drawImage(
+                            img,
+                            sourceX,
+                            sourceY,
+                            sourceWidth,
+                            sourceHeight,
+                            -tileX,
+                            -tileY,
+                            sourceWidth,
+                            sourceHeight
+                        );
+                        context.drawImage(
+                            tmpCanvas,
+                            0,
+                            0,
+                            tileSize,
+                            tileSize,
+                            destX,
+                            destY,
+                            destWidth,
+                            destHeight
+                        );
+                        tileX += tileSize;
+                        destX += destWidth;
+                    }
+                    tileY += tileSize;
+                    destY += destHeight;
+                }
+                context.restore();
+                return canvas;
+            }
+        }
+        return originalRenderMethod(
+            canvas,
+            img,
+            sourceX,
+            sourceY,
+            sourceWidth,
+            sourceHeight,
+            destX,
+            destY,
+            destWidth,
+            destHeight
+        );
+    };
+
+}));
 
 /*global window, FileAPI */
 
@@ -2201,7 +2618,13 @@
 			});
 
 			this.each(function (file){
-				next(file, data, queue, arg);
+				try{
+					next(file, data, queue, arg);
+				}
+				catch( err ){
+					api.log('FileAPI.Form._to: ' + err.message);
+					complete(err);
+				}
 			});
 
 			queue.check();
@@ -2216,6 +2639,7 @@
 					api.reset(blob, true);
 					// set new name
 					blob.name = file.name;
+					blob.disabled = false;
 					data.appendChild(blob);
 				}
 				else {
@@ -2419,7 +2843,7 @@
 			this.end(0, 'abort');
 
 			if( this.xhr ){
-			    this.xhr.aborted = true;
+				this.xhr.aborted = true;
 				this.xhr.abort();
 			}
 		},
@@ -2428,14 +2852,19 @@
 			var _this = this, options = this.options;
 
 			FormData.toData(function (data){
-				// Start uploading
-				options.upload(options, _this);
-				_this._send.call(_this, options, data);
+				if( data instanceof Error ){
+					_this.end(0, data.message);
+				}
+				else{
+					// Start uploading
+					options.upload(options, _this);
+					_this._send.call(_this, options, data);
+				}
 			}, options);
 		},
 
 		_send: function (options, data){
-			var _this = this, xhr, uid = _this.uid, url = options.url;
+			var _this = this, xhr, uid = _this.uid, onLoadFnName = _this.uid + "Load", url = options.url;
 
 			api.log('XHR._send:', data);
 
@@ -2445,31 +2874,77 @@
 			}
 
 			if( data.nodeName ){
+				var jsonp = options.jsonp;
+
+				// prepare callback in GET
+				url = url.replace(/([a-z]+)=(\?)/i, '$1='+uid);
+
 				// legacy
 				options.upload(options, _this);
 
-				xhr = document.createElement('div');
-				xhr.innerHTML = '<form target="'+ uid +'" action="'+ url +'" method="POST" enctype="multipart/form-data" style="position: absolute; top: -1000px; overflow: hidden; width: 1px; height: 1px;">'
-							+ '<iframe name="'+ uid +'" src="javascript:false;"></iframe>'
-							+ '<input value="'+ uid +'" name="callback" type="hidden"/>'
-							+ '</form>'
+				var
+					onPostMessage = function (evt){
+						if( ~url.indexOf(evt.origin) ){
+							try {
+								var result = api.parseJSON(evt.data);
+								if( result.id == uid ){
+									complete(result.status, result.statusText, result.response);
+								}
+							} catch( err ){
+								complete(0, err.message);
+							}
+						}
+					},
+
+					// jsonp-callack
+					complete = window[uid] = function (status, statusText, response){
+						_this.readyState	= 4;
+						_this.responseText	= response;
+						_this.end(status, statusText);
+
+						api.event.off(window, 'message', onPostMessage);
+						window[uid] = xhr = transport = window[onLoadFnName] = null;
+					}
 				;
 
 				_this.xhr.abort = function (){
-					var transport = xhr.getElementsByTagName('iframe')[0];
-					if( transport ){
-						try {
-							if( transport.stop ){ transport.stop(); }
-							else if( transport.contentWindow.stop ){ transport.contentWindow.stop(); }
-							else { transport.contentWindow.document.execCommand('Stop'); }
-						}
-						catch (er) {}
+					try {
+						if( transport.stop ){ transport.stop(); }
+						else if( transport.contentWindow.stop ){ transport.contentWindow.stop(); }
+						else { transport.contentWindow.document.execCommand('Stop'); }
 					}
-					xhr = null;
+					catch (er) {}
+					complete(0, "abort");
 				};
 
-				// append form-data
-				var form = xhr.getElementsByTagName('form')[0];
+				api.event.on(window, 'message', onPostMessage);
+
+				window[onLoadFnName] = function (){
+					try {
+						var
+							  win = transport.contentWindow
+							, doc = win.document
+							, result = win.result || api.parseJSON(doc.body.innerHTML)
+						;
+						complete(result.status, result.statusText, result.response);
+					} catch (e){
+						api.log('[transport.onload]', e);
+					}
+				};
+
+				xhr = document.createElement('div');
+				xhr.innerHTML = '<form target="'+ uid +'" action="'+ url +'" method="POST" enctype="multipart/form-data" style="position: absolute; top: -1000px; overflow: hidden; width: 1px; height: 1px;">'
+							+ '<iframe name="'+ uid +'" src="javascript:false;" onload="window.' + onLoadFnName + ' && ' + onLoadFnName + '();"></iframe>'
+							+ (jsonp && (options.url.indexOf('=?') < 0) ? '<input value="'+ uid +'" name="'+jsonp+'" type="hidden"/>' : '')
+							+ '</form>'
+				;
+
+				// get form-data & transport
+				var
+					  form = xhr.getElementsByTagName('form')[0]
+					, transport = xhr.getElementsByTagName('iframe')[0]
+				;
+
 				form.appendChild(data);
 
 				api.log(form.parentNode.innerHTML);
@@ -2480,20 +2955,19 @@
 				// keep a reference to node-transport
 				_this.xhr.node = xhr;
 
-				// jsonp-callack
-				window[uid] = function (status, statusText, response){
-					_this.readyState	= 4;
-					_this.responseText	= response;
-					_this.end(status, statusText);
-					xhr = null;
-				};
-
 				// send
 				_this.readyState = 2; // loaded
-				form.submit();
+				try {
+					form.submit();
+				} catch (err) {
+					api.log('iframe.error: ' + err);
+				}
 				form = null;
 			}
 			else {
+				// Clean url
+				url = url.replace(/([a-z]+)=(\?)&?/i, '');
+
 				// html5
 				if (this.xhr && this.xhr.aborted) {
 					api.log("Error: already aborted");
@@ -2502,7 +2976,7 @@
 				xhr = _this.xhr = api.getXHR();
 
 				if (data.params) {
-				    url += (url.indexOf('?') < 0 ? "?" : "&") + data.params.join("&");
+					url += (url.indexOf('?') < 0 ? "?" : "&") + data.params.join("&");
 				}
 
 				xhr.open('POST', url, true);
@@ -2519,13 +2993,13 @@
 					xhr.setRequestHeader(key, val);
 				});
 
-				
+
 				if ( options._chunked ) {
 					// chunked upload
 					if( xhr.upload ){
-						xhr.upload.addEventListener('progress', function (/**Event*/evt){
+						xhr.upload.addEventListener('progress', api.throttle(function (/**Event*/evt){
 							if (!data.retry) {
-							    // show progress only for correct chunk uploads
+								// show progress only for correct chunk uploads
 								options.progress({
 									  type:			evt.type
 									, total:		data.size
@@ -2533,7 +3007,7 @@
 									, totalSize:	data.size
 								}, _this, options);
 							}
-						}, false);
+						}, 100), false);
 					}
 
 					xhr.onreadystatechange = function (){
@@ -2548,9 +3022,9 @@
 								_this['response'+k]  = xhr['response'+k];
 							}
 							xhr.onreadystatechange = null;
-                            
+
 							if (!xhr.status || xhr.status - 201 > 0) {
-							    api.log("Error: " + xhr.status);
+								api.log("Error: " + xhr.status);
 								// some kind of error
 								// 0 - connection fail or timeout, if xhr.aborted is true, then it's not recoverable user action
 								// up - server error
@@ -2559,7 +3033,7 @@
 									// only applicable for recoverable error codes 500 && 416
 									var delay = xhr.status ? 0 : api.chunkNetworkDownRetryTimeout;
 
-								    // inform about recoverable problems
+									// inform about recoverable problems
 									options.pause(data.file, options);
 
 									// smart restart if server reports about the last known byte
@@ -2568,10 +3042,13 @@
 										data.end = lkb;
 									} else {
 										data.end = data.start - 1;
+										if (416 == xhr.status) {
+											data.end = data.end - options.chunkSize;
+										}
 									}
 
 									setTimeout(function () {
-									    _this._send(options, data);
+										_this._send(options, data);
 									}, delay);
 								} else {
 									// no mo retries
@@ -2595,28 +3072,37 @@
 									data.file.FileAPIReadPosition = data.end;
 
 									setTimeout(function () {
-									    _this._send(options, data);
+										_this._send(options, data);
 									}, 0);
 								}
 							}
+
 							xhr = null;
 						}
 					};
 
 					data.start = data.end + 1;
-					data.end = Math.max(Math.min(data.start + options.chunkSize, data.size ) - 1, data.start);
-                    
-					var slice;
-					(slice = 'slice') in data.file || (slice = 'mozSlice') in data.file || (slice = 'webkitSlice') in data.file;
+					data.end = Math.max(Math.min(data.start + options.chunkSize, data.size) - 1, data.start);
 
-					xhr.setRequestHeader("Content-Range", "bytes " + data.start + "-" + data.end + "/" + data.size);
-					xhr.setRequestHeader("Content-Disposition", 'attachment; filename=' + encodeURIComponent(data.name));
-					xhr.setRequestHeader("Content-Type", data.type || "application/octet-stream");
-                    
-					slice = data.file[slice](data.start, data.end + 1);
-                 
-					xhr.send(slice);
-					slice = null;
+					// Retrieve a slice of file
+					var
+						  file = data.file
+						, slice = (file.slice || file.mozSlice || file.webkitSlice).call(file, data.start, data.end + 1)
+					;
+
+					if( data.size && !slice.size ){
+						setTimeout(function (){
+							_this.end(-1);
+						});
+					} else {
+						xhr.setRequestHeader("Content-Range", "bytes " + data.start + "-" + data.end + "/" + data.size);
+						xhr.setRequestHeader("Content-Disposition", 'attachment; filename=' + encodeURIComponent(data.name));
+						xhr.setRequestHeader("Content-Type", data.type || "application/octet-stream");
+
+						xhr.send(slice);
+					}
+
+					file = slice = null;
 				} else {
 					// single piece upload
 					if( xhr.upload ){
@@ -2625,7 +3111,7 @@
 							options.progress(evt, _this, options);
 						}, 100), false);
 					}
-				    
+
 					xhr.onreadystatechange = function (){
 						_this.status     = xhr.status;
 						_this.statusText = xhr.statusText;
@@ -2636,7 +3122,28 @@
 								_this['response'+k]  = xhr['response'+k];
 							}
 							xhr.onreadystatechange = null;
-							_this.end(xhr.status);
+
+							if (!xhr.status || xhr.status > 201) {
+								api.log("Error: " + xhr.status);
+								if (((!xhr.status && !xhr.aborted) || 500 == xhr.status) && (options.retry || 0) < options.uploadRetry) {
+									options.retry = (options.retry || 0) + 1;
+									var delay = api.networkDownRetryTimeout;
+
+									// inform about recoverable problems
+									options.pause(options.file, options);
+
+									setTimeout(function () {
+										_this._send(options, data);
+									}, delay);
+								} else {
+									//success
+									_this.end(xhr.status);
+								}
+							} else {
+								//success
+								_this.end(xhr.status);
+							}
+
 							xhr = null;
 						}
 					};
@@ -2644,19 +3151,19 @@
 					if( api.isArray(data) ){
 						// multipart
 						xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=_'+api.expando);
-						data = data.join('') +'--_'+ api.expando +'--';
+						var rawData = data.join('') +'--_'+ api.expando +'--';
 
 						/** @namespace  xhr.sendAsBinary  https://developer.mozilla.org/ru/XMLHttpRequest#Sending_binary_content */
 						if( xhr.sendAsBinary ){
-							xhr.sendAsBinary(data);
+							xhr.sendAsBinary(rawData);
 						}
 						else {
-							var bytes = Array.prototype.map.call(data, function(c){ return c.charCodeAt(0) & 0xff; });
+							var bytes = Array.prototype.map.call(rawData, function(c){ return c.charCodeAt(0) & 0xff; });
 							xhr.send(new Uint8Array(bytes).buffer);
 
 						}
 					} else {
-						// FormData 
+						// FormData
 						xhr.send(data);
 					}
 				}
@@ -2918,269 +3425,115 @@
 	api.Camera	= Camera;
 })(window, FileAPI);
 
-/*
- * JavaScript Load Image iOS scaling fixes 1.0.3
- * https://github.com/blueimp/JavaScript-Load-Image
+/**
+ * FileAPI fallback to Flash
  *
- * Copyright 2013, Sebastian Tschan
- * https://blueimp.net
- *
- * iOS image scaling fixes based on
- * https://github.com/stomita/ios-imagefile-megapixel
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * @flash-developer  "Vladimir Demidov" <v.demidov@corp.mail.ru>
  */
 
-/*jslint nomen: true, bitwise: true */
-/*global FileAPI, window, document */
+/*global window, FileAPI */
+(function (window, jQuery, api) {
+    "use strict";
 
-(function (factory) {
-	'use strict';
-	factory(FileAPI);
-}(function (loadImage) {
-    'use strict';
+    var _each = api.each,
+        _cameraQueue = [];
 
-    // Only apply fixes on the iOS platform:
-    if (!window.navigator || !window.navigator.platform ||
-             !(/iP(hone|od|ad)/).test(window.navigator.platform)) {
-        return;
-    }
-
-    var originalRenderMethod = loadImage.renderImageToCanvas;
-
-    // Detects subsampling in JPEG images:
-    loadImage.detectSubsampling = function (img) {
-        var canvas,
-            context;
-        if (img.width * img.height > 1024 * 1024) { // only consider mexapixel images
-            canvas = document.createElement('canvas');
-            canvas.width = canvas.height = 1;
-            context = canvas.getContext('2d');
-            context.drawImage(img, -img.width + 1, 0);
-            // subsampled image becomes half smaller in rendering size.
-            // check alpha channel value to confirm image is covering edge pixel or not.
-            // if alpha value is 0 image is not covering, hence subsampled.
-            return context.getImageData(0, 0, 1, 1).data[3] === 0;
-        }
-        return false;
-    };
-
-    // Detects vertical squash in JPEG images:
-    loadImage.detectVerticalSquash = function (img, subsampled) {
-        var naturalHeight = img.naturalHeight || img.height,
-            canvas = document.createElement('canvas'),
-            context = canvas.getContext('2d'),
-            data,
-            sy,
-            ey,
-            py,
-            alpha;
-        if (subsampled) {
-            naturalHeight /= 2;
-        }
-        canvas.width = 1;
-        canvas.height = naturalHeight;
-        context.drawImage(img, 0, 0);
-        data = context.getImageData(0, 0, 1, naturalHeight).data;
-        // search image edge pixel position in case it is squashed vertically:
-        sy = 0;
-        ey = naturalHeight;
-        py = naturalHeight;
-        while (py > sy) {
-            alpha = data[(py - 1) * 4 + 3];
-            if (alpha === 0) {
-                ey = py;
-            } else {
-                sy = py;
+    if (api.support.flash && (api.media && (!api.support.media || !api.html5))) {
+        (function () {
+            function _wrap(fn) {
+                var id = fn.wid = api.uid();
+                api.Flash._fn[id] = fn;
+                return 'FileAPI.Flash._fn.' + id;
             }
-            py = (ey + sy) >> 1;
-        }
-        return (py / naturalHeight) || 1;
-    };
 
-    // Renders image to canvas while working around iOS image scaling bugs:
-    // https://github.com/blueimp/JavaScript-Load-Image/issues/13
-    loadImage.renderImageToCanvas = function (
-        canvas,
-        img,
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
-        destX,
-        destY,
-        destWidth,
-        destHeight
-    ) {
-        if (img._type === 'image/jpeg') {
-            var context = canvas.getContext('2d'),
-                tmpCanvas = document.createElement('canvas'),
-                tileSize = 1024,
-                tmpContext = tmpCanvas.getContext('2d'),
-                subsampled,
-                vertSquashRatio,
-                tileX,
-                tileY;
-            tmpCanvas.width = tileSize;
-            tmpCanvas.height = tileSize;
-            context.save();
-            subsampled = loadImage.detectSubsampling(img);
-            if (subsampled) {
-                sourceX /= 2;
-                sourceY /= 2;
-                sourceWidth /= 2;
-                sourceHeight /= 2;
-            }
-            vertSquashRatio = loadImage.detectVerticalSquash(img, subsampled);
-            if (subsampled || vertSquashRatio !== 1) {
-                sourceY *= vertSquashRatio;
-                destWidth = Math.ceil(tileSize * destWidth / sourceWidth);
-                destHeight = Math.ceil(
-                    tileSize * destHeight / sourceHeight / vertSquashRatio
-                );
-                destY = 0;
-                tileY = 0;
-                while (tileY < sourceHeight) {
-                    destX = 0;
-                    tileX = 0;
-                    while (tileX < sourceWidth) {
-                        tmpContext.clearRect(0, 0, tileSize, tileSize);
-                        tmpContext.drawImage(
-                            img,
-                            sourceX,
-                            sourceY,
-                            sourceWidth,
-                            sourceHeight,
-                            -tileX,
-                            -tileY,
-                            sourceWidth,
-                            sourceHeight
-                        );
-                        context.drawImage(
-                            tmpCanvas,
-                            0,
-                            0,
-                            tileSize,
-                            tileSize,
-                            destX,
-                            destY,
-                            destWidth,
-                            destHeight
-                        );
-                        tileX += tileSize;
-                        destX += destWidth;
-                    }
-                    tileY += tileSize;
-                    destY += destHeight;
-                }
-                context.restore();
-                return canvas;
-            }
-        }
-        return originalRenderMethod(
-            canvas,
-            img,
-            sourceX,
-            sourceY,
-            sourceWidth,
-            sourceHeight,
-            destX,
-            destY,
-            destWidth,
-            destHeight
-        );
-    };
 
-}));
-
-/*
- * JavaScript Canvas to Blob 2.0.5
- * https://github.com/blueimp/JavaScript-Canvas-to-Blob
- *
- * Copyright 2012, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
- *
- * Based on stackoverflow user Stoive's code snippet:
- * http://stackoverflow.com/q/4998908
- */
-
-/*jslint nomen: true, regexp: true */
-/*global window, atob, Blob, ArrayBuffer, Uint8Array */
-
-(function (window) {
-    'use strict';
-    var CanvasPrototype = window.HTMLCanvasElement &&
-            window.HTMLCanvasElement.prototype,
-        hasBlobConstructor = window.Blob && (function () {
-            try {
-                return Boolean(new Blob());
-            } catch (e) {
-                return false;
-            }
-        }()),
-        hasArrayBufferViewSupport = hasBlobConstructor && window.Uint8Array &&
-            (function () {
+            function _unwrap(fn) {
                 try {
-                    return new Blob([new Uint8Array(100)]).size === 100;
+                    api.Flash._fn[fn.wid] = null;
+                    delete api.Flash._fn[fn.wid];
                 } catch (e) {
-                    return false;
                 }
-            }()),
-        BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder ||
-            window.MozBlobBuilder || window.MSBlobBuilder,
-        dataURLtoBlob = (hasBlobConstructor || BlobBuilder) && window.atob &&
-            window.ArrayBuffer && window.Uint8Array && function (dataURI) {
-                var byteString,
-                    arrayBuffer,
-                    intArray,
-                    i,
-                    mimeString,
-                    bb;
-                if (dataURI.split(',')[0].indexOf('base64') >= 0) {
-                    // Convert base64 to raw binary data held in a string:
-                    byteString = atob(dataURI.split(',')[1]);
-                } else {
-                    // Convert base64/URLEncoded data component to raw binary data:
-                    byteString = decodeURIComponent(dataURI.split(',')[1]);
+            }
+
+            var flash = api.Flash;
+            api.extend(api.Flash, {
+
+                patchCamera: function () {
+                    api.Camera.fallback = function (el, options, callback) {
+                        var camId = api.uid();
+                        api.log('FlashAPI.Camera.publish: ' + camId);
+                        flash.publish(el, camId, api.extend(options, {
+                            camera: true,
+                            onEvent: _wrap(function _(evt) {
+                                if (evt.type === 'camera') {
+                                    _unwrap(_);
+
+                                    if (evt.error) {
+                                        api.log('FlashAPI.Camera.publish.error: ' + evt.error);
+                                        callback(evt.error);
+                                    } else {
+                                        api.log('FlashAPI.Camera.publish.success: ' + camId);
+                                        callback(null);
+                                    }
+                                }
+                            })
+                        }));
+                    };
+                    // Run
+                    _each(_cameraQueue, function (args) {
+                        api.Camera.fallback.apply(api.Camera, args);
+                    });
+                    _cameraQueue = [];
+
+
+                    // FileAPI.Camera:proto
+                    api.extend(api.Camera.prototype, {
+                        _id: function () {
+                            return this.video.id;
+                        },
+
+                        start: function (callback) {
+                            var _this = this;
+                            flash.cmd(this._id(), 'camera.on', {
+                                callback: _wrap(function _(evt) {
+                                    _unwrap(_);
+
+                                    if (evt.error) {
+                                        api.log('FlashAPI.camera.on.error: ' + evt.error);
+                                        callback(evt.error, _this);
+                                    } else {
+                                        api.log('FlashAPI.camera.on.success: ' + _this._id());
+                                        _this._active = true;
+                                        callback(null, _this);
+                                    }
+                                })
+                            });
+                        },
+
+                        stop: function () {
+                            this._active = false;
+                            flash.cmd(this._id(), 'camera.off');
+                        },
+
+                        shot: function () {
+                            api.log('FlashAPI.Camera.shot:', this._id());
+
+                            var shot = api.Flash.cmd(this._id(), 'shot', {});
+                            shot.type = 'image/png';
+                            shot.flashId = this._id();
+                            shot.isShot = true;
+
+                            return new api.Camera.Shot(shot);
+                        }
+                    });
                 }
-                // Write the bytes of the string to an ArrayBuffer:
-                arrayBuffer = new ArrayBuffer(byteString.length);
-                intArray = new Uint8Array(arrayBuffer);
-                for (i = 0; i < byteString.length; i += 1) {
-                    intArray[i] = byteString.charCodeAt(i);
-                }
-                // Separate out the mime component:
-                mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-                // Write the ArrayBuffer (or ArrayBufferView) to a blob:
-                if (hasBlobConstructor) {
-                    return new Blob(
-                        [hasArrayBufferViewSupport ? intArray : arrayBuffer],
-                        {type: mimeString}
-                    );
-                }
-                bb = new BlobBuilder();
-                bb.append(arrayBuffer);
-                return bb.getBlob(mimeString);
+            });
+
+            api.Camera.fallback = function () {
+                _cameraQueue.push(arguments);
             };
-    if (window.HTMLCanvasElement && !CanvasPrototype.toBlob) {
-        if (CanvasPrototype.mozGetAsFile) {
-            CanvasPrototype.toBlob = function (callback, type, quality) {
-                if (quality && CanvasPrototype.toDataURL && dataURLtoBlob) {
-                    callback(dataURLtoBlob(this.toDataURL(type, quality)));
-                } else {
-                    callback(this.mozGetAsFile('blob', type));
-                }
-            };
-        } else if (CanvasPrototype.toDataURL && dataURLtoBlob) {
-            CanvasPrototype.toBlob = function (callback, type, quality) {
-                callback(dataURLtoBlob(this.toDataURL(type, quality)));
-            };
-        }
+
+        }());
     }
-    window.dataURLtoBlob = dataURLtoBlob;
-})(window);
+}(window, window.jQuery, FileAPI));
 if( typeof define === "function" && define.amd ){ define("FileAPI", [], function (){ return FileAPI; }); }
