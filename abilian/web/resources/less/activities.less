@@ -3,28 +3,34 @@
   margin: 0;
 
   li {
+    .clearfix();
     list-style: none;
     padding: 5px 0;
-    margin: 10px auto;
+    margin: 5px auto;
     font-size: 12px;
 
     .entry {
       text-align: left;
       border-left: 2px solid #FF7F66;
-      margin-left: 65px;
-      background: #fafafa;
+      min-height: @avatar-size;      
+      margin-left: @avatar-size + 10px;
+      background: @gray-lighter;
       display: block;
       padding: 5px;
       position: relative;
-    
-      .message { display: block; }
 
+      .datetime {
+        float: right;
+        color: @gray;
+      }
+      
       .body {
+        display: block;
         font-style: italic;
-        color: #777;
+        color: @text-color;
         a {
           text-decoration: none;
-          color: #777;
+          color: @text-color;
           }
       }
     }
@@ -32,8 +38,7 @@
     img.avatar {
       float: left;
       margin-right: 10px;
-      height: 45px;
-      width: 45px;
+      .square(@avatar-size);
     }
   }
 }

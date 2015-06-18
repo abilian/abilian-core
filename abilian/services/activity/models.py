@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 def _default_from(column):
-  """ Helper for default and onupdates parameters in a Column definitions.
+  """
+  Helper for default and onupdates parameters in a Column definitions.
 
   Returns a `context-sensitive default function <http://docs.sqlalchemy.org/en/rel_0_8/core/defaults.html#context-sensitive-default-functions>`_
   to set value from another column.
@@ -35,7 +36,9 @@ def _default_from(column):
 
 
 class ActivityEntry(db.Model):
-  """Main table for all activities."""
+  """
+  Main table for all activities.
+  """
 
   id = Column(Integer, primary_key=True)
   happened_at = Column(DateTime, default=datetime.utcnow)
