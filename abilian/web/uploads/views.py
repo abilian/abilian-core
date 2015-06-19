@@ -8,14 +8,20 @@ from werkzeug.exceptions import BadRequest, NotFound
 from flask import request, current_app, send_file, jsonify
 from flask.signals import request_tearing_down
 from flask_login import current_user
+from flask_wtf.file import FileField, file_required
 
 from abilian.web import csrf, url_for
+from abilian.web.forms import Form
 from abilian.web.blueprints import Blueprint
 from abilian.web.views import View, JSONView
 
 bp = Blueprint('uploads', __name__, url_prefix='/upload')
 
+class UploadForm(Form):
 
+  file = FileField(validators=(file_required,))
+
+  
 class BaseUploadsView(object):
 
   def prepare_args(self, args, kwargs):
@@ -42,10 +48,12 @@ class NewUploadView(BaseUploadsView, JSONView):
     }
   
   def post(self, *args, **kwargs):
-    if 'file' not in request.files:
+    form = UploadForm()
+
+    if not form.validate():
       raise BadRequest('File is missing.')
     
-    uploaded = request.files['file']
+    uploaded = form['file'].data
     filename = secure_filename(uploaded.filename)
     self.handle = self.uploads.add_file(self.user, uploaded, filename=filename)
     return self.get(*args, **kwargs)
