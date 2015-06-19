@@ -13,6 +13,8 @@ from celery import shared_task
 from flask import current_app
 from flask_login import AnonymousUserMixin
 
+from abilian.core import signals
+from abilian.web import url_for
 from .views import bp as blueprint
 
 logger = logging.getLogger(__name__)
@@ -56,7 +58,8 @@ class FileUploadsExtension(object):
     app.extensions['uploads'] = self
     app.add_template_global(self, 'uploads')
     app.register_blueprint(blueprint)
-
+    signals.register_js_api.connect(self._do_register_js_api)
+    
     self.config = {}
     self.config.update(DEFAULT_CONFIG)
     self.config.update(app.config.get('FILE_UPLOADS', {}))
@@ -73,6 +76,11 @@ class FileUploadsExtension(object):
 
     path.resolve()
 
+  def _do_register_js_api(self, sender):
+    app = sender
+    js_api = app.js_api.setdefault('upload', {})
+    js_api['newFileUrl'] = url_for('uploads.new_file')
+    
   def user_dir(self, user):
     user_id = (str(user.id) if not isinstance(user, AnonymousUserMixin)
                else 'anonymous')
