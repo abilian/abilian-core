@@ -164,3 +164,33 @@ class TextSearchCriterion(BaseCriterion):
   @property
   def has_form_filter(self):
     return False
+
+
+class TextCriterion(TextSearchCriterion):
+  def __init__(self, name, label=u'', attributes=None, search_fmt=u'%{q}%'):
+    super(TextCriterion, self).__init__(name, label, attributes, search_fmt)
+
+  def filter(self, query, module, request, searched_text, *args, **kwargs):
+    my_searched_text = request.values.get(self.name, u'').strip()
+    if my_searched_text:
+      return super(TextCriterion, self).filter(query, module, request,
+                                               my_searched_text.lower(),
+                                               *args, **kwargs)
+    else:
+      return query
+
+  @property
+  def has_form_filter(self):
+    return True
+
+  @property
+  def form_filter_type(self):
+    return "text"
+
+  @property
+  def form_filter_args(self):
+    return []
+
+  @property
+  def form_unset_value(self):
+    return u''
