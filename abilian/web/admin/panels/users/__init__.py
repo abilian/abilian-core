@@ -29,7 +29,7 @@ class UsersPanel(AdminPanel):
   def get(self):
     #FIXME: use widgets.AjaxMainTableView instead
     datatable_options = {
-      'sDom': 'lfFrtip',
+      'sDom': 'lfFritip',
       'aaSorting': [
           [1, u'asc'],
           [2, u'desc'],

@@ -283,7 +283,7 @@ class AjaxMainTableView(object):
     aoColumns += [{'asSorting': col['sorting'], 'bSortable': col['sortable']}
                   for col in self.columns]
     datatable_options = {
-      'sDom': 'lfFrtip',
+      'sDom': 'lfFritip',
       'aoColumns': aoColumns,
       'bFilter': True,
       'oLanguage': {
