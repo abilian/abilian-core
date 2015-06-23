@@ -14,6 +14,7 @@ from whoosh.fields import TEXT
 from flask import current_app
 
 from abilian.core.extensions import db
+from abilian.core.sqlalchemy import MutationList
 from .schema import accent_folder
 
 
@@ -190,6 +191,8 @@ class SAAdapter(SchemaAdapter):
 
         val = cached[a]
         if val is not None:
+          if isinstance(val, (list, tuple,)):
+            val = u' '.join(val)
           values.append(val)
 
       if values:
