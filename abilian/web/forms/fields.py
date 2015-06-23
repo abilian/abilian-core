@@ -168,6 +168,13 @@ class FileField(BaseFileField):
 
     return super(FileField, self).process(formdata, *args, **kwargs)
 
+  def process_data(self, value):
+    if isinstance(value, db.Model):
+      value = getattr(value, self.blob_attr)
+
+    self.object_data = value
+    return super(FileField, self).process_data(value)
+
   def process_formdata(self, valuelist):
     uploads = current_app.extensions['uploads']
     if self.delete_files_index:
@@ -192,12 +199,6 @@ class FileField(BaseFileField):
         setattr(stream, 'content_type', mimetype)
       self.data = stream
       self._has_uploads = True
-
-  def process_data(self, value):
-    if isinstance(value, db.Model):
-      value = getattr(value, self.blob_attr)
-
-    return super(FileField, self).process_data(value)
 
   def populate_obj(self, obj, name):
     """
