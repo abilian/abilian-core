@@ -7,7 +7,7 @@ import operator
 import logging
 from functools import partial
 import datetime
-
+import json
 import sqlalchemy as sa
 
 from wtforms import (
@@ -28,6 +28,8 @@ from wtforms_alchemy import (
 )
 import babel
 
+from flask import current_app
+from flask_login import current_user
 from flask.helpers import locked_cached_property
 from flask_wtf.file import FileField as BaseFileField
 from flask_babel import (
@@ -120,11 +122,14 @@ class FileField(BaseFileField):
     try:
       self.multiple = kwargs.pop('multiple')
     except KeyError:
-      pass
+      self.multiple = False
 
     self.blob_attr = kwargs.pop('blob_attr', self.__class__.blob_attr)
     allow_delete = kwargs.pop('allow_delete', None)
     validators = list(kwargs.get('validators', []))
+    self.upload_handles = []
+    self.delete_files_index = []
+    self._has_uploads = False
 
     if allow_delete is not None:
       if any(isinstance(v, required if allow_delete else optional)
@@ -143,7 +148,7 @@ class FileField(BaseFileField):
   @property
   def allow_delete(self):
     """
-    propery for legacy code. Test `field.flags.required` instead.
+    property for legacy code. Test `field.flags.required` instead.
     """
     return not self.flags.required
 
@@ -152,11 +157,37 @@ class FileField(BaseFileField):
       kwargs['multiple'] = 'multiple'
     return BaseFileField.__call__(self, **kwargs)
 
+  def has_file(self):
+    return self._has_uploads
+
   def process(self, formdata, *args, **kwargs):
     delete_arg = u'__{name}_delete__'.format(name=self.name)
-    self._delete_file = formdata and delete_arg in formdata
+    self.delete_files_index = (formdata.getlist(delete_arg)
+                               if formdata and delete_arg in formdata
+                               else [])
 
     return super(FileField, self).process(formdata, *args, **kwargs)
+
+  def process_formdata(self, valuelist):
+    uploads = current_app.extensions['uploads']
+    if self.delete_files_index:
+      return
+
+    if valuelist:
+      self.upload_handles = valuelist
+      handle = valuelist[0]
+      fileobj = uploads.get_file(current_user, handle)
+
+      if fileobj is None:
+        # FIXME: this is a validation task
+        raise ValueError('File with handle {!r} not found'.format(handle))
+
+      meta = uploads.get_metadata(current_user, handle)
+      filename = meta.get('filename', handle)
+      stream = fileobj.open('rb')
+      setattr(stream, 'filename', filename)
+      self.data = stream
+      self._has_uploads = True
 
   def process_data(self, value):
     if isinstance(value, db.Model):
@@ -168,7 +199,8 @@ class FileField(BaseFileField):
     """
     Store file
     """
-    if not self.has_file() and not (self.allow_delete and self._delete_file):
+    if (not self.has_file()
+        and not (self.allow_delete and self.delete_files_index)):
       return
 
     state = sa.inspect(obj)
