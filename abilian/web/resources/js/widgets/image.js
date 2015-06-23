@@ -1,16 +1,16 @@
 /* jshint camelcase: false */
 (function(factory) {
     'use strict';
-    require(['widget.FileInput', 'jquery', 'FileAPI', 'Hogan'], factory);
+    require(['AbilianWidget', 'widget.FileInput', 'jquery', 'FileAPI'], factory);
 }
-(function(FileInput, $, api, Hogan) {
+(function(Abilian, FileInput, $, api) {
     'use strict';
     /**
      * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
      */
     var defaults = {
         width: 120,
-        height: 12
+        height: 120
     };
 
     function ImageInput(node, options) {
@@ -37,18 +37,26 @@
         return el;
     };
 
+    function createImageInput(options) {
+        var element = $(this),
+            opts = $.extend({}, defaults, options),
+            widget = new ImageInput(element, opts);
+        element.data('image-input', widget);
+        return widget;
+    }
+    Abilian.registerWidgetCreator('imageInput', createImageInput);
+
     $.fn.imageInput = function(options) {
-        var defaults = { width: 120, height: 120 };
-        var opts = $.extend(defaults, options);
+        var opts = $.extend({}, defaults, options);
         return this.each(
             function() {
                 var node = $(this);
-                var input = node.data('image-input');
-                if (input === undefined) {
-                    input = new ImageInput(node, opts);
-                    node.data('image-input', input);
+                var widget = node.data('image-input');
+                if (widget === undefined) {
+                    widget = new ImageInput(node, opts);
+                    node.data('image-input', widget);
                 }
-                return input;
+                return widget;
         });
     };
 

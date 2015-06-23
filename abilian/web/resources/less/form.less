@@ -99,11 +99,24 @@ label.required:after {
     }
 }
 
-.file-item {
-  .well();
-  .well-sm();
-  margin-bottom: 0px;
+.file-input {
+  .make-row();
+
+  .file-item {
+    .make-xs-column(12);
+    .make-md-column(6);
+    .well();
+    .well-sm();
+    margin-bottom: 0px;
+  }
+
+  .file-item-existing button {
+    float: right;
+    font-size: 200%;
+  }
 }
+
+
 
 .scribe-widget {
   .btn-toolbar {
