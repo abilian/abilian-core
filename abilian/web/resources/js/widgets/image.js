@@ -9,8 +9,8 @@
      * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
      */
     var defaults = {
-        width: 120,
-        height: 120
+        width: 55,
+        height: 55
     };
 
     function ImageInput(node, options) {

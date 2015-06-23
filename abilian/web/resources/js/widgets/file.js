@@ -12,7 +12,7 @@
     var defaults = {
         fileItemTemplate: Hogan.compile(
             '<div id="{{ uid }}" class="file-item">\n' +
-                '{{ name }} ({{ size }}) ' +
+                '<span class="file-info">{{ name }} ({{ size }})</span> ' +
                 '<a class="close" href="#">&times;</a>' +
                 '\n</div>'
         ),
