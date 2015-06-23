@@ -677,6 +677,9 @@ class FileInput(object):
     existing = []
     object_data = field.object_data
 
+    if not object_data:
+      return existing
+
     if not field.multiple:
       object_data = [object_data]
 
