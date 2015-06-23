@@ -5,10 +5,12 @@ from __future__ import absolute_import
 
 from werkzeug import secure_filename
 from werkzeug.exceptions import BadRequest, NotFound
-from flask import request, current_app, send_file, jsonify
+from flask import current_app, send_file, jsonify
 from flask.signals import request_tearing_down
 from flask_login import current_user
 from flask_wtf.file import FileField, file_required
+
+from abilian.core.util import pdb_on_error
 
 from abilian.web import csrf, url_for
 from abilian.web.forms import Form
@@ -19,7 +21,7 @@ bp = Blueprint('uploads', __name__, url_prefix='/upload')
 
 class UploadForm(Form):
 
-  file = FileField(validators=(file_required,))
+  file = FileField(validators=(file_required(),))
 
   
 class BaseUploadsView(object):
@@ -46,7 +48,7 @@ class NewUploadView(BaseUploadsView, JSONView):
       'handle': self.handle,
       'url': url_for('.handle', handle=self.handle),
     }
-  
+
   def post(self, *args, **kwargs):
     form = UploadForm()
 
