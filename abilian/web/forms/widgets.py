@@ -657,7 +657,7 @@ class FileInput(object):
     existing = self.build_exisiting_files_list(field)
     uploads = self.build_uploads_list(field)
 
-    if not field.multiple and field.delete_files_index and uploads:
+    if not field.multiple and uploads:
       # single file field: exising file replaced by new upload, don't show
       # existing
       existing = []
