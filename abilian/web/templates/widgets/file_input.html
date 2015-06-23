@@ -1,16 +1,31 @@
-{#
-<div class="input-group file-input">
-  <span class="input-group-btn"><span class="btn btn-default btn-file">
-    {{ input }}</span></span>
-
-</div>
-#}
-<div class="file-input">
-  <span class="js-fileapi-wrapper upload-btn">
-    <span class="btn btn-default btn-file">
-      {{ button_label }}
-      {{ input|safe }}
+<div class="file-input row">
+  <div class="col-xs-12">
+    <span class="js-fileapi-wrapper upload-btn">
+      <span class="btn btn-default btn-file">
+        {{ button_label }}
+        {{ input|safe }}
+      </span>
     </span>
-  </span>
-  <ul class="selected-files list-inline"></ul>
+  </div>
+  
+  <div class="selected-files">
+    {%- for data in existing %}
+      <div class="file-item col-xs-12 col-md-6">
+        <span class="file-info">{{ loop.index0 }}. — {{ data.size | filesize }}</span>
+        {%- if field.allow_delete %}
+          <input type="checkbox" class="push-right"
+                 name = "__{{ fieldname }}_delete__" value="{{ loop.index0 }}"
+                 {%- if data.delete %} checked{%- endif %} />
+        {%- endif %}
+      </div>
+    {%- endfor %}
+    
+    {%- for data in uploaded %}
+      <div class="file-item col-xs-12 col-md-6">
+        <span class="file-info">{{ data.filename }} – {{ data.size|filesize }}</span>
+        <input type="hidden" name="{{ field.name }}" value="{{ data.handle }}" />
+        <a class="close" href="#">&times;</a>        
+      </div>
+    {%- endfor %}
+  </div>
 </div>

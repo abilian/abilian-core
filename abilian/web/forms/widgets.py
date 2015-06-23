@@ -16,8 +16,11 @@ from collections import namedtuple
 import bleach
 import sqlalchemy as sa
 import werkzeug.datastructures
-from flask import g, render_template, json, Markup, render_template_string
-from flask.ext.babel import format_date, format_datetime, get_locale
+from flask import (
+  g, render_template, json, Markup, render_template_string, current_app,
+)
+from flask_babel import format_date, format_datetime, get_locale
+from flask_login import current_user
 import wtforms
 from wtforms.widgets import (
     HTMLString, Input, html_params, Select,
@@ -641,6 +644,9 @@ class FileInput(object):
   Renders a file input.  Inspired from
   http://www.abeautifulsite.net/blog/2013/08/whipping-file-inputs-into-shape-with-bootstrap-3/
   """
+  def __init__(self, template='widgets/file_input.html'):
+    self.template = template
+
   def __call__(self, field, **kwargs):
     kwargs.setdefault('id', field.id)
     kwargs['name'] = field.name
@@ -648,15 +654,63 @@ class FileInput(object):
     input_elem = u'<input {}>'.format(html_params(**kwargs))
     button_label = _(u'Add file') if 'multiple' in kwargs else _(u'Select file')
 
+    existing = self.build_exisiting_files_list(field)
+    uploads = self.build_uploads_list(field)
+
+    if not field.multiple and field.delete_files_index and uploads:
+      # single file field: exising file replaced by new upload, don't show
+      # existing
+      existing = []
+
     return Markup(
-      render_template('widgets/file_input.html',
+      render_template(self.template,
                       id=field.id,
+                      field=field,
+                      widget=self,
                       input=input_elem,
                       button_label=button_label,
-                      ))
+                      existing=existing,
+                      uploaded=uploads,)
+    )
+
+  def build_exisiting_files_list(self, field):
+    existing = []
+    object_data = field.object_data
+
+    if not field.multiple:
+      object_data = [object_data]
+
+    for idx, data in enumerate(object_data):
+      if data is not None:
+        existing.append(
+          {
+            'file': data,
+            'size': len(bytes(data)),
+           'delete': idx in field.delete_files_index,
+         })
+
+    return existing
+
+  def build_uploads_list(self, field):
+    uploads = current_app.extensions['uploads']
+    uploaded = []
+
+    for handle in field.upload_handles:
+      file_ = uploads.get_file(current_user, handle)
+      if file_ is None:
+        continue
+      meta = uploads.get_metadata(current_user, handle)
+      uploaded.append({
+        'file': file_,
+        'handle': handle,
+        'filename': meta.get('filename', handle),
+        'size': file_.stat().st_size,
+      })
+
+    return uploaded
 
 
-class ImageInput(object):
+class ImageInput(FileInput):
   """
   An image widget with client-side preview. To show current image field
   data has to provide an attribute named `url`.
@@ -664,39 +718,39 @@ class ImageInput(object):
   def __init__(self, template='widgets/image_input.html',
                width=120, height=120,
                valid_extensions=('jpg', 'jpeg', 'png'),):
-    self.template = template
+    super(ImageInput, self).__init__(template=template)
     self.valid_extensions = valid_extensions
     self.width, self.height = width, height
 
-  def __call__(self, field, **kwargs):
-    field_id = kwargs.pop('id', field.id)
-    image_url = None
-    value = kwargs.get('value', field.data)
+  def build_exisiting_files_list(self, field):
+    existing = super(ImageInput, self).build_exisiting_files_list(field)
+    for data in existing:
+      value = data['file']
+      if value:
+        if hasattr(value, 'url'):
+          image_url = value.url
+        else:
+          image_url = self.get_b64_thumb_url(value)
 
-    if value and isinstance(value, werkzeug.datastructures.FileStorage):
-      # happens during POST with a validation error: value is the submitted
-      # value. Generally the get() page is rendered, but in the case of file
-      # inputs it will not work: user has to re-select the file to upload.  Thus
-      # we restore object value, so that user is aware that the file has not
-      # changed.
-      value = field.object_data
+        data['image_url'] = image_url
 
-    if value:
-      if hasattr(value, 'url'):
-        image_url = value.url
-      else:
-        image_url = self.get_b64_thumb_url(value)
+    return existing
 
-    pattern = '.*\.({ext})'.format(ext='|'.join(self.valid_extensions))
-    return Markup(
-      render_template(self.template,
-                      id=field_id,
-                      field=field,
-                      required=False,
-                      image_url=image_url,
-                      width=self.width,
-                      height=self.height,
-                      pattern=pattern,))
+  def build_uploads_list(self, field):
+    uploaded = super(ImageInput, self).build_uploads_list(field)
+    for data in uploaded:
+      value = data['file']
+      if value:
+        if hasattr(value, 'url'):
+          image_url = value.url
+        else:
+          with value.open('rb') as in_:
+            image_url = self.get_b64_thumb_url(in_)
+
+        data['image_url'] = image_url
+
+    return uploaded
+
 
   def get_b64_thumb_url(self, data):
     thumb = image.crop_and_resize(data, self.width, self.height)
