@@ -107,7 +107,6 @@ class UserPreferencesPanel(PreferencePanel):
     form = UserPreferencesForm(obj=g.user, formdata=None, prefix=self.id, **data)
     return render_template('preferences/user.html', form=form, title=self.label)
 
-  @csrf.protect
   @csrf.support_graceful_failure
   def post(self):
     # Manual security check, should be done by the framework instead.
