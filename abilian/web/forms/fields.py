@@ -171,6 +171,7 @@ class FileField(BaseFileField):
   def process_formdata(self, valuelist):
     uploads = current_app.extensions['uploads']
     if self.delete_files_index:
+      self.data = None
       return
 
     if valuelist:
@@ -199,8 +200,10 @@ class FileField(BaseFileField):
     """
     Store file
     """
-    if (not self.has_file()
-        and not (self.allow_delete and self.delete_files_index)):
+    delete_value = self.allow_delete and self.delete_files_index
+
+    if not self.has_file() and not delete_value:
+      # nothing uploaded, and nothing to delete
       return
 
     state = sa.inspect(obj)
@@ -212,6 +215,10 @@ class FileField(BaseFileField):
     rel = getattr(mapper.relationships, name)
     if rel.uselist:
       raise ValueError("Only single target supported; else use ModelFieldList")
+
+    if delete_value:
+      setattr(obj, name, None)
+      return
 
     #  FIXME: propose option to always create a new blob
     val = getattr(obj, name)
