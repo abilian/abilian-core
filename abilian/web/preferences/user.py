@@ -129,9 +129,6 @@ class UserPreferencesPanel(PreferencePanel):
         g.user.set_password(form.password.data)
       del form.password
 
-      if not form.photo.data:
-        del form.photo
-
       form.populate_obj(g.user)
 
       current_app.db.session.commit()
