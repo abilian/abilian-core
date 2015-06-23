@@ -108,6 +108,7 @@ class UserPreferencesPanel(PreferencePanel):
     return render_template('preferences/user.html', form=form, title=self.label)
 
   @csrf.protect
+  @csrf.support_graceful_failure
   def post(self):
     # Manual security check, should be done by the framework instead.
     if not self.is_accessible():
@@ -119,6 +120,10 @@ class UserPreferencesPanel(PreferencePanel):
     form = UserPreferencesForm(request.form, prefix=self.id)
 
     if form.validate():
+      if request.csrf_failed:
+        current_app.extensions['csrf-handler'].flash_csrf_failed_message()
+        return render_template('preferences/user.html', form=form)
+
       del form.confirm_password
       if form.password.data:
         g.user.set_password(form.password.data)
