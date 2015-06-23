@@ -1,84 +1,137 @@
-/* jshint camelcase: false */
+/* jshint unused: false */
 (function(factory) {
     'use strict';
-    require(['jquery', 'FileAPI', 'Hogan'], factory);
+    define('widget.FileInput',
+           ['Abilian', 'jquery', 'FileAPI', 'Hogan'], factory);
 }
-(function($, api, Hogan) {
+(function(Abilian, $, api, Hogan) {
     'use strict';
     /**
      * File input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
      */
-    var file_item_template = Hogan.compile(
-        '<li class="file-item well well-sm">{{ name }} ({{ size }}) '
-        + '<a class="close" href="#">&times;</a>'
-        + '</li>'
-    );
+    var defaults = {
+        fileItemTemplate: Hogan.compile(
+            '<div id="{{ uid }}" class="file-item col-xs-12 col-md-6">\n' +
+                '{{ name }} ({{ size }}) ' +
+                '<a class="close" href="#">&times;</a>' +
+                '\n</div>'
+        ),
+        progressTemplate:
+            '<div class="progress">' +
+            '<div class="progress-bar" role="progressbar" ' +
+            '     aria-valuenow="0" aria-valuemin="0" ' +
+            '     aria-valuemax="100" style="width: 0%;">' +
+            '</div>' +
+            '</div>',
+        inputTemplate: '<input type="hidden" name="{{ name }}" />',
+        progressBarHeight: '0.2em'
+    };
 
     function FileInput(node, options) {
-        var self = this;
-        self.root_node = node;
-        self.button = node.find('.js-fileapi-wrapper .btn-file');
-        var $input = node.find('.js-fileapi-wrapper input');
-        self.multiple = Boolean($input.attr('multiple'));
-        $input.attr('multiple', null);
-        self.input_name = $input.attr('name');
-        self.input_model = $input.clone();
-        self.list_node = node.find('.selected-files');
-
-        self.button.on('change.fileapi', 'input',
-                       {fileinput: self},
-                       self.addFiles);
+        this.options = $.extend({}, defaults, options);
+        this.$input = node.find('.js-fileapi-wrapper input');
+        this.rootNode = node;
+        this.button = node.find('.js-fileapi-wrapper .btn-file');
+        this.multiple = Boolean(this.$input.attr('multiple'));
+        this.$input.attr('multiple', null);
+        this.inputName = this.$input.attr('name');
+        this.$input.attr('name', null);
+        this.listNode = node.find('.selected-files');
+        this.button.on('change', 'input',
+                       this.addFiles.bind(this));
     }
 
     FileInput.prototype = {
         addFiles: function(evt) {
-            var self = evt.data.fileinput;
-            var file = api.getFiles(evt)[0];
+            var self = this,
+                files = api.getFiles(evt);
 
-            if (!self.multiple) {
-                self.list_node.empty();
+            if (!this.multiple) {
+                this.listNode.empty();
+                files = files.slice(0, 1);
             }
 
-            self.addFileNode(evt.target, file);
+            $(files).each(function () {
+                self.addFileNode(evt.target, this);
+            });
         },
 
         addFileNode: function(input, file) {
-            var infos = {
-                name: this.sanitizeFilename(file.name),
-                type: file.type,
-                size: this.humanSize(file.size)
-            };
-            var el = $(file_item_template.render(infos));
-            var $input = $(input).attr({id: null,
-                                        name: this.input_name,
-                                        'class': 'hide'});
-            el.append($input);
+            var el = this.createFileNode(file);
+            this.listNode.append(el);
+            el.find('a.close').on('click',
+                                  this.removeFileNode.bind(this));
+            this.triggerUpload(el, file);
+        },
 
-            this.list_node.append(el);
-            el.find('a.close').on('click', {fileinput: this}, this.removeFileNode);
-
-            if (this.multiple) {
-                // create new input element
-                this.input_model
-                    .clone()
-                    .attr({name: null})
-                    .appendTo(this.button);
-            }
+        triggerUpload: function(element, file) {
+            var xhr = api.upload({
+                url:  Abilian.api.upload.newFileUrl,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': Abilian.csrf_token
+                },
+                files: { 'file': file },
+                progress: this.onFileProgress.bind(this),
+                complete: this.onFileComplete.bind(this)
+            });
         },
 
         removeFileNode: function(evt) {
             evt.preventDefault();
-            var self = evt.data.fileinput;
-            var node = $(evt.target).parent('.file-item');
-            node.remove();
+            $(evt.target)
+                .parent('.file-item')
+                .remove();
+        },
 
-            if (!this.multiple) {
-                // restore input element
-                this.input_model
-                    .clone()
-                    .attr({name: null})
-                    .appendTo(this.button);
+        createFileNode: function(file) {
+            var infos = this.getFileInfos(file),
+                el = $(this.options.fileItemTemplate.render(infos)),
+                progress = $(this.options.progressTemplate)
+                    .css({height: this.options.progressBarHeight});
+
+            el.append(progress);
+            return el;
+        },
+
+        getElementForFile: function(file) {
+            var uid = api.uid(file);
+            console.info('UID = ', uid, ';  file = ', file);
+            return $(document.getElementById(uid));
+        },
+
+        getFileInfos: function(file) {
+            return {
+                name: this.sanitizeFilename(file.name),
+                type: file.type,
+                size: this.humanSize(file.size),
+                uid: api.uid(file)
+            };
+        },
+
+        onFileProgress: function(evt, file, xhr, options) {
+            var progress = evt.loaded/evt.total * 100;
+            this.getElementForFile(file)
+                .find('.progress-bar')
+                .css({'width': progress + '%'});
+        },
+
+        onFileComplete: function(err, xhr, file, options) {
+            var $el = this.getElementForFile(xhr.currentFile);
+
+            if (err) {
+                $el.remove();
+                return;
             }
+
+            var $input = $('<input>')
+                    .attr({'type': 'hidden',
+                           'name': this.inputName}),
+                result = JSON.parse(xhr.responseText);
+
+            $el.find('.progress').remove();
+            $input.val(result.handle);
+            $el.append($input);
         },
 
         sanitizeFilename: function(filename) {
@@ -118,4 +171,6 @@
                 return input;
             });
     };
+
+    return FileInput;
 }));
