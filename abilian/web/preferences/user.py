@@ -10,7 +10,7 @@ import PIL.Image
 import babel
 from flask import g, current_app, request, redirect, url_for, render_template, \
     flash
-from flask.ext.wtf.file import FileField
+
 from werkzeug.exceptions import InternalServerError
 from wtforms.fields import StringField
 from wtforms.validators import ValidationError
@@ -28,8 +28,8 @@ class UserPreferencesForm(Form):
   confirm_password= StringField(_l(u'Confirm new password'),
                                 widget=widgets.PasswordInput(autocomplete='off'))
 
-  photo = FileField(label=_l('Photo'),
-                    widget=widgets.ImageInput(width=55, height=55))
+  photo = fields.FileField(label=_l('Photo'),
+                           widget=widgets.ImageInput(width=55, height=55))
 
   locale = fields.LocaleSelectField(
     label=_l(u'Preferred Language'),
@@ -51,10 +51,11 @@ class UserPreferencesForm(Form):
           u' "password" field and "confirm password" field.'))
 
   def validate_photo(self, field):
-    data = request.files.get(field.name)
+    data = request.form.get(field.name)
     if not data:
       return
 
+    data = field.data
     filename = data.filename
     valid = any(filename.lower().endswith(ext)
                 for ext in ('.png', '.jpg', '.jpeg'))
@@ -67,10 +68,10 @@ class UserPreferencesForm(Form):
     if not img_type in ('png', 'jpeg'):
       raise ValidationError(_(u'Only PNG or JPG image files are accepted'))
 
-    data.stream.seek(0)
+    data.seek(0)
     try:
       # check this is actually an image file
-      im = PIL.Image.open(data.stream)
+      im = PIL.Image.open(data)
       im.load()
     except:
       raise ValidationError(_(u'Could not decode image file'))
@@ -106,7 +107,7 @@ class UserPreferencesPanel(PreferencePanel):
     form = UserPreferencesForm(obj=g.user, formdata=None, prefix=self.id, **data)
     return render_template('preferences/user.html', form=form, title=self.label)
 
-  @csrf.protect
+  @csrf.support_graceful_failure
   def post(self):
     # Manual security check, should be done by the framework instead.
     if not self.is_accessible():
@@ -118,13 +119,14 @@ class UserPreferencesPanel(PreferencePanel):
     form = UserPreferencesForm(request.form, prefix=self.id)
 
     if form.validate():
+      if request.csrf_failed:
+        current_app.extensions['csrf-handler'].flash_csrf_failed_message()
+        return render_template('preferences/user.html', form=form)
+
       del form.confirm_password
       if form.password.data:
         g.user.set_password(form.password.data)
       del form.password
-
-      if not form.photo.data:
-        del form.photo
 
       form.populate_obj(g.user)
 

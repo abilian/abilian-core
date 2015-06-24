@@ -27,12 +27,19 @@ class TestUserPreferences(BaseTestCase):
 
   def test_form_photo(self):
     url = url_for('preferences.user')
-    photo = (AVATAR_COLORMAP.open('rb'), u'avatar.png', 'image/png')
+    uploads = self.app.extensions['uploads']
+    with AVATAR_COLORMAP.open('rb') as f:
+      handle = uploads.add_file(self.user, f,
+                                filename=u'avatar.png',
+                                mimetype='image/png')
+
     kwargs = dict(
         method='POST',
-        data={'photo': photo,},
+        data={'photo': handle,},
       )
+
     with self.app.test_request_context(url, **kwargs):
+      self.login(self.user)
       form = UserPreferencesForm(request.form)
       form.validate()
       assert form.photo.data is not None

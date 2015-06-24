@@ -108,10 +108,6 @@
                );
 
          datetimePickerSetup();
-
-         /* file / image input */
-         $('.file-input').fileInput();
-         $('.image-input').imageInput();
      };
     $(window).on(Abilian.events.appAfterInit,
                  Abilian.fn.initWidgets);

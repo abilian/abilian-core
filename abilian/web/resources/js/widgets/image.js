@@ -1,56 +1,62 @@
 /* jshint camelcase: false */
 (function(factory) {
     'use strict';
-    require(['jquery', 'FileAPI'], factory);
+    require(['AbilianWidget', 'widget.FileInput', 'jquery', 'FileAPI'], factory);
 }
-(function($, FileAPI) {
+(function(Abilian, FileInput, $, api) {
     'use strict';
     /**
      * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
      */
-    function ImageInput(node, options) {
-        var self = this;
-        self.root_node = node;
-        self.preview_node = node.find('.upload_preview').get(0);
-        self.fileapi_node = node.find('.js-fileapi-wrapper input').get(0);
-
-        var $preview = $(self.preview_node);
-        self.width = $preview.data('width') || options.width;
-        self.height = $preview.data('height') || options.height;
-
-        FileAPI.event.on(self.fileapi_node, 'change', function(evt) {
-            self.changeImage(evt);
-        });
-    }
-
-    ImageInput.prototype = {
-        changeImage: function(evt) {
-            var self = this;
-            var file = FileAPI.getFiles(evt)[0];
-            var image = FileAPI.Image(file);
-            var preview = image.preview(self.width, self.height, 'max');
-            preview.get(function( err/**String*/, img/**HTMLElement*/ ) {
-                while (self.preview_node.firstChild) {
-                    self.preview_node.removeChild(self.preview_node.firstChild);
-                }
-                self.preview_node.appendChild(img);
-            });
-        }
+    var defaults = {
+        width: 55,
+        height: 55
     };
 
+    function ImageInput(node, options) {
+        FileInput.call(this, node, $.extend({}, defaults, options));
+        this.preview_node = node.find('.upload_preview').get(0);
+        var $preview = $(this.preview_node);
+        this.width = $preview.data('width') || options.width;
+        this.height = $preview.data('height') || options.height;
+
+        // api.event.on(this.fileapi_node, 'change', this.changeImage.bind(this));
+    }
+
+    ImageInput.prototype = Object.create(FileInput.prototype);
+
+    ImageInput.prototype.createFileNode = function(file) {
+        var el = FileInput.prototype.createFileNode.call(this, file),
+            image = api.Image(file),
+            preview = image.preview(this.width, this.height, 'max');
+
+        preview.get(function( err/**String*/, img/**HTMLElement*/ ) {
+            el.prepend(img);
+        });
+
+        return el;
+    };
+
+    function createImageInput(options) {
+        var element = $(this),
+            opts = $.extend({}, defaults, options),
+            widget = new ImageInput(element, opts);
+        element.data('image-input', widget);
+        return widget;
+    }
+    Abilian.registerWidgetCreator('imageInput', createImageInput);
 
     $.fn.imageInput = function(options) {
-        var defaults = { width: 120, height: 120 };
-        var opts = $.extend(defaults, options);
+        var opts = $.extend({}, defaults, options);
         return this.each(
             function() {
                 var node = $(this);
-                var input = node.data('image-input');
-                if (input === undefined) {
-                    input = new ImageInput(node, opts);
-                    node.data('image-input', input);
+                var widget = node.data('image-input');
+                if (widget === undefined) {
+                    widget = new ImageInput(node, opts);
+                    node.data('image-input', widget);
                 }
-                return input;
+                return widget;
         });
     };
 

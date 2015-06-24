@@ -32,8 +32,7 @@ DATATABLE_LESS = Bundle('datatables/css/jquery.dataTables.css',
                         'datatables/css/jquery.dataTables_themeroller.css')
 DATATABLE_JS = Bundle('datatables/js/jquery.dataTables.js')
 
-FILEAPI_JS = Bundle('fileapi/FileAPI.js',
-                    'fileapi/plugins/jquery.fileapi.js')
+FILEAPI_JS = Bundle('fileapi/FileAPI.js')
 
 FONTAWESOME_LESS = Bundle('font-awesome/less/font-awesome.less')
 

@@ -4,6 +4,7 @@ Various tools that don't belong some place specific.
 """
 from __future__ import absolute_import
 
+import sys
 import functools
 import logging
 import time
@@ -12,9 +13,38 @@ from math import ceil
 import unicodedata
 import re
 
-from flask import request
+from flask import request, current_app
 from babel.dates import LOCALTZ
 from werkzeug.local import LocalProxy
+
+try:
+  import ipdb as pdb
+except ImportError:
+  import pdb
+
+
+def pdb_on_error(fn):
+  """
+  Decorator to trigger (i)pdb on exception inside decorated function.
+  Active only in DEBUG mode.
+  Useful to debug POST only views for example.
+  """
+  @functools.wraps(fn)
+  def decorator(*args, **kwargs):
+    try:
+      return fn(*args, **kwargs)
+    except:
+      if current_app and current_app.debug:
+        type_, value, tb = sys.exc_info()
+        if tb.tb_next is not None:
+          # error has happened inside decorated function, remove us from top
+          # stack: better readability in logs, accurate label in sentry
+          tb = tb.tb_next
+
+        pdb.post_mortem(tb)
+      raise
+
+  return decorator
 
 
 def noproxy(obj):

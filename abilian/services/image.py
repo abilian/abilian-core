@@ -18,7 +18,9 @@ cache = {}
 def get_format(img):
   if isinstance(img, basestring):
     img = StringIO(img)
+  pos = img.tell()
   image = Image.open(img)
+  img.seek(pos)
   return image.format
 
 
@@ -56,10 +58,13 @@ def resize(orig, hsize):
 def crop_and_resize(orig, hsize, vsize=0):
   if isinstance(orig, basestring):
     orig = StringIO(orig)
+
   if not vsize:
     vsize = hsize
+
+  original_pos = orig.tell()
   cache_key = (hashlib.md5(orig.read()).digest(), hsize, vsize)
-  orig.seek(0)
+  orig.seek(original_pos)
   if cache_key in cache:
     return cache[cache_key]
 
