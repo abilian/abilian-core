@@ -28,7 +28,7 @@ DEFAULT_CONFIG = {
 }
 
 CLEANUP_SCHEDULE_ID = 'periodic_clean_upload_directory'
-DEFAULT_CLEANUP_SCHEDULE = {  
+DEFAULT_CLEANUP_SCHEDULE = {
   'task': 'periodic_clean_upload_directory',
   'schedule': timedelta(hours=1),
 }
@@ -59,7 +59,7 @@ class FileUploadsExtension(object):
     app.add_template_global(self, 'uploads')
     app.register_blueprint(blueprint)
     signals.register_js_api.connect(self._do_register_js_api)
-    
+
     self.config = {}
     self.config.update(DEFAULT_CONFIG)
     self.config.update(app.config.get('FILE_UPLOADS', {}))
@@ -69,7 +69,7 @@ class FileUploadsExtension(object):
     CELERYBEAT_SCHEDULE = app.config.setdefault('CELERYBEAT_SCHEDULE', {})
     if CLEANUP_SCHEDULE_ID not in CELERYBEAT_SCHEDULE:
       CELERYBEAT_SCHEDULE[CLEANUP_SCHEDULE_ID] = DEFAULT_CLEANUP_SCHEDULE
-          
+
     path = self.UPLOAD_DIR = app.DATA_DIR / 'uploads'
     if not path.exists():
       path.mkdir(0775)
@@ -80,12 +80,12 @@ class FileUploadsExtension(object):
     app = sender
     js_api = app.js_api.setdefault('upload', {})
     js_api['newFileUrl'] = url_for('uploads.new_file')
-    
+
   def user_dir(self, user):
     user_id = (str(user.id) if not isinstance(user, AnonymousUserMixin)
                else 'anonymous')
     return self.UPLOAD_DIR / user_id
-  
+
   def add_file(self, user, file_obj, **metadata):
     """
     Add a new file.
@@ -107,7 +107,7 @@ class FileUploadsExtension(object):
       meta_file = user_dir / '{}.metadata'.format(handle)
       with meta_file.open('wb') as out:
         json.dump(metadata, out, skipkeys=True)
-      
+
     return handle
 
   def get_file(self, user, handle):
@@ -129,8 +129,8 @@ class FileUploadsExtension(object):
     if not file_path.exists() and not file_path.is_file():
       return None
 
-    return file_path  
-  
+    return file_path
+
   def get_metadata_file(self, user, handle):
     content = self.get_file(user, handle)
     if content is None:
@@ -146,7 +146,7 @@ class FileUploadsExtension(object):
     metafile = self.get_metadata_file(user, handle)
     if metafile is None:
       return {}
-    
+
     try:
       with metafile.open('rb') as in_:
         meta = json.load(in_)
@@ -154,7 +154,7 @@ class FileUploadsExtension(object):
       meta = {}
 
     return meta
-    
+
   def remove_file(self, user, handle):
     paths = (self.get_file(user, handle),
              self.get_metadata_file(user, handle),)
@@ -176,7 +176,7 @@ class FileUploadsExtension(object):
     # FIXME: put lock in directory?
     CLEAR_AFTER = self.config['DELETE_STALLED_AFTER']
     minimum_age = time.time() - CLEAR_AFTER
-    
+
     for user_dir in self.UPLOAD_DIR.iterdir():
       if not user_dir.is_dir():
         logger.error('Found non-directory in upload dir: %r', bytes(user_dir))
@@ -189,7 +189,7 @@ class FileUploadsExtension(object):
 
         if content.stat().st_ctime < minimum_age:
           content.unlink()
-          
+
 
 @shared_task
 def periodic_clean_upload_directory():
@@ -202,4 +202,3 @@ def periodic_clean_upload_directory():
   """
   uploads = current_app.extensions['uploads']
   uploads.clear_stalled_files()
-  
