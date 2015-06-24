@@ -661,6 +661,12 @@ class FileInput(object):
       # single file field: exising file replaced by new upload, don't show
       # existing
       existing = []
+    else:
+      for data in existing:
+        # this might be a very big bytes object: in any case it will not be used
+        # in widget's template, and during development it makes very large pages
+        # due to debugtoolbar capturing template parameters
+        del data['file']
 
     return Markup(
       render_template(self.template,
