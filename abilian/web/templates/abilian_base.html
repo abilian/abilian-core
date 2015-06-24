@@ -29,6 +29,13 @@
     <script src="{{ ext.raven_js_url }}"></script>
     <script>Raven.config({{ ext.client.get_public_dsn() |tojson }}).install();</script>
   {%- endif %}
+
+  <script>
+   var require ={
+       waitSeconds: 90
+   };
+  </script>
+
   {%- assets "js-top" %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
   {%- endassets %}
