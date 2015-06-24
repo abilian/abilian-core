@@ -17,10 +17,11 @@ class AttachmentExtension(object):
   """
   def __init__(self, app):
     app.extensions['attachments'] = self
-    app.add_template_global(self, 'attachements')
+    app.add_template_global(self, 'attachments')
+    app.register_blueprint(blueprint)
 
   def is_support_attachements(self, obj):
-    return attachments.is_support_attachements(obj)
+    return attachments.is_support_attachments(obj)
 
   def for_entity(self, obj, check_support_attachments=False):
     return attachments.for_entity(obj, check_support_attachments=check_support_attachments)
@@ -37,7 +38,7 @@ class AttachmentExtension(object):
     Used by macro m_attachment_form(entity)
     """
     ctx = {}
-    ctx['url'] = url_for('attachements.create', entity_id=obj.id)
+    ctx['url'] = url_for('attachments.create', entity_id=obj.id)
     ctx['form'] = AttachmentForm()
     ctx['buttons'] = [UPLOAD_BUTTON]
     return ctx

@@ -1,0 +1,40 @@
+{% from "macros/user.html" import m_user_photo, m_user_link %}
+{% from "macros/form.html" import m_field %}
+
+{% macro m_attachments(entity) %}
+  {%- if attachments.has_attachments(entity) %}
+    <ul class="attachments">
+    {%- for attachment in attachments.for_entity(entity) %}
+      <li id="attachment-{{ attachment.id }}">{{ m_attachment(attachment) }}</li>
+    {%- endfor %}
+    </ul>
+  {%- endif %}
+{% endmacro %}
+
+{# single attachment #}
+{% macro m_attachment(attachment) %}
+  <div class="media">
+    <div class="media-left">
+      <i class="fa fa-file fa-big"></i>
+    </div>
+    <div class="media-body">
+      <h4 class="media-heading">{{ attachment.name }}</h4>
+      <p>{{ attachment.blob.size | filesize }}</p>
+    </div>
+  </div>  
+{% endmacro %}
+
+{% macro m_attachment_form(entity) %}
+  {%- set ctx = attachments.get_form_context(entity) %}
+  <form action="{{ ctx.url }}" method="POST" enctype="multipart/form-data" role="form">
+    {%- for field in ctx.form %}
+      {{ m_field(field) }}
+    {%- endfor %}
+
+    <div class="form-group form-actions">
+      {%- for button in ctx.buttons %}
+        {{ button.render() }}
+      {%- endfor %}
+    </div>
+  </form>
+{% endmacro %}

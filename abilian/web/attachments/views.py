@@ -8,7 +8,7 @@ from werkzeug.exceptions import BadRequest
 
 from abilian.i18n import _, _l
 from abilian.core.entities import Entity
-from abilian.core.models.attachment import Attachment, is_support_attachements
+from abilian.core.models.attachment import Attachment, is_support_attachments
 from abilian.web import url_for, nav
 from abilian.web.blueprints import Blueprint
 from abilian.web.action import actions, ButtonAction
@@ -50,10 +50,10 @@ class AttachmentCreateView(ObjectCreate):
       self.entity = Entity.query.get(entity_id)
 
     if self.entity is None:
-      raise BadRequest('No entity to attachment')
+      raise BadRequest('No entity provided')
 
-      if not is_support_attachements(self.entity):
-        raise BadRequest('This entity is not commentable')
+      if not is_support_attachments(self.entity):
+        raise BadRequest('This entity is doesn\'t support attachments')
 
     self.obj.entity = self.entity
     session = sa.orm.object_session(self.entity)
@@ -69,7 +69,7 @@ class AttachmentCreateView(ObjectCreate):
     return nav.BreadcrumbItem(label=label)
 
   def get_form_buttons(self, *args, **kwargs):
-    return [COMMENT_BUTTON]
+    return [UPLOAD_BUTTON]
 
   def view_url(self):
     kw = {}
