@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 
-from .extension import AttachmentExtensions
+from .extension import AttachmentExtension
 
 def register_plugin(app):
   AttachmentExtension(app=app)
