@@ -42,6 +42,10 @@ class BlobTestCase(AbilianTestCase):
     assert 'md5' in b.meta
     assert b.meta['md5'] == u'0e4e3b2681e8931c067a23c583c878d5'
 
+  def test_size(self):
+    b = Blob(u'test')
+    assert b.size == 4
+
   def test_filename(self):
     content = StringIO(u'test')
     setattr(content, 'filename', 'test.txt')

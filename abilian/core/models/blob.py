@@ -66,6 +66,14 @@ class Blob(Model):
     return repository.get(self, self.uuid)
 
   @property
+  def size(self):
+    """
+    Return size in bytes of value
+    """
+    f = self.file
+    return f.stat().st_size if f is not None else 0
+
+  @property
   def value(self):
     """
     Binary value content
