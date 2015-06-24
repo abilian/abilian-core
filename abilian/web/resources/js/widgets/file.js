@@ -29,7 +29,9 @@
 
     function FileInput(node, options) {
         var self = this;
+        this.currentlyUploaded = {};
         this.options = $.extend({}, defaults, options);
+        this.form = node.parent('form');
         this.$input = node.find('.js-fileapi-wrapper input');
         this.rootNode = node;
         this.button = node.find('.js-fileapi-wrapper .btn-file');
@@ -48,6 +50,8 @@
             });
         this.button.on('change', 'input',
                        this.addFiles.bind(this));
+
+        this.form.on('submit', this.onFormSubmit.bind(this));
     }
 
     FileInput.prototype = {
@@ -97,6 +101,9 @@
         },
 
         triggerUpload: function(element, file) {
+            var uid = api.uid(file);
+            this.currentlyUploaded[uid] = true;
+
             var xhr = api.upload({
                 url:  Abilian.api.upload.newFileUrl,
                 headers: {
@@ -106,7 +113,8 @@
                 files: { 'file': file },
                 progress: this.onFileProgress.bind(this),
                 complete: this.onFileComplete.bind(this)
-            });
+                });
+
         },
 
         removeFileNode: function(evt) {
@@ -167,10 +175,14 @@
         },
 
         onFileComplete: function(err, xhr, file, options) {
-            var $el = this.getElementForFile(xhr.currentFile);
+            var $el = this.getElementForFile(xhr.currentFile),
+                uid = api.uid(xhr.currentFile);
+
+            delete this.currentlyUploaded[uid];
 
             if (err) {
                 $el.remove();
+                alert('Echec de l\'envoi du fichier!'); // FIXME: i18n
                 return;
             }
 
@@ -182,6 +194,13 @@
             $el.find('.progress').remove();
             $input.val(result.handle);
             $el.append($input);
+        },
+
+        onFormSubmit: function (e) {
+            if (Object.keys(this.currentlyUploaded).length > 0) {
+                e.preventDefault();
+                alert('Des fichiers sont en cours d\'envoi'); //FIXME: i18n
+            }
         },
 
         sanitizeFilename: function(filename) {
