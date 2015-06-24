@@ -150,7 +150,8 @@ class Application(Flask, ServiceManager, PluginManager):
   #: Custom apps may want to always load some plugins: list them here.
   APP_PLUGINS = ('abilian.web.search',
                  'abilian.web.comments',
-                 'abilian.web.uploads',)
+                 'abilian.web.uploads',
+                 'abilian.web.attachments',)
 
   #: Environment variable used to locate a config file to load last (after
   #: instance config file). Use this if you want to override some settings on a
