@@ -24,15 +24,15 @@
   <link rel="shortcut icon" type="image/png" href="{{ app.config['FAVICO_URL'] | string }}" />
   <link rel="apple-touch-icon" type="image/png" href="{{ app.config['FAVICO_URL'] | string }}" />
 
-  {%- assets "js-top" %}
-  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-  {%- endassets %}
-
   {%- if app.config.get('SENTRY_INSTALL_CLIENT_JS', True) and app.extensions.get('sentry') %}
     {%- set ext = app.extensions['sentry'] %}
     <script src="{{ ext.raven_js_url }}"></script>
     <script>Raven.config({{ ext.client.get_public_dsn() |tojson }}).install();</script>
   {%- endif %}
+  {%- assets "js-top" %}
+  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {%- endassets %}
+
   {%- block top_js %}{%- endblock top_js %}
 </head>
 
