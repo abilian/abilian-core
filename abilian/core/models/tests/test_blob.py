@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import uuid
+from StringIO import StringIO
 
 from abilian.testing import BaseTestCase as AbilianTestCase
 from abilian.services import (
@@ -40,6 +41,20 @@ class BlobTestCase(AbilianTestCase):
     b = Blob(u'test md5')
     assert 'md5' in b.meta
     assert b.meta['md5'] == u'0e4e3b2681e8931c067a23c583c878d5'
+
+  def test_filename(self):
+    content = StringIO(u'test')
+    setattr(content, 'filename', 'test.txt')
+    b = Blob(content)
+    assert 'filename' in b.meta
+    assert b.meta['filename'] == u'test.txt'
+
+  def test_mimetype(self):
+    content = StringIO(u'test')
+    setattr(content, 'content_type', 'text/plain')
+    b = Blob(content)
+    assert 'mimetype' in b.meta
+    assert b.meta['mimetype'] == u'text/plain'
 
   def test_nonzero(self):
     b = Blob(u'test md5')

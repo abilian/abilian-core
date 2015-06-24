@@ -84,7 +84,16 @@ class Blob(Model):
     """
     from abilian.services.repository import session_repository as repository
     repository.set(self, self.uuid, value)
-    self.meta['md5'] = unicode(hashlib.md5(value).hexdigest())
+    self.meta['md5'] = unicode(hashlib.md5(self.value).hexdigest())
+
+    if hasattr(value, 'filename'):
+      filename = getattr(value, 'filename')
+      if isinstance(filename, bytes):
+        filename = filename.decode('utf-8')
+      self.meta['filename'] = filename
+
+    if hasattr(value, 'content_type'):
+      self.meta['mimetype'] = getattr(value, 'content_type')
 
   @value.deleter
   def value(self):
