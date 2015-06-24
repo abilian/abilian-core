@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abilian-core 0.3.3.dev88+ng11c50b5.d20150311\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-18 12:27+0200\n"
+"POT-Creation-Date: 2015-06-24 11:49+0200\n"
 "PO-Revision-Date: 2015-03-20 15:19+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -245,7 +245,7 @@ msgstr ""
 msgid "{manager} has revoked role \"{role}\" from {principal}"
 msgstr ""
 
-#: abilian/web/admin/panels/dashboard.py:18
+#: abilian/web/admin/panels/dashboard.py:21
 msgid "Dashboard"
 msgstr ""
 
@@ -550,6 +550,10 @@ msgstr ""
 msgid "Select file"
 msgstr ""
 
+#: abilian/web/forms/widgets.py:1004
+msgid "hour(s)"
+msgstr ""
+
 #: abilian/web/preferences/user.py:31
 msgid "Photo"
 msgstr ""
@@ -614,7 +618,7 @@ msgstr ""
 msgid "%(date)s at %(time)s"
 msgstr ""
 
-#: abilian/web/templates/abilian_base.html:42
+#: abilian/web/templates/abilian_base.html:49
 msgid "Skip to content"
 msgstr ""
 
@@ -667,15 +671,7 @@ msgstr ""
 msgid "Export XML"
 msgstr ""
 
-#: abilian/web/templates/default/list_view.html:82
-msgid "Send an email to selected contacts"
-msgstr ""
-
-#: abilian/web/templates/default/list_view.html:82
-msgid "Send an email"
-msgstr ""
-
-#: abilian/web/templates/default/single_view.html:28
+#: abilian/web/templates/default/single_view.html:29
 #, python-format
 msgid "Comments (%(count)d)"
 msgstr ""

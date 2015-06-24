@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-18 12:27+0200\n"
-"PO-Revision-Date: 2015-06-18 12:29+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-06-24 11:49+0200\n"
+"PO-Revision-Date: 2015-06-24 11:44+0100\n"
+"Last-Translator: ybourbotte@abilian.com\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Des informations de sécurité sont manquantes ou expirées. Cela peut "
 "arriver si vous avez ouvert le formulaire depuis un bon moment. <br /><br"
-" />Essayez de soumettre à nouveau le formulaire.\n"
+" />Essayez de soumettre à nouveau le formulaire."
 
 #: abilian/services/auth/service.py:54
 msgid "Logout"
@@ -187,7 +187,7 @@ msgstr "Label"
 #: abilian/services/vocabularies/forms.py:30
 #, python-format
 msgid "allowed tags: %(tags)s"
-msgstr ""
+msgstr "balises autorisées : %(tags)s"
 
 #: abilian/services/vocabularies/forms.py:32
 #: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:24
@@ -251,7 +251,7 @@ msgstr "{manager} a donné le rôle \"{role}\" à {principal}"
 msgid "{manager} has revoked role \"{role}\" from {principal}"
 msgstr "{manager} a retiré le rôle \"{role}\" à {principal}"
 
-#: abilian/web/admin/panels/dashboard.py:18
+#: abilian/web/admin/panels/dashboard.py:21
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -293,7 +293,7 @@ msgstr "Changement enregistrés."
 #: abilian/web/admin/panels/groups/__init__.py:19
 #: abilian/web/admin/templates/admin/groups.html:8
 msgid "Groups"
-msgstr ""
+msgstr "Groupes"
 
 #: abilian/web/admin/panels/groups/__init__.py:46
 #: abilian/web/admin/panels/users/__init__.py:47
@@ -339,12 +339,12 @@ msgstr "Nom"
 
 #: abilian/web/admin/panels/groups/forms.py:20
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: abilian/web/admin/panels/groups/forms.py:23
 #: abilian/web/admin/templates/admin/groups.html:17
 msgid "Public"
-msgstr ""
+msgstr "Public"
 
 #: abilian/web/admin/panels/groups/forms.py:27
 #: abilian/web/admin/panels/users/forms.py:39
@@ -355,7 +355,7 @@ msgstr "Roles"
 
 #: abilian/web/admin/panels/groups/views.py:93
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
 #: abilian/web/admin/panels/users/__init__.py:19
 #: abilian/web/admin/templates/admin/users.html:8
@@ -507,15 +507,15 @@ msgstr "Dernière connection"
 
 #: abilian/web/comments/views.py:30
 msgid "Send"
-msgstr ""
+msgstr "Envoyer"
 
 #: abilian/web/comments/views.py:38
 msgid "Comment added"
-msgstr ""
+msgstr "Commentaire ajouté"
 
 #: abilian/web/comments/views.py:68
 msgid "New comment on \"{title}\""
-msgstr ""
+msgstr "Nouveau commentaire sur \"{title}\""
 
 #: abilian/web/forms/fields.py:257 abilian/web/forms/fields.py:301
 msgid "Not a valid datetime value"
@@ -559,6 +559,10 @@ msgstr "Ajouter un fichier"
 #: abilian/web/forms/widgets.py:649
 msgid "Select file"
 msgstr "Selectionner un fichier"
+
+#: abilian/web/forms/widgets.py:1004
+msgid "hour(s)"
+msgstr "heure(s)"
 
 #: abilian/web/preferences/user.py:31
 msgid "Photo"
@@ -624,7 +628,7 @@ msgstr "Dernière modification: %(date)s"
 msgid "%(date)s at %(time)s"
 msgstr "%(date)s à %(time)s"
 
-#: abilian/web/templates/abilian_base.html:42
+#: abilian/web/templates/abilian_base.html:49
 msgid "Skip to content"
 msgstr "Aller au contenu"
 
@@ -677,15 +681,7 @@ msgstr "Déposer"
 msgid "Export XML"
 msgstr "Export XML"
 
-#: abilian/web/templates/default/list_view.html:82
-msgid "Send an email to selected contacts"
-msgstr ""
-
-#: abilian/web/templates/default/list_view.html:82
-msgid "Send an email"
-msgstr ""
-
-#: abilian/web/templates/default/single_view.html:28
+#: abilian/web/templates/default/single_view.html:29
 #, python-format
 msgid "Comments (%(count)d)"
 msgstr "Commentaires (%(count)d)"
@@ -708,7 +704,7 @@ msgstr "Supprimer l'image"
 
 #: abilian/web/templates/widgets/render_ajax_table.html:28
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement en cours…"
 
 #: abilian/web/templates/widgets/render_single.html:3
 #: abilian/web/templates/widgets/render_single.html:17
@@ -819,10 +815,4 @@ msgstr "Entité supprimée"
 
 #~ msgid "Advanced filtering"
 #~ msgstr "Filtrage avancé"
-
-#~ msgid "Send an email to selected contacts"
-#~ msgstr "Envoyer un mail aux contacts sélectionnés"
-
-#~ msgid "Send an email"
-#~ msgstr "Envoyer un email"
 
