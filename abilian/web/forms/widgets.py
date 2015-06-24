@@ -29,7 +29,7 @@ from wtforms.widgets import (
 )
 from wtforms_alchemy import ModelFieldList
 
-from abilian.i18n import _
+from abilian.i18n import _, _l
 from abilian.core.entities import Entity
 from abilian.services import image
 from abilian.web.filters import labelize, babel2datepicker
@@ -1064,7 +1064,7 @@ class HoursWidget(TextInput):
   """ Widget used to show / enter hours.
   Currently hardcoded to heure(s)
   """
-  post_icon = _(u'hour(s)')
+  post_icon = _l(u'hour(s)')
   input_type = 'number'
 
   def render_view(self, field, **kwargs):
