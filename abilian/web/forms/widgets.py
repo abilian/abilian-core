@@ -997,6 +997,24 @@ class EntityWidget(object):
       if o)
 
 
+class HoursWidget(TextInput):
+  """ Widget used to show / enter hours.
+  Currently hardcoded to heure(s)
+  """
+  post_icon = _(u'hour(s)')
+  input_type = 'number'
+
+  def render_view(self, field, **kwargs):
+    val = field.object_data
+    unit = u'h'
+
+    if val is None:
+      return u''
+
+    # \u00A0: non-breakable whitespace
+    return u'{value}\u00A0{unit}'.format(value=val, unit=unit)
+
+
 class MoneyWidget(TextInput):
   """ Widget used to show / enter money amount.
   Currently hardcoded to € / k€
