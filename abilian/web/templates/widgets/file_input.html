@@ -1,12 +1,10 @@
 <div class="file-input js-widget" data-init-with="fileInput">
-  <div class="col-xs-12">
-    <span class="js-fileapi-wrapper upload-btn">
-      <span class="btn btn-default btn-file">
-        {{ button_label }}
-        {{ input|safe }}
-      </span>
+  <span class="js-fileapi-wrapper upload-btn">
+    <span class="btn btn-default btn-file">
+      {{ button_label }}
+      {{ input|safe }}
     </span>
-  </div>
+  </span>
   
   <div class="selected-files">
     {%- for data in existing %}

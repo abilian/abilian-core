@@ -99,9 +99,14 @@ label.required:after {
     }
 }
 
-.file-input {
-  .make-row();
+.file-input {  
+  .clearfix();
 
+  .selected-files {
+    margin-top: 0.5em;
+    margin-bottm: 0.5em;
+  }
+  
   .file-item {
     .make-xs-column(12);
     .make-md-column(6);
@@ -120,7 +125,22 @@ label.required:after {
   }
 }
 
+.form-inline {
+  & .file-input,
+  & .selected-files {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+    }
 
+  & .selected-files {
+    margin: auto 0px;
+
+    .file-item {
+      width: auto;
+    }
+  }
+}
 
 .scribe-widget {
   .btn-toolbar {
