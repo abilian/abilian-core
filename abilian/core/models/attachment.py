@@ -97,8 +97,12 @@ class Attachment(Entity):
   )
 
   #: file. Stored in a :class:`Blob`
-  blob_id = Column(Integer, sa.ForeignKey(Blob.id))
+  blob_id = Column(Integer, sa.ForeignKey(Blob.id), nullable=False)
   blob = relationship(Blob, cascade='all, delete', foreign_keys=[blob_id])
+
+  description = Column(sa.UnicodeText(),
+                       nullable=False, default=u'',
+                       server_default=u'',)
   
   def __repr__(self):
     class_ = self.__class__
@@ -106,3 +110,18 @@ class Attachment(Entity):
     classname = class_.__name__
     return '<{}.{} instance at 0x{:x} entity id={!r}'\
         .format(mod_, classname, id(self), self.entity_id)
+
+  
+@sa.event.listens_for(Attachment, 'before_insert', propagate=True)
+@sa.event.listens_for(Attachment, 'before_update', propagate=True)
+def set_attachment_name(mapper, connection, target):
+  if target.name:
+    return
+
+  blob = target.blob
+  if not blob:
+    return
+
+  filename = blob.meta.get('filename', None)
+  if filename is not None:
+    target.name = filename

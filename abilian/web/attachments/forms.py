@@ -14,12 +14,6 @@ from abilian.web.forms.filters import strip
 
 
 class AttachmentForm(Form):
-
-  name = StringField(
-    _l(u'attachment_label'),
-    description=_l(u'If empty, filename will be used'),
-    filters=(strip,),
-  )
   
   blob = FileField(
     _l(u'file'),
@@ -27,13 +21,10 @@ class AttachmentForm(Form):
     filters=(strip,),
     multiple=False)
 
-  def process(self, *args, **kwargs):
-    super(AttachmentForm, self).process(*args, **kwargs)
-
-    if not self['name'].data and self['blob'].data:
-      f = self['blob'].data
-      if hasattr(f, 'filename'):
-        self['name'].data = getattr(f, 'filename')
+  description = StringField(
+    _l(u'description (optional)'),
+    filters=(strip,),
+  )
   
   class Meta:
     model = Attachment
