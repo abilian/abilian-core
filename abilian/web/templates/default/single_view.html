@@ -22,12 +22,11 @@
     {%- endfor %}
 
     {%- if comments.is_commentable(view.obj) %}
-    <div class="row">
+      <h3 class="" href="#panel_comments" data-toggle="collapse">{{ _('Comments (%(count)d)', count=comments.count(view.obj)) }}</h3>    <div class="row">
       <div class="col-xs-12
                   col-sm-8 col-sm-push-2
                   col-md-7 col-md-push-3
                   col-lg-6 col-lg-push-3">
-        <h3 class="" href="#panel_comments" data-toggle="collapse">{{ _('Comments (%(count)d)', count=comments.count(view.obj)) }}</h3>
         <div id="panel_comments" class="collapse in">
           {{ m_comments(view.obj) }}
           {{ m_comment_form(view.obj) }}
