@@ -93,6 +93,20 @@ class EntityTestCase(TestCase):
     session.flush()
     assert contact3.slug == u'pacome-hegesippe-adelard-ladislas-1'
 
+  def test_meta(self):
+    session = self.get_session()
+    e = DummyContact(name='test')
+    e.meta['key'] = u'value'
+    e.meta['number'] = 42
+    session.add(e)
+    session.flush()
+    e_id = e.id
+    session.expunge(e)
+    del e
+    e = session.query(DummyContact).get(e_id)
+    assert e.meta['key'] == u'value'
+    assert e.meta['number'] == 42
+
   def test_entity_type(self):
     class MyType(Entity):
       pass

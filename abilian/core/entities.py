@@ -16,6 +16,7 @@ from sqlalchemy.types import Integer, String, UnicodeText
 from sqlalchemy import event
 
 from .extensions import db
+from .sqlalchemy import JSONDict
 from .util import memoized, friendly_fqcn, slugify
 from .models import BaseMixin
 from .models.base import Indexable, SYSTEM, SEARCHABLE, EDITABLE
@@ -209,6 +210,14 @@ class Entity(Indexable, BaseMixin, db.Model):
   _entity_type = Column('entity_type', String(1000), nullable=False)
   entity_type = None
 
+  meta = Column(JSONDict(), nullable=False, default=dict, server_default='{}')
+  """
+  A dictionnary of simple values (JSON-serializable) to conveniently annotate
+  the entity.
+
+  It is recommanded to keep it lighwight and not store large objects in it.
+  """
+
   @property
   def object_type(self):
     return unicode(self.entity_type)
@@ -231,6 +240,9 @@ class Entity(Indexable, BaseMixin, db.Model):
   def __init__(self, *args, **kwargs):
     db.Model.__init__(self, *args, **kwargs)
     BaseMixin.__init__(self)
+
+    if self.meta is None:
+      self.meta = dict()
 
   @property
   def auto_slug(self):
