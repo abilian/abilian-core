@@ -197,6 +197,20 @@ if not _PATCHED:
   Field.__init__ = _core_field_init
   del _core_field_init
 
+  def _core_field_repr(self):
+    '''
+    __repr__ that shows the name of the field instance. Useful for tracing field
+    errors (like in sentry)
+    '''
+    return '<{}.{} at 0x{:x} name={!r}>'.format(
+      self.__class__.__module__, self.__class__.__name__,
+      id(self),
+      self.name,
+    )
+  patch_logger.info(Field.__module__ + '.Field.__repr__')
+  Field.__repr__ = _core_field_repr
+  del _core_field_repr
+
   #  support 'widget_options' for some custom widgets
   _wtforms_Field_render = Field.__call__
   def _core_field_render(self, **kwargs):
