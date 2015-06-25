@@ -197,6 +197,7 @@ class FileField(BaseFileField):
       setattr(stream, 'filename', filename)
       if mimetype:
         setattr(stream, 'content_type', mimetype)
+        setattr(stream, 'mimetype', mimetype)
       self.data = stream
       self._has_uploads = True
 
@@ -204,6 +205,7 @@ class FileField(BaseFileField):
     """
     Store file
     """
+    from abilian.core.models.blob import Blob
     delete_value = self.allow_delete and self.delete_files_index
 
     if not self.has_file() and not delete_value:
@@ -225,12 +227,19 @@ class FileField(BaseFileField):
       return
 
     #  FIXME: propose option to always create a new blob
+    cls = rel.mapper.class_
     val = getattr(obj, name)
+
     if val is None:
-      val = rel.mapper.class_()
+      val = cls()
       setattr(obj, name, val)
 
-    data = self.data.read() if self.has_file() else u''
+    data = u''
+    if self.has_file():
+      data = self.data
+      if not issubclass(cls, Blob):
+        data = data.read()
+
     setattr(val, self.blob_attr, data)
 
 

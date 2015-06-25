@@ -57,10 +57,10 @@ class NewUploadView(BaseUploadsView, JSONView):
     
     uploaded = form['file'].data
     filename = secure_filename(uploaded.filename)
-    content_type = uploaded.content_type
+    mimetype = uploaded.mimetype
     self.handle = self.uploads.add_file(self.user, uploaded,
                                         filename=filename,
-                                        mimetype=content_type)
+                                        mimetype=mimetype)
     return self.get(*args, **kwargs)
     
   def put(self, *args, **kwargs):
