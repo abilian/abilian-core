@@ -95,7 +95,7 @@ class EntityTestCase(TestCase):
 
   def test_meta(self):
     session = self.get_session()
-    e = DummyContact(name='test')
+    e = DummyContact(name=u'test')
     e.meta['key'] = u'value'
     e.meta['number'] = 42
     session.add(e)
