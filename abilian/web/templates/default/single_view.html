@@ -1,6 +1,7 @@
 {% extends base_template %}
 {% from "macros/audit.html" import m_audit_log with context %}
 {% from "macros/comment.html" import m_comments, m_comment_form %}
+{% from "macros/attachment.html" import m_attachments, m_attachment_form %}
 {% from "macros/box.html" import m_box_content %}
 
 {% block content %}
@@ -34,6 +35,18 @@
 
       </div>
     </div>
+    {%- endif %}
+
+    {%- if attachments.is_support_attachements(view.obj) %}
+      <div class="row">
+        <div class="col-xs-12">
+        <h3 class="" href="#panel_attachments" data-toggle="collapse">{{ _('Attachments (%(count)d)', count=attachments.count(view.obj)) }}</h3>
+        <div id="panel_attachments" class="collapse in">
+          {{ m_attachments(view.obj) }}
+          {{ m_attachment_form(view.obj) }}
+        </div>          
+        </div>
+      </div>
     {%- endif %}
     
     {{ m_audit_log(audit_entries) }}
