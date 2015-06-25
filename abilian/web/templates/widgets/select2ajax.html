@@ -15,7 +15,7 @@
                    {id: {{ oid|tojson }}, text: {{ label|tojson }}}{% if not loop.last %},{%- endif %}{% endfor %}
        ];
        if (data.length > 1) { /* debugger; */ } 
-       else if (data.length > 0) {
+       if (data.length > 0) {
          callback(data{%- if not s2_params.multiple %}[0]{%- endif %});
        }
      },
