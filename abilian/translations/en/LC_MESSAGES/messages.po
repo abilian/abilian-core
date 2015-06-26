@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abilian-core 0.3.3.dev88+ng11c50b5.d20150311\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-24 11:49+0200\n"
+"POT-Creation-Date: 2015-06-26 11:44+0200\n"
 "PO-Revision-Date: 2015-03-20 15:19+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -287,37 +287,37 @@ msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:46
 #: abilian/web/admin/panels/users/__init__.py:47
-#: abilian/web/forms/widgets.py:155 abilian/web/forms/widgets.py:290
+#: abilian/web/forms/widgets.py:158 abilian/web/forms/widgets.py:293
 msgid "Filter records:"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:47
 #: abilian/web/admin/panels/users/__init__.py:48
-#: abilian/web/forms/widgets.py:291
+#: abilian/web/forms/widgets.py:294
 msgid "Previous"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:48
 #: abilian/web/admin/panels/users/__init__.py:49
-#: abilian/web/forms/widgets.py:292
+#: abilian/web/forms/widgets.py:295
 msgid "Next"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:293
+#: abilian/web/forms/widgets.py:296
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:294
+#: abilian/web/forms/widgets.py:297
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:295
+#: abilian/web/forms/widgets.py:298
 msgid "Add a filter"
 msgstr ""
 
@@ -495,8 +495,24 @@ msgstr ""
 msgid "Last connection"
 msgstr ""
 
-#: abilian/web/comments/views.py:30
+#: abilian/web/attachments/forms.py:19
+msgid "file"
+msgstr ""
+
+#: abilian/web/attachments/forms.py:25
+msgid "description (optional)"
+msgstr ""
+
+#: abilian/web/attachments/views.py:30 abilian/web/comments/views.py:30
 msgid "Send"
+msgstr ""
+
+#: abilian/web/attachments/views.py:38
+msgid "Attachment added"
+msgstr ""
+
+#: abilian/web/attachments/views.py:68
+msgid "New attachment on \"{title}\""
 msgstr ""
 
 #: abilian/web/comments/views.py:38
@@ -507,11 +523,11 @@ msgstr ""
 msgid "New comment on \"{title}\""
 msgstr ""
 
-#: abilian/web/forms/fields.py:257 abilian/web/forms/fields.py:301
+#: abilian/web/forms/fields.py:309 abilian/web/forms/fields.py:353
 msgid "Not a valid datetime value"
 msgstr ""
 
-#: abilian/web/forms/fields.py:463
+#: abilian/web/forms/fields.py:522
 msgid "Not a valid choice"
 msgstr ""
 
@@ -542,15 +558,15 @@ msgstr ""
 msgid "Virus detected!"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:649
+#: abilian/web/forms/widgets.py:655
 msgid "Add file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:649
+#: abilian/web/forms/widgets.py:655
 msgid "Select file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:1004
+#: abilian/web/forms/widgets.py:1067
 msgid "hour(s)"
 msgstr ""
 
@@ -566,19 +582,19 @@ msgstr ""
 msgid "Time zone"
 msgstr ""
 
-#: abilian/web/preferences/user.py:63 abilian/web/preferences/user.py:68
+#: abilian/web/preferences/user.py:64 abilian/web/preferences/user.py:69
 msgid "Only PNG or JPG image files are accepted"
 msgstr ""
 
-#: abilian/web/preferences/user.py:76
+#: abilian/web/preferences/user.py:77
 msgid "Could not decode image file"
 msgstr ""
 
-#: abilian/web/preferences/user.py:87
+#: abilian/web/preferences/user.py:88
 msgid "About me"
 msgstr ""
 
-#: abilian/web/preferences/user.py:132
+#: abilian/web/preferences/user.py:134
 msgid "Preferences saved."
 msgstr ""
 
@@ -671,9 +687,14 @@ msgstr ""
 msgid "Export XML"
 msgstr ""
 
-#: abilian/web/templates/default/single_view.html:29
+#: abilian/web/templates/default/single_view.html:25
 #, python-format
 msgid "Comments (%(count)d)"
+msgstr ""
+
+#: abilian/web/templates/default/single_view.html:42
+#, python-format
+msgid "Attachments (%(count)d)"
 msgstr ""
 
 #: abilian/web/templates/macros/audit.html:9
@@ -686,10 +707,6 @@ msgstr ""
 
 #: abilian/web/templates/macros/audit.html:16
 msgid "{key} set to {new_value}"
-msgstr ""
-
-#: abilian/web/templates/widgets/image_input.html:6
-msgid "Delete image"
 msgstr ""
 
 #: abilian/web/templates/widgets/render_ajax_table.html:28
@@ -807,5 +824,23 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Filter by types"
+#~ msgstr ""
+
+#~ msgid "Delete image"
+#~ msgstr ""
+
+#~ msgid " in the community {target}."
+#~ msgstr ""
+
+#~ msgid "has posted an object of type {object_type} called \"{object}\""
+#~ msgstr ""
+
+#~ msgid "has joined the community {object}."
+#~ msgstr ""
+
+#~ msgid "has left the community {object}."
+#~ msgstr ""
+
+#~ msgid "has done action \"{verb}\" on object \"{object}\"."
 #~ msgstr ""
 
