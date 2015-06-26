@@ -509,7 +509,14 @@ class QuerySelect2Field(SelectFieldBase):
 
   def pre_validate(self, form):
     if not self.allow_blank or self.data is not None:
-      data = set(self.data if self.multiple else [self.data])
+      data = self.data
+      if not self.multiple:
+        data = [data] if data is not None else []
+      elif not data:
+        # multiple values: ensure empty list (data may be None)
+        data = []
+
+      data = set(data)
       valid = {obj for pk, obj in self._get_object_list()}
       if (data - valid):
         raise ValidationError(self.gettext('Not a valid choice'))
