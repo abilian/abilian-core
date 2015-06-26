@@ -15,7 +15,7 @@ from sqlalchemy.types import (
   )
 
 from abilian.i18n import _l
-from abilian.core.singleton import UniqueName
+from abilian.core.singleton import UniqueName, UniqueNameType
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import User, Group
 from abilian.core.extensions import db
@@ -48,6 +48,16 @@ class Permission(UniqueName):
 
   def __lt__(self, other):
     return unicode(self).__lt__(unicode(other))
+
+
+class PermissionType(UniqueNameType):
+  """
+  Store :class:`Permission`
+
+  Usage::
+    RoleType()
+  """
+  Type = Permission
 
 
 @total_ordering
@@ -83,28 +93,14 @@ class Role(UniqueName):
     return roles
 
 
-class RoleType(TypeDecorator):
+class RoleType(UniqueNameType):
   """
   Store :class:`Role`
 
   Usage::
     RoleType()
   """
-  impl = String
-
-  def __init__(self, *args, **kwargs):
-    kwargs['length'] = 100
-    TypeDecorator.__init__(self, *args, **kwargs)
-
-  def process_bind_param(self, value, dialect):
-    if value is not None:
-      value = str(value)
-    return value
-
-  def process_result_value(self, value, dialect):
-    if value is not None:
-      value = Role(value)
-    return value
+  Type = Role
 
 
 #: marker for role assigned to 'Anonymous'

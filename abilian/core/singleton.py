@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import
 
+from sqlalchemy.types import String, TypeDecorator
+
 
 class ValueSingletonMeta(type):
 
@@ -56,3 +58,34 @@ class UniqueName(object):
 
   def __hash__(self):
     return self._hash
+
+
+class UniqueNameType(TypeDecorator):
+  """
+  Sqlalchemy type that stores a subclass of :class:`UniqueName`
+
+  Usage::
+    class MySingleton(UniqueName):
+        pass
+
+    class MySingletonType(UniqueNameType):
+        Type = MySingleton
+  """
+  impl = String
+  Type = None
+  default_max_length = 100
+
+  def __init__(self, *args, **kwargs):
+    assert self.Type is not None
+    kwargs.setdefault('length', self.default_max_length)
+    TypeDecorator.__init__(self, *args, **kwargs)
+
+  def process_bind_param(self, value, dialect):
+    if value is not None:
+      value = str(value)
+    return value
+
+  def process_result_value(self, value, dialect):
+    if value is not None:
+      value = self.Type(value)
+    return value
