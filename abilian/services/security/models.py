@@ -225,6 +225,10 @@ del _postgres_indexes
 
 class PermissionAssignment(db.Model):
   __tablename__ = 'permission_assignment'
+  __table_args__ = (
+    UniqueConstraint('permission', 'role', 'object_id',
+                     name='assignments_unique'),
+  )
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
   permission = Column(PermissionType, index=True, nullable=False)
@@ -232,6 +236,28 @@ class PermissionAssignment(db.Model):
   object_id = Column(Integer, ForeignKey(Entity.id, ondelete='CASCADE'),
                      nullable=True)
   object = relationship(Entity, lazy='select')
+
+
+def _postgres_indexes():
+  # we need a unique index for when object_id is NULL; when it's not the
+  # uniqueconstraint will just work.
+  PA = PermissionAssignment
+  name = 'ix_permission_assignment_{}_unique'.format
+  engines = ('postgresql',)
+  indexes = [
+    Index(
+        name('permission_role_global'), PA.permission, PA.role, unique=True,
+              postgresql_where=(PA.object_id == None),
+    ),
+  ]
+
+  for idx in indexes:
+    idx.info['engines'] = engines
+
+  return indexes
+
+_postgres_indexes()
+del _postgres_indexes
 
 
 class SecurityAudit(db.Model):
