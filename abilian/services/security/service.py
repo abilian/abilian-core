@@ -1,10 +1,9 @@
+# coding=utf-8
 """
 Security service, manages roles and permissions.
-
-Currently very simple (simplisitic?).
-
-Roles and permissions are just strings, and are currently hardcoded.
 """
+from __future__ import absolute_import
+
 from functools import wraps
 from itertools import chain
 
