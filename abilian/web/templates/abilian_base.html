@@ -98,16 +98,16 @@
   {%- endblock footer %}
 {%- endblock body %}
 
-<!-- app init -->
-<script type="text/javascript">
- {%- include "abilian_init.js" %}
-</script>
-
 {%- assets "js" %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {%- endassets %}  
 
 {%- block js %}{%- endblock js %} {# this block should be used to load additional libraries #}
+
+<!-- app init -->
+<script type="text/javascript">
+ {%- include "abilian_init.js" %}
+</script>
 
 {#- i18n bundles #}
 {%- set js_i18n_bundle = "js-i18n-" + locale.language %}
