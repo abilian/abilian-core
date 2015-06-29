@@ -9,7 +9,8 @@ from abilian.core.models.subjects import User, Group
 from abilian.testing import BaseTestCase
 
 from . import (
-  security, RoleAssignment, InheritSecurity, SecurityAudit,
+  security, RoleAssignment, PermissionAssignment,
+  InheritSecurity, SecurityAudit,
   Role, Permission, READ, WRITE, Reader, Writer, Owner, Creator,
   Admin, Anonymous, Authenticated)
 
@@ -264,6 +265,22 @@ class SecurityTestCase(IntegrationTestCase):
 
     security.grant_role(user, Writer, obj=obj)
     assert security.has_permission(user, WRITE, obj=obj)
+
+    # permission assignment
+    security.ungrant_role(user, Reader)
+    security.ungrant_role(user, Writer, object=obj)
+    security.grant_role(user, Authenticated)
+    assert not security.has_permission(user, READ, obj=obj)
+    assert not security.has_permission(user, WRITE, obj=obj)
+
+    pa = PermissionAssignment(role=Authenticated, permission=READ, object=obj)
+    self.session.add(pa)
+    self.session.flush()
+    assert security.has_permission(user, READ, obj=obj)
+
+    self.session.delete(pa)
+    self.session.flush()
+    assert not security.has_permission(user, READ, obj=obj)
 
     # test when object is *not* in session (newly created objects have id=None
     # for instance)

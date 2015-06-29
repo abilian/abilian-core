@@ -6,12 +6,13 @@ from __future__ import absolute_import
 from functools import total_ordering
 from datetime import datetime
 
+from sqlalchemy import sql
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import (
   Column, ForeignKey, Index, UniqueConstraint, CheckConstraint
   )
 from sqlalchemy.types import (
-  Integer, Enum, DateTime, String, Boolean, TypeDecorator, UnicodeText
+  Integer, Enum, DateTime, String, Boolean, UnicodeText
   )
 
 from abilian.i18n import _l
@@ -21,7 +22,8 @@ from abilian.core.models.subjects import User, Group
 from abilian.core.extensions import db
 
 
-__all__ = ['RoleAssignment', 'SecurityAudit', 'InheritSecurity',
+__all__ = ['RoleAssignment', 'PermissionAssignment',
+           'SecurityAudit', 'InheritSecurity',
            'Permission', 'MANAGE', 'READ', 'WRITE',
            'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
            'Creator', 'Owner', 'Reader', 'Writer',
@@ -144,7 +146,8 @@ class RoleAssignment(db.Model):
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
   role = Column(RoleType, index=True, nullable=False)
-  anonymous = Column('anonymous', Boolean, nullable=True, default=False)
+  anonymous = Column('anonymous', Boolean, nullable=True,
+                     default=False, server_default=sql.false())
   user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
   user = relationship(User, lazy='joined')
   group_id = Column(Integer, ForeignKey('group.id', ondelete='CASCADE'))
@@ -220,8 +223,20 @@ _postgres_indexes()
 del _postgres_indexes
 
 
+class PermissionAssignment(db.Model):
+  __tablename__ = 'permission_assignment'
+
+  id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+  permission = Column(PermissionType, index=True, nullable=False)
+  role = Column(RoleType, index=True, nullable=False)
+  object_id = Column(Integer, ForeignKey(Entity.id, ondelete='CASCADE'),
+                     nullable=True)
+  object = relationship(Entity, lazy='select')
+
+
 class SecurityAudit(db.Model):
-  """Logs changes on security.
+  """
+  Logs changes on security.
   """
   GRANT = u'GRANT'
   REVOKE = u'REVOKE'
@@ -277,7 +292,8 @@ class SecurityAudit(db.Model):
 
 
 class InheritSecurity(object):
-  """Mixin for objects with a parent relation and security inheritance.
+  """
+  Mixin for objects with a parent relation and security inheritance.
   """
   inherit_security = Column(Boolean, default=True, nullable=False,
                             info={'auditable': False})

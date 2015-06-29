@@ -17,16 +17,28 @@ from abilian.core.extensions import db
 from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
-  SecurityAudit, RoleAssignment, Anonymous, Admin, Manager,
+  SecurityAudit, RoleAssignment, PermissionAssignment,
+  Anonymous, Authenticated,
+  Admin, Manager, Reader, Writer,
   Owner, Creator,
-  InheritSecurity, Role, Permission, READ, WRITE
+  InheritSecurity, Role, Permission, READ, WRITE, MANAGE
 )
 
 
-PERMISSION = frozenset(['read', 'write', 'manage'])
+#: list of legacy supported permissions when not using :class:`Permission`
+#: instance
+PERMISSIONS = frozenset(['read', 'write', 'manage'])
 
 __all__ = ['security', 'SecurityError', 'SecurityService',
            'InheritSecurity', 'SecurityAudit']
+
+#: default security matrix
+DEFAULT_PERMISSION_ROLE = dict()
+prm = DEFAULT_PERMISSION_ROLE
+prm[MANAGE] = frozenset((Admin, Manager,))
+prm[WRITE] = frozenset((Admin, Manager, Writer,))
+prm[READ] = frozenset((Admin, Manager, Writer, Reader,))
+del prm
 
 
 class SecurityError(Exception):
@@ -474,15 +486,31 @@ class SecurityService(Service):
                     `permission`.
     """
     if not isinstance(permission, Permission):
-      assert permission in PERMISSION
+      assert permission in PERMISSIONS
       permission = Permission(permission)
     user = noproxy(user)
+
+    session = (object_session(obj) if obj is not None
+               else current_app.db.session())
 
     # root always have any permission
     if isinstance(user, User) and user.id == 0:
       return True
 
-    valid_roles = {Manager, Admin}  # have all permissions
+    # valid roles
+    # 1: from database
+    pa_filter = PermissionAssignment.object == None
+    if obj is not None:
+      pa_filter |= PermissionAssignment.object == obj
+    valid_roles = session.query(PermissionAssignment.role)\
+                         .filter(pa_filter)
+    valid_roles = { res[0] for res in valid_roles.yield_per(1000) }
+
+    # complete with defaults
+    valid_roles |= {Admin}  # always have all permissions
+    valid_roles |= DEFAULT_PERMISSION_ROLE.get(permission, set())
+
+    #FIXME: obj.__class__ could define default permisssion matrix too
 
     if roles is not None:
       if isinstance(roles, (Role, bytes, unicode)):
@@ -491,15 +519,13 @@ class SecurityService(Service):
       for r in roles:
         valid_roles.add(Role(r))
 
+    #FIXME: query permission_role: global and on object
+
     if Anonymous in valid_roles:
       return True
 
-    # implicit role-permission mapping
-    if permission in (READ, WRITE,):
-      valid_roles.add(Role('writer'))
-
-    if permission == READ:
-      valid_roles.add(Role('reader'))
+    if Authenticated in valid_roles and not user.is_anonymous():
+        return True
 
     checked_objs = [None, obj] # first test global roles, then object local
                                # roles
