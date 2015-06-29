@@ -317,3 +317,63 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.has_permission(user, 'read')
     assert security.has_permission(user, 'write')
     assert security.has_permission(user, 'manage')
+
+  def test_query_entity_with_permission(self):
+    get_filter = security.query_entity_with_permission
+    user = User(email=u"john@example.com", password="x")
+    self.session.add(user)
+
+    obj_reader = DummyModel(name=u'reader')
+    obj_writer = DummyModel(name=u'writer')
+    obj_none = DummyModel(name=u'none')
+    self.session.add_all([obj_reader, obj_writer, obj_none])
+
+    self.session.add_all(
+      [PermissionAssignment(role=Reader, permission=READ, object=obj_reader),
+       PermissionAssignment(role=Writer, permission=WRITE, object=obj_writer)]
+    )
+    self.session.flush()
+
+    # very unfiltered query returns all objects
+    base_query = DummyModel.query
+    assert set(base_query.all()) == {obj_reader, obj_writer, obj_none}
+
+    # user has no roles: no objects returned at all
+    assert base_query.filter(get_filter(READ, user=user)).all() == []
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == []
+
+    # grant object specific roles
+    security.grant_role(user, Reader, obj=obj_reader)
+    security.grant_role(user, Writer, obj=obj_writer)
+    self.session.flush()
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
+
+    # grant global roles
+    security.ungrant_role(user, Reader, object=obj_reader)
+    security.ungrant_role(user, Writer, object=obj_writer)
+    security.grant_role(user, Reader)
+    security.grant_role(user, Writer)
+    self.session.flush()
+
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
+
+    # admin role has all permissions
+    # 1: local role
+    security.ungrant_role(user, Reader)
+    security.ungrant_role(user, Writer)
+    security.grant_role(user, Admin, obj=obj_reader)
+    security.grant_role(user, Admin, obj=obj_none)
+    self.session.flush()
+
+    assert set(base_query.filter(get_filter(READ, user=user)).all()) == \
+      {obj_reader, obj_none}
+    assert set(base_query.filter(get_filter(WRITE, user=user)).all()) == \
+      {obj_reader, obj_none}
+
+    # 2: global role
+    security.grant_role(user, Admin)
+    self.session.flush()
+    assert set(base_query.filter(get_filter(READ, user=user)).all()) == \
+        {obj_reader, obj_writer, obj_none}

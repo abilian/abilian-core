@@ -8,6 +8,8 @@ from functools import wraps
 from itertools import chain
 
 from flask import g, current_app
+from flask_login import current_user
+import sqlalchemy as sa
 from sqlalchemy.orm import subqueryload, object_session
 from sqlalchemy import sql
 
@@ -541,6 +543,71 @@ class SecurityService(Service):
     return any((self.has_role(principal, valid_roles, item)
                 for principal in principals
                 for item in checked_objs))
+
+  def query_entity_with_permission(self, permission, user=None, id_column=None):
+    """
+    Filter a query on an :class:`Entity` or on of its subclasses.
+
+    :param user: user to filter for. Default: `current_user`.
+
+    :param permission: required :class:`Permission`
+
+    :param id_column: Model's id column. By default :attr:`Entity.id` is
+    used. Useful when there is more than on Entity based object in query, or if
+    an alias should be used.
+
+    :returns: a `sqlalchemy.sql.exists()` expression.
+    """
+    assert isinstance(permission, Permission)
+    RA = sa.orm.aliased(RoleAssignment)
+    PA = sa.orm.aliased(PermissionAssignment)
+
+    if id_column is None:
+      id_column = Entity.id
+
+    if user is None:
+      user = current_user._get_current_object()
+
+    # build clause: role EXISTS
+    principal_filter = (RA.anonymous == True) | \
+                       (RA.user == user)
+    if user.groups:
+      principal_filter |= RA.groups.in_(user.groups)
+
+    # role_exists: find for each permission row if user has one of required
+    # role, local or global
+    role_exists = \
+        sa.sql.exists([1])\
+              .where(
+                sa.sql.and_(
+                  (RA.role == PA.role),
+                  (RA.object_id == PA.object_id) | (RA.object_id == None),
+                  principal_filter))
+
+    permission_exists = \
+        sa.sql.exists([1])\
+              .where(
+                sa.sql.and_(
+                  PA.permission == permission,
+                  PA.object_id == id_column,
+                  role_exists,
+                ))
+
+    # is_admin: self-explanatory. It search for local or global admin
+    # role, but PermissionAssignment is not involved, thus it can match on
+    # entities that don't have *any permission assignment*, whereas previous
+    # expressions cannot.
+    is_admin = \
+        sa.sql.exists([1])\
+              .where(
+                sa.sql.and_(
+                  RA.role == Admin,
+                  (RA.object_id == id_column) | (RA.object_id == None),
+                  principal_filter,
+                ))
+
+    return permission_exists | is_admin
+
 
   def filter_with_permission(self, user, permission, obj_list, inherit=False):
     user = noproxy(user)
