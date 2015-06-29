@@ -74,12 +74,14 @@
     </table>
 
 
-    {%- deferJS %}
-    <script type="text/javascript">
-     jQuery(window).on(
-         Abilian.events.appInit,
-         function() {
-             $("#user-select")
+{%- deferJS %}
+<script type="text/javascript">
+ (function (factory) {
+     require(['Abilian', 'jquery'], factory);
+ })
+ (function(Abilian, $) {
+     function initSelect() {
+         $("#user-select")
             .attr("style", "min-width: 220px")
             .select2({
                 minimumInputLength: 2,
@@ -110,10 +112,13 @@
                 }
             });
 
-             $("#s2id_user-select a span").text("");
-             $("input#user-select").attr("value", "");
-         });
-    </script>
+         $("#s2id_user-select a span").text("");
+         $("input#user-select").attr("value", "");
+     };
+
+     Abilian.fn.onAppInit(initSelect);
+ });
+</script>
   {%- enddeferJS %}
     
 {% endblock %}
