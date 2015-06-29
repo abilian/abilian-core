@@ -16,7 +16,6 @@ import random
 
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship, backref, deferred
-from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import (
   Integer, UnicodeText, LargeBinary, Boolean, DateTime
@@ -133,7 +132,7 @@ class BcryptPasswordStrategy(PasswordStrategy):
     return bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
 
 
-class UserQuery(Query):
+class UserQuery(db.Model.query_class):
   def get_by_email(self, email):
     return self.filter_by(email=email).one()
 
