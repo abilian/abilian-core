@@ -254,7 +254,7 @@ class SecurityTestCase(IntegrationTestCase):
     user = User(email=u"john@example.com", password=u"x")
     group = Group(name=u"Test Group")
     user.groups.add(group)
-    obj = DummyModel()
+    obj = DummyModel(creator=user, owner=user)
     self.session.add_all([user, obj])
     self.session.flush()
 
@@ -281,6 +281,18 @@ class SecurityTestCase(IntegrationTestCase):
     self.session.delete(pa)
     self.session.flush()
     assert not security.has_permission(user, READ, obj=obj)
+
+    # Owner / Creator
+    for role in (Owner, Creator):
+      pa = PermissionAssignment(role=Owner, permission=READ, object=obj)
+      self.session.add(pa)
+      self.session.flush()
+      assert security.has_permission(user, READ, obj=obj)
+
+      self.session.delete(pa)
+      self.session.flush()
+      assert not security.has_permission(user, READ, obj=obj)
+
 
     # test when object is *not* in session (newly created objects have id=None
     # for instance)
@@ -373,7 +385,25 @@ class SecurityTestCase(IntegrationTestCase):
       {obj_reader, obj_none}
 
     # 2: global role
+    security.ungrant_role(user, Admin, object=obj_reader)
+    security.ungrant_role(user, Admin, object=obj_none)
     security.grant_role(user, Admin)
     self.session.flush()
     assert set(base_query.filter(get_filter(READ, user=user)).all()) == \
         {obj_reader, obj_writer, obj_none}
+
+    # implicit role: Owner, Creator
+    security.ungrant_role(user, Admin)
+    assert base_query.filter(get_filter(READ, user=user)).all() == []
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == []
+
+    obj_reader.creator = user
+    obj_writer.owner = user
+    self.session.add_all(
+      [PermissionAssignment(role=Creator, permission=READ, object=obj_reader),
+       PermissionAssignment(role=Owner, permission=WRITE, object=obj_writer)]
+    )
+    self.session.flush()
+
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]

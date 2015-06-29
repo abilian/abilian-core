@@ -336,6 +336,11 @@ class SecurityService(Service):
     if object:
       assert isinstance(object, Entity)
       object_key = u"{}:{}".format(object.object_type, unicode(object.id))
+      if Creator in role:
+        return object.creator == principal
+      elif Owner in role:
+        return object.owner == principal
+
     else:
       object_key = None
 
@@ -544,7 +549,7 @@ class SecurityService(Service):
                 for principal in principals
                 for item in checked_objs))
 
-  def query_entity_with_permission(self, permission, user=None, id_column=None):
+  def query_entity_with_permission(self, permission, user=None, Model=Entity):
     """
     Filter a query on an :class:`Entity` or on of its subclasses.
 
@@ -552,18 +557,18 @@ class SecurityService(Service):
 
     :param permission: required :class:`Permission`
 
-    :param id_column: Model's id column. By default :attr:`Entity.id` is
-    used. Useful when there is more than on Entity based object in query, or if
-    an alias should be used.
+    :param Model: An :class:`Entity` based class. Useful when there is more than
+    on Entity based object in query, or if an alias should be used.
 
     :returns: a `sqlalchemy.sql.exists()` expression.
     """
     assert isinstance(permission, Permission)
+    assert issubclass(Model, Entity)
     RA = sa.orm.aliased(RoleAssignment)
     PA = sa.orm.aliased(PermissionAssignment)
-
-    if id_column is None:
-      id_column = Entity.id
+    id_column = Model.id
+    creator = Model.creator
+    owner = Model.owner
 
     if user is None:
       user = current_user._get_current_object()
@@ -606,7 +611,21 @@ class SecurityService(Service):
                   principal_filter,
                 ))
 
-    return permission_exists | is_admin
+    filter_expr = permission_exists | is_admin
+
+    if user and not user.is_anonymous():
+      is_owner_or_creator = \
+          sa.sql.exists([1])\
+                .where(
+                  sa.sql.and_(
+                    PA.permission == permission,
+                    PA.object_id == id_column,
+                    sa.sql.or_((PA.role == Owner) & (owner == user),
+                               (PA.role == Creator) & (creator == user)),
+                  ))
+      filter_expr |= is_owner_or_creator
+
+    return filter_expr
 
 
   def filter_with_permission(self, user, permission, obj_list, inherit=False):
