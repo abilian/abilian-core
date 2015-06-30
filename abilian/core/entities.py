@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level).
@@ -14,6 +15,8 @@ from sqlalchemy.orm import mapper, Session
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String, UnicodeText
 from sqlalchemy import event
+
+from flask import current_app
 
 from .extensions import db
 from .sqlalchemy import JSONDict
@@ -104,6 +107,18 @@ class _EntityInherit(object):
 BaseMeta = db.Model.__class__
 
 
+class EntityQuery(db.Model.query_class):
+  """
+  """
+  def with_permission(self, permission, user=None):
+    security = current_app.services['security']
+    model = self._entity_zero().entity_zero.entity
+    expr = security.query_entity_with_permission(permission,
+                                                 user,
+                                                 Model=model)
+    return self.filter(expr)
+
+
 class EntityMeta(BaseMeta):
   """
   Metaclass for Entities. It properly sets-up subclasses by adding
@@ -135,6 +150,11 @@ class EntityMeta(BaseMeta):
                                           Entity.SLUG_SEPARATOR))
 
     cls = BaseMeta.__new__(mcs, classname, bases, d)
+
+    if not issubclass(cls.query_class, EntityQuery):
+      raise TypeError('query_class is not a subclass of EntityQuery: {!r}'
+                      ''.format(cls.query_class))
+
     event.listen(cls, 'before_insert', auto_slug_on_insert)
     event.listen(cls, 'after_insert', auto_slug_after_insert)
     return cls
@@ -179,6 +199,8 @@ class Entity(Indexable, BaseMixin, db.Model):
   del index_to
 
   SLUG_SEPARATOR = u'-'  # \x2d \u002d HYPHEN-MINUS
+
+  query_class = EntityQuery
 
   @declared_attr
   def __mapper_args__(cls):
