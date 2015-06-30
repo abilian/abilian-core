@@ -165,9 +165,9 @@ class BaseTableView(object):
     }
     js = render_template_string(
         '''
-        requirejs(
+        require(
             ['jquery', 'jquery.dataTables'],
-            function() {
+            function($) {
                 $('#{{ table_id  }}').dataTable({{ options|tojson|safe }});
             });
         ''',

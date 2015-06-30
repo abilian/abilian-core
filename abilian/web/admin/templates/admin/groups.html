@@ -25,9 +25,9 @@
 
     {%- deferJS %}
     <script type="text/javascript">
-     requirejs(
+     require(
        ['jquery', 'jquery.dataTables'],
-       function () {
+       function ($) {
          var id = "#{{ table_id }}"; // Should be unique enough
          $(id).dataTable({{ datatable_options|tojson|safe }});       
        });
