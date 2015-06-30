@@ -497,8 +497,12 @@ class SecurityService(Service):
       permission = Permission(permission)
     user = noproxy(user)
 
-    session = (object_session(obj) if obj is not None
-               else current_app.db.session())
+    session = None
+    if obj is not None:
+      session = object_session(obj)
+
+    if session is None:
+      session = current_app.db.session()
 
     # root always have any permission
     if isinstance(user, User) and user.id == 0:

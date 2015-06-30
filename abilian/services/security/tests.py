@@ -213,6 +213,10 @@ class SecurityTestCase(IntegrationTestCase):
     assert not security.has_role(group, "manager", obj)
     assert security.get_roles(group, obj) == []
 
+    # when called on unmapped instance
+    new_obj = DummyModel()
+    assert not security.has_permission(user, READ, new_obj)
+
   def test_grant_roles_unique(self):
     user = User(email=u"john@example.com", password="x")
     obj = DummyModel()
