@@ -632,6 +632,64 @@ class SecurityService(Service):
     return filter_expr
 
 
+  def get_permissions_assignments(self, obj=None, permission=None):
+    """
+    :param permission: return only roles having this permission
+
+    :returns: an dict where keys are `permissions` and values `roles` iterable.
+    """
+    session = None
+    if obj is not None:
+      assert isinstance(obj, Entity)
+      session = object_session(obj)
+
+    if session is None:
+      session = current_app.db.session()
+
+    pa = session.query(PermissionAssignment.permission,
+                       PermissionAssignment.role)\
+                .filter(PermissionAssignment.object == obj)
+
+    if permission:
+      pa = pa.filter(PermissionAssignment.permission == permission)
+
+    results = {}
+    for permission, role in pa.yield_per(1000):
+      results.setdefault(permission, set()).add(role)
+
+    return results
+
+  def add_permission(self, permission, role, obj=None):
+    session = None
+    if obj is not None:
+      session = object_session(obj)
+
+    if session is None:
+      session = current_app.db.session()
+
+    pa = session.query(PermissionAssignment)\
+                .filter(PermissionAssignment.permission == permission,
+                        PermissionAssignment.role == role,
+                        PermissionAssignment.object == obj)\
+                .first()
+    if not pa:
+      pa = PermissionAssignment(permission=permission, role=role, object=obj)
+      session.add(pa)
+
+  def delete_permission(self, permission, role, obj=None):
+    session = object_session(obj)
+    if session is None:
+      session = current_app.db.session()
+
+    pa = session.query(PermissionAssignment)\
+                .filter(PermissionAssignment.permission == permission,
+                        PermissionAssignment.role == role,
+                        PermissionAssignment.object == obj)\
+                .first()
+
+    if pa:
+      session.delete(pa)
+
   def filter_with_permission(self, user, permission, obj_list, inherit=False):
     user = noproxy(user)
     return [ obj for obj in obj_list

@@ -254,6 +254,40 @@ class SecurityTestCase(IntegrationTestCase):
     self.assertTrue(folder.inherit_security)
     self.assertEquals(SecurityAudit.query.count(), 2)
 
+
+  def test_add_list_delete_permissions(self):
+    obj = DummyModel()
+    assert security.get_permissions_assignments(obj) == {}
+    self.session.add(obj)
+    self.session.flush()
+
+    security.add_permission(READ, Authenticated, obj)
+    security.add_permission(READ, Owner, obj)
+    security.add_permission(WRITE, Owner, obj)
+    assert security.get_permissions_assignments(obj) == {
+      READ: {Authenticated, Owner,},
+      WRITE: {Owner,},
+    }
+
+    security.delete_permission(READ, Authenticated, obj)
+    assert security.get_permissions_assignments(obj) == {
+      READ: { Owner,},
+      WRITE: {Owner,},
+    }
+    assert security.get_permissions_assignments(obj, READ) == {
+      READ: { Owner,},
+    }
+
+    # do it twice: it should not crash
+    security.add_permission(READ, Owner, obj)
+    security.delete_permission(READ, Authenticated, obj)
+
+    # set/get/delete global permission
+    security.add_permission(READ, Writer)
+    assert security.get_permissions_assignments() == {
+      READ: {Writer,},
+    }
+
   def test_has_permission_on_objects(self):
     user = User(email=u"john@example.com", password=u"x")
     group = Group(name=u"Test Group")
