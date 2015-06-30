@@ -581,7 +581,7 @@ class SecurityService(Service):
     principal_filter = (RA.anonymous == True) | \
                        (RA.user == user)
     if user.groups:
-      principal_filter |= RA.groups.in_(user.groups)
+      principal_filter |= RA.group_id.in_([g.id for g in user.groups])
 
     # role_exists: find for each permission row if user has one of required
     # role, local or global
