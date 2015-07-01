@@ -24,6 +24,7 @@ from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.services import audit_service
 from abilian.services.vocabularies.models import BaseVocabulary
+from abilian.services.security import READ
 from .action import (
   actions, Action, FAIcon, Endpoint,
   ActionGroup, ActionGroupItem, ActionDropDown,
@@ -216,7 +217,8 @@ class ListJson(ModuleView, JSONView):
     start = int(kwargs.get("iDisplayStart", 0))
     end = start + length
 
-    total_count = self.module.managed_class.query.count()
+    total_count = self.module.read_query\
+                             .count()
     q = self.module.query(request)
     count = q.count()
     q = self.module.ordered_query(request, q)
@@ -454,12 +456,28 @@ class Module(object):
     g.breadcrumb.append(BreadcrumbItem(label=self.name,
                         url=Endpoint('.list_view')))
 
+  @property
+  def base_query(self):
+    """
+    Return a query instance for :attr:`managed_class`.
+    """
+    return self.managed_class.query
+
+  @property
+  def read_query(self):
+    """
+    Return a query instance for :attr:`managed_class` filtering on `READ`
+    permission
+    """
+    return self.base_query.with_permission(READ)
+
   def query(self, request):
-    """ Return filtered query based on request args
+    """
+    Return filtered query based on request args
     """
     args = request.args
     search = args.get("sSearch", "").replace("%", "").lower()
-    q = self.managed_class.query.distinct()
+    q = self.read_query.distinct()
 
     for crit in self.search_criterions:
       q = crit.filter(q, self, request, search)
