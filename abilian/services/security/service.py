@@ -578,8 +578,11 @@ class SecurityService(Service):
       user = current_user._get_current_object()
 
     # build clause: role EXISTS
-    principal_filter = (RA.anonymous == True) | \
-                       (RA.user == user)
+    principal_filter = (RA.anonymous == True)
+
+    if not user.is_anonymous():
+      principal_filter |= (RA.user == user)
+
     if user.groups:
       principal_filter |= RA.group_id.in_([g.id for g in user.groups])
 
