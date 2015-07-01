@@ -103,7 +103,7 @@ class AuthService(Service):
     try:
       user = User.query.get(user_id)
 
-      if user and not user.can_login:
+      if not user or not user.can_login:
         # if a user is edited and should not have access any more, this will
         # ensure he cannot continue if he had an active session
         return None
@@ -129,7 +129,7 @@ class AuthService(Service):
     # a manager to see site as another user (impersonate), or propose a "see as
     # anonymous" function
     g.user = g.logged_user = user
-    is_anonymous = user.is_anonymous()
+    is_anonymous = user is None or user.is_anonymous()
     security = app.services.get('security')
     g.is_manager = (user
                     and not is_anonymous
