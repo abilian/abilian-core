@@ -7,6 +7,8 @@ from unittest import TestCase
 from datetime import datetime
 import sqlalchemy as sa
 
+from abilian.testing import BaseTestCase as AbilianTestCase
+from abilian.services import security
 from abilian.core.models.base import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE, Info
 from abilian.core.models.subjects import User
 from abilian.core.entities import Entity
@@ -136,6 +138,44 @@ class EntityTestCase(TestCase):
 
     assert InheritedBase.entity_type == 'from.ancestor.InheritedBase'
     assert InheritedBase._object_type() == 'from.ancestor.InheritedBase'
+
+
+class PermissionsTestCase(AbilianTestCase):
+
+  def test_default_permissions(self):
+    class MyType(Entity):
+      __default_permissions__ = {
+        security.READ: {security.Anonymous},
+        security.WRITE: {security.Owner}
+      }
+
+    assert isinstance(MyType.__default_permissions__, frozenset)
+    assert MyType.__default_permissions__ == \
+      frozenset(
+        ((security.READ, frozenset((security.Anonymous,))),
+         (security.WRITE, frozenset((security.Owner,))),
+       ))
+
+    self.app.db.create_all() # create missing 'mytype' table
+
+    obj = MyType(name=u'test object')
+    self.session.add(obj)
+    PA = security.PermissionAssignment
+    query = self.session.query(PA.role)\
+                        .filter(PA.object==obj)
+
+    assert query.filter(PA.permission==security.READ).all()\
+                 == [(security.Anonymous,)]
+
+    assert query.filter(PA.permission==security.WRITE).all()\
+                 == [(security.Owner,)]
+
+    svc = self.app.services['security']
+    permissions = svc.get_permissions_assignments(obj)
+    assert permissions == { \
+      security.READ: {security.Anonymous},
+      security.WRITE: {security.Owner},
+    }
 
 
 def test_info():

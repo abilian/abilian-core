@@ -41,6 +41,12 @@ Module :mod:`abilian.core.entities`
 
 .. automodule:: abilian.core.entities
 
+   .. autoclass:: Entity
+      :show-inheritance:
+      :members:
+      :special-members:
+      
+
 Module :mod:`abilian.core.extensions`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

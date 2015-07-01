@@ -8,6 +8,7 @@ from __future__ import absolute_import
 import re
 from inspect import isclass
 from datetime import datetime
+import collections
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
@@ -82,6 +83,31 @@ def auto_slug_after_insert(mapper, connection, target):
                                             sep=target.SLUG_SEPARATOR,
                                             id=target.id)
 
+@event.listens_for(Session, 'after_attach')
+def setup_default_permissions(session, instance):
+  """
+  Setup default permissions on newly created entities according to
+  :attr:`Entity.__default_permissions__`.
+  """
+  if instance not in session.new or not isinstance(instance, Entity):
+    return
+
+  if not current_app:
+    # working outside app_context. Raw object manipulation
+    return
+
+  _setup_default_permissions(instance)
+
+
+def _setup_default_permissions(instance):
+  """
+  separate method to conveniently call it from scripts for example.
+  """
+  security = current_app.services['security']
+  for permission, roles in instance.__default_permissions__:
+    for role in roles:
+      security.add_permission(permission, role, obj=instance)
+
 
 class _EntityInherit(object):
   """
@@ -146,6 +172,21 @@ class EntityMeta(BaseMeta):
 
         d['entity_type'] = entity_type_base + '.' + classname
 
+      default_permissions = d.get('__default_permissions__')
+      if default_permissions is not None:
+        if isinstance(default_permissions, collections.Mapping):
+          default_permissions = default_permissions.items()
+        elif not isinstance(default_permissions, collections.Set):
+          raise TypeError('__default_permissions__ is neither a dict or set, '
+                          'cannot create class {}'.format(classname))
+
+        # also ensure that `roles` set is immutable, too
+        default_permissions = frozenset(
+          (permission, frozenset(roles))
+           for permission, roles in default_permissions
+        )
+        d['__default_permissions__'] = default_permissions
+
       d['SLUG_SEPARATOR'] = unicode(d.get('SLUG_SEPARATOR',
                                           Entity.SLUG_SEPARATOR))
 
@@ -197,6 +238,35 @@ class Entity(Indexable, BaseMixin, db.Model):
   index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
   __indexation_args__['index_to'] = index_to
   del index_to
+
+  __default_permissions__ = frozenset()
+  """
+  Permission to roles mapping to set at object creation time.
+
+  Default permissions can be declared as a :py:class:`dict` on classes, the final
+  datastructure will changed by metaclass to a :py:class:`frozenset` of
+  :py:meth:`dict.items`. This is made to garantee the immutability of definition
+  on parent classes.
+
+  Exemple definition:
+
+  .. code-block:: python
+
+     __default_permissions__ = {
+         READ: {Owner, Authenticated},
+         WRITE: {Owner},
+     }
+
+
+  To alter inherited default permissions:
+
+  .. code-block:: python
+
+     class Child(Parent):
+         __default_permissions__ = dp = dict(ParentClass.__default_permissions__)
+         dp[READ] = dp[READ] - {Authenticated} + {Anonymous}
+         del dp
+  """
 
   SLUG_SEPARATOR = u'-'  # \x2d \u002d HYPHEN-MINUS
 
