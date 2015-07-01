@@ -188,12 +188,14 @@ class BaseTableView(object):
   def render_line(self, entity):
     line = []
     make_link_on = self.options.get("make_link_on")
-
+    
     for col in self.columns:
       if type(col) == str:
         column_name = col
+        build_url = url_for
       else:
         column_name = col['name']
+        build_url = col.get('url', url_for)
 
       value = entity
       for attr in column_name.split('.'):
@@ -206,10 +208,10 @@ class BaseTableView(object):
       if column_name == make_link_on or column_name == 'name' or \
          col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'
-                      % (url_for(entity), cgi.escape(unicode(value))))
+                      % (build_url(entity), cgi.escape(unicode(value))))
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'
-                      % (url_for(value), cgi.escape(value.name)))
+                      % (build_url(value), cgi.escape(value.name)))
       elif isinstance(value, basestring) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
