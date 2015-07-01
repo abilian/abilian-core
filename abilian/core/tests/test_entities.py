@@ -143,14 +143,14 @@ class EntityTestCase(TestCase):
 class PermissionsTestCase(AbilianTestCase):
 
   def test_default_permissions(self):
-    class MyType(Entity):
+    class MyRestrictedType(Entity):
       __default_permissions__ = {
         security.READ: {security.Anonymous},
         security.WRITE: {security.Owner}
       }
 
-    assert isinstance(MyType.__default_permissions__, frozenset)
-    assert MyType.__default_permissions__ == \
+    assert isinstance(MyRestrictedType.__default_permissions__, frozenset)
+    assert MyRestrictedType.__default_permissions__ == \
       frozenset(
         ((security.READ, frozenset((security.Anonymous,))),
          (security.WRITE, frozenset((security.Owner,))),
@@ -158,7 +158,7 @@ class PermissionsTestCase(AbilianTestCase):
 
     self.app.db.create_all() # create missing 'mytype' table
 
-    obj = MyType(name=u'test object')
+    obj = MyRestrictedType(name=u'test object')
     self.session.add(obj)
     PA = security.PermissionAssignment
     query = self.session.query(PA.role)\
