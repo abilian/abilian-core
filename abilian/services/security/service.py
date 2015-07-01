@@ -513,6 +513,8 @@ class SecurityService(Service):
     pa_filter = PermissionAssignment.object == None
     if obj is not None:
       pa_filter |= PermissionAssignment.object == obj
+
+    pa_filter &= PermissionAssignment.permission == permission
     valid_roles = session.query(PermissionAssignment.role)\
                          .filter(pa_filter)
     valid_roles = { res[0] for res in valid_roles.yield_per(1000) }

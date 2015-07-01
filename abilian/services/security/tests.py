@@ -289,6 +289,7 @@ class SecurityTestCase(IntegrationTestCase):
     }
 
   def test_has_permission_on_objects(self):
+    has_permission = security.has_permission
     user = User(email=u"john@example.com", password=u"x")
     group = Group(name=u"Test Group")
     user.groups.add(group)
@@ -298,38 +299,39 @@ class SecurityTestCase(IntegrationTestCase):
 
     # global role provides permissions on any object
     security.grant_role(user, Reader)
-    assert security.has_permission(user, READ, obj=obj)
-    assert not security.has_permission(user, WRITE, obj=obj)
+    assert has_permission(user, READ, obj=obj)
+    assert not has_permission(user, WRITE, obj=obj)
 
     security.grant_role(user, Writer, obj=obj)
-    assert security.has_permission(user, WRITE, obj=obj)
+    assert has_permission(user, WRITE, obj=obj)
 
     # permission assignment
     security.ungrant_role(user, Reader)
     security.ungrant_role(user, Writer, object=obj)
     security.grant_role(user, Authenticated)
-    assert not security.has_permission(user, READ, obj=obj)
-    assert not security.has_permission(user, WRITE, obj=obj)
+    assert not has_permission(user, READ, obj=obj)
+    assert not has_permission(user, WRITE, obj=obj)
 
     pa = PermissionAssignment(role=Authenticated, permission=READ, object=obj)
     self.session.add(pa)
     self.session.flush()
-    assert security.has_permission(user, READ, obj=obj)
+    assert has_permission(user, READ, obj=obj)
+    assert not has_permission(user, WRITE, obj=obj)
 
     self.session.delete(pa)
     self.session.flush()
-    assert not security.has_permission(user, READ, obj=obj)
+    assert not has_permission(user, READ, obj=obj)
 
     # Owner / Creator
     for role in (Owner, Creator):
       pa = PermissionAssignment(role=Owner, permission=READ, object=obj)
       self.session.add(pa)
       self.session.flush()
-      assert security.has_permission(user, READ, obj=obj)
+      assert has_permission(user, READ, obj=obj)
 
       self.session.delete(pa)
       self.session.flush()
-      assert not security.has_permission(user, READ, obj=obj)
+      assert not has_permission(user, READ, obj=obj)
 
 
     # test when object is *not* in session (newly created objects have id=None
