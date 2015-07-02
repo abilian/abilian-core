@@ -293,12 +293,11 @@ class WhooshIndexService(Service):
     if not hasattr(g, 'is_manager') or not g.is_manager:
       # security access filter
       user = current_user
-      roles = [indexable_role(user)]
+      roles = {indexable_role(user)}
       if not user.is_anonymous():
-        roles.append(indexable_role(Anonymous))
-        roles.append(indexable_role(Authenticated))
-        roles.extend([indexable_role(group) for group in user.groups])
-        roles.extend([indexable_role(r) for r in security.get_roles(user)])
+        roles.add(indexable_role(Anonymous))
+        roles.add(indexable_role(Authenticated))
+        roles |= set(indexable_role(r) for r in security.get_roles(user))
 
       filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
                         for role in roles])
