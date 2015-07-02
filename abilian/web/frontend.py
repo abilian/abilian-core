@@ -140,11 +140,9 @@ class ModuleView(object):
     self.module = module
     super(ModuleView, self).__init__(*args, **kwargs)
 
+
 class BaseEntityView(ModuleView):
   pk = 'entity_id'
-
-  #: permission used to filter objects
-  permission = READ
 
   def init_object(self, args, kwargs):
     args, kwargs = super(BaseEntityView, self).init_object(args, kwargs)
@@ -197,7 +195,6 @@ class EntityView(BaseEntityView, ObjectView):
 
 class EntityEdit(BaseEntityView, ObjectEdit):
   template = 'default/single_view.html'
-  permission = WRITE
 
   @property
   def template_kwargs(self):
@@ -221,7 +218,6 @@ class EntityCreate(BaseEntityView, ObjectCreate):
 
 
 class EntityDelete(BaseEntityView, ObjectDelete):
-  permission = WRITE
   pass
 
 
