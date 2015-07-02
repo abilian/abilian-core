@@ -196,7 +196,7 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(group, obj) == ['manager']
 
     # group membership: user hasn't role set, but has permissions
-    assert security.get_roles(user, obj) == []
+    assert security.get_roles(user, obj, no_group_roles=True) == []
     assert security.has_permission(user, "read", obj)
     assert security.has_permission(user, "write", obj)
     assert security.has_permission(user, "manage", obj)

@@ -78,7 +78,7 @@ class JsonUsersList(base.JSONView):
       mugshot = user_photo_url(user, size=MUGSHOT_SIZE)
       name = escape(getattr(user, "name") or "")
       email = escape(getattr(user, "email") or "")
-      roles = security.get_roles(user)
+      roles = security.get_roles(user, no_group_roles=True)
       columns = []
       columns.append(
         u'<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
@@ -131,7 +131,7 @@ class UserEdit(UserBase, views.ObjectEdit):
   def get_form_kwargs(self):
     kw = super(UserEdit, self).get_form_kwargs()
     security = current_app.services['security']
-    roles = security.get_roles(self.obj)
+    roles = security.get_roles(self.obj, no_group_roles=True)
     kw['roles'] = [r.name for r in roles]
     return kw
 
@@ -157,7 +157,7 @@ class UserEdit(UserBase, views.ObjectEdit):
 
   def after_populate_obj(self):
     security = current_app.services['security']
-    current_roles = set(security.get_roles(self.obj))
+    current_roles = set(security.get_roles(self.obj, no_group_roles=True))
     new_roles = { Role(r) for r in self.form.roles.data }
 
     for r in (current_roles - new_roles):

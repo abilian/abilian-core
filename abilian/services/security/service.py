@@ -133,19 +133,32 @@ class SecurityService(Service):
   # Roles-related API.
   #
   @require_flush
-  def get_roles(self, principal, object=None):
+  def get_roles(self, principal, object=None, no_group_roles=False):
     """
-    Gets all the roles attached to given `user`, on a given `object`.
+    Gets all the roles attached to given `principal`, on a given `object`.
+
+    :param principal: a :class:`User` or :class:`Group`
+
+    :param object: an :class:`Entity`
+
+    :param no_group_roles: If `True`, return only direct roles, not roles
+    acquired through group membership.
     """
     assert principal
     if hasattr(principal, 'is_anonymous') and principal.is_anonymous():
       return [Anonymous]
 
     q = db.session.query(RoleAssignment.role)
-    filter_col = (RoleAssignment.user
-                  if not isinstance(principal, Group)
-                  else RoleAssignment.group)
-    q = q.filter(filter_col == principal)
+    if isinstance(principal, Group):
+      filter_principal = RoleAssignment.group == principal
+    else:
+      filter_principal = RoleAssignment.user == principal
+      if not no_group_roles:
+        groups = [g.id for g in principal.groups]
+        if groups:
+          filter_principal |= RoleAssignment.group_id.in_(groups)
+
+    q = q.filter(filter_principal)
 
     if object is not None:
       assert isinstance(object, Entity)

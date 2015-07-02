@@ -112,7 +112,7 @@ class GroupView(GroupBase, views.ObjectView):
     members = list(self.obj.members)
     members.sort(key=lambda u: (u.last_name, u.first_name))
     kw['members'] = members
-    kw['roles'] = sorted(security.get_roles(self.obj))
+    kw['roles'] = sorted(security.get_roles(self.obj, no_group_roles=True))
     kw['ADD_USER_BUTTON'] = ADD_USER_BUTTON
     kw['REMOVE_USER_BUTTON'] = REMOVE_USER_BUTTON
     return kw
@@ -133,13 +133,13 @@ class GroupEdit(GroupBase, views.ObjectEdit):
   def get_form_kwargs(self):
     kw = super(GroupEdit, self).get_form_kwargs()
     security = current_app.services['security']
-    roles = security.get_roles(self.obj)
+    roles = security.get_roles(self.obj, no_group_roles=True)
     kw['roles'] = [r.name for r in roles]
     return kw
 
   def after_populate_obj(self):
     security = current_app.services['security']
-    current_roles = set(security.get_roles(self.obj))
+    current_roles = set(security.get_roles(self.obj, no_group_roles=True))
     new_roles = { Role(r) for r in self.form.roles.data }
 
     for r in (current_roles - new_roles):
