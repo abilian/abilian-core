@@ -18,13 +18,14 @@ from werkzeug.exceptions import BadRequest
 from flask import (session, redirect, request, g,
                    Blueprint, jsonify, url_for,
                    current_app, render_template)
+from flask_login import current_user
 
 from abilian.i18n import _l
 from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.services import audit_service
 from abilian.services.vocabularies.models import BaseVocabulary
-from abilian.services.security import READ
+from abilian.services.security import READ, WRITE
 from .action import (
   actions, Action, FAIcon, Endpoint,
   ActionGroup, ActionGroupItem, ActionDropDown,
@@ -139,9 +140,24 @@ class ModuleView(object):
     self.module = module
     super(ModuleView, self).__init__(*args, **kwargs)
 
-
 class BaseEntityView(ModuleView):
   pk = 'entity_id'
+
+  #: permission used to filter objects
+  permission = READ
+
+  def init_object(self, args, kwargs):
+    args, kwargs = super(BaseEntityView, self).init_object(args, kwargs)
+    security = current_app.services['security']
+
+    # security check
+    if (self.obj and
+        not security.has_permission(current_user, self.permission, self.obj)):
+      # FIXME: will lead base views to return 404. Ok when permission is
+      # READ, but when it's WRITE would 403 be more appropriate?
+      self.obj = None
+
+    return args, kwargs
 
   def breadcrumb(self):
     return BreadcrumbItem(label=self.obj.name or self.obj.id,
@@ -181,6 +197,7 @@ class EntityView(BaseEntityView, ObjectView):
 
 class EntityEdit(BaseEntityView, ObjectEdit):
   template = 'default/single_view.html'
+  permission = WRITE
 
   @property
   def template_kwargs(self):
@@ -204,6 +221,7 @@ class EntityCreate(BaseEntityView, ObjectCreate):
 
 
 class EntityDelete(BaseEntityView, ObjectDelete):
+  permission = WRITE
   pass
 
 
