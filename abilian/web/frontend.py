@@ -492,41 +492,48 @@ class Module(object):
     """
     if query is None:
       query = self.query(request)
+
+    engine = query.session.get_bind(self.managed_class.__mapper__)
     args = request.args
     sort_col = int(args.get("iSortCol_0", 1))
     sort_dir = args.get("sSortDir_0", "asc")
     sort_col_def = self.list_view_columns[sort_col]
     sort_col_name = sort_col_def['name']
-    sort_col = getattr(self.managed_class, sort_col_name)
+    rel_sort_names = sort_col_def.get('sort_on', (sort_col_name,))
+    sort_cols = []
 
-    if isinstance(sort_col.property, orm.properties.RelationshipProperty):
-      # this is a related model: find attribute to filter on
-      query = query.join(sort_col_name, aliased=True)
+    for rel_col in rel_sort_names:
+      sort_col = getattr(self.managed_class, rel_col)
 
-      rel_model = sort_col.property.mapper.class_
-      default_sort_name = 'name'
-      if issubclass(rel_model, BaseVocabulary):
-        default_sort_name = 'label'
+      if isinstance(sort_col.property, orm.properties.RelationshipProperty):
+        # this is a related model: find attribute to filter on
+        query = query.join(sort_col_name, aliased=True)
 
-      rel_sort_name = sort_col_def.get('sort_on', default_sort_name)
-      sort_col = getattr(rel_model, rel_sort_name)
+        rel_model = sort_col.property.mapper.class_
+        default_sort_name = 'name'
+        if issubclass(rel_model, BaseVocabulary):
+          default_sort_name = 'label'
 
-    # XXX: Big hack, date are sorted in reverse order by default
-    if isinstance(sort_col, sa.types._DateAffinity):
-      sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
-    elif isinstance(sort_col, sa.types.String):
-      sort_col = func.lower(sort_col)
+        rel_sort_name = sort_col_def.get('sort_on', default_sort_name)
+        sort_col = getattr(rel_model, rel_sort_name)
 
-    direction = desc if sort_dir == 'desc' else asc
-    sort_col = direction(sort_col)
+      # XXX: Big hack, date are sorted in reverse order by default
+      if isinstance(sort_col, sa.types._DateAffinity):
+        sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
+      elif isinstance(sort_col, sa.types.String):
+        sort_col = func.lower(sort_col)
 
-    # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
-    engine = query.session.get_bind(self.managed_class.__mapper__)
-    if engine.name != 'sqlite':
-      nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
-      sort_col = nullsorder(sort_col)
+      direction = desc if sort_dir == 'desc' else asc
+      sort_col = direction(sort_col)
 
-    query = query.order_by(sort_col)
+      # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
+      if engine.name != 'sqlite':
+        nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
+        sort_col = nullsorder(sort_col)
+
+      sort_cols.append(sort_col)
+
+    query = query.order_by(*sort_cols)
     query.reset_joinpoint()
     return query
 
