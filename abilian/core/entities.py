@@ -236,6 +236,9 @@ class Entity(Indexable, BaseMixin, db.Model):
   __indexation_args__.update(Indexable.__indexation_args__)
   index_to = __indexation_args__.setdefault('index_to', ())
   index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
+  index_to += (
+      ('_indexable_roles_and_users', ('allowed_roles_and_users',)),
+  )
   __indexation_args__['index_to'] = index_to
   del index_to
 
@@ -362,6 +365,47 @@ class Entity(Indexable, BaseMixin, db.Model):
       if max_id:
         slug = u'{}-{}'.format(slug, max_id)
     return slug
+
+  @property
+  def _indexable_roles_and_users(self):
+    """
+    return a string made for indexing roles having :any:`READ` permission on
+    this object.
+    """
+    from abilian.services.indexing import indexable_role
+    from abilian.services.security import READ, Admin, Anonymous, Creator, Owner
+    result = []
+    svc = current_app.services['security']
+
+    # roles - required to match when user has a global role
+    assignments = svc.get_permissions_assignments(permission=READ, obj=self)
+    allowed_roles = assignments.get(READ, set())
+    allowed_roles.add(Admin)
+
+    for r in allowed_roles:
+      result.append(indexable_role(r))
+
+    for role, attr in ((Creator, 'creator'), (Owner, 'owner'),):
+      if role in allowed_roles:
+        user = getattr(self, attr)
+        if user:
+          result.append(indexable_role(user))
+
+    # users and groups
+    principals = set()
+    for user, role in svc.get_role_assignements(self):
+      if role in allowed_roles:
+        principals.add(user)
+
+    if Anonymous in principals:
+      # it's a role listed in role assignments - legacy when there wasn't
+      # permission-role assignments
+      principals.remove(Anonymous)
+
+    for p in principals:
+      result.append(indexable_role(p))
+
+    return u' '.join(result)
 
 
 # TODO: make this unecessary

@@ -9,6 +9,7 @@ from datetime import datetime
 import sqlalchemy as sa
 from whoosh.fields import Schema, TEXT, NUMERIC
 
+from abilian.testing import BaseTestCase as AppTestCase
 from abilian.services.indexing.adapter import SAAdapter
 from abilian.core.extensions import db
 from abilian.core.models.base import IdMixin, Indexable as CoreIndexable, \
@@ -67,13 +68,17 @@ class TestSAAdapter(TestCase):
     assert set(adapter.doc_attrs) == {
       'object_key', 'id', 'name', 'slug', 'object_type',
       'text', 'created_at', 'updated_at', 'name_prefix',
-      'owner', 'owner_name', 'creator_name', 'creator'}
+      'owner', 'owner_name', 'creator_name', 'creator',
+      'allowed_roles_and_users',
+    }
     assert all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues())
 
     assert set(schema.names()) == {
       'object_key', 'id', 'object_type', 'name', 'slug',
       'text', 'created_at', 'updated_at', 'name_prefix',
-      'owner', 'owner_name', 'creator_name', 'creator'}
+      'owner', 'owner_name', 'creator_name', 'creator',
+      'allowed_roles_and_users',
+    }
 
     schema = Schema(
       id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True),
@@ -86,6 +91,9 @@ class TestSAAdapter(TestCase):
     assert set(schema.names()) == {'id', 'text', 'num', 'name'}
     assert isinstance(schema['text'], TEXT)
     assert isinstance(schema['num'], NUMERIC)
+
+
+class DocumentTestCase(AppTestCase):
 
   def test_get_document(self):
     schema = Schema()
@@ -105,6 +113,7 @@ class TestSAAdapter(TestCase):
     expected['text'] = u'entity name'
     expected['slug'] = 'entity-name'
     expected['name_prefix'] = u'entity name'
+    expected['allowed_roles_and_users'] = u'role:admin'
     assert adapter.get_document(obj) == expected
 
     # test retrieve related attributes
