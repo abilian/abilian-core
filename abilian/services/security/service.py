@@ -74,6 +74,40 @@ def require_flush(fun):
   return ensure_flushed
 
 
+def query_pa_no_flush(session, permission, role, obj):
+  """
+  query for a :class:`PermissionAssignment` using `session` without any
+  `flush()`.
+
+  It works by looking in session `new`, `dirty` and `deleted`, and issuing a
+  query with no autoflush.
+
+  .. note::
+
+     This function is used by `add_permission` and `delete_permission` to allow
+     to add/remove the same assignment twice without issuing any flush. Since
+     :class:`Entity` creates its initial permissions in during
+     :sqlalchemy:`sqlalchemy.orm.events.SessionEvents.after_attach`, it might be
+     problematic to issue a flush when entity is not yet ready to be flushed
+     (missing required attributes for example).
+  """
+  for instance in chain(session.deleted, session.dirty, session.new):
+    if not isinstance(instance, PermissionAssignment):
+      continue
+
+    if (instance.permission == permission and
+        instance.role == role and
+        instance.object == obj):
+      return instance
+
+  with session.no_autoflush:
+    return session.query(PermissionAssignment)\
+                  .filter(PermissionAssignment.permission == permission,
+                          PermissionAssignment.role == role,
+                          PermissionAssignment.object == obj)\
+                  .first()
+
+
 # noinspection PyComparisonWithNone
 class SecurityService(Service):
   """ """
@@ -685,28 +719,28 @@ class SecurityService(Service):
     if session is None:
       session = current_app.db.session()
 
-    pa = session.query(PermissionAssignment)\
-                .filter(PermissionAssignment.permission == permission,
-                        PermissionAssignment.role == role,
-                        PermissionAssignment.object == obj)\
-                .first()
+    pa = query_pa_no_flush(session, permission, role, obj)
+
     if not pa:
       pa = PermissionAssignment(permission=permission, role=role, object=obj)
-      session.add(pa)
+
+    # do it in any case: it could have been found in session.deleted
+    session.add(pa)
+
 
   def delete_permission(self, permission, role, obj=None):
-    session = object_session(obj)
+    session = None
+    if obj is not None:
+      session = object_session(obj)
+
     if session is None:
       session = current_app.db.session()
 
-    pa = session.query(PermissionAssignment)\
-                .filter(PermissionAssignment.permission == permission,
-                        PermissionAssignment.role == role,
-                        PermissionAssignment.object == obj)\
-                .first()
+    pa = query_pa_no_flush(session, permission, role, obj)
 
     if pa:
       session.delete(pa)
+
 
   def filter_with_permission(self, user, permission, obj_list, inherit=False):
     user = noproxy(user)
