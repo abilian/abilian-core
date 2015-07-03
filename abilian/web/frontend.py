@@ -146,11 +146,9 @@ class BaseEntityView(ModuleView):
 
   def init_object(self, args, kwargs):
     args, kwargs = super(BaseEntityView, self).init_object(args, kwargs)
-    security = current_app.services['security']
 
     # security check
-    if (self.obj and
-        not security.has_permission(current_user, self.permission, self.obj)):
+    if self.obj and not self.check_access():
       # FIXME: will lead base views to return 404. Ok when permission is
       # READ, but when it's WRITE would 403 be more appropriate?
       self.obj = None
@@ -174,7 +172,40 @@ class BaseEntityView(ModuleView):
   def single_view(self):
     return make_single_view(self.form,
                             view_template=self.module.view_template,
+                            view=self,
+                            module=self.module,
                             **self.module.view_options)
+
+  def check_access(self):
+    return self._check_view_permission(self)
+
+  def _check_view_permission(self, view):
+    """
+    :param view: a :class:`ObjectView` class or instance
+    """
+    security = current_app.services['security']
+    return security.has_permission(current_user, view.permission, self.obj)
+
+  @property
+  def can_edit(self):
+    return self._check_view_permission(self.module.edit_cls)
+
+  @property
+  def can_delete(self):
+    return self._check_view_permission(self.module.delete_cls)
+
+  @property
+  def can_create(self):
+    create_cls = self.module.create_cls
+    permission = create_cls.permission
+    cls_permissions = dict(self.Model.__default_permissions__)
+
+    if self.permission in cls_permissions:
+      security = current_app.services['security']
+      return security.has_permission(current_user,
+                                     create_cls.permission,
+                                     roles=cls_permissions[permission])
+    return False
 
 
 class EntityView(BaseEntityView, ObjectView):
@@ -208,6 +239,9 @@ class EntityCreate(BaseEntityView, ObjectCreate):
 
   prepare_args = ObjectCreate.prepare_args
   breadcrumb = ObjectCreate.breadcrumb
+
+  def check_access(self):
+    return self.can_create
 
   @property
   def template_kwargs(self):
