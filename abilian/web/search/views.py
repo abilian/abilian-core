@@ -80,21 +80,9 @@ def init_search(endpoint, values):
   values['page'] = page
 
 
-def url_for_hit(hit, default=u'#'):
-  object_type = hit['object_type']
-  object_id = int(hit['id'])
-  try:
-    return current_app.default_view.url_for(hit, object_type, object_id)
-  except KeyError:
-    return default
-  except Exception:
-    logger.error('Error building URL for search result', exc_info=True)
-    return default
-
-
 @search.context_processor
 def install_hit_to_url():
-  return dict(url_for_hit=url_for_hit)
+  return dict(url_for_hit=current_app.extensions['indexing'].url_for_hit)
 
 
 _COUNT_OBJECT_TYPE_FACET = whoosh.sorting.FieldFacet(
@@ -206,6 +194,7 @@ _JSON_HTML = u'''
 @route('/live')
 def live(q=u'', page=None):
   svc = current_app.services['indexing']
+  url_for_hit = svc.app_state.url_for_hit
   search_kwargs = {'facet_by_type': 5}
   response = {}
   results = svc.search(q, **search_kwargs)

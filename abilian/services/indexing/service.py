@@ -68,6 +68,20 @@ if not _PATCHED:
   del wrapping_collector_remove
 # END PATCH
 
+def url_for_hit(hit, default=u'#'):
+  """
+  Helper for building URLs from results
+  """
+  object_type = hit['object_type']
+  object_id = int(hit['id'])
+  try:
+    return current_app.default_view.url_for(hit, object_type, object_id)
+  except KeyError:
+    return default
+  except Exception:
+    logger.error('Error building URL for search result', exc_info=True)
+    return default
+
 
 def fqcn(cls):
   if issubclass(cls, Entity):
@@ -82,6 +96,7 @@ class IndexServiceState(ServiceState):
   indexed_fqcn = None
   search_filter_funcs = None
   value_provider_funcs = None
+  url_for_hit = None
 
   def __init__(self, *args, **kwargs):
     ServiceState.__init__(self, *args, **kwargs)
@@ -90,6 +105,7 @@ class IndexServiceState(ServiceState):
     self.indexed_fqcn = set()
     self.search_filter_funcs = []
     self.value_provider_funcs = []
+    self.url_for_hit = url_for_hit
 
   @property
   def to_update(self):
