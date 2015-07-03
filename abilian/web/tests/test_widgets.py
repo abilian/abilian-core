@@ -75,7 +75,8 @@ class ModelViewTestCase(BaseTestCase):
   def test_single_view(self):
     with self.app.test_request_context():
       panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
-      view = SingleView(DummyForm, *panels)
+      view = SingleView(DummyForm, *panels,
+                        view=dict(can_edit=False, can_delete=False))
       model = WidgetTestModel(name="Renault Megane",
                               price=10000, email="joe@example.com")
       form = DummyForm(obj=model)

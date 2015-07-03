@@ -1,5 +1,11 @@
-<a class="btn btn-default" href="{{ request.path }}/edit"><i class="fa fa-edit"></i>{{ _("Edit") }}</a>
-{%- if view.options.allow_delete is defined and view.options.allow_delete() %}
+{%- set widget = view %}
+{%- set view = widget.options.view %}
+{%- if view.can_edit %}
+  <a class="btn btn-default" href="{{ url_for('.entity_edit', **{view.pk: view.obj.id}) }}">
+    <i class="fa fa-edit"></i>{{ _("Edit") }}
+  </a>
+{%- endif %}
+{%- if view.can_delete %}
 <a class="btn btn-danger" id="delete-button"><i class="fa fa-trash fa-inverse"></i>{{ _("Delete") }}</a>
 
 {%- deferJS %}
