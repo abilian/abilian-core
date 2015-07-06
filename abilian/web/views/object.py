@@ -190,7 +190,7 @@ class ObjectEdit(ObjectView):
 
   def __init__(self, Model=None, pk=None, Form=None, template=None,
                view_endpoint=None, message_success=None, *args, **kwargs):
-    ObjectView.__init__(self, Model, pk, Form, *args, **kwargs)
+    ObjectView.__init__(self, Model, pk, Form, template=template, *args, **kwargs)
     self.view_endpoint = (view_endpoint
                           if view_endpoint is not None
                           else '.{}_view'.format(self.Model.__name__))
