@@ -331,7 +331,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
       entity_url = None
       entity_name = e.object_name
       if e.object:
-        entity_name = e.object.path or e.object.name
+        entity_name = getattr(e.object, 'path', e.object.name)
         entity_url = url_for(e.object)
 
       entity = render(
