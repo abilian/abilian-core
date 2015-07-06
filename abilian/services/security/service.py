@@ -442,9 +442,9 @@ class SecurityService(Service):
     # cannot call flush() in grant_role() since this method may be called a
     # great number of times in the same transaction, and sqlalchemy limits to
     # 100 flushes before triggering a warning
-    for obj in (o for models in (session.new, session.dirty)
+    for ra in (o for models in (session.new, session.dirty)
                 for o in models if isinstance(o, RoleAssignment)):
-      if all(getattr(obj, attr) == val for attr, val in args.items()):
+      if all(getattr(ra, attr) == val for attr, val in args.items()):
         return
 
     ra = RoleAssignment(**args)
