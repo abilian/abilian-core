@@ -94,15 +94,15 @@ class BaseObjectView(View):
 
     kwargs = {'base_template': self.base_template}
     kwargs.update(self.template_kwargs)
-    # forbid override "view" and "form"
-    kwargs.update(dict(view=self, form=self.form))
+    # forbid override "view"
+    kwargs['view'] = self
     return render_template(self.template, **kwargs)
 
   @property
   def template_kwargs(self):
     """
     Template render arguments. You can override `base_template` for
-    instance. Only `view` and `form` cannot be overriden.
+    instance. Only `view` cannot be overriden.
     """
     return {}
 
@@ -115,7 +115,7 @@ class ObjectView(BaseObjectView):
   #: html template
   template = 'default/object_view.html'
 
-  #: View form. Form object used to show objects fields
+  #: View form class. Form object used to show objects fields
   Form = None
 
   #: required permission. Must be an instance of
@@ -151,6 +151,15 @@ class ObjectView(BaseObjectView):
 
   def redirect_to_index(self):
     return redirect(self.index_url())
+
+  @property
+  def template_kwargs(self):
+    """
+    provides :attr:`form` to templates
+    """
+    kw = super(ObjectView, self).template_kwargs
+    kw['form'] = self.form
+    return kw
 
 
 CANCEL_BUTTON = ButtonAction(
