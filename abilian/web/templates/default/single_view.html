@@ -29,7 +29,9 @@
                   col-lg-6 col-lg-push-3">
         <div id="panel_comments" class="collapse in">
           {{ m_comments(view.obj) }}
-          {{ m_comment_form(view.obj) }}
+          {%- if show_new_comment_form %}
+            {{ m_comment_form(view.obj) }}
+          {%- endif %}
         </div>
 
       </div>
@@ -42,7 +44,9 @@
         <h3 class="" href="#panel_attachments" data-toggle="collapse">{{ _('Attachments (%(count)d)', count=attachments.count(view.obj)) }}</h3>
         <div id="panel_attachments" class="collapse in">
           {{ m_attachments(view.obj) }}
-          {{ m_attachment_form(view.obj) }}
+          {%- if show_new_attachment_form %}
+            {{ m_attachment_form(view.obj) }}
+          {%- endif %}
         </div>          
         </div>
       </div>

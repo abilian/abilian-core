@@ -221,6 +221,8 @@ class EntityView(BaseEntityView, ObjectView):
     return dict(rendered_entity=rendered_entity,
                 related_views=related_views,
                 audit_entries=audit_entries,
+                show_new_comment_form=True,
+                show_new_attachment_form=True,
                 module=self.module)
 
 
@@ -231,6 +233,8 @@ class EntityEdit(BaseEntityView, ObjectEdit):
   def template_kwargs(self):
     rendered_entity = self.single_view.render_form(self.form)
     return dict(rendered_entity=rendered_entity,
+                show_new_comment_form=False,
+                show_new_attachment_form=False,
                 module=self.module)
 
 
