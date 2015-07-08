@@ -23,7 +23,7 @@ class UploadForm(Form):
 
   file = FileField(validators=(file_required(),))
 
-  
+
 class BaseUploadsView(object):
 
   def prepare_args(self, args, kwargs):
@@ -32,7 +32,7 @@ class BaseUploadsView(object):
     self.user = current_user._get_current_object()
     return args, kwargs
 
-  
+
 class NewUploadView(BaseUploadsView, JSONView):
   """
   Upload a new file
@@ -48,13 +48,13 @@ class NewUploadView(BaseUploadsView, JSONView):
       'handle': self.handle,
       'url': url_for('.handle', handle=self.handle),
     }
-  
+
   def post(self, *args, **kwargs):
     form = UploadForm()
 
     if not form.validate():
       raise BadRequest('File is missing.')
-    
+
     uploaded = form['file'].data
     filename = secure_filename(uploaded.filename)
     mimetype = uploaded.mimetype
@@ -62,29 +62,12 @@ class NewUploadView(BaseUploadsView, JSONView):
                                         filename=filename,
                                         mimetype=mimetype)
     return self.get(*args, **kwargs)
-    
+
   def put(self, *args, **kwargs):
     return self.post(*args, **kwargs)
 
 
 bp.add_url_rule('/', view_func=NewUploadView.as_view('new_file',),)
-
-
-class _StreamCloser(object):
-  """
-  Ensure file is closed after after response has been sent.
-  """
-  def __init__(self, stream):
-    self.stream = stream
-    request_tearing_down.connect(self, weak=False)
-
-  def __call__(self, *args, **kwargs):
-    try:
-      self.stream.close()
-      self.stream = None
-    finally:
-      request_tearing_down.disconnect(self)
-      
 
 class UploadView(BaseUploadsView, View):
   """
@@ -92,7 +75,7 @@ class UploadView(BaseUploadsView, View):
   """
   methods = ['GET', 'DELETE']
   decorators = (csrf.support_graceful_failure,)
-  
+
   def get(self, handle, *args, **kwargs):
     file_obj = self.uploads.get_file(self.user, handle)
 
@@ -103,8 +86,7 @@ class UploadView(BaseUploadsView, View):
     filename = metadata.get('filename', handle)
     content_type = metadata.get('mimetype', None)
     stream = file_obj.open('rb')
-    _StreamCloser(stream)
-    
+
     return send_file(stream,
                      as_attachment=True,
                      attachment_filename=filename,
@@ -120,5 +102,5 @@ class UploadView(BaseUploadsView, View):
     self.uploads.remove_file(self.user, handle)
     return jsonify({'success': True})
 
-  
+
 bp.add_url_rule('/<string:handle>', view_func=UploadView.as_view('handle',),)
