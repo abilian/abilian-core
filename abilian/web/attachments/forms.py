@@ -14,7 +14,7 @@ from abilian.web.forms.filters import strip
 
 
 class AttachmentForm(Form):
-  
+
   blob = FileField(
     _l(u'file'),
     validators=[required()],
@@ -25,9 +25,8 @@ class AttachmentForm(Form):
     _l(u'description (optional)'),
     filters=(strip,),
   )
-  
+
   class Meta:
     model = Attachment
     include_primary_keys = True
     assign_required = False # for 'id': allow None, for new records
-    

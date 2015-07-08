@@ -13,7 +13,7 @@ class AttachmentExtension(object):
   """
   API for comments, installed as an application extension.
 
-  It is also available in templates as `attachments`.  
+  It is also available in templates as `attachments`.
   """
   def __init__(self, app):
     app.extensions['attachments'] = self
@@ -42,4 +42,3 @@ class AttachmentExtension(object):
     ctx['form'] = AttachmentForm()
     ctx['buttons'] = [UPLOAD_BUTTON]
     return ctx
-    

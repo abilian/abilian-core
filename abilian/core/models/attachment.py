@@ -69,7 +69,7 @@ def for_entity(obj, check_support_attachments=False):
 
 class Attachment(Entity):
   """
-  An Attachment related to an :class:`Entity`.
+  An Attachment owned by an :class:`Entity`.
   """
   @sa.ext.declarative.declared_attr
   def __mapper_args__(cls):
@@ -84,7 +84,7 @@ class Attachment(Entity):
 
   entity_id = Column(Integer, ForeignKey(Entity.id), nullable=False)
 
-  #: Attachmented entity
+  #: owning entity
   entity = relationship(
     Entity,
     lazy='immediate',
@@ -96,14 +96,13 @@ class Attachment(Entity):
                   )
   )
 
-  #: file. Stored in a :class:`Blob`
   blob_id = Column(Integer, sa.ForeignKey(Blob.id), nullable=False)
+  #: file. Stored in a :class:`Blob`
   blob = relationship(Blob, cascade='all, delete', foreign_keys=[blob_id])
 
-  description = Column(sa.UnicodeText(),
-                       nullable=False, default=u'',
-                       server_default=u'',)
-  
+  description = Column(UnicodeText(), nullable=False,
+                       default=u'', server_default=u'',)
+
   def __repr__(self):
     class_ = self.__class__
     mod_ = class_.__module__
@@ -111,7 +110,7 @@ class Attachment(Entity):
     return '<{}.{} instance at 0x{:x} entity id={!r}'\
         .format(mod_, classname, id(self), self.entity_id)
 
-  
+
 @sa.event.listens_for(Attachment, 'before_insert', propagate=True)
 @sa.event.listens_for(Attachment, 'before_update', propagate=True)
 def set_attachment_name(mapper, connection, target):
