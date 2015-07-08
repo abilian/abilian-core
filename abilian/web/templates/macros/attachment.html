@@ -18,12 +18,19 @@
       <i class="fa fa-file fa-big"></i>
     </div>
     <div class="media-body">
-      <h4 class="media-heading">{{ attachment.name }} <small>{{ attachment.blob.size | filesize }}</small></h4>
+      <h4 class="media-heading">
+        <a href="{{ url_for('attachments.download',
+                            entity_id=attachment.entity.id,
+                            object_id=attachment.id) }}"
+           title="{{ _('Download') }}">{{ attachment.name }}</a>
+        <small>{{ attachment.blob.size | filesize }}</small>
+      </h4>
       <p>{{ attachment.description }}</p>
     </div>
-  </div>  
+  </div>
 {% endmacro %}
 
+{# new attachment form #}
 {% macro m_attachment_form(entity) %}
   {%- set ctx = attachments.get_form_context(entity) %}
   <form class="form-inline" action="{{ ctx.url }}" method="POST" enctype="multipart/form-data" role="form">
