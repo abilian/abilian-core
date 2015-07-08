@@ -30,17 +30,3 @@ activity = signals.signal("activity")
 #: This signal is sent when user object has been loaded. g.user and current_user
 #: are available.
 user_loaded = signals.signal('user_loaded')
-
-#: Currently not used and subject to change.
-entity_created = signals.signal("entity:created")
-
-#: Currently not used and subject to change.
-entity_updated = signals.signal("entity:updated")
-
-#: Currently not used and subject to change.
-entity_deleted = signals.signal("entity:deleted")
-
-# user_created = signals.signal("user:created")
-# user_deleted = signals.signal("user:deleted")
-
-# More signals ?
