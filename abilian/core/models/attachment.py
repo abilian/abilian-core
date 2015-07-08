@@ -71,6 +71,10 @@ class Attachment(Entity):
   """
   An Attachment owned by an :class:`Entity`.
   """
+  __auditable_entity__ = ('entity',
+                          'attachment',
+                          ('id', 'name'))
+
   @sa.ext.declarative.declared_attr
   def __mapper_args__(cls):
     # we cannot use super(Attachment, cls): declared_attr happens during class
