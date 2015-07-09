@@ -4,9 +4,11 @@
 from __future__ import absolute_import
 
 from flask import current_app
+from flask_login import current_user
 
 from abilian.core.entities import Entity
 from abilian.core.models import attachment as attachments
+from abilian.services.security import security, READ, WRITE
 from abilian.web import url_for
 
 from .forms import AttachmentForm
@@ -26,6 +28,9 @@ class AttachmentExtension(object):
     app.register_blueprint(blueprint)
 
   def manager(self, obj):
+    """
+    Returns the :class:`AttachmentsManager` instance for this object.
+    """
     manager = getattr(obj, _MANAGER_ATTR, None)
     if manager is None:
       manager = AttachmentsManager()
@@ -34,28 +39,27 @@ class AttachmentExtension(object):
     return manager
 
   def is_support_attachements(self, obj):
-    return attachments.is_support_attachments(obj)
+    return self.manager(obj).is_support_attachments(obj)
 
   def for_entity(self, obj, check_support_attachments=False):
-    return attachments.for_entity(obj, check_support_attachments=check_support_attachments)
+    return self.manager(obj).for_entity(
+        obj,
+        check_support_attachments=check_support_attachments,
+    )
 
   def has_attachments(self, obj):
-    return bool(attachments.for_entity(obj, check_support_attachments=True))
+    return self.manager(obj).has_attachments(obj)
 
   def count(self, obj):
-    return len(attachments.for_entity(obj, check_support_attachments=True))
+    return self.manager(obj).count(obj)
 
   def get_form_context(self, obj):
     """
     Return a dict: form instance, action button, submit url...
     Used by macro m_attachment_form(entity)
     """
-    manager = self.manager(obj)
-    ctx = {}
-    ctx['url'] = url_for('attachments.create', entity_id=obj.id)
-    ctx['form'] = manager.Form()
-    ctx['buttons'] = [UPLOAD_BUTTON]
-    return ctx
+    return self.manager(obj).get_form_context(obj)
+
 
 
 _DEFAULT_TEMPLATE = 'macros/attachment_default.html'
@@ -91,3 +95,51 @@ class AttachmentsManager(object):
       m_attachment_form=getattr(m, 'm_attachment_form',
                                 default.m_attachment_form)
     )
+
+  def is_support_attachements(self, obj):
+    return attachments.is_support_attachments(obj)
+
+  def for_entity(self, obj, check_support_attachments=False):
+    return attachments.for_entity(obj, check_support_attachments=check_support_attachments)
+
+  def has_attachments(self, obj):
+    return bool(self.for_entity(obj, check_support_attachments=True))
+
+  def count(self, obj):
+    return len(self.for_entity(obj, check_support_attachments=True))
+
+  def get_form_context(self, obj):
+    """
+    Return a dict: form instance, action button, submit url...
+    Used by macro m_attachment_form(entity)
+    """
+    ctx = {}
+    ctx['url'] = url_for('attachments.create', entity_id=obj.id)
+    ctx['form'] = self.Form()
+    ctx['buttons'] = [UPLOAD_BUTTON]
+    return ctx
+
+  ## current user capabilities
+  def can_view(self, entity):
+    """
+    True if user can view attachments on entity
+    """
+    return security.has_permission(current_user, READ, obj=entity)
+
+  def can_edit(self, entity):
+    """
+    True if user can edit attachments on entity
+    """
+    return security.has_permission(current_user, WRITE, obj=entity)
+
+  def can_create(self, entity):
+    """
+    True if user can add attachments
+    """
+    return security.has_permission(current_user, WRITE, obj=entity)
+
+  def can_delete(self, entity):
+    """
+    True if user can delete attachments
+    """
+    return security.has_permission(current_user, WRITE, obj=entity)
