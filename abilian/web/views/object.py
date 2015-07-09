@@ -464,6 +464,7 @@ class ObjectDelete(ObjectEdit):
   """
   Delete object. Supports DELETE verb.
   """
+  methods = ['POST']
   activity_verb = 'delete'
   _message_success = _l(u"Entity deleted")
 
