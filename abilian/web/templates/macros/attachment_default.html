@@ -16,11 +16,37 @@
 
 {# single attachment #}
 {% macro m_attachment(attachment) %}
+  {%- set entity = attachment.entity %}
+  {%- set manager = attachments.manager(entity) %}
+  {%- set can_edit = manager.can_edit(entity) %}
+  {%- set can_delete = manager.can_delete(entity) %}
   <div class="media">
     <div class="media-left">
       <i class="fa fa-file fa-big"></i>
     </div>
     <div class="media-body">
+    {%- if can_edit or can_delete %}
+      <div class="pull-right">
+        {%- if can_edit %}
+        <a class="btn btn-default"
+           title="{{ _("Edit") }}"
+           href="{{ url_for('attachments.edit', entity_id=entity.id, object_id=attachment.id) }}"><i class="fa fa-edit"></i></a>
+        {%- endif %}
+        {%- if can_delete %}
+        <a class="btn btn-danger js-widget"
+           href="{{ url_for('attachments.delete', entity_id=entity.id, object_id=attachment.id) }}"
+           data-init-with="deleteConfirm"
+           data-init-params="{{ {
+                              'title': _('Delete attachment ?'),
+                              'message': _('Do you really want to delete this attachment?'),
+                              'label': _("Delete"),
+                              'cancelLabel': _('Cancel'),
+                              }|tojson|forceescape }}">
+          <i class="fa fa-trash fa-inverse"></i>
+        </a>
+        {%- endif %}
+      </div>
+    {%- endif %}
       <h4 class="media-heading">
         <a href="{{ url_for('attachments.download',
                             entity_id=attachment.entity.id,
