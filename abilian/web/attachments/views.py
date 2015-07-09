@@ -13,7 +13,9 @@ from abilian.core.models.attachment import Attachment, is_support_attachments
 from abilian.web import url_for, nav
 from abilian.web.blueprints import Blueprint
 from abilian.web.action import actions, ButtonAction
-from abilian.web.views import BaseObjectView, ObjectCreate
+from abilian.web.views import (
+  BaseObjectView, ObjectCreate, ObjectDelete, ObjectEdit,
+)
 
 from .forms import AttachmentForm
 
@@ -51,6 +53,9 @@ class BaseAttachmentView(object):
 
     if self.entity is None:
       raise BadRequest('No entity provided')
+
+    if not is_support_attachments(self.entity):
+      raise BadRequest('This entity is doesn\'t support attachments')
 
     extension = current_app.extensions['attachments']
     self.Form = extension.manager(self.entity).Form
@@ -94,16 +99,21 @@ download_view = AttachmentDownload.as_view('download')
 bp.route('/<int:entity_id>/<int:object_id>/download')(download_view)
 
 
+class AttachmentEdit(BaseAttachmentView, ObjectEdit):
+  _message_success = _l(u'Attachment edited')
+
+
+edit_view = AttachmentEdit.as_view('edit')
+bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
+
+
 class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
   """
   """
-  _message_success = _l(u"Attachment added")
+  _message_success = _l(u'Attachment added')
 
   def init_object(self, args, kwargs):
     args, kwargs = super(AttachmentCreateView, self).init_object(args, kwargs)
-
-    if not is_support_attachments(self.entity):
-      raise BadRequest('This entity is doesn\'t support attachments')
 
     self.obj.entity = self.entity
     session = sa.orm.object_session(self.entity)
@@ -123,3 +133,10 @@ class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
 
 create_view = AttachmentCreateView.as_view('create')
 bp.route('/<int:entity_id>/create')(create_view)
+
+
+class AttachmentDelete(BaseAttachmentView, ObjectDelete):
+  pass
+
+delete_view = AttachmentDelete.as_view('delete')
+bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)
