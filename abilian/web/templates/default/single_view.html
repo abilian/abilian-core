@@ -38,20 +38,21 @@
     </div>
     {%- endif %}
 
-    {%- if attachments.is_support_attachements(view.obj) %}
+    {%- set att_manager = attachments.manager(view.obj) %}
+    {%- if att_manager.is_support_attachements(view.obj) and att_manager.can_view(view.obj) %}
       <div class="row">
         <div class="col-xs-12">
         <h3 class="" href="#panel_attachments" data-toggle="collapse">{{ _('Attachments (%(count)d)', count=attachments.count(view.obj)) }}</h3>
         <div id="panel_attachments" class="collapse in">
           {{ m_attachments(view.obj) }}
-          {%- if show_new_attachment_form %}
+          {%- if show_new_attachment_form and att_manager.can_create(view.obj) %}
             {{ m_attachment_form(view.obj) }}
           {%- endif %}
-        </div>          
+        </div>
         </div>
       </div>
     {%- endif %}
-    
+
     {{ m_audit_log(audit_entries) }}
   </div>
 
