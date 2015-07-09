@@ -6,57 +6,18 @@
   </a>
 {%- endif %}
 {%- if view.can_delete %}
-<a class="btn btn-danger" id="delete-button"><i class="fa fa-trash fa-inverse"></i>{{ _("Delete") }}</a>
-
-{%- deferJS %}
-<script type="text/javascript">
- require(
-   ['Abilian', 'jquery', 'bootbox'],
-   function (Abilian, $, bootbox) {
-       $("#delete-button").click(function () {
-         bootbox.dialog({
-       title: '<strong class="text-danger"><i class="glyphicon glyphicon-warning-sign"></i> La suppression est irréversible</strong>',
-       message: '<p class="lead">{{ _('Do you really want to delete this entity?') }}</p>',
-       closeButton: true,
-       buttons: {
-         confirm: {
-           "label" : {{ _('Delete')|tojson }},
-           "className" : "btn-danger",   // or btn-primary, or btn-danger, or nothing at all
-           "callback": function() {
-             // Hack to provoke a POST instead of a GET.
-             var path = "{{ request.path }}/delete";
-             var form = document.createElement("form");
-             form.setAttribute("method", "POST");
-             form.setAttribute("action", path);
-             form.setAttribute('enctype', 'multipart/form-data');
-             // csrf
-             var input = document.createElement('input');
-             input.setAttribute('type', 'hidden');
-             input.setAttribute('name', Abilian.csrf_fieldname);
-             input.setAttribute('value', Abilian.csrf_token);             
-             form.appendChild(input);
-             // action value
-             input = document.createElement('input');
-             input.setAttribute('type', 'hidden');
-             input.setAttribute('name', '__action');
-             input.setAttribute('value', 'delete');
-             form.appendChild(input);
-
-             document.body.appendChild(form);
-             form.submit();
-           }
-         },
-         cancel: {
-           "label" : {{ _('Cancel')|tojson }},
-           "className" : ""   // or btn-primary, or btn-danger, or nothing at all
-         }
-       },
-       'keyboard': true
-      });
-    });
-  });
-</script>
-{%- enddeferJS %}
+  <a class="btn btn-danger js-widget" id="delete-button"
+     href="{{ url_for('.entity_delete', **{view.pk: view.obj.id}) }}"
+     data-init-with="deleteConfirm"
+     data-init-params="{{ {
+                        'title': 'La suppression est irréversible',
+                        'message': _('Do you really want to delete this entity?'),
+                        'label': _('Delete'),
+                        'cancelLabel': _('Cancel'),
+                        }|tojson|forceescape }}">
+    <i class="fa fa-trash fa-inverse"></i>
+    {{ _("Delete") }}
+  </a>
 {%- endif %}
 
 {%- for panel, data in panels %}
