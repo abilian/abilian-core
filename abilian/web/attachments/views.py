@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 import sqlalchemy as sa
 from werkzeug.exceptions import BadRequest
-from flask import send_file
+from flask import current_app, send_file
 
 from abilian.i18n import _, _l
 from abilian.core.entities import Entity
@@ -52,6 +52,8 @@ class BaseAttachmentView(object):
     if self.entity is None:
       raise BadRequest('No entity provided')
 
+    extension = current_app.extensions['attachments']
+    self.Form = extension.manager(self.entity).Form
     actions.context['object'] = self.entity
     return args, kwargs
 

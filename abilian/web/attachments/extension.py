@@ -3,11 +3,16 @@
 """
 from __future__ import absolute_import
 
+from flask import current_app
+
+from abilian.core.entities import Entity
 from abilian.core.models import attachment as attachments
 from abilian.web import url_for
 
 from .forms import AttachmentForm
 from .views import bp as blueprint, UPLOAD_BUTTON
+
+_MANAGER_ATTR = '__attachments_manager__'
 
 class AttachmentExtension(object):
   """
@@ -19,6 +24,14 @@ class AttachmentExtension(object):
     app.extensions['attachments'] = self
     app.add_template_global(self, 'attachments')
     app.register_blueprint(blueprint)
+
+  def manager(self, obj):
+    manager = getattr(obj, _MANAGER_ATTR, None)
+    if manager is None:
+      manager = AttachmentsManager()
+      setattr(obj.__class__, _MANAGER_ATTR, manager)
+
+    return manager
 
   def is_support_attachements(self, obj):
     return attachments.is_support_attachments(obj)
@@ -37,8 +50,44 @@ class AttachmentExtension(object):
     Return a dict: form instance, action button, submit url...
     Used by macro m_attachment_form(entity)
     """
+    manager = self.manager(obj)
     ctx = {}
     ctx['url'] = url_for('attachments.create', entity_id=obj.id)
-    ctx['form'] = AttachmentForm()
+    ctx['form'] = manager.Form()
     ctx['buttons'] = [UPLOAD_BUTTON]
     return ctx
+
+
+_DEFAULT_TEMPLATE = 'macros/attachment_default.html'
+
+class AttachmentsManager(object):
+  """
+  Allow customization of attachments form, display macros, etc
+
+  can be used as class decorator
+  """
+  Form = AttachmentForm
+  macros_template = 'macros/attachment.html'
+
+  def __init__(self, Form=AttachmentForm,
+               macros_template='macros/attachment_default.html'):
+    self.Form = Form
+    self.macros_template = macros_template
+
+  def __call__(self, Model):
+    assert issubclass(Model, Entity)
+    setattr(Model, _MANAGER_ATTR, self)
+    return Model
+
+  @property
+  def macros(self):
+    default_template = current_app.jinja_env.get_template(_DEFAULT_TEMPLATE)
+    template = current_app.jinja_env.get_template(self.macros_template)
+    default = default_template.module
+    m = template.module
+    return dict(
+      m_attachments=getattr(m, 'm_attachments', default.m_attachments),
+      m_attachment=getattr(m, 'm_attachment', default.m_attachment),
+      m_attachment_form=getattr(m, 'm_attachment_form',
+                                default.m_attachment_form)
+    )
