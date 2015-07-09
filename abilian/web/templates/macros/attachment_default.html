@@ -52,7 +52,7 @@
                             entity_id=attachment.entity.id,
                             object_id=attachment.id) }}"
            title="{{ _('Download') }}">{{ attachment.name }}</a>
-        <small>{{ attachment.blob.size | filesize }}</small>
+        <small>{{ attachment.blob.size | filesize }} - {{ attachment.updated_at | age }}</small>
       </h4>
       <p>{{ attachment.description }}</p>
     </div>
