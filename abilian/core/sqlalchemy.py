@@ -291,7 +291,7 @@ class MutationList(Mutable, list):
 class JSON(sa.types.TypeDecorator):
   """Stores any structure serializable with json.
 
-  Usage::
+  Usage
     JSON()
     Takes same parameters as sqlalchemy.types.Text
   """
