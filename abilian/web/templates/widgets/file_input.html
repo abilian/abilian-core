@@ -5,7 +5,7 @@
       {{ input|safe }}
     </span>
   </span>
-  
+
   <div class="selected-files">
     {%- for data in existing %}
       <div class="file-item file-item-existing">
@@ -20,12 +20,12 @@
         {%- endif %}
       </div>
     {%- endfor %}
-    
+
     {%- for data in uploaded %}
       <div class="file-item file-item-uploaded">
         <span class="file-info">{{ data.filename }} – {{ data.size|filesize }}</span>
         <input type="hidden" name="{{ field.name }}" value="{{ data.handle }}" />
-        <a class="close" href="#">&times;</a>        
+        <a class="close" href="#">&times;</a>
       </div>
     {%- endfor %}
   </div>

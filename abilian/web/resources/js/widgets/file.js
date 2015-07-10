@@ -71,9 +71,12 @@
 
         setupExistingFileNode: function(node) {
             var button = node.find('button'),
+                unwrappedButton = button.get(0),
                 deleted = button.data('deleted');
 
-            button.get(0).markerInputElement = $('<input>')
+            if (!unwrappedButton) { return; }
+
+            unwrappedButton.markerInputElement = $('<input>')
                 .attr({
                     'type': 'hidden',
                     'name': button.data('name'),
@@ -81,7 +84,7 @@
                 });
 
             if (deleted) {
-                node.append(button.get(0).markerInputElement);
+                node.append(unwrappedButton.markerInputElement);
             }
 
             button.on('click', { node: node },
