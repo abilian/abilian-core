@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Subject classes (i.e. people, groups, etc.).
 

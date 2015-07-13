@@ -53,7 +53,7 @@ Module :mod:`abilian.core.extensions`
 .. automodule:: abilian.core.extensions
 
 Module :mod:`abilian.core.logging`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: abilian.core.logging
 
@@ -74,6 +74,9 @@ Module :mod:`abilian.core.models`
 .. automodule:: abilian.core.models.base
 .. automodule:: abilian.core.models.subjects
 .. automodule:: abilian.core.models.owned
+.. automodule:: abilian.core.models.blob
+.. automodule:: abilian.core.models.comment
+.. automodule:: abilian.core.models.attachment
 .. automodule:: abilian.core.models
 
 Module :mod:`abilian.core.util`

@@ -26,11 +26,12 @@ def register(cls):
   Register an :class:`Entity` as a commentable class.
 
   Can be used as a class decorator:
+
   .. code-block:: python
 
       @comment.register
       class MyContent(Entity):
-          ....
+          ...
   """
   if not issubclass(cls, Entity):
     raise ValueError('Class must be a subclass of abilian.core.entities.Entity')
