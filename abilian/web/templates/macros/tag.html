@@ -1,8 +1,8 @@
 {% from "macros/form.html" import m_field %}
 
 {% macro m_tags(entity, ns=None) %}
-    {%- set tags_form = tags.entity_tags_form(entity)(obj=entity) %}
-    {{ form['__tags__'].render_view() }}
+    {%- set tags_form = tags.entity_tags_form(entity)(obj=entity, ns=ns) %}
+    {{ tags_form['tags'].render_view() }}
 {% endmacro %}
 
 {% macro m_tags_form(entity, ns=None) %}
@@ -17,4 +17,20 @@
       {%- endfor %}
     </div>
   </form>
+{% endmacro %}
+
+{# show tags with an edit button, that replaces content by edit form #}
+{% macro m_tags_toggle_edit(entity, ns=None) %}
+  <div>
+    <div class="tags-view">
+      {{ m_tags(entity, ns) }}
+      {%- set target_id = 'collapse-%s' | format(g.id_generator.next()) %}
+      <button class="btn btn-default" data-toggle="collapse" data-target="#{{ target_id }}">
+        <i class="fa fa-edit"></i>
+      </button>
+    </div>
+    <div class="collapse" id="{{ target_id }}">
+      {{ m_tags_form(entity, ns) }}
+    </div>
+  </div>
 {% endmacro %}
