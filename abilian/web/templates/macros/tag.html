@@ -1,0 +1,20 @@
+{% from "macros/form.html" import m_field %}
+
+{% macro m_tags(entity, ns=None) %}
+    {%- set tags_form = tags.entity_tags_form(entity)(obj=entity) %}
+    {{ form['__tags__'].render_view() }}
+{% endmacro %}
+
+{% macro m_tags_form(entity, ns=None) %}
+  {%- set ctx = tags.get_form_context(entity) %}
+  <form class="form-inline" action="{{ ctx.url }}" method="POST" enctype="multipart/form-data" role="form">
+    {%- for field in ctx.form %}
+      {{ m_field(field) }}
+    {%- endfor %}
+    <div class="form-group form-actions">
+      {%- for button in ctx.buttons %}
+        {{ button.render() }}
+      {%- endfor %}
+    </div>
+  </form>
+{% endmacro %}
