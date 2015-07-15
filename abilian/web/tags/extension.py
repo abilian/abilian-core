@@ -110,13 +110,13 @@ class TagsExtension(object):
       pass
 
 
-  def get_form_context(self, obj):
+  def get_form_context(self, obj, ns=None):
     """
     Return a dict: form instance, action button, submit url...
     Used by macro m_tags_form(entity)
     """
     ctx = {}
-    ctx['url'] = url_for('tags.edit', object_id=obj.id)
-    ctx['form'] = self.entity_tags_form(obj)(obj=obj)
+    ctx['url'] = url_for('entity_tags.edit', object_id=obj.id)
+    ctx['form'] = self.entity_tags_form(obj)(obj=obj, ns=ns)
     ctx['buttons'] = [EDIT_BUTTON]
     return ctx
