@@ -60,7 +60,7 @@ bp.route('/manage/<int:object_id>/delete')(delete_view)
 
 
 # Tags on entities
-entity_bp = Blueprint('entity_tag', __name__, url_prefix='/tags/entity')
+entity_bp = Blueprint('entity_tags', __name__, url_prefix='/tags/entity')
 
 
 class BaseEntityTagView(BaseTagView):
@@ -75,6 +75,8 @@ class BaseEntityTagView(BaseTagView):
     if self.entity is None:
       raise BadRequest('No entity provided')
 
+    return args, kwargs
+    
   def view_url(self):
     return url_for(self.entity)
 
@@ -124,6 +126,13 @@ class EntityTagEdit(ObjectEdit):
     args, kwargs = super(EntityTagEdit, self).init_object(args, kwargs)
     extension = current_app.extensions['tags']
     self.Form = extension.entity_tags_form(self.obj)
+    return args, kwargs
     
+  def view_url(self):
+    return url_for(self.obj)
+
+  def index_url(self):
+    return self.view_url()
+
 
 entity_bp.route('/<int:object_id>/edit')(EntityTagEdit.as_view('edit'))
