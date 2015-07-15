@@ -3,11 +3,17 @@
 {% from "macros/comment.html" import m_comments, m_comment_form %}
 {% from "macros/attachment.html" import m_attachments, m_attachment_form %}
 {% from "macros/box.html" import m_box_content %}
+{% from "macros/tag.html" import m_tags_toggle_edit %}
 
 {% block content %}
   {% if title %}<h1>{{ title }}</h1>{% endif %}
 
   {{ rendered_entity }}
+
+  {%- if tags.is_support_tagging(view.obj) %}
+    <h3>{{ _('Tags') }}</h3>
+    {{ m_tags_toggle_edit(view.obj) }}
+  {%- endif %}
 
   <div class="collapsable">
     {%- for view in related_views %}
@@ -22,7 +28,7 @@
     {%- endfor %}
 
     {%- if comments.is_commentable(view.obj) %}
-      <h3 class="" href="#panel_comments" data-toggle="collapse">{{ _('Comments (%(count)d)', count=comments.count(view.obj)) }}</h3>    <div class="row">
+      <h3 href="#panel_comments" data-toggle="collapse">{{ _('Comments (%(count)d)', count=comments.count(view.obj)) }}</h3>    <div class="row">
       <div class="col-xs-12
                   col-sm-8 col-sm-push-2
                   col-md-7 col-md-push-3
@@ -42,7 +48,7 @@
     {%- if att_manager.is_support_attachements(view.obj) and att_manager.can_view(view.obj) %}
       <div class="row">
         <div class="col-xs-12">
-        <h3 class="" href="#panel_attachments" data-toggle="collapse">{{ _('Attachments (%(count)d)', count=attachments.count(view.obj)) }}</h3>
+        <h3 href="#panel_attachments" data-toggle="collapse">{{ _('Attachments (%(count)d)', count=attachments.count(view.obj)) }}</h3>
         <div id="panel_attachments" class="collapse in">
           {{ m_attachments(view.obj) }}
           {%- if show_new_attachment_form and att_manager.can_create(view.obj) %}

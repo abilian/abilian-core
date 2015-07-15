@@ -80,6 +80,7 @@ ABILIAN_JS = Bundle('js/abilian.js',
                     'js/widgets/delete.js',
                     'js/widgets/file.js',
                     'js/widgets/image.js',
+                    'js/widgets/tags.js',
                     'js/widgets/dynamic-row.js',
             )
 

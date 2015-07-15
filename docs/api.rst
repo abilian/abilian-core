@@ -75,6 +75,7 @@ Module :mod:`abilian.core.models`
 .. automodule:: abilian.core.models.subjects
 .. automodule:: abilian.core.models.owned
 .. automodule:: abilian.core.models.blob
+.. automodule:: abilian.core.models.tag
 .. automodule:: abilian.core.models.comment
 .. automodule:: abilian.core.models.attachment
 .. automodule:: abilian.core.models
@@ -138,6 +139,18 @@ Module :mod:`abilian.services.security`
 Package ``abilian.web``
 -----------------------
 
+Module :mod:`abilian.web.attachments`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.attachments
+
+
+Module :mod:`abilian.web.comments`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.comments
+
+                
 Module :mod:`abilian.web.decorators`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -177,6 +190,12 @@ Module :mod:`abilian.web.frontend`
 
 .. automodule:: abilian.web.frontend
 
+Module :mod:`abilian.web.tags`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: abilian.web.tags
+
+                
 Module :mod:`abilian.web.util`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

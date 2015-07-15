@@ -20,6 +20,10 @@
         widgetsCreators[name] = createFun;
     };
 
+    Abilian.getWidgetCreator = function(name) {
+        return widgetsCreators[name];
+    };
+
     /*
      * Initialiaze a single element.
      */
@@ -59,7 +63,7 @@
 
             // replace the escaped html with proper tags
             // to be displayed in the select
-            if('makeHtml' in params){
+            if('makeHtml' in params) {
 
                 var tagsToReplace = {
                     '&amp;': '&',

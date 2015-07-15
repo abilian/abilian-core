@@ -188,7 +188,7 @@ class BaseTableView(object):
   def render_line(self, entity):
     line = []
     make_link_on = self.options.get("make_link_on")
-    
+
     for col in self.columns:
       if type(col) == str:
         column_name = col
@@ -1190,11 +1190,11 @@ class ListWidget(wtforms.widgets.ListWidget):
     else:
       data = []
 
-    return render_template_string(
+    return Markup(render_template_string(
       '''{%- for obj in data %}
       <span class="badge">{{ obj }}</span>
       {%- endfor %}''',
-      data=data)
+      data=data))
 
 
 class FieldListWidget(object):
@@ -1301,8 +1301,10 @@ class Select2(Select):
   """
   unescape_html = False
 
-  def __init__(self, unescape_html=False, *args, **kwargs):
+  def __init__(self, unescape_html=False, js_init='select2', *args, **kwargs):
     super(Select2, self).__init__(*args, **kwargs)
+    self.js_init = js_init
+
     if unescape_html:
       self.unescape_html = True
 
@@ -1319,7 +1321,7 @@ class Select2(Select):
       css_class += u' js-widget'
       kwargs['class'] = css_class
 
-    kwargs['data-init-with'] = 'select2'
+    kwargs.setdefault('data-init-with', self.js_init)
     kwargs['data-init-params'] = json.dumps(params)
     return Select.__call__(self, field, *args, **kwargs)
 
