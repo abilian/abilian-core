@@ -1190,11 +1190,11 @@ class ListWidget(wtforms.widgets.ListWidget):
     else:
       data = []
 
-    return render_template_string(
+    return Markup(render_template_string(
       '''{%- for obj in data %}
       <span class="badge">{{ obj }}</span>
       {%- endfor %}''',
-      data=data)
+      data=data))
 
 
 class FieldListWidget(object):
