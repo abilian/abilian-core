@@ -1,6 +1,30 @@
 Changelog for Abilian Core
 ==========================
 
+0.4.1 (unreleased)
+------------------
+
+TODO
+
+
+0.4.0 (2015-07-15)
+------------------
+
+Features
+~~~~~~~~
+
+- Object level permissions
+- Add "meta" properties to entities
+- Attached files to entities
+- More flexible search filters
+- Avatars
+- Tag engine (alpha)
+
+Fixes / cleanup
+~~~~~~~~~~~~~~~
+
+- JS: Upate ravenjs, requirejs, bootbox, jquery, scribe
+
 
 0.3.6 (2015-05-27)
 ------------------
