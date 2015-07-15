@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 from abilian.i18n import _l
-from abilian.core.models.tag import Tag, TAGS_ATTR
+from abilian.core.models.tag import Tag, TAGS_ATTR, is_support_tagging
 from abilian.web import url_for
 from abilian.web.forms import Form
 from abilian.web.views.object import EDIT_BUTTON
@@ -54,6 +54,9 @@ class TagsExtension(object):
     app.add_template_global(self, 'tags')
     app.register_blueprint(tags_bp)
     app.register_blueprint(entity_bp)
+
+  def is_support_tagging(self, entity):
+    return is_support_tagging(entity)
 
   def entity_tags(self, entity):
     return getattr(entity, TAGS_ATTR)

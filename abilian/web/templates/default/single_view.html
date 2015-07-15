@@ -10,8 +10,10 @@
 
   {{ rendered_entity }}
 
-  <h3>{{ _('Tags') }}</h3>
-  {{ m_tags_toggle_edit(view.obj) }}
+  {%- if tags.is_support_tagging(view.obj) %}
+    <h3>{{ _('Tags') }}</h3>
+    {{ m_tags_toggle_edit(view.obj) }}
+  {%- endif %}
 
   <div class="collapsable">
     {%- for view in related_views %}

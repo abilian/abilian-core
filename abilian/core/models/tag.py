@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import
 
+import abc
+
 from functools import total_ordering
 import sqlalchemy as sa
 
@@ -12,6 +14,48 @@ from abilian.core.entities import Entity
 
 #: backref attribute on tagged elements
 TAGS_ATTR = '__tags__'
+
+
+class SupportTagging(object):
+  """
+  """
+  __metaclass__ = abc.ABCMeta
+
+
+def register(cls):
+  """
+  Register an :class:`~.Entity` as a taggable class.
+
+  Can be used as a class decorator:
+
+  .. code-block:: python
+
+      @tag.register
+      class MyContent(Entity):
+          ....
+  """
+  if not issubclass(cls, Entity):
+    raise ValueError('Class must be a subclass of abilian.core.entities.Entity')
+
+  SupportTagging.register(cls)
+  return cls
+
+
+def is_support_tagging(obj):
+  """
+  :param obj: a class or instance
+  """
+  if isinstance(obj, type):
+    return issubclass(obj, SupportTagging)
+
+  if not isinstance(obj, SupportTagging):
+    return False
+
+  if obj.id is None:
+    return False
+
+  return True
+
 
 entity_tag_tbl = sa.Table(
   'entity_tags', Model.metadata,
