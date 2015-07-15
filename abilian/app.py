@@ -38,7 +38,6 @@ from flask.ext.script import Manager as ScriptManager
 
 import abilian.i18n
 from abilian.core import extensions, signals, redis
-from abilian.core.models import comment
 from abilian.core.celery import FlaskCelery
 import abilian.core.util
 from abilian.plugin.loader import AppLoader
@@ -149,6 +148,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
   #: Custom apps may want to always load some plugins: list them here.
   APP_PLUGINS = ('abilian.web.search',
+                 'abilian.web.tags',
                  'abilian.web.comments',
                  'abilian.web.uploads',
                  'abilian.web.attachments',)
