@@ -6,9 +6,9 @@ from __future__ import absolute_import
 from wtforms.fields import StringField
 from flask import current_app
 
-from abilian.core.models.tag import Tag, TAGS_ATTR
+from abilian.core.models.tag import Tag
 from abilian.web.forms import Field, ModelForm
-from abilian.web.forms.widgets import Select2
+from abilian.web.forms.widgets import Select2, ListWidget
 from abilian.web.forms.validators import required
 from abilian.web.forms.filters import strip
 
@@ -22,17 +22,18 @@ class TagsField(Field):
       __tags__ = TagsField(ns='tags namespace')
 
   """
+  multiple = True
   widget = Select2(js_init='tags-select', multiple=True)
+  view_widget = ListWidget()
 
   def __init__(self, ns, *args, **kwargs):
+    kwargs.setdefault('view_widget', self.view_widget)
     super(TagsField, self).__init__(*args, **kwargs)
     self.ns = ns.strip()
     assert self.ns
 
   def iter_choices(self):
     choices = []
-    choices.append(('', u'', False)) # tags are never required: first option is blank
-
     extension = current_app.extensions['tags']
     ns_tags = extension.get(ns=self.ns)
 
@@ -51,9 +52,10 @@ class TagsField(Field):
 
   def process_formdata(self, valuelist):
     extension = current_app.extensions['tags']
+    valuelist = set(valuelist[0].split(u';'))
     data = set()
 
-    for label in set(valuelist):
+    for label in valuelist:
       tag = extension.get(ns=self.ns, label=label)
       if tag is None:
         tag = Tag(ns=self.ns, label=label)
@@ -64,8 +66,7 @@ class TagsField(Field):
   def populate_obj(self, obj, name):
     extension = current_app.extensions['tags']
     all_tags = extension.entity_tags(obj)
-    ns_existing = set(extension.get(ns=self.ns))
-    to_remove = ns_existing - self.data
+    to_remove = all_tags - self.data
 
     for tag in to_remove:
       all_tags.remove(tag)
