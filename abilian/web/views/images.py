@@ -208,7 +208,12 @@ class UserMugshot(BaseImageView):
       return super(UserMugshot, self).get(image, size, *args, **kwargs)
 
     # render svg avatar
-    letter = user.last_name[0] if user.last_name else user.first_name[0]
+    if user.last_name:
+      letter = user.last_name[0]
+    elif user.first_name:
+      letter = user.first_name[0] 
+    else:
+      letter = u"?"
     letter = letter.upper()
     # generate bg color, pastel: sat=65% in hsl color space
     id_hash = hash((user.name + user.email).encode('utf-8'))
