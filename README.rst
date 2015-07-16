@@ -113,7 +113,7 @@ by `Abilian <http://www.abilian.com/>`_ over the last two years:
 
 -  [Abilian SBE (Social Business
    Engine)](https://github.com/abilian/abilian-sbe) - an enterprise 2.0 (social
-collaboration) platform
+   collaboration) platform
 
 -  Abilian EMS (Event Management System)
 

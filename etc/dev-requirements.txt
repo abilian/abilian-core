@@ -22,3 +22,6 @@ sphinx-rtd-theme
 
 # Used by functional tests
 requests
+
+# Check README
+restructuredtext_lint

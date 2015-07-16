@@ -25,6 +25,8 @@ develop:
 #
 # testing & checking
 #
+test-all: test test-readme
+
 test:
 	@echo "--> Running Python tests"
 	py.test $(PYTEST_MULTI) .
@@ -46,6 +48,9 @@ lint-python:
 	@echo "--> Linting Python files"
 	flake8 $(SRC)
 	@echo ""
+
+test-readme:
+	rst-lint README.rst
 
 #
 # Various Checkers
