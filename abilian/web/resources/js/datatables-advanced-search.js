@@ -2,7 +2,7 @@
 
 (function(factory) {
 	'use strict';
-	require(['Abilian', 'jquery', 'jquery.dataTables'], factory );
+	require(['AbilianNS', 'jquery', 'jquery.dataTables'], factory );
 }
 (function(Abilian, $) {
     'use strict';
@@ -14,7 +14,7 @@
             $.fn.dataTable.ext.sErrMode = '';
         }
     }
-    defaultDatatableConfig();
+    Abilian.fn.onAppInit(defaultDatatableConfig);
 
     /* create new filter instance */
     function instantiateFilter(filterType, args) {
