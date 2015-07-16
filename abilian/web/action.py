@@ -384,7 +384,7 @@ class ModalActionMixin(object):
 class ButtonAction(Action):
   template_string = (
       u'<button type="submit" '
-      u'class="btn btn-{{ action.btn_class }} {{ action.css_class}}"'
+      u'class="btn btn-{{ action.btn_class }} {{ action.css_class}}" '
       u'name="{{ action.submit_name }}" '
       u'value="{{ action.name }}">'
       u'{%- if action.icon %}{{ action.icon }} {% endif %}'
