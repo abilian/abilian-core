@@ -7,7 +7,7 @@
     <li class="previous {%- if not top_date %} disabled{% endif %}">
       <a href="{{ url_for(request.endpoint, after=top_date|default, **url_params) }}">&larr; {{ _("Newer") }}</a>
     </li>
-    
+
     <li class="next {%- if not lowest_date %} disabled"{% endif %}">
       <a href="{{ url_for(request.endpoint, before=lowest_date|default, **url_params) }}">{{ _("Older") }} &rarr;</a>
     </li>
@@ -17,7 +17,7 @@
 {% block content %}
   {%- call m_box(title="Global audit") %}
   <form id="audit-filters" action="{{ url_for(request.endpoint) }}" method="GET"
-        class="form-inline" role="form">        
+        class="form-inline" role="form">
 
     <div>
       {%- if 'after' in request.args %}
@@ -49,8 +49,8 @@
     </div>
 
     <div>{{ audit_pager() }}</div>
-  </form>     
-      
+  </form>
+
   <div style="margin-bottom: 25px;">
     {%- for day, entries in entries %}
     <ul class="unstyled"><h2>{{ day.strftime('%d-%m-%Y') }}</h2>
@@ -100,7 +100,7 @@ require(
 
          input.select2(params)
               .on('change', function() { form.submit(); });
-       
+
          var dateInput = $('#date-chooser').datepicker();
          dateInput.on(
              'changeDate',
@@ -120,10 +120,10 @@ require(
                  before_input.val(isoDate);
                  form.submit();
              });
-         
+
          $('select[name="types"]').on('change', function() { form.submit(); });
      }
-        
+
         Abilian.fn.onAppInit(setupAudit);
     });
   </script>

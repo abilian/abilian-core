@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-  
+
   <h1>
     {{ form['name'].render_view() }}
     <a class="btn btn-default pull-right" href="{{ url_for('.groups_group_edit', group_id=view.obj.id) }}"><i class="fa fa-pencil"></i> {{ _('Edit') }}</a>
@@ -13,10 +13,10 @@
 
   <p>
     {%- for role in roles %}
-      <span class="badge badge-default">{{ role }}</span>      
+      <span class="badge badge-default">{{ role }}</span>
     {%- endfor %}
   </p>
-  
+
   <h2>{{ _('Members') }}</h2>
 
   <div id="add-user-role" role="dialog">
@@ -32,7 +32,7 @@
     </form>
   </div>
 
-  
+
   <p>(<i class="glyphicon glyphicon-lock"></i>: {{ _('account disabled') }})</p>
 
   {% set table_id = uuid() %}
@@ -89,11 +89,11 @@
                     url:         "{{ url_for("users.json_list") }}",
                     dataType:    'json',
                     quietMillis: 100,
-                    data:        function(term, page) { 
-                        return { q: term}; 
+                    data:        function(term, page) {
+                        return { q: term};
                     },
                     results:     function(data, page) {
-                        return {results: data.results, more: false}; 
+                        return {results: data.results, more: false};
                     }
                 },
                 allowClear:    true,
@@ -108,7 +108,7 @@
                     if (state.email) {
                         text += ' <br /><i>' + escapeMarkup(state.email) + '</i> ';
                     }
-                    return text;             
+                    return text;
                 }
             });
 
@@ -120,5 +120,5 @@
  });
 </script>
   {%- enddeferJS %}
-    
+
 {% endblock %}

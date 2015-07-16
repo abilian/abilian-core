@@ -45,10 +45,10 @@
   <script type="text/javascript">
  require(['Abilian', 'jquery', 'jquery.dataTables'],
          function(Abilian, $) {
-   
+
              function initDatatable() {
                  var tbl = $("#listing_{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
-                 
+
                  /* export button: setup url args on click, to match current table filtering */
                  tbl.bind('xhr', $.fn.dataTableSetExportArgs);
                  $('.datatable-export').click(
@@ -79,11 +79,11 @@
                      return true;
                  }
              }
-             
+
              Abilian.fn.onAppInit(initDatatable)
          }
    );
   </script>
   {%- enddeferJS %}
-    
+
 <div style="clear: both;"></div>
