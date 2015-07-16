@@ -529,7 +529,10 @@ class UnoconvPdfHandler(Handler):
           # timeout reached
           self._process.terminate()
           if self._process.poll() is not None:
-            self._process.kill()
+            try:
+              self._process.kill()
+            except OSError:
+              logger.warning("Failed to kill process {}".format(self._process))
 
           self._process = None
           raise ConversionError("Conversion timeout ({})".format(timeout))
