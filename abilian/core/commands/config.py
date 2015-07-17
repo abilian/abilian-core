@@ -62,10 +62,10 @@ class DefaultConfig(object):
 
   SITE_NAME = u''
   MAIL_SENDER = u''
+  UNOCONV_LOCATION = u'/usr/bin/unoconv'
 
   def __init__(self, logging_file=None):
     self.SESSION_COOKIE_NAME = '{}-session'.format(current_app.name)
-    self.UNOCONV_LOCATION = os.path.join(sys.prefix, 'bin', 'unoconv')
     self.SECRET_KEY = os.urandom(24)
 
     db_dir = os.path.join(current_app.instance_path, 'data')
