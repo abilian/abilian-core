@@ -544,6 +544,9 @@ class SecurityService(Service):
       permission = Permission(permission)
     user = noproxy(user)
 
+    if not self.running:
+      return True
+
     session = None
     if obj is not None:
       session = object_session(obj)
@@ -622,6 +625,9 @@ class SecurityService(Service):
     id_column = Model.id
     creator = Model.creator
     owner = Model.owner
+
+    if not self.running:
+      return sa.sql.exists([1])
 
     if user is None:
       user = current_user._get_current_object()
