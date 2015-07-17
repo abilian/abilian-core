@@ -15,9 +15,10 @@ from pathlib import Path
 
 from sqlalchemy.exc import SAWarning
 from flask import url_for
-from flask.ext.testing import TestCase
-from flask.ext.login import login_user, logout_user
-from flask.ext.assets import Bundle
+from flask_testing import TestCase
+from flask_login import login_user, logout_user
+from flask_assets import Bundle
+
 from abilian.app import Application
 from abilian.core.models.subjects import User, ClearPasswordStrategy
 
