@@ -5,7 +5,6 @@
 }
 (function(Abilian, $, FileAPI, bootbox) {
 
-    require(['domReady!'], Abilian.init);
     window.onbeforeprint = Abilian.fn.before_print;
 
     Abilian.DEBUG = {{ config.DEBUG|tojson }};
@@ -64,3 +63,5 @@
 
     return Abilian;
 }));
+
+require(['Abilian', 'domReady!'], function(Abilian){ Abilian.init(); });
