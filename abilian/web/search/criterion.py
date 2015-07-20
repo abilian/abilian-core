@@ -6,13 +6,26 @@ from sqlalchemy.sql.expression import or_
 
 logger = logging.getLogger(__name__)
 
+_UNDEFINED = type('UNDEFINED', (object,), {})
 
 class BaseCriterion(object):
   """
   """
-  def __init__(self, name, label=u''):
+
+  form_default_value = _UNDEFINED
+  '''
+  Values to set by default when adding a filter. The provided value(s) must be
+  the ones used in html, not in python.
+
+  Subclasses can also define property.
+  '''
+
+  def __init__(self, name, label=u'', form_default_value=_UNDEFINED):
     self.name = name
     self.label = label
+
+    if form_default_value is not _UNDEFINED:
+      self.form_default_value = form_default_value # optionnal default value
 
   # model must be set before calling any method or property
   _model = None
@@ -50,6 +63,10 @@ class BaseCriterion(object):
   @property
   def form_unset_value(self):
     raise NotImplementedError
+
+  @property
+  def has_form_default_value(self):
+    return self.form_default_value is not _UNDEFINED
 
 
 class TextSearchCriterion(BaseCriterion):

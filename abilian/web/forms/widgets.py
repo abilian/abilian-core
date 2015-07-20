@@ -310,13 +310,20 @@ class AjaxMainTableView(object):
       'sAjaxSource': self.ajax_source,
     }
 
-    advanced_search_filters = [dict(name=c.name,
-                                    label=unicode(c.label),
-                                    type=c.form_filter_type,
-                                    args=c.form_filter_args,
-                                    unset=c.form_unset_value,)
-                               for c in self.search_criterions
-                               if c.has_form_filter]
+    advanced_search_filters = []
+    for c in self.search_criterions:
+      if not c.has_form_filter:
+        continue
+      d = dict(name=c.name,
+               label=unicode(c.label),
+               type=c.form_filter_type,
+               args=c.form_filter_args,
+               unset=c.form_unset_value,)
+      if c.has_form_default_value:
+        d['defaultValue'] = c.form_default_value
+
+      advanced_search_filters.append(d)
+
     if advanced_search_filters:
       datatable_options['aoAdvancedSearchFilters'] = advanced_search_filters
 

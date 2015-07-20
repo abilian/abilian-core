@@ -127,6 +127,7 @@
                 filter = oDTSettings.oInit.aoAdvancedSearchFilters[i],
                 args = [].concat([filter.name, filter.label], filter.args),
                 instance = instantiateFilter(filter.type, args),
+                defaultValue = filter.defaultValue,
                 $option = $('<option>' + filter.label + '</option>')
                     .attr({'value': filter.name}),
                 $closeButton = $('<button />')
@@ -137,6 +138,13 @@
 
             instance.type = filter.type;
             instance.unsetValue = filter.unset;
+
+            if (defaultValue !== undefined
+                && !Array.isArray(defaultValue)) {
+                defaultValue = [defaultValue];
+            }
+            instance.defaultValue = defaultValue;
+
             instance.$container = $criterionContainer;
             /* setup criterion container: label, inputs */
             $criterionContainer.hide();
@@ -221,6 +229,14 @@
         var instance = this.oFilters[filterName];
         if (instance === undefined) {
             return;
+        }
+
+        /* install default value if possible and necessary: addFilter may be
+         * called from stateLoaded() with a value already set by load
+         * function */
+        if (!hasValueSet(instance)
+            && (instance.defaultValue !== undefined)) {
+            instance.load(instance.defaultValue);
         }
 
         instance.$container.show();
