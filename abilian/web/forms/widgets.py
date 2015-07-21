@@ -1394,6 +1394,7 @@ class Select2Ajax(object):
     values = [(o.id, o.name) for o in data if o]
     input_value = u','.join(unicode(o.id) for o in data if o)
     return Markup(render_template(self.template,
+                                  field=field,
                                   name=field.name,
                                   id=field.id,
                                   input_value=input_value,

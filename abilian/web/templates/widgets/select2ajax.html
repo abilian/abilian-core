@@ -7,7 +7,7 @@
      minimumInputLength: 2,
      containerCssClass: 'form-control',
      {%- if not required %}allowClear: true,{%- endif %}
-     placeholder: '',
+     placeholder: {{ field.label.text |tojson }},
      multiple: {{ s2_params.multiple |tojson }},
      {%- if values %}
      initSelection : function (element, callback) {
