@@ -20,7 +20,7 @@ from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import (
   SecurityAudit, RoleAssignment, PermissionAssignment,
-  Anonymous, Authenticated,
+  Anonymous as AnonymousRole, Authenticated,
   Admin, Manager, Reader, Writer,
   Owner, Creator,
   InheritSecurity, Role, Permission, READ, WRITE, MANAGE
@@ -180,7 +180,7 @@ class SecurityService(Service):
     """
     assert principal
     if hasattr(principal, 'is_anonymous') and principal.is_anonymous():
-      return [Anonymous]
+      return [AnonymousRole]
 
     q = db.session.query(RoleAssignment.role)
     if isinstance(principal, Group):
@@ -367,18 +367,19 @@ class SecurityService(Service):
     if not self.running:
       return True
 
-    if (principal is Anonymous
+    if isinstance(role, (Role, basestring)):
+      role = (role,)
+
+    # admin & manager always have role
+    valid_roles = frozenset((Admin, Manager) + tuple(role))
+
+    if (principal is AnonymousRole
         or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
-      return False
+      return AnonymousRole in valid_roles
 
     # root always have any role
     if isinstance(principal, User) and principal.id == 0:
       return True
-
-    # admin & manager always have role
-    if isinstance(role, (Role, basestring)):
-      role = (role,)
-    valid_roles = frozenset((Admin, Manager) + tuple(role))
 
     if object:
       assert isinstance(object, Entity)
@@ -426,7 +427,7 @@ class SecurityService(Service):
                 anonymous=False,
                 user=None, group=None)
 
-    if (principal is Anonymous
+    if (principal is AnonymousRole
         or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
       args['anonymous'] = True
     elif isinstance(principal, User):
@@ -481,7 +482,7 @@ class SecurityService(Service):
     q = q.filter(RoleAssignment.role == role,
                  RoleAssignment.object == object)
 
-    if (principal is Anonymous
+    if (principal is AnonymousRole
         or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
       args['anonymous'] = True
       q.filter(RoleAssignment.anonymous == False,
@@ -519,7 +520,7 @@ class SecurityService(Service):
     for ra in role_assignments:
       principal = None
       if ra.anonymous:
-        principal = Anonymous
+        principal = AnonymousRole
       elif ra.user:
         principal = ra.user
       else:
@@ -584,7 +585,7 @@ class SecurityService(Service):
 
     #FIXME: query permission_role: global and on object
 
-    if Anonymous in valid_roles:
+    if AnonymousRole in valid_roles:
       return True
 
     if Authenticated in valid_roles and not user.is_anonymous():

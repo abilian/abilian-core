@@ -75,7 +75,8 @@ class SecurityTestCase(IntegrationTestCase):
     # anonymous user is not an SQLAlchemy instance and must be handled
     # specifically to avoid tracebacks
     anon = self.app.login_manager.anonymous_user()
-    assert not security.has_role(anon, 'read')
+    assert not security.has_role(anon, 'reader')
+    assert security.has_role(anon, Anonymous)
     assert security.get_roles(anon) == [Anonymous]
     assert not security.has_permission(anon, 'read')
 
