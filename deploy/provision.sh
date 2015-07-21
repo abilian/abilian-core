@@ -12,3 +12,6 @@ ln -sf /usr/bin/nodejs /usr/local/bin/node
 
 npm install -g less
 
+mkvirtualenv core
+pip install -U pip tox setuptools
+

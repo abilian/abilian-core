@@ -10,7 +10,7 @@ from flask import (
     g, request, render_template, redirect, url_for, current_app,
     flash, abort
 )
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 
 from abilian.i18n import _, _l
 from abilian.services.security import READ, WRITE
@@ -401,7 +401,8 @@ class ObjectEdit(ObjectView):
     return None
 
 
-CREATE_BUTTON = ButtonAction('form', 'create', btn_class='primary', title=_l(u'Create'))
+CREATE_BUTTON = ButtonAction('form', 'create', btn_class='primary',
+                             title=_l(u'Create'))
 CHAIN_CREATE_BUTTON = ButtonAction(
     'form', 'chain_create', btn_class='primary',
     title=_l(u'Create and add new'),
@@ -503,8 +504,7 @@ class JSONBaseSearch(JSONView):
 
   def data(self, q, *args, **kwargs):
     if self.minimum_input_length and len(q) < self.minimum_input_length:
-      abort(
-        400,
+      raise BadRequest(
         'Minimum query length is {:d}'.format(self.minimum_input_length),
       )
 
@@ -529,7 +529,8 @@ class JSONBaseSearch(JSONView):
 
 class JSONModelSearch(JSONBaseSearch):
   """
-  Base class for json sqlalchemy model search, as used by select2 widgets for example
+  Base class for json sqlalchemy model search, as used by select2 widgets for
+  example
   """
 
   def get_results(self, q, *args, **kwargs):
@@ -568,7 +569,7 @@ class JSONModelSearch(JSONBaseSearch):
 
 class JSONWhooshSearch(JSONBaseSearch):
   """
-  Base class for json whoosh search, as used by select2 widgets for example
+  Base class for JSON Whoosh search, as used by select2 widgets for example
   """
 
   def get_results(self, q, *args, **kwargs):

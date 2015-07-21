@@ -10,8 +10,9 @@ Notes:
 """
 from __future__ import absolute_import
 
-from flask import Blueprint, url_for, request, redirect, abort, g
+from flask import Blueprint, url_for, request, redirect, g
 from flask_login import current_user
+from werkzeug.exceptions import InternalServerError
 
 from abilian.i18n import _, _l
 from abilian.core.extensions import db
@@ -165,7 +166,7 @@ class PreferenceService(Service):
           return redirect(url_for("preferences." + panel.id))
       else:
         # Should not happen.
-        abort(500)
+        raise InternalServerError()
 
   def build_breadcrumbs(self, endpoint, view_args):
     state = self.app_state
