@@ -1,10 +1,22 @@
 Changelog for Abilian Core
 ==========================
 
-0.4.1 (unreleased)
-------------------
+0.4.2 (unreleased)
+~~~~~~~~~~~~~~~~~
 
 TODO
+
+
+0.4.1 (2015-07-21)
+------------------
+
+Bugfixes / cleanup
+~~~~~~~~~~~~~~~~~~
+
+- permission: no-op when service not running
+- JS fixes
+- CSS fixes
+- https://github.com/mitsuhiko/flask/issues/1135
 
 
 0.4.0 (2015-07-15)
