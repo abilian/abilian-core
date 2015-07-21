@@ -373,9 +373,14 @@ class SecurityService(Service):
     # admin & manager always have role
     valid_roles = frozenset((Admin, Manager) + tuple(role))
 
+    if AnonymousRole in valid_roles:
+      # everybody has the role 'Anonymous'
+      return True
+
     if (principal is AnonymousRole
         or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
-      return AnonymousRole in valid_roles
+      # anonymous user, and anonymous role isn't in valid_roles
+      return False
 
     # root always have any role
     if isinstance(principal, User) and principal.id == 0:

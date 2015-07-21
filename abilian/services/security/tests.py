@@ -85,6 +85,7 @@ class SecurityTestCase(IntegrationTestCase):
     """
     root = User.query.get(0)
     assert security.has_role(root, Admin)
+    assert security.has_role(root, Anonymous)
     assert security.has_permission(root, 'manage')
 
     obj = DummyModel()
@@ -97,6 +98,9 @@ class SecurityTestCase(IntegrationTestCase):
     user = User(email=u"john@example.com", password="x")
     self.session.add(user)
     self.session.flush()
+
+    # everybody always has role Anonymous
+    assert security.has_role(user, Anonymous)
 
     security.grant_role(user, Admin)
     assert security.has_role(user, Admin)
