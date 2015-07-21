@@ -10,6 +10,7 @@
 .ropeproject
 *,cover
 
+sandbox
 node_modules
 env
 whoosh*
