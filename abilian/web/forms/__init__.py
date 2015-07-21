@@ -102,10 +102,8 @@ class FormPermissions(object):
         roles.extend(r)
 
     svc = current_app.services['security']
-    return svc.has_permission(user,
-                              permission,
-                              obj=obj,
-                              roles=roles)
+    return svc.has_role(user, role=roles, object=obj,)
+
 
 class Form(BaseForm):
 
