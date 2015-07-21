@@ -2,7 +2,7 @@ Changelog for Abilian Core
 ==========================
 
 0.4.2 (unreleased)
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 TODO
 
