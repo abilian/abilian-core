@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 import sqlalchemy as sa
 from sqlalchemy import Column
-from flask.ext.sqlalchemy import BaseQuery
+from flask_sqlalchemy import BaseQuery
 
 from abilian.core.extensions import db
 from abilian.core.util import slugify

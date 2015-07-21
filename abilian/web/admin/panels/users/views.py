@@ -10,8 +10,8 @@ from sqlalchemy.sql.expression import or_, func, asc, desc, nullslast
 
 from werkzeug.datastructures import MultiDict
 from flask import request, current_app, render_template_string
-from flask.ext.login import current_user
-from flask.ext.babel import format_datetime
+from flask_login import current_user
+from flask_babel import format_datetime
 
 from abilian.services.security.models import Role, Admin
 from abilian.i18n import _

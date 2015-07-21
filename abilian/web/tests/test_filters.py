@@ -1,13 +1,12 @@
 import datetime
 
+from flask import Flask
+from flask_testing import TestCase as FlaskTestCase
+from flask_babel import Babel
+from jinja2 import Environment
 import mock
 import html5lib
-from jinja2 import Environment
 from pytz import timezone, utc
-
-from flask import Flask
-from flask.ext.testing import TestCase as FlaskTestCase
-from flask.ext.babel import Babel
 
 from .. import filters
 

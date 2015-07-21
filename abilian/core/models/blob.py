@@ -10,7 +10,7 @@ import hashlib
 import sqlalchemy as sa
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer
-from flask.ext.sqlalchemy import BaseQuery
+from flask_sqlalchemy import BaseQuery
 
 from abilian.core.sqlalchemy import UUID, JSONDict
 from abilian.core.models.base import Model

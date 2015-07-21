@@ -9,7 +9,7 @@ import pytz
 
 from flask import request, render_template, render_template_string, \
   get_template_attribute
-from flask.ext.babel import format_date, get_locale
+from flask_babel import format_date, get_locale
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE
 from werkzeug.exceptions import InternalServerError
@@ -20,7 +20,7 @@ from abilian.core.extensions import db
 from abilian.core.models.subjects import User
 from abilian.core.util import local_dt
 from abilian.core.entities import Entity, all_entity_classes
-from abilian.services.audit import AuditEntry, Changes
+from abilian.services.audit import AuditEntry
 from abilian.services.security import SecurityAudit
 from abilian.web.util import url_for
 from abilian.web.views.base import JSONView
@@ -55,6 +55,7 @@ class JSONUserSearch(JSONView):
     filters = sa.sql.and_(*filters) if len(filters) > 1 else filters[0]
 
     if u'@' in q:
+      # FIXME: where does this 'part' variable come from ?
       filters = sa.sql.or_(lower(User.email).like('%' + part + '%'),
                            filters)
 

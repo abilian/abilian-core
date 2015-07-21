@@ -4,7 +4,8 @@
 from __future__ import absolute_import
 
 from babel import Locale
-from flask.ext.babel import get_locale
+from flask_babel import get_locale
+
 from abilian.testing import BaseTestCase
 from abilian import i18n
 

@@ -17,10 +17,13 @@ import os
 import logging
 from inspect import isclass
 
+from flask import current_app, g, _app_ctx_stack, appcontext_pushed
+from flask_login import current_user
+from flask.globals import _lookup_app_object
+from celery import shared_task
 import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
-
 import whoosh.index
 from whoosh.collectors import WrappingCollector
 from whoosh.filedb.filestore import RamStorage, FileStorage
@@ -30,11 +33,6 @@ from whoosh.analysis import StemmingAnalyzer, CharsetFilter
 import whoosh.query as wq
 from whoosh.support.charset import accent_map
 
-from celery import shared_task
-from flask import current_app, g, _app_ctx_stack, appcontext_pushed
-from flask.ext.login import current_user
-from flask.globals import _lookup_app_object
-
 from abilian.services import Service, ServiceState
 from abilian.services.security import Role, Anonymous, Authenticated, security
 from abilian.core import signals
@@ -42,10 +40,8 @@ from abilian.core.models.subjects import User, Group
 from abilian.core.util import fqcn as base_fqcn, friendly_fqcn
 from abilian.core.entities import Entity, Indexable
 from abilian.core.extensions import db
-
 from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
-
 
 logger = logging.getLogger(__name__)
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)

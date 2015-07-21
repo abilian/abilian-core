@@ -8,23 +8,21 @@ Notes:
 from __future__ import absolute_import
 
 from datetime import datetime
-
 import random
 import string
 from urlparse import urlparse, urljoin
-
-from sqlalchemy import sql
-from sqlalchemy.orm.exc import NoResultFound
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 from flask import (
   render_template, request, redirect, url_for, flash, current_app)
 from flask.json import jsonify
 from flask.globals import _request_ctx_stack
-from flask.ext.login import (
+from flask_login import (
   login_user, logout_user, user_logged_in, user_logged_out,)
-from flask.ext.security.utils import md5
-from flask.ext.mail import Message
+from flask_security.utils import md5
+from flask_mail import Message
+from sqlalchemy import sql
+from sqlalchemy.orm.exc import NoResultFound
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 from abilian.i18n import _, render_template_i18n
 from abilian.core.extensions import db, csrf

@@ -11,7 +11,7 @@ Notes:
 from __future__ import absolute_import
 
 from flask import Blueprint, url_for, request, redirect, abort, g
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from abilian.i18n import _, _l
 from abilian.core.extensions import db

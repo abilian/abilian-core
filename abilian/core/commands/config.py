@@ -4,12 +4,11 @@
 from __future__ import absolute_import
 
 import os
-import sys
 import logging
 
 from jinja2 import Environment, PackageLoader, Markup
 from flask import current_app
-from flask.ext.script import Manager
+from flask_script import Manager
 
 from .base import log_config, logger
 

@@ -7,20 +7,17 @@ from __future__ import absolute_import
 
 import os
 import errno
-import yaml
 import logging
 import logging.config
 import importlib
-
 from itertools import chain, count
 from functools import partial
+
+import yaml
 from pkg_resources import resource_filename
 from pathlib import Path
-
 import sqlalchemy as sa
 from sqlalchemy.orm.attributes import NO_VALUE, NEVER_SET
-import celery
-
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
 import jinja2
@@ -31,10 +28,10 @@ from flask import (
   )
 from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
-from flask.ext.assets import Bundle, Environment as AssetsEnv
-from flask.ext.babel import get_locale as babel_get_locale
-from flask.ext.migrate import Migrate
-from flask.ext.script import Manager as ScriptManager
+from flask_assets import Bundle, Environment as AssetsEnv
+from flask_babel import get_locale as babel_get_locale
+from flask_migrate import Migrate
+from flask_script import Manager as ScriptManager
 
 import abilian.i18n
 from abilian.core import extensions, signals, redis
@@ -48,7 +45,6 @@ from abilian.services import (
     converter as conversion_service, vocabularies_service, antivirus
 )
 from abilian.services.security import Anonymous
-
 from abilian.web.action import actions, Endpoint
 from abilian.web.views import Registry as ViewRegistry
 from abilian.web.views.images import user_photo_url
@@ -449,9 +445,9 @@ class Application(Flask, ServiceManager, PluginManager):
         and self.config.get('DEBUG_TB_ENABLED')
         and 'debugtoolbar' not in self.blueprints):
       try:
-        from flask.ext.debugtoolbar import DebugToolbarExtension, DebugToolbar
+        from flask_debugtoolbar import DebugToolbarExtension, DebugToolbar
       except ImportError:
-        logger.warning('DEBUG_TB_ENABLED is on but flask.ext.debugtoolbar '
+        logger.warning('DEBUG_TB_ENABLED is on but flask_debugtoolbar '
                        'is not installed.')
       else:
         try:

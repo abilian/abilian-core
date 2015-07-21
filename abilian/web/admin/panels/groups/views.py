@@ -5,21 +5,17 @@ from __future__ import absolute_import
 
 from cgi import escape
 
-import sqlalchemy as sa
-from sqlalchemy.sql.expression import or_, func, asc, desc, nullslast
-
-from werkzeug.datastructures import MultiDict
 from flask import request, current_app, render_template_string
-from flask.ext.babel import format_datetime
+import sqlalchemy as sa
+from sqlalchemy.sql.expression import func, asc, desc, nullslast
 
-from abilian.i18n import _, _l
+from abilian.i18n import _l
 from abilian.services.security.models import Role
 from abilian.core.models.subjects import User, Group
 from abilian.web.util import url_for
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.action import ButtonAction, FAIcon
 from abilian.web.views import base, object as views
-
 from .forms import GroupAdminForm
 
 class JsonGroupsList(base.JSONView):

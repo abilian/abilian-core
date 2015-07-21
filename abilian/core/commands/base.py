@@ -9,7 +9,7 @@ import urllib
 
 import sqlalchemy as sa
 from flask import current_app
-from flask.ext.script import Manager, prompt_pass
+from flask_script import Manager, prompt_pass
 
 from abilian.core.logging import patch_logger
 from abilian.core.extensions import db

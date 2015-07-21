@@ -9,7 +9,7 @@ from werkzeug.exceptions import Forbidden
 from werkzeug.utils import import_string
 from flask import Blueprint, g
 from flask.helpers import _endpoint_from_view_func
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from abilian.i18n import _l
 from abilian.services.security import security, Admin as AdminRole

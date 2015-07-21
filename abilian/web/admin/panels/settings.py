@@ -7,7 +7,7 @@ from datetime import timedelta
 
 from flask import (current_app, render_template, request, flash,
                    redirect, url_for)
-from flask.ext.babel import gettext as _, lazy_gettext as _l
+from flask_babel import gettext as _, lazy_gettext as _l
 from jinja2 import Template
 
 from abilian.web import csrf

@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 from flask import current_app, request
-from flask.ext.login import user_logged_in
+from flask_login import user_logged_in
 from raven.contrib.flask import Sentry as RavenExt
 
 class Sentry(RavenExt):

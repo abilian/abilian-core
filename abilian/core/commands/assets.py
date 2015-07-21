@@ -2,7 +2,7 @@
 """
 """
 from __future__ import absolute_import
-from flask.ext.assets import ManageAssets as BaseManageAssets
+from flask_assets import ManageAssets as BaseManageAssets
 
 
 class ManageAssets(BaseManageAssets):

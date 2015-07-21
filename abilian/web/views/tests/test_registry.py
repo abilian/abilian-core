@@ -6,7 +6,7 @@ from __future__ import absolute_import
 import sqlalchemy as sa
 
 from flask import Flask, Blueprint
-from flask.ext.testing import TestCase as FlaskTestCase
+from flask_testing import TestCase as FlaskTestCase
 
 from abilian.core.entities import Entity
 

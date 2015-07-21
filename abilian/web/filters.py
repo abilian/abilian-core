@@ -5,15 +5,15 @@ Add a few specific filters to Jinja2.
 import re
 from functools import wraps
 import datetime
-from pytz import utc
 from calendar import timegm
-from babel.dates import DateTimePattern, format_timedelta, parse_pattern
-import bleach
 
-from werkzeug.routing import BuildError
-from jinja2 import Markup, escape, evalcontextfilter
 from flask import Flask
 from flask.ext import babel
+from jinja2 import Markup, escape, evalcontextfilter
+from pytz import utc
+from babel.dates import DateTimePattern, format_timedelta, parse_pattern
+import bleach
+from werkzeug.routing import BuildError
 
 from ..core.util import local_dt, utc_dt, slugify
 from .util import url_for

@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 import pkg_resources
-from flask.ext.assets import Bundle
+from flask_assets import Bundle
 
 # register custom filters for webassets
 from . import filters  # noqa

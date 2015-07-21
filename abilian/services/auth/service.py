@@ -7,10 +7,10 @@ import logging
 from datetime import datetime, timedelta
 
 from flask import current_app, g, request, url_for, redirect
-from flask.ext.login import (
+from flask_login import (
   current_user, user_logged_out, user_logged_in, login_user
 )
-from flask.ext.babel import lazy_gettext as _l
+from flask_babel import lazy_gettext as _l
 
 from abilian.services import Service, ServiceState
 from abilian.core.signals import user_loaded

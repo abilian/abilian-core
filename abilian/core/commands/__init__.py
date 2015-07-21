@@ -31,7 +31,7 @@ Extensions can add their own commands to :py:data:`~abilian.core.commands.manage
 """
 from __future__ import absolute_import
 
-from flask.ext.migrate import MigrateCommand
+from flask_migrate import MigrateCommand
 
 from .base import manager
 from .assets import ManageAssets
