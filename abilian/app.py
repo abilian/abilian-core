@@ -812,6 +812,11 @@ class Application(Flask, ServiceManager, PluginManager):
   def _setup_asset_extension(self):
     assets = self.extensions['webassets'] = AssetsEnv(self)
     assets.debug = not self.config.get('PRODUCTION', False)
+    assets.requirejs_config = {
+      'waitSeconds': 90,
+      'shim': {},
+      'paths': {},
+    }
 
     assets_base_dir = Path(self.instance_path, 'webassets')
     assets_dir = assets_base_dir / 'compiled'
