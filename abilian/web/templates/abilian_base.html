@@ -31,9 +31,7 @@
   {%- endif %}
 
   <script>
-   var require ={
-       waitSeconds: 90
-   };
+   var require = {{ app.extensions['webassets'].requirejs_config | tojson }};
   </script>
 
   {%- assets "js-top" %}
@@ -79,9 +77,9 @@
         {% block main %}
           {% block content %}
           {% endblock content %}
-        {%- endblock main %}   
+        {%- endblock main %}
       </div>
-    </div>     
+    </div>
   </div>
 
   {%- block footer %}
@@ -100,7 +98,7 @@
 
 {%- assets "js" %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-{%- endassets %}  
+{%- endassets %}
 
 {%- block js %}{%- endblock js %} {# this block should be used to load additional libraries #}
 
@@ -115,7 +113,7 @@
 <!-- i18n -->
   {%- assets js_i18n_bundle %}
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-  {%- endassets %}  
+  {%- endassets %}
 {%- endif %}
 
 {% block locale_js %}
