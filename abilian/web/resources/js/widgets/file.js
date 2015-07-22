@@ -33,6 +33,7 @@
         this.options = $.extend({}, defaults, options);
         this.form = node.parent('form');
         this.$input = node.find('.js-fileapi-wrapper input');
+        this.$input.attr('disabled', null);
         this.rootNode = node;
         this.button = node.find('.js-fileapi-wrapper .btn-file');
         this.multiple = Boolean(this.$input.attr('multiple'));

@@ -660,6 +660,7 @@ class FileInput(object):
     kwargs.setdefault('id', field.id)
     kwargs['name'] = field.name
     kwargs['type'] = 'file'
+    kwargs['disabled'] = 'disabled' # JS widget will activate it
     input_elem = u'<input {}>'.format(html_params(**kwargs))
     button_label = _(u'Add file') if 'multiple' in kwargs else _(u'Select file')
 
