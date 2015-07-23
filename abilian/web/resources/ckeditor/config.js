@@ -11,7 +11,8 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.skin = 'moono';
 
-    config.extraPlugins = ['autolink'];
+    config.extraPlugins = ['autolink',
+                           'bootstrapVisibility'];
     config.extraPlugins = config.extraPlugins.join(',');
 
     config.toolbar = [
