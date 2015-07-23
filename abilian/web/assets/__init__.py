@@ -4,6 +4,8 @@
 from __future__ import absolute_import
 
 import pkg_resources
+
+from flask import url_for, current_app
 from flask_assets import Bundle
 
 from abilian.services.security import Anonymous
@@ -17,6 +19,19 @@ def init_app(app):
   app.add_static_url('abilian', RESOURCES_DIR,
                      endpoint='abilian_static',
                      roles=Anonymous)
+
+  app.before_first_request(requirejs_config)
+
+
+def requirejs_config():
+  assets = current_app.extensions['webassets']
+  config = assets.requirejs_config
+
+  # setup ckeditor
+  ckeditor_lib = 'ckeditor/ckeditor'
+  config['shim']['ckeditor'] = {'exports': 'CKEDITOR'}
+  config['paths']['ckeditor'] = url_for('abilian_static', filename=ckeditor_lib)
+
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 
@@ -49,27 +64,6 @@ REQUIRE_JS = Bundle('requirejs/require.js',
                     'requirejs/domReady.js')
 
 
-SCRIBE_JS = Bundle( # needs requirejs
-    'scribe/scribe/scribe.js',
-    ('scribe/scribe-plugin-formatter-plain-text-convert-new-lines-to-html/'
-     'scribe-plugin-formatter-plain-text-convert-new-lines-to-html.js'),
-    ('scribe/scribe-plugin-blockquote-command/'
-     'scribe-plugin-blockquote-command.js'),
-    ('scribe/scribe-plugin-link-prompt-command/'
-     'scribe-plugin-link-prompt-command.js'),
-    ('scribe/scribe-plugin-keyboard-shortcuts/'
-     'scribe-plugin-keyboard-shortcuts.js'),
-    'scribe/scribe-plugin-curly-quotes/scribe-plugin-curly-quotes.js',
-    'scribe/scribe-plugin-heading-command/scribe-plugin-heading-command.js',
-    #'scribe/scribe-plugin-toolbar/scribe-plugin-toolbar.js',
-    'scribe/scribe-plugin-abilian-toolbar.js',
-    ('scribe/scribe-plugin-intelligent-unlink-command/'
-     'scribe-plugin-intelligent-unlink-command.js'),
-    'scribe/scribe-plugin-smart-lists/scribe-plugin-smart-lists.js',
-    'scribe/scribe-plugin-sanitizer/scribe-plugin-sanitizer.js',
-    'scribe/widget.js',
-)
-
 SELECT2_LESS = Bundle('select2/select2.css',
                       'select2/select2-bootstrap.css',)
 SELECT2_JS = Bundle('select2/select2.js')
@@ -86,6 +80,7 @@ ABILIAN_JS = Bundle('js/abilian.js',
                     'js/datatables-setup.js',
                     'js/datatables-advanced-search.js',
                     'js/widgets/base.js',
+                    'js/widgets/richtext.js',
                     'js/widgets/delete.js',
                     'js/widgets/file.js',
                     'js/widgets/image.js',
@@ -117,7 +112,6 @@ JS = Bundle(BOOTSTRAP_JS,
             BOOTSTRAP_TIMEPICKER_JS,
             DATATABLE_JS,
             FILEAPI_JS,
-            SCRIBE_JS,
             ABILIAN_JS,)
 
 JS_I18N = (

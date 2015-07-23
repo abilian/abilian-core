@@ -190,10 +190,4 @@
      }
 
     Abilian.fn.onAppInit(initLiveSearch);
-    Abilian.fn.onAppInit(
-        function() {
-            require(
-                ['abilian-init-scribe-widgets'],
-                function(initScribeWidgets) { initScribeWidgets(); });
-        });
 }));
