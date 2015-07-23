@@ -958,6 +958,7 @@ class DateTimeInput(object):
 
     return (
       Markup(
+        u'<div class="form-inline">\n'
         u'<input class="datetimepicker" type="hidden" id="{id}" name="{id}" '
         u'value="{date} | {time}" />\n'
         u''.format(id=field_id, name=field_name, date=date_value, time=time_value))
@@ -969,6 +970,7 @@ class DateTimeInput(object):
       self.time(field,
                   id=field_id + '-time', name=field_name + '-time',
                   value=time_value)
+      + Markup(u'</div>')
     )
 
 
