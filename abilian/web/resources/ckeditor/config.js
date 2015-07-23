@@ -4,7 +4,32 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
-	// Define changes to default configuration here. For example:
-	// config.language = 'fr';
-	// config.uiColor = '#AADC6E';
+    'use strict';
+	// Define changes to default configuration here.
+	// For complete reference see:
+	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
+
+    config.skin = 'moono';
+
+    config.toolbar = [
+		{ name: 'styles', items: [ 'Format' ] },
+		{ name: 'basicstyles',
+          items: [ 'Bold', 'Italic', 'Underline', '-',
+                   'RemoveFormat' ] },
+		{ name: 'paragraph',
+          items: [ 'NumberedList', 'BulletedList', '-',
+                   'Blockquote', '-',
+                   'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
+		{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+		{ name: 'insert', items: [ 'Image', 'Table' ] },
+		{ name: 'clipboard', items: [ 'Paste', 'PasteText', 'PasteFromWord', '-',
+                                      'Undo', 'Redo' ] },
+		{ name: 'editing', items: [ 'SelectAll' ] },
+		{ name: 'tools', items: [ 'Maximize' ] }
+	];
+	// Set the most common block elements.
+	config.format_tags = 'p;h1;h2;h3;pre';
+
+	// Simplify the dialog windows.
+	config.removeDialogTabs = 'image:advanced;link:advanced';
 };
