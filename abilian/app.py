@@ -844,11 +844,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     # setup static url for our assets
     from abilian.web import assets as core_bundles
-
-    assets.append_path(core_bundles.RESOURCES_DIR, '/static/abilian')
-    self.add_static_url('abilian', core_bundles.RESOURCES_DIR,
-                        endpoint='abilian_static',
-                        roles=Anonymous)
+    core_bundles.init_app(self)
 
     # static minified are here
     assets.url = self.static_url_path + '/min'
