@@ -8,6 +8,8 @@ CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here.
 	// For complete reference see:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
+    var Abilian = require('Abilian');
+    config.defaultLanguage = Abilian.locale;
 
     config.skin = 'moono';
 
