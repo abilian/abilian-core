@@ -4,6 +4,8 @@
 from __future__ import absolute_import
 
 import pkg_resources
+
+from flask import url_for, current_app
 from flask_assets import Bundle
 
 from abilian.services.security import Anonymous
@@ -17,6 +19,18 @@ def init_app(app):
   app.add_static_url('abilian', RESOURCES_DIR,
                      endpoint='abilian_static',
                      roles=Anonymous)
+
+  app.before_first_request(requirejs_config)
+
+def requirejs_config():
+  assets = current_app.extensions['webassets']
+  config = assets.requirejs_config
+
+  # setup ckeditor
+  ckeditor_lib = 'ckeditor/ckeditor'
+  config['shim']['ckeditor'] = {'exports': 'CKEDITOR'}
+  config['paths']['ckeditor'] = url_for('abilian_static', filename=ckeditor_lib)
+
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 
@@ -65,6 +79,7 @@ ABILIAN_JS = Bundle('js/abilian.js',
                     'js/datatables-setup.js',
                     'js/datatables-advanced-search.js',
                     'js/widgets/base.js',
+                    'js/widgets/richtext.js',
                     'js/widgets/delete.js',
                     'js/widgets/file.js',
                     'js/widgets/image.js',
