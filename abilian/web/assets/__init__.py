@@ -6,8 +6,17 @@ from __future__ import absolute_import
 import pkg_resources
 from flask_assets import Bundle
 
+from abilian.services.security import Anonymous
+
 # register custom filters for webassets
 from . import filters  # noqa
+
+def init_app(app):
+  assets = app.extensions['webassets']
+  assets.append_path(RESOURCES_DIR, '/static/abilian')
+  app.add_static_url('abilian', RESOURCES_DIR,
+                     endpoint='abilian_static',
+                     roles=Anonymous)
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 
