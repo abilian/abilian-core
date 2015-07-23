@@ -29,9 +29,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
 		{ name: 'insert', items: [ 'Image', 'Table' ] },
 		{ name: 'clipboard', items: [ 'Paste', 'PasteText', 'PasteFromWord', '-',
-                                      'Undo', 'Redo' ] },
-		{ name: 'editing', items: [ 'SelectAll' ] },
-		{ name: 'tools', items: [ 'Maximize' ] }
+                                      'Undo', 'Redo' ] }
 	];
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
