@@ -22,7 +22,6 @@
      }
 
      var DEFAULT_PARAMS = {
-         minimumInputLength: 2,
          'containerCssClass': 'form-control'
      };
 
@@ -63,7 +62,7 @@
      };
 
      function initSelect2Ajax(params) {
-         var initParams = $.extend({}, DEFAULT_PARAMS, params),
+         var initParams = $.extend({minimumInputLength: 2}, DEFAULT_PARAMS, params),
              data = null;
 
          if (params.ajax) {
