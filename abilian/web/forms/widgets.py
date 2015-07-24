@@ -1363,7 +1363,7 @@ class Select2Ajax(object):
                format_result=None):
     self.template = template
     self.multiple = multiple
-    self.s2_params = dict(format_result=format_result,
+    self.s2_params = dict(formatResult=format_result,
                           multiple=self.multiple)
 
   def process_formdata(self, valuelist):
@@ -1387,21 +1387,39 @@ class Select2Ajax(object):
       css_class += u' js-widget'
       kwargs['class'] = css_class
 
-    extra_args = Markup(html_params(**kwargs))
-    url = field.ajax_source
+    s2_params = {}
+    s2_params.update(self.s2_params)
+    s2_params['ajax'] = {'url': unicode(field.ajax_source)}
+    s2_params['placeholder'] = field.label.text
+
+    if not field.flags.required:
+      s2_params['allowClear'] = True
 
     data = field.data
     if not self.multiple:
       data = [data]
 
-    values = [(o.id, o.name) for o in data if o]
+    values = [{'id': o.id, 'text': o.name} for o in data if o]
     input_value = u','.join(unicode(o.id) for o in data if o)
+    data_node_id = None
+
+    json_data = {}
+    if values:
+      json_data['values'] = values
+      data_node_id = s2_params['dataNodeId'] = field.id + '-json'
+
+    kwargs['data-init-with'] = 'select2ajax'
+    kwargs['data-init-params'] = json.dumps(s2_params)
+
+
+    extra_args = Markup(html_params(**kwargs))
+
     return Markup(render_template(self.template,
                                   field=field,
                                   name=field.name,
                                   id=field.id,
                                   input_value=input_value,
-                                  values=values, url=url,
+                                  json_data=json_data,
                                   required=not field.allow_blank,
-                                  s2_params=self.s2_params,
+                                  data_node_id=data_node_id,
                                   extra_args=extra_args,))

@@ -49,42 +49,5 @@
      */
     Abilian.events.widgetsInitialized = 'widgets-initiliazed';
 
-    Abilian.registerWidgetCreator(
-        'select2',
-        function(params) {
-            var initParams = {
-                'containerCssClass': 'form-control'
-            };
-
-            function replaceTag(tag) {
-                return tagsToReplace[tag] || tag;
-            }
-
-            function safeTagsReplace(element) {
-                var output =  element.text.replace(/&amp;/g, replaceTag);
-                output =  output.replace(/&lt;/g, replaceTag);
-                output =  output.replace(/&gt;/g, replaceTag);
-                return output;
-            }
-
-            // replace the escaped html with proper tags
-            // to be displayed in the select
-            if('makeHtml' in params) {
-
-                var tagsToReplace = {
-                    '&amp;': '&',
-                    '&lt;': '<',
-                    '&gt;': '>'
-                };
-
-                //select2 parameters for formating function
-                initParams.formatResult = safeTagsReplace;
-                initParams.formatSelection = safeTagsReplace;
-            }
-
-            $.extend(initParams, params);
-            this.select2(initParams);
-        });
-
-   return Abilian;
+    return Abilian;
 }));
