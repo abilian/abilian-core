@@ -108,6 +108,7 @@
                );
 
          datetimePickerSetup();
+         $(document).trigger(Abilian.events.widgetsInitialized);
      };
     $(window).on(Abilian.events.appAfterInit,
                  Abilian.fn.initWidgets);
