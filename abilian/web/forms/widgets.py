@@ -1356,15 +1356,16 @@ class Select2Ajax(object):
   structure of a Select2 widget.
 
   :param format_result: `formatResult` arg of Select2. Must be a valid
-  javascript expression. It is recommanded to not use an inlined anonymous
-  function, but rather a reference (like `Abilian.my_format_function`)
+  javascript reference (like `Abilian.my_format_function`)
   """
   def __init__(self, template='widgets/select2ajax.html', multiple=False,
                format_result=None):
     self.template = template
     self.multiple = multiple
-    self.s2_params = dict(formatResult=format_result,
-                          multiple=self.multiple)
+    self.s2_params = dict(multiple=self.multiple)
+
+    if format_result:
+      self.s2_params['formatResult'] = format_result
 
   def process_formdata(self, valuelist):
     """
