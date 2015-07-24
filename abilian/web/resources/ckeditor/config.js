@@ -36,4 +36,30 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
+
+    config.allowedContent = {
+    'a': { attributes: ['!href', 'title'] },
+    'abbr': { attributes: ['title'] },
+    'acronym': { attributes: ['title'] },
+    'b': {},
+    'blockquote': { attributes: ['title'] },
+    'br': {},
+    'code': { attributes: ['title'] },
+    'em': {},
+    'i': {},
+    'li': {},
+    'ol': { attributes: ['title'] },
+    'strong': {},
+    'ul': { attributes: ['title'] },
+    'h1': {},
+    'h2': {},
+    'h3': {},
+    'h4': {},
+    'h5': {},
+    'h6': {},
+    'p': { attributes: ['style'], styles: ['text-align'] },
+    'u': {},
+    'img': { attributes: ['!src', 'alt', 'title'] }
+    };
+
 };
