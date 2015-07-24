@@ -26,8 +26,8 @@ CKEDITOR.editorConfig = function( config ) {
           items: [ 'NumberedList', 'BulletedList', '-',
                    'Blockquote', '-',
                    'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
-		{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-		{ name: 'insert', items: [ 'Image', 'Table' ] },
+		{ name: 'links', items: [ 'Link', 'Unlink'] },
+		{ name: 'insert', items: [ 'Image'] },
 		{ name: 'clipboard', items: [ 'Paste', 'PasteText', 'PasteFromWord', '-',
                                       'Undo', 'Redo' ] }
 	];
