@@ -95,9 +95,10 @@ doc-pdf:
 	make -C docs/_build/latex all-pdf
 
 clean:
-	find . -name "*.pyc" | xargs rm -f
-	find . -name __pycache__ | xargs rm -rf
-	find . -name abilian.db | xargs rm -f
+	find . -name "*.pyc" -delete
+	find . -name __pycache__ -delete
+	find . -name abilian.db -delete
+	find . -type d -empty -delete
 	rm -rf *.egg-info *.egg .coverage
 	rm -rf whoosh tests/whoosh tests/integration/whoosh
 	rm -rf docs/_build docs/cache docs/tmp
