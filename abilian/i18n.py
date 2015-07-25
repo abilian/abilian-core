@@ -356,7 +356,7 @@ def render_template_i18n(template_name_or_list, **context):
     # Use get_locale() or default_locale
     locale = flask_babel.get_locale()
 
-  if isinstance(template_name_or_list, (str, unicode)):
+  if isinstance(template_name_or_list, basestring):
     template_list = get_template_i18n(template_name_or_list, locale)
   else:
     # Search for locale for each member of the list, do not bypass

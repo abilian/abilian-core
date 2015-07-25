@@ -41,7 +41,7 @@ class Blueprint(BaseBlueprint):
     BaseBlueprint.__init__(self, name, import_name, **kwargs)
 
     if allowed_roles is not None:
-      if isinstance(allowed_roles, (str, unicode)):
+      if isinstance(allowed_roles, basestring):
         allowed_roles = Role(allowed_roles)
 
       if isinstance(allowed_roles, Role):

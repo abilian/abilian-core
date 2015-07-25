@@ -395,7 +395,7 @@ class Locale(sa.types.TypeDecorator):
       return None
 
     if not isinstance(value, babel.Locale):
-      if not isinstance(value, (str, unicode)):
+      if not isinstance(value, basestring):
         raise ValueError("Unknown locale value: %s" % repr(value))
       if not value.strip():
         return None
@@ -428,7 +428,7 @@ class Timezone(sa.types.TypeDecorator):
       return None
 
     if not isinstance(value, pytz.tzfile.DstTzInfo):
-      if not isinstance(value, (str, unicode)):
+      if not isinstance(value, basestring):
         raise ValueError("Unknown timezone value: %s" % repr(value))
       if not value.strip():
         return None
