@@ -165,11 +165,12 @@ class FieldsTestCase(BaseTestCase):
     """
     Test fields supports date with year < 1900
     """
-    with self.app.test_request_context(headers={'Accept-Language': 'fr-FR,fr;q=0.8'}):
+    headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
+    with self.app.test_request_context(headers=headers):
       f = fields.DateField().bind(Form(), 'dt')
       f.process_formdata(['17/06/1789'])
-      self.assertEquals(f.data, datetime.date(1789, 06, 17))
-      self.assertEquals(f._value(), u'17/06/1789')
+      assert f.data == datetime.date(1789, 06, 17)
+      assert f._value() == u'17/06/1789'
 
   def test_datefield_force_4digit_year(self):
     # use 'en': short date pattern is u'M/d/yy'

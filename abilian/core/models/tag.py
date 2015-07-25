@@ -4,8 +4,8 @@
 from __future__ import absolute_import
 
 import abc
-
 from functools import total_ordering
+
 import sqlalchemy as sa
 
 from .base import Model, IdMixin
@@ -74,7 +74,7 @@ class Tag(IdMixin, Model):
   application. The default namespace is `"default"`.
   """
   __tablename__ = 'tag'
-  
+
   #: namespace
   ns = sa.Column(sa.UnicodeText(), nullable=False,
                  default=u'default', server_default=u'default')
@@ -88,11 +88,11 @@ class Tag(IdMixin, Model):
     secondary=entity_tag_tbl,
     backref=sa.orm.backref(TAGS_ATTR, collection_class=set),
   )
-  
+
   __mapper_args__ = {
     'order_by': label,
   }
-  
+
   __table_args__ = (
     sa.UniqueConstraint('ns', 'label'),
     # namespace is not empty and is not surrounded by space characters
@@ -120,4 +120,4 @@ class Tag(IdMixin, Model):
     return '<{mod}.{cls} id={t.id!r} ns={t.ns!r} label={t.label!r} at 0x{addr:x}>'.format(
       mod=cls.__module__, cls=cls.__name__, t=self, addr=id(self),
     )
-  
+

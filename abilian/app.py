@@ -5,56 +5,55 @@ in real applications.
 """
 from __future__ import absolute_import
 
-import os
 import errno
+import importlib
 import logging
 import logging.config
-import importlib
-from itertools import chain, count
+import os
 from functools import partial
+from itertools import chain, count
 
-import yaml
-from pkg_resources import resource_filename
-from pathlib import Path
-import sqlalchemy as sa
-from sqlalchemy.orm.attributes import NO_VALUE, NEVER_SET
-from werkzeug.datastructures import ImmutableDict
-from werkzeug.utils import import_string
 import jinja2
-from flask import (
-  Flask, g, request, current_app, render_template,
-  request_started, Blueprint, abort, appcontext_pushed,
-  _request_ctx_stack
-  )
+import sqlalchemy as sa
+import yaml
+from flask import (Blueprint, Flask, _request_ctx_stack, abort,
+                   appcontext_pushed, current_app, g, render_template, request,
+                   request_started)
 from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
-from flask_assets import Bundle, Environment as AssetsEnv
+from flask_assets import Environment as AssetsEnv
+from flask_assets import Bundle
 from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
+from pathlib import Path
+from pkg_resources import resource_filename
+from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
+from werkzeug.datastructures import ImmutableDict
+from werkzeug.utils import import_string
 
-import abilian.i18n
-from abilian.core import extensions, signals, redis
-from abilian.core.celery import FlaskCelery
 import abilian.core.util
+import abilian.i18n
+from abilian.core import extensions, redis, signals
+from abilian.core.celery import FlaskCelery
 from abilian.plugin.loader import AppLoader
-from abilian.services import (
-    audit_service, index_service, activity_service, auth_service,
-    settings_service, security_service, preferences_service,
-    repository_service, session_repository_service,
-    converter as conversion_service, vocabularies_service, antivirus
-)
+from abilian.services import converter as conversion_service
+from abilian.services import (activity_service, antivirus, audit_service,
+                              auth_service, index_service, preferences_service,
+                              repository_service, security_service,
+                              session_repository_service, settings_service,
+                              vocabularies_service)
 from abilian.services.security import Anonymous
-from abilian.web.action import actions, Endpoint
+from abilian.web import csrf
+from abilian.web.action import Endpoint, actions
+from abilian.web.admin import Admin
+from abilian.web.assets.filters import ClosureJS
+from abilian.web.blueprints import allow_access_for_roles
+from abilian.web.filters import init_filters
+from abilian.web.nav import BreadcrumbItem
+from abilian.web.util import send_file_from_directory, url_for
 from abilian.web.views import Registry as ViewRegistry
 from abilian.web.views.images import user_photo_url
-from abilian.web.nav import BreadcrumbItem
-from abilian.web.filters import init_filters
-from abilian.web.assets.filters import ClosureJS
-from abilian.web.util import send_file_from_directory, url_for
-from abilian.web.admin import Admin
-from abilian.web import csrf
-from abilian.web.blueprints import allow_access_for_roles
 
 logger = logging.getLogger(__name__)
 db = extensions.db

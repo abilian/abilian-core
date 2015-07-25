@@ -6,10 +6,9 @@
 # validation code.
 
 from wtforms.validators import (
-  ValidationError,
-  EqualTo, Length, NumberRange, Optional, Required,\
-  Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf
-)
+  ValidationError, EqualTo, Length, NumberRange, Optional,
+  Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf,
+  DataRequired)
 
 from abilian.i18n import _, _n
 from abilian.services import get_service
@@ -34,7 +33,7 @@ class Email(Email):
     return {"email": True}
 
 
-class Required(Required):
+class Required(DataRequired):
   field_flags = ('required',)
 
   @property
@@ -133,9 +132,10 @@ class FlagHidden(Rule):
   def __call__(self, form, field):
     pass
 
+
 class AntiVirus(Rule):
   """
-  check content for viruses
+  Check content for viruses
   """
   field_flags = ('antivirus',)
 

@@ -51,7 +51,7 @@ __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
 
 class FormField(BaseFormField):
   """
-  discard csrf_token on subform
+  Discard csrf_token on subform
   """
   def process(self, *args, **kwargs):
     super(FormField, self).process(*args, **kwargs)
@@ -74,7 +74,7 @@ class FormField(BaseFormField):
 
 class ModelFormField(FormField, BaseModelFormField):
   """
-  discard csrf_token on subform
+  Discard csrf_token on subform
   """
 
 
@@ -107,9 +107,9 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
 
 class FileField(BaseFileField):
   """
-  support 'multiple' attribute, enabling html5 multiple file input in widget.
+  Support 'multiple' attribute, enabling html5 multiple file input in widget.
 
-  can store file using a related model
+  Can store file using a related model.
 
   :param blob_attr: attribute name to store / retrieve value on related model.
       Used if `name` is a relationship on model. Defauts to `'value'`
@@ -148,7 +148,7 @@ class FileField(BaseFileField):
   @property
   def allow_delete(self):
     """
-    property for legacy code. Test `field.flags.required` instead.
+    Property for legacy code. Test `field.flags.required` instead.
     """
     return not self.flags.required
 

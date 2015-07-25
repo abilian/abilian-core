@@ -225,6 +225,7 @@ We are also specially grateful to:
 Links
 =====
 
+- `Discussion list (Google Groups) <https://groups.google.com/forum/#!forum/abilian-users>`_
 - `Documentation <http://docs.abilian.com/>`_
 - `GitHub repository <https://github.com/abilian/abilian-core>`_
 - `Corporate support <http://www.abilian.com>`_
