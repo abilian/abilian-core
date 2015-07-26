@@ -1,6 +1,7 @@
 # For running tests
 pytest>=2.4.0
 pytest-xdist
+tox
 
 # Backport of Python 3 mocking library
 mock>=1.0.1
