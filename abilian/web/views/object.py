@@ -345,14 +345,14 @@ class ObjectEdit(ObjectView):
                     object=self.obj,
                     target=self.activity_target)
       session.commit()
-    except ValidationError, e:
+    except ValidationError as e:
       rv = self.handle_commit_exception(e)
       if rv is not None:
         return rv
       session.rollback()
       flash(e.message, "error")
       return self.get()
-    except sa.exc.IntegrityError, e:
+    except sa.exc.IntegrityError as e:
       rv = self.handle_commit_exception(e)
       if rv is not None:
         return rv

@@ -34,7 +34,7 @@ class Test(TestCase):
   def read_file(self, fn):
     try:
       return open(join(BASEDIR, fn)).read()
-    except IOError, e:
+    except IOError as e:
       return open(join(BASEDIR2, fn)).read()
 
   # To text

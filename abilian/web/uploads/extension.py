@@ -72,7 +72,7 @@ class FileUploadsExtension(object):
 
     path = self.UPLOAD_DIR = app.DATA_DIR / 'uploads'
     if not path.exists():
-      path.mkdir(0775)
+      path.mkdir(0o775)
 
     path.resolve()
 
@@ -94,7 +94,7 @@ class FileUploadsExtension(object):
     """
     user_dir = self.user_dir(user)
     if not user_dir.exists():
-      user_dir.mkdir(0775)
+      user_dir.mkdir(0o775)
 
     handle = str(uuid1())
     file_path = user_dir / handle

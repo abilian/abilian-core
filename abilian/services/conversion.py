@@ -321,7 +321,7 @@ class PdfToTextHandler(Handler):
     with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
       try:
         subprocess.check_call(['pdftotext', in_fn, out_fn])
-      except Exception, e:
+      except Exception as e:
         raise ConversionError(e)
 
       converted = open(out_fn).read()
@@ -353,7 +353,7 @@ class AbiwordTextHandler(Handler):
           ['abiword',
            '--to', os.path.basename(out_fn),
           os.path.basename(in_fn)])
-      except Exception, e:
+      except Exception as e:
         raise ConversionError(e)
       finally:
         os.chdir(cur_dir)
@@ -388,7 +388,7 @@ class AbiwordPDFHandler(Handler):
           ['abiword',
            '--to', os.path.basename(out_fn),
           os.path.basename(in_fn)])
-      except Exception, e:
+      except Exception as e:
         raise ConversionError(e)
       finally:
         os.chdir(cur_dir)
@@ -407,7 +407,7 @@ class ImageMagickHandler(Handler):
         subprocess.check_call(['convert', in_fn, "pdf:" + out_fn])
         converted = open(out_fn).read()
         return converted
-      except Exception, e:
+      except Exception as e:
         raise ConversionError(e)
 
 
@@ -430,7 +430,7 @@ class PdfToPpmHandler(Handler):
           converted_images.append(converted)
 
         return converted_images
-      except Exception, e:
+      except Exception as e:
         raise ConversionError(e)
       finally:
         for fn in l:
@@ -516,7 +516,7 @@ class UnoconvPdfHandler(Handler):
                                            close_fds=True,
                                            cwd=bytes(self.TMP_DIR))
           self._process.communicate()
-        except Exception, e:
+        except Exception as e:
           logger.error('run_uno error: %s', bytes(e), exc_info=True)
           raise ConversionError(e)
 
@@ -599,7 +599,7 @@ class WvwareTextHandler(Handler):
     with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
       try:
         subprocess.check_call(['wvText', in_fn, out_fn])
-      except Exception, e:
+      except Exception as e:
         raise ConversionError(e)
 
       converted = open(out_fn).read()

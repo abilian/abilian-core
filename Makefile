@@ -15,20 +15,13 @@ all: test
 
 
 #
-#
-#
-develop:
-	@echo "--> Installing dependencies"
-	pip install -U -e '.[dev]'
-	@echo ""
-
-#
 # Setup
 #
 develop: setup-git
 	@echo "--> Installing dependencies"
 	pip install -U setuptools
-	pip install -e .
+	pip install -U -e '.[dev]'
+	@echo ""
 
 setup-git:
 	@echo "--> Configuring git and installing hooks"
@@ -75,7 +68,7 @@ lint-js:
 	@echo "No JavaScript files to check"
 
 lint-python: flake8
-	
+
 pep8:
 	pep8 -r $(SRC)
 

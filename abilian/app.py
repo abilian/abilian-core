@@ -367,7 +367,7 @@ class Application(Flask, ServiceManager, PluginManager):
     if not path.exists():
       if create:
         logger.info('Create instance folder: %s', unicode(path).encode('utf-8'))
-        path.mkdir(0775, parents=True)
+        path.mkdir(0o775, parents=True)
       else:
         err = 'Instance folder does not exists'
         eno = errno.ENOENT
@@ -382,7 +382,7 @@ class Application(Flask, ServiceManager, PluginManager):
       raise OSError(eno, err, str(path))
 
     if not self.DATA_DIR.exists():
-      self.DATA_DIR.mkdir(0775, parents=True)
+      self.DATA_DIR.mkdir(0o775, parents=True)
 
   def make_config(self, instance_relative=False):
     config = Flask.make_config(self, instance_relative)
@@ -664,7 +664,7 @@ class Application(Flask, ServiceManager, PluginManager):
     if 'bytecode_cache' not in options:
       cache_dir = Path(self.instance_path, 'cache', 'jinja')
       if not cache_dir.exists():
-        cache_dir.mkdir(0775, parents=True)
+        cache_dir.mkdir(0o775, parents=True)
 
       options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(str(cache_dir),
                                                                  '%s.cache')
