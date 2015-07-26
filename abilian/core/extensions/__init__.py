@@ -10,6 +10,7 @@ Create all standard extensions.
 from __future__ import absolute_import
 
 from abilian.core.logging import patch_logger
+from sqlalchemy.engine import Engine
 
 from flask import current_app
 from . import upstream_info
@@ -119,3 +120,16 @@ def _install_get_display_value(cls):
 
 
 sa.event.listen(db.Model, 'class_instrument', _install_get_display_value)
+
+
+#
+# Make Sqlite a bit more well-behaved.
+#
+@sa.event.listens_for(Engine, "connect")
+def _set_sqlite_pragma(dbapi_connection, connection_record):
+  from sqlite3 import Connection as SQLite3Connection
+  if isinstance(dbapi_connection, SQLite3Connection):  # pragma: no cover
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON;")
+    cursor.close()
+
