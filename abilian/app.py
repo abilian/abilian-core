@@ -774,7 +774,7 @@ class Application(Flask, ServiceManager, PluginManager):
     """
     Installs Sentry handler if config defines 'SENTRY_DSN'.
     """
-    if self.config.get('SENTRY_DSN', None):
+    if self.config.get('SENTRY_DSN'):
       try:
         from abilian.core.sentry import Sentry
       except ImportError:
@@ -786,7 +786,7 @@ class Application(Flask, ServiceManager, PluginManager):
       ext = Sentry(self, logging=True, level=logging.ERROR)
       ext.client.tags['app_name'] = self.name
       ext.client.tags['process_type'] = 'web'
-      server_name = str(self.config.get('SERVER_NAME', None))
+      server_name = str(self.config.get('SERVER_NAME'))
       ext.client.tags['configured_server_name'] = server_name
 
 
@@ -863,7 +863,7 @@ class Application(Flask, ServiceManager, PluginManager):
     for name, data in self._assets_bundles.items():
       bundles = data.get('bundles', [])
       options = data.get('options', {})
-      filters = options.get('filters', None) or []
+      filters = options.get('filters') or []
       options['filters'] = []
       for f in filters:
         if f == 'closure_js':

@@ -66,7 +66,7 @@ class BaseImageView(View):
   def prepare_args(self, args, kwargs):
     if self.set_expire:
       vary_arg = kwargs.get(self.expire_vary_arg,
-                            request.args.get(self.expire_vary_arg, None))
+                            request.args.get(self.expire_vary_arg))
       if vary_arg is None:
         # argument for timestamp, serial etc is missing. We must refuse to serve
         # an image with expiry date set up to maybe 1 year from now.
@@ -211,7 +211,7 @@ class UserMugshot(BaseImageView):
     if user.last_name:
       letter = user.last_name[0]
     elif user.first_name:
-      letter = user.first_name[0] 
+      letter = user.first_name[0]
     else:
       letter = u"?"
     letter = letter.upper()

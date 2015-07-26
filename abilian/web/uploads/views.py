@@ -84,7 +84,7 @@ class UploadView(BaseUploadsView, View):
 
     metadata = self.uploads.get_metadata(self.user, handle)
     filename = metadata.get('filename', handle)
-    content_type = metadata.get('mimetype', None)
+    content_type = metadata.get('mimetype')
     stream = file_obj.open('rb')
 
     return send_file(stream,

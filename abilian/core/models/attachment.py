@@ -126,6 +126,6 @@ def set_attachment_name(mapper, connection, target):
   if not blob:
     return
 
-  filename = blob.meta.get('filename', None)
+  filename = blob.meta.get('filename')
   if filename is not None:
     target.name = filename

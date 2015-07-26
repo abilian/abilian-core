@@ -21,6 +21,7 @@ from .forms import AttachmentForm
 
 bp = Blueprint('attachments', __name__, url_prefix='/attachments')
 
+
 def _default_attachment_view(obj, obj_type, obj_id, **kwargs):
   entity = obj.entity
   return url_for(entity, _anchor='attachment-{}'.format(obj.id))
@@ -31,7 +32,7 @@ def register_default_view(state):
   state.app.default_view.register(Attachment, _default_attachment_view)
 
 UPLOAD_BUTTON = ButtonAction('form', 'edit', btn_class='primary',
-                              title=_l(u'Send'))
+                             title=_l(u'Send'))
 
 
 class BaseAttachmentView(object):
@@ -83,7 +84,7 @@ class AttachmentDownload(BaseAttachmentView, BaseObjectView):
     blob = self.obj.blob
     metadata = blob.meta
     filename = metadata.get('filename', self.obj.name)
-    content_type = metadata.get('mimetype', None)
+    content_type = metadata.get('mimetype')
     stream = blob.file.open('rb')
 
     return send_file(stream,

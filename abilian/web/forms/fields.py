@@ -192,7 +192,7 @@ class FileField(BaseFileField):
 
       meta = uploads.get_metadata(current_user, handle)
       filename = meta.get('filename', handle)
-      mimetype = meta.get('mimetype', None)
+      mimetype = meta.get('mimetype')
       stream = fileobj.open('rb')
       setattr(stream, 'filename', filename)
       if mimetype:
