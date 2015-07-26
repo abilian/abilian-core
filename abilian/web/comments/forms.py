@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from wtforms.fields import TextAreaField
 
@@ -17,11 +17,11 @@ class CommentForm(Form):
   body = TextAreaField(
     validators=[required()],
     filters=(strip,),
-    widget=TextArea(rows=5, resizeable='vertical'),    
+    widget=TextArea(rows=5, resizeable='vertical'),
   )
-  
+
   class Meta:
     model = Comment
     include_primary_keys = True
     assign_required = False # for 'id': allow None, for new records
-    
+

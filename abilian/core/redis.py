@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from redis import from_url as redis_from_url
 from flask import current_app

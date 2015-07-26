@@ -4,6 +4,9 @@ Front-end for a CRM app.
 
 This should eventually allow implementing very custom CRM-style application.
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 import logging
 import copy
 import re

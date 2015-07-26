@@ -7,7 +7,7 @@ Create all standard extensions.
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from abilian.core.logging import patch_logger
 from sqlalchemy.engine import Engine

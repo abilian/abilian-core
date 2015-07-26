@@ -2,7 +2,7 @@
 """
 Extensions to WTForms fields, widgets and validators.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import logging
 from functools import partial

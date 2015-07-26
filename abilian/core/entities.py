@@ -3,7 +3,7 @@
 Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level).
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import re
 from inspect import isclass

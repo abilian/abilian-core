@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 from sqlalchemy import Column, UnicodeText, Text
 
 from abilian.core.entities import Entity, SEARCHABLE

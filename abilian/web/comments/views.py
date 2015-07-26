@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import sqlalchemy as sa
 from werkzeug.exceptions import BadRequest
@@ -42,7 +42,7 @@ class CommentCreateView(ObjectCreate):
 
   def __init__(self, *args, **kwargs):
     super(CommentCreateView, self).__init__(*args, **kwargs)
-    
+
   def init_object(self, args, kwargs):
     args, kwargs = super(CommentCreateView, self).init_object(args, kwargs)
     entity_id = kwargs.pop('entity_id', None)
@@ -54,23 +54,23 @@ class CommentCreateView(ObjectCreate):
 
     if not is_commentable(self.entity):
       raise BadRequest('This entity is not commentable')
-    
+
     self.obj.entity = self.entity
     session = sa.orm.object_session(self.entity)
-    
+
     if session:
       sa.orm.session.make_transient(self.obj)
-      
+
     actions.context['object'] = self.entity
     return args, kwargs
 
   def breadcrumb(self):
     label = _(u'New comment on "{title}"').format(title=self.entity.name)
     return nav.BreadcrumbItem(label=label)
-  
+
   def get_form_buttons(self, *args, **kwargs):
     return [COMMENT_BUTTON]
-  
+
   def view_url(self):
     kw = {}
     if self.obj and self.obj.id:
@@ -79,11 +79,11 @@ class CommentCreateView(ObjectCreate):
 
   def index_url(self):
     return self.view_url()
-  
+
   @property
   def activity_target(self):
     return self.entity
 
-  
+
 create_view = CommentCreateView.as_view('create')
 bp.route('/<int:entity_id>/create')(create_view)

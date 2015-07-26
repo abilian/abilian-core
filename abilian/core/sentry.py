@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from flask import current_app, request
 from flask_login import user_logged_in

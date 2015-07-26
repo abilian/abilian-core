@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from flask_login import AnonymousUserMixin
 from abilian.services.security.models import Anonymous, Reader

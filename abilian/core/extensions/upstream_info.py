@@ -2,7 +2,7 @@
 """
 Extension for sending informations to upstream server
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from flask import _request_ctx_stack
 from flask.signals import request_started, request_finished

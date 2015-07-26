@@ -2,7 +2,7 @@
 """
 Elements to build test cases for an :class:`abilian.app.Application`
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import os
 from time import time

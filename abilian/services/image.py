@@ -2,6 +2,9 @@
 Provides tools (currently: only functions, not a real service) for image
 processing.
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 from cStringIO import StringIO
 from PIL import Image

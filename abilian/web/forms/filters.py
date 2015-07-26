@@ -2,7 +2,7 @@
 """
 Field filters for WTForm.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 
 def strip(data):

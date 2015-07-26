@@ -7,7 +7,7 @@ See ICOM-ics-v1.0 "Subject Branch".
 TODO: I'm not a big fan of the "subject" name. Could be replaced by something
 else, like "people" or "principal" ?
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from abc import ABCMeta, abstractmethod, abstractproperty
 import bcrypt

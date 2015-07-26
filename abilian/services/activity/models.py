@@ -7,6 +7,9 @@ See: http://stackoverflow.com/questions/1443960/how-to-implement-the-activity-st
 
 TODO: Look wether other attributes from the spec need to be implemented.
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 from datetime import datetime
 from flask import logging

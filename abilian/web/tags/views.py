@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from werkzeug.exceptions import BadRequest
 from flask import current_app
@@ -30,10 +30,10 @@ class BaseTagView(object):
   def __init__(self, *args, **kwargs):
     super(BaseTagView, self).__init__(*args, **kwargs)
     self.extension = current_app.extensions['tags']
-  
+
   def view_url(self):
     return url_for()
-  
+
 
 class TagEdit(BaseTagView, ObjectEdit):
   _message_success = _l(u'Tag edited')
@@ -76,19 +76,19 @@ class BaseEntityTagView(BaseTagView):
       raise BadRequest('No entity provided')
 
     return args, kwargs
-    
+
   def view_url(self):
     return url_for(self.entity)
 
   def index_url(self):
     return self.view_url()
 
-  
+
 class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
 
   def get(self, *args, **kwargs):
     return JSONView.get(self, *args, **kwargs)
-  
+
   def data(self, *args, **kwargs):
     tags = sorted(self.extension.entity_tags(self.entity))
     return dict(result=tags)
@@ -97,12 +97,12 @@ class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
 entity_bp.route('/<int:object_id>/list')(EntityTagList.as_view('list'))
 
 
-class EntityTagManage(BaseEntityTagView, ObjectEdit):  
+class EntityTagManage(BaseEntityTagView, ObjectEdit):
   methods = ['POST']
-  
+
   # operation: add or remove
   mode = None
-  
+
   def __init__(self, mode, *args, **kwargs):
     super(EntityTagManage, *args, **kwargs)
     assert mode in ('add', 'remove')
@@ -113,8 +113,8 @@ class EntityTagManage(BaseEntityTagView, ObjectEdit):
     label = self.form.label.data
     op = getattr(self.extension, self.mode)
     op(self.entity, ns=ns, label=label)
-      
-  
+
+
 entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view('add', mode='add'))
 entity_bp.route('/<int:object_id>/remove')(EntityTagManage.as_view('remove', mode='remove'))
 
@@ -127,7 +127,7 @@ class EntityTagEdit(ObjectEdit):
     extension = current_app.extensions['tags']
     self.Form = extension.entity_tags_form(self.obj)
     return args, kwargs
-    
+
   def view_url(self):
     return url_for(self.obj)
 

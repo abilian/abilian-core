@@ -2,7 +2,7 @@
 """
 Blob. References to files stored in a on-disk repository
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import uuid
 import hashlib

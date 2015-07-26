@@ -2,7 +2,7 @@
 """
 Admin panel for vocabularies
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from flask import g, request, current_app, render_template, redirect
 

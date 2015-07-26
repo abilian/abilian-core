@@ -8,7 +8,7 @@ Notes:
 - For application settings use
   :class:`abilian.services.settings.SettingsService`.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from flask import Blueprint, url_for, request, redirect, g
 from flask_login import current_user

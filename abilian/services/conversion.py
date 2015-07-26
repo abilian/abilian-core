@@ -9,6 +9,9 @@ Assumes poppler-utils and LibreOffice are installed.
 
 TODO: rename Converter into ConversionService ?
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 import glob
 import hashlib

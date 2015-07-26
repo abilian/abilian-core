@@ -1,7 +1,7 @@
 """
 Models for user preferences.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relation, backref

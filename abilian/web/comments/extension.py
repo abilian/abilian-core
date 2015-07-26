@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from abilian.core.models import comment as comments
 from abilian.web import url_for
@@ -20,7 +20,7 @@ class CommentExtension(object):
     app.extensions['comments'] = self
     app.add_template_global(self, 'comments')
     app.register_blueprint(blueprint)
-  
+
   def is_commentable(self, obj):
     return comments.is_commentable(obj)
 
@@ -32,7 +32,7 @@ class CommentExtension(object):
 
   def count(self, obj):
     return len(comments.for_entity(obj, check_commentable=True))
-    
+
   def get_form_context(self, obj):
     """
     Return a dict: form instance, action button, submit url...
@@ -43,4 +43,4 @@ class CommentExtension(object):
     ctx['form'] = CommentForm()
     ctx['buttons'] = [COMMENT_BUTTON]
     return ctx
-  
+

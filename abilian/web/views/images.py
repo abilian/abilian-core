@@ -2,7 +2,7 @@
 """
 Blueprint for views of dynamic images
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import hashlib
 from datetime import datetime, timedelta

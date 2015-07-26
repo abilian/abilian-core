@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from werkzeug.exceptions import HTTPException
 from flask import request, g, json, jsonify, render_template_string, redirect

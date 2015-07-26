@@ -1,5 +1,8 @@
 # coding=utf-8
 
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 from unittest import TestCase, skip
 import sqlalchemy as sa
 from flask.signals import request_started

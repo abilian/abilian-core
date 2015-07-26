@@ -4,6 +4,9 @@ Reusable widgets to be included in views.
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 import cgi
 import urlparse

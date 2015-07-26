@@ -29,7 +29,7 @@ Extensions can add their own commands to :py:data:`~abilian.core.commands.manage
      sub_manager = Manager(usage='Little extension')
      abilian_manager.add_command('special_commands', sub_manager)
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from flask_migrate import MigrateCommand
 

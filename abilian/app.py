@@ -3,7 +3,7 @@
 Base Flask application class, used by tests or to be extended
 in real applications.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import errno
 import importlib

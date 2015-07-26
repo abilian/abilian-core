@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from flask import Blueprint as BaseBlueprint
 from abilian.services.security import Role, Anonymous

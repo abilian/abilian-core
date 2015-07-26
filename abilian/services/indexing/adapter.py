@@ -2,7 +2,7 @@
 """
 Objects to schema adapters
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import logging
 from abc import ABCMeta, abstractmethod

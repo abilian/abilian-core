@@ -2,7 +2,7 @@
 """
 Various tools that don't belong some place specific.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 import sys
 import functools

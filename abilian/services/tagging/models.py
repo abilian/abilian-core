@@ -12,6 +12,9 @@ For example, if the actor specifies that a particular user appears in a photo.
 The object is the user and the target is the photo."
 
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 from abilian.core.extensions import db
 from abilian.core.entities import IdMixin
 

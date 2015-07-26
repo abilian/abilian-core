@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, division
 
 from abilian.i18n import _l
 from abilian.core.models.tag import Tag, TAGS_ATTR, is_support_tagging
