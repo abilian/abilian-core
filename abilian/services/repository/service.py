@@ -389,7 +389,7 @@ class RepositoryTransaction(object):
 
   def begin(self, session=None):
     if not self.path.exists():
-      self.path.mkdir(0700)
+      self.path.mkdir(0o700)
 
   def rollback(self, session=None):
     self._clear()

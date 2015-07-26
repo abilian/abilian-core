@@ -121,7 +121,7 @@ class FieldsTestCase(BaseTestCase):
       f.process_formdata(['17/06/1789 | 10:42'])
       # 1789: applied offset for HongKong is equal to LMT+7:37:00,
       # thus we compare with tzinfo=user_tz
-      assert f.data == datetime.datetime(1789, 06, 17, 10, 42, tzinfo=USER_TZ)
+      assert f.data == datetime.datetime(1789, 6, 17, 10, 42, tzinfo=USER_TZ)
       # UTC stored
       assert f.data.tzinfo is pytz.UTC
       # displayed in user current timezone
@@ -130,10 +130,10 @@ class FieldsTestCase(BaseTestCase):
       # non-naive mode: test process_data change TZ to user's TZ
       f.process_data(f.data)
       assert f.data.tzinfo is USER_TZ
-      assert f.data == datetime.datetime(1789, 06, 17, 10, 42, tzinfo=USER_TZ)
+      assert f.data == datetime.datetime(1789, 6, 17, 10, 42, tzinfo=USER_TZ)
 
       f.populate_obj(obj, 'dt')
-      assert obj.dt == datetime.datetime(1789, 06, 17, 10, 42, tzinfo=USER_TZ)
+      assert obj.dt == datetime.datetime(1789, 6, 17, 10, 42, tzinfo=USER_TZ)
 
       # test more recent date: offset is GMT+8
       f.process_formdata(['23/01/2011 | 10:42'])
@@ -146,11 +146,11 @@ class FieldsTestCase(BaseTestCase):
       f.process_formdata(['17/06/1789 | 10:42'])
       # UTC stored
       assert f.data.tzinfo is pytz.UTC
-      assert f.data == datetime.datetime(1789, 06, 17, 10, 42, tzinfo=pytz.UTC)
+      assert f.data == datetime.datetime(1789, 6, 17, 10, 42, tzinfo=pytz.UTC)
 
       # naive stored
       f.populate_obj(obj, 'dt')
-      assert obj.dt == datetime.datetime(1789, 06, 17, 10, 42)
+      assert obj.dt == datetime.datetime(1789, 6, 17, 10, 42)
 
 
   def test_datetimefield_force_4digit_year(self):
@@ -169,7 +169,7 @@ class FieldsTestCase(BaseTestCase):
     with self.app.test_request_context(headers=headers):
       f = fields.DateField().bind(Form(), 'dt')
       f.process_formdata(['17/06/1789'])
-      assert f.data == datetime.date(1789, 06, 17)
+      assert f.data == datetime.date(1789, 6, 17)
       assert f._value() == u'17/06/1789'
 
   def test_datefield_force_4digit_year(self):

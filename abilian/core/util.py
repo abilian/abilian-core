@@ -119,7 +119,7 @@ class timer(object):
 
   def __init__(self, f):
     self.__f = f
-    self.log = logging.getLogger(f.__module__ + '.' + f.func_name)
+    self.log = logging.getLogger(f.__module__ + '.' + f.__name__)
 
   def __call__(self, *args, **kwargs):
     self.__start = time.time()

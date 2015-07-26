@@ -191,7 +191,7 @@ class SAAdapter(SchemaAdapter):
 
         val = cached[a]
         if val is not None:
-          if isinstance(val, (list, tuple,)):
+          if isinstance(val, (list, tuple)):
             val = u' '.join(val)
           values.append(val)
 

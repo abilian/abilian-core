@@ -42,11 +42,11 @@ class PatchLoggerAdapter(logging.LoggerAdapter):
     func = msg
     location = func.__module__
     if hasattr(func, 'im_class'):
-      cls = func.im_class
-      func = func.im_func
+      cls = func.__self__.__class__
+      func = func.__func__
       location = '{}.{}'.format(cls.__module__, cls.__name__)
 
-    return '{}.{}'.format(location, func.func_name), kwargs
+    return '{}.{}'.format(location, func.__name__), kwargs
 
 
 #: logger for monkey patchs. use like this:

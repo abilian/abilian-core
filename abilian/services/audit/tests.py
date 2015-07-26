@@ -163,13 +163,13 @@ class TestAudit(BaseTestCase):
     audit_query = AuditEntry.query.order_by(AuditEntry.happened_at)
 
     def next_entry():
-      return audit_query.all()[audit_idx.next()]
+      return audit_query.all()[next(audit_idx)]
 
     account = DummyAccount(name=u"John SARL")
     db.session.add(account)
     db.session.commit()
     assert len(AuditEntry.query.all()) == 1
-    audit_idx.next()
+    next(audit_idx)
 
     data = AccountRelated(account=account, text=u'text 1')
     db.session.add(data)

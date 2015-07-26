@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import logging
@@ -139,7 +140,7 @@ def routes():
     output.append((rule.endpoint, methods, path))
 
   for endpoint, methods, path in sorted(output):
-    print '{:40s} {:25s} {}'.format(endpoint, methods, path)
+    print('{:40s} {:25s} {}'.format(endpoint, methods, path))
 
 
 
@@ -187,7 +188,7 @@ def createuser(email, password, role=None, name=None, first_name=None):
     security.grant_role(user, role)
 
   db.session.commit()
-  print "User {} added".format(email)
+  print("User {} added".format(email))
 
 
 @email_opt
@@ -215,7 +216,7 @@ def passwd(email, password=None):
 
   user.set_password(password)
   db.session.commit()
-  print "Password updated for user {}".format(email)
+  print("Password updated for user {}".format(email))
 
 
 @manager.command

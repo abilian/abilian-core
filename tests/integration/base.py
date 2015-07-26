@@ -1,9 +1,10 @@
 """
 Base TestCase for integration tests.
 """
+from __future__ import absolute_import
 
 # Don't remove
-import fix_path  # noqa
+from . import fix_path  # noqa
 
 import os
 

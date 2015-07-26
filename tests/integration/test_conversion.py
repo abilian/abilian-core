@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from warnings import warn
 import tempfile
 from os.path import join, dirname
@@ -5,7 +6,7 @@ from unittest import TestCase
 from magic import Magic, os
 
 # Don't remove
-import fix_path
+from . import fix_path
 
 from abilian.services.conversion import converter
 
