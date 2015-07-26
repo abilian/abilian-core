@@ -3,10 +3,10 @@ python:
   - "2.7"
 
 sudo: false
-  
+
 env:
   - SQLALCHEMY_DATABASE_URI="sqlite://"
-  - SQLALCHEMY_DATABASE_URI="postgres://abilian_core_test:test_pw@localhost:5432/abilian_core_test_db"
+  - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost:5432/abilian_core"
 
 services:
   - redis-server
@@ -31,13 +31,11 @@ install:
 
 # Create DB
 before_script:
-  - createuser -w -U postgres -DRS abilian_core_test
-  - psql -w -U postgres -c "ALTER USER abilian_core_test WITH ENCRYPTED PASSWORD 'test_pw';"
-  - createdb -w -U postgres -E utf-8 -O abilian_core_test abilian_core_test_db
+  - psql -c 'create database abilian_core;' -U postgres
 
 # Run tests
 script:
-  - py.test --tb=short -q --cov abilian --cov-config etc/coverage.rc abilian tests
+  - py.test --tb=short -q --cov abilian abilian tests
   - sphinx-build -W -b html docs/ docs/_build/
 
 # Report coverage
