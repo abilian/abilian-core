@@ -458,3 +458,42 @@ class SecurityTestCase(IntegrationTestCase):
 
     assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
     assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
+
+
+class PermissionNoSAWarnTestCase(IntegrationTestCase):
+
+  SQLALCHEMY_WARNINGS_AS_ERROR = False
+
+  def test_add_delete_permissions_expunged_obj(self):
+    # weird case. In CreateObject based views, usually Entity is instanciated
+    # and might be added to session if it has a relationship with an existing
+    # object. `init_object` must do `session.expunge(obj)`. But entities will
+    # have initialized default permissions during `after_attach`.
+    #
+    # At save time, the object is added again to session. The bug is that
+    # without precaution we may create permissions assignment twice, because
+    # assignments created in the first place are not yet again in session.(new,
+    # dirty, deleted) and cannot be found with a filtered query on
+    # PermissionAssignment because they have not been flushed yet.
+    #
+    security.add_permission(READ, Owner, None)
+    obj = DummyModel()
+    # override default permission at instance level
+    obj.__default_permissions__ = frozenset({
+      (READ, frozenset({Owner})),
+    })
+    self.session.add(obj) # core.entities._setup_default_permissions creates
+                          # permissions
+    security.add_permission(READ, Owner, obj) # no-op
+    self.session.expunge(obj) # obj and its permissions are removed from session
+
+    self.session.add(obj) # obj in session again. When
+                          # _setup_default_permissions is called durint
+                          # `after_flush`, previously created permission are not
+                          # yet back in session. The cascading rule will add
+                          # them just after (as of sqlalchemy 0.8, at least)
+
+
+    # Finally the test! IntegrityError will be raised if we have done something
+    # wrong (`Key (permission, role, object_id)=(..., ..., ...) already exists`)
+    self.session.flush()

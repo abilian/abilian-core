@@ -23,7 +23,8 @@ from abilian.services.security.models import (
   Anonymous as AnonymousRole, Authenticated,
   Admin, Manager, Reader, Writer,
   Owner, Creator,
-  InheritSecurity, Role, Permission, READ, WRITE, MANAGE
+  InheritSecurity, Role, Permission, READ, WRITE, MANAGE,
+  PERMISSIONS_ATTR,
 )
 
 
@@ -91,14 +92,28 @@ def query_pa_no_flush(session, permission, role, obj):
      problematic to issue a flush when entity is not yet ready to be flushed
      (missing required attributes for example).
   """
-  for instance in chain(session.deleted, session.dirty, session.new):
-    if not isinstance(instance, PermissionAssignment):
-      continue
-
-    if (instance == obj):
-      return instance
-
+  to_visit = [session.deleted, session.dirty, session.new]
   with session.no_autoflush:
+    # no_autoflush is required to visit PERMISSIONS_ATTR without emitting a
+    # flush()
+    if obj:
+      to_visit.append(getattr(obj, PERMISSIONS_ATTR))
+
+    permissions = (
+      p for p in chain(*to_visit)
+      if isinstance(p, PermissionAssignment)
+    )
+
+    for instance in permissions:
+      if (instance.permission == permission and
+          instance.role == role and
+          instance.object == obj):
+        return instance
+
+    # last chance: perform a filtered query. If obj is not None, sometimes
+    # getattr(obj, PERMISSIONS_ATTR) has objects not present in session not in
+    # this query (maybe in a parent session transaction `new`?). This happens
+    # when
     return session.query(PermissionAssignment)\
                   .filter(PermissionAssignment.permission == permission,
                           PermissionAssignment.role == role,
