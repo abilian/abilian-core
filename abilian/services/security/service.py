@@ -390,9 +390,11 @@ class SecurityService(Service):
       assert isinstance(object, Entity)
       object_key = u"{}:{}".format(object.object_type, unicode(object.id))
       if Creator in role:
-        return object.creator == principal
-      elif Owner in role:
-        return object.owner == principal
+        if object.creator == principal:
+          return True
+      if Owner in role:
+        if object.owner == principal:
+          return True
 
     else:
       object_key = None

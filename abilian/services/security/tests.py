@@ -151,10 +151,11 @@ class SecurityTestCase(IntegrationTestCase):
 
   def test_grant_roles_on_objects(self):
     user = User(email=u"john@example.com", password=u"x")
+    user2 = User(email=u"papa@example.com", password=u"p")
     group = Group(name=u"Test Group")
     user.groups.add(group)
     obj = DummyModel()
-    self.session.add_all([user, obj])
+    self.session.add_all([user, user2, obj])
     self.session.flush()
 
     security.grant_role(user, 'global_role')
@@ -188,6 +189,11 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(user, obj) == [Owner]
     assert security.get_principals(Owner, object=obj) == [user]
     assert security.get_principals(Creator, object=obj) == []
+    # if user2 has Admin role e gets the rights no matter Creator/Ownership
+    security.grant_role(user2, Admin)
+    assert security.has_role(user2, (Owner, Creator), obj)
+    assert security.has_role(user, (Owner, Creator), obj)
+
     obj.owner = old_owner
     obj.creator = user
     assert security.get_roles(user, obj) == [Creator]
