@@ -142,7 +142,7 @@ def search_main(q=u'', page=1):
 
   # results.pagecount must be ignored when query is filtered: it ignores
   # filtered_count
-  pagecount = 1 + results_count / PAGE_SIZE
+  pagecount = 1 + results_count // PAGE_SIZE
   page = min(page, pagecount)
   results = whoosh.searching.ResultsPage(results, page, PAGE_SIZE)
   page = results.pagenum
