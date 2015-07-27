@@ -7,7 +7,7 @@ from functools import total_ordering
 from datetime import datetime
 
 from sqlalchemy import sql
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.schema import (
   Column, ForeignKey, Index, UniqueConstraint, CheckConstraint
   )
@@ -223,6 +223,8 @@ _postgres_indexes()
 del _postgres_indexes
 
 
+PERMISSIONS_ATTR = '__permissions__'
+
 class PermissionAssignment(db.Model):
   __tablename__ = 'permission_assignment'
   __table_args__ = (
@@ -235,7 +237,38 @@ class PermissionAssignment(db.Model):
   role = Column(RoleType, index=True, nullable=False)
   object_id = Column(Integer, ForeignKey(Entity.id, ondelete='CASCADE'),
                      nullable=True)
-  object = relationship(Entity, lazy='select')
+  object = relationship(
+    Entity, lazy='select',
+    backref=backref(PERMISSIONS_ATTR, lazy='select',
+                    collection_class=set,
+                    cascade='all, delete-orphan',
+                    passive_deletes=True)
+  )
+
+  def __hash__(self):
+    return hash((self.permission, self.role, self.object))
+
+  def __eq__(self, other):
+    if not isinstance(other, PermissionAssignment):
+      return False
+
+    return (
+      self.permission == other.permission and
+      self.role == other.role and
+      self.object == other.object
+    )
+
+  def __neq__(self, other):
+    return not self.__eq__(other)
+
+  def __repr__(self):
+    class_ = self.__class__
+    mod_ = class_.__module__
+    classname = class_.__name__
+    return ('<{cls} instance at 0x{id:x} '
+            'permission={self.permission.name!r} '
+            'role={self.role.name!r} object={self.object!r}>'
+            ''.format(mod=mod_, cls=classname, id=id(self), self=self))
 
 
 def _postgres_indexes():

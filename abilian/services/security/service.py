@@ -95,9 +95,7 @@ def query_pa_no_flush(session, permission, role, obj):
     if not isinstance(instance, PermissionAssignment):
       continue
 
-    if (instance.permission == permission and
-        instance.role == role and
-        instance.object == obj):
+    if (instance == obj):
       return instance
 
   with session.no_autoflush:
