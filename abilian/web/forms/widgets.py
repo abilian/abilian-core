@@ -1394,7 +1394,7 @@ class Select2Ajax(object):
     s2_params = {}
     s2_params.update(self.s2_params)
     s2_params['ajax'] = {'url': unicode(field.ajax_source)}
-    s2_params['placeholder'] = field.label.text
+    s2_params['placeholder'] = unicode(field.label.text)
 
     if not field.flags.required:
       s2_params['allowClear'] = True
