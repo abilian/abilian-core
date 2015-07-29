@@ -59,8 +59,7 @@ You can also check the coverage reports:
 Releasing
 ---------
 
-We've switched to PBR (<http://docs.openstack.org/developer/pbr/>) recently
-to manage our project metadata.
+We're now using `setuptools_scm` to manage version numbers.
 
 It comes with some conventions on its own when it comes to releasing.
 
@@ -70,9 +69,8 @@ Here's what you should do to make a new release on PyPI:
 
 2. Commit.
 
-3. Tag, using the `-s` option (ex: `tag -s 0.3.0`), using numbers that are
-consistent with semantic versionning. Note that you will need to sign the
-tag with your GPG key.
+3. Tag (ex: `git tag 0.3.0`), using numbers that are consistent with semantic
+   versionning.
 
 4. Run `python setup.py sdist upload`.
 

@@ -111,9 +111,10 @@ doc-pdf:
 clean:
 	find . -name "*.pyc" -delete
 	find . -name __pycache__ -delete
+	find . -name .hypothesis -delete
 	find . -name abilian.db -delete
 	find . -type d -empty -delete
-	rm -rf *.egg-info *.egg .coverage
+	rm -rf *.egg-info *.egg .coverage .eggs .cache
 	rm -rf whoosh tests/whoosh tests/integration/whoosh
 	rm -rf docs/_build docs/cache docs/tmp
 	rm -rf $(SRC)/static/gen
