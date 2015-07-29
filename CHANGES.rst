@@ -1,11 +1,19 @@
 Changelog for Abilian Core
 ==========================
 
-0.4.2 (unreleased)
-~~~~~~~~~~~~~~~~~~
+0.4.3 (unreleased)
+------------------
 
 TODO
 
+0.4.2 (2015-07-29)
+------------------
+
+Bugfixes / cleanup
+~~~~~~~~~~~~~~~~~~
+
+- Replace Scribe by CKEditor for better IE compatibility.
+- Smaller bug fixes and code cleanups
 
 0.4.1 (2015-07-21)
 ------------------
