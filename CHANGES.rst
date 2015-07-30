@@ -4,7 +4,11 @@ Changelog for Abilian Core
 0.4.4 (unreleased)
 ------------------
 
-TODO.
+Design / UI
+~~~~~~~~~~~
+
+- Navbar is now non-fluid.
+
 
 0.4.3 (2015-07-29)
 ------------------
