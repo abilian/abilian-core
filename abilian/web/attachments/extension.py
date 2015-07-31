@@ -16,6 +16,7 @@ from .views import bp as blueprint, UPLOAD_BUTTON
 
 _MANAGER_ATTR = '__attachments_manager__'
 
+
 class AttachmentExtension(object):
   """
   API for comments, installed as an application extension.
@@ -38,7 +39,7 @@ class AttachmentExtension(object):
 
     return manager
 
-  def is_support_attachements(self, obj):
+  def is_support_attachments(self, obj):
     return self.manager(obj).is_support_attachments(obj)
 
   def for_entity(self, obj, check_support_attachments=False):
@@ -96,7 +97,7 @@ class AttachmentsManager(object):
                                 default.m_attachment_form)
     )
 
-  def is_support_attachements(self, obj):
+  def is_support_attachments(self, obj):
     return attachments.is_support_attachments(obj)
 
   def for_entity(self, obj, check_support_attachments=False):

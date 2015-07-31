@@ -45,7 +45,7 @@
     {%- endif %}
 
     {%- set att_manager = attachments.manager(view.obj) %}
-    {%- if att_manager.is_support_attachements(view.obj) and att_manager.can_view(view.obj) %}
+    {%- if att_manager.is_support_attachments(view.obj) and att_manager.can_view(view.obj) %}
       <div class="row">
         <div class="col-xs-12">
         <h3 href="#panel_attachments" data-toggle="collapse">{{ _('Attachments (%(count)d)', count=attachments.count(view.obj)) }}</h3>
