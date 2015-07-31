@@ -650,7 +650,7 @@
             'save': getVal,
             'load': function(vals) {
                 if (vals.length === 0) { return; }
-                this.$elements.children('label input')
+                this.$elements.find('label input')
                     .first()
                     .prop('checked', true);
                 this.$select.select2('val', vals[0]);
