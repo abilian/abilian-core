@@ -11,7 +11,7 @@
   </ul>
 {% endmacro %}
 
-{% macro m_activity(entry) %}
+{% macro m_activity(entry, ignore_communities=False) %}
   {% call m_user_link(entry.actor) %}
     {{ m_user_photo(entry.actor, size=45) }}
   {% endcall %}
@@ -19,8 +19,9 @@
   <div class="entry">
     <span class="datetime">{{ entry.happened_at|age }}</span>
     {%- call m_user_link(entry.actor) %}
-    {{ entry.actor }}
-    {%- endcall %}    
+      {{ entry.actor }}
+    {%- endcall %}
+
     <span class="message">{{ entry.message(ignore_communities)|safe }}</span>
 
     {%- set body = entry.body %}
