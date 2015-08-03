@@ -208,11 +208,18 @@ class Action(object):
 
   def __init__(self, category, name, title=None, description=None, icon=None,
                url=None, endpoint=None, condition=None, status=None,
+               template=None, template_string=None,
                button=None, css=None):
     """
     :param button: if not `None`, a valid `btn` class (i.e `default`,
     `primary`...)
+
     :param css: additional css class string
+
+    :param template: optional: a template file name or a list of filenames.
+
+    :param template_string: template_string to use. Defaults to
+    `Action.template_string`
     """
     self.category = category
     self.name = name
@@ -237,7 +244,9 @@ class Action(object):
     self.condition = condition
 
     self._enabled = True
-    self.template = None
+    self.template = template
+    if template_string:
+      self.template_string = template_string
 
   #: ui status. A :class:`Status` instance
   @getset
@@ -352,8 +361,13 @@ class Action(object):
     if not self.template:
       self.template = Template(self.template_string)
 
+    template = self.template
+
+    if not isinstance(template, Template):
+      template = current_app.jinja_env.get_or_select_template(template)
+
     params = self.get_render_args(**kwargs)
-    return Markup(self.template.render(params))
+    return Markup(template.render(params))
 
   def get_render_args(self, **kwargs):
     params = dict(action=self)
