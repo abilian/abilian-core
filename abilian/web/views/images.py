@@ -99,7 +99,7 @@ class BaseImageView(View):
     :param image: image as bytes
     :param s: requested maximum width/height size
     """
-    from abilian.services.image import crop_and_resize, get_format
+    from abilian.services.image import resize, CROP, get_format
 
     try:
       fmt = get_format(image)
@@ -110,7 +110,7 @@ class BaseImageView(View):
     content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
 
     if size:
-      image = crop_and_resize(image, size)
+      image = resize(image, size, mode=CROP)
     else:
       image = image.read()
 

@@ -738,9 +738,10 @@ class ImageInput(FileInput):
   data has to provide an attribute named `url`.
   """
   def __init__(self, template='widgets/image_input.html',
-               width=120, height=120,
+               width=120, height=120, resize_mode=image.CROP,
                valid_extensions=('jpg', 'jpeg', 'png'),):
     super(ImageInput, self).__init__(template=template)
+    self.resize_mode = resize_mode
     self.valid_extensions = valid_extensions
     self.width, self.height = width, height
 
@@ -752,7 +753,7 @@ class ImageInput(FileInput):
         if hasattr(value, 'url'):
           image_url = value.url
         else:
-          image_url = self.get_b64_thumb_url(value)
+          image_url = self.get_b64_thumb_url(self.get_thumb(value))
 
         data['image_url'] = image_url
 
@@ -767,17 +768,18 @@ class ImageInput(FileInput):
           image_url = value.url
         else:
           with value.open('rb') as in_:
-            image_url = self.get_b64_thumb_url(in_)
+            image_url = self.get_b64_thumb_url(self.get_thumb(in_))
 
         data['image_url'] = image_url
 
     return uploaded
 
+  def get_thumb(self, data):
+    return image.resize(data, self.width, self.height, mode=self.resize_mode)
 
-  def get_b64_thumb_url(self, data):
-    thumb = image.crop_and_resize(data, self.width, self.height)
-    fmt = image.get_format(thumb).lower()
-    thumb = base64.b64encode(thumb)
+  def get_b64_thumb_url(self, img):
+    fmt = image.get_format(img).lower()
+    thumb = base64.b64encode(img)
     return u'data:image/{format};base64,{img}'.format(format=fmt, img=thumb)
 
   def render_view(self, field, **kwargs):
@@ -785,10 +787,12 @@ class ImageInput(FileInput):
     if not data:
       return u''
 
+    thumb = self.get_thumb(data)
+    width, height = image.get_size(thumb)
     tmpl = u'<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
     return render_template_string(tmpl,
-                                  url=self.get_b64_thumb_url(data),
-                                  width=self.width, height=self.height)
+                                  url=self.get_b64_thumb_url(thumb),
+                                  width=width, height=height)
 
 
 class Chosen(Select):

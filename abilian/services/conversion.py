@@ -35,7 +35,7 @@ from contextlib import contextmanager
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-from abilian.services.image import resize
+from abilian.services.image import resize, FIT
 
 
 logger = logging.getLogger(__name__)
@@ -429,7 +429,7 @@ class PdfToPpmHandler(Handler):
 
         converted_images = []
         for fn in l:
-          converted = resize(open(fn).read(), size)
+          converted = resize(open(fn).read(), size, size, mode=FIT)
           converted_images.append(converted)
 
         return converted_images
