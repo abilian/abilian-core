@@ -162,6 +162,7 @@ class BaseEntityView(ModuleView):
     return BreadcrumbItem(label=self.obj.name or self.obj.id,
                           url=Endpoint('.entity_view', entity_id=self.obj.id))
 
+
   def prepare_args(self, args, kwargs):
     args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
     actions.context['module'] = self.module
@@ -211,8 +212,30 @@ class BaseEntityView(ModuleView):
     return False
 
 
+EDIT_ACTION = Action(
+  'module', 'object:view', title=_l(u'Edit'),
+  button='default', condition=lambda ctx: ctx['view'].can_edit,
+  icon=FAIcon('edit'),
+  url=lambda ctx: url_for('.entity_edit',
+                          **{ctx['view'].pk: ctx['view'].obj.id}),
+)
+
+DELETE_ACTION = Action(
+  'module', 'object:view', title=_l(u'Delete'),
+  button='danger', condition=lambda ctx: ctx['view'].can_delete,
+  icon=FAIcon('trash fa-inverse'),
+  url=lambda ctx: url_for('.entity_delete',
+                          **{ctx['view'].pk: ctx['view'].obj.id}),
+)
+DELETE_ACTION.template = 'widgets/frontend_action_delete_confim.html'
+
+
 class EntityView(BaseEntityView, ObjectView):
   template = 'default/single_view.html'
+
+  @property
+  def object_actions(self):
+    return [EDIT_ACTION, DELETE_ACTION]
 
   @property
   def template_kwargs(self):

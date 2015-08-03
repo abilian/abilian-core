@@ -1,24 +1,9 @@
 {%- set widget = view %}
 {%- set view = widget.options.view %}
-{%- if view.can_edit %}
-  <a class="btn btn-default" href="{{ url_for('.entity_edit', **{view.pk: view.obj.id}) }}">
-    <i class="fa fa-edit"></i>{{ _("Edit") }}
-  </a>
-{%- endif %}
-{%- if view.can_delete %}
-  <a class="btn btn-danger js-widget" id="delete-button"
-     href="{{ url_for('.entity_delete', **{view.pk: view.obj.id}) }}"
-     data-init-with="deleteConfirm"
-     data-init-params="{{ {
-                        'title': 'La suppression est irréversible',
-                        'message': _('Do you really want to delete this entity?'),
-                        'label': _('Delete'),
-                        'cancelLabel': _('Cancel'),
-                        }|tojson|forceescape }}">
-    <i class="fa fa-trash fa-inverse"></i>
-    {{ _("Delete") }}
-  </a>
-{%- endif %}
+
+{%- for action in view.object_actions %}
+  {{ action.render() }}
+{%- endfor %}
 
 {%- for panel, data in panels %}
 <div class="panel" style="margin-top: 10px;">
