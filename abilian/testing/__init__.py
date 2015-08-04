@@ -219,18 +219,28 @@ class BaseTestCase(TestCase):
         svc.stop()
 
     self.db.session.remove()
-    self.db.drop_all()
 
-    if self.db.engine.name == 'postgresql':
-      username = self.db.engine.url.username
-      with self.db.engine.connect() as conn:
-        with conn.begin():
-          conn.execute('ALTER ROLE {username} SET search_path TO public'
-                       ''.format(username=username))
-          conn.execute('SET search_path TO public')
-          conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(self.__pg_schema))
-        conn.execute('COMMIT')
-      del self.__pg_schema
+    with self.db.engine.connect() as conn:
+      if self.db.engine.name == 'postgresql':
+        username = self.db.engine.url.username
+        with self.db.engine.connect() as conn:
+          with conn.begin():
+            conn.execute('ALTER ROLE {username} SET search_path TO public'
+                         ''.format(username=username))
+            conn.execute('SET search_path TO public')
+            conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(self.__pg_schema))
+          conn.execute('COMMIT')
+        del self.__pg_schema
+      else:
+        if self.db.engine.name == 'sqlite':
+          # core.extension.sqlalchemy performs a 'PRAGMA foreign_keys=ON' on a
+          # connection listener.
+          #
+          # We must revert it to perform drop_all without ever encounting a
+          # foreign key error
+          conn.execute("PRAGMA foreign_keys=OFF;")
+
+        self.db.metadata.drop_all(bind=conn)
 
     self.db.engine.dispose()
     self.app.services['session_repository'].stop()
