@@ -2,6 +2,7 @@
 Test the index service.
 """
 from sqlalchemy import UnicodeText, Text, Column
+from sqlalchemy.orm import column_property
 from abilian.core.entities import Entity, SEARCHABLE
 from abilian.services import index_service
 
@@ -17,8 +18,9 @@ def gen_name(ctx):
 class DummyContact1(Entity):
   """
   """
-  name = Column('name', UnicodeText(), info=SEARCHABLE,
-                default=gen_name, onupdate=gen_name)
+  name = column_property(Column('name', UnicodeText(), info=SEARCHABLE,
+                                default=gen_name, onupdate=gen_name),
+                         Entity.name)
 
   salutation = Column(UnicodeText, default=u"")
   first_name = Column(UnicodeText, default=u"", info=SEARCHABLE)
