@@ -100,17 +100,21 @@ class BlobTestCase(AbilianTestCase):
     self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
     self.assertEquals(b.value, content)
 
-    tr = session.begin(nested=True)
-    session.delete(b)
-    # object marked for deletion, but instance attribute should still be
-    # readable
-    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
-                      content)
-    tr.commit()
+    session.begin(nested=True) # match session.rollback
 
+    with session.begin(nested=True):
+      session.delete(b)
+      # object marked for deletion, but instance attribute should still be
+      # readable
+      self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
+                        content)
+
+    # commit in transaction: session_repository has no content, 'physical'
+    # repository still has content
     self.assertIs(session_repository.get(b, b.uuid), None)
     self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
 
+    # rollback: session_repository has content again
     session.rollback()
     self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
                       content)
