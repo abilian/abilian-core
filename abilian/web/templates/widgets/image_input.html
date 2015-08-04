@@ -1,18 +1,25 @@
-<div class="file-input image-input js-widget" data-init-with="imageInput">
+{%- set params = {
+    'width': widget.width,
+    'height': widget.height,
+    'resize_mode': widget.resize_mode|upper, }
+%}
+<div class="file-input image-input js-widget"
+     data-init-with="imageInput"
+     data-init-params="{{ params|tojson|forceescape }}">
   <span class="js-fileapi-wrapper upload-btn">
     <span class="btn btn-default btn-file">
       {{ button_label }}
       {{ input|safe }}
     </span>
   </span>
-  
+
   <div class="selected-files">
     {%- for data in existing %}
       <div class="file-item file-item-existing">
         {%- if data.image_url %}
           <img src="{{ data.image_url }}" class="img-thumbnail"
                style="max-width: {{ widget.width }}px; max-height: {{ widget.height }}px" />
-        {%-  endif %}        
+        {%-  endif %}
         <span class="file-info">{{ loop.index0 }}. — {{ data.size | filesize }}</span>
         {%- if field.allow_delete %}
           <button type="button" class="btn"
@@ -20,20 +27,20 @@
                   data-value="{{ loop.index0 }}"
                   data-deleted="{{ data.delete |tojson }}">
             <span class="fa fa-trash"></span>
-          </button>          
+          </button>
         {%- endif %}
       </div>
     {%- endfor %}
-    
+
     {%- for data in uploaded %}
       <div class="file-item file-item-uploaded">
         {%- if data.image_url %}
           <image src="{{ data.image_url }}" class="img-thumbnail"
                  style="max-width: {{ widget.width }}px; max-height: {{ widget.height }}px" />
-        {%-  endif %}                
+        {%-  endif %}
         <span class="file-info">{{ data.filename }} – {{ data.size|filesize }}</span>
         <input type="hidden" name="{{ field.name }}" value="{{ data.handle }}" />
-        <a class="close" href="#">&times;</a>        
+        <a class="close" href="#">&times;</a>
       </div>
     {%- endfor %}
   </div>
