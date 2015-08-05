@@ -3,6 +3,7 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from multiprocessing.util import register_after_fork
 from celery import task, Celery
 from celery.app.task import Task
 from celery.task import PeriodicTask as CeleryPeriodicTask
@@ -49,7 +50,15 @@ class FlaskLoader(BaseLoader):
       register_signal(client)
       register_logger_signal(client)
 
+    self._setup_after_fork(app)
     return app
+
+  def _setup_after_fork(self, app):
+    binds = [None] + list(app.config.get('SQLALCHEMY_BINDS') or ())
+    db = app.db
+    for bind in binds:
+      engine = db.get_engine(app, bind)
+      register_after_fork(engine, engine.dispose)
 
   def read_configuration(self):
     app = self.flask_app
