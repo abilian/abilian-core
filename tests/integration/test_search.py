@@ -27,10 +27,7 @@ class DummyContact1(Entity):
 
 
 class IndexingTestCase(IntegrationTestCase):
-
-  def setUp(self):
-    IntegrationTestCase.setUp(self)
-    index_service.start()
+  SERVICES = ('security', 'indexing',)
 
   def tearDown(self):
     if index_service.running:

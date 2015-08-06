@@ -16,6 +16,7 @@ AVATAR_COLORMAP = Path(__file__).parent / u'avatar-colormap.png'
 
 
 class TestUserPreferences(BaseTestCase):
+  SERVICES = ('security',)
 
   def setUp(self):
     BaseTestCase.setUp(self)

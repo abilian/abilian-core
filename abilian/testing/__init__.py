@@ -240,6 +240,19 @@ class BaseTestCase(TestCase):
 
     TestCase.tearDown(self)
 
+  def _login_tests_sanity_check(self):
+    """
+    For login methods: perform checks to avoid using login methods whereas
+    application will not perform auth or security checks.
+    """
+    if self.app.config.get('NO_LOGIN'):
+      raise RuntimeError('login is useless when "NO_LOGIN" is set. '
+                         'Fix testcase.')
+
+    if not self.app.services['security'].running:
+      raise RuntimeError('trying to use login in test but security service is '
+                         'not running. Fix testcase.')
+
   def login(self, user, remember=False, force=False):
     """
     Perform user login for `user`, so that code needing a logged-in user can
@@ -253,6 +266,7 @@ class BaseTestCase(TestCase):
 
     .. seealso:: :meth:`logout`
     """
+    self._login_tests_sanity_check()
     success = login_user(user, remember, force)
     if not success:
       raise ValueError(u'User is not active, cannot login; or use force=True')
@@ -293,6 +307,8 @@ class BaseTestCase(TestCase):
     All subsequent request made with `self.client` will be authentifed until
     :meth:`client_logout` is called or exit of `with` block.
     """
+    self._login_tests_sanity_check()
+
     r = self.client.post(url_for('login.login_post'),
                          data={'email': email, 'password': password})
     self.assertEquals(r.status_code, 302)
