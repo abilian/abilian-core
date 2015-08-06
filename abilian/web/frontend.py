@@ -28,7 +28,7 @@ from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.services import audit_service
 from abilian.services.vocabularies.models import BaseVocabulary
-from abilian.services.security import READ, WRITE
+from abilian.services.security import READ, WRITE  # noqa
 from .action import (
   actions, Action, FAIcon, Endpoint,
   ActionGroup, ActionGroupItem, ActionDropDown,
@@ -161,7 +161,6 @@ class BaseEntityView(ModuleView):
   def breadcrumb(self):
     return BreadcrumbItem(label=self.obj.name or self.obj.id,
                           url=Endpoint('.entity_view', entity_id=self.obj.id))
-
 
   def prepare_args(self, args, kwargs):
     args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
@@ -344,7 +343,7 @@ class ModuleMeta(type):
             cls._default_view = p
 
             # Wrap views
-            #setattr(cls, p, _wrap_view(attr))
+            # setattr(cls, p, _wrap_view(attr))
 
 
 class Module(object):
@@ -387,7 +386,10 @@ class Module(object):
   def __init__(self):
     # If endpoint name is not provided, get it from the class name
     if self.endpoint is None:
-      self.endpoint = self.__class__.__name__.lower()
+      class_name = self.__class__.__name__
+      if class_name.endswith('Module'):
+        class_name = class_name[0:-len('Module')]
+      self.endpoint = class_name.lower()
 
     if self.label is None:
       self.label = labelize(self.endpoint)

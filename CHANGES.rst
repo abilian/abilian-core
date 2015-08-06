@@ -9,6 +9,10 @@ Design / UI
 
 - Navbar is now non-fluid.
 
+Updates
+~~~~~~~
+
+- Upgrade Jinja to 2.8 and Babel to 2.0
 
 0.4.3 (2015-07-29)
 ------------------
