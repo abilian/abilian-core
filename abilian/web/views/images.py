@@ -110,7 +110,7 @@ class BaseImageView(View):
     content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
 
     if size:
-      image = resize(image, size, mode=CROP)
+      image = resize(image, size, size, mode=CROP)
     else:
       image = image.read()
 
