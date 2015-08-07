@@ -6,28 +6,27 @@ from __future__ import absolute_import, print_function, division
 
 import hashlib
 from datetime import datetime, timedelta
-from pathlib import Path
 import colorsys
+from pathlib import Path
 
 import sqlalchemy as sa
 import pkg_resources
-
 from flask import Blueprint, request, make_response, render_template
 from werkzeug.exceptions import BadRequest, NotFound
+
 from abilian.core.util import utc_dt
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
+from abilian.services.image import get_size
 from abilian.web.util import url_for
-
 from .base import View
 
 blueprint = Blueprint('images', __name__, url_prefix='/images')
 route = blueprint.route
 
 DEFAULT_AVATAR = Path(
-    pkg_resources.resource_filename(
-        'abilian.web',
-        'resources/img/avatar-default.png')
+  pkg_resources.resource_filename('abilian.web',
+                                  'resources/img/avatar-default.png')
 )
 DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
 
@@ -111,6 +110,7 @@ class BaseImageView(View):
 
     if size:
       image = resize(image, size, size, mode=CROP)
+      assert get_size(image) == (size, size)
     else:
       image = image.read()
 
@@ -191,9 +191,9 @@ class UserMugshot(BaseImageView):
     args, kwargs = BaseImageView.prepare_args(self, args, kwargs)
 
     user_id = kwargs['user_id']
-    user = User.query\
-        .options(sa.orm.undefer(User.photo))\
-        .get(user_id)
+    user = User.query \
+      .options(sa.orm.undefer(User.photo)) \
+      .get(user_id)
 
     if user is None:
       raise NotFound()
@@ -234,13 +234,13 @@ user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
 route("/users/<int:user_id>")(user_photo)
 route('/users/default')(StaticImageView.as_view('user_default',
                                                 set_expire=True,
-                                                image=DEFAULT_AVATAR,))
+                                                image=DEFAULT_AVATAR, ))
 
 
 def user_url_args(user, size):
   endpoint = 'images.user_default'
   kwargs = {'s': size,
-            'md5': DEFAULT_AVATAR_MD5,}
+            'md5': DEFAULT_AVATAR_MD5, }
 
   if not user.is_anonymous():
     endpoint = 'images.user_photo'
