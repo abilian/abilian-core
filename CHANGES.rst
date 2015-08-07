@@ -1,7 +1,13 @@
 Changelog for Abilian Core
 ==========================
 
-0.4.4 (unreleased)
+0.4.5 (unreleased)
+------------------
+
+TODO
+
+
+0.4.4 (2015-08-07)
 ------------------
 
 Design / UI
@@ -13,6 +19,12 @@ Updates
 ~~~~~~~
 
 - Upgrade Jinja to 2.8 and Babel to 2.0
+
+Fixes
+~~~~~
+
+- Fixed image cropping.
+
 
 0.4.3 (2015-07-29)
 ------------------
