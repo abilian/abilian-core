@@ -100,7 +100,7 @@ Fixes
 - Permissions fixes
 
 Updates
--------
+~~~~~~~
 
 - Updated Bootstrap to 3.3.4
 - Updated flask-login to 0.2.11
