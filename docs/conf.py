@@ -67,7 +67,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Abilian'
-copyright = u'2012-2013, Abilian SAS'
+copyright = u'2012-2015, Abilian SAS'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
