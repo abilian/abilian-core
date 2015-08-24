@@ -59,7 +59,7 @@ def get_save_format(fmt):
   return 'JPEG'
 
 
-def resize(orig, width, height, mode=FIT, background=None):
+def resize(orig, width, height, mode=FIT):
   """
   :param background: a color name or value as found in
   `PIL.ImageColor.colormap`, or an RGB tuple.
@@ -68,7 +68,7 @@ def resize(orig, width, height, mode=FIT, background=None):
     orig = StringIO(orig)
 
   digest = hashlib.md5(orig.read()).digest()
-  cache_key = (digest, mode, background, width, height)
+  cache_key = (digest, mode, width, height)
   if cache_key in cache:
     return cache[cache_key]
 
