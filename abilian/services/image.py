@@ -8,7 +8,6 @@ from __future__ import absolute_import
 
 from cStringIO import StringIO
 import hashlib
-from io import BufferedReader
 
 from PIL import Image
 
@@ -55,26 +54,31 @@ def get_size(img):
 
 
 def get_save_format(fmt):
-  if format in ('GIF', 'PNG'):
+  if fmt in ('GIF', 'PNG'):
     return 'PNG'
   return 'JPEG'
 
 
-def resize(orig, width, height, mode=FIT):
-  if isinstance(orig, BufferedReader):
-    orig = orig.read()
-  cache_key = (hashlib.md5(orig).digest(), mode, width, height)
-  if cache_key in cache:
-    return cache[cache_key]
-
+def resize(orig, width, height, mode=FIT, background=None):
+  """
+  :param background: a color name or value as found in
+  `PIL.ImageColor.colormap`, or an RGB tuple.
+  """
   if isinstance(orig, basestring):
     orig = StringIO(orig)
 
+  digest = hashlib.md5(orig.read()).digest()
+  cache_key = (digest, mode, background, width, height)
+  if cache_key in cache:
+    return cache[cache_key]
+
+  orig.seek(0)
   image = open_image(orig)
   format = image.format
   x, y = image.size
 
   if (x, y) == (width, height):
+    orig.seek(0)
     return orig.read()
 
   if mode is SCALE:
