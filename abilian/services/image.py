@@ -61,8 +61,6 @@ def get_save_format(fmt):
 
 def resize(orig, width, height, mode=FIT):
   """
-  :param background: a color name or value as found in
-  `PIL.ImageColor.colormap`, or an RGB tuple.
   """
   if isinstance(orig, basestring):
     orig = StringIO(orig)
