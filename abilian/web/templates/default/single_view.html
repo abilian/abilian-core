@@ -17,9 +17,11 @@
 
   <div class="collapsable">
     {%- for view in related_views %}
-      {% if view.size %}
+      {%- if view.size or view.show_empty|default(False) %}
       <h3 class="collapsed" data-toggle="collapse"
-          href="#panel_{{ loop.index }}">{{ view.label }} ({{ view.size }})</h3>
+          href="#panel_{{ loop.index }}">
+        {{ view.label }} {%- if view.size %} ({{ view.size }}){%- endif %}
+      </h3>
 
       <div id="panel_{{ loop.index }}" class="collapse" style="margin-bottom: 25px;">
         {{ view.rendered }}

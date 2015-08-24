@@ -683,7 +683,9 @@ class RelatedView(object):
   """ A base class for related views
   """
   def render(self, entity):
-    """ Return a dict with keys 'label', 'attr_name', 'rendered', 'size'
+    """
+    Return a dict with keys 'label', 'attr_name', 'rendered', 'size',
+    'show_empty'
     """
     raise NotImplementedError
 
@@ -692,11 +694,13 @@ class DefaultRelatedView(RelatedView):
   """ Default view used by Module for items directly related to entity
   """
 
-  def __init__(self, label, attr, column_names, options=None):
+  def __init__(self, label, attr, column_names, options=None, show_empty=False):
     self.label = label
     self.attr = attr
+    self.show_empty = show_empty
     self.column_names = column_names
     self.options = {}
+
     if options is not None:
       self.options.update(options)
 
@@ -706,6 +710,7 @@ class DefaultRelatedView(RelatedView):
     return dict(label=self.label,
                 attr_name=self.attr,
                 rendered=view.render(related_entities, related_to=entity),
+                show_empty=self.show_empty,
                 size=len(related_entities))
 
 
