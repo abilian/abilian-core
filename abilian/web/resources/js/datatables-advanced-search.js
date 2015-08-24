@@ -405,7 +405,7 @@
             for (var i=2; i < arg_len; i++) {
                 var arg = arguments[i],
                     id = name + '_' + i,
-                    input = $('<input type="radio">')
+                    input = $('<input type="checkbox">')
                         .attr({'id': id,
                                'name': name,
                                'value': arg.value});
@@ -416,7 +416,7 @@
                 }
 
                 var $label = $('<label></label>')
-                        .attr({'class': 'radio-inline', 'for': id})
+                        .attr({'class': 'checkbox-inline', 'for': id})
                         .append(input)
                         .append(document.createTextNode(arg.label));
 
