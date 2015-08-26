@@ -24,7 +24,7 @@ pathlib
 # Databases / persistence
 SQLAlchemy>=0.8,<0.9
 psycopg2
-alembic>=0.6.7
+alembic>=0.7.7,<0.8
 
 # requirement of jinja2; > 0.21 has an important fix for string format. See
 # https://github.com/mitsuhiko/markupsafe/issues/28

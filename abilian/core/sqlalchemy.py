@@ -210,7 +210,8 @@ class MutationDict(Mutable, dict):
 
 
 class MutationList(Mutable, list):
-  """ Provides a list type with mutability support.
+  """
+  Provides a list type with mutability support.
   """
   @classmethod
   def coerce(cls, key, value):
@@ -378,6 +379,12 @@ class UUID(sa.types.TypeDecorator):
 
   def process_result_value(self, value, dialect):
     return value if value is None else uuid.UUID(value)
+
+  def compare_against_backend(self, dialect, conn_type):
+    if dialect.name == 'postgresql':
+      return isinstance(conn_type, sa.dialects.postgresql.UUID)
+    else:
+      return isinstance(conn_type, sa.types.CHAR)
 
 
 class Locale(sa.types.TypeDecorator):
