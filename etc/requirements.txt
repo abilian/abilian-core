@@ -16,6 +16,8 @@ Flask-Mail>=0.9.1
 blinker
 jinja2>=2.8
 
+Werkzeug>=0.10
+
 # pathlib is included in python 3.4, and very useful
 pathlib
 
