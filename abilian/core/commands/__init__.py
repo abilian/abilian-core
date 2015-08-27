@@ -32,9 +32,9 @@ Extensions can add their own commands to :py:data:`~abilian.core.commands.manage
 from __future__ import absolute_import, print_function, division
 
 from flask_migrate import MigrateCommand
+from flask_assets import ManageAssets
 
 from .base import manager
-from .assets import ManageAssets
 from .config import manager as config_manager
 
 # Additional commands
