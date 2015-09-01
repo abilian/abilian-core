@@ -60,6 +60,10 @@ class TagsField(Field):
     data = set()
 
     for label in valuelist:
+      label = label.strip()
+      if not label:
+        continue
+
       tag = extension.get(ns=self.ns, label=label)
       if tag is None:
         tag = Tag(ns=self.ns, label=label)
