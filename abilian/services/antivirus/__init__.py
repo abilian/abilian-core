@@ -5,6 +5,10 @@ from __future__ import absolute_import, print_function, division
 
 import os
 import io
+import logging
+import pathlib
+
+logger = logging.getLogger(__name__)
 
 try:
   import clamd
@@ -17,6 +21,38 @@ from abilian.core.models.blob import Blob
 from ..base import Service
 
 
+if CLAMD_AVAILABLE:
+  conf_path = pathlib.Path('/etc', 'clamav', 'clamd.conf')
+  conf_lines = [l.strip() for l in conf_path.open('rt').readlines()]
+  CLAMD_CONF = dict(l.split(u' ', 1) for l in conf_lines
+                    if not l.startswith(u'#'))
+
+  def _size_to_int(size_str):
+    multiplier = 0
+    if not size_str:
+      return 0
+
+    unit = size_str[-1].lower()
+    if unit in ('k', 'm'):
+      size_str = size_str[:-1]
+      multiplier = 1024
+      if unit == 'm':
+        multiplier *= 1024
+
+    if not size_str:
+      return 0
+
+    size = int(size_str)
+    if multiplier:
+      size *= multiplier
+
+    return size
+
+  CLAMD_STREAMMAXLENGTH = _size_to_int(CLAMD_CONF['StreamMaxLength'])
+  CLAMD_MAXFILESIZE = _size_to_int(CLAMD_CONF['MaxFileSize'])
+  del conf_path, conf_lines, _size_to_int
+
+
 class AntiVirusService(Service):
   """
   Antivirus service
@@ -26,6 +62,7 @@ class AntiVirusService(Service):
   def scan(self, file_or_stream):
     """
     :param file_or_stream: :class:`Blob` instance, filename or file object
+
     :returns: True if file is 'clean', False if a virus is detected, None if
     file could not be scanned.
 
@@ -50,6 +87,22 @@ class AntiVirusService(Service):
 
     if isinstance(file_or_stream, bytes):
       content = io.open(file_or_stream, 'rb')
+
+    if content.seekable():
+      pos = content.tell()
+      content.seek(0, io.SEEK_END)
+      size = content.tell()
+      content.seek(pos)
+
+      if size > CLAMD_STREAMMAXLENGTH:
+        logger.error(
+          'Content size exceed antivirus size limit, size=%d, limit=%d (%s)',
+          size,
+          CLAMD_STREAMMAXLENGTH,
+          CLAMD_CONF['StreamMaxLength'].encode('utf-8'),
+          extra={'stack': True},
+        )
+        return None
 
     # use stream scan. When using scan by filename, clamd runnnig user must have
     # access to file, which we cannot guarantee
