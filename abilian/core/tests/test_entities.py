@@ -95,6 +95,19 @@ class EntityTestCase(TestCase):
     session.flush()
     assert contact3.slug == u'pacome-hegesippe-adelard-ladislas-1'
 
+  def test_polymorphic_update_timestamp(self):
+    session = self.get_session()
+    contact = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+    session.add(contact)
+    session.flush()
+
+    updated_at = contact.updated_at
+    assert updated_at
+    contact.email = u'p@example.com'
+    session.flush()
+    assert contact.updated_at > updated_at
+
+
   def test_meta(self):
     session = self.get_session()
     e = DummyContact(name=u'test')
