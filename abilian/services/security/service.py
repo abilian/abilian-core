@@ -773,6 +773,9 @@ class SecurityService(Service):
 
     if pa:
       session.delete(pa)
+      if obj:
+        # this seems to be required with sqlalchemy > 0.9
+        session.expire(obj, [PERMISSIONS_ATTR])
 
 
   def filter_with_permission(self, user, permission, obj_list, inherit=False):
