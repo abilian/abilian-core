@@ -20,37 +20,44 @@ except ImportError:
 from abilian.core.models.blob import Blob
 from ..base import Service
 
+CLAMD_CONF = {
+  'StreamMaxLength': u'25M',
+  'MaxFileSize': u'25M',
+}
+CLAMD_STREAMMAXLENGTH = 26214400
+CLAMD_MAXFILESIZE = 26214400
 
 if CLAMD_AVAILABLE:
   conf_path = pathlib.Path('/etc', 'clamav', 'clamd.conf')
-  conf_lines = [l.strip() for l in conf_path.open('rt').readlines()]
-  CLAMD_CONF = dict(l.split(u' ', 1) for l in conf_lines
-                    if not l.startswith(u'#'))
+  if conf_path.exists():
+    conf_lines = [l.strip() for l in conf_path.open('rt').readlines()]
+    CLAMD_CONF = dict(l.split(u' ', 1) for l in conf_lines
+                      if not l.startswith(u'#'))
 
-  def _size_to_int(size_str):
-    multiplier = 0
-    if not size_str:
-      return 0
+    def _size_to_int(size_str):
+      multiplier = 0
+      if not size_str:
+        return 0
 
-    unit = size_str[-1].lower()
-    if unit in ('k', 'm'):
-      size_str = size_str[:-1]
-      multiplier = 1024
-      if unit == 'm':
-        multiplier *= 1024
+      unit = size_str[-1].lower()
+      if unit in ('k', 'm'):
+        size_str = size_str[:-1]
+        multiplier = 1024
+        if unit == 'm':
+          multiplier *= 1024
 
-    if not size_str:
-      return 0
+      if not size_str:
+        return 0
 
-    size = int(size_str)
-    if multiplier:
-      size *= multiplier
+      size = int(size_str)
+      if multiplier:
+        size *= multiplier
 
-    return size
+      return size
 
-  CLAMD_STREAMMAXLENGTH = _size_to_int(CLAMD_CONF['StreamMaxLength'])
-  CLAMD_MAXFILESIZE = _size_to_int(CLAMD_CONF['MaxFileSize'])
-  del conf_path, conf_lines, _size_to_int
+    CLAMD_STREAMMAXLENGTH = _size_to_int(CLAMD_CONF['StreamMaxLength'])
+    CLAMD_MAXFILESIZE = _size_to_int(CLAMD_CONF['MaxFileSize'])
+    del conf_path, conf_lines, _size_to_int
 
 
 class AntiVirusService(Service):
