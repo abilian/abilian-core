@@ -345,6 +345,32 @@ class ModuleMeta(type):
             # Wrap views
             # setattr(cls, p, _wrap_view(attr))
 
+class ModuleComponent(object):
+  """
+  A component that provide new functions for a :class:`Module`
+  """
+  name = None
+
+  def __init__(self, name=None):
+    if name is not None:
+      self.name = name
+
+    if self.name is None:
+      raise ValueError('A module component must have a name')
+
+  def init_module(self, module):
+    self.module = module
+    self.init()
+
+  def init(self, *args, **kwargs):
+    """
+    Implements this in components
+    """
+    pass
+
+  def get_actions(self):
+    return []
+
 
 class Module(object):
   __metaclass__ = ModuleMeta
@@ -356,6 +382,7 @@ class Module(object):
   list_view = None
   list_view_columns = []
   single_view = None
+  components = ()
 
   # class based views. If not provided will be automaticaly created from
   # EntityView etc defined above
@@ -456,6 +483,14 @@ class Module(object):
     for sc in self.search_criterions:
       sc.model = self.managed_class
 
+    self.__components = {}
+    for component in self.components:
+      component.init_module(self)
+      self.__components[component.name] = component
+
+  def get_component(self, name):
+    return self.__components.get(name)
+
   def _setup_view(self, url, attr, cls, *args, **kwargs):
     """
     Register class based views
@@ -491,6 +526,9 @@ class Module(object):
                    endpoint=Endpoint(self.endpoint + '.entity_new'),
                    button='default',),
     ]
+    for component in self.components:
+      ACTIONS.extend(component.get_actions())
+
     actions.register(*ACTIONS)
 
   def create_blueprint(self, crud_app):
