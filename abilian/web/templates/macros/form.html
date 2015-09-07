@@ -57,7 +57,7 @@
 {%- macro m_form(form, fields=(), action="", method="POST", enctype="multipart/form-data", 
                  horizontal=False, id=None, role="form",
                  label_width=2, field_width=8) %}
-  <form action="{{ action }}" method="{{ method }}" enctype="{{ enctype }}" {%- if horizontal %}class="form-horizontal" {%- endif %} {%- if id %} id="{{ id }}" {%- endif %} role="{{ role }}">
+  <form action="{{ action }}" method="{{ method }}" enctype="{{ enctype }}" {%- if horizontal %}class="form-horizontal" {%- endif %} {%- if id %} id="{{ id }}" {%- endif %} role="{{ role }}"  novalidate>
 
     {%- for field in (fields or form) %}
       {{ m_field(field, horizontal=horizontal, label_width=label_width, field_width=field_width) }}
