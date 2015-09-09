@@ -754,13 +754,31 @@ class DefaultRelatedView(RelatedView):
 
 # TODO: rename to CRMApp ?
 class CRUDApp(object):
-  def __init__(self, app, modules=None):
+
+  modules = ()
+
+  def __init__(self, app, modules=None, name=None):
+    if name is None:
+      name = self.__class__.__module__
+      modules_signature = ','.join(str(module.id) for module in self.modules)
+      name = name + '-' + modules_signature
+
+    self.name = name
+    self.app = app
+    app.extensions[name] = self
+
     if modules:
       self.modules = modules
-    self.app = app
 
     for module in self.modules:
       self.add_module(module)
+
+  def get_module(self, module_id):
+    for m in self.modules:
+      if m.id == module_id:
+        return m
+
+    return None
 
   def add_module(self, module):
     self.app.register_blueprint(self.create_blueprint(module))
