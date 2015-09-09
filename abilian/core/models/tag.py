@@ -77,7 +77,7 @@ class Tag(IdMixin, Model):
 
   #: namespace
   ns = sa.Column(sa.UnicodeText(), nullable=False,
-                 default=u'default', server_default=u'default')
+                 default=u'default', server_default='default')
 
   #: Label visible to the user
   label = sa.Column(sa.UnicodeText(), nullable=False)
@@ -120,4 +120,3 @@ class Tag(IdMixin, Model):
     return '<{mod}.{cls} id={t.id!r} ns={t.ns!r} label={t.label!r} at 0x{addr:x}>'.format(
       mod=cls.__module__, cls=cls.__name__, t=self, addr=id(self),
     )
-
