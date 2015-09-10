@@ -11,7 +11,7 @@ from collections import OrderedDict
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from wtforms_alchemy import model_form_factory
-from flask import current_app
+from flask import current_app, has_app_context
 from flask_login import current_user
 from flask_wtf.form import Form as BaseForm
 
@@ -114,6 +114,17 @@ class Form(BaseForm):
   def __init__(self, *args, **kwargs):
     permission = kwargs.pop('permission', None)
     user= kwargs.pop('user', current_user)
+
+    if kwargs.get('csrf_enabled') is None and not has_app_context():
+      # form instanciated without app context and without explicit csrf
+      # parameter: disable csrf since it requires current_app.
+      #
+      # If there is a prefix, it's probably a subform (in a fieldform of
+      # fieldformlist): csrf is not required. If there is no prefix: let error
+      # happen.
+      if kwargs.get('prefix'):
+        kwargs['csrf_enabled'] = False
+
     super(Form, self).__init__(*args, **kwargs)
     self._field_groups = {} # map field -> group
 
