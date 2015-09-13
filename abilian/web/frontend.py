@@ -571,7 +571,7 @@ class Module(object):
     self.blueprint.url_value_preprocessor(self._add_breadcrumb)
 
   def _add_breadcrumb(self, endpoint, values):
-    g.breadcrumb.append(BreadcrumbItem(label=self.name,
+    g.breadcrumb.append(BreadcrumbItem(label=self.label,
                         url=Endpoint('.list_view')))
 
   @property
