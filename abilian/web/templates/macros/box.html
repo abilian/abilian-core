@@ -11,7 +11,7 @@
       <div class="panel-heading">
         <h5 class="panel-title">
           {%- if href %}<a href="{{ href }}">{%- endif %}
-          {%- if icon_class -%}<span class="{{ icon_class}}"></span>{%- endif -%}
+          {%- if icon_class -%}<span class="{{ icon_class}}"></span>{% endif %}
           {{ title }}
           {%- if href %}</a>{%- endif %}
         </h5>
