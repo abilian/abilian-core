@@ -3,7 +3,8 @@
 
 {% macro m_audit_field_changes(changes) %}
   <ul>
-    {%- for key, values in changes.columns.items() %}
+    {%- for key in changes.columns|sort %}
+      {% set values = changes.columns[key] %}
       <li>
         {%- if values.columns|default(None) != None %}
           {{ _('{key} changed:').format(key=_key_fmt(key)) }}
@@ -11,7 +12,8 @@
         {%- else %}
           {%- set old_value, new_value = values %}
           {%- if old_value and old_value not in (NEVER_SET, NO_VALUE) %}
-            {{ _('{key} changed from {old_value} to {new_value}').format(key=_key_fmt(key), old_value=_value_fmt(old_value), new_value=_value_fmt(new_value)) }}
+            {{ _('{key} changed from {old_value} to {new_value}').format(
+                 key=_key_fmt(key), old_value=_value_fmt(old_value), new_value=_value_fmt(new_value)) }}
           {%- else %}
             {{ _('{key} set to {new_value}').format(key=_key_fmt(key), new_value=_value_fmt(new_value)) }}
           {%- endif %}
@@ -35,7 +37,8 @@
 {% macro m_audit_entry(entry) %}
     <div>
       {#- FIXME: use macro for user avatar #}
-      <img src="{{ user_photo_url(entry.user, size=16) }}" alt=""/>
+      <img src="{{ user_photo_url(entry.user, size=16) }}" style="margin-bottom: 2px;" alt=""/>
+
       <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
       {%- if entry.related or entry.op == 1 %}
         made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
