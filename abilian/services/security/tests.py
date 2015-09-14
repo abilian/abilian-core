@@ -136,6 +136,8 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(group) == ['admin']
     assert security.get_principals(Admin) == [group]
 
+    assert security.has_role(user, Admin)
+
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
     assert security.has_permission(user, "manage")
@@ -145,6 +147,7 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(group) == []
     assert security.get_principals(Admin) == []
 
+    assert not security.has_role(user, "admin")
     assert not security.has_permission(user, "read")
     assert not security.has_permission(user, "write")
     assert not security.has_permission(user, "manage")

@@ -257,7 +257,9 @@ class SecurityService(Service):
     if isinstance(principal, User):
       filter_cond = (RoleAssignment.user == principal)
       if len(principal.groups) > 0:
-         filter_cond |= (RoleAssignment.group in principal.groups)
+        group_ids = (g.id for g in principal.groups)
+        filter_cond |= (RoleAssignment.group_id.in_(group_ids))
+
       q = q.filter(filter_cond)
     else:
       q = q.filter(RoleAssignment.group == principal)
@@ -358,6 +360,17 @@ class SecurityService(Service):
           obj_roles |= roles
 
       self._set_role_cache(user, all_roles)
+
+
+  def _clear_role_cache(self, principal):
+    if hasattr(principal, "__roles_cache__"):
+      del principal.__roles_cache__
+
+    if isinstance(principal, Group):
+      for u in principal.members:
+        if hasattr(u, '__roles_cache__'):
+          del u.__roles_cache__
+
 
   def has_role(self, principal, role, object=None):
     """
@@ -521,9 +534,7 @@ class SecurityService(Service):
     audit = SecurityAudit(manager=manager, op=SecurityAudit.REVOKE, **args)
     session.add(audit)
     self._needs_flush()
-
-    if hasattr(principal, "__roles_cache__"):
-      del principal.__roles_cache__
+    self._clear_role_cache(principal)
 
   @require_flush
   def get_role_assignements(self, object):
