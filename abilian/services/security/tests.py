@@ -175,9 +175,13 @@ class SecurityTestCase(IntegrationTestCase):
     # test get_roles "global": object roles should not appear
     assert security.get_roles(user) == ['global_role']
 
+    # global role is valid on all object
+    assert security.has_role(user, 'global_role', obj)
+
     security.ungrant_role(user, "reader", obj)
     assert not security.has_role(user, "reader", obj)
     assert security.get_roles(user, obj) == []
+    assert security.has_role(user, 'global_role', obj)
 
     assert not security.has_permission(user, "read", obj)
     assert not security.has_permission(user, "write", obj)

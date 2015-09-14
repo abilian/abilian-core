@@ -425,25 +425,12 @@ class SecurityService(Service):
     else:
       object_key = None
 
-    if self.app_state.use_cache:
-      cache = self._fill_role_cache(principal)
-
-      if Admin in cache.get(None, ()):
-        # user is a global admin
-        return True
-
-      if object_key in cache:
-        roles = cache[object_key]
-        return len(valid_roles & roles) > 0
-      return False
-
-    all_roles = self._all_roles(principal)
-
-    if Admin in all_roles.get(None, ()):
-      # user is a global admin
-      return True
-
-    roles = all_roles.get(object_key, set())
+    all_roles = (self._fill_role_cache(principal)
+                 if self.app_state.use_cache
+                 else self._all_roles(principal))
+    roles = set()
+    roles |= all_roles.get(None, set())
+    roles |= all_roles.get(object_key, set())
     return len(valid_roles & roles) > 0
 
   def grant_role(self, principal, role, obj=None):

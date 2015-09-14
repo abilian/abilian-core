@@ -4,7 +4,8 @@ Changelog for Abilian Core
 0.4.5 (unreleased)
 ------------------
 
-- fixed: check user has roles through group membership
+- fix: check user has role on object with global role
+- fix: check user has roles through group membership
 
 
 0.4.4 (2015-08-07)
