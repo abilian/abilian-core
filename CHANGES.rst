@@ -4,6 +4,7 @@ Changelog for Abilian Core
 0.4.5 (unreleased)
 ------------------
 
+- celery: fix how dispose is called after fork
 - fix: check user has role on object with global role
 - fix: check user has roles through group membership
 
