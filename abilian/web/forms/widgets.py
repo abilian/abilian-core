@@ -201,12 +201,15 @@ class BaseTableView(object):
         build_url = col.get('url', url_for)
 
       value = entity
-      for attr in column_name.split('.'):
-        value = value.display_value(attr)
-
-      # Manual massage.
-      if value is None:
-        value = ""
+      attr = column_name.rsplit('.', 1)
+      if len(attr) > 1:
+        try:
+          value = getattr(value, attr[0], "")
+          value = value.display_value(attr[1])
+        except AttributeError:
+          value = ""
+      else:
+        value = value.display_value(attr[0])
 
       if column_name == make_link_on or column_name == 'name' or \
          col.get('linkable'):
