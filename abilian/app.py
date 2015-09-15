@@ -633,6 +633,8 @@ class Application(Flask, ServiceManager, PluginManager):
                       view_func=partial(send_file_from_directory,
                                         directory=directory),
                       roles=roles)
+    self.add_access_controller(endpoint, allow_access_for_roles(Anonymous),
+                               endpoint=True)
 
   #
   # Templating and context injection setup
