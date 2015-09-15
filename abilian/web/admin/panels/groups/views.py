@@ -23,6 +23,7 @@ class JsonGroupsList(base.JSONView):
   JSON group list for datatable
   """
   def data(self, *args, **kw):
+    security = current_app.services['security']
     length = int(kw.get("iDisplayLength", 0))
     start = int(kw.get("iDisplayStart", 0))
     sort_dir = kw.get("sSortDir_0", "asc")
@@ -56,10 +57,16 @@ class JsonGroupsList(base.JSONView):
       # TODO: this should be done on the browser.
       group_url = url_for(".groups_group", group_id=group.id)
       name = escape(getattr(group, "name") or "")
+      roles = security.get_roles(group)
       columns = []
       columns.append(
         u'<a href="{url}">{name}</a>'.format(url=group_url, name=name)
       )
+      columns.append(render_template_string(
+        u'''{%- for role in roles %}
+            <span class="badge badge-default">{{ role }}</span>
+            {%- endfor %}''',
+            roles=roles))
       columns.append(u'\u2713' if group.public else u'')
       data.append(columns)
 

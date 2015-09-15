@@ -34,12 +34,12 @@ class GroupsPanel(AdminPanel):
     datatable_options = {
       'sDom': 'lfFrtip',
       'aaSorting': [
-          [1, u'asc'],
-          [2, u'desc'],
+          [0, u'asc'],
       ],
       'aoColumns': [
           dict(asSorting=['asc', 'desc']),
-          dict(asSorting=[]),
+          dict(bSortable=False),
+          dict(bSortable=False),
       ],
       'bFilter': True,
       'oLanguage': {
