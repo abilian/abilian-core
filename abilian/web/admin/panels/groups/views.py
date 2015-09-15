@@ -88,7 +88,8 @@ class GroupBase(object):
   def index_url(self):
     return url_for('.groups')
 
-  view_url = index_url
+  def view_url(self):
+    return url_for('.groups_group', group_id=self.obj.id)
 
 
 # those buttons are made to have valid edit actions, but will not be shown in
