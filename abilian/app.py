@@ -274,6 +274,14 @@ class Application(Flask, ServiceManager, PluginManager):
       self.register_plugins()
       self.add_access_controller('static', allow_access_for_roles(Anonymous),
                                  endpoint=True)
+      # debugtoolbar: this is needed to have it when not authenticated on a
+      # private site. We cannot do this in init_debug_toolbar, since auth
+      # service is not yet installed
+      self.add_access_controller('debugtoolbar',
+                                 allow_access_for_roles(Anonymous),)
+      self.add_access_controller('_debug_toolbar.static',
+                                 allow_access_for_roles(Anonymous),
+                                 endpoint=True)
 
     self.maybe_register_setup_wizard()
     self._finalize_assets_setup()
