@@ -39,6 +39,7 @@ class UsersPanel(AdminPanel):
           dict(asSorting=['asc', 'desc']),
           dict(bSortable=False),
           dict(bSortable=False),
+          dict(bSortable=False),
           dict(asSorting=['asc', 'desc']),
       ],
       'bFilter': True,

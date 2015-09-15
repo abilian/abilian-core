@@ -38,7 +38,8 @@ class JsonUsersList(base.JSONView):
 
     end = start + length
     q = User.query\
-        .options(sa.orm.noload('*'))\
+        .options(sa.orm.subqueryload('groups'),
+                 sa.orm.undefer('photo'),)\
         .filter(User.id != 0)
     total_count = q.count()
 
@@ -88,6 +89,11 @@ class JsonUsersList(base.JSONView):
       columns.append(u'<a href="{url}"><em>{email}</em></a>'.format(url=user_url,
                                                                     email=email))
       columns.append(u'\u2713' if user.can_login else u'')
+      columns.append(render_template_string(
+        u'''{%- for g in groups %}
+            <span class="badge badge-default">{{ g.name }}</span>
+            {%- endfor %}''',
+            groups=sorted(user.groups)))
       columns.append(render_template_string(
         u'''{%- for role in roles %}
             <span class="badge badge-default">{{ role }}</span>
