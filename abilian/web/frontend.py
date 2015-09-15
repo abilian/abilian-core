@@ -207,6 +207,7 @@ class BaseEntityView(ModuleView):
       security = current_app.services['security']
       return security.has_permission(current_user,
                                      create_cls.permission,
+                                     obj=self.obj,
                                      roles=cls_permissions[permission])
     return False
 
