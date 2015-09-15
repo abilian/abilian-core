@@ -67,7 +67,7 @@ _JSON_HTML = u'''
 <body>
   <pre>
   <code class="json">
-{{ content }}
+{{ content|escape }}
   </code>
   </pre>
 
