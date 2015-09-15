@@ -32,14 +32,13 @@ class UsersPanel(AdminPanel):
       'sDom': 'lfFritip',
       'aaSorting': [
           [1, u'asc'],
-          [2, u'desc'],
       ],
       'aoColumns': [
-          dict(asSorting=[]),
+          dict(bSortable=False),
           dict(asSorting=['asc', 'desc']),
           dict(asSorting=['asc', 'desc']),
-          dict(asSorting=[]),
-          dict(asSorting=[]),
+          dict(bSortable=False),
+          dict(bSortable=False),
           dict(asSorting=['asc', 'desc']),
       ],
       'bFilter': True,
