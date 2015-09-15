@@ -81,6 +81,8 @@ class GroupBase(object):
   def index_url(self):
     return url_for('.groups')
 
+  view_url = index_url
+
 
 # those buttons are made to have valid edit actions, but will not be shown in
 # edit forms: they must be availabe only during POST
