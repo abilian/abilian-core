@@ -36,8 +36,11 @@ class BaseUserAdminForm(Form):
       widget=widgets.BooleanWidget())
 
   roles = Select2MultipleField(
-      _l(u'Roles'),
-      choices=lambda: [(r.name, r.label) for r in Role.assignable_roles()],
+    _l(u'Roles'),
+    description=_l(
+      u'Prefer groups to manage access rights. Directly assigning roles '
+      u'to users is possible but discouraged.'),
+    choices=lambda: [(r.name, r.label) for r in Role.assignable_roles()],
   )
 
   password = StringField(
