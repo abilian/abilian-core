@@ -294,22 +294,22 @@ class AjaxMainTableView(object):
     aoColumns += [{'asSorting': col['sorting'], 'bSortable': col['sortable']}
                   for col in self.columns]
     datatable_options = {
-      'sDom': 'lfFritip',
+      'sDom': 'fFriltip',
       'aoColumns': aoColumns,
       'bFilter': True,
       'oLanguage': {
-        'sSearch': self.options.get('search_label', _("Filter records:")),
-        'sPrevious': _("Previous"),
-        'sNext': _("Next"),
-        'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
-        'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
-        'sAddAdvancedFilter': _("Add a filter"),
+        'sSearch': self.options.get('search_label', _(u'Filter records:')),
+        'sPrevious': _(u'Previous'),
+        'sNext': _(u'Next'),
+        'sLengthMenu': _(u'Entries per page: _MENU_'),
+        'sInfo': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
+        'sInfoFiltered': _(u'(filtered from _MAX_ total entries)'),
+        'sAddAdvancedFilter': _(u'Add a filter'),
       },
       'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",
-      'bLengthChange': False,
+      'bLengthChange': True,
       'iDisplayLength': 25,
-
       'bStateSave': self.save_state,
       'bProcessing': True,
       'bServerSide': True,

@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: abilian-core 0.4.5.dev36+ngc52fac0.d20150915\n"
+"Project-Id-Version: abilian-core 0.4.5.dev42+ng155785d.d20150916\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-15 14:15+0200\n"
+"POT-Creation-Date: 2015-09-16 11:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,11 +46,11 @@ msgstr ""
 msgid "has done action \"{verb}\" on object \"{object}\"."
 msgstr ""
 
-#: abilian/services/auth/service.py:54
+#: abilian/services/auth/service.py:55
 msgid "Logout"
 msgstr ""
 
-#: abilian/services/auth/service.py:61
+#: abilian/services/auth/service.py:62
 msgid "Login"
 msgstr ""
 
@@ -223,20 +223,20 @@ msgstr ""
 msgid "No item in this vocabulary"
 msgstr ""
 
-#: abilian/web/frontend.py:215
+#: abilian/web/frontend.py:216
 #: abilian/web/admin/templates/admin/group_view.html:7
 #: abilian/web/templates/macros/attachment_default.html:32
 msgid "Edit"
 msgstr ""
 
-#: abilian/web/frontend.py:223
+#: abilian/web/frontend.py:224
 #: abilian/web/templates/macros/attachment_default.html:42
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
 #: abilian/web/views/object.py:461
 msgid "Delete"
 msgstr ""
 
-#: abilian/web/frontend.py:525
+#: abilian/web/frontend.py:526
 msgid "Create New"
 msgstr ""
 
@@ -341,19 +341,19 @@ msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:304
+#: abilian/web/forms/widgets.py:305
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:305
+#: abilian/web/forms/widgets.py:306
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:306
+#: abilian/web/forms/widgets.py:307
 msgid "Add a filter"
 msgstr ""
 
@@ -380,7 +380,7 @@ msgstr ""
 msgid "Roles"
 msgstr ""
 
-#: abilian/web/admin/panels/groups/views.py:98
+#: abilian/web/admin/panels/groups/views.py:99
 msgid "Add"
 msgstr ""
 
@@ -598,6 +598,10 @@ msgstr ""
 
 #: abilian/web/forms/validators.py:152
 msgid "Virus detected!"
+msgstr ""
+
+#: abilian/web/forms/widgets.py:304
+msgid "Entries per page: _MENU_"
 msgstr ""
 
 #: abilian/web/forms/widgets.py:671

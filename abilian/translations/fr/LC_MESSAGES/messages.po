@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-15 14:15+0200\n"
-"PO-Revision-Date: 2015-09-15 14:16+0200\n"
+"POT-Creation-Date: 2015-09-16 11:14+0200\n"
+"PO-Revision-Date: 2015-09-16 11:15+0200\n"
 "Last-Translator: ybourbotte@abilian.com\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -48,11 +48,11 @@ msgstr ""
 msgid "has done action \"{verb}\" on object \"{object}\"."
 msgstr ""
 
-#: abilian/services/auth/service.py:54
+#: abilian/services/auth/service.py:55
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: abilian/services/auth/service.py:61
+#: abilian/services/auth/service.py:62
 msgid "Login"
 msgstr "Connexion"
 
@@ -229,20 +229,20 @@ msgstr "Ajouter une nouvelle valeur"
 msgid "No item in this vocabulary"
 msgstr "Aucun élement pour ce vocabulaire"
 
-#: abilian/web/frontend.py:215
+#: abilian/web/frontend.py:216
 #: abilian/web/admin/templates/admin/group_view.html:7
 #: abilian/web/templates/macros/attachment_default.html:32
 msgid "Edit"
 msgstr "Éditer"
 
-#: abilian/web/frontend.py:223
+#: abilian/web/frontend.py:224
 #: abilian/web/templates/macros/attachment_default.html:42
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
 #: abilian/web/views/object.py:461
 msgid "Delete"
 msgstr "Supprimer"
 
-#: abilian/web/frontend.py:525
+#: abilian/web/frontend.py:526
 msgid "Create New"
 msgstr "Créer un nouveau"
 
@@ -351,19 +351,19 @@ msgstr "Suivant"
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:304
+#: abilian/web/forms/widgets.py:305
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:305
+#: abilian/web/forms/widgets.py:306
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtré sur un total de _MAX_ entrées)"
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:306
+#: abilian/web/forms/widgets.py:307
 msgid "Add a filter"
 msgstr "Ajouter un filtre"
 
@@ -390,7 +390,7 @@ msgstr "Public"
 msgid "Roles"
 msgstr "Roles"
 
-#: abilian/web/admin/panels/groups/views.py:98
+#: abilian/web/admin/panels/groups/views.py:99
 msgid "Add"
 msgstr "Ajouter"
 
@@ -437,7 +437,9 @@ msgstr "Si décoché, l'utilisateur ne pourra plus se connecter."
 msgid ""
 "Prefer groups to manage access rights. Directly assigning roles to users "
 "is possible but discouraged."
-msgstr "Préférez les groupes pour gérer les droits d'accès. Directement donner un rôle à un utilisateur est possible mais découragé."
+msgstr ""
+"Préférez les groupes pour gérer les droits d'accès. Directement donner un"
+" rôle à un utilisateur est possible mais découragé."
 
 #: abilian/web/admin/panels/users/forms.py:47
 #: abilian/web/preferences/user.py:26
@@ -610,6 +612,10 @@ msgstr "Le champ doit comporter entre %(min)d et %(max)d caractères."
 #: abilian/web/forms/validators.py:152
 msgid "Virus detected!"
 msgstr "Virus détecté!"
+
+#: abilian/web/forms/widgets.py:304
+msgid "Entries per page: _MENU_"
+msgstr "Entrées par page: _MENU_"
 
 #: abilian/web/forms/widgets.py:671
 msgid "Add file"
@@ -905,8 +911,5 @@ msgstr "Entité supprimée"
 #~ msgstr "refaire"
 
 #~ msgid ""
-#~ "Prefer groups to manage role-based "
-#~ "access. Directly assigning roles to "
-#~ "users is possible but discouraged."
 #~ msgstr ""
 
