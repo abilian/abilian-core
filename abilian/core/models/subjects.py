@@ -24,6 +24,7 @@ from sqlalchemy.types import (
 from flask_login import UserMixin, current_app
 
 from abilian.core import sqlalchemy as sa_types
+
 from .base import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
 
 __all__ = ['User', 'Group', 'Principal']
