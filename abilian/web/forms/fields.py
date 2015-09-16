@@ -7,7 +7,6 @@ import operator
 import logging
 from functools import partial
 import datetime
-import json
 import sqlalchemy as sa
 
 from wtforms import (
@@ -414,14 +413,20 @@ class QuerySelect2Field(SelectFieldBase):
   """
   def __init__(self, label=None, validators=None, query_factory=None,
                get_pk=None, get_label=None, allow_blank=False,
-               blank_text='', widget=None, multiple=False, **kwargs):
+               blank_text='', widget=None, multiple=False,
+               collection_class=list, **kwargs):
+
     if widget is None:
       widget = Select2(multiple=multiple)
+
     kwargs['widget'] = widget
     self.multiple = multiple
+    self.collection_class = collection_class
 
-    if (validators is None
-        or not any(isinstance(v, (optional, required)) for v in validators)):
+    if validators is None:
+      validators = []
+
+    if not any(isinstance(v, (optional, required)) for v in validators):
       logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
       logger.warning('Use deprecated paramater `allow_blank`.')
       validators.append(optional() if allow_blank else required())
@@ -470,6 +475,8 @@ class QuerySelect2Field(SelectFieldBase):
     return self._data
 
   def _set_data(self, data):
+    if self.multiple and not isinstance(data, self.collection_class):
+      data = self.collection_class(data) if data else self.collection_class
     self._data = data
     self._formdata = None
 
