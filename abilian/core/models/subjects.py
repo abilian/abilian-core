@@ -21,6 +21,8 @@ from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import (
   Integer, UnicodeText, LargeBinary, Boolean, DateTime
 )
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from flask_login import UserMixin, current_app
 
 from abilian.core import sqlalchemy as sa_types
@@ -298,3 +300,14 @@ class Group(Principal, db.Model):
   photo = deferred(Column(LargeBinary))
 
   public = Column(Boolean, default=False, nullable=False)
+
+  @hybrid_property
+  def members_count(self):
+    return len(self.members)
+
+  @members_count.expression
+  def members_count(cls):
+    return sa.sql.select([sa.sql.func.count(membership.c.user_id)])\
+                 .where(membership.c.group_id == cls.id)\
+                 .group_by(membership.c.group_id)\
+                 .label('members_count')

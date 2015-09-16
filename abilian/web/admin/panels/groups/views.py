@@ -49,11 +49,12 @@ class JsonGroupsList(base.JSONView):
     if engine.name != 'sqlite':
       order_by[0] = nullslast(order_by[0])
 
-    q = q.order_by(*order_by)
+    q = q.order_by(*order_by)\
+         .add_columns(Group.members_count)
     groups = q.slice(start, end).all()
     data = []
 
-    for group in groups:
+    for group, members_count in groups:
       # TODO: this should be done on the browser.
       group_url = url_for(".groups_group", group_id=group.id)
       name = escape(getattr(group, "name") or "")
@@ -62,6 +63,7 @@ class JsonGroupsList(base.JSONView):
       columns.append(
         u'<a href="{url}">{name}</a>'.format(url=group_url, name=name)
       )
+      columns.append(unicode(members_count or 0))
       columns.append(render_template_string(
         u'''{%- for role in roles %}
             <span class="badge badge-default">{{ role }}</span>
