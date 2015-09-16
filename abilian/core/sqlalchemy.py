@@ -196,7 +196,7 @@ class MutationDict(Mutable, dict):
     self.changed()
 
   def setdefault(self, key, failobj=None):
-    if key not in self.data:
+    if key not in self:
       self.changed()
     return dict.setdefault(self, key, failobj)
 
