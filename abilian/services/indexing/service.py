@@ -506,7 +506,13 @@ class WhooshIndexService(Service):
           continue
 
         writer.delete_by_term('object_key', object_key)
-        writer.add_document(**document)
+        try:
+          writer.add_document(**document)
+        except ValueError:
+          # logger is here to give us more infos in order to catch a weird bug
+          # that happens regularly on CI but is not reliably reproductible.
+          logger.error('writer.add_document(%)', document, exc_info=True)
+          raise
         indexed.add(object_key)
 
 
