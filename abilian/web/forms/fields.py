@@ -476,7 +476,7 @@ class QuerySelect2Field(SelectFieldBase):
 
   def _set_data(self, data):
     if self.multiple and not isinstance(data, self.collection_class):
-      data = self.collection_class(data) if data else self.collection_class
+      data = self.collection_class(data) if data else self.collection_class()
     self._data = data
     self._formdata = None
 
