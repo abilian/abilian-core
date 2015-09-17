@@ -3,7 +3,7 @@
 """
 from __future__ import absolute_import, print_function, division
 
-from flask import Blueprint as BaseBlueprint
+from flask import Blueprint as BaseBlueprint, current_app
 from abilian.services.security import Role, Anonymous
 
 
@@ -23,8 +23,8 @@ def allow_access_for_roles(roles):
     return allow_anonymous
 
   def check_role(user, roles, **kwargs):
-    # valid if roles intersection it not empty
-    return bool(roles & valid_roles)
+    security = current_app.services['security']
+    return security.has_role(user, valid_roles)
 
   return check_role
 
