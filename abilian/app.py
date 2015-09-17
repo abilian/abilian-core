@@ -157,6 +157,10 @@ class Application(Flask, ServiceManager, PluginManager):
   #: site.
   configured = ConfigAttribute('CONFIGURED')
 
+  #: If True all views will require by default an authenticated user, unless
+  #: Anonymous role is authorized. Static assets are always public.
+  private_site = ConfigAttribute('PRIVATE_SITE')
+
   #: instance of :class:`.web.views.registry.Registry`.
   default_view = None
 
