@@ -275,7 +275,10 @@ class DateTimeField(Field):
   def process_data(self, value):
     if value is not None:
       if not value.tzinfo:
-        value = utc_dt(value)
+        if self.use_naive:
+          value = get_timezone().localize(value)
+        else:
+          value = utc_dt(value)
       if not self.use_naive:
         value = value.astimezone(get_timezone())
 
