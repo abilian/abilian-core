@@ -33,11 +33,13 @@
       </ul>
 
       {%- if 'abilian.web.search' in app.APP_PLUGINS %}
+        {%- if not (current_user.is_anonymous() and app.private_site) %}
       <form class="navbar-form navbar-right" role="search" method="GET"
-          action="{{ url_for('search.search_main') }}">
+            action="{{ url_for('search.search_main') }}">
         <input type="text" name="q" class="search-query form-control"
-            placeholder="{{ _('Search') }}" autocomplete="off" id="search-box"/>
+               placeholder="{{ _('Search') }}" autocomplete="off" id="search-box"/>
       </form>
+        {%- endif %}
       {%- endif %}
 
       {%- set admin_nav = actions.for_category('navigation:admin') %}
