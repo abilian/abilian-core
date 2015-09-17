@@ -16,7 +16,7 @@ from flask import (
 )
 
 from abilian.i18n import _
-from abilian.web import nav
+from abilian.web import nav, views
 
 
 logger = logging.getLogger(__name__)
@@ -171,51 +171,29 @@ def search_main(q=u'', page=1):
                          friendly_fqcn=friendly_fqcn,)
 
 
-_JSON_HTML = u'''
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="{{ url_for('abilian_static', filename="highlightjs/default.min.css") }}" />
-</head>
-<body>
-  <pre>
-  <code class="json">
-{{ content }}
-  </code>
-  </pre>
+class Live(views.JSONView):
+  """
+  JSON response for live search
+  """
+  def data(self, q=u'', page=None, *args, **kwargs):
+    svc = current_app.services['indexing']
+    url_for_hit = svc.app_state.url_for_hit
+    search_kwargs = {'facet_by_type': 5}
+    response = {}
+    results = svc.search(q, **search_kwargs)
+    datasets = {}
 
-  <script src="{{ url_for('abilian_static', filename="highlightjs/highlight.min.js")  }}" ></script>
-  <script>hljs.initHighlightingOnLoad();</script>
-</body>
-</html>
-'''
+    for typename, docs in results.iteritems():
+      dataset = []
+      for doc in docs:
+        d = dict(name=doc['name'])
+        url = url_for_hit(doc, None)
+        if url is not None:
+          d['url'] = url
+          dataset.append(d)
+      datasets[typename] = dataset
 
-@route('/live')
-def live(q=u'', page=None):
-  svc = current_app.services['indexing']
-  url_for_hit = svc.app_state.url_for_hit
-  search_kwargs = {'facet_by_type': 5}
-  response = {}
-  results = svc.search(q, **search_kwargs)
-  datasets = {}
-  for typename, docs in results.iteritems():
-    dataset = []
-    for doc in docs:
-      d = dict(name=doc['name'])
-      url = url_for_hit(doc, None)
-      if url is not None:
-        d['url'] = url
-        dataset.append(d)
-    datasets[typename] = dataset
+    response['results'] = datasets
+    return response
 
-  response['results'] = datasets
-
-  best_mime = request.accept_mimetypes.best_match(['text/html',
-                                                   'application/json'])
-  if best_mime == 'application/json':
-    return jsonify(response)
-
-  # dev requesting from browser? serve html, let debugtoolbar show up, etc...
-  content = json.dumps(response, indent=2)
-  return render_template_string(_JSON_HTML, content=content)
+route('/live')(Live.as_view('live'))
