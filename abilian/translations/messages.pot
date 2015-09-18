@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: abilian-core 0.4.5.dev59+ngee0ca12.d20150918\n"
+"Project-Id-Version: abilian-core 0.4.5.dev56+ngbf24836.d20150918\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-18 12:26+0200\n"
+"POT-Creation-Date: 2015-09-18 15:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -309,31 +309,31 @@ msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:47
 #: abilian/web/admin/panels/users/__init__.py:48
-#: abilian/web/forms/widgets.py:302
+#: abilian/web/forms/widgets.py:303
 msgid "Previous"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:48
 #: abilian/web/admin/panels/users/__init__.py:49
-#: abilian/web/forms/widgets.py:303
+#: abilian/web/forms/widgets.py:304
 msgid "Next"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:305
+#: abilian/web/forms/widgets.py:307
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:306
+#: abilian/web/forms/widgets.py:308
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:307
+#: abilian/web/forms/widgets.py:309
 msgid "Add a filter"
 msgstr ""
 
@@ -580,19 +580,19 @@ msgstr ""
 msgid "Virus detected!"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:304
+#: abilian/web/forms/widgets.py:306
 msgid "Entries per page: _MENU_"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:671
+#: abilian/web/forms/widgets.py:673
 msgid "Add file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:671
+#: abilian/web/forms/widgets.py:673
 msgid "Select file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:1089
+#: abilian/web/forms/widgets.py:1091
 msgid "hour(s)"
 msgstr ""
 

@@ -299,8 +299,10 @@ class AjaxMainTableView(object):
       'bFilter': True,
       'oLanguage': {
         'sSearch': self.options.get('search_label', _(u'Filter records:')),
-        'sPrevious': _(u'Previous'),
-        'sNext': _(u'Next'),
+        'oPaginate': {
+          'sPrevious': _(u'Previous'),
+          'sNext': _(u'Next'),
+        },
         'sLengthMenu': _(u'Entries per page: _MENU_'),
         'sInfo': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
         'sInfoFiltered': _(u'(filtered from _MAX_ total entries)'),
