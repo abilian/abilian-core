@@ -49,7 +49,7 @@
 
     Abilian.fn.prevent_double_submit = function () {
         $(document).on('click', '[type="submit"]', function(e) {
-            var form = e.target.form;
+            var form = e.currentTarget.form;
             if (form.checkValidity !== undefined && !form.checkValidity()) {
                 // HTML5 constraint API. form will not validate, so will not be
                 // submitted: don't disable buttons.
