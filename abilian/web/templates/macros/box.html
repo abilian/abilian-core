@@ -2,11 +2,11 @@
 
 {%- set color_map = dict(blue="info", green="success", orange="warning", red="danger",
                          primary="primary", info="info", success="success",
-                         warning="warning", danger="danger") %}
+                         warning="warning", danger="danger", cls="") %}
 
 {%- macro m_box(title, color="info", href=None, icon_class="") %}
 <!-- begin box "{{ title }}" -->
-  <div class="panel panel-{{ color_map.get(color, 'default') }}">
+  <div class="panel panel-{{ color_map.get(color, 'default') }} {{ cls }}">
     {%- if title %}
       <div class="panel-heading">
         <h5 class="panel-title">
