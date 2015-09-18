@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-16 11:14+0200\n"
+"POT-Creation-Date: 2015-09-18 12:26+0200\n"
 "PO-Revision-Date: 2015-09-16 11:15+0200\n"
 "Last-Translator: ybourbotte@abilian.com\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -26,27 +26,6 @@ msgstr ""
 "Des informations de sécurité sont manquantes ou expirées. Cela peut "
 "arriver si vous avez ouvert le formulaire depuis un bon moment. <br /><br"
 " />Essayez de soumettre à nouveau le formulaire."
-
-#: abilian/services/activity/presenter.py:45
-#: abilian/services/activity/presenter.py:54
-msgid " in the community {target}."
-msgstr ""
-
-#: abilian/services/activity/presenter.py:50
-msgid "has posted an object of type {object_type} called \"{object}\""
-msgstr ""
-
-#: abilian/services/activity/presenter.py:59
-msgid "has joined the community {object}."
-msgstr ""
-
-#: abilian/services/activity/presenter.py:62
-msgid "has left the community {object}."
-msgstr ""
-
-#: abilian/services/activity/presenter.py:65
-msgid "has done action \"{verb}\" on object \"{object}\"."
-msgstr ""
 
 #: abilian/services/auth/service.py:55
 msgid "Logout"
@@ -129,7 +108,7 @@ msgstr "Connexion à %(site_name)s"
 #: abilian/services/auth/templates/login/login.html:16
 #: abilian/services/auth/templates/login/password_reset.fr.html:18
 #: abilian/services/auth/templates/login/password_reset.html:18
-#: abilian/web/admin/panels/users/forms.py:72
+#: abilian/web/admin/panels/users/forms.py:84
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -326,6 +305,7 @@ msgid "Changes saved."
 msgstr "Changement enregistrés."
 
 #: abilian/web/admin/panels/groups/__init__.py:19
+#: abilian/web/admin/panels/users/forms.py:42
 #: abilian/web/admin/templates/admin/groups.html:8
 #: abilian/web/admin/templates/admin/users.html:20
 msgid "Groups"
@@ -378,19 +358,19 @@ msgid "Description"
 msgstr "Description"
 
 #: abilian/web/admin/panels/groups/forms.py:23
-#: abilian/web/admin/templates/admin/groups.html:18
+#: abilian/web/admin/templates/admin/groups.html:19
 msgid "Public"
 msgstr "Public"
 
 #: abilian/web/admin/panels/groups/forms.py:27
-#: abilian/web/admin/panels/users/forms.py:39
+#: abilian/web/admin/panels/users/forms.py:51
 #: abilian/web/admin/templates/admin/group_view.html:12
-#: abilian/web/admin/templates/admin/groups.html:17
+#: abilian/web/admin/templates/admin/groups.html:18
 #: abilian/web/admin/templates/admin/users.html:21
 msgid "Roles"
 msgstr "Roles"
 
-#: abilian/web/admin/panels/groups/views.py:99
+#: abilian/web/admin/panels/groups/views.py:101
 msgid "Add"
 msgstr "Ajouter"
 
@@ -399,41 +379,41 @@ msgstr "Ajouter"
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: abilian/web/admin/panels/users/forms.py:19
+#: abilian/web/admin/panels/users/forms.py:22
 #: abilian/web/admin/templates/admin/users.html:18
 msgid "Email"
 msgstr "Email"
 
-#: abilian/web/admin/panels/users/forms.py:20
+#: abilian/web/admin/panels/users/forms.py:23
 msgid "Users log in with their email address."
 msgstr "L'e-mail est utilisé pour se connecter sur le site."
 
-#: abilian/web/admin/panels/users/forms.py:24
+#: abilian/web/admin/panels/users/forms.py:27
 msgid "First Name"
 msgstr "Prénom"
 
-#: abilian/web/admin/panels/users/forms.py:25
+#: abilian/web/admin/panels/users/forms.py:28
 msgid "ex: John"
 msgstr "ex: Pierre"
 
-#: abilian/web/admin/panels/users/forms.py:28
+#: abilian/web/admin/panels/users/forms.py:31
 msgid "Last Name"
 msgstr "Nom"
 
-#: abilian/web/admin/panels/users/forms.py:29
+#: abilian/web/admin/panels/users/forms.py:32
 msgid "ex: Smith"
 msgstr "ex: Dupont"
 
-#: abilian/web/admin/panels/users/forms.py:34
+#: abilian/web/admin/panels/users/forms.py:37
 #: abilian/web/admin/templates/admin/users.html:19
 msgid "Login enabled"
 msgstr "Login activé"
 
-#: abilian/web/admin/panels/users/forms.py:35
+#: abilian/web/admin/panels/users/forms.py:38
 msgid "If unchecked, user will not be able to connect."
 msgstr "Si décoché, l'utilisateur ne pourra plus se connecter."
 
-#: abilian/web/admin/panels/users/forms.py:40
+#: abilian/web/admin/panels/users/forms.py:52
 msgid ""
 "Prefer groups to manage access rights. Directly assigning roles to users "
 "is possible but discouraged."
@@ -441,28 +421,28 @@ msgstr ""
 "Préférez les groupes pour gérer les droits d'accès. Directement donner un"
 " rôle à un utilisateur est possible mais découragé."
 
-#: abilian/web/admin/panels/users/forms.py:47
+#: abilian/web/admin/panels/users/forms.py:59
 #: abilian/web/preferences/user.py:26
 msgid "New Password"
 msgstr "Nouveau mot de passe"
 
-#: abilian/web/admin/panels/users/forms.py:48
+#: abilian/web/admin/panels/users/forms.py:60
 msgid "If empty the current password will not be changed."
 msgstr "Si vide le mot de passe actuel ne sera pas changé."
 
-#: abilian/web/admin/panels/users/forms.py:55
+#: abilian/web/admin/panels/users/forms.py:67
 #: abilian/web/preferences/user.py:28
 msgid "Confirm new password"
 msgstr "Confirmer le nouveau mot de passe"
 
-#: abilian/web/admin/panels/users/forms.py:64
+#: abilian/web/admin/panels/users/forms.py:76
 #: abilian/web/preferences/user.py:50
 msgid ""
 "Passwords differ. Ensure you have typed same password in both "
 "\"password\" field and \"confirm password\" field."
 msgstr "Assurez vous d'avoir tapé le même mot de passe dans les 2 champs."
 
-#: abilian/web/admin/panels/users/forms.py:73
+#: abilian/web/admin/panels/users/forms.py:85
 msgid "If empty a random password will be generated."
 msgstr "Si vide un mot de passe aléatoire sera généré."
 
@@ -578,11 +558,11 @@ msgstr "Commentaire ajouté"
 msgid "New comment on \"{title}\""
 msgstr "Nouveau commentaire sur \"{title}\""
 
-#: abilian/web/forms/fields.py:309 abilian/web/forms/fields.py:353
+#: abilian/web/forms/fields.py:311 abilian/web/forms/fields.py:355
 msgid "Not a valid datetime value"
 msgstr "N'est pas une date valide"
 
-#: abilian/web/forms/fields.py:522
+#: abilian/web/forms/fields.py:532
 msgid "Not a valid choice"
 msgstr "N'est pas un choix valide"
 
@@ -662,7 +642,7 @@ msgid "All"
 msgstr "Tous"
 
 #: abilian/web/search/templates/search/search.html:14
-#: abilian/web/templates/navbar.html:39
+#: abilian/web/templates/navbar.html:40
 msgid "Search"
 msgstr "Rechercher"
 
@@ -680,6 +660,7 @@ msgid "Filter by type"
 msgstr "Filtrer par type"
 
 #: abilian/web/search/templates/search/search.html:72
+#: abilian/web/templates/widgets/render_single.html:17
 msgid "by"
 msgstr "par"
 
@@ -711,7 +692,7 @@ msgstr ""
 msgid "Tag deleted"
 msgstr "Entité supprimée"
 
-#: abilian/web/templates/abilian_base.html:47
+#: abilian/web/templates/abilian_base.html:48
 msgid "Skip to content"
 msgstr "Aller au contenu"
 
@@ -806,6 +787,14 @@ msgstr "Voulez-vous vraiment supprimer cet object?"
 #: abilian/web/templates/widgets/render_ajax_table.html:28
 msgid "Loading..."
 msgstr "Chargement en cours…"
+
+#: abilian/web/templates/widgets/render_single.html:15
+msgid "Created at:"
+msgstr "Créé le:"
+
+#: abilian/web/templates/widgets/render_single.html:21
+msgid "Updated at:"
+msgstr "Mis à jour le:"
 
 #: abilian/web/views/object.py:198
 msgid "Entity successfully edited"
