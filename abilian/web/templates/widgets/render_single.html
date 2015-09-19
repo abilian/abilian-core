@@ -11,14 +11,13 @@
 
   <h1>{{ entity.name }}</h1>
   <small>
-    {#  TODO: format datetime properly #}
-    {{ _("Created at:") }} {{ entity.created_at }}
+    {{ _("Created at:") }} {{ entity.created_at|datetimeformat("medium") }}
     {% if entity.creator %}
     {{ _("by") }} <a href="{{ url_for(entity.creator) }}">{{ entity.creator }}</a>
     {% endif %}
 
     {% if entity.created_at != entity.updated_at %}
-      - {{ _("Updated at:") }} {{ entity.updated_at }}
+      - {{ _("Updated at:") }} {{ entity.updated_at|datetimeformat("medium") }}
       {#  TODO: link to last updater #}
     {% endif %}
   </small>
