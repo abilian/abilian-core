@@ -145,6 +145,7 @@ class ModuleView(object):
 
 
 class BaseEntityView(ModuleView):
+  mode = 'view'
   pk = 'entity_id'
 
   def init_object(self, args, kwargs):
@@ -254,6 +255,7 @@ class EntityView(BaseEntityView, ObjectView):
 
 class EntityEdit(BaseEntityView, ObjectEdit):
   template = 'default/single_view.html'
+  mode = 'edit'
 
   @property
   def template_kwargs(self):
@@ -266,6 +268,7 @@ class EntityEdit(BaseEntityView, ObjectEdit):
 
 class EntityCreate(BaseEntityView, ObjectCreate):
   template = 'default/single_view.html'
+  mode = 'create'
 
   prepare_args = ObjectCreate.prepare_args
   breadcrumb = ObjectCreate.breadcrumb
