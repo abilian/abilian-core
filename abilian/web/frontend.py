@@ -145,7 +145,6 @@ class ModuleView(object):
 
 
 class BaseEntityView(ModuleView):
-  mode = 'view'
   pk = 'entity_id'
 
   def init_object(self, args, kwargs):
@@ -232,6 +231,7 @@ DELETE_ACTION.template = 'widgets/frontend_action_delete_confim.html'
 
 
 class EntityView(BaseEntityView, ObjectView):
+  mode = 'view'
   template = 'default/single_view.html'
 
   @property

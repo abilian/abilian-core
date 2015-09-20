@@ -606,19 +606,23 @@ class TextInput(wtforms.widgets.TextInput):
 
     return Markup(render_template_string(
       u'''
-      <div class="input-group">
-      {%- if widget.pre_icon %}
-      <div class="input-group-addon">{{ widget.pre_icon }}</div>
-      {%- endif %}
-      <input {{ params | safe}}>
-      {%- if widget.post_icon %}
-      <div class="input-group-addon">{{ widget.post_icon }}</div>
-      {%- endif %}
+      <div class="input-group input-group-type-{{ widget.typename }}">
+        {%- if widget.pre_icon %}
+          <div class="input-group-addon">{{ widget.pre_icon }}</div>
+        {%- endif %}
+          <input {{ params | safe}}>
+        {%- if widget.post_icon %}
+          <div class="input-group-addon">{{ widget.post_icon }}</div>
+        {%- endif %}
       </div>
       ''',
       widget=self,
       params=self.html_params(name=field.name, **kwargs)
     ))
+
+  @property
+  def typename(self):
+    return self.__class__.__name__.lower()
 
 
 class TextArea(BaseTextArea):
