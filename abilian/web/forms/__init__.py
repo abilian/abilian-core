@@ -44,7 +44,8 @@ class FormPermissions(object):
   Form role/permission manager
   """
   def __init__(self, default=Anonymous, read=None, write=None,
-               fields_read=None, fields_write=None):
+               fields_read=None, fields_write=None,
+               existing=None):
     """
     """
     if isinstance(default, Role):
@@ -53,6 +54,19 @@ class FormPermissions(object):
     self.default = default
     self.form = dict()
     self.fields = dict()
+
+    if existing is not None:
+      # copy existing formpermissions instance
+      # maybe overwrite later with our definitions
+      assert isinstance(existing, FormPermissions)
+      for permission in (READ, WRITE):
+        if permission in existing.form:
+          self.form[permission] = existing.form[permission]
+
+      for field, mapping in existing.fields.items():
+        f_map = self.fields[field] = dict()
+        for permission, roles in mapping.items():
+          f_map[permission] = roles
 
     for permission, roles in ((READ, read), (WRITE, write)):
       if roles is None:
