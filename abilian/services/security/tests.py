@@ -80,6 +80,14 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(anon) == [Anonymous]
     assert not security.has_permission(anon, 'read')
 
+  def test_has_role_authenticated(self):
+    anon = self.app.login_manager.anonymous_user()
+    user = User(email=u"john@example.com", password="x")
+    self.session.add(user)
+    self.session.flush()
+    assert not security.has_role(anon, Authenticated)
+    assert security.has_role(user, Authenticated)
+
   def test_root_user(self):
     """ Root user always has any role, any permission
     """

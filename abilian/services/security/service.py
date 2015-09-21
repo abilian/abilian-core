@@ -403,6 +403,10 @@ class SecurityService(Service):
       # everybody has the role 'Anonymous'
       return True
 
+    if (Authenticated in valid_roles
+        and isinstance(principal, User) and not principal.is_anonymous()):
+        return True
+
     if (principal is AnonymousRole
         or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
       # anonymous user, and anonymous role isn't in valid_roles
