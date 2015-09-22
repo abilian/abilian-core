@@ -49,6 +49,7 @@ class TestConfig(object):
   """
   SITE_NAME = u'Abilian Test'
   SQLALCHEMY_DATABASE_URI = "sqlite://"
+  SERVER_NAME = 'localhost' # needed for url_for with '_external=True'
   SQLALCHEMY_ECHO = False
   TESTING = True
   SECRET_KEY = "SECRET"
