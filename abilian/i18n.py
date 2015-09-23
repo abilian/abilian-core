@@ -50,6 +50,7 @@ from __future__ import absolute_import, print_function, division
 
 import os
 import re
+from gettext import GNUTranslations
 import importlib
 import unicodedata
 from pathlib import Path
@@ -59,7 +60,7 @@ from datetime import datetime
 import pytz
 from babel import Locale
 from babel.localedata import locale_identifiers
-from babel.support import Translations
+from babel.support import Translations as BaseTranslations
 from babel.dates import LOCALTZ, get_timezone, get_timezone_gmt
 from flask import g, request, _request_ctx_stack, current_app, render_template
 import flask_babel
@@ -213,6 +214,40 @@ class Babel(BabelBase):
         continue
 
       self._translations_paths.append((unicode(path), domain))
+
+
+class Translations(BaseTranslations):
+  """
+  Merge only non-empty translations.
+
+  This avoids having uncomplete catalog that "clear" existing translations, when
+  used with :func:`_get_translations_multi_paths`.
+  """
+  def merge(self, translations):
+    if isinstance(translations, GNUTranslations):
+
+      for msgkey, msgstr in translations._catalog.items():
+        msgid = msgkey
+
+        if isinstance(msgkey, tuple):
+          msgid = msgkey[0]
+
+        msgstr = msgstr.strip()
+        if msgkey in self._catalog and (msgid == msgstr):
+          # when msgstr is empty, compile_catalog sets msgstr = msgid so this is
+          # probable an existing translation that would be "erased" by msgid
+          # string: skip it.
+
+          # logger.debug('Catalog: %r, skip msgkey: %r, existing: %r',
+          #                translations, msgkey, self._catalog[msgkey])
+          continue
+
+        self._catalog[msgkey] = msgstr
+
+      if isinstance(translations, BaseTranslations):
+        self.files.extend(translations.files)
+
+    return self
 
 
 def _get_translations_multi_paths():
