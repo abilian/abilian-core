@@ -431,7 +431,8 @@ class QuerySelect2Field(SelectFieldBase):
 
     if not any(isinstance(v, (optional, required)) for v in validators):
       logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
-      logger.warning('Use deprecated paramater `allow_blank`.')
+      logger.warning(u'Use deprecated parameter `allow_blank` for field "{}".'
+                     .format(label))
       validators.append(optional() if allow_blank else required())
 
     super(QuerySelect2Field, self).__init__(label, validators, **kwargs)
