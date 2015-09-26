@@ -54,7 +54,7 @@ def support_graceful_failure(view):
 
   View can be a view function or a class based view
   """
-  setattr(view, 'csrf_support_graceful_failure', True)
+  view.csrf_support_graceful_failure = True
   return view
 
 

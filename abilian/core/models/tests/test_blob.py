@@ -48,14 +48,14 @@ class BlobTestCase(AbilianTestCase):
 
   def test_filename(self):
     content = StringIO(u'test')
-    setattr(content, 'filename', 'test.txt')
+    content.filename = 'test.txt'
     b = Blob(content)
     assert 'filename' in b.meta
     assert b.meta['filename'] == u'test.txt'
 
   def test_mimetype(self):
     content = StringIO(u'test')
-    setattr(content, 'content_type', 'text/plain')
+    content.content_type = 'text/plain'
     b = Blob(content)
     assert 'mimetype' in b.meta
     assert b.meta['mimetype'] == u'text/plain'
