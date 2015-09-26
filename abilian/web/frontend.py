@@ -689,7 +689,7 @@ class Module(object):
     args = request.args
     cls = self.managed_class
 
-    q = args.get("q").replace("%", " ")
+    q = args.get("q", "").replace("%", " ")
     if not q or len(q) < 2:
       raise BadRequest()
 

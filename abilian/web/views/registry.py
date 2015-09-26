@@ -38,7 +38,6 @@ class Registry(object):
     """
     Returns canonical view for given entity instance.
 
-
     If no view has been registered the registry will try to find an
     endpoint named with entity's class lowercased followed by '.view'
     and that accepts `object_id=entity.id` to generates an url.

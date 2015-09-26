@@ -47,7 +47,6 @@ class View(BaseView):
     """
     return args, kwargs
 
-
   def redirect(self, url):
     """
     Shortcut all call stack and return response.
