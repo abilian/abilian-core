@@ -336,7 +336,10 @@ class Action(object):
     """
     if not self._enabled:
       return False
-    return self.pre_condition(context) and self._check_condition(context)
+    try:
+      return self.pre_condition(context) and self._check_condition(context)
+    except:
+      return False
 
   def pre_condition(self, context):
     """

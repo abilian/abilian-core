@@ -11,9 +11,6 @@ from abilian.web.action import actions
 
 
 class ActionDebugPanel(DebugPanel):
-  """
-
-  """
   name = 'Actions'
   has_content = True
   routes = []
@@ -29,8 +26,10 @@ class ActionDebugPanel(DebugPanel):
 
   def content(self):
     actions_for_template = []
-    for category, actions2 in actions.actions().items():
-      for action in actions2:
+
+    for category in actions.actions().keys():
+      available_actions = actions.for_category(category)
+      for action in available_actions:
         d = {
           'category': action.category,
           'title': action.title,
@@ -41,7 +40,7 @@ class ActionDebugPanel(DebugPanel):
         except:
           d['endpoint'] = '<Exception>'
         try:
-          d['url'] = action.url(g.action_context)
+          d['url'] = unicode(action.url(g.action_context))
         except:
           d['url'] = '<Exception>'
         actions_for_template.append(d)
