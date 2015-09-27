@@ -255,6 +255,13 @@ class User(Principal, UserMixin, db.Model):
                                               last_name=self.last_name or u'')
     return name.strip() or u'Unknown'
 
+  @property
+  def short_name(self):
+    first_name = self.first_name or u''
+    last_name = self.last_name[0:1] + "." if self.last_name else u''
+    name = u'{} {}'.format(first_name, last_name)
+    return name.strip() or u'Unknown'
+
   def __unicode__(self):
     return self.name
 
