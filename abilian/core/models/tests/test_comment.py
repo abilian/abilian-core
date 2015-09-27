@@ -4,8 +4,7 @@
 from __future__ import absolute_import, print_function, division
 
 from datetime import datetime, timedelta
-
-import pytest
+from _pytest.python import raises
 
 from abilian.testing import BaseTestCase as AbilianTestCase
 from abilian.core.entities import Entity
@@ -19,8 +18,10 @@ class CommentableContent(Entity):
 
 def test_commentable_interface():
   assert is_commentable(CommentableContent)
+
   instance = CommentableContent(name=u'test instance')
   assert not is_commentable(instance) # not in DB: no id
+
   instance.id = 42
   assert is_commentable(instance)
   assert not is_commentable(object)
@@ -31,7 +32,7 @@ def test_cannot_register_non_entities():
   class Dummy(object):
     pass
 
-  with pytest.raises(ValueError):
+  with raises(ValueError):
     register(Dummy)
 
 
