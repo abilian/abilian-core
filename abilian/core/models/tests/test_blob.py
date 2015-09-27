@@ -75,7 +75,6 @@ class BlobTestCase(AbilianTestCase):
     session.add(b)
     session.flush()
 
-    b.uuid
     assert Blob.query.by_uuid(b.uuid) is b
     assert Blob.query.by_uuid(unicode(b.uuid)) is b
 
@@ -91,34 +90,31 @@ class BlobTestCase(AbilianTestCase):
     session.add(b)
     tr.commit()
 
-    self.assertIs(repository.get(b.uuid), None)
-    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
-                      content)
-    self.assertEquals(b.value, content)
+    assert repository.get(b.uuid) is None
+    assert session_repository.get(b, b.uuid).open('rb').read() == content
+    assert b.value == content
 
     session.commit()
-    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
-    self.assertEquals(b.value, content)
+    assert repository.get(b.uuid).open('rb').read() == content
+    assert b.value == content
 
     tr = session.begin(nested=True)
     session.delete(b)
     # object marked for deletion, but instance attribute should still be
     # readable
-    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
-                      content)
+    assert session_repository.get(b, b.uuid).open('rb').read() == content
     tr.commit()
 
-    self.assertIs(session_repository.get(b, b.uuid), None)
-    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
+    assert session_repository.get(b, b.uuid) is None
+    assert repository.get(b.uuid).open('rb').read() == content
 
     session.rollback()
-    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
-                      content)
+    assert session_repository.get(b, b.uuid).open('rb').read() == content
 
     session.delete(b)
     session.flush()
-    self.assertIs(session_repository.get(b, b.uuid), None)
-    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
+    assert session_repository.get(b, b.uuid) is None
+    assert repository.get(b.uuid).open('rb').read() == content
 
     session.commit()
-    self.assertIs(repository.get(b.uuid), None)
+    assert repository.get(b.uuid) is None

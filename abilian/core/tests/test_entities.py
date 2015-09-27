@@ -185,7 +185,7 @@ class PermissionsTestCase(AbilianTestCase):
 
     svc = self.app.services['security']
     permissions = svc.get_permissions_assignments(obj)
-    assert permissions == { \
+    assert permissions == {
       security.READ: {security.Anonymous},
       security.WRITE: {security.Owner},
     }

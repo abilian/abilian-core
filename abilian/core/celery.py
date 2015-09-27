@@ -107,6 +107,7 @@ class PeriodicTask(FlaskTask, CeleryPeriodicTask):
 
 def periodic_task(*args, **options):
   """Deprecated decorator, please use :setting:`CELERYBEAT_SCHEDULE`."""
+  # FIXME: 'task' below is not callable. Fix or remove.
   return task(**dict({'base': PeriodicTask}, **options))
 
 

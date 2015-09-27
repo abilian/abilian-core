@@ -17,7 +17,7 @@ class GroupAdminForm(Form):
   name = StringField(_l(u'Name'),
                      filters=(strip,),
                      validators=[required()])
-  description = TextField(_l(u'Description'),
+  description = StringField(_l(u'Description'),
                           filters=(strip,))
 
   public = BooleanField(_l(u'Public'),

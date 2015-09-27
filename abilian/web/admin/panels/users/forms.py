@@ -19,7 +19,7 @@ from abilian.web.forms.validators import required
 
 class BaseUserAdminForm(Form):
 
-  email = TextField(_l(u'Email'),
+  email = StringField(_l(u'Email'),
                       description=_l(u'Users log in with their email address.'),
                       view_widget=widgets.EmailWidget(),
                       filters=(strip,),
