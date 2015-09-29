@@ -511,7 +511,7 @@ class WhooshIndexService(Service):
         except ValueError:
           # logger is here to give us more infos in order to catch a weird bug
           # that happens regularly on CI but is not reliably reproductible.
-          logger.error('writer.add_document(%)', document, exc_info=True)
+          logger.error('writer.add_document(%r)', document, exc_info=True)
           raise
         indexed.add(object_key)
 
@@ -567,7 +567,13 @@ def index_update(index, items):
           continue
 
         document = service.get_document(obj, adapter)
-        writer.add_document(**document)
+        try:
+          writer.add_document(**document)
+        except ValueError:
+          # logger is here to give us more infos in order to catch a weird bug
+          # that happens regularly on CI but is not reliably reproductible.
+          logger.error('writer.add_document(%r)', document, exc_info=True)
+          raise
         updated.add(object_key)
   except:
     writer.cancel()
