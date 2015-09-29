@@ -3,6 +3,7 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from jinja2 import DictLoader
 from babel import Locale
 from flask import _app_ctx_stack, _request_ctx_stack
 from flask_babel import get_locale
@@ -40,6 +41,52 @@ class I18NTestCase(BaseTestCase):
     with i18n.set_locale(fr):
       assert get_locale() is None
 
+
+  def test_ensure_request_context(self):
+    en = Locale('en')
+    fr = Locale('fr')
+
+    # by default, a request context is present is test case setup.  first let's
+    # show no new request context is set up and that set_locale works as
+    # advertised
+    app_ctx = _app_ctx_stack.top
+    current_ctx = _request_ctx_stack.top
+    assert current_ctx is not None
+    assert get_locale() == en
+
+    with i18n.ensure_request_context():
+      assert current_ctx == _request_ctx_stack.top
+
+      with i18n.set_locale(fr):
+        assert get_locale() == fr
+
+    self._ctx.pop()
+    self._ctx = None
+    assert _app_ctx_stack.top is None
+    assert _request_ctx_stack.top is None
+    assert get_locale() is None
+
+    app_ctx.push()
+    # ensure set_locale() doesn't set up a request context
+    with i18n.set_locale(fr):
+      assert _request_ctx_stack.top is None
+      assert get_locale() is None
+
+    with i18n.ensure_request_context():
+      assert _request_ctx_stack.top is not None
+      assert current_ctx != _request_ctx_stack.top
+      assert get_locale() == en
+
+      with i18n.set_locale(fr):
+        assert get_locale() == fr
+
+    assert _request_ctx_stack.top is None
+    assert get_locale() is None
+
+    # test chaining
+    with i18n.ensure_request_context(), i18n.set_locale(fr):
+      assert get_locale() == fr
+
   def test_get_template_i18n(self):
     template_path = '/myfile.txt'
     en = Locale('en')
@@ -57,6 +104,19 @@ class I18NTestCase(BaseTestCase):
         self.assertIn('/myfile.fr.txt', result)
         self.assertIn('/myfile.txt', result)
 
+  def test_render_template_i18n(self):
+    loader = DictLoader({u'tmpl.txt': u'default ({{ locale }})',
+                         u'tmpl.en.txt': u'en locale ({{ locale }})',
+                         u'tmpl.fr.txt': u'fr locale ({{ locale }})',})
+    app_loader = self.app.jinja_loader
+    self.app.jinja_loader = loader
+    render = i18n.render_template_i18n
+    try:
+      assert render('tmpl.txt', locale='fr') == u'fr locale (fr)'
+      assert render('tmpl.txt', locale='en') == u'en locale (en)'
+      assert render('tmpl.txt', locale='de') == u'default (de)'
+    finally:
+      self.app.jinja_loader = app_loader
 
   def test_default_country(self):
     assert 'DEFAULT_COUNTRY' in self.app.config

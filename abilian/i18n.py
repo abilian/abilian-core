@@ -380,6 +380,25 @@ def get_template_i18n(template_name, locale):
   return template_list
 
 
+class ensure_request_context(object):
+  """
+  Context manager that ensures a request context is set up
+  """
+  _rq_ctx = None
+
+  def __enter__(self):
+    if _request_ctx_stack.top is None:
+      ctx = self._rq_ctx = current_app.test_request_context()
+      ctx.__enter__()
+
+  def __exit__(self, *args):
+    ctx = self._rq_ctx
+    self._rq_ctx = None
+
+    if ctx is not None:
+      ctx.__exit__(*args)
+
+
 def render_template_i18n(template_name_or_list, **context):
   """
     Try to build an ordered list of template to satisfy the current locale
@@ -399,7 +418,7 @@ def render_template_i18n(template_name_or_list, **context):
     for template in template_name_or_list:
         template_list.append(get_template_i18n(template, locale))
 
-  with set_locale(locale):
+  with ensure_request_context(), set_locale(locale):
     return render_template(template_list, **context)
 
 
