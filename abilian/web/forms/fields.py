@@ -17,7 +17,7 @@ from wtforms import (
     SelectFieldBase,
     FormField as BaseFormField,
     FieldList as BaseFieldList)
-from wtforms.validators import required, optional
+from wtforms.validators import DataRequired, Optional
 from wtforms.compat import string_types, text_type
 from wtforms.ext.csrf import SecureForm
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
@@ -131,15 +131,15 @@ class FileField(BaseFileField):
     self._has_uploads = False
 
     if allow_delete is not None:
-      if any(isinstance(v, required if allow_delete else optional)
+      if any(isinstance(v, DataRequired if allow_delete else Optional)
              for v in validators):
         raise ValueError(
           "Field validators are conflicting with `allow_delete`,"
           "validators={!r}, allow_delete={!r}".format(validators, allow_delete)
         )
-      validators.append(optional() if allow_delete else required())
-    elif not any(isinstance(v, (required, optional)) for v in validators):
-      validators.append(optional())
+      validators.append(Optional() if allow_delete else DataRequired())
+    elif not any(isinstance(v, (DataRequired, Optional)) for v in validators):
+      validators.append(Optional())
 
     kwargs['validators'] = validators
     BaseFileField.__init__(self, *args, **kwargs)
@@ -429,11 +429,11 @@ class QuerySelect2Field(SelectFieldBase):
     if validators is None:
       validators = []
 
-    if not any(isinstance(v, (optional, required)) for v in validators):
+    if not any(isinstance(v, (Optional, DataRequired)) for v in validators):
       logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
       logger.warning(u'Use deprecated parameter `allow_blank` for field "{}".'
                      .format(label))
-      validators.append(optional() if allow_blank else required())
+      validators.append(Optional() if allow_blank else DataRequired())
 
     super(QuerySelect2Field, self).__init__(label, validators, **kwargs)
 
