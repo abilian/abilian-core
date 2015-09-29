@@ -4,6 +4,7 @@
 from __future__ import absolute_import, print_function, division
 
 from babel import Locale
+from flask import _app_ctx_stack, _request_ctx_stack
 from flask_babel import get_locale
 
 from abilian.testing import BaseTestCase
@@ -30,6 +31,14 @@ class I18NTestCase(BaseTestCase):
           assert get_locale() == en
         assert get_locale() == fr
       assert get_locale() == en
+
+    # no request context: no locale set
+    app_ctx = _app_ctx_stack.top
+    self._ctx.pop()
+    self._ctx = None
+    app_ctx.push()
+    with i18n.set_locale(fr):
+      assert get_locale() is None
 
   def test_get_template_i18n(self):
     template_path = '/myfile.txt'

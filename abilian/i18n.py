@@ -344,6 +344,7 @@ def set_locale(locale):
   ctx = _request_ctx_stack.top
   if ctx is None:
     yield
+    return
 
   if not isinstance(locale, Locale):
     locale = Locale.parse(locale)
