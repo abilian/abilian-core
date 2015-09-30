@@ -519,7 +519,7 @@ class WhooshIndexService(Service):
 service = WhooshIndexService()
 
 
-@shared_task(ignore_result=True)
+@shared_task
 def index_update(index, items):
   """
   :param:index: index name
