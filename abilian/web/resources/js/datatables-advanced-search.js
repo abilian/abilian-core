@@ -557,12 +557,21 @@
             return val;
         }
 
+        function saveVal() {
+            /* jshint validthis: true */
+            var data = this.$select.data('select2').data();
+            if (!this.multiple && !data.length) {
+                data = [];
+            }
+            return data;
+        }
+
         SelectAjaxFilter.prototype = {
             'getElements': function() { return this.$elements; },
             'val': getVal,
-            'save': getVal,
+            'save': saveVal,
             'load': function(vals) {
-                this.$select.data('select2').val(vals);
+                this.$select.data('select2').data(vals);
             }
         };
         return SelectAjaxFilter;
