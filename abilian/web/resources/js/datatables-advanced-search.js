@@ -101,6 +101,7 @@
 
         self.aFilters = [];
         self.oFilters = {};
+        self.oActiveFilters = {};
 
         /* filters container */
         self.$Container = $('<div class="advanced-search-filters"></div>');
@@ -231,6 +232,13 @@
             return;
         }
 
+        if (this.oActiveFilters[filterName] !== undefined) {
+            // filter already active
+            return;
+        }
+
+        this.oActiveFilters[filterName] = instance;
+
         /* install default value if possible and necessary: addFilter may be
          * called from stateLoaded() with a value already set by load
          * function */
@@ -240,7 +248,8 @@
         }
 
         instance.$container.show();
-        this.$filterSelect.find('option[value="' + filterName + '"]')
+        this.$filterSelect
+            .find('option[value="' + filterName + '"]')
             .prop('disabled', true);
     };
 
@@ -268,6 +277,13 @@
         if (instance === undefined) {
             return;
         }
+
+        if (this.oActiveFilters[filterName] === undefined) {
+            // not in active filters
+            return;
+        }
+
+        delete this.oActiveFilters[filterName];
         instance.$container.hide();
         this.$filterSelect.find('option[value="' + filterName + '"]').
             prop('disabled', null);
@@ -278,14 +294,21 @@
      */
     AdvancedSearchFilters.serverParamsCallBack = function(event, aoData) {
         var self = event.data.instance;
-        for(var i=0; i < self.aFilters.length; i++) {
-            var f = self.aFilters[i],
+
+        function pushFilterValue(filterName) {
+            var f = self.oFilters[filterName],
                 vals = f.val();
+
             if (!(vals instanceof Array)) {
                 vals = [vals];
             }
-            $(vals).each(function() { aoData.push({name: f.name, value: this});});
+            $(vals).each(function() {
+                aoData.push({name: f.name, value: this});
+            });
         }
+
+        Object.keys(self.oActiveFilters).sort()
+              .forEach(pushFilterValue);
     };
 
     /**
@@ -294,8 +317,9 @@
     AdvancedSearchFilters.stateSaveParams = function(event, oSettings, oData) {
         var self = event.data.instance;
         oData.oAdvancedSearchFilters = {};
-        self.aFilters.forEach(
-            function(filter, idx) {
+        Object.keys(self.oActiveFilters).forEach(
+            function(filterName, idx) {
+                var filter = self.oFilters[filterName];
                 if (filter.save === undefined) { return; }
                 this[filter.name] = filter.save();
             },
