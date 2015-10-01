@@ -94,12 +94,16 @@ def log_config(config):
 @manager.option('--show-config', dest='show_config', action='store_const',
                 const=True, default=False,
                 help='show application configuration on startup')
-def run(port, show_config):
+@manager.option('--ssl', dest='ssl', action='store_const',
+                default=False, const=True,
+                help='Enable werkzeug SSL')
+def run(port, show_config, ssl):
   """
   Like runserver. May also print application configuration if used with
   --show-config.
   """
   app = current_app
+  options = {}
   if show_config:
     log_config(app.config)
 
@@ -107,7 +111,11 @@ def run(port, show_config):
   host = "0.0.0.0"
   debug = app.config.get('DEBUG')
   port = int(port or app.config.get('PORT', 5000))
-  app.run(host=host, debug=debug, port=port)
+
+  if ssl:
+    options['ssl_context'] = 'adhoc'
+
+  app.run(host=host, debug=debug, port=port, **options)
 
 
 @manager.command
