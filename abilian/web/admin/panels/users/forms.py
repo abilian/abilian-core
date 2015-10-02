@@ -15,7 +15,7 @@ from abilian.core.models.subjects import Group
 from abilian.web.forms import Form, widgets
 from abilian.web.forms.fields import Select2MultipleField, QuerySelect2Field
 from abilian.web.forms.filters import strip
-from abilian.web.forms.validators import required
+from abilian.web.forms.validators import required, optional
 
 class BaseUserAdminForm(Form):
 
@@ -40,6 +40,7 @@ class BaseUserAdminForm(Form):
 
   groups = QuerySelect2Field(
     _l(u'Groups'),
+    validators=(optional(),),
     multiple=True,
     collection_class=set,
     query_factory= lambda: \
