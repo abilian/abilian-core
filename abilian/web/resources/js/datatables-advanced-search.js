@@ -584,9 +584,14 @@
         function saveVal() {
             /* jshint validthis: true */
             var data = this.$select.data('select2').data();
-            if (!this.multiple && !data.length) {
+
+            if (data) {
+              if (!this.multiple && !data.length) {
                 data = [];
+              }
             }
+            else {data=null;}
+
             return data;
         }
 
