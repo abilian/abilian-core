@@ -37,6 +37,10 @@ _flask_script_manager_run = Manager.run
 
 def _manager_run(self, *args, **kwargs):
   self()
+  if 'sentry' in self.app.extensions:
+    client = self.app.extensions['sentry'].client
+    client.tags['process_type'] = 'shell'
+
   return _flask_script_manager_run(self, *args, **kwargs)
 
 
