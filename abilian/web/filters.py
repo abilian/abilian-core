@@ -99,7 +99,7 @@ def roughsize(size, above=20, mod=10):
   return u'{:d}+'.format(size - size % mod)
 
 
-def age(dt, now=None):
+def age(dt, now=None, add_direction=True):
   # Fail silently for now XXX
   if not dt:
     return ""
@@ -116,7 +116,7 @@ def age(dt, now=None):
                           locale=babel.get_locale(),
                           granularity='minute',
                           threshold=0.9,
-                          add_direction=True)
+                          add_direction=add_direction)
 
 
 def date_age(dt, now=None):
