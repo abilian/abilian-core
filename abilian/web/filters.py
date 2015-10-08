@@ -106,10 +106,10 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
   :param now: :class:`datetime<datetime.datetime>` instance to compare to `dt`
 
   :param add_direction: if `True`, will add "in" or "ago" (example for `en`
-  locale) to time difference `dt - now`, i.e "in 9 min." or " 9min. ago"
+       locale) to time difference `dt - now`, i.e "in 9 min." or " 9min. ago"
 
   :param date_threshold: above threshold, will use a formated date instead of
-  elapsed time indication. Supported values: "day".
+       elapsed time indication. Supported values: "day".
   """
   # Fail silently for now XXX
   if not dt:
