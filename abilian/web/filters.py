@@ -99,7 +99,18 @@ def roughsize(size, above=20, mod=10):
   return u'{:d}+'.format(size - size % mod)
 
 
-def age(dt, now=None, add_direction=True):
+def age(dt, now=None, add_direction=True, date_threshold=None):
+  """
+  :param dt: :class:`datetime<datetime.datetime>` instance to format
+
+  :param now: :class:`datetime<datetime.datetime>` instance to compare to `dt`
+
+  :param add_direction: if `True`, will add "in" or "ago" (example for `en`
+  locale) to time difference `dt - now`, i.e "in 9 min." or " 9min. ago"
+
+  :param date_threshold: above threshold, will use a formated date instead of
+  elapsed time indication. Supported values: "day".
+  """
   # Fail silently for now XXX
   if not dt:
     return ""
@@ -107,13 +118,35 @@ def age(dt, now=None, add_direction=True):
   if not now:
     now = datetime.datetime.utcnow()
 
+  locale = babel.get_locale()
   dt = utc_dt(dt)
   now = utc_dt(now)
+  delta = dt - now
+
+  if date_threshold is not None:
+    dy, dw, dd = dt_cal = dt.isocalendar()
+    ny, nw, nd = now_cal =now.isocalendar()
+
+    if dt_cal != now_cal:
+      # not same day
+      remove_year = dy != dy
+      date_fmt = locale.date_formats['long'].pattern
+      time_fmt = locale.time_formats['short'].pattern
+      fmt = locale.datetime_formats['medium']
+
+      if remove_year:
+        date_fmt.replace('y', '').strip()
+        date_fmt.replace('y', '')
+        # remove leading or trailing spaces, comma, etc...
+        date_fmt = re.sub(u'^[^A-Za-z]*|[^A-Za-z]*$', u'', date_fmt)
+
+      fmt = fmt.format(time_fmt, date_fmt)
+      return babel.format_datetime(dt, format=fmt)
 
   # don't use (flask.ext.)babel.format_timedelta: as of Flask-Babel 0.9 it
   # doesn't support "threshold" arg.
-  return format_timedelta((dt - now),
-                          locale=babel.get_locale(),
+  return format_timedelta(delta,
+                          locale=locale,
                           granularity='minute',
                           threshold=0.9,
                           add_direction=add_direction)
