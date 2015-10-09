@@ -21,6 +21,9 @@ Werkzeug>=0.10
 # pathlib is included in python 3.4, and very useful
 pathlib
 
+# can parse isoformat / used in a jinja filter
+python-dateutil>=2.4.0
+
 # Databases / persistence
 SQLAlchemy>=0.8,<0.9
 psycopg2
