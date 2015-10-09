@@ -10,6 +10,7 @@ from functools import wraps
 import datetime
 from calendar import timegm
 
+import dateutil.parser
 from flask import Flask
 from flask.ext import babel
 from jinja2 import Markup, escape, evalcontextfilter
@@ -97,6 +98,21 @@ def roughsize(size, above=20, mod=10):
     return unicode(size)
 
   return u'{:d}+'.format(size - size % mod)
+
+def datetimeparse(s):
+  """
+  Parse a string date time to a datetime object.
+
+  Suitable for dates serialized with .isoformat()
+
+  :return: None, or an aware datetime instance, tz=UTC.
+  """
+  try:
+    dt = dateutil.parser.parse(s)
+  except:
+    return None
+
+  return utc_dt(dt)
 
 
 def age(dt, now=None, add_direction=True, date_threshold=None):
@@ -254,6 +270,7 @@ def init_filters(env):
   env.filters['nl2br'] = nl2br
   env.filters['paragraphs'] = paragraphs
   env.filters['date_age'] = date_age
+  env.filters['datetimeparse'] = datetimeparse
   env.filters['age'] = age
   env.filters['date'] = date
   env.filters['babel2datepicker'] = babel2datepicker
