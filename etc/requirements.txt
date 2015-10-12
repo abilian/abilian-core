@@ -48,7 +48,6 @@ bleach>=1.4.2
 py-bcrypt
 
 # Validation
-phonenumbers
 validate_email
 
 # Others (TODO: document)
