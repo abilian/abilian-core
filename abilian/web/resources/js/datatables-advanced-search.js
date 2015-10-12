@@ -122,9 +122,9 @@
             var $criterionContainer = $('<div></div>')
                     .attr({'class': 'criterion form-group'}),
                 $labelContainer = $('<div></div>').
-                    attr({'class': 'col-md-3 control-label'}),
+                    attr({'class': 'col-xs-12 col-sm-3 control-label'}),
                 $filterContainer = $('<div></div>').
-                    attr({'class': 'col-md-9'}),
+                    attr({'class': 'col-xs-12 col-sm-9'}),
                 filter = oDTSettings.oInit.aoAdvancedSearchFilters[i],
                 args = [].concat([filter.name, filter.label], filter.args),
                 instance = instantiateFilter(filter.type, args),
