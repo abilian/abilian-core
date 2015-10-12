@@ -73,8 +73,6 @@ clamd
 # Content detection / transformation
 Pillow>=2.7.0
 python-magic
-xlwt
-xlrd
 
 #
 # Assets management (might not be necessary if distributing compiled assets)
