@@ -26,7 +26,7 @@ python-dateutil>=2.4.0
 
 # Databases / persistence
 SQLAlchemy>=0.8,<0.9
-psycopg2
+psycopg2>=2.6.1
 alembic>=0.7.7,<0.8
 
 # requirement of jinja2; > 0.21 has an important fix for string format. See
