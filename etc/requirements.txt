@@ -44,7 +44,7 @@ redis>=2.10.1
 straight.plugin==1.4.0-post-1
 
 # Security
-bleach
+bleach>=1.4.2
 py-bcrypt
 
 # Validation
