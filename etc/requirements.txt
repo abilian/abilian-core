@@ -47,9 +47,6 @@ straight.plugin==1.4.0-post-1
 bleach>=1.4.2
 py-bcrypt
 
-# Validation
-validate_email
-
 # Others (TODO: document)
 Markdown
 PyYAML
