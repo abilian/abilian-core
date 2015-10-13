@@ -68,13 +68,12 @@
           {%- if 'creator' in hit %}
           {%- set author_type, author_id = hit['creator'].split(':') %}
           {%- set author_href = url_for('social.' + author_type, **{(author_type + '_id'): author_id}) %}
-            <p class="">
+            <p>
               <i>{{ _('by') }}
                 <a href="{{ author_href }}">{{hit['creator_name'] }}</a>
                 &ndash;
                 {{ _('Last modification: %(date)s',
-                     date=_('%(date)s at %(time)s', date=hit['updated_at']|dateformat('long'),
-                                                    time=hit['updated_at']|timeformat('short'))) }}
+                     date=hit['updated_at'] | age(date_threshold='day')) }}
               </i><br />
             </p>
           {%- endif %}
