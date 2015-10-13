@@ -585,8 +585,8 @@ def index_update(index, items):
     # async thread: wait for its termination
     writer.join()
   except RuntimeError:
-    # happens when actual writer was alraedy available: asyncwriter needn't to
-    # start a thread
+    # happens when actual writer was already available: asyncwriter didn't need
+    # to start a thread
     pass
 
 
