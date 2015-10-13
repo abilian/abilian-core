@@ -76,7 +76,7 @@ class TagsField(Field):
     # all_tags is an InstrumentedSet. add/remove will result in DB operations.
     all_tags = extension.entity_tags(obj)
     all_ns_tags = {t for t in extension.entity_tags(obj)
-                if t.ns == self.ns}
+                   if t.ns == self.ns}
     to_remove = all_ns_tags - self.data
 
     for tag in to_remove:

@@ -69,7 +69,7 @@ class TestSAAdapter(TestCase):
       'object_key', 'id', 'name', 'slug', 'object_type',
       'text', 'created_at', 'updated_at', 'name_prefix',
       'owner', 'owner_name', 'creator_name', 'creator',
-      'allowed_roles_and_users',
+      'allowed_roles_and_users', 'tag_ids', 'tag_text',
     }
     assert all(lambda f: callable(f) for f in adapter.doc_attrs.itervalues())
 
@@ -77,7 +77,7 @@ class TestSAAdapter(TestCase):
       'object_key', 'id', 'object_type', 'name', 'slug',
       'text', 'created_at', 'updated_at', 'name_prefix',
       'owner', 'owner_name', 'creator_name', 'creator',
-      'allowed_roles_and_users',
+      'allowed_roles_and_users', 'tag_ids', 'tag_text',
     }
 
     schema = Schema(
@@ -110,10 +110,12 @@ class DocumentTestCase(AppTestCase):
     expected['owner_name'] = u''
     expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
     expected['object_key'] = u'test_adapter.SubclassEntityIndexable:2'
-    expected['text'] = u'entity name'
+    expected['text'] = u' entity name'
     expected['slug'] = 'entity-name'
     expected['name_prefix'] = u'entity name'
     expected['allowed_roles_and_users'] = u'role:admin'
+    expected['tag_ids'] = u''
+    expected['tag_text'] = u''
     assert adapter.get_document(obj) == expected
 
     # test retrieve related attributes

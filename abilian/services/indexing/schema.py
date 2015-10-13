@@ -45,6 +45,10 @@ class _DefaultSearchSchema(SchemaClass):
   #: content
   allowed_roles_and_users = KEYWORD(stored=True)
 
+  #: tags indexing
+  tag_ids = KEYWORD(stored=True)
+  tag_text = TEXT(stored=False, analyzer=accent_folder)
+
   # hierarchical index of ids path ('/' is the separator)
   parent_ids = FieldType(format=Existence(), analyzer=PathTokenizer(),
                          stored=True, unique=False)
