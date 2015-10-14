@@ -23,10 +23,12 @@ from abilian.web.views.images import user_photo_url
 
 from .forms import UserAdminForm, UserCreateForm
 
+
 class JsonUsersList(base.JSONView):
   """
   JSON user list for datatable
   """
+
   def data(self, *args, **kw):
     security = current_app.services['security']
     length = int(kw.get("iDisplayLength", 0))
@@ -37,10 +39,10 @@ class JsonUsersList(base.JSONView):
     search = kw.get("sSearch", "").replace("%", "").strip().lower()
 
     end = start + length
-    q = User.query\
-        .options(sa.orm.subqueryload('groups'),
-                 sa.orm.undefer('photo'),)\
-        .filter(User.id != 0)
+    q = User.query \
+      .options(sa.orm.subqueryload('groups'),
+               sa.orm.undefer('photo'), ) \
+      .filter(User.id != 0)
     total_count = q.count()
 
     if search:
@@ -85,20 +87,22 @@ class JsonUsersList(base.JSONView):
         u'<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
         u'</a>'.format(url=user_url, src=mugshot, size=MUGSHOT_SIZE)
       )
-      columns.append(u'<a href="{url}">{name}</a>'.format(url=user_url, name=name))
-      columns.append(u'<a href="{url}"><em>{email}</em></a>'.format(url=user_url,
-                                                                    email=email))
+      columns.append(
+        u'<a href="{url}">{name}</a>'.format(url=user_url, name=name))
+      columns.append(
+        u'<a href="{url}"><em>{email}</em></a>'.format(url=user_url,
+                                                       email=email))
       columns.append(u'\u2713' if user.can_login else u'')
       columns.append(render_template_string(
         u'''{%- for g in groups %}
             <span class="badge badge-default">{{ g.name }}</span>
             {%- endfor %}''',
-            groups=sorted(user.groups)))
+        groups=sorted(user.groups)))
       columns.append(render_template_string(
         u'''{%- for role in roles %}
             <span class="badge badge-default">{{ role }}</span>
             {%- endfor %}''',
-            roles=roles))
+        roles=roles))
 
       if user.last_active:
         last_active = format_datetime(user.last_active)
@@ -109,11 +113,12 @@ class JsonUsersList(base.JSONView):
       data.append(columns)
 
     return {
-        "sEcho": echo,
-        "iTotalRecords": total_count,
-        "iTotalDisplayRecords": count,
-        "aaData": data,
+      "sEcho": echo,
+      "iTotalRecords": total_count,
+      "iTotalDisplayRecords": count,
+      "aaData": data,
     }
+
 
 # User edit / create views
 class UserBase(object):
@@ -129,7 +134,6 @@ class UserBase(object):
 
 
 class UserEdit(UserBase, views.ObjectEdit):
-
   def breadcrumb(self):
     label = render_template_string(u'<em>{{ u.email }}</em>', u=self.obj)
     return BreadcrumbItem(label=label, url=u'', description=self.obj.name)
@@ -164,7 +168,7 @@ class UserEdit(UserBase, views.ObjectEdit):
   def after_populate_obj(self):
     security = current_app.services['security']
     current_roles = set(security.get_roles(self.obj, no_group_roles=True))
-    new_roles = { Role(r) for r in self.form.roles.data }
+    new_roles = {Role(r) for r in self.form.roles.data}
 
     for r in (current_roles - new_roles):
       security.ungrant_role(self.obj, r)
@@ -173,6 +177,7 @@ class UserEdit(UserBase, views.ObjectEdit):
       security.grant_role(self.obj, r)
 
     return super(UserEdit, self).after_populate_obj()
+
 
 class UserCreate(UserBase, views.ObjectCreate):
   Form = UserCreateForm

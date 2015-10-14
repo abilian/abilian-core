@@ -11,6 +11,7 @@ from abilian.web.admin.panel import AdminPanel
 
 from . import views
 
+
 class GroupsPanel(AdminPanel):
   """
   Group administration panel.
@@ -30,16 +31,16 @@ class GroupsPanel(AdminPanel):
                                                    view_endpoint='.groups_group'))
 
   def get(self):
-    #FIXME: use widgets.AjaxMainTableView instead
+    # FIXME: use widgets.AjaxMainTableView instead
     datatable_options = {
       'sDom': 'lfFrtip',
       'aaSorting': [
-          [0, u'asc'],
+        [0, u'asc'],
       ],
       'aoColumns': [
-          dict(asSorting=['asc', 'desc']),
-          dict(bSortable=False),
-          dict(bSortable=False),
+        dict(asSorting=['asc', 'desc']),
+        dict(bSortable=False),
+        dict(bSortable=False),
       ],
       'bFilter': True,
       'oLanguage': {

@@ -11,6 +11,7 @@ from abilian.web.admin.panel import AdminPanel
 
 from . import views
 
+
 class UsersPanel(AdminPanel):
   """
   User administration panel.
@@ -27,20 +28,20 @@ class UsersPanel(AdminPanel):
                  view_func=views.UserEdit.as_view('user'))
 
   def get(self):
-    #FIXME: use widgets.AjaxMainTableView instead
+    # FIXME: use widgets.AjaxMainTableView instead
     datatable_options = {
       'sDom': 'lfFritip',
       'aaSorting': [
-          [1, u'asc'],
+        [1, u'asc'],
       ],
       'aoColumns': [
-          dict(bSortable=False),
-          dict(asSorting=['asc', 'desc']),
-          dict(asSorting=['asc', 'desc']),
-          dict(bSortable=False),
-          dict(bSortable=False),
-          dict(bSortable=False),
-          dict(asSorting=['asc', 'desc']),
+        dict(bSortable=False),
+        dict(asSorting=['asc', 'desc']),
+        dict(asSorting=['asc', 'desc']),
+        dict(bSortable=False),
+        dict(bSortable=False),
+        dict(bSortable=False),
+        dict(asSorting=['asc', 'desc']),
       ],
       'bFilter': True,
       'oLanguage': {

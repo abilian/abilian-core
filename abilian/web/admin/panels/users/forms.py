@@ -17,6 +17,7 @@ from abilian.web.forms.fields import Select2MultipleField, QuerySelect2Field
 from abilian.web.forms.filters import strip
 from abilian.web.forms.validators import required, optional
 
+
 class BaseUserAdminForm(Form):
 
   email = StringField(_l(u'Email'),

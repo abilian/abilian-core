@@ -18,10 +18,12 @@ from abilian.web.action import ButtonAction, FAIcon
 from abilian.web.views import base, object as views
 from .forms import GroupAdminForm
 
+
 class JsonGroupsList(base.JSONView):
   """
   JSON group list for datatable
   """
+
   def data(self, *args, **kw):
     security = current_app.services['security']
     length = int(kw.get("iDisplayLength", 0))
@@ -31,8 +33,8 @@ class JsonGroupsList(base.JSONView):
     search = kw.get("sSearch", "").replace("%", "").strip().lower()
 
     end = start + length
-    q = Group.query\
-        .options(sa.orm.noload('*'))
+    q = Group.query \
+      .options(sa.orm.noload('*'))
     total_count = q.count()
 
     if search:
@@ -49,8 +51,8 @@ class JsonGroupsList(base.JSONView):
     if engine.name != 'sqlite':
       order_by[0] = nullslast(order_by[0])
 
-    q = q.order_by(*order_by)\
-         .add_columns(Group.members_count)
+    q = q.order_by(*order_by) \
+      .add_columns(Group.members_count)
     groups = q.slice(start, end).all()
     data = []
 
@@ -68,15 +70,15 @@ class JsonGroupsList(base.JSONView):
         u'''{%- for role in roles %}
             <span class="badge badge-default">{{ role }}</span>
             {%- endfor %}''',
-            roles=roles))
+        roles=roles))
       columns.append(u'\u2713' if group.public else u'')
       data.append(columns)
 
     return {
-        "sEcho": echo,
-        "iTotalRecords": total_count,
-        "iTotalDisplayRecords": count,
-        "aaData": data,
+      "sEcho": echo,
+      "iTotalRecords": total_count,
+      "iTotalDisplayRecords": count,
+      "aaData": data,
     }
 
 
@@ -127,7 +129,6 @@ class GroupView(GroupBase, views.ObjectView):
 
 
 class GroupEdit(GroupBase, views.ObjectEdit):
-
   def breadcrumb(self):
     label = render_template_string(u'<em>{{ g }}</em>', g=self.obj.name)
     return BreadcrumbItem(label=label, url=u'', description=self.obj.name)
@@ -148,7 +149,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
   def after_populate_obj(self):
     security = current_app.services['security']
     current_roles = set(security.get_roles(self.obj, no_group_roles=True))
-    new_roles = { Role(r) for r in self.form.roles.data }
+    new_roles = {Role(r) for r in self.form.roles.data}
 
     for r in (current_roles - new_roles):
       security.ungrant_role(self.obj, r)
@@ -158,14 +159,12 @@ class GroupEdit(GroupBase, views.ObjectEdit):
 
     return super(GroupEdit, self).after_populate_obj()
 
-
   def add_user(self, *args, **kwargs):
     user_id = int(request.form.get('user'))
     user = User.query.get(user_id)
     user.groups.add(self.obj)
     sa.orm.object_session(user).commit()
     return self.redirect_to_view()
-
 
   def remove_user(self, *args, **kwargs):
     user_id = int(request.form.get('user'))
@@ -176,5 +175,4 @@ class GroupEdit(GroupBase, views.ObjectEdit):
 
 
 class GroupCreate(GroupBase, views.ObjectCreate):
-
   chain_create_allowed = True
