@@ -117,6 +117,7 @@ default_config.update(
         'abilian.web.admin.panels.groups.GroupsPanel',
         'abilian.web.admin.panels.sysinfo.SysinfoPanel',
         'abilian.services.vocabularies.admin.VocabularyPanel',
+        'abilian.web.tags.admin.TagPanel',
     ),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],

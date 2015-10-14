@@ -7,7 +7,7 @@ from wtforms.fields import StringField
 from flask import current_app
 
 from abilian.core.models.tag import Tag
-from abilian.web.forms import Field, ModelForm
+from abilian.web.forms import Form, Field
 from abilian.web.forms.widgets import Select2, ListWidget
 from abilian.web.forms.validators import required
 from abilian.web.forms.filters import strip
@@ -86,18 +86,19 @@ class TagsField(Field):
       all_tags.add(tag)
 
 
-class TagForm(ModelForm):
+_NS = StringField(u'Namespace',
+                   validators=[required()],
+                   filters=(strip,),)
+
+class TagForm(Form):
   """
   Form for a single tag
   """
-  ns = StringField(u'Namespace',
-                   validators=[required()],
-                   filters=(strip,),
-  )
-
   label = StringField(u'Label', filters=(strip,), validators=[required(),])
 
-  class Meta:
-    model = Tag
-    include_primary_keys = True
-    assign_required = False # for 'id': allow None, for new records
+
+class TagNSForm(TagForm):
+  """
+  Allow to edit namespace.
+  """
+  ns = _NS
