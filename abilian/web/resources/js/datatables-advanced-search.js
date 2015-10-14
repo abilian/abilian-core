@@ -618,6 +618,8 @@
             this.name = name;
             this.label = label;
             this.$elements = $('<div>');
+            this.multiple = s2_args['multiple'] || false;
+
 
             /* create the select*/
             var selectId = name + '-select',
@@ -635,6 +637,7 @@
             $select.select2(
                 {'data': s2_args['select-data'],
                  'placeholder': (s2_args['select-label'] || ''),
+                 'multiple': this.multiple,
                  'allowClear': true,
                  'width': '20em',
                  'max-width': '100%',
@@ -675,6 +678,7 @@
             /* jshint validthis: true */
             var radioValue = this.$elements.find('input:checked').val(),
                 select2Value = this.$select.select2('val');
+
 
             if ( select2Value || radioValue !== 'None') {
                 return [select2Value, radioValue];
