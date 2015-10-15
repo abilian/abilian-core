@@ -17,7 +17,7 @@ all: test
 #
 # Setup
 #
-develop: setup-git
+develop:
 	@echo "--> Installing dependencies"
 	pip install -U setuptools
 	pip install -U -e '.[dev]'
