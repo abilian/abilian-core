@@ -1,8 +1,15 @@
 Changelog for Abilian Core
 ==========================
 
-0.4.5 (unreleased)
+0.4.6 (unreleased)
 ------------------
+
+
+0.4.5 (2015-10-15)
+------------------
+
+Improvements and updates
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Breaking: minor schemas changes. Migrations needed for existing applications
 - tags in 'default' namespace are indexed in document's text for full text
@@ -10,13 +17,18 @@ Changelog for Abilian Core
 - age filter has a new option to show full date when date is not today
 - run command: add `--ssl` option
 - admin: manage groups membership from user page
-- fixes for celery workers
 - updated requirements to ensure sane minimum versions
 - Role based access control makes more permissions checks againts roles and less
   simple role check
+
+Fixes
+~~~~~
+
+- fixes for celery workers
 - fix: check user has role on object with global role
 - fix: check user has roles through group membership
-  
+
+
 0.4.4 (2015-08-07)
 ------------------
 
