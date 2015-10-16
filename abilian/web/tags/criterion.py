@@ -25,7 +25,7 @@ class TagCriterion(BaseCriterion):
       kwargs.setdefault('label', _(u'Tags'))
 
     super(TagCriterion, self).__init__(*args, **kwargs)
-  
+
   @BaseCriterion.model.setter
   def model(self, model):
     BaseCriterion.model.fset(self, model)
@@ -47,7 +47,7 @@ class TagCriterion(BaseCriterion):
 
     for val in request.values.getlist(self.name):
       try:
-        tag_ids.append(int(val))        
+        tag_ids.append(int(val))
       except ValueError:
         pass
 
@@ -60,7 +60,7 @@ class TagCriterion(BaseCriterion):
 
     return tags
 
-  
+
   def filter(self, query, module, request, searched_text, *args, **kwargs):
     """
     """
@@ -69,10 +69,14 @@ class TagCriterion(BaseCriterion):
       return query
 
     cond = sa.sql.exists(
-      sa.sql.select([1], entity_tag_tbl.c.entity_id == self.model.id)
+      sa.sql.select(
+        [1],
+        sa.sql.and_(entity_tag_tbl.c.entity_id == self.model.id,
+                    entity_tag_tbl.c.tag_id.in_(t.id for t in tags)),
+      )
     )
     return query.filter(cond)
-    
+
   @property
   def form_filter_type(self):
     return "select"
@@ -80,7 +84,7 @@ class TagCriterion(BaseCriterion):
   @property
   def form_unset_value(self):
     return []
-  
+
   @property
   def form_filter_args(self):
     # expected value: [list of selectable items, is multiple?]
@@ -88,4 +92,3 @@ class TagCriterion(BaseCriterion):
       [(unicode(t.id), t.label) for t in self.valid_tags],
       True,
     ]
-  
