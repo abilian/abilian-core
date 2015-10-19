@@ -8,6 +8,7 @@ import sys
 import functools
 import logging
 import time
+from datetime import datetime
 import pytz
 from math import ceil
 import unicodedata
@@ -78,8 +79,16 @@ def friendly_fqcn(cls_name):
   return cls_name.rsplit('.', 1)[-1]
 
 
+def utcnow():
+  """
+  Return a new aware datetime with current date and time, in UTC TZ.
+  """
+  return datetime.now(pytz.utc)
+
+
 def local_dt(dt):
-  """ Return an aware datetime in system timezone, from a naive or aware
+  """
+  Return an aware datetime in system timezone, from a naive or aware
   datetime. Naive datetime are assumed to be in UTC TZ.
   """
   if not dt.tzinfo:
@@ -88,8 +97,9 @@ def local_dt(dt):
 
 
 def utc_dt(dt):
-  """ set UTC timezone on a datetime object. A naive datetime is assumed to be
-  in UTC TZ
+  """
+  set UTC timezone on a datetime object. A naive datetime is assumed to be in
+  UTC TZ
   """
   if not dt.tzinfo:
     return pytz.utc.localize(dt)
