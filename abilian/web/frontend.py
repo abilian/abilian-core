@@ -47,6 +47,12 @@ from .forms.widgets import (
 logger = logging.getLogger(__name__)
 
 
+try:
+  # sqlalchemy 0.8
+  _DateAffinity = sa.types._DateAffinity
+except AttributeError:
+  _DateAffinity = sa.sql.sqltypes._DateAffinity
+
 class ModuleAction(Action):
   """
   Base action class for :class:`Module` actions.
@@ -640,7 +646,7 @@ class Module(object):
         sort_col = getattr(rel_model, rel_sort_name)
 
       # XXX: Big hack, date are sorted in reverse order by default
-      if isinstance(sort_col, sa.types._DateAffinity):
+      if isinstance(sort_col, _DateAffinity):
         sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
       elif isinstance(sort_col, sa.types.String):
         sort_col = func.lower(sort_col)

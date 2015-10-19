@@ -114,6 +114,9 @@ def query_pa_no_flush(session, permission, role, obj):
     # getattr(obj, PERMISSIONS_ATTR) has objects not present in session not in
     # this query (maybe in a parent session transaction `new`?). This happens
     # when
+    if obj is not None and obj.id is None:
+      obj = None
+
     return session.query(PermissionAssignment)\
                   .filter(PermissionAssignment.permission == permission,
                           PermissionAssignment.role == role,
@@ -584,7 +587,7 @@ class SecurityService(Service):
     # valid roles
     # 1: from database
     pa_filter = PermissionAssignment.object == None
-    if obj is not None:
+    if obj is not None and obj.id is not None:
       pa_filter |= PermissionAssignment.object == obj
 
     pa_filter &= PermissionAssignment.permission == permission
@@ -724,6 +727,9 @@ class SecurityService(Service):
       assert isinstance(obj, Entity)
       session = object_session(obj)
 
+      if obj.id is None:
+        obj = None
+
     if session is None:
       session = current_app.db.session()
 
@@ -769,6 +775,9 @@ class SecurityService(Service):
 
     if pa:
       session.delete(pa)
+      if obj:
+        # this seems to be required with sqlalchemy > 0.9
+        session.expire(obj, [PERMISSIONS_ATTR])
 
 
   def filter_with_permission(self, user, permission, obj_list, inherit=False):

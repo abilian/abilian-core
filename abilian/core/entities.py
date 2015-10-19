@@ -464,7 +464,7 @@ def polymorphic_update_timestamp(session, flush_context, instances):
     if not isinstance(obj, Entity):
       continue
     state = sa.inspect(obj)
-    history = state.get_history('updated_at', state.dict)
+    history = state.attrs['updated_at'].history
     if not any((history.added, history.deleted)):
       obj.updated_at = datetime.utcnow()
 
