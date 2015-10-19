@@ -50,6 +50,7 @@ from __future__ import absolute_import, print_function, division
 
 import os
 import re
+from gettext import GNUTranslations
 import importlib
 import unicodedata
 from pathlib import Path
@@ -59,7 +60,7 @@ from datetime import datetime
 import pytz
 from babel import Locale
 from babel.localedata import locale_identifiers
-from babel.support import Translations
+from babel.support import Translations as BaseTranslations
 from babel.dates import LOCALTZ, get_timezone, get_timezone_gmt
 from flask import g, request, _request_ctx_stack, current_app, render_template
 import flask_babel
@@ -215,6 +216,40 @@ class Babel(BabelBase):
       self._translations_paths.append((unicode(path), domain))
 
 
+class Translations(BaseTranslations):
+  """
+  Merge only non-empty translations.
+
+  This avoids having uncomplete catalog that "clear" existing translations, when
+  used with :func:`_get_translations_multi_paths`.
+  """
+  def merge(self, translations):
+    if isinstance(translations, GNUTranslations):
+
+      for msgkey, msgstr in translations._catalog.items():
+        msgid = msgkey
+
+        if isinstance(msgkey, tuple):
+          msgid = msgkey[0]
+
+        msgstr = msgstr.strip()
+        if msgkey in self._catalog and (msgid == msgstr):
+          # when msgstr is empty, compile_catalog sets msgstr = msgid so this is
+          # probable an existing translation that would be "erased" by msgid
+          # string: skip it.
+
+          # logger.debug('Catalog: %r, skip msgkey: %r, existing: %r',
+          #                translations, msgkey, self._catalog[msgkey])
+          continue
+
+        self._catalog[msgkey] = msgstr
+
+      if isinstance(translations, BaseTranslations):
+        self.files.extend(translations.files)
+
+    return self
+
+
 def _get_translations_multi_paths():
   """
   Returns the correct gettext translations that should be used for this
@@ -309,6 +344,7 @@ def set_locale(locale):
   ctx = _request_ctx_stack.top
   if ctx is None:
     yield
+    return
 
   if not isinstance(locale, Locale):
     locale = Locale.parse(locale)
@@ -344,6 +380,25 @@ def get_template_i18n(template_name, locale):
   return template_list
 
 
+class ensure_request_context(object):
+  """
+  Context manager that ensures a request context is set up
+  """
+  _rq_ctx = None
+
+  def __enter__(self):
+    if _request_ctx_stack.top is None:
+      ctx = self._rq_ctx = current_app.test_request_context()
+      ctx.__enter__()
+
+  def __exit__(self, *args):
+    ctx = self._rq_ctx
+    self._rq_ctx = None
+
+    if ctx is not None:
+      ctx.__exit__(*args)
+
+
 def render_template_i18n(template_name_or_list, **context):
   """
     Try to build an ordered list of template to satisfy the current locale
@@ -363,7 +418,7 @@ def render_template_i18n(template_name_or_list, **context):
     for template in template_name_or_list:
         template_list.append(get_template_i18n(template, locale))
 
-  with set_locale(locale):
+  with ensure_request_context(), set_locale(locale):
     return render_template(template_list, **context)
 
 

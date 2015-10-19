@@ -343,6 +343,7 @@ class ClosureJS(BaseClosureJS):
     possible_paths = [p for p in self.ctx.url_mapping.keys()
                       if src_path.startswith(p)]
     if not possible_paths:
+      # FIXME: url is not defined at this point, this can't work.
       return url
 
     if len(possible_paths) > 1:

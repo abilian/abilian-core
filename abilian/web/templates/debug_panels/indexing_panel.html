@@ -10,9 +10,12 @@
   </thead>
 
   <tbody>
-    {%- for key in sorted_keys %}
-      <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}"><td>{{ key }}</td><td>{{ document[key]|printable }}</td></tr>
-    {%- endfor %}
+  {%- for key in sorted_keys %}
+    <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+      <td>{{ key }}</td>
+      <td>{{ document[key]|printable }}</td>
+    </tr>
+  {%- endfor %}
   </tbody>
 </table>
 {%- endif %}

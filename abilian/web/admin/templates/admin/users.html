@@ -4,7 +4,7 @@
 {% from "macros/box.html" import m_box %}
 
 {% block content %}
-  
+
   {% call m_box(title=_("Users")) %}
 
     {{ buttons.create_a(url_for('.users_new'), _('New user...')) }}
@@ -17,6 +17,7 @@
           <th>{{ _("Name") }}</th>
           <th>{{ _('Email') }}</th>
           <th width="10%">{{ _('Login enabled') }}</th>
+          <th>{{ _("Groups") }}</th>
           <th>{{ _("Roles") }}</th>
           <th>{{ _('Last connection') }}</th>
         </tr>
@@ -35,10 +36,10 @@
        ['jquery', 'jquery.dataTables'],
        function ($) {
          var id = "#{{ table_id }}"; // Should be unique enough
-         $(id).dataTable({{ datatable_options|tojson|safe }});       
+         $(id).dataTable({{ datatable_options|tojson|safe }});
        });
     </script>
     {%- enddeferJS %}
   {% endcall %}
-  
+
 {% endblock %}

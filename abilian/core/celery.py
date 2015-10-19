@@ -50,7 +50,7 @@ class FlaskLoader(BaseLoader):
       register_signal(client)
       register_logger_signal(client)
 
-    self._setup_after_fork(app)
+    register_after_fork(app, self._setup_after_fork)
     return app
 
   def _setup_after_fork(self, app):
@@ -58,7 +58,8 @@ class FlaskLoader(BaseLoader):
     db = app.db
     for bind in binds:
       engine = db.get_engine(app, bind)
-      register_after_fork(engine, engine.dispose)
+      engine.dispose()
+
 
   def read_configuration(self):
     app = self.flask_app
@@ -106,6 +107,7 @@ class PeriodicTask(FlaskTask, CeleryPeriodicTask):
 
 def periodic_task(*args, **options):
   """Deprecated decorator, please use :setting:`CELERYBEAT_SCHEDULE`."""
+  # FIXME: 'task' below is not callable. Fix or remove.
   return task(**dict({'base': PeriodicTask}, **options))
 
 

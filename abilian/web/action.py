@@ -239,7 +239,7 @@ class Action(object):
     self._status = Status(status) if status is not None else ENABLED
     self.endpoint = endpoint
     if not callable(endpoint) and not isinstance(endpoint, Endpoint):
-    # property getter will make it and Endpoint instance
+      # property getter will make it and Endpoint instance
       self.endpoint = self.endpoint
     self.condition = condition
 
@@ -336,7 +336,10 @@ class Action(object):
     """
     if not self._enabled:
       return False
-    return self.pre_condition(context) and self._check_condition(context)
+    try:
+      return self.pre_condition(context) and self._check_condition(context)
+    except:
+      return False
 
   def pre_condition(self, context):
     """

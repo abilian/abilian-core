@@ -11,7 +11,7 @@ from collections import OrderedDict
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from wtforms_alchemy import model_form_factory
-from flask import current_app
+from flask import current_app, has_app_context
 from flask_login import current_user
 from flask_wtf.form import Form as BaseForm
 
@@ -44,7 +44,8 @@ class FormPermissions(object):
   Form role/permission manager
   """
   def __init__(self, default=Anonymous, read=None, write=None,
-               fields_read=None, fields_write=None):
+               fields_read=None, fields_write=None,
+               existing=None):
     """
     """
     if isinstance(default, Role):
@@ -53,6 +54,19 @@ class FormPermissions(object):
     self.default = default
     self.form = dict()
     self.fields = dict()
+
+    if existing is not None:
+      # copy existing formpermissions instance
+      # maybe overwrite later with our definitions
+      assert isinstance(existing, FormPermissions)
+      for permission in (READ, WRITE):
+        if permission in existing.form:
+          self.form[permission] = existing.form[permission]
+
+      for field, mapping in existing.fields.items():
+        f_map = self.fields[field] = dict()
+        for permission, roles in mapping.items():
+          f_map[permission] = roles
 
     for permission, roles in ((READ, read), (WRITE, write)):
       if roles is None:
@@ -114,6 +128,17 @@ class Form(BaseForm):
   def __init__(self, *args, **kwargs):
     permission = kwargs.pop('permission', None)
     user= kwargs.pop('user', current_user)
+
+    if kwargs.get('csrf_enabled') is None and not has_app_context():
+      # form instanciated without app context and without explicit csrf
+      # parameter: disable csrf since it requires current_app.
+      #
+      # If there is a prefix, it's probably a subform (in a fieldform of
+      # fieldformlist): csrf is not required. If there is no prefix: let error
+      # happen.
+      if kwargs.get('prefix'):
+        kwargs['csrf_enabled'] = False
+
     super(Form, self).__init__(*args, **kwargs)
     self._field_groups = {} # map field -> group
 

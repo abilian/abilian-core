@@ -213,6 +213,7 @@ class BaseEntityView(ModuleView):
       security = current_app.services['security']
       return security.has_permission(current_user,
                                      create_cls.permission,
+                                     obj=self.obj,
                                      roles=cls_permissions[permission])
     return False
 
@@ -236,6 +237,7 @@ DELETE_ACTION.template = 'widgets/frontend_action_delete_confim.html'
 
 
 class EntityView(BaseEntityView, ObjectView):
+  mode = 'view'
   template = 'default/single_view.html'
 
   @property
@@ -259,6 +261,7 @@ class EntityView(BaseEntityView, ObjectView):
 
 class EntityEdit(BaseEntityView, ObjectEdit):
   template = 'default/single_view.html'
+  mode = 'edit'
 
   @property
   def template_kwargs(self):
@@ -271,6 +274,7 @@ class EntityEdit(BaseEntityView, ObjectEdit):
 
 class EntityCreate(BaseEntityView, ObjectCreate):
   template = 'default/single_view.html'
+  mode = 'create'
 
   prepare_args = ObjectCreate.prepare_args
   breadcrumb = ObjectCreate.breadcrumb
@@ -351,6 +355,32 @@ class ModuleMeta(type):
             # Wrap views
             # setattr(cls, p, _wrap_view(attr))
 
+class ModuleComponent(object):
+  """
+  A component that provide new functions for a :class:`Module`
+  """
+  name = None
+
+  def __init__(self, name=None):
+    if name is not None:
+      self.name = name
+
+    if self.name is None:
+      raise ValueError('A module component must have a name')
+
+  def init_module(self, module):
+    self.module = module
+    self.init()
+
+  def init(self, *args, **kwargs):
+    """
+    Implements this in components
+    """
+    pass
+
+  def get_actions(self):
+    return []
+
 
 class Module(object):
   __metaclass__ = ModuleMeta
@@ -362,6 +392,7 @@ class Module(object):
   list_view = None
   list_view_columns = []
   single_view = None
+  components = ()
 
   # class based views. If not provided will be automaticaly created from
   # EntityView etc defined above
@@ -462,6 +493,14 @@ class Module(object):
     for sc in self.search_criterions:
       sc.model = self.managed_class
 
+    self.__components = {}
+    for component in self.components:
+      component.init_module(self)
+      self.__components[component.name] = component
+
+  def get_component(self, name):
+    return self.__components.get(name)
+
   def _setup_view(self, url, attr, cls, *args, **kwargs):
     """
     Register class based views
@@ -497,6 +536,9 @@ class Module(object):
                    endpoint=Endpoint(self.endpoint + '.entity_new'),
                    button='default',),
     ]
+    for component in self.components:
+      ACTIONS.extend(component.get_actions())
+
     actions.register(*ACTIONS)
 
   def create_blueprint(self, crud_app):
@@ -539,7 +581,7 @@ class Module(object):
     self.blueprint.url_value_preprocessor(self._add_breadcrumb)
 
   def _add_breadcrumb(self, endpoint, values):
-    g.breadcrumb.append(BreadcrumbItem(label=self.name,
+    g.breadcrumb.append(BreadcrumbItem(label=self.label,
                         url=Endpoint('.list_view')))
 
   @property
@@ -653,7 +695,7 @@ class Module(object):
     args = request.args
     cls = self.managed_class
 
-    q = args.get("q").replace("%", " ")
+    q = args.get("q", "").replace("%", " ")
     if not q or len(q) < 2:
       raise BadRequest()
 
@@ -722,13 +764,31 @@ class DefaultRelatedView(RelatedView):
 
 # TODO: rename to CRMApp ?
 class CRUDApp(object):
-  def __init__(self, app, modules=None):
+
+  modules = ()
+
+  def __init__(self, app, modules=None, name=None):
+    if name is None:
+      name = self.__class__.__module__
+      modules_signature = ','.join(str(module.id) for module in self.modules)
+      name = name + '-' + modules_signature
+
+    self.name = name
+    self.app = app
+    app.extensions[name] = self
+
     if modules:
       self.modules = modules
-    self.app = app
 
     for module in self.modules:
       self.add_module(module)
+
+  def get_module(self, module_id):
+    for m in self.modules:
+      if m.id == module_id:
+        return m
+
+    return None
 
   def add_module(self, module):
     self.app.register_blueprint(self.create_blueprint(module))

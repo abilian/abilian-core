@@ -1,21 +1,22 @@
 # coding=utf-8
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-import os
 import logging
+import os
 import runpy
-from pprint import pformat
 import urllib
+from pprint import pformat
 
 import sqlalchemy as sa
 from flask import current_app
 from flask_script import Manager, prompt_pass
 
-from abilian.core.logging import patch_logger
 from abilian.core.extensions import db
+from abilian.core.logging import patch_logger
 from abilian.core.models.subjects import User
 from abilian.services import get_service
 from abilian.services.security import Role
+
 
 __all__ = ['manager', 'logger']
 
@@ -26,16 +27,22 @@ __all__ = ['manager', 'logger']
 logging.basicConfig()
 logger = logging.getLogger('')
 
-
 # PATCH flask.ext.script.Manager.run to force creation of app before run() is
 # called. In default implementation, the arg parser is created before the Flask
 # application. So we can't use app.script_manager to add commands from
 # plugins. If app is created before the arg parser, plugin commands are properly
 # registered
 _flask_script_manager_run = Manager.run
+
+
 def _manager_run(self, *args, **kwargs):
   self()
+  if 'sentry' in self.app.extensions:
+    client = self.app.extensions['sentry'].client
+    client.tags['process_type'] = 'shell'
+
   return _flask_script_manager_run(self, *args, **kwargs)
+
 
 patch_logger.info(Manager.run)
 Manager.run = _manager_run
@@ -48,8 +55,9 @@ def _log_config(config):
   lines = ["Application configuration:"]
 
   if config.get('CONFIGURED'):
+    settings = current_app.services['settings']
     try:
-      db_settings = set(current_app.services['settings'].namespace('config').keys())
+      db_settings = set(settings.namespace('config').keys())
     except sa.exc.ProgrammingError:
       # there is config.py, db uri, but maybe "initdb" has yet to be run
       db_settings = {}
@@ -87,22 +95,31 @@ def log_config(config):
 
 @manager.option('-p', '--port', dest='port', help='listening port',
                 default=5000)
-@manager.option('--hide-config', dest='hide_config', action='store_const',
-                 const=True, default=False,
-                help='don\'t show application configuration on startup')
-def run(port, hide_config):
+@manager.option('--show-config', dest='show_config', action='store_const',
+                const=True, default=False,
+                help='show application configuration on startup')
+@manager.option('--ssl', dest='ssl', action='store_const',
+                default=False, const=True,
+                help='Enable werkzeug SSL')
+def run(port, show_config, ssl):
   """
-  Like runserver, also print application configuration.
+  Like runserver. May also print application configuration if used with
+  --show-config.
   """
   app = current_app
-  if not hide_config:
+  options = {}
+  if show_config:
     log_config(app.config)
 
   # TODO: pass host and debug as params to
   host = "0.0.0.0"
   debug = app.config.get('DEBUG')
   port = int(port or app.config.get('PORT', 5000))
-  app.run(host=host, debug=debug, port=port)
+
+  if ssl:
+    options['ssl_context'] = 'adhoc'
+
+  app.run(host=host, debug=debug, port=port, **options)
 
 
 @manager.command
@@ -122,7 +139,7 @@ def dropdb():
   confirm = raw_input("Are you sure you want to drop the database? (Y/N) ")
   print("Dropping DB using engine: {}".format(db))
   if confirm.lower() == 'y':
-    #with current_app.app_context():
+    # with current_app.app_context():
     db.drop_all()
 
 
@@ -135,29 +152,29 @@ def routes():
   for rule in current_app.url_map.iter_rules():
     methods = ','.join(rule.methods)
     path = urllib.unquote(rule.rule)
-    #line = urllib.unquote()
+    # line = urllib.unquote()
     output.append((rule.endpoint, methods, path))
 
   for endpoint, methods, path in sorted(output):
     print('{:40s} {:25s} {}'.format(endpoint, methods, path))
 
 
-
 # user commands
 email_opt = manager.option('email', help='user\'s email')
 password_opt = manager.option(
-    '-p', '--password', dest='password', default=None,
-    help='If absent, a prompt will ask for password',)
+  '-p', '--password', dest='password', default=None,
+  help='If absent, a prompt will ask for password', )
 role_opt = manager.option(
-    '-r', '--role', dest='role',
-    choices=[r.name for r in Role.assignable_roles()],
+  '-r', '--role', dest='role',
+  choices=[r.name for r in Role.assignable_roles()],
 )
 name_opt = manager.option(
-    '-n', '--name', dest='name', default=None,
-    help='Last name (e.g "Smith")')
+  '-n', '--name', dest='name', default=None,
+  help='Last name (e.g "Smith")')
 firstname_opt = manager.option(
-    '-f', '--firstname', dest='first_name', default=None,
-    help='Fist name (e.g. "John")')
+  '-f', '--firstname', dest='first_name', default=None,
+  help='Fist name (e.g. "John")')
+
 
 @email_opt
 @password_opt
@@ -209,7 +226,7 @@ def passwd(email, password=None):
   """
   Changes the password for the given user.
   """
-  user = User.query.filter(User.email==email).one()
+  user = User.query.filter(User.email == email).one()
   if password is None:
     password = prompt_pass(u'New password: ')
 

@@ -241,6 +241,9 @@ def random_password():
 
 
 def get_serializer(name):
+  """
+  :type name: str
+  """
   config = current_app.config
   secret_key = config.get('SECRET_KEY')
   salt = config.get('SECURITY_{}_SALT'.format(name.upper()))
@@ -251,6 +254,7 @@ def send_reset_password_instructions(user):
   """Sends the reset password instructions email for the specified user.
 
   :param user: The user to send the instructions to
+  :type user: User
   """
   token = generate_reset_password_token(user)
   url = url_for('login.reset_password', token=token)
@@ -266,6 +270,7 @@ def generate_reset_password_token(user):
   """Generates a unique reset password token for the specified user.
 
   :param user: The user to work with
+  :type user: User
   """
   data = [str(user.id), md5(user.password)]
   return get_serializer("reset").dumps(data)
@@ -278,12 +283,13 @@ def reset_password_token_status(token):
       expired, invalid, user = reset_password_token_status('...')
 
   :param token: The password reset token
+  :type token: str
   """
   return get_token_status(token, 'reset', 'RESET_PASSWORD')
 
 
-def get_token_status(token, serializer, max_age=None):
-  serializer = get_serializer(serializer)
+def get_token_status(token, serializer_name, max_age=None):
+  serializer = get_serializer(serializer_name)
   #max_age = get_max_age(max_age)
   user, data = None, None
   expired, invalid = False, False

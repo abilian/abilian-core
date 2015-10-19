@@ -18,7 +18,7 @@ from flask import current_app
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, Unicode, DateTime, Binary, String
+from sqlalchemy.types import Integer, UnicodeText, DateTime, Binary, String
 
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import User
@@ -97,7 +97,7 @@ class AuditEntry(db.Model):
 
   entity_id = Column(Integer)
   entity_type = Column(String(1000))
-  entity_name = Column(Unicode(length=255))
+  entity_name = Column(UnicodeText())
 
   user_id = Column(Integer, ForeignKey(User.id))
   user = relationship(User, foreign_keys=user_id)

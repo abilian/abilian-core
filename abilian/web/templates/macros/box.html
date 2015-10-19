@@ -1,18 +1,19 @@
 {# Generic renderer for boxes / portlets #}
 
 {%- set color_map = dict(blue="info", green="success", orange="warning", red="danger",
-                         primary="primary", info="info", success="success", 
-                         warning="warning", danger="danger") %}
+                         primary="primary", info="info", success="success",
+                         warning="warning", danger="danger", cls="") %}
 
-{%- macro m_box(title, color="info", href=None) %}
+{%- macro m_box(title, color="info", href=None, icon_class="") %}
 <!-- begin box "{{ title }}" -->
-  <div class="panel panel-{{ color_map.get(color, 'default') }}">
+  <div class="panel panel-{{ color_map.get(color, 'default') }} {{ cls }}">
     {%- if title %}
       <div class="panel-heading">
         <h5 class="panel-title">
           {%- if href %}<a href="{{ href }}">{%- endif %}
-            {{ title }}
-            {%- if href %}</a>{%- endif %}        
+          {%- if icon_class -%}<span class="{{ icon_class}}"></span>{% endif %}
+          {{ title }}
+          {%- if href %}</a>{%- endif %}
         </h5>
       </div>
     {%- endif %}
@@ -55,6 +56,6 @@
       {{ caller() }}
     </div>
   </div>
-  <div class="clearfix"></div> 
+  <div class="clearfix"></div>
 <!-- end box "{{ title }}" -->
 {%- endmacro %}

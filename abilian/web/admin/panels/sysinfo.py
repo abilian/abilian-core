@@ -22,7 +22,6 @@ class SysinfoPanel(AdminPanel):
     uname = os.popen("uname -a").read()
     python_version = sys.version.strip()
 
-    lines = os.popen("pip freeze").readlines()
     packages = []
 
     for dist in pkg_resources.working_set:

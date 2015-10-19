@@ -12,7 +12,7 @@
 {% macro m_box(title, color="blue", with_toolbar=False) %}
   <div class="box">
   {{ deprecated("m_box", "box") }}
-    
+
     {% if title %}
       <div class="box-header box-header-small box-header-color-{{ color }}">
         <h5>{{ title }}</h5>
@@ -239,9 +239,7 @@
         {{ field.label.text|safe }}
       </label>
     {% else %}
-      {% if field.type in ('TextField', 'TextAreaField', 'PasswordField') %}
-        {% set class_ = class_ + ' input-xlarge' %}
-      {% elif field.type == 'FileField' %}
+      {% if field.type == 'FileField' %}
         {% set class_ = class_ + ' input-file' %}
       {% endif %}
       {{ field(class_=class_, placeholder=placeholder, **kwargs)|safe }}

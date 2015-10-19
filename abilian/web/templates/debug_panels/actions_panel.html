@@ -1,0 +1,46 @@
+<h4>Action context</h4>
+
+<table>
+  <thead>
+  <tr>
+    <th>Key</th>
+    <th>Value</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  {%- for key, value in g.action_context.items() %}
+    <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+      <td>{{ key }}</td>
+      <td>{{ value|printable }}</td>
+    </tr>
+  {%- endfor %}
+  </tbody>
+</table>
+
+
+<h4>Actions</h4>
+<table>
+  <thead>
+  <tr>
+    <th>Category</th>
+    <th>Title</th>
+    <th>Class</th>
+    <th>Endpoint</th>
+    <th>URL</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  {% for action in actions %}
+
+    <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+      <td>{{ action.category }}</td>
+      <td>{{ action.title }}</td>
+      <td>{{ action.class }}</td>
+      <td>{{ action.endpoint }}</td>
+      <td>{{ action.url }}</td>
+    </tr>
+  {%- endfor %}
+  </tbody>
+</table>

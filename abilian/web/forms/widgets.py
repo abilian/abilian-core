@@ -201,12 +201,15 @@ class BaseTableView(object):
         build_url = col.get('url', url_for)
 
       value = entity
-      for attr in column_name.split('.'):
-        value = value.display_value(attr)
-
-      # Manual massage.
-      if value is None:
-        value = ""
+      attr = column_name.rsplit('.', 1)
+      if len(attr) > 1:
+        try:
+          value = getattr(value, attr[0], "")
+          value = value.display_value(attr[1])
+        except AttributeError:
+          value = ""
+      else:
+        value = value.display_value(attr[0])
 
       if column_name == make_link_on or column_name == 'name' or \
          col.get('linkable'):
@@ -291,22 +294,24 @@ class AjaxMainTableView(object):
     aoColumns += [{'asSorting': col['sorting'], 'bSortable': col['sortable']}
                   for col in self.columns]
     datatable_options = {
-      'sDom': 'lfFritip',
+      'sDom': 'fFriltip',
       'aoColumns': aoColumns,
       'bFilter': True,
       'oLanguage': {
-        'sSearch': self.options.get('search_label', _("Filter records:")),
-        'sPrevious': _("Previous"),
-        'sNext': _("Next"),
-        'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
-        'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
-        'sAddAdvancedFilter': _("Add a filter"),
+        'sSearch': self.options.get('search_label', _(u'Filter records:')),
+        'oPaginate': {
+          'sPrevious': _(u'Previous'),
+          'sNext': _(u'Next'),
+        },
+        'sLengthMenu': _(u'Entries per page: _MENU_'),
+        'sInfo': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
+        'sInfoFiltered': _(u'(filtered from _MAX_ total entries)'),
+        'sAddAdvancedFilter': _(u'Add a filter'),
       },
       'bPaginate': self.paginate,
       'sPaginationType': "bootstrap",
-      'bLengthChange': False,
+      'bLengthChange': True,
       'iDisplayLength': 25,
-
       'bStateSave': self.save_state,
       'bProcessing': True,
       'bServerSide': True,
@@ -601,19 +606,23 @@ class TextInput(wtforms.widgets.TextInput):
 
     return Markup(render_template_string(
       u'''
-      <div class="input-group">
-      {%- if widget.pre_icon %}
-      <div class="input-group-addon">{{ widget.pre_icon }}</div>
-      {%- endif %}
-      <input {{ params | safe}}>
-      {%- if widget.post_icon %}
-      <div class="input-group-addon">{{ widget.post_icon }}</div>
-      {%- endif %}
+      <div class="input-group input-group-type-{{ widget.typename }}">
+        {%- if widget.pre_icon %}
+          <div class="input-group-addon">{{ widget.pre_icon }}</div>
+        {%- endif %}
+          <input {{ params | safe}}>
+        {%- if widget.post_icon %}
+          <div class="input-group-addon">{{ widget.post_icon }}</div>
+        {%- endif %}
       </div>
       ''',
       widget=self,
       params=self.html_params(name=field.name, **kwargs)
     ))
+
+  @property
+  def typename(self):
+    return self.__class__.__name__.lower()
 
 
 class TextArea(BaseTextArea):

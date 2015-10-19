@@ -21,9 +21,12 @@ from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
 from sqlalchemy.types import (
   Integer, UnicodeText, LargeBinary, Boolean, DateTime
 )
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from flask_login import UserMixin, current_app
 
 from abilian.core import sqlalchemy as sa_types
+
 from .base import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
 
 __all__ = ['User', 'Group', 'Principal']
@@ -252,6 +255,13 @@ class User(Principal, UserMixin, db.Model):
                                               last_name=self.last_name or u'')
     return name.strip() or u'Unknown'
 
+  @property
+  def short_name(self):
+    first_name = self.first_name or u''
+    last_name = self.last_name[0:1] + "." if self.last_name else u''
+    name = u'{} {}'.format(first_name, last_name)
+    return name.strip() or u'Unknown'
+
   def __unicode__(self):
     return self.name
 
@@ -297,3 +307,14 @@ class Group(Principal, db.Model):
   photo = deferred(Column(LargeBinary))
 
   public = Column(Boolean, default=False, nullable=False)
+
+  @hybrid_property
+  def members_count(self):
+    return len(self.members)
+
+  @members_count.expression
+  def members_count(cls):
+    return sa.sql.select([sa.sql.func.count(membership.c.user_id)])\
+                 .where(membership.c.group_id == cls.id)\
+                 .group_by(membership.c.group_id)\
+                 .label('members_count')

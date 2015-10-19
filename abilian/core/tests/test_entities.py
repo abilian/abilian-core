@@ -23,8 +23,8 @@ class EntityTestCase(TestCase):
     Session = sa.orm.sessionmaker(bind=engine)
     session = Session()
 
-    setattr(session, '_model_changes', {})  # flask-sqlalchemy as listeners
-                                            # looking for this
+    # flask-sqlalchemy as listeners looking for this
+    session._model_changes = {}
 
     DummyContact.metadata.create_all(engine)
     return session
@@ -185,7 +185,7 @@ class PermissionsTestCase(AbilianTestCase):
 
     svc = self.app.services['security']
     permissions = svc.get_permissions_assignments(obj)
-    assert permissions == { \
+    assert permissions == {
       security.READ: {security.Anonymous},
       security.WRITE: {security.Owner},
     }

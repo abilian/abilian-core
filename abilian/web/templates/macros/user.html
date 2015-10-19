@@ -11,5 +11,6 @@
 {% endmacro %}
 
 {% macro m_user_link(user, css="") %}
-  <a href="{{ url_for(user) }}" {%- if css %} class="{{ css }}"{%- endif %}>{{ caller() }}</a>
-{% endmacro %}    
+  {%- set content = caller() if caller|default(None) else user.name %}
+  <a href="{{ url_for(user) }}" {%- if css %} class="{{ css }}"{%- endif %}>{{ content }}</a>
+{% endmacro %}

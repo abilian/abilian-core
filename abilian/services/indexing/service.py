@@ -506,14 +506,20 @@ class WhooshIndexService(Service):
           continue
 
         writer.delete_by_term('object_key', object_key)
-        writer.add_document(**document)
+        try:
+          writer.add_document(**document)
+        except ValueError:
+          # logger is here to give us more infos in order to catch a weird bug
+          # that happens regularly on CI but is not reliably reproductible.
+          logger.error('writer.add_document(%r)', document, exc_info=True)
+          raise
         indexed.add(object_key)
 
 
 service = WhooshIndexService()
 
 
-@shared_task(ignore_result=True)
+@shared_task
 def index_update(index, items):
   """
   :param:index: index name
@@ -527,7 +533,7 @@ def index_update(index, items):
 
   if not getattr(session, '_model_changes', None):
     # Flask-Sqlalchemy up to 1.0 needs this
-    setattr(session, '_model_changes', {})
+    session._model_changes = {}
 
   updated = set()
   writer = AsyncWriter(index)
@@ -561,7 +567,13 @@ def index_update(index, items):
           continue
 
         document = service.get_document(obj, adapter)
-        writer.add_document(**document)
+        try:
+          writer.add_document(**document)
+        except ValueError:
+          # logger is here to give us more infos in order to catch a weird bug
+          # that happens regularly on CI but is not reliably reproductible.
+          logger.error('writer.add_document(%r)', document, exc_info=True)
+          raise
         updated.add(object_key)
   except:
     writer.cancel()
@@ -573,8 +585,8 @@ def index_update(index, items):
     # async thread: wait for its termination
     writer.join()
   except RuntimeError:
-    # happens when actual writer was alraedy available: asyncwriter needn't to
-    # start a thread
+    # happens when actual writer was already available: asyncwriter didn't need
+    # to start a thread
     pass
 
 

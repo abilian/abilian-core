@@ -61,6 +61,27 @@ class TagsExtension(object):
   def entity_tags(self, entity):
     return getattr(entity, TAGS_ATTR)
 
+  def tags_from_hit(self, tag_ids):
+    """
+    :param tag_ids: indexed ids of tags in hit result. Do not pass hit instance.
+
+    :returns: an iterable of :class:`Tag` instances.
+    """
+    ids = []
+    for t in tag_ids.split():
+      t = t.strip()
+      try:
+        t = int(t)
+      except ValueError:
+        pass
+      else:
+        ids.append(t)
+
+    if not ids:
+      return []
+
+    return Tag.query.filter(Tag.id.in_(ids)).all()
+
   def entity_default_ns(self, entity):
     return getattr(entity, ENTITY_DEFAULT_NS_ATTR, 'default')
 

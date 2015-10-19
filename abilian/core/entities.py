@@ -238,6 +238,8 @@ class Entity(Indexable, BaseMixin, db.Model):
   index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
   index_to += (
       ('_indexable_roles_and_users', ('allowed_roles_and_users',)),
+      ('_indexable_tag_ids', ('tag_ids',)),
+      ('_indexable_tag_text', ('tag_text', 'text',)),
   )
   __indexation_args__['index_to'] = index_to
   del index_to
@@ -406,6 +408,28 @@ class Entity(Indexable, BaseMixin, db.Model):
       result.append(indexable_role(p))
 
     return u' '.join(result)
+
+  @property
+  def _indexable_tags(self):
+    """
+    Index tag ids for tags defined in this Entity's default tags namespace.
+    """
+    tags = current_app.extensions['tags']
+
+    if not tags.is_support_tagging(self):
+      return u''
+
+    default_ns = tags.entity_default_ns(self)
+    return [t for t in tags.entity_tags(self)
+            if t.ns == default_ns]
+
+  @property
+  def _indexable_tag_ids(self):
+    return u' '.join(unicode(t.id) for t in self._indexable_tags)
+
+  @property
+  def _indexable_tag_text(self):
+    return u' '.join(unicode(t.label) for t in self._indexable_tags)
 
 
 # TODO: make this unecessary

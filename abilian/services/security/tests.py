@@ -80,6 +80,14 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(anon) == [Anonymous]
     assert not security.has_permission(anon, 'read')
 
+  def test_has_role_authenticated(self):
+    anon = self.app.login_manager.anonymous_user()
+    user = User(email=u"john@example.com", password="x")
+    self.session.add(user)
+    self.session.flush()
+    assert not security.has_role(anon, Authenticated)
+    assert security.has_role(user, Authenticated)
+
   def test_root_user(self):
     """ Root user always has any role, any permission
     """
@@ -136,6 +144,8 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(group) == ['admin']
     assert security.get_principals(Admin) == [group]
 
+    assert security.has_role(user, Admin)
+
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
     assert security.has_permission(user, "manage")
@@ -145,6 +155,7 @@ class SecurityTestCase(IntegrationTestCase):
     assert security.get_roles(group) == []
     assert security.get_principals(Admin) == []
 
+    assert not security.has_role(user, "admin")
     assert not security.has_permission(user, "read")
     assert not security.has_permission(user, "write")
     assert not security.has_permission(user, "manage")
@@ -172,9 +183,13 @@ class SecurityTestCase(IntegrationTestCase):
     # test get_roles "global": object roles should not appear
     assert security.get_roles(user) == ['global_role']
 
+    # global role is valid on all object
+    assert security.has_role(user, 'global_role', obj)
+
     security.ungrant_role(user, "reader", obj)
     assert not security.has_role(user, "reader", obj)
     assert security.get_roles(user, obj) == []
+    assert security.has_role(user, 'global_role', obj)
 
     assert not security.has_permission(user, "read", obj)
     assert not security.has_permission(user, "write", obj)

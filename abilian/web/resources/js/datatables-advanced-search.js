@@ -101,6 +101,7 @@
 
         self.aFilters = [];
         self.oFilters = {};
+        self.oActiveFilters = {};
 
         /* filters container */
         self.$Container = $('<div class="advanced-search-filters"></div>');
@@ -121,9 +122,9 @@
             var $criterionContainer = $('<div></div>')
                     .attr({'class': 'criterion form-group'}),
                 $labelContainer = $('<div></div>').
-                    attr({'class': 'col-md-3 control-label'}),
+                    attr({'class': 'col-xs-12 col-sm-3 control-label'}),
                 $filterContainer = $('<div></div>').
-                    attr({'class': 'col-md-9'}),
+                    attr({'class': 'col-xs-12 col-sm-9'}),
                 filter = oDTSettings.oInit.aoAdvancedSearchFilters[i],
                 args = [].concat([filter.name, filter.label], filter.args),
                 instance = instantiateFilter(filter.type, args),
@@ -231,6 +232,13 @@
             return;
         }
 
+        if (this.oActiveFilters[filterName] !== undefined) {
+            // filter already active
+            return;
+        }
+
+        this.oActiveFilters[filterName] = instance;
+
         /* install default value if possible and necessary: addFilter may be
          * called from stateLoaded() with a value already set by load
          * function */
@@ -240,7 +248,8 @@
         }
 
         instance.$container.show();
-        this.$filterSelect.find('option[value="' + filterName + '"]')
+        this.$filterSelect
+            .find('option[value="' + filterName + '"]')
             .prop('disabled', true);
     };
 
@@ -268,6 +277,13 @@
         if (instance === undefined) {
             return;
         }
+
+        if (this.oActiveFilters[filterName] === undefined) {
+            // not in active filters
+            return;
+        }
+
+        delete this.oActiveFilters[filterName];
         instance.$container.hide();
         this.$filterSelect.find('option[value="' + filterName + '"]').
             prop('disabled', null);
@@ -278,14 +294,21 @@
      */
     AdvancedSearchFilters.serverParamsCallBack = function(event, aoData) {
         var self = event.data.instance;
-        for(var i=0; i < self.aFilters.length; i++) {
-            var f = self.aFilters[i],
+
+        function pushFilterValue(filterName) {
+            var f = self.oFilters[filterName],
                 vals = f.val();
+
             if (!(vals instanceof Array)) {
                 vals = [vals];
             }
-            $(vals).each(function() { aoData.push({name: f.name, value: this});});
+            $(vals).each(function() {
+                aoData.push({name: f.name, value: this});
+            });
         }
+
+        Object.keys(self.oActiveFilters).sort()
+              .forEach(pushFilterValue);
     };
 
     /**
@@ -294,8 +317,9 @@
     AdvancedSearchFilters.stateSaveParams = function(event, oSettings, oData) {
         var self = event.data.instance;
         oData.oAdvancedSearchFilters = {};
-        self.aFilters.forEach(
-            function(filter, idx) {
+        Object.keys(self.oActiveFilters).forEach(
+            function(filterName, idx) {
+                var filter = self.oFilters[filterName];
                 if (filter.save === undefined) { return; }
                 this[filter.name] = filter.save();
             },
@@ -557,12 +581,26 @@
             return val;
         }
 
+        function saveVal() {
+            /* jshint validthis: true */
+            var data = this.$select.data('select2').data();
+
+            if (data) {
+              if (!this.multiple && !data.length) {
+                data = [];
+              }
+            }
+            else {data=null;}
+
+            return data;
+        }
+
         SelectAjaxFilter.prototype = {
             'getElements': function() { return this.$elements; },
             'val': getVal,
-            'save': getVal,
+            'save': saveVal,
             'load': function(vals) {
-                this.$select.data('select2').val(vals);
+                this.$select.data('select2').data(vals);
             }
         };
         return SelectAjaxFilter;
@@ -580,6 +618,8 @@
             this.name = name;
             this.label = label;
             this.$elements = $('<div>');
+            this.multiple = s2_args['multiple'] || false;
+
 
             /* create the select*/
             var selectId = name + '-select',
@@ -597,6 +637,7 @@
             $select.select2(
                 {'data': s2_args['select-data'],
                  'placeholder': (s2_args['select-label'] || ''),
+                 'multiple': this.multiple,
                  'allowClear': true,
                  'width': '20em',
                  'max-width': '100%',
@@ -637,6 +678,7 @@
             /* jshint validthis: true */
             var radioValue = this.$elements.find('input:checked').val(),
                 select2Value = this.$select.select2('val');
+
 
             if ( select2Value || radioValue !== 'None') {
                 return [select2Value, radioValue];

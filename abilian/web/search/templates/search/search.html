@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% from "macros/box.html" import m_box_menu %}
+{% from "macros/tag.html" import m_tags_from_hit %}
 
 {% block main %}
 
@@ -57,9 +58,14 @@
       {%- for hit in results %}
         <div class="ab-search-result">
           {%- if (filtered_by_type|length) != 1 %}
-          <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span> &nbsp;
+            <span class="label label-info">{{ friendly_fqcn(hit['object_type']) }}</span> &nbsp;
           {%- endif %}
           <a href="{{ url_for_hit(hit)|safe }}"><span class="title">{{ hit.highlights('name')|safe or hit['name']}}</span></a>
+          {%- if hit['tag_ids'] %}
+            <div class="tags">
+              {{ m_tags_from_hit(hit) }}
+            </div>
+          {%- endif  %}
 
           {%- if 'description' in hit %}
             <p>{{ hit.highlights('description')|safe }}</p>
@@ -68,13 +74,12 @@
           {%- if 'creator' in hit %}
           {%- set author_type, author_id = hit['creator'].split(':') %}
           {%- set author_href = url_for('social.' + author_type, **{(author_type + '_id'): author_id}) %}
-            <p class="">
+            <p>
               <i>{{ _('by') }}
                 <a href="{{ author_href }}">{{hit['creator_name'] }}</a>
                 &ndash;
                 {{ _('Last modification: %(date)s',
-                     date=_('%(date)s at %(time)s', date=hit['updated_at']|dateformat('long'),
-                                                    time=hit['updated_at']|timeformat('short'))) }}
+                     date=hit['updated_at'] | age(date_threshold='day')) }}
               </i><br />
             </p>
           {%- endif %}

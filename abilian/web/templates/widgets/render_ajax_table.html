@@ -47,7 +47,8 @@
          function(Abilian, $) {
 
              function initDatatable() {
-                 var tbl = $("#listing_{{ view.name }}").dataTable({{ datatable_options|tojson|safe }});
+                 var tbl_options = {{ datatable_options|tojson|safe }},
+                     tbl = $("#listing_{{ view.name }}").dataTable(tbl_options);
 
                  /* export button: setup url args on click, to match current table filtering */
                  tbl.bind('xhr', $.fn.dataTableSetExportArgs);

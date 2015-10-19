@@ -1,0 +1,60 @@
+<h4>Available signals</h4>
+
+<table>
+  <thead>
+  <tr>
+    <th>Module</th>
+    <th>Namespace name</th>
+    <th>Signal name</th>
+    <th>Receivers</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  {% for signal in signals %}
+
+    <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+      <td>{{ signal.module_name }}</td>
+      <td>{{ signal.ns_name }}</td>
+      <td>{{ signal.signal_name }}</td>
+      <td>
+        <ul style="margin-left: 10px;">
+          {% for receiver in signal.receivers %}
+            <li>{{ receiver }}</li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+  {%- endfor %}
+  </tbody>
+</table>
+
+<h4>Events during this request</h4>
+
+<table>
+  <thead>
+  <tr>
+    <th>Signal name</th>
+    <th>Sender</th>
+    <th>Args</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  {% for event in events %}
+
+    <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+      <td>{{ event.signal_name }}</td>
+      <td>{{ event.sender }}</td>
+      <td>
+        <ul style="margin-left: 10px;">
+          {% for arg, value in event.args.items()|sort %}
+            <li><b>{{ arg }}</b>: {{ value }}</li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+  {%- endfor %}
+  </tbody>
+</table>
+

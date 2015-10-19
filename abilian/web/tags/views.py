@@ -17,7 +17,8 @@ from abilian.web.views import (
 
 from .forms import TagForm
 
-bp = Blueprint('tags', __name__, url_prefix='/tags')
+bp = Blueprint('tags', __name__, url_prefix='/tags',
+               template_folder='templates')
 
 
 class BaseTagView(object):

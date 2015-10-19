@@ -48,14 +48,14 @@ class BlobTestCase(AbilianTestCase):
 
   def test_filename(self):
     content = StringIO(u'test')
-    setattr(content, 'filename', 'test.txt')
+    content.filename = 'test.txt'
     b = Blob(content)
     assert 'filename' in b.meta
     assert b.meta['filename'] == u'test.txt'
 
   def test_mimetype(self):
     content = StringIO(u'test')
-    setattr(content, 'content_type', 'text/plain')
+    content.content_type = 'text/plain'
     b = Blob(content)
     assert 'mimetype' in b.meta
     assert b.meta['mimetype'] == u'text/plain'
@@ -75,7 +75,6 @@ class BlobTestCase(AbilianTestCase):
     session.add(b)
     session.flush()
 
-    b.uuid
     assert Blob.query.by_uuid(b.uuid) is b
     assert Blob.query.by_uuid(unicode(b.uuid)) is b
 
@@ -91,14 +90,13 @@ class BlobTestCase(AbilianTestCase):
     session.add(b)
     tr.commit()
 
-    self.assertIs(repository.get(b.uuid), None)
-    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
-                      content)
-    self.assertEquals(b.value, content)
+    assert repository.get(b.uuid) is None
+    assert session_repository.get(b, b.uuid).open('rb').read() == content
+    assert b.value == content
 
     session.commit()
-    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
-    self.assertEquals(b.value, content)
+    assert repository.get(b.uuid).open('rb').read() == content
+    assert b.value == content
 
     session.begin(nested=True) # match session.rollback
 
@@ -106,23 +104,21 @@ class BlobTestCase(AbilianTestCase):
       session.delete(b)
       # object marked for deletion, but instance attribute should still be
       # readable
-      self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
-                        content)
+      assert session_repository.get(b, b.uuid).open('rb').read() == content
 
     # commit in transaction: session_repository has no content, 'physical'
     # repository still has content
-    self.assertIs(session_repository.get(b, b.uuid), None)
-    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
+    assert session_repository.get(b, b.uuid) is None
+    assert repository.get(b.uuid).open('rb').read() == content
 
     # rollback: session_repository has content again
     session.rollback()
-    self.assertEquals(session_repository.get(b, b.uuid).open('rb').read(),
-                      content)
+    assert session_repository.get(b, b.uuid).open('rb').read() == content
 
     session.delete(b)
     session.flush()
-    self.assertIs(session_repository.get(b, b.uuid), None)
-    self.assertEquals(repository.get(b.uuid).open('rb').read(), content)
+    assert session_repository.get(b, b.uuid) is None
+    assert repository.get(b.uuid).open('rb').read() == content
 
     session.commit()
-    self.assertIs(repository.get(b.uuid), None)
+    assert repository.get(b.uuid) is None

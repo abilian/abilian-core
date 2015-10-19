@@ -117,6 +117,7 @@ default_config.update(
         'abilian.web.admin.panels.groups.GroupsPanel',
         'abilian.web.admin.panels.sysinfo.SysinfoPanel',
         'abilian.services.vocabularies.admin.VocabularyPanel',
+        'abilian.web.tags.admin.TagPanel',
     ),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
@@ -156,6 +157,10 @@ class Application(Flask, ServiceManager, PluginManager):
   #: True if application has a config file and can be considered configured for
   #: site.
   configured = ConfigAttribute('CONFIGURED')
+
+  #: If True all views will require by default an authenticated user, unless
+  #: Anonymous role is authorized. Static assets are always public.
+  private_site = ConfigAttribute('PRIVATE_SITE')
 
   #: instance of :class:`.web.views.registry.Registry`.
   default_view = None
@@ -273,6 +278,14 @@ class Application(Flask, ServiceManager, PluginManager):
       self.init_extensions()
       self.register_plugins()
       self.add_access_controller('static', allow_access_for_roles(Anonymous),
+                                 endpoint=True)
+      # debugtoolbar: this is needed to have it when not authenticated on a
+      # private site. We cannot do this in init_debug_toolbar, since auth
+      # service is not yet installed
+      self.add_access_controller('debugtoolbar',
+                                 allow_access_for_roles(Anonymous),)
+      self.add_access_controller('_debug_toolbar.static',
+                                 allow_access_for_roles(Anonymous),
                                  endpoint=True)
 
     self.maybe_register_setup_wizard()
@@ -633,6 +646,8 @@ class Application(Flask, ServiceManager, PluginManager):
                       view_func=partial(send_file_from_directory,
                                         directory=directory),
                       roles=roles)
+    self.add_access_controller(endpoint, allow_access_for_roles(Anonymous),
+                               endpoint=True)
 
   #
   # Templating and context injection setup

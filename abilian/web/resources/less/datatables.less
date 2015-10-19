@@ -1,10 +1,19 @@
-.dataTables_filter > label > input {
+.dataTables_filter > label > input,
+.dataTables_length > label > select {
   .form-control();
 
   @media (min-width: @screen-sm-min) {
     display: inline-block;
     width: auto; // Prevent labels from stacking above inputs in `.form-group`
     vertical-align: middle;
+  }
+}
+
+.dataTables_length {
+  float: right;
+  
+  > label {
+    font-weight: normal;
   }
 }
 

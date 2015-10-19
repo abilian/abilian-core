@@ -7,7 +7,6 @@ import operator
 import logging
 from functools import partial
 import datetime
-import json
 import sqlalchemy as sa
 
 from wtforms import (
@@ -18,7 +17,7 @@ from wtforms import (
     SelectFieldBase,
     FormField as BaseFormField,
     FieldList as BaseFieldList)
-from wtforms.validators import required, optional
+from wtforms.validators import DataRequired, Optional
 from wtforms.compat import string_types, text_type
 from wtforms.ext.csrf import SecureForm
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
@@ -132,15 +131,15 @@ class FileField(BaseFileField):
     self._has_uploads = False
 
     if allow_delete is not None:
-      if any(isinstance(v, required if allow_delete else optional)
+      if any(isinstance(v, DataRequired if allow_delete else Optional)
              for v in validators):
         raise ValueError(
           "Field validators are conflicting with `allow_delete`,"
           "validators={!r}, allow_delete={!r}".format(validators, allow_delete)
         )
-      validators.append(optional() if allow_delete else required())
-    elif not any(isinstance(v, (required, optional)) for v in validators):
-      validators.append(optional())
+      validators.append(Optional() if allow_delete else DataRequired())
+    elif not any(isinstance(v, (DataRequired, Optional)) for v in validators):
+      validators.append(Optional())
 
     kwargs['validators'] = validators
     BaseFileField.__init__(self, *args, **kwargs)
@@ -194,10 +193,10 @@ class FileField(BaseFileField):
       filename = meta.get('filename', handle)
       mimetype = meta.get('mimetype')
       stream = fileobj.open('rb')
-      setattr(stream, 'filename', filename)
+      stream.filename = filename
       if mimetype:
-        setattr(stream, 'content_type', mimetype)
-        setattr(stream, 'mimetype', mimetype)
+        stream.content_type = mimetype
+        stream.mimetype = mimetype
       self.data = stream
       self._has_uploads = True
 
@@ -276,7 +275,10 @@ class DateTimeField(Field):
   def process_data(self, value):
     if value is not None:
       if not value.tzinfo:
-        value = utc_dt(value)
+        if self.use_naive:
+          value = get_timezone().localize(value)
+        else:
+          value = utc_dt(value)
       if not self.use_naive:
         value = value.astimezone(get_timezone())
 
@@ -414,17 +416,24 @@ class QuerySelect2Field(SelectFieldBase):
   """
   def __init__(self, label=None, validators=None, query_factory=None,
                get_pk=None, get_label=None, allow_blank=False,
-               blank_text='', widget=None, multiple=False, **kwargs):
+               blank_text='', widget=None, multiple=False,
+               collection_class=list, **kwargs):
+
     if widget is None:
       widget = Select2(multiple=multiple)
+
     kwargs['widget'] = widget
     self.multiple = multiple
+    self.collection_class = collection_class
 
-    if (validators is None
-        or not any(isinstance(v, (optional, required)) for v in validators)):
+    if validators is None:
+      validators = []
+
+    if not any(isinstance(v, (Optional, DataRequired)) for v in validators):
       logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
-      logger.warning('Use deprecated paramater `allow_blank`.')
-      validators.append(optional() if allow_blank else required())
+      logger.warning(u'Use deprecated parameter `allow_blank` for field "{}".'
+                     .format(label))
+      validators.append(Optional() if allow_blank else DataRequired())
 
     super(QuerySelect2Field, self).__init__(label, validators, **kwargs)
 
@@ -470,6 +479,8 @@ class QuerySelect2Field(SelectFieldBase):
     return self._data
 
   def _set_data(self, data):
+    if self.multiple and not isinstance(data, self.collection_class):
+      data = self.collection_class(data) if data else self.collection_class()
     self._data = data
     self._formdata = None
 

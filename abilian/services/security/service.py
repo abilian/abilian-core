@@ -260,7 +260,9 @@ class SecurityService(Service):
     if isinstance(principal, User):
       filter_cond = (RoleAssignment.user == principal)
       if len(principal.groups) > 0:
-         filter_cond |= (RoleAssignment.group in principal.groups)
+        group_ids = (g.id for g in principal.groups)
+        filter_cond |= (RoleAssignment.group_id.in_(group_ids))
+
       q = q.filter(filter_cond)
     else:
       q = q.filter(RoleAssignment.group == principal)
@@ -362,6 +364,17 @@ class SecurityService(Service):
 
       self._set_role_cache(user, all_roles)
 
+
+  def _clear_role_cache(self, principal):
+    if hasattr(principal, "__roles_cache__"):
+      del principal.__roles_cache__
+
+    if isinstance(principal, Group):
+      for u in principal.members:
+        if hasattr(u, '__roles_cache__'):
+          del u.__roles_cache__
+
+
   def has_role(self, principal, role, object=None):
     """
     True if `principal` has `role` (either globally, if `object` is None, or on
@@ -393,6 +406,10 @@ class SecurityService(Service):
       # everybody has the role 'Anonymous'
       return True
 
+    if (Authenticated in valid_roles
+        and isinstance(principal, User) and not principal.is_anonymous()):
+        return True
+
     if (principal is AnonymousRole
         or (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
       # anonymous user, and anonymous role isn't in valid_roles
@@ -415,25 +432,12 @@ class SecurityService(Service):
     else:
       object_key = None
 
-    if self.app_state.use_cache:
-      cache = self._fill_role_cache(principal)
-
-      if Admin in cache.get(None, ()):
-        # user is a global admin
-        return True
-
-      if object_key in cache:
-        roles = cache[object_key]
-        return len(valid_roles & roles) > 0
-      return False
-
-    all_roles = self._all_roles(principal)
-
-    if Admin in all_roles.get(None, ()):
-      # user is a global admin
-      return True
-
-    roles = all_roles.get(object_key, set())
+    all_roles = (self._fill_role_cache(principal)
+                 if self.app_state.use_cache
+                 else self._all_roles(principal))
+    roles = set()
+    roles |= all_roles.get(None, set())
+    roles |= all_roles.get(object_key, set())
     return len(valid_roles & roles) > 0
 
   def grant_role(self, principal, role, obj=None):
@@ -524,9 +528,7 @@ class SecurityService(Service):
     audit = SecurityAudit(manager=manager, op=SecurityAudit.REVOKE, **args)
     session.add(audit)
     self._needs_flush()
-
-    if hasattr(principal, "__roles_cache__"):
-      del principal.__roles_cache__
+    self._clear_role_cache(principal)
 
   @require_flush
   def get_role_assignements(self, object):

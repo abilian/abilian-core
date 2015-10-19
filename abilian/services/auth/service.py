@@ -6,6 +6,7 @@ from __future__ import absolute_import, print_function, division
 import logging
 from datetime import datetime, timedelta
 
+from werkzeug.exceptions import Forbidden
 from flask import current_app, g, request, url_for, redirect
 from flask_login import (
   current_user, user_logged_out, user_logged_in, login_user
@@ -181,7 +182,9 @@ class AuthService(Service):
       elif verdict is True:
         return
       else:
-        return self.redirect_to_login()
+        if user.is_anonymous():
+          return self.redirect_to_login()
+        raise Forbidden()
 
     # default policy
     if current_app.config.get('PRIVATE_SITE') and user.is_anonymous():

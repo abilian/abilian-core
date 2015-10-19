@@ -1,16 +1,16 @@
-{%- set locale = get_locale() %}
-{%- set full_width = full_width|default(False) %}
-<!DOCTYPE html>
+{%- set locale = get_locale() %}{%- set full_width = full_width|default(False) %}<!DOCTYPE html>
 <html lang="{{ locale.language }}">
 <head>
   <meta charset="utf-8">
-  <title>{% block page_title %}{{ config.SITE_NAME }}{% endblock page_title %}</title>
+  <title>{% block page_title %}
+    {{ config.SITE_NAME }}{% endblock page_title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="description" content="">
   <meta name="author" content="">
 
   {%- assets "css" %}
-    <link href="{{ ASSET_URL }}" rel="stylesheet" />
+    <link href="{{ ASSET_URL }}" rel="stylesheet"/>
   {%- endassets %}
 
   {%- block css %}{%- endblock css %}
@@ -21,8 +21,10 @@
   <![endif]-->
 
   <!-- Le fav and touch icons -->
-  <link rel="shortcut icon" type="image/png" href="{{ app.config['FAVICO_URL'] | string }}" />
-  <link rel="apple-touch-icon" type="image/png" href="{{ app.config['FAVICO_URL'] | string }}" />
+  <link rel="shortcut icon" type="image/png"
+      href="{{ app.config['FAVICO_URL'] | string }}"/>
+  <link rel="apple-touch-icon" type="image/png"
+      href="{{ app.config['FAVICO_URL'] | string }}"/>
 
   {%- if app.config.get('SENTRY_INSTALL_CLIENT_JS', True) and app.extensions.get('sentry') %}
     {%- set ext = app.extensions['sentry'] %}
@@ -31,17 +33,17 @@
   {%- endif %}
 
   <script>
-   var require = {{ app.extensions['webassets'].requirejs_config | tojson }};
+    var require = {{ app.extensions['webassets'].requirejs_config | tojson }};
   </script>
 
   {%- assets "js-top" %}
-  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
   {%- endassets %}
 
   {%- block top_js %}{%- endblock top_js %}
 </head>
 
-<body>
+<body {%- if body_class %} class="{{ body_class }}"{% endif -%}>
 {%- block body %}
   {#- accessibility link: see http://getbootstrap.com/getting-started/#accessibility #}
   <a href="#content" class="sr-only">{{ _("Skip to content") }}</a>
@@ -49,14 +51,17 @@
   <!-- navbar -->
   {% include "navbar.html" %}
 
-  <div id="content" class="container{%- if full_width %}-fluid {% endif %} clearfix">
+  <div id="content"
+      class="container{%- if full_width %}-fluid {% endif %} clearfix">
 
     <!-- breadcrumbs -->
+    {% if g.breadcrumb|length > 1 %}
     <div class="row">
       <div class="col-xs-12">
         {% include "breadcrumbs.html" %}
       </div>
     </div>
+    {% endif %}
 
     <!-- flash messages -->
     <div class="row" id="flash-messages">
@@ -83,16 +88,19 @@
   </div>
 
   {%- block footer %}
-  <footer>
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12">
-          <hr />
-          <p class="text-right"><small>Powered by <a href="http://www.abilian.com/">Abilian</a></small></p>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <hr/>
+            <p class="text-right">
+              <small>Powered by <a href="http://www.abilian.com/">Abilian</a>
+              </small>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
   {%- endblock footer %}
 {%- endblock body %}
 
@@ -100,19 +108,20 @@
   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {%- endassets %}
 
-{%- block js %}{%- endblock js %} {# this block should be used to load additional libraries #}
+{%- block js %}{%- endblock js %}
+{# this block should be used to load additional libraries #}
 
 <!-- app init -->
 <script type="text/javascript">
- {%- include "abilian_init.js" %}
+  {%- include "abilian_init.js" %}
 </script>
 
 {#- i18n bundles #}
 {%- set js_i18n_bundle = "js-i18n-" + locale.language %}
 {%- if js_i18n_bundle in app.extensions['webassets'] %}
-<!-- i18n -->
+  <!-- i18n -->
   {%- assets js_i18n_bundle %}
-  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
   {%- endassets %}
 {%- endif %}
 
@@ -125,21 +134,21 @@
 #}
 
 <script type="text/javascript">
- {% deferredJS %}{% enddeferredJS %}
+  {% deferredJS %}{% enddeferredJS %}
 
- {% block inline_js %}
- {% endblock inline_js %}
+  {% block inline_js %}
+  {% endblock inline_js %}
 
- {#- template can also use an 'inline_js' variable #}
-{%- set inline_js = inline_js|default(None) %}
- {%- if inline_js %}
-   {{ inline_js }}
- {%- endif %}
+  {#- template can also use an 'inline_js' variable #}
+  {%- set inline_js = inline_js|default(None) %}
+  {%- if inline_js %}
+    {{ inline_js }}
+  {%- endif %}
 </script>
 
 
 {%- if config.TRACKING_CODE_SNIPPET %}
- {{ config.TRACKING_CODE_SNIPPET | safe }}
+  {{ config.TRACKING_CODE_SNIPPET | safe }}
 {%- endif %}
 </body>
 </html>
