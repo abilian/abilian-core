@@ -70,7 +70,7 @@ class TestActions(BaseTestCase):
 
   def test_action_url_from_context(self):
     url = OTHER_CAT.url({'for': 'having', '2 keys': 'in context'})
-    assert url == 'http://count?2'
+    assert url == 'http://count?3'
     assert OTHER_CAT.url({}) == 'http://count?0'
 
   def test_render(self):
@@ -92,7 +92,7 @@ class TestActions(BaseTestCase):
     assert (
       OTHER_CAT.render() ==
       Markup(u'<a class="action action-cat_2-sub action-cat_2-sub-other '
-             u'custom-class" href="http://count?2">'
+             u'custom-class" href="http://count?3">'
              u'<img src="/static/icons/other.png" width="14" height="14" /> '
              u'Other Action</a>')
     )
