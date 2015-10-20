@@ -1,7 +1,7 @@
 Changelog for Abilian Core
 ==========================
 
-0.4.6 (unreleased)
+0.5.0 (unreleased)
 ------------------
 
 - Upgrade SQLAlchemy to 0.9
