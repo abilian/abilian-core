@@ -9,8 +9,9 @@ from jinja2 import Template, Markup
 from flask import current_app, g
 from flask.signals import appcontext_pushed
 
-from abilian.web.util import url_for
 from abilian.core.singleton import UniqueName
+from abilian.web import csrf
+from abilian.web.util import url_for
 
 log = logging.getLogger(__name__)
 
@@ -376,6 +377,7 @@ class Action(object):
     params = dict(action=self)
     params.update(actions.context)
     params.update(kwargs)
+    params['csrf'] = csrf
     params['url'] = self.url(params)
     return params
 
