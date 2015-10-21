@@ -70,7 +70,7 @@ class TestActions(BaseTestCase):
 
   def test_action_url_from_context(self):
     url = OTHER_CAT.url({'for': 'having', '2 keys': 'in context'})
-    assert url == 'http://count?3'
+    assert url == 'http://count?2'
     assert OTHER_CAT.url({}) == 'http://count?0'
 
   def test_render(self):
