@@ -7,6 +7,7 @@ from ..image import resize, FIT, SCALE, CROP, get_size, get_save_format
 
 @fixture
 def orig_image():
+  # 725x518
   return open(join(dirname(__file__), "cat.jpg")).read()
 
 def test_get_save_format():
@@ -20,8 +21,12 @@ def test_get_save_format():
 def test_fit(orig_image):
   image = resize(orig_image, 500, 500, FIT)
   x, y = get_size(image)
-  assert x == 500 or y == 500
+  assert (x, y) == (500, 357)
 
+  # image already fits in desired dimension
+  image = resize(orig_image, 1000, 1000, FIT)
+  x, y = get_size(image)
+  assert x == 725 and y == 518
 
 def test_scale(orig_image):
   image = resize(orig_image, 500, 500, SCALE)

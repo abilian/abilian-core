@@ -83,9 +83,11 @@ def resize(orig, width, height, mode=FIT):
     image = image.resize((width, height), Image.LANCZOS)
     assert image.size == (width, height)
   elif mode is FIT:
-    image.thumbnail((width, height), Image.LANCZOS)
-    x1, y1 = image.size
-    assert x1 == width or y1 == height
+    if (x >= width or y >= height):
+      # resize only if images exceed desired dimensions
+      image.thumbnail((width, height), Image.LANCZOS)
+      x1, y1 = image.size
+      assert x1 == width or y1 == height
   elif mode is CROP:
     image = _crop_and_resize(image, width, height)
     assert image.size == (width, height)
