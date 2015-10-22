@@ -145,14 +145,13 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
 
     if dt_cal != now_cal:
       # not same day
-      remove_year = dy != dy
+      remove_year = (dy == ny)
       date_fmt = locale.date_formats['long'].pattern
       time_fmt = locale.time_formats['short'].pattern
       fmt = locale.datetime_formats['medium']
 
       if remove_year:
-        date_fmt.replace('y', '').strip()
-        date_fmt.replace('y', '')
+        date_fmt = date_fmt.replace('y', '').strip()
         # remove leading or trailing spaces, comma, etc...
         date_fmt = re.sub(u'^[^A-Za-z]*|[^A-Za-z]*$', u'', date_fmt)
 

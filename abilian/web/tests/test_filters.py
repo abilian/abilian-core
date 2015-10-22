@@ -82,6 +82,38 @@ class TestFilters(FlaskTestCase):
       mocked.utcnow.return_value = now
       self.assertEquals("2012-06-10 16:30 (2 hours ago)", date_age(dt))
 
+  def test_age(self):
+    age = filters.age
+    now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
+    d1m =  datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
+    d3w = datetime.datetime(2012, 5, 18, 8, 0, 0, tzinfo=utc)
+    d2011 = datetime.datetime(2011, 9, 4, 12, 12, 0, tzinfo=utc)
+
+    # default parameters
+    assert age(None) == u''
+    assert age(d1m, now) == u'1 minute ago'
+    assert age(d3w, now) == u'3 weeks ago'
+
+    # with direction
+    assert age(d1m, now, add_direction=False) == u'1 minute'
+    assert age(d3w, now, add_direction=False) == u'3 weeks'
+
+    # with date_threshold
+    assert age(d1m, now, date_threshold='day') == u'1 minute ago'
+    # same year: 2012 not shown
+    assert age(d3w, now, date_threshold='day') == u'May 18, 4:00 PM'
+    # different year: 2011 shown
+    assert (age(d2011, now, date_threshold='day') ==
+            u'September 4, 2011, 8:12 PM')
+
+    # using default parameter now=None
+    dt_patcher = mock.patch.object(filters.datetime, 'datetime',
+                                   mock.Mock(wraps=datetime.datetime))
+    with dt_patcher as mocked:
+      mocked.utcnow.return_value = now
+      assert age(d1m) == u'1 minute ago'
+
+
   def test_abbrev(self):
     abbrev = filters.abbrev
     self.assertEquals(u'test', abbrev(u'test', 20))
