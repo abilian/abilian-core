@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 from uuid import UUID, uuid1
 import weakref
 import shutil
@@ -100,7 +102,7 @@ class RepositoryService(Service):
       encoding = None
 
     with dest.open(mode, encoding=encoding) as f:
-      if not isinstance(content, basestring):
+      if not isinstance(content, string_types):
         content = content.read()
       f.write(content)
 
@@ -466,7 +468,7 @@ class RepositoryTransaction(object):
 
     dest = self.path / str(uuid)
     with dest.open(mode, encoding=encoding) as f:
-      if not isinstance(content, basestring):
+      if not isinstance(content, string_types):
         content = content.read()
       f.write(content)
 

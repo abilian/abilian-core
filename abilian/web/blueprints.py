@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 from flask import Blueprint as BaseBlueprint, current_app
 from abilian.services.security import Role, Anonymous
 
@@ -41,7 +43,7 @@ class Blueprint(BaseBlueprint):
     BaseBlueprint.__init__(self, name, import_name, **kwargs)
 
     if allowed_roles is not None:
-      if isinstance(allowed_roles, basestring):
+      if isinstance(allowed_roles, string_types):
         allowed_roles = Role(allowed_roles)
 
       if isinstance(allowed_roles, Role):

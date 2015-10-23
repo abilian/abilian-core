@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import sys
 import logging
 from distutils.version import StrictVersion
@@ -402,7 +404,7 @@ class Locale(sa.types.TypeDecorator):
       return None
 
     if not isinstance(value, babel.Locale):
-      if not isinstance(value, basestring):
+      if not isinstance(value, string_types):
         raise ValueError("Unknown locale value: %s" % repr(value))
       if not value.strip():
         return None
@@ -435,7 +437,7 @@ class Timezone(sa.types.TypeDecorator):
       return None
 
     if not isinstance(value, pytz.tzfile.DstTzInfo):
-      if not isinstance(value, basestring):
+      if not isinstance(value, string_types):
         raise ValueError("Unknown timezone value: %s" % repr(value))
       if not value.strip():
         return None

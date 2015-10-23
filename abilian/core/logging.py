@@ -15,6 +15,8 @@ your entry point before anything has been imported:
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import logging
 
 __all__ = ['patch_logger']
@@ -36,7 +38,7 @@ if _patch_logger.level is logging.NOTSET:
 class PatchLoggerAdapter(logging.LoggerAdapter):
 
   def process(self, msg, kwargs):
-    if isinstance(msg, basestring):
+    if isinstance(msg, string_types):
       return super(PatchLoggerAdapter, self).process(msg, kwargs)
 
     func = msg

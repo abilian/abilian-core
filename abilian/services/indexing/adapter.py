@@ -4,6 +4,8 @@ Objects to schema adapters
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import logging
 from abc import ABCMeta, abstractmethod
 from operator import attrgetter
@@ -110,7 +112,7 @@ class SAAdapter(SchemaAdapter):
 
     def setup_field(attr_name, field_name):
       field_def = False
-      if not isinstance(field_name, basestring):
+      if not isinstance(field_name, string_types):
         field_name, field_def = field_name
 
       if field_name not in schema:
@@ -124,7 +126,7 @@ class SAAdapter(SchemaAdapter):
 
     # model level definitions
     for name, field_names in self.index_args.get('index_to', ()):
-      if isinstance(field_names, basestring):
+      if isinstance(field_names, string_types):
         field_names = (field_names,)
       for field_name in field_names:
         setup_field(name, field_name)
@@ -138,7 +140,7 @@ class SAAdapter(SchemaAdapter):
         continue
 
       index_to = info.get('index_to', (name,))
-      if isinstance(index_to, basestring):
+      if isinstance(index_to, string_types):
         index_to = (index_to,)
 
       for field_name in index_to:

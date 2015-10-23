@@ -8,6 +8,8 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
+from future.utils import string_types
+
 import cgi
 import urlparse
 import re
@@ -131,7 +133,7 @@ class BaseTableView(object):
     self.columns = []
     default_width = '{:2.0f}%'.format(0.99 / len(columns) * 100)
     for col in columns:
-      if isinstance(col, basestring):
+      if isinstance(col, string_types):
         col = dict(name=col, width=default_width)
       assert type(col) == dict
       col.setdefault('width', default_width)
@@ -218,7 +220,7 @@ class BaseTableView(object):
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'
                       % (build_url(value), cgi.escape(value.name)))
-      elif isinstance(value, basestring) \
+      elif isinstance(value, string_types) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
       elif value in (True, False):
@@ -371,7 +373,7 @@ class AjaxMainTableView(object):
       elif isinstance(value, Entity):
         cell = Markup('<a href="%s">%s</a>'
                       % (url_for(value), cgi.escape(value.name)))
-      elif (isinstance(value, basestring)
+      elif (isinstance(value, string_types)
             and (value.startswith("http://") or value.startswith("www."))):
         cell = Markup(linkify_url(value))
       elif col.get('linkable'):
@@ -993,7 +995,7 @@ class DateTimeInput(object):
 class DefaultViewWidget(object):
   def render_view(self, field, **kwargs):
     value = field.object_data
-    if isinstance(value, basestring):
+    if isinstance(value, string_types):
       return text2html(value)
     else:
       return unicode(value or u'')  # [], None and other must be rendered using

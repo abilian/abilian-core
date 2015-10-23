@@ -3,6 +3,9 @@
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
+
+from future.utils import string_types
+
 import logging
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
@@ -84,7 +87,7 @@ class TextSearchCriterion(BaseCriterion):
                                     else (name,))
     self._attributes_prepared = False
 
-    if isinstance(search_fmt, basestring):
+    if isinstance(search_fmt, string_types):
       search_fmt = [search_fmt]
 
     self.search_fmt = search_fmt

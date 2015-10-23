@@ -13,6 +13,8 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
+from future.utils import string_types
+
 import glob
 import hashlib
 import shutil
@@ -261,7 +263,7 @@ class Converter(object):
 
   @staticmethod
   def digest(blob):
-    assert isinstance(blob, basestring)
+    assert isinstance(blob, string_types)
     if type(blob) == str:
       digest = hashlib.md5(blob).hexdigest()
     else:

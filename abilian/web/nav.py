@@ -10,6 +10,8 @@ Abilian define theses categories:
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 from flask import g
 from jinja2 import Template, Markup
 from .action import Action, Glyphicon, ENABLED, ACTIVE, getset, Endpoint
@@ -121,7 +123,7 @@ class BreadcrumbItem(object):
   def __init__(self, label=u'', url=u'#', icon=None, description=None):
     assert label or icon
     self.label = label
-    if isinstance(icon, basestring):
+    if isinstance(icon, string_types):
       icon = Glyphicon(icon)
 
     self.icon = icon

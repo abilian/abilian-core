@@ -5,6 +5,8 @@ in real applications.
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import errno
 import importlib
 import logging
@@ -616,7 +618,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     if endpoint:
       adder = auth_state.add_endpoint_access_controller
-      if not isinstance(name, basestring):
+      if not isinstance(name, string_types):
         raise ValueError('{} is not a valid endpoint name', repr(name))
 
     adder(name, func)

@@ -4,6 +4,8 @@ Elements to build test cases for an :class:`abilian.app.Application`
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import os
 from time import time
 import subprocess
@@ -132,7 +134,7 @@ class BaseTestCase(TestCase):
     TestCase.setUpClass()
 
     if not isinstance(cls.SERVICES, tuple):
-      if isinstance(cls.SERVICES, basestring):
+      if isinstance(cls.SERVICES, string_types):
         cls.SERVICES = (cls.SERVICES,)
       else:
         cls.SERVICES = tuple(cls.SERVICES)

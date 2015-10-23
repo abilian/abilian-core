@@ -7,6 +7,9 @@ of stuff to implement.
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
+
+from future.utils import string_types
+
 import logging
 import sys
 
@@ -33,7 +36,7 @@ def url_for(obj, **kw):
   When it's an object, it
 
   """
-  if isinstance(obj, basestring):
+  if isinstance(obj, string_types):
     return flask_url_for(obj, **kw)
 
   try:
@@ -84,7 +87,7 @@ def capture_stream_errors(logger, msg):
   @param logger: a logger name or logger instance
   @param msg: message to log
   """
-  if isinstance(logger, basestring):
+  if isinstance(logger, string_types):
     logger = logging.getLogger(logger)
 
   def decorator(fun):

@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import logging
 import re
 from jinja2 import Template, Markup
@@ -233,7 +235,7 @@ class Action(object):
 
     self.title = title
     self.description = description
-    if isinstance(icon, basestring):
+    if isinstance(icon, string_types):
       icon = Glyphicon(icon)
     self.icon = icon
     self._url = url
@@ -310,12 +312,12 @@ class Action(object):
       return
 
     if not isinstance(endpoint, Endpoint):
-      if isinstance(endpoint, basestring):
+      if isinstance(endpoint, string_types):
         endpoint = self.Endpoint(endpoint)
       elif isinstance(endpoint, (tuple, list)):
         assert len(endpoint) == 2
         endpoint, kwargs = endpoint
-        assert isinstance(endpoint, basestring)
+        assert isinstance(endpoint, string_types)
         assert isinstance(kwargs, dict)
         endpoint = self.Endpoint(endpoint, **kwargs)
       else:

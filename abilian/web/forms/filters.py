@@ -4,6 +4,7 @@ Field filters for WTForm.
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
 
 def strip(data):
   """
@@ -11,18 +12,18 @@ def strip(data):
   """
   if data is None:
     return ""
-  if not isinstance(data, basestring):
+  if not isinstance(data, string_types):
     return data
   return data.strip()
 
 
 def uppercase(data):
-  if not isinstance(data, basestring):
+  if not isinstance(data, string_types):
     return data
   return data.upper()
 
 
 def lowercase(data):
-  if not isinstance(data, basestring):
+  if not isinstance(data, string_types):
     return data
   return data.lower()

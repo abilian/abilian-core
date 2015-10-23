@@ -4,6 +4,8 @@ Security service, manages roles and permissions.
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 from functools import wraps
 from itertools import chain
 
@@ -396,7 +398,7 @@ class SecurityService(Service):
     if not self.running:
       return True
 
-    if isinstance(role, (Role, basestring)):
+    if isinstance(role, (Role, string_types)):
       role = (role,)
 
     # admin & manager always have role

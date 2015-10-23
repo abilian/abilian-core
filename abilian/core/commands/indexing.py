@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 from collections import deque
 import time
 
@@ -138,7 +140,7 @@ def single_transaction(index, clear, **kwargs):
       if doc is COMMIT:
         doc = yield True
         continue
-      if isinstance(doc, basestring):
+      if isinstance(doc, string_types):
         writer.delete_by_term('object_type', doc)
       else:
         writer.add_document(**doc)
@@ -178,7 +180,7 @@ def progressive_mode(index, clear, batch_size, **kwargs):
       writer = _get_writer(index)
       while queue:
         doc = queue.pop()
-        if isinstance(doc, basestring):
+        if isinstance(doc, string_types):
           writer.delete_by_term('object_type', doc)
         else:
           writer.add_document(**doc)

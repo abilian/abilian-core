@@ -6,6 +6,8 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
+from future.utils import string_types
+
 from cStringIO import StringIO
 import hashlib
 
@@ -34,7 +36,7 @@ cache = {}
 
 
 def open_image(img):
-  if isinstance(img, basestring):
+  if isinstance(img, string_types):
     img = StringIO(img)
 
   pos = img.tell()
@@ -62,7 +64,7 @@ def get_save_format(fmt):
 def resize(orig, width, height, mode=FIT):
   """
   """
-  if isinstance(orig, basestring):
+  if isinstance(orig, string_types):
     orig = StringIO(orig)
 
   digest = hashlib.md5(orig.read()).digest()
