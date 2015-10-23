@@ -48,6 +48,8 @@ And just type:
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import os
 import re
 from gettext import GNUTranslations
@@ -411,12 +413,12 @@ def render_template_i18n(template_name_or_list, **context):
     # Use get_locale() or default_locale
     locale = flask_babel.get_locale()
 
-  if isinstance(template_name_or_list, basestring):
+  if isinstance(template_name_or_list, string_types):
     template_list = get_template_i18n(template_name_or_list, locale)
   else:
     # Search for locale for each member of the list, do not bypass
     for template in template_name_or_list:
-        template_list.append(get_template_i18n(template, locale))
+        template_list.extend(get_template_i18n(template, locale))
 
   with ensure_request_context(), set_locale(locale):
     return render_template(template_list, **context)
