@@ -617,7 +617,7 @@
                 argLen = arguments.length;
             this.name = name;
             this.label = label;
-            this.$elements = $('<div>');
+            this.$elements = $('<div class="form-inline">');
             this.multiple = s2_args['multiple'] || false;
 
 
@@ -644,7 +644,7 @@
                  'containerCssClass': 'form-control',
                  'containerCss': {'margin-left': '0.5em'}
                 });
-
+            this.$elements.append("&nbsp;&nbsp;");
             /* create the radios*/
             for (var i=3; i < argLen; i++) {
                 var arg = arguments[i];
