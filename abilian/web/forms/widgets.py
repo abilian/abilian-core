@@ -764,7 +764,8 @@ class ImageInput(FileInput):
         if hasattr(value, 'url'):
           image_url = value.url
         else:
-          image_url = self.get_b64_thumb_url(self.get_thumb(value))
+          image_url = self.get_b64_thumb_url(
+            self.get_thumb(value, self.width, self.height))
 
         data['image_url'] = image_url
 
@@ -779,14 +780,15 @@ class ImageInput(FileInput):
           image_url = value.url
         else:
           with value.open('rb') as in_:
-            image_url = self.get_b64_thumb_url(self.get_thumb(in_))
+            image_url = self.get_b64_thumb_url(
+              self.get_thumb(in_, self.width, self.height))
 
         data['image_url'] = image_url
 
     return uploaded
 
-  def get_thumb(self, data):
-    return image.resize(data, self.width, self.height, mode=self.resize_mode)
+  def get_thumb(self, data, width, height):
+    return image.resize(data, width, height, mode=self.resize_mode)
 
   def get_b64_thumb_url(self, img):
     fmt = image.get_format(img).lower()
@@ -798,8 +800,12 @@ class ImageInput(FileInput):
     if not data:
       return u''
 
-    thumb = self.get_thumb(data)
+    width = kwargs.get('width', self.width)
+    height = kwargs.get('heigth', self.height)
+
+    thumb = self.get_thumb(data, width, height)
     width, height = image.get_size(thumb)
+
     tmpl = u'<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
     return render_template_string(tmpl,
                                   url=self.get_b64_thumb_url(thumb),
