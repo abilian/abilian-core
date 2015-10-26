@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  abilian-core\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-10-15 15:43+0200\n"
-"PO-Revision-Date: 2015-10-15 16:14+0200\n"
+"POT-Creation-Date: 2015-10-26 14:49+0100\n"
+"PO-Revision-Date: 2015-10-26 14:47+0100\n"
 "Last-Translator: ybourbotte@abilian.com\n"
+"Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.0\n"
+"Generated-By: Babel 2.1.1\n"
 
 #: abilian/core/extensions/csrf.py:26
 msgid ""
@@ -208,20 +209,20 @@ msgstr "Ajouter une nouvelle valeur"
 msgid "No item in this vocabulary"
 msgstr "Aucun élement pour ce vocabulaire"
 
-#: abilian/web/frontend.py:216
+#: abilian/web/frontend.py:222
 #: abilian/web/admin/templates/admin/group_view.html:7
 #: abilian/web/templates/macros/attachment_default.html:32
 msgid "Edit"
 msgstr "Éditer"
 
-#: abilian/web/frontend.py:224
+#: abilian/web/frontend.py:230
 #: abilian/web/templates/macros/attachment_default.html:42
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
 #: abilian/web/views/object.py:461
 msgid "Delete"
 msgstr "Supprimer"
 
-#: abilian/web/frontend.py:529
+#: abilian/web/frontend.py:535
 msgid "Create New"
 msgstr "Créer un nouveau"
 
@@ -313,37 +314,37 @@ msgstr "Groupes"
 
 #: abilian/web/admin/panels/groups/__init__.py:47
 #: abilian/web/admin/panels/users/__init__.py:48
-#: abilian/web/forms/widgets.py:161 abilian/web/forms/widgets.py:301
+#: abilian/web/forms/widgets.py:163 abilian/web/forms/widgets.py:303
 msgid "Filter records:"
 msgstr "Filtrer les entrées:"
 
 #: abilian/web/admin/panels/groups/__init__.py:48
 #: abilian/web/admin/panels/users/__init__.py:49
-#: abilian/web/forms/widgets.py:303
+#: abilian/web/forms/widgets.py:305
 msgid "Previous"
 msgstr "Précédente"
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:304
+#: abilian/web/forms/widgets.py:306
 msgid "Next"
 msgstr "Suivante"
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:307
+#: abilian/web/forms/widgets.py:308 abilian/web/forms/widgets.py:312
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:308
+#: abilian/web/forms/widgets.py:309 abilian/web/forms/widgets.py:313
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtré sur un total de _MAX_ entrées)"
 
 #: abilian/web/admin/panels/groups/__init__.py:52
 #: abilian/web/admin/panels/users/__init__.py:53
-#: abilian/web/forms/widgets.py:309
+#: abilian/web/forms/widgets.py:314
 msgid "Add a filter"
 msgstr "Ajouter un filtre"
 
@@ -592,19 +593,23 @@ msgstr "Le champ doit comporter entre %(min)d et %(max)d caractères."
 msgid "Virus detected!"
 msgstr "Virus détecté!"
 
-#: abilian/web/forms/widgets.py:306
+#: abilian/web/forms/widgets.py:307
+msgid "No matching records found"
+msgstr "Aucun enregistrement ne correspond aux termes de recherche spécifiés"
+
+#: abilian/web/forms/widgets.py:311
 msgid "Entries per page: _MENU_"
 msgstr "Entrées par page: _MENU_"
 
-#: abilian/web/forms/widgets.py:677
+#: abilian/web/forms/widgets.py:682
 msgid "Add file"
 msgstr "Ajouter un fichier"
 
-#: abilian/web/forms/widgets.py:677
+#: abilian/web/forms/widgets.py:682
 msgid "Select file"
 msgstr "Sélectionner un fichier"
 
-#: abilian/web/forms/widgets.py:1095
+#: abilian/web/forms/widgets.py:1106
 msgid "hour(s)"
 msgstr "heure(s)"
 
@@ -678,7 +683,9 @@ msgstr "Veuillez corriger la ou les erreurs ci-dessous"
 
 #: abilian/web/tags/admin.py:135
 msgid "Must be checked to ensure you intent to delete these tags"
-msgstr "Doit être cochée pour être certain que vous voulez bien supprimer les tags sélectionnés"
+msgstr ""
+"Doit être cochée pour être certain que vous voulez bien supprimer les "
+"tags sélectionnés"
 
 #: abilian/web/tags/admin.py:143
 msgid "No action performed: no tags selected"
@@ -731,7 +738,10 @@ msgid ""
 "    Tags are grouped by namespaces, so that different set of tags can be\n"
 "    defined for different type of objects, or for a different purpose.\n"
 "    "
-msgstr "Les Tags sont regroupés par espaces de noms, de sorte que différent ensemble de tags peuvent définis pour différents types d'objets ou d'usages."
+msgstr ""
+"Les Tags sont regroupés par espaces de noms, de sorte que différent "
+"ensemble de tags peuvent définis pour différents types d'objets ou "
+"d'usages."
 
 #: abilian/web/tags/templates/admin/tags.html:14
 msgid "Namespace"
