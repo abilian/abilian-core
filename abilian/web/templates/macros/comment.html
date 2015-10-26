@@ -24,7 +24,7 @@
   <span class="date"><small>{{ comment.created_at | age }}</small></span>
   </div>
   
-  <p> {{ comment.body |nl2br }} </p>
+  <p class="comment-body"> {{ comment.body |nl2br }} </p>
 {% endmacro %}
 
 {% macro m_comment_form(entity) %}
