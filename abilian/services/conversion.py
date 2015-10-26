@@ -13,7 +13,7 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-from future.utils import string_types
+from future.utils import string_types, raise_from
 
 import glob
 import hashlib
@@ -327,7 +327,7 @@ class PdfToTextHandler(Handler):
       try:
         subprocess.check_call(['pdftotext', in_fn, out_fn])
       except Exception as e:
-        raise ConversionError(e)
+        raise raise_from(ConversionError('pdftotext'), e)
 
       converted = open(out_fn).read()
       encoding = self.encoding_sniffer.from_file(out_fn)
@@ -359,7 +359,7 @@ class AbiwordTextHandler(Handler):
            '--to', os.path.basename(out_fn),
           os.path.basename(in_fn)])
       except Exception as e:
-        raise ConversionError(e)
+        raise_from(ConversionError('abiword'), e)
       finally:
         os.chdir(cur_dir)
 
@@ -394,7 +394,7 @@ class AbiwordPDFHandler(Handler):
            '--to', os.path.basename(out_fn),
           os.path.basename(in_fn)])
       except Exception as e:
-        raise ConversionError(e)
+        raise_from(ConversionError('abiword'), e)
       finally:
         os.chdir(cur_dir)
 
@@ -413,7 +413,7 @@ class ImageMagickHandler(Handler):
         converted = open(out_fn).read()
         return converted
       except Exception as e:
-        raise ConversionError(e)
+        raise_from(ConversionError('convert'), e)
 
 
 class PdfToPpmHandler(Handler):
@@ -436,7 +436,7 @@ class PdfToPpmHandler(Handler):
 
         return converted_images
       except Exception as e:
-        raise ConversionError(e)
+        raise_from(ConversionError('pdftoppm'), e)
       finally:
         for fn in l:
           try:
@@ -523,7 +523,7 @@ class UnoconvPdfHandler(Handler):
           self._process.communicate()
         except Exception as e:
           logger.error('run_uno error: %s', bytes(e), exc_info=True)
-          raise ConversionError(e)
+          raise_from(ConversionError('unoconv'), e)
 
       run_thread = threading.Thread(target=run_uno)
       run_thread.start()
@@ -605,7 +605,7 @@ class WvwareTextHandler(Handler):
       try:
         subprocess.check_call(['wvText', in_fn, out_fn])
       except Exception as e:
-        raise ConversionError(e)
+        raise_from(ConversionError('wxText'), e)
 
       converted = open(out_fn).read()
 
