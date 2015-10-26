@@ -228,8 +228,11 @@ class BaseTableView(object):
       elif isinstance(value, list):
         cell = "; ".join(value)
       else:
-        if not isinstance(value, Markup):
-          value = unicode(value)
+        if not isinstance(value, (Markup,) + string_types):
+          if value is None:
+            value = u''
+          else:
+            value = unicode(value)
         cell = value
 
       line.append(cell)
