@@ -12,12 +12,11 @@ from flask import current_app, render_template, request, flash, redirect
 
 from abilian.i18n import _, _l, _n
 from abilian.core.models.tag import Tag, entity_tag_tbl
-from abilian.core.entities import Entity, all_entity_classes
-from abilian.core.util import fqcn
+from abilian.core.entities import Entity
 from abilian.web import url_for
 from abilian.web.admin import AdminPanel
 from abilian.web.views.base import View
-from abilian.web.views import ObjectEdit, ObjectDelete
+from abilian.web.views import ObjectEdit
 from abilian.services.indexing.service import index_update
 
 from .forms import TagForm
