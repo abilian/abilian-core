@@ -3,6 +3,8 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from future.utils import string_types
+
 import operator
 import logging
 from functools import partial
@@ -653,11 +655,22 @@ class LocaleSelectField(SelectField):
   widget = Select2()
 
   def __init__(self, *args, **kwargs):
-    kwargs['coerce'] = babel.Locale.parse
+    kwargs['coerce'] = LocaleSelectField.coerce
     kwargs['choices'] = (locale_info
                          for locale_info in i18n.supported_app_locales())
     super(LocaleSelectField, self).__init__(*args, **kwargs)
 
+  @staticmethod
+  def coerce(value):
+    if isinstance(value, babel.Locale):
+      return value
+    elif isinstance(value, string_types):
+      return babel.Locale.parse(value)
+    elif value is None:
+      return None
+
+    raise ValueError('Value cannot be converted to Locale(), or is not None, {!r}'.format(value))
+    
   def iter_choices(self):
     if not self.flags.required:
       yield (None, None, self.data is None,)
