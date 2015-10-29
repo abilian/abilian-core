@@ -17,7 +17,7 @@ from wtforms.validators import ValidationError
 
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
-from abilian.web.forms import Form, fields, widgets
+from abilian.web.forms import Form, fields, widgets, validators
 from abilian.i18n import _l, _, get_default_locale
 
 
@@ -33,11 +33,13 @@ class UserPreferencesForm(Form):
 
   locale = fields.LocaleSelectField(
     label=_l(u'Preferred Language'),
+    validators=(validators.required(),),
     default=lambda: get_default_locale(),
   )
 
   timezone = fields.TimezoneField(
     label=_l(u'Time zone'),
+    validators=(validators.required(),),
     default=babel.dates.LOCALTZ,
   )
 
@@ -105,6 +107,8 @@ class UserPreferencesPanel(PreferencePanel):
       data['photo'] = photo
 
     form = UserPreferencesForm(obj=g.user, formdata=None, prefix=self.id, **data)
+    if form['locale'].data is None:
+      form['locale'].data = get_default_locale()
     return render_template('preferences/user.html', form=form, title=self.label)
 
   @csrf.support_graceful_failure
