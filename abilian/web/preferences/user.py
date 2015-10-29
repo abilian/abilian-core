@@ -130,6 +130,7 @@ class UserPreferencesPanel(PreferencePanel):
       del form.confirm_password
       if form.password.data:
         g.user.set_password(form.password.data)
+        flash(_(u'Password changed'), 'success')
       del form.password
 
       form.populate_obj(g.user)

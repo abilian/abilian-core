@@ -142,7 +142,8 @@ def forgotten_pw_form():
 @route("/forgotten_pw", methods=['POST'])
 @csrf.exempt
 def forgotten_pw(new_user=False):
-  """ reset password for users who have already activated their accounts.
+  """
+  reset password for users who have already activated their accounts.
   """
   email = request.form.get('email', "").lower()
 
@@ -227,8 +228,9 @@ def reset_password_post(token):
   user.set_password(password)
   db.session.commit()
 
-  flash(_(u"Your password has been reset. You can now login with your new password"),
-        "info")
+  flash(_(u"Your password has been changed. "
+          u"You can now login with your new password"),
+        "success")
 
   return redirect(url_for("login.login_form", next_url=request.url_root))
 

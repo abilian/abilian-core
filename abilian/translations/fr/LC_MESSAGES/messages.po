@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  abilian-core\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-10-26 14:49+0100\n"
-"PO-Revision-Date: 2015-10-26 14:47+0100\n"
+"POT-Creation-Date: 2015-10-29 12:09+0100\n"
+"PO-Revision-Date: 2015-10-29 12:10+0100\n"
 "Last-Translator: ybourbotte@abilian.com\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr "Connexion"
 msgid "You must provide your email and password."
 msgstr "Vous devez entrez votre email et votre mot de passe."
 
-#: abilian/services/auth/views.py:71 abilian/services/auth/views.py:163
+#: abilian/services/auth/views.py:71 abilian/services/auth/views.py:164
 msgid "Sorry, we couldn't find an account for email '{email}'."
 msgstr "Nous n'avons pas trouvé de compte correspondant à l'email '{email}'"
 
@@ -48,47 +48,47 @@ msgstr "Nous n'avons pas trouvé de compte correspondant à l'email '{email}'"
 msgid "Sorry, wrong password."
 msgstr "Mauvais mot de passe."
 
-#: abilian/services/auth/views.py:154
+#: abilian/services/auth/views.py:155
 msgid "You must provide your email address."
 msgstr "Vous devez entrez votre adresse email de connexion."
 
-#: abilian/services/auth/views.py:172
+#: abilian/services/auth/views.py:173
 msgid "Password reset instructions have been sent to your email address."
 msgstr ""
 "Un email contenant les instructions de changement de mot passe a été "
 "envoyé à votre adresse électronique."
 
-#: abilian/services/auth/views.py:182 abilian/services/auth/views.py:201
+#: abilian/services/auth/views.py:183 abilian/services/auth/views.py:202
 msgid "Invalid reset password token."
 msgstr "Jeton d'accès invalide."
 
-#: abilian/services/auth/views.py:184 abilian/services/auth/views.py:203
+#: abilian/services/auth/views.py:185 abilian/services/auth/views.py:204
 msgid "Password reset expired"
 msgstr "L'accès a la page de changement de mot de passe à expiré."
 
-#: abilian/services/auth/views.py:210
+#: abilian/services/auth/views.py:211
 msgid "You must provide a password."
 msgstr "Vous devez entrez un mot de passe."
 
-#: abilian/services/auth/views.py:215
+#: abilian/services/auth/views.py:216
 msgid "Your new password must be at least 8 characters long"
 msgstr "Le nouveau mot de passe doit comporter au moins 8 caractères"
 
-#: abilian/services/auth/views.py:219
+#: abilian/services/auth/views.py:220
 msgid "Your new password must contain upper case and lower case letters"
 msgstr "Le nouveau mot de passe doit comporter des majuscules et des minuscules"
 
-#: abilian/services/auth/views.py:224
+#: abilian/services/auth/views.py:225
 msgid "Your new password must contain at least one digit"
 msgstr "Le nouveau mot de passe doit comporter au moins 1 chiffre"
 
-#: abilian/services/auth/views.py:230
-msgid "Your password has been reset. You can now login with your new password"
+#: abilian/services/auth/views.py:231
+msgid "Your password has been changed. You can now login with your new password"
 msgstr ""
 "Votre mot de passe a été enregistré. Vous pouvez maintenant vous "
 "connecter avec ce mot de passe."
 
-#: abilian/services/auth/views.py:263
+#: abilian/services/auth/views.py:265
 msgid "Password reset instruction for {site_name}"
 msgstr "Réinitialisation de votre mot de passe pour {site_name}"
 
@@ -314,37 +314,37 @@ msgstr "Groupes"
 
 #: abilian/web/admin/panels/groups/__init__.py:47
 #: abilian/web/admin/panels/users/__init__.py:48
-#: abilian/web/forms/widgets.py:163 abilian/web/forms/widgets.py:303
+#: abilian/web/forms/widgets.py:163 abilian/web/forms/widgets.py:306
 msgid "Filter records:"
 msgstr "Filtrer les entrées:"
 
 #: abilian/web/admin/panels/groups/__init__.py:48
 #: abilian/web/admin/panels/users/__init__.py:49
-#: abilian/web/forms/widgets.py:305
+#: abilian/web/forms/widgets.py:308
 msgid "Previous"
 msgstr "Précédente"
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:306
+#: abilian/web/forms/widgets.py:309
 msgid "Next"
 msgstr "Suivante"
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:308 abilian/web/forms/widgets.py:312
+#: abilian/web/forms/widgets.py:312 abilian/web/forms/widgets.py:313
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:309 abilian/web/forms/widgets.py:313
+#: abilian/web/forms/widgets.py:314
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtré sur un total de _MAX_ entrées)"
 
 #: abilian/web/admin/panels/groups/__init__.py:52
 #: abilian/web/admin/panels/users/__init__.py:53
-#: abilian/web/forms/widgets.py:314
+#: abilian/web/forms/widgets.py:315
 msgid "Add a filter"
 msgstr "Ajouter un filtre"
 
@@ -437,7 +437,7 @@ msgid "Confirm new password"
 msgstr "Confirmer le nouveau mot de passe"
 
 #: abilian/web/admin/panels/users/forms.py:78
-#: abilian/web/preferences/user.py:50
+#: abilian/web/preferences/user.py:52
 msgid ""
 "Passwords differ. Ensure you have typed same password in both "
 "\"password\" field and \"confirm password\" field."
@@ -558,11 +558,11 @@ msgstr "Commentaire ajouté"
 msgid "New comment on \"{title}\""
 msgstr "Nouveau commentaire sur \"{title}\""
 
-#: abilian/web/forms/fields.py:311 abilian/web/forms/fields.py:355
+#: abilian/web/forms/fields.py:313 abilian/web/forms/fields.py:357
 msgid "Not a valid datetime value"
 msgstr "N'est pas une date valide"
 
-#: abilian/web/forms/fields.py:533
+#: abilian/web/forms/fields.py:535
 msgid "Not a valid choice"
 msgstr "N'est pas un choix valide"
 
@@ -593,23 +593,23 @@ msgstr "Le champ doit comporter entre %(min)d et %(max)d caractères."
 msgid "Virus detected!"
 msgstr "Virus détecté!"
 
-#: abilian/web/forms/widgets.py:307
-msgid "No matching records found"
-msgstr "Aucun enregistrement ne correspond aux termes de recherche spécifiés"
-
 #: abilian/web/forms/widgets.py:311
 msgid "Entries per page: _MENU_"
 msgstr "Entrées par page: _MENU_"
 
-#: abilian/web/forms/widgets.py:682
+#: abilian/web/forms/widgets.py:316 abilian/web/forms/widgets.py:317
+msgid "No matching records found"
+msgstr "Aucun enregistrement ne correspond aux termes de recherche spécifiés"
+
+#: abilian/web/forms/widgets.py:685
 msgid "Add file"
 msgstr "Ajouter un fichier"
 
-#: abilian/web/forms/widgets.py:682
+#: abilian/web/forms/widgets.py:685
 msgid "Select file"
 msgstr "Sélectionner un fichier"
 
-#: abilian/web/forms/widgets.py:1106
+#: abilian/web/forms/widgets.py:1109
 msgid "hour(s)"
 msgstr "heure(s)"
 
@@ -621,23 +621,27 @@ msgstr "Photo"
 msgid "Preferred Language"
 msgstr "Langue du site"
 
-#: abilian/web/preferences/user.py:40
+#: abilian/web/preferences/user.py:41
 msgid "Time zone"
 msgstr "Fuseau horaire"
 
-#: abilian/web/preferences/user.py:64 abilian/web/preferences/user.py:69
+#: abilian/web/preferences/user.py:66 abilian/web/preferences/user.py:71
 msgid "Only PNG or JPG image files are accepted"
 msgstr "Seuls les fichier d'image PNG ou JPG sont acceptés"
 
-#: abilian/web/preferences/user.py:77
+#: abilian/web/preferences/user.py:79
 msgid "Could not decode image file"
 msgstr "Impossible de lire l'image"
 
-#: abilian/web/preferences/user.py:88
+#: abilian/web/preferences/user.py:90
 msgid "About me"
 msgstr "À propos de moi"
 
-#: abilian/web/preferences/user.py:134
+#: abilian/web/preferences/user.py:133
+msgid "Password changed"
+msgstr "Mot de passe changé"
+
+#: abilian/web/preferences/user.py:139
 msgid "Preferences saved."
 msgstr "Préférences enregistrées."
 
@@ -673,25 +677,25 @@ msgstr "par"
 msgid "Last modification: %(date)s"
 msgstr "Dernière modification: %(date)s"
 
-#: abilian/web/tags/admin.py:114
+#: abilian/web/tags/admin.py:113
 msgid "Unknown action"
 msgstr "Action inconnue"
 
-#: abilian/web/tags/admin.py:134 abilian/web/views/object.py:281
+#: abilian/web/tags/admin.py:133 abilian/web/views/object.py:281
 msgid "Please fix the error(s) below"
 msgstr "Veuillez corriger la ou les erreurs ci-dessous"
 
-#: abilian/web/tags/admin.py:135
+#: abilian/web/tags/admin.py:134
 msgid "Must be checked to ensure you intent to delete these tags"
 msgstr ""
 "Doit être cochée pour être certain que vous voulez bien supprimer les "
 "tags sélectionnés"
 
-#: abilian/web/tags/admin.py:143
+#: abilian/web/tags/admin.py:142
 msgid "No action performed: no tags selected"
 msgstr "Aucune action effectuée: pas de tag sélectionné"
 
-#: abilian/web/tags/admin.py:152
+#: abilian/web/tags/admin.py:151
 #, python-format
 msgid "%(tag)s deleted"
 msgid_plural ""
@@ -702,23 +706,23 @@ msgstr[1] ""
 "%(num)d tags supprimés:\n"
 "%(tags)s"
 
-#: abilian/web/tags/admin.py:164
+#: abilian/web/tags/admin.py:163
 msgid "You must select a target tag to merge to"
 msgstr "Vous devez choisir un tag vers lequel fusionner les tag sélectionnés"
 
-#: abilian/web/tags/admin.py:170
+#: abilian/web/tags/admin.py:169
 msgid "Target tag not found, no action performed"
 msgstr "Tag cible nont trouvé, aucune action effectuée"
 
-#: abilian/web/tags/admin.py:179
+#: abilian/web/tags/admin.py:178
 msgid "No tag selected for merging"
 msgstr "Pas de tag cible sélectionné pour la fusion"
 
-#: abilian/web/tags/admin.py:224 abilian/web/tags/views.py:40
+#: abilian/web/tags/admin.py:223 abilian/web/tags/views.py:40
 msgid "Tag edited"
 msgstr "Tag modifié"
 
-#: abilian/web/tags/admin.py:246 abilian/web/tags/criterion.py:25
+#: abilian/web/tags/admin.py:245 abilian/web/tags/criterion.py:25
 #: abilian/web/tags/extension.py:95
 #: abilian/web/templates/default/single_view.html:15
 msgid "Tags"
