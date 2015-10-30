@@ -213,7 +213,10 @@ class BaseTableView(object):
       else:
         value = value.display_value(attr[0])
 
-      if column_name == make_link_on or column_name == 'name' or \
+      format = col.get('format')
+      if format:
+        cell = format(value)
+      elif column_name == make_link_on or column_name == 'name' or \
          col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'
                       % (build_url(entity), cgi.escape(unicode(value))))
