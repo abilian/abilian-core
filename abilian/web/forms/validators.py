@@ -7,11 +7,12 @@ from __future__ import absolute_import
 #
 # NOTE: the `rule` property is supposed to be useful for generating client-side
 # validation code.
+from wtforms.compat import string_types
 
 from wtforms.validators import (
   ValidationError, EqualTo, Length, NumberRange, Optional,
   Regexp, Email, IPAddress, MacAddress, URL, UUID, AnyOf, NoneOf,
-  DataRequired)
+  DataRequired, StopValidation)
 
 from abilian.i18n import _, _n
 from abilian.services import get_service
@@ -36,7 +37,20 @@ class Email(Email):
     return {"email": True}
 
 
-class Required(DataRequired):
+class CorrectInputRequired(DataRequired):
+  def __call__(self, form, field):
+    if field.data is None or isinstance(field.data,
+                                        string_types) and not field.data.strip():
+      if self.message is None:
+        message = field.gettext('This field is required.')
+      else:
+        message = self.message
+
+      field.errors[:] = []
+      raise StopValidation(message)
+
+
+class Required(CorrectInputRequired):
   field_flags = ('required',)
 
   @property
