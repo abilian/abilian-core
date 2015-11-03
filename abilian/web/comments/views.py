@@ -27,7 +27,7 @@ def register_default_view(state):
   state.app.default_view.register(Comment, _default_comment_view)
 
 COMMENT_BUTTON = ButtonAction('form', 'edit', btn_class='primary',
-                              title=_l(u'Send'))
+                              title=_l(u'Post'))
 
 
 class CommentCreateView(ObjectCreate):

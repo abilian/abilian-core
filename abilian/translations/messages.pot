@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: abilian-core 0.4.6.dev37+ng96d87f7.d20151029\n"
+"Project-Id-Version: abilian-core 0.4.6.dev42+ngf5e6a92.d20151103\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-10-29 12:09+0100\n"
+"POT-Creation-Date: 2015-11-03 17:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -303,37 +303,37 @@ msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:47
 #: abilian/web/admin/panels/users/__init__.py:48
-#: abilian/web/forms/widgets.py:163 abilian/web/forms/widgets.py:306
+#: abilian/web/forms/widgets.py:163 abilian/web/forms/widgets.py:309
 msgid "Filter records:"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:48
 #: abilian/web/admin/panels/users/__init__.py:49
-#: abilian/web/forms/widgets.py:308
+#: abilian/web/forms/widgets.py:311
 msgid "Previous"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:309
+#: abilian/web/forms/widgets.py:312
 msgid "Next"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:312 abilian/web/forms/widgets.py:313
+#: abilian/web/forms/widgets.py:315 abilian/web/forms/widgets.py:316
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:314
+#: abilian/web/forms/widgets.py:317
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
 #: abilian/web/admin/panels/groups/__init__.py:52
 #: abilian/web/admin/panels/users/__init__.py:53
-#: abilian/web/forms/widgets.py:315
+#: abilian/web/forms/widgets.py:318
 msgid "Add a filter"
 msgstr ""
 
@@ -521,7 +521,7 @@ msgstr ""
 msgid "description (optional)"
 msgstr ""
 
-#: abilian/web/attachments/views.py:35 abilian/web/comments/views.py:30
+#: abilian/web/attachments/views.py:35
 msgid "Send"
 msgstr ""
 
@@ -535,6 +535,14 @@ msgstr ""
 
 #: abilian/web/attachments/views.py:128
 msgid "New attachment on \"{title}\""
+msgstr ""
+
+#: abilian/web/comments/.flycheck_forms.py:19 abilian/web/comments/forms.py:19
+msgid "Comment"
+msgstr ""
+
+#: abilian/web/comments/views.py:30
+msgid "Post"
 msgstr ""
 
 #: abilian/web/comments/views.py:38
@@ -553,50 +561,54 @@ msgstr ""
 msgid "Not a valid choice"
 msgstr ""
 
-#: abilian/web/forms/validators.py:29
+#: abilian/web/forms/validators.py:30
 msgid "Invalid email address."
 msgstr ""
 
-#: abilian/web/forms/validators.py:79
+#: abilian/web/forms/validators.py:45
+msgid "This field is required."
+msgstr ""
+
+#: abilian/web/forms/validators.py:93
 #, python-format
 msgid "Field must be at least %(min)d character long."
 msgid_plural "Field must be at least %(min)d characters long."
 msgstr[0] ""
 msgstr[1] ""
 
-#: abilian/web/forms/validators.py:83
+#: abilian/web/forms/validators.py:97
 #, python-format
 msgid "Field cannot be longer than %(max)d character."
 msgid_plural "Field cannot be longer than %(max)d characters."
 msgstr[0] ""
 msgstr[1] ""
 
-#: abilian/web/forms/validators.py:87
+#: abilian/web/forms/validators.py:101
 #, python-format
 msgid "Field must be between %(min)d and %(max)d characters long."
 msgstr ""
 
-#: abilian/web/forms/validators.py:152
+#: abilian/web/forms/validators.py:166
 msgid "Virus detected!"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:311
+#: abilian/web/forms/widgets.py:314
 msgid "Entries per page: _MENU_"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:316 abilian/web/forms/widgets.py:317
+#: abilian/web/forms/widgets.py:319 abilian/web/forms/widgets.py:320
 msgid "No matching records found"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:685
+#: abilian/web/forms/widgets.py:688
 msgid "Add file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:685
+#: abilian/web/forms/widgets.py:688
 msgid "Select file"
 msgstr ""
 
-#: abilian/web/forms/widgets.py:1109
+#: abilian/web/forms/widgets.py:1112
 msgid "hour(s)"
 msgstr ""
 
