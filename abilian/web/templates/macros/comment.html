@@ -17,14 +17,14 @@
   {%- call m_user_link(comment.creator) %}
     {{ m_user_photo(comment.creator, size=45) }}
   {%- endcall %}
-  
+
   {%- call m_user_link(comment.creator, css='author') %}
     {{ comment.creator.name }}
   {%- endcall %}
   <span class="date"><small>{{ comment.created_at | age }}</small></span>
   </div>
-  
-  <p class="comment-body"> {{ comment.body |nl2br }} </p>
+
+  <p class="comment-body"> {{ comment.body | linkify | paragraphs }} </p>
 {% endmacro %}
 
 {% macro m_comment_form(entity) %}
