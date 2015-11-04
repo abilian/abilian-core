@@ -105,6 +105,12 @@ def _setup_default_permissions(instance):
   """
   security = current_app.services['security']
   for permission, roles in instance.__default_permissions__:
+    if permission == u'create':
+      # use str for comparise instead of `abilian.services.security.CREATE`
+      # symbol to avoid imports that quickly become circular.
+      #
+      # FIXME: put roles and permissions in a separate, isolated module.
+      continue
     for role in roles:
       security.add_permission(permission, role, obj=instance)
 

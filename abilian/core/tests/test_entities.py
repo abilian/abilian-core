@@ -159,7 +159,9 @@ class PermissionsTestCase(AbilianTestCase):
     class MyRestrictedType(Entity):
       __default_permissions__ = {
         security.READ: {security.Anonymous},
-        security.WRITE: {security.Owner}
+        security.WRITE: {security.Owner},
+        security.CREATE: {security.Writer},
+        security.DELETE: {security.Owner},
       }
 
     assert isinstance(MyRestrictedType.__default_permissions__, frozenset)
@@ -167,6 +169,8 @@ class PermissionsTestCase(AbilianTestCase):
       frozenset(
         ((security.READ, frozenset((security.Anonymous,))),
          (security.WRITE, frozenset((security.Owner,))),
+         (security.CREATE, frozenset((security.Writer,))),
+         (security.DELETE, frozenset((security.Owner,))),
        ))
 
     self.app.db.create_all() # create missing 'mytype' table
@@ -183,11 +187,19 @@ class PermissionsTestCase(AbilianTestCase):
     assert query.filter(PA.permission==security.WRITE).all()\
                  == [(security.Owner,)]
 
+    assert query.filter(PA.permission==security.DELETE).all()\
+                 == [(security.Owner,)]
+
+    # special case:
+    assert query.filter(PA.permission==security.CREATE).all()\
+                 == []
+
     svc = self.app.services['security']
     permissions = svc.get_permissions_assignments(obj)
     assert permissions == {
       security.READ: {security.Anonymous},
       security.WRITE: {security.Owner},
+      security.DELETE: {security.Owner},
     }
 
 
