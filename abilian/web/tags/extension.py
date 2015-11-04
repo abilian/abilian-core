@@ -118,7 +118,7 @@ class TagsExtension(object):
       if tag is None:
         tag = Tag(ns=ns, label=label)
 
-    tags = self.entity_tag(entity)
+    tags = self.entity_tags(entity)
     tags.add(tag)
 
 
@@ -127,7 +127,7 @@ class TagsExtension(object):
       assert None not in (ns, label)
       tag = self.get(ns, label)
 
-    tags = self.entity_tag(entity)
+    tags = self.entity_tags(entity)
     try:
       tags.remove(tag)
     except KeyError:
