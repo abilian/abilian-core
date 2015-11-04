@@ -28,7 +28,7 @@ from abilian.core.extensions import db
 from abilian.core.entities import Entity
 from abilian.services import audit_service
 from abilian.services.vocabularies.models import BaseVocabulary
-from abilian.services.security import READ, WRITE  # noqa
+from abilian.services.security import READ  # noqa
 from .action import (
   actions, Action, FAIcon, Endpoint,
   ActionGroup, ActionGroupItem, ActionDropDown,
@@ -242,7 +242,9 @@ class EntityView(BaseEntityView, ObjectView):
 
   @property
   def object_actions(self):
-    return [EDIT_ACTION, DELETE_ACTION]
+    ctx = actions.context
+    return [a for a in (EDIT_ACTION, DELETE_ACTION)
+            if a.available(ctx)]
 
   @property
   def template_kwargs(self):
