@@ -443,9 +443,13 @@ class SingleView(object):
 
     template = filter(bool, (self.options.get('view_template'),
                              'widgets/render_single.html'))
+    module = self.options.get('module')
+    related_views = []
+    if module:
+      related_views = [v.render(item) for v in module.related_views]
 
     return Markup(render_template(template,
-                                  view=self,
+                                  view=self, related_views=related_views,
                                   csrf_token=csrf.field(),
                                   entity=item, panels=panels, form=form))
 
