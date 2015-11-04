@@ -29,15 +29,22 @@
         table.find("> thead > tr").append(self.add_button);
         table.find("> tbody > tr").append(self.minus_button);
 
-        self.template_row = table.find("tbody > tr:first").clone(true, true);
-        self.template_row.find('input[data-short-name!="csrf_token"]').attr('value', '');
-        self.template_row.find("textarea").text('');
+        self.templateRow = table.find("tbody > tr:first").clone(true, true);
+        /* remove value except for specific controls that have constant (and
+         * required) value
+         */
+        self.templateRow.find('input' +
+                               '[type!="checkbox"]' +
+                               '[type!="radio"]' +
+                               '[data-short-name!="csrf_token"]')
+            .attr('value', '');
+        self.templateRow.find("textarea").text('');
     }
 
     DynamicRowWidget.prototype = {
         'addRow': function() {
             var self = this;
-            var new_row = self.template_row.clone(true, true);
+            var new_row = self.templateRow.clone(true, true);
             new_row.find("input").each(
                 function() {
                     var item  = $(this);
