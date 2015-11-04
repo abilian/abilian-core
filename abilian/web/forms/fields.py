@@ -20,7 +20,7 @@ from wtforms import (
     FormField as BaseFormField,
     FieldList as BaseFieldList)
 from wtforms.validators import DataRequired, Optional
-from wtforms.compat import string_types, text_type
+from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
 from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
 from wtforms_alchemy import (
@@ -670,7 +670,7 @@ class LocaleSelectField(SelectField):
       return None
 
     raise ValueError('Value cannot be converted to Locale(), or is not None, {!r}'.format(value))
-    
+
   def iter_choices(self):
     if not self.flags.required:
       yield (None, None, self.data is None,)
