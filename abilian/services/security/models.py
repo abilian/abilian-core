@@ -24,7 +24,7 @@ from abilian.core.extensions import db
 
 __all__ = ['RoleAssignment', 'PermissionAssignment',
            'SecurityAudit', 'InheritSecurity',
-           'Permission', 'MANAGE', 'READ', 'WRITE',
+           'Permission', 'MANAGE', 'READ', 'WRITE', 'CREATE', 'DELETE',
            'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
            'Creator', 'Owner', 'Reader', 'Writer',
            'RoleType']
@@ -126,6 +126,8 @@ Writer = Role('writer', assignable=False)
 READ = Permission(u'read')
 WRITE = Permission(u'write')
 MANAGE = Permission(u'manage')
+CREATE = Permission(u'create')
+DELETE = Permission(u'delete')
 
 
 class RoleAssignment(db.Model):

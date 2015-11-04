@@ -7,13 +7,13 @@ import logging
 
 import sqlalchemy as sa
 from flask import (
-    g, request, render_template, redirect, url_for, current_app,
-    flash, abort
+  g, request, render_template, redirect, url_for, current_app,
+  flash
 )
 from werkzeug.exceptions import NotFound, BadRequest
 
 from abilian.i18n import _, _l
-from abilian.services.security import READ, WRITE
+from abilian.services.security import READ, WRITE, CREATE, DELETE
 from abilian.core.signals import activity
 from abilian.core.entities import ValidationError
 
@@ -415,6 +415,7 @@ class ObjectCreate(ObjectEdit):
   """
   Create a new object
   """
+  permission = CREATE
   activity_verb = 'post'
   _message_success = _l(u"Entity successfully added")
 
@@ -466,6 +467,7 @@ class ObjectDelete(ObjectEdit):
   Delete object. Supports DELETE verb.
   """
   methods = ['POST']
+  permission = DELETE
   activity_verb = 'delete'
   _message_success = _l(u"Entity deleted")
 

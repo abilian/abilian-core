@@ -25,7 +25,8 @@ from abilian.services.security.models import (
   Anonymous as AnonymousRole, Authenticated,
   Admin, Manager, Reader, Writer,
   Owner, Creator,
-  InheritSecurity, Role, Permission, READ, WRITE, MANAGE,
+  InheritSecurity, Role, Permission,
+  READ, WRITE, MANAGE, CREATE, DELETE,
   PERMISSIONS_ATTR,
 )
 
@@ -42,6 +43,8 @@ DEFAULT_PERMISSION_ROLE = dict()
 prm = DEFAULT_PERMISSION_ROLE
 prm[MANAGE] = frozenset((Admin, Manager,))
 prm[WRITE] = frozenset((Admin, Manager, Writer,))
+prm[CREATE] = frozenset((Admin, Manager, Writer,))
+prm[DELETE] = frozenset((Admin, Manager, Writer,))
 prm[READ] = frozenset((Admin, Manager, Writer, Reader,))
 del prm
 
