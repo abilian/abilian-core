@@ -7,8 +7,10 @@ NOTE: code is currently quite messy. Needs to be refactored.
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
+from flask.ext.wtf.file import FileField
 
-from future.utils import string_types
+from future.utils import string_types, bytes_to_native_str, native_str_to_bytes
+import logging
 
 import cgi
 import urlparse
@@ -42,7 +44,7 @@ from abilian.web.action import Icon
 from abilian.web import csrf, url_for
 
 from .util import babel2datetime
-
+logger = logging.getLogger(__name__)
 
 __all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',
            'MainTableView', 'RelatedTableView', 'AjaxMainTableView',
@@ -422,8 +424,9 @@ class SingleView(object):
           continue
 
         value = field.data
-        if value in _to_skip and not field.flags.render_empty:
-          continue
+        if not isinstance(field, FileField) and not field.flags.render_empty:
+          if value in _to_skip:
+            continue
 
         value = Markup(field.render_view(entity=item))
         if value == u'':
