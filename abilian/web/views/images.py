@@ -17,7 +17,7 @@ from werkzeug.exceptions import BadRequest, NotFound
 from abilian.core.util import utc_dt
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
-from abilian.services.image import get_size
+from abilian.services.image import get_size, CROP, FIT, RESIZE_MODES
 from abilian.web.util import url_for
 from .base import View
 
@@ -91,14 +91,21 @@ class BaseImageView(View):
         )
 
     kwargs['size'] = size
+
+    resize_mode = request.args.get('m', CROP)
+    if resize_mode not in RESIZE_MODES:
+      resize_mode = CROP
+
+    kwargs['mode'] = resize_mode
+
     return args, kwargs
 
-  def get(self, image, size, *args, **kwargs):
+  def get(self, image, size, mode, *args, **kwargs):
     """
     :param image: image as bytes
     :param s: requested maximum width/height size
     """
-    from abilian.services.image import resize, CROP, get_format
+    from abilian.services.image import resize, get_format
 
     try:
       fmt = get_format(image)
@@ -109,8 +116,9 @@ class BaseImageView(View):
     content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
 
     if size:
-      image = resize(image, size, size, mode=CROP)
-      assert get_size(image) == (size, size)
+      image = resize(image, size, size, mode=mode)
+      if mode == CROP:
+        assert get_size(image) == (size, size)
     else:
       image = image.read()
 
