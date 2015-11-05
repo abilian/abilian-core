@@ -166,6 +166,16 @@ class AntiVirus(Rule):
       raise ValidationError(_(u'Virus detected!'))
 
 
+class RenderEmpty(object):
+  """
+  Force display
+  """
+  field_flags = ('render_empty', )
+
+  def __call__(self, form, field):
+    pass
+
+
 # These are the canonical names that should be used.
 equalto = EqualTo
 length = Length
@@ -181,3 +191,4 @@ uuid = UUID
 anyof = AnyOf
 noneof = NoneOf
 flaghidden = FlagHidden
+renderempty = RenderEmpty
