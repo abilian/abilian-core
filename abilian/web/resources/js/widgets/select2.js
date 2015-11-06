@@ -74,7 +74,7 @@
 
              initParams.initSelection = function(element, callback) {
                  if (data.values.length > 0) {
-                     callback(data.values[0]);
+                     callback(data.values.length == 1 ? data.values[0]: data.values);
                  }
              };
          }
