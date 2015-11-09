@@ -16,7 +16,7 @@ from flask_login import current_user
 from flask_wtf.form import Form as BaseForm
 
 from abilian.i18n import _, _n
-from abilian.services.security import READ, WRITE, Role, Anonymous
+from abilian.services.security import READ, WRITE, CREATE, Role, Anonymous
 from abilian.core.logging import patch_logger
 
 from .fields import *  # noqa
@@ -75,7 +75,12 @@ class FormPermissions(object):
         roles = (roles,)
       self.form[permission] = roles
 
-    for fields, permission in ((fields_read, READ), (fields_write, WRITE)):
+    fields_defs = ((fields_read, READ),
+                   (fields_write, WRITE),
+                   (fields_write, CREATE),) # checking against CREATE permission
+                                            # at field level is the same as
+                                            # WRITE permisssion
+    for fields, permission in fields_defs:
       if fields:
         for field_name, allowed_roles in fields.items():
           if isinstance(allowed_roles, Role):
