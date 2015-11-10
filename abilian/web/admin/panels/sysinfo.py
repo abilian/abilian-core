@@ -7,6 +7,7 @@ import os
 import sys
 import pkg_resources
 from pip.vcs import vcs
+from pathlib import Path
 
 from flask import render_template
 
@@ -32,8 +33,9 @@ class SysinfoPanel(AdminPanel):
           vcs=None,
       )
 
-      location = os.path.normcase(os.path.abspath(dist.location))
+      location = unicode(Path(dist.location).absolute())
       vcs_name = vcs.get_backend_name(location)
+
       if vcs_name:
         vc = vcs.get_backend_from_location(location)()
         url, revision = vc.get_info(location)
