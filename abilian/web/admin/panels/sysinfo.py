@@ -6,6 +6,7 @@ from __future__ import absolute_import, print_function, division
 import os
 import sys
 import pkg_resources
+import pip
 from pip.vcs import vcs
 from pathlib import Path
 
@@ -37,8 +38,15 @@ class SysinfoPanel(AdminPanel):
       vcs_name = vcs.get_backend_name(location)
 
       if vcs_name:
-        vc = vcs.get_backend_from_location(location)()
-        url, revision = vc.get_info(location)
+        vc = vcs.get_backend(vcs_name)()
+        try:
+          url = vc.get_url(location)
+        except pip.exceptions.InstallationError:
+          url = 'None'
+        try:
+          revision = vc.get_revision(location)
+        except pip.exceptions.InstallationError:
+          revision = 'None'
         package['vcs'] = dict(name=vcs_name, url=url, revision=revision)
 
       packages.append(package)
