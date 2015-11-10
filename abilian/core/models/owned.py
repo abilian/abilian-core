@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from flask import g
 from whoosh.fields import STORED
 
-from .base import SYSTEM, SEARCHABLE
+from .base import SYSTEM, EDITABLE, AUDITABLE, SEARCHABLE
 from .subjects import User
 
 
@@ -46,13 +46,13 @@ class OwnedMixin(object):
 
   @declared_attr
   def owner_id(cls):
-    return Column(ForeignKey(User.id), info=SYSTEM)
+    return Column(ForeignKey(User.id), info=EDITABLE | AUDITABLE)
 
   @declared_attr
   def owner(cls):
     pj = "User.id == %s.owner_id" % cls.__name__
     return relationship(User, primaryjoin=pj, lazy='joined', uselist=False,
-                        info=SYSTEM | SEARCHABLE)
+                        info=EDITABLE | AUDITABLE | SEARCHABLE)
 
   @property
   def owner_name(self):
