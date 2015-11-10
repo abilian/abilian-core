@@ -80,7 +80,6 @@ class AttachmentsManager(object):
     self.macros_template = macros_template
 
   def __call__(self, Model):
-    assert issubclass(Model, Entity)
     setattr(Model, _MANAGER_ATTR, self)
     return Model
 
