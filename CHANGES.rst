@@ -4,6 +4,7 @@ Changelog for Abilian Core
 0.5.0 (unreleased)
 ------------------
 
+- Editable comments
 - Upgrade SQLAlchemy to 0.9
 - Admin: add Tag panels
 

@@ -9,6 +9,7 @@ import sqlalchemy as sa
 from sqlalchemy import Column, UnicodeText, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
+from abilian.services.security import Owner, Anonymous, WRITE, CREATE
 from abilian.core.entities import Entity
 
 #: name of backref on target :class:`Entity` object
@@ -70,6 +71,11 @@ class Comment(Entity):
   """
   A Comment related to an :class:`Entity`.
   """
+  __default_permissions__ = {
+    WRITE: {Owner},
+    CREATE: {Anonymous},
+  }
+
   @sa.ext.declarative.declared_attr
   def __mapper_args__(cls):
     # we cannot use super(Comment, cls): declared_attr happens during class
@@ -100,6 +106,10 @@ class Comment(Entity):
     UnicodeText(),
     sa.CheckConstraint("trim(body) != ''"),
     nullable=False)
+
+  @property
+  def history(self):
+    return self.meta.get('abilian.core.models.comment', {}).get('history', [])
 
   def __repr__(self):
     class_ = self.__class__

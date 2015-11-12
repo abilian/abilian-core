@@ -12,6 +12,15 @@
 {% endmacro %}
 
 {# single comment #}
+{% macro m_comment_edit_link(comment) %}
+  {%- if g.user == comment.owner or g.is_manager %}
+    <a href="{{ url_for('comments.edit', entity_id=comment.entity.id, object_id=comment.id) }}">
+      <i class="fa fa-edit"></i>
+      {{ _('Edit') }}
+    </a>
+  {%- endif %}
+{% endmacro %}
+
 {% macro m_comment(comment) %}
   <div class="header">
   {%- call m_user_link(comment.creator) %}
@@ -25,6 +34,15 @@
   </div>
 
   <p class="comment-body"> {{ comment.body | linkify | paragraphs }} </p>
+  <div>
+    {{ m_comment_edit_link(comment) }}
+    {%- set count = comment.history |length %}
+    {%- if comment.history %}
+      <small class="pull-right">
+        {{ _n('edited', 'edited %(count)d times', count, count=count) }}
+      </small>
+    {%- endif %}
+  </div>
 {% endmacro %}
 
 {% macro m_comment_form(entity) %}
