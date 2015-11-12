@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  abilian-core\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-11-03 17:16+0100\n"
-"PO-Revision-Date: 2015-11-03 17:17+0100\n"
+"POT-Creation-Date: 2015-11-12 14:33+0100\n"
+"PO-Revision-Date: 2015-11-12 14:35+0100\n"
 "Last-Translator: ybourbotte@abilian.com\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -212,17 +212,18 @@ msgstr "Aucun élement pour ce vocabulaire"
 #: abilian/web/frontend.py:222
 #: abilian/web/admin/templates/admin/group_view.html:7
 #: abilian/web/templates/macros/attachment_default.html:32
+#: abilian/web/templates/macros/comment.html:19
 msgid "Edit"
 msgstr "Éditer"
 
 #: abilian/web/frontend.py:230
 #: abilian/web/templates/macros/attachment_default.html:42
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
-#: abilian/web/views/object.py:461
+#: abilian/web/views/object.py:462
 msgid "Delete"
 msgstr "Supprimer"
 
-#: abilian/web/frontend.py:535
+#: abilian/web/frontend.py:537
 msgid "Create New"
 msgstr "Créer un nouveau"
 
@@ -314,37 +315,37 @@ msgstr "Groupes"
 
 #: abilian/web/admin/panels/groups/__init__.py:47
 #: abilian/web/admin/panels/users/__init__.py:48
-#: abilian/web/forms/widgets.py:163 abilian/web/forms/widgets.py:309
+#: abilian/web/forms/widgets.py:165 abilian/web/forms/widgets.py:311
 msgid "Filter records:"
 msgstr "Filtrer les entrées:"
 
 #: abilian/web/admin/panels/groups/__init__.py:48
 #: abilian/web/admin/panels/users/__init__.py:49
-#: abilian/web/forms/widgets.py:311
+#: abilian/web/forms/widgets.py:313
 msgid "Previous"
 msgstr "Précédente"
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:50
-#: abilian/web/forms/widgets.py:312
+#: abilian/web/forms/widgets.py:314
 msgid "Next"
 msgstr "Suivante"
 
 #: abilian/web/admin/panels/groups/__init__.py:50
 #: abilian/web/admin/panels/users/__init__.py:51
-#: abilian/web/forms/widgets.py:315 abilian/web/forms/widgets.py:316
+#: abilian/web/forms/widgets.py:317 abilian/web/forms/widgets.py:318
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affiche de _START_ à _END_ sur _TOTAL_ entrées"
 
 #: abilian/web/admin/panels/groups/__init__.py:51
 #: abilian/web/admin/panels/users/__init__.py:52
-#: abilian/web/forms/widgets.py:317
+#: abilian/web/forms/widgets.py:319
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtré sur un total de _MAX_ entrées)"
 
 #: abilian/web/admin/panels/groups/__init__.py:52
 #: abilian/web/admin/panels/users/__init__.py:53
-#: abilian/web/forms/widgets.py:318
+#: abilian/web/forms/widgets.py:320
 msgid "Add a filter"
 msgstr "Ajouter un filtre"
 
@@ -550,19 +551,27 @@ msgstr "Fichier ajouté"
 msgid "New attachment on \"{title}\""
 msgstr "Nouveau fichier ajouté sur \"{title}\""
 
-#: abilian/web/comments/.flycheck_forms.py:19 abilian/web/comments/forms.py:19
+#: abilian/web/comments/forms.py:19
 msgid "Comment"
 msgstr "Commentaire"
 
-#: abilian/web/comments/views.py:30
+#: abilian/web/comments/views.py:34
 msgid "Post"
 msgstr "Poster"
 
-#: abilian/web/comments/views.py:38
+#: abilian/web/comments/views.py:79
+msgid "Comment edited"
+msgstr "Commentaire modifié"
+
+#: abilian/web/comments/views.py:82
+msgid "Edit comment on \"{title}\""
+msgstr "Édition du commentaire sur \"{title}\""
+
+#: abilian/web/comments/views.py:101
 msgid "Comment added"
 msgstr "Commentaire ajouté"
 
-#: abilian/web/comments/views.py:68
+#: abilian/web/comments/views.py:118
 msgid "New comment on \"{title}\""
 msgstr "Nouveau commentaire sur \"{title}\""
 
@@ -605,23 +614,23 @@ msgstr "Le champ doit comporter entre %(min)d et %(max)d caractères."
 msgid "Virus detected!"
 msgstr "Virus détecté!"
 
-#: abilian/web/forms/widgets.py:314
+#: abilian/web/forms/widgets.py:316
 msgid "Entries per page: _MENU_"
 msgstr "Entrées par page: _MENU_"
 
-#: abilian/web/forms/widgets.py:319 abilian/web/forms/widgets.py:320
+#: abilian/web/forms/widgets.py:321 abilian/web/forms/widgets.py:322
 msgid "No matching records found"
 msgstr "Aucun enregistrement ne correspond aux termes de recherche spécifiés"
 
-#: abilian/web/forms/widgets.py:688
+#: abilian/web/forms/widgets.py:695
 msgid "Add file"
 msgstr "Ajouter un fichier"
 
-#: abilian/web/forms/widgets.py:688
+#: abilian/web/forms/widgets.py:695
 msgid "Select file"
 msgstr "Sélectionner un fichier"
 
-#: abilian/web/forms/widgets.py:1112
+#: abilian/web/forms/widgets.py:1119
 msgid "hour(s)"
 msgstr "heure(s)"
 
@@ -881,6 +890,13 @@ msgstr "{key} modifié de «{old_value}» en «{new_value}»"
 msgid "{key} set to {new_value}"
 msgstr "{key} initialisé à «{new_value}»"
 
+#: abilian/web/templates/macros/comment.html:42
+#, python-format
+msgid "edited"
+msgid_plural "edited %(count)d times"
+msgstr[0] "modifié"
+msgstr[1] "modifié %(count)d fois"
+
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:6
 msgid "Do you really want to delete this entity?"
 msgstr "Voulez-vous vraiment supprimer cet object?"
@@ -913,11 +929,11 @@ msgstr "Créer"
 msgid "Create and add new"
 msgstr "Créer et ajouter un nouveau"
 
-#: abilian/web/views/object.py:419
+#: abilian/web/views/object.py:420
 msgid "Entity successfully added"
 msgstr "Ajout réussi"
 
-#: abilian/web/views/object.py:470
+#: abilian/web/views/object.py:472
 msgid "Entity deleted"
 msgstr "Objet supprimé"
 
