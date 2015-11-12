@@ -661,6 +661,7 @@ class Application(Flask, ServiceManager, PluginManager):
         csrf=csrf,
         get_locale=babel_get_locale,
         local_dt=abilian.core.util.local_dt,
+        _n=abilian.i18n._n,
         url_for=url_for,
         user_photo_url=user_photo_url,
         NO_VALUE=NO_VALUE,
