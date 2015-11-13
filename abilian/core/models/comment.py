@@ -9,7 +9,7 @@ import sqlalchemy as sa
 from sqlalchemy import Column, UnicodeText, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
-from abilian.services.security import Owner, Anonymous, WRITE, CREATE
+from abilian.services.security import Owner, Anonymous, WRITE, CREATE, DELETE
 from abilian.core.entities import Entity
 
 #: name of backref on target :class:`Entity` object
@@ -73,6 +73,7 @@ class Comment(Entity):
   """
   __default_permissions__ = {
     WRITE: {Owner},
+    DELETE: {Owner},
     CREATE: {Anonymous},
   }
 

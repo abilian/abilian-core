@@ -21,6 +21,23 @@
   {%- endif %}
 {% endmacro %}
 
+{% macro m_comment_delete_link(comment) %}
+  {%- if g.user == comment.owner or g.is_manager %}
+    <a class="js-widget text-danger"
+       href="{{ url_for('comments.delete', entity_id=comment.entity.id, object_id=comment.id) }}"
+       data-init-with="deleteConfirm"
+       data-init-params="{{ {
+                          'title': _('Delete comment ?'),
+                          'message': _('Do you really want to delete this comment?'),
+                          'label': _("Delete"),
+                          'cancelLabel': _('Cancel'),
+                          }|tojson|forceescape }}">
+      <i class="fa fa-trash"></i>
+      {{ _('Delete') }}
+    </a>
+  {%- endif %}
+{% endmacro %}
+
 {% macro m_comment(comment) %}
   <div class="header">
   {%- call m_user_link(comment.creator) %}
@@ -36,12 +53,15 @@
   <p class="comment-body"> {{ comment.body | linkify | paragraphs }} </p>
   <div>
     {{ m_comment_edit_link(comment) }}
-    {%- set count = comment.history |length %}
-    {%- if comment.history %}
-      <small class="pull-right">
-        {{ _n('edited', 'edited %(count)d times', count, count=count) }}
-      </small>
-    {%- endif %}
+    <span class="pull-right">
+      {{ m_comment_delete_link(comment) }}
+      {%- set count = comment.history |length %}
+      {%- if comment.history %}
+        <small>
+          {{ _n('edited', 'edited %(count)d times', count, count=count) }}
+        </small>
+      {%- endif %}
+    </span>
   </div>
 {% endmacro %}
 

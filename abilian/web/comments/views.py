@@ -16,7 +16,9 @@ from abilian.core.util import utc_dt
 from abilian.web import url_for, nav
 from abilian.web.blueprints import Blueprint
 from abilian.web.action import actions, ButtonAction
-from abilian.web.views.object import ObjectEdit, ObjectCreate, CANCEL_BUTTON
+from abilian.web.views.object import (
+  ObjectEdit, ObjectCreate, ObjectDelete, CANCEL_BUTTON,
+)
 from .forms import CommentForm
 
 bp = Blueprint('comments', __name__, url_prefix='/comments')
@@ -56,9 +58,6 @@ class BaseCommentView(object):
     actions.context['object'] = self.entity
     return args, kwargs
 
-  def get_form_buttons(self, *args, **kwargs):
-    return [COMMENT_BUTTON, CANCEL_BUTTON]
-
   def view_url(self):
     kw = {}
     if self.obj and self.obj.id:
@@ -81,6 +80,9 @@ class CommentEditView(BaseCommentView, ObjectEdit):
   def breadcrumb(self):
     label = _(u'Edit comment on "{title}"').format(title=self.entity.name)
     return nav.BreadcrumbItem(label=label)
+
+  def get_form_buttons(self, *args, **kwargs):
+    return [COMMENT_BUTTON, CANCEL_BUTTON]
 
   def after_populate_obj(self):
     obj_meta = self.obj.meta.setdefault('abilian.core.models.comment', {})
@@ -123,3 +125,13 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
 
 create_view = CommentCreateView.as_view('create')
 bp.route('/<int:entity_id>/create')(create_view)
+
+
+class CommentDeleteView(BaseCommentView, ObjectDelete):
+  """
+  """
+  _message_success = _l(u"Comment deleted")
+
+
+delete_view = CommentDeleteView.as_view('delete')
+bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)
