@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  abilian-core\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-11-12 14:33+0100\n"
-"PO-Revision-Date: 2015-11-12 14:35+0100\n"
+"POT-Creation-Date: 2015-11-13 12:45+0100\n"
+"PO-Revision-Date: 2015-11-13 12:46+0100\n"
 "Last-Translator: ybourbotte@abilian.com\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -131,6 +131,7 @@ msgstr "Changer le mot de passe"
 #: abilian/services/auth/templates/login/password_reset.html:23
 #: abilian/web/templates/default/list_view.html:63
 #: abilian/web/templates/macros/attachment_default.html:43
+#: abilian/web/templates/macros/comment.html:33
 #: abilian/web/templates/preferences/user.html:19
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:8
 #: abilian/web/views/object.py:166
@@ -218,6 +219,8 @@ msgstr "Éditer"
 
 #: abilian/web/frontend.py:230
 #: abilian/web/templates/macros/attachment_default.html:42
+#: abilian/web/templates/macros/comment.html:32
+#: abilian/web/templates/macros/comment.html:36
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
 #: abilian/web/views/object.py:462
 msgid "Delete"
@@ -555,25 +558,29 @@ msgstr "Nouveau fichier ajouté sur \"{title}\""
 msgid "Comment"
 msgstr "Commentaire"
 
-#: abilian/web/comments/views.py:34
+#: abilian/web/comments/views.py:36
 msgid "Post"
 msgstr "Poster"
 
-#: abilian/web/comments/views.py:79
+#: abilian/web/comments/views.py:78
 msgid "Comment edited"
 msgstr "Commentaire modifié"
 
-#: abilian/web/comments/views.py:82
+#: abilian/web/comments/views.py:81
 msgid "Edit comment on \"{title}\""
 msgstr "Édition du commentaire sur \"{title}\""
 
-#: abilian/web/comments/views.py:101
+#: abilian/web/comments/views.py:103
 msgid "Comment added"
 msgstr "Commentaire ajouté"
 
-#: abilian/web/comments/views.py:118
+#: abilian/web/comments/views.py:119
 msgid "New comment on \"{title}\""
 msgstr "Nouveau commentaire sur \"{title}\""
+
+#: abilian/web/comments/views.py:133
+msgid "Comment deleted"
+msgstr "Commentaire supprimé"
 
 #: abilian/web/forms/fields.py:313 abilian/web/forms/fields.py:357
 msgid "Not a valid datetime value"
@@ -890,7 +897,15 @@ msgstr "{key} modifié de «{old_value}» en «{new_value}»"
 msgid "{key} set to {new_value}"
 msgstr "{key} initialisé à «{new_value}»"
 
-#: abilian/web/templates/macros/comment.html:42
+#: abilian/web/templates/macros/comment.html:30
+msgid "Delete comment ?"
+msgstr "Supprimer le commentaire?"
+
+#: abilian/web/templates/macros/comment.html:31
+msgid "Do you really want to delete this comment?"
+msgstr "Voulez-vous vraiment supprimer ce commentaire?"
+
+#: abilian/web/templates/macros/comment.html:61
 #, python-format
 msgid "edited"
 msgid_plural "edited %(count)d times"

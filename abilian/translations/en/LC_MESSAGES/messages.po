@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abilian-core 0.3.3.dev88+ng11c50b5.d20150311\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-11-12 14:33+0100\n"
+"POT-Creation-Date: 2015-11-13 12:45+0100\n"
 "PO-Revision-Date: 2015-03-20 15:19+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -125,6 +125,7 @@ msgstr ""
 #: abilian/services/auth/templates/login/password_reset.html:23
 #: abilian/web/templates/default/list_view.html:63
 #: abilian/web/templates/macros/attachment_default.html:43
+#: abilian/web/templates/macros/comment.html:33
 #: abilian/web/templates/preferences/user.html:19
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:8
 #: abilian/web/views/object.py:166
@@ -212,6 +213,8 @@ msgstr ""
 
 #: abilian/web/frontend.py:230
 #: abilian/web/templates/macros/attachment_default.html:42
+#: abilian/web/templates/macros/comment.html:32
+#: abilian/web/templates/macros/comment.html:36
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
 #: abilian/web/views/object.py:462
 msgid "Delete"
@@ -543,24 +546,29 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
-#: abilian/web/comments/views.py:34
+#: abilian/web/comments/views.py:36
 msgid "Post"
 msgstr ""
 
-#: abilian/web/comments/views.py:79
+#: abilian/web/comments/views.py:78
 msgid "Comment edited"
 msgstr ""
 
-#: abilian/web/comments/views.py:82
+#: abilian/web/comments/views.py:81
 msgid "Edit comment on \"{title}\""
 msgstr ""
 
-#: abilian/web/comments/views.py:101
+#: abilian/web/comments/views.py:103
 msgid "Comment added"
 msgstr ""
 
-#: abilian/web/comments/views.py:118
+#: abilian/web/comments/views.py:119
 msgid "New comment on \"{title}\""
+msgstr ""
+
+#: abilian/web/comments/views.py:133
+#, fuzzy, python-format
+msgid "Comment deleted"
 msgstr ""
 
 #: abilian/web/forms/fields.py:313 abilian/web/forms/fields.py:357
@@ -871,7 +879,15 @@ msgstr ""
 msgid "{key} set to {new_value}"
 msgstr ""
 
-#: abilian/web/templates/macros/comment.html:42
+#: abilian/web/templates/macros/comment.html:30
+msgid "Delete comment ?"
+msgstr ""
+
+#: abilian/web/templates/macros/comment.html:31
+msgid "Do you really want to delete this comment?"
+msgstr ""
+
+#: abilian/web/templates/macros/comment.html:61
 #, python-format
 msgid "edited"
 msgid_plural "edited %(count)d times"
