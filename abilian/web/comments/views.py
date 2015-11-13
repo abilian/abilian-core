@@ -16,7 +16,7 @@ from abilian.core.util import utc_dt
 from abilian.web import url_for, nav
 from abilian.web.blueprints import Blueprint
 from abilian.web.action import actions, ButtonAction
-from abilian.web.views import ObjectEdit, ObjectCreate
+from abilian.web.views.object import ObjectEdit, ObjectCreate, CANCEL_BUTTON
 from .forms import CommentForm
 
 bp = Blueprint('comments', __name__, url_prefix='/comments')
@@ -57,7 +57,7 @@ class BaseCommentView(object):
     return args, kwargs
 
   def get_form_buttons(self, *args, **kwargs):
-    return [COMMENT_BUTTON]
+    return [COMMENT_BUTTON, CANCEL_BUTTON]
 
   def view_url(self):
     kw = {}
@@ -100,7 +100,6 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
   """
   _message_success = _l(u"Comment added")
 
-
   def __init__(self, *args, **kwargs):
     super(CommentCreateView, self).__init__(*args, **kwargs)
 
@@ -117,6 +116,9 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
   def breadcrumb(self):
     label = _(u'New comment on "{title}"').format(title=self.entity.name)
     return nav.BreadcrumbItem(label=label)
+
+  def get_form_buttons(self, *args, **kwargs):
+    return [COMMENT_BUTTON, CANCEL_BUTTON]
 
 
 create_view = CommentCreateView.as_view('create')
