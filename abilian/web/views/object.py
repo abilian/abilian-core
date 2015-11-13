@@ -479,7 +479,8 @@ class ObjectDelete(ObjectEdit):
   def delete(self):
     session = current_app.db.session()
     session.delete(self.obj)
-    activity.send(self, actor=g.user, verb="delete", object=self.obj)
+    activity.send(self, actor=g.user, verb="delete", object=self.obj,
+                  target=self.activity_target)
     session.commit()
     flash(self.message_success(), 'success')
     # FIXME: for DELETE verb response in case of success should be 200, 202
