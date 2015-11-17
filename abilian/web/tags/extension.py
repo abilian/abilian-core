@@ -113,19 +113,17 @@ class TagsExtension(object):
 
   def add(self, entity, tag=None, ns=None, label=None):
     """
-    :return: tuple ( bool(is_new_tag), tag )
+    :return: tag
     """
-    is_new_tag = False
     if tag is None:
       assert None not in (ns, label)
       tag = self.get(ns, label)
       if tag is None:
         tag = Tag(ns=ns, label=label)
-        is_new_tag = True
 
     tags = self.entity_tags(entity)
     tags.add(tag)
-    return is_new_tag, tag
+    return tag
 
   def remove(self, entity, tag=None, ns=None, label=None):
     if tag is None:
