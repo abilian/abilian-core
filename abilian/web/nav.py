@@ -121,7 +121,12 @@ class BreadcrumbItem(object):
       u'{%- if url %}</a>{%- endif %}')
 
   def __init__(self, label=u'', url=u'#', icon=None, description=None):
-    assert label or icon
+    # don't test 'label or...': if label is a lazy_gettext, it will be
+    # resolved. If this item is created in a url_value_preprocessor, it will
+    # setup i18n before auth has loaded user, so i18n will fallback on browser
+    # negociation instead of user's site preference, and load wrong catalogs for
+    # the whole request.
+    assert (label is not None or icon is None)
     self.label = label
     if isinstance(icon, string_types):
       icon = Glyphicon(icon)
