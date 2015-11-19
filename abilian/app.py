@@ -127,7 +127,7 @@ default_config.update(
     CELERY_TIMEZONE=LOCALTZ,
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
     SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
-    SENTRY_JS_VERSION='1.1.19',
+    SENTRY_JS_VERSION='1.1.22',
     SENTRY_JS_PLUGINS=('console', 'jquery', 'native', 'require',),
     SESSION_COOKIE_NAME=None,
     SQLALCHEMY_POOL_RECYCLE=1800, # 30min. default value in flask_sa is None
