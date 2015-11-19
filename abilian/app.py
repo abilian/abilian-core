@@ -18,6 +18,7 @@ from itertools import chain, count
 import jinja2
 import sqlalchemy as sa
 import yaml
+from babel.dates import LOCALTZ
 from flask import (Blueprint, Flask, _request_ctx_stack, abort,
                    appcontext_pushed, current_app, g, render_template, request,
                    request_started)
@@ -123,6 +124,7 @@ default_config.update(
     ),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
+    CELERY_TIMEZONE=LOCALTZ,
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
     SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
     SENTRY_JS_VERSION='1.1.19',
