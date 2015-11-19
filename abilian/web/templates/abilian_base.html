@@ -29,7 +29,14 @@
   {%- if app.config.get('SENTRY_INSTALL_CLIENT_JS', True) and app.extensions.get('sentry') %}
     {%- set ext = app.extensions['sentry'] %}
     <script src="{{ ext.raven_js_url }}"></script>
-    <script>Raven.config({{ ext.client.get_public_dsn() |tojson }}).install();</script>
+    <script>
+     Raven.config({{ ext.client.get_public_dsn() |tojson }},
+                  {tags: { app_name: {{ app.name | tojson }},
+                           configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
+                           process_type: 'javascript'}
+                  })
+          .install();
+    </script>
   {%- endif %}
 
   <script>
