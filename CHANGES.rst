@@ -1,12 +1,19 @@
 Changelog for Abilian Core
 ==========================
 
-0.5.0 (unreleased)
+0.5.1 (unreleased)
+------------------
+
+TODO.
+
+
+0.5.0 (2015-11-20)
 ------------------
 
 - Editable comments
 - Upgrade SQLAlchemy to 0.9
 - Admin: add Tag panels
+
 
 0.4.5 (2015-10-15)
 ------------------
