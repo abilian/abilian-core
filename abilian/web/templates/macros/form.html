@@ -28,7 +28,7 @@
       <label class="checkbox-inline">
         {# the 'nbsp' after the field is here because without any text bootstrap
            misalign the checkbox :-( #}
-          {{ field(class_=css_class, **kwargs) }} 
+          {{ field(class_=css_class, **kwargs) }} {#- comment to prevent trailing whitespace cleanup by editors.. #}
       </label>
 
     {%- else %}
