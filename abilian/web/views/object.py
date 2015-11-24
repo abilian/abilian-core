@@ -339,11 +339,7 @@ class ObjectEdit(ObjectView):
 
     try:
       session.flush()
-      activity.send(self,
-                    actor=g.user,
-                    verb=self.activity_verb,
-                    object=self.obj,
-                    target=self.activity_target)
+      self.send_activity()
       session.commit()
     except ValidationError as e:
       rv = self.handle_commit_exception(e)
@@ -392,6 +388,13 @@ class ObjectEdit(ObjectView):
     """
     current_app.extensions['csrf-handler'].flash_csrf_failed_message()
     return self.get()
+
+  def send_activity(self):
+    activity.send(self,
+                  actor=g.user,
+                  verb=self.activity_verb,
+                  object=self.obj,
+                  target=self.activity_target)
 
   @property
   def activity_target(self):
