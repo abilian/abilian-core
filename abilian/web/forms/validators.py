@@ -39,8 +39,9 @@ class Email(Email):
 
 class CorrectInputRequired(DataRequired):
   def __call__(self, form, field):
-    if field.data is None or isinstance(field.data,
-                                        string_types) and not field.data.strip():
+    if field.data is None or (
+      isinstance(field.data, string_types) and not field.data.strip()) or (
+      isinstance(field.data, (list, dict)) and not field.data):
       if self.message is None:
         message = field.gettext('This field is required.')
       else:
@@ -136,6 +137,7 @@ class UUID(UUID, Rule):
 
 class AnyOf(AnyOf, Rule):
   pass
+
 
 class NoneOf(NoneOf, Rule):
   pass
