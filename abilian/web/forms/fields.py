@@ -139,9 +139,8 @@ class FileField(BaseFileField):
           "Field validators are conflicting with `allow_delete`,"
           "validators={!r}, allow_delete={!r}".format(validators, allow_delete)
         )
-      validators.append(Optional() if allow_delete else DataRequired())
-    elif not any(isinstance(v, (DataRequired, Optional)) for v in validators):
-      validators.append(Optional())
+      if not allow_delete:
+        validators.append(DataRequired())
 
     kwargs['validators'] = validators
     BaseFileField.__init__(self, *args, **kwargs)
@@ -435,7 +434,8 @@ class QuerySelect2Field(SelectFieldBase):
       logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
       logger.warning(u'Use deprecated parameter `allow_blank` for field "{}".'
                      .format(label))
-      validators.append(Optional() if allow_blank else DataRequired())
+      if not allow_blank:
+        validators.append(DataRequired())
 
     super(QuerySelect2Field, self).__init__(label, validators, **kwargs)
 
