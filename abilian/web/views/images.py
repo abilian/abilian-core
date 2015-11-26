@@ -17,7 +17,7 @@ from werkzeug.exceptions import BadRequest, NotFound
 from abilian.core.util import utc_dt
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
-from abilian.services.image import get_size, CROP, FIT, RESIZE_MODES
+from abilian.services.image import get_size, CROP, RESIZE_MODES
 from abilian.web.util import url_for
 from .base import View
 
@@ -37,6 +37,7 @@ class BaseImageView(View):
   max_size = None
   set_expire = False
   expire_offset = timedelta(days=365)
+  as_attachment = False
 
   #: argument name that must be found in view kwargs. This is a safety measure
   #: to prevent setting far expire date on resources without a varying argument
@@ -44,7 +45,7 @@ class BaseImageView(View):
   expire_vary_arg = None
 
   def __init__(self, max_size=None, set_expire=None, expire_offset=None,
-               expire_vary_arg=None):
+               expire_vary_arg=None, as_attachment=None):
     # override class default value only if arg is specified in constructor. This
     # allows subclasses to easily override theses defaults.
     if max_size is not None:
@@ -55,6 +56,8 @@ class BaseImageView(View):
       self.expire_offset = expire_offset
     if expire_vary_arg is not None:
       self.expire_vary_arg = expire_vary_arg
+    if as_attachment is not None:
+      self.as_attachment = bool(as_attachment)
 
     if self.set_expire:
       if not self.expire_offset:
@@ -97,10 +100,10 @@ class BaseImageView(View):
       resize_mode = CROP
 
     kwargs['mode'] = resize_mode
-
+    kwargs['attach'] = request.args.get('attach', self.as_attachment, type=bool)
     return args, kwargs
 
-  def get(self, image, size, mode, *args, **kwargs):
+  def get(self, image, size, mode, attach, *args, **kwargs):
     """
     :param image: image as bytes
     :param s: requested maximum width/height size
@@ -124,6 +127,17 @@ class BaseImageView(View):
 
     response = make_response(image)
     response.headers['content-type'] = content_type
+
+    if attach:
+      ext = u'.' + unicode(fmt.lower())
+      filename = kwargs.get('filename')
+      if not filename:
+        filename = u'image'
+      if not filename.lower().endswith(ext):
+        filename += ext
+      response.headers.add('Content-Disposition', u'attachment',
+                           filename=filename)
+
     self.set_cache_headers(response)
     return response
 
@@ -156,6 +170,7 @@ class StaticImageView(BaseImageView):
 
   def prepare_args(self, args, kwargs):
     kwargs['image'] = self.image_path.open('rb')
+    kwargs['filename'] = self.image_path.name
     return BaseImageView.prepare_args(self, args, kwargs)
 
 
@@ -184,6 +199,11 @@ class BlobView(BaseImageView):
     if not blob:
       raise NotFound()
 
+    meta = blob.meta
+    filename = meta.get('filename',
+                        meta.get('md5',
+                                 unicode(blob.uuid)))
+    kwargs['filename'] = filename
     kwargs['image'] = blob.file.open('rb')
     return args, kwargs
 
