@@ -634,8 +634,7 @@ class Module(object):
 
     for rel_col in rel_sort_names:
       sort_col = getattr(self.managed_class, rel_col)
-
-      if isinstance(sort_col.property, orm.properties.RelationshipProperty):
+      if hasattr(sort_col, 'property') and isinstance(sort_col.property, orm.properties.RelationshipProperty):
         # this is a related model: find attribute to filter on
         query = query.join(sort_col_name, aliased=True)
 
