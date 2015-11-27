@@ -643,14 +643,19 @@ class Module(object):
         if issubclass(rel_model, BaseVocabulary):
           default_sort_name = 'label'
 
-        rel_sort_name = sort_col_def.get('sort_on', default_sort_name)
+        rel_sort_name = sort_col_def.get('relationship_sort_on', None)
+        if rel_sort_name is None:
+          rel_sort_name = sort_col_def.get('sort_on', default_sort_name)
         sort_col = getattr(rel_model, rel_sort_name)
 
       # XXX: Big hack, date are sorted in reverse order by default
       if isinstance(sort_col, _DateAffinity):
         sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
-      elif isinstance(sort_col, sa.types.String):
+      elif isinstance(sort_col, sa.types.String) or \
+          hasattr(sort_col, 'property') and \
+          isinstance(sort_col.property.columns[0].type, sa.types.String):
         sort_col = func.lower(sort_col)
+
 
       direction = desc if sort_dir == 'desc' else asc
       sort_col = direction(sort_col)
