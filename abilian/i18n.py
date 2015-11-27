@@ -362,7 +362,7 @@ def get_template_i18n(template_name, locale):
     Build template list with preceding locale if found
   """
   if locale is None:
-    return template_name
+    return [template_name]
 
   template_list = []
   parts = template_name.rsplit('.', 1)
