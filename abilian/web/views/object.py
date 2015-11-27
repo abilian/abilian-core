@@ -197,12 +197,17 @@ class ObjectEdit(ObjectView):
   #: UI flash message
   _message_success = _l(u"Entity successfully edited")
 
+  view_endpoint = None
+
   def __init__(self, Model=None, pk=None, Form=None, template=None,
                view_endpoint=None, message_success=None, *args, **kwargs):
     ObjectView.__init__(self, Model, pk, Form, template=template, *args, **kwargs)
-    self.view_endpoint = (view_endpoint
-                          if view_endpoint is not None
-                          else '.{}_view'.format(self.Model.__name__))
+    if view_endpoint is not None:
+      self.view_endpoint = view_endpoint
+
+    if not self.view_endpoint:
+      self.view_endpoint = '.{}_view'.format(self.Model.__name__)
+
     if message_success:
       self._message_success = message_success
 
