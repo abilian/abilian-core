@@ -4,7 +4,8 @@ Changelog for Abilian Core
 0.5.1 (unreleased)
 ------------------
 
-TODO.
+- Subforms (Form used in FormFields / ListFormFields / etc) can filter their
+  fields according to permission passed to top Form.
 
 
 0.5.0 (2015-11-20)

@@ -11,7 +11,7 @@ from collections import OrderedDict
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from wtforms_alchemy import model_form_factory
-from flask import current_app, has_app_context
+from flask import current_app, has_app_context, g
 from flask_login import current_user
 from flask_wtf.form import Form as BaseForm
 
@@ -124,6 +124,45 @@ class FormPermissions(object):
     return svc.has_role(user, role=roles, object=obj,)
 
 
+class FormContext(object):
+  """
+  Allows :class:`forms <Form>` to set a context during instanciation, so that
+  subforms used in formfields / listformfields / etc can perform proper field
+  filtering according to original permission and user passed to top form
+  __init__ method.
+  """
+  permission = None
+  user = None
+
+  def __init__(self, permission=None, user=None):
+    self.permission = permission
+    self.user = user
+
+  def __enter__(self):
+    if not has_app_context():
+      return
+
+    self.__existing = getattr(g, '__form_ctx__', None)
+    if self.__existing:
+      if self.permission is None:
+        self.permission = self.__existing.permission
+
+      if self.user is None:
+        self.user = self.__existing.user
+
+    if self.user is None:
+      self.user = current_user
+
+    setattr(g, '__form_ctx__', self)
+    return self
+
+  def __exit__(self, exc_type, exc_val, exc_tb):
+    if not has_app_context():
+      return
+
+    setattr(g, '__form_ctx__', self.__existing)
+
+
 class Form(BaseForm):
 
   _groups = OrderedDict()
@@ -132,7 +171,9 @@ class Form(BaseForm):
 
   def __init__(self, *args, **kwargs):
     permission = kwargs.pop('permission', None)
-    user= kwargs.pop('user', current_user)
+    user= kwargs.pop('user', None)
+    form_ctx = FormContext(permission=permission, user=user)
+    obj = kwargs.get('obj')
 
     if kwargs.get('csrf_enabled') is None and not has_app_context():
       # form instanciated without app context and without explicit csrf
@@ -144,46 +185,45 @@ class Form(BaseForm):
       if kwargs.get('prefix'):
         kwargs['csrf_enabled'] = False
 
-    super(Form, self).__init__(*args, **kwargs)
-    self._field_groups = {} # map field -> group
+    with form_ctx as ctx:
+      super(Form, self).__init__(*args, **kwargs)
+      self._field_groups = {} # map field -> group
 
-    if not isinstance(self.__class__._groups, OrderedDict):
-      self.__class__._groups = OrderedDict(self.__class__._groups)
+      if not isinstance(self.__class__._groups, OrderedDict):
+        self.__class__._groups = OrderedDict(self.__class__._groups)
 
-    for label, fields in self._groups.items():
-      self._groups[label] = list(fields)
-      self._field_groups.update(dict.fromkeys(fields, label))
-
-    obj = kwargs.get('obj')
-
-    if permission and self._permissions is not None:
-      # we are going to alter groups: copy dict on instance to preserve class
-      # definition
-      self._groups = OrderedDict()
-      for label, fields in self.__class__._groups.items():
+      for label, fields in self._groups.items():
         self._groups[label] = list(fields)
+        self._field_groups.update(dict.fromkeys(fields, label))
 
-      has_permission = partial(self._permissions.has_permission,
-                               permission,
-                               obj=obj, user=user)
-      empty_form = not has_permission()
+      if ctx.permission and self._permissions is not None:
+        # we are going to alter groups: copy dict on instance to preserve class
+        # definition
+        self._groups = OrderedDict()
+        for label, fields in self.__class__._groups.items():
+          self._groups[label] = list(fields)
 
-      for field_name in list(self._fields):
-        if empty_form or not has_permission(field=field_name):
-          logger.debug('{}(permission={!r}): field {!r}: removed'
-                       ''.format(self.__class__.__name__, permission,
-                                 field_name))
-          del self[field_name]
-          group = self._field_groups.get(field_name)
-          if group:
-            self._groups[group].remove(field_name)
+        has_permission = partial(self._permissions.has_permission,
+                                 ctx.permission,
+                                 obj=obj, user=ctx.user)
+        empty_form = not has_permission()
+
+        for field_name in list(self._fields):
+          if empty_form or not has_permission(field=field_name):
+            logger.debug('{}(permission={!r}): field {!r}: removed'
+                         ''.format(self.__class__.__name__, ctx.permission,
+                                   field_name))
+            del self[field_name]
+            group = self._field_groups.get(field_name)
+            if group:
+              self._groups[group].remove(field_name)
 
   def _get_translations(self):
     return BabelTranslation
 
   def _fields_for_group(self, group):
-      for g, field_names in self._groups:
-        if group == g:
+      for group_name, field_names in self._groups:
+        if group == group_name:
           fields = field_names
           break
       else:
