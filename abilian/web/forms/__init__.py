@@ -140,7 +140,7 @@ class FormContext(object):
 
   def __enter__(self):
     if not has_app_context():
-      return
+      return self
 
     self.__existing = getattr(g, '__form_ctx__', None)
     if self.__existing:
