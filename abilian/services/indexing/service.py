@@ -68,9 +68,9 @@ def url_for_hit(hit, default=u'#'):
   """
   Helper for building URLs from results
   """
-  object_type = hit['object_type']
-  object_id = int(hit['id'])
   try:
+    object_type = hit['object_type']
+    object_id = int(hit['id'])
     return current_app.default_view.url_for(hit, object_type, object_id)
   except KeyError:
     return default
