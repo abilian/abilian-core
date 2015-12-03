@@ -328,9 +328,16 @@ class Application(Flask, ServiceManager, PluginManager):
       if manager.startswith('.'):
         manager = self.import_name + manager
 
+      manager_import_path = manager
       manager = import_string(manager, silent=True)
       if manager is None:
         # fallback on abilian-core's
+        logger.warning(
+          '\n' + ('*' * 79) + '\n'
+          'Could not find command manager at %r, using a default one\n'
+          'Some commands might not be available\n'
+          + ('*' * 79) + '\n',
+          manager_import_path)
         from abilian.core.commands import setup_abilian_commands
         manager = ScriptManager()
         setup_abilian_commands(manager)
