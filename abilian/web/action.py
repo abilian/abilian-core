@@ -95,6 +95,42 @@ class FAIcon(NamedIconBase):
   template = Template(u'<i class="fa fa-{{ name }}"></i>')
 
 
+class FAIconStacked(NamedIconBase):
+  """
+  Stacked FA icons
+  """
+  template = Template(
+    u'<span class="fa-stack {%- if stack_class %} {{ stack_class }}'
+    u'{%- endif %}">\n'
+    u'  <i class="fa fa-{{ name }}"></i>\n'
+    u'  <i class="fa fa-{{ second }}"></i>\n'
+    u'</span>'
+  )
+
+  def __init__(self, name, second, stack=u''):
+    '''
+    @param name: first icon name, support additional css classes.
+
+    @param second: second icon. Can be 'ban fa-stack-2x text-danger' for
+    example.
+
+    @param stack: additional class on top-level element, i.e 'fa-lg'.
+    '''
+    if u'fa-stack-' not in name:
+      name += u' fa-stack-1x'
+    if u'fa-stack-' not in second:
+      second += u' fa-stack-1x'
+
+    super(FAIconStacked, self).__init__(name)
+    self.second = second
+    self.stack = stack
+
+  def __html__(self):
+    return self.template.render(name=self.name,
+                                second=self.second,
+                                stack_class=self.stack)
+
+
 class DynamicIcon(Icon):
   """
 
