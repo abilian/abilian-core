@@ -856,7 +856,7 @@ class TagInput(Input):
 
   def __call__(self, field, **kwargs):
     kwargs.setdefault('id', field.id)
-    kwargs['class'] = "tagbox"
+    kwargs['class_'] = "tagbox"
     if 'value' not in kwargs:
       kwargs['value'] = field._value()
 
@@ -1366,10 +1366,10 @@ class Select2(Select):
     if not field.flags.required:
       params['allowClear'] = True
 
-    css_class = kwargs.setdefault('class', u'')
+    css_class = kwargs.setdefault('class_', u'')
     if 'js-widget' not in css_class:
       css_class += u' js-widget'
-      kwargs['class'] = css_class
+      kwargs['class_'] = css_class
 
     kwargs.setdefault('data-init-with', self.js_init)
     kwargs['data-init-params'] = json.dumps(params)
@@ -1423,10 +1423,10 @@ class Select2Ajax(object):
     if self.multiple:
       kwargs['multiple'] = True
 
-    css_class = kwargs.setdefault('class', u'')
+    css_class = kwargs.setdefault('class_', u'')
     if 'js-widget' not in css_class:
       css_class += u' js-widget'
-      kwargs['class'] = css_class
+      kwargs['class_'] = css_class
 
     s2_params = {}
     s2_params.update(self.s2_params)
