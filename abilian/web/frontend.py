@@ -636,7 +636,7 @@ class Module(object):
       sort_col = getattr(self.managed_class, rel_col)
       if hasattr(sort_col, 'property') and isinstance(sort_col.property, orm.properties.RelationshipProperty):
         # this is a related model: find attribute to filter on
-        query = query.join(sort_col_name, aliased=True)
+        query = query.outerjoin(sort_col_name, aliased=True)
 
         rel_model = sort_col.property.mapper.class_
         default_sort_name = 'name'
