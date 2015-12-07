@@ -92,6 +92,19 @@
              };
          }
 
+         if (params.formatSelection) {
+             initParams.formatSelection = function() {
+                 var f = params.formatSelection.split('.'),
+                     formatter = window;
+
+                 for (var i=0; i<f.length; i++) {
+                     formatter = formatter[f[i]];
+                 }
+
+                 return formatter.apply(this, arguments);
+             };
+         }
+
          this.select2(initParams);
      }
 

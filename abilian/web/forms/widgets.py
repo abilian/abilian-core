@@ -1397,15 +1397,30 @@ class Select2Ajax(object):
 
   :param format_result: `formatResult` arg of Select2. Must be a valid
   javascript reference (like `Abilian.my_format_function`)
+
+  :param format_selection: like `format_result`, but for Select2's
+  `formatSelection`
+
+  :param values_builder: an optional function, which given a data iterable of
+  values, returns a list of dict items suitable for widget initial data;
+  generally needed when using custom format_result/format_selection.
   """
   def __init__(self, template='widgets/select2ajax.html', multiple=False,
-               format_result=None):
+               format_result=None, format_selection=None,
+               values_builder=None):
     self.template = template
     self.multiple = multiple
+    self.values_builder = (
+      values_builder
+      if callable(values_builder)
+      else lambda data: [{'id': o.id, 'text': o.name} for o in data if o]
+    )
     self.s2_params = dict(multiple=self.multiple)
 
     if format_result:
       self.s2_params['formatResult'] = format_result
+    if format_selection:
+      self.s2_params['formatSelection'] = format_selection
 
   def process_formdata(self, valuelist):
     """
@@ -1440,7 +1455,7 @@ class Select2Ajax(object):
     if not self.multiple:
       data = [data]
 
-    values = [{'id': o.id, 'text': o.name} for o in data if o]
+    values = self.values_builder(data)
     input_value = u','.join(unicode(o.id) for o in data if o)
     data_node_id = None
 
