@@ -739,7 +739,7 @@ class RelatedView(object):
   def render(self, entity):
     """
     Return a dict with keys 'label', 'attr_name', 'rendered', 'size',
-    'show_empty'
+    'show_empty', 'default_collapsed'
     """
     raise NotImplementedError
 
