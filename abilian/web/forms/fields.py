@@ -645,6 +645,24 @@ class JsonSelect2Field(SelectFieldBase):
         valuelist = valuelist[0]
       self._formdata = valuelist
 
+  def populate_obj(self, obj, name):
+    data = self.data
+
+    try:
+      state = sa.inspect(obj)
+    except sa.exc.NoInspectionAvailable:
+      return super(JsonSelect2Field, self).populate_obj(obj, name)
+
+    relations = state.mapper.relationships
+
+    if self.multiple and name in relations:
+      prop = relations[name]
+      if prop.collection_class:
+        # data is a list, try to convert to actual type; generally `set()`
+        data = prop.collection_class(data)
+
+    setattr(obj, name, data)
+
 
 class JsonSelect2MultipleField(JsonSelect2Field):
   # legacy class, now use JsonSelect2Field(multiple=True)
