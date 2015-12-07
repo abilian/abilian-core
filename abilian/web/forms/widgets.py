@@ -408,7 +408,7 @@ class SingleView(object):
     self.panels = panels
     self.options = options
 
-  def render(self, item, form):
+  def render(self, item, form, related_views=()):
     mapper = sa.orm.class_mapper(item.__class__)
     panels = []
     _to_skip = (None, False, 0, 0.0, '', u'-')
@@ -446,10 +446,6 @@ class SingleView(object):
 
     template = filter(bool, (self.options.get('view_template'),
                              'widgets/render_single.html'))
-    module = self.options.get('module')
-    related_views = []
-    if module:
-      related_views = [v.render(item) for v in module.related_views]
 
     return Markup(render_template(template,
                                   view=self, related_views=related_views,
