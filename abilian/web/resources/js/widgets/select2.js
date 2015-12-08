@@ -62,12 +62,8 @@
      };
 
      function initSelect2Ajax(params) {
-         var initParams = $.extend({minimumInputLength: 2}, DEFAULT_PARAMS, params),
+         var initParams = $.extend({}, DEFAULT_PARAMS, params),
              data = null;
-
-         if (params.ajax) {
-             initParams.ajax = $.extend({}, DEFAULT_AJAX_PARAMS, params.ajax);
-         }
 
          if (params.dataNodeId !== undefined) {
              data = JSON.parse($('#' + params.dataNodeId).html());
@@ -77,6 +73,18 @@
                      callback(data.values.length == 1 ? data.values[0]: data.values);
                  }
              };
+         }
+
+         if (params.ajax) {
+             initParams.ajax = $.extend({}, DEFAULT_AJAX_PARAMS, params.ajax);
+             if (!('minimumInputLength' in params)) {
+                 initParams.minimumInputLength = 2;
+             }
+         } else if (!params.data || !params.tags) {
+             // no ajax, no dataset provided: init would fail. This can happen
+             // when this select2 data is changed later by external functions,
+             // like an "on change" event handler on another input.
+             initParams.data = [];
          }
 
          if (params.formatResult) {
