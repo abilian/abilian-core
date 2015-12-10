@@ -640,6 +640,15 @@ class SecurityService(Service):
     """
     Filter a query on an :class:`Entity` or on of its subclasses.
 
+    Usage::
+
+        read_q = security.query_entity_with_permission(READ, Model=MyModel)
+        MyModel.query.filter(read_q)
+
+    It should always be placed before any `.join()` happens in the query; else
+    sqlalchemy might join to the "wrong" entity table when joining to other
+    :class:`Entity`.
+
     :param user: user to filter for. Default: `current_user`.
 
     :param permission: required :class:`Permission`
