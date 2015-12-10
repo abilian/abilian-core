@@ -65,9 +65,9 @@ class SessionLifeTimeKey(Key):
       if field == 'days':
         return td.days
       elif field == 'hours':
-        return td.seconds / 3600
+        return int(td.seconds / 3600)
       elif field == 'minutes':
-        return td.seconds % 3600 / 60
+        return int(td.seconds % 3600 / 60)
     return 0
 
   @property
