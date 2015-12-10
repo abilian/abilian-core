@@ -19,6 +19,7 @@ from wtforms import (
     SelectFieldBase,
     FormField as BaseFormField,
     FieldList as BaseFieldList)
+from wtforms.utils import unset_value
 from wtforms.validators import DataRequired, Optional
 from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
@@ -101,9 +102,20 @@ class FieldList(FilterFieldListMixin, BaseFieldList):
 
 class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
   """
-  Filter empty entries
+  Filter empty entries before saving and refills before displaying
   """
-  pass
+
+  def __call__(self, **kwargs):
+    """
+    Refill with default min_entry, which were possibly
+    removed by FilterFieldListMixin.
+
+    Mandatory for proper function of DynamicRowWidget which clones an existing
+    field
+    """
+    while len(self) < self.min_entries:
+      self.append_entry()
+    return super(ModelFieldList, self).__call__(**kwargs)
 
 
 class FileField(BaseFileField):
