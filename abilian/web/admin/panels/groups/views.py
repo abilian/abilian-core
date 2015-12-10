@@ -60,7 +60,7 @@ class JsonGroupsList(base.JSONView):
       # TODO: this should be done on the browser.
       group_url = url_for(".groups_group", group_id=group.id)
       name = escape(getattr(group, "name") or "")
-      roles = security.get_roles(group)
+      roles = [r for r in security.get_roles(group) if r.assignable]
       columns = []
       columns.append(
         u'<a href="{url}">{name}</a>'.format(url=group_url, name=name)
@@ -122,7 +122,10 @@ class GroupView(GroupBase, views.ObjectView):
     members = list(self.obj.members)
     members.sort(key=lambda u: (u.last_name, u.first_name))
     kw['members'] = members
-    kw['roles'] = sorted(security.get_roles(self.obj, no_group_roles=True))
+    kw['roles'] = sorted(
+      [r for r in security.get_roles(self.obj, no_group_roles=True)
+       if r.assignable]
+    )
     kw['ADD_USER_BUTTON'] = ADD_USER_BUTTON
     kw['REMOVE_USER_BUTTON'] = REMOVE_USER_BUTTON
     return kw
@@ -142,13 +145,15 @@ class GroupEdit(GroupBase, views.ObjectEdit):
   def get_form_kwargs(self):
     kw = super(GroupEdit, self).get_form_kwargs()
     security = current_app.services['security']
-    roles = security.get_roles(self.obj, no_group_roles=True)
+    roles = [r for r in security.get_roles(self.obj, no_group_roles=True)
+             if r.assignable]
     kw['roles'] = [r.name for r in roles]
     return kw
 
   def after_populate_obj(self):
     security = current_app.services['security']
-    current_roles = set(security.get_roles(self.obj, no_group_roles=True))
+    current_roles = security.get_roles(self.obj, no_group_roles=True)
+    current_roles = set(r for r in current_roles if r.assignable)
     new_roles = {Role(r) for r in self.form.roles.data}
 
     for r in (current_roles - new_roles):

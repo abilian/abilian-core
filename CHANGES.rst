@@ -4,6 +4,7 @@ Changelog for Abilian Core
 0.5.1 (unreleased)
 ------------------
 
+- Fix: user administration could remove non-assignable roles
 - Subforms (Form used in FormFields / ListFormFields / etc) can filter their
   fields according to permission passed to top Form.
 
