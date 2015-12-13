@@ -36,6 +36,7 @@ from whoosh.support.charset import accent_map
 from abilian.services import Service, ServiceState
 from abilian.services.security import Role, Anonymous, Authenticated, security
 from abilian.core import signals
+from abilian.core.celery import safe_session
 from abilian.core.models.subjects import User, Group
 from abilian.core.util import fqcn as base_fqcn, friendly_fqcn
 from abilian.core.entities import Entity, Indexable
@@ -529,8 +530,7 @@ def index_update(index, items):
   index = service.app_state.indexes[index_name]
   adapted = service.adapted
 
-  session = Session(bind=db.session.get_bind(None, None), autocommit=True)
-
+  session = safe_session()
   updated = set()
   writer = AsyncWriter(index)
   try:
@@ -555,7 +555,7 @@ def index_update(index, items):
         continue
 
       if op in ("new", "changed"):
-        with session.begin():
+        with session.begin(nested=True):
           obj = adapter.retrieve(pk, _session=session, **data)
 
         if obj is None:
