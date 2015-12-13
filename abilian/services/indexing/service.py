@@ -531,10 +531,6 @@ def index_update(index, items):
 
   session = Session(bind=db.session.get_bind(None, None), autocommit=True)
 
-  if not getattr(session, '_model_changes', None):
-    # Flask-Sqlalchemy up to 1.0 needs this
-    session._model_changes = {}
-
   updated = set()
   writer = AsyncWriter(index)
   try:

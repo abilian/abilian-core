@@ -3,7 +3,7 @@ future>=0.15.2
 
 # Flask and Flask extensions
 Flask>=0.10.1
-Flask-SQLAlchemy
+Flask-SQLAlchemy>1.0
 Flask-Testing>=0.4.2
 Flask-Security
 Flask-Login==0.2.11
