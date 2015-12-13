@@ -3,8 +3,9 @@
 """
 from __future__ import absolute_import, print_function, division
 
+from sqlalchemy.orm.session import Session
 from multiprocessing.util import register_after_fork
-from celery import task, Celery
+from celery import task, Celery, current_task, current_app as celery_current_app
 from celery.app.task import Task
 from celery.task import PeriodicTask as CeleryPeriodicTask
 from celery.loaders.base import BaseLoader
@@ -25,6 +26,31 @@ CELERY_CONF_KEY_PREFIXES = ('CELERY_', 'CELERYD_', 'BROKER_',
 
 def is_celery_setting(key):
   return any(key.startswith(prefix) for prefix in CELERY_CONF_KEY_PREFIXES)
+
+
+def is_eager():
+  """
+  True when tasks are run eagerly. As of celery 3.1.17 it seems that when
+  CELERY_ALWAYS_EAGER is set in config, request.is_eager is *False*.
+  """
+  return (current_task.request.is_eager
+          or celery_current_app.conf.CELERY_ALWAYS_EAGER)
+
+
+def safe_session():
+  """
+  Return a sqlalchemy session that can be safely used in a task.
+
+  During standard async task processing, there is generally no problem. When
+  developping with task run in eager mode, the session is not usable when task
+  is called during an `after_commit` event.
+  """
+  db = flask_current_app.db
+
+  if not is_eager():
+    return db.session()
+
+  return Session(bind=db.session.get_bind(None, None), autocommit=False)
 
 
 class FlaskLoader(BaseLoader):
@@ -80,7 +106,7 @@ class FlaskTask(Task):
   """
   abstract = True
   def __call__(self, *args, **kwargs):
-    if self.request.is_eager:
+    if is_eager():
       # this is here mainly because flask_sqlalchemy (as of 2.0) will remove
       # session on app context teardown.
       #
