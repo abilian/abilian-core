@@ -148,13 +148,25 @@ class SecurityService(Service):
   def clear(self):
     pass
 
-  def _current_user_manager(self):
-    """Returns the current user, or SYSTEM user.
+  def _current_user_manager(self, session=None):
     """
+    Returns the current user, or SYSTEM user.
+    """
+    if session is None:
+      session = db.session()
+
     try:
-      return g.user
+      user = g.user
     except:
-      return User.query.get(0)
+      return session.query(User).get(0)
+
+    if sa.orm.object_session(user) is not session:
+      # this can happen when called from a celery task during development (with
+      # CELERY_ALWAYS_EAGER=True): the task SA session is not app.db.session,
+      # and we should not attach this object to the other session, because it
+      # can make weird, hard-to-debug errors related to session.identity_map.
+      return session.query(User).get(user.id)
+
 
   # security log
   @require_flush
@@ -172,16 +184,17 @@ class SecurityService(Service):
     assert isinstance(obj, Entity)
 
     obj.inherit_security = inherit_security
-    db.session.add(obj)
+    session = object_session(obj) if obj is not None else db.session
+    session.add(obj)
 
-    manager = self._current_user_manager()
+    manager = self._current_user_manager(session=session)
     op = (SecurityAudit.SET_INHERIT if inherit_security
           else SecurityAudit.UNSET_INHERIT)
     audit = SecurityAudit(manager=manager, op=op, object=obj,
                           object_id=obj.id,
                           object_type=obj.entity_type,
                           object_name=obj.name)
-    db.session.add(audit)
+    session.add(audit)
     self._needs_flush()
 
   #
@@ -452,9 +465,8 @@ class SecurityService(Service):
     """
     assert principal
     principal = noproxy(principal)
-    manager = self._current_user_manager()
     session = object_session(obj) if obj is not None else db.session
-
+    manager = self._current_user_manager(session=session)
     args = dict(role=role, object=obj,
                 anonymous=False,
                 user=None, group=None)
@@ -467,7 +479,8 @@ class SecurityService(Service):
     else:
       args['group'] = principal
 
-    if len(RoleAssignment.query.filter_by(**args).limit(1).all()) > 0:
+    q = session.query(RoleAssignment)
+    if len(q.filter_by(**args).limit(1).all()) > 0:
       # role already granted, nothing to do
       return
 
@@ -506,7 +519,7 @@ class SecurityService(Service):
     assert principal
     principal = noproxy(principal)
     session = object_session(object) if object is not None else db.session
-    manager = self._current_user_manager()
+    manager = self._current_user_manager(session=session)
 
     args = dict(role=role, object=object,
                 anonymous=False, user=None, group=None)
