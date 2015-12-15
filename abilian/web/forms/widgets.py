@@ -906,7 +906,7 @@ class DateInput(Input):
     return Markup(s)
 
   def render_view(self, field, **kwargs):
-    return format_date(field.object_data)
+    return format_date(field.data) if field.data else u''
 
 
 class TimeInput(Input):
