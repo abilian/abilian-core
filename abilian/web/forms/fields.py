@@ -354,6 +354,8 @@ class DateField(Field):
       return format_date(self.data, date_fmt) if self.data else ''
 
   def process_formdata(self, valuelist):
+    valuelist = [i for i in valuelist if i.strip()]
+
     if valuelist:
       date_str = ' '.join(valuelist)
       date_fmt = get_locale().date_formats['short']
