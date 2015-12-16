@@ -39,6 +39,7 @@ from wtforms_alchemy import ModelFieldList
 from abilian.i18n import _, _l
 from abilian.core.entities import Entity
 from abilian.services import image
+from abilian.services.image import get_format
 from abilian.web.filters import labelize, babel2datepicker
 from abilian.web.action import Icon
 from abilian.web import csrf, url_for
@@ -800,16 +801,27 @@ class ImageInput(FileInput):
     return uploaded
 
   def get_thumb(self, data, width, height):
+    try:
+      get_format(data)
+    except IOError:
+      return u''
     return image.resize(data, width, height, mode=self.resize_mode)
 
   def get_b64_thumb_url(self, img):
-    fmt = image.get_format(img).lower()
+    try:
+      fmt = image.get_format(img).lower()
+    except IOError:
+      return u''
     thumb = base64.b64encode(img)
     return u'data:image/{format};base64,{img}'.format(format=fmt, img=thumb)
 
   def render_view(self, field, **kwargs):
     data = field.data
     if not data:
+      return u''
+    try:
+      get_format(data)
+    except IOError:
       return u''
 
     width = kwargs.get('width', self.width)
