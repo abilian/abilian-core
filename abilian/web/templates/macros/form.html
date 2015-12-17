@@ -1,3 +1,4 @@
+{# edit macros #}
 {%- macro m_field(field, horizontal=False, label_width=2, field_width=8) %}
   {%- set with_label = kwargs.pop('with_label', not field.flags.hidden) %}
   {%- set placeholder = '' %}
@@ -70,4 +71,25 @@
     </div>
 
   </form>
+{%- endmacro %}
+
+{# view macros #}
+{% macro m_field_view(field, label_width=4, field_width=8) %}
+
+  <tr class="row">
+    <td class="col-sm-{{ label_width }}">{{ field.label }}</td>
+    <td class="col-sm-{{ field_width }}">{{ field.render_view() | safe }}</td>
+  </tr>
+{% endmacro %}
+
+{%- macro m_form_view(form, fields=(), id=None, label_width=4, field_width=8) %}
+
+  <table {%- if id %} id="{{ id }}"{% endif %} class="table table-striped table-condensed">
+    <tbody>
+      {%- for field in (fields or form) %}
+        {{ m_field_view(field, label_width=label_width, field_width=field_width) }}
+      {%- endfor %}
+    </tbody>
+  </table>
+
 {%- endmacro %}
