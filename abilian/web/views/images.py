@@ -19,7 +19,7 @@ from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
 from abilian.services.image import get_size, CROP, RESIZE_MODES
 from abilian.web.util import url_for
-from .base import View
+from .files import BaseFileDownload
 
 blueprint = Blueprint('images', __name__, url_prefix='/images')
 route = blueprint.route
@@ -31,54 +31,20 @@ DEFAULT_AVATAR = Path(
 DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
 
 
-class BaseImageView(View):
+class BaseImageView(BaseFileDownload):
   """
   """
   max_size = None
-  set_expire = False
-  expire_offset = timedelta(days=365)
-  as_attachment = False
 
-  #: argument name that must be found in view kwargs. This is a safety measure
-  #: to prevent setting far expire date on resources without a varying argument
-  #: in url (path or query string), such as a timestamp, a serial, a hash...
-  expire_vary_arg = None
-
-  def __init__(self, max_size=None, set_expire=None, expire_offset=None,
-               expire_vary_arg=None, as_attachment=None):
+  def __init__(self, max_size=None, *args, **kwargs):
+    super(BaseImageView, self).__init__(*args, **kwargs)
     # override class default value only if arg is specified in constructor. This
     # allows subclasses to easily override theses defaults.
     if max_size is not None:
       self.max_size = max_size
-    if set_expire is not None:
-      self.set_expire = set_expire
-    if expire_offset is not None:
-      self.expire_offset = expire_offset
-    if expire_vary_arg is not None:
-      self.expire_vary_arg = expire_vary_arg
-    if as_attachment is not None:
-      self.as_attachment = bool(as_attachment)
-
-    if self.set_expire:
-      if not self.expire_offset:
-        raise ValueError('expire_offset is not set')
-      if not self.expire_vary_arg:
-        raise ValueError('expire_vary_arg is not set')
 
   def prepare_args(self, args, kwargs):
-    if self.set_expire:
-      vary_arg = kwargs.get(self.expire_vary_arg,
-                            request.args.get(self.expire_vary_arg))
-      if vary_arg is None:
-        # argument for timestamp, serial etc is missing. We must refuse to serve
-        # an image with expiry date set up to maybe 1 year from now.
-        # Check the code that has generated this url!
-        raise BadRequest(
-          'Image version marker is missing ({}=?)'.format(
-            repr(self.expire_vary_arg))
-        )
-
-    args, kwargs = View.prepare_args(self, args, kwargs)
+    args, kwargs = super(BaseImageView, self).prepare_args(args, kwargs)
     size = request.args.get('s', 0)
     try:
       size = int(size)
@@ -100,10 +66,9 @@ class BaseImageView(View):
       resize_mode = CROP
 
     kwargs['mode'] = resize_mode
-    kwargs['attach'] = request.args.get('attach', self.as_attachment, type=bool)
     return args, kwargs
 
-  def get(self, image, size, mode, attach, *args, **kwargs):
+  def make_response(self, image, size, mode, *args, **kwargs):
     """
     :param image: image as bytes
     :param s: requested maximum width/height size
@@ -116,7 +81,15 @@ class BaseImageView(View):
       #  not a known image file
       raise NotFound()
 
-    content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
+    self.content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
+    ext = u'.' + unicode(fmt.lower())
+
+    filename = kwargs.get('filename')
+    if not filename:
+      filename = u'image'
+    if not filename.lower().endswith(ext):
+      filename += ext
+    self.filename = filename
 
     if size:
       image = resize(image, size, size, mode=mode)
@@ -125,29 +98,13 @@ class BaseImageView(View):
     else:
       image = image.read()
 
-    response = make_response(image)
-    response.headers['content-type'] = content_type
+    return make_response(image)
 
-    if attach:
-      ext = u'.' + unicode(fmt.lower())
-      filename = kwargs.get('filename')
-      if not filename:
-        filename = u'image'
-      if not filename.lower().endswith(ext):
-        filename += ext
-      response.headers.add('Content-Disposition', u'attachment',
-                           filename=filename)
+  def get_filename(self, *args, **kwargs):
+    return self.filename
 
-    self.set_cache_headers(response)
-    return response
-
-  def set_cache_headers(self, response):
-    """
-    """
-    if self.set_expire:
-      response.cache_control.private = True
-      response.cache_control.max_age = int(self.expire_offset.total_seconds())
-      response.expires = utc_dt(datetime.utcnow() + self.expire_offset)
+  def get_content_type(self, *args, **kwargs):
+    return self.content_type
 
 
 class StaticImageView(BaseImageView):
@@ -216,7 +173,7 @@ class UserMugshot(BaseImageView):
   expire_vary_arg = 'md5'
 
   def prepare_args(self, args, kwargs):
-    args, kwargs = BaseImageView.prepare_args(self, args, kwargs)
+    args, kwargs = super(UserMugshot, self).prepare_args(args, kwargs)
 
     user_id = kwargs['user_id']
     user = User.query \
@@ -230,10 +187,10 @@ class UserMugshot(BaseImageView):
     kwargs['image'] = user.photo
     return args, kwargs
 
-  def get(self, user, image, size, *args, **kwargs):
+  def make_response(self, user, image, size, *args, **kwargs):
     if image:
       #  user has set a photo
-      return super(UserMugshot, self).get(image, size, *args, **kwargs)
+      return super(UserMugshot, self).make_response(image, size, *args, **kwargs)
 
     # render svg avatar
     if user.last_name:
@@ -253,8 +210,8 @@ class UserMugshot(BaseImageView):
     svg = render_template('default/avatar.svg',
                           color=color, letter=letter, size=size)
     response = make_response(svg)
-    response.headers['content-type'] = u'image/svg+xml'
-    self.set_cache_headers(response)
+    self.content_type = u'image/svg+xml'
+    self.filename = u'avatar-{}.svg'.format(id_hash)
     return response
 
 
