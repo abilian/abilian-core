@@ -43,13 +43,35 @@ class FormPermissions(object):
   """
   Form role/permission manager
   """
-  def __init__(self, default=Anonymous, read=None, write=None,
+  def __init__(self, default=Anonymous,
+               read=None, write=None,
                fields_read=None, fields_write=None,
                existing=None):
     """
+    :param default: default roles when not specified for field. Can be:
+
+        * a :class:`Role` or an iterable of :class:`Role`
+
+        * a callable that returns a :class:`Role` or an iterable of
+          :class:`Role`
+
+        * a `dict` with :class:`Permission` instances for keys and one of other
+          acceptable role spec.; a default entry `"default"` is required.
+
+    :param read: global roles required for `READ` permission for whole form.
+
+    :param write: global roles required for `WRITE` permission for whole form.
     """
     if isinstance(default, Role):
-      default = (default,)
+      default = {'default': (default,)}
+    elif isinstance(default, dict):
+      if 'default' not in default:
+        raise ValueError('`default` parameter must have a "default" key')
+    elif callable(default):
+      default = {'default': default}
+    else:
+      raise ValueError("No valid value for `default`. Use a Role, an iterable "
+                       "of Roles, a callable, or a dict.")
 
     self.default = default
     self.form = dict()
@@ -90,7 +112,9 @@ class FormPermissions(object):
   def has_permission(self, permission, field=None, obj=None, user=current_user):
     """
     """
-    allowed_roles = self.default
+    allowed_roles = (self.default[permission]
+                     if permission in self.default
+                     else self.default['default'])
     definition = None
     eval_roles = lambda fun: fun(permission=permission,
                                  field=field,
