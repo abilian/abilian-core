@@ -166,6 +166,8 @@ class SecurityService(Service):
       # and we should not attach this object to the other session, because it
       # can make weird, hard-to-debug errors related to session.identity_map.
       return session.query(User).get(user.id)
+    else:
+      return user
 
 
   # security log
