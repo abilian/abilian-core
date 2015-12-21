@@ -244,7 +244,7 @@ class SecurityService(Service):
 
   @require_flush
   def get_principals(self, role, anonymous=True, users=True, groups=True,
-                     object=None):
+                     object=None, as_list=True):
     """
     Return all users which are assigned given role
     """
@@ -268,6 +268,9 @@ class SecurityService(Service):
       p = object.creator if role == Creator else object.owner
       if p:
         principals.add(p)
+
+    if not as_list:
+      return principals
 
     return list(principals)
 
