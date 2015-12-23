@@ -41,16 +41,20 @@ following = Table(
 )
 membership = Table(
   'membership', db.Model.metadata,
-  Column('user_id', Integer, ForeignKey('user.id')),
-  Column('group_id', Integer, ForeignKey('group.id')),
+  Column('user_id', Integer,
+         ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE')),
+  Column('group_id', Integer,
+         ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE')),
   UniqueConstraint('user_id', 'group_id'),
 )
 
 # Should not be needed (?)
 administratorship = Table(
   'administratorship', db.Model.metadata,
-  Column('user_id', Integer, ForeignKey('user.id')),
-  Column('group_id', Integer, ForeignKey('group.id')),
+  Column('user_id', Integer,
+         ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE')),
+  Column('group_id', Integer,
+         ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE')),
   UniqueConstraint('user_id', 'group_id'),
 )
 
