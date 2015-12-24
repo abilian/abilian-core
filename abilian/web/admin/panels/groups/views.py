@@ -166,16 +166,21 @@ class GroupEdit(GroupBase, views.ObjectEdit):
 
   def add_user(self, *args, **kwargs):
     user_id = int(request.form.get('user'))
-    user = User.query.get(user_id)
-    user.groups.add(self.obj)
-    sa.orm.object_session(user).commit()
+    user = User.query\
+               .options(sa.orm.joinedload(User.groups))\
+               .get(user_id)
+    self.obj.members.add(user)
+    sa.orm.object_session(self.obj).commit()
     return self.redirect_to_view()
 
   def remove_user(self, *args, **kwargs):
     user_id = int(request.form.get('user'))
     user = User.query.get(user_id)
-    user.groups.remove(self.obj)
-    sa.orm.object_session(user).commit()
+    user = User.query\
+               .options(sa.orm.joinedload(User.groups))\
+               .get(user_id)
+    self.obj.members.discard(user)
+    sa.orm.object_session(self.obj).commit()
     return self.redirect_to_view()
 
 
