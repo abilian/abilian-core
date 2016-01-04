@@ -979,6 +979,10 @@ class TimeInput(Input):
 
 
 class DateTimeInput(object):
+  """
+  if corresponding field.raw_data exist it is used
+  to initialize default date & time (raw_data example: ["10/10/16 | 09:00"])
+  """
 
   def __init__(self):
     self.date = DateInput()
@@ -999,10 +1003,28 @@ class DateTimeInput(object):
 
     value = kwargs.pop('value', None)
     if value is None:
-      value = field.data
+      if field.data:
+        value = field.data
+        date_value = value.strftime(date_fmt) if value else u''
+        time_value = value.strftime(time_fmt) if value else u''
+      elif field.raw_data:
+        value = field.raw_data  # example "10/10/16 | 09:00"
+        value = u''.join(value)
+        value = value.split(u'|')
 
-    date_value = value.strftime(date_fmt) if value else u''
-    time_value = value.strftime(time_fmt) if value else u''
+        try:
+          date_value = datetime.strptime(value[0].strip(), date_fmt)
+        except (ValueError, IndexError):
+          date_value = u''
+
+        try:
+          time_value = value[1].strip()  # example  "09:00"
+        except IndexError:
+          time_value = u''
+
+      else:
+        date_value = u''
+        time_value = u''
 
     return (
       Markup(

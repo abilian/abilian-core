@@ -266,6 +266,7 @@ class DateTimeField(Field):
     timezone; different users with different timezones will see corrected
     date/time. For storage dates are always stored using UTC.
     """
+    self.raw_data = kwargs.pop('raw_data', None)
     super(DateTimeField, self).__init__(label, validators, **kwargs)
     self.use_naive = use_naive
 
