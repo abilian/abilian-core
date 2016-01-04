@@ -18,6 +18,7 @@ from flask_wtf.form import Form as BaseForm
 from abilian.i18n import _, _n
 from abilian.services.security import READ, WRITE, CREATE, Role, Anonymous
 from abilian.core.logging import patch_logger
+from abilian.core.entities import Entity
 
 from .fields import *  # noqa
 from .filters import *  # noqa
@@ -112,6 +113,10 @@ class FormPermissions(object):
   def has_permission(self, permission, field=None, obj=None, user=current_user):
     """
     """
+    if obj is not None and not isinstance(obj, Entity):
+      # permission/role can be set only on entities
+      return True
+
     allowed_roles = (self.default[permission]
                      if permission in self.default
                      else self.default['default'])
