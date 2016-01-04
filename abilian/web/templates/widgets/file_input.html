@@ -9,7 +9,7 @@
   <div class="selected-files">
     {%- for data in existing %}
       <div class="file-item file-item-existing">
-        <span class="file-info">{{ loop.index0 }}. — {{ data.size | filesize }}</span>
+        <span class="file-info">{{ data.filename |default('') or loop.index0 }} — {{ data.size | filesize }}</span>
         {%- if field.allow_delete %}
           <button type="button" class="btn"
                   data-name="__{{ field.name }}_delete__"

@@ -42,6 +42,7 @@ from flask_babel import (
 from abilian import i18n
 from abilian.core.util import utc_dt
 from abilian.core.extensions import db
+from abilian.core.models.blob import Blob
 
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
@@ -129,6 +130,7 @@ class FileField(BaseFileField):
   """
   multiple = False
   widget = FileInput()
+  blob = None
   blob_attr = 'value'
 
   def __init__(self, *args, **kwargs):
@@ -182,6 +184,7 @@ class FileField(BaseFileField):
 
   def process_data(self, value):
     if isinstance(value, db.Model):
+      self.blob = value
       value = getattr(value, self.blob_attr)
 
     self.object_data = value

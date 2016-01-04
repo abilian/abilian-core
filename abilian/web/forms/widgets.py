@@ -35,6 +35,7 @@ from wtforms_alchemy import ModelFieldList
 
 from abilian.i18n import _, _l
 from abilian.core.entities import Entity
+from abilian.core.models.blob import Blob
 from abilian.services import image
 from abilian.services.image import get_format
 from abilian.web.filters import labelize, babel2datepicker
@@ -714,6 +715,7 @@ class FileInput(object):
 
   def build_exisiting_files_list(self, field):
     existing = []
+    blob = None
     object_data = field.object_data
 
     if not object_data:
@@ -721,6 +723,7 @@ class FileInput(object):
 
     if not field.multiple:
       object_data = [object_data]
+      blob = getattr(field, 'blob')
 
     for idx, data in enumerate(object_data):
       if data is not None:
@@ -730,6 +733,10 @@ class FileInput(object):
             'size': len(bytes(data)),
            'delete': idx in field.delete_files_index,
          })
+        if hasattr(data, 'filename'):
+          existing[-1]['filename'] = data.filename
+        elif blob and isinstance(blob, Blob):
+          existing[-1]['filename'] = blob.meta.get('filename', u'')
 
     return existing
 
