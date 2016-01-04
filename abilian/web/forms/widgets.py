@@ -7,25 +7,22 @@ NOTE: code is currently quite messy. Needs to be refactored.
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
-from flask.ext.wtf.file import FileField
 
-from future.utils import string_types, bytes_to_native_str, native_str_to_bytes
+from future.utils import string_types
 import logging
-
 import cgi
 import urlparse
 import re
 import base64
-from datetime import datetime
 from itertools import ifilter
 from collections import namedtuple
 
 import bleach
 import sqlalchemy as sa
-import werkzeug.datastructures
 from flask import (
   g, render_template, json, Markup, render_template_string, current_app,
 )
+from flask_wtf.file import FileField
 from flask_babel import format_date, format_datetime, get_locale
 from flask_login import current_user
 import wtforms
@@ -41,7 +38,6 @@ from abilian.core.entities import Entity
 from abilian.services import image
 from abilian.services.image import get_format
 from abilian.web.filters import labelize, babel2datepicker
-from abilian.web.action import Icon
 from abilian.web import csrf, url_for
 
 from .util import babel2datetime
