@@ -680,7 +680,9 @@ class SecurityService(Service):
     assert issubclass(Model, Entity)
     RA = sa.orm.aliased(RoleAssignment)
     PA = sa.orm.aliased(PermissionAssignment)
-    id_column = Model.id
+    # id column from entity table. Model.id would refer to 'model' table.
+    # this allows the DB to use indexes / foreign key constraints.
+    id_column = sa.inspect(Model).primary_key[0]
     creator = Model.creator
     owner = Model.owner
 
