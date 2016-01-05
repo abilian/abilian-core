@@ -692,7 +692,7 @@ class SecurityService(Service):
     if user is None:
       user = current_user._get_current_object()
 
-    # build clause: role EXISTS
+    # build role CTE
     principal_filter = (RA.anonymous == True)
 
     if not user.is_anonymous():
@@ -701,23 +701,15 @@ class SecurityService(Service):
     if user.groups:
       principal_filter |= RA.group_id.in_([g.id for g in user.groups])
 
-    # role_exists: find for each permission row if user has one of required
-    # role, local or global
-    role_exists = \
-        sa.sql.exists([1])\
-              .where(
-                sa.sql.and_(
-                  (RA.role == PA.role),
-                  (RA.object_id == PA.object_id) | (RA.object_id == None),
-                  principal_filter))
-
+    RA = sa.sql.select([RA], principal_filter).cte()
     permission_exists = \
         sa.sql.exists([1])\
               .where(
                 sa.sql.and_(
                   PA.permission == permission,
                   PA.object_id == id_column,
-                  role_exists,
+                  (RA.c.role == PA.role),
+                  (RA.c.object_id == PA.object_id) | (RA.c.object_id == None)
                 ))
 
     # is_admin: self-explanatory. It search for local or global admin
@@ -728,8 +720,8 @@ class SecurityService(Service):
         sa.sql.exists([1])\
               .where(
                 sa.sql.and_(
-                  RA.role == Admin,
-                  (RA.object_id == id_column) | (RA.object_id == None),
+                  RA.c.role == Admin,
+                  (RA.c.object_id == id_column) | (RA.c.object_id == None),
                   principal_filter,
                 ))
 
