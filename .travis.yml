@@ -5,8 +5,11 @@ python:
 sudo: false
 
 env:
-  - SQLALCHEMY_DATABASE_URI="sqlite://"
-  - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost:5432/abilian_core"
+  global:
+    - LD_LIBRARY_PATH=~/sqlite-3.9.1/lib
+  matrix:
+    - SQLALCHEMY_DATABASE_URI="sqlite://"
+    - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost:5432/abilian_core"
 
 services:
   - redis-server
