@@ -148,14 +148,17 @@ class RoleAssignment(db.Model):
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
   role = Column(RoleType, index=True, nullable=False)
-  anonymous = Column('anonymous', Boolean, nullable=True,
+  anonymous = Column('anonymous', Boolean, index=True, nullable=True,
                      default=False, server_default=sql.false())
-  user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
+  user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'),
+                   index=True)
   user = relationship(User, lazy='joined')
-  group_id = Column(Integer, ForeignKey('group.id', ondelete='CASCADE'))
+  group_id = Column(Integer, ForeignKey('group.id', ondelete='CASCADE'),
+                    index=True)
   group = relationship(Group, lazy='joined')
 
-  object_id = Column(Integer, ForeignKey(Entity.id, ondelete='CASCADE'))
+  object_id = Column(Integer, ForeignKey(Entity.id, ondelete='CASCADE'),
+                     index=True)
   object = relationship(Entity, lazy='select')
 
 
@@ -238,7 +241,7 @@ class PermissionAssignment(db.Model):
   permission = Column(PermissionType, index=True, nullable=False)
   role = Column(RoleType, index=True, nullable=False)
   object_id = Column(Integer, ForeignKey(Entity.id, ondelete='CASCADE'),
-                     nullable=True)
+                     index=True, nullable=True)
   object = relationship(
     Entity, lazy='select',
     backref=backref(PERMISSIONS_ATTR, lazy='select',
