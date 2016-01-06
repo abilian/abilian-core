@@ -307,10 +307,17 @@ class ListJson(ModuleView, JSONView):
     start = int(kwargs.get("iDisplayStart", 0))
     end = start + length
 
-    total_count = self.module.read_query\
-                             .count()
-    q = self.module.query(request)
-    count = q.count()
+    Model = self.module.managed_class
+    mapper = sa.inspect(Model)
+    count_pk = sa.sql.func.count(mapper.primary_key[0].distinct())
+    total_count = self.module.listing_query\
+                             .filter(Model._entity_type == Model.entity_type)\
+                             .with_entities(count_pk)\
+                             .scalar()
+    q = self.module.list_query(request)
+    count = q.filter(Model._entity_type == Model.entity_type)\
+             .with_entities(count_pk)\
+             .scalar()
     q = self.module.ordered_query(request, q)
 
     entities = q.slice(start, end).all()
@@ -602,6 +609,17 @@ class Module(object):
     """
     return self.base_query.with_permission(READ)
 
+  @property
+  def listing_query(self):
+    """
+    Like `read_query`, but can be made lightweight with only columns and joins
+    of interest.
+
+    `read_query` can be used with exports for example, with lot more columns
+    (generallly it means more joins).
+    """
+    return self.base_query.with_permission(READ)
+
   def query(self, request):
     """
     Return filtered query based on request args
@@ -609,6 +627,23 @@ class Module(object):
     args = request.args
     search = args.get("sSearch", "").replace("%", "").lower()
     q = self.read_query.distinct()
+
+    for crit in self.search_criterions:
+      q = crit.filter(q, self, request, search)
+
+    return q
+
+  def list_query(self, request):
+    """
+    Return a filtered query based on request args, for listings.
+
+    Like `query`, but subclasses can modify it to remove costly joined loads for
+    example.
+    """
+    args = request.args
+    search = args.get("sSearch", "").replace("%", "").lower()
+    q = self.listing_query
+    q = q.distinct()
 
     for crit in self.search_criterions:
       q = crit.filter(q, self, request, search)
