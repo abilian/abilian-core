@@ -1,0 +1,55 @@
+<h4>Permissions</h4>
+
+{%- if permissions %}
+  <table>
+    <thead>
+      <tr>
+        <th>Permission</th>
+        <th>Roles</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%- for p in permissions|sort  %}
+        <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+          <td>{{ p }}</td>
+          <td>{{ permissions[p] | sort | join(', ') }}</td>
+        </tr>
+      {%- endfor %}
+    </tbody>
+  </table>
+{%- else %}
+  {{ _('No permissions defined') }}
+{%- endif %}
+
+
+<h4>Roles</h4>
+
+{%- if roles %}
+  <table>
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Principals</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%- for r in roles | sort %}
+        {%- set info = roles[r] %}
+        <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+          <td>{{ r }}</td>
+          <td>
+            {%- if info.anonymous %}<b>Anonymous</b><br />{%- endif %}
+            {%- if info.groups %}
+              Groups: {{ info.groups | join(', ') }} <br />
+            {%- endif %}
+            {%- if info.users %}
+              Users: {{ info.users | join(', ') }}<br />
+            {%- endif %}
+          </td>
+        </tr>
+      {%- endfor %}
+    </tbody>
+  </table>
+{%- else %}
+  {{ _('No roles set') }}
+{%- endif %}

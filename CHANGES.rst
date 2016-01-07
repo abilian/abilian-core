@@ -4,6 +4,7 @@ Changelog for Abilian Core
 0.5.1 (unreleased)
 ------------------
 
+- add security debug panel: shows permissions and roles assignments
 - faster query_with_permission()
 - Fix: user administration could remove non-assignable roles
 - Subforms (Form used in FormFields / ListFormFields / etc) can filter their
