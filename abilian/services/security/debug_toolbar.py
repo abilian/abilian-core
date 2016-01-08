@@ -7,7 +7,8 @@ from flask import current_app
 from flask_debugtoolbar.panels import DebugPanel
 
 from abilian.i18n import _
-from abilian.core.models.subjects import User, Group
+from abilian.core.entities import Entity
+from abilian.core.models.subjects import Group
 from abilian.web.action import actions
 
 from .models import Anonymous
@@ -26,8 +27,7 @@ class SecurityInfoDebugPanel(DebugPanel):
   def has_content(self):
     obj = self.current_obj
     return (obj is not None
-            and hasattr(obj, 'object_type')
-            and hasattr(obj, 'id')
+            and isinstance(obj, Entity)
             and obj.id is not None)
 
   def nav_title(self):
