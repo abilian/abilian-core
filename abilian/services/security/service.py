@@ -708,7 +708,7 @@ class SecurityService(Service):
                 sa.sql.and_(
                   PA.permission == permission,
                   PA.object_id == id_column,
-                  (RA.c.role == PA.role),
+                  (RA.c.role == PA.role) | (PA.role == AnonymousRole),
                   (RA.c.object_id == PA.object_id) | (RA.c.object_id == None)
                 ))
 

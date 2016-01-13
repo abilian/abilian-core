@@ -427,6 +427,19 @@ class SecurityTestCase(IntegrationTestCase):
     assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
     assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
 
+    # Permission granted to anonymous: objects returned
+    pa = PermissionAssignment(
+      role=Anonymous,
+      permission=WRITE,
+      object=obj_reader)
+    self.session.add(pa)
+
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert set(base_query.filter(get_filter(WRITE, user=user)).all()) \
+      == set([obj_reader, obj_writer])
+    self.session.delete(pa)
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
+
     # grant global roles
     security.ungrant_role(user, Reader, object=obj_reader)
     security.ungrant_role(user, Writer, object=obj_writer)
