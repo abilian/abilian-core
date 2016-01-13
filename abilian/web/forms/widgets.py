@@ -1473,6 +1473,10 @@ class Select2Ajax(object):
       kwargs['multiple'] = True
 
     css_class = kwargs.setdefault('class_', u'')
+    if 'class' in kwargs:
+      css_class += kwargs.pop('class', u'')
+      kwargs['class_'] = css_class
+
     if 'js-widget' not in css_class:
       css_class += u' js-widget'
       kwargs['class_'] = css_class
