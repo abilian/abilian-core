@@ -163,9 +163,10 @@ class FormContext(object):
   permission = None
   user = None
 
-  def __init__(self, permission=None, user=None):
+  def __init__(self, permission=None, user=None, obj=None):
     self.permission = permission
     self.user = user
+    self.obj = obj
 
   def __enter__(self):
     if not has_app_context():
@@ -178,6 +179,11 @@ class FormContext(object):
 
       if self.user is None:
         self.user = self.__existing.user
+
+      if self.obj is None:
+        self.obj = self.__existing.obj
+      elif not isinstance(self.obj, Entity):
+        self.obj = self.__existing.obj
 
     if self.user is None:
       self.user = current_user
@@ -201,8 +207,8 @@ class Form(BaseForm):
   def __init__(self, *args, **kwargs):
     permission = kwargs.pop('permission', None)
     user= kwargs.pop('user', None)
-    form_ctx = FormContext(permission=permission, user=user)
     obj = kwargs.get('obj')
+    form_ctx = FormContext(permission=permission, user=user, obj=obj)
 
     if kwargs.get('csrf_enabled') is None and not has_app_context():
       # form instanciated without app context and without explicit csrf
@@ -234,7 +240,8 @@ class Form(BaseForm):
 
         has_permission = partial(self._permissions.has_permission,
                                  ctx.permission,
-                                 obj=obj, user=ctx.user)
+                                 obj=ctx.obj,
+                                 user=ctx.user,)
         empty_form = not has_permission()
 
         for field_name in list(self._fields):
