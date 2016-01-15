@@ -106,6 +106,26 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
   Filter empty entries before saving and refills before displaying
   """
 
+  def __init__(self, *args, **kwargs):
+    super(ModelFieldList, self).__init__(*args, **kwargs)
+
+    # build visible field list for widget. We must do it during form
+    # instanciation so as to have permission filtering
+    field_names = []
+    labels = []
+    fieldsubform = self.unbound_field.bind(form=None, name='dummy',
+                                           _meta=self.meta)
+    subform = fieldsubform.form_class()
+    for f in subform:
+      if f.is_hidden:
+        continue
+      name = f.short_name
+      field_names.append(name)
+      labels.append(f.label.text if f.label else f.name)
+
+    self._field_names = field_names
+    self._field_labels = labels
+
   def __call__(self, **kwargs):
     """
     Refill with default min_entry, which were possibly
