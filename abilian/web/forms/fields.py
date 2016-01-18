@@ -115,7 +115,7 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
     labels = []
     fieldsubform = self.unbound_field.bind(form=None, name='dummy',
                                            _meta=self.meta)
-    subform = fieldsubform.form_class()
+    subform = fieldsubform.form_class(csrf_enabled=False)
     for f in subform:
       if f.is_hidden:
         continue
