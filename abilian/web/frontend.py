@@ -307,17 +307,9 @@ class ListJson(ModuleView, JSONView):
     start = int(kwargs.get("iDisplayStart", 0))
     end = start + length
 
-    Model = self.module.managed_class
-    mapper = sa.inspect(Model)
-    count_pk = sa.sql.func.count(mapper.primary_key[0].distinct())
-    total_count = self.module.listing_query\
-                             .filter(Model._entity_type == Model.entity_type)\
-                             .with_entities(count_pk)\
-                             .scalar()
+    total_count = self.module.listing_query.count()
     q = self.module.list_query(request)
-    count = q.filter(Model._entity_type == Model.entity_type)\
-             .with_entities(count_pk)\
-             .scalar()
+    count = q.count()
     q = self.module.ordered_query(request, q)
 
     entities = q.slice(start, end).all()
