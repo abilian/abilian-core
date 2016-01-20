@@ -15,6 +15,7 @@
         self.current_index = table.find("> tbody > tr").length;
 
         self.add_button = $("<th><span class=\"glyphicon glyphicon-plus\"></span></th>");
+        self.add_button.css({'width': '1em'});
         self.add_button.click(function(e) {
                                   self.addRow();
                                   e.preventDefault();
