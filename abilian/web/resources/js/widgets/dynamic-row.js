@@ -9,28 +9,28 @@
         var self = this;
         self.table = table;
         self.prefix = table.data('prefix');
-        self.tbody = table.children("tbody");
+        self.tbody = table.children('tbody');
         self.options = options;
 
-        self.current_index = table.find("> tbody > tr").length;
+        self.current_index = table.find('> tbody > tr').length;
 
-        self.add_button = $("<th><span class=\"glyphicon glyphicon-plus\"></span></th>");
-        self.add_button.css({'width': '1em'});
-        self.add_button.click(function(e) {
+        self.addButton = $('<th><span class="glyphicon glyphicon-plus"></span></th>');
+        self.addButton.css({'width': '1em'});
+        self.addButton.click(function(e) {
                                   self.addRow();
                                   e.preventDefault();
                               });
 
-        self.minus_button = $("<td><span class=\"glyphicon glyphicon-remove\"></span></td>");
-        self.minus_button.click(function(e) {
+        self.minusButton = $('<td><span class="glyphicon glyphicon-remove"></span></td>');
+        self.minusButton.click(function(e) {
                                     $(this).closest('tr').remove();
                                     e.preventDefault();
                                 });
 
-        table.find("> thead > tr").append(self.add_button);
-        table.find("> tbody > tr").append(self.minus_button);
+        table.find('> thead > tr').append(self.addButton);
+        table.find('> tbody > tr').append(self.minusButton);
 
-        self.templateRow = table.find("tbody > tr:first").clone(true, true);
+        self.templateRow = table.find('tbody > tr:first').clone(true, true);
         /* remove value except for specific controls that have constant (and
          * required) value
          */
@@ -39,28 +39,28 @@
                                '[type!="radio"]' +
                                '[data-short-name!="csrf_token"]')
             .attr('value', '');
-        self.templateRow.find("textarea").text('');
+        self.templateRow.find('textarea').text('');
     }
 
     DynamicRowWidget.prototype = {
         'addRow': function() {
             var self = this;
             var new_row = self.templateRow.clone(true, true);
-            new_row.find("input").each(
+            new_row.find('input').each(
                 function() {
                     var item  = $(this);
-                    var shortName = item.data("shortName");
+                    var shortName = item.data('shortName');
                     var name = self.prefix + '-' + self.current_index;
                     if (shortName) {
                         name =  name + '-' + shortName;
                     }
                     item.attr('name', name);
-                    item.attr("id", name);
+                    item.attr('id', name);
                 });
-            new_row.find("select").each(
+            new_row.find('select').each(
                 function() {
                     var item  = $(this);
-                    var id_splitted = item.attr("id").split('-');
+                    var id_splitted = item.attr('id').split('-');
 
                     for (var i = 0; i < id_splitted.length; i++) {
                         if (!isNaN(id_splitted[i])){
@@ -69,7 +69,7 @@
                     }
                     var name = id_splitted.join('-')
                     item.attr('name', name);
-                    item.attr("id", name);
+                    item.attr('id', name);
                 }
             );
             self.tbody.append(new_row);
