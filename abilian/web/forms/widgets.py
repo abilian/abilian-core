@@ -24,7 +24,9 @@ from flask import (
   g, render_template, json, Markup, render_template_string, current_app,
 )
 from flask_wtf.file import FileField
-from flask_babel import format_date, format_datetime, get_locale
+from flask_babel import (
+  format_date, format_datetime, format_number, get_locale,
+)
 from flask_login import current_user
 import wtforms
 from wtforms.widgets import (
@@ -1165,8 +1167,10 @@ class HoursWidget(TextInput):
 
 
 class MoneyWidget(TextInput):
-  """ Widget used to show / enter money amount.
-  Currently hardcoded to € / k€
+  """
+  Widget used to show / enter money amount.
+
+  Currently hardcoded to € / k€.
   """
   post_icon = u'€'
   input_type = 'number'
@@ -1182,8 +1186,11 @@ class MoneyWidget(TextInput):
       unit = u'k€'
       val = int(round(val / 1000.0))
 
+    # `format_currency()` is not used since it display numbers with cents
+    #units, which we don't want
+    #
     # \u00A0: non-breakable whitespace
-    return u'{value}\u00A0{unit}'.format(value=val, unit=unit)
+    return u'{value}\u00A0{unit}'.format(value=format_number(val), unit=unit)
 
 
 class EmailWidget(TextInput):
