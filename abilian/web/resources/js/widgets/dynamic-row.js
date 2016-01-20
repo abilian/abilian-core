@@ -13,7 +13,7 @@
         self.options = options;
 
         self.current_index = table.find('> tbody > tr').length;
-
+        self.table.addClass('dynamic-row-widget');
         self.addButton = $('<th><span class="glyphicon glyphicon-plus"></span></th>');
         self.addButton.css({'width': '1em'});
         self.addButton.click(function(e) {
