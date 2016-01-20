@@ -1,56 +1,65 @@
 {# edit macros #}
 {%- macro m_field(field, horizontal=False, label_width=2, field_width=8) %}
-  {%- set with_label = kwargs.pop('with_label', not field.flags.hidden) %}
+  {%- set is_hidden = field.is_hidden or field.type in ('CSRFTokenField', 'HiddenField') %}
+  {%- set with_label = kwargs.pop('with_label', not is_hidden) %}
   {%- set placeholder = '' %}
+
   {%- if not with_label %}
     {%- set placeholder = field.label.text %}
   {%- endif %}
+
   {%- set css_class = kwargs.pop('class_', '') %}
   {%- set standard_field = field.type not in ('CSRFTokenField',) %}
   {%-  if standard_field and field.type not in ('BooleanField',) %}
     {%- set css_class =  'form-control ' + css_class %}
   {%- endif %}
+
   {%- if field.flags.required %}
     {%- set css_class = css_class + ' required' %}
   {%- endif %}
-  <div class="form-group{% if field.errors and not field.form %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
-    {%- if with_label and not (field.is_hidden or field.type in ('CSRFTokenField', 'HiddenField')) %}
-      <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}</label>
-    {%- endif %}
 
-    {%- if horizontal and standard_field %}
-      <div class="col-sm-{{ field_width }}">
-    {%- endif %}
+  {%- if is_hidden %}
+    {{ field() }}
+  {%- else %}
+    <div class="form-group{% if field.errors and not field.form %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
+      {%- if with_label and not is_hidden %}
+        <label class="control-label {%- if horizontal %} col-sm-{{ label_width }} {%- endif %}" for="{{ field.id }}">{{ field.label.text }}</label>
+      {%- endif %}
 
-    {%- if field.type == 'CSRFTokenField' %}
-      {{ field() }}
+      {%- if horizontal and standard_field %}
+        <div class="col-sm-{{ field_width }}">
+      {%- endif %}
 
-    {%- elif field.type == 'BooleanField' %}
-      <label class="checkbox-inline">
-        {# the 'nbsp' after the field is here because without any text bootstrap
+      {%- if field.type == 'CSRFTokenField' %}
+        {{ field() }}
+
+      {%- elif field.type == 'BooleanField' %}
+        <label class="checkbox-inline">
+          {# the 'nbsp' after the field is here because without any text bootstrap
            misalign the checkbox :-( #}
           {{ field(class_=css_class, **kwargs) }} {#- comment to prevent trailing whitespace cleanup by editors.. #}
-      </label>
+        </label>
 
-    {%- else %}
-      {%- if field.type == 'FileField' %}
-        {%- set css_class = css_class + ' input-file' %}
-      {%- endif %}
+      {%- else %}
+        {%- if field.type == 'FileField' %}
+          {%- set css_class = css_class + ' input-file' %}
+        {%- endif %}
         {{ field(class_=css_class, placeholder=placeholder, **kwargs)|safe }}
-    {%- endif %}
+      {%- endif %}
 
-    {%- if field.errors and not field.form %}
-      <span class="help-inline text-danger">{{ field.errors|join('<br />'|safe) }}</span>
-    {%- endif %}
+      {%- if field.errors and not field.form %}
+        <span class="help-inline text-danger">{{ field.errors|join('<br />'|safe) }}</span>
+      {%- endif %}
 
-    {%- if field.description %}
-      <span class="help-block">{{ field.description|safe }}</span>
-    {%- endif %}
+      {%- if field.description %}
+        <span class="help-block">{{ field.description|safe }}</span>
+      {%- endif %}
 
-    {%- if standard_field and horizontal %}
-      </div> {# when horizontal: close input div; else closes div.col-xs-12 before label #}
-    {%- endif %}
-  </div> {# form-group #}
+      {%- if standard_field and horizontal %}
+        </div> {# when horizontal: close input div; else closes div.col-xs-12 before label #}
+      {%- endif %}
+    </div> {# form-group #}
+  {%- endif %}
 {%- endmacro %}
 
 {%- macro m_form(form, fields=(), action="", method="POST", enctype="multipart/form-data",
