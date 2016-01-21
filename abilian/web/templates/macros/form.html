@@ -19,7 +19,7 @@
   {%- endif %}
 
   {%- if is_hidden %}
-    {{ field() }}
+    {{ field(**kwargs) }}
   {%- else %}
     <div class="form-group{% if field.errors and not field.form %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
       {%- if with_label and not is_hidden %}
@@ -31,7 +31,7 @@
       {%- endif %}
 
       {%- if field.type == 'CSRFTokenField' %}
-        {{ field() }}
+        {{ field(**kwargs) }}
 
       {%- elif field.type == 'BooleanField' %}
         <label class="checkbox-inline">
