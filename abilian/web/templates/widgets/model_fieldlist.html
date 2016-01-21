@@ -10,7 +10,8 @@
     <tr>
       <td>
         {%- for subfield in fieldform %}
-          {{ m_field(subfield) }}
+          {%- set attrs={'data-short-name': subfield.short_name} %}
+          {{ m_field(subfield, **attrs) }}
         {%- endfor %}
       </td>
     </tr>
