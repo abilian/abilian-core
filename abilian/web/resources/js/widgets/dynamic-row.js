@@ -12,7 +12,7 @@
         self.tbody = table.children('tbody');
         self.options = options;
 
-        self.current_index = table.find('> tbody > tr').length;
+        self.currentIndex = table.find('> tbody > tr').length;
         self.table.addClass('dynamic-row-widget');
         self.addButton = $('<th><span class="glyphicon glyphicon-plus"></span></th>');
         self.addButton.css({'width': '1em'});
@@ -45,36 +45,36 @@
     DynamicRowWidget.prototype = {
         'addRow': function() {
             var self = this;
-            var new_row = self.templateRow.clone(true, true);
-            new_row.find('input').each(
+            var newRow = self.templateRow.clone(true, true);
+            newRow.find('input').each(
                 function() {
                     var item  = $(this);
                     var shortName = item.data('shortName');
-                    var name = self.prefix + '-' + self.current_index;
+                    var name = self.prefix + '-' + self.currentIndex;
                     if (shortName) {
                         name =  name + '-' + shortName;
                     }
                     item.attr('name', name);
                     item.attr('id', name);
                 });
-            new_row.find('select').each(
+            newRow.find('select').each(
                 function() {
                     var item  = $(this);
-                    var id_splitted = item.attr('id').split('-');
+                    var idSplitted = item.attr('id').split('-');
 
-                    for (var i = 0; i < id_splitted.length; i++) {
-                        if (!isNaN(id_splitted[i])){
-                            id_splitted[i] = self.current_index
+                    for (var i = 0; i < idSplitted.length; i++) {
+                        if (!isNaN(idSplitted[i])){
+                            idSplitted[i] = self.currentIndex;
                         }
                     }
-                    var name = id_splitted.join('-')
+                    var name = idSplitted.join('-');
                     item.attr('name', name);
                     item.attr('id', name);
                 }
             );
-            self.tbody.append(new_row);
-            new_row.find('.js-widget').each(Abilian.initJsWidget);
-            self.current_index += 1;
+            self.tbody.append(newRow);
+            newRow.find('.js-widget').each(Abilian.initJsWidget);
+            self.currentIndex += 1;
         }
     };
 
