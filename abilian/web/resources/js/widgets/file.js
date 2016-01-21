@@ -41,14 +41,20 @@
         this.inputName = this.$input.attr('name');
         this.$input.attr('name', null);
         this.listNode = node.find('.selected-files');
-        this.listNode.find('.file-item-existing')
-            .each(function () {
-                self.setupExistingFileNode($(this));
-            });
-        this.listNode.find('.file-item-uploaded')
-            .each(function () {
-                self.setupFileNode($(this));
-            });
+
+        if (node.data('cloned')) {
+            this.listNode.empty();
+        } else {
+            this.listNode.find('.file-item-existing')
+                .each(function () {
+                    self.setupExistingFileNode($(this));
+                });
+            this.listNode.find('.file-item-uploaded')
+                .each(function () {
+                    self.setupFileNode($(this));
+                });
+        }
+
         this.button.on('change', 'input',
                        this.addFiles.bind(this));
 
