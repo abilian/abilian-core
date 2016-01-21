@@ -42,7 +42,6 @@ from flask_babel import (
 from abilian import i18n
 from abilian.core.util import utc_dt
 from abilian.core.extensions import db
-from abilian.core.models.blob import Blob
 
 from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
