@@ -73,7 +73,11 @@
                 }
             );
             self.tbody.append(newRow);
-            newRow.find('.js-widget').each(Abilian.initJsWidget);
+
+            newRow.find('.js-widget')
+                .data('cloned', true)
+                .each(Abilian.initJsWidget);
+
             self.currentIndex += 1;
         }
     };
