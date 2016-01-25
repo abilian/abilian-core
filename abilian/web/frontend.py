@@ -480,6 +480,7 @@ class Module(object):
                      'entity_delete',
                      self.delete_cls,
                      Form=self.edit_form_class,
+                     view_endpoint=view_endpoint,
                      **kw)
 
     self._setup_view("/json", 'list_json', ListJson, module=self)

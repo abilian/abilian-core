@@ -489,11 +489,23 @@ class ObjectDelete(ObjectEdit):
     session.delete(self.obj)
     activity.send(self, actor=g.user, verb="delete", object=self.obj,
                   target=self.activity_target)
-    session.commit()
-    flash(self.message_success(), 'success')
-    # FIXME: for DELETE verb response in case of success should be 200, 202
-    # (accepted) or 204 (no content)
-    return self.redirect_to_index()
+    try:
+      session.commit()
+    except sa.exc.IntegrityError as e:
+      rv = self.handle_commit_exception(e)
+      if rv is not None:
+        return rv
+      session.rollback()
+      logger.error(e)
+      flash(_(u"An entity with this name already exists in the database "
+              u"or is referenced by another object and cannot be deleted."),
+            "error")
+      return self.redirect_to_view()
+    else:
+      flash(self.message_success(), 'success')
+      # FIXME: for DELETE verb response in case of success should be 200, 202
+      # (accepted) or 204 (no content)
+      return self.redirect_to_index()
 
 
 class JSONBaseSearch(JSONView):
