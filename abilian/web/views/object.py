@@ -337,10 +337,12 @@ class ObjectEdit(ObjectView):
     Called when form is validated.
     """
     session = current_app.db.session()
-    self.before_populate_obj()
-    self.form.populate_obj(self.obj)
-    session.add(self.obj)
-    self.after_populate_obj()
+
+    with session.no_autoflush:
+      self.before_populate_obj()
+      self.form.populate_obj(self.obj)
+      session.add(self.obj)
+      self.after_populate_obj()
 
     try:
       session.flush()
