@@ -439,6 +439,21 @@ class ObjectCreate(ObjectEdit):
 
     ObjectEdit.__init__(self, *args, **kwargs)
 
+  def prepare_args(self, args, kwargs):
+    # we must ensure that no flush() occurs and that obj is not registered in
+    # session (to prevent accidental insert of an incomplete object)
+    session = current_app.db.session()
+    with session.no_autoflush:
+      args, kwargs = super(ObjectCreate, self).prepare_args(args, kwargs)
+
+    try:
+      session.expunge(self.obj)
+    except sa.exc.InvalidRequestError:
+      # obj is not in session
+      pass
+
+    return args, kwargs
+
   def init_object(self, args, kwargs):
     self.obj = self.Model()
     return args, kwargs
