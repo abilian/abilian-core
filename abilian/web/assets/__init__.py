@@ -32,6 +32,13 @@ def requirejs_config():
   config['shim']['ckeditor'] = {'exports': 'CKEDITOR'}
   config['paths']['ckeditor'] = url_for('abilian_static', filename=ckeditor_lib)
 
+  d3_lib = 'nvd3/d3.min'
+  config['shim']['d3'] = {'exports': 'd3'}
+  config['paths']['d3'] = url_for('abilian_static', filename=d3_lib)
+
+  nvd3_lib = 'nvd3/nv.d3'
+  config['shim']['nvd3'] = {'exports': 'nv', 'deps': ['d3']}
+  config['paths']['nvd3'] = url_for('abilian_static', filename=nvd3_lib)
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 

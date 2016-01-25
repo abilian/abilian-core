@@ -5,12 +5,15 @@ from __future__ import absolute_import, print_function, division
 
 from datetime import datetime, timedelta
 import sqlalchemy as sa
+from numpy import sum as numpysum
+import pandas as pd
 
 from flask import render_template, current_app
 
 from abilian.i18n import _l
 from abilian.core.models.subjects import User
 from abilian.services.audit import AuditEntry, CREATION
+from abilian.services.auth.models import LoginSession
 
 from ..panel import AdminPanel
 
@@ -22,12 +25,30 @@ class DashboardPanel(AdminPanel):
   icon = 'eye-open'
 
   def get(self):
+    login_entries = LoginSession.query.order_by(LoginSession.started_at.asc()).all()
+    # .options(sa.orm.joinedload(LoginSession.user))
+    daily, weekly, monthly = uniquelogins(login_entries)
+    new_logins, total_users = newlogins(login_entries)
+
     stats = {
       'today': stats_since(timedelta(days=1)),
       'this_week': stats_since(timedelta(days=7)),
       'this_month': stats_since(timedelta(days=30)),
     }
-    return render_template("admin/dashboard.html", stats=stats)
+
+    # let's format the data into NVD3 datastructures
+    daily = [{'key': 'Connections journalières', 'color': '#7777ff', 'values': daily}]
+    weekly = [{'key': 'Connections hebdomadaires', 'color': '#2ca02c', 'values': weekly}]
+    monthly = [{'key': 'Connections mensuelles', 'color': '#ff7f0e', 'values': monthly}]
+    new_logins = [{'key': 'Nouveaux Utilisateurs', 'color': '#ff7f0e', "bar": True, 'values': new_logins},
+                   {'key': 'Total Utilisateurs', 'color': '#2ca02c', 'values': total_users}]
+
+    return render_template("admin/dashboard.html",
+                           stats=stats,
+                           daily=daily,
+                           weekly=weekly,
+                           monthly=monthly,
+                           new_logins=new_logins)
 
 
 def stats_since(dt):
@@ -60,3 +81,102 @@ def stats_since(dt):
     'new_documents': new_documents,
     'new_messages': new_messages,
   }
+
+
+epoch = datetime.utcfromtimestamp(0)
+
+
+def unix_time_millis(dt):
+    return (dt - epoch).total_seconds() * 1000.0
+
+
+def newlogins(sessions):
+  """
+  brand New logins each day, and total of users each day
+  :return: data, total
+  2 lists of dictionaries of the following format [{'x':epoch, 'y': value},]
+  """
+  if not sessions:
+    return [], []
+  users = {}
+  dates = {}
+
+  for session in sessions:
+    user = session.user
+    # time value is discarded to aggregate on days only
+    date = session.started_at.strftime("%Y/%m/%d")
+    # keep the info only it's the first time we encounter a user
+    if user not in users:
+      users[user] = date
+      # build the list of users on a given day
+      if date not in dates:
+        dates[date] = [user]
+      else:
+        dates[date].append(user)
+
+  data = []
+  total = []
+  previous = 0
+  for date in sorted(dates.keys()):
+    # print u"{} : {}".format(date, len(dates[date]))
+    date_epoch = unix_time_millis(datetime.strptime(date, "%Y/%m/%d"))
+    data.append({u'x': date_epoch, u'y': len(dates[date])})
+    previous += len(dates[date])
+    total.append({u'x': date_epoch, u'y': previous})
+
+  return data, total
+
+
+def uniquelogins(sessions):
+  """
+  unique logins per days/weeks/months
+
+  :return: daily, weekly, monthly
+  3 lists of dictionaries of the following format [{'x':epoch, 'y': value},]
+  """
+  # sessions = LoginSession.query.order_by(LoginSession.started_at.asc()).all()
+  if not sessions:
+    return [], [], []
+  dates = {}
+  for session in sessions:
+    user = session.user
+    # time value is discarded to aggregate on days only
+    date = session.started_at.strftime("%Y/%m/%d")
+
+    if date not in dates:
+      dates[date] = set()  # we want unique users on a given day
+      dates[date].add(user)
+    else:
+      dates[date].add(user)
+
+  daily = []
+  weekly = []
+  monthly = []
+
+  for date in sorted(dates.keys()):
+    # print u"{} : {}".format(date, len(dates[date]))
+    date_epoch = unix_time_millis(datetime.strptime(date, "%Y/%m/%d"))
+    daily.append({u'x': date_epoch, u'y': len(dates[date])})
+
+  # first_day = data[0]['x']
+  # last_day = data[-1]['x']
+
+  daily_serie = pd.Series(dates)
+  # convert the index to Datetime type
+  daily_serie.index = pd.DatetimeIndex(daily_serie.index)
+  # calculate the values instead of users lists
+  daily_serie = daily_serie.apply(lambda x: len(x))
+
+  # GroupBy Week/month, Thanks Panda
+  weekly_serie = daily_serie.groupby(pd.TimeGrouper(freq='W')).aggregate(numpysum)
+  monthly_serie = daily_serie.groupby(pd.TimeGrouper(freq='M')).aggregate(numpysum)
+
+  for date, value in weekly_serie.iteritems():
+    date_epoch = unix_time_millis(date)
+    weekly.append({u'x': date_epoch, u'y': value})
+
+  for date, value in monthly_serie.iteritems():
+    date_epoch = unix_time_millis(date)
+    monthly.append({u'x': date_epoch, u'y': value})
+
+  return daily, weekly, monthly
