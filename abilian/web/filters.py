@@ -184,6 +184,13 @@ def date(value, format="EE, d MMMM y"):
     return babel.format_date(local_dt(value), format)
 
 
+def format_datetime(value, format="EE, d MMMM y"):
+  if isinstance(value, datetime.datetime):
+    return babel.format_datetime(value, format)
+  else:
+    return babel.format_datetime(local_dt(value), format)
+
+
 def babel2datepicker(pattern):
   """
   Converts date format from babel
@@ -280,6 +287,7 @@ def init_filters(env):
   env.filters['datetimeparse'] = datetimeparse
   env.filters['age'] = age
   env.filters['date'] = date
+  env.filters['datetime'] = format_datetime
   env.filters['babel2datepicker'] = babel2datepicker
   env.filters['to_timestamp'] = to_timestamp
   env.filters['url_for'] = obj_to_url
