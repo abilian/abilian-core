@@ -1,11 +1,14 @@
 """
 Useful decorators for web views.
 """
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 from functools import wraps
+import warnings
+
+
 from flask import request, render_template
 
 __all__ = ['templated']
@@ -34,3 +37,22 @@ def templated(template=None):
       return render_template(template_name, **ctx)
     return decorated_function
   return decorator
+
+
+# Copy/pasted from:
+# https://wiki.python.org/moin/PythonDecoratorLibrary#Generating_Deprecation_Warnings
+def deprecated(func):
+    '''This decorator can be used to mark functions
+    as deprecated. It will result in a warning being emitted
+    when the function is used.'''
+
+    @wraps(func)
+    def new_func(*args, **kwargs):
+        warnings.warn_explicit(
+            "Call to deprecated function {}.".format(func.__name__),
+            category=DeprecationWarning,
+            filename=func.func_code.co_filename,
+            lineno=func.func_code.co_firstlineno + 1
+        )
+        return func(*args, **kwargs)
+    return new_func

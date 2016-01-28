@@ -2,26 +2,27 @@
 """
 Add a few specific filters to Jinja2.
 """
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
-import re
-from functools import wraps
 import datetime
+import re
 from calendar import timegm
+from functools import wraps
 
+import bleach
 import dateutil.parser
+import flask_babel as babel
+from babel.dates import DateTimePattern, format_timedelta, parse_pattern
 from flask import Flask
-from flask.ext import babel
 from jinja2 import Markup, escape, evalcontextfilter
 from pytz import utc
-from babel.dates import DateTimePattern, format_timedelta, parse_pattern
-import bleach
 from werkzeug.routing import BuildError
 
-from ..core.util import local_dt, utc_dt, slugify
+from abilian.web.decorators import deprecated
 from .util import url_for
+from ..core.util import local_dt, utc_dt, slugify
 
 
 def autoescape(filter_func):
@@ -177,18 +178,15 @@ def date_age(dt, now=None):
   return u"{} ({})".format(formatted_date, age(dt, now))
 
 
+@deprecated
 def date(value, format="EE, d MMMM y"):
+  """
+  @deprecated: use flask_babel's dateformat filter instead.
+  """
   if isinstance(value, datetime.date):
     return babel.format_date(value, format)
   else:
     return babel.format_date(local_dt(value), format)
-
-
-def format_datetime(value, format="EE, d MMMM y"):
-  if isinstance(value, datetime.datetime):
-    return babel.format_datetime(value, format)
-  else:
-    return babel.format_datetime(local_dt(value), format)
 
 
 def babel2datepicker(pattern):
@@ -287,7 +285,6 @@ def init_filters(env):
   env.filters['datetimeparse'] = datetimeparse
   env.filters['age'] = age
   env.filters['date'] = date
-  env.filters['datetime'] = format_datetime
   env.filters['babel2datepicker'] = babel2datepicker
   env.filters['to_timestamp'] = to_timestamp
   env.filters['url_for'] = obj_to_url

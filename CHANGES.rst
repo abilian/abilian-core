@@ -9,7 +9,6 @@ Changelog for Abilian Core
 - Fix: user administration could remove non-assignable roles
 - Subforms (Form used in FormFields / ListFormFields / etc) can filter their
   fields according to permission passed to top Form.
-- Add a new 'datetime' jinja filter.
 
 
 0.5.0 (2015-11-20)
