@@ -95,6 +95,11 @@ class FilterFieldListMixin(object):
       self.entries.remove(field)
 
     if self.entries:
+      # setting raw_data enables validator to function properly
+      # 1) we have entries so a subfield is not empty
+      # 2) FieldList by default has an optional() validator
+      # 3) by setting raw_data optional() does not reset the errors dict
+      # -> subfields errors are propagated
       self.raw_data = [True]
     return super(FilterFieldListMixin, self).validate(form, extra_validators)
 
