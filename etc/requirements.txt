@@ -59,8 +59,9 @@ pygeoip
 # "fork" of progressbar which is not installable with pip > 1.5
 progressbar-latest
 
-# Forms
+# Forms (TODO: need some updates)
 WTForms-Alchemy==0.12.9
+WTForms-Components<0.10
 # required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
 SQLAlchemy-Utils<0.24.0
 
