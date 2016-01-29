@@ -48,7 +48,18 @@
       {%- endif %}
 
       {%- if field.errors and not field.form %}
-        <span class="help-inline text-danger">{{ field.errors|join('<br />'|safe) }}</span>
+        {%- if 'FieldList' in field.type  %}
+          <span class="help-inline text-danger">
+          {% for error in field.errors %}
+            {% if not loop.first %}<br />{% endif %}
+            {% for key, val in error.iteritems() %}
+              {{ field._field_nameTolabel[key] }}&nbsp;:&nbsp;{{val|join(', ')}}
+            {% endfor %}
+          {% endfor %}
+          </span>
+        {%- else %}
+          <span class="help-inline text-danger">{{ field.errors|join('<br />'|safe) }}</span>
+        {%- endif %}
       {%- endif %}
 
       {%- if field.description %}

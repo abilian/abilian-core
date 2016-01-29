@@ -93,6 +93,9 @@ class FilterFieldListMixin(object):
 
     for field in to_remove:
       self.entries.remove(field)
+
+    if self.entries:
+      self.raw_data = [True]
     return super(FilterFieldListMixin, self).validate(form, extra_validators)
 
 
@@ -124,6 +127,7 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
 
     self._field_names = field_names
     self._field_labels = labels
+    self._field_nameTolabel = dict(zip(self._field_names, self._field_labels))
 
   def __call__(self, **kwargs):
     """
