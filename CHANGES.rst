@@ -1,7 +1,7 @@
 Changelog for Abilian Core
 ==========================
 
-0.5.1 (unreleased)
+0.5.1 (2016-01-29)
 ------------------
 
 - add security debug panel: shows permissions and roles assignments
