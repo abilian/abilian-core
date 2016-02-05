@@ -129,3 +129,10 @@ tidy: clean
 update-pot:
 	# _n => ngettext, _l => lazy_gettext
 	python setup.py extract_messages update_catalog compile_catalog
+
+release:
+	rm -rf /tmp/abilian-core
+	git clone . /tmp/abilian-core
+	cd /tmp/abilian-core ; python setup.py sdist
+	cd /tmp/abilian-core ; python setup.py sdist upload
+
