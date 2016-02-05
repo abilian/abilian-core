@@ -6,6 +6,7 @@ from __future__ import absolute_import, print_function, division
 import sqlalchemy as sa
 from werkzeug.exceptions import BadRequest
 from flask import current_app, send_file
+from werkzeug.utils import redirect
 
 from abilian.i18n import _, _l
 from abilian.core.entities import Entity
@@ -23,6 +24,8 @@ bp = Blueprint('attachments', __name__, url_prefix='/attachments')
 
 
 def _default_attachment_view(obj, obj_type, obj_id, **kwargs):
+  if not hasattr(obj, 'entity'):
+    return url_for('attachments.entity', object_id=obj_id)
   entity = obj.entity
   return url_for(entity, _anchor='attachment-{}'.format(obj.id))
 
@@ -141,3 +144,17 @@ class AttachmentDelete(BaseAttachmentView, ObjectDelete):
 
 delete_view = AttachmentDelete.as_view('delete')
 bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)
+
+
+class AttachmentEntity(BaseObjectView):
+  """
+  Redirects to an attachment's entity view
+  """
+  Model = Attachment
+
+  def get(self):
+    return redirect(url_for(self.obj))
+
+
+entity_view = AttachmentEntity.as_view('entity')
+bp.route('/<int:object_id>/entity')(entity_view)
