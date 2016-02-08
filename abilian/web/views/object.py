@@ -78,9 +78,9 @@ class BaseObjectView(View):
     This method is reponsible for setting :attr:`obj`. It is called during
     :meth:`prepare_args`.
     """
-    object_id = kwargs.pop(self.pk, None)
-    if object_id is not None:
-      self.obj = self.Model.query.get(object_id)
+    self.object_id = kwargs.pop(self.pk, None)
+    if self.object_id is not None:
+      self.obj = self.Model.query.get(self.object_id)
       actions.context['object'] = self.obj
 
     return args, kwargs
