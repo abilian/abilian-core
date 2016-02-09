@@ -190,8 +190,8 @@ class FileUploadsExtension(object):
         if content.stat().st_ctime < minimum_age:
           content.unlink()
 
-
-@shared_task
+# Task scheduled to run every hour: make it expire after 50min.
+@shared_task(expires=3000)
 def periodic_clean_upload_directory():
   """
   This task should be run periodically.
