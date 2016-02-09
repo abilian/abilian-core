@@ -40,6 +40,9 @@ class BaseObjectView(View):
   #: object instance for this view
   obj = None
 
+  #: object id
+  object_id = None
+
   #: template to render
   template = None
 
