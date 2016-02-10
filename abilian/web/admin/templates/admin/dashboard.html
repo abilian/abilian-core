@@ -199,9 +199,8 @@
 
         var new_logins = {{ new_logins |tojson}};
 
-        var chart;
         nv.addGraph(function() {
-            chart = nv.models.linePlusBarChart()
+            var chart = nv.models.linePlusBarChart()
                 .margin({top: 50, right: 60, bottom: 30, left: 70})
                 .legendRightAxisHint(' [Ordonnée droite]')
                 .legendLeftAxisHint(' [Ordonnée gauche]')
@@ -242,7 +241,8 @@
             chart.y1Axis.axisLabel('Utilisateurs');
             chart.bars.forceY([0]).padData(false);
             chart.x2Axis.tickFormat(function(d) {
-                return d3.time.format('%d/%m/%y')(new Date(d))
+              var dx = new_logins[0].values[d] && new_logins[0].values[d]['x'] || 0;
+              return d3.time.format('%d/%m/%y')(new Date(dx))
             }).showMaxMin(false);
             chart.y2Axis.axisLabel('Utilisateurs');
             d3.select('#chart-new-logins svg')
