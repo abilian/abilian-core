@@ -121,7 +121,9 @@ def _calling_context(app_path):
 
   while frm.f_back is not None:
     name = frm.f_globals.get('__name__')
-    if name and (name == app_path or name.startswith(app_path + '.')):
+    if name and (name == app_path
+                 or name.startswith(app_path + '.')
+                 or name.startswith('abilian.')):
       return format_name(frm=frm)
 
     if not exited_sa_code:
