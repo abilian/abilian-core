@@ -10,7 +10,7 @@ import pandas as pd
 
 from flask import render_template, current_app
 
-from abilian.i18n import _l
+from abilian.i18n import _, _l
 from abilian.core.models.subjects import User
 from abilian.services.audit import AuditEntry, CREATION
 from abilian.services.auth.models import LoginSession
@@ -37,17 +37,18 @@ class DashboardPanel(AdminPanel):
     }
 
     # let's format the data into NVD3 datastructures
-    daily = [{'key': 'Connections journalières', 'color': '#7777ff', 'values': daily}]
-    weekly = [{'key': 'Connections hebdomadaires', 'color': '#2ca02c', 'values': weekly}]
-    monthly = [{'key': 'Connections mensuelles', 'color': '#ff7f0e', 'values': monthly}]
-    new_logins = [{'key': 'Nouveaux Utilisateurs', 'color': '#ff7f0e', "bar": True, 'values': new_logins},
-                   {'key': 'Total Utilisateurs', 'color': '#2ca02c', 'values': total_users}]
+    connections = [
+      {'key': _('Daily'), 'color': '#7777ff', 'values': daily},
+      {'key': _('Weekly'), 'color': '#2ca02c', 'values': weekly, 'disabled': True},
+      {'key': _('Monthly'), 'color': '#ff7f0e', 'values': monthly, 'disabled': True},
+    ]
+    new_logins = [
+      {'key': _('New'), 'color': '#ff7f0e', "bar": True, 'values': new_logins},
+      {'key': _('Total'), 'color': '#2ca02c', 'values': total_users}]
 
     return render_template("admin/dashboard.html",
                            stats=stats,
-                           daily=daily,
-                           weekly=weekly,
-                           monthly=monthly,
+                           connections=connections,
                            new_logins=new_logins)
 
 
