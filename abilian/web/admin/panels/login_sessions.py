@@ -6,10 +6,15 @@ from __future__ import absolute_import, print_function, division
 import pygeoip
 from flask import render_template
 
+from abilian.i18n import _
 from abilian.services.auth.models import LoginSession
 
 from ..panel import AdminPanel
 
+DATA_FILES = (
+  '/usr/share/GeoIP/GeoIP.dat',
+  '/usr/share/GeoIP/GeoIPv6.dat',
+)
 
 class LoginSessionsPanel(AdminPanel):
   id = "login_sessions"
@@ -17,17 +22,31 @@ class LoginSessionsPanel(AdminPanel):
   icon = 'log-in'
 
   def get(self):
-    try:
-      geoip = pygeoip.GeoIP('/usr/share/GeoIP/GeoIP.dat')
-    except:
-      geoip = None
+    geoips = []
+    for filename in DATA_FILES:
+      try:
+        geoips.append(pygeoip.GeoIP(filename))
+      except pygeoip.GeoIPError:
+        pass
 
     sessions = LoginSession.query.order_by(LoginSession.id.desc()).limit(50).all()
+    unknown_country = _(u'Country unknown')
 
     for session in sessions:
-      country = "Country unknown"
-      if geoip and session.ip_address:
-        country = geoip.country_name_by_addr(session.ip_address) or country
-      session.country = country
+      country = unknown_country
+
+      if geoips and session.ip_address:
+        for g in geoips:
+          try:
+            country = g.country_name_by_addr(session.ip_address)
+          except pygeoip.GeoIPError:
+            continue
+
+          if country:
+            break
+          else:
+            country = unknown_country
+
+        session.country = country
 
     return render_template("admin/login_sessions.html", **locals())
