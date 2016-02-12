@@ -26,7 +26,7 @@ class LoginSessionsPanel(AdminPanel):
     for filename in DATA_FILES:
       try:
         geoips.append(pygeoip.GeoIP(filename))
-      except pygeoip.GeoIPError:
+      except (pygeoip.GeoIPError, IOError):
         pass
 
     sessions = LoginSession.query.order_by(LoginSession.id.desc()).limit(50).all()
