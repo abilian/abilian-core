@@ -1,6 +1,15 @@
 Changelog for Abilian Core
 ==========================
 
+0.5.2 (2016-02-16)
+------------------
+
+- Fix IPv6 / GeoIP issue
+- Improve debug toolbar
+- Improve dashboard
+- Celery: expire task before next run scheduled
+
+
 0.5.1 (2016-01-29)
 ------------------
 
