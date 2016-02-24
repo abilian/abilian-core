@@ -331,6 +331,8 @@ class AjaxMainTableView(object):
       'bServerSide': True,
       'sAjaxSource': self.ajax_source,
     }
+    if self.options.get('aaSorting', None):
+      datatable_options['aaSorting'] = self.options.get('aaSorting')
 
     advanced_search_filters = []
     for c in self.search_criterions:
