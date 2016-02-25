@@ -11,6 +11,10 @@ CKEDITOR.editorConfig = function( config ) {
     var Abilian = require('Abilian');
     config.defaultLanguage = Abilian.locale;
 
+    // http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html#.entities
+    // disable accent encoding
+    config.entities = false;
+
     config.skin = 'moono';
 
     config.extraPlugins = ['autolink',
