@@ -36,9 +36,14 @@ class LoginSessionsPanel(AdminPanel):
       country = unknown_country
 
       if geoips and session.ip_address:
+        ip_address = session.ip_address
+        multiple = ip_address.split(',')
+        if multiple:
+          # only use last ip in the list, most likely the public address
+          ip_address = multiple[-1]
         for g in geoips:
           try:
-            country = g.country_name_by_addr(session.ip_address)
+            country = g.country_name_by_addr(ip_address)
           except pygeoip.GeoIPError:
             continue
 
