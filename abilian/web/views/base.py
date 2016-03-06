@@ -28,7 +28,7 @@ class View(BaseView):
     # retry with GET
     if meth is None and request.method == 'HEAD':
       meth = getattr(self, 'get', None)
-      assert meth is not None, 'Unimplemented method %r' % request.method
+      assert meth is not None, 'Unimplemented method {0!r}'.format(request.method)
 
     g.view = actions.context['view'] = self
     try:

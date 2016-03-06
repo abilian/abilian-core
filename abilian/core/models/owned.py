@@ -36,7 +36,7 @@ class OwnedMixin(object):
 
   @declared_attr
   def creator(cls):
-    pj = "User.id == %s.creator_id" % cls.__name__
+    pj = "User.id == {0!s}.creator_id".format(cls.__name__)
     return relationship(User, primaryjoin=pj, lazy='joined', uselist=False,
                         info=SYSTEM | SEARCHABLE)
 
@@ -50,7 +50,7 @@ class OwnedMixin(object):
 
   @declared_attr
   def owner(cls):
-    pj = "User.id == %s.owner_id" % cls.__name__
+    pj = "User.id == {0!s}.owner_id".format(cls.__name__)
     return relationship(User, primaryjoin=pj, lazy='joined', uselist=False,
                         info=EDITABLE | AUDITABLE | SEARCHABLE)
 

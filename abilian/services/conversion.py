@@ -145,7 +145,7 @@ class Converter(object):
         pdf = handler.convert(blob)
         self.cache[cache_key] = pdf
         return pdf
-    raise ConversionError("No handler found to convert from %s to PDF" % mime_type)
+    raise ConversionError("No handler found to convert from {0!s} to PDF".format(mime_type))
 
   def to_text(self, digest, blob, mime_type):
     """Converts a file to plain text.
@@ -182,7 +182,7 @@ class Converter(object):
   def has_image(self, digest, mime_type, index, size=500):
     """ Tell if there is a preview image
     """
-    cache_key = "img:%s:%s:%s" % (index, size, digest)
+    cache_key = "img:{0!s}:{1!s}:{2!s}".format(index, size, digest)
     return mime_type.startswith("image/") or cache_key in self.cache
 
   def get_image(self, digest, blob, mime_type, index, size=500):
@@ -193,7 +193,7 @@ class Converter(object):
     if mime_type.startswith("image/"):
       return ""
 
-    cache_key = "img:%s:%s:%s" % (index, size, digest)
+    cache_key = "img:{0!s}:{1!s}:{2!s}".format(index, size, digest)
     return self.cache.get(cache_key)
 
   def to_image(self, digest, blob, mime_type, index, size=500):
@@ -204,7 +204,7 @@ class Converter(object):
     if mime_type.startswith("image/"):
       return ""
 
-    cache_key = "img:%s:%s:%s" % (index, size, digest)
+    cache_key = "img:{0!s}:{1!s}:{2!s}".format(index, size, digest)
     converted = self.cache.get(cache_key)
     if converted:
       return converted
@@ -215,7 +215,7 @@ class Converter(object):
         converted_images = handler.convert(blob, size=size)
         for i in range(0, len(converted_images)):
           converted = converted_images[i]
-          self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
+          self.cache["img:{0!s}:{1!s}:{2!s}".format(i, size, digest)] = converted
         return converted_images[index]
 
     # Use PDF as a pivot format
@@ -225,7 +225,7 @@ class Converter(object):
         converted_images = handler.convert(pdf, size=size)
         for i in range(0, len(converted_images)):
           converted = converted_images[i]
-          self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
+          self.cache["img:{0!s}:{1!s}:{2!s}".format(i, size, digest)] = converted
         return converted_images[index]
 
     raise ConversionError()
@@ -302,12 +302,12 @@ class Handler(object):
     match_target = False
 
     for pat in self.accepts_mime_types:
-      if re.match("^%s$" % pat, source_mime_type):
+      if re.match("^{0!s}$".format(pat), source_mime_type):
         match_source = True
         break
 
     for pat in self.produces_mime_types:
-      if re.match("^%s$" % pat, target_mime_type):
+      if re.match("^{0!s}$".format(pat), target_mime_type):
         match_target = True
         break
 
@@ -426,7 +426,7 @@ class PdfToPpmHandler(Handler):
     with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
       try:
         subprocess.check_call(['pdftoppm', '-jpeg', in_fn, out_fn])
-        l = glob.glob("%s-*.jpg" % out_fn)
+        l = glob.glob("{0!s}-*.jpg".format(out_fn))
         l.sort()
 
         converted_images = []
@@ -574,8 +574,8 @@ class CloudoooPdfHandler(Handler):
     }
 
   def convert(self, key):
-    in_fn = "data/%s.blob" % key
-    in_mime_type = open("data/%s.mime" % key).read()
+    in_fn = "data/{0!s}.blob".format(key)
+    in_mime_type = open("data/{0!s}.mime".format(key)).read()
     file_extension = mimetypes.guess_extension(in_mime_type).strip(".")
 
     data = encodestring(open(in_fn).read())
@@ -590,7 +590,7 @@ class CloudoooPdfHandler(Handler):
 
     converted = decodestring(data)
     new_key = hashlib.md5(converted).hexdigest()
-    with open("data/%s.blob" % new_key, "wcb") as fd:
+    with open("data/{0!s}.blob".format(new_key), "wcb") as fd:
       fd.write(converted)
     return new_key
 

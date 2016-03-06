@@ -396,5 +396,4 @@ class BaseTestCase(TestCase):
           message['lastLine'],
           message['extract'],
           message['message'])
-        self.fail((u'Got a validation error for %r:\n%s' %
-                   (url, detail)).encode('utf-8'))
+        self.fail((u'Got a validation error for {0!r}:\n{1!s}'.format(url, detail)).encode('utf-8'))

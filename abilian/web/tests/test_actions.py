@@ -18,7 +18,7 @@ CONDITIONAL = Action('cat_1', 'conditional', 'Conditional Action',
                      icon=Glyphicon('hand-right'), button='warning')
 
 OTHER_CAT = Action('cat_2:sub', 'other', 'Other Action',
-                   url=lambda ctx: 'http://count?%d' % len(ctx),
+                   url=lambda ctx: 'http://count?{0:d}'.format(len(ctx)),
                    icon=StaticIcon('icons/other.png', size=14),
                    css='custom-class')
 

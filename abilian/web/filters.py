@@ -70,23 +70,23 @@ def filesize(d):
     d = int(d)
 
   if d < 1000:
-    s = "%d&nbsp;B" % d
+    s = "{0:d}&nbsp;B".format(d)
 
   elif d < 1e4:
-    s = "%.1f&nbsp;kB" % (d / 1e3)
+    s = "{0:.1f}&nbsp;kB".format((d / 1e3))
   elif d < 1e6:
-    s = "%.0f&nbsp;kB" % (d / 1e3)
+    s = "{0:.0f}&nbsp;kB".format((d / 1e3))
 
   elif d < 1e7:
-    s = "%.1f&nbsp;MB" % (d / 1e6)
+    s = "{0:.1f}&nbsp;MB".format((d / 1e6))
   elif d < 1e9:
-    s = "%.0f&nbsp;MB" % (d / 1e6)
+    s = "{0:.0f}&nbsp;MB".format((d / 1e6))
 
   elif d < 1e10:
-    s = "%.1f&nbsp;GB" % (d / 1e9)
+    s = "{0:.1f}&nbsp;GB".format((d / 1e9))
 
   else:
-    s = "%.0f&nbsp;GB" % (d / 1e9)
+    s = "{0:.0f}&nbsp;GB".format((d / 1e9))
 
   return Markup(s)
 
