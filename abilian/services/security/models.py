@@ -268,12 +268,11 @@ class PermissionAssignment(db.Model):
 
   def __repr__(self):
     class_ = self.__class__
-    mod_ = class_.__module__
     classname = class_.__name__
     return ('<{cls} instance at 0x{id:x} '
             'permission={self.permission.name!r} '
             'role={self.role.name!r} object={self.object!r}>'
-            ''.format(mod=mod_, cls=classname, id=id(self), self=self))
+            ''.format(cls=classname, id=id(self), self=self))
 
 
 def _postgres_indexes():

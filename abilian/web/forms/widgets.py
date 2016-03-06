@@ -656,7 +656,7 @@ class TextArea(BaseTextArea):
     if resizeable not in self._resizeable_valid:
       raise ValueError(
         'Invalid value for resizeable: {}, valid values are: {!r}'
-        ''.format(self._resizeable_valid)
+        ''.format(resizeable, self._resizeable_valid)
       )
     if resizeable:
       self.resizeable = 'resizeable-' + resizeable
