@@ -91,8 +91,6 @@ class BaseFileDownload(View):
     return response
 
   def set_cache_headers(self, response):
-    """
-    """
     if self.set_expire:
       response.cache_control.public = False
       response.cache_control.private = True
@@ -101,10 +99,8 @@ class BaseFileDownload(View):
 
 
 class BaseBlobDownload(BaseFileDownload):
-  """
-  """
 
-  def get_blob(*args, **kwargs):
+  def get_blob(self, *args, **kwargs):
     raise NotImplementedError()
 
   def prepare_args(self, args, kwargs):

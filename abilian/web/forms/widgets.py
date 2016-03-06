@@ -1007,7 +1007,6 @@ class DateTimeInput(object):
     date_fmt = babel2datetime(date_fmt)
     date_fmt = date_fmt.replace('%B', '%m').replace('%b', '%m')  # force numerical months
     time_fmt = u'%H:%M'
-    datetime_fmt = '{} | {}'.format(date_fmt, time_fmt)
 
     value = kwargs.pop('value', None)
     if value is None:
@@ -1037,7 +1036,7 @@ class DateTimeInput(object):
     return (
       Markup(
         u'<div class="form-inline">\n'
-        u'<input class="datetimepicker" type="hidden" id="{id}" name="{id}" '
+        u'<input class="datetimepicker" type="hidden" id="{id}" name="{name}" '
         u'value="{date} | {time}" />\n'
         u''.format(id=field_id, name=field_name, date=date_value, time=time_value))
       +
@@ -1068,7 +1067,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
   _ON_OFF_VALID_OPTIONS = frozenset((
     'animate', 'indeterminate', 'inverse', 'radio-all-off',
     'on-color', 'off-color', 'on-text', 'off-text', 'label-text',
-    'handle-width', 'label-width', 'base-class', 'wrapper-class',
+    'handle-width', 'label-width', 'base-class', 'wrapper-class'
   ))
 
   def __init__(self, *args, **kwargs):
