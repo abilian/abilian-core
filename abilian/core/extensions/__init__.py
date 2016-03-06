@@ -79,8 +79,6 @@ from .csrf import wtf_csrf as csrf, abilian_csrf
 def get_extension(name):
   """Get the named extension from the current app, returning None if not found.
   """
-
-  from flask import current_app
   return current_app.extensions.get(name)
 
 
