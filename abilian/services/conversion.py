@@ -590,7 +590,7 @@ class CloudoooPdfHandler(Handler):
 
     converted = decodestring(data)
     new_key = hashlib.md5(converted).hexdigest()
-    with open("data/%s.blob" % new_key, "wcb") as fd:
+    with open("data/%s.blob" % new_key, "wb") as fd:
       fd.write(converted)
     return new_key
 

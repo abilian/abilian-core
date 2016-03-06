@@ -50,7 +50,7 @@ class SysinfoPanel(AdminPanel):
         package['vcs'] = dict(name=vcs_name, url=url, revision=revision)
 
       packages.append(package)
-      packages.sort(key=lambda d: d.get('key', None))
+      packages.sort(key=lambda d: d.get('key'))
 
     return render_template("admin/sysinfo.html",
                            python_version=python_version,

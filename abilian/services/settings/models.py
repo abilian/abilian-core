@@ -28,7 +28,8 @@ class TransformerRegistry(object):
     return value
 
   def register(self, type_, encoder=None, decoder=None):
-    assert type_ and any((encoder, decoder))
+    assert type_
+    assert any((encoder, decoder))
     if encoder:
       self.encoders[type_] = encoder
     if decoder:

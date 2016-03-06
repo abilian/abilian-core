@@ -87,12 +87,9 @@ class VocabularyPanel(AdminPanel):
     data = request.form
     group = data.get('group', u'').strip()
     Model = data.get('Model', u'').strip()
-    return_to = data.get('return_to', None)
+    return_to = data.get('return_to')
     return_endpoint = '.vocabularies'
     return_args = {}
-    cmp_op = None
-    cmp_order = None
-    object_id = None
 
     if return_to not in (None, 'group', 'model'):
       return_to = None
@@ -135,9 +132,9 @@ class VocabularyPanel(AdminPanel):
     session = current_app.db.session()
     query = Model.query.with_lockmode('update')
     item = query.get(object_id)
-    other = query\
-        .filter(cmp_op(item.position))\
-        .order_by(cmp_order)\
+    other = query \
+        .filter(cmp_op(item.position)) \
+        .order_by(cmp_order) \
         .first()
 
     if other is not None:
@@ -165,8 +162,7 @@ class VocabularyPanel(AdminPanel):
         url_for_voc_edit=self.voc_edit_url,
         icon_checked=Glyphicon('check'),
         vocabularies={group: vocabularies},
-        edit_return_to='group',
-    )
+        edit_return_to='group')
 
   def model_view(self, Model, group=None):
     return render_template(
@@ -175,8 +171,7 @@ class VocabularyPanel(AdminPanel):
         url_for_voc_edit=self.voc_edit_url,
         icon_checked=Glyphicon('check'),
         vocabularies={Model.Meta.group: [Model]},
-        edit_return_to='model',
-      )
+        edit_return_to='model')
 
   def install_additional_rules(self, add_url_rule):
     panel_endpoint = '.' + self.id

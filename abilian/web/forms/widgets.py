@@ -219,8 +219,8 @@ class BaseTableView(object):
       format = col.get('format')
       if format:
         cell = format(value)
-      elif column_name == make_link_on or column_name == 'name' or \
-         col.get('linkable'):
+      elif column_name in (make_link_on, 'name') \
+          or col.get('linkable'):
         cell = Markup('<a href="%s">%s</a>'
                       % (build_url(entity), cgi.escape(unicode(value))))
       elif isinstance(value, Entity):

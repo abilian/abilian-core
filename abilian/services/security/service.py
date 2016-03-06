@@ -282,7 +282,7 @@ class SecurityService(Service):
 
     if isinstance(principal, User):
       filter_cond = (RoleAssignment.user == principal)
-      if len(principal.groups) > 0:
+      if principal.groups:
         group_ids = (g.id for g in principal.groups)
         filter_cond |= (RoleAssignment.group_id.in_(group_ids))
 
@@ -485,7 +485,7 @@ class SecurityService(Service):
       args['group'] = principal
 
     q = session.query(RoleAssignment)
-    if len(q.filter_by(**args).limit(1).all()) > 0:
+    if q.filter_by(**args).limit(1).count():
       # role already granted, nothing to do
       return
 
