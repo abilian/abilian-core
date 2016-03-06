@@ -327,7 +327,7 @@ def send_mail(subject, recipient, template, **context):
                 recipients=[recipient])
 
   ctx = ('login/email', template)
-  msg.body = render_template_i18n('%s/%s.txt' % ctx, **context)
+  msg.body = render_template_i18n('{0!s}/{1!s}.txt'.format(*ctx), **context)
   #msg.html = render_template('%s/%s.html' % ctx, **context)
 
   mail = current_app.extensions.get('mail')

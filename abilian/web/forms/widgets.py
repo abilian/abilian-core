@@ -64,7 +64,7 @@ def linkify_url(value):
 
   rjs = r'[\s]*(&#x.{1,7})?'.join(list('javascript:'))
   rvb = r'[\s]*(&#x.{1,7})?'.join(list('vbscript:'))
-  re_scripts = re.compile('(%s)|(%s)' % (rjs, rvb), re.IGNORECASE)
+  re_scripts = re.compile('({0!s})|({1!s})'.format(rjs, rvb), re.IGNORECASE)
 
   value = re_scripts.sub('', value)
 
@@ -86,7 +86,7 @@ def linkify_url(value):
   if value.count("/") == 1 and value.endswith("/"):
     value = value[0:-1]
 
-  return '<a href="%s">%s</a>&nbsp;<i class="fa fa-external-link"></i>' % (url, value)
+  return '<a href="{0!s}">{1!s}</a>&nbsp;<i class="fa fa-external-link"></i>'.format(url, value)
 
 
 def text2html(text):
@@ -98,7 +98,7 @@ def text2html(text):
 
   lines = text.split("\n")
   lines = [ line for line in lines if line ]
-  paragraphs = ['<p>%s</p>' % line for line in lines]
+  paragraphs = ['<p>{0!s}</p>'.format(line) for line in lines]
   return Markup(bleach.clean("\n".join(paragraphs), tags=['p']))
 
 
@@ -221,11 +221,9 @@ class BaseTableView(object):
         cell = format(value)
       elif column_name == make_link_on or column_name == 'name' or \
          col.get('linkable'):
-        cell = Markup('<a href="%s">%s</a>'
-                      % (build_url(entity), cgi.escape(unicode(value))))
+        cell = Markup('<a href="{0!s}">{1!s}</a>'.format(build_url(entity), cgi.escape(unicode(value))))
       elif isinstance(value, Entity):
-        cell = Markup('<a href="%s">%s</a>'
-                      % (build_url(value), cgi.escape(value.name)))
+        cell = Markup('<a href="{0!s}">{1!s}</a>'.format(build_url(value), cgi.escape(value.name)))
       elif isinstance(value, string_types) \
           and (value.startswith("http://") or value.startswith("www.")):
         cell = Markup(linkify_url(value))
@@ -382,17 +380,14 @@ class AjaxMainTableView(object):
       if has_custom_display:
         cell = value
       elif column_name == 'name':
-        cell = Markup('<a href="%s">%s</a>'
-                      % (url_for(entity), cgi.escape(value)))
+        cell = Markup('<a href="{0!s}">{1!s}</a>'.format(url_for(entity), cgi.escape(value)))
       elif isinstance(value, Entity):
-        cell = Markup('<a href="%s">%s</a>'
-                      % (url_for(value), cgi.escape(value.name)))
+        cell = Markup('<a href="{0!s}">{1!s}</a>'.format(url_for(value), cgi.escape(value.name)))
       elif (isinstance(value, string_types)
             and (value.startswith("http://") or value.startswith("www."))):
         cell = Markup(linkify_url(value))
       elif col.get('linkable'):
-        cell = Markup('<a href="%s">%s</a>'
-                      % (url_for(entity), cgi.escape(unicode(value))))
+        cell = Markup('<a href="{0!s}">{1!s}</a>'.format(url_for(entity), cgi.escape(unicode(value))))
       else:
         cell = unicode(value)
 
@@ -851,7 +846,7 @@ class Chosen(Select):
 
   def __call__(self, field, **kwargs):
     kwargs.setdefault('id', field.id)
-    html = [u'<select %s class="chzn-select">' % html_params(name=field.name, **kwargs)]
+    html = [u'<select {0!s} class="chzn-select">'.format(html_params(name=field.name, **kwargs))]
     for val, label, selected in field.iter_choices():
       html.append(self.render_option(val, label, selected))
     html.append(u'</select>')
@@ -862,7 +857,7 @@ class Chosen(Select):
     options = dict(kwargs, value=value)
     if selected:
       options['selected'] = True
-    return HTMLString(u'<option %s>%s</option>' % (html_params(**options), cgi.escape(unicode(label))))
+    return HTMLString(u'<option {0!s}>{1!s}</option>'.format(html_params(**options), cgi.escape(unicode(label))))
 
 
 class TagInput(Input):
@@ -876,7 +871,7 @@ class TagInput(Input):
     if 'value' not in kwargs:
       kwargs['value'] = field._value()
 
-    return HTMLString(u'<input %s>' % self.html_params(name=field.name, **kwargs))
+    return HTMLString(u'<input {0!s}>'.format(self.html_params(name=field.name, **kwargs)))
 
 
 class DateInput(Input):
@@ -1265,11 +1260,11 @@ class ListWidget(wtforms.widgets.ListWidget):
       return super(ListWidget, self).__call__(field, **kwargs)
 
     kwargs.setdefault('id', field.id)
-    html = [u'<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs))]
+    html = [u'<{0!s} {1!s}>'.format(self.html_tag, wtforms.widgets.html_params(**kwargs))]
     for subfield in field:
       html.append(u'<li>{}</li>'.format(subfield()))
 
-    html.append(u'</%s>' % self.html_tag)
+    html.append(u'</{0!s}>'.format(self.html_tag))
     return wtforms.widgets.HTMLString(''.join(html))
 
   def render_view(self, field, **kwargs):

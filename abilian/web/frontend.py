@@ -554,10 +554,10 @@ class Module(object):
 
     # If url is not provided, generate it from endpoint name
     if self.url is None:
-      self.url = '%s/%s' % (self.crud_app.url, self.endpoint)
+      self.url = '{0!s}/{1!s}'.format(self.crud_app.url, self.endpoint)
     else:
       if not self.url.startswith('/'):
-        self.url = '%s/%s' % (self.crud_app.url, self.url)
+        self.url = '{0!s}/{1!s}'.format(self.crud_app.url, self.url)
 
     # Create blueprint and register rules
     self.blueprint = Blueprint(self.endpoint, __name__,

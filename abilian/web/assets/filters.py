@@ -235,7 +235,7 @@ class Less(ExternalTool):
     # Set working directory to the source file so that includes are found
     args = [self.less or 'lessc']
     if self.line_numbers:
-      args.append('--line-numbers=%s' % self.line_numbers)
+      args.append('--line-numbers={0!s}'.format(self.line_numbers))
 
     if self.paths:
       paths = [path if isabs(path) else self.ctx.resolver.resolve_source(path)

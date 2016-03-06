@@ -379,7 +379,7 @@ class UUID(sa.types.TypeDecorator):
       if not isinstance(value, uuid.UUID):
         value = uuid.UUID(value)
       # hexstring
-      return "%.32x" % value
+      return "{0:.32x}".format(value)
 
   def process_result_value(self, value, dialect):
     return value if value is None else uuid.UUID(value)
@@ -407,7 +407,7 @@ class Locale(sa.types.TypeDecorator):
 
     if not isinstance(value, babel.Locale):
       if not isinstance(value, string_types):
-        raise ValueError("Unknown locale value: %s" % repr(value))
+        raise ValueError("Unknown locale value: {0!s}".format(repr(value)))
       if not value.strip():
         return None
       value = babel.Locale.parse(value)
@@ -440,7 +440,7 @@ class Timezone(sa.types.TypeDecorator):
 
     if not isinstance(value, pytz.tzfile.DstTzInfo):
       if not isinstance(value, string_types):
-        raise ValueError("Unknown timezone value: %s" % repr(value))
+        raise ValueError("Unknown timezone value: {0!s}".format(repr(value)))
       if not value.strip():
         return None
       value = babel.dates.get_timezone(value)

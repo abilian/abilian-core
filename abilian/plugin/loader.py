@@ -32,10 +32,10 @@ class AppLoader(ModuleLoader):
     for mod in self:
 
       if logger:
-        logger.info("Register module: %s" % mod.__name__)
+        logger.info("Register module: {0!s}".format(mod.__name__))
 
       if submodule:
-        mod = self.import_module('%s.%s' % (mod.__name__, submodule))
+        mod = self.import_module('{0!s}.{1!s}'.format(mod.__name__, submodule))
 
       meta = self._meta(mod)
 
