@@ -39,7 +39,7 @@ class develop(_develop):
 setuptools.setup(
   name='abilian-core',
   use_scm_version=True,
-  url='https://github.com/abilian/ablian-core',
+  url='https://github.com/abilian/abilian-core',
   license='LGPL',
   author='Abilian SAS',
   author_email='contact@abilian.com',
