@@ -146,16 +146,8 @@ class TextSearchCriterion(BaseCriterion):
         model = orm.aliased(val['model'])
         attr = getattr(model, attr.key)
 
-        # Mystery to investigate
-
-        # Original outerjoin :
-        # fails when val['rel_attr_name'] is passed directly,
-        # the on_clause demands to be explicitly specified
-        # query = query.outerjoin(model, val['rel_attr_name'])
-
-        # when the val['rel_attr_name'] is formatted in a string all is fine
-        clause = '{}'.format(val['rel_attr_name'])
-        query = query.outerjoin(model, clause)
+        join_attr = getattr(module.managed_class, val['rel_attr_name'])
+        query = query.outerjoin(model, join_attr)
 
         has_joins = True
 
