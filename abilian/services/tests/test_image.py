@@ -1,8 +1,8 @@
-from os.path import join, dirname
+from os.path import dirname, join
 
 from pytest import fixture
 
-from ..image import resize, FIT, SCALE, CROP, get_size, get_save_format
+from ..image import CROP, FIT, SCALE, get_save_format, get_size, resize
 
 
 @fixture

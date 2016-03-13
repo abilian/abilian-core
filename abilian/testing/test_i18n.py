@@ -1,15 +1,15 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from jinja2 import DictLoader
 from babel import Locale
 from flask import _app_ctx_stack, _request_ctx_stack
 from flask_babel import get_locale
+from jinja2 import DictLoader
 
-from abilian.testing import BaseTestCase
 from abilian import i18n
+from abilian.testing import BaseTestCase
 
 
 class I18NTestCase(BaseTestCase):

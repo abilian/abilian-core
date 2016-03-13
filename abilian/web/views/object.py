@@ -2,24 +2,23 @@
 """
 Class based views
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
+
 import logging
 
 import sqlalchemy as sa
-from flask import (
-  g, request, render_template, redirect, url_for, current_app,
-  flash
-)
-from werkzeug.exceptions import NotFound, BadRequest
+from flask import (current_app, flash, g, redirect, render_template, request,
+                   url_for)
+from werkzeug.exceptions import BadRequest, NotFound
 
-from abilian.i18n import _, _l
-from abilian.services.security import READ, WRITE, CREATE, DELETE
-from abilian.core.signals import activity
 from abilian.core.entities import ValidationError
+from abilian.core.signals import activity
+from abilian.i18n import _, _l
+from abilian.services.security import CREATE, DELETE, READ, WRITE
 
-from .. import nav, csrf, forms
+from .. import csrf, forms, nav
 from ..action import ButtonAction, Endpoint, actions
-from .base import View, JSONView
+from .base import JSONView, View
 
 logger = logging.getLogger(__name__)
 

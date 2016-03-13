@@ -1,50 +1,40 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from future.utils import string_types
-
-import operator
-import logging
-from functools import partial
 import datetime
-import sqlalchemy as sa
+import logging
+import operator
+from functools import partial
 
-from wtforms import (
-    ValidationError,
-    Field,
-    SelectMultipleField,
-    SelectField,
-    SelectFieldBase,
-    FormField as BaseFormField,
-    FieldList as BaseFieldList)
-from wtforms.utils import unset_value
-from wtforms.validators import DataRequired, Optional
+import babel
+import sqlalchemy as sa
+from flask import current_app
+from flask.helpers import locked_cached_property
+from flask_babel import format_date, format_datetime, get_locale, get_timezone
+from flask_login import current_user
+from flask_wtf.file import FileField as BaseFileField
+from future.utils import string_types
+from wtforms import FieldList as BaseFieldList
+from wtforms import FormField as BaseFormField
+from wtforms import (Field, SelectField, SelectFieldBase, SelectMultipleField,
+                     ValidationError)
 from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
-from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, has_identity_key
-from wtforms_alchemy import (
-  ModelFieldList as BaseModelFieldList,
-  ModelFormField as BaseModelFormField,
-)
-import babel
-
-from flask import current_app
-from flask_login import current_user
-from flask.helpers import locked_cached_property
-from flask_wtf.file import FileField as BaseFileField
-from flask_babel import (
-  get_locale, get_timezone,
-  format_date, format_datetime
-)
+from wtforms.ext.sqlalchemy.fields import (get_pk_from_identity,
+                                           has_identity_key)
+from wtforms.utils import unset_value
+from wtforms.validators import DataRequired, Optional
+from wtforms_alchemy import ModelFieldList as BaseModelFieldList
+from wtforms_alchemy import ModelFormField as BaseModelFormField
 
 from abilian import i18n
-from abilian.core.util import utc_dt
 from abilian.core.extensions import db
+from abilian.core.util import utc_dt
 
-from .widgets import DateTimeInput, DateInput, Select2, Select2Ajax, FileInput
 from .util import babel2datetime
+from .widgets import DateInput, DateTimeInput, FileInput, Select2, Select2Ajax
 
 __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
            'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',

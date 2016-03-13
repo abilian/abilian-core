@@ -1,12 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import logging
 from functools import wraps
 
 from flask import current_app
+
 from abilian.core.util import fqcn
 
 

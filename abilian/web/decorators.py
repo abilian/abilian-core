@@ -1,15 +1,12 @@
 """
 Useful decorators for web views.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
-from functools import wraps
 import warnings
+from functools import wraps
 
-
-from flask import request, render_template
+from flask import render_template, request
 
 __all__ = ['templated']
 

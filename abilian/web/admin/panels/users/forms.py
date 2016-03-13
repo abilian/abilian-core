@@ -1,21 +1,19 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import sqlalchemy as sa
-
-from wtforms.fields import StringField, BooleanField, TextField
+from wtforms.fields import BooleanField, StringField, TextField
 from wtforms.validators import ValidationError
 
+from abilian.core.models.subjects import Group
 from abilian.i18n import _, _l
 from abilian.services.security.models import Role
-from abilian.core.models.subjects import Group
-
 from abilian.web.forms import Form, widgets
-from abilian.web.forms.fields import Select2MultipleField, QuerySelect2Field
+from abilian.web.forms.fields import QuerySelect2Field, Select2MultipleField
 from abilian.web.forms.filters import strip
-from abilian.web.forms.validators import required, optional
+from abilian.web.forms.validators import optional, required
 
 
 class BaseUserAdminForm(Form):

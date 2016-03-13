@@ -1,25 +1,26 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
+
 from datetime import datetime
 from itertools import chain
-from markupsafe import Markup
-import pytz
 
-from flask import request, render_template, render_template_string, \
-  get_template_attribute
-from flask_babel import format_date, get_locale
+import pytz
 import sqlalchemy as sa
+from flask import (get_template_attribute, render_template,
+                   render_template_string, request)
+from flask_babel import format_date, get_locale
+from markupsafe import Markup
 from sqlalchemy.orm.attributes import NO_VALUE
 from werkzeug.exceptions import InternalServerError
 from werkzeug.routing import BuildError
 
-from abilian.i18n import _
+from abilian.core.entities import Entity, all_entity_classes
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User
 from abilian.core.util import local_dt
-from abilian.core.entities import Entity, all_entity_classes
+from abilian.i18n import _
 from abilian.services.audit import AuditEntry
 from abilian.services.security import SecurityAudit
 from abilian.web.util import url_for

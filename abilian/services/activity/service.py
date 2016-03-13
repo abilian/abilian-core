@@ -1,14 +1,14 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import sqlalchemy as sa
 from sqlalchemy.orm import object_session
 
-from abilian.services import Service
-from abilian.core.signals import activity
 from abilian.core.entities import Entity
+from abilian.core.signals import activity
+from abilian.services import Service
 
 from .models import ActivityEntry
 

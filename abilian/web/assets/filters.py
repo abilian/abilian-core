@@ -1,18 +1,18 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
+import json
 import logging
 import os
-from os.path import isabs
-import json
 import re
 from functools import partial
+from os.path import isabs
 from StringIO import StringIO
-from pathlib import Path
 
-from webassets.filter import Filter, register_filter, get_filter, ExternalTool
+from pathlib import Path
+from webassets.filter import ExternalTool, Filter, get_filter, register_filter
 from webassets.filter.closure import ClosureJS as BaseClosureJS
 from webassets.utils import working_directory
 

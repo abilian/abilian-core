@@ -1,15 +1,14 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import sqlalchemy as sa
-from sqlalchemy import Column
 from flask_sqlalchemy import BaseQuery
+from sqlalchemy import Column
 
 from abilian.core.extensions import db
 from abilian.core.util import slugify
-
 
 _BaseMeta = db.Model.__class__
 

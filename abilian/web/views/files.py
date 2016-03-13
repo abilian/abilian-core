@@ -6,10 +6,11 @@ from __future__ import absolute_import
 
 from datetime import datetime, timedelta
 
-from werkzeug.exceptions import BadRequest
 from flask import request, send_file
+from werkzeug.exceptions import BadRequest
 
 from abilian.core.util import utc_dt
+
 from .base import View
 
 

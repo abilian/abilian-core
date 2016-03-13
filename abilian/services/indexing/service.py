@@ -11,36 +11,38 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :copyright: (c) 2012 by Karl Gyllstrom
 :license: BSD (see LICENSE.txt)
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-import os
 import logging
+import os
 from inspect import isclass
 
-from flask import current_app, g, _app_ctx_stack, appcontext_pushed
-from flask_login import current_user
-from flask.globals import _lookup_app_object
-from celery import shared_task
 import sqlalchemy as sa
+import whoosh.index
+import whoosh.query as wq
+from celery import shared_task
+from flask import _app_ctx_stack, appcontext_pushed, current_app, g
+from flask.globals import _lookup_app_object
+from flask_login import current_user
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
-import whoosh.index
+from whoosh.analysis import CharsetFilter, StemmingAnalyzer
 from whoosh.collectors import WrappingCollector
-from whoosh.filedb.filestore import RamStorage, FileStorage
-from whoosh.writing import AsyncWriter, CLEAR
+from whoosh.filedb.filestore import FileStorage, RamStorage
 from whoosh.qparser import DisMaxParser
-from whoosh.analysis import StemmingAnalyzer, CharsetFilter
-import whoosh.query as wq
 from whoosh.support.charset import accent_map
+from whoosh.writing import CLEAR, AsyncWriter
 
-from abilian.services import Service, ServiceState
-from abilian.services.security import Role, Anonymous, Authenticated, security
 from abilian.core import signals
 from abilian.core.celery import safe_session
-from abilian.core.models.subjects import User, Group
-from abilian.core.util import fqcn as base_fqcn, friendly_fqcn
 from abilian.core.entities import Entity, Indexable
 from abilian.core.extensions import db
+from abilian.core.models.subjects import Group, User
+from abilian.core.util import fqcn as base_fqcn
+from abilian.core.util import friendly_fqcn
+from abilian.services import Service, ServiceState
+from abilian.services.security import Anonymous, Authenticated, Role, security
+
 from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
 

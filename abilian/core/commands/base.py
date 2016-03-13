@@ -17,7 +17,6 @@ from abilian.core.models.subjects import User
 from abilian.services import get_service
 from abilian.services.security import Role
 
-
 __all__ = ['manager', 'logger']
 
 # Setup basic logging capabilities in case logging is not yet set up. From doc:

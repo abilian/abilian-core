@@ -1,9 +1,9 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from wtforms.fields import StringField, BooleanField, TextField
+from wtforms.fields import BooleanField, StringField, TextField
 
 from abilian.i18n import _l
 from abilian.services.security.models import Role

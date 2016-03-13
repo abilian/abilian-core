@@ -1,10 +1,10 @@
 """
 Models for user preferences.
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import relation, backref
+from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy.orm import backref, relation
 
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User

@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from wtforms.fields import StringField
 from flask import current_app
+from wtforms.fields import StringField
 
 from abilian.core.models.tag import Tag
-from abilian.web.forms import Form, Field
-from abilian.web.forms.widgets import Select2, ListWidget
-from abilian.web.forms.validators import required
+from abilian.web.forms import Field, Form
 from abilian.web.forms.filters import strip
+from abilian.web.forms.validators import required
+from abilian.web.forms.widgets import ListWidget, Select2
 
 
 class TagsField(Field):

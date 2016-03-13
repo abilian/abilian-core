@@ -1,15 +1,15 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
-
-from future.utils import string_types
+from __future__ import absolute_import, division, print_function
 
 import logging
 import re
-from jinja2 import Template, Markup
+
 from flask import current_app, g
 from flask.signals import appcontext_pushed
+from future.utils import string_types
+from jinja2 import Markup, Template
 
 from abilian.core.singleton import UniqueName
 from abilian.web import csrf

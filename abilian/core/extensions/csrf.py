@@ -1,13 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from markupsafe import Markup
-from werkzeug.exceptions import BadRequest
-from flask import request, current_app, flash
+from flask import current_app, flash, request
 from flask.signals import request_started
 from flask_wtf.csrf import CsrfProtect
+from markupsafe import Markup
+from werkzeug.exceptions import BadRequest
 
 from abilian.i18n import _l
 

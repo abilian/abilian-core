@@ -1,24 +1,23 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from cStringIO import StringIO
 import imghdr
-import PIL.Image
+from cStringIO import StringIO
 
 import babel
-from flask import g, current_app, request, redirect, url_for, render_template, \
-    flash
-
+import PIL.Image
+from flask import (current_app, flash, g, redirect, render_template, request,
+                   url_for)
 from werkzeug.exceptions import InternalServerError
 from wtforms.fields import StringField
 from wtforms.validators import ValidationError
 
+from abilian.i18n import _, _l, get_default_locale
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
-from abilian.web.forms import Form, fields, widgets, validators
-from abilian.i18n import _l, _, get_default_locale
+from abilian.web.forms import Form, fields, validators, widgets
 
 
 class UserPreferencesForm(Form):

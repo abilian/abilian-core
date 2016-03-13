@@ -7,27 +7,25 @@ See ICOM-ics-v1.0 "Subject Branch".
 TODO: I'm not a big fan of the "subject" name. Could be replaced by something
 else, like "people" or "principal" ?
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from abc import ABCMeta, abstractmethod, abstractproperty
-import bcrypt
-from datetime import datetime, timedelta
-import string
 import random
+import string
+from abc import ABCMeta, abstractmethod, abstractproperty
+from datetime import datetime, timedelta
 
+import bcrypt
 import sqlalchemy as sa
-from sqlalchemy.orm import relationship, backref, deferred
-from sqlalchemy.schema import Column, Table, ForeignKey, UniqueConstraint
-from sqlalchemy.types import (
-  Integer, UnicodeText, LargeBinary, Boolean, DateTime
-)
-from sqlalchemy.ext.hybrid import hybrid_property
-
 from flask_login import UserMixin, current_app
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import backref, deferred, relationship
+from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
+from sqlalchemy.types import (Boolean, DateTime, Integer, LargeBinary,
+                              UnicodeText)
 
 from abilian.core import sqlalchemy as sa_types
 
-from .base import db, IdMixin, TimestampedMixin, Indexable, SEARCHABLE, SYSTEM
+from .base import SEARCHABLE, SYSTEM, IdMixin, Indexable, TimestampedMixin, db
 
 __all__ = ['User', 'Group', 'Principal']
 

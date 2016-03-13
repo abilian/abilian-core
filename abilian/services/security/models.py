@@ -1,26 +1,23 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from functools import total_ordering
 from datetime import datetime
+from functools import total_ordering
 
 from sqlalchemy import sql
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.schema import (
-  Column, ForeignKey, Index, UniqueConstraint, CheckConstraint
-  )
-from sqlalchemy.types import (
-  Integer, Enum, DateTime, String, Boolean, UnicodeText
-  )
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import (CheckConstraint, Column, ForeignKey, Index,
+                               UniqueConstraint)
+from sqlalchemy.types import (Boolean, DateTime, Enum, Integer, String,
+                              UnicodeText)
 
-from abilian.i18n import _l
-from abilian.core.singleton import UniqueName, UniqueNameType
 from abilian.core.entities import Entity
-from abilian.core.models.subjects import User, Group
 from abilian.core.extensions import db
-
+from abilian.core.models.subjects import Group, User
+from abilian.core.singleton import UniqueName, UniqueNameType
+from abilian.i18n import _l
 
 __all__ = ['RoleAssignment', 'PermissionAssignment',
            'SecurityAudit', 'InheritSecurity',

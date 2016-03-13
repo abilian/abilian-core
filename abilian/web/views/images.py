@@ -2,23 +2,24 @@
 """
 Blueprint for views of dynamic images
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
+import colorsys
 import hashlib
 from datetime import datetime, timedelta
-import colorsys
-from pathlib import Path
 
-import sqlalchemy as sa
 import pkg_resources
-from flask import Blueprint, request, make_response, render_template
+import sqlalchemy as sa
+from flask import Blueprint, make_response, render_template, request
+from pathlib import Path
 from werkzeug.exceptions import BadRequest, NotFound
 
-from abilian.core.util import utc_dt
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
-from abilian.services.image import get_size, CROP, RESIZE_MODES
+from abilian.core.util import utc_dt
+from abilian.services.image import CROP, RESIZE_MODES, get_size
 from abilian.web.util import url_for
+
 from .files import BaseFileDownload
 
 blueprint = Blueprint('images', __name__, url_prefix='/images')

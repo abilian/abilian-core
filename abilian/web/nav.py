@@ -8,13 +8,13 @@ Abilian define theses categories:
   `user`:
     User for element that should appear in user menu
 """
-from __future__ import absolute_import, print_function, division
-
-from future.utils import string_types
+from __future__ import absolute_import, division, print_function
 
 from flask import g
-from jinja2 import Template, Markup
-from .action import Action, Glyphicon, ENABLED, ACTIVE, getset, Endpoint
+from future.utils import string_types
+from jinja2 import Markup, Template
+
+from .action import ACTIVE, ENABLED, Action, Endpoint, Glyphicon, getset
 
 
 class NavItem(Action):

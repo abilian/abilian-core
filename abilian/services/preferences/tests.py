@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from flask import current_app
 from flask_login import current_user
@@ -9,9 +9,9 @@ from flask_login import current_user
 from abilian.core.models.subjects import User
 from abilian.testing import BaseTestCase
 
-from .service import PreferenceService
 from .models import UserPreference
 from .panel import PreferencePanel
+from .service import PreferenceService
 
 
 class VisiblePanel(PreferencePanel):

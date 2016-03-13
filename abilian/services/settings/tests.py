@@ -1,12 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from unittest import TestCase
 
 from abilian.testing import BaseTestCase
-from .models import Setting, EmptyValue
+
+from .models import EmptyValue, Setting
 
 
 class SettingTestCase(TestCase):

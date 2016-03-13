@@ -5,32 +5,32 @@ Login-related views (login / logout / password reminder / ...).
 Notes:
 - Uses code copy/pasted (and modified) from Flask-Security
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from datetime import datetime
 import random
 import string
-from urlparse import urlparse, urljoin
+from datetime import datetime
+from urlparse import urljoin, urlparse
 
-from flask import (
-  render_template, request, redirect, url_for, flash, current_app)
-from flask.json import jsonify
+from flask import (current_app, flash, redirect, render_template, request,
+                   url_for)
 from flask.globals import _request_ctx_stack
-from flask_login import (
-  login_user, logout_user, user_logged_in, user_logged_out,)
-from flask_security.utils import md5
+from flask.json import jsonify
+from flask_login import (login_user, logout_user, user_logged_in,
+                         user_logged_out)
 from flask_mail import Message
+from flask_security.utils import md5
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
-from abilian.i18n import _, render_template_i18n
-from abilian.core.extensions import db, csrf
+from abilian.core.extensions import csrf, db
 from abilian.core.models.subjects import User
-from abilian.web.blueprints import Blueprint
+from abilian.i18n import _, render_template_i18n
 from abilian.services.security import Anonymous
-from .models import LoginSession
+from abilian.web.blueprints import Blueprint
 
+from .models import LoginSession
 
 __all__ = []
 

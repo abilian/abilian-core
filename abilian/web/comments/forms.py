@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from wtforms.fields import TextAreaField
 
-from abilian.i18n import _l
 from abilian.core.models.comment import Comment
+from abilian.i18n import _l
 from abilian.web.forms import Form
-from abilian.web.forms.widgets import TextArea
-from abilian.web.forms.validators import required
 from abilian.web.forms.filters import strip
+from abilian.web.forms.validators import required
+from abilian.web.forms.widgets import TextArea
 
 
 class CommentForm(Form):

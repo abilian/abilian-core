@@ -1,13 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import abc
 
 import sqlalchemy as sa
-from sqlalchemy import Column, UnicodeText, Integer, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
+from sqlalchemy.orm import backref, relationship
 
 from abilian.core.entities import Entity
 

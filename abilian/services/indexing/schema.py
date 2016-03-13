@@ -1,22 +1,18 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from whoosh.analysis import (
-    CharsetFilter, RegexTokenizer, LowercaseFilter,
-    PathTokenizer, NgramFilter)
-
-from whoosh.support.charset import accent_map
+from whoosh.analysis import (CharsetFilter, LowercaseFilter, NgramFilter,
+                             PathTokenizer, RegexTokenizer)
+from whoosh.fields import (DATETIME, ID, KEYWORD, NUMERIC, TEXT, FieldType,
+                           SchemaClass)
 from whoosh.formats import Existence
-from whoosh.fields import (
-    SchemaClass, FieldType,
-    ID, KEYWORD, DATETIME, TEXT, NUMERIC)
+from whoosh.support.charset import accent_map
 
-from abilian.services.security.models import Role, Anonymous
+from abilian.core.models.subjects import Group, User
 from abilian.core.util import noproxy
-from abilian.core.models.subjects import User, Group
-
+from abilian.services.security.models import Anonymous, Role
 
 #: A Whoosh analyzer that splits on word boundaries and folds accents and case.
 accent_folder = (RegexTokenizer(r'\w+')  # defaults doesn't split on '.'

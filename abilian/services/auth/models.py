@@ -1,18 +1,18 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
+
 from datetime import datetime
 
 from flask import request
 from flask_login import current_user
 from flask_sqlalchemy import BaseQuery
-from sqlalchemy import ForeignKey, Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relation
 
 from abilian.core.extensions import db
 from abilian.core.models.subjects import User
-
 
 _MARK = object()
 

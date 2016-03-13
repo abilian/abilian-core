@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
-from future.utils import string_types
+from __future__ import absolute_import, division, print_function
 
 import logging
+
+from future.utils import string_types
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
 

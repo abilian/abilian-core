@@ -1,15 +1,15 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declared_attr
 from flask import g
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import relationship
+from sqlalchemy.schema import Column, ForeignKey
 from whoosh.fields import STORED
 
-from .base import SYSTEM, EDITABLE, AUDITABLE, SEARCHABLE
+from .base import AUDITABLE, EDITABLE, SEARCHABLE, SYSTEM
 from .subjects import User
 
 

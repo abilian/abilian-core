@@ -1,11 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from flask_login import AnonymousUserMixin
-from abilian.services.security.models import Anonymous, Reader
+
 from abilian.services.indexing.schema import indexable_role
+from abilian.services.security.models import Anonymous, Reader
+
 
 def test_indexable_role():
 

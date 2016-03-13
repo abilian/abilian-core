@@ -1,12 +1,12 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from datetime import datetime
 
 from sqlalchemy.schema import Column
-from sqlalchemy.types import Integer, DateTime
+from sqlalchemy.types import DateTime, Integer
 from whoosh.fields import ID
 
 from ..extensions import db

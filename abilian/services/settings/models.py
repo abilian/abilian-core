@@ -1,11 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import json
 from datetime import timedelta
+
 import sqlalchemy as sa
+
 from abilian.core.extensions import db
 
 __all__ = ['Setting']

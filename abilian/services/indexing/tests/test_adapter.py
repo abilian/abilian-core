@@ -1,20 +1,20 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from unittest import TestCase
 from datetime import datetime
+from unittest import TestCase
 
 import sqlalchemy as sa
-from whoosh.fields import Schema, TEXT, NUMERIC
+from whoosh.fields import NUMERIC, TEXT, Schema
 
-from abilian.testing import BaseTestCase as AppTestCase
-from abilian.services.indexing.adapter import SAAdapter
-from abilian.core.extensions import db
-from abilian.core.models.base import IdMixin, Indexable as CoreIndexable, \
-    SEARCHABLE
 from abilian.core.entities import Entity
+from abilian.core.extensions import db
+from abilian.core.models.base import Indexable as CoreIndexable
+from abilian.core.models.base import SEARCHABLE, IdMixin
+from abilian.services.indexing.adapter import SAAdapter
+from abilian.testing import BaseTestCase as AppTestCase
 
 
 class SANotAdaptable(object):

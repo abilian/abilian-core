@@ -2,17 +2,17 @@
 """
 Jinja2 extensions
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from functools import partial
 
 import lxml.html
-from jinja2.ext import Extension
-from jinja2 import nodes
-from werkzeug.local import LocalProxy
 from flask import current_app
-from flask.signals import request_started, got_request_exception
-from flask.globals import _request_ctx_stack, _lookup_req_object
+from flask.globals import _lookup_req_object, _request_ctx_stack
+from flask.signals import got_request_exception, request_started
+from jinja2 import nodes
+from jinja2.ext import Extension
+from werkzeug.local import LocalProxy
 
 
 deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))

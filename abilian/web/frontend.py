@@ -4,45 +4,36 @@ Front-end for a CRM app.
 
 This should eventually allow implementing very custom CRM-style application.
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-import logging
+from __future__ import absolute_import, division, print_function
+
 import copy
+import logging
 import re
 from collections import OrderedDict
 
 import sqlalchemy as sa
-from sqlalchemy import func
+from flask import (Blueprint, current_app, g, jsonify, redirect,
+                   render_template, request, session, url_for)
+from flask_login import current_user
+from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
-from sqlalchemy import orm
 from werkzeug.exceptions import BadRequest
 
-from flask import (session, redirect, request, g,
-                   Blueprint, jsonify, url_for,
-                   current_app, render_template)
-from flask_login import current_user
-
-from abilian.i18n import _l
-from abilian.core.extensions import db
 from abilian.core.entities import Entity
+from abilian.core.extensions import db
+from abilian.i18n import _l
 from abilian.services import audit_service
-from abilian.services.vocabularies.models import BaseVocabulary
 from abilian.services.security import READ  # noqa
-from .action import (
-  actions, Action, FAIcon, Endpoint,
-  ActionGroup, ActionGroupItem, ActionDropDown,
-)
+from abilian.services.vocabularies.models import BaseVocabulary
 
 from . import search
+from .action import (Action, ActionDropDown, ActionGroup, ActionGroupItem,
+                     Endpoint, FAIcon, actions)
+from .forms.widgets import (AjaxMainTableView, Panel, RelatedTableView, Row,
+                            SingleView)
 from .nav import BreadcrumbItem
-from .views import (
-    default_view, ObjectView, ObjectEdit, ObjectCreate,
-    ObjectDelete, JSONView, JSONWhooshSearch,
-)
-from .forms.widgets import (
-  Panel, Row, SingleView, RelatedTableView, AjaxMainTableView,
-)
+from .views import (JSONView, JSONWhooshSearch, ObjectCreate, ObjectDelete,
+                    ObjectEdit, ObjectView, default_view)
 
 logger = logging.getLogger(__name__)
 

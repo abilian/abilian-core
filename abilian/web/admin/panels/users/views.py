@@ -1,24 +1,24 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from cgi import escape
 
 import sqlalchemy as sa
-from sqlalchemy.sql.expression import or_, func, asc, desc, nullslast
-
-from werkzeug.datastructures import MultiDict
-from flask import request, current_app, render_template_string
-from flask_login import current_user
+from flask import current_app, render_template_string, request
 from flask_babel import format_datetime
+from flask_login import current_user
+from sqlalchemy.sql.expression import asc, desc, func, nullslast, or_
+from werkzeug.datastructures import MultiDict
 
-from abilian.services.security.models import Role, Admin
-from abilian.i18n import _
 from abilian.core.models.subjects import User, gen_random_password
-from abilian.web.util import url_for
+from abilian.i18n import _
+from abilian.services.security.models import Admin, Role
 from abilian.web.nav import BreadcrumbItem
-from abilian.web.views import base, object as views
+from abilian.web.util import url_for
+from abilian.web.views import object as views
+from abilian.web.views import base
 from abilian.web.views.images import user_photo_url
 
 from .forms import UserAdminForm, UserCreateForm

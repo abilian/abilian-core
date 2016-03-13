@@ -3,27 +3,26 @@
 Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level).
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-import re
-from inspect import isclass
-from datetime import datetime
 import collections
+import re
+from datetime import datetime
+from inspect import isclass
 
 import sqlalchemy as sa
+from flask import current_app
+from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import mapper, Session
+from sqlalchemy.orm import Session, mapper
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String, UnicodeText
-from sqlalchemy import event
-
-from flask import current_app
 
 from .extensions import db
-from .sqlalchemy import JSONDict
-from .util import memoized, friendly_fqcn, slugify
 from .models import BaseMixin
-from .models.base import Indexable, SYSTEM, SEARCHABLE, EDITABLE
+from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
+from .sqlalchemy import JSONDict
+from .util import friendly_fqcn, memoized, slugify
 
 __all__ = ['Entity', 'all_entity_classes', 'db', 'ValidationError']
 

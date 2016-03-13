@@ -1,9 +1,8 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from sqlalchemy import Column, UnicodeText, Text
+from __future__ import absolute_import, division, print_function
 
-from abilian.core.entities import Entity, SEARCHABLE
+from sqlalchemy import Column, Text, UnicodeText
+
+from abilian.core.entities import SEARCHABLE, Entity
 
 
 class DummyContact(Entity):

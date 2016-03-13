@@ -1,18 +1,20 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from sqlalchemy.orm.session import Session
 from multiprocessing.util import register_after_fork
-from celery import task, Celery, current_task, current_app as celery_current_app
-from celery.app.task import Task
-from celery.task import PeriodicTask as CeleryPeriodicTask
-from celery.loaders.base import BaseLoader
-from celery.utils.imports import symbol_by_name
 
-from flask import has_app_context, current_app as flask_current_app
+from celery import current_app as celery_current_app
+from celery import Celery, current_task, task
+from celery.app.task import Task
+from celery.loaders.base import BaseLoader
+from celery.task import PeriodicTask as CeleryPeriodicTask
+from celery.utils.imports import symbol_by_name
+from flask import current_app as flask_current_app
+from flask import has_app_context
 from flask.helpers import locked_cached_property
+from sqlalchemy.orm.session import Session
 
 
 def default_app_factory():

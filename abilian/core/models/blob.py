@@ -2,18 +2,18 @@
 """
 Blob. References to files stored in a on-disk repository
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-import uuid
 import hashlib
+import uuid
 
 import sqlalchemy as sa
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer
-from flask_sqlalchemy import BaseQuery
 
-from abilian.core.sqlalchemy import UUID, JSONDict
 from abilian.core.models.base import Model
+from abilian.core.sqlalchemy import UUID, JSONDict
 
 
 class BlobQuery(BaseQuery):

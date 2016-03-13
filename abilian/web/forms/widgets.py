@@ -4,47 +4,41 @@ Reusable widgets to be included in views.
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
-from future.utils import string_types
-import logging
-import cgi
-import urlparse
-import re
 import base64
-from itertools import ifilter
+import cgi
+import logging
+import re
+import urlparse
 from collections import namedtuple
 from datetime import datetime
+from itertools import ifilter
 
 import bleach
 import sqlalchemy as sa
-from flask import (
-  g, render_template, json, Markup, render_template_string, current_app,
-)
-from flask_wtf.file import FileField
-from flask_babel import (
-  format_date, format_datetime, format_number, get_locale,
-)
-from flask_login import current_user
 import wtforms
-from wtforms.widgets import (
-    HTMLString, Input, html_params, Select,
-    TextArea as BaseTextArea,
-    PasswordInput as BasePasswordInput,
-)
+from flask import (Markup, current_app, g, json, render_template,
+                   render_template_string)
+from flask_babel import format_date, format_datetime, format_number, get_locale
+from flask_login import current_user
+from flask_wtf.file import FileField
+from future.utils import string_types
+from wtforms.widgets import PasswordInput as BasePasswordInput
+from wtforms.widgets import TextArea as BaseTextArea
+from wtforms.widgets import HTMLString, Input, Select, html_params
 from wtforms_alchemy import ModelFieldList
 
-from abilian.i18n import _, _l
 from abilian.core.entities import Entity
 from abilian.core.models.blob import Blob
+from abilian.i18n import _, _l
 from abilian.services import image
 from abilian.services.image import get_format
-from abilian.web.filters import labelize, babel2datepicker
 from abilian.web import csrf, url_for
+from abilian.web.filters import babel2datepicker, labelize
 
 from .util import babel2datetime
+
 logger = logging.getLogger(__name__)
 
 __all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',

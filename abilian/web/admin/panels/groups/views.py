@@ -1,21 +1,23 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from cgi import escape
 
-from flask import request, current_app, render_template_string
 import sqlalchemy as sa
-from sqlalchemy.sql.expression import func, asc, desc, nullslast
+from flask import current_app, render_template_string, request
+from sqlalchemy.sql.expression import asc, desc, func, nullslast
 
+from abilian.core.models.subjects import Group, User
 from abilian.i18n import _l
 from abilian.services.security.models import Role
-from abilian.core.models.subjects import User, Group
-from abilian.web.util import url_for
-from abilian.web.nav import BreadcrumbItem
 from abilian.web.action import ButtonAction, FAIcon
-from abilian.web.views import base, object as views
+from abilian.web.nav import BreadcrumbItem
+from abilian.web.util import url_for
+from abilian.web.views import object as views
+from abilian.web.views import base
+
 from .forms import GroupAdminForm
 
 

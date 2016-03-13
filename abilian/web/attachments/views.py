@@ -1,22 +1,21 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import sqlalchemy as sa
-from werkzeug.exceptions import BadRequest
 from flask import current_app, send_file
+from werkzeug.exceptions import BadRequest
 from werkzeug.utils import redirect
 
-from abilian.i18n import _, _l
 from abilian.core.entities import Entity
 from abilian.core.models.attachment import Attachment, is_support_attachments
-from abilian.web import url_for, nav
+from abilian.i18n import _, _l
+from abilian.web import nav, url_for
+from abilian.web.action import ButtonAction, actions
 from abilian.web.blueprints import Blueprint
-from abilian.web.action import actions, ButtonAction
-from abilian.web.views import (
-  BaseObjectView, ObjectCreate, ObjectDelete, ObjectEdit,
-)
+from abilian.web.views import (BaseObjectView, ObjectCreate, ObjectDelete,
+                               ObjectEdit)
 
 from .forms import AttachmentForm
 

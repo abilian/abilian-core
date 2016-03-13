@@ -1,14 +1,12 @@
 # coding=utf-8
 
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from jinja2 import Markup
+from __future__ import absolute_import, division, print_function
+
 from flask import Flask
+from jinja2 import Markup
 
-from abilian.web.action import actions, Action, Glyphicon, StaticIcon
 from abilian.testing import BaseTestCase
-
+from abilian.web.action import Action, Glyphicon, StaticIcon, actions
 
 BASIC = Action('cat_1', 'basic', 'Basic Action', url='http://some.where',
                icon='ok')

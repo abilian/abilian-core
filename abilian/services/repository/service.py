@@ -1,22 +1,20 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from future.utils import string_types
-
-from uuid import UUID, uuid1
-import weakref
 import shutil
-from pathlib import Path
+import weakref
+from uuid import UUID, uuid1
 
 import sqlalchemy as sa
-from sqlalchemy.orm.session import Session
 from flask import _app_ctx_stack, current_app
 from flask.globals import _lookup_app_object
+from future.utils import string_types
+from pathlib import Path
+from sqlalchemy.orm.session import Session
 
 from abilian.services import Service, ServiceState
-
 
 _NULL_MARK = object()
 

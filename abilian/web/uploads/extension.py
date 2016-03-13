@@ -1,10 +1,10 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-import logging
 import json
+import logging
 import time
 from datetime import timedelta
 from uuid import UUID, uuid1
@@ -15,6 +15,7 @@ from flask_login import AnonymousUserMixin
 
 from abilian.core import signals
 from abilian.web import url_for
+
 from .views import bp as blueprint
 
 logger = logging.getLogger(__name__)

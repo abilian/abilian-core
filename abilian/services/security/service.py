@@ -2,34 +2,31 @@
 """
 Security service, manages roles and permissions.
 """
-from __future__ import absolute_import, print_function, division
-
-from future.utils import string_types
+from __future__ import absolute_import, division, print_function
 
 from functools import wraps
 from itertools import chain
 
-from flask import g, current_app
-from flask_login import current_user
 import sqlalchemy as sa
-from sqlalchemy.orm import subqueryload, object_session
+from flask import current_app, g
+from flask_login import current_user
+from future.utils import string_types
 from sqlalchemy import sql
+from sqlalchemy.orm import object_session, subqueryload
 
-from abilian.core.models.subjects import User, Group
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
+from abilian.core.models.subjects import Group, User
 from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
-from abilian.services.security.models import (
-  SecurityAudit, RoleAssignment, PermissionAssignment,
-  Anonymous as AnonymousRole, Authenticated,
-  Admin, Manager, Reader, Writer,
-  Owner, Creator,
-  InheritSecurity, Role, Permission,
-  READ, WRITE, MANAGE, CREATE, DELETE,
-  PERMISSIONS_ATTR,
-)
-
+from abilian.services.security.models import Anonymous as AnonymousRole
+from abilian.services.security.models import (CREATE, DELETE, MANAGE,
+                                              PERMISSIONS_ATTR, READ, WRITE,
+                                              Admin, Authenticated, Creator,
+                                              InheritSecurity, Manager, Owner,
+                                              Permission, PermissionAssignment,
+                                              Reader, Role, RoleAssignment,
+                                              SecurityAudit, Writer)
 
 #: list of legacy supported permissions when not using :class:`Permission`
 #: instance

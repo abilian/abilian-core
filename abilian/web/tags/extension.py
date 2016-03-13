@@ -1,16 +1,17 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
+from abilian.core.models.tag import TAGS_ATTR, Tag, is_support_tagging
 from abilian.i18n import _l
-from abilian.core.models.tag import Tag, TAGS_ATTR, is_support_tagging
 from abilian.web import url_for
 from abilian.web.forms import Form
 from abilian.web.views.object import EDIT_BUTTON
 
 from .forms import TagsField
-from .views import bp as tags_bp, entity_bp
+from .views import bp as tags_bp
+from .views import entity_bp
 
 ENTITY_DEFAULT_NS_ATTR = '__tags_default_ns__'
 

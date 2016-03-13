@@ -2,20 +2,20 @@
 """
 Various tools that don't belong some place specific.
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-import sys
 import functools
 import logging
-import time
-from datetime import datetime
-import pytz
-from math import ceil
-import unicodedata
 import re
+import sys
+import time
+import unicodedata
+from datetime import datetime
+from math import ceil
 
-from flask import request, current_app
+import pytz
 from babel.dates import LOCALTZ
+from flask import current_app, request
 from werkzeug.local import LocalProxy
 
 try:

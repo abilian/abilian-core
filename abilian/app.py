@@ -3,9 +3,7 @@
 Base Flask application class, used by tests or to be extended
 in real applications.
 """
-from __future__ import absolute_import, print_function, division
-
-from future.utils import string_types
+from __future__ import absolute_import, division, print_function
 
 import errno
 import importlib
@@ -29,6 +27,7 @@ from flask_assets import Bundle
 from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
+from future.utils import string_types
 from pathlib import Path
 from pkg_resources import resource_filename
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE

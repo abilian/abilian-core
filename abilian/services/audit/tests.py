@@ -1,23 +1,22 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import datetime
 from itertools import count
 
 import sqlalchemy as sa
+from sqlalchemy import (Column, Date, ForeignKey, Integer, Text, Unicode,
+                        UnicodeText)
 from sqlalchemy.orm.attributes import NEVER_SET
-from sqlalchemy import (Column, Unicode, UnicodeText, Text, Date, ForeignKey,
-                        Integer)
 
-from abilian.core.models.base import SEARCHABLE, AUDITABLE_HIDDEN
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
+from abilian.core.models.base import AUDITABLE_HIDDEN, SEARCHABLE
 from abilian.testing import BaseTestCase
 
-from . import audit_service
-from . import AuditEntry, Changes, CREATION, UPDATE, DELETION
+from . import CREATION, DELETION, UPDATE, AuditEntry, Changes, audit_service
 
 
 class IntegerCollection(db.Model):

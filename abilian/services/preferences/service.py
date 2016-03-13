@@ -8,22 +8,21 @@ Notes:
 - For application settings use
   :class:`abilian.services.settings.SettingsService`.
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from flask import Blueprint, url_for, request, redirect, g
+from flask import Blueprint, g, redirect, request, url_for
 from flask_login import current_user
 from werkzeug.exceptions import InternalServerError
 
-from abilian.i18n import _, _l
-from abilian.core.extensions import db
 from abilian.core import signals
-from abilian.web.action import Endpoint
-from abilian.web.nav import NavItem, BreadcrumbItem
+from abilian.core.extensions import db
+from abilian.i18n import _, _l
 from abilian.services.auth.service import user_menu
 from abilian.services.base import Service, ServiceState
+from abilian.web.action import Endpoint
+from abilian.web.nav import BreadcrumbItem, NavItem
 
 from .models import UserPreference
-
 
 _PREF_NAV_ITEM = NavItem(
   'user', 'preferences', title=_l(u'Preferences'), icon='cog',

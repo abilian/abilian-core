@@ -1,11 +1,12 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from flask import current_app, request
 from flask_login import user_logged_in
 from raven.contrib.flask import Sentry as RavenExt
+
 
 class Sentry(RavenExt):
 

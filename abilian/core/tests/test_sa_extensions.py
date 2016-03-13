@@ -1,13 +1,12 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
 import uuid
 
 from sqlalchemy import Column
 
-from abilian.core.extensions import db
 from abilian.core.entities import Entity
-from abilian.core.sqlalchemy import JSONList, JSONDict, UUID
+from abilian.core.extensions import db
+from abilian.core.sqlalchemy import UUID, JSONDict, JSONList
 from abilian.testing import BaseTestCase
 
 

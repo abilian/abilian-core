@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from wtforms.fields import StringField
 
-from abilian.i18n import _l
 from abilian.core.models.attachment import Attachment
+from abilian.i18n import _l
 from abilian.web.forms import Form
 from abilian.web.forms.fields import FileField
-from abilian.web.forms.validators import required
 from abilian.web.forms.filters import strip
+from abilian.web.forms.validators import required
 
 
 class AttachmentForm(Form):

@@ -1,11 +1,11 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from werkzeug.exceptions import HTTPException
-from flask import request, g, json, jsonify, render_template_string, redirect
+from flask import g, json, jsonify, redirect, render_template_string, request
 from flask.views import MethodView as BaseView
+from werkzeug.exceptions import HTTPException
 
 from ..action import actions
 

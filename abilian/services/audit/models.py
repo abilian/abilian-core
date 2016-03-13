@@ -8,22 +8,19 @@ TODO: In the future, we may decide to:
 - Make Models that have the __auditable__ property (set to True) auditable.
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
-from datetime import datetime
 import pickle
-from flask import current_app
+from datetime import datetime
 
+from flask import current_app
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, UnicodeText, DateTime, Binary, String
+from sqlalchemy.types import Binary, DateTime, Integer, String, UnicodeText
 
 from abilian.core.entities import Entity
-from abilian.core.models.subjects import User
 from abilian.core.extensions import db
-
+from abilian.core.models.subjects import User
 
 CREATION = 0
 UPDATE   = 1

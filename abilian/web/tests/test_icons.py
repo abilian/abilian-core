@@ -1,10 +1,10 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from abilian.web.action import Glyphicon, FAIcon, StaticIcon
 from abilian.testing import BaseTestCase
+from abilian.web.action import FAIcon, Glyphicon, StaticIcon
 
 
 class TestIcons(BaseTestCase):

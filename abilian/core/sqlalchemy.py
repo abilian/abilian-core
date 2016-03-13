@@ -1,26 +1,25 @@
 # coding=utf-8
 """ Additional data types for sqlalchemy
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from future.utils import string_types
-
-import sys
-import logging
-from distutils.version import StrictVersion
-import pkg_resources
-from functools import partial
 import json
+import logging
+import sys
 import uuid
+from distutils.version import StrictVersion
+from functools import partial
 
-import pytz
 import babel
-from flask_sqlalchemy import SQLAlchemy as SAExtension
+import flask_sqlalchemy as flask_sa
+import pkg_resources
+import pytz
 import sqlalchemy as sa
+from flask_sqlalchemy import SQLAlchemy as SAExtension
+from future.utils import string_types
 from sqlalchemy.ext.mutable import Mutable
 
 from .logging import patch_logger
-
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +139,6 @@ def _calling_context(app_path):
 
   return sa_caller
 
-import flask_sqlalchemy as flask_sa
 patch_logger.info(flask_sa._calling_context)
 flask_sa._calling_context = _calling_context
 del flask_sa

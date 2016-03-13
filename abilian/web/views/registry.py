@@ -1,10 +1,10 @@
 # coding=utf-8
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import inspect
 from operator import attrgetter, itemgetter
 
-from flask import url_for, Blueprint
+from flask import Blueprint, url_for
 from whoosh.searching import Hit
 
 from abilian.core.extensions import db

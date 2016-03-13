@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import os
 import sys
-import pkg_resources
-import pip
-from pip.vcs import vcs
-from pathlib import Path
 
+import pip
+import pkg_resources
 from flask import render_template
+from pathlib import Path
+from pip.vcs import vcs
 
 from ..panel import AdminPanel
 

@@ -1,14 +1,14 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import sqlalchemy as sa
 
-from abilian.web import url_for
 from abilian.testing import BaseTestCase
+from abilian.web import url_for
 
-from .models import Vocabulary, BaseVocabulary
+from .models import BaseVocabulary, Vocabulary
 from .service import vocabularies
 
 

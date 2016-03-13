@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import abc
 from functools import total_ordering
 
 import sqlalchemy as sa
 
-from .base import Model, IdMixin
 from abilian.core.entities import Entity
 
+from .base import IdMixin, Model
 
 #: backref attribute on tagged elements
 TAGS_ATTR = '__tags__'

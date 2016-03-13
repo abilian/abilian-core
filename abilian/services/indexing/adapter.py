@@ -2,23 +2,21 @@
 """
 Objects to schema adapters
 """
-from __future__ import absolute_import, print_function, division
-
-from future.utils import string_types
+from __future__ import absolute_import, division, print_function
 
 import logging
 from abc import ABCMeta, abstractmethod
 from operator import attrgetter
 
 import sqlalchemy as sa
-from whoosh.fields import TEXT
-
 from flask import current_app
+from future.utils import string_types
+from whoosh.fields import TEXT
 
 from abilian.core.extensions import db
 from abilian.core.sqlalchemy import MutationList
-from .schema import accent_folder
 
+from .schema import accent_folder
 
 __all__ = ['SchemaAdapter', 'SAAdapter']
 

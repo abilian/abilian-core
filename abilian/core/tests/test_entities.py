@@ -1,17 +1,19 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from unittest import TestCase
 from datetime import datetime
+from unittest import TestCase
+
 import sqlalchemy as sa
 
-from abilian.testing import BaseTestCase as AbilianTestCase
-from abilian.services import security
-from abilian.core.models.base import SEARCHABLE, NOT_SEARCHABLE, AUDITABLE, Info
-from abilian.core.models.subjects import User
 from abilian.core.entities import Entity
+from abilian.core.models.base import (AUDITABLE, NOT_SEARCHABLE, SEARCHABLE,
+                                      Info)
+from abilian.core.models.subjects import User
+from abilian.services import security
+from abilian.testing import BaseTestCase as AbilianTestCase
 
 from .dummy import DummyContact
 

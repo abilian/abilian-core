@@ -6,12 +6,13 @@ from __future__ import absolute_import
 from flask import current_app
 from flask_debugtoolbar.panels import DebugPanel
 
-from abilian.i18n import _
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import Group
+from abilian.i18n import _
 from abilian.web.action import actions
 
 from .models import Anonymous
+
 
 class SecurityInfoDebugPanel(DebugPanel):
   """

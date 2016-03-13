@@ -1,17 +1,17 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import uuid
 from StringIO import StringIO
 
+from abilian.services import repository_service as repository
+from abilian.services import session_repository_service as session_repository
 from abilian.testing import BaseTestCase as AbilianTestCase
-from abilian.services import (
-  repository_service as repository,
-  session_repository_service as session_repository
-)
+
 from ..blob import Blob
+
 
 #
 # Unit tests

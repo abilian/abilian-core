@@ -1,17 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
-import bleach
+from __future__ import absolute_import, division, print_function
 
+import bleach
 from wtforms.fields import BooleanField, IntegerField, StringField
 from wtforms.widgets import HiddenInput
 
 from abilian.i18n import _l
 from abilian.web.forms import ModelForm
-from abilian.web.forms.validators import required
 from abilian.web.forms.filters import strip
-
+from abilian.web.forms.validators import required
 
 ALLOWED_TAGS = [
     'b',

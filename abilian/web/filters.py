@@ -2,9 +2,7 @@
 """
 Add a few specific filters to Jinja2.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import datetime
 import re
@@ -21,8 +19,9 @@ from pytz import utc
 from werkzeug.routing import BuildError
 
 from abilian.web.decorators import deprecated
+
+from ..core.util import local_dt, slugify, utc_dt
 from .util import url_for
-from ..core.util import local_dt, utc_dt, slugify
 
 
 def autoescape(filter_func):

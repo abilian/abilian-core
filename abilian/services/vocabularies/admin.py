@@ -2,15 +2,15 @@
 """
 Admin panel for vocabularies
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from flask import g, request, current_app, render_template, redirect
+from flask import current_app, g, redirect, render_template, request
 
 from abilian.i18n import _, _l
-from abilian.web.admin import AdminPanel
-from abilian.web import views, url_for
-from abilian.web.nav import BreadcrumbItem
+from abilian.web import url_for, views
 from abilian.web.action import Glyphicon
+from abilian.web.admin import AdminPanel
+from abilian.web.nav import BreadcrumbItem
 
 from .forms import EditForm
 

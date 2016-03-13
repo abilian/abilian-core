@@ -2,14 +2,16 @@
 """
 Vocabularies service.
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from inspect import isclass
 
 import jinja2
+
 from abilian.services.base import Service
 
 from .models import BaseVocabulary
+
 
 def _vocabularies():
   return {cls for cls in BaseVocabulary._decl_class_registry.values()

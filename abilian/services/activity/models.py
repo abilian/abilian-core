@@ -7,18 +7,16 @@ See: http://stackoverflow.com/questions/1443960/how-to-implement-the-activity-st
 
 TODO: Look wether other attributes from the spec need to be implemented.
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 from datetime import datetime
-from flask import logging
 
+from flask import logging
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, DateTime, Text, String
+from sqlalchemy.types import DateTime, Integer, String, Text
 
-from abilian.core.entities import db, Entity
+from abilian.core.entities import Entity, db
 from abilian.core.models.subjects import User
 
 __all__ = ['ActivityEntry']

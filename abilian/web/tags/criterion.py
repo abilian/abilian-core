@@ -5,10 +5,11 @@ from __future__ import absolute_import
 
 import sqlalchemy as sa
 
-from abilian.i18n import _
 from abilian.core.models.tag import Tag, entity_tag_tbl
-from .extension import ENTITY_DEFAULT_NS_ATTR
+from abilian.i18n import _
+
 from ..search.criterion import BaseCriterion
+from .extension import ENTITY_DEFAULT_NS_ATTR
 
 
 class TagCriterion(BaseCriterion):

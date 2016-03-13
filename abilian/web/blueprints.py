@@ -1,12 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
+from flask import Blueprint as BaseBlueprint
+from flask import current_app
 from future.utils import string_types
 
-from flask import Blueprint as BaseBlueprint, current_app
-from abilian.services.security import Role, Anonymous
+from abilian.services.security import Anonymous, Role
 
 
 def allow_anonymous(user, roles, **kwargs):

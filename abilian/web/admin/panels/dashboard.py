@@ -1,18 +1,18 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from datetime import datetime, timedelta
-import sqlalchemy as sa
-from numpy import sum as numpysum
+
 import pandas as pd
+import sqlalchemy as sa
+from flask import current_app, render_template
+from numpy import sum as numpysum
 
-from flask import render_template, current_app
-
-from abilian.i18n import _, _l
 from abilian.core.models.subjects import User
-from abilian.services.audit import AuditEntry, CREATION
+from abilian.i18n import _, _l
+from abilian.services.audit import CREATION, AuditEntry
 from abilian.services.auth.models import LoginSession
 
 from ..panel import AdminPanel

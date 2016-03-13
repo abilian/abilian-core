@@ -1,15 +1,17 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from datetime import datetime, timedelta
+
 from _pytest.python import raises
 
-from abilian.testing import BaseTestCase as AbilianTestCase
 from abilian.core.entities import Entity
+from abilian.testing import BaseTestCase as AbilianTestCase
 
 from ..comment import Comment, is_commentable, register
+
 
 @register
 class CommentableContent(Entity):

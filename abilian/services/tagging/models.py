@@ -12,13 +12,12 @@ For example, if the actor specifies that a particular user appears in a photo.
 The object is the user and the target is the photo."
 
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from abilian.core.extensions import db
-from abilian.core.entities import IdMixin
+from __future__ import absolute_import, division, print_function
 
-from sqlalchemy import Column, Integer, Unicode, ForeignKey, DateTime
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode
+
+from abilian.core.entities import IdMixin
+from abilian.core.extensions import db
 
 
 class Tag(db.Model, IdMixin):

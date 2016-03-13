@@ -1,11 +1,11 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import sys
 
-from blinker import Signal, Namespace
+from blinker import Namespace, Signal
 from flask import current_app, g
 from flask_debugtoolbar.panels import DebugPanel
 

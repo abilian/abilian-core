@@ -1,24 +1,24 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from datetime import datetime
 
 import sqlalchemy as sa
-from werkzeug.exceptions import BadRequest
 from flask_login import current_user
+from werkzeug.exceptions import BadRequest
 
-from abilian.i18n import _, _l
 from abilian.core.entities import Entity
 from abilian.core.models.comment import Comment, is_commentable
 from abilian.core.util import utc_dt
-from abilian.web import url_for, nav
+from abilian.i18n import _, _l
+from abilian.web import nav, url_for
+from abilian.web.action import ButtonAction, actions
 from abilian.web.blueprints import Blueprint
-from abilian.web.action import actions, ButtonAction
-from abilian.web.views.object import (
-  ObjectEdit, ObjectCreate, ObjectDelete, CANCEL_BUTTON,
-)
+from abilian.web.views.object import (CANCEL_BUTTON, ObjectCreate,
+                                      ObjectDelete, ObjectEdit)
+
 from .forms import CommentForm
 
 bp = Blueprint('comments', __name__, url_prefix='/comments')

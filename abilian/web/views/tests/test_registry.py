@@ -1,19 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import sqlalchemy as sa
-
-from flask import Flask, Blueprint
+from flask import Blueprint, Flask
 from flask_testing import TestCase as FlaskTestCase
 
 from abilian.core.entities import Entity
-
 # needed if running only this test, else SA won't have registered this mapping
 # required by Entity.owner_id, etc
 from abilian.core.models.subjects import User  # noqa
-
 from abilian.web.views import Registry, default_view
 
 

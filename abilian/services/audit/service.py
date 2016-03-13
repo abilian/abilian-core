@@ -6,23 +6,21 @@ TODO: In the future, we may decide to:
 - Make Models that have the __auditable__ property (set to True) auditable.
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
 import logging
 from inspect import isclass
 
-from flask import g, current_app
 import sqlalchemy as sa
+from flask import current_app, g
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 
-from abilian.services import Service, ServiceState
 from abilian.core.entities import Entity
+from abilian.services import Service, ServiceState
 
-from .models import AuditEntry, Changes, CREATION, UPDATE, DELETION, RELATED
-
+from .models import CREATION, DELETION, RELATED, UPDATE, AuditEntry, Changes
 
 log = logging.getLogger(__name__)
 

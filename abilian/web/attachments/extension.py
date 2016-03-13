@@ -1,18 +1,19 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from flask import current_app
 from flask_login import current_user
 
 from abilian.core.entities import Entity
 from abilian.core.models import attachment as attachments
-from abilian.services.security import security, READ, WRITE
+from abilian.services.security import READ, WRITE, security
 from abilian.web import url_for
 
 from .forms import AttachmentForm
-from .views import bp as blueprint, UPLOAD_BUTTON
+from .views import bp as blueprint
+from .views import UPLOAD_BUTTON
 
 _MANAGER_ATTR = '__attachments_manager__'
 

@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import datetime
+
 import mock
 import pytz
-
 from wtforms.form import Form
 
-from abilian.services.security import Role, READ, WRITE, Anonymous, Owner
 from abilian.core.entities import Entity
+from abilian.services.security import READ, WRITE, Anonymous, Owner, Role
 from abilian.testing import BaseTestCase
 
 from . import FormPermissions, fields, filters

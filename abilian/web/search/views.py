@@ -1,23 +1,19 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from functools import partial
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
+from functools import partial
 
 import whoosh
 import whoosh.sorting
-
-from flask import (
-  Blueprint, request, g, render_template, current_app, url_for,
-  json, jsonify, render_template_string
-)
+from flask import (Blueprint, current_app, g, json, jsonify, render_template,
+                   render_template_string, request, url_for)
 
 from abilian.i18n import _
 from abilian.web import nav, views
-
 
 logger = logging.getLogger(__name__)
 

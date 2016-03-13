@@ -2,10 +2,10 @@
 """
 View decorators for controlling some aspect of HTTP, mainly: Cache headers
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
 from functools import wraps
+
 from flask import make_response
 
 

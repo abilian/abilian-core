@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import json
 from functools import partial
 
-from flask import url_for, request
+from flask import request, url_for
 
-from abilian.testing import BaseTestCase, TestConfig
 from abilian.core.models.subjects import User
 from abilian.services.auth import views
+from abilian.testing import BaseTestCase, TestConfig
 
 
 class AuthTestConfig(TestConfig):

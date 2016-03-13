@@ -1,19 +1,18 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from werkzeug.exceptions import BadRequest
 from flask import current_app
+from werkzeug.exceptions import BadRequest
 
-from abilian.i18n import _l
 from abilian.core.entities import Entity
 from abilian.core.models.tag import Tag
+from abilian.i18n import _l
 from abilian.web import url_for
 from abilian.web.blueprints import Blueprint
-from abilian.web.views import (
-  JSONView, BaseObjectView, ObjectEdit, ObjectCreate, ObjectDelete,
-)
+from abilian.web.views import (BaseObjectView, JSONView, ObjectCreate,
+                               ObjectDelete, ObjectEdit)
 
 from .forms import TagForm
 

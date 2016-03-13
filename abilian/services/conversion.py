@@ -9,36 +9,32 @@ Assumes poppler-utils and LibreOffice are installed.
 
 TODO: rename Converter into ConversionService ?
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
-from future.utils import string_types, raise_from
-
+import cStringIO as StringIO
 import glob
 import hashlib
-import shutil
 import logging
-from tempfile import mkstemp
-import traceback
-from abc import ABCMeta, abstractmethod
-from pathlib import Path
-from magic import Magic
+import mimetypes
 import os
+import re
+import shutil
 import subprocess
 import threading
-from base64 import encodestring, decodestring
-from xmlrpclib import ServerProxy
-import mimetypes
-import re
-import cStringIO as StringIO
+import traceback
+from abc import ABCMeta, abstractmethod
+from base64 import decodestring, encodestring
 from contextlib import contextmanager
+from tempfile import mkstemp
+from xmlrpclib import ServerProxy
 
+from future.utils import raise_from, string_types
+from magic import Magic
+from pathlib import Path
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-from abilian.services.image import resize, FIT
-
+from abilian.services.image import FIT, resize
 
 logger = logging.getLogger(__name__)
 

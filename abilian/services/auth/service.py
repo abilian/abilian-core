@@ -1,28 +1,26 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import logging
 from datetime import datetime, timedelta
 
-from werkzeug.exceptions import Forbidden
-from flask import current_app, g, request, url_for, redirect
-from flask_login import (
-  current_user, user_logged_out, user_logged_in, login_user
-)
+from flask import current_app, g, redirect, request, url_for
 from flask_babel import lazy_gettext as _l
+from flask_login import (current_user, login_user, user_logged_in,
+                         user_logged_out)
+from werkzeug.exceptions import Forbidden
 
-from abilian.services import Service, ServiceState
-from abilian.core.signals import user_loaded
-from abilian.core.models.subjects import User
 from abilian.core.extensions import db, login_manager
-from abilian.web.action import actions, DynamicIcon
-from abilian.web.nav import NavItem, NavGroup
+from abilian.core.models.subjects import User
+from abilian.core.signals import user_loaded
+from abilian.services import Service, ServiceState
+from abilian.web.action import DynamicIcon, actions
+from abilian.web.nav import NavGroup, NavItem
 
-from .views import login as login_views
 from .models import LoginSession
-
+from .views import login as login_views
 
 __all__ = ['AuthService', 'user_menu']
 

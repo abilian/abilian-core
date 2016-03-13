@@ -1,10 +1,10 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from redis import from_url as redis_from_url
 from flask import current_app
+from redis import from_url as redis_from_url
 
 
 class Extension(object):

@@ -2,15 +2,12 @@
 Provides tools (currently: only functions, not a real service) for image
 processing.
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
+import hashlib
+from cStringIO import StringIO
 
 from future.utils import string_types
-
-from cStringIO import StringIO
-import hashlib
-
 from PIL import Image
 
 __all__ = ['resize', 'RESIZE_MODES', 'SCALE', 'FIT', 'CROP']

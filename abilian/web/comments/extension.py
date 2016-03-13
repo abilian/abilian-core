@@ -1,13 +1,14 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from abilian.core.models import comment as comments
 from abilian.web import url_for
 
 from .forms import CommentForm
-from .views import bp as blueprint, COMMENT_BUTTON
+from .views import bp as blueprint
+from .views import COMMENT_BUTTON
 
 
 class CommentExtension(object):
@@ -43,4 +44,3 @@ class CommentExtension(object):
     ctx['form'] = CommentForm()
     ctx['buttons'] = [COMMENT_BUTTON]
     return ctx
-

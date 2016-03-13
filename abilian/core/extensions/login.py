@@ -1,10 +1,10 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from flask import current_app
-from flask_login import LoginManager, AnonymousUserMixin
+from flask_login import AnonymousUserMixin, LoginManager
 
 
 class AnonymousUser(AnonymousUserMixin):

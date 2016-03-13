@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from pathlib import Path
 import imghdr
-from flask import url_for, request
 
-from abilian.testing import BaseTestCase
+from flask import request, url_for
+from pathlib import Path
+
 from abilian.core.models.subjects import User
+from abilian.testing import BaseTestCase
 from abilian.web.preferences.user import UserPreferencesForm
-
 
 AVATAR_COLORMAP = Path(__file__).parent / u'avatar-colormap.png'
 

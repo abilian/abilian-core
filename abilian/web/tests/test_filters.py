@@ -1,14 +1,13 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
 import datetime
 
-from flask import Flask
-from flask_testing import TestCase as FlaskTestCase
-from flask_babel import Babel
-from jinja2 import Environment
-import mock
 import html5lib
+import mock
+from flask import Flask
+from flask_babel import Babel
+from flask_testing import TestCase as FlaskTestCase
+from jinja2 import Environment
 from pytz import timezone, utc
 
 from .. import filters

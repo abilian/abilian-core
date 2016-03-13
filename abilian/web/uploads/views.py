@@ -1,21 +1,20 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from werkzeug import secure_filename
-from werkzeug.exceptions import BadRequest, NotFound
-from flask import current_app, send_file, jsonify
+from flask import current_app, jsonify, send_file
 from flask.signals import request_tearing_down
 from flask_login import current_user
 from flask_wtf.file import FileField, file_required
+from werkzeug import secure_filename
+from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.util import pdb_on_error
-
 from abilian.web import csrf, url_for
-from abilian.web.forms import Form
 from abilian.web.blueprints import Blueprint
-from abilian.web.views import View, JSONView
+from abilian.web.forms import Form
+from abilian.web.views import JSONView, View
 
 bp = Blueprint('uploads', __name__, url_prefix='/upload')
 

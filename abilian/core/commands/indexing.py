@@ -1,22 +1,20 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from future.utils import string_types
-
-from collections import deque
 import time
+from collections import deque
 
 import progressbar as pb
 import sqlalchemy as sa
-from sqlalchemy.orm.session import Session
 import whoosh
-from whoosh.writing import AsyncWriter, CLEAR
 from flask import current_app
+from future.utils import string_types
+from sqlalchemy.orm.session import Session
+from whoosh.writing import CLEAR, AsyncWriter
 
 from .base import manager
-
 
 STOP = object()
 COMMIT = object()

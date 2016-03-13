@@ -46,30 +46,27 @@ And just type:
 
 
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from future.utils import string_types
-
+import importlib
 import os
 import re
-from gettext import GNUTranslations
-import importlib
 import unicodedata
-from pathlib import Path
 from contextlib import contextmanager
 from datetime import datetime
+from gettext import GNUTranslations
 
+import flask_babel
 import pytz
 from babel import Locale
+from babel.dates import LOCALTZ, get_timezone, get_timezone_gmt
 from babel.localedata import locale_identifiers
 from babel.support import Translations as BaseTranslations
-from babel.dates import LOCALTZ, get_timezone, get_timezone_gmt
-from flask import g, request, _request_ctx_stack, current_app, render_template
-import flask_babel
-from flask_babel import (
-    Babel as BabelBase,
-    gettext, lazy_gettext, ngettext,
-)
+from flask import _request_ctx_stack, current_app, g, render_template, request
+from flask_babel import Babel as BabelBase
+from flask_babel import gettext, lazy_gettext, ngettext
+from future.utils import string_types
+from pathlib import Path
 
 __all__ = [
   'babel',

@@ -1,13 +1,12 @@
 # coding=utf-8
 
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
 from functools import wraps
 
-from werkzeug.exceptions import Forbidden
-from flask import Blueprint, jsonify, current_app, request
+from flask import Blueprint, current_app, jsonify, request
 from flask_wtf import Form
+from werkzeug.exceptions import Forbidden
 
 blueprint = Blueprint('csrf', __name__, url_prefix='/csrf')
 

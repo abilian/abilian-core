@@ -1,23 +1,21 @@
 # coding=utf-8
 
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
 from unittest import TestCase, skip
+
 import sqlalchemy as sa
 from flask.signals import request_started
 from wtforms import Form, IntegerField, StringField
 
-from abilian.testing import BaseTestCase
-
 # Import for side-effects (monkey-patch)
 import abilian.web.forms  # noqa
-
 from abilian.core.entities import Entity
+from abilian.testing import BaseTestCase
 from abilian.web.views import default_view
 
-from ..forms.widgets import MainTableView, SingleView, Panel, Row, \
-  linkify_url, text2html, EmailWidget
+from ..forms.widgets import (EmailWidget, MainTableView, Panel, Row,
+                             SingleView, linkify_url, text2html)
 
 
 class WidgetTestModel(Entity):

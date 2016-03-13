@@ -1,18 +1,17 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import hashlib
 
-from sqlalchemy.sql.expression import or_, func
-from flask import Blueprint, make_response, request, g, Response
+from flask import Blueprint, Response, g, make_response, request
+from sqlalchemy.sql.expression import func, or_
 from werkzeug.exceptions import NotFound
 
 from abilian.core.models.subjects import User
 from abilian.web import url_for
 from abilian.web.views import JSONModelSearch
-
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 

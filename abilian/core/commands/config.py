@@ -1,14 +1,14 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-import os
 import logging
+import os
 
-from jinja2 import Environment, PackageLoader, Markup
 from flask import current_app
 from flask_script import Manager
+from jinja2 import Environment, Markup, PackageLoader
 
 from .base import log_config, logger
 
