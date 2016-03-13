@@ -56,6 +56,13 @@ lint-python:
 	flake8 $(SRC)
 	@echo ""
 
+flake8:
+	flake8 --max-complexity=8 --config=setup.cfg abilian
+
+clean-code:
+	isort -rc abilian
+	yapf --style google -r -i abilian
+
 test-readme:
 	rst-lint README.rst
 
@@ -80,9 +87,6 @@ pytest-pep8:
 
 pytest-flake:
 	py.test --flakes -m flakes $(SRC) tests
-
-flake8:
-	flake8 $(SRC)
 
 pylama:
 	pylama $(SRC)
