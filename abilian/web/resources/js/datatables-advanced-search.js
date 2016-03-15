@@ -834,7 +834,8 @@
                 $('<button />')
                     .attr({'class': 'close'})
                     .append($('<span />')
-                            .attr({'class': 'glyphicon glyphicon-minus'}))
+                            .attr({'class': 'glyphicon glyphicon-minus'})
+                            .text(args.label))
                     .on('click',
                         {'instance': this,
                          'value': args.value,
@@ -867,7 +868,7 @@
             'load': function(vals) {
                 vals = vals[0];
                 for (var filterName in vals.values) {
-                    if (!this.options[filterName]) {
+                    if (this.options==null || !this.options[filterName]) {
                         continue;
                     }
                     this.installOption(this.options[filterName]);
