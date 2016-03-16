@@ -11,7 +11,7 @@
         self.prefix = table.data('prefix');
         self.tbody = table.children('tbody');
         self.options = options;
-
+        if (self.options == null){self.options = 'top'};
         self.currentIndex = table.find('> tbody > tr').length;
         self.table.addClass('dynamic-row-widget');
         self.addButton = $('<th><span class="glyphicon glyphicon-plus"></span></th>');
@@ -26,8 +26,17 @@
                                     $(this).closest('tr').remove();
                                     e.preventDefault();
                                 });
-
-        table.find('> thead > tr').append(self.addButton);
+        if(self.options.indexOf('top') > -1){
+          table.find('> thead > tr').append(self.addButton);
+        }
+        if(self.options.indexOf('bottom') > -1){
+          var bottom_addButton = self.addButton.clone();
+          bottom_addButton.click(function(e) {
+                                  self.addRow();
+                                  e.preventDefault();
+                              });
+          table.find('> tfoot > tr').append(bottom_addButton);
+        }
         table.find('> tbody > tr').append(self.minusButton);
 
         self.templateRow = table.find('tbody > tr:first').clone(true, true);
