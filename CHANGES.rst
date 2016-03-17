@@ -1,6 +1,25 @@
 Changelog for Abilian Core
 ==========================
 
+0.5.3-0.5.6 (2016-03-17)
+------------------------
+
+Features:
+
+- dynamic row widget options to add controls at the bottom (23 hours ago)<yvon>
+
+Fixes:
+
+- fix datatable optionalcriterion filter (2 days ago)<yvon>
+- fix jquery datable jqmigrate warning (2 days ago)<yvon>
+- fix search criterion outerjoin (6 days ago)<yvon>
+- textsearch criterion mysterious onclause fix (9 days ago)<yvon>
+
+Cleanup:
+
+- Upgrade deps
+- Reformat code using Google style rule
+
 0.5.2 (2016-02-16)
 ------------------
 
