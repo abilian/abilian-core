@@ -59,7 +59,7 @@ lint-python:
 flake8:
 	flake8 --max-complexity=8 --config=setup.cfg abilian
 
-clean-code:
+format:
 	isort -rc abilian
 	yapf --style google -r -i abilian
 
