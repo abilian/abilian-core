@@ -1,15 +1,16 @@
 from __future__ import absolute_import
-from warnings import warn
-import tempfile
-from os.path import join, dirname
-from unittest import TestCase
-from magic import Magic, os
 
-# Don't remove
-from . import fix_path
+import tempfile
+from os.path import dirname, join
+from unittest import TestCase
+from warnings import warn
+
+from magic import Magic, os
 
 from abilian.services.conversion import converter
 
+# Don't remove
+from . import fix_path
 
 BASEDIR = join(dirname(__file__), "..", "dummy_files")
 BASEDIR2 = join(dirname(__file__), "..", "dummy_files2")

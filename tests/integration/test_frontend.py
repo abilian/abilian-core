@@ -2,7 +2,7 @@
 Test the frontend.
 """
 from flask.ext.wtf import Form
-from sqlalchemy import Column, UnicodeText, String
+from sqlalchemy import Column, String, UnicodeText
 
 from abilian.core.entities import Entity
 from abilian.testing import BaseTestCase

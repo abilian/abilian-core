@@ -3,12 +3,12 @@
 """
 from __future__ import absolute_import
 
-import setuptools
 from distutils.command.build import build as _build
-from setuptools.command.sdist import sdist as _sdist
-from setuptools.command.develop import develop as _develop
 
 import pip
+import setuptools
+from setuptools.command.develop import develop as _develop
+from setuptools.command.sdist import sdist as _sdist
 
 session = session=pip.download.PipSession()
 _install_requires = pip.req.parse_requirements(

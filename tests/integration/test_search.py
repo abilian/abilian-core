@@ -1,9 +1,10 @@
 """
 Test the index service.
 """
-from sqlalchemy import UnicodeText, Text, Column
+from sqlalchemy import Column, Text, UnicodeText
 from sqlalchemy.orm import column_property
-from abilian.core.entities import Entity, SEARCHABLE
+
+from abilian.core.entities import SEARCHABLE, Entity
 from abilian.services import index_service
 
 from .base import IntegrationTestCase

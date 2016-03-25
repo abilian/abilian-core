@@ -59,10 +59,6 @@ lint-python:
 flake8:
 	flake8 --max-complexity=8 --config=setup.cfg abilian
 
-format:
-	isort -rc abilian
-	yapf --style google -r -i abilian
-
 test-readme:
 	rst-lint README.rst
 

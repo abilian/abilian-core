@@ -3,13 +3,12 @@ Base TestCase for integration tests.
 """
 from __future__ import absolute_import
 
-# Don't remove
-from . import fix_path  # noqa
-
 import os
 
 from abilian.testing import BaseTestCase
 
+# Don't remove
+from . import fix_path  # noqa
 from .config import TestConfig
 
 BASEDIR = os.path.dirname(__file__)
