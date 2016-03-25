@@ -15,18 +15,15 @@ from abilian.web.forms.validators import required
 
 class AttachmentForm(Form):
 
-  blob = FileField(
-    _l(u'file'),
-    validators=[required()],
-    filters=(strip,),
-    multiple=False)
+    blob = FileField(
+        _l(u'file'),
+        validators=[required()],
+        filters=(strip,),
+        multiple=False)
 
-  description = StringField(
-    _l(u'description (optional)'),
-    filters=(strip,),
-  )
+    description = StringField(_l(u'description (optional)'), filters=(strip,),)
 
-  class Meta:
-    model = Attachment
-    include_primary_keys = True
-    assign_required = False # for 'id': allow None, for new records
+    class Meta:
+        model = Attachment
+        include_primary_keys = True
+        assign_required = False  # for 'id': allow None, for new records

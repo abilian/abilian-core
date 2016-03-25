@@ -8,5 +8,6 @@ from .criterion import TagCriterion
 
 __all__ = ['TagsExtension', 'TagCriterion']
 
+
 def register_plugin(app):
-  TagsExtension(app=app)
+    TagsExtension(app=app)

@@ -12,76 +12,74 @@ from abilian.web.action import actions
 
 
 class IndexedTermsDebugPanel(DebugPanel):
-  """
+    """
   A panel to display term values found in index for "current" object
 
   FIXME: this notion of "current" object should formalized in
   abilian.app.Application
   """
-  name = 'IndexedTerms'
+    name = 'IndexedTerms'
 
-  @property
-  def current_obj(self):
-    return actions.context.get('object')
+    @property
+    def current_obj(self):
+        return actions.context.get('object')
 
-  @property
-  def has_content(self):
-    obj = self.current_obj
-    return (obj is not None
-            and hasattr(obj, 'object_type')
-            and hasattr(obj, 'id')
-            and obj.id is not None)
+    @property
+    def has_content(self):
+        obj = self.current_obj
+        return (obj is not None and hasattr(obj, 'object_type') and
+                hasattr(obj, 'id') and obj.id is not None)
 
-  def nav_title(self):
-      return _('Indexed Terms')
+    def nav_title(self):
+        return _('Indexed Terms')
 
-  def nav_subtitle(self):
-    """Subtitle showing until title in toolbar"""
-    obj = self.current_obj
-    if not obj:
-      return _(u'No current object')
+    def nav_subtitle(self):
+        """Subtitle showing until title in toolbar"""
+        obj = self.current_obj
+        if not obj:
+            return _(u'No current object')
 
-    try:
-      return u'{}(id={})'.format(obj.__class__.__name__, obj.id)
-    except:
-      return u''
+        try:
+            return u'{}(id={})'.format(obj.__class__.__name__, obj.id)
+        except:
+            return u''
 
-  def title(self):
-      return _('Indexed Terms')
+    def title(self):
+        return _('Indexed Terms')
 
-  def url(self):
-      return ''
+    def url(self):
+        return ''
 
-  def content(self):
-    obj = self.current_obj
-    svc = current_app.services['indexing']
-    index = svc.app_state.indexes['default']
-    schema = index.schema
-    context = self.context.copy()
-    context['schema'] = schema
-    context['sorted_fields'] = sorted(schema.names())
+    def content(self):
+        obj = self.current_obj
+        svc = current_app.services['indexing']
+        index = svc.app_state.indexes['default']
+        schema = index.schema
+        context = self.context.copy()
+        context['schema'] = schema
+        context['sorted_fields'] = sorted(schema.names())
 
-    adapter = svc.adapted.get(fqcn(obj.__class__))
-    if adapter and adapter.indexable:
-      doc = context['current_document'] = svc.get_document(obj, adapter)
-      indexed = {}
-      for name, field in schema.items():
-        value = doc.get(name)
-        indexed[name] = None
-        if value and field.analyzer and field.format:
-          indexed[name] = list(field.process_text(value))
-      context['current_indexed'] = indexed
-      context['current_keys'] = sorted(set(doc) | set(indexed))
+        adapter = svc.adapted.get(fqcn(obj.__class__))
+        if adapter and adapter.indexable:
+            doc = context['current_document'] = svc.get_document(obj, adapter)
+            indexed = {}
+            for name, field in schema.items():
+                value = doc.get(name)
+                indexed[name] = None
+                if value and field.analyzer and field.format:
+                    indexed[name] = list(field.process_text(value))
+            context['current_indexed'] = indexed
+            context['current_keys'] = sorted(set(doc) | set(indexed))
 
-    with index.searcher() as search:
-      document = search.document(object_key=obj.object_key)
+        with index.searcher() as search:
+            document = search.document(object_key=obj.object_key)
 
-    sorted_keys = sorted(document) if document is not None else None
+        sorted_keys = sorted(document) if document is not None else None
 
-    context.update({'document': document, 'sorted_keys': sorted_keys})
+        context.update({'document': document, 'sorted_keys': sorted_keys})
 
-    jinja_env = current_app.jinja_env
-    jinja_env.filters.update(self.jinja_env.filters)
-    template = jinja_env.get_or_select_template(
-      'debug_panels/indexing_panel.html')
-    return template.render(context)
+        jinja_env = current_app.jinja_env
+        jinja_env.filters.update(self.jinja_env.filters)
+        template = jinja_env.get_or_select_template(
+            'debug_panels/indexing_panel.html')
+        return template.render(context)

@@ -56,122 +56,123 @@ _pending_indexation_attr = 'abilian_pending_indexation'
 _PATCHED = False
 
 if not _PATCHED:
-  def wrapping_collector_remove(self, global_docnum):
-    return self.child.remove(global_docnum)
 
-  from abilian.core.logging import patch_logger
-  patch_logger.info(WrappingCollector.remove)
-  WrappingCollector.remove = wrapping_collector_remove
-  _PATCHED = True
-  del patch_logger
-  del wrapping_collector_remove
+    def wrapping_collector_remove(self, global_docnum):
+        return self.child.remove(global_docnum)
+
+    from abilian.core.logging import patch_logger
+    patch_logger.info(WrappingCollector.remove)
+    WrappingCollector.remove = wrapping_collector_remove
+    _PATCHED = True
+    del patch_logger
+    del wrapping_collector_remove
 # END PATCH
 
+
 def url_for_hit(hit, default=u'#'):
-  """
+    """
   Helper for building URLs from results
   """
-  try:
-    object_type = hit['object_type']
-    object_id = int(hit['id'])
-    return current_app.default_view.url_for(hit, object_type, object_id)
-  except KeyError:
-    return default
-  except Exception:
-    logger.error('Error building URL for search result', exc_info=True)
-    return default
+    try:
+        object_type = hit['object_type']
+        object_id = int(hit['id'])
+        return current_app.default_view.url_for(hit, object_type, object_id)
+    except KeyError:
+        return default
+    except Exception:
+        logger.error('Error building URL for search result', exc_info=True)
+        return default
 
 
 def fqcn(cls):
-  if issubclass(cls, Entity):
-    return cls.entity_type
-  return base_fqcn(cls)
+    if issubclass(cls, Entity):
+        return cls.entity_type
+    return base_fqcn(cls)
 
 
 class IndexServiceState(ServiceState):
-  whoosh_base = None
-  indexes = None
-  indexed_classes = None
-  indexed_fqcn = None
-  search_filter_funcs = None
-  value_provider_funcs = None
-  url_for_hit = None
+    whoosh_base = None
+    indexes = None
+    indexed_classes = None
+    indexed_fqcn = None
+    search_filter_funcs = None
+    value_provider_funcs = None
+    url_for_hit = None
 
-  def __init__(self, *args, **kwargs):
-    ServiceState.__init__(self, *args, **kwargs)
-    self.indexes = {}
-    self.indexed_classes = set()
-    self.indexed_fqcn = set()
-    self.search_filter_funcs = []
-    self.value_provider_funcs = []
-    self.url_for_hit = url_for_hit
+    def __init__(self, *args, **kwargs):
+        ServiceState.__init__(self, *args, **kwargs)
+        self.indexes = {}
+        self.indexed_classes = set()
+        self.indexed_fqcn = set()
+        self.search_filter_funcs = []
+        self.value_provider_funcs = []
+        self.url_for_hit = url_for_hit
 
-  @property
-  def to_update(self):
-    return _lookup_app_object(_pending_indexation_attr)
+    @property
+    def to_update(self):
+        return _lookup_app_object(_pending_indexation_attr)
 
-  @to_update.setter
-  def to_update(self, value):
-    top = _app_ctx_stack.top
-    if top is None:
-      raise RuntimeError('working outside of application context')
+    @to_update.setter
+    def to_update(self, value):
+        top = _app_ctx_stack.top
+        if top is None:
+            raise RuntimeError('working outside of application context')
 
-    setattr(top, _pending_indexation_attr, value)
+        setattr(top, _pending_indexation_attr, value)
 
 
 class WhooshIndexService(Service):
-  """
+    """
   Index documents using whoosh
   """
-  name = 'indexing'
-  AppStateClass = IndexServiceState
+    name = 'indexing'
+    AppStateClass = IndexServiceState
 
-  _listening = False
+    _listening = False
 
-  def __init__(self, *args, **kwargs):
-    Service.__init__(self, *args, **kwargs)
-    self.adapters_cls = [SAAdapter]
-    self.adapted = {}
-    self.schemas = {'default': DefaultSearchSchema()}
+    def __init__(self, *args, **kwargs):
+        Service.__init__(self, *args, **kwargs)
+        self.adapters_cls = [SAAdapter]
+        self.adapted = {}
+        self.schemas = {'default': DefaultSearchSchema()}
 
-  def init_app(self, app):
-    Service.init_app(self, app)
-    state = app.extensions[self.name]
+    def init_app(self, app):
+        Service.init_app(self, app)
+        state = app.extensions[self.name]
 
-    whoosh_base = app.config.get("WHOOSH_BASE")
-    if not whoosh_base:
-      whoosh_base = "whoosh"  # Default value
+        whoosh_base = app.config.get("WHOOSH_BASE")
+        if not whoosh_base:
+            whoosh_base = "whoosh"  # Default value
 
-    if not os.path.isabs(whoosh_base):
-      whoosh_base = os.path.join(app.instance_path, whoosh_base)
+        if not os.path.isabs(whoosh_base):
+            whoosh_base = os.path.join(app.instance_path, whoosh_base)
 
-    state.whoosh_base = os.path.abspath(whoosh_base)
+        state.whoosh_base = os.path.abspath(whoosh_base)
 
-    if not self._listening:
-      event.listen(Session, "after_flush", self.after_flush)
-      event.listen(Session, "after_commit", self.after_commit)
-      self._listening = True
+        if not self._listening:
+            event.listen(Session, "after_flush", self.after_flush)
+            event.listen(Session, "after_commit", self.after_commit)
+            self._listening = True
 
-    appcontext_pushed.connect(self.clear_update_queue, app)
-    signals.register_js_api.connect(self._do_register_js_api)
+        appcontext_pushed.connect(self.clear_update_queue, app)
+        signals.register_js_api.connect(self._do_register_js_api)
 
-  def _do_register_js_api(self, sender):
-    app = sender
-    js_api = app.js_api.setdefault('search', {})
-    js_api['object_types'] = self.searchable_object_types()
+    def _do_register_js_api(self, sender):
+        app = sender
+        js_api = app.js_api.setdefault('search', {})
+        js_api['object_types'] = self.searchable_object_types()
 
-
-  def register_search_filter(self, func):
-    """
+    def register_search_filter(self, func):
+        """
     Register a function that returns a query used for filtering search
     results. This query is And'ed with other filters.
 
     If no filtering should be performed the function must return None.
     """
-    self.app_state.search_filter_funcs.append(func)
+        self.app_state.search_filter_funcs.append(func)
 
-  def register_value_provider(self, func):
-    """
+    def register_value_provider(self, func):
+        """
     Register a function that may alter content of indexable document.
 
     It is used in :meth:`get_document` and called after adapter has built
@@ -180,100 +181,102 @@ class WhooshIndexService(Service):
     The function must accept (document, obj) as arguments, and return
     the new document object.
     """
-    self.app_state.value_provider_funcs.append(func)
+        self.app_state.value_provider_funcs.append(func)
 
-  def clear_update_queue(self, app=None):
-    self.app_state.to_update = []
+    def clear_update_queue(self, app=None):
+        self.app_state.to_update = []
 
-  def start(self):
-    Service.start(self)
-    self.register_classes()
-    self.init_indexes()
-    self.clear_update_queue()
+    def start(self):
+        Service.start(self)
+        self.register_classes()
+        self.init_indexes()
+        self.clear_update_queue()
 
-  def init_indexes(self):
-    """
+    def init_indexes(self):
+        """
     Create indexes for schemas.
     """
-    state = self.app_state
+        state = self.app_state
 
-    for name, schema in self.schemas.iteritems():
-      if current_app.testing:
-        storage = TestingStorage()
-      else:
-        index_path = os.path.join(state.whoosh_base, name)
-        if not os.path.exists(index_path):
-          os.makedirs(index_path)
-        storage = FileStorage(index_path)
+        for name, schema in self.schemas.iteritems():
+            if current_app.testing:
+                storage = TestingStorage()
+            else:
+                index_path = os.path.join(state.whoosh_base, name)
+                if not os.path.exists(index_path):
+                    os.makedirs(index_path)
+                storage = FileStorage(index_path)
 
-      FileIndex = whoosh.index.FileIndex
-      if not storage.index_exists(name):
-        FileIndex = whoosh.index.FileIndex.create
+            FileIndex = whoosh.index.FileIndex
+            if not storage.index_exists(name):
+                FileIndex = whoosh.index.FileIndex.create
 
-      index = FileIndex(storage, schema, name)
-      state.indexes[name] = index
+            index = FileIndex(storage, schema, name)
+            state.indexes[name] = index
 
-  def clear(self):
-    """
+    def clear(self):
+        """
     Remove all content from indexes, and unregister all classes.
 
     After clear() the service is stopped. It must be started again to create
     new indexes and register classes.
     """
-    logger.info('Resetting indexes')
-    state = self.app_state
+        logger.info('Resetting indexes')
+        state = self.app_state
 
-    for name, idx in state.indexes.iteritems():
-      writer = AsyncWriter(idx)
-      writer.commit(merge=True, optimize=True, mergetype=CLEAR)
+        for name, idx in state.indexes.iteritems():
+            writer = AsyncWriter(idx)
+            writer.commit(merge=True, optimize=True, mergetype=CLEAR)
 
-    state.indexes = {}
-    state.indexed_classes = set()
-    state.indexed_fqcn = set()
-    self.clear_update_queue()
+        state.indexes = {}
+        state.indexed_classes = set()
+        state.indexed_fqcn = set()
+        self.clear_update_queue()
 
-    if self.running:
-      self.stop()
+        if self.running:
+            self.stop()
 
-  def index(self, name='default'):
-    return self.app_state.indexes[name]
+    def index(self, name='default'):
+        return self.app_state.indexes[name]
 
-  @property
-  def default_search_fields(self):
-    """
+    @property
+    def default_search_fields(self):
+        """
     Return default field names and boosts to be used for searching. Can be
     configured with `SEARCH_DEFAULT_BOOSTS`
     """
-    config = current_app.config.get('SEARCH_DEFAULT_BOOSTS')
-    if not config:
-     config = dict(
-         name=1.5,
-         name_prefix=1.3,
-         description=1.3,
-         text=1.0,)
-     return config
+        config = current_app.config.get('SEARCH_DEFAULT_BOOSTS')
+        if not config:
+            config = dict(name=1.5, name_prefix=1.3, description=1.3, text=1.0,)
+            return config
 
-  def searchable_object_types(self):
-    """
+    def searchable_object_types(self):
+        """
     List of (object_types, friendly name) present in the index.
     """
-    try:
-      idx = self.index()
-    except KeyError:
-      # index does not exists: service never started, may happens during tests
-      return []
+        try:
+            idx = self.index()
+        except KeyError:
+            # index does not exists: service never started, may happens during tests
+            return []
 
-    with idx.reader() as r:
-      indexed = sorted(set(r.field_terms('object_type')))
-    app_indexed = self.app_state.indexed_fqcn
+        with idx.reader() as r:
+            indexed = sorted(set(r.field_terms('object_type')))
+        app_indexed = self.app_state.indexed_fqcn
 
-    return [(name, friendly_fqcn(name)) for name in indexed
-            if name in app_indexed]
+        return [(name, friendly_fqcn(name))
+                for name in indexed if name in app_indexed]
 
-  def search(self, q, index='default', fields=None, Models=(),
-             object_types=(), prefix=True, facet_by_type=None,
-             **search_args):
-    """
+    def search(self,
+               q,
+               index='default',
+               fields=None,
+               Models=(),
+               object_types=(),
+               prefix=True,
+               facet_by_type=None,
+               **search_args):
+        """
     Interface to search indexes.
 
     :param q: unparsed search string.
@@ -288,235 +291,242 @@ class WhooshIndexService(Service):
         :meth:`whoosh.searching.Search.search`. This includes `limit`,
         `groupedby` and `sortedby`
     """
-    index = self.app_state.indexes[index]
-    if not fields:
-      fields = self.default_search_fields
+        index = self.app_state.indexes[index]
+        if not fields:
+            fields = self.default_search_fields
 
-    valid_fields = set(f for f in index.schema.names(check_names=fields)
-                       if prefix or not f.endswith('_prefix'))
+        valid_fields = set(f
+                           for f in index.schema.names(check_names=fields)
+                           if prefix or not f.endswith('_prefix'))
 
-    for invalid in set(fields) - valid_fields:
-      del fields[invalid]
+        for invalid in set(fields) - valid_fields:
+            del fields[invalid]
 
-    parser = DisMaxParser(fields, index.schema)
-    query = parser.parse(q)
+        parser = DisMaxParser(fields, index.schema)
+        query = parser.parse(q)
 
-    filters = search_args.setdefault('filter', None)
-    filters = [filters] if filters is not None else []
-    del search_args['filter']
+        filters = search_args.setdefault('filter', None)
+        filters = [filters] if filters is not None else []
+        del search_args['filter']
 
-    if not hasattr(g, 'is_manager') or not g.is_manager:
-      # security access filter
-      user = current_user
-      roles = {indexable_role(user)}
-      if not user.is_anonymous():
-        roles.add(indexable_role(Anonymous))
-        roles.add(indexable_role(Authenticated))
-        roles |= set(indexable_role(r) for r in security.get_roles(user))
+        if not hasattr(g, 'is_manager') or not g.is_manager:
+            # security access filter
+            user = current_user
+            roles = {indexable_role(user)}
+            if not user.is_anonymous():
+                roles.add(indexable_role(Anonymous))
+                roles.add(indexable_role(Authenticated))
+                roles |= set(indexable_role(r)
+                             for r in security.get_roles(user))
 
-      filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
-                        for role in roles])
-      filters.append(filter_q)
+            filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
+                              for role in roles])
+            filters.append(filter_q)
 
-    object_types = set(object_types)
-    for m in Models:
-      object_type = m.entity_type
-      if not object_type:
-        continue
-      object_types.add(object_type)
+        object_types = set(object_types)
+        for m in Models:
+            object_type = m.entity_type
+            if not object_type:
+                continue
+            object_types.add(object_type)
 
-    if object_types:
-      object_types &= self.app_state.indexed_fqcn
-    else:
-      # ensure we don't show content types previously indexed but not yet
-      # cleaned from index
-      object_types = self.app_state.indexed_fqcn
+        if object_types:
+            object_types &= self.app_state.indexed_fqcn
+        else:
+            # ensure we don't show content types previously indexed but not yet
+            # cleaned from index
+            object_types = self.app_state.indexed_fqcn
 
-    # limit object_type
-    filter_q = wq.Or([wq.Term('object_type', t) for t in object_types])
-    filters.append(filter_q)
-
-    for func in self.app_state.search_filter_funcs:
-      filter_q = func()
-      if filter_q is not None:
+        # limit object_type
+        filter_q = wq.Or([wq.Term('object_type', t) for t in object_types])
         filters.append(filter_q)
 
-    if filters:
-      filter_q = wq.And(filters) if len(filters) > 1 else filters[0]
-      #search_args['filter'] = filter_q
-      query = filter_q & query
+        for func in self.app_state.search_filter_funcs:
+            filter_q = func()
+            if filter_q is not None:
+                filters.append(filter_q)
 
-    if facet_by_type:
-      if not object_types:
-        object_types = [t[0] for t in self.searchable_object_types()]
+        if filters:
+            filter_q = wq.And(filters) if len(filters) > 1 else filters[0]
+            #search_args['filter'] = filter_q
+            query = filter_q & query
 
-      # limit number of documents to score, per object type
-      collapse_limit = 5
-      search_args['groupedby'] = 'object_type'
-      search_args['collapse'] = 'object_type'
-      search_args['collapse_limit'] = collapse_limit
-      search_args['limit'] = (search_args['collapse_limit']
-                              * max(len(object_types), 1))
+        if facet_by_type:
+            if not object_types:
+                object_types = [t[0] for t in self.searchable_object_types()]
 
-    with index.searcher(closereader=False) as searcher:
-      # 'closereader' is needed, else results cannot by used outside 'with'
-      # statement
-      results = searcher.search(query, **search_args)
+            # limit number of documents to score, per object type
+            collapse_limit = 5
+            search_args['groupedby'] = 'object_type'
+            search_args['collapse'] = 'object_type'
+            search_args['collapse_limit'] = collapse_limit
+            search_args['limit'] = (search_args['collapse_limit'] * max(
+                len(object_types), 1))
 
-      if facet_by_type:
-        positions = { doc_id: pos
-                      for pos, doc_id in enumerate(i[1] for i in results.top_n)}
-        sr = results
-        results = {}
-        for typename, doc_ids in sr.groups('object_type').items():
-          results[typename] = [sr[positions[oid]]
-                               for oid in doc_ids[:collapse_limit]]
+        with index.searcher(closereader=False) as searcher:
+            # 'closereader' is needed, else results cannot by used outside 'with'
+            # statement
+            results = searcher.search(query, **search_args)
 
-      return results
+            if facet_by_type:
+                positions = {doc_id: pos
+                             for pos, doc_id in enumerate(i[1] for i in
+                                                          results.top_n)}
+                sr = results
+                results = {}
+                for typename, doc_ids in sr.groups('object_type').items():
+                    results[typename] = [sr[positions[oid]]
+                                         for oid in doc_ids[:collapse_limit]]
 
-  def search_for_class(self, query, cls, index='default', **search_args):
-    return self.search(query, Models=(fqcn(cls),), index=index, **search_args)
+            return results
 
-  def register_classes(self):
-    state = self.app_state
-    classes = (cls for cls in db.Model._decl_class_registry.values()
-               if isclass(cls) and issubclass(cls, Indexable)
-               and cls.__indexable__)
-    for cls in classes:
-      if not cls in state.indexed_classes:
-        self.register_class(cls, app_state=state)
+    def search_for_class(self, query, cls, index='default', **search_args):
+        return self.search(query,
+                           Models=(fqcn(cls),),
+                           index=index,
+                           **search_args)
 
-  def register_class(self, cls, app_state=None):
-    """
+    def register_classes(self):
+        state = self.app_state
+        classes = (cls
+                   for cls in db.Model._decl_class_registry.values()
+                   if isclass(cls) and issubclass(cls, Indexable) and
+                   cls.__indexable__)
+        for cls in classes:
+            if not cls in state.indexed_classes:
+                self.register_class(cls, app_state=state)
+
+    def register_class(self, cls, app_state=None):
+        """
     Registers a model class
     """
-    state = app_state if app_state is not None else self.app_state
+        state = app_state if app_state is not None else self.app_state
 
-    for Adapter in self.adapters_cls:
-      if Adapter.can_adapt(cls):
-        break
-    else:
-      return
+        for Adapter in self.adapters_cls:
+            if Adapter.can_adapt(cls):
+                break
+        else:
+            return
 
-    cls_fqcn = fqcn(cls)
-    self.adapted[cls_fqcn] = Adapter(cls, self.schemas['default'])
-    state.indexed_classes.add(cls)
-    state.indexed_fqcn.add(cls_fqcn)
+        cls_fqcn = fqcn(cls)
+        self.adapted[cls_fqcn] = Adapter(cls, self.schemas['default'])
+        state.indexed_classes.add(cls)
+        state.indexed_fqcn.add(cls_fqcn)
 
-  def after_flush(self, session, flush_context):
-    if not self.running or session is not db.session():
-      return
+    def after_flush(self, session, flush_context):
+        if not self.running or session is not db.session():
+            return
 
-    to_update = self.app_state.to_update
-    session_objs = (
-      ('new', session.new),
-      ('deleted', session.deleted),
-      ('changed', session.dirty),
-    )
-    for key, objs in session_objs:
-      for obj in objs:
-        model_name = fqcn(obj.__class__)
-        adapter = self.adapted.get(model_name)
+        to_update = self.app_state.to_update
+        session_objs = (('new', session.new),
+                        ('deleted', session.deleted),
+                        ('changed', session.dirty),)
+        for key, objs in session_objs:
+            for obj in objs:
+                model_name = fqcn(obj.__class__)
+                adapter = self.adapted.get(model_name)
 
-        if adapter is None or not adapter.indexable:
-          continue
+                if adapter is None or not adapter.indexable:
+                    continue
 
-        to_update.append((key, obj))
+                to_update.append((key, obj))
 
-  def after_commit(self, session):
-    """
+    def after_commit(self, session):
+        """
     Any db updates go through here. We check if any of these models have
     ``__searchable__`` fields, indicating they need to be indexed. With these
     we update the whoosh index for the model. If no index exists, it will be
     created here; this could impose a penalty on the initial commit of a model.
     """
-    if (not self.running
-        or session.transaction.nested  # inside a sub-transaction:
-                                       # not yet written in DB
-        or session is not db.session()):
-      # note: we have not tested too far if session is enclosed in a transaction
-      # at connection level. For now it's not a standard use case, it would most
-      # likely happens during tests (which don't do that for now)
-      return
+        if (not self.running or
+                session.transaction.nested  # inside a sub-transaction:
+                # not yet written in DB
+                or session is not db.session()):
+            # note: we have not tested too far if session is enclosed in a transaction
+            # at connection level. For now it's not a standard use case, it would most
+            # likely happens during tests (which don't do that for now)
+            return
 
-    primary_field = 'id'
-    state = self.app_state
-    items = []
-    for op, obj in state.to_update:
-      model_name = fqcn(obj.__class__)
-      if model_name not in self.adapted or \
-          not self.adapted[model_name].indexable:
-        # safeguard
-        continue
+        primary_field = 'id'
+        state = self.app_state
+        items = []
+        for op, obj in state.to_update:
+            model_name = fqcn(obj.__class__)
+            if model_name not in self.adapted or \
+                not self.adapted[model_name].indexable:
+                # safeguard
+                continue
 
-      # safeguard against DetachedInstanceError
-      if sa.orm.object_session(obj) is not None:
-        items.append((op, model_name, getattr(obj, primary_field), {}))
+            # safeguard against DetachedInstanceError
+            if sa.orm.object_session(obj) is not None:
+                items.append((op, model_name, getattr(obj, primary_field), {}))
 
-    if items:
-      index_update.apply_async(kwargs=dict(index='default', items=items))
-    self.clear_update_queue()
+        if items:
+            index_update.apply_async(kwargs=dict(index='default', items=items))
+        self.clear_update_queue()
 
-  def get_document(self, obj, adapter=None):
+    def get_document(self, obj, adapter=None):
+        """
     """
-    """
-    if adapter is None:
-      class_name = fqcn(obj.__class__)
-      adapter = self.adapted.get(class_name)
+        if adapter is None:
+            class_name = fqcn(obj.__class__)
+            adapter = self.adapted.get(class_name)
 
-    if adapter is None or not adapter.indexable:
-      return None
+        if adapter is None or not adapter.indexable:
+            return None
 
-    document = adapter.get_document(obj)
+        document = adapter.get_document(obj)
 
-    for k, v in document.items():
-      if v is None:
-        del document[k]
-        continue
-      if isinstance(v, (User, Group, Role)):
-        document[k] = indexable_role(v)
+        for k, v in document.items():
+            if v is None:
+                del document[k]
+                continue
+            if isinstance(v, (User, Group, Role)):
+                document[k] = indexable_role(v)
 
-    if not document.get('allowed_roles_and_users'):
-      # no data for security: assume anybody can access the document
-      document['allowed_roles_and_users'] = indexable_role(Anonymous)
+        if not document.get('allowed_roles_and_users'):
+            # no data for security: assume anybody can access the document
+            document['allowed_roles_and_users'] = indexable_role(Anonymous)
 
-    for func in self.app_state.value_provider_funcs:
-      res = func(document, obj)
-      if res is not None:
-        document = res
+        for func in self.app_state.value_provider_funcs:
+            res = func(document, obj)
+            if res is not None:
+                document = res
 
-    return document
+        return document
 
-  def index_objects(self, objects, index='default'):
-    """
+    def index_objects(self, objects, index='default'):
+        """
     Bulk index a list of objects.
     """
-    if not objects:
-      return
+        if not objects:
+            return
 
-    index_name = index
-    index = self.app_state.indexes[index_name]
-    indexed = set()
+        index_name = index
+        index = self.app_state.indexes[index_name]
+        indexed = set()
 
-    with index.writer() as writer:
-      for obj in objects:
-        document = self.get_document(obj)
-        if document is None:
-          continue
+        with index.writer() as writer:
+            for obj in objects:
+                document = self.get_document(obj)
+                if document is None:
+                    continue
 
-        object_key = document['object_key']
-        if object_key in indexed:
-          continue
+                object_key = document['object_key']
+                if object_key in indexed:
+                    continue
 
-        writer.delete_by_term('object_key', object_key)
-        try:
-          writer.add_document(**document)
-        except ValueError:
-          # logger is here to give us more infos in order to catch a weird bug
-          # that happens regularly on CI but is not reliably reproductible.
-          logger.error('writer.add_document(%r)', document, exc_info=True)
-          raise
-        indexed.add(object_key)
+                writer.delete_by_term('object_key', object_key)
+                try:
+                    writer.add_document(**document)
+                except ValueError:
+                    # logger is here to give us more infos in order to catch a weird bug
+                    # that happens regularly on CI but is not reliably reproductible.
+                    logger.error('writer.add_document(%r)',
+                                 document,
+                                 exc_info=True)
+                    raise
+                indexed.add(object_key)
 
 
 service = WhooshIndexService()
@@ -524,72 +534,74 @@ service = WhooshIndexService()
 
 @shared_task
 def index_update(index, items):
-  """
+    """
   :param:index: index name
   :param:items: list of (operation, full class name, primary key, data) tuples.
   """
-  index_name = index
-  index = service.app_state.indexes[index_name]
-  adapted = service.adapted
+    index_name = index
+    index = service.app_state.indexes[index_name]
+    adapted = service.adapted
 
-  session = safe_session()
-  updated = set()
-  writer = AsyncWriter(index)
-  try:
-    for op, cls_name, pk, data in items:
-      if pk is None:
-        continue
+    session = safe_session()
+    updated = set()
+    writer = AsyncWriter(index)
+    try:
+        for op, cls_name, pk, data in items:
+            if pk is None:
+                continue
 
-      # always delete. Whoosh manual says that 'update' is actually delete + add
-      # operation
-      object_key = u'{}:{}'.format(cls_name, pk)
-      writer.delete_by_term('object_key', object_key)
+            # always delete. Whoosh manual says that 'update' is actually delete + add
+            # operation
+            object_key = u'{}:{}'.format(cls_name, pk)
+            writer.delete_by_term('object_key', object_key)
 
-      adapter = adapted.get(cls_name)
-      if not adapter:
-        # FIXME: log to sentry?
-        continue
+            adapter = adapted.get(cls_name)
+            if not adapter:
+                # FIXME: log to sentry?
+                continue
 
-      if object_key in updated:
-        # don't add twice the same document in same transaction. The writer will
-        # not delete previous records, ending in duplicate records for same
-        # document.
-        continue
+            if object_key in updated:
+                # don't add twice the same document in same transaction. The writer will
+                # not delete previous records, ending in duplicate records for same
+                # document.
+                continue
 
-      if op in ("new", "changed"):
-        with session.begin(nested=True):
-          obj = adapter.retrieve(pk, _session=session, **data)
+            if op in ("new", "changed"):
+                with session.begin(nested=True):
+                    obj = adapter.retrieve(pk, _session=session, **data)
 
-        if obj is None:
-          # deleted after task queued, but before task run
-          continue
+                if obj is None:
+                    # deleted after task queued, but before task run
+                    continue
 
-        document = service.get_document(obj, adapter)
-        try:
-          writer.add_document(**document)
-        except ValueError:
-          # logger is here to give us more infos in order to catch a weird bug
-          # that happens regularly on CI but is not reliably reproductible.
-          logger.error('writer.add_document(%r)', document, exc_info=True)
-          raise
-        updated.add(object_key)
-  except:
-    writer.cancel()
-    raise
+                document = service.get_document(obj, adapter)
+                try:
+                    writer.add_document(**document)
+                except ValueError:
+                    # logger is here to give us more infos in order to catch a weird bug
+                    # that happens regularly on CI but is not reliably reproductible.
+                    logger.error('writer.add_document(%r)',
+                                 document,
+                                 exc_info=True)
+                    raise
+                updated.add(object_key)
+    except:
+        writer.cancel()
+        raise
 
-  session.close()
-  writer.commit()
-  try:
-    # async thread: wait for its termination
-    writer.join()
-  except RuntimeError:
-    # happens when actual writer was already available: asyncwriter didn't need
-    # to start a thread
-    pass
+    session.close()
+    writer.commit()
+    try:
+        # async thread: wait for its termination
+        writer.join()
+    except RuntimeError:
+        # happens when actual writer was already available: asyncwriter didn't need
+        # to start a thread
+        pass
 
 
 class TestingStorage(RamStorage):
-  """
+    """
   RamStorage whoses temp_storage method returns another TestingStorage
   instead of a FileStorage.
 
@@ -599,5 +611,5 @@ class TestingStorage(RamStorage):
   tests are ran in parallel, including different abilian-based packages.
   """
 
-  def temp_storage(self, name=None):
-    return TestingStorage()
+    def temp_storage(self, name=None):
+        return TestingStorage()

@@ -10,6 +10,7 @@ from flask import make_response
 
 
 def nocache(view):
+
     @wraps(view)
     def _nocache(*args, **kwargs):
         resp = make_response(view(*args, **kwargs))

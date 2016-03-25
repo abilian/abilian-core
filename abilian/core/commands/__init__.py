@@ -44,26 +44,25 @@ __all__ = ['manager', 'setup_abilian_commands']
 
 
 def setup_abilian_commands(manager):
-  """
-  Register abilian commands on ``manager``.
+    """Register abilian commands on ``manager``.
 
-  :param manager: ``flask.ext.script.Manager`` instance to add commands onto
+    :param manager: ``flask.ext.script.Manager`` instance to add commands onto
 
-  Usage exemple::
+    Usage exemple::
 
       from flask.ext.script import Manager
       from abilian.commands import setup_abilian_commands
 
       my_manager = Manager(app)
       setup_abilian_commands(my_manager)
-  """
-  abilian_manager = globals()['manager']
-  manager._options.extend(abilian_manager._options)
+    """
+    abilian_manager = globals()['manager']
+    manager._options.extend(abilian_manager._options)
 
-  for name, command in abilian_manager._commands.items():
-    manager.add_command(name, command)
+    for name, command in abilian_manager._commands.items():
+        manager.add_command(name, command)
 
-  manager.add_command("assets", ManageAssets()) # flask-assets
-  manager.add_command("config", config_manager)
-  manager.add_command("migrate", MigrateCommand)
-  return manager
+    manager.add_command("assets", ManageAssets())  # flask-assets
+    manager.add_command("config", config_manager)
+    manager.add_command("migrate", MigrateCommand)
+    return manager

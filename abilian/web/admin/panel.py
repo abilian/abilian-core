@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function
 
 
 class AdminPanel(object):
-  """
+    """
   Base classe for admin panels.
 
   Currently this class does nothing. It may be useful in the future
@@ -13,12 +13,12 @@ class AdminPanel(object):
   registration), or to add some common functionnalities. Otherwise, it
   will be removed.
   """
-  id = None
-  label = None
-  icon = None
+    id = None
+    label = None
+    icon = None
 
-  def url_value_preprocess(self, endpoint, view_args):
-    """
+    def url_value_preprocess(self, endpoint, view_args):
+        """
     Panel can preprocess values for their views.
 
     This method is called only if the endpoint is for `get()`, `post()`, or
@@ -26,10 +26,10 @@ class AdminPanel(object):
 
     This is also the right place to add items to the breadcrumbs.
     """
-    pass
+        pass
 
-  def install_additional_rules(self, add_url_rule):
-    """
+    def install_additional_rules(self, add_url_rule):
+        """
     This method can be redefined in subclasses to install custom url rules
 
     All rules are relative to panel 'base' rule, don't prefix rules with panel
@@ -38,4 +38,4 @@ class AdminPanel(object):
     :param add_url_rule: function to use to add url rules, same interface as
         :meth:`flask.blueprint.Blueprint.add_url_rule`.
     """
-    pass
+        pass

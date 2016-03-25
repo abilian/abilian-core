@@ -19,8 +19,8 @@ _MARK = object()
 
 class LoginSessionQuery(BaseQuery):
 
-  def get_active_for(self, user, user_agent=_MARK, ip_address=_MARK):
-    """
+    def get_active_for(self, user, user_agent=_MARK, ip_address=_MARK):
+        """
     Returns last known session for user
 
     :param user: user session
@@ -38,55 +38,57 @@ class LoginSessionQuery(BaseQuery):
 
     :rtype: `LoginSession` or `None` if no session is found.
     """
-    conditions = [LoginSession.user == user]
+        conditions = [LoginSession.user == user]
 
-    if user_agent is not _MARK:
-      if user_agent is None:
-        user_agent = request.environ.get('HTTP_USER_AGENT', '')
-      conditions.append(LoginSession.user_agent == user_agent)
+        if user_agent is not _MARK:
+            if user_agent is None:
+                user_agent = request.environ.get('HTTP_USER_AGENT', '')
+            conditions.append(LoginSession.user_agent == user_agent)
 
-    if ip_address is not _MARK:
-      if ip_address is None:
-        ip_address = request.headers.getlist("X-Forwarded-For")
-        ip_address = ip_address[0] if ip_address else request.remote_addr
-      conditions.append(LoginSession.ip_address == ip_address)
+        if ip_address is not _MARK:
+            if ip_address is None:
+                ip_address = request.headers.getlist("X-Forwarded-For")
+                ip_address = ip_address[
+                    0] if ip_address else request.remote_addr
+            conditions.append(LoginSession.ip_address == ip_address)
 
-    session = LoginSession.query\
-      .filter(*conditions)\
-      .order_by(LoginSession.id.desc())\
-      .first()
-    return session
+        session = LoginSession.query\
+          .filter(*conditions)\
+          .order_by(LoginSession.id.desc())\
+          .first()
+        return session
 
 
 class LoginSession(db.Model):
 
-  __tablename__ = 'login_session'
-  query_class = LoginSessionQuery
+    __tablename__ = 'login_session'
+    query_class = LoginSessionQuery
 
-  id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
-  started_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-  last_active_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-  ended_at = Column(DateTime)
+    started_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    last_active_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    ended_at = Column(DateTime)
 
-  user_id = Column(ForeignKey(User.id), nullable=False)
-  user = relation(User)
+    user_id = Column(ForeignKey(User.id), nullable=False)
+    user = relation(User)
 
-  #: IP addres, should work with both IPv4 and IPv6.
-  # FIXME: define a custom type to use postgres inet when on postgres
-  # http://www.postgresql.org/docs/9.1/static/datatype-net-types.html
-  ip_address = Column(String(39), default="", nullable=False)
+    #: IP addres, should work with both IPv4 and IPv6.
+    # FIXME: define a custom type to use postgres inet when on postgres
+    # http://www.postgresql.org/docs/9.1/static/datatype-net-types.html
+    ip_address = Column(String(39), default="", nullable=False)
 
-  #: Limited (somewhat artbitrarily) to 512 characters.
-  user_agent = Column(String(512), default="", nullable=False)
+    #: Limited (somewhat artbitrarily) to 512 characters.
+    user_agent = Column(String(512), default="", nullable=False)
 
-  @staticmethod
-  def new():
-    user_agent = request.environ.get('HTTP_USER_AGENT', '')
-    if not request.headers.getlist("X-Forwarded-For"):
-      ip_address = request.remote_addr
-    else:
-      ip_address = request.headers.getlist("X-Forwarded-For")[0]
-    session = LoginSession(user=current_user, user_agent=user_agent,
-                           ip_address=ip_address)
-    return session
+    @staticmethod
+    def new():
+        user_agent = request.environ.get('HTTP_USER_AGENT', '')
+        if not request.headers.getlist("X-Forwarded-For"):
+            ip_address = request.remote_addr
+        else:
+            ip_address = request.headers.getlist("X-Forwarded-For")[0]
+        session = LoginSession(user=current_user,
+                               user_agent=user_agent,
+                               ip_address=ip_address)
+        return session

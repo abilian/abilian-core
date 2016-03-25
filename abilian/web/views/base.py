@@ -11,49 +11,48 @@ from ..action import actions
 
 
 class Redirect(HTTPException):
-  pass
+    pass
 
 
 class View(BaseView):
-  """
-  Base class to use for all class based views.
+    """Base class to use for all class based views.
 
-  The view instance is accessible in :data:`g <flask.g>` and is set in
-  :meth:`actions context <abilian.web.action.ActionRegistry.context>`.
-  """
-
-  def dispatch_request(self, *args, **kwargs):
-    meth = getattr(self, request.method.lower(), None)
-    # if the request method is HEAD and we don't have a handler for it
-    # retry with GET
-    if meth is None and request.method == 'HEAD':
-      meth = getattr(self, 'get', None)
-      assert meth is not None, 'Unimplemented method %r' % request.method
-
-    g.view = actions.context['view'] = self
-    try:
-      args, kwargs = self.prepare_args(args, kwargs)
-      return meth(*args, **kwargs)
-    except Redirect as exc:
-      return exc.response
-
-  def prepare_args(self, args, kwargs):
+    The view instance is accessible in :data:`g <flask.g>` and is set in
+    :meth:`actions context <abilian.web.action.ActionRegistry.context>`.
     """
-    If view arguments need to be prepared it can be done here.
 
-    A typical use case is to take an identifier, convert it to an object
-    instance and maybe store it on view instance and/or replace
-    identifier by object in arguments.
-    """
-    return args, kwargs
+    def dispatch_request(self, *args, **kwargs):
+        meth = getattr(self, request.method.lower(), None)
+        # if the request method is HEAD and we don't have a handler for it
+        # retry with GET
+        if meth is None and request.method == 'HEAD':
+            meth = getattr(self, 'get', None)
+            assert meth is not None, 'Unimplemented method %r' % request.method
 
-  def redirect(self, url):
-    """
-    Shortcut all call stack and return response.
+        g.view = actions.context['view'] = self
+        try:
+            args, kwargs = self.prepare_args(args, kwargs)
+            return meth(*args, **kwargs)
+        except Redirect as exc:
+            return exc.response
 
-    usage: `self.response(url_for(...))`
-    """
-    raise Redirect(response=redirect(url))
+    def prepare_args(self, args, kwargs):
+        """
+        If view arguments need to be prepared it can be done here.
+
+        A typical use case is to take an identifier, convert it to an object
+        instance and maybe store it on view instance and/or replace
+        identifier by object in arguments.
+        """
+        return args, kwargs
+
+    def redirect(self, url):
+        """
+        Shortcut all call stack and return response.
+
+        usage: `self.response(url_for(...))`
+        """
+        raise Redirect(response=redirect(url))
 
 
 _JSON_HTML = u'''
@@ -78,29 +77,28 @@ _JSON_HTML = u'''
 
 
 class JSONView(View):
-  """
-  Base view for JSON GET.
+    """Base view for JSON GET.
 
-  Renders as JSON when requested by Ajax, renders as HTML when requested
-  from browser.
-  """
-  def prepare_args(self, args, kwargs):
-    kwargs.update({k: v for k, v in request.args.items()})
-    return args, kwargs
-
-  def data(self, *args, **kwargs):
+    Renders as JSON when requested by Ajax, renders as HTML when requested
+    from browser.
     """
-    This method should return data to be serialized using JSON
-    """
-    raise NotImplementedError
 
-  def get(self, *args, **kwargs):
-    data = self.data(*args, **kwargs)
-    best_mime = request.accept_mimetypes.best_match(['text/html',
-                                                     'application/json'])
-    if best_mime == 'application/json':
-      return jsonify(data)
+    def prepare_args(self, args, kwargs):
+        kwargs.update({k: v for k, v in request.args.items()})
+        return args, kwargs
 
-    # dev requesting from browser? serve html, let debugtoolbar show up, etc...
-    content = json.dumps(data, indent=2)
-    return render_template_string(_JSON_HTML, content=content)
+    def data(self, *args, **kwargs):
+        """This method should return data to be serialized using JSON
+        """
+        raise NotImplementedError
+
+    def get(self, *args, **kwargs):
+        data = self.data(*args, **kwargs)
+        best_mime = request.accept_mimetypes.best_match(['text/html',
+                                                         'application/json'])
+        if best_mime == 'application/json':
+            return jsonify(data)
+
+        # dev requesting from browser? serve html, let debugtoolbar show up, etc...
+        content = json.dumps(data, indent=2)
+        return render_template_string(_JSON_HTML, content=content)

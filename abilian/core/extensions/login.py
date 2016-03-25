@@ -9,12 +9,12 @@ from flask_login import AnonymousUserMixin, LoginManager
 
 class AnonymousUser(AnonymousUserMixin):
 
-  def has_role(self, role):
-    return current_app.services['security'].has_role(self, role)
+    def has_role(self, role):
+        return current_app.services['security'].has_role(self, role)
 
-  @property
-  def groups(self):
-    return set()
+    @property
+    def groups(self):
+        return set()
 
 
 login_manager = LoginManager()

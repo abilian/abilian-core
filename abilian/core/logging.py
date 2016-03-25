@@ -33,23 +33,23 @@ _patch_logger.addHandler(_patch_handler)
 _patch_logger.propagate = False
 
 if _patch_logger.level is logging.NOTSET:
-  _patch_logger.setLevel(logging.WARNING)
+    _patch_logger.setLevel(logging.WARNING)
+
 
 class PatchLoggerAdapter(logging.LoggerAdapter):
 
-  def process(self, msg, kwargs):
-    if isinstance(msg, string_types):
-      return super(PatchLoggerAdapter, self).process(msg, kwargs)
+    def process(self, msg, kwargs):
+        if isinstance(msg, string_types):
+            return super(PatchLoggerAdapter, self).process(msg, kwargs)
 
-    func = msg
-    location = func.__module__
-    if hasattr(func, 'im_class'):
-      cls = func.__self__.__class__
-      func = func.__func__
-      location = '{}.{}'.format(cls.__module__, cls.__name__)
+        func = msg
+        location = func.__module__
+        if hasattr(func, 'im_class'):
+            cls = func.__self__.__class__
+            func = func.__func__
+            location = '{}.{}'.format(cls.__module__, cls.__name__)
 
-    return '{}.{}'.format(location, func.__name__), kwargs
-
+        return '{}.{}'.format(location, func.__name__), kwargs
 
 #: logger for monkey patchs. use like this:
 #: patch_logger.info(<func>`patched_func`)
