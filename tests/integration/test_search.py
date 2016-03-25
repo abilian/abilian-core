@@ -17,8 +17,6 @@ def gen_name(ctx):
 
 
 class DummyContact1(Entity):
-    """
-  """
     name = column_property(
         Column('name',
                UnicodeText(),

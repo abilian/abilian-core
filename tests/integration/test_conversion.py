@@ -9,9 +9,6 @@ from magic import Magic, os
 
 from abilian.services.conversion import converter
 
-# Don't remove
-from . import fix_path
-
 BASEDIR = join(dirname(__file__), "..", "dummy_files")
 BASEDIR2 = join(dirname(__file__), "..", "dummy_files2")
 

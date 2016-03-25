@@ -30,10 +30,13 @@ class Contacts(Module):
 
     list_view_columns = [
         dict(name='_name',
-             width=35), dict(name='first_name',
-                             width=25), dict(name='last_name',
-                                             width=14), dict(name='email',
-                                                             width=20)
+             width=35),
+        dict(name='first_name',
+             width=25),
+        dict(name='last_name',
+             width=14),
+        dict(name='email',
+             width=20),
     ]
 
     edit_form_class = ContactEditForm
