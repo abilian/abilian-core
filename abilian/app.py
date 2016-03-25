@@ -599,8 +599,8 @@ class Application(Flask, ServiceManager, PluginManager):
         Role instances.
         """
         roles = options.pop('roles', None)
-        super(Application, self).add_url_rule(rule, endpoint, view_func, **
-                                              options)
+        super(Application, self).add_url_rule(rule, endpoint, view_func,
+                                              **options)
 
         if roles:
             self.add_access_controller(endpoint,

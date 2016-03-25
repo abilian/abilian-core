@@ -1083,8 +1083,8 @@ class DefaultViewWidget(object):
         if isinstance(value, string_types):
             return text2html(value)
         else:
-            return unicode(value or u''
-                          )  # [], None and other must be rendered using
+            return unicode(value or
+                           u'')  # [], None and other must be rendered using
             # empty string
 
 

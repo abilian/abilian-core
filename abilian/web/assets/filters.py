@@ -304,8 +304,8 @@ class Less(ExternalTool):
                 data['sources'][idx] = u'-'
                 continue
 
-            path = os.path.join('..', path
-                               )  # apparently less is stripping first part
+            path = os.path.join('..',
+                                path)  # apparently less is stripping first part
             data['sources'][idx] = self.fix_url(self.ctx.directory, path)
 
         with open(filename, 'w') as f:

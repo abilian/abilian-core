@@ -183,8 +183,8 @@ class UserMugshot(BaseImageView):
     def make_response(self, user, image, size, *args, **kwargs):
         if image:
             #  user has set a photo
-            return super(UserMugshot, self).make_response(image, size, *args, **
-                                                          kwargs)
+            return super(UserMugshot, self).make_response(image, size, *args,
+                                                          **kwargs)
 
         # render svg avatar
         if user.last_name:

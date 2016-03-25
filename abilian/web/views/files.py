@@ -82,8 +82,8 @@ class BaseFileDownload(View):
     :param s: requested maximum width/height size
     """
         response = self.make_response(*args, **kwargs)
-        response.headers['content-type'] = self.get_content_type(*args, **
-                                                                 kwargs)
+        response.headers['content-type'] = self.get_content_type(*args,
+                                                                 **kwargs)
 
         if attach:
             filename = self.get_filename(*args, **kwargs)

@@ -60,8 +60,9 @@ class AbilianCsrf(object):
             # view can handle it nicely for the user
             return None
 
-        if (hasattr(view, 'view_class') and getattr(
-                view.view_class, 'csrf_support_graceful_failure', False)):
+        if (hasattr(view, 'view_class') and
+                getattr(view.view_class, 'csrf_support_graceful_failure',
+                        False)):
             return None
 
         raise BadRequest(failed)

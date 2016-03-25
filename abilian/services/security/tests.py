@@ -518,8 +518,8 @@ class PermissionNoSAWarnTestCase(IntegrationTestCase):
         obj = DummyModel()
         # override default permission at instance level
         obj.__default_permissions__ = frozenset({(READ, frozenset({Owner})),})
-        self.session.add(obj
-                        )  # core.entities._setup_default_permissions creates
+        self.session.add(
+            obj)  # core.entities._setup_default_permissions creates
         # permissions
         security.add_permission(READ, Owner, obj)  # no-op
         self.session.expunge(

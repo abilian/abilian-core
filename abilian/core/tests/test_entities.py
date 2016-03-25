@@ -168,34 +168,32 @@ class PermissionsTestCase(AbilianTestCase):
             }
 
         assert isinstance(MyRestrictedType.__default_permissions__, frozenset)
-        assert MyRestrictedType.__default_permissions__ == \
-          frozenset(
-            ((security.READ, frozenset((security.Anonymous,))),
-             (security.WRITE, frozenset((security.Owner,))),
-             (security.CREATE, frozenset((security.Writer,))),
-             (security.DELETE, frozenset((security.Owner,))),
-           ))
+        expected = frozenset(((security.READ, frozenset((security.Anonymous,))),
+                              (security.WRITE, frozenset((security.Owner,))),
+                              (security.CREATE, frozenset((security.Writer,))),
+                              (security.DELETE, frozenset((security.Owner,))),))
+        assert MyRestrictedType.__default_permissions__ == expected
 
         self.app.db.create_all()  # create missing 'mytype' table
 
         obj = MyRestrictedType(name=u'test object')
         self.session.add(obj)
         PA = security.PermissionAssignment
-        query = self.session.query(PA.role)\
-                            .filter(PA.object==obj)
+        query = self.session.query(PA.role) \
+            .filter(PA.object == obj)
 
-        assert query.filter(PA.permission==security.READ).all()\
-                     == [(security.Anonymous,)]
+        assert query.filter(PA.permission == security.READ).all() \
+               == [(security.Anonymous,)]
 
-        assert query.filter(PA.permission==security.WRITE).all()\
-                     == [(security.Owner,)]
+        assert query.filter(PA.permission == security.WRITE).all() \
+               == [(security.Owner,)]
 
-        assert query.filter(PA.permission==security.DELETE).all()\
-                     == [(security.Owner,)]
+        assert query.filter(PA.permission == security.DELETE).all() \
+               == [(security.Owner,)]
 
         # special case:
-        assert query.filter(PA.permission==security.CREATE).all()\
-                     == []
+        assert query.filter(PA.permission == security.CREATE).all() \
+               == []
 
         svc = self.app.services['security']
         permissions = svc.get_permissions_assignments(obj)

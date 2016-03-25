@@ -28,6 +28,7 @@ def autoescape(filter_func):
     """
     Decorator to autoescape result from filters.
     """
+
     @evalcontextfilter
     @wraps(filter_func)
     def _autoescape(eval_ctx, *args, **kwargs):
