@@ -140,3 +140,6 @@ release:
 	cd /tmp/abilian-core ; python setup.py sdist
 	cd /tmp/abilian-core ; python setup.py sdist upload
 
+format:
+	isort -rc abilian tests *.py
+	yapf --style google -r -i abilian tests *.py
