@@ -13,13 +13,11 @@ __all__ = ['templated']
 
 # Copy/pasted from: http://flask.pocoo.org/docs/patterns/viewdecorators/
 def templated(template=None):
-    """
-  The idea of this decorator is that you return a dictionary with the values
-  passed to the template from the view function and the template
-  is automatically rendered.
+    """The idea of this decorator is that you return a dictionary with the values
+    passed to the template from the view function and the template is automatically rendered.
 
-  @deprecated
-  """
+    @deprecated
+    """
 
     def decorator(f):
 
@@ -43,9 +41,9 @@ def templated(template=None):
 # Copy/pasted from:
 # https://wiki.python.org/moin/PythonDecoratorLibrary#Generating_Deprecation_Warnings
 def deprecated(func):
-    '''This decorator can be used to mark functions
-    as deprecated. It will result in a warning being emitted
-    when the function is used.'''
+    """This decorator can be used to mark functions as deprecated.
+
+    It will result in a warning being emitted when the function is used."""
 
     @wraps(func)
     def new_func(*args, **kwargs):

@@ -27,9 +27,9 @@ pathlib
 python-dateutil>=2.4.0
 
 # Databases / persistence
-SQLAlchemy>=0.9,<1.0
+SQLAlchemy>=1.0,<1.1
 psycopg2>=2.6.1
-alembic>=0.7.7,<0.8
+alembic>=0.8,<0.9
 
 # requirement of jinja2; > 0.21 has an important fix for string format. See
 # https://github.com/mitsuhiko/markupsafe/issues/28
@@ -58,10 +58,10 @@ pygeoip
 progressbar-latest
 
 # Forms (TODO: need some updates)
-WTForms-Alchemy==0.12.9
-WTForms-Components<0.10
-# required by wtforms-alchemy, but 0.24.0 needs sqlalchemy >= 0.9
-SQLAlchemy-Utils<0.24.0
+WTForms-Alchemy>=0.15,<0.16
+WTForms-Components>=0.10,<0.11
+# required by wtforms-alchemy
+SQLAlchemy-Utils>=0.32,<0.33
 
 # for debug toolbar
 sqlparse

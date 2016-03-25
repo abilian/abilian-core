@@ -189,7 +189,7 @@ class TestAudit(BaseTestCase):
         changes = changes['data 1']
         assert changes.columns == {'text': (NEVER_SET, u'text 1'),
                                    'account_id': (NEVER_SET, 1),
-                                   'id': (None, 1),}
+                                   'id': (NEVER_SET, 1),}
 
         comment = CommentRelated(related=data, text=u'comment')
         db.session.add(comment)
@@ -206,7 +206,7 @@ class TestAudit(BaseTestCase):
         changes = changes['data.comments 1 1']
         assert changes.columns == {'text': (NEVER_SET, u'comment'),
                                    'related_id': (NEVER_SET, 1),
-                                   'id': (None, 1),}
+                                   'id': (NEVER_SET, 1),}
 
         comment = CommentRelated(related=data, text=u'comment 2')
         db.session.add(comment)
@@ -223,7 +223,7 @@ class TestAudit(BaseTestCase):
         changes = changes['data.comments 1 2']
         assert changes.columns == {'text': (NEVER_SET, u'comment 2'),
                                    'related_id': (NEVER_SET, 1),
-                                   'id': (None, 2),}
+                                   'id': (NEVER_SET, 2),}
 
         # deletion
         db.session.delete(comment)
