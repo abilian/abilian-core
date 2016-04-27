@@ -811,8 +811,8 @@ msgid ""
 "    defined for different type of objects, or for a different purpose.\n"
 "    "
 msgstr ""
-"Les Tags sont regroupés par espaces de noms, de sorte que différent "
-"ensemble de tags peuvent définis pour différents types d'objets ou "
+"Les Tags sont regroupés par espaces de noms, de sorte que différents "
+"ensembles de tags peuvent être définis pour différents types d'objets ou "
 "d'usages."
 
 #: abilian/web/tags/templates/admin/tags.html:14
