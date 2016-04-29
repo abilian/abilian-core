@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function
 
 import colorsys
 import hashlib
-from datetime import datetime, timedelta
 
 import pkg_resources
 import sqlalchemy as sa
@@ -16,7 +15,6 @@ from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
-from abilian.core.util import utc_dt
 from abilian.services.image import CROP, RESIZE_MODES, get_size
 from abilian.web.util import url_for
 

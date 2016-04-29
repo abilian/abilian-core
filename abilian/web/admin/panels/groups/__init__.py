@@ -14,8 +14,8 @@ from . import views
 
 class GroupsPanel(AdminPanel):
     """
-  Group administration panel.
-  """
+    Group administration panel.
+    """
     id = 'groups'
     label = _l(u'Groups')
     icon = 'grain'
@@ -34,32 +34,32 @@ class GroupsPanel(AdminPanel):
     def get(self):
         # FIXME: use widgets.AjaxMainTableView instead
         datatable_options = {
-          'sDom': 'lfFrtip',
-          'aaSorting': [
-            [0, u'asc'],
-          ],
-          'aoColumns': [
-            dict(asSorting=['asc', 'desc']),
-            dict(bSortable=False),
-            dict(bSortable=False),
-          ],
-          'bFilter': True,
-          'oLanguage': {
-            'sSearch': _("Filter records:"),
-            'sPrevious': _("Previous"),
-            'sNext': _("Next"),
-            'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
-            'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
-            'sAddAdvancedFilter': _("Add a filter"),
-          },
-          'bStateSave': False,
-          'bPaginate': True,
-          'sPaginationType': "bootstrap",
-          'bLengthChange': False,
-          'iDisplayLength': 30,
-          'bProcessing': True,
-          'bServerSide': True,
-          'sAjaxSource': url_for('.groups_json_list'),
+            'sDom': 'lfFrtip',
+            'aaSorting': [
+                [0, u'asc'],
+            ],
+            'aoColumns': [
+                dict(asSorting=['asc', 'desc']),
+                dict(bSortable=False),
+                dict(bSortable=False),
+            ],
+            'bFilter': True,
+            'oLanguage': {
+                'sSearch': _("Filter records:"),
+                'sPrevious': _("Previous"),
+                'sNext': _("Next"),
+                'sInfo': _("Showing _START_ to _END_ of _TOTAL_ entries"),
+                'sInfoFiltered': _("(filtered from _MAX_ total entries)"),
+                'sAddAdvancedFilter': _("Add a filter"),
+            },
+            'bStateSave': False,
+            'bPaginate': True,
+            'sPaginationType': "bootstrap",
+            'bLengthChange': False,
+            'iDisplayLength': 30,
+            'bProcessing': True,
+            'bServerSide': True,
+            'sAjaxSource': url_for('.groups_json_list'),
         }
 
         return render_template('admin/groups.html',

@@ -4,13 +4,11 @@
 from __future__ import absolute_import, division, print_function
 
 from flask import current_app, jsonify, send_file
-from flask.signals import request_tearing_down
 from flask_login import current_user
 from flask_wtf.file import FileField, file_required
-from werkzeug import secure_filename
 from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.utils import secure_filename
 
-from abilian.core.util import pdb_on_error
 from abilian.web import csrf, url_for
 from abilian.web.blueprints import Blueprint
 from abilian.web.forms import Form
@@ -35,8 +33,8 @@ class BaseUploadsView(object):
 
 class NewUploadView(BaseUploadsView, JSONView):
     """
-  Upload a new file
-  """
+    Upload a new file
+    """
     methods = ['POST', 'PUT']
     decorators = (csrf.support_graceful_failure,)
 
@@ -74,8 +72,8 @@ bp.add_url_rule('/', view_func=NewUploadView.as_view('new_file',),)
 
 class UploadView(BaseUploadsView, View):
     """
-  Manage an uploaded file: download, delete
-  """
+    Manage an uploaded file: download, delete
+    """
     methods = ['GET', 'DELETE']
     decorators = (csrf.support_graceful_failure,)
 

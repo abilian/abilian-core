@@ -124,15 +124,15 @@ default_config.update(
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
     CELERY_TIMEZONE=LOCALTZ,
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
-    SENTRY_INSTALL_CLIENT_JS=True, # also install client JS
+    SENTRY_INSTALL_CLIENT_JS=True,  # also install client JS
     SENTRY_JS_VERSION='1.1.22',
     SENTRY_JS_PLUGINS=('console', 'jquery', 'native', 'require',),
     SESSION_COOKIE_NAME=None,
-    SQLALCHEMY_POOL_RECYCLE=1800, # 30min. default value in flask_sa is None
+    SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False, # upstream info extension
-    TRACKING_CODE_SNIPPET=u'', # tracking code to insert before </body>
+    TRACKING_CODE_SNIPPET=u'',  # tracking code to insert before </body>
     MAIL_ADDRESS_TAG_CHAR=None,
 )
 default_config = ImmutableDict(default_config)

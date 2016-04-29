@@ -9,8 +9,7 @@ from functools import partial
 
 import whoosh
 import whoosh.sorting
-from flask import (Blueprint, current_app, g, json, jsonify, render_template,
-                   render_template_string, request, url_for)
+from flask import Blueprint, current_app, g, render_template, request, url_for
 
 from abilian.i18n import _
 from abilian.web import nav, views
@@ -168,8 +167,8 @@ def search_main(q=u'', page=1):
 
 class Live(views.JSONView):
     """
-  JSON response for live search
-  """
+    JSON response for live search
+    """
 
     def data(self, q=u'', page=None, *args, **kwargs):
         svc = current_app.services['indexing']
