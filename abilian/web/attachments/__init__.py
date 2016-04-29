@@ -3,8 +3,8 @@
 """
 from __future__ import absolute_import, print_function, division
 
-from .forms import AttachmentForm
-from .extension import AttachmentExtension, AttachmentsManager
+from .forms import AttachmentForm  # noqa
+from .extension import AttachmentExtension, AttachmentsManager  # noqa
 
 
 def register_plugin(app):

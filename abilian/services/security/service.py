@@ -48,7 +48,6 @@ class SecurityError(Exception):
 
 
 class SecurityServiceState(ServiceState):
-    """ """
     use_cache = True
     #: True if security has changed
     needs_db_flush = False
@@ -56,8 +55,8 @@ class SecurityServiceState(ServiceState):
 
 def require_flush(fun):
     """ Decorator for methods that need to query security. It ensures all security
-  related operations are flushed to DB, but avoids unneeded flushes.
-  """
+    related operations are flushed to DB, but avoids unneeded flushes.
+    """
 
     @wraps(fun)
     def ensure_flushed(service, *args, **kwargs):
@@ -77,21 +76,21 @@ def require_flush(fun):
 
 def query_pa_no_flush(session, permission, role, obj):
     """
-  query for a :class:`PermissionAssignment` using `session` without any
-  `flush()`.
+    query for a :class:`PermissionAssignment` using `session` without any
+    `flush()`.
 
-  It works by looking in session `new`, `dirty` and `deleted`, and issuing a
-  query with no autoflush.
+    It works by looking in session `new`, `dirty` and `deleted`, and issuing a
+    query with no autoflush.
 
-  .. note::
+    .. note::
 
-     This function is used by `add_permission` and `delete_permission` to allow
-     to add/remove the same assignment twice without issuing any flush. Since
-     :class:`Entity` creates its initial permissions in during
-     :sqlalchemy:`sqlalchemy.orm.events.SessionEvents.after_attach`, it might be
-     problematic to issue a flush when entity is not yet ready to be flushed
-     (missing required attributes for example).
-  """
+        This function is used by `add_permission` and `delete_permission` to allow
+        to add/remove the same assignment twice without issuing any flush. Since
+        :class:`Entity` creates its initial permissions in during
+        :sqlalchemy:`sqlalchemy.orm.events.SessionEvents.after_attach`, it might be
+        problematic to issue a flush when entity is not yet ready to be flushed
+        (missing required attributes for example).
+    """
     to_visit = [session.deleted, session.dirty, session.new]
     with session.no_autoflush:
         # no_autoflush is required to visit PERMISSIONS_ATTR without emitting a
@@ -115,16 +114,15 @@ def query_pa_no_flush(session, permission, role, obj):
         if obj is not None and obj.id is None:
             obj = None
 
-        return session.query(PermissionAssignment)\
-                      .filter(PermissionAssignment.permission == permission,
-                              PermissionAssignment.role == role,
-                              PermissionAssignment.object == obj)\
-                      .first()
+        return session.query(PermissionAssignment) \
+            .filter(PermissionAssignment.permission == permission,
+                    PermissionAssignment.role == role,
+                    PermissionAssignment.object == obj) \
+            .first()
 
 
 # noinspection PyComparisonWithNone
 class SecurityService(Service):
-    """ """
     name = 'security'
     AppStateClass = SecurityServiceState
 
@@ -135,7 +133,7 @@ class SecurityService(Service):
 
     def _needs_flush(self):
         """ Mark next security queries needs DB flush to have up to date information
-    """
+        """
         self.app_state.needs_db_flush = True
 
     def clear(self):
@@ -143,8 +141,8 @@ class SecurityService(Service):
 
     def _current_user_manager(self, session=None):
         """
-    Returns the current user, or SYSTEM user.
-    """
+        Returns the current user, or SYSTEM user.
+        """
         if session is None:
             session = db.session()
 
@@ -166,14 +164,13 @@ class SecurityService(Service):
     @require_flush
     def entries_for(self, obj, limit=20):
         assert isinstance(obj, Entity)
-        return SecurityAudit.query.filter(SecurityAudit.object == obj)\
-          .order_by(SecurityAudit.happened_at.desc())\
-          .limit(limit)
+        return SecurityAudit.query \
+            .filter(SecurityAudit.object == obj) \
+            .order_by(SecurityAudit.happened_at.desc()) \
+            .limit(limit)
 
     # inheritance
     def set_inherit_security(self, obj, inherit_security):
-        """
-    """
         assert isinstance(obj, InheritSecurity)
         assert isinstance(obj, Entity)
 
@@ -199,15 +196,15 @@ class SecurityService(Service):
     @require_flush
     def get_roles(self, principal, object=None, no_group_roles=False):
         """
-    Gets all the roles attached to given `principal`, on a given `object`.
+        Gets all the roles attached to given `principal`, on a given `object`.
 
-    :param principal: a :class:`User` or :class:`Group`
+        :param principal: a :class:`User` or :class:`Group`
 
-    :param object: an :class:`Entity`
+        :param object: an :class:`Entity`
 
-    :param no_group_roles: If `True`, return only direct roles, not roles
-    acquired through group membership.
-    """
+        :param no_group_roles: If `True`, return only direct roles, not roles
+        acquired through group membership.
+        """
         assert principal
         if hasattr(principal, 'is_anonymous') and principal.is_anonymous():
             return [AnonymousRole]
@@ -245,8 +242,8 @@ class SecurityService(Service):
                        object=None,
                        as_list=True):
         """
-    Return all users which are assigned given role
-    """
+        Return all users which are assigned given role
+        """
         if not isinstance(role, Role):
             role = Role(role)
         assert role
@@ -315,10 +312,10 @@ class SecurityService(Service):
 
     def _fill_role_cache(self, principal, overwrite=False):
         """ Fill role cache for `principal` (User or Group), in order to avoid too
-    many queries when checking role access with 'has_role'
+        many queries when checking role access with 'has_role'
 
-    Return role_cache of `principal`
-    """
+        Return role_cache of `principal`
+        """
         if not self.app_state.use_cache:
             return None
 
@@ -329,8 +326,8 @@ class SecurityService(Service):
     @require_flush
     def _fill_role_cache_batch(self, principals, overwrite=False):
         """ Fill role cache for `principals` (Users and/or Groups), in order to
-    avoid too many queries when checking role access with 'has_role'
-    """
+        avoid too many queries when checking role access with 'has_role'
+        """
         if not self.app_state.use_cache:
             return
 
@@ -396,18 +393,18 @@ class SecurityService(Service):
 
     def has_role(self, principal, role, object=None):
         """
-    True if `principal` has `role` (either globally, if `object` is None, or on
-    the specific `object`).
+        True if `principal` has `role` (either globally, if `object` is None, or on
+        the specific `object`).
 
-    :param:role:  can be a list or tuple of strings or a :class:`Role` instance
+        :param:role:  can be a list or tuple of strings or a :class:`Role` instance
 
-    `object` can be an :class:`Entity`, a string, or `None`.
+        `object` can be an :class:`Entity`, a string, or `None`.
 
-    Note: we're using a cache for efficiency here. TODO: check that we're not
-    over-caching.
+        Note: we're using a cache for efficiency here. TODO: check that we're not
+        over-caching.
 
-    Note2: caching could also be moved upfront to when the user is loaded.
-    """
+        Note2: caching could also be moved upfront to when the user is loaded.
+        """
         if not principal:
             return False
 
@@ -460,9 +457,9 @@ class SecurityService(Service):
 
     def grant_role(self, principal, role, obj=None):
         """
-    Grants `role` to `user` (either globally, if `obj` is None, or on
-    the specific `obj`).
-    """
+        Grants `role` to `user` (either globally, if `obj` is None, or on
+        the specific `obj`).
+        """
         assert principal
         principal = noproxy(principal)
         session = object_session(obj) if obj is not None else db.session
@@ -516,9 +513,9 @@ class SecurityService(Service):
 
     def ungrant_role(self, principal, role, object=None):
         """
-    Ungrants `role` to `user` (either globally, if `object` is None, or on
-    the specific `object`).
-    """
+        Ungrants `role` to `user` (either globally, if `object` is None, or on
+        the specific `object`).
+        """
         assert principal
         principal = noproxy(principal)
         session = object_session(object) if object is not None else db.session
@@ -586,12 +583,12 @@ class SecurityService(Service):
                        inherit=False,
                        roles=None):
         """
-    @param `obj`: target object to check permissions.
-    @param `inherit`: check with permission inheritance. By default, check only
-    local roles.
-    @param `roles`: additional valid role or iterable of roles having
-                    `permission`.
-    """
+        @param `obj`: target object to check permissions.
+        @param `inherit`: check with permission inheritance. By default, check only
+        local roles.
+        @param `roles`: additional valid role or iterable of roles having
+                        `permission`.
+        """
         if not isinstance(permission, Permission):
             assert permission in PERMISSIONS
             permission = Permission(permission)
@@ -659,26 +656,26 @@ class SecurityService(Service):
 
     def query_entity_with_permission(self, permission, user=None, Model=Entity):
         """
-    Filter a query on an :class:`Entity` or on of its subclasses.
+        Filter a query on an :class:`Entity` or on of its subclasses.
 
-    Usage::
+        Usage::
 
-        read_q = security.query_entity_with_permission(READ, Model=MyModel)
-        MyModel.query.filter(read_q)
+            read_q = security.query_entity_with_permission(READ, Model=MyModel)
+            MyModel.query.filter(read_q)
 
-    It should always be placed before any `.join()` happens in the query; else
-    sqlalchemy might join to the "wrong" entity table when joining to other
-    :class:`Entity`.
+        It should always be placed before any `.join()` happens in the query; else
+        sqlalchemy might join to the "wrong" entity table when joining to other
+        :class:`Entity`.
 
-    :param user: user to filter for. Default: `current_user`.
+        :param user: user to filter for. Default: `current_user`.
 
-    :param permission: required :class:`Permission`
+        :param permission: required :class:`Permission`
 
-    :param Model: An :class:`Entity` based class. Useful when there is more than
-    on Entity based object in query, or if an alias should be used.
+        :param Model: An :class:`Entity` based class. Useful when there is more than
+        on Entity based object in query, or if an alias should be used.
 
-    :returns: a `sqlalchemy.sql.exists()` expression.
-    """
+        :returns: a `sqlalchemy.sql.exists()` expression.
+        """
         assert isinstance(permission, Permission)
         assert issubclass(Model, Entity)
         RA = sa.orm.aliased(RoleAssignment)
@@ -706,50 +703,41 @@ class SecurityService(Service):
 
         RA = sa.sql.select([RA], principal_filter).cte()
         permission_exists = \
-            sa.sql.exists([1])\
-                  .where(
-                    sa.sql.and_(
-                      PA.permission == permission,
-                      PA.object_id == id_column,
-                      (RA.c.role == PA.role) | (PA.role == AnonymousRole),
-                      (RA.c.object_id == PA.object_id) | (RA.c.object_id == None)
-                    ))
+            sa.sql.exists([1]) \
+                .where(sa.sql.and_(PA.permission == permission,
+                                   PA.object_id == id_column,
+                                   (RA.c.role == PA.role) | (PA.role == AnonymousRole),
+                                   (RA.c.object_id == PA.object_id) | (RA.c.object_id == None)))
 
         # is_admin: self-explanatory. It search for local or global admin
         # role, but PermissionAssignment is not involved, thus it can match on
         # entities that don't have *any permission assignment*, whereas previous
         # expressions cannot.
         is_admin = \
-            sa.sql.exists([1])\
-                  .where(
-                    sa.sql.and_(
-                      RA.c.role == Admin,
-                      (RA.c.object_id == id_column) | (RA.c.object_id == None),
-                      principal_filter,
-                    ))
+            sa.sql.exists([1]) \
+                .where(sa.sql.and_(RA.c.role == Admin,
+                                   (RA.c.object_id == id_column) | (RA.c.object_id == None),
+                                   principal_filter))
 
         filter_expr = permission_exists | is_admin
 
         if user and not user.is_anonymous():
             is_owner_or_creator = \
-                sa.sql.exists([1])\
-                      .where(
-                        sa.sql.and_(
-                          PA.permission == permission,
-                          PA.object_id == id_column,
-                          sa.sql.or_((PA.role == Owner) & (owner == user),
-                                     (PA.role == Creator) & (creator == user)),
-                        ))
+                sa.sql.exists([1]) \
+                    .where(sa.sql.and_(PA.permission == permission,
+                                       PA.object_id == id_column,
+                                       sa.sql.or_((PA.role == Owner) & (owner == user),
+                                                  (PA.role == Creator) & (creator == user))))
             filter_expr |= is_owner_or_creator
 
         return filter_expr
 
     def get_permissions_assignments(self, obj=None, permission=None):
         """
-    :param permission: return only roles having this permission
+        :param permission: return only roles having this permission
 
-    :returns: an dict where keys are `permissions` and values `roles` iterable.
-    """
+        :returns: an dict where keys are `permissions` and values `roles` iterable.
+        """
         session = None
         if obj is not None:
             assert isinstance(obj, Entity)

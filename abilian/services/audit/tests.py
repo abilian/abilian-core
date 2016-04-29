@@ -16,7 +16,7 @@ from abilian.core.extensions import db
 from abilian.core.models.base import AUDITABLE_HIDDEN, SEARCHABLE
 from abilian.testing import BaseTestCase
 
-from . import CREATION, DELETION, UPDATE, AuditEntry, Changes, audit_service
+from . import CREATION, DELETION, UPDATE, AuditEntry, audit_service
 
 
 class IntegerCollection(db.Model):

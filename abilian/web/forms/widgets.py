@@ -156,17 +156,17 @@ class BaseTableView(object):
             aaSorting.append([idx, c['sorting'][0]])
 
         datatable_options = {
-          'aaSorting': aaSorting,
-          'aoColumns': aoColumns,
-          'bFilter': self.show_search,
-          'oLanguage': {
-            'sSearch': self.options.get('search_label', _("Filter records:")),
-          },
-          'bStateSave': False,
-          'bPaginate': self.paginate,
-          'sPaginationType': "bootstrap",
-          'bLengthChange': False,
-          'iDisplayLength': self.options.get('paginate_length', 50)
+            'aaSorting': aaSorting,
+            'aoColumns': aoColumns,
+            'bFilter': self.show_search,
+            'oLanguage': {
+                'sSearch': self.options.get('search_label', _("Filter records:")),
+            },
+            'bStateSave': False,
+            'bPaginate': self.paginate,
+            'sPaginationType': "bootstrap",
+            'bLengthChange': False,
+            'iDisplayLength': self.options.get('paginate_length', 50)
         }
         js = render_template_string('''
         require(
@@ -244,26 +244,26 @@ class BaseTableView(object):
 
 class MainTableView(BaseTableView):
     """
-  Table view for main objects list.
-  """
+    Table view for main objects list.
+    """
     show_controls = True
     paginate = True
 
 
 class RelatedTableView(BaseTableView):
     """
-  Table view for related objects list.
-  """
+    Table view for related objects list.
+    """
     show_controls = False
     paginate = False
 
 
 class AjaxMainTableView(object):
     """
-  Variant of the MainTableView that gets content from AJAX requests.
+    Variant of the MainTableView that gets content from AJAX requests.
 
-  TODO: refactor all of this (currently code is copy/pasted!).
-  """
+    TODO: refactor all of this (currently code is copy/pasted!).
+    """
     show_controls = False
     paginate = True
     options = {}
@@ -512,12 +512,12 @@ class SingleView(object):
 #
 class Panel(object):
     """
-  `Panel` and `Row` classes help implement a trivial internal DSL for
-  specifying multi-column layouts in forms or object views.
+    `Panel` and `Row` classes help implement a trivial internal DSL for
+    specifying multi-column layouts in forms or object views.
 
-  They are currently not really used, since we went with 1-column designs
-  eventually.
-  """
+    They are currently not really used, since we went with 1-column designs
+    eventually.
+    """
 
     def __init__(self, label=None, *rows):
         self.label = label
@@ -535,12 +535,12 @@ class Panel(object):
 
 class Row(object):
     """
-  `Panel` and `Row` classes help implement a trivial internal DSL for
-  specifying multi-column layouts in forms or object views.
+    `Panel` and `Row` classes help implement a trivial internal DSL for
+    specifying multi-column layouts in forms or object views.
 
-  They are currently not really used, since we went with 1-column designs
-  eventually.
-  """
+    They are currently not really used, since we went with 1-column designs
+    eventually.
+    """
 
     def __init__(self, *cols):
         self.cols = cols
@@ -598,12 +598,11 @@ class ModelWidget(object):
 
 # Form field widgets ###########################################################
 class TextInput(wtforms.widgets.TextInput):
-    """
-  Support pre and post icons.
+    """Support pre and post icons.
 
-  An Icon can be a plain string, or an instance of
-  :class:`abilian.web.action.Icon`.
-  """
+    An Icon can be a plain string, or an instance of
+    :class:`abilian.web.action.Icon`.
+    """
     pre_icon = None
     post_icon = None
 
@@ -651,8 +650,8 @@ class TextInput(wtforms.widgets.TextInput):
 
 class TextArea(BaseTextArea):
     """
-  Accepts "resizeable" parameter: "vertical", "horizontal", "both", None
-  """
+    Accepts "resizeable" parameter: "vertical", "horizontal", "both", None
+    """
     _resizeable_valid = ("vertical", "horizontal", "both", None)
     resizeable = None
     rows = None
@@ -685,9 +684,9 @@ class TextArea(BaseTextArea):
 
 class FileInput(object):
     """
-  Renders a file input.  Inspired from
-  http://www.abeautifulsite.net/blog/2013/08/whipping-file-inputs-into-shape-with-bootstrap-3/
-  """
+    Renders a file input.  Inspired from
+    http://www.abeautifulsite.net/blog/2013/08/whipping-file-inputs-into-shape-with-bootstrap-3/
+    """
 
     def __init__(self, template='widgets/file_input.html'):
         self.template = template
@@ -770,9 +769,9 @@ class FileInput(object):
 
 class ImageInput(FileInput):
     """
-  An image widget with client-side preview. To show current image field
-  data has to provide an attribute named `url`.
-  """
+    An image widget with client-side preview. To show current image field
+    data has to provide an attribute named `url`.
+    """
 
     def __init__(self,
                  template='widgets/image_input.html',
@@ -855,8 +854,8 @@ class ImageInput(FileInput):
 
 class Chosen(Select):
     """
-  Extends the Select widget using the Chosen jQuery plugin.
-  """
+    Extends the Select widget using the Chosen jQuery plugin.
+    """
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
@@ -879,8 +878,8 @@ class Chosen(Select):
 
 class TagInput(Input):
     """
-  Extends the Select widget using the Chosen jQuery plugin.
-  """
+    Extends the Select widget using the Chosen jQuery plugin.
+    """
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
@@ -894,9 +893,9 @@ class TagInput(Input):
 
 class DateInput(Input):
     """
-  Renders date inputs using the fancy Bootstrap Datepicker:
-  https://github.com/eternicode/bootstrap-datepicker
-  """
+    Renders date inputs using the fancy Bootstrap Datepicker:
+    https://github.com/eternicode/bootstrap-datepicker
+    """
     input_type = 'date'
 
     def __call__(self, field, **kwargs):
@@ -947,9 +946,9 @@ class DateInput(Input):
 
 class TimeInput(Input):
     """
-  Renders time inputs using boostrap timepicker:
-  https://github.com/jdewit/bootstrap-timepicker
-  """
+    Renders time inputs using boostrap timepicker:
+    https://github.com/jdewit/bootstrap-timepicker
+    """
     template = 'widgets/timepicker.html'
 
     def __init__(self,
@@ -1013,9 +1012,9 @@ class TimeInput(Input):
 
 class DateTimeInput(object):
     """
-  if corresponding field.raw_data exist it is used
-  to initialize default date & time (raw_data example: ["10/10/16 | 09:00"])
-  """
+    if corresponding field.raw_data exist it is used
+    to initialize default date & time (raw_data example: ["10/10/16 | 09:00"])
+    """
 
     def __init__(self):
         self.date = DateInput()
@@ -1059,21 +1058,22 @@ class DateTimeInput(object):
                 date_value = u''
                 time_value = u''
 
-        return (Markup(
-            u'<div class="form-inline">\n'
-            u'<input class="datetimepicker" type="hidden" id="{id}" name="{name}" '
-            u'value="{date} | {time}" />\n'
-            u''.format(id=field_id,
-                       name=field_name,
-                       date=date_value,
-                       time=time_value)) + self.date(field,
-                                                     id=field_id + '-date',
-                                                     name=field_name + '-date',
-                                                     value=date_value) +
-                self.time(field,
-                          id=field_id + '-time',
-                          name=field_name + '-time',
-                          value=time_value) + Markup(u'</div>'))
+        return Markup(u'<div class="form-inline">\n'
+                      u'<input class="datetimepicker" type="hidden" id="{id}" name="{name}" '
+                      u'value="{date} | {time}" />\n'
+                      u''.format(id=field_id,
+                                 name=field_name,
+                                 date=date_value,
+                                 time=time_value)) \
+               + self.date(field,
+                           id=field_id + '-date',
+                           name=field_name + '-date',
+                           value=date_value) \
+               + self.time(field,
+                           id=field_id + '-time',
+                           name=field_name + '-time',
+                           value=time_value) \
+               + Markup(u'</div>')
 
 
 class DefaultViewWidget(object):
@@ -1122,8 +1122,8 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 
 class PasswordInput(BasePasswordInput):
     """
-  Supports setting 'autocomplete' at instanciation time
-  """
+    Supports setting 'autocomplete' at instanciation time
+    """
 
     def __init__(self, *args, **kwargs):
         self.autocomplete = kwargs.pop('autocomplete', None)
@@ -1139,7 +1139,7 @@ class PasswordInput(BasePasswordInput):
 
 class FloatWidget(wtforms.widgets.TextInput):
     """ In view mode, format float number to 'precision' decimal
-  """
+    """
 
     def __init__(self, precision=None):
         self.precision = precision
@@ -1179,8 +1179,8 @@ class EntityWidget(object):
 
 class HoursWidget(TextInput):
     """ Widget used to show / enter hours.
-  Currently hardcoded to heure(s)
-  """
+    Currently hardcoded to heure(s)
+    """
     post_icon = _l(u'hour(s)')
     input_type = 'number'
 
@@ -1196,11 +1196,10 @@ class HoursWidget(TextInput):
 
 
 class MoneyWidget(TextInput):
-    """
-  Widget used to show / enter money amount.
+    """Widget used to show / enter money amount.
 
-  Currently hardcoded to € / k€.
-  """
+    Currently hardcoded to € / k€.
+    """
     post_icon = u'€'
     input_type = 'number'
 
@@ -1292,7 +1291,7 @@ class RichTextWidget(object):
 
 class ListWidget(wtforms.widgets.ListWidget):
     """ display field label is optionnal
-  """
+    """
 
     def __init__(self, html_tag='ul', prefix_label=True, show_label=True):
         wtforms.widgets.ListWidget.__init__(self, html_tag, prefix_label)
@@ -1330,10 +1329,8 @@ class ListWidget(wtforms.widgets.ListWidget):
 
 
 class FieldListWidget(object):
+    """For list of Fields (using <tr><td>)
     """
-  For list of Fields
-  (using <tr><td>)
-  """
     view_template = 'widgets/fieldlist_view.html'
     template = 'widgets/fieldlist.html'
 
@@ -1356,15 +1353,15 @@ class FieldListWidget(object):
 
 
 class TabularFieldListWidget(object):
-    """
-  For list of formfields
+    """For list of formfields
 
-  2 templates are available:
-   * widgets/tabular_fieldlist_widget.html (default):
-     Show sub-forms as a table, one row of inputs per model
-   * widgets/model_fieldlist.html:
-     Show sub-forms as a list of forms
-  """
+    2 templates are available:
+
+    * widgets/tabular_fieldlist_widget.html (default):
+      Show sub-forms as a table, one row of inputs per model
+    * widgets/model_fieldlist.html:
+      Show sub-forms as a list of forms
+    """
 
     def __init__(self, template='widgets/tabular_fieldlist_widget.html'):
         self.template = template
@@ -1427,8 +1424,8 @@ class ModelListWidget(object):
 #
 class Select2(Select):
     """
-  Transforms a Select widget into a Select2 widget. Depends on global JS code.
-  """
+    Transforms a Select widget into a Select2 widget. Depends on global JS code.
+    """
     unescape_html = False
 
     def __init__(self, unescape_html=False, js_init='select2', *args, **kwargs):
@@ -1468,22 +1465,21 @@ class Select2(Select):
 
 
 class Select2Ajax(object):
+    """Ad-hoc select widget based on Select2.
+
+    The code below is probably very fragile, since it depends on the internal
+    structure of a Select2 widget.
+
+    :param format_result: `formatResult` arg of Select2. Must be a valid
+    javascript reference (like `Abilian.my_format_function`)
+
+    :param format_selection: like `format_result`, but for Select2's
+    `formatSelection`
+
+    :param values_builder: an optional function, which given a data iterable of
+    values, returns a list of dict items suitable for widget initial data;
+    generally needed when using custom format_result/format_selection.
     """
-  Ad-hoc select widget based on Select2.
-
-  The code below is probably very fragile, since it depends on the internal
-  structure of a Select2 widget.
-
-  :param format_result: `formatResult` arg of Select2. Must be a valid
-  javascript reference (like `Abilian.my_format_function`)
-
-  :param format_selection: like `format_result`, but for Select2's
-  `formatSelection`
-
-  :param values_builder: an optional function, which given a data iterable of
-  values, returns a list of dict items suitable for widget initial data;
-  generally needed when using custom format_result/format_selection.
-  """
 
     def __init__(self,
                  template='widgets/select2ajax.html',
@@ -1507,17 +1503,17 @@ class Select2Ajax(object):
 
     def process_formdata(self, valuelist):
         """
-    field helper: as of select2 3.x, multiple values are passed as a single
-    string.
-    """
+        field helper: as of select2 3.x, multiple values are passed as a single
+        string.
+        """
         if self.multiple:
             valuelist = valuelist[0].split(u',')
         return valuelist
 
     def __call__(self, field, **kwargs):
         """
-    Render widget
-    """
+        Render widget
+        """
         if self.multiple:
             kwargs['multiple'] = True
 

@@ -30,8 +30,8 @@ RELATED = 1 << 7
 
 class Changes(object):
     """
-  Trace object modifications
-  """
+    Trace object modifications
+    """
 
     def __init__(self):
         self.columns = {}
@@ -81,8 +81,8 @@ class Changes(object):
 
 class AuditEntry(db.Model):
     """
-  Logs modifications to auditable classes.
-  """
+    Logs modifications to auditable classes.
+    """
     id = Column(Integer, primary_key=True)
     happened_at = Column(DateTime, default=datetime.utcnow, index=True)
     type = Column(Integer)  # CREATION / UPDATE / DELETION

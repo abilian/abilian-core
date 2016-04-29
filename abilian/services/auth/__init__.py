@@ -3,4 +3,4 @@
 """
 from __future__ import absolute_import, print_function, division
 
-from .service import AuthService
+from .service import AuthService  # noqa

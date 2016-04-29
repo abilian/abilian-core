@@ -4,7 +4,7 @@
 from __future__ import absolute_import, division, print_function
 
 import sqlalchemy as sa
-from wtforms.fields import BooleanField, StringField, TextField
+from wtforms.fields import BooleanField, StringField
 from wtforms.validators import ValidationError
 
 from abilian.core.models.subjects import Group
@@ -41,13 +41,13 @@ class BaseUserAdminForm(Form):
         widget=widgets.BooleanWidget())
 
     groups = QuerySelect2Field(
-      _l(u'Groups'),
-      validators=(optional(),),
-      multiple=True,
-      collection_class=set,
-      query_factory= lambda: \
-          Group.query.order_by(sa.sql.func.lower(Group.name).asc()),
-      get_label='name',
+        _l(u'Groups'),
+        validators=(optional(),),
+        multiple=True,
+        collection_class=set,
+        query_factory=lambda:
+            Group.query.order_by(sa.sql.func.lower(Group.name).asc()),
+        get_label='name',
     )
 
     roles = Select2MultipleField(
