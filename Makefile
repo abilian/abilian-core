@@ -49,49 +49,28 @@ vagrant-tests:
 	vagrant up
 	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
 
-lint: lint-python
-
-lint-python:
-	@echo "--> Linting Python files"
-	flake8 $(SRC)
-	@echo ""
-
-flake8:
-	flake8 --max-complexity=8 --config=setup.cfg abilian
-
-test-readme:
-	rst-lint README.rst
-
 #
 # Various Checkers
 #
-lint: lint-js lint-python
+lint: lint-py
 
 lint-js:
-	@echo "No JavaScript files to check"
+	@echo "--> Linting JS files"
+	npm run lint --silent
+	@echo ""
 
-lint-python: flake8
+lint-py:
+	@echo "--> Linting Python files"
+	flake8 --max-complexity=8 --config=setup.cfg $(SRC)
+	pylama $(SRC)
+	@echo ""
 
-pep8:
-	pep8 -r $(SRC)
+lint-readme:
+	rst-lint README.rst
 
 pep8-stats:
 	pep8 -r --statistics -qq $(SRC) | sort -nr
 
-pytest-pep8:
-	py.test --pep8 -m pep8 $(SRC) tests
-
-pytest-flake:
-	py.test --flakes -m flakes $(SRC) tests
-
-pylama:
-	pylama $(SRC)
-
-pylint:
-	pylint --rcfile=etc/pylintrc $(SRC)
-
-js-lint:
-	npm run lint --silent
 
 #
 # Everything else

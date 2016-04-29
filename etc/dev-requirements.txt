@@ -16,9 +16,6 @@ pytest-cov
 
 # Static code analysis
 pylama
-pylint
-pytest-pep8
-pytest-flakes
 flake8
 
 # To build docs
