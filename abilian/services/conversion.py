@@ -39,7 +39,7 @@ from abilian.services.image import FIT, resize
 logger = logging.getLogger(__name__)
 
 # For some reason, twill includes a broken version of subprocess.
-assert not 'twill' in subprocess.__file__
+assert 'twill' not in subprocess.__file__
 
 # Hack for Mac OS + homebrew
 os.environ['PATH'] += ":/usr/local/bin"
@@ -146,8 +146,8 @@ class Converter(object):
     def to_text(self, digest, blob, mime_type):
         """Converts a file to plain text.
 
-    Useful for full-text indexing. Returns an unicode string.
-    """
+        Useful for full-text indexing. Returns an unicode string.
+        """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
             return u""
@@ -177,14 +177,14 @@ class Converter(object):
 
     def has_image(self, digest, mime_type, index, size=500):
         """ Tell if there is a preview image
-    """
+        """
         cache_key = "img:%s:%s:%s" % (index, size, digest)
         return mime_type.startswith("image/") or cache_key in self.cache
 
     def get_image(self, digest, blob, mime_type, index, size=500):
         """ Return an image for the given content, only if it already exists in the
-    image cache
-    """
+        image cache
+        """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
             return ""
@@ -194,8 +194,8 @@ class Converter(object):
 
     def to_image(self, digest, blob, mime_type, index, size=500):
         """
-    Converts a file to a list of images. Returns image at the given index.
-    """
+        Converts a file to a list of images. Returns image at the given index.
+        """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
             return ""
@@ -493,11 +493,11 @@ class UnoconvPdfHandler(Handler):
 
     def convert(self, blob, **kw):
         """
-    Unoconv converter called.
-    """
+        Unoconv converter called.
+        """
         timeout = self.run_timeout
-        with make_temp_file(blob) as in_fn,\
-            make_temp_file(prefix='tmp-unoconv-', suffix=".pdf") as out_fn:
+        with make_temp_file(blob) as in_fn, \
+                make_temp_file(prefix='tmp-unoconv-', suffix=".pdf") as out_fn:
 
             # Hack for my Mac, FIXME later
             if os.path.exists(
@@ -546,12 +546,12 @@ class UnoconvPdfHandler(Handler):
 class CloudoooPdfHandler(Handler):
     """Handles conversion from OOo to PDF.
 
-  Highly inefficient since file are serialized in base64 over HTTP.
+    Highly inefficient since file are serialized in base64 over HTTP.
 
-  Deactivated because it's so hard to set up.
+    Deactivated because it's so hard to set up.
 
-  FIXME: needs cleanup, or removal.
-  """
+    FIXME: needs cleanup, or removal.
+    """
 
     accepts_mime_types = [r'application/.*']
     produces_mime_types = ['application/pdf']

@@ -20,7 +20,7 @@ from .base import (Model,
                    NOT_SEARCHABLE,
                    EXPORTABLE,
                    NOT_EXPORTABLE,
-                   SYSTEM,)
+                   SYSTEM)  # noqa
 
 from .owned import OwnedMixin
 

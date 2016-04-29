@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function
 from flask import current_app
 from flask_login import current_user
 
-from abilian.core.entities import Entity
 from abilian.core.models import attachment as attachments
 from abilian.services.security import READ, WRITE, security
 from abilian.web import url_for
@@ -20,10 +19,10 @@ _MANAGER_ATTR = '__attachments_manager__'
 
 class AttachmentExtension(object):
     """
-  API for comments, installed as an application extension.
+    API for comments, installed as an application extension.
 
-  It is also available in templates as `attachments`.
-  """
+    It is also available in templates as `attachments`.
+    """
 
     def __init__(self, app):
         app.extensions['attachments'] = self
@@ -32,8 +31,8 @@ class AttachmentExtension(object):
 
     def manager(self, obj):
         """
-    Returns the :class:`AttachmentsManager` instance for this object.
-    """
+        Returns the :class:`AttachmentsManager` instance for this object.
+        """
         manager = getattr(obj, _MANAGER_ATTR, None)
         if manager is None:
             manager = AttachmentsManager()
@@ -57,9 +56,9 @@ class AttachmentExtension(object):
 
     def get_form_context(self, obj):
         """
-    Return a dict: form instance, action button, submit url...
-    Used by macro m_attachment_form(entity)
-    """
+        Return a dict: form instance, action button, submit url...
+        Used by macro m_attachment_form(entity)
+        """
         return self.manager(obj).get_form_context(obj)
 
 
@@ -68,10 +67,10 @@ _DEFAULT_TEMPLATE = 'macros/attachment_default.html'
 
 class AttachmentsManager(object):
     """
-  Allow customization of attachments form, display macros, etc
+    Allow customization of attachments form, display macros, etc
 
-  can be used as class decorator
-  """
+    can be used as class decorator
+    """
     Form = AttachmentForm
     macros_template = 'macros/attachment.html'
 
@@ -113,36 +112,38 @@ class AttachmentsManager(object):
 
     def get_form_context(self, obj):
         """
-    Return a dict: form instance, action button, submit url...
-    Used by macro m_attachment_form(entity)
-    """
+        Return a dict: form instance, action button, submit url...
+        Used by macro m_attachment_form(entity)
+        """
         ctx = {}
         ctx['url'] = url_for('attachments.create', entity_id=obj.id)
         ctx['form'] = self.Form()
         ctx['buttons'] = [UPLOAD_BUTTON]
         return ctx
 
-    ## current user capabilities
+    #
+    # current user capabilities
+    #
     def can_view(self, entity):
         """
-    True if user can view attachments on entity
-    """
+        True if user can view attachments on entity
+        """
         return security.has_permission(current_user, READ, obj=entity)
 
     def can_edit(self, entity):
         """
-    True if user can edit attachments on entity
-    """
+        True if user can edit attachments on entity
+        """
         return security.has_permission(current_user, WRITE, obj=entity)
 
     def can_create(self, entity):
         """
-    True if user can add attachments
-    """
+        True if user can add attachments
+        """
         return security.has_permission(current_user, WRITE, obj=entity)
 
     def can_delete(self, entity):
         """
-    True if user can delete attachments
-    """
+        True if user can delete attachments
+        """
         return security.has_permission(current_user, WRITE, obj=entity)

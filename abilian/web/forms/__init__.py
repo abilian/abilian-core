@@ -42,9 +42,8 @@ BabelTranslation = _BabelTranslation()
 
 
 class FormPermissions(object):
+    """Form role/permission manager
     """
-  Form role/permission manager
-  """
 
     def __init__(self,
                  default=Anonymous,
@@ -54,20 +53,20 @@ class FormPermissions(object):
                  fields_write=None,
                  existing=None):
         """
-    :param default: default roles when not specified for field. Can be:
+        :param default: default roles when not specified for field. Can be:
 
-        * a :class:`Role` or an iterable of :class:`Role`
+            * a :class:`Role` or an iterable of :class:`Role`
 
-        * a callable that returns a :class:`Role` or an iterable of
-          :class:`Role`
+            * a callable that returns a :class:`Role` or an iterable of
+              :class:`Role`
 
-        * a `dict` with :class:`Permission` instances for keys and one of other
-          acceptable role spec.; a default entry `"default"` is required.
+            * a `dict` with :class:`Permission` instances for keys and one of other
+              acceptable role spec.; a default entry `"default"` is required.
 
-    :param read: global roles required for `READ` permission for whole form.
+        :param read: global roles required for `READ` permission for whole form.
 
-    :param write: global roles required for `WRITE` permission for whole form.
-    """
+        :param write: global roles required for `WRITE` permission for whole form.
+        """
         if isinstance(default, Role):
             default = {'default': (default,)}
         elif isinstance(default, dict):
@@ -124,8 +123,6 @@ class FormPermissions(object):
                        field=None,
                        obj=None,
                        user=current_user):
-        """
-    """
         if obj is not None and not isinstance(obj, Entity):
             # permission/role can be set only on entities
             return True
@@ -253,7 +250,7 @@ class Form(BaseForm):
                 has_permission = partial(self._permissions.has_permission,
                                          ctx.permission,
                                          obj=ctx.obj,
-                                         user=ctx.user,)
+                                         user=ctx.user)
                 empty_form = not has_permission()
 
                 for field_name in list(self._fields):
@@ -291,7 +288,7 @@ class Form(BaseForm):
 
 ModelForm = model_form_factory(Form)
 
-### PATCH wtforms.field.core.Field ####################
+# PATCH wtforms.field.core.Field ####################
 _PATCHED = False
 
 if not _PATCHED:
@@ -316,9 +313,9 @@ if not _PATCHED:
 
     def _core_field_repr(self):
         '''
-    __repr__ that shows the name of the field instance. Useful for tracing field
-    errors (like in sentry)
-    '''
+        __repr__ that shows the name of the field instance. Useful for tracing field
+        errors (like in sentry)
+        '''
         return '<{}.{} at 0x{:x} name={!r}>'.format(self.__class__.__module__,
                                                     self.__class__.__name__,
                                                     id(self),
@@ -343,8 +340,8 @@ if not _PATCHED:
 
     def render_view(self, **kwargs):
         """
-    Render data
-    """
+        Render data
+        """
         if 'widget_options' in kwargs and not kwargs['widget_options']:
             kwargs.pop('widget_options')
 
@@ -359,9 +356,9 @@ if not _PATCHED:
 
     def is_hidden(self):
         """
-    WTForms is not consistent with hidden fields, since `flags.hidden` is not
-    set on `HiddenField` :-(
-    """
+        WTForms is not consistent with hidden fields, since `flags.hidden` is not
+        set on `HiddenField` :-(
+        """
         return (self.flags.hidden or isinstance(self, HiddenField))
 
     patch_logger.info('Add method %s.Field.is_hidden' % Field.__module__)
@@ -369,4 +366,4 @@ if not _PATCHED:
     del is_hidden
 
     _PATCHED = True
-### END PATCH wtforms.field.core.Field #################
+# END PATCH wtforms.field.core.Field #################

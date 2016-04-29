@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 # validation code.
 from wtforms.compat import string_types
 from wtforms.validators import (URL, UUID, AnyOf, DataRequired, Email, EqualTo,
-                                IPAddress, Length, MacAddress, NoneOf,
+                                IPAddress, MacAddress, NoneOf,
                                 NumberRange, Optional, Regexp, StopValidation,
                                 ValidationError)
 
@@ -66,19 +66,18 @@ class EqualTo(EqualTo, Rule):
 
 
 class Length(Rule):
+    """Validates the length of a string.
+
+    :param min: The minimum required length of the string. If not provided, minimum
+    length will not be checked.
+
+    :param max:  The maximum length of the string. If not provided, maximum length
+    will not be checked.
+
+    :param message: Error message to raise in case of a validation error. Can be
+    interpolated using `%(min)d` and `%(max)d` if desired. Useful defaults are
+    provided depending on the existence of min and max.
     """
-  Validates the length of a string.
-
-  :param min: The minimum required length of the string. If not provided, minimum
-  length will not be checked.
-
-  :param max:  The maximum length of the string. If not provided, maximum length
-  will not be checked.
-
-  :param message: Error message to raise in case of a validation error. Can be
-  interpolated using `%(min)d` and `%(max)d` if desired. Useful defaults are
-  provided depending on the existence of min and max.
-  """
 
     def __init__(self, min=-1, max=-1, message=None):
         assert min != -1 or max != -1, 'At least one of `min` or `max` must be specified.'
@@ -107,8 +106,8 @@ class Length(Rule):
                         max=self.max)
                 else:
                     message = _(
-                      u'Field must be between %(min)d and %(max)d characters long.',
-                      min=self.min, max=self.max)
+                        u'Field must be between %(min)d and %(max)d characters long.',
+                        min=self.min, max=self.max)
             raise ValidationError(message % dict(min=self.min,
                                                  max=self.max,
                                                  length=l))
@@ -154,8 +153,8 @@ class NoneOf(NoneOf, Rule):
 
 
 class FlagHidden(Rule):
-    """ Flag the field as hidden
-  """
+    """Flag the field as hidden.
+    """
     field_flags = ('hidden',)
 
     def __call__(self, form, field):
@@ -163,9 +162,8 @@ class FlagHidden(Rule):
 
 
 class AntiVirus(Rule):
+    """Check content for viruses.
     """
-  Check content for viruses
-  """
     field_flags = ('antivirus',)
 
     def __call__(self, form, field):
@@ -179,9 +177,8 @@ class AntiVirus(Rule):
 
 
 class RenderEmpty(object):
+    """Force display.
     """
-  Force display
-  """
     field_flags = ('render_empty',)
 
     def __call__(self, form, field):

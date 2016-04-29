@@ -24,7 +24,6 @@ from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
 from wtforms.ext.sqlalchemy.fields import (get_pk_from_identity,
                                            has_identity_key)
-from wtforms.utils import unset_value
 from wtforms.validators import DataRequired, Optional
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 from wtforms_alchemy import ModelFormField as BaseModelFormField
@@ -67,8 +66,8 @@ class FormField(BaseFormField):
 
 class ModelFormField(FormField, BaseModelFormField):
     """
-  Discard csrf_token on subform
-  """
+    Discard csrf_token on subform
+    """
 
 
 class FilterFieldListMixin(object):
@@ -103,8 +102,8 @@ class FieldList(FilterFieldListMixin, BaseFieldList):
 
 class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
     """
-  Filter empty entries before saving and refills before displaying
-  """
+    Filter empty entries before saving and refills before displaying
+    """
 
     def __init__(self, *args, **kwargs):
         super(ModelFieldList, self).__init__(*args, **kwargs)
@@ -131,12 +130,12 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
 
     def __call__(self, **kwargs):
         """
-    Refill with default min_entry, which were possibly
-    removed by FilterFieldListMixin.
+        Refill with default min_entry, which were possibly
+        removed by FilterFieldListMixin.
 
-    Mandatory for proper function of DynamicRowWidget which clones an existing
-    field
-    """
+        Mandatory for proper function of DynamicRowWidget which clones an existing
+        field
+        """
         while len(self) < self.min_entries:
             self.append_entry()
         return super(ModelFieldList, self).__call__(**kwargs)
@@ -144,13 +143,13 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
 
 class FileField(BaseFileField):
     """
-  Support 'multiple' attribute, enabling html5 multiple file input in widget.
+    Support 'multiple' attribute, enabling html5 multiple file input in widget.
 
-  Can store file using a related model.
+    Can store file using a related model.
 
-  :param blob_attr: attribute name to store / retrieve value on related model.
+    :param blob_attr: attribute name to store / retrieve value on related model.
       Used if `name` is a relationship on model. Defauts to `'value'`
-  """
+    """
     multiple = False
     widget = FileInput()
     blob = None
@@ -240,9 +239,8 @@ class FileField(BaseFileField):
             self._has_uploads = True
 
     def populate_obj(self, obj, name):
+        """Store file
         """
-    Store file
-    """
         from abilian.core.models.blob import Blob
         delete_value = self.allow_delete and self.delete_files_index
 
@@ -283,16 +281,14 @@ class FileField(BaseFileField):
 
 
 class DateTimeField(Field):
-    """
-  """
     widget = DateTimeInput()
 
     def __init__(self, label=None, validators=None, use_naive=True, **kwargs):
         """
-    :param use_naive: if `False`, dates are considered entered using user's
-    timezone; different users with different timezones will see corrected
-    date/time. For storage dates are always stored using UTC.
-    """
+        :param use_naive: if `False`, dates are considered entered using user's
+        timezone; different users with different timezones will see corrected
+        date/time. For storage dates are always stored using UTC.
+        """
         self.raw_data = kwargs.pop('raw_data', None)
         super(DateTimeField, self).__init__(label, validators, **kwargs)
         self.use_naive = use_naive
@@ -361,8 +357,8 @@ class DateTimeField(Field):
 
 class DateField(Field):
     """
-  A text field which stores a `datetime.date` matching a format.
-  """
+    A text field which stores a `datetime.date` matching a format.
+    """
     widget = DateInput()
 
     def __init__(self, label=None, validators=None, **kwargs):
@@ -401,8 +397,8 @@ class DateField(Field):
 
 class Select2Field(SelectField):
     """
-  Allow choices to be a function instead of an iterable
-  """
+    Allow choices to be a function instead of an iterable
+    """
     widget = Select2()
 
     @property
@@ -431,33 +427,33 @@ class Select2MultipleField(SelectMultipleField):
 
 class QuerySelect2Field(SelectFieldBase):
     """
-  COPY/PASTED (and patched) from WTForms!
+    COPY/PASTED (and patched) from WTForms!
 
-  Will display a select drop-down field to choose between ORM results in a
-  sqlalchemy `Query`.  The `data` property actually will store/keep an ORM
-  model instance, not the ID. Submitting a choice which is not in the query
-  will result in a validation error.
+    Will display a select drop-down field to choose between ORM results in a
+    sqlalchemy `Query`.  The `data` property actually will store/keep an ORM
+    model instance, not the ID. Submitting a choice which is not in the query
+    will result in a validation error.
 
-  This field only works for queries on models whose primary key column(s)
-  have a consistent string representation. This means it mostly only works
-  for those composed of string, unicode, and integer types. For the most
-  part, the primary keys will be auto-detected from the model, alternately
-  pass a one-argument callable to `get_pk` which can return a unique
-  comparable key.
+    This field only works for queries on models whose primary key column(s)
+    have a consistent string representation. This means it mostly only works
+    for those composed of string, unicode, and integer types. For the most
+    part, the primary keys will be auto-detected from the model, alternately
+    pass a one-argument callable to `get_pk` which can return a unique
+    comparable key.
 
-  The `query` property on the field can be set from within a view to assign
-  a query per-instance to the field. If the property is not set, the
-  `query_factory` callable passed to the field constructor will be called to
-  obtain a query.
+    The `query` property on the field can be set from within a view to assign
+    a query per-instance to the field. If the property is not set, the
+    `query_factory` callable passed to the field constructor will be called to
+    obtain a query.
 
-  Specify `get_label` to customize the label associated with each option. If
-  a string, this is the name of an attribute on the model object to use as
-  the label text. If a one-argument callable, this callable will be passed
-  model instance and expected to return the label text. Otherwise, the model
-  object's `__str__` or `__unicode__` will be used.
+    Specify `get_label` to customize the label associated with each option. If
+    a string, this is the name of an attribute on the model object to use as
+    the label text. If a one-argument callable, this callable will be passed
+    model instance and expected to return the label text. Otherwise, the model
+    object's `__str__` or `__unicode__` will be used.
 
-  :param allow_blank: DEPRECATED. Use optional()/required() validators instead.
-  """
+    :param allow_blank: DEPRECATED. Use optional()/required() validators instead.
+    """
 
     def __init__(self,
                  label=None,
@@ -592,41 +588,41 @@ class QuerySelect2Field(SelectFieldBase):
 
 class JsonSelect2Field(SelectFieldBase):
     """
-  TODO: rewrite this docstring. This is copy-pasted from QuerySelectField
+    TODO: rewrite this docstring. This is copy-pasted from QuerySelectField
 
-  Will display a select drop-down field to choose between ORM results in a
-  sqlalchemy `Query`.  The `data` property actually will store/keep an ORM
-  model instance, not the ID. Submitting a choice which is not in the query
-  will result in a validation error.
+    Will display a select drop-down field to choose between ORM results in a
+    sqlalchemy `Query`.  The `data` property actually will store/keep an ORM
+    model instance, not the ID. Submitting a choice which is not in the query
+    will result in a validation error.
 
-  This field only works for queries on models whose primary key column(s)
-  have a consistent string representation. This means it mostly only works
-  for those composed of string, unicode, and integer types. For the most
-  part, the primary keys will be auto-detected from the model, alternately
-  pass a one-argument callable to `get_pk` which can return a unique
-  comparable key.
+    This field only works for queries on models whose primary key column(s)
+    have a consistent string representation. This means it mostly only works
+    for those composed of string, unicode, and integer types. For the most
+    part, the primary keys will be auto-detected from the model, alternately
+    pass a one-argument callable to `get_pk` which can return a unique
+    comparable key.
 
-  The `query` property on the field can be set from within a view to assign
-  a query per-instance to the field. If the property is not set, the
-  `query_factory` callable passed to the field constructor will be called to
-  obtain a query.
+    The `query` property on the field can be set from within a view to assign
+    a query per-instance to the field. If the property is not set, the
+    `query_factory` callable passed to the field constructor will be called to
+    obtain a query.
 
-  Specify `get_label` to customize the label associated with each option. If
-  a string, this is the name of an attribute on the model object to use as
-  the label text. If a one-argument callable, this callable will be passed
-  model instance and expected to return the label text. Otherwise, the model
-  object's `__str__` or `__unicode__` will be used.
+    Specify `get_label` to customize the label associated with each option. If
+    a string, this is the name of an attribute on the model object to use as
+    the label text. If a one-argument callable, this callable will be passed
+    model instance and expected to return the label text. Otherwise, the model
+    object's `__str__` or `__unicode__` will be used.
 
-  If `allow_blank` is set to `True`, then a blank choice will be added to the
-  top of the list. Selecting this choice will result in the `data` property
-  being `None`. The label for this blank choice can be set by specifying the
-  `blank_text` parameter.
+    If `allow_blank` is set to `True`, then a blank choice will be added to the
+    top of the list. Selecting this choice will result in the `data` property
+    being `None`. The label for this blank choice can be set by specifying the
+    `blank_text` parameter.
 
-  :param model_class: can be an sqlalchemy model, or a string with model
-  name. The model will be looked up in sqlalchemy class registry on first
-  access. This allows to use a model when it cannot be imported during field
-  declaration.
-  """
+    :param model_class: can be an sqlalchemy model, or a string with model
+    name. The model will be looked up in sqlalchemy class registry on first
+    access. This allows to use a model when it cannot be imported during field
+    declaration.
+    """
 
     def __init__(self,
                  label=None,

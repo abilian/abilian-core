@@ -14,7 +14,6 @@ from future.utils import string_types
 from whoosh.fields import TEXT
 
 from abilian.core.extensions import db
-from abilian.core.sqlalchemy import MutationList
 
 from .schema import accent_folder
 
@@ -25,32 +24,32 @@ logger = logging.getLogger(__name__)
 
 class SchemaAdapter(object):
     """
-  Abstract base class for objects to schema adapter. The purpose of adapters is
-  that given an object they return kwargs for document.
-  """
+    Abstract base class for objects to schema adapter. The purpose of adapters is
+    that given an object they return kwargs for document.
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, Model, schema):
         """
-    :param:Model: class of objects instances to be adapted
-    :param:schema: :class:`whoosh.fields.Schema` instance
-    """
+        :param:Model: class of objects instances to be adapted
+        :param:schema: :class:`whoosh.fields.Schema` instance
+        """
         pass
 
     @staticmethod
     def can_adapt(obj_cls):
         """
-    Returns True if this class can adapt objects of class `obj_cls`
-    """
+        Returns True if this class can adapt objects of class `obj_cls`
+        """
         raise NotImplementedError
 
     @abstractmethod
     def retrieve(self, pk, **data):
         """
-    Returns an object instance given its identifier and optional data kwargs.
+        Returns an object instance given its identifier and optional data kwargs.
 
-    :returns:None if not object instance can be returned
-    """
+        :returns:None if not object instance can be returned
+        """
         raise NotImplementedError
 
     @abstractmethod
@@ -59,29 +58,28 @@ class SchemaAdapter(object):
 
 
 class SAAdapter(SchemaAdapter):
-    """
-  Adapts an sqlalchemy model.
+    """Adapts an sqlalchemy model.
 
-  A column on the model is indexed if `"searchable"` is set to `True` in
-  its `info` field (see :meth:`sqlalchemy.schema.Column.__init__`)
+    A column on the model is indexed if `"searchable"` is set to `True` in
+    its `info` field (see :meth:`sqlalchemy.schema.Column.__init__`)
 
-  Additionnaly info can also contains `index_to`. It's expected to be an
-  iterable of field names or tuple of (field name, whoosh field
-  instance). The default the whoosh field is a
-  :class:`whoosh.fields.TEXT` instance.
+    Additionnaly info can also contains `index_to`. It's expected to be an
+    iterable of field names or tuple of (field name, whoosh field
+    instance). The default the whoosh field is a
+    :class:`whoosh.fields.TEXT` instance.
 
-  When `index_to` is used the column name will *not* be indexed on the same
-  field name unless specified in `index_to`.
+    When `index_to` is used the column name will *not* be indexed on the same
+    field name unless specified in `index_to`.
 
-  If multiple field names are passed to `index_to` the values will be
-  concatenated with a space.
+    If multiple field names are passed to `index_to` the values will be
+    concatenated with a space.
 
-  `index_to` is useful for::
+    `index_to` is useful for::
 
     * index many attributes to on field names, for exemple index `title`
-  and `description` to a `_full_text` field
+    and `description` to a `_full_text` field
     * define new fields on schema
-  """
+    """
 
     @staticmethod
     def can_adapt(obj_cls):
@@ -89,9 +87,9 @@ class SAAdapter(SchemaAdapter):
 
     def __init__(self, Model, schema):
         """
-    :param:Model: a sqlalchemy model class
-    :param:schema: :class:`whoosh.fields.Schema` instance
-    """
+        :param:Model: a sqlalchemy model class
+        :param:schema: :class:`whoosh.fields.Schema` instance
+        """
         assert issubclass(Model, db.Model)
         self.Model = Model
         self.indexable = getattr(Model, '__indexable__', False)

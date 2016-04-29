@@ -19,9 +19,9 @@ from webassets.utils import working_directory
 
 class ImportCSSFilter(Filter):
     """
-  This filter searches (recursively) '@import' rules and replaces them by
-  content of target file.
-  """
+    This filter searches (recursively) '@import' rules and replaces them by
+    content of target file.
+    """
     name = 'cssimporter'
     max_debug_level = None
 
@@ -90,10 +90,10 @@ register_filter(ImportCSSFilter)
 
 class LessImportFilter(Filter):
     """
-  This filter outputs `@import` statements for listed files. This allows
-  to generate a single less file for application, where abilian properties
-  can be overridden by application.
-  """
+    This filter outputs `@import` statements for listed files. This allows
+    to generate a single less file for application, where abilian properties
+    can be overridden by application.
+    """
     name = 'less_import'
     options = {
         'run_in_debug': 'LESS_RUN_IN_DEBUG',  # use same option as less filter
@@ -131,34 +131,34 @@ register_filter(LessImportFilter)
 class Less(ExternalTool):
     """Converts `less <http://lesscss.org/>`_ markup to real CSS.
 
-  This depends on the NodeJS implementation of less, installable via npm.
-  To use the old Ruby-based version (implemented in the 1.x Ruby gem), see
-  :class:`~.less_ruby.Less`.
+    This depends on the NodeJS implementation of less, installable via npm.
+    To use the old Ruby-based version (implemented in the 1.x Ruby gem), see
+    :class:`~.less_ruby.Less`.
 
-  *Supported configuration options*:
+    *Supported configuration options*:
 
-  LESS_BIN (binary)
+    LESS_BIN (binary)
       Path to the less executable used to compile source files. By default,
       the filter will attempt to run ``lessc`` via the system path.
 
-  LESS_LINE_NUMBERS (line_numbers)
+    LESS_LINE_NUMBERS (line_numbers)
       Outputs filename and line numbers. Can be either 'comments', which
       will output the debug info within comments, 'mediaquery' that will
       output the information within a fake media query which is compatible
       with the SASSPath to the less executable used to compile source files.
 
-  LESS_RUN_IN_DEBUG (run_in_debug)
+    LESS_RUN_IN_DEBUG (run_in_debug)
       By default, the filter will compile in debug mode. Since the less
       compiler is written in Javascript and capable of running in the
       browser, you can set this to ``False`` to have your original less
       source files served (see below).
 
-  LESS_PATHS (paths)
+    LESS_PATHS (paths)
       Add include paths for less command line.
       It should be a list of paths relatives to Environment.directory or absolute paths.
       Order matters as less will pick the first file found in path order.
 
-  .. admonition:: Compiling less in the browser
+    .. admonition:: Compiling less in the browser
 
       less is an interesting case because it is written in Javascript and
       capable of running in the browser. While for performance reason you
@@ -197,7 +197,7 @@ class Less(ExternalTool):
 
           if env.debug:
               js_bundle.contents += 'http://lesscss.googlecode.com/files/less-1.3.0.min.js'
-  """
+    """
 
     name = 'less'
     options = {

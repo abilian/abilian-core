@@ -3,10 +3,15 @@
 """
 from __future__ import absolute_import, print_function, division
 
-import os
 import io
 import logging
+import os
+
 import pathlib
+
+from abilian.core.models.blob import Blob
+from ..base import Service
+
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +21,6 @@ try:
     CLAMD_AVAILABLE = True
 except ImportError:
     CLAMD_AVAILABLE = False
-
-from abilian.core.models.blob import Blob
-from ..base import Service
 
 CLAMD_CONF = {'StreamMaxLength': u'25M', 'MaxFileSize': u'25M',}
 CLAMD_STREAMMAXLENGTH = 26214400
@@ -58,21 +60,20 @@ if CLAMD_AVAILABLE:
 
 
 class AntiVirusService(Service):
+    """Antivirus service
     """
-  Antivirus service
-  """
     name = 'antivirus'
 
     def scan(self, file_or_stream):
         """
-    :param file_or_stream: :class:`Blob` instance, filename or file object
+        :param file_or_stream: :class:`Blob` instance, filename or file object
 
-    :returns: True if file is 'clean', False if a virus is detected, None if
-    file could not be scanned.
+        :returns: True if file is 'clean', False if a virus is detected, None if
+        file could not be scanned.
 
-    If `file_or_stream` is a Blob, scan result is stored in
-    Blob.meta['antivirus'].
-    """
+        If `file_or_stream` is a Blob, scan result is stored in
+        Blob.meta['antivirus'].
+        """
         res = self._scan(file_or_stream)
         if isinstance(file_or_stream, Blob):
             file_or_stream.meta['antivirus'] = res

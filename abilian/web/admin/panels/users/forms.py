@@ -75,8 +75,8 @@ class UserAdminForm(BaseUserAdminForm):
 
         if pwd != confirmed:
             raise ValidationError(
-              _(u'Passwords differ. Ensure you have typed same password in both'
-                u' "password" field and "confirm password" field.'))
+                _(u'Passwords differ. Ensure you have typed same password in both'
+                  u' "password" field and "confirm password" field.'))
 
 
 class UserCreateForm(BaseUserAdminForm):

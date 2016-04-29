@@ -272,9 +272,10 @@ class SecurityService(Service):
 
     @require_flush
     def _all_roles(self, principal):
-        q = db.session.query(RoleAssignment.object_id, RoleAssignment.role)\
-          .outerjoin(Entity)\
-          .add_columns(Entity._entity_type)
+        q = db.session \
+            .query(RoleAssignment.object_id, RoleAssignment.role) \
+            .outerjoin(Entity) \
+            .add_columns(Entity._entity_type)
 
         if isinstance(principal, User):
             filter_cond = (RoleAssignment.user == principal)
@@ -427,7 +428,7 @@ class SecurityService(Service):
             return True
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+                (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
             # anonymous user, and anonymous role isn't in valid_roles
             return False
 
@@ -471,7 +472,7 @@ class SecurityService(Service):
                     group=None)
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+                (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
             args['anonymous'] = True
         elif isinstance(principal, User):
             args['user'] = principal
@@ -531,7 +532,7 @@ class SecurityService(Service):
                      RoleAssignment.object == object)
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+                (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
             args['anonymous'] = True
             q.filter(RoleAssignment.anonymous == False,
                      RoleAssignment.user == None, RoleAssignment.group == None)
@@ -722,12 +723,12 @@ class SecurityService(Service):
         filter_expr = permission_exists | is_admin
 
         if user and not user.is_anonymous():
-            is_owner_or_creator = \
-                sa.sql.exists([1]) \
-                    .where(sa.sql.and_(PA.permission == permission,
-                                       PA.object_id == id_column,
-                                       sa.sql.or_((PA.role == Owner) & (owner == user),
-                                                  (PA.role == Creator) & (creator == user))))
+            is_owner_or_creator = sa.sql \
+                .exists([1]) \
+                .where(sa.sql.and_(PA.permission == permission,
+                                   PA.object_id == id_column,
+                                   sa.sql.or_((PA.role == Owner) & (owner == user),
+                                              (PA.role == Creator) & (creator == user))))
             filter_expr |= is_owner_or_creator
 
         return filter_expr
@@ -801,6 +802,7 @@ class SecurityService(Service):
         return [obj
                 for obj in obj_list
                 if self.has_permission(user, permission, obj, inherit)]
+
 
 # Instanciate the service
 security = SecurityService()

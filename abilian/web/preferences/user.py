@@ -47,8 +47,8 @@ class UserPreferencesForm(Form):
 
         if pwd != confirmed:
             raise ValidationError(
-              _(u'Passwords differ. Ensure you have typed same password in both'
-                u' "password" field and "confirm password" field.'))
+                _(u'Passwords differ. Ensure you have typed same password in both'
+                  u' "password" field and "confirm password" field.'))
 
     def validate_photo(self, field):
         data = request.form.get(field.name)

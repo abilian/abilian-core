@@ -45,12 +45,11 @@ except AttributeError:
 
 
 class ModuleAction(Action):
-    """
-  Base action class for :class:`Module` actions.
+    """Base action class for :class:`Module` actions.
 
-  Basic condition is simple: :attr:`category` must match the string
-  `'module:{module.endpoint}'`
-  """
+    Basic condition is simple: :attr:`category` must match the string
+    `'module:{module.endpoint}'`
+    """
 
     def __init__(self, module, group, name, *args, **kwargs):
         self.group = group
@@ -98,14 +97,13 @@ def add_to_recent_items(entity, type='ignored'):
 
 
 def expose(url='/', methods=('GET',)):
-    """
-  Use this decorator to expose views in your view classes.
+    """Use this decorator to expose views in your view classes.
 
-  `url`
+    `url`
       Relative URL for the view
-  `methods`
+    `methods`
       Allowed HTTP methods. By default only GET is allowed.
-  """
+    """
 
     def wrap(f):
         if not hasattr(f, '_urls'):
@@ -129,11 +127,10 @@ def make_single_view(form, **options):
 
 
 class ModuleView(object):
-    """
-  Mixin for module base views.
+    """Mixin for module base views.
 
-  Provide :attr:`module`.
-  """
+    Provide :attr:`module`.
+    """
     #: :class:`Module` instance
     module = None
 
@@ -183,8 +180,8 @@ class BaseEntityView(ModuleView):
 
     def _check_view_permission(self, view):
         """
-    :param view: a :class:`ObjectView` class or instance
-    """
+        :param view: a :class:`ObjectView` class or instance
+        """
         security = current_app.services['security']
         return security.has_permission(current_user, view.permission, self.obj)
 
@@ -295,9 +292,8 @@ class EntityDelete(BaseEntityView, ObjectDelete):
 
 
 class ListJson(ModuleView, JSONView):
+    """JSON endpoint, for AJAX-backed table views.
     """
-  JSON endpoint, for AJAX-backed table views.
-  """
 
     def data(self, *args, **kwargs):
         echo = int(kwargs.get("sEcho", 0))
@@ -327,12 +323,11 @@ class ListJson(ModuleView, JSONView):
 
 
 class ModuleMeta(type):
-    """
-  Module metaclass.
+    """Module metaclass.
 
-  Does some precalculations (like getting list of view methods from the
-  class) to avoid calculating them for each view class instance.
-  """
+    Does some precalculations (like getting list of view methods from the
+    class) to avoid calculating them for each view class instance.
+    """
 
     def __init__(cls, classname, bases, fields):
         type.__init__(cls, classname, bases, fields)
@@ -358,8 +353,8 @@ class ModuleMeta(type):
 
 class ModuleComponent(object):
     """
-  A component that provide new functions for a :class:`Module`
-  """
+    A component that provide new functions for a :class:`Module`
+    """
     name = None
 
     def __init__(self, name=None):
@@ -551,8 +546,8 @@ class Module(object):
 
     def create_blueprint(self, crud_app):
         """
-    Create a Flask blueprint for this module.
-    """
+        Create a Flask blueprint for this module.
+        """
         # Store admin instance
         self.crud_app = crud_app
         self.app = crud_app.app
@@ -593,34 +588,33 @@ class Module(object):
 
     @property
     def base_query(self):
+        """Return a query instance for :attr:`managed_class`.
         """
-    Return a query instance for :attr:`managed_class`.
-    """
         return self.managed_class.query
 
     @property
     def read_query(self):
         """
-    Return a query instance for :attr:`managed_class` filtering on `READ`
-    permission
-    """
+        Return a query instance for :attr:`managed_class` filtering on `READ`
+        permission
+        """
         return self.base_query.with_permission(READ)
 
     @property
     def listing_query(self):
         """
-    Like `read_query`, but can be made lightweight with only columns and joins
-    of interest.
+        Like `read_query`, but can be made lightweight with only columns and joins
+        of interest.
 
-    `read_query` can be used with exports for example, with lot more columns
-    (generallly it means more joins).
-    """
+        `read_query` can be used with exports for example, with lot more columns
+        (generallly it means more joins).
+        """
         return self.base_query.with_permission(READ)
 
     def query(self, request):
         """
-    Return filtered query based on request args
-    """
+        Return filtered query based on request args
+        """
         args = request.args
         search = args.get("sSearch", "").replace("%", "").lower()
         q = self.read_query.distinct()
@@ -632,11 +626,11 @@ class Module(object):
 
     def list_query(self, request):
         """
-    Return a filtered query based on request args, for listings.
+        Return a filtered query based on request args, for listings.
 
-    Like `query`, but subclasses can modify it to remove costly joined loads for
-    example.
-    """
+        Like `query`, but subclasses can modify it to remove costly joined loads for
+        example.
+        """
         args = request.args
         search = args.get("sSearch", "").replace("%", "").lower()
         q = self.listing_query
@@ -648,11 +642,11 @@ class Module(object):
         return q
 
     def ordered_query(self, request, query=None):
-        """ Order query according to request args.
+        """Order query according to request args.
 
-    If query is None, the query is generated according to request args with
-    self.query(request)
-    """
+        If query is None, the query is generated according to request args with
+        self.query(request)
+        """
         if query is None:
             query = self.query(request)
 
@@ -687,8 +681,8 @@ class Module(object):
             if isinstance(sort_col, _DateAffinity):
                 sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
             elif isinstance(sort_col, sa.types.String) or \
-                hasattr(sort_col, 'property') and \
-                isinstance(sort_col.property.columns[0].type, sa.types.String):
+                            hasattr(sort_col, 'property') and \
+                            isinstance(sort_col.property.columns[0].type, sa.types.String):
                 sort_col = func.lower(sort_col)
 
             direction = desc if sort_dir == 'desc' else asc
@@ -726,10 +720,10 @@ class Module(object):
     @expose("/json2")
     def list_json2(self):
         """
-    Other JSON endpoint, this time used for filling select boxes dynamically.
+        Other JSON endpoint, this time used for filling select boxes dynamically.
 
-    NB: not used currently.
-    """
+        NB: not used currently.
+        """
         args = request.args
         cls = self.managed_class
 
@@ -755,31 +749,30 @@ class Module(object):
 
     @staticmethod
     def _prettify_name(name):
-        """
-    Prettify class name by splitting name by capital characters.
-    So, 'MySuperClass' will look like 'My Super Class'
+        """Prettify class name by splitting name by capital characters.
 
-    `name`
-      String to prettify
-    """
+        So, 'MySuperClass' will look like 'My Super Class'
+
+        `name`
+          String to prettify
+        """
         return re.sub(r'(?<=.)([A-Z])', r' \1', name)
 
 
 class RelatedView(object):
-    """ A base class for related views
-  """
+    """A base class for related views"""
 
     def render(self, entity):
         """
-    Return a dict with keys 'label', 'attr_name', 'rendered', 'size',
-    'show_empty', 'default_collapsed'
-    """
+        Return a dict with keys 'label', 'attr_name', 'rendered', 'size',
+        'show_empty', 'default_collapsed'
+        """
         raise NotImplementedError
 
 
 class DefaultRelatedView(RelatedView):
     """ Default view used by Module for items directly related to entity
-  """
+    """
 
     def __init__(self,
                  label,

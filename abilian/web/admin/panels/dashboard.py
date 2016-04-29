@@ -25,8 +25,9 @@ class DashboardPanel(AdminPanel):
     icon = 'eye-open'
 
     def get(self):
-        login_entries = LoginSession.query.order_by(LoginSession.started_at.asc(
-        )).all()
+        login_entries = LoginSession.query \
+            .order_by(LoginSession.started_at.asc()) \
+            .all()
         # .options(sa.orm.joinedload(LoginSession.user))
         daily, weekly, monthly = uniquelogins(login_entries)
         new_logins, total_users = newlogins(login_entries)
@@ -39,13 +40,14 @@ class DashboardPanel(AdminPanel):
 
         # let's format the data into NVD3 datastructures
         connections = [
-          {'key': _('Daily'), 'color': '#7777ff', 'values': daily},
-          {'key': _('Weekly'), 'color': '#2ca02c', 'values': weekly, 'disabled': True},
-          {'key': _('Monthly'), 'color': '#ff7f0e', 'values': monthly, 'disabled': True},
+            {'key': _('Daily'), 'color': '#7777ff', 'values': daily},
+            {'key': _('Weekly'), 'color': '#2ca02c', 'values': weekly, 'disabled': True},
+            {'key': _('Monthly'), 'color': '#ff7f0e', 'values': monthly, 'disabled': True},
         ]
         new_logins = [
-          {'key': _('New'), 'color': '#ff7f0e', "bar": True, 'values': new_logins},
-          {'key': _('Total'), 'color': '#2ca02c', 'values': total_users}]
+            {'key': _('New'), 'color': '#ff7f0e', "bar": True, 'values': new_logins},
+            {'key': _('Total'), 'color': '#2ca02c', 'values': total_users}
+        ]
 
         return render_template("admin/dashboard.html",
                                stats=stats,
@@ -57,13 +59,13 @@ def stats_since(dt):
     new_members = new_documents = new_messages = 0
     after_date = datetime.utcnow() - dt
     session = current_app.db.session()
-    counts_per_type = session\
-      .query(AuditEntry.entity_type.label('type'),
-             sa.func.count(AuditEntry.entity_type).label('count'))\
-      .group_by(AuditEntry.entity_type)\
-      .filter(AuditEntry.happened_at > after_date) \
-      .filter(AuditEntry.type == CREATION)\
-      .all()
+    counts_per_type = session \
+        .query(AuditEntry.entity_type.label('type'),
+               sa.func.count(AuditEntry.entity_type).label('count')) \
+        .group_by(AuditEntry.entity_type) \
+        .filter(AuditEntry.happened_at > after_date) \
+        .filter(AuditEntry.type == CREATION) \
+        .all()
 
     for entity_type, count in counts_per_type:
         entity_class = entity_type.split('.')[-1]
@@ -94,10 +96,11 @@ def unix_time_millis(dt):
 
 def newlogins(sessions):
     """
-  brand New logins each day, and total of users each day
-  :return: data, total
-  2 lists of dictionaries of the following format [{'x':epoch, 'y': value},]
-  """
+    Brand new logins each day, and total of users each day.
+
+    :return: data, total
+      2 lists of dictionaries of the following format [{'x':epoch, 'y': value},]
+    """
     if not sessions:
         return [], []
     users = {}
@@ -130,12 +133,11 @@ def newlogins(sessions):
 
 
 def uniquelogins(sessions):
-    """
-  unique logins per days/weeks/months
+    """Unique logins per days/weeks/months.
 
-  :return: daily, weekly, monthly
-  3 lists of dictionaries of the following format [{'x':epoch, 'y': value},]
-  """
+    :return: daily, weekly, monthly
+    3 lists of dictionaries of the following format [{'x':epoch, 'y': value},]
+    """
     # sessions = LoginSession.query.order_by(LoginSession.started_at.asc()).all()
     if not sessions:
         return [], [], []
@@ -170,10 +172,12 @@ def uniquelogins(sessions):
     daily_serie = daily_serie.apply(lambda x: len(x))
 
     # GroupBy Week/month, Thanks Panda
-    weekly_serie = daily_serie.groupby(pd.TimeGrouper(freq='W')).aggregate(
-        numpysum)
-    monthly_serie = daily_serie.groupby(pd.TimeGrouper(freq='M')).aggregate(
-        numpysum)
+    weekly_serie = daily_serie \
+        .groupby(pd.TimeGrouper(freq='W')) \
+        .aggregate(numpysum)
+    monthly_serie = daily_serie \
+        .groupby(pd.TimeGrouper(freq='M')) \
+        .aggregate(numpysum)
 
     for date, value in weekly_serie.iteritems():
         date_epoch = unix_time_millis(date)

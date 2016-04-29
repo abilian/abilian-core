@@ -912,10 +912,10 @@ class DateInput(Input):
 
         date_fmt = kwargs.pop('format', None)
         if date_fmt is not None:
-            date_fmt = date_fmt.replace("%", "")\
-              .replace("d", "dd")\
-              .replace("m", "mm")\
-              .replace("Y", "yyyy")
+            date_fmt = date_fmt.replace("%", "") \
+                .replace("d", "dd") \
+                .replace("m", "mm") \
+                .replace("Y", "yyyy")
         else:
             date_fmt = get_locale().date_formats['short'].pattern
             date_fmt = babel2datepicker(date_fmt)
@@ -1083,9 +1083,8 @@ class DefaultViewWidget(object):
         if isinstance(value, string_types):
             return text2html(value)
         else:
-            return unicode(value or
-                           u'')  # [], None and other must be rendered using
-            # empty string
+            # [], None and other must be rendered using empty string
+            return unicode(value or u'')
 
 
 class BooleanWidget(wtforms.widgets.CheckboxInput):
@@ -1490,9 +1489,9 @@ class Select2Ajax(object):
         self.template = template
         self.multiple = multiple
         self.values_builder = (
-          values_builder
-          if callable(values_builder)
-          else lambda data: [{'id': o.id, 'text': o.name} for o in data if o]
+            values_builder
+            if callable(values_builder)
+            else lambda data: [{'id': o.id, 'text': o.name} for o in data if o]
         )
         self.s2_params = dict(multiple=self.multiple)
 

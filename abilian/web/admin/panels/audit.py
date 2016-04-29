@@ -31,15 +31,16 @@ from ..panel import AdminPanel
 
 def format_date_for_input(date):
     date_fmt = get_locale().date_formats['short'].pattern
-    date_fmt = date_fmt.replace('MMMM', 'MM')\
+    date_fmt = date_fmt \
+        .replace('MMMM', 'MM') \
         .replace('MMM', 'MM')  # force numerical months
     return format_date(date, date_fmt)
 
 
 class JSONUserSearch(JSONView):
     """
-  Search users by fullname
-  """
+    Search users by fullname
+    """
 
     def data(self, q, *args, **kwargs):
         q = q.replace(u'%', u' ').strip().lower()
@@ -68,21 +69,21 @@ class JSONUserSearch(JSONView):
         result = {'results': [
             {'id': obj.id,
              'text':
-             u'{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)}
+                 u'{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)}
             for obj in query.values(User.id, User.first_name, User.last_name,
                                     User.email)
-        ]}
+            ]}
         return result
 
 
 class AuditPanel(AdminPanel):
     """Global audit log.
 
-  Can receive one out of two possible GET parameter, datetime type:
+    Can receive one out of two possible GET parameter, datetime type:
 
-  * before: events that happened immediately before 't' (less recent than 't')
-  * after: events that happened immediately after 't' (more recent than 't')
-  """
+    * before: events that happened immediately before 't' (less recent than 't')
+    * after: events that happened immediately after 't' (more recent than 't')
+    """
     id = 'audit'
     label = 'Audit trail'
     icon = 'list-alt'
@@ -127,17 +128,17 @@ class AuditPanel(AdminPanel):
                                       Entity._entity_type.in_(filter_types))
 
             base_audit_q = base_audit_q.filter(audit_expr)
-            base_security_q = base_security_q\
-                .join(SecurityAudit.object)\
-                .filter(sec_expr)\
+            base_security_q = base_security_q \
+                .join(SecurityAudit.object) \
+                .filter(sec_expr) \
                 .reset_joinpoint()
 
         def after_query(q, model, date):
-            return q.filter(model.happened_at > date)\
+            return q.filter(model.happened_at > date) \
                 .order_by(model.happened_at.asc())
 
         def before_query(q, model, date):
-            return q.filter(model.happened_at < date)\
+            return q.filter(model.happened_at < date) \
                 .order_by(model.happened_at.desc())
 
         if after:
@@ -150,13 +151,13 @@ class AuditPanel(AdminPanel):
             audit_q = before_query(base_audit_q, AuditEntry, before)
             security_q = before_query(base_security_q, SecurityAudit, before)
 
-        audit_entries = audit_q\
-            .options(sa.orm.joinedload(AuditEntry.entity))\
-            .limit(LIMIT)\
+        audit_entries = audit_q \
+            .options(sa.orm.joinedload(AuditEntry.entity)) \
+            .limit(LIMIT) \
             .all()
-        security_entries = security_q\
-            .options(sa.orm.joinedload(SecurityAudit.object))\
-            .limit(LIMIT)\
+        security_entries = security_q \
+            .options(sa.orm.joinedload(SecurityAudit.object)) \
+            .limit(LIMIT) \
             .all()
         #audit_entries = []
         all_entries = list(chain(
@@ -194,8 +195,9 @@ class AuditPanel(AdminPanel):
             # above)
             top_date = entries[0][1][0].date.astimezone(pytz.utc).replace(
                 tzinfo=None)
-            lowest_date = entries[-1][1][-1].date.astimezone(pytz.utc)\
-                                                  .replace(tzinfo=None)
+            lowest_date = entries[-1][1][-1].date \
+                .astimezone(pytz.utc) \
+                .replace(tzinfo=None)
 
             after_queries = (
                 after_query(base_audit_q, AuditEntry, top_date),
