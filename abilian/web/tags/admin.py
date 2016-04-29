@@ -28,8 +28,8 @@ _OBJ_COUNT = functions.count(entity_tag_tbl.c.entity_id).label('obj_count')
 
 def get_entities_for_reindex(tags):
     """
-  Collect entities for theses tags.
-  """
+    Collect entities for theses tags.
+    """
     if isinstance(tags, Tag):
         tags = (tags,)
 
@@ -37,11 +37,11 @@ def get_entities_for_reindex(tags):
     indexing = current_app.services['indexing']
     tbl = Entity.__table__
     tag_ids = [t.id for t in tags]
-    q = sa.sql.select([tbl.c.entity_type, tbl.c.id])\
-              .select_from(
-                tbl.join(entity_tag_tbl,
-                         entity_tag_tbl.c.entity_id == tbl.c.id))\
-              .where(entity_tag_tbl.c.tag_id.in_(tag_ids))
+    q = sa.sql \
+        .select([tbl.c.entity_type, tbl.c.id]) \
+        .select_from(tbl.join(entity_tag_tbl,
+                              entity_tag_tbl.c.entity_id == tbl.c.id)) \
+        .where(entity_tag_tbl.c.tag_id.in_(tag_ids))
 
     entities = set()
 
@@ -58,8 +58,8 @@ def get_entities_for_reindex(tags):
 
 def schedule_entities_reindex(entities):
     """
-  :param entities: as returned by :func:`get_entities_for_reindex`
-  """
+    :param entities: as returned by :func:`get_entities_for_reindex`
+    """
     entities = [(e[0], e[1], e[2], dict(e[3])) for e in entities]
     return index_update.apply_async(kwargs=dict(index='default',
                                                 items=entities))
@@ -67,8 +67,8 @@ def schedule_entities_reindex(entities):
 
 class NSView(View):
     """
-  View a Namespace
-  """
+    View a Namespace
+    """
 
     def __init__(self, view_endpoint, *args, **kwargs):
         super(NSView, self).__init__(*args, **kwargs)
@@ -81,12 +81,12 @@ class NSView(View):
         return args, kwargs
 
     def get(self, ns):
-        tags = Tag.query\
-                  .filter(Tag.ns == ns)\
-                  .outerjoin(entity_tag_tbl, entity_tag_tbl.c.tag_id == Tag.id)\
-                  .add_column(_OBJ_COUNT)\
-                  .group_by(Tag)\
-                  .order_by(sa.sql.func.lower(Tag.label))
+        tags = Tag.query \
+            .filter(Tag.ns == ns) \
+            .outerjoin(entity_tag_tbl, entity_tag_tbl.c.tag_id == Tag.id) \
+            .add_column(_OBJ_COUNT) \
+            .group_by(Tag) \
+            .order_by(sa.sql.func.lower(Tag.label))
 
         # get a list of rows instead of (Tag, count) tuples
         tags = list(tags.session.execute(tags))
@@ -123,9 +123,9 @@ class NSView(View):
             if not tag_ids:
                 self.__selected_tags = []
             else:
-                self.__selected_tags = Tag.query.filter(Tag.ns == self.ns,
-                                                        Tag.id.in_(tag_ids))\
-                                                .all()
+                self.__selected_tags = Tag.query \
+                    .filter(Tag.ns == self.ns, Tag.id.in_(tag_ids)) \
+                    .all()
         return self.__selected_tags
 
     def do_delete(self):
@@ -165,8 +165,9 @@ class NSView(View):
             flash(_(u'You must select a target tag to merge to'), 'error')
             return self.get(self.ns)
 
-        target = Tag.query.filter(Tag.ns == self.ns,
-                                  Tag.id == target_id).scalar()
+        target = Tag.query \
+            .filter(Tag.ns == self.ns, Tag.id == target_id) \
+            .scalar()
 
         if not target:
             flash(_(u'Target tag not found, no action performed'), 'error')
@@ -185,15 +186,16 @@ class NSView(View):
         merge_from_ids = [t.id for t in merge_from]
         tbl = entity_tag_tbl
         entities_to_reindex = get_entities_for_reindex(merge_from)
-        already_tagged = sa.sql.select([tbl.c.entity_id]).where(tbl.c.tag_id ==
-                                                                target.id)
-        del_dup = tbl.delete()\
-                  .where(sa.sql.and_(tbl.c.tag_id.in_(merge_from_ids),
-                                     tbl.c.entity_id.in_(already_tagged)))
+        already_tagged = sa.sql \
+            .select([tbl.c.entity_id]) \
+            .where(tbl.c.tag_id == target.id)
+        del_dup = tbl.delete() \
+            .where(sa.sql.and_(tbl.c.tag_id.in_(merge_from_ids),
+                               tbl.c.entity_id.in_(already_tagged)))
         session.execute(del_dup)
-        update = tbl.update()\
-                 .where(tbl.c.tag_id.in_(merge_from_ids))\
-                 .values(tag_id=target.id)
+        update = tbl.update() \
+            .where(tbl.c.tag_id.in_(merge_from_ids)) \
+            .values(tag_id=target.id)
         session.execute(update)
         map(session.delete, merge_from)
         session.commit()
@@ -203,8 +205,8 @@ class NSView(View):
 
 class BaseTagView(object):
     """
-  Mixin for tag views
-  """
+    Mixin for tag views
+    """
     Model = Tag
     Form = TagForm
 
@@ -242,30 +244,27 @@ class TagEdit(BaseTagView, ObjectEdit):
 
 class TagPanel(AdminPanel):
     """
-  Tags administration
-  """
+    Tags administration
+    """
     id = 'tags'
     label = _l(u'Tags')
     icon = 'tags'
 
     def get(self):
-        obj_count = \
-          sa.sql.select([
-            Tag.ns,
-            functions.count(entity_tag_tbl.c.entity_id).label('obj_count'),
-          ])\
-                .select_from(Tag.__table__.join(entity_tag_tbl))\
-                .group_by(Tag.ns)\
-                .alias()
+        obj_count = sa.sql \
+            .select([Tag.ns,
+                     functions.count(entity_tag_tbl.c.entity_id).label('obj_count')]) \
+            .select_from(Tag.__table__.join(entity_tag_tbl)) \
+            .group_by(Tag.ns) \
+            .alias()
 
-        ns_query = sa.sql.select(
-          [Tag.ns,
-           functions.count(Tag.id).label('tag_count'),
-           obj_count.c.obj_count],
-          from_obj=[Tag.__table__.outerjoin(obj_count, Tag.ns == obj_count.c.ns)]
-        )\
-                         .group_by(Tag.ns, obj_count.c.obj_count)\
-                         .order_by(Tag.ns)
+        ns_query = sa.sql \
+            .select([Tag.ns,
+                     functions.count(Tag.id).label('tag_count'),
+                     obj_count.c.obj_count],
+                    from_obj=[Tag.__table__.outerjoin(obj_count, Tag.ns == obj_count.c.ns)]) \
+            .group_by(Tag.ns, obj_count.c.obj_count) \
+            .order_by(Tag.ns)
 
         session = current_app.db.session()
         namespaces = session.execute(ns_query)

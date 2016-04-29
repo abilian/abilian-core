@@ -217,14 +217,14 @@ class BaseTableView(object):
             if format:
                 cell = format(value)
             elif column_name in (make_link_on, 'name') \
-                or col.get('linkable'):
+                    or col.get('linkable'):
                 cell = Markup('<a href="%s">%s</a>' %
                               (build_url(entity), cgi.escape(unicode(value))))
             elif isinstance(value, Entity):
                 cell = Markup('<a href="%s">%s</a>' %
                               (build_url(value), cgi.escape(value.name)))
             elif isinstance(value, string_types) \
-                and (value.startswith("http://") or value.startswith("www.")):
+                    and (value.startswith("http://") or value.startswith("www.")):
                 cell = Markup(linkify_url(value))
             elif value in (True, False):
                 cell = u'\u2713' if value else u''  # Unicode "Check mark"
@@ -307,31 +307,31 @@ class AjaxMainTableView(object):
         aoColumns += [{'asSorting': col['sorting'],
                        'bSortable': col['sortable']} for col in self.columns]
         datatable_options = {
-          'sDom': 'fFriltip',
-          'aoColumns': aoColumns,
-          'bFilter': True,
-          'oLanguage': {
-            'sSearch': self.options.get('search_label', _(u'Filter records:')),
-            'oPaginate': {
-              'sPrevious': _(u'Previous'),
-              'sNext': _(u'Next'),
+            'sDom': 'fFriltip',
+            'aoColumns': aoColumns,
+            'bFilter': True,
+            'oLanguage': {
+                'sSearch': self.options.get('search_label', _(u'Filter records:')),
+                'oPaginate': {
+                    'sPrevious': _(u'Previous'),
+                    'sNext': _(u'Next'),
+                },
+                'sLengthMenu': _(u'Entries per page: _MENU_'),
+                'sInfo': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
+                'sInfoEmpty': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
+                'sInfoFiltered': _(u'(filtered from _MAX_ total entries)'),
+                'sAddAdvancedFilter': _(u'Add a filter'),
+                'sZeroRecords': _(u'No matching records found'),
+                'sEmptyTable': _(u'No matching records found'),
             },
-            'sLengthMenu': _(u'Entries per page: _MENU_'),
-            'sInfo': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
-            'sInfoEmpty': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
-            'sInfoFiltered': _(u'(filtered from _MAX_ total entries)'),
-            'sAddAdvancedFilter': _(u'Add a filter'),
-            'sZeroRecords': _(u'No matching records found'),
-            'sEmptyTable': _(u'No matching records found'),
-          },
-          'bPaginate': self.paginate,
-          'sPaginationType': "bootstrap",
-          'bLengthChange': True,
-          'iDisplayLength': 25,
-          'bStateSave': self.save_state,
-          'bProcessing': True,
-          'bServerSide': True,
-          'sAjaxSource': self.ajax_source,
+            'bPaginate': self.paginate,
+            'sPaginationType': "bootstrap",
+            'bLengthChange': True,
+            'iDisplayLength': 25,
+            'bStateSave': self.save_state,
+            'bProcessing': True,
+            'bServerSide': True,
+            'sAjaxSource': self.ajax_source,
         }
         if self.options.get('aaSorting', None):
             datatable_options['aaSorting'] = self.options.get('aaSorting')
