@@ -71,8 +71,8 @@ if not _PATCHED:
 
 def url_for_hit(hit, default=u'#'):
     """
-  Helper for building URLs from results
-  """
+    Helper for building URLs from results
+    """
     try:
         object_type = hit['object_type']
         object_id = int(hit['id'])
@@ -123,8 +123,8 @@ class IndexServiceState(ServiceState):
 
 class WhooshIndexService(Service):
     """
-  Index documents using whoosh
-  """
+    Index documents using whoosh
+    """
     name = 'indexing'
     AppStateClass = IndexServiceState
 
@@ -164,23 +164,22 @@ class WhooshIndexService(Service):
 
     def register_search_filter(self, func):
         """
-    Register a function that returns a query used for filtering search
-    results. This query is And'ed with other filters.
+        Register a function that returns a query used for filtering search
+        results. This query is And'ed with other filters.
 
-    If no filtering should be performed the function must return None.
-    """
+        If no filtering should be performed the function must return None.
+        """
         self.app_state.search_filter_funcs.append(func)
 
     def register_value_provider(self, func):
+        """Register a function that may alter content of indexable document.
+
+        It is used in :meth:`get_document` and called after adapter has built
+        document.
+
+        The function must accept (document, obj) as arguments, and return
+        the new document object.
         """
-    Register a function that may alter content of indexable document.
-
-    It is used in :meth:`get_document` and called after adapter has built
-    document.
-
-    The function must accept (document, obj) as arguments, and return
-    the new document object.
-    """
         self.app_state.value_provider_funcs.append(func)
 
     def clear_update_queue(self, app=None):
@@ -193,9 +192,8 @@ class WhooshIndexService(Service):
         self.clear_update_queue()
 
     def init_indexes(self):
+        """Create indexes for schemas.
         """
-    Create indexes for schemas.
-    """
         state = self.app_state
 
         for name, schema in self.schemas.iteritems():
@@ -215,12 +213,11 @@ class WhooshIndexService(Service):
             state.indexes[name] = index
 
     def clear(self):
-        """
-    Remove all content from indexes, and unregister all classes.
+        """Remove all content from indexes, and unregister all classes.
 
-    After clear() the service is stopped. It must be started again to create
-    new indexes and register classes.
-    """
+        After clear() the service is stopped. It must be started again to create
+        new indexes and register classes.
+        """
         logger.info('Resetting indexes')
         state = self.app_state
 
@@ -242,9 +239,9 @@ class WhooshIndexService(Service):
     @property
     def default_search_fields(self):
         """
-    Return default field names and boosts to be used for searching. Can be
-    configured with `SEARCH_DEFAULT_BOOSTS`
-    """
+        Return default field names and boosts to be used for searching. Can be
+        configured with `SEARCH_DEFAULT_BOOSTS`
+        """
         config = current_app.config.get('SEARCH_DEFAULT_BOOSTS')
         if not config:
             config = dict(name=1.5, name_prefix=1.3, description=1.3, text=1.0,)
@@ -252,8 +249,8 @@ class WhooshIndexService(Service):
 
     def searchable_object_types(self):
         """
-    List of (object_types, friendly name) present in the index.
-    """
+        List of (object_types, friendly name) present in the index.
+        """
         try:
             idx = self.index()
         except KeyError:
@@ -276,21 +273,20 @@ class WhooshIndexService(Service):
                prefix=True,
                facet_by_type=None,
                **search_args):
-        """
-    Interface to search indexes.
+        """Interface to search indexes.
 
-    :param q: unparsed search string.
-    :param index: name of index to use for search.
-    :param fields: optionnal mapping of field names -> boost factor?
-    :param Models: list of Model classes to limit search on.
-    :param object_types: same as `Models`, but directly the model string.
-    :param prefix: enable or disable search by prefix
-    :param facet_by_type: if set, returns a dict of object_type: results with a
-         max of `limit` matches for each type.
-    :param search_args: any valid parameter for
-        :meth:`whoosh.searching.Search.search`. This includes `limit`,
-        `groupedby` and `sortedby`
-    """
+        :param q: unparsed search string.
+        :param index: name of index to use for search.
+        :param fields: optionnal mapping of field names -> boost factor?
+        :param Models: list of Model classes to limit search on.
+        :param object_types: same as `Models`, but directly the model string.
+        :param prefix: enable or disable search by prefix
+        :param facet_by_type: if set, returns a dict of object_type: results with a
+             max of `limit` matches for each type.
+        :param search_args: any valid parameter for
+            :meth:`whoosh.searching.Search.search`. This includes `limit`,
+            `groupedby` and `sortedby`
+        """
         index = self.app_state.indexes[index]
         if not fields:
             fields = self.default_search_fields
@@ -369,9 +365,10 @@ class WhooshIndexService(Service):
             results = searcher.search(query, **search_args)
 
             if facet_by_type:
-                positions = {doc_id: pos
-                             for pos, doc_id in enumerate(i[1] for i in
-                                                          results.top_n)}
+                positions = {
+                    doc_id: pos
+                    for pos, doc_id in enumerate(i[1] for i in results.top_n)
+                }
                 sr = results
                 results = {}
                 for typename, doc_ids in sr.groups('object_type').items():
@@ -381,10 +378,9 @@ class WhooshIndexService(Service):
             return results
 
     def search_for_class(self, query, cls, index='default', **search_args):
-        return self.search(query,
-                           Models=(fqcn(cls),),
-                           index=index,
-                           **search_args)
+        return self.search(
+            query, Models=(fqcn(cls),),
+            index=index, **search_args)
 
     def register_classes(self):
         state = self.app_state
@@ -393,13 +389,13 @@ class WhooshIndexService(Service):
                    if isclass(cls) and issubclass(cls, Indexable) and
                    cls.__indexable__)
         for cls in classes:
-            if not cls in state.indexed_classes:
+            if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)
 
     def register_class(self, cls, app_state=None):
         """
-    Registers a model class
-    """
+        Registers a model class
+        """
         state = app_state if app_state is not None else self.app_state
 
         for Adapter in self.adapters_cls:
@@ -433,11 +429,11 @@ class WhooshIndexService(Service):
 
     def after_commit(self, session):
         """
-    Any db updates go through here. We check if any of these models have
-    ``__searchable__`` fields, indicating they need to be indexed. With these
-    we update the whoosh index for the model. If no index exists, it will be
-    created here; this could impose a penalty on the initial commit of a model.
-    """
+        Any db updates go through here. We check if any of these models have
+        ``__searchable__`` fields, indicating they need to be indexed. With these
+        we update the whoosh index for the model. If no index exists, it will be
+        created here; this could impose a penalty on the initial commit of a model.
+        """
         if (not self.running or
                 session.transaction.nested  # inside a sub-transaction:
                 # not yet written in DB
@@ -453,7 +449,7 @@ class WhooshIndexService(Service):
         for op, obj in state.to_update:
             model_name = fqcn(obj.__class__)
             if model_name not in self.adapted or \
-                not self.adapted[model_name].indexable:
+                    not self.adapted[model_name].indexable:
                 # safeguard
                 continue
 
@@ -466,8 +462,6 @@ class WhooshIndexService(Service):
         self.clear_update_queue()
 
     def get_document(self, obj, adapter=None):
-        """
-    """
         if adapter is None:
             class_name = fqcn(obj.__class__)
             adapter = self.adapted.get(class_name)
@@ -496,9 +490,8 @@ class WhooshIndexService(Service):
         return document
 
     def index_objects(self, objects, index='default'):
+        """Bulk index a list of objects.
         """
-    Bulk index a list of objects.
-    """
         if not objects:
             return
 
@@ -535,9 +528,9 @@ service = WhooshIndexService()
 @shared_task
 def index_update(index, items):
     """
-  :param:index: index name
-  :param:items: list of (operation, full class name, primary key, data) tuples.
-  """
+    :param:index: index name
+    :param:items: list of (operation, full class name, primary key, data) tuples.
+    """
     index_name = index
     index = service.app_state.indexes[index_name]
     adapted = service.adapted
@@ -602,14 +595,14 @@ def index_update(index, items):
 
 class TestingStorage(RamStorage):
     """
-  RamStorage whoses temp_storage method returns another TestingStorage
-  instead of a FileStorage.
+    RamStorage whoses temp_storage method returns another TestingStorage
+    instead of a FileStorage.
 
-  Reason is that FileStorage.temp_storage() creates temp file in
+    Reason is that FileStorage.temp_storage() creates temp file in
 
-  /tmp/index_name.tmp/, which is subject to race conditions when many
-  tests are ran in parallel, including different abilian-based packages.
-  """
+    /tmp/index_name.tmp/, which is subject to race conditions when many
+    tests are ran in parallel, including different abilian-based packages.
+    """
 
     def temp_storage(self, name=None):
         return TestingStorage()

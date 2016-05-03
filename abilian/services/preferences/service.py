@@ -114,10 +114,9 @@ class PreferenceService(Service):
             state.blueprint.add_url_rule(rule, endpoint, panel.get)
         if hasattr(panel, 'post'):
             endpoint += "_post"
-            state.blueprint.add_url_rule(rule,
-                                         endpoint,
-                                         panel.post,
-                                         methods=['POST'])
+            state.blueprint.add_url_rule(
+                rule, endpoint, panel.post,
+                methods=['POST'])
 
         state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
             label=panel.label,

@@ -154,9 +154,9 @@ class BaseEntityView(ModuleView):
         return args, kwargs
 
     def breadcrumb(self):
-        return BreadcrumbItem(label=self.obj.name or self.obj.id,
-                              url=Endpoint('.entity_view',
-                                           entity_id=self.obj.id))
+        return BreadcrumbItem(
+            label=self.obj.name or self.obj.id,
+            url=Endpoint('.entity_view', entity_id=self.obj.id))
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
@@ -411,9 +411,8 @@ class Module(object):
     view_options = None
     related_views = []
     blueprint = None
-    search_criterions = (
-        search.TextSearchCriterion("name",
-                                   attributes=('name', 'nom')),)
+    search_criterions = (search.TextSearchCriterion(
+        "name", attributes=('name', 'nom')),)
     tableview_options = {}  # used mostly to change datatable search_label
     _urls = []
 
@@ -563,10 +562,9 @@ class Module(object):
         self.blueprint = Blueprint(self.endpoint, __name__, url_prefix=self.url)
 
         for url, name, methods in self._urls:
-            self.blueprint.add_url_rule(url,
-                                        name,
-                                        getattr(self, name),
-                                        methods=methods)
+            self.blueprint.add_url_rule(
+                url, name, getattr(self, name),
+                methods=methods)
 
         # run default_view decorator
         default_view(self.blueprint,

@@ -91,8 +91,7 @@ class Tag(IdMixin, Model):
         Entity,
         collection_class=set,
         secondary=entity_tag_tbl,
-        backref=sa.orm.backref(TAGS_ATTR,
-                               collection_class=set),)
+        backref=sa.orm.backref(TAGS_ATTR, collection_class=set),)
 
     __mapper_args__ = {'order_by': label,}
 

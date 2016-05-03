@@ -101,8 +101,7 @@ class AttachmentsManager(object):
 
     def for_entity(self, obj, check_support_attachments=False):
         return attachments.for_entity(
-            obj,
-            check_support_attachments=check_support_attachments)
+            obj, check_support_attachments=check_support_attachments)
 
     def has_attachments(self, obj):
         return bool(self.for_entity(obj, check_support_attachments=True))

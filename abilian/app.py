@@ -131,7 +131,7 @@ default_config.update(
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
-    ABILIAN_UPSTREAM_INFO_ENABLED=False, # upstream info extension
+    ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET=u'',  # tracking code to insert before </body>
     MAIL_ADDRESS_TAG_CHAR=None,
 )
@@ -476,7 +476,7 @@ class Application(Flask, ServiceManager, PluginManager):
                     default_config = dbt._default_config(self)
                     init_dbt = dbt.init_app
 
-                if not 'DEBUG_TB_PANELS' in self.config:
+                if 'DEBUG_TB_PANELS' not in self.config:
                     # add our panels to default ones
                     self.config['DEBUG_TB_PANELS'] = list(default_config[
                         'DEBUG_TB_PANELS'])
@@ -557,8 +557,9 @@ class Application(Flask, ServiceManager, PluginManager):
         # Celery async service
         # this allows all shared tasks to use this celery app
         celery_app = self.extensions['celery'] = self.celery_app_cls()
-        celery_app.conf  # force reading celery conf now - default celery app will
+        # force reading celery conf now - default celery app will
         # also update our config with default settings
+        celery_app.conf  # noqa
         celery_app.set_default()
 
         # dev helper

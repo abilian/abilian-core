@@ -153,19 +153,16 @@ class RoleAssignment(db.Model):
                        default=False,
                        server_default=sql.false())
     user_id = Column(Integer,
-                     ForeignKey('user.id',
-                                ondelete='CASCADE'),
+                     ForeignKey('user.id', ondelete='CASCADE'),
                      index=True)
     user = relationship(User, lazy='joined')
     group_id = Column(Integer,
-                      ForeignKey('group.id',
-                                 ondelete='CASCADE'),
+                      ForeignKey('group.id', ondelete='CASCADE'),
                       index=True)
     group = relationship(Group, lazy='joined')
 
     object_id = Column(Integer,
-                       ForeignKey(Entity.id,
-                                  ondelete='CASCADE'),
+                       ForeignKey(Entity.id, ondelete='CASCADE'),
                        index=True)
     object = relationship(Entity, lazy='select')
 
@@ -259,8 +256,7 @@ class PermissionAssignment(db.Model):
     permission = Column(PermissionType, index=True, nullable=False)
     role = Column(RoleType, index=True, nullable=False)
     object_id = Column(Integer,
-                       ForeignKey(Entity.id,
-                                  ondelete='CASCADE'),
+                       ForeignKey(Entity.id, ondelete='CASCADE'),
                        index=True,
                        nullable=True)
     object = relationship(Entity,
@@ -290,8 +286,7 @@ class PermissionAssignment(db.Model):
         return ('<{cls} instance at 0x{id:x} '
                 'permission={self.permission.name!r} '
                 'role={self.role.name!r} object={self.object!r}>'
-                ''.format(cls=classname,
-                          id=id(self),
+                ''.format(cls=classname, id=id(self),
                           self=self))
 
 

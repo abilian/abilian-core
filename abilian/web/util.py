@@ -22,13 +22,11 @@ except ImportError:
 
 
 def url_for(obj, **kw):
+    """Polymorphic variant of Flask's `url_for` function.
+
+    Behaves like the original function when the first argument is a string.
+    When it's an object, it
     """
-  Polymorphic variant of Flask's `url_for` function.
-
-  Behaves like the original function when the first argument is a string.
-  When it's an object, it
-
-  """
     if isinstance(obj, string_types):
         return flask_url_for(obj, **kw)
 
@@ -44,25 +42,23 @@ def url_for(obj, **kw):
 
 
 def get_object_or_404(cls, *args):
+    """Shorthand similar to Django's `get_object_or_404`.
     """
-  Shorthand similar to Django's `get_object_or_404`.
-  """
 
     return cls.query.filter(*args).first_or_404()
 
 
 def send_file_from_directory(filename, directory, app=None):
-    """
-  Helper to add static rules, like in `abilian.app`.app
+    """Helper to add static rules, like in `abilian.app`.app
 
-  Example use::
+    Example use::
 
        app.add_url_rule(
           app.static_url_path + '/abilian/<path:filename>',
           endpoint='abilian_static',
           view_func=partial(send_file_from_directory,
                             directory='/path/to/static/files/dir'))
-  """
+    """
     if app is None:
         app = current_app
     cache_timeout = app.get_send_file_max_age(filename)
@@ -70,15 +66,14 @@ def send_file_from_directory(filename, directory, app=None):
 
 
 def capture_stream_errors(logger, msg):
+    """Decorator that capture and log errors during streamed response.
+
+    Decorated function is automatically decorated with
+    :func:<`Flask.stream_with_context`>.
+
+    @param logger: a logger name or logger instance
+    @param msg: message to log
     """
-  Decorator that capture and log errors during streamed response.
-
-  Decorated function is automatically decorated with
-  :func:<`Flask.stream_with_context`>.
-
-  @param logger: a logger name or logger instance
-  @param msg: message to log
-  """
     if isinstance(logger, string_types):
         logger = logging.getLogger(logger)
 

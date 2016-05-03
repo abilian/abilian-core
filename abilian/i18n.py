@@ -122,11 +122,11 @@ def default_country():
 
 def country_choices(first=None, default_country_first=True):
     """
-  Return a list of (code, countries), alphabetically sorted on localized
-  country name.
+    Return a list of (code, countries), alphabetically sorted on localized
+    country name.
 
-  :param first: Country code to be placed at the top
-  """
+    :param first: Country code to be placed at the top
+    """
     locale = _get_locale()
     territories = [(code, name)
                    for code, name in locale.territories.iteritems()
@@ -145,12 +145,11 @@ def country_choices(first=None, default_country_first=True):
 
 
 def supported_app_locales():
-    """
-  language codes and labels supported by current application
+    """Language codes and labels supported by current application.
 
-  :return: an iterable of `(:class:`babel.Locale`, label)`, label being the
-  locale language human name in current locale.
-  """
+    :return: an iterable of `(:class:`babel.Locale`, label)`, label being the
+    locale language human name in current locale.
+    """
     locale = _get_locale()
     codes = current_app.config['BABEL_ACCEPT_LANGUAGES']
     return ((Locale.parse(code), locale.languages.get(code, code))
@@ -158,25 +157,24 @@ def supported_app_locales():
 
 
 def timezones_choices():
-    """
-  Timezones values and their labels for current locale.
+    """Timezones values and their labels for current locale.
 
-  :return: an iterable of `(code, label)`, code being a timezone code and label
-  the timezone name in current locale.
-  """
+    :return: an iterable of `(code, label)`, code being a timezone code and label
+    the timezone name in current locale.
+    """
     utcnow = pytz.utc.localize(datetime.utcnow())
     locale = _get_locale()
     for tz in sorted(pytz.common_timezones):
         tz = get_timezone(tz)
         now = tz.normalize(utcnow.astimezone(tz))
         label = u'({}) {}'.format(get_timezone_gmt(now, locale=locale), tz.zone)
-        yield (tz, label)  #get_timezone_name(tz, locale=locale))
+        yield (tz, label)  # get_timezone_name(tz, locale=locale))
 
 
 class Babel(BabelBase):
     """
-  Allow to load translations from other modules
-  """
+    Allow to load translations from other modules
+    """
     _translations_paths = None
 
     def __init__(self, *args, **kwargs):
@@ -193,12 +191,12 @@ class Babel(BabelBase):
                          translations_dir='translations',
                          domain='messages'):
         """
-    Adds translations from external module. For example::
+        Adds translations from external module. For example::
 
-        babel.add_translations('abilian.core')
+            babel.add_translations('abilian.core')
 
-    Will add translations files from `abilian.core` module.
-    """
+        Will add translations files from `abilian.core` module.
+        """
         module = importlib.import_module(module_name)
         for path in (Path(p, translations_dir) for p in module.__path__):
             if not (path.exists() and path.is_dir()):
@@ -214,12 +212,11 @@ class Babel(BabelBase):
 
 
 class Translations(BaseTranslations):
-    """
-  Merge only non-empty translations.
+    """Merge only non-empty translations.
 
-  This avoids having uncomplete catalog that "clear" existing translations, when
-  used with :func:`_get_translations_multi_paths`.
-  """
+    This avoids having uncomplete catalog that "clear" existing translations, when
+    used with :func:`_get_translations_multi_paths`.
+    """
 
     def merge(self, translations):
         if isinstance(translations, GNUTranslations):
@@ -250,10 +247,10 @@ class Translations(BaseTranslations):
 
 def _get_translations_multi_paths():
     """
-  Returns the correct gettext translations that should be used for this
-  request. This will never fail and return a dummy translation object
-  if used outside of the request or if a translation cannot be found.
-  """
+    Returns the correct gettext translations that should be used for this
+    request. This will never fail and return a dummy translation object
+    if used outside of the request or if a translation cannot be found.
+    """
     ctx = _request_ctx_stack.top
     if ctx is None:
         return None
@@ -299,9 +296,8 @@ babel = Babel()
 
 
 def localeselector():
+    """Default locale selector used in abilian applications.
     """
-  Default locale selector used in abilian applications
-  """
     # if a user is logged in, use the locale from the user settings
     user = getattr(g, 'user', None)
     if user is not None:
@@ -316,28 +312,26 @@ def localeselector():
 
 
 def timezoneselector():
+    """Default timezone selector used in abilian applications.
     """
-  Default timezone selector used in abilian applications
-  """
     return LOCALTZ
 
 
 @contextmanager
 def set_locale(locale):
-    """
-  Change current locale.
+    """Change current locale.
 
-  Can be used as a context manager to temporary change locale::
+    Can be used as a context manager to temporary change locale::
 
       with set_locale('fr') as fr_locale:
           ...
 
-  :type locale: :class:`babel.core.Locale` or `str`
-  :param locale: locale to use. If it's a string if must be a valid locale
+    :type locale: :class:`babel.core.Locale` or `str`
+    :param locale: locale to use. If it's a string if must be a valid locale
                  specification
-  :rtype: :class:`babel.core.Locale`
-  :return: locale set
-  """
+    :rtype: :class:`babel.core.Locale`
+    :return: locale set
+    """
     ctx = _request_ctx_stack.top
     if ctx is None:
         yield
@@ -353,9 +347,8 @@ def set_locale(locale):
 
 
 def get_template_i18n(template_name, locale):
+    """Build template list with preceding locale if found
     """
-    Build template list with preceding locale if found
-  """
     if locale is None:
         return [template_name]
 
@@ -378,9 +371,8 @@ def get_template_i18n(template_name, locale):
 
 
 class ensure_request_context(object):
+    """Context manager that ensures a request context is set up.
     """
-  Context manager that ensures a request context is set up
-  """
     _rq_ctx = None
 
     def __enter__(self):
@@ -398,8 +390,8 @@ class ensure_request_context(object):
 
 def render_template_i18n(template_name_or_list, **context):
     """
-    Try to build an ordered list of template to satisfy the current locale
-  """
+    Try to build an ordered list of template to satisfy the current locale.
+    """
     template_list = []
     # Use locale if present in **context
     if 'locale' in context:

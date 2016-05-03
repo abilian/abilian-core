@@ -43,7 +43,8 @@ def templated(template=None):
 def deprecated(func):
     """This decorator can be used to mark functions as deprecated.
 
-    It will result in a warning being emitted when the function is used."""
+    It will result in a warning being emitted when the function is used.
+    """
 
     @wraps(func)
     def new_func(*args, **kwargs):

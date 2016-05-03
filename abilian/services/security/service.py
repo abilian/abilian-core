@@ -428,7 +428,7 @@ class SecurityService(Service):
             return True
 
         if (principal is AnonymousRole or
-                (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
             # anonymous user, and anonymous role isn't in valid_roles
             return False
 
@@ -472,7 +472,7 @@ class SecurityService(Service):
                     group=None)
 
         if (principal is AnonymousRole or
-                (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
             args['anonymous'] = True
         elif isinstance(principal, User):
             args['user'] = principal
@@ -532,7 +532,7 @@ class SecurityService(Service):
                      RoleAssignment.object == object)
 
         if (principal is AnonymousRole or
-                (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
             args['anonymous'] = True
             q.filter(RoleAssignment.anonymous == False,
                      RoleAssignment.user == None, RoleAssignment.group == None)
@@ -802,7 +802,6 @@ class SecurityService(Service):
         return [obj
                 for obj in obj_list
                 if self.has_permission(user, permission, obj, inherit)]
-
 
 # Instanciate the service
 security = SecurityService()

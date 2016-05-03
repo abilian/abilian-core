@@ -146,11 +146,9 @@ _generated_vocabularies = []
 
 def Vocabulary(name, label=None, group=None):
     cls_name = 'Vocabulary' + name.capitalize()
-    Meta = type('Meta',
-                (object,),
+    Meta = type('Meta', (object,),
                 dict(name=name.lower(),
-                     label=label,
-                     group=group))
+                     label=label, group=group))
     cls = type(cls_name, (BaseVocabulary,), dict(Meta=Meta))
     _generated_vocabularies.append(cls)
     return cls

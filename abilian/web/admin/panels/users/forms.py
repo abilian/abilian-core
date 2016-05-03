@@ -45,10 +45,9 @@ class BaseUserAdminForm(Form):
         validators=(optional(),),
         multiple=True,
         collection_class=set,
-        query_factory=lambda:
-            Group.query.order_by(sa.sql.func.lower(Group.name).asc()),
-        get_label='name',
-    )
+        query_factory=
+        lambda: Group.query.order_by(sa.sql.func.lower(Group.name).asc()),
+        get_label='name',)
 
     roles = Select2MultipleField(
         _l(u'Roles'),

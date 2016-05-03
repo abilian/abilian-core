@@ -192,13 +192,11 @@ class StaticIcon(DynamicIcon):
                  height=12,
                  css=u'',
                  size=None):
-        DynamicIcon.__init__(self,
-                             endpoint,
-                             width,
-                             height,
-                             css,
-                             size,
-                             filename=filename)
+        DynamicIcon.__init__(
+            self, endpoint,
+            width, height,
+            css, size,
+            filename=filename)
 
 
 class Endpoint(object):

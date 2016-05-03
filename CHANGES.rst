@@ -1,10 +1,16 @@
 Changelog for Abilian Core
 ==========================
 
-0.6.0 (2016-03-25)
+0.6.0 (2016-04-29)
 ------------------
 
-- Upgrade SQLAlchemy to 1.0.
+- Upgrade SQLAlchemy to 1.0+.
+- Dump config in sysinfo admin panel
+
+Cleanup:
+
+- Upgrade deps
+- Reformat code using Google style rule
 
 
 0.5.3-0.5.6 (2016-03-17)

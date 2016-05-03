@@ -7,10 +7,9 @@ from __future__ import absolute_import, division, print_function
 # NOTE: the `rule` property is supposed to be useful for generating client-side
 # validation code.
 from wtforms.compat import string_types
-from wtforms.validators import (URL, UUID, AnyOf, DataRequired, Email, EqualTo,
-                                IPAddress, MacAddress, NoneOf,
-                                NumberRange, Optional, Regexp, StopValidation,
-                                ValidationError)
+from wtforms.validators import (
+    URL, UUID, AnyOf, DataRequired, Email, EqualTo, IPAddress, MacAddress,
+    NoneOf, NumberRange, Optional, Regexp, StopValidation, ValidationError)
 
 from abilian.i18n import _, _n
 from abilian.services import get_service
@@ -108,9 +107,8 @@ class Length(Rule):
                     message = _(
                         u'Field must be between %(min)d and %(max)d characters long.',
                         min=self.min, max=self.max)
-            raise ValidationError(message % dict(min=self.min,
-                                                 max=self.max,
-                                                 length=l))
+            raise ValidationError(message % dict(
+                min=self.min, max=self.max, length=l))
 
 
 class NumberRange(NumberRange, Rule):

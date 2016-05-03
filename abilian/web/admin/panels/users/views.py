@@ -84,8 +84,7 @@ class JsonUsersList(base.JSONView):
             name = escape(getattr(user, "name") or "")
             email = escape(getattr(user, "email") or "")
             roles = [r
-                     for r in security.get_roles(user,
-                                                 no_group_roles=True)
+                     for r in security.get_roles(user, no_group_roles=True)
                      if r.assignable]
             columns = []
             columns.append(
@@ -95,9 +94,8 @@ class JsonUsersList(base.JSONView):
                                size=MUGSHOT_SIZE))
             columns.append(u'<a href="{url}">{name}</a>'.format(url=user_url,
                                                                 name=name))
-            columns.append(
-                u'<a href="{url}"><em>{email}</em></a>'.format(url=user_url,
-                                                               email=email))
+            columns.append(u'<a href="{url}"><em>{email}</em></a>'.format(
+                url=user_url, email=email))
             columns.append(u'\u2713' if user.can_login else u'')
             columns.append(render_template_string(u'''{%- for g in groups %}
             <span class="badge badge-default">{{ g.name }}</span>

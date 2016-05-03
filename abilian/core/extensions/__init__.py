@@ -52,14 +52,13 @@ db = SQLAlchemy()
 @sa.event.listens_for(db.metadata, 'before_create')
 @sa.event.listens_for(db.metadata, 'before_drop')
 def _filter_metadata_for_connection(target, connection, **kw):
+    """Listener to control what indexes get created.
+
+    Useful for skipping postgres-specific indexes on a sqlite for example.
+
+    It's looking for info entry `engines` on an index
+    (`Index(info=dict(engines=['postgresql']))`), an iterable of engine names.
     """
-  listener to control what indexes get created.
-
-  Useful for skipping postgres-specific indexes on a sqlite for example.
-
-  It's looking for info entry `engines` on an index
-  (`Index(info=dict(engines=['postgresql']))`), an iterable of engine names.
-  """
     engine = connection.engine.name
     default_engines = (engine,)
     tables = target if isinstance(target, sa.Table) else kw.get('tables', [])

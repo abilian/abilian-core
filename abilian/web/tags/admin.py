@@ -61,8 +61,8 @@ def schedule_entities_reindex(entities):
     :param entities: as returned by :func:`get_entities_for_reindex`
     """
     entities = [(e[0], e[1], e[2], dict(e[3])) for e in entities]
-    return index_update.apply_async(kwargs=dict(index='default',
-                                                items=entities))
+    return index_update.apply_async(
+        kwargs=dict(index='default', items=entities))
 
 
 class NSView(View):
@@ -274,10 +274,10 @@ class TagPanel(AdminPanel):
     def install_additional_rules(self, add_url_rule):
         panel_endpoint = '.' + self.id
         ns_base = '/<string:ns>/'
-        add_url_rule(ns_base,
-                     endpoint='ns',
-                     view_func=NSView.as_view('ns',
-                                              view_endpoint=panel_endpoint))
+        add_url_rule(
+            ns_base,
+            endpoint='ns',
+            view_func=NSView.as_view('ns', view_endpoint=panel_endpoint))
 
         tag_base = ns_base + '<int:object_id>/'
         add_url_rule(tag_base,

@@ -180,10 +180,9 @@ CANCEL_BUTTON = ButtonAction(
     btn_class='default cancel'  # .cancel: if jquery.validate is used it will
 )  # properly skip validation
 
-EDIT_BUTTON = ButtonAction('form',
-                           'edit',
-                           btn_class='primary',
-                           title=_l(u'Save'))
+EDIT_BUTTON = ButtonAction(
+    'form', 'edit', btn_class='primary',
+    title=_l(u'Save'))
 
 
 class ObjectEdit(ObjectView):
@@ -223,13 +222,10 @@ class ObjectEdit(ObjectView):
                  message_success=None,
                  *args,
                  **kwargs):
-        ObjectView.__init__(self,
-                            Model,
-                            pk,
-                            Form,
-                            template=template,
-                            *args,
-                            **kwargs)
+        ObjectView.__init__(
+            self, Model,
+            pk, Form, template=template,
+            *args, **kwargs)
         if view_endpoint is not None:
             self.view_endpoint = view_endpoint
 
@@ -441,10 +437,9 @@ class ObjectEdit(ObjectView):
         return None
 
 
-CREATE_BUTTON = ButtonAction('form',
-                             'create',
-                             btn_class='primary',
-                             title=_l(u'Create'))
+CREATE_BUTTON = ButtonAction(
+    'form', 'create', btn_class='primary',
+    title=_l(u'Create'))
 CHAIN_CREATE_BUTTON = ButtonAction(
     'form',
     'chain_create',

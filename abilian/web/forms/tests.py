@@ -114,18 +114,16 @@ def test_form_permissions_controller():
         dyn_roles.return_value = [MarkRole]
         fp = FormPermissions(read=dyn_roles)
         fp.has_permission(READ)
-        assert dyn_roles.call_args == [dict(permission=READ,
-                                            field=None,
-                                            obj=None)]
+        assert dyn_roles.call_args == [dict(
+            permission=READ, field=None, obj=None)]
         assert has_role.call_args[-1]['role'] == [MarkRole]
 
         has_role.reset_mock()
         dyn_roles.reset_mock()
         fp = FormPermissions(read=[Owner, dyn_roles])
         fp.has_permission(READ)
-        assert dyn_roles.call_args == [dict(permission=READ,
-                                            field=None,
-                                            obj=None)]
+        assert dyn_roles.call_args == [dict(
+            permission=READ, field=None, obj=None)]
         assert has_role.call_args[-1]['role'] == [Owner, MarkRole]
 
 
@@ -149,12 +147,8 @@ class FieldsTestCase(BaseTestCase):
             f.process_formdata(['17/06/1789 | 10:42'])
             # 1789: applied offset for HongKong is equal to LMT+7:37:00,
             # thus we compare with tzinfo=user_tz
-            assert f.data == datetime.datetime(1789,
-                                               6,
-                                               17,
-                                               10,
-                                               42,
-                                               tzinfo=USER_TZ)
+            assert f.data == datetime.datetime(
+                1789, 6, 17, 10, 42, tzinfo=USER_TZ)
             # UTC stored
             assert f.data.tzinfo is pytz.UTC
             # displayed in user current timezone
@@ -163,29 +157,17 @@ class FieldsTestCase(BaseTestCase):
             # non-naive mode: test process_data change TZ to user's TZ
             f.process_data(f.data)
             assert f.data.tzinfo is USER_TZ
-            assert f.data == datetime.datetime(1789,
-                                               6,
-                                               17,
-                                               10,
-                                               42,
-                                               tzinfo=USER_TZ)
+            assert f.data == datetime.datetime(
+                1789, 6, 17, 10, 42, tzinfo=USER_TZ)
 
             f.populate_obj(obj, 'dt')
-            assert obj.dt == datetime.datetime(1789,
-                                               6,
-                                               17,
-                                               10,
-                                               42,
-                                               tzinfo=USER_TZ)
+            assert obj.dt == datetime.datetime(
+                1789, 6, 17, 10, 42, tzinfo=USER_TZ)
 
             # test more recent date: offset is GMT+8
             f.process_formdata(['23/01/2011 | 10:42'])
-            assert f.data == datetime.datetime(2011,
-                                               1,
-                                               23,
-                                               2,
-                                               42,
-                                               tzinfo=pytz.utc)
+            assert f.data == datetime.datetime(
+                2011, 1, 23, 2, 42, tzinfo=pytz.utc)
 
             # NAIVE mode: dates without timezone. Those are the problematic ones when
             # year < 1900: strptime will raise an Exception use naive dates; by
@@ -194,12 +176,8 @@ class FieldsTestCase(BaseTestCase):
             f.process_formdata(['17/06/1789 | 10:42'])
             # UTC stored
             assert f.data.tzinfo is pytz.UTC
-            assert f.data == datetime.datetime(1789,
-                                               6,
-                                               17,
-                                               10,
-                                               42,
-                                               tzinfo=pytz.UTC)
+            assert f.data == datetime.datetime(
+                1789, 6, 17, 10, 42, tzinfo=pytz.UTC)
 
             # naive stored
             f.populate_obj(obj, 'dt')

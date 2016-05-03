@@ -49,11 +49,10 @@ def init_search(endpoint, values):
     except:
         page = 1
 
-    g.breadcrumb.append(
-        nav.BreadcrumbItem(label=u'"{}"'.format(q),
-                           icon="search",
-                           url=nav.Endpoint('search.search_main',
-                                            q=q)))
+    g.breadcrumb.append(nav.BreadcrumbItem(
+        label=u'"{}"'.format(q),
+        icon="search",
+        url=nav.Endpoint('search.search_main', q=q)))
 
     page_kw = OrderedDict(q=q)
     object_types = request.args.getlist('object_type')

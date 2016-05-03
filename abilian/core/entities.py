@@ -146,9 +146,8 @@ class EntityQuery(db.Model.query_class):
     def with_permission(self, permission, user=None):
         security = current_app.services['security']
         model = self._entity_zero().entity_zero.entity
-        expr = security.query_entity_with_permission(permission,
-                                                     user,
-                                                     Model=model)
+        expr = security.query_entity_with_permission(
+            permission, user, Model=model)
         return self.filter(expr)
 
 
@@ -296,8 +295,8 @@ class Entity(Indexable, BaseMixin, db.Model):
     #: The name is a string that is shown to the user; it could be a title
     #: for document, a folder name, etc.
     name = Column('name', UnicodeText())
-    name.info = (EDITABLE | SEARCHABLE
-                 | dict(index_to=('name', 'name_prefix', 'text')))
+    name.info = (EDITABLE | SEARCHABLE |
+                 dict(index_to=('name', 'name_prefix', 'text')))
 
     slug = Column('slug', UnicodeText(), info=SEARCHABLE)
     """

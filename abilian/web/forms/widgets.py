@@ -184,11 +184,10 @@ class BaseTableView(object):
 
         template = filter(bool, (self.options.get('template'),
                                  'widgets/render_table.html'))
-        return Markup(render_template(template,
-                                      table=table,
-                                      js=Markup(js),
-                                      view=self,
-                                      **kwargs))
+        return Markup(render_template(
+            template, table=table,
+            js=Markup(js),
+            view=self, **kwargs))
 
     def render_line(self, entity):
         line = []
@@ -627,8 +626,8 @@ class TextInput(wtforms.widgets.TextInput):
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
 
-        return Markup(
-            render_template_string(u'''
+        return Markup(render_template_string(
+            u'''
       <div class="input-group input-group-type-{{ widget.typename }}">
         {%- if widget.pre_icon %}
           <div class="input-group-addon">{{ widget.pre_icon }}</div>
@@ -639,9 +638,8 @@ class TextInput(wtforms.widgets.TextInput):
         {%- endif %}
       </div>
       ''',
-                                   widget=self,
-                                   params=self.html_params(name=field.name,
-                                                           **kwargs)))
+            widget=self,
+            params=self.html_params(name=field.name, **kwargs)))
 
     @property
     def typename(self):
@@ -860,8 +858,7 @@ class Chosen(Select):
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
         html = [u'<select %s class="chzn-select">' %
-                html_params(name=field.name,
-                            **kwargs)]
+                html_params(name=field.name, **kwargs)]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
         html.append(u'</select>')
@@ -1282,10 +1279,9 @@ class RichTextWidget(object):
     def __call__(self, field, **kwargs):
         value = kwargs.pop('value') if 'value' in kwargs else field._value()
         kwargs.setdefault('allowed_tags', self.allowed_tags)
-        return render_template(self.template,
-                               field=field,
-                               value=value,
-                               kw=kwargs)
+        return render_template(
+            self.template, field=field,
+            value=value, kw=kwargs)
 
 
 class ListWidget(wtforms.widgets.ListWidget):

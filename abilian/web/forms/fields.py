@@ -112,9 +112,8 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         # instanciation so as to have permission filtering
         field_names = []
         labels = []
-        fieldsubform = self.unbound_field.bind(form=None,
-                                               name='dummy',
-                                               _meta=self.meta)
+        fieldsubform = self.unbound_field.bind(
+            form=None, name='dummy', _meta=self.meta)
         subform = fieldsubform.form_class(csrf_enabled=False)
         for f in subform:
             if f.is_hidden:

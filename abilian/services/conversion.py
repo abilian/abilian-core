@@ -608,9 +608,8 @@ class WvwareTextHandler(Handler):
             if encoding in ("binary", None):
                 encoding = "ascii"
             try:
-                converted_unicode = unicode(converted,
-                                            encoding,
-                                            errors="ignore")
+                converted_unicode = unicode(
+                    converted, encoding, errors="ignore")
             except:
                 traceback.print_exc()
                 converted_unicode = unicode(converted, errors="ignore")
