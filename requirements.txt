@@ -54,8 +54,7 @@ Markdown
 PyYAML
 pygeoip
 
-# "fork" of progressbar which is not installable with pip > 1.5
-progressbar-latest
+progressbar
 
 # Forms (TODO: need some updates)
 WTForms-Alchemy>=0.15,<0.16
