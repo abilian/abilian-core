@@ -11,7 +11,8 @@ Flask-Script
 Flask-DebugToolbar>=0.10
 Flask-Uploads
 Flask-Migrate>=1.6.0
-Flask-Babel>=0.9
+# FIXME
+Flask-Babel>=0.9,<0.10
 Flask-Assets>=0.10
 Flask-Mail>=0.9.1
 blinker
