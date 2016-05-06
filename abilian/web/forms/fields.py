@@ -42,8 +42,8 @@ __all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
 
 class FormField(BaseFormField):
     """
-  Discard csrf_token on subform
-  """
+    Discard csrf_token on subform
+    """
 
     def process(self, *args, **kwargs):
         super(FormField, self).process(*args, **kwargs)
@@ -182,9 +182,10 @@ class FileField(BaseFileField):
 
     @property
     def allow_delete(self):
+        """Property for legacy code.
+
+        Test `field.flags.required` instead.
         """
-    Property for legacy code. Test `field.flags.required` instead.
-    """
         return not self.flags.required
 
     def __call__(self, **kwargs):
@@ -238,7 +239,7 @@ class FileField(BaseFileField):
             self._has_uploads = True
 
     def populate_obj(self, obj, name):
-        """Store file
+        """Store file.
         """
         from abilian.core.models.blob import Blob
         delete_value = self.allow_delete and self.delete_files_index
@@ -395,8 +396,7 @@ class DateField(Field):
 
 
 class Select2Field(SelectField):
-    """
-    Allow choices to be a function instead of an iterable
+    """Allows choices to be a function instead of an iterable.
     """
     widget = Select2()
 

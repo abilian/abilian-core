@@ -34,9 +34,9 @@ _DEFAULT_PWD = User.__password_strategy__
 
 class NullBundle(Bundle):
     """
-  This bundle class emits no url, thus avoid any asset build. Saves a lot of
-  time during tests.
-  """
+    This bundle class emits no url, thus avoid any asset build. Saves a lot of
+    time during tests.
+    """
 
     def urls(self):
         return []
@@ -44,11 +44,11 @@ class NullBundle(Bundle):
 
 class TestConfig(object):
     """
-  Base class config settings for test cases.
+    Base class config settings for test cases.
 
-  The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
-  test against different databases.
-  """
+    The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
+    test against different databases.
+    """
     SITE_NAME = u'Abilian Test'
     SQLALCHEMY_DATABASE_URI = "sqlite://"
     SERVER_NAME = 'localhost'  # needed for url_for with '_external=True'
@@ -86,18 +86,18 @@ class TestConfig(object):
 
 class BaseTestCase(TestCase):
     """
-  Base test case to test an :class:`abilian.app.Application`.
+    Base test case to test an :class:`abilian.app.Application`.
 
-  It will create an instance path that will be used and shared for all tests
-  defined in this test case.
+    It will create an instance path that will be used and shared for all tests
+    defined in this test case.
 
-  The test case creates a clean database before running each test by calling
-  :meth:`abilian.app.Application.create_db` et destroys it after test.
+    The test case creates a clean database before running each test by calling
+    :meth:`abilian.app.Application.create_db` et destroys it after test.
 
-  Additionaly if the database is postgresql a schema is created for each test
-  and the connection role is altered to use this DB schema. This is done to
-  ensure harder test isolation.
-  """
+    Additionaly if the database is postgresql a schema is created for each test
+    and the connection role is altered to use this DB schema. This is done to
+    ensure harder test isolation.
+    """
 
     #: Config class to use for :attr:`.application_class` configuration.
     config_class = TestConfig

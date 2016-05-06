@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 
 class BaseObjectView(View):
     """
-  Base class common to all database objects views
-  """
+    Base class common to all database objects views.
+    """
     #: form title
     title = None
 
@@ -72,18 +72,18 @@ class BaseObjectView(View):
 
     def breadcrumb(self):
         """
-    Return :class:`..nav.BreadcrumbItem` instance for this object.
+        Return :class:`..nav.BreadcrumbItem` instance for this object.
 
-    This method may return a list of BreadcrumbItem instances. Return
-    `None` if nothing.
-    """
+        This method may return a list of BreadcrumbItem instances. Return
+        `None` if nothing.
+        """
         return None
 
     def init_object(self, args, kwargs):
         """
-    This method is reponsible for setting :attr:`obj`. It is called during
-    :meth:`prepare_args`.
-    """
+        This method is reponsible for setting :attr:`obj`. It is called during
+        :meth:`prepare_args`.
+        """
         self.object_id = kwargs.pop(self.pk, None)
         if self.object_id is not None:
             self.obj = self.Model.query.get(self.object_id)
@@ -107,16 +107,15 @@ class BaseObjectView(View):
     @property
     def template_kwargs(self):
         """
-    Template render arguments. You can override `base_template` for
-    instance. Only `view` cannot be overriden.
-    """
+        Template render arguments. You can override `base_template` for
+        instance. Only `view` cannot be overriden.
+        """
         return {}
 
 
 class ObjectView(BaseObjectView):
+    """View objects.
     """
-  View objects
-  """
 
     #: html template
     template = 'default/object_view.html'
@@ -145,8 +144,8 @@ class ObjectView(BaseObjectView):
 
     def prepare_args(self, args, kwargs):
         """
-    :attr:`form` is initialized here. See also :meth:`View.prepare_args`.
-    """
+        :attr:`form` is initialized here. See also :meth:`View.prepare_args`.
+        """
         args, kwargs = super(ObjectView, self).prepare_args(args, kwargs)
         self.form = self.Form(**self.get_form_kwargs())
         return args, kwargs
@@ -165,9 +164,8 @@ class ObjectView(BaseObjectView):
 
     @property
     def template_kwargs(self):
+        """Provides :attr:`form` to templates
         """
-    provides :attr:`form` to templates
-    """
         kw = super(ObjectView, self).template_kwargs
         kw['form'] = self.form
         return kw
@@ -186,9 +184,8 @@ EDIT_BUTTON = ButtonAction(
 
 
 class ObjectEdit(ObjectView):
+    """Edit objects.
     """
-  Edit objects
-  """
     template = 'default/object_edit.html'
     decorators = (csrf.support_graceful_failure,)
     permission = WRITE
@@ -317,51 +314,50 @@ class ObjectEdit(ObjectView):
 
     def before_populate_obj(self):
         """
-    This method is called after form has been validated and before calling
-    `form.populate_obj()`. Sometimes one may want to remove a field from
-    the form because it's non-sense to store it on edited object, and use it in
-    a specific manner, for example::
+        This method is called after form has been validated and before calling
+        `form.populate_obj()`. Sometimes one may want to remove a field from
+        the form because it's non-sense to store it on edited object, and use it in
+        a specific manner, for example::
 
-        image = form.image
-        del form.image
-        store_image(image)
-    """
+            image = form.image
+            del form.image
+            store_image(image)
+        """
         pass
 
     def after_populate_obj(self):
         """
-    Called after `self.obj` values have been updated, and `self.obj`
-    attached to an ORM session.
-    """
+        Called after `self.obj` values have been updated, and `self.obj`
+        attached to an ORM session.
+        """
         pass
 
     def handle_commit_exception(self, exc):
         """
-    hook point to handle exception that may happen during commit.
+        hook point to handle exception that may happen during commit.
 
-    It is the responsability of this method to perform a rollback if it is
-    required for handling `exc`. If the method does not handle `exc` if should
-    do nothing and return None.
+        It is the responsability of this method to perform a rollback if it is
+        required for handling `exc`. If the method does not handle `exc` if should
+        do nothing and return None.
 
-    :returns: * a valid :class:`Response` if exception is handled.
-              * `None` if exception is not handled. Default handling happens.
-    """
+        :returns: * a valid :class:`Response` if exception is handled.
+                  * `None` if exception is not handled. Default handling happens.
+        """
         return None
 
     def commit_success(self):
         """
-    Called after object has been successfully saved to database
-    """
+        Called after object has been successfully saved to database
+        """
 
     def validate(self):
         return self.form.validate()
 
     def form_valid(self):
-        """
-    Save object.
+        """Save object.
 
-    Called when form is validated.
-    """
+        Called when form is validated.
+        """
         session = current_app.db.session()
 
         with session.no_autoflush:
@@ -397,28 +393,28 @@ class ObjectEdit(ObjectView):
 
     def form_invalid(self):
         """
-    When a form doesn't validate this method is called.
+        When a form doesn't validate this method is called.
 
-    It may return a :class:`Flask.Response` instance, to handle specific
-    errors in custom screens.
+        It may return a :class:`Flask.Response` instance, to handle specific
+        errors in custom screens.
 
-    Else the edit form screen is returned with error(s) highlighted.
+        Else the edit form screen is returned with error(s) highlighted.
 
-    This method is useful for detecting edition conflict using hidden fields
-    and show a specific screen to help resolve the conflict.
-    """
+        This method is useful for detecting edition conflict using hidden fields
+        and show a specific screen to help resolve the conflict.
+        """
         return None
 
     def form_csrf_invalid(self):
         """
-    Called when a form doesn't validate *only* because of csrf token expiration.
+        Called when a form doesn't validate *only* because of csrf token expiration.
 
-    This works only if form is an instance of :class:`flask_wtf.form.SecureForm`.
-    Else default CSRF protection (before request) will take place.
+        This works only if form is an instance of :class:`flask_wtf.form.SecureForm`.
+        Else default CSRF protection (before request) will take place.
 
-    It must return a valid :class:`Flask.Response` instance. By default it
-    returns to edit form screen with an informative message.
-    """
+        It must return a valid :class:`Flask.Response` instance. By default it
+        returns to edit form screen with an informative message.
+        """
         current_app.extensions['csrf-handler'].flash_csrf_failed_message()
         return self.get()
 
@@ -432,8 +428,8 @@ class ObjectEdit(ObjectView):
     @property
     def activity_target(self):
         """
-    Return `target` to use when creating activity.
-    """
+        Return `target` to use when creating activity.
+        """
         return None
 
 
@@ -450,9 +446,8 @@ CHAIN_CREATE_BUTTON = ButtonAction(
 
 
 class ObjectCreate(ObjectEdit):
+    """Create a new object.
     """
-  Create a new object
-  """
     permission = CREATE
     activity_verb = 'post'
     _message_success = _l(u"Entity successfully added")
@@ -516,9 +511,8 @@ DELETE_BUTTON = ButtonAction('form', 'delete', title=_l(u'Delete'))
 
 
 class ObjectDelete(ObjectEdit):
+    """Delete object. Supports DELETE verb.
     """
-  Delete object. Supports DELETE verb.
-  """
     methods = ['POST']
     permission = DELETE
     activity_verb = 'delete'
@@ -589,19 +583,19 @@ class JSONBaseSearch(JSONView):
 
     def get_item(self, obj):
         """
-    Return a result item
+        Return a result item
 
-    :param obj: Instance object
-    :returns: a dictionnary with at least `id` and `text` values
-    """
+        :param obj: Instance object
+        :returns: a dictionnary with at least `id` and `text` values
+        """
         raise NotImplementedError
 
 
 class JSONModelSearch(JSONBaseSearch):
     """
-  Base class for json sqlalchemy model search, as used by select2 widgets for
-  example
-  """
+    Base class for json sqlalchemy model search, as used by select2 widgets for
+    example
+    """
 
     def get_results(self, q, *args, **kwargs):
         query = self.Model.query
@@ -629,18 +623,18 @@ class JSONModelSearch(JSONBaseSearch):
 
     def get_item(self, obj):
         """
-    Return a result item
+        Return a result item.
 
-    :param obj: Instance object
-    :returns: a dictionnary with at least `id` and `text` values
-    """
+        :param obj: Instance object
+        :returns: a dictionnary with at least `id` and `text` values
+        """
         return dict(id=obj.id, text=self.get_label(obj), name=obj.name)
 
 
 class JSONWhooshSearch(JSONBaseSearch):
     """
-  Base class for JSON Whoosh search, as used by select2 widgets for example
-  """
+    Base class for JSON Whoosh search, as used by select2 widgets for example
+    """
 
     def get_results(self, q, *args, **kwargs):
         svc = current_app.services['indexing']
@@ -649,10 +643,9 @@ class JSONWhooshSearch(JSONBaseSearch):
         return results
 
     def get_item(self, hit):
-        """
-    Return a result item
+        """Return a result item.
 
-    :param hit: Hit object from Whoosh
-    :returns: a dictionnary with at least `id` and `text` values
-    """
+        :param hit: Hit object from Whoosh
+        :returns: a dictionnary with at least `id` and `text` values
+        """
         return dict(id=hit['id'], text=hit['name'], name=hit['name'])

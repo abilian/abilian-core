@@ -27,9 +27,8 @@ def EdgeNgramField():
 
 
 class _DefaultSearchSchema(SchemaClass):
+    """General search schema.
     """
-  General search schema
-  """
     object_key = ID(stored=True, unique=True)
     id = NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=False)
     object_type = ID(stored=True, unique=False)
@@ -71,12 +70,12 @@ def DefaultSearchSchema(*args, **kwargs):
 
 def indexable_role(principal):
     """
-  Returns a string suitable for query against `allowed_roles_and_users`
-  field.
+    Return a string suitable for query against `allowed_roles_and_users`
+    field.
 
-  :param principal: It can be :data:`Anonymous`, :data:`Authenticated`,
+    :param principal: It can be :data:`Anonymous`, :data:`Authenticated`,
       or an instance of :class:`User` or :class:`Group`.
-  """
+    """
     principal = noproxy(principal)
 
     if (hasattr(principal, 'is_anonymous') and principal.is_anonymous()):

@@ -22,8 +22,8 @@ __all__ = ('Action', 'ModalActionMixin', 'actions')
 
 class Status(UniqueName):
     """
-  Action UI status names
-  """
+    Action UI status names
+    """
 
 #: default action status: show in UID, usable, not marked "current"
 ENABLED = Status(u'enabled')
@@ -35,31 +35,31 @@ DISABLED = Status(u'disabled')
 
 def getset(f):
     """
-  Shortcut for a custom getter/ standard setter.
+    Shortcut for a custom getter/ standard setter.
 
-  Usage::
+    Usage::
+
       @getset
       def my_property(self, value=None):
           if value is None:
               return getter_value
           set_value(value)
 
-  Default value for `value` should be any marker that helps distinguish
-  between getter or setter mode. If None is not appropriate a good approach is
-  to use a unique object instance::
+    Default value for `value` should be any marker that helps distinguish
+    between getter or setter mode. If None is not appropriate a good approach is
+    to use a unique object instance::
 
       MARK = object()
       # test like this
       if value is MARK:
         # getter mode
-  """
+    """
     return property(f, f)
 
 
 class Icon(object):
+    """Base abstract class for icons.
     """
-  Base abstract class for icons
-  """
 
     def __html__(self):
         raise NotImplementedError
@@ -69,9 +69,8 @@ class Icon(object):
 
 
 class NamedIconBase(Icon):
+    """Renders markup for named icons set.
     """
-  Renders markup for named icons set
-  """
     template = None
 
     def __init__(self, name=u''):
@@ -82,23 +81,20 @@ class NamedIconBase(Icon):
 
 
 class Glyphicon(NamedIconBase):
+    """Renders markup for bootstrap's glyphicons.
     """
-  Renders markup for bootstrap's glyphicons
-  """
     template = Template(u'<i class="glyphicon glyphicon-{{ name }}"></i>')
 
 
 class FAIcon(NamedIconBase):
+    """Renders markup for FontAwesome icons.
     """
-  Renders markup for FontAwesome icons
-  """
     template = Template(u'<i class="fa fa-{{ name }}"></i>')
 
 
 class FAIconStacked(NamedIconBase):
+    """Stacked FA icons.
     """
-  Stacked FA icons
-  """
     template = Template(
         u'<span class="fa-stack {%- if stack_class %} {{ stack_class }}'
         u'{%- endif %}">\n'
@@ -107,14 +103,14 @@ class FAIconStacked(NamedIconBase):
         u'</span>')
 
     def __init__(self, name, second, stack=u''):
-        '''
-    @param name: first icon name, support additional css classes.
+        """
+        @param name: first icon name, support additional css classes.
 
-    @param second: second icon. Can be 'ban fa-stack-2x text-danger' for
-    example.
+        @param second: second icon. Can be 'ban fa-stack-2x text-danger' for
+        example.
 
-    @param stack: additional class on top-level element, i.e 'fa-lg'.
-    '''
+        @param stack: additional class on top-level element, i.e 'fa-lg'.
+        """
         if u'fa-stack-' not in name:
             name += u' fa-stack-1x'
         if u'fa-stack-' not in second:
@@ -131,9 +127,6 @@ class FAIconStacked(NamedIconBase):
 
 
 class DynamicIcon(Icon):
-    """
-
-  """
     template = Template(u'<img {%- if css %} class="{{ css }}"{% endif %} '
                         u'src="{{ url }}" '
                         u'width="{{ width }}" height="{{ height }}" />')
@@ -180,10 +173,10 @@ class DynamicIcon(Icon):
 
 class StaticIcon(DynamicIcon):
     """
-  Renders markup for icon located in static folder served by `endpoint`.
+    Renders markup for icon located in static folder served by `endpoint`.
 
-  Default endpoint is application static folder.
-  """
+    Default endpoint is application static folder.
+    """
 
     def __init__(self,
                  filename,
@@ -208,13 +201,12 @@ class Endpoint(object):
         self.kwargs = kwargs
 
     def get_kwargs(self):
-        """
-    Hook for subclasses.
+        """Hook for subclasses.
 
-    The key and values in the returned dictionnary can be safely changed
-    without side effects on self.kwargs (provided you don't alter
-    mutable values, like calling list.pop()).
-    """
+        The key and values in the returned dictionnary can be safely changed
+        without side effects on self.kwargs (provided you don't alter
+        mutable values, like calling list.pop()).
+        """
         return self.kwargs.copy()
 
     def __unicode__(self):
@@ -229,9 +221,8 @@ class Endpoint(object):
 
 
 class Action(object):
+    """Action interface.
     """
-  Action interface.
-  """
     Endpoint = Endpoint
     category = None
     name = None
@@ -270,16 +261,16 @@ class Action(object):
                  button=None,
                  css=None):
         """
-    :param button: if not `None`, a valid `btn` class (i.e `default`,
-    `primary`...)
+        :param button: if not `None`, a valid `btn` class (i.e `default`,
+        `primary`...)
 
-    :param css: additional css class string
+        :param css: additional css class string
 
-    :param template: optional: a template file name or a list of filenames.
+        :param template: optional: a template file name or a list of filenames.
 
-    :param template_string: template_string to use. Defaults to
-    `Action.template_string`
-    """
+        :param template_string: template_string to use. Defaults to
+        `Action.template_string`
+        """
         self.category = category
         self.name = name
 
@@ -389,12 +380,12 @@ class Action(object):
 
     def available(self, context):
         """
-    Determine if this actions is available in this `context`.
+        Determine if this actions is available in this `context`.
 
-    :param context: a dict whose content is left to application needs; if
-                    :attr:`.condition` is a callable it receives `context`
-                    in parameter.
-    """
+        :param context: a dict whose content is left to application needs; if
+                        :attr:`.condition` is a callable it receives `context`
+                        in parameter.
+        """
         if not self._enabled:
             return False
         try:
@@ -405,12 +396,12 @@ class Action(object):
 
     def pre_condition(self, context):
         """
-    Called by :meth:`.available` before checking condition.
+        Called by :meth:`.available` before checking condition.
 
-    Subclasses may override it to ease creating actions with repetitive
-    check (for example: actions that apply on a given content type
-    only).
-    """
+        Subclasses may override it to ease creating actions with repetitive
+        check (for example: actions that apply on a given content type
+        only).
+        """
         return True
 
     def _check_condition(self, context):
@@ -484,9 +475,8 @@ class ButtonAction(Action):
 
 
 class ActionGroup(Action):
+    """A group of single actions
     """
-  A group of single actions
-  """
     template_string = (
         u'<div class="btn-group" role="group" aria-label="{{ action.name}}">'
         u'{%- for entry in action_items %}'
@@ -505,9 +495,8 @@ class ActionGroup(Action):
 
 
 class ActionDropDown(ActionGroup):
+    """Renders as a button dropdown
     """
-  Renders as a button dropdown
-  """
     template_string = u'''
   <div class="btn-group">
     <button type="button" class="{{ action.css_class }} dropdown-toggle"
@@ -537,15 +526,15 @@ class ActionGroupItem(Action):
 
 
 class ActionRegistry(object):
-    """ The Action registry.
+    """The Action registry.
 
-  This is a Flask extension which registers :class:`.Action` sets. Actions are
-  grouped by category and are ordered by registering order.
+    This is a Flask extension which registers :class:`.Action` sets. Actions are
+    grouped by category and are ordered by registering order.
 
-  From your application use the instanciated registry :data:`.actions`.
+    From your application use the instanciated registry :data:`.actions`.
 
-  The registry is available in jinja2 templates as `actions`.
-  """
+    The registry is available in jinja2 templates as `actions`.
+    """
     __EXTENSION_NAME = 'abilian:actions'
 
     def init_app(self, app):
@@ -562,19 +551,19 @@ class ActionRegistry(object):
             return dict(actions=self)
 
     def installed(self, app=None):
-        """ Return `True` if the registry has been installed in current applications
-    """
+        """Return `True` if the registry has been installed in current applications
+        """
         if app is None:
             app = current_app
         return self.__EXTENSION_NAME in app.extensions
 
     def register(self, *actions):
         """ Register `actions` in the current application. All `actions` must be an
-    instance of :class:`.Action` or one of its subclasses.
+        instance of :class:`.Action` or one of its subclasses.
 
-    If `overwrite` is `True`, then it is allowed to overwrite an existing
-    action with same name and category; else `ValueError` is raised.
-    """
+        If `overwrite` is `True`, then it is allowed to overwrite an existing
+        action with same name and category; else `ValueError` is raised.
+        """
         assert self.installed(), "Actions not enabled on this application"
         assert all(map(lambda a: isinstance(a, Action), actions))
 
@@ -586,11 +575,11 @@ class ActionRegistry(object):
     def actions(self, context=None):
         """ Return a mapping of category => actions list.
 
-    Actions are filtered according to :meth:`.Action.available`.
+        Actions are filtered according to :meth:`.Action.available`.
 
-    if `context` is None, then current action context is used
-    (:attr:`context`).
-    """
+        if `context` is None, then current action context is used
+        (:attr:`context`).
+        """
         assert self.installed(), "Actions not enabled on this application"
         result = {}
         if context is None:
@@ -603,11 +592,11 @@ class ActionRegistry(object):
     def for_category(self, category, context=None):
         """ Returns actions list for this category in current application.
 
-    Actions are filtered according to :meth:`.Action.available`.
+        Actions are filtered according to :meth:`.Action.available`.
 
-    if `context` is None, then current action context is used
-    (:attr:`context`)
-    """
+        if `context` is None, then current action context is used
+        (:attr:`context`)
+        """
         assert self.installed(), "Actions not enabled on this application"
         actions = self._state['categories'].get(category, [])
 
@@ -626,8 +615,8 @@ class ActionRegistry(object):
     @property
     def context(self):
         """ Return action context (dict type). Applications can modify it to suit
-    their needs.
-    """
+        their needs.
+        """
         return g.action_context
 
 

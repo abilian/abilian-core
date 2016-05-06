@@ -46,15 +46,15 @@ def is_valid_handle(handle):
 
 class FileUploadsExtension(object):
     """
-  API for Out-Of-Band file uploads.
+    API for Out-Of-Band file uploads.
 
-  Allow to manage files in forms: file is uploaded to an upload url, a handle is
-  returned will be used in the form to refer to this uploaded filed.
+    Allow to manage files in forms: file is uploaded to an upload url, a handle is
+    returned will be used in the form to refer to this uploaded filed.
 
-  If the form fails to validate the uploaded file is not lost.
+    If the form fails to validate the uploaded file is not lost.
 
-  A periodic task cleans the temporary repository.
-  """
+    A periodic task cleans the temporary repository.
+    """
 
     def __init__(self, app):
         app.extensions['uploads'] = self
@@ -89,11 +89,10 @@ class FileUploadsExtension(object):
         return self.UPLOAD_DIR / user_id
 
     def add_file(self, user, file_obj, **metadata):
-        """
-    Add a new file.
+        """Add a new file.
 
-    :returns: file handle
-    """
+        :returns: file handle
+        """
         user_dir = self.user_dir(user)
         if not user_dir.exists():
             user_dir.mkdir(0o775)
@@ -113,12 +112,11 @@ class FileUploadsExtension(object):
         return handle
 
     def get_file(self, user, handle):
-        """
-    Retrieve a file for a user.
+        """Retrieve a file for a user.
 
-    :returns: a :class:`pathlib.Path` instance to this file, or None if no file
-    can be found for this handle.
-    """
+        :returns: a :class:`pathlib.Path` instance to this file, or None if no file
+        can be found for this handle.
+        """
         user_dir = self.user_dir(user)
         if not user_dir.exists():
             return None
@@ -169,12 +167,11 @@ class FileUploadsExtension(object):
                     logger.exception('Error during remove file')
 
     def clear_stalled_files(self):
-        """
-    Scan upload directory and delete stalled files.
+        """Scan upload directory and delete stalled files.
 
-    Stalled files are files uploaded more than `DELETE_STALLED_AFTER` seconds
-    ago.
-    """
+        Stalled files are files uploaded more than `DELETE_STALLED_AFTER` seconds
+        ago.
+        """
         # FIXME: put lock in directory?
         CLEAR_AFTER = self.config['DELETE_STALLED_AFTER']
         minimum_age = time.time() - CLEAR_AFTER
@@ -198,12 +195,11 @@ class FileUploadsExtension(object):
 # Task scheduled to run every hour: make it expire after 50min.
 @shared_task(expires=3000)
 def periodic_clean_upload_directory():
-    """
-  This task should be run periodically.
+    """This task should be run periodically.
 
-  Default config sets up schedule using
-  :data:`DEFAULT_CLEANUP_SCHEDULE`. `CELERYBEAT_SCHEDULE` key is
-  :data:`CLEANUP_SCHEDULE_ID`.
-  """
+    Default config sets up schedule using
+    :data:`DEFAULT_CLEANUP_SCHEDULE`. `CELERYBEAT_SCHEDULE` key is
+    :data:`CLEANUP_SCHEDULE_ID`.
+    """
     uploads = current_app.extensions['uploads']
     uploads.clear_stalled_files()

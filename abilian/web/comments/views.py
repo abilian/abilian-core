@@ -76,8 +76,7 @@ class BaseCommentView(object):
 
 
 class CommentEditView(BaseCommentView, ObjectEdit):
-    """
-  """
+
     _message_success = _l(u'Comment edited')
 
     def breadcrumb(self):
@@ -131,8 +130,7 @@ bp.route('/<int:entity_id>/create')(create_view)
 
 
 class CommentDeleteView(BaseCommentView, ObjectDelete):
-    """
-  """
+
     _message_success = _l(u"Comment deleted")
 
 

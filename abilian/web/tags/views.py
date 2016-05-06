@@ -24,8 +24,8 @@ bp = Blueprint('tags',
 
 class BaseTagView(object):
     """
-  Mixin for tag views
-  """
+    Mixin for tag views
+    """
     Model = Tag
     Form = TagForm
 

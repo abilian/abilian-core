@@ -26,10 +26,10 @@ _BP_PREFIX = 'admin'
 
 class Admin(object):
     """
-  Flask extension for an admin interface with pluggable admin panels.
+    Flask extension for an admin interface with pluggable admin panels.
 
-  Note: this is quite different that a Django-style admin interface.
-  """
+    Note: this is quite different that a Django-style admin interface.
+    """
 
     def __init__(self, *panels, **kwargs):
         self.app = None

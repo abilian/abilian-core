@@ -163,11 +163,11 @@ class FormPermissions(object):
 
 class FormContext(object):
     """
-  Allows :class:`forms <Form>` to set a context during instanciation, so that
-  subforms used in formfields / listformfields / etc can perform proper field
-  filtering according to original permission and user passed to top form
-  __init__ method.
-  """
+    Allows :class:`forms <Form>` to set a context during instanciation, so that
+    subforms used in formfields / listformfields / etc can perform proper field
+    filtering according to original permission and user passed to top form
+    __init__ method.
+    """
     permission = None
     user = None
 
@@ -311,10 +311,10 @@ if not _PATCHED:
     del _core_field_init
 
     def _core_field_repr(self):
-        '''
+        """
         __repr__ that shows the name of the field instance. Useful for tracing field
         errors (like in sentry)
-        '''
+        """
         return '<{}.{} at 0x{:x} name={!r}>'.format(self.__class__.__module__,
                                                     self.__class__.__name__,
                                                     id(self),
@@ -338,8 +338,7 @@ if not _PATCHED:
     del _core_field_render
 
     def render_view(self, **kwargs):
-        """
-        Render data
+        """Render data.
         """
         if 'widget_options' in kwargs and not kwargs['widget_options']:
             kwargs.pop('widget_options')

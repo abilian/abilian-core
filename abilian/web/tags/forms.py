@@ -15,13 +15,13 @@ from abilian.web.forms.widgets import ListWidget, Select2
 
 class TagsField(Field):
     """
-  Handle tags selection on for a given :attr:`tags namespace<.Tag.ns>`.
+    Handle tags selection on for a given :attr:`tags namespace<.Tag.ns>`.
 
-  Usage::
+    Usage::
 
       __tags__ = TagsField(ns='tags namespace')
 
-  """
+    """
     multiple = True
     widget = Select2(js_init='tags-select', multiple=True)
     view_widget = ListWidget()
@@ -89,13 +89,13 @@ _NS = StringField(u'Namespace', validators=[required()], filters=(strip,),)
 
 class TagForm(Form):
     """
-  Form for a single tag
-  """
+    Form for a single tag
+    """
     label = StringField(u'Label', filters=(strip,), validators=[required(),])
 
 
 class TagNSForm(TagForm):
     """
-  Allow to edit namespace.
-  """
+    Allows to edit namespace.
+    """
     ns = _NS

@@ -15,8 +15,7 @@ from .base import View
 
 
 class BaseFileDownload(View):
-    """
-  """
+
     set_expire = False
     expire_offset = timedelta(days=365)
     as_attachment = False
@@ -78,9 +77,9 @@ class BaseFileDownload(View):
 
     def get(self, attach, *args, **kwargs):
         """
-    :param image: image as bytes
-    :param s: requested maximum width/height size
-    """
+        :param image: image as bytes
+        :param s: requested maximum width/height size
+        """
         response = self.make_response(*args, **kwargs)
         response.headers['content-type'] = self.get_content_type(*args,
                                                                  **kwargs)

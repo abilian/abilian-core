@@ -440,8 +440,8 @@ class PdfToPpmHandler(Handler):
 class UnoconvPdfHandler(Handler):
     """Handles conversion from office documents (MS-Office, OOo) to PDF.
 
-  Uses unoconv.
-  """
+    Uses unoconv.
+    """
 
     # TODO: add more if needed.
     accepts_mime_types = ['application/vnd.oasis.*', 'application/msword',

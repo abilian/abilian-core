@@ -55,8 +55,8 @@ class IdMixin(object):
 
 class Indexable(object):
     """
-  Mixin with sensible defaults for indexable objects.
-  """
+    Mixin with sensible defaults for indexable objects.
+    """
     __indexable__ = True
     __indexation_args__ = {
         'index_to': (('object_key', (('object_key', ID(stored=True,

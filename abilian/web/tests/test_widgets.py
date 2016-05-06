@@ -20,8 +20,8 @@ from ..forms.widgets import (EmailWidget, MainTableView, Panel, Row, SingleView,
 
 class WidgetTestModel(Entity):
     """
-  Mock model.
-  """
+    Mock model.
+    """
     __tablename__ = 'widget_test_model'
     id = sa.Column(sa.Integer, primary_key=True)
     price = sa.Column(sa.Integer)

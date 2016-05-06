@@ -18,8 +18,8 @@ ENTITY_DEFAULT_NS_ATTR = '__tags_default_ns__'
 
 def ns(ns):
     """
-  Class decorator that set default tags namespace to use with its instances.
-  """
+    Class decorator that sets default tags namespace to use with its instances.
+    """
 
     def setup_ns(cls):
         setattr(cls, ENTITY_DEFAULT_NS_ATTR, ns)
@@ -30,13 +30,13 @@ def ns(ns):
 
 class _TagsForm(Form):
     """
-  Form to workaround a wtforms limitation: fields cannot start with an
-  underscore, so '__tags__' is not accepted.
+    Form to workaround a wtforms limitation: fields cannot start with an
+    underscore, so '__tags__' is not accepted.
 
-  This form help process tags (and only tags).
+    This form help process tags (and only tags).
 
-  .. seealso:: :py:meth:`~TagsExtension.entity_tags_form`
-  """
+    .. seealso:: :py:meth:`~TagsExtension.entity_tags_form`
+    """
 
     def process(self, formdata=None, obj=None, data=None, **kwargs):
         tags = None
@@ -52,10 +52,10 @@ class _TagsForm(Form):
 
 class TagsExtension(object):
     """
-  API for tags, installed as an application extension
+    API for tags, installed as an application extension.
 
-  It is also available in templates as `tags`
-  """
+    It is also available in templates as `tags`.
+    """
 
     def __init__(self, app):
         app.extensions['tags'] = self
@@ -71,10 +71,10 @@ class TagsExtension(object):
 
     def tags_from_hit(self, tag_ids):
         """
-    :param tag_ids: indexed ids of tags in hit result. Do not pass hit instance.
+        :param tag_ids: indexed ids of tags in hit result. Do not pass hit instance.
 
-    :returns: an iterable of :class:`Tag` instances.
-    """
+        :returns: an iterable of :class:`Tag` instances.
+        """
         ids = []
         for t in tag_ids.split():
             t = t.strip()
@@ -95,8 +95,8 @@ class TagsExtension(object):
 
     def entity_tags_form(self, entity, ns=None):
         """
-    Construct a form class with a field for tags in namespace `ns`
-    """
+        Construct a form class with a field for tags in namespace `ns`.
+        """
         if ns is None:
             ns = self.entity_default_ns(entity)
 
@@ -106,12 +106,12 @@ class TagsExtension(object):
 
     def get(self, ns, label=None):
         """
-    Return :class:`tags instances<~Tag>` for the namespace `ns`, ordered by
-    label.
+        Return :class:`tags instances<~Tag>` for the namespace `ns`, ordered by
+        label.
 
-    If `label` is not None the only one instance may be returned, or `None` if
-    no tags exists for this label.
-    """
+        If `label` is not None the only one instance may be returned, or `None` if
+        no tags exists for this label.
+        """
         query = Tag.query.filter(Tag.ns == ns)
 
         if label is not None:
@@ -121,8 +121,8 @@ class TagsExtension(object):
 
     def add(self, entity, tag=None, ns=None, label=None):
         """
-    :return: tag
-    """
+        :return: tag
+        """
         if tag is None:
             assert None not in (ns, label)
             tag = self.get(ns, label)
@@ -146,9 +146,9 @@ class TagsExtension(object):
 
     def get_form_context(self, obj, ns=None):
         """
-    Return a dict: form instance, action button, submit url...
-    Used by macro m_tags_form(entity)
-    """
+        Return a dict: form instance, action button, submit url...
+        Used by macro m_tags_form(entity)
+        """
         ctx = {}
         ctx['url'] = url_for('entity_tags.edit', object_id=obj.id)
         ctx['form'] = self.entity_tags_form(obj)(obj=obj, ns=ns)

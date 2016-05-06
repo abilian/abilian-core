@@ -31,8 +31,8 @@ class RepositoryServiceState(ServiceState):
 
 class RepositoryService(Service):
     """
-  Service for storage of binary objects referenced in database
-  """
+    Service for storage of binary objects referenced in database
+    """
     name = 'repository'
     AppStateClass = RepositoryServiceState
 
@@ -49,21 +49,21 @@ class RepositoryService(Service):
     # data management: paths and accessors
     def rel_path(self, uuid):
         """
-    contruct relative path from repository top directory to the file named
-    after this uuid.
+        Contruct relative path from repository top directory to the file named
+        after this uuid.
 
-    :param:uuid: :class:`UUID` instance
-    """
+        :param:uuid: :class:`UUID` instance
+        """
         _assert_uuid(uuid)
         filename = str(uuid)
         return Path(filename[0:2], filename[2:4], filename)
 
     def abs_path(self, uuid):
         """
-    Return absolute :class:`Path` object for given uuid.
+        Return absolute :class:`Path` object for given uuid.
 
-    :param:uuid: :class:`UUID` instance
-    """
+        :param:uuid: :class:`UUID` instance
+        """
         top = self.app_state.path
         rel_path = self.rel_path(uuid)
         dest = top / rel_path
@@ -72,11 +72,11 @@ class RepositoryService(Service):
 
     def get(self, uuid, default=None):
         """
-    Return absolute :class:`Path` object for given uuid, if this uuid exists in
-    repository, or `default` if it doesn't.
+        Return absolute :class:`Path` object for given uuid, if this uuid exists in
+        repository, or `default` if it doesn't.
 
-    :param:uuid: :class:`UUID` instance
-    """
+        :param:uuid: :class:`UUID` instance
+        """
         path = self.abs_path(uuid)
         if not path.exists():
             return default
@@ -84,12 +84,12 @@ class RepositoryService(Service):
 
     def set(self, uuid, content, encoding='utf-8'):
         """
-    Store binary content with uuid as key
+        Store binary content with uuid as key
 
-    :param:uuid: :class:`UUID` instance
-    :param:content: string, bytes, or any object with a `read()` method
-    :param:encoding: encoding to use when content is unicode
-    """
+        :param:uuid: :class:`UUID` instance
+        :param:content: string, bytes, or any object with a `read()` method
+        :param:encoding: encoding to use when content is unicode
+        """
         dest = self.abs_path(uuid)
         if not dest.parent.exists():
             dest.parent.mkdir(0o775, parents=True)
@@ -106,11 +106,11 @@ class RepositoryService(Service):
 
     def delete(self, uuid):
         """
-    Delete file with given uuid.
+        Delete file with given uuid.
 
-    :param:uuid: :class:`UUID` instance
-    :raises:KeyError if file does not exists
-    """
+        :param:uuid: :class:`UUID` instance
+        :raises:KeyError if file does not exists
+        """
         dest = self.abs_path(uuid)
         if not dest.exists():
             raise KeyError('No file can be found for this uuid', uuid)
@@ -172,9 +172,9 @@ class SessionRepositoryState(ServiceState):
 
     def set_transaction(self, session, transaction):
         """
-    :param:session: :class:`sqlalchemy.orm.session.Session` instance
-    :param:transaction: :class:`RepositoryTransaction` instance
-    """
+        :param:session: :class:`sqlalchemy.orm.session.Session` instance
+        :param:transaction: :class:`RepositoryTransaction` instance
+        """
         if isinstance(session, sa.orm.scoped_session):
             session = session()
 
@@ -241,11 +241,11 @@ class SessionRepositoryState(ServiceState):
 
 class SessionRepositoryService(Service):
     """
-  A repository service that is session aware, i.e content is actually
-  written or delete at commit time.
+    A repository service that is session aware, i.e content is actually
+    written or delete at commit time.
 
-  All content is stored using the main :class:`RepositoryService`.
-  """
+    All content is stored using the main :class:`RepositoryService`.
+    """
     name = 'session_repository'
     AppStateClass = SessionRepositoryState
 
@@ -275,18 +275,17 @@ class SessionRepositoryService(Service):
             # appcontext_tearing_down.connect(self.clear_transaction, app)
 
     def _session_for(self, model_or_session):
+        """Return session instance for object parameter.
+
+        If parameter is a session instance, it is return as is.
+        If parameter is a registered model instance, its session will be used.
+
+        If parameter is a detached model instance, or None, application scoped
+        session will be used (app.db.session())
+
+        If parameter is a scoped_session instance, a new session will be
+        instanciated.
         """
-    Return session instance for object parameter.
-
-    If parameter is a session instance, it is return as is.
-    If parameter is a registered model instance, its session will be used.
-
-    If parameter is a detached model instance, or None, application scoped
-    session will be used (app.db.session())
-
-    If parameter is a scoped_session instance, a new session will be
-    instanciated.
-    """
         session = model_or_session
         if not isinstance(session, (Session, sa.orm.scoped_session)):
             if session is not None:
@@ -396,12 +395,12 @@ class RepositoryTransaction(object):
 
     def commit(self, session=None):
         """
-    merge modified objects into parent transaction.
+        Merge modified objects into parent transaction.
 
-    Once commited a transaction object is not usable anymore
+        Once commited a transaction object is not usable anymore
 
-    :param:session: current sqlalchemy Session
-    """
+        :param:session: current sqlalchemy Session
+        """
         if self.__cleared:
             return
 
@@ -443,8 +442,8 @@ class RepositoryTransaction(object):
 
     def _add_to(self, uuid, dest, other):
         """
-    Add `item` to `dest` set, ensuring `item` is not present in `other` set.
-    """
+        Add `item` to `dest` set, ensuring `item` is not present in `other` set.
+        """
         _assert_uuid(uuid)
         try:
             other.remove(uuid)

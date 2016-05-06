@@ -12,11 +12,10 @@ from .views import COMMENT_BUTTON
 
 
 class CommentExtension(object):
-    """
-  API for comments, installed as an application extension.
+    """API for comments, installed as an application extension.
 
-  It is also available in templates as `comments`.
-  """
+    It is also available in templates as `comments`.
+    """
 
     def __init__(self, app):
         app.extensions['comments'] = self
@@ -36,10 +35,10 @@ class CommentExtension(object):
         return len(comments.for_entity(obj, check_commentable=True))
 
     def get_form_context(self, obj):
+        """Return a dict: form instance, action button, submit url...
+
+        Used by macro m_comment_form(entity)
         """
-    Return a dict: form instance, action button, submit url...
-    Used by macro m_comment_form(entity)
-    """
         ctx = {}
         ctx['url'] = url_for('comments.create', entity_id=obj.id)
         ctx['form'] = CommentForm()

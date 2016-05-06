@@ -144,8 +144,8 @@ def forgotten_pw_form():
 @csrf.exempt
 def forgotten_pw(new_user=False):
     """
-  reset password for users who have already activated their accounts.
-  """
+    Reset password for users who have already activated their accounts.
+    """
     email = request.form.get('email', "").lower()
 
     action = request.form.get('action')
@@ -245,8 +245,8 @@ def random_password():
 
 def get_serializer(name):
     """
-  :type name: str
-  """
+    :type name: str
+    """
     config = current_app.config
     secret_key = config.get('SECRET_KEY')
     salt = config.get('SECURITY_{}_SALT'.format(name.upper()))
@@ -254,11 +254,11 @@ def get_serializer(name):
 
 
 def send_reset_password_instructions(user):
-    """Sends the reset password instructions email for the specified user.
+    """Send the reset password instructions email for the specified user.
 
-  :param user: The user to send the instructions to
-  :type user: User
-  """
+    :param user: The user to send the instructions to
+    :type user: User
+    """
     token = generate_reset_password_token(user)
     url = url_for('login.reset_password', token=token)
     reset_link = request.url_root[:-1] + url
@@ -274,24 +274,26 @@ def send_reset_password_instructions(user):
 
 
 def generate_reset_password_token(user):
-    """Generates a unique reset password token for the specified user.
+    """Generate a unique reset password token for the specified user.
 
-  :param user: The user to work with
-  :type user: User
-  """
+    :param user: The user to work with
+    :type user: User
+    """
     data = [str(user.id), md5(user.password)]
     return get_serializer("reset").dumps(data)
 
 
 def reset_password_token_status(token):
-    """Returns the expired status, invalid status, and user of a password reset
-  token. For example::
+    """Return the expired status, invalid status, and user of a password reset
+  token.
 
-      expired, invalid, user = reset_password_token_status('...')
+    For example::
 
-  :param token: The password reset token
-  :type token: str
-  """
+        expired, invalid, user = reset_password_token_status('...')
+
+    :param token: The password reset token
+    :type token: str
+    """
     return get_token_status(token, 'reset', 'RESET_PASSWORD')
 
 
@@ -319,11 +321,11 @@ def get_token_status(token, serializer_name, max_age=None):
 def send_mail(subject, recipient, template, **context):
     """Send an email using the Flask-Mail extension.
 
-  :param subject: Email subject
-  :param recipient: Email recipient
-  :param template: The name of the email template
-  :param context: The context to render the template with
-  """
+    :param subject: Email subject
+    :param recipient: Email recipient
+    :param template: The name of the email template
+    :param context: The context to render the template with
+    """
 
     config = current_app.config
     sender = config['MAIL_SENDER']

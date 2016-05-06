@@ -17,8 +17,6 @@ ATTRIBUTE = '__comments__'
 
 
 class Commentable(object):
-    """
-  """
     __metaclass__ = abc.ABCMeta
 
 

@@ -106,8 +106,7 @@ class Column(object):
 
 # TODO: rewrite
 class BaseTableView(object):
-    """
-  """
+
     show_controls = False
     show_search = None
     paginate = False

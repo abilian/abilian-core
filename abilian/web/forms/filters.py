@@ -9,8 +9,8 @@ from future.utils import string_types
 
 def strip(data):
     """
-  Strip data if data is a string
-  """
+    Strip data if data is a string
+    """
     if data is None:
         return ""
     if not isinstance(data, string_types):

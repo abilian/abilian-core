@@ -28,8 +28,8 @@ __all__ = ['RoleAssignment', 'PermissionAssignment', 'SecurityAudit',
 @total_ordering
 class Permission(UniqueName):
     """
-  Defines permission by name. Permission instances are unique by name.
-  """
+    Defines permission by name. Permission instances are unique by name.
+    """
     __slots__ = ('label',)
 
     def __init__(self, name, label=None, assignable=True):
@@ -49,23 +49,23 @@ class Permission(UniqueName):
 
 class PermissionType(UniqueNameType):
     """
-  Store :class:`Permission`
+    Store :class:`Permission`
 
-  Usage::
+    Usage::
     RoleType()
-  """
+    """
     Type = Permission
 
 
 @total_ordering
 class Role(UniqueName):
     """
-  Defines role by name. Roles instances are unique by name.
+    Defines role by name. Roles instances are unique by name.
 
-  :param assignable: this role is can be assigned through security service.
-  Non-assignable roles are roles automatically given depending on context (ex:
-  Anonymous/Authenticated).
-  """
+    :param assignable: this role is can be assigned through security service.
+    Non-assignable roles are roles automatically given depending on context (ex:
+    Anonymous/Authenticated).
+    """
     __slots__ = ('label', 'assignable')
 
     def __init__(self, name, label=None, assignable=True):
@@ -92,11 +92,11 @@ class Role(UniqueName):
 
 class RoleType(UniqueNameType):
     """
-  Store :class:`Role`
+    Store :class:`Role`
 
-  Usage::
+    Usage::
     RoleType()
-  """
+    """
     Type = Role
 
 #: marker for role assigned to 'Anonymous'
@@ -317,8 +317,8 @@ del _postgres_indexes
 
 class SecurityAudit(db.Model):
     """
-  Logs changes on security.
-  """
+    Logs changes on security.
+    """
     GRANT = u'GRANT'
     REVOKE = u'REVOKE'
     SET_INHERIT = u'SET_INHERIT'
@@ -375,8 +375,8 @@ class SecurityAudit(db.Model):
 
 class InheritSecurity(object):
     """
-  Mixin for objects with a parent relation and security inheritance.
-  """
+    Mixin for objects with a parent relation and security inheritance.
+    """
     inherit_security = Column(Boolean,
                               default=True,
                               nullable=False,

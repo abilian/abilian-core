@@ -14,16 +14,14 @@ _UNDEFINED = type('UNDEFINED', (object,), {})
 
 
 class BaseCriterion(object):
-    """
-  """
 
     form_default_value = _UNDEFINED
-    '''
-  Values to set by default when adding a filter. The provided value(s) must be
-  the ones used in html, not in python.
+    """
+    Values to set by default when adding a filter. The provided value(s) must be
+    the ones used in html, not in python.
 
-  Subclasses can also define property.
-  '''
+    Subclasses can also define property.
+    """
 
     def __init__(self, name, label=u'', form_default_value=_UNDEFINED):
         self.name = name
@@ -49,8 +47,7 @@ class BaseCriterion(object):
     model = property(_get_model, _set_model)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
-        """
-    """
+
         raise NotImplementedError
 
     @property
@@ -75,9 +72,8 @@ class BaseCriterion(object):
 
 
 class TextSearchCriterion(BaseCriterion):
+    """Fulltext search on given attributes.
     """
-  Fulltext search on given attributes.
-  """
 
     def __init__(self, name, label=u'', attributes=None, search_fmt=u'%{q}%'):
         super(TextSearchCriterion, self).__init__(name, label)
@@ -163,10 +159,10 @@ class TextSearchCriterion(BaseCriterion):
 
     def get_rel_attr(self, attr_name, model):
         """
-    For a related attribute specification, returns (related model,
-    attribute).  Returns (None, None) if model is not found, or (model, None) if
-    attribute is not found.
-    """
+        For a related attribute specification, returns (related model,
+        attribute).  Returns (None, None) if model is not found, or (model, None) if
+        attribute is not found.
+        """
         rel_attr_name, attr_name = attr_name.split('.', 1)
         rel_attr = getattr(self.model, rel_attr_name, None)
         rel_model = None
@@ -180,8 +176,8 @@ class TextSearchCriterion(BaseCriterion):
 
     def is_excluded(self, attr_name, request):
         """
-    To be overriden by subclasses that want to filter searched attributes.
-    """
+        To be overriden by subclasses that want to filter searched attributes.
+        """
         return False
 
     @property

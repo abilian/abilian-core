@@ -71,8 +71,8 @@ _ACTIONS = (NavItem('user',
 
 class AuthServiceState(ServiceState):
     """
-  State class for :class:`AuthService`
-  """
+    State class for :class:`AuthService`
+    """
 
     def __init__(self, *args, **kwargs):
         super(AuthServiceState, self).__init__(*args, **kwargs)

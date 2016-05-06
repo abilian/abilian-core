@@ -58,7 +58,7 @@ class Setting(db.Model):
     identifier and the primary key.
 
     value must be stored as unicode.
-  """
+    """
     transformers = _transformers
     key = sa.Column('key', sa.String(length=1000), primary_key=True)
 

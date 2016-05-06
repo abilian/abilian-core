@@ -17,8 +17,8 @@ class ServiceNotRegistered(Exception):
 
 class ServiceState(object):
     """
-  Service state stored in Application.extensions
-  """
+    Service state stored in Application.extensions
+    """
     #: reference to :class:`Service` instance
     service = None
 
@@ -32,8 +32,8 @@ class ServiceState(object):
 
 class Service(object):
     """
-  Base class for services.
-  """
+    Base class for services.
+    """
     #: State class to use for this Service
     AppStateClass = ServiceState
 
@@ -55,15 +55,15 @@ class Service(object):
 
     def start(self, ignore_state=False):
         """
-    Starts the service.
-    """
+        Starts the service.
+        """
         self.logger.debug('Start service')
         self._toggle_running(True, ignore_state)
 
     def stop(self, ignore_state=False):
         """
-    Stops the service.
-    """
+        Stops the service.
+        """
         self.logger.debug('Stop service')
         self._toggle_running(False, ignore_state)
 
@@ -78,8 +78,8 @@ class Service(object):
     def app_state(self):
         """ Current service state in current application.
 
-    :raise:RuntimeError if working outside application context.
-    """
+        :raise:RuntimeError if working outside application context.
+        """
         try:
             return current_app.extensions[self.name]
         except KeyError:
@@ -88,10 +88,10 @@ class Service(object):
     @property
     def running(self):
         """
-    :returns: `False` if working outside application context, if service is
-              not registered on current application,  or if service is halted
-              for current application.
-    """
+        :returns: `False` if working outside application context, if service is
+                  not registered on current application,  or if service is halted
+                  for current application.
+        """
         try:
             return self.app_state.running
         except (RuntimeError, ServiceNotRegistered):
@@ -102,9 +102,9 @@ class Service(object):
     @staticmethod
     def if_running(meth):
         """
-    Decorator for service methods that must be ran only if service is in
-    running state.
-    """
+        Decorator for service methods that must be ran only if service is in
+        running state.
+        """
 
         @wraps(meth)
         def check_running(self, *args, **kwargs):

@@ -65,8 +65,7 @@ def photo(user):
 
 # JSON search
 class UserJsonListing(JSONModelSearch):
-    """
-  """
+
     Model = User
     minimum_input_length = 0
 

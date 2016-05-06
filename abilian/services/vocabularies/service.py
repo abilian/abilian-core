@@ -37,8 +37,6 @@ def get_vocabulary(name, group=None):
 
 
 class VocabularyService(Service):
-    """
-  """
     name = 'vocabularies'
 
     def init_app(self, app):

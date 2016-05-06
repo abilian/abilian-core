@@ -32,8 +32,8 @@ ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 
 
 class TestActions(BaseTestCase):
-    """ Test Action and ActionRegistry.
-  """
+    """Test Action and ActionRegistry.
+    """
 
     def setUp(self):
         BaseTestCase.setUp(self)

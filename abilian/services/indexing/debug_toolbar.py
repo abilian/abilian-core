@@ -12,12 +12,11 @@ from abilian.web.action import actions
 
 
 class IndexedTermsDebugPanel(DebugPanel):
-    """
-  A panel to display term values found in index for "current" object
+    """A panel to display term values found in index for "current" object.
 
-  FIXME: this notion of "current" object should formalized in
-  abilian.app.Application
-  """
+    FIXME: this notion of "current" object should formalized in
+    abilian.app.Application
+    """
     name = 'IndexedTerms'
 
     @property

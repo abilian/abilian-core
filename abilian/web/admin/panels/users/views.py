@@ -25,9 +25,8 @@ from .forms import UserAdminForm, UserCreateForm
 
 
 class JsonUsersList(base.JSONView):
+    """JSON user list for datatable.
     """
-  JSON user list for datatable
-  """
 
     def data(self, *args, **kw):
         security = current_app.services['security']

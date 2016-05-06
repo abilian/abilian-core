@@ -14,19 +14,17 @@ _BaseMeta = db.Model.__class__
 
 
 class VocabularyQuery(BaseQuery):
-    """
-  """
 
     def active(self):
         """
-    Returns only valid vocabulary items
-    """
+        Returns only valid vocabulary items
+        """
         return self.filter_by(active=True)
 
     def by_label(self, label):
         """
-    Like `.get()`, but by label
-    """
+        Like `.get()`, but by label
+        """
         # don't use .first(), so that MultipleResultsFound can be raised
         try:
             return self.filter_by(label=label).one()
@@ -35,8 +33,8 @@ class VocabularyQuery(BaseQuery):
 
     def by_position(self, position):
         """
-    Like `.get()`, but by position number
-    """
+        Like `.get()`, but by position number
+        """
         # don't use .first(), so that MultipleResultsFound can be raised
         try:
             return self.filter_by(position=position).one()
@@ -46,8 +44,8 @@ class VocabularyQuery(BaseQuery):
 
 class _VocabularyMeta(_BaseMeta):
     """
-  Metaclass for vocabularies. Enforces `__tablename__`.
-  """
+    Metaclass for vocabularies. Enforces `__tablename__`.
+    """
 
     def __new__(cls, name, bases, d):
         meta = d.get('Meta')
@@ -66,8 +64,8 @@ class _VocabularyMeta(_BaseMeta):
 
 class BaseVocabulary(db.Model):
     """
-  Base abstract class for vocabularies
-  """
+    Base abstract class for vocabularies
+    """
     __metaclass__ = _VocabularyMeta
     __abstract__ = True
     query_class = VocabularyQuery
@@ -116,8 +114,8 @@ class BaseVocabulary(db.Model):
 @sa.event.listens_for(BaseVocabulary, "before_update", propagate=True)
 def strip_label(mapper, connection, target):
     """
-  Strip labels at ORM level so the unique=True means something
-  """
+    Strip labels at ORM level so the unique=True means something
+    """
     if target.label is not None:
         target.label = target.label.strip()
 
@@ -125,8 +123,8 @@ def strip_label(mapper, connection, target):
 @sa.event.listens_for(BaseVocabulary, "before_insert", propagate=True)
 def _before_insert(mapper, connection, target):
     """
-  Set item to last position if position not defined
-  """
+    Set item to last position if position not defined
+    """
     if target.position is None:
         func = sa.sql.func
         stmt = sa.select([func.coalesce(

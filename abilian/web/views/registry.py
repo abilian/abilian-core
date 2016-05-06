@@ -12,24 +12,24 @@ from abilian.core.extensions import db
 
 class Registry(object):
     """
-  Registry for default (canonical) views for entities.
+    Registry for default (canonical) views for entities.
 
-  There is one registry per application instance.
-  """
+    There is one registry per application instance.
+    """
 
     def __init__(self, *args, **kwargs):
         self._map = dict()
 
     def register(self, entity, url_func):
         """
-    Associates a `url_func` with entity's type.
+        Associate a `url_func` with entity's type.
 
-    :param:entity: an :class:`abilian.core.extensions.db.Model` class or
-    instance.
+        :param:entity: an :class:`abilian.core.extensions.db.Model` class or
+        instance.
 
-    :param:url_func: any callable that accepts an entity instance and
-    return an url for it.
-    """
+        :param:url_func: any callable that accepts an entity instance and
+        return an url for it.
+        """
         if not inspect.isclass(entity):
             entity = entity.__class__
         assert issubclass(entity, db.Model)
@@ -37,22 +37,22 @@ class Registry(object):
 
     def url_for(self, entity=None, object_type=None, object_id=None, **kwargs):
         """
-    Returns canonical view for given entity instance.
+        Return canonical view URL for given entity instance.
 
-    If no view has been registered the registry will try to find an
-    endpoint named with entity's class lowercased followed by '.view'
-    and that accepts `object_id=entity.id` to generates an url.
+        If no view has been registered the registry will try to find an
+        endpoint named with entity's class lowercased followed by '.view'
+        and that accepts `object_id=entity.id` to generates an url.
 
-    :param entity: a instance of a subclass of
-        :class:`abilian.core.extensions.db.Model`,
-        :class:`whoosh.searching.Hit` or :class:`python:dict`
+        :param entity: a instance of a subclass of
+            :class:`abilian.core.extensions.db.Model`,
+            :class:`whoosh.searching.Hit` or :class:`python:dict`
 
-    :param object_id: if `entity` is not an instance, this parameter
-        must be set to target id. This is usefull when you know the type and
-        id of an object but don't want to retrieve it from DB.
+        :param object_id: if `entity` is not an instance, this parameter
+            must be set to target id. This is usefull when you know the type and
+            id of an object but don't want to retrieve it from DB.
 
-    :raise KeyError: if no view can be found for the given entity.
-    """
+        :raise KeyError: if no view can be found for the given entity.
+        """
         if object_type is None:
             assert isinstance(entity, (db.Model, Hit, dict))
             getter = attrgetter if isinstance(entity, db.Model) else itemgetter
@@ -74,14 +74,14 @@ class Registry(object):
 
 class default_view(object):
     """
-  Decorator to register a view as default view for given entity class.
+    Decorator to register a view as default view for given entity class.
 
-  :param id_attr: url parameter name for object id.
-  :param endpoint: endpoint to use, defaults to view function's name.
-  :param kw_func: function to process keywords to be passed to url_for. Useful
+    :param id_attr: url parameter name for object id.
+    :param endpoint: endpoint to use, defaults to view function's name.
+    :param kw_func: function to process keywords to be passed to url_for. Useful
        for additional keywords. This function receives: kw, obj, obj_type,
        obj_id, \*\*kwargs. It must return kw.
-  """
+    """
 
     def __init__(self,
                  app_or_blueprint,

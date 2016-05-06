@@ -9,8 +9,8 @@ from abilian.web.action import FAIcon, Glyphicon, StaticIcon
 
 class TestIcons(BaseTestCase):
     """
-  test abilian.web.actions icons
-  """
+    test abilian.web.actions icons
+    """
 
     def test_glyphicons(self):
         icon = Glyphicon('ok')

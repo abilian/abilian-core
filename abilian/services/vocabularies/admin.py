@@ -60,8 +60,8 @@ class Delete(ViewBase, views.ObjectDelete):
 
 class VocabularyPanel(AdminPanel):
     """
-  Vocabularies administration
-  """
+    Vocabularies administration
+    """
     id = 'vocabularies'
     label = _l(u'Vocabularies')
     icon = 'list'

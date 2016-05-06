@@ -69,8 +69,6 @@ _RANDOM_PASSWORD_CHARS = (
 
 
 def gen_random_password(length=15):
-    """
-  """
     rg = random.SystemRandom()
     return u''.join(rg.choice(_RANDOM_PASSWORD_CHARS) for i in range(length))
 

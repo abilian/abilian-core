@@ -8,9 +8,9 @@ from babel.dates import DateTimePattern, parse_pattern
 
 def babel2datetime(pattern):
     """Convert date format from babel
-  (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
-  datetime.strptime.
-  """
+    (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
+    datetime.strptime.
+    """
     if not isinstance(pattern, DateTimePattern):
         pattern = parse_pattern(pattern)
 
