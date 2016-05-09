@@ -12,7 +12,9 @@ import whoosh.sorting
 from flask import Blueprint, current_app, g, render_template, request, url_for
 
 from abilian.i18n import _
-from abilian.web import nav, views
+from abilian.web import views
+from abilian.web.action import Endpoint
+from abilian.web.nav import BreadcrumbItem
 
 logger = logging.getLogger(__name__)
 
@@ -49,24 +51,24 @@ def init_search(endpoint, values):
     except:
         page = 1
 
-    g.breadcrumb.append(nav.BreadcrumbItem(
+    g.breadcrumb.append(BreadcrumbItem(
         label=u'"{}"'.format(q),
         icon="search",
-        url=nav.Endpoint('search.search_main', q=q)))
+        url=Endpoint('search.search_main', q=q)))
 
     page_kw = OrderedDict(q=q)
     object_types = request.args.getlist('object_type')
 
     if object_types:
         page_kw['object_type'] = object_types
-        g.breadcrumb.append(nav.BreadcrumbItem(
+        g.breadcrumb.append(BreadcrumbItem(
             label=u' | '.join(friendly_fqcn(name) for name in object_types),
-            url=nav.Endpoint('search.search_main', **page_kw)))
+            url=Endpoint('search.search_main', **page_kw)))
 
     if page > 1:
         g.breadcrumb.append(
-            nav.BreadcrumbItem(label=unicode(page),
-                               url=nav.Endpoint('search.search_main',
+            BreadcrumbItem(label=unicode(page),
+                               url=Endpoint('search.search_main',
                                                 page=page,
                                                 **page_kw)))
 
