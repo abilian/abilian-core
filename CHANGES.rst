@@ -1,6 +1,12 @@
 Changelog for Abilian Core
 ==========================
 
+0.6.1 (2016-05-09)
+------------------
+
+- Allow SQLAlchemy 0.9.x for now
+- Allow application/x-pdf mime type.
+
 0.6.0 (2016-04-29)
 ------------------
 
