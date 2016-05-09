@@ -315,7 +315,7 @@ class Handler(object):
 
 
 class PdfToTextHandler(Handler):
-    accepts_mime_types = ['application/pdf']
+    accepts_mime_types = ['application/pdf', 'application/x-pdf']
     produces_mime_types = ['text/plain']
 
     def convert(self, blob, **kw):
@@ -409,7 +409,7 @@ class ImageMagickHandler(Handler):
 
 
 class PdfToPpmHandler(Handler):
-    accepts_mime_types = ['application/pdf']
+    accepts_mime_types = ['application/pdf', 'application/x-pdf']
     produces_mime_types = ['image/jpeg']
 
     def convert(self, blob, size=500):
