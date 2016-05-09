@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function
 import time
 from collections import deque
 
-import progressbar as pb
+import progressbar
 import sqlalchemy as sa
 import whoosh
 from flask import current_app
@@ -73,19 +73,10 @@ def reindex(clear=False, progressive=False, batch_size=None):
                 print("{}: 0".format(name))
                 continue
 
-            widgets = [name,
-                       ': ',
-                       pb.Counter(),
-                       '/{}'.format(count),
-                       ' ',
-                       pb.Timer(),
-                       ' ',
-                       pb.Percentage(),
-                       ' ',
-                       pb.Bar(),
-                       ' ',
-                       pb.ETA(),]
-            progress = pb.ProgressBar(widgets=widgets, maxval=count)
+            widgets = [name, ': ', progressbar.Counter(), '/{}'.format(count),
+                       ' ', progressbar.Timer(), ' ', progressbar.Percentage(),
+                       ' ', progressbar.Bar(), ' ', progressbar.ETA()]
+            progress = progressbar.ProgressBar(widgets=widgets, maxval=count)
             progress.start()
             count_current = 0
 

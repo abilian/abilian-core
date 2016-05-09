@@ -51,10 +51,10 @@ def init_search(endpoint, values):
     except:
         page = 1
 
-    g.breadcrumb.append(BreadcrumbItem(
-        label=u'"{}"'.format(q),
-        icon="search",
-        url=Endpoint('search.search_main', q=q)))
+    g.breadcrumb.append(BreadcrumbItem(label=u'"{}"'.format(q),
+                                       icon="search",
+                                       url=Endpoint('search.search_main',
+                                                    q=q)))
 
     page_kw = OrderedDict(q=q)
     object_types = request.args.getlist('object_type')
@@ -66,11 +66,10 @@ def init_search(endpoint, values):
             url=Endpoint('search.search_main', **page_kw)))
 
     if page > 1:
-        g.breadcrumb.append(
-            BreadcrumbItem(label=unicode(page),
-                               url=Endpoint('search.search_main',
-                                                page=page,
-                                                **page_kw)))
+        g.breadcrumb.append(BreadcrumbItem(label=unicode(page),
+                                           url=Endpoint('search.search_main',
+                                                        page=page,
+                                                        **page_kw)))
 
     values['q'] = q
     values['page'] = page
