@@ -58,7 +58,7 @@ pygeoip
 progressbar
 
 # Forms (TODO: need some updates)
-WTForms-Alchemy>=0.15,<0.16
+WTForms-Alchemy>=0.12,<0.16
 WTForms-Components>=0.10,<0.11
 # required by wtforms-alchemy
 SQLAlchemy-Utils>=0.29,<0.33
