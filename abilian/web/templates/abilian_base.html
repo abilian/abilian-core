@@ -52,7 +52,7 @@
   {%- block top_js %}{%- endblock top_js %}
 </head>
 
-<body {%- if body_class %} class="{{ body_class }}"{% endif -%}>
+<body {%- if body_class is defined %} class="{{ body_class }}"{% endif -%}>
 {%- block body %}
   {#- accessibility link: see http://getbootstrap.com/getting-started/#accessibility #}
   <a href="#content" class="sr-only">{{ _("Skip to content") }}</a>
