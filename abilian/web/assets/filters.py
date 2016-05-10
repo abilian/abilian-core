@@ -244,13 +244,17 @@ class Less(ExternalTool):
                      for path in self.pathsep]
             args.append('--include-path={0}'.format(os.pathsep.join(paths)))
 
-        source_map = self.source_map_file and self.ctx.debug
-        if source_map:
-            source_map_dest = os.path.join(self.ctx.directory,
-                                           self.source_map_file)
-            self.logger.debug('Generate source map to "%s"', source_map_dest)
-            args.append('--source-map={}'.format(source_map_dest))
-            args.append('--source-map-url={}'.format(self.source_map_file))
+        #
+        # Commented out since this doesn't work with the current lessc compiler.
+        # (See also just below)
+        #
+        # source_map = self.source_map_file and self.ctx.debug
+        # if source_map:
+        #     source_map_dest = os.path.join(self.ctx.directory,
+        #                                    self.source_map_file)
+        #     self.logger.debug('Generate source map to "%s"', source_map_dest)
+        #     args.append('--source-map={}'.format(source_map_dest))
+        #     args.append('--source-map-url={}'.format(self.source_map_file))
 
         if self.extra_args:
             args.extend(self.extra_args)
@@ -260,8 +264,8 @@ class Less(ExternalTool):
         with working_directory(filename=output_path):
             self.subprocess(args, buf, in_)
 
-        if source_map:
-            self.fix_source_map_urls(source_map_dest)
+        # if source_map:
+        #     self.fix_source_map_urls(source_map_dest)
 
         # rewrite css url()
         replace_url = partial(self.fix_url, os.path.dirname(output_path))
