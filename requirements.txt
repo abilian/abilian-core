@@ -61,7 +61,7 @@ progressbar
 WTForms-Alchemy>=0.15,<0.16
 WTForms-Components>=0.10,<0.11
 # required by wtforms-alchemy
-SQLAlchemy-Utils>=0.32,<0.33
+SQLAlchemy-Utils>=0.29,<0.33
 
 # for debug toolbar
 sqlparse
