@@ -1,6 +1,11 @@
 Changelog for Abilian Core
 ==========================
 
+0.6.5 (2016-05-10)
+------------------
+
+Workaround some regression by not generating less source map.
+
 0.6.2 (2016-05-09)
 ------------------
 
