@@ -86,8 +86,7 @@ class AuditService(Service):
     def register_classes(self):
         state = self.app_state
         BaseModel = current_app.db.Model
-        all_models = (cls
-                      for cls in BaseModel._decl_class_registry.values()
+        all_models = (cls for cls in BaseModel._decl_class_registry.values()
                       if isclass(cls) and self.is_auditable(cls))
         for cls in all_models:
             self.register_class(cls, app_state=state)

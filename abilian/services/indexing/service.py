@@ -261,8 +261,8 @@ class WhooshIndexService(Service):
             indexed = sorted(set(r.field_terms('object_type')))
         app_indexed = self.app_state.indexed_fqcn
 
-        return [(name, friendly_fqcn(name))
-                for name in indexed if name in app_indexed]
+        return [(name, friendly_fqcn(name)) for name in indexed
+                if name in app_indexed]
 
     def search(self,
                q,
@@ -291,8 +291,7 @@ class WhooshIndexService(Service):
         if not fields:
             fields = self.default_search_fields
 
-        valid_fields = set(f
-                           for f in index.schema.names(check_names=fields)
+        valid_fields = set(f for f in index.schema.names(check_names=fields)
                            if prefix or not f.endswith('_prefix'))
 
         for invalid in set(fields) - valid_fields:
@@ -384,10 +383,8 @@ class WhooshIndexService(Service):
 
     def register_classes(self):
         state = self.app_state
-        classes = (cls
-                   for cls in db.Model._decl_class_registry.values()
-                   if isclass(cls) and issubclass(cls, Indexable) and
-                   cls.__indexable__)
+        classes = (cls for cls in db.Model._decl_class_registry.values(
+        ) if isclass(cls) and issubclass(cls, Indexable) and cls.__indexable__)
         for cls in classes:
             if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)

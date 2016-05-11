@@ -1309,9 +1309,8 @@ class ListWidget(wtforms.widgets.ListWidget):
         is_empty = data == [] if field.multiple else data is None
 
         if not is_empty:
-            data = ([label
-                     for v, label, checked in field.iter_choices() if checked]
-                    if hasattr(field, 'iter_choices') and
+            data = ([label for v, label, checked in field.iter_choices()
+                     if checked] if hasattr(field, 'iter_choices') and
                     callable(field.iter_choices) else field.object_data)
         else:
             data = []
@@ -1447,8 +1446,8 @@ class Select2(Select):
         return Select.__call__(self, field, *args, **kwargs)
 
     def render_view(self, field, **kwargs):
-        labels = [unicode(label)
-                  for v, label, checked in field.iter_choices() if checked]
+        labels = [unicode(label) for v, label, checked in field.iter_choices()
+                  if checked]
         return u'; '.join(labels)
 
     @classmethod

@@ -26,10 +26,10 @@ class GroupsPanel(AdminPanel):
         add_url_rule('/new', view_func=views.GroupCreate.as_view('new'))
         add_url_rule('/<int:group_id>/',
                      view_func=views.GroupView.as_view('group'))
-        add_url_rule(
-            '/<int:group_id>/edit',
-            view_func=views.GroupEdit.as_view('group_edit',
-                                              view_endpoint='.groups_group'))
+        add_url_rule('/<int:group_id>/edit',
+                     view_func=views.GroupEdit.as_view(
+                         'group_edit',
+                         view_endpoint='.groups_group'))
 
     def get(self):
         # FIXME: use widgets.AjaxMainTableView instead

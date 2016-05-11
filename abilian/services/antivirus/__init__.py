@@ -29,8 +29,8 @@ if CLAMD_AVAILABLE:
     conf_path = pathlib.Path('/etc', 'clamav', 'clamd.conf')
     if conf_path.exists():
         conf_lines = [l.strip() for l in conf_path.open('rt').readlines()]
-        CLAMD_CONF = dict(l.split(u' ', 1)
-                          for l in conf_lines if not l.startswith(u'#'))
+        CLAMD_CONF = dict(l.split(u' ', 1) for l in conf_lines
+                          if not l.startswith(u'#'))
 
         def _size_to_int(size_str):
             multiplier = 0

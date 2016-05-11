@@ -98,8 +98,7 @@ def query_pa_no_flush(session, permission, role, obj):
         if obj:
             to_visit.append(getattr(obj, PERMISSIONS_ATTR))
 
-        permissions = (p
-                       for p in chain(*to_visit)
+        permissions = (p for p in chain(*to_visit)
                        if isinstance(p, PermissionAssignment))
 
         for instance in permissions:
@@ -488,8 +487,7 @@ class SecurityService(Service):
         # cannot call flush() in grant_role() since this method may be called a
         # great number of times in the same transaction, and sqlalchemy limits to
         # 100 flushes before triggering a warning
-        for ra in (o
-                   for models in (session.new, session.dirty) for o in models
+        for ra in (o for models in (session.new, session.dirty) for o in models
                    if isinstance(o, RoleAssignment)):
             if all(getattr(ra, attr) == val for attr, val in args.items()):
                 return
@@ -799,8 +797,7 @@ class SecurityService(Service):
 
     def filter_with_permission(self, user, permission, obj_list, inherit=False):
         user = noproxy(user)
-        return [obj
-                for obj in obj_list
+        return [obj for obj in obj_list
                 if self.has_permission(user, permission, obj, inherit)]
 
 # Instanciate the service

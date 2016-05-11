@@ -675,8 +675,8 @@ class JsonSelect2Field(SelectFieldBase):
         if formdata:
             if not self.multiple:
                 formdata = [formdata]
-            data = [self.model_class.query.get(int(pk))
-                    for pk in formdata if pk not in (u'', None)]
+            data = [self.model_class.query.get(int(pk)) for pk in formdata
+                    if pk not in (u'', None)]
             if not self.multiple:
                 data = data[0] if data else None
             self._set_data(data)

@@ -31,9 +31,9 @@ class Indexable(IdMixin, CoreIndexable, db.Model):
     __indexation_args__ = dict(index_to=(('related.name', ('name', 'text')),
                                          ('related.description', 'text'),),)
 
-    num = sa.Column(
-        sa.Integer,
-        info=SEARCHABLE | dict(index_to=(('num', NUMERIC(numtype=int)),)),)
+    num = sa.Column(sa.Integer,
+                    info=SEARCHABLE | dict(index_to=(
+                        ('num', NUMERIC(numtype=int)),)),)
 
 
 class SubclassEntityIndexable(Entity):

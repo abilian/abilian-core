@@ -29,8 +29,8 @@ class SysinfoPanel(AdminPanel):
         for dist in pkg_resources.working_set:
             package = dict(name=dist.project_name,
                            key=dist.key,
-                           version=dist.version if dist.has_version(
-                           ) else u'Unknown version',
+                           version=dist.version
+                           if dist.has_version() else u'Unknown version',
                            vcs=None,)
 
             location = unicode(Path(dist.location).absolute())

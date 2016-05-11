@@ -83,8 +83,7 @@ _l = lazy_gettext
 _n = ngettext
 
 #: accepted languages codes
-VALID_LANGUAGES_CODE = frozenset(lang
-                                 for lang in locale_identifiers()
+VALID_LANGUAGES_CODE = frozenset(lang for lang in locale_identifiers()
                                  if len(lang) == 2)
 
 
@@ -128,8 +127,7 @@ def country_choices(first=None, default_country_first=True):
     :param first: Country code to be placed at the top
     """
     locale = _get_locale()
-    territories = [(code, name)
-                   for code, name in locale.territories.iteritems()
+    territories = [(code, name) for code, name in locale.territories.iteritems()
                    if len(code) == 2]  # skip 3-digit regions
 
     if first is None and default_country_first:

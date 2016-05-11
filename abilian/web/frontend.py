@@ -215,8 +215,7 @@ EDIT_ACTION = Action(
     button='default',
     condition=lambda ctx: ctx['view'].can_edit,
     icon=FAIcon('edit'),
-    url=
-    lambda ctx: url_for('.entity_edit', **{ctx['view'].pk: ctx['view'].obj.id}),)
+    url=lambda ctx: url_for('.entity_edit', **{ctx['view'].pk: ctx['view'].obj.id}),)
 
 DELETE_ACTION = Action(
     'module',
@@ -225,8 +224,7 @@ DELETE_ACTION = Action(
     button='danger',
     condition=lambda ctx: ctx['view'].can_delete,
     icon=FAIcon('trash fa-inverse'),
-    url=
-    lambda ctx: url_for('.entity_delete', **{ctx['view'].pk: ctx['view'].obj.id}),)
+    url=lambda ctx: url_for('.entity_delete', **{ctx['view'].pk: ctx['view'].obj.id}),)
 DELETE_ACTION.template = 'widgets/frontend_action_delete_confim.html'
 
 

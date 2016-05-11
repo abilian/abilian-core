@@ -302,12 +302,12 @@ class Group(Principal, db.Model):
     name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
     description = Column(UnicodeText, info=SEARCHABLE)
 
-    members = relationship(
-        "User",
-        collection_class=set,
-        secondary=membership,
-        backref=backref('groups', lazy='select',
-                        collection_class=set))
+    members = relationship("User",
+                           collection_class=set,
+                           secondary=membership,
+                           backref=backref('groups',
+                                           lazy='select',
+                                           collection_class=set))
     admins = relationship("User",
                           collection_class=set,
                           secondary=administratorship)

@@ -243,8 +243,7 @@ class Application(Flask, ServiceManager, PluginManager):
         if languages is None:
             languages = abilian.i18n.VALID_LANGUAGES_CODE
         else:
-            languages = tuple(lang
-                              for lang in languages
+            languages = tuple(lang for lang in languages
                               if lang in abilian.i18n.VALID_LANGUAGES_CODE)
         self.config['BABEL_ACCEPT_LANGUAGES'] = languages
 

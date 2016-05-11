@@ -477,8 +477,7 @@ def all_entity_classes():
     """
     persistent_classes = Entity._decl_class_registry.values()
     # with sqlalchemy 0.8 _decl_class_registry holds object that are not classes
-    return [cls
-            for cls in persistent_classes
+    return [cls for cls in persistent_classes
             if isclass(cls) and issubclass(cls, Entity)]
 
 

@@ -193,44 +193,44 @@ def _postgres_indexes():
             user_id,
             role,
             unique=True,
-            postgresql_where=((anonymous == False) & (group_id == None) & (
-                obj == None))),
+            postgresql_where=((anonymous == False) & (group_id == None) &
+                              (obj == None))),
         Index(
             name('group_role'),
             group_id,
             role,
             unique=True,
-            postgresql_where=((anonymous == False) & (user_id == None) & (
-                obj == None))),
+            postgresql_where=((anonymous == False) & (user_id == None) &
+                              (obj == None))),
         Index(
             name('anonymous_role'),
             role,
             unique=True,
-            postgresql_where=((anonymous == True) & (user_id == None) & (
-                group_id == None) & (obj == None)),),
+            postgresql_where=((anonymous == True) & (user_id == None) &
+                              (group_id == None) & (obj == None)),),
         Index(
             name('user_role_object'),
             user_id,
             role,
             obj,
             unique=True,
-            postgresql_where=((anonymous == False) & (group_id == None) & (
-                obj != None))),
+            postgresql_where=((anonymous == False) & (group_id == None) &
+                              (obj != None))),
         Index(
             name('group_role_object'),
             group_id,
             role,
             obj,
             unique=True,
-            postgresql_where=((anonymous == False) & (user_id == None) & (
-                obj != None))),
+            postgresql_where=((anonymous == False) & (user_id == None) &
+                              (obj != None))),
         Index(
             name('anonymous_role_object'),
             role,
             obj,
             unique=True,
-            postgresql_where=((anonymous == True) & (user_id == None) & (
-                group_id == None) & (obj != None))),
+            postgresql_where=((anonymous == True) & (user_id == None) &
+                              (group_id == None) & (obj != None))),
     ]
 
     for idx in indexes:

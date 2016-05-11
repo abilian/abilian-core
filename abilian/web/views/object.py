@@ -254,8 +254,7 @@ class ObjectEdit(ObjectView):
 
     @property
     def buttons(self):
-        return (button
-                for button in self._buttons
+        return (button for button in self._buttons
                 if button.available(actions.context))
 
     def view_url(self):
