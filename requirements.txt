@@ -4,22 +4,20 @@ future>=0.15.2
 
 # Flask and friends
 Flask>=0.10.1
-Flask-SQLAlchemy>1.0
-Flask-Testing>=0.4.2
-Flask-WTF>=0.9.4
-Flask-Script
-Flask-DebugToolbar>=0.10
-Flask-Uploads
-Flask-Migrate>=1.6.0
-# FIXME
-Flask-Babel>=0.9,<0.10
 Flask-Assets>=0.10
+Flask-DebugToolbar>=0.10
 Flask-Mail>=0.9.1
-blinker
+Flask-Migrate>=1.6.0
+Flask-SQLAlchemy>1.0
+Flask-Script
+Flask-Testing>=0.4.2
+Flask-Uploads
+Flask-WTF>=0.9.4
 
-# Flask-Security and Flask-Login are both pinned
+# Can't be upgraded for now
 Flask-Security==1.7.4
 Flask-Login==0.2.11
+Flask-Babel>=0.9,<0.10
 
 # pathlib is included in python 3.4, and very useful
 pathlib
