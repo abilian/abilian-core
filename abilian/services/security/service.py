@@ -2,7 +2,8 @@
 """
 Security service, manages roles and permissions.
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from functools import wraps
 from itertools import chain
@@ -20,10 +21,13 @@ from abilian.core.models.subjects import Group, User
 from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import Anonymous as AnonymousRole
-from abilian.services.security.models import (
-    CREATE, DELETE, MANAGE, PERMISSIONS_ATTR, READ, WRITE, Admin, Authenticated,
-    Creator, InheritSecurity, Manager, Owner, Permission, PermissionAssignment,
-    Reader, Role, RoleAssignment, SecurityAudit, Writer)
+from abilian.services.security.models import (CREATE, DELETE, MANAGE,
+                                              PERMISSIONS_ATTR, READ, WRITE,
+                                              Admin, Authenticated, Creator,
+                                              InheritSecurity, Manager, Owner,
+                                              Permission, PermissionAssignment,
+                                              Reader, Role, RoleAssignment,
+                                              SecurityAudit, Writer)
 
 #: list of legacy supported permissions when not using :class:`Permission`
 #: instance

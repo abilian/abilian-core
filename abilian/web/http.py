@@ -2,7 +2,8 @@
 """
 View decorators for controlling some aspect of HTTP, mainly: Cache headers
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from functools import wraps
 

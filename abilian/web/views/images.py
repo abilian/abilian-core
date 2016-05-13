@@ -2,7 +2,8 @@
 """
 Blueprint for views of dynamic images
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import colorsys
 import hashlib
@@ -156,7 +157,7 @@ class BlobView(BaseImageView):
         return args, kwargs
 
 
-blob_image = BlobView.as_view('blob_image')
+blob_image = BlobView.as_view(b'blob_image')
 route("/files/<int:object_id>")(blob_image)
 
 
@@ -209,11 +210,11 @@ class UserMugshot(BaseImageView):
         return response
 
 
-user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
+user_photo = UserMugshot.as_view(b'user_photo', set_expire=True, max_size=500)
 route("/users/<int:user_id>")(user_photo)
-route('/users/default')(StaticImageView.as_view('user_default',
+route('/users/default')(StaticImageView.as_view(b'user_default',
                                                 set_expire=True,
-                                                image=DEFAULT_AVATAR,))
+                                                image=DEFAULT_AVATAR))
 
 
 def user_url_args(user, size):

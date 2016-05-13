@@ -4,7 +4,8 @@ Front-end for a CRM app.
 
 This should eventually allow implementing very custom CRM-style application.
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import copy
 import logging
@@ -447,21 +448,21 @@ class Module(object):
                   module=self,
                   base_template=self.base_template)
         self._setup_view("/<int:entity_id>",
-                         'entity_view',
+                         b'entity_view',
                          self.view_cls,
                          Form=self.view_form_class,
                          **kw)
         view_endpoint = self.endpoint + '.entity_view'
 
         self._setup_view("/<int:entity_id>/edit",
-                         'entity_edit',
+                         b'entity_edit',
                          self.edit_cls,
                          Form=self.edit_form_class,
                          view_endpoint=view_endpoint,
                          **kw)
 
         self._setup_view("/new",
-                         'entity_new',
+                         b'entity_new',
                          self.create_cls,
                          Form=self.edit_form_class,
                          chain_create_allowed=self.view_new_save_and_add,
@@ -469,16 +470,16 @@ class Module(object):
                          **kw)
 
         self._setup_view("/<int:entity_id>/delete",
-                         'entity_delete',
+                         b'entity_delete',
                          self.delete_cls,
                          Form=self.edit_form_class,
                          view_endpoint=view_endpoint,
                          **kw)
 
-        self._setup_view("/json", 'list_json', ListJson, module=self)
+        self._setup_view("/json", b'list_json', ListJson, module=self)
 
         self._setup_view('/json_search',
-                         'json_search',
+                         b'json_search',
                          self.json_search_cls,
                          Model=self.managed_class)
 
@@ -500,8 +501,8 @@ class Module(object):
 
     def _setup_view(self, url, attr, cls, *args, **kwargs):
         """
-    Register class based views
-    """
+        Register class based views
+        """
         view = cls.as_view(attr, *args, **kwargs)
         setattr(self, attr, view)
         self._urls.append((url, attr, view.methods))

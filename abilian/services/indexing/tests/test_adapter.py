@@ -1,7 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from datetime import datetime
 from unittest import TestCase
@@ -143,7 +144,7 @@ class DocumentTestCase(AppTestCase):
         adapter = SAAdapter(Indexable, schema)
         expected = dict(id=1, num=42)
         obj = Indexable(**expected)
-        obj.related = type('Related', (object,), dict(name=None))()
+        obj.related = type(b'Related', (object,), dict(name=None))()
         expected['name'] = obj.related.name = u'related name'
         obj.related.description = u'description text'
         expected['text'] = obj.related.name + u' ' + obj.related.description

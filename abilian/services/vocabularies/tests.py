@@ -1,7 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import sqlalchemy as sa
 
@@ -14,10 +15,10 @@ from .service import vocabularies
 
 class TestVocabularies(BaseTestCase):
 
-    DefaultVoc = Vocabulary('defaultstates', label=u'States')
+    DefaultVoc = Vocabulary(b'defaultstates', label=u'States')
 
     def test_vocabulary_creator(self):
-        PriorityVoc = Vocabulary('priorities', label=u'Priorities')
+        PriorityVoc = Vocabulary(b'priorities', label=u'Priorities')
         assert PriorityVoc.__name__ == 'VocabularyPriorities'
         assert PriorityVoc.__tablename__ == 'vocabulary_priorities'
         assert PriorityVoc.Meta.name == u'priorities'
@@ -26,7 +27,7 @@ class TestVocabularies(BaseTestCase):
         assert issubclass(PriorityVoc, BaseVocabulary)
 
         StateVoc = self.DefaultVoc
-        DocCatVoc = Vocabulary('categories',
+        DocCatVoc = Vocabulary(b'categories',
                                group='documents',
                                label=u'Categories')
 

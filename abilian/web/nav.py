@@ -8,7 +8,8 @@ Abilian define theses categories:
   `user`:
     User for element that should appear in user menu
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from flask import g
 from future.utils import string_types

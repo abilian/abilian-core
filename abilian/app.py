@@ -3,7 +3,8 @@
 Base Flask application class, used by tests or to be extended
 in real applications.
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import errno
 import importlib
@@ -40,10 +41,11 @@ from abilian.core import extensions, redis, signals
 from abilian.core.celery import FlaskCelery
 from abilian.plugin.loader import AppLoader
 from abilian.services import converter as conversion_service
-from abilian.services import (
-    activity_service, antivirus, audit_service, auth_service, index_service,
-    preferences_service, repository_service, security_service,
-    session_repository_service, settings_service, vocabularies_service)
+from abilian.services import (activity_service, antivirus, audit_service,
+                              auth_service, index_service, preferences_service,
+                              repository_service, security_service,
+                              session_repository_service, settings_service,
+                              vocabularies_service)
 from abilian.services.security import Anonymous
 from abilian.web import csrf
 from abilian.web.action import Endpoint, actions

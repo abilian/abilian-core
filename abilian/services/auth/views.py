@@ -5,7 +5,8 @@ Login-related views (login / logout / password reminder / ...).
 Notes:
 - Uses code copy/pasted (and modified) from Flask-Security
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import random
 import string

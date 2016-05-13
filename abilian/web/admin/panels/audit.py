@@ -1,7 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from datetime import datetime
 from itertools import chain
@@ -91,7 +92,7 @@ class AuditPanel(AdminPanel):
 
     def install_additional_rules(self, add_url_rule):
         add_url_rule('/search_users',
-                     view_func=JSONUserSearch.as_view('search_users'))
+                     view_func=JSONUserSearch.as_view(b'search_users'))
 
     # noinspection PyComparisonWithNone
     def get(self):

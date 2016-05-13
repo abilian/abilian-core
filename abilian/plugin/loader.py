@@ -1,7 +1,8 @@
 """
 Plugin loader, initially from Flask-Foundation.
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from importlib import import_module
 

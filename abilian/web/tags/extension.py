@@ -1,7 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from abilian.core.models.tag import TAGS_ATTR, Tag, is_support_tagging
 from abilian.i18n import _l
@@ -101,7 +102,7 @@ class TagsExtension(object):
             ns = self.entity_default_ns(entity)
 
         field = TagsField(label=_l(u'Tags'), ns=ns)
-        cls = type('EntityNSTagsForm', (_TagsForm,), {'tags': field})
+        cls = type(b'EntityNSTagsForm', (_TagsForm,), {'tags': field})
         return cls
 
     def get(self, ns, label=None):

@@ -1,66 +1,79 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from unittest import TestCase
+
+import pytest
 
 from abilian.testing import BaseTestCase
 
 from .models import EmptyValue, Setting
 
 
-class SettingTestCase(TestCase):
+def test_type_set():
+    s = Setting()
+    # registered base type: no failure
+    s.type = 'int'
+    s.type = 'bool'
+    s.type = 'json'
+    s.type = 'string'
 
-    def test_type_set(self):
-        s = Setting()
-        # registered base type: no failure
-        s.type = 'int'
-        s.type = 'bool'
-        s.type = 'json'
-        s.type = 'string'
+    with pytest.raises(ValueError):
+        s.type = 'dummy type name'
 
-        with self.assertRaises(ValueError):
-            s.type = 'dummy type name'
 
-    def test_int(self):
-        s = Setting(key='key', type='int')
-        s.value = 42
+def test_int():
+    s = Setting(key='key', type='int')
+    s.value = 42
+    assert s._value == '42'
 
-        self.assertEqual(s._value, '42')
-        s._value = '24'
-        self.assertEqual(s.value, 24)
+    s._value = '24'
+    assert s.value == 24
 
-    def test_bool(self):
-        s = Setting(key='key', type='bool')
-        s.value = True
-        self.assertEqual(s._value, 'true')
-        s.value = False
-        self.assertEqual(s._value, 'false')
-        s._value = 'true'
-        self.assertEqual(s.value, True)
 
-    def test_string(self):
-        s = Setting(key='key', type='string')
-        s.value = u'ascii'
-        self.assertEqual(s._value, 'ascii')
-        s.value = u'bel été'
-        self.assertEqual(s._value, 'bel \xc3\xa9t\xc3\xa9')
-        s._value = 'd\xc3\xa9code'
-        self.assertEquals(s.value, u'décode')
+def test_bool():
+    s = Setting(key='key', type='bool')
+    s.value = True
+    assert s._value == 'true'
 
-    def test_json(self):
-        s = Setting(key='key', type='json')
-        s.value = [1, 2, u'été', {1: '1', 2: '2'}]
-        assert s._value == '[1, 2, "\\u00e9t\\u00e9", {"1": "1", "2": "2"}]'
+    s.value = False
+    assert s._value == 'false'
 
-        s.value = None
-        assert s._value == 'null'
+    s._value = 'true'
+    assert s.value is True
 
-    def test_empty_value(self):
-        s = Setting(key='key', type='json')
-        s._value = None
-        assert s.value == EmptyValue
+    s._value = 'false'
+    assert s.value is False
+
+
+def test_string():
+    s = Setting(key='key', type='string')
+    s.value = u'ascii'
+    assert s._value == b'ascii'
+
+    s.value = u'bel été'
+    assert s._value == b'bel \xc3\xa9t\xc3\xa9'
+
+    s._value = b'd\xc3\xa9code'
+    assert s.value == u'décode'
+
+
+def test_json():
+    s = Setting(key='key', type='json')
+    s.value = [1, 2, u'été', {1: '1', 2: '2'}]
+    assert s._value == '[1, 2, "\\u00e9t\\u00e9", {"1": "1", "2": "2"}]'
+
+    s.value = None
+    assert s._value == 'null'
+
+
+def test_empty_value():
+    s = Setting(key='key', type='json')
+    s._value = None
+    assert s.value == EmptyValue
 
 
 class SettingsServiceTestCase(BaseTestCase):

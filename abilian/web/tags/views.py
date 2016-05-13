@@ -1,7 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from flask import current_app
 from werkzeug.exceptions import BadRequest
@@ -41,7 +42,7 @@ class TagEdit(BaseTagView, ObjectEdit):
     _message_success = _l(u'Tag edited')
 
 
-edit_view = TagEdit.as_view('edit')
+edit_view = TagEdit.as_view(b'edit')
 bp.route('/manage/<int:object_id>/edit')(edit_view)
 
 
@@ -49,7 +50,7 @@ class TagCreate(BaseTagView, ObjectCreate):
     _message_success = _l(u'Tag created')
 
 
-create_view = TagCreate.as_view('create')
+create_view = TagCreate.as_view(b'create')
 bp.route('/manage/new')(create_view)
 
 
@@ -57,7 +58,7 @@ class TagDelete(BaseTagView, ObjectDelete):
     _message_success = _l(u'Tag deleted')
 
 
-delete_view = TagDelete.as_view('delete')
+delete_view = TagDelete.as_view(b'delete')
 bp.route('/manage/<int:object_id>/delete')(delete_view)
 
 # Tags on entities
@@ -95,7 +96,7 @@ class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
         return dict(result=tags)
 
 
-entity_bp.route('/<int:object_id>/list')(EntityTagList.as_view('list'))
+entity_bp.route('/<int:object_id>/list')(EntityTagList.as_view(b'list'))
 
 
 class EntityTagManage(BaseEntityTagView, ObjectEdit):
@@ -116,10 +117,10 @@ class EntityTagManage(BaseEntityTagView, ObjectEdit):
         op(self.entity, ns=ns, label=label)
 
 
-entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view('add',
+entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view(b'add',
                                                                 mode='add'))
 entity_bp.route('/<int:object_id>/remove')(EntityTagManage.as_view(
-    'remove', mode='remove'))
+    b'remove', mode='remove'))
 
 
 class EntityTagEdit(ObjectEdit):
@@ -138,4 +139,4 @@ class EntityTagEdit(ObjectEdit):
         return self.view_url()
 
 
-entity_bp.route('/<int:object_id>/edit')(EntityTagEdit.as_view('edit'))
+entity_bp.route('/<int:object_id>/edit')(EntityTagEdit.as_view(b'edit'))

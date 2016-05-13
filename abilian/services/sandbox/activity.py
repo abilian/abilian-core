@@ -4,7 +4,8 @@ See: ActivityStreams, OpenSocial
 
 Note: ICOM also a notion of activity, but it's very different.
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 
 class Activity(object):

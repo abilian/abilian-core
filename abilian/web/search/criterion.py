@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import logging
 
@@ -10,7 +11,7 @@ from sqlalchemy.sql.expression import or_
 
 logger = logging.getLogger(__name__)
 
-_UNDEFINED = type('UNDEFINED', (object,), {})
+_UNDEFINED = type(b'UNDEFINED', (object,), {})
 
 
 class BaseCriterion(object):

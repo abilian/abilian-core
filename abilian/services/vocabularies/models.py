@@ -1,7 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
@@ -143,8 +144,8 @@ _generated_vocabularies = []
 
 
 def Vocabulary(name, label=None, group=None):
-    cls_name = 'Vocabulary' + name.capitalize()
-    Meta = type('Meta', (object,),
+    cls_name = b'Vocabulary' + name.capitalize()
+    Meta = type(b'Meta', (object,),
                 dict(name=name.lower(),
                      label=label, group=group))
     cls = type(cls_name, (BaseVocabulary,), dict(Meta=Meta))

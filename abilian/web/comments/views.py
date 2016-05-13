@@ -1,7 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from datetime import datetime
 
@@ -16,8 +17,8 @@ from abilian.i18n import _, _l
 from abilian.web import nav, url_for
 from abilian.web.action import ButtonAction, actions
 from abilian.web.blueprints import Blueprint
-from abilian.web.views.object import (CANCEL_BUTTON, ObjectCreate, ObjectDelete,
-                                      ObjectEdit)
+from abilian.web.views.object import (CANCEL_BUTTON, ObjectCreate,
+                                      ObjectDelete, ObjectEdit)
 
 from .forms import CommentForm
 
@@ -95,7 +96,7 @@ class CommentEditView(BaseCommentView, ObjectEdit):
         self.obj.meta.changed()
 
 
-edit_view = CommentEditView.as_view('edit')
+edit_view = CommentEditView.as_view(b'edit')
 bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
 
 
@@ -125,7 +126,7 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
         return [COMMENT_BUTTON, CANCEL_BUTTON]
 
 
-create_view = CommentCreateView.as_view('create')
+create_view = CommentCreateView.as_view(b'create')
 bp.route('/<int:entity_id>/create')(create_view)
 
 
@@ -134,5 +135,5 @@ class CommentDeleteView(BaseCommentView, ObjectDelete):
     _message_success = _l(u"Comment deleted")
 
 
-delete_view = CommentDeleteView.as_view('delete')
+delete_view = CommentDeleteView.as_view(b'delete')
 bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)

@@ -1,6 +1,7 @@
 # coding=utf-8
 
-from __future__ import absolute_import, division, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from flask import Flask
 from jinja2 import Markup
