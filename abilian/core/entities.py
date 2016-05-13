@@ -359,7 +359,7 @@ class Entity(Indexable, BaseMixin, db.Model):
             session = sa.orm.object_session(self)
             if not session:
                 return None
-            q = session.query(Entity.slug)\
+            q = session.query(Entity.slug) \
                 .filter(Entity._entity_type == self.object_type)
             if self.id is not None:
                 q = q.filter(Entity.id != self.id)

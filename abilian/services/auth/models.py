@@ -21,23 +21,23 @@ class LoginSessionQuery(BaseQuery):
 
     def get_active_for(self, user, user_agent=_MARK, ip_address=_MARK):
         """
-    Returns last known session for user
+        Returns last known session for user
 
-    :param user: user session
-    :type user: `abilian.core.models.subjects.User`
+        :param user: user session
+        :type user: `abilian.core.models.subjects.User`
 
-    :param user_agent: *exact* user agent string to lookup, or `None` to have
-    user_agent extracted from request object. If not provided at all, no
-    filtering on user_agent.
-    :type user_agent: string or None, or absent
+        :param user_agent: *exact* user agent string to lookup, or `None` to have
+        user_agent extracted from request object. If not provided at all, no
+        filtering on user_agent.
+        :type user_agent: string or None, or absent
 
-    :param ip_address: client IP, or `None` to have ip_address extracted from
-    request object (requires header 'X-Forwarded-For'). If not provided at
-    all, no filtering on ip_address.
-    :type ip_address: string or None, or absent
+        :param ip_address: client IP, or `None` to have ip_address extracted from
+        request object (requires header 'X-Forwarded-For'). If not provided at
+        all, no filtering on ip_address.
+        :type ip_address: string or None, or absent
 
-    :rtype: `LoginSession` or `None` if no session is found.
-    """
+        :rtype: `LoginSession` or `None` if no session is found.
+        """
         conditions = [LoginSession.user == user]
 
         if user_agent is not _MARK:
@@ -52,10 +52,10 @@ class LoginSessionQuery(BaseQuery):
                     0] if ip_address else request.remote_addr
             conditions.append(LoginSession.ip_address == ip_address)
 
-        session = LoginSession.query\
-          .filter(*conditions)\
-          .order_by(LoginSession.id.desc())\
-          .first()
+        session = LoginSession.query \
+            .filter(*conditions) \
+            .order_by(LoginSession.id.desc()) \
+            .first()
         return session
 
 

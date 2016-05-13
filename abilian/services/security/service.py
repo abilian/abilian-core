@@ -555,8 +555,8 @@ class SecurityService(Service):
         if not session:
             session = db.session()
         q = session.query(RoleAssignment)
-        q = q.filter(RoleAssignment.object == object)\
-             .options(subqueryload('user.groups'))
+        q = q.filter(RoleAssignment.object == object) \
+            .options(subqueryload('user.groups'))
 
         role_assignments = q.all()
 
@@ -614,8 +614,9 @@ class SecurityService(Service):
             pa_filter |= PermissionAssignment.object == obj
 
         pa_filter &= PermissionAssignment.permission == permission
-        valid_roles = session.query(PermissionAssignment.role)\
-                             .filter(pa_filter)
+        valid_roles = session \
+            .query(PermissionAssignment.role) \
+            .filter(pa_filter)
         valid_roles = {res[0] for res in valid_roles.yield_per(1000)}
 
         # complete with defaults
@@ -748,9 +749,10 @@ class SecurityService(Service):
         if session is None:
             session = current_app.db.session()
 
-        pa = session.query(PermissionAssignment.permission,
-                           PermissionAssignment.role)\
-                    .filter(PermissionAssignment.object == obj)
+        pa = session \
+            .query(PermissionAssignment.permission,
+                   PermissionAssignment.role) \
+            .filter(PermissionAssignment.object == obj)
 
         if permission:
             pa = pa.filter(PermissionAssignment.permission == permission)

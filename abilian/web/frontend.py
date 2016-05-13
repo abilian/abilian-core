@@ -728,10 +728,11 @@ class Module(object):
             raise BadRequest()
 
         query = db.session.query(cls.id, cls.name)
-        query = query.filter(cls.name.ilike("%" + q + "%"))\
-                     .distinct()\
-                     .order_by(cls.name)\
-                     .limit(50)
+        query = query \
+            .filter(cls.name.ilike("%" + q + "%")) \
+            .distinct() \
+            .order_by(cls.name) \
+            .limit(50)
         all = query.all()
 
         result = {'results': [{'id': r[0], 'text': r[1]} for r in all]}

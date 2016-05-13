@@ -2,7 +2,7 @@
 """
 Class based views
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 
@@ -382,7 +382,7 @@ class ObjectEdit(ObjectView):
                 return rv
             session.rollback()
             logger.error(e)
-            flash(_(u"An entity with this name already exists in the database."),
+            flash(_(u"An entity with this name already exists in the system."),
                   "error")
             return self.get()
         else:
@@ -538,8 +538,7 @@ class ObjectDelete(ObjectEdit):
                 return rv
             session.rollback()
             logger.error(e)
-            flash(_(u"An entity with this name already exists in the database "
-                    u"or is referenced by another object and cannot be deleted."),
+            flash(_("This entity is referenced by another object and cannot be deleted."),
                   "error")
             return self.redirect_to_view()
         else:

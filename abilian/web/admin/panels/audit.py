@@ -63,8 +63,9 @@ class JSONUserSearch(JSONView):
             filters = sa.sql.or_(
                 lower(User.email).like('%' + part + '%'), filters)
 
-        query = query.filter(filters)\
-                     .order_by(User.last_name, User.first_name)
+        query = query \
+            .filter(filters) \
+            .order_by(User.last_name, User.first_name)
 
         result = {'results': [
             {'id': obj.id,
@@ -134,11 +135,13 @@ class AuditPanel(AdminPanel):
                 .reset_joinpoint()
 
         def after_query(q, model, date):
-            return q.filter(model.happened_at > date) \
+            return q \
+                .filter(model.happened_at > date) \
                 .order_by(model.happened_at.asc())
 
         def before_query(q, model, date):
-            return q.filter(model.happened_at < date) \
+            return q \
+                .filter(model.happened_at < date) \
                 .order_by(model.happened_at.desc())
 
         if after:

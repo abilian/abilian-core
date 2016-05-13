@@ -64,9 +64,9 @@ def do_login(form):
         return res
 
     try:
-        user = User.query\
+        user = User.query \
             .filter(sql.func.lower(User.email) == email,
-                    User.can_login == True)\
+                    User.can_login == True) \
             .one()
     except NoResultFound:
         res['error'] = _(u"Sorry, we couldn't find an account for "
@@ -157,9 +157,9 @@ def forgotten_pw(new_user=False):
         return render_template("login/forgotten_password.html")
 
     try:
-        user = User.query\
+        user = User.query \
             .filter(sql.func.lower(User.email) == email,
-                    User.can_login == True)\
+                    User.can_login == True) \
             .one()
     except NoResultFound:
         flash(_(u"Sorry, we couldn't find an account for "
