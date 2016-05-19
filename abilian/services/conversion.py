@@ -261,7 +261,7 @@ class Converter(object):
     @staticmethod
     def digest(blob):
         assert isinstance(blob, string_types)
-        if type(blob) == str:
+        if isinstance(blob, str):
             digest = hashlib.md5(blob).hexdigest()
         else:
             digest = hashlib.md5(blob.encode("utf8")).hexdigest()

@@ -44,7 +44,7 @@ class LoginSessionsPanel(AdminPanel):
                 for g in geoips:
                     try:
                         country = g.country_name_by_addr(ip_address)
-                    except pygeoip.GeoIPError:
+                    except:  # noqa
                         continue
 
                     if country:

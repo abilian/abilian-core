@@ -101,7 +101,7 @@ class UserPreferencesPanel(PreferencePanel):
         if photo:
             # subclass str/bytes to set additional 'url' attribute
             photo = type(
-                'Photo', (bytes,),
+                b'Photo', (bytes,),
                 dict(object=photo,
                      url=url_for('users.photo', user_id=g.user.id)))
             data['photo'] = photo
