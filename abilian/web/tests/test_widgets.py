@@ -15,8 +15,8 @@ from abilian.core.entities import Entity
 from abilian.testing import BaseTestCase
 from abilian.web.views import default_view
 
-from ..forms.widgets import (EmailWidget, MainTableView, Panel, Row,
-                             SingleView, linkify_url, text2html)
+from ..forms.widgets import (EmailWidget, MainTableView, Panel, Row, SingleView,
+                             linkify_url, text2html)
 
 
 class WidgetTestModel(Entity):
