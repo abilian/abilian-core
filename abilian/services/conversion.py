@@ -251,9 +251,9 @@ class Converter(object):
                 output = subprocess.check_output(['pdfinfo', in_fn])
 
             ret = {}
-            for line in output.split("\n"):
-                if ":" in line:
-                    key, value = line.strip().split(":", 1)
+            for line in output.split(b"\n"):
+                if b":" in line:
+                    key, value = line.strip().split(b":", 1)
                     ret["PDF:" + key] = unicode(value.strip(), errors="replace")
 
             return ret
