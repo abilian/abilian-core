@@ -170,8 +170,7 @@ class SAAdapter(SchemaAdapter):
         # cache because the same attribute may be needed by many fields, i.e
         # "title" on "title" field and "full_text" field for example
         cached = {}
-        missed = set(
-        )  # negative cache. Might be used especially with dotted names
+        missed = set()  # negative cache. Might be used especially with dotted names
 
         for field, attrs in self.doc_attrs.iteritems():
             values = []

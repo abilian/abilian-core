@@ -60,5 +60,6 @@ class ActivityService(Service):
 
     @staticmethod
     def entries_for_actor(actor, limit=50):
-        return ActivityEntry.query.filter(ActivityEntry.actor == actor).limit(
-            limit).all()
+        return ActivityEntry.query \
+            .filter(ActivityEntry.actor == actor) \
+            .limit(limit).all()

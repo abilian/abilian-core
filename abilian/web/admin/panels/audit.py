@@ -110,9 +110,10 @@ class AuditPanel(AdminPanel):
         if user_id:
             user_id = int(user_id)
             filter_user = User.query.get(user_id)
-            base_audit_q = base_audit_q.filter(AuditEntry.user == filter_user)
-            base_security_q = base_security_q.filter(SecurityAudit.manager ==
-                                                     filter_user)
+            base_audit_q = base_audit_q \
+                .filter(AuditEntry.user == filter_user)
+            base_security_q = base_security_q \
+                .filter(SecurityAudit.manager == filter_user)
 
         # filter by types
         all_classes = sorted(all_entity_classes(), key=lambda c: c.__name__)
@@ -163,7 +164,7 @@ class AuditPanel(AdminPanel):
             .options(sa.orm.joinedload(SecurityAudit.object)) \
             .limit(LIMIT) \
             .all()
-        #audit_entries = []
+        # audit_entries = []
         all_entries = list(chain(
             (AuditEntryPresenter(e) for e in audit_entries), (
                 SecurityEntryPresenter(e) for e in security_entries)))

@@ -18,8 +18,7 @@ class SettingsService(Service):
         return SettingsNamespace(name, self)
 
     def keys(self, prefix=None):
-        """ List all keys, with optional prefix filtering
-    """
+        """List all keys, with optional prefix filtering."""
         q = Setting.query
         if prefix:
             q = q.filter(Setting.key.startswith(prefix))
@@ -29,8 +28,7 @@ class SettingsService(Service):
         return [i[0] for i in q.yield_per(1000).values(Setting.key)]
 
     def iteritems(self, prefix=None):
-        """ Like dict.iteritems
-    """
+        """Like dict.iteritems."""
         q = Setting.query
         if prefix:
             q = q.filter(Setting.key.startswith(prefix))
@@ -39,9 +37,9 @@ class SettingsService(Service):
             yield (s.key, s.value)
 
     def as_dict(self, prefix=None):
-        """ Return a mapping key -> value of settings, with optional prefix
-    filtering
-    """
+        """Return a mapping key -> value of settings, with optional prefix
+        filtering.
+        """
         return dict(self.iteritems(prefix))
 
     def _get_setting(self, key):
@@ -52,14 +50,11 @@ class SettingsService(Service):
         return s
 
     def get(self, key):
-        """ Returns value of a previously stored key
-    """
+        """Returns value of a previously stored key."""
         s = self._get_setting(key)
         return s.value
 
     def set(self, key, value, type_=None):
-        """
-    """
         try:
             s = self._get_setting(key)
         except KeyError:

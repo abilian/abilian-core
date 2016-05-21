@@ -317,8 +317,9 @@ class AuditService(Service):
         return entry
 
     def entries_for(self, entity, limit=None):
-        q = AuditEntry.query.filter(AuditEntry.entity == entity)
-        q = q.order_by(AuditEntry.happened_at.desc())
+        q = AuditEntry.query \
+            .filter(AuditEntry.entity == entity) \
+            .order_by(AuditEntry.happened_at.desc())
 
         if limit is not None:
             q = q.limit(limit)
