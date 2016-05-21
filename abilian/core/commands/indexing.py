@@ -165,7 +165,7 @@ def progressive_mode(index, clear, batch_size, **kwargs):
         print("*" * 80)
         print("CLEAR INDEX BEFORE REINDEXING")
         print("*" * 80)
-        writer.writer.mergetype = CLEAR
+        writer.mergetype = CLEAR
         writer.commit()
         del writer
 
