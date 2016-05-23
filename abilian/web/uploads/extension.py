@@ -102,7 +102,7 @@ class FileUploadsExtension(object):
         file_path = user_dir / handle
 
         with file_path.open('wb') as out:
-            for chunk in iter(lambda: file_obj.read(CHUNK_SIZE), ''):
+            for chunk in iter(lambda: file_obj.read(CHUNK_SIZE), b''):
                 out.write(chunk)
 
         if metadata:
