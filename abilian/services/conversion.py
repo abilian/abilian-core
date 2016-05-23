@@ -57,6 +57,10 @@ class ConversionError(Exception):
     pass
 
 
+class HandlerNotFound(ConversionError):
+    pass
+
+
 class Cache(object):
 
     CACHE_DIR = None
@@ -141,7 +145,7 @@ class Converter(object):
                 pdf = handler.convert(blob)
                 self.cache[cache_key] = pdf
                 return pdf
-        raise ConversionError("No handler found to convert from %s to PDF" %
+        raise HandlerNotFound("No handler found to convert from %s to PDF" %
                               mime_type)
 
     def to_text(self, digest, blob, mime_type):
@@ -174,7 +178,8 @@ class Converter(object):
                 self.cache[cache_key] = text
                 return text
 
-        raise ConversionError()
+        raise HandlerNotFound("No handler found to convert from %s to text" %
+                              mime_type)
 
     def has_image(self, digest, mime_type, index, size=500):
         """ Tell if there is a preview image
@@ -225,7 +230,8 @@ class Converter(object):
                     self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
                 return converted_images[index]
 
-        raise ConversionError()
+        raise HandlerNotFound("No handler found to convert from %s to image" %
+                              mime_type)
 
     def get_metadata(self, digest, content, mime_type):
         """Gets a dictionary representing the metadata embedded in the given content."""
@@ -324,7 +330,7 @@ class PdfToTextHandler(Handler):
             try:
                 subprocess.check_call(['pdftotext', in_fn, out_fn])
             except Exception as e:
-                raise raise_from(ConversionError('pdftotext'), e)
+                raise raise_from(ConversionError('pdftotext failed'), e)
 
             converted = open(out_fn).read()
             encoding = self.encoding_sniffer.from_file(out_fn)
@@ -354,7 +360,7 @@ class AbiwordTextHandler(Handler):
                 subprocess.check_call(['abiword', '--to', os.path.basename(
                     out_fn), os.path.basename(in_fn)])
             except Exception as e:
-                raise_from(ConversionError('abiword'), e)
+                raise_from(ConversionError('abiword failed'), e)
             finally:
                 os.chdir(cur_dir)
 
@@ -387,7 +393,7 @@ class AbiwordPDFHandler(Handler):
                 subprocess.check_call(['abiword', '--to', os.path.basename(
                     out_fn), os.path.basename(in_fn)])
             except Exception as e:
-                raise_from(ConversionError('abiword'), e)
+                raise_from(ConversionError('abiword failed'), e)
             finally:
                 os.chdir(cur_dir)
 
@@ -406,7 +412,7 @@ class ImageMagickHandler(Handler):
                 converted = open(out_fn).read()
                 return converted
             except Exception as e:
-                raise_from(ConversionError('convert'), e)
+                raise_from(ConversionError('convert failed'), e)
 
 
 class PdfToPpmHandler(Handler):
@@ -429,7 +435,7 @@ class PdfToPpmHandler(Handler):
 
                 return converted_images
             except Exception as e:
-                raise_from(ConversionError('pdftoppm'), e)
+                raise_from(ConversionError('pdftoppm failed'), e)
             finally:
                 for fn in l:
                     try:
@@ -517,7 +523,7 @@ class UnoconvPdfHandler(Handler):
                     self._process.communicate()
                 except Exception as e:
                     logger.error('run_uno error: %s', bytes(e), exc_info=True)
-                    raise_from(ConversionError('unoconv'), e)
+                    raise_from(ConversionError('unoconv failed'), e)
 
             run_thread = threading.Thread(target=run_uno)
             run_thread.start()
@@ -601,7 +607,7 @@ class WvwareTextHandler(Handler):
             try:
                 subprocess.check_call(['wvText', in_fn, out_fn])
             except Exception as e:
-                raise_from(ConversionError('wxText'), e)
+                raise_from(ConversionError('wxText failed'), e)
 
             converted = open(out_fn).read()
 
