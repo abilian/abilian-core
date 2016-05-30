@@ -1,7 +1,7 @@
 # For running tests
 pytest>=2.4.0
 pytest-xdist
-tox<2.2
+tox
 
 # needed to avoid a ResourceClosedError when using some CTE queries with 0 results:
 # https://bitbucket.org/zzzeek/sqlalchemy/issues/3079/select-statement-returning-0-rows
