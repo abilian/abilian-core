@@ -116,5 +116,6 @@ release:
 	cd /tmp/abilian-core ; python setup.py sdist upload
 
 format:
-	isort -rc abilian tests *.py
+	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
+		-rc abilian tests *.py
 	yapf --style google -r -i abilian tests *.py
