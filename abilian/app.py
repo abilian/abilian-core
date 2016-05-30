@@ -506,13 +506,14 @@ class Application(Flask, ServiceManager, PluginManager):
         self._register_base_assets()
 
         # Babel (for i18n)
-        abilian.i18n.babel.init_app(self)
-        abilian.i18n.babel.add_translations('wtforms',
-                                            translations_dir='locale',
-                                            domain='wtforms')
-        abilian.i18n.babel.add_translations('abilian')
-        abilian.i18n.babel.localeselector(abilian.i18n.localeselector)
-        abilian.i18n.babel.timezoneselector(abilian.i18n.timezoneselector)
+        babel = abilian.i18n.babel
+        babel.init_app(self)
+        babel.add_translations('wtforms',
+                               translations_dir='locale',
+                               domain='wtforms')
+        babel.add_translations('abilian')
+        babel.localeselector(abilian.i18n.localeselector)
+        babel.timezoneselector(abilian.i18n.timezoneselector)
 
         # Flask-Migrate
         Migrate(self, self.db)

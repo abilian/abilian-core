@@ -254,6 +254,11 @@ class BaseTestCase(TestCase):
 
         User.__password_strategy__ = _DEFAULT_PWD
 
+        # Resets babel extension
+        babel = self.app.extensions['babel']
+        babel.locale_selector_func = None
+        babel.timezone_selector_func = None
+
         TestCase.tearDown(self)
 
     def _login_tests_sanity_check(self):
