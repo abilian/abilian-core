@@ -105,16 +105,16 @@ class I18NTestCase(BaseTestCase):
             self.assertIn('/myfile.txt', result)
 
     def test_render_template_i18n(self):
-        loader = DictLoader({u'tmpl.txt': u'default ({{ locale }})',
-                             u'tmpl.en.txt': u'en locale ({{ locale }})',
-                             u'tmpl.fr.txt': u'fr locale ({{ locale }})',})
+        loader = DictLoader({'tmpl.txt': 'default ({{ locale }})',
+                             'tmpl.en.txt': 'en locale ({{ locale }})',
+                             'tmpl.fr.txt': 'fr locale ({{ locale }})',})
         app_loader = self.app.jinja_loader
         self.app.jinja_loader = loader
         render = i18n.render_template_i18n
         try:
-            assert render('tmpl.txt', locale='fr') == u'fr locale (fr)'
-            assert render('tmpl.txt', locale='en') == u'en locale (en)'
-            assert render('tmpl.txt', locale='de') == u'default (de)'
+            assert render('tmpl.txt', locale='fr') == 'fr locale (fr)'
+            assert render('tmpl.txt', locale='en') == 'en locale (en)'
+            assert render('tmpl.txt', locale='de') == 'default (de)'
         finally:
             self.app.jinja_loader = app_loader
 
@@ -122,9 +122,9 @@ class I18NTestCase(BaseTestCase):
         assert 'DEFAULT_COUNTRY' in self.app.config
         assert self.app.config['DEFAULT_COUNTRY'] is None
         assert i18n.default_country() is None
-        assert i18n.country_choices()[0][0] == u'AF'
+        assert i18n.country_choices()[0][0] == 'AF'
 
-        self.app.config['DEFAULT_COUNTRY'] = u'FR'
-        assert i18n.default_country() == u'FR'
-        assert i18n.country_choices()[0][0] == u'FR'
-        assert i18n.country_choices(default_country_first=False)[0][0] == u'AF'
+        self.app.config['DEFAULT_COUNTRY'] = 'FR'
+        assert i18n.default_country() == 'FR'
+        assert i18n.country_choices()[0][0] == 'FR'
+        assert i18n.country_choices(default_country_first=False)[0][0] == 'AF'
