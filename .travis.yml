@@ -22,6 +22,7 @@ addons:
 
 # Install OS dependencies
 before_install:
+  - pip install pip==8.1.1
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less
