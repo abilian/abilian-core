@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from babel import Locale
 from flask import _app_ctx_stack, _request_ctx_stack
-from flask_babel import get_locale, force_locale
+from flask_babel import force_locale, get_locale
 from jinja2 import DictLoader
 from pytest import skip
 

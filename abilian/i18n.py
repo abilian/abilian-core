@@ -65,14 +65,13 @@ from babel.localedata import locale_identifiers
 from babel.support import Translations as BaseTranslations
 from flask import _request_ctx_stack, current_app, g, render_template, request
 from flask_babel import Babel as BabelBase
-from flask_babel import gettext, lazy_gettext, ngettext, force_locale
+from flask_babel import force_locale, gettext, lazy_gettext, ngettext
 from future.utils import string_types
 from pathlib import Path
 
 __all__ = [
     'babel', 'gettext', '_', 'lazy_gettext', '_l', 'localeselector', 'ngettext',
-    '_n', 'timezoneselector', 'VALID_LANGUAGES_CODE',
-    'render_template_i18n'
+    '_n', 'timezoneselector', 'VALID_LANGUAGES_CODE', 'render_template_i18n'
 ]
 
 #: gettext alias

@@ -183,8 +183,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
         # used by make_config to determine if we try to load config from instance /
         # environment variable /...
-        self._ABILIAN_INIT_TESTING_FLAG = (getattr(config, 'TESTING', False)
-                                           if config else False)
+        self._ABILIAN_INIT_TESTING_FLAG = (getattr(config, 'TESTING', False) if
+                                           config else False)
         Flask.__init__(self, name, *args, **kwargs)
         del self._ABILIAN_INIT_TESTING_FLAG
 
@@ -252,8 +252,8 @@ class Application(Flask, ServiceManager, PluginManager):
         self.register_jinja_loaders(jinja2.PackageLoader('abilian.web',
                                                          'templates'))
 
-        js_filters = (('closure_js',)
-                      if self.config.get('PRODUCTION', False) else None)
+        js_filters = (('closure_js',) if self.config.get('PRODUCTION', False)
+                      else None)
 
         self._assets_bundles = {
             'css': {'options': dict(filters=('less', 'cssmin'),
@@ -825,9 +825,7 @@ class Application(Flask, ServiceManager, PluginManager):
     def _setup_asset_extension(self):
         assets = self.extensions['webassets'] = AssetsEnv(self)
         assets.debug = not self.config.get('PRODUCTION', False)
-        assets.requirejs_config = {'waitSeconds': 90,
-                                   'shim': {},
-                                   'paths': {}}
+        assets.requirejs_config = {'waitSeconds': 90, 'shim': {}, 'paths': {}}
 
         assets_base_dir = Path(self.instance_path, 'webassets')
         assets_dir = assets_base_dir / 'compiled'
