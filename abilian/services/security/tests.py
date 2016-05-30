@@ -406,11 +406,14 @@ class SecurityTestCase(IntegrationTestCase):
         obj_none = DummyModel(name=u'none')
         self.session.add_all([obj_reader, obj_writer, obj_none])
 
-        self.session.add_all([PermissionAssignment(
-            role=Reader, permission=READ,
-            object=obj_reader), PermissionAssignment(role=Writer,
-                                                     permission=WRITE,
-                                                     object=obj_writer)])
+        assigments = [PermissionAssignment(role=Reader,
+                                           permission=READ,
+                                           object=obj_reader),
+                      #
+                      PermissionAssignment(role=Writer,
+                                           permission=WRITE,
+                                           object=obj_writer)]
+        self.session.add_all(assigments)
         self.session.flush()
 
         # very unfiltered query returns all objects
@@ -425,12 +428,10 @@ class SecurityTestCase(IntegrationTestCase):
         security.grant_role(user, Reader, obj=obj_reader)
         security.grant_role(user, Writer, obj=obj_writer)
         self.session.flush()
-        assert base_query.filter(get_filter(READ, user=user)).all() == [
-            obj_reader
-        ]
-        assert base_query.filter(get_filter(WRITE, user=user)).all() == [
-            obj_writer
-        ]
+        assert base_query.filter(get_filter(READ, user=user)).all() \
+            == [obj_reader]
+        assert base_query.filter(get_filter(WRITE, user=user)).all() \
+            == [obj_writer]
 
         # Permission granted to anonymous: objects returned
         pa = PermissionAssignment(role=Anonymous,
@@ -438,15 +439,13 @@ class SecurityTestCase(IntegrationTestCase):
                                   object=obj_reader)
         self.session.add(pa)
 
-        assert base_query.filter(get_filter(READ, user=user)).all() == [
-            obj_reader
-        ]
+        assert base_query.filter(get_filter(READ, user=user)).all() \
+            == [obj_reader]
         assert set(base_query.filter(get_filter(WRITE, user=user)).all()) \
-          == set([obj_reader, obj_writer])
+            == set([obj_reader, obj_writer])
         self.session.delete(pa)
-        assert base_query.filter(get_filter(WRITE, user=user)).all() == [
-            obj_writer
-        ]
+        assert base_query.filter(get_filter(WRITE, user=user)).all() \
+            == [obj_writer]
 
         # grant global roles
         security.ungrant_role(user, Reader, object=obj_reader)
@@ -490,19 +489,20 @@ class SecurityTestCase(IntegrationTestCase):
 
         obj_reader.creator = user
         obj_writer.owner = user
-        self.session.add_all([PermissionAssignment(
-            role=Creator, permission=READ,
-            object=obj_reader), PermissionAssignment(role=Owner,
-                                                     permission=WRITE,
-                                                     object=obj_writer)])
+        assigments = [PermissionAssignment(role=Creator,
+                                           permission=READ,
+                                           object=obj_reader),
+                      #
+                      PermissionAssignment(role=Owner,
+                                           permission=WRITE,
+                                           object=obj_writer)]
+        self.session.add_all(assigments)
         self.session.flush()
 
-        assert base_query.filter(get_filter(READ, user=user)).all() == [
-            obj_reader
-        ]
-        assert base_query.filter(get_filter(WRITE, user=user)).all() == [
-            obj_writer
-        ]
+        assert base_query.filter(get_filter(READ, user=user)).all() \
+            == [obj_reader]
+        assert base_query.filter(get_filter(WRITE, user=user)).all() \
+            == [obj_writer]
 
 
 class PermissionNoSAWarnTestCase(IntegrationTestCase):
@@ -525,12 +525,12 @@ class PermissionNoSAWarnTestCase(IntegrationTestCase):
         obj = DummyModel()
         # override default permission at instance level
         obj.__default_permissions__ = frozenset({(READ, frozenset({Owner})),})
-        self.session.add(
-            obj)  # core.entities._setup_default_permissions creates
+        # core.entities._setup_default_permissions creates
+        self.session.add(obj)
         # permissions
         security.add_permission(READ, Owner, obj)  # no-op
-        self.session.expunge(
-            obj)  # obj and its permissions are removed from session
+        # obj and its permissions are removed from session
+        self.session.expunge(obj)
 
         self.session.add(obj)  # obj in session again. When
         # _setup_default_permissions is called durint
