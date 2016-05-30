@@ -433,8 +433,9 @@ class Application(Flask, ServiceManager, PluginManager):
         return config
 
     def setup_logging(self):
-        self.logger  # force flask to create application logger before logging
+        # Force flask to create application logger before logging
         # configuration; else, flask will overwrite our settings
+        self.logger  # noqa
 
         log_level = self.config.get("LOG_LEVEL")
         if log_level:
@@ -467,14 +468,9 @@ class Application(Flask, ServiceManager, PluginManager):
                 logger.warning('DEBUG_TB_ENABLED is on but flask_debugtoolbar '
                                'is not installed.')
             else:
-                try:
-                    default_config = DebugToolbar.config
-                    init_dbt = DebugToolbarExtension
-                except AttributeError:
-                    # debugtoolbar > 0.8.0
-                    dbt = DebugToolbarExtension()
-                    default_config = dbt._default_config(self)
-                    init_dbt = dbt.init_app
+                dbt = DebugToolbarExtension()
+                default_config = dbt._default_config(self)
+                init_dbt = dbt.init_app
 
                 if 'DEBUG_TB_PANELS' not in self.config:
                     # add our panels to default ones
