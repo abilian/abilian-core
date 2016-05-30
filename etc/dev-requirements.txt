@@ -6,7 +6,7 @@ tox
 # needed to avoid a ResourceClosedError when using some CTE queries with 0 results:
 # https://bitbucket.org/zzzeek/sqlalchemy/issues/3079/select-statement-returning-0-rows
 # http://bugs.python.org/issue21718
-#pysqlite >= 2.8.1
+pysqlite >= 2.8.1
 
 # Backport of Python 3 mocking library
 mock>=1.0.1
