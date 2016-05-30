@@ -206,7 +206,7 @@ class SecurityService(Service):
         acquired through group membership.
         """
         assert principal
-        if hasattr(principal, 'is_anonymous') and principal.is_anonymous():
+        if hasattr(principal, 'is_anonymous') and principal.is_anonymous:
             return [AnonymousRole]
 
         q = db.session.query(RoleAssignment.role)
@@ -424,11 +424,11 @@ class SecurityService(Service):
             return True
 
         if (Authenticated in valid_roles and isinstance(principal, User) and
-                not principal.is_anonymous()):
+                not principal.is_anonymous):
             return True
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             # anonymous user, and anonymous role isn't in valid_roles
             return False
 
@@ -472,7 +472,7 @@ class SecurityService(Service):
                     group=None)
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             args['anonymous'] = True
         elif isinstance(principal, User):
             args['user'] = principal
@@ -531,7 +531,7 @@ class SecurityService(Service):
                      RoleAssignment.object == object)
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous())):
+            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             args['anonymous'] = True
             q.filter(RoleAssignment.anonymous == False,
                      RoleAssignment.user == None, RoleAssignment.group == None)
@@ -638,7 +638,7 @@ class SecurityService(Service):
         if AnonymousRole in valid_roles:
             return True
 
-        if Authenticated in valid_roles and not user.is_anonymous():
+        if Authenticated in valid_roles and not user.is_anonymous:
             return True
 
         checked_objs = [None, obj]  # first test global roles, then object local
@@ -696,7 +696,7 @@ class SecurityService(Service):
         # build role CTE
         principal_filter = (RA.anonymous == True)
 
-        if not user.is_anonymous():
+        if not user.is_anonymous:
             principal_filter |= (RA.user == user)
 
         if user.groups:
@@ -722,7 +722,7 @@ class SecurityService(Service):
 
         filter_expr = permission_exists | is_admin
 
-        if user and not user.is_anonymous():
+        if user and not user.is_anonymous:
             is_owner_or_creator = sa.sql \
                 .exists([1]) \
                 .where(sa.sql.and_(PA.permission == permission,

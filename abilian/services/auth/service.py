@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 def is_anonymous(context):
-    return current_user.is_anonymous()
+    return current_user.is_anonymous
 
 
 def is_authenticated(context):
@@ -135,7 +135,7 @@ class AuthService(Service):
         # a manager to see site as another user (impersonate), or propose a "see as
         # anonymous" function
         g.user = g.logged_user = user
-        is_anonymous = user is None or user.is_anonymous()
+        is_anonymous = user is None or user.is_anonymous
         security = app.services.get('security')
         g.is_manager = (user and not is_anonymous and
                         ((security.has_role(user, 'admin') or
@@ -186,17 +186,17 @@ class AuthService(Service):
             elif verdict is True:
                 return
             else:
-                if user.is_anonymous():
+                if user.is_anonymous:
                     return self.redirect_to_login()
                 raise Forbidden()
 
         # default policy
-        if current_app.config.get('PRIVATE_SITE') and user.is_anonymous():
+        if current_app.config.get('PRIVATE_SITE') and user.is_anonymous:
             return self.redirect_to_login()
 
     def update_user_session_data(self):
         user = current_user
-        if current_user.is_anonymous():
+        if current_user.is_anonymous:
             return
 
         # Update last_active every 60 seconds only so as to not stress the database

@@ -65,13 +65,14 @@ class DeferredJSExtension(Extension):
             self.call_method(method, []), [], [], body).set_lineno(lineno)
 
     def defer_nodes(self, caller):
-        body = u'<div>{}</div>'.format(caller().strip())
+        body = '<div>{}</div>'.format(caller().strip())
 
         # remove 'script' tag in immediate children, if any
         fragment = lxml.html.fragment_fromstring(body)
         for child in fragment:
             if child.tag == 'script':
-                child.drop_tag()  # side effect on fragment.text or previous_child.tail!
+                # side effect on fragment.text or previous_child.tail!
+                child.drop_tag()
 
         body = []
         if fragment.text:
@@ -86,7 +87,7 @@ class DeferredJSExtension(Extension):
         return u''
 
     def collect_deferred(self, caller):
-        result = u'\n'.join(u'(function(){{\n{}\n}})();'.format(js)
-                            for js in deferred_js)
+        result = '\n'.join('(function(){{\n{}\n}})();'.format(js)
+                           for js in deferred_js)
         current_app.extensions[DeferredJS.name].reset_deferred()
         return result

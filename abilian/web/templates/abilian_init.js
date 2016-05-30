@@ -13,7 +13,7 @@
     Abilian.csrf_token = {{ csrf.token()|tojson }};
     Abilian.api = {{ app.js_api | tojson }};
 
-    {%- if not current_user.is_anonymous() %}
+    {%- if not current_user.is_anonymous %}
     Abilian.current_user.anonymous = false;
     Abilian.current_user.id = {{ current_user.id | tojson }};
     Abilian.current_user.email = {{ current_user.email |tojson }};

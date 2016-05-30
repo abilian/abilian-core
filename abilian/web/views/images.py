@@ -221,7 +221,7 @@ def user_url_args(user, size):
     endpoint = 'images.user_default'
     kwargs = {'s': size, 'md5': DEFAULT_AVATAR_MD5,}
 
-    if not user.is_anonymous():
+    if not user.is_anonymous:
         endpoint = 'images.user_photo'
         kwargs['user_id'] = user.id
         content = (user.photo if user.photo else

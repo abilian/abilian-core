@@ -31,7 +31,7 @@ _PREF_NAV_ITEM = NavItem(
     title=_l(u'Preferences'),
     icon='cog',
     url=lambda context: request.url_root + 'preferences',
-    condition=lambda context: not current_user.is_anonymous(),)
+    condition=lambda context: not current_user.is_anonymous)
 
 user_menu.insert(0, _PREF_NAV_ITEM)
 
@@ -163,7 +163,7 @@ class PreferenceService(Service):
             """Index redirects to the first accessible panel."""
 
             # Work around unit test failure. FIXME.
-            if current_user.is_anonymous():
+            if current_user.is_anonymous:
                 return "OK"
 
             for panel in self.app_state.panels:

@@ -309,7 +309,7 @@ class WhooshIndexService(Service):
             # security access filter
             user = current_user
             roles = {indexable_role(user)}
-            if not user.is_anonymous():
+            if not user.is_anonymous:
                 roles.add(indexable_role(Anonymous))
                 roles.add(indexable_role(Authenticated))
                 roles |= set(indexable_role(r)

@@ -27,15 +27,15 @@ class UpstreamInfo(object):
 
         config = app.config
         config.setdefault('ABILIAN_UPSTREAM_INFO_ENABLED', False)
-        for key in (u'ABILIAN_UPSTREAM_INFO_DISCARD',
-                    u'ABILIAN_UPSTREAM_INFO_INCLUDE'):
+        for key in ('ABILIAN_UPSTREAM_INFO_DISCARD',
+                    'ABILIAN_UPSTREAM_INFO_INCLUDE'):
             val = config.get(key, ())
             if val is not None:
                 val = frozenset(val)
             config[key] = val
 
     def request_started(self, app):
-        _request_ctx_stack.top.upstream_info = {'Username': u'Anonymous',}
+        _request_ctx_stack.top.upstream_info = {'Username': 'Anonymous',}
 
     def request_finished(self, app, response):
         info = _request_ctx_stack.top.upstream_info
@@ -49,7 +49,7 @@ class UpstreamInfo(object):
                     key not in enabled):
                 continue
 
-            header = u'X-' + key
+            header = 'X-' + key
             response.headers[header] = val
 
     def user_loaded(self, app, user, *args, **kwargs):
