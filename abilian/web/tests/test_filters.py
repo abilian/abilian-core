@@ -120,7 +120,7 @@ class TestFilters(FlaskTestCase):
         abbrev = filters.abbrev
         self.assertEqual(u'test', abbrev(u'test', 20))
         self.assertEqual(u'Longer test...e truncated',
-                          abbrev(u'Longer test. it should be truncated', 25))
+                         abbrev(u'Longer test. it should be truncated', 25))
 
     def test_linkify(self):
         tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')

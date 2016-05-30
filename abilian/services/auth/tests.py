@@ -97,10 +97,10 @@ class TestAuth(BaseTestCase):
                               content_type='application/json')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
         self.assertEqual(rv.json,
-                          dict(email='User@domain.tld',
-                               username='user@domain.tld',
-                               fullname='Unknown',
-                               next_url=''))
+                         dict(email='User@domain.tld',
+                              username='user@domain.tld',
+                              fullname='Unknown',
+                              next_url=''))
 
         rv = self.client.post('/user/api/logout')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
@@ -121,10 +121,10 @@ class TestAuth(BaseTestCase):
         with mail.record_messages() as outbox:
             rv = self.client.post('/user/forgotten_pw', data=kwargs)
             self.assertEqual(rv.status_code, 302,
-                              "expected 302, got:" + rv.status)
+                             "expected 302, got:" + rv.status)
             self.assertEqual(len(outbox), 1)
             msg = outbox[0]
             self.assertEqual(msg.subject,
-                              u'Password reset instruction for Abilian Test')
+                             u'Password reset instruction for Abilian Test')
             self.assertEqual(msg.recipients, [u'User@domain.tld'])
             self.assertEqual(msg.cc, [])

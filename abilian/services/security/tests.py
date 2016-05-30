@@ -10,8 +10,8 @@ from abilian.core.models.subjects import Group, User
 from abilian.testing import BaseTestCase
 
 from . import (READ, WRITE, Admin, Anonymous, Authenticated, Creator,
-               InheritSecurity, Owner, Permission, PermissionAssignment,
-               Reader, Role, RoleAssignment, SecurityAudit, Writer, security)
+               InheritSecurity, Owner, Permission, PermissionAssignment, Reader,
+               Role, RoleAssignment, SecurityAudit, Writer, security)
 
 TEST_EMAIL = u"joe@example.com"
 TEST_PASSWORD = "tototiti"

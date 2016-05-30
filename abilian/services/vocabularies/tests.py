@@ -125,10 +125,9 @@ class TestVocabularies(BaseTestCase):
         Voc = self.DefaultVoc
         session = self.session
         items = [
-            Voc(label='First',
-                position=0), Voc(label='Second',
-                                 position=2), Voc(label='Third',
-                                                  position=3)
+            Voc(label='First', position=0),
+            Voc(label='Second', position=2),
+            Voc(label='Third', position=3),
         ]
 
         for i in items:

@@ -16,7 +16,7 @@ class TestIcons(BaseTestCase):
     def test_glyphicons(self):
         icon = Glyphicon('ok')
         self.assertEqual(icon.__html__(),
-                          u'<i class="glyphicon glyphicon-ok"></i>')
+                         u'<i class="glyphicon glyphicon-ok"></i>')
 
     def test_faicons(self):
         icon = FAIcon('check')

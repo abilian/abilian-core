@@ -15,7 +15,6 @@ from jinja2 import nodes
 from jinja2.ext import Extension
 from werkzeug.local import LocalProxy
 
-
 deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
 
 

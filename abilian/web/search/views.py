@@ -19,11 +19,10 @@ from abilian.web.nav import BreadcrumbItem
 
 logger = logging.getLogger(__name__)
 
-BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(
-    tagname='mark',
-    classname='',
-    termclass='term-',
-    between='[…]')
+BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(tagname='mark',
+                                                              classname='',
+                                                              termclass='term-',
+                                                              between='[…]')
 
 RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter()
 
