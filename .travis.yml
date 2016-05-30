@@ -9,8 +9,6 @@ env:
   matrix:
     - SQLALCHEMY_DATABASE_URI="sqlite://"
     - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost:5432/abilian_core"
-    - FLASK_VERSION=0.10.1
-    - FLASK_VERSION=0.11
 
 services:
   - redis-server
