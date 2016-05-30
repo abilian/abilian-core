@@ -151,7 +151,7 @@ class NSView(View):
                              u'%(num)d tags deleted:\n%(tags)s',
                              count,
                              tag=tags[0].label,
-                             tags=u', '.join(t.label for t in tags))
+                             tags=', '.join(t.label for t in tags))
         map(session.delete, tags)
         session.commit()
         flash(success_message)

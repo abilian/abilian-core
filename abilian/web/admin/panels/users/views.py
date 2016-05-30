@@ -139,7 +139,7 @@ class UserEdit(UserBase, views.ObjectEdit):
 
     def breadcrumb(self):
         label = render_template_string(u'<em>{{ u.email }}</em>', u=self.obj)
-        return BreadcrumbItem(label=label, url=u'', description=self.obj.name)
+        return BreadcrumbItem(label=label, url='', description=self.obj.name)
 
     def get_form_kwargs(self):
         kw = super(UserEdit, self).get_form_kwargs()

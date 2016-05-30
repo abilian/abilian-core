@@ -10,16 +10,16 @@ from abilian.core.models.subjects import Group, User
 from abilian.testing import BaseTestCase
 
 from . import (READ, WRITE, Admin, Anonymous, Authenticated, Creator,
-               InheritSecurity, Owner, Permission, PermissionAssignment, Reader,
-               Role, RoleAssignment, SecurityAudit, Writer, security)
+               InheritSecurity, Owner, Permission, PermissionAssignment,
+               Reader, Role, RoleAssignment, SecurityAudit, Writer, security)
 
 TEST_EMAIL = u"joe@example.com"
 TEST_PASSWORD = "tototiti"
 
 
 def init_user():
-    user = User(first_name=u"Joe",
-                last_name=u"User",
+    user = User(first_name="Joe",
+                last_name="User",
                 email=TEST_EMAIL,
                 password=TEST_PASSWORD)
     db.session.add(user)
@@ -83,7 +83,7 @@ class SecurityTestCase(IntegrationTestCase):
 
     def test_has_role_authenticated(self):
         anon = self.app.login_manager.anonymous_user()
-        user = User(email=u"john@example.com", password="x")
+        user = User(email="john@example.com", password="x")
         self.session.add(user)
         self.session.flush()
         assert not security.has_role(anon, Authenticated)
@@ -104,7 +104,7 @@ class SecurityTestCase(IntegrationTestCase):
         assert security.has_permission(root, 'manage', obj)
 
     def test_grant_basic_roles(self):
-        user = User(email=u"john@example.com", password="x")
+        user = User(email="john@example.com", password="x")
         self.session.add(user)
         self.session.flush()
 
@@ -134,8 +134,8 @@ class SecurityTestCase(IntegrationTestCase):
         assert not security.has_permission(user, "manage")
 
     def test_grant_basic_roles_on_groups(self):
-        user = User(email=u"john@example.com", password="x")
-        group = Group(name=u"Test Group")
+        user = User(email="john@example.com", password="x")
+        group = Group(name="Test Group")
         user.groups.add(group)
         self.session.add(user)
         self.session.flush()
@@ -162,9 +162,9 @@ class SecurityTestCase(IntegrationTestCase):
         assert not security.has_permission(user, "manage")
 
     def test_grant_roles_on_objects(self):
-        user = User(email=u"john@example.com", password=u"x")
-        user2 = User(email=u"papa@example.com", password=u"p")
-        group = Group(name=u"Test Group")
+        user = User(email="john@example.com", password="x")
+        user2 = User(email="papa@example.com", password="p")
+        group = Group(name="Test Group")
         user.groups.add(group)
         obj = DummyModel()
         self.session.add_all([user, user2, obj])
@@ -245,7 +245,7 @@ class SecurityTestCase(IntegrationTestCase):
         assert not security.has_permission(user, READ, new_obj)
 
     def test_grant_roles_unique(self):
-        user = User(email=u"john@example.com", password="x")
+        user = User(email="john@example.com", password="x")
         obj = DummyModel()
         self.session.add_all([user, obj])
         self.session.flush()
@@ -315,8 +315,8 @@ class SecurityTestCase(IntegrationTestCase):
 
     def test_has_permission_on_objects(self):
         has_permission = security.has_permission
-        user = User(email=u"john@example.com", password=u"x")
-        group = Group(name=u"Test Group")
+        user = User(email="john@example.com", password="x")
+        group = Group(name="Test Group")
         user.groups.add(group)
         obj = DummyModel(creator=user, owner=user)
         self.session.add_all([user, obj])
@@ -366,7 +366,7 @@ class SecurityTestCase(IntegrationTestCase):
         assert security.has_role(user, Reader, object=obj) is False
 
     def test_has_permission_custom_roles(self):
-        user = User(email=u"john@example.com", password="x")
+        user = User(email="john@example.com", password="x")
         self.session.add(user)
         self.session.flush()
 
@@ -398,12 +398,12 @@ class SecurityTestCase(IntegrationTestCase):
 
     def test_query_entity_with_permission(self):
         get_filter = security.query_entity_with_permission
-        user = User(email=u"john@example.com", password="x")
+        user = User(email="john@example.com", password="x")
         self.session.add(user)
 
-        obj_reader = DummyModel(name=u'reader')
-        obj_writer = DummyModel(name=u'writer')
-        obj_none = DummyModel(name=u'none')
+        obj_reader = DummyModel(name='reader')
+        obj_writer = DummyModel(name='writer')
+        obj_none = DummyModel(name='none')
         self.session.add_all([obj_reader, obj_writer, obj_none])
 
         assigments = [PermissionAssignment(role=Reader,

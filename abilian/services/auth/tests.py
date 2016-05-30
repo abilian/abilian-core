@@ -35,7 +35,7 @@ class TestAuth(BaseTestCase):
             assert get_redirect_target() is None
             url_root = request.url_root[:-1]
 
-        with self.app.test_request_context(form_url(next=u'/')):
+        with self.app.test_request_context(form_url(next='/')):
             assert get_redirect_target() == url_root + u'/'
 
         # test "next" from referer
@@ -54,15 +54,15 @@ class TestAuth(BaseTestCase):
 
         # test open redirect is forbidden
         with self.app.test_request_context(form_url(
-                next=u'http://google.com/test')):
+                next='http://google.com/test')):
             assert get_redirect_target() is None
 
         # open redirect through malicious construct and browser not checking Location
-        with self.app.test_request_context(form_url(next=u'/////google.com')):
+        with self.app.test_request_context(form_url(next='/////google.com')):
             assert get_redirect_target() == url_root + u'///google.com'
 
     def test_login_post(self):
-        kwargs = dict(email=u'User@domain.tld',
+        kwargs = dict(email='User@domain.tld',
                       password='azerty',
                       can_login=True)
         u = User(**kwargs)
@@ -85,7 +85,7 @@ class TestAuth(BaseTestCase):
         self.assertEqual(rv.status_code, 401, "expected 401, got:" + rv.status)
 
     def test_api_post(self):
-        kwargs = dict(email=u'User@domain.tld',
+        kwargs = dict(email='User@domain.tld',
                       password='azerty',
                       can_login=True)
         u = User(**kwargs)
@@ -97,17 +97,17 @@ class TestAuth(BaseTestCase):
                               content_type='application/json')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
         self.assertEqual(rv.json,
-                          dict(email=u'User@domain.tld',
-                               username=u'user@domain.tld',
-                               fullname=u'Unknown',
-                               next_url=u''))
+                          dict(email='User@domain.tld',
+                               username='user@domain.tld',
+                               fullname='Unknown',
+                               next_url=''))
 
         rv = self.client.post('/user/api/logout')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
 
     def test_forgotten_pw(self):
         mail = self.app.extensions['mail']
-        kwargs = dict(email=u'User@domain.tld',
+        kwargs = dict(email='User@domain.tld',
                       password='azerty',
                       can_login=True)
         u = User(**kwargs)

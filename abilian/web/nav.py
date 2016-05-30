@@ -120,7 +120,7 @@ class BreadcrumbItem(object):
                        u'{{ item.label }}'
                        u'{%- if url %}</a>{%- endif %}')
 
-    def __init__(self, label=u'', url=u'#', icon=None, description=None):
+    def __init__(self, label='', url='#', icon=None, description=None):
         # don't test 'label or...': if label is a lazy_gettext, it will be
         # resolved. If this item is created in a url_value_preprocessor, it will
         # setup i18n before auth has loaded user, so i18n will fallback on browser

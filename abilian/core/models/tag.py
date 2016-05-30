@@ -81,7 +81,7 @@ class Tag(IdMixin, Model):
     #: namespace
     ns = sa.Column(sa.UnicodeText(),
                    nullable=False,
-                   default=u'default',
+                   default='default',
                    server_default='default')
 
     #: Label visible to the user

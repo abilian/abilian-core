@@ -99,8 +99,8 @@ class Attachment(Entity):
 
     description = Column(UnicodeText(),
                          nullable=False,
-                         default=u'',
-                         server_default=u'',)
+                         default='',
+                         server_default='',)
 
     def __repr__(self):
         class_ = self.__class__

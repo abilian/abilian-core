@@ -116,7 +116,7 @@ class GroupView(GroupBase, views.ObjectView):
 
     def breadcrumb(self):
         label = render_template_string(u'<em>{{ g }}</em>', g=self.obj.name)
-        return BreadcrumbItem(label=label, url=u'', description=self.obj.name)
+        return BreadcrumbItem(label=label, url='', description=self.obj.name)
 
     @property
     def template_kwargs(self):
@@ -137,7 +137,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
 
     def breadcrumb(self):
         label = render_template_string(u'<em>{{ g }}</em>', g=self.obj.name)
-        return BreadcrumbItem(label=label, url=u'', description=self.obj.name)
+        return BreadcrumbItem(label=label, url='', description=self.obj.name)
 
     def get_form_buttons(self, *args, **kwargs):
         buttons = super(GroupEdit, self).get_form_buttons()

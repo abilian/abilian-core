@@ -74,7 +74,7 @@ class NamedIconBase(Icon):
     """
     template = None
 
-    def __init__(self, name=u''):
+    def __init__(self, name=''):
         self.name = name
 
     def __html__(self):
@@ -103,7 +103,7 @@ class FAIconStacked(NamedIconBase):
         u'  <i class="fa fa-{{ second }}"></i>\n'
         u'</span>')
 
-    def __init__(self, name, second, stack=u''):
+    def __init__(self, name, second, stack=''):
         """
         @param name: first icon name, support additional css classes.
 
@@ -136,7 +136,7 @@ class DynamicIcon(Icon):
                  endpoint=None,
                  width=12,
                  height=12,
-                 css=u'',
+                 css='',
                  size=None,
                  url_args=None,
                  **fixed_url_args):
@@ -184,7 +184,7 @@ class StaticIcon(DynamicIcon):
                  endpoint='static',
                  width=12,
                  height=12,
-                 css=u'',
+                 css='',
                  size=None):
         DynamicIcon.__init__(
             self, endpoint,

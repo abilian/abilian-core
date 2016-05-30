@@ -16,7 +16,7 @@ from abilian.web.views import Registry, default_view
 
 
 class RegEntity(Entity):
-    name = sa.Column(sa.Unicode, default=u'')
+    name = sa.Column(sa.Unicode, default='')
 
 
 class NonEntity(object):

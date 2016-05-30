@@ -20,10 +20,10 @@ from abilian.web.nav import BreadcrumbItem
 logger = logging.getLogger(__name__)
 
 BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(
-    tagname=u'mark',
-    classname=u'',
-    termclass=u'term-',
-    between=u'[…]')
+    tagname='mark',
+    classname='',
+    termclass='term-',
+    between='[…]')
 
 RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter()
 
@@ -52,7 +52,7 @@ def init_search(endpoint, values):
     except:
         page = 1
 
-    g.breadcrumb.append(BreadcrumbItem(label=u'"{}"'.format(q),
+    g.breadcrumb.append(BreadcrumbItem(label='"{}"'.format(q),
                                        icon="search",
                                        url=Endpoint('search.search_main',
                                                     q=q)))
@@ -63,7 +63,7 @@ def init_search(endpoint, values):
     if object_types:
         page_kw['object_type'] = object_types
         g.breadcrumb.append(BreadcrumbItem(
-            label=u' | '.join(friendly_fqcn(name) for name in object_types),
+            label=' | '.join(friendly_fqcn(name) for name in object_types),
             url=Endpoint('search.search_main', **page_kw)))
 
     if page > 1:
@@ -87,7 +87,7 @@ _COUNT_OBJECT_TYPE_FACET = whoosh.sorting.FieldFacet(
 
 
 @route('')
-def search_main(q=u'', page=1):
+def search_main(q='', page=1):
     svc = current_app.services['indexing']
     q = q.strip()
     page = int(request.args.get('page', page))
@@ -171,7 +171,7 @@ class Live(views.JSONView):
     JSON response for live search
     """
 
-    def data(self, q=u'', page=None, *args, **kwargs):
+    def data(self, q='', page=None, *args, **kwargs):
         svc = current_app.services['indexing']
         url_for_hit = svc.app_state.url_for_hit
         search_kwargs = {'facet_by_type': 5}

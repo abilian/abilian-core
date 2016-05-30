@@ -29,10 +29,10 @@ class IntegerCollection(db.Model):
 
 
 class DummyAccount(Entity):
-    name = Column(UnicodeText, default=u"", info=SEARCHABLE)
-    password = Column(Unicode, default=u'*', info=AUDITABLE_HIDDEN)
-    website = Column(Text, default=u"")
-    office_phone = Column(UnicodeText, default=u"")
+    name = Column(UnicodeText, default="", info=SEARCHABLE)
+    password = Column(Unicode, default='*', info=AUDITABLE_HIDDEN)
+    website = Column(Text, default="")
+    office_phone = Column(UnicodeText, default="")
     birthday = Column(Date)
 
     @sa.ext.declarative.declared_attr
@@ -59,7 +59,7 @@ class AccountRelated(db.Model):
                                order_by='AccountRelated.id',
                                cascade='all, delete-orphan'))
 
-    text = Column(UnicodeText, default=u"")
+    text = Column(UnicodeText, default="")
 
 
 class CommentRelated(db.Model):
@@ -74,7 +74,7 @@ class CommentRelated(db.Model):
         backref=sa.orm.backref('comments',
                                order_by='CommentRelated.id',
                                cascade='all, delete-orphan'))
-    text = Column(UnicodeText, default=u"")
+    text = Column(UnicodeText, default="")
 
 
 class TestAudit(BaseTestCase):
@@ -95,7 +95,7 @@ class TestAudit(BaseTestCase):
         db.session.flush()
         assert len(AuditEntry.query.all()) == 0
 
-        account = DummyAccount(name=u"John SARL")
+        account = DummyAccount(name="John SARL")
         db.session.add(account)
         db.session.commit()
         assert len(AuditEntry.query.all()) == 1
@@ -167,13 +167,13 @@ class TestAudit(BaseTestCase):
         def next_entry():
             return audit_query.all()[next(audit_idx)]
 
-        account = DummyAccount(name=u"John SARL")
+        account = DummyAccount(name="John SARL")
         db.session.add(account)
         db.session.commit()
         assert len(AuditEntry.query.all()) == 1
         next(audit_idx)
 
-        data = AccountRelated(account=account, text=u'text 1')
+        data = AccountRelated(account=account, text='text 1')
         db.session.add(data)
         db.session.commit()
 
@@ -192,7 +192,7 @@ class TestAudit(BaseTestCase):
                                    'account_id': (NEVER_SET, 1),
                                    'id': (NEVER_SET, 1),}
 
-        comment = CommentRelated(related=data, text=u'comment')
+        comment = CommentRelated(related=data, text='comment')
         db.session.add(comment)
         db.session.commit()
         entry = next_entry()
@@ -209,7 +209,7 @@ class TestAudit(BaseTestCase):
                                    'related_id': (NEVER_SET, 1),
                                    'id': (NEVER_SET, 1),}
 
-        comment = CommentRelated(related=data, text=u'comment 2')
+        comment = CommentRelated(related=data, text='comment 2')
         db.session.add(comment)
         db.session.commit()
         entry = next_entry()
@@ -244,7 +244,7 @@ class TestAudit(BaseTestCase):
         self.session.add(I2)
         self.session.flush()
 
-        account = DummyAccount(name=u'John')
+        account = DummyAccount(name='John')
         account.integers.append(I1)
         self.session.add(account)
         self.session.flush()

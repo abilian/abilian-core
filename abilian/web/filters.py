@@ -249,7 +249,7 @@ def abbrev(s, max_size):
         return s[0:h] + "..." + s[-h:]
 
 
-def bool2check(val, true=u'\u2713', false=u''):
+def bool2check(val, true='\u2713', false=''):
     """Filter value as boolean and show check mark (✓) or nothing.
     """
     return true if val else false

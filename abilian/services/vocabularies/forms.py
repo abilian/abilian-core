@@ -21,7 +21,7 @@ class EditForm(ModelForm):
     label = StringField(
         _l(u'Label'),
         description=_l(u'allowed tags: %(tags)s',
-                       tags=u', '.join(ALLOWED_TAGS)),
+                       tags=', '.join(ALLOWED_TAGS)),
         filters=(strip,),
         validators=[required()])
     default = BooleanField(_l(u'Default'), default=False)

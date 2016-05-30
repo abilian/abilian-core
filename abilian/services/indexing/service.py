@@ -70,7 +70,7 @@ if not _PATCHED:
 # END PATCH
 
 
-def url_for_hit(hit, default=u'#'):
+def url_for_hit(hit, default='#'):
     """
     Helper for building URLs from results
     """

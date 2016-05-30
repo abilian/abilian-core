@@ -1,6 +1,8 @@
 """
 Test the frontend.
 """
+from __future__ import absolute_import, print_function, unicode_literals
+
 from flask.ext.wtf import Form
 from sqlalchemy import Column, String, UnicodeText
 

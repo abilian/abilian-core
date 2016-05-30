@@ -33,7 +33,7 @@ class EntityTestCase(TestCase):
         return session
 
     def test(self):
-        contact = DummyContact(first_name=u"John")
+        contact = DummyContact(first_name="John")
         assert contact.creator is None
         assert contact.owner is None
 
@@ -43,7 +43,7 @@ class EntityTestCase(TestCase):
 
     def test_auto_slug_property(self):
         session = self.get_session()
-        obj = DummyContact(name=u'a b c')
+        obj = DummyContact(name='a b c')
         session.add(obj)
         session.flush()
         assert obj.auto_slug == u'a-b-c'
@@ -80,7 +80,7 @@ class EntityTestCase(TestCase):
 
     def test_auto_slug(self):
         session = self.get_session()
-        contact1 = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+        contact1 = DummyContact(name='Pacôme Hégésippe Adélard Ladislas')
         session.add(contact1)
         session.flush()
         assert contact1.slug == u'pacome-hegesippe-adelard-ladislas'
@@ -93,14 +93,14 @@ class EntityTestCase(TestCase):
         assert contact2.slug == expected
 
         # test numbering if slug already exists:
-        contact3 = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+        contact3 = DummyContact(name='Pacôme Hégésippe Adélard Ladislas')
         session.add(contact3)
         session.flush()
         assert contact3.slug == u'pacome-hegesippe-adelard-ladislas-1'
 
     def test_polymorphic_update_timestamp(self):
         session = self.get_session()
-        contact = DummyContact(name=u'Pacôme Hégésippe Adélard Ladislas')
+        contact = DummyContact(name='Pacôme Hégésippe Adélard Ladislas')
         session.add(contact)
         session.flush()
 
@@ -112,7 +112,7 @@ class EntityTestCase(TestCase):
 
     def test_meta(self):
         session = self.get_session()
-        e = DummyContact(name=u'test')
+        e = DummyContact(name='test')
         e.meta['key'] = u'value'
         e.meta['number'] = 42
         session.add(e)
@@ -177,7 +177,7 @@ class PermissionsTestCase(AbilianTestCase):
 
         self.app.db.create_all()  # create missing 'mytype' table
 
-        obj = MyRestrictedType(name=u'test object')
+        obj = MyRestrictedType(name='test object')
         self.session.add(obj)
         PA = security.PermissionAssignment
         query = self.session.query(PA.role) \

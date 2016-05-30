@@ -15,10 +15,10 @@ from .service import vocabularies
 
 class TestVocabularies(BaseTestCase):
 
-    DefaultVoc = Vocabulary(b'defaultstates', label=u'States')
+    DefaultVoc = Vocabulary(b'defaultstates', label='States')
 
     def test_vocabulary_creator(self):
-        PriorityVoc = Vocabulary(b'priorities', label=u'Priorities')
+        PriorityVoc = Vocabulary(b'priorities', label='Priorities')
         assert PriorityVoc.__name__ == 'VocabularyPriorities'
         assert PriorityVoc.__tablename__ == 'vocabulary_priorities'
         assert PriorityVoc.Meta.name == u'priorities'
@@ -29,7 +29,7 @@ class TestVocabularies(BaseTestCase):
         StateVoc = self.DefaultVoc
         DocCatVoc = Vocabulary(b'categories',
                                group='documents',
-                               label=u'Categories')
+                               label='Categories')
 
         # test registered vocabularies
         assert vocabularies.vocabularies == {PriorityVoc, StateVoc, DocCatVoc}
@@ -43,16 +43,16 @@ class TestVocabularies(BaseTestCase):
 
         self.app.db.create_all()
 
-        IMMEDIATE = PriorityVoc(label=u'Immediate', position=0)
-        NORMAL = PriorityVoc(label=u'Normal', position=3, default=True)
-        URGENT = PriorityVoc(label=u'Urgent', position=1)
-        HIGH = PriorityVoc(label=u'High', position=2)
+        IMMEDIATE = PriorityVoc(label='Immediate', position=0)
+        NORMAL = PriorityVoc(label='Normal', position=3, default=True)
+        URGENT = PriorityVoc(label='Urgent', position=1)
+        HIGH = PriorityVoc(label='High', position=2)
         items = (IMMEDIATE, NORMAL, URGENT, HIGH)
         map(self.session.add, items)
         self.session.flush()
 
         # test position=4 set automatically; Label stripped
-        low_item = PriorityVoc(label=u' Low  ')
+        low_item = PriorityVoc(label=' Low  ')
         self.session.add(low_item)
         self.session.flush()
         assert low_item.position == 4
@@ -75,7 +75,7 @@ class TestVocabularies(BaseTestCase):
         # test db-side constraint for non-empty labels
         try:
             with self.session.begin_nested():
-                v = PriorityVoc(label=u'   ', position=6)
+                v = PriorityVoc(label='   ', position=6)
                 self.session.add(v)
                 self.session.flush()
         except sa.exc.IntegrityError:
@@ -86,7 +86,7 @@ class TestVocabularies(BaseTestCase):
         # test unique labels constraint
         try:
             with self.session.begin_nested():
-                v = PriorityVoc(label=u'Immediate')
+                v = PriorityVoc(label='Immediate')
                 self.session.add(v)
                 self.session.flush()
         except sa.exc.IntegrityError:
@@ -97,7 +97,7 @@ class TestVocabularies(BaseTestCase):
         # test unique position constraint
         try:
             with self.session.begin_nested():
-                v = PriorityVoc(label=u'New one', position=1)
+                v = PriorityVoc(label='New one', position=1)
                 self.session.add(v)
                 self.session.flush()
         except sa.exc.IntegrityError:
@@ -125,9 +125,9 @@ class TestVocabularies(BaseTestCase):
         Voc = self.DefaultVoc
         session = self.session
         items = [
-            Voc(label=u'First',
-                position=0), Voc(label=u'Second',
-                                 position=2), Voc(label=u'Third',
+            Voc(label='First',
+                position=0), Voc(label='Second',
+                                 position=2), Voc(label='Third',
                                                   position=3)
         ]
 

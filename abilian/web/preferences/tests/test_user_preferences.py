@@ -21,9 +21,9 @@ class TestUserPreferences(BaseTestCase):
 
     def setUp(self):
         BaseTestCase.setUp(self)
-        self.user = User(email=u'john@example.com',
-                         first_name=u'John',
-                         last_name=u'Doe',
+        self.user = User(email='john@example.com',
+                         first_name='John',
+                         last_name='Doe',
                          can_login=True)
         self.session.add(self.user)
         self.session.commit()
@@ -34,7 +34,7 @@ class TestUserPreferences(BaseTestCase):
         with AVATAR_COLORMAP.open('rb') as f:
             handle = uploads.add_file(self.user,
                                       f,
-                                      filename=u'avatar.png',
+                                      filename='avatar.png',
                                       mimetype='image/png')
 
         kwargs = dict(method='POST', data={'photo': handle,},)

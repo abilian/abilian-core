@@ -35,7 +35,7 @@ class IndexingServiceTestCase(BaseTestCase):
         assert IndexedContact.entity_type in state.indexed_fqcn
 
     def test_index_only_after_final_commit(self):
-        contact = IndexedContact(name=u'John Doe')
+        contact = IndexedContact(name='John Doe')
         state = self.svc.app_state
         self.session.begin(nested=True)
 

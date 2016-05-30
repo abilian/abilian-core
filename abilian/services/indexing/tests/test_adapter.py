@@ -122,7 +122,7 @@ class DocumentTestCase(AppTestCase):
         schema = Schema()
         adapter = SAAdapter(SubclassEntityIndexable, schema)
         expected = dict(id=2,
-                        name=u'entity name',
+                        name='entity name',
                         created_at=datetime(2013, 11, 28, 16, 17, 0),
                         updated_at=datetime(2013, 11, 29, 12, 17, 58))
         obj = SubclassEntityIndexable(**expected)

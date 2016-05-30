@@ -1,6 +1,8 @@
 """
 Test the index service.
 """
+from __future__ import absolute_import, print_function, unicode_literals
+
 from sqlalchemy import Column, Text, UnicodeText
 from sqlalchemy.orm import column_property
 
@@ -25,10 +27,10 @@ class DummyContact1(Entity):
                onupdate=gen_name),
         Entity.name)
 
-    salutation = Column(UnicodeText, default=u"")
-    first_name = Column(UnicodeText, default=u"", info=SEARCHABLE)
-    last_name = Column(UnicodeText, default=u"", info=SEARCHABLE)
-    email = Column(Text, default=u"")
+    salutation = Column(UnicodeText, default="")
+    first_name = Column(UnicodeText, default="", info=SEARCHABLE)
+    last_name = Column(UnicodeText, default="", info=SEARCHABLE)
+    email = Column(Text, default="")
 
 
 class IndexingTestCase(IntegrationTestCase):
@@ -41,9 +43,9 @@ class IndexingTestCase(IntegrationTestCase):
 
     def test_contacts_are_indexed(self):
         self.login_system()
-        contact = DummyContact1(first_name=u"John",
-                                last_name=u"Test User",
-                                email=u"test@example.com")
+        contact = DummyContact1(first_name="John",
+                                last_name="Test User",
+                                email="test@example.com")
         self.session.add(contact)
         self.session.commit()
 

@@ -41,10 +41,11 @@ from abilian.core import extensions, redis, signals
 from abilian.core.celery import FlaskCelery
 from abilian.plugin.loader import AppLoader
 from abilian.services import converter as conversion_service
-from abilian.services import (
-    activity_service, antivirus, audit_service, auth_service, index_service,
-    preferences_service, repository_service, security_service,
-    session_repository_service, settings_service, vocabularies_service)
+from abilian.services import (activity_service, antivirus, audit_service,
+                              auth_service, index_service, preferences_service,
+                              repository_service, security_service,
+                              session_repository_service, settings_service,
+                              vocabularies_service)
 from abilian.services.security import Anonymous
 from abilian.web import csrf
 from abilian.web.action import Endpoint, actions
@@ -133,7 +134,7 @@ default_config.update(
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
-    TRACKING_CODE_SNIPPET=u'',  # tracking code to insert before </body>
+    TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
     MAIL_ADDRESS_TAG_CHAR=None,
 )
 default_config = ImmutableDict(default_config)
@@ -367,8 +368,8 @@ class Application(Flask, ServiceManager, PluginManager):
         This happens during `request_started` event, which is triggered before any
         url_value_preprocessor and `before_request` handlers.
         """
-        g.breadcrumb.append(BreadcrumbItem(icon=u'home',
-                                           url=u'/' + request.script_root))
+        g.breadcrumb.append(BreadcrumbItem(icon='home',
+                                           url='/' + request.script_root))
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary permissions.
@@ -816,8 +817,8 @@ class Application(Flask, ServiceManager, PluginManager):
         db.create_all()
         if User.query.get(0) is None:
             root = User(id=0,
-                        last_name=u'SYSTEM',
-                        email=u'system@example.com',
+                        last_name='SYSTEM',
+                        email='system@example.com',
                         can_login=False)
             db.session.add(root)
             db.session.commit()

@@ -50,7 +50,7 @@ class PreferencesTestCase(BaseTestCase):
     application_class = App
 
     def test_preferences(self):
-        user = User(email=u"test@example.com")
+        user = User(email="test@example.com")
         assert UserPreference.query.all() == []
 
         preference_service = PreferenceService()
@@ -72,7 +72,7 @@ class PreferencesTestCase(BaseTestCase):
         assert UserPreference.query.all() == []
 
     def test_preferences_with_various_types(self):
-        user = User(email=u"test@example.com")
+        user = User(email="test@example.com")
         preference_service = PreferenceService()
 
         preference_service.set_preferences(user, some_int=1)
@@ -86,7 +86,7 @@ class PreferencesTestCase(BaseTestCase):
         self.assertEqual(preferences, {'some_int': 1, 'some_bool': True})
 
     def test_visible_panels(self):
-        user = User(email=u"test@example.com")
+        user = User(email="test@example.com")
         app = self.app
         security = app.services['security']
         security.start()

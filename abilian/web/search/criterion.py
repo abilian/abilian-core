@@ -24,7 +24,7 @@ class BaseCriterion(object):
     Subclasses can also define property.
     """
 
-    def __init__(self, name, label=u'', form_default_value=_UNDEFINED):
+    def __init__(self, name, label='', form_default_value=_UNDEFINED):
         self.name = name
         self.label = label
 
@@ -76,7 +76,7 @@ class TextSearchCriterion(BaseCriterion):
     """Fulltext search on given attributes.
     """
 
-    def __init__(self, name, label=u'', attributes=None, search_fmt=u'%{q}%'):
+    def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
         super(TextSearchCriterion, self).__init__(name, label)
         self.attributes = dict.fromkeys(attributes if attributes is not None
                                         else (name,))
@@ -188,7 +188,7 @@ class TextSearchCriterion(BaseCriterion):
 
 class TextCriterion(TextSearchCriterion):
 
-    def __init__(self, name, label=u'', attributes=None, search_fmt=u'%{q}%'):
+    def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
         super(TextCriterion, self).__init__(name, label, attributes, search_fmt)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):

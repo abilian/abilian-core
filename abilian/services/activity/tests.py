@@ -24,8 +24,8 @@ class ActivityTestCase(BaseTestCase):
 
     def test(self):
         service = self.activity_service
-        user = User(email=u'test@example.com')
-        message = Message1(creator=user, owner=user, name=u'test message')
+        user = User(email='test@example.com')
+        message = Message1(creator=user, owner=user, name='test message')
 
         with self.session.begin_nested():
             self.session.add(user)
