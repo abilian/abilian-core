@@ -3,10 +3,11 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from unittest import TestCase, skip
+from unittest import TestCase
 
 import sqlalchemy as sa
 from flask.signals import request_started
+from pytest import skip
 from wtforms import Form, IntegerField, StringField
 
 # Import for side-effects (monkey-patch)

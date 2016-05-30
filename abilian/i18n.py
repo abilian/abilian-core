@@ -65,13 +65,13 @@ from babel.localedata import locale_identifiers
 from babel.support import Translations as BaseTranslations
 from flask import _request_ctx_stack, current_app, g, render_template, request
 from flask_babel import Babel as BabelBase
-from flask_babel import gettext, lazy_gettext, ngettext
+from flask_babel import gettext, lazy_gettext, ngettext, force_locale
 from future.utils import string_types
 from pathlib import Path
 
 __all__ = [
     'babel', 'gettext', '_', 'lazy_gettext', '_l', 'localeselector', 'ngettext',
-    '_n', 'set_locale', 'timezoneselector', 'VALID_LANGUAGES_CODE',
+    '_n', 'timezoneselector', 'VALID_LANGUAGES_CODE',
     'render_template_i18n'
 ]
 
@@ -316,35 +316,6 @@ def timezoneselector():
     return LOCALTZ
 
 
-@contextmanager
-def set_locale(locale):
-    """Change current locale.
-
-    Can be used as a context manager to temporary change locale::
-
-      with set_locale('fr') as fr_locale:
-          ...
-
-    :type locale: :class:`babel.core.Locale` or `str`
-    :param locale: locale to use. If it's a string if must be a valid locale
-                 specification
-    :rtype: :class:`babel.core.Locale`
-    :return: locale set
-    """
-    ctx = _request_ctx_stack.top
-    if ctx is None:
-        yield
-        return
-
-    if not isinstance(locale, Locale):
-        locale = Locale.parse(locale)
-
-    current_locale = getattr(ctx, 'babel_locale', None)
-    ctx.babel_locale = locale
-    yield locale
-    ctx.babel_locale = current_locale
-
-
 def get_template_i18n(template_name, locale):
     """Build template list with preceding locale if found
     """
@@ -406,7 +377,7 @@ def render_template_i18n(template_name_or_list, **context):
         for template in template_name_or_list:
             template_list.extend(get_template_i18n(template, locale))
 
-    with ensure_request_context(), set_locale(locale):
+    with ensure_request_context(), force_locale(locale):
         return render_template(template_list, **context)
 
 

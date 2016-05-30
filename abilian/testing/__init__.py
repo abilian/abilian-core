@@ -67,7 +67,7 @@ class TestConfig(object):
 
     MAIL_SENDER = 'test@testcase.app.tld'
 
-    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_LOCALE = b'en'
 
     # It's a good idea to test with a timezone that's not your system timezone nor
     # UTC. It can reveal problem with date handling within app (rule is: all dates
