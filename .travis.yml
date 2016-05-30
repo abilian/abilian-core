@@ -17,10 +17,6 @@ services:
 
 addons:
   postgresql: "9.3"
-  apt:
-    packages:
-      - poppler-utils
-      - nodejs
 
 # Install OS dependencies
 before_install:
