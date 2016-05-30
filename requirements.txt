@@ -1,7 +1,3 @@
-# python 2/3 compat
-future>=0.15.2
-# Or should we use six or pie ?
-
 # Flask and friends
 Flask>=0.10.1
 Flask-Assets>=0.10
