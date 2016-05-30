@@ -53,7 +53,6 @@ import importlib
 import os
 import re
 import unicodedata
-from contextlib import contextmanager
 from datetime import datetime
 from gettext import GNUTranslations
 

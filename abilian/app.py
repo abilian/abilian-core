@@ -165,6 +165,7 @@ class Application(Flask, ServiceManager, PluginManager):
     private_site = ConfigAttribute('PRIVATE_SITE')
 
     #: instance of :class:`.web.views.registry.Registry`.
+    # type: web.views.registry.Registry
     default_view = None
 
     #: json serializable dict to land in Javascript under Abilian.api

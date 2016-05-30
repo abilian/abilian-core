@@ -50,6 +50,7 @@ py-bcrypt
 Markdown
 PyYAML
 pygeoip
+typing
 
 progressbar
 

@@ -105,14 +105,14 @@ Anonymous = Role('anonymous', _l(u'role_anonymous'), assignable=False)
 
 #: marker for role assigned to 'Authenticated'
 Authenticated = Role('authenticated',
-                     _l(u'role_authenticated'),
+                     _l('role_authenticated'),
                      assignable=False)
 
 #: marker for `admin` role
-Admin = Role('admin', _l(u'role_administrator'))
+Admin = Role('admin', _l('role_administrator'))
 
 #: marker for `manager` role
-Manager = Role('manager', _l(u'role_manager'), assignable=False)
+Manager = Role('manager', _l('role_manager'), assignable=False)
 
 Creator = Role('creator', assignable=False)
 Owner = Role('owner', assignable=False)
@@ -120,11 +120,11 @@ Reader = Role('reader', assignable=False)
 Writer = Role('writer', assignable=False)
 
 # Permissions
-READ = Permission(u'read')
-WRITE = Permission(u'write')
-MANAGE = Permission(u'manage')
-CREATE = Permission(u'create')
-DELETE = Permission(u'delete')
+READ = Permission('read')
+WRITE = Permission('write')
+MANAGE = Permission('manage')
+CREATE = Permission('create')
+DELETE = Permission('delete')
 
 
 class RoleAssignment(db.Model):

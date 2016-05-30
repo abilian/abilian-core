@@ -14,6 +14,7 @@ from flask_login import current_user
 from future.utils import string_types
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
+from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
