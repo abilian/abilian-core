@@ -3,7 +3,7 @@ future>=0.15.2
 # Or should we use six or pie ?
 
 # Flask and friends
-Flask>=0.10.1,<0.11
+Flask>=0.10.1
 Flask-Assets>=0.10
 Flask-Babel>=0.11
 Flask-DebugToolbar>=0.10
