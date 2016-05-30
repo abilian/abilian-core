@@ -13,11 +13,11 @@ Flask-Script
 Flask-Testing>=0.4.2
 Flask-Uploads
 Flask-WTF>=0.9.4
+Flask-Babel>=0.11
 
 # Can't be upgraded for now
 Flask-Security==1.7.4
 Flask-Login==0.2.11
-Flask-Babel>=0.9,<0.10
 
 # pathlib is included in python 3.4, and very useful
 pathlib
