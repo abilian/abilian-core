@@ -130,8 +130,8 @@ class EntityTestCase(TestCase):
             pass
 
         expected = __name__ + '.MyType'
-        self.assertEquals(MyType.entity_type, expected)
-        self.assertEquals(MyType._object_type(), expected)
+        self.assertEqual(MyType.entity_type, expected)
+        self.assertEqual(MyType._object_type(), expected)
 
         class Fixed(Entity):
             entity_type = 'some.fixed.module.fixed_type'

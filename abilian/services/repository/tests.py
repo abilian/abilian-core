@@ -25,7 +25,7 @@ class TestRepository(BaseTestCase):
         p = repository.rel_path(self.UUID)
         expected = Path('4f', '80', '4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
         self.assertTrue(isinstance(p, Path))
-        self.assertEquals(p, expected)
+        self.assertEqual(p, expected)
 
     def test_abs_path(self):
         self.assertRaises(ValueError, repository.abs_path, self.UUID_STR)
@@ -48,8 +48,8 @@ class TestRepository(BaseTestCase):
         p.open('bw').write(b'my file content')
 
         val = repository.get(self.UUID)
-        self.assertEquals(val, p)
-        self.assertEquals(val.open('rb').read(), b'my file content')
+        self.assertEqual(val, p)
+        self.assertEqual(val.open('rb').read(), b'my file content')
 
         # non-existent
         u = uuid.UUID('bcdc32ac-498d-4544-9e7f-fb2c75097011')
@@ -59,8 +59,8 @@ class TestRepository(BaseTestCase):
 
         # __getitem__
         val = repository[self.UUID]
-        self.assertEquals(val, p)
-        self.assertEquals(val.open('rb').read(), b'my file content')
+        self.assertEqual(val, p)
+        self.assertEqual(val.open('rb').read(), b'my file content')
 
         # __getitem__ non-existent
         self.assertRaises(KeyError, repository.__getitem__, u)
@@ -71,13 +71,13 @@ class TestRepository(BaseTestCase):
 
         p = repository.abs_path(self.UUID)
         repository.set(self.UUID, b'my file content')
-        self.assertEquals(p.open('rb').read(), b'my file content')
+        self.assertEqual(p.open('rb').read(), b'my file content')
 
         # __setitem__
         p.unlink()
-        self.assertEquals(p.exists(), False)
+        self.assertEqual(p.exists(), False)
         repository[self.UUID] = b'my file content'
-        self.assertEquals(p.open('rb').read(), b'my file content')
+        self.assertEqual(p.open('rb').read(), b'my file content')
         # FIXME: test unicode content
 
     def test_delete(self):
@@ -88,8 +88,8 @@ class TestRepository(BaseTestCase):
         p.parent.mkdir(parents=True)
         p.open('bw').write(b'my file content')
         repository.delete(self.UUID)
-        self.assertEquals(p.exists(), False)
-        self.assertEquals(p.parent.exists(), True)
+        self.assertEqual(p.exists(), False)
+        self.assertEqual(p.parent.exists(), True)
 
         # non-existent
         u = uuid.UUID('bcdc32ac-498d-4544-9e7f-fb2c75097011')
@@ -97,10 +97,10 @@ class TestRepository(BaseTestCase):
 
         # __delitem__
         p.open('bw').write(b'my file content')
-        self.assertEquals(p.exists(), True)
+        self.assertEqual(p.exists(), True)
         del repository[self.UUID]
-        self.assertEquals(p.exists(), False)
-        self.assertEquals(p.parent.exists(), True)
+        self.assertEqual(p.exists(), False)
+        self.assertEqual(p.parent.exists(), True)
 
         # __delitem__ non-existent
         self.assertRaises(KeyError, repository.__delitem__, u)
@@ -154,7 +154,7 @@ class TestSessionRepository(BaseTestCase):
 
         # set
         self.svc.set(session, self.UUID, b'my file content')
-        self.assertEquals(
+        self.assertEqual(
             self.svc.get(session, self.UUID).open('rb').read(),
             b'my file content')
         self.assertIs(repository.get(self.UUID), None)
@@ -173,7 +173,7 @@ class TestSessionRepository(BaseTestCase):
     def test_transaction(self):
         session = self.session
         repository.set(self.UUID, b'first draft')
-        self.assertEquals(
+        self.assertEqual(
             self.svc.get(session, self.UUID).open('rb').read(), b'first draft')
 
         self.svc.set(session, self.UUID, b'new content')
@@ -184,7 +184,7 @@ class TestSessionRepository(BaseTestCase):
         self.svc.delete(session, self.UUID)
         self.assertIs(self.svc.get(session, self.UUID), None)
         db_tr.rollback()
-        self.assertEquals(
+        self.assertEqual(
             self.svc.get(session, self.UUID).open('rb').read(), b'new content')
 
         # delete and commit
@@ -203,7 +203,7 @@ class TestSessionRepository(BaseTestCase):
         self.svc.delete(session, self.UUID)
         self.assertIs(self.svc.get(session, self.UUID), None)
         db_tr.rollback()
-        self.assertEquals(
+        self.assertEqual(
             self.svc.get(session, self.UUID).open('rb').read(), b'first draft')
         session.rollback()
 
@@ -229,7 +229,7 @@ class TestSessionRepository(BaseTestCase):
             with session.begin(nested=True):
                 self.svc.set(session, self.UUID, b'transaction 2')
 
-            self.assertEquals(
+            self.assertEqual(
                 self.svc.get(session, self.UUID).open('rb').read(),
                 b'transaction 2')
 

@@ -127,17 +127,17 @@ class TestText2Html(TestCase):
 
     def test1(self):
         result = text2html("a")
-        self.assertEquals(result, "a")
+        self.assertEqual(result, "a")
 
     def test2(self):
         result = text2html("a\nb")
-        self.assertEquals(str(result), "<p>a</p>\n<p>b</p>")
+        self.assertEqual(str(result), "<p>a</p>\n<p>b</p>")
 
     def test3(self):
         result = text2html("a\n\nb")
-        self.assertEquals(str(result), "<p>a</p>\n<p>b</p>")
+        self.assertEqual(str(result), "<p>a</p>\n<p>b</p>")
 
     def test4(self):
         result = text2html("a\n<a>toto</a>")
-        self.assertEquals(
+        self.assertEqual(
             str(result), "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>")

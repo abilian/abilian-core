@@ -39,7 +39,7 @@ class IndexingServiceTestCase(BaseTestCase):
         state = self.svc.app_state
         self.session.begin(nested=True)
 
-        self.assertEquals(state.to_update, [])
+        self.assertEqual(state.to_update, [])
         self.session.add(contact)
 
         # no commit: model is in wait queue

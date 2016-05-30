@@ -32,12 +32,12 @@ class RoleTestCase(unittest.TestCase):
         admin = Role('admin')
         other_admin = Role('admin')
         self.assertIs(admin, other_admin)
-        self.assertEquals(id(admin), id(other_admin))
+        self.assertEqual(id(admin), id(other_admin))
 
     def test_equality(self):
         admin = Role('admin')
-        self.assertEquals(admin, 'admin')
-        self.assertEquals(admin, u'admin')
+        self.assertEqual(admin, 'admin')
+        self.assertEqual(admin, u'admin')
 
     def test_ordering(self):
         roles = [Authenticated, Admin, Anonymous]
@@ -269,17 +269,17 @@ class SecurityTestCase(IntegrationTestCase):
         self.session.add(folder)
         self.session.flush()
 
-        self.assertEquals(SecurityAudit.query.count(), 0)
+        self.assertEqual(SecurityAudit.query.count(), 0)
 
         security.set_inherit_security(folder, False)
         self.session.flush()
         self.assertFalse(folder.inherit_security)
-        self.assertEquals(SecurityAudit.query.count(), 1)
+        self.assertEqual(SecurityAudit.query.count(), 1)
 
         security.set_inherit_security(folder, True)
         self.session.flush()
         self.assertTrue(folder.inherit_security)
-        self.assertEquals(SecurityAudit.query.count(), 2)
+        self.assertEqual(SecurityAudit.query.count(), 2)
 
     def test_add_list_delete_permissions(self):
         obj = DummyModel()

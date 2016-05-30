@@ -337,7 +337,7 @@ class BaseTestCase(TestCase):
             url_for('login.login_post'),
             data={'email': email,
                   'password': password})
-        self.assertEquals(r.status_code, 302)
+        self.assertEqual(r.status_code, 302)
 
         class LoginContext(object):
 

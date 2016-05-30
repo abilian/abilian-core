@@ -55,13 +55,13 @@ class TestRegistry(FlaskTestCase):
             return obj.name
 
         registry.register(obj, custom_url)
-        self.assertEquals(registry.url_for(obj), name)
+        self.assertEqual(registry.url_for(obj), name)
 
         def url_from_type_and_id(obj, obj_type, obj_id):
             return u'{}:{}'.format(obj_type, obj_id)
 
         registry.register(obj, url_from_type_and_id)
-        self.assertEquals(registry.url_for(obj), u'test_registry.RegEntity:1')
+        self.assertEqual(registry.url_for(obj), u'test_registry.RegEntity:1')
 
     def test_default_url_func(self):
         obj = RegEntity(id=1)
@@ -71,10 +71,10 @@ class TestRegistry(FlaskTestCase):
         def dummy_default_view(object_id):
             pass
 
-        self.assertEquals(
+        self.assertEqual(
             self.app.default_view.url_for(obj), '/regentities_path/1/view')
 
-        self.assertEquals(
+        self.assertEqual(
             self.app.default_view.url_for(obj, _external=True),
             'http://localhost/regentities_path/1/view')
 
@@ -92,7 +92,7 @@ class TestRegistry(FlaskTestCase):
 
         # blueprint registered: default view is set
         self.app.register_blueprint(bp)
-        self.assertEquals(self.app.default_view.url_for(obj), '/blueprint/1')
-        self.assertEquals(
+        self.assertEqual(self.app.default_view.url_for(obj), '/blueprint/1')
+        self.assertEqual(
             self.app.default_view.url_for(obj, _external=True),
             'http://localhost/blueprint/1')

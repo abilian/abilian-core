@@ -70,19 +70,19 @@ class TestAuth(BaseTestCase):
         self.session.commit()
 
         rv = self.client.post('/user/login', data=kwargs)
-        self.assertEquals(rv.status_code, 302, "expected 302, got:" + rv.status)
+        self.assertEqual(rv.status_code, 302, "expected 302, got:" + rv.status)
 
         # wrong password
         d = dict(kwargs)
         d['password'] = 'wrong one'
         rv = self.client.post('/user/login', data=d)
-        self.assertEquals(rv.status_code, 401, "expected 401, got:" + rv.status)
+        self.assertEqual(rv.status_code, 401, "expected 401, got:" + rv.status)
 
         # login disabled
         u.can_login = False
         self.session.commit()
         rv = self.client.post('/user/login', data=kwargs)
-        self.assertEquals(rv.status_code, 401, "expected 401, got:" + rv.status)
+        self.assertEqual(rv.status_code, 401, "expected 401, got:" + rv.status)
 
     def test_api_post(self):
         kwargs = dict(email=u'User@domain.tld',
@@ -95,15 +95,15 @@ class TestAuth(BaseTestCase):
         rv = self.client.post('/user/api/login',
                               data=json.dumps(kwargs),
                               content_type='application/json')
-        self.assertEquals(rv.status_code, 200, "expected 200, got:" + rv.status)
-        self.assertEquals(rv.json,
+        self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
+        self.assertEqual(rv.json,
                           dict(email=u'User@domain.tld',
                                username=u'user@domain.tld',
                                fullname=u'Unknown',
                                next_url=u''))
 
         rv = self.client.post('/user/api/logout')
-        self.assertEquals(rv.status_code, 200, "expected 200, got:" + rv.status)
+        self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
 
     def test_forgotten_pw(self):
         mail = self.app.extensions['mail']
@@ -120,11 +120,11 @@ class TestAuth(BaseTestCase):
 
         with mail.record_messages() as outbox:
             rv = self.client.post('/user/forgotten_pw', data=kwargs)
-            self.assertEquals(rv.status_code, 302,
+            self.assertEqual(rv.status_code, 302,
                               "expected 302, got:" + rv.status)
-            self.assertEquals(len(outbox), 1)
+            self.assertEqual(len(outbox), 1)
             msg = outbox[0]
-            self.assertEquals(msg.subject,
+            self.assertEqual(msg.subject,
                               u'Password reset instruction for Abilian Test')
-            self.assertEquals(msg.recipients, [u'User@domain.tld'])
-            self.assertEquals(msg.cc, [])
+            self.assertEqual(msg.recipients, [u'User@domain.tld'])
+            self.assertEqual(msg.cc, [])

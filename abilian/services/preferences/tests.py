@@ -56,19 +56,19 @@ class PreferencesTestCase(BaseTestCase):
         preference_service = PreferenceService()
 
         preferences = preference_service.get_preferences(user)
-        self.assertEquals(preferences, {})
+        self.assertEqual(preferences, {})
 
         preference_service.set_preferences(user, digest='daily')
         self.session.flush()
 
         preferences = preference_service.get_preferences(user)
-        self.assertEquals(preferences, {'digest': 'daily'})
+        self.assertEqual(preferences, {'digest': 'daily'})
 
         preference_service.clear_preferences(user)
         self.session.flush()
 
         preferences = preference_service.get_preferences(user)
-        self.assertEquals(preferences, {})
+        self.assertEqual(preferences, {})
         assert UserPreference.query.all() == []
 
     def test_preferences_with_various_types(self):
@@ -78,12 +78,12 @@ class PreferencesTestCase(BaseTestCase):
         preference_service.set_preferences(user, some_int=1)
         self.session.flush()
         preferences = preference_service.get_preferences(user)
-        self.assertEquals(preferences, {'some_int': 1})
+        self.assertEqual(preferences, {'some_int': 1})
 
         preference_service.set_preferences(user, some_bool=True)
         self.session.flush()
         preferences = preference_service.get_preferences(user)
-        self.assertEquals(preferences, {'some_int': 1, 'some_bool': True})
+        self.assertEqual(preferences, {'some_int': 1, 'some_bool': True})
 
     def test_visible_panels(self):
         user = User(email=u"test@example.com")
