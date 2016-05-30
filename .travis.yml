@@ -31,7 +31,6 @@ before_install:
 # Install Python dependencies
 install:
   - pip install -e '.[dev]'
-  - pip install Flask==$FLASK_VERSION
 
 # Create DB
 before_script:
