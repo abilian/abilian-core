@@ -42,7 +42,7 @@ before_script:
 
 # Run tests
 script:
-  - py.test -q --cov abilian abilian tests
+  - py.test --cov abilian abilian tests
   - sphinx-build -W -b html docs/ docs/_build/
 
 # Report coverage
