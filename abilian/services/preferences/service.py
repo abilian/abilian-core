@@ -65,18 +65,18 @@ class PreferenceService(Service):
                 self.register_panel(panel)
 
     def get_preferences(self, user=None):
-        """Returns a string->value dictionnary representing the given user
-    preferences.
+        """Return a string->value dictionnary representing the given user
+        preferences.
 
-    If no user is provided, the current user is used instead.
-    """
+        If no user is provided, the current user is used instead.
+        """
         if user is None:
             user = current_user
         return {pref.key: pref.value for pref in user.preferences}
 
     def set_preferences(self, user=None, **kwargs):
-        """Sets preferences from keyword arguments.
-    """
+        """Set preferences from keyword arguments.
+        """
         if user is None:
             user = current_user
 
@@ -89,8 +89,8 @@ class PreferenceService(Service):
                 db.session.add(d[k])
 
     def clear_preferences(self, user=None):
-        """Clears the user preferences.
-    """
+        """Clear the user preferences.
+        """
         if user is None:
             user = current_user
 
@@ -160,7 +160,8 @@ class PreferenceService(Service):
 
         @bp.route("/")
         def index():
-            """Index redirects to the first accessible panel."""
+            """Index redirects to the first accessible panel.
+            """
 
             # Work around unit test failure. FIXME.
             if current_user.is_anonymous:
