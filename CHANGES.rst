@@ -1,6 +1,13 @@
 Changelog for Abilian Core
 ==========================
 
+0.7.0 (2016-05-31)
+------------------
+
+- Made compatible with Flask 0.11, SQLAlchemy 1.0 and a few other recent
+  releases.
+- General cleanup.
+
 0.6.5 (2016-05-10)
 ------------------
 
