@@ -17,9 +17,6 @@ Flask-Testing>=0.4.2
 Flask-Uploads
 Flask-WTF>=0.9.4
 
-# Used to be a dependency of Flask-Babel.
-speaklater
-
 # pathlib is included in python 3.4, and very useful
 pathlib
 

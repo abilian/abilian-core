@@ -64,7 +64,8 @@ from babel.localedata import locale_identifiers
 from babel.support import Translations as BaseTranslations
 from flask import _request_ctx_stack, current_app, g, render_template, request
 from flask_babel import Babel as BabelBase
-from flask_babel import force_locale, gettext, lazy_gettext, ngettext
+from flask_babel import (LazyString, force_locale, gettext, lazy_gettext,
+                         ngettext)
 from future.utils import string_types
 from pathlib import Path
 
@@ -110,8 +111,7 @@ def country_name(code):
 
 #: lazy version of :func:`country_name`
 def lazy_country_name(code):
-    from speaklater import make_lazy_string
-    return make_lazy_string(__gettext_territory, code)
+    return LazyString(__gettext_territory, code)
 
 
 def default_country():

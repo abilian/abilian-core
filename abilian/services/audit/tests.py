@@ -10,9 +10,9 @@ from itertools import count
 import sqlalchemy as sa
 from sqlalchemy import (Column, Date, ForeignKey, Integer, Text, Unicode,
                         UnicodeText)
-from sqlalchemy.orm.attributes import NEVER_SET
-from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm.attributes import NEVER_SET
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -55,11 +55,10 @@ class AccountRelated(db.Model):
     id = Column(Integer, primary_key=True)
 
     account_id = Column(Integer, ForeignKey(DummyAccount.id), nullable=False)
-    account = relationship(
-        DummyAccount,
-        backref=backref('data',
-                               order_by='AccountRelated.id',
-                               cascade='all, delete-orphan'))
+    account = relationship(DummyAccount,
+                           backref=backref('data',
+                                           order_by='AccountRelated.id',
+                                           cascade='all, delete-orphan'))
 
     text = Column(UnicodeText, default="")
 
@@ -71,11 +70,10 @@ class CommentRelated(db.Model):
     id = Column(Integer, primary_key=True)
 
     related_id = Column(Integer, ForeignKey(AccountRelated.id), nullable=False)
-    related = relationship(
-        AccountRelated,
-        backref=backref('comments',
-                               order_by='CommentRelated.id',
-                               cascade='all, delete-orphan'))
+    related = relationship(AccountRelated,
+                           backref=backref('comments',
+                                           order_by='CommentRelated.id',
+                                           cascade='all, delete-orphan'))
     text = Column(UnicodeText, default="")
 
 
