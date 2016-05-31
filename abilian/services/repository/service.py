@@ -27,7 +27,7 @@ def _assert_uuid(uuid):
 
 class RepositoryServiceState(ServiceState):
     #: :class:`Path` path to application repository
-    path = None
+    path = None  # type: Path
 
 
 class RepositoryService(Service):
@@ -137,7 +137,7 @@ _REPOSITORY_TRANSACTION = 'abilian_repository_transactions'
 
 
 class SessionRepositoryState(ServiceState):
-    path = None
+    path = None  # type: Path
 
     @property
     def transactions(self):

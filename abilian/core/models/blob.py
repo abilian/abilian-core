@@ -10,6 +10,8 @@ import uuid
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
+from sqlalchemy.event import listens_for
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer
 
@@ -22,14 +24,14 @@ class BlobQuery(BaseQuery):
     """
 
     def by_uuid(self, uuid):
-        """
-    Like `.get()` but by uuid
+        """Like `.get()` but by uuid.
 
-    :param uuid: a `string` or an `uuid`.
-    """
+        :param uuid: a `string` or an `uuid`.
+        """
+        # type: (str) -> Blob
         try:
             return self.filter_by(uuid=uuid).one()
-        except sa.orm.exc.NoResultFound:
+        except NoResultFound:
             return None
 
 
@@ -122,7 +124,7 @@ class Blob(Model):
         return self.file is not None and self.file.exists()
 
 
-@sa.event.listens_for(sa.orm.Session, 'after_flush')
+@listens_for(sa.orm.Session, 'after_flush')
 def _blob_propagate_delete_content(session, flush_context):
     deleted = (obj for obj in session.deleted if isinstance(obj, Blob))
     for blob in deleted:
