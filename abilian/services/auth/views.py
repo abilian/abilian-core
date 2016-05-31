@@ -344,21 +344,22 @@ def send_mail(subject, recipient, template, **context):
 #
 # Logging
 #
+@user_logged_in.connect
 def log_session_start(app, user):
     session = LoginSession.new()
     db.session.add(session)
     db.session.commit()
 
 
+@user_logged_out.connect
 def log_session_end(app, user):
+    if user.is_anonymous:
+        return
+
     session = LoginSession.query.get_active_for(user)
     if session:
         session.ended_at = datetime.utcnow()
         db.session.commit()
-
-
-user_logged_in.connect(log_session_start)
-user_logged_out.connect(log_session_end)
 
 
 # login redirect utilities

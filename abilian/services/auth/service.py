@@ -142,9 +142,10 @@ class AuthService(Service):
                           security.has_role(user, 'manager'))))
 
     def user_logged_out(self, app, user):
-        del g.user
-        del g.logged_user
-        del g.is_manager
+        if hasattr(g, 'user'):
+            del g.user
+            del g.logged_user
+            del g.is_manager
 
     def redirect_to_login(self, next_url=True):
         kw = {}
