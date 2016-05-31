@@ -8,16 +8,14 @@ import json
 import logging
 import sys
 import uuid
-from distutils.version import StrictVersion
-from functools import partial
 
 import babel
 import flask_sqlalchemy as flask_sa
-import pkg_resources
 import pytz
 import sqlalchemy as sa
 from flask_sqlalchemy import SQLAlchemy as SAExtension
 from future.utils import string_types
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.mutable import Mutable
 
 from .logging import patch_logger
@@ -25,7 +23,7 @@ from .logging import patch_logger
 logger = logging.getLogger(__name__)
 
 
-@sa.event.listens_for(sa.pool.Pool, "checkout")
+@listens_for(sa.pool.Pool, "checkout")
 def ping_connection(dbapi_connection, connection_record, connection_proxy):
     """Ensure connections are valid.
 

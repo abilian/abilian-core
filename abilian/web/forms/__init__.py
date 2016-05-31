@@ -129,9 +129,9 @@ class FormPermissions(object):
         allowed_roles = (self.default[permission] if permission in self.default
                          else self.default['default'])
         definition = None
-        eval_roles = lambda fun: fun(permission=permission,
-                                     field=field,
-                                     obj=obj)
+
+        def eval_roles(fun):
+            return fun(permission=permission, field=field, obj=obj)
 
         if field is None:
             definition = self.form

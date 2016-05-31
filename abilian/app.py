@@ -464,7 +464,7 @@ class Application(Flask, ServiceManager, PluginManager):
         if (not self.testing and self.config.get('DEBUG_TB_ENABLED') and
                 'debugtoolbar' not in self.blueprints):
             try:
-                from flask_debugtoolbar import DebugToolbarExtension, DebugToolbar
+                from flask_debugtoolbar import DebugToolbarExtension, DebugTo  # noqa
             except ImportError:
                 logger.warning('DEBUG_TB_ENABLED is on but flask_debugtoolbar '
                                'is not installed.')

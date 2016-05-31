@@ -5,7 +5,7 @@ Abilian script commands to be used in a project. See `Flask-Script documentation
 
 Here is how a `manage.py` can include these commands::
 
-     from flask.ext.script import Manager
+     from flask_script import Manager
      from abilian.commands import setup_abilian_commands
 
      my_manager = Manager(app)

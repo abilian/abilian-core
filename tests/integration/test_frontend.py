@@ -3,7 +3,7 @@ Test the frontend.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from sqlalchemy import Column, String, UnicodeText
 
 from abilian.core.entities import Entity
@@ -41,7 +41,7 @@ class Contacts(Module):
 
     related_views = [
         # TODO
-        #('Visites', 'visites', ('partenaire', 'visiteur', 'date')),
+        # ('Visites', 'visites', ('partenaire', 'visiteur', 'date')),
     ]
 
 
