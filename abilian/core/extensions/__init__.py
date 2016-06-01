@@ -100,8 +100,10 @@ def _install_get_display_value(cls):
             pass
         else:
             if 'choices' in field.info:
+
                 def get(v):
                     return field.info['choices'].get(v, v)
+
                 if isinstance(val, list):
                     val = [get(v) for v in val]
                 else:
