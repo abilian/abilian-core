@@ -1,6 +1,6 @@
 machine:
   services:
-    - postgres
+    - postgresql
     - redis
   environment:
     POSTGRES_URI: postgres://ubuntu:@localhost/circle_test
