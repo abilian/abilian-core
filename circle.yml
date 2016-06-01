@@ -1,0 +1,18 @@
+machine:
+  service:
+    - postgres
+    - redis
+  environment:
+    POSTGRES_URI: postgres://ubuntu:@localhost/circle_test
+
+dependencies:
+  cache_directories:
+     - "~/.cache/"
+  override:
+    - pip install pip==8.1.1
+    - npm install -g less
+
+test:
+  override:
+    - tox -r -e py27-sqlite
+    
