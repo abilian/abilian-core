@@ -4,6 +4,8 @@ Elements to build test cases for an :class:`abilian.app.Application`
 """
 from __future__ import absolute_import, print_function, division
 
+import getpass
+
 from future.utils import string_types
 
 import os
@@ -195,7 +197,7 @@ class BaseTestCase(TestCase):
         if self.db.engine.name == 'postgresql':
             # ensure we are on a clean DB: let's use our own schema
             self.__pg_schema = 'test_{}'.format(str(time()).replace('.', '_'))
-            username = self.db.engine.url.username
+            username = self.db.engine.url.username or getpass.getuser()
             with self.db.engine.connect() as conn:
                 with conn.begin():
                     conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(
@@ -204,7 +206,7 @@ class BaseTestCase(TestCase):
                     conn.execute('SET search_path TO {}'.format(
                         self.__pg_schema))
                     conn.execute(
-                        'ALTER ROLE {username} SET search_path TO {schema}'
+                        'ALTER ROLE {username} SET search_path TO {schema}' \
                         ''.format(username=username,
                                   schema=self.__pg_schema))
                 conn.execute('COMMIT')
@@ -226,7 +228,7 @@ class BaseTestCase(TestCase):
 
         with self.db.engine.connect() as conn:
             if self.db.engine.name == 'postgresql':
-                username = self.db.engine.url.username
+                username = self.db.engine.url.username or getpass.getuser()
                 with self.db.engine.connect() as conn:
                     with conn.begin():
                         conn.execute(

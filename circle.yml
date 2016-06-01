@@ -1,7 +1,6 @@
 machine:
   services:
     - postgresql
-    - redis
   environment:
     POSTGRES_URI: postgres://ubuntu:@localhost/circle_test
 
@@ -14,5 +13,5 @@ dependencies:
 
 test:
   override:
-    - tox -r -e py27-sqlite
-    
+    - tox
+ 
