@@ -52,7 +52,7 @@ setuptools.setup(
     setup_requires=['babel', 'setuptools-git', 'setuptools_scm>=1.5.5'],
     install_requires=install_requires,
     extras_require={
-        'tests': dev_requires,
+        'testing': dev_requires,
         'dev': dev_requires,
     },
     include_package_data=True,

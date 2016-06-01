@@ -214,8 +214,7 @@ class EntityMeta(BaseMeta):
 
 
 class Entity(Indexable, BaseMixin, db.Model):
-    """
-    Base class for Abilian entities.
+    """Base class for Abilian entities.
 
     From Sqlalchemy POV, Entities use `Joined-Table inheritance
     <http://docs.sqlalchemy.org/en/rel_0_8/orm/inheritance.html#joined-table-inheritance>`_,
@@ -376,8 +375,8 @@ class Entity(Indexable, BaseMixin, db.Model):
 
     @property
     def _indexable_roles_and_users(self):
-        """Return a string made for indexing roles having :any:`READ` permission on
-        this object.
+        """Return a string made for indexing roles having :any:`READ`
+        permission on this object.
         """
         from abilian.services.indexing import indexable_role
         from abilian.services.security import READ, Admin, Anonymous, Creator, Owner
@@ -416,7 +415,8 @@ class Entity(Indexable, BaseMixin, db.Model):
 
     @property
     def _indexable_tags(self):
-        """Index tag ids for tags defined in this Entity's default tags namespace.
+        """Index tag ids for tags defined in this Entity's default tags
+        namespace.
         """
         tags = current_app.extensions['tags']
 

@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin, current_app
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
@@ -280,7 +281,7 @@ class User(Principal, UserMixin, db.Model):
             addr=id(self))
 
 
-@sa.event.listens_for(User, "mapper_configured", propagate=True)
+@listens_for(User, "mapper_configured", propagate=True)
 def _add_user_indexes(mapper, class_):
     # this is a functional index (indexes on a function result), we cannot define
     # it in __table_args__.
