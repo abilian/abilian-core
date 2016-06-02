@@ -254,7 +254,11 @@ class Converter(object):
                 content = self.to_pdf(digest, content, mime_type)
 
             with make_temp_file(content) as in_fn:
-                output = subprocess.check_output(['pdfinfo', in_fn])
+                try:
+                    output = subprocess.check_output(['pdfinfo', in_fn])
+                except OSError:
+                    logger.error("Conversion failed, probably pdfinfo is not installed")
+                    raise
 
             ret = {}
             for line in output.split(b"\n"):
