@@ -12,7 +12,8 @@ from abilian.services.auth.models import LoginSession
 
 from ..panel import AdminPanel
 
-DATA_FILES = ('/usr/share/GeoIP/GeoIP.dat', '/usr/share/GeoIP/GeoIPv6.dat',)
+DATA_FILES = ('/usr/share/GeoIP/GeoIP.dat',
+              '/usr/share/GeoIP/GeoIPv6.dat',)
 
 
 class LoginSessionsPanel(AdminPanel):

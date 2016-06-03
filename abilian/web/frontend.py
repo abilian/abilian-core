@@ -561,9 +561,10 @@ class Module(object):
         self.blueprint = Blueprint(self.endpoint, __name__, url_prefix=self.url)
 
         for url, name, methods in self._urls:
-            self.blueprint.add_url_rule(
-                url, name, getattr(self, name),
-                methods=methods)
+            self.blueprint.add_url_rule(url,
+                                        name,
+                                        getattr(self, name),
+                                        methods=methods)
 
         # run default_view decorator
         default_view(self.blueprint,

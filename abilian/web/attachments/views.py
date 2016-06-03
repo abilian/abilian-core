@@ -35,9 +35,10 @@ def register_default_view(state):
     state.app.default_view.register(Attachment, _default_attachment_view)
 
 
-UPLOAD_BUTTON = ButtonAction(
-    'form', 'edit', btn_class='primary',
-    title=_l(u'Send'))
+UPLOAD_BUTTON = ButtonAction('form',
+                             'edit',
+                             btn_class='primary',
+                             title=_l(u'Send'))
 
 
 class BaseAttachmentView(object):

@@ -151,8 +151,8 @@ class AuditPanel(AdminPanel):
             audit_q = after_query(base_audit_q, AuditEntry, after)
             security_q = after_query(base_security_q, SecurityAudit, after)
         else:
-            before = (datetime.strptime(before, u'%Y-%m-%dT%H:%M:%S.%f') if
-                      before else datetime.utcnow())
+            before = (datetime.strptime(before, u'%Y-%m-%dT%H:%M:%S.%f')
+                      if before else datetime.utcnow())
             audit_q = before_query(base_audit_q, AuditEntry, before)
             security_q = before_query(base_security_q, SecurityAudit, before)
 
@@ -166,8 +166,10 @@ class AuditPanel(AdminPanel):
             .all()
         # audit_entries = []
         all_entries = list(chain(
-            (AuditEntryPresenter(e) for e in audit_entries), (
-                SecurityEntryPresenter(e) for e in security_entries)))
+            #
+            (AuditEntryPresenter(e) for e in audit_entries),
+            #
+            (SecurityEntryPresenter(e) for e in security_entries)))
         all_entries.sort()
 
         if after:

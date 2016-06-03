@@ -42,14 +42,14 @@ from .util import babel2datetime
 
 logger = logging.getLogger(__name__)
 
-__all__ = ['linkify_url', 'text2html', 'Column', 'BaseTableView',
-           'MainTableView', 'RelatedTableView', 'AjaxMainTableView',
-           'SingleView', 'Panel', 'Row', 'Chosen', 'TagInput', 'DateInput',
-           'DefaultViewWidget', 'BooleanWidget', 'FloatWidget',
-           'DateTimeWidget', 'DateWidget', 'MoneyWidget', 'EmailWidget',
-           'URLWidget', 'ListWidget', 'TabularFieldListWidget',
-           'ModelListWidget', 'Select2', 'Select2Ajax', 'RichTextWidget',
-           'FileInput', 'EntityWidget']
+__all__ = [
+    'linkify_url', 'text2html', 'Column', 'BaseTableView', 'MainTableView',
+    'RelatedTableView', 'AjaxMainTableView', 'SingleView', 'Panel', 'Row',
+    'Chosen', 'TagInput', 'DateInput', 'DefaultViewWidget', 'BooleanWidget',
+    'FloatWidget', 'DateTimeWidget', 'DateWidget', 'MoneyWidget', 'EmailWidget',
+    'URLWidget', 'ListWidget', 'TabularFieldListWidget', 'ModelListWidget',
+    'Select2', 'Select2Ajax', 'RichTextWidget', 'FileInput', 'EntityWidget'
+]
 
 
 def linkify_url(value):
@@ -447,7 +447,7 @@ class SingleView(object):
                 data[name] = (label, value)
 
             if data:
-                panels.append((panel, data,))
+                panels.append((panel, data))
 
         template = filter(bool, (self.options.get('view_template'),
                                  'widgets/render_single.html'))
@@ -566,7 +566,7 @@ class ModelWidget(object):
             self.view_template = view_template
 
     def __call__(self, field, *args, **kwargs):
-        return render_template(self.edit_template, form=field,)
+        return render_template(self.edit_template, form=field)
 
     def render_view(self, field, *args, **kwargs):
         _to_skip = (None, False, 0, 0.0, '', u'-')
@@ -1159,8 +1159,8 @@ class DateWidget(wtforms.widgets.TextInput):
 class DateTimeWidget(DateWidget):
 
     def render_view(self, field, **kwargs):
-        return (format_datetime(field.object_data) if field.object_data else
-                u'')
+        return (format_datetime(field.object_data)
+                if field.object_data else u'')
 
 
 class EntityWidget(object):
@@ -1279,9 +1279,10 @@ class RichTextWidget(object):
     def __call__(self, field, **kwargs):
         value = kwargs.pop('value') if 'value' in kwargs else field._value()
         kwargs.setdefault('allowed_tags', self.allowed_tags)
-        return render_template(
-            self.template, field=field,
-            value=value, kw=kwargs)
+        return render_template(self.template,
+                               field=field,
+                               value=value,
+                               kw=kwargs)
 
 
 class ListWidget(wtforms.widgets.ListWidget):

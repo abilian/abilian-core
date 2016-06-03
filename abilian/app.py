@@ -13,6 +13,7 @@ import logging.config
 import os
 from functools import partial
 from itertools import chain, count
+from pathlib import Path
 
 import jinja2
 import sqlalchemy as sa
@@ -29,7 +30,6 @@ from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
 from future.utils import string_types
-from pathlib import Path
 from pkg_resources import resource_filename
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
 from werkzeug.datastructures import ImmutableDict
@@ -184,8 +184,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
         # used by make_config to determine if we try to load config from instance /
         # environment variable /...
-        self._ABILIAN_INIT_TESTING_FLAG = (getattr(config, 'TESTING', False) if
-                                           config else False)
+        self._ABILIAN_INIT_TESTING_FLAG = (getattr(config, 'TESTING', False)
+                                           if config else False)
         Flask.__init__(self, name, *args, **kwargs)
         del self._ABILIAN_INIT_TESTING_FLAG
 
@@ -253,8 +253,8 @@ class Application(Flask, ServiceManager, PluginManager):
         self.register_jinja_loaders(jinja2.PackageLoader('abilian.web',
                                                          'templates'))
 
-        js_filters = (('closure_js',) if self.config.get('PRODUCTION', False)
-                      else None)
+        js_filters = (('closure_js',)
+                      if self.config.get('PRODUCTION', False) else None)
 
         self._assets_bundles = {
             'css': {'options': dict(filters=('less', 'cssmin'),
@@ -464,7 +464,7 @@ class Application(Flask, ServiceManager, PluginManager):
         if (not self.testing and self.config.get('DEBUG_TB_ENABLED') and
                 'debugtoolbar' not in self.blueprints):
             try:
-                from flask_debugtoolbar import DebugToolbarExtension, DebugTo  # noqa
+                from flask_debugtoolbar import DebugToolbarExtension
             except ImportError:
                 logger.warning('DEBUG_TB_ENABLED is on but flask_debugtoolbar '
                                'is not installed.')

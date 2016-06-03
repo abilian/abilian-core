@@ -147,8 +147,9 @@ class EntityQuery(db.Model.query_class):
     def with_permission(self, permission, user=None):
         security = current_app.services['security']
         model = self._entity_zero().entity_zero.entity
-        expr = security.query_entity_with_permission(
-            permission, user, Model=model)
+        expr = security.query_entity_with_permission(permission,
+                                                     user,
+                                                     Model=model)
         return self.filter(expr)
 
 
@@ -391,7 +392,8 @@ class Entity(Indexable, BaseMixin, db.Model):
         for r in allowed_roles:
             result.append(indexable_role(r))
 
-        for role, attr in ((Creator, 'creator'), (Owner, 'owner'),):
+        for role, attr in ((Creator, 'creator'),
+                           (Owner, 'owner'),):
             if role in allowed_roles:
                 user = getattr(self, attr)
                 if user:

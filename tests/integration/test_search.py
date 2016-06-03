@@ -34,7 +34,7 @@ class DummyContact1(Entity):
 
 
 class IndexingTestCase(IntegrationTestCase):
-    SERVICES = ('security', 'indexing',)
+    SERVICES = ('security', 'indexing')
 
     def tearDown(self):
         if index_service.running:

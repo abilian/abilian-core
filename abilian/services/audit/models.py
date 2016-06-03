@@ -108,8 +108,8 @@ class AuditEntry(db.Model):
             repr(self.id), {CREATION: "CREATION",
                             DELETION: "DELETION",
                             UPDATE: "UPDATE"}[self.op],
-            repr(unicode(self.user)), 'related ' if self.related else '',
-            self.entity_type, self.entity_id)
+            repr(unicode(self.user)), 'related '
+            if self.related else '', self.entity_type, self.entity_id)
 
     @property
     def op(self):

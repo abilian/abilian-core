@@ -5,9 +5,9 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import imghdr
+from pathlib import Path
 
 from flask import request, url_for
-from pathlib import Path
 
 from abilian.core.models.subjects import User
 from abilian.testing import BaseTestCase
@@ -37,7 +37,7 @@ class TestUserPreferences(BaseTestCase):
                                       filename='avatar.png',
                                       mimetype='image/png')
 
-        kwargs = dict(method='POST', data={'photo': handle,},)
+        kwargs = dict(method='POST', data={'photo': handle})
 
         with self.app.test_request_context(url, **kwargs):
             self.login(self.user)

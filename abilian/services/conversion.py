@@ -26,12 +26,12 @@ import traceback
 from abc import ABCMeta, abstractmethod
 from base64 import decodestring, encodestring
 from contextlib import contextmanager
+from pathlib import Path
 from tempfile import mkstemp
 from xmlrpclib import ServerProxy
 
 from future.utils import raise_from, string_types
 from magic import Magic
-from pathlib import Path
 from PIL import Image
 from PIL.ExifTags import TAGS
 
@@ -259,7 +259,8 @@ class Converter(object):
                 try:
                     output = subprocess.check_output(['pdfinfo', in_fn])
                 except OSError:
-                    logger.error("Conversion failed, probably pdfinfo is not installed")
+                    logger.error(
+                        "Conversion failed, probably pdfinfo is not installed")
                     raise
 
             ret = {}
@@ -363,8 +364,9 @@ class AbiwordTextHandler(Handler):
              make_temp_file(suffix='.txt') as out_fn:
             try:
                 os.chdir(str(tmp_dir))
-                subprocess.check_call(['abiword', '--to', os.path.basename(
-                    out_fn), os.path.basename(in_fn)])
+                subprocess.check_call(['abiword', '--to',
+                                       os.path.basename(out_fn),
+                                       os.path.basename(in_fn)])
             except Exception as e:
                 raise_from(ConversionError('abiword failed'), e)
             finally:
@@ -396,8 +398,9 @@ class AbiwordPDFHandler(Handler):
              make_temp_file(suffix='.pdf') as out_fn:
             try:
                 os.chdir(bytes(self.TMP_DIR))
-                subprocess.check_call(['abiword', '--to', os.path.basename(
-                    out_fn), os.path.basename(in_fn)])
+                subprocess.check_call(['abiword', '--to',
+                                       os.path.basename(out_fn),
+                                       os.path.basename(in_fn)])
             except Exception as e:
                 raise_from(ConversionError('abiword failed'), e)
             finally:
@@ -457,12 +460,12 @@ class UnoconvPdfHandler(Handler):
     """
 
     # TODO: add more if needed.
-    accepts_mime_types = ['application/vnd.oasis.*', 'application/msword',
-                          'application/mspowerpoint',
-                          'application/vnd.ms-powerpoint',
-                          'application/vnd.ms-excel', 'application/ms-excel',
-                          'application/vnd.openxmlformats-officedocument.*',
-                          'text/rtf']
+    accepts_mime_types = [
+        'application/vnd.oasis.*', 'application/msword',
+        'application/mspowerpoint', 'application/vnd.ms-powerpoint',
+        'application/vnd.ms-excel', 'application/ms-excel',
+        'application/vnd.openxmlformats-officedocument.*', 'text/rtf'
+    ]
     produces_mime_types = ['application/pdf']
     run_timeout = 60
     _process = None
@@ -620,8 +623,9 @@ class WvwareTextHandler(Handler):
             if encoding in ("binary", None):
                 encoding = "ascii"
             try:
-                converted_unicode = unicode(
-                    converted, encoding, errors="ignore")
+                converted_unicode = unicode(converted,
+                                            encoding,
+                                            errors="ignore")
             except:
                 traceback.print_exc()
                 converted_unicode = unicode(converted, errors="ignore")

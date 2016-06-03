@@ -106,9 +106,10 @@ class UserPreferencesPanel(PreferencePanel):
                      url=url_for('users.photo', user_id=g.user.id)))
             data['photo'] = photo
 
-        form = UserPreferencesForm(
-            obj=g.user, formdata=None,
-            prefix=self.id, **data)
+        form = UserPreferencesForm(obj=g.user,
+                                   formdata=None,
+                                   prefix=self.id,
+                                   **data)
         if form['locale'].data is None:
             form['locale'].data = get_default_locale()
         return render_template('preferences/user.html',

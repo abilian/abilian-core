@@ -118,10 +118,11 @@ class FormPermissions(object):
                     self.fields.setdefault(field_name,
                                            dict())[permission] = allowed_roles
 
-    def has_permission(
-            self, permission,
-            field=None,
-            obj=None, user=current_user):
+    def has_permission(self,
+                       permission,
+                       field=None,
+                       obj=None,
+                       user=current_user):
         if obj is not None and not isinstance(obj, Entity):
             # permission/role can be set only on entities
             return True
@@ -158,7 +159,7 @@ class FormPermissions(object):
                 roles.extend(r)
 
         svc = current_app.services['security']
-        return svc.has_role(user, role=roles, object=obj,)
+        return svc.has_role(user, role=roles, object=obj)
 
 
 class FormContext(object):

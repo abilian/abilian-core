@@ -4,7 +4,7 @@
 from __future__ import absolute_import, print_function, division
 
 from .forms import AttachmentForm  # noqa
-from .extension import AttachmentExtension, AttachmentsManager  # noqa
+from .extension import AttachmentExtension, AttachmentsManager
 
 
 def register_plugin(app):

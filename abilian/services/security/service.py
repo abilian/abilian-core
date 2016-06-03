@@ -7,6 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from functools import wraps
 from itertools import chain
+from typing import Dict, Set
 
 import sqlalchemy as sa
 from flask import current_app, g
@@ -14,7 +15,6 @@ from flask_login import current_user
 from future.utils import string_types
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
-from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -37,11 +37,11 @@ __all__ = ['security', 'SecurityError', 'SecurityService', 'InheritSecurity',
 #: default security matrix
 DEFAULT_PERMISSION_ROLE = dict()
 prm = DEFAULT_PERMISSION_ROLE
-prm[MANAGE] = frozenset((Admin, Manager,))
-prm[WRITE] = frozenset((Admin, Manager, Writer,))
-prm[CREATE] = frozenset((Admin, Manager, Writer,))
-prm[DELETE] = frozenset((Admin, Manager, Writer,))
-prm[READ] = frozenset((Admin, Manager, Writer, Reader,))
+prm[MANAGE] = frozenset((Admin, Manager))
+prm[WRITE] = frozenset((Admin, Manager, Writer))
+prm[CREATE] = frozenset((Admin, Manager, Writer))
+prm[DELETE] = frozenset((Admin, Manager, Writer))
+prm[READ] = frozenset((Admin, Manager, Writer, Reader))
 del prm
 
 
@@ -77,8 +77,7 @@ def require_flush(fun):
 
 
 def query_pa_no_flush(session, permission, role, obj):
-    """
-    query for a :class:`PermissionAssignment` using `session` without any
+    """Query for a :class:`PermissionAssignment` using `session` without any
     `flush()`.
 
     It works by looking in session `new`, `dirty` and `deleted`, and issuing a
@@ -133,7 +132,7 @@ class SecurityService(Service):
         state.use_cache = True
 
     def _needs_flush(self):
-        """ Mark next security queries needs DB flush to have up to date information
+        """Mark next security queries needs DB flush to have up to date information
         """
         self.app_state.needs_db_flush = True
 
@@ -141,8 +140,7 @@ class SecurityService(Service):
         pass
 
     def _current_user_manager(self, session=None):
-        """
-        Returns the current user, or SYSTEM user.
+        """Return the current user, or SYSTEM user.
         """
         if session is None:
             session = db.session()
@@ -180,8 +178,8 @@ class SecurityService(Service):
         session.add(obj)
 
         manager = self._current_user_manager(session=session)
-        op = (SecurityAudit.SET_INHERIT if inherit_security else
-              SecurityAudit.UNSET_INHERIT)
+        op = (SecurityAudit.SET_INHERIT
+              if inherit_security else SecurityAudit.UNSET_INHERIT)
         audit = SecurityAudit(manager=manager,
                               op=op,
                               object=obj,
@@ -196,8 +194,7 @@ class SecurityService(Service):
     #
     @require_flush
     def get_roles(self, principal, object=None, no_group_roles=False):
-        """
-        Gets all the roles attached to given `principal`, on a given `object`.
+        """Get all the roles attached to given `principal`, on a given `object`.
 
         :param principal: a :class:`User` or :class:`Group`
 
@@ -242,8 +239,7 @@ class SecurityService(Service):
                        groups=True,
                        object=None,
                        as_list=True):
-        """
-        Return all users which are assigned given role
+        """Return all users which are assigned given role.
         """
         if not isinstance(role, Role):
             role = Role(role)
@@ -313,8 +309,8 @@ class SecurityService(Service):
         principal.__roles_cache__ = cache
 
     def _fill_role_cache(self, principal, overwrite=False):
-        """ Fill role cache for `principal` (User or Group), in order to avoid too
-        many queries when checking role access with 'has_role'
+        """Fill role cache for `principal` (User or Group), in order to avoid
+        too many queries when checking role access with 'has_role'.
 
         Return role_cache of `principal`
         """
@@ -327,8 +323,8 @@ class SecurityService(Service):
 
     @require_flush
     def _fill_role_cache_batch(self, principals, overwrite=False):
-        """ Fill role cache for `principals` (Users and/or Groups), in order to
-        avoid too many queries when checking role access with 'has_role'
+        """Fill role cache for `principals` (Users and/or Groups), in order to
+        avoid too many queries when checking role access with 'has_role'.
         """
         if not self.app_state.use_cache:
             return
@@ -353,11 +349,11 @@ class SecurityService(Service):
 
         filter_cond = []
         if users:
-            filter_cond.append(RoleAssignment.user_id.in_((u.id for u in users
-                                                          )))
+            filter_cond.append(RoleAssignment.user_id.in_((u.id
+                                                           for u in users)))
         if groups:
-            filter_cond.append(RoleAssignment.group_id.in_((g.id for g in groups
-                                                           )))
+            filter_cond.append(RoleAssignment.group_id.in_((g.id
+                                                            for g in groups)))
 
         q = q.filter(sql.or_(*filter_cond))
         ra_users = {}
@@ -394,9 +390,8 @@ class SecurityService(Service):
                     del u.__roles_cache__
 
     def has_role(self, principal, role, object=None):
-        """
-        True if `principal` has `role` (either globally, if `object` is None, or on
-        the specific `object`).
+        """True if `principal` has `role` (either globally, if `object`
+        is None, or on the specific `object`).
 
         :param:role:  can be a list or tuple of strings or a :class:`Role` instance
 
@@ -458,8 +453,7 @@ class SecurityService(Service):
         return len(valid_roles & roles) > 0
 
     def grant_role(self, principal, role, obj=None):
-        """
-        Grants `role` to `user` (either globally, if `obj` is None, or on
+        """Grant `role` to `user` (either globally, if `obj` is None, or on
         the specific `obj`).
         """
         assert principal
@@ -513,9 +507,8 @@ class SecurityService(Service):
             del principal.__roles_cache__
 
     def ungrant_role(self, principal, role, object=None):
-        """
-        Ungrants `role` to `user` (either globally, if `object` is None, or on
-        the specific `object`).
+        """Ungrant `role` to `user` (either globally, if `object` is None,
+        or on the specific `object`).
         """
         assert principal
         principal = noproxy(principal)

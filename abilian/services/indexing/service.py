@@ -164,8 +164,7 @@ class WhooshIndexService(Service):
         js_api['object_types'] = self.searchable_object_types()
 
     def register_search_filter(self, func):
-        """
-        Register a function that returns a query used for filtering search
+        """Register a function that returns a query used for filtering search
         results. This query is And'ed with other filters.
 
         If no filtering should be performed the function must return None.
@@ -245,12 +244,11 @@ class WhooshIndexService(Service):
         """
         config = current_app.config.get('SEARCH_DEFAULT_BOOSTS')
         if not config:
-            config = dict(name=1.5, name_prefix=1.3, description=1.3, text=1.0,)
+            config = dict(name=1.5, name_prefix=1.3, description=1.3, text=1.0)
             return config
 
     def searchable_object_types(self):
-        """
-        List of (object_types, friendly name) present in the index.
+        """List of (object_types, friendly name) present in the index.
         """
         try:
             idx = self.index()
@@ -378,21 +376,23 @@ class WhooshIndexService(Service):
             return results
 
     def search_for_class(self, query, cls, index='default', **search_args):
-        return self.search(
-            query, Models=(fqcn(cls),),
-            index=index, **search_args)
+        return self.search(query,
+                           Models=(fqcn(cls),),
+                           index=index,
+                           **search_args)
 
     def register_classes(self):
         state = self.app_state
-        classes = (cls for cls in db.Model._decl_class_registry.values(
-        ) if isclass(cls) and issubclass(cls, Indexable) and cls.__indexable__)
+        classes = (
+            cls for cls in db.Model._decl_class_registry.values()
+            if isclass(cls) and issubclass(cls, Indexable) and cls.__indexable__
+        )
         for cls in classes:
             if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)
 
     def register_class(self, cls, app_state=None):
-        """
-        Registers a model class
+        """Register a model class.
         """
         state = app_state if app_state is not None else self.app_state
 

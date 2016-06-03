@@ -82,18 +82,16 @@ class TestActions(BaseTestCase):
         assert OTHER_CAT.url({}) == 'http://count?0'
 
     def test_render(self):
-        assert (
-            BASIC.render() ==
-            Markup(u'<a class="action action-cat_1 action-cat_1-basic" '
-                   u'href="http://some.where">'
-                   u'<i class="glyphicon glyphicon-ok"></i> Basic Action</a>'))
+        assert (BASIC.render() == Markup(
+            u'<a class="action action-cat_1 action-cat_1-basic" '
+            u'href="http://some.where">'
+            u'<i class="glyphicon glyphicon-ok"></i> Basic Action</a>'))
 
-        assert (
-            CONDITIONAL.render() ==
-            Markup(u'<a class="action action-cat_1 action-cat_1-conditional '
-                   u'btn btn-warning" href="http://condition.al">'
-                   u'<i class="glyphicon glyphicon-hand-right"></i> '
-                   u'Conditional Action</a>'))
+        assert (CONDITIONAL.render() == Markup(
+            u'<a class="action action-cat_1 action-cat_1-conditional '
+            u'btn btn-warning" href="http://condition.al">'
+            u'<i class="glyphicon glyphicon-hand-right"></i> '
+            u'Conditional Action</a>'))
 
         assert (OTHER_CAT.render() == Markup(
             u'<a class="action action-cat_2-sub action-cat_2-sub-other '

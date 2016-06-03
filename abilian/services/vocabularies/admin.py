@@ -205,9 +205,9 @@ class VocabularyPanel(AdminPanel):
                 label=Model.Meta.group if group else _('Global'),
                 url=url_for('.vocabularies_group', group=group or u'_'),
             ))
-            g.breadcrumb.append(
-                BreadcrumbItem(label=Model.Meta.label,
-                               url=url_for('.vocabularies_model',
-                                           group=group or u'_',
-                                           Model=Model.Meta.name),))
+            g.breadcrumb.append(BreadcrumbItem(label=Model.Meta.label,
+                                               url=url_for(
+                                                   '.vocabularies_model',
+                                                   group=group or u'_',
+                                                   Model=Model.Meta.name),))
             view_args['Model'] = Model

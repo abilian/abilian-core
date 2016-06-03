@@ -55,6 +55,7 @@ import re
 import unicodedata
 from datetime import datetime
 from gettext import GNUTranslations
+from pathlib import Path
 
 import flask_babel
 import pytz
@@ -67,7 +68,6 @@ from flask_babel import Babel as BabelBase
 from flask_babel import (LazyString, force_locale, gettext, lazy_gettext,
                          ngettext)
 from future.utils import string_types
-from pathlib import Path
 
 __all__ = [
     'babel', 'gettext', '_', 'lazy_gettext', '_l', 'localeselector', 'ngettext',

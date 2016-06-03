@@ -85,8 +85,8 @@ class FileUploadsExtension(object):
         js_api['newFileUrl'] = url_for('uploads.new_file')
 
     def user_dir(self, user):
-        user_id = (str(user.id) if not isinstance(user, AnonymousUserMixin) else
-                   'anonymous')
+        user_id = (str(user.id)
+                   if not isinstance(user, AnonymousUserMixin) else 'anonymous')
         return self.UPLOAD_DIR / user_id
 
     def add_file(self, user, file_obj, **metadata):

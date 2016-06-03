@@ -130,6 +130,7 @@ DELETE = Permission('delete')
 class RoleAssignment(db.Model):
     __tablename__ = "roleassignment"
     __table_args__ = (
+        #
         CheckConstraint("(CAST(anonymous AS INTEGER) = 1)"
                         " OR "
                         "((CAST(anonymous AS INTEGER) = 0)"
@@ -138,12 +139,13 @@ class RoleAssignment(db.Model):
                         "  OR "
                         "  (user_id IS NULL AND group_id IS NOT NULL)))",
                         name="roleassignment_ck_user_xor_group"),
+        #
         UniqueConstraint('anonymous',
                          'user_id',
                          'group_id',
                          'role',
                          'object_id',
-                         name='assignment_mapped_role_unique'),)
+                         name='assignment_mapped_role_unique'))
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     role = Column(RoleType, index=True, nullable=False)
@@ -208,7 +210,7 @@ def _postgres_indexes():
             role,
             unique=True,
             postgresql_where=((anonymous == True) & (user_id == None) &
-                              (group_id == None) & (obj == None)),),
+                              (group_id == None) & (obj == None))),
         Index(
             name('user_role_object'),
             user_id,
@@ -303,7 +305,7 @@ def _postgres_indexes():
             PA.permission,
             PA.role,
             unique=True,
-            postgresql_where=(PA.object_id == None),),
+            postgresql_where=(PA.object_id == None))
     ]
 
     for idx in indexes:

@@ -76,7 +76,8 @@ FONTAWESOME_LESS = Bundle('font-awesome/less/font-awesome.less')
 
 REQUIRE_JS = Bundle('requirejs/require.js', 'requirejs/domReady.js')
 
-SELECT2_LESS = Bundle('select2/select2.css', 'select2/select2-bootstrap.css',)
+SELECT2_LESS = Bundle('select2/select2.css',
+                      'select2/select2-bootstrap.css',)
 SELECT2_JS = Bundle('select2/select2.js')
 
 TYPEAHEAD_LESS = Bundle('typeahead/typeahead.js-bootstrap.less')

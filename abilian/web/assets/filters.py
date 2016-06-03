@@ -10,9 +10,9 @@ import os
 import re
 from functools import partial
 from os.path import isabs
+from pathlib import Path
 from StringIO import StringIO
 
-from pathlib import Path
 from webassets.filter import ExternalTool, Filter, get_filter, register_filter
 from webassets.filter.closure import ClosureJS as BaseClosureJS
 from webassets.utils import working_directory
@@ -340,7 +340,8 @@ class ClosureJS(BaseClosureJS):
         try:
             smap_idx = self.extra_args.index('--create_source_map')
             smap_path = Path(self.extra_args[smap_idx + 1])
-        except (ValueError, IndexError,):
+        except (ValueError,
+                IndexError,):
             return
 
         if not smap_path.exists():

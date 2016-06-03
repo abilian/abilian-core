@@ -78,8 +78,8 @@ class TextSearchCriterion(BaseCriterion):
 
     def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
         super(TextSearchCriterion, self).__init__(name, label)
-        self.attributes = dict.fromkeys(attributes if attributes is not None
-                                        else (name,))
+        self.attributes = dict.fromkeys(attributes
+                                        if attributes is not None else (name,))
         self._attributes_prepared = False
 
         if isinstance(search_fmt, string_types):

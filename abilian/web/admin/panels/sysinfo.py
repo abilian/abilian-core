@@ -6,11 +6,11 @@ from __future__ import (absolute_import, division, print_function,
 
 import os
 import sys
+from pathlib import Path
 
 import pip
 import pkg_resources
 from flask import current_app, render_template
-from pathlib import Path
 from pip.vcs import vcs
 
 from ..panel import AdminPanel

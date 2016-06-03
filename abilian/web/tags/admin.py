@@ -269,7 +269,7 @@ class TagPanel(AdminPanel):
         session = current_app.db.session()
         namespaces = session.execute(ns_query)
 
-        return render_template('admin/tags.html', namespaces=namespaces,)
+        return render_template('admin/tags.html', namespaces=namespaces)
 
     def install_additional_rules(self, add_url_rule):
         panel_endpoint = '.' + self.id

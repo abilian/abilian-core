@@ -113,8 +113,9 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         # instanciation so as to have permission filtering
         field_names = []
         labels = []
-        fieldsubform = self.unbound_field.bind(
-            form=None, name='dummy', _meta=self.meta)
+        fieldsubform = self.unbound_field.bind(form=None,
+                                               name='dummy',
+                                               _meta=self.meta)
         subform = fieldsubform.form_class(csrf_enabled=False)
         for f in subform:
             if f.is_hidden:
@@ -553,9 +554,8 @@ class QuerySelect2Field(SelectFieldBase):
 
     def iter_choices(self):
         if not self.flags.required:
-            yield (None,
-                   None,
-                   self.data == [] if self.multiple else self.data is None,)
+            yield (None, None, self.data == []
+                   if self.multiple else self.data is None)
 
         predicate = (operator.contains if
                      (self.multiple and self.data is not None) else operator.eq)
@@ -662,7 +662,7 @@ class JsonSelect2Field(SelectFieldBase):
 
     def iter_choices(self):
         if not self.flags.required:
-            yield (None, None, self.data is None,)
+            yield (None, None, self.data is None)
 
         data = self.data
         if not self.multiple:
@@ -756,7 +756,7 @@ class LocaleSelectField(SelectField):
 
     def iter_choices(self):
         if not self.flags.required:
-            yield (None, None, self.data is None,)
+            yield (None, None, self.data is None)
 
         for locale, label in i18n.supported_app_locales():
             yield (locale.language, label.capitalize(), locale == self.data)
@@ -772,7 +772,7 @@ class TimezoneField(SelectField):
 
     def iter_choices(self):
         if not self.flags.required:
-            yield (None, None, self.data is None,)
+            yield (None, None, self.data is None)
 
         for tz, label in i18n.timezones_choices():
             yield (tz.zone, label, tz == self.data)

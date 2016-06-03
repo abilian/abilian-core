@@ -109,9 +109,10 @@ class Admin(object):
             self._panels_endpoints[abs_endpoint] = panel
         if hasattr(panel, 'post'):
             post_endpoint = endpoint + "_post"
-            self.blueprint.add_url_rule(
-                rule, post_endpoint,
-                panel.post, methods=['POST'])
+            self.blueprint.add_url_rule(rule,
+                                        post_endpoint,
+                                        panel.post,
+                                        methods=['POST'])
             self._panels_endpoints['admin.' + post_endpoint] = panel
 
         panel.install_additional_rules(self.get_panel_url_rule_adder(

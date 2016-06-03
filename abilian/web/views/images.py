@@ -7,11 +7,11 @@ from __future__ import (absolute_import, division, print_function,
 
 import colorsys
 import hashlib
+from pathlib import Path
 
 import pkg_resources
 import sqlalchemy as sa
 from flask import Blueprint, make_response, render_template, request
-from pathlib import Path
 from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.models.blob import Blob
@@ -219,13 +219,13 @@ route('/users/default')(StaticImageView.as_view(b'user_default',
 
 def user_url_args(user, size):
     endpoint = 'images.user_default'
-    kwargs = {'s': size, 'md5': DEFAULT_AVATAR_MD5,}
+    kwargs = {'s': size, 'md5': DEFAULT_AVATAR_MD5}
 
     if not user.is_anonymous:
         endpoint = 'images.user_photo'
         kwargs['user_id'] = user.id
-        content = (user.photo if user.photo else
-                   (user.name + user.email).encode('utf-8'))
+        content = (user.photo
+                   if user.photo else (user.name + user.email).encode('utf-8'))
         kwargs['md5'] = hashlib.md5(content).hexdigest()
 
     return endpoint, kwargs

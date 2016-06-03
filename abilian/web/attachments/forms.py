@@ -19,10 +19,10 @@ class AttachmentForm(Form):
     blob = FileField(
         _l(u'file'),
         validators=[required()],
-        filters=(strip,),
+        filters=[strip],
         multiple=False)
 
-    description = StringField(_l(u'description (optional)'), filters=(strip,),)
+    description = StringField(_l(u'description (optional)'), filters=[strip])
 
     class Meta:
         model = Attachment
