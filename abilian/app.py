@@ -966,7 +966,7 @@ class Application(Flask, ServiceManager, PluginManager):
            app.errorhandler(code)(handler)
         """
         # 5xx code: error on server side
-        if (code / 100) == 5:
+        if (code // 100) == 5:
             # ensure rollback if needed, else error page may
             # have an error, too, resulting in raw 500 page :-(
             db.session.rollback()
