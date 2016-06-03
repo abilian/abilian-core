@@ -22,17 +22,18 @@ class VisiblePanel(PreferencePanel):
         return True
 
     def get(self):
-        return u'Visible'
+        return 'Visible'
 
 
 class AdminPanel(PreferencePanel):
     id = label = 'admin'
 
     def is_accessible(self):
-        return current_app.services['security'].has_role(current_user, "admin")
+        security_service = current_app.services['security']
+        return security_service.has_role(current_user, "admin")
 
     def get(self):
-        return u'Admin'
+        return 'Admin'
 
 
 class App(BaseTestCase.application_class):

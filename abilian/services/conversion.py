@@ -66,7 +66,8 @@ class Cache(object):
     CACHE_DIR = None
 
     def _path(self, key):
-        """ file path for `key`"""
+        """File path for `key`:
+        """
         return self.CACHE_DIR / "{}.blob".format(key)
 
     def __contains__(self, key):
@@ -149,7 +150,7 @@ class Converter(object):
                               mime_type)
 
     def to_text(self, digest, blob, mime_type):
-        """Converts a file to plain text.
+        """Convert a file to plain text.
 
         Useful for full-text indexing. Returns an unicode string.
         """
@@ -182,14 +183,14 @@ class Converter(object):
                               mime_type)
 
     def has_image(self, digest, mime_type, index, size=500):
-        """ Tell if there is a preview image
+        """Tell if there is a preview image.
         """
         cache_key = "img:%s:%s:%s" % (index, size, digest)
         return mime_type.startswith("image/") or cache_key in self.cache
 
     def get_image(self, digest, blob, mime_type, index, size=500):
-        """ Return an image for the given content, only if it already exists in the
-        image cache
+        """Return an image for the given content, only if it already exists in
+        the image cache.
         """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
@@ -199,8 +200,7 @@ class Converter(object):
         return self.cache.get(cache_key)
 
     def to_image(self, digest, blob, mime_type, index, size=500):
-        """
-        Converts a file to a list of images. Returns image at the given index.
+        """Convert a file to a list of images. Returns image at the given index.
         """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
@@ -234,7 +234,9 @@ class Converter(object):
                               mime_type)
 
     def get_metadata(self, digest, content, mime_type):
-        """Gets a dictionary representing the metadata embedded in the given content."""
+        """Get a dictionary representing the metadata embedded in the given
+        content.
+        """
 
         # XXX: ad-hoc for now, refactor later
         if mime_type.startswith("image/"):
@@ -503,8 +505,7 @@ class UnoconvPdfHandler(Handler):
         return out
 
     def convert(self, blob, **kw):
-        """
-        Unoconv converter called.
+        """Convert using unoconv converter.
         """
         timeout = self.run_timeout
         with make_temp_file(blob) as in_fn, \

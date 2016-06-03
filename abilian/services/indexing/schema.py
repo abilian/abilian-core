@@ -70,8 +70,7 @@ def DefaultSearchSchema(*args, **kwargs):
 
 
 def indexable_role(principal):
-    """
-    Return a string suitable for query against `allowed_roles_and_users`
+    """Return a string suitable for query against `allowed_roles_and_users`
     field.
 
     :param principal: It can be :data:`Anonymous`, :data:`Authenticated`,

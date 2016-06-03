@@ -49,9 +49,8 @@ class RepositoryService(Service):
 
     # data management: paths and accessors
     def rel_path(self, uuid):
-        """
-        Contruct relative path from repository top directory to the file named
-        after this uuid.
+        """Contruct relative path from repository top directory to the file
+        named after this uuid.
 
         :param:uuid: :class:`UUID` instance
         """
@@ -60,8 +59,7 @@ class RepositoryService(Service):
         return Path(filename[0:2], filename[2:4], filename)
 
     def abs_path(self, uuid):
-        """
-        Return absolute :class:`Path` object for given uuid.
+        """Return absolute :class:`Path` object for given uuid.
 
         :param:uuid: :class:`UUID` instance
         """
@@ -84,8 +82,7 @@ class RepositoryService(Service):
         return path
 
     def set(self, uuid, content, encoding='utf-8'):
-        """
-        Store binary content with uuid as key
+        """Store binary content with uuid as key
 
         :param:uuid: :class:`UUID` instance
         :param:content: string, bytes, or any object with a `read()` method
@@ -106,8 +103,7 @@ class RepositoryService(Service):
             f.write(content)
 
     def delete(self, uuid):
-        """
-        Delete file with given uuid.
+        """Delete file with given uuid.
 
         :param:uuid: :class:`UUID` instance
         :raises:KeyError if file does not exists

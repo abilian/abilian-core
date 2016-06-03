@@ -48,7 +48,8 @@ route = login.route
 #
 @route("/login")
 def login_form():
-    """Display the login form."""
+    """Display the login form.
+    """
     next_url = get_redirect_target()
     return render_template("login/login.html", next_url=next_url)
 
@@ -144,8 +145,7 @@ def forgotten_pw_form():
 @route("/forgotten_pw", methods=['POST'])
 @csrf.exempt
 def forgotten_pw(new_user=False):
-    """
-    Reset password for users who have already activated their accounts.
+    """Reset password for users who have already activated their accounts.
     """
     email = request.form.get('email', "").lower()
 
@@ -286,7 +286,7 @@ def generate_reset_password_token(user):
 
 def reset_password_token_status(token):
     """Return the expired status, invalid status, and user of a password reset
-  token.
+    token.
 
     For example::
 

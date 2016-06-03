@@ -21,8 +21,7 @@ _MARK = object()
 class LoginSessionQuery(BaseQuery):
 
     def get_active_for(self, user, user_agent=_MARK, ip_address=_MARK):
-        """
-        Returns last known session for user
+        """Return last known session for given user.
 
         :param user: user session
         :type user: `abilian.core.models.subjects.User`
@@ -85,10 +84,11 @@ class LoginSession(db.Model):
     @staticmethod
     def new():
         user_agent = request.environ.get('HTTP_USER_AGENT', '')
-        if not request.headers.getlist("X-Forwarded-For"):
+        forwared_for = request.headers.getlist("X-Forwarded-For")
+        if not forwared_for:
             ip_address = request.remote_addr
         else:
-            ip_address = request.headers.getlist("X-Forwarded-For")[0]
+            ip_address = forwared_for[0]
         session = LoginSession(user=current_user,
                                user_agent=user_agent,
                                ip_address=ip_address)

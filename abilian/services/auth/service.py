@@ -156,9 +156,9 @@ class AuthService(Service):
 
     def do_access_control(self):
         """
-    `before_request` handler to check if user should be redirected to login
-    page.
-    """
+        `before_request` handler to check if user should be redirected to login
+        page.
+        """
         if current_app.testing and current_app.config.get("NO_LOGIN"):
             # Special case for tests
             user = User.query.get(0)

@@ -39,15 +39,14 @@ class SchemaAdapter(object):
 
     @staticmethod
     def can_adapt(obj_cls):
-        """
-        Returns True if this class can adapt objects of class `obj_cls`
+        """Return True if this class can adapt objects of class `obj_cls`.
         """
         raise NotImplementedError
 
     @abstractmethod
     def retrieve(self, pk, **data):
-        """
-        Returns an object instance given its identifier and optional data kwargs.
+        """Returns an object instance given its identifier and optional data
+        kwargs.
 
         :returns:None if not object instance can be returned
         """
