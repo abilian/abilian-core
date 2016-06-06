@@ -18,7 +18,7 @@ You can also include abilian commands as sub commands::
 
 Extensions can add their own commands to :py:data:`~abilian.core.commands.manager`::
 
-     from flask.ext.script import Manager
+     from flask_script import Manager
      from abilian.commands import manager
 
      @manager.command
@@ -46,11 +46,11 @@ __all__ = ['manager', 'setup_abilian_commands']
 def setup_abilian_commands(manager):
     """Register abilian commands on ``manager``.
 
-    :param manager: ``flask.ext.script.Manager`` instance to add commands onto
+    :param manager: ``flask_script.Manager`` instance to add commands onto
 
     Usage exemple::
 
-      from flask.ext.script import Manager
+      from flask_script import Manager
       from abilian.commands import setup_abilian_commands
 
       my_manager = Manager(app)
