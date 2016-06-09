@@ -27,7 +27,7 @@ __all__ = ['manager', 'logger']
 logging.basicConfig()
 logger = logging.getLogger('')
 
-# PATCH flask.ext.script.Manager.run to force creation of app before run() is
+# PATCH flask_script.Manager.run to force creation of app before run() is
 # called. In default implementation, the arg parser is created before the Flask
 # application. So we can't use app.script_manager to add commands from
 # plugins. If app is created before the arg parser, plugin commands are properly
@@ -47,7 +47,7 @@ def _manager_run(self, *args, **kwargs):
 patch_logger.info(Manager.run)
 Manager.run = _manager_run
 
-#: ``flask.ext.script.Manager`` instance for abilian commands
+#: ``flask_script.Manager`` instance for abilian commands
 manager = Manager(usage='Abilian base commands')
 
 

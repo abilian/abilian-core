@@ -171,7 +171,7 @@ class Application(Flask, ServiceManager, PluginManager):
     #: json serializable dict to land in Javascript under Abilian.api
     js_api = None
 
-    #: :class:`flask.ext.script.Manager` instance for shell commands of this app.
+    #: :class:`flask_script.Manager` instance for shell commands of this app.
     #: defaults to `.commands.manager`, relative to app name.
     script_manager = '.commands.manager'
 
