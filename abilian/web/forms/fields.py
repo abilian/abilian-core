@@ -399,6 +399,8 @@ class DateField(Field):
             except ValueError:
                 self.data = None
                 raise ValueError(self.gettext('Not a valid datetime value'))
+        else:
+            self.data = None
 
 
 class Select2Field(SelectField):
