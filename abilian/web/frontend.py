@@ -301,11 +301,11 @@ class ListJson(ModuleView, JSONView):
         end = start + length
 
         total_count = self.module.listing_query.count()
-        q = self.module.list_query(request)
-        count = q.count()
-        q = self.module.ordered_query(request, q)
+        query = self.module.list_query(request)
+        count = query.count()
+        query = self.module.ordered_query(request, query)
 
-        entities = q.slice(start, end).all()
+        entities = query.slice(start, end).all()
         table_view = AjaxMainTableView(
             columns=self.module.list_view_columns,
             name=self.module.managed_class.__name__.lower(),
@@ -615,12 +615,12 @@ class Module(object):
         """
         args = request.args
         search = args.get("sSearch", "").replace("%", "").lower()
-        q = self.read_query.distinct()
+        query = self.read_query.distinct()
 
         for crit in self.search_criterions:
-            q = crit.filter(q, self, request, search)
+            query = crit.filter(query, self, request, search)
 
-        return q
+        return query
 
     def list_query(self, request):
         """
@@ -631,13 +631,13 @@ class Module(object):
         """
         args = request.args
         search = args.get("sSearch", "").replace("%", "").lower()
-        q = self.listing_query
-        q = q.distinct()
+        query = self.listing_query
+        query = query.distinct()
 
         for crit in self.search_criterions:
-            q = crit.filter(q, self, request, search)
+            query = crit.filter(query, self, request, search)
 
-        return q
+        return query
 
     def ordered_query(self, request, query=None):
         """Order query according to request args.

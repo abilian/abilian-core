@@ -67,8 +67,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
         name = cls.__name__
 
         with session.begin():
-            q = session.query(cls).options(sa.orm.lazyload('*'))
-            count = q.count()
+            query = session.query(cls).options(sa.orm.lazyload('*'))
+            count = query.count()
 
             if count == 0:
                 print("{}: 0".format(name))
@@ -81,7 +81,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
             progress.start()
             count_current = 0
 
-            for obj in q.yield_per(1000):
+            for obj in query.yield_per(1000):
                 if obj.object_type != current_object_type:
                     # may happen if obj is a subclass and its parent class is also
                     # indexable

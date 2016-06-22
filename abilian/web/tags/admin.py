@@ -37,7 +37,7 @@ def get_entities_for_reindex(tags):
     indexing = current_app.services['indexing']
     tbl = Entity.__table__
     tag_ids = [t.id for t in tags]
-    q = sa.sql \
+    query = sa.sql \
         .select([tbl.c.entity_type, tbl.c.id]) \
         .select_from(tbl.join(entity_tag_tbl,
                               entity_tag_tbl.c.entity_id == tbl.c.id)) \
@@ -46,7 +46,7 @@ def get_entities_for_reindex(tags):
     entities = set()
 
     with session.no_autoflush:
-        for entity_type, entity_id in session.execute(q):
+        for entity_type, entity_id in session.execute(query):
             if entity_type not in indexing.adapted:
                 logger.debug('%r is not indexed, skipping', entity_type)
 

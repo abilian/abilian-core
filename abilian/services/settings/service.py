@@ -19,21 +19,21 @@ class SettingsService(Service):
 
     def keys(self, prefix=None):
         """List all keys, with optional prefix filtering."""
-        q = Setting.query
+        query = Setting.query
         if prefix:
-            q = q.filter(Setting.key.startswith(prefix))
+            query = query.filter(Setting.key.startswith(prefix))
 
         # don't use iteritems: 'value' require little processing whereas we only
         # want 'key'
-        return [i[0] for i in q.yield_per(1000).values(Setting.key)]
+        return [i[0] for i in query.yield_per(1000).values(Setting.key)]
 
     def iteritems(self, prefix=None):
         """Like dict.iteritems."""
-        q = Setting.query
+        query = Setting.query
         if prefix:
-            q = q.filter(Setting.key.startswith(prefix))
+            query = query.filter(Setting.key.startswith(prefix))
 
-        for s in q.yield_per(1000):
+        for s in query.yield_per(1000):
             yield (s.key, s.value)
 
     def as_dict(self, prefix=None):

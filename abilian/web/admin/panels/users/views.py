@@ -39,11 +39,11 @@ class JsonUsersList(base.JSONView):
         search = kw.get("sSearch", "").replace("%", "").strip().lower()
 
         end = start + length
-        q = User.query \
+        query = User.query \
           .options(sa.orm.subqueryload('groups'),
                    sa.orm.undefer('photo'), ) \
           .filter(User.id != 0)
-        total_count = q.count()
+        total_count = query.count()
 
         if search:
             # TODO: gérer les accents
@@ -51,9 +51,9 @@ class JsonUsersList(base.JSONView):
                 func.lower(User.first_name).like("%" + search + "%"),
                 func.lower(User.last_name).like("%" + search + "%"),
                 func.lower(User.email).like("%" + search + "%"))
-            q = q.filter(filter)
+            query = query.filter(filter)
 
-        count = q.count()
+        count = query.count()
         SORT_COLS = {
             1: [],  # [User.last_name, User.first_name] will be added anyway
             2: [func.lower(User.email)],
@@ -67,13 +67,13 @@ class JsonUsersList(base.JSONView):
         order_by = map(direction, columns)
 
         # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
-        engine = q.session.get_bind(User.__mapper__)
+        engine = query.session.get_bind(User.__mapper__)
         if engine.name != 'sqlite':
             order_by[0] = nullslast(order_by[0])
 
-        q = q.order_by(*order_by)
+        query = query.order_by(*order_by)
 
-        users = q.slice(start, end).all()
+        users = query.slice(start, end).all()
 
         data = []
         MUGSHOT_SIZE = 45

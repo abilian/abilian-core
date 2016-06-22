@@ -35,27 +35,27 @@ class JsonGroupsList(base.JSONView):
         search = kw.get("sSearch", "").replace("%", "").strip().lower()
 
         end = start + length
-        q = Group.query \
+        query = Group.query \
           .options(sa.orm.noload('*'))
-        total_count = q.count()
+        total_count = query.count()
 
         if search:
             # TODO: gérer les accents
-            q = q.filter(func.lower(Group.name).like("%" + search + "%"))
+            query = query.filter(func.lower(Group.name).like("%" + search + "%"))
 
-        count = q.count()
+        count = query.count()
         columns = [func.lower(Group.name)]
         direction = asc if sort_dir == 'asc' else desc
         order_by = map(direction, columns)
 
         # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
-        engine = q.session.get_bind(Group.__mapper__)
+        engine = query.session.get_bind(Group.__mapper__)
         if engine.name != 'sqlite':
             order_by[0] = nullslast(order_by[0])
 
-        q = q.order_by(*order_by) \
+        query = query.order_by(*order_by) \
           .add_columns(Group.members_count)
-        groups = q.slice(start, end).all()
+        groups = query.slice(start, end).all()
         data = []
 
         for group, members_count in groups:

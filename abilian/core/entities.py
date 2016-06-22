@@ -360,13 +360,13 @@ class Entity(Indexable, BaseMixin, db.Model):
             session = sa.orm.object_session(self)
             if not session:
                 return None
-            q = session.query(Entity.slug) \
+            query = session.query(Entity.slug) \
                 .filter(Entity._entity_type == self.object_type)
             if self.id is not None:
-                q = q.filter(Entity.id != self.id)
+                query = query.filter(Entity.id != self.id)
             slug_re = re.compile(re.escape(slug) + r'-?(-\d+)?')
             results = [int(m.group(1) or 0)  # 0: for the unnumbered slug
-                       for m in (slug_re.match(s.slug) for s in q.all()
+                       for m in (slug_re.match(s.slug) for s in query.all()
                                  if s.slug) if m]
 
             max_id = max(-1, -1, *results) + 1

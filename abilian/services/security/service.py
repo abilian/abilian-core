@@ -207,7 +207,7 @@ class SecurityService(Service):
         if hasattr(principal, 'is_anonymous') and principal.is_anonymous:
             return [AnonymousRole]
 
-        q = db.session.query(RoleAssignment.role)
+        query = db.session.query(RoleAssignment.role)
         if isinstance(principal, Group):
             filter_principal = RoleAssignment.group == principal
         else:
@@ -217,13 +217,13 @@ class SecurityService(Service):
                 if groups:
                     filter_principal |= RoleAssignment.group_id.in_(groups)
 
-        q = q.filter(filter_principal)
+        query = query.filter(filter_principal)
 
         if object is not None:
             assert isinstance(object, Entity)
 
-        q = q.filter(RoleAssignment.object == object)
-        roles = {i[0] for i in q.all()}
+        query = query.filter(RoleAssignment.object == object)
+        roles = {i[0] for i in query.all()}
 
         if object is not None:
             for attr, role in (('creator', Creator), ('owner', Owner)):
@@ -245,17 +245,17 @@ class SecurityService(Service):
             role = Role(role)
         assert role
         assert (users or groups)
-        q = RoleAssignment.query.filter_by(role=role)
+        query = RoleAssignment.query.filter_by(role=role)
 
         if not anonymous:
-            q = q.filter(RoleAssignment.anonymous == False)
+            query = query.filter(RoleAssignment.anonymous == False)
         if not users:
-            q = q.filter(RoleAssignment.user == None)
+            query = query.filter(RoleAssignment.user == None)
         elif not groups:
-            q = q.filter(RoleAssignment.group == None)
+            query = query.filter(RoleAssignment.group == None)
 
-        q = q.filter(RoleAssignment.object == object)
-        principals = {(ra.user or ra.group) for ra in q.all()}
+        query = query.filter(RoleAssignment.object == object)
+        principals = {(ra.user or ra.group) for ra in query.all()}
 
         if object is not None and role in (Creator, Owner):
             p = object.creator if role == Creator else object.owner
@@ -269,7 +269,7 @@ class SecurityService(Service):
 
     @require_flush
     def _all_roles(self, principal):
-        q = db.session \
+        query = db.session \
             .query(RoleAssignment.object_id, RoleAssignment.role) \
             .outerjoin(Entity) \
             .add_columns(Entity._entity_type)
@@ -280,11 +280,11 @@ class SecurityService(Service):
                 group_ids = (g.id for g in principal.groups)
                 filter_cond |= (RoleAssignment.group_id.in_(group_ids))
 
-            q = q.filter(filter_cond)
+            query = query.filter(filter_cond)
         else:
-            q = q.filter(RoleAssignment.group == principal)
+            query = query.filter(RoleAssignment.group == principal)
 
-        results = q.all()
+        results = query.all()
         all_roles = {}
         for object_id, role, object_type in results:
             if object_id is None:
@@ -329,7 +329,7 @@ class SecurityService(Service):
         if not self.app_state.use_cache:
             return
 
-        q = db.session.query(RoleAssignment)
+        query = db.session.query(RoleAssignment)
         users = set((u for u in principals if isinstance(u, User)))
         groups = set((g for g in principals if isinstance(g, Group)))
         groups |= set((g for u in users for g in u.groups))
@@ -355,10 +355,10 @@ class SecurityService(Service):
             filter_cond.append(RoleAssignment.group_id.in_((g.id
                                                             for g in groups)))
 
-        q = q.filter(sql.or_(*filter_cond))
+        query = query.filter(sql.or_(*filter_cond))
         ra_users = {}
         ra_groups = {}
-        for ra in q.all():
+        for ra in query.all():
             if ra.user:
                 all_roles = ra_users.setdefault(ra.user, {})
             else:
@@ -474,8 +474,8 @@ class SecurityService(Service):
         else:
             args['group'] = principal
 
-        q = session.query(RoleAssignment)
-        if q.filter_by(**args).limit(1).count():
+        query = session.query(RoleAssignment)
+        if query.filter_by(**args).limit(1).count():
             # role already granted, nothing to do
             return
 
@@ -520,24 +520,24 @@ class SecurityService(Service):
                     anonymous=False,
                     user=None,
                     group=None)
-        q = session.query(RoleAssignment)
-        q = q.filter(RoleAssignment.role == role,
+        query = session.query(RoleAssignment)
+        query = query.filter(RoleAssignment.role == role,
                      RoleAssignment.object == object)
 
         if (principal is AnonymousRole or
             (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             args['anonymous'] = True
-            q.filter(RoleAssignment.anonymous == False,
+            query.filter(RoleAssignment.anonymous == False,
                      RoleAssignment.user == None, RoleAssignment.group == None)
 
         elif isinstance(principal, User):
             args['user'] = principal
-            q = q.filter(RoleAssignment.user == principal)
+            query = query.filter(RoleAssignment.user == principal)
         else:
             args['group'] = principal
-            q = q.filter(RoleAssignment.group == principal)
+            query = query.filter(RoleAssignment.group == principal)
 
-        ra = q.one()
+        ra = query.one()
         session.delete(ra)
         audit = SecurityAudit(manager=manager, op=SecurityAudit.REVOKE, **args)
         session.add(audit)
@@ -545,19 +545,18 @@ class SecurityService(Service):
         self._clear_role_cache(principal)
 
     @require_flush
-    def get_role_assignements(self, object):
-        session = object_session(object) if object is not None else db.session
+    def get_role_assignements(self, obj):
+        session = object_session(obj) if obj is not None else db.session
         if not session:
             session = db.session()
-        q = session.query(RoleAssignment)
-        q = q.filter(RoleAssignment.object == object) \
+        query = session.query(RoleAssignment)
+        query = query.filter(RoleAssignment.object == obj) \
             .options(subqueryload('user.groups'))
 
-        role_assignments = q.all()
+        role_assignments = query.all()
 
         results = []
         for ra in role_assignments:
-            principal = None
             if ra.anonymous:
                 principal = AnonymousRole
             elif ra.user:

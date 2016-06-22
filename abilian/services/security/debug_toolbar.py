@@ -58,7 +58,7 @@ class SecurityInfoDebugPanel(DebugPanel):
         context['permissions'] = svc.get_permissions_assignments(obj=obj)
         context['roles'] = roles = dict()
 
-        for principal, r in svc.get_role_assignements(object=obj):
+        for principal, r in svc.get_role_assignements(obj=obj):
             if r not in roles:
                 roles[r] = dict(anonymous=False, users=set(), groups=set())
 
