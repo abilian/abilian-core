@@ -32,9 +32,9 @@ class Test(TestCase):
 
     def read_file(self, fn):
         try:
-            return open(join(BASEDIR, fn)).read()
+            return open(join(BASEDIR, fn), 'rb').read()
         except IOError as e:
-            return open(join(BASEDIR2, fn)).read()
+            return open(join(BASEDIR2, fn), 'rb').read()
 
     # To text
     def test_pdf_to_text(self):

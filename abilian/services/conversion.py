@@ -12,7 +12,7 @@ TODO: rename Converter into ConversionService ?
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import cStringIO as StringIO
+from io import BytesIO
 import glob
 import hashlib
 import logging
@@ -28,7 +28,10 @@ from base64 import decodestring, encodestring
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import mkstemp
-from xmlrpclib import ServerProxy
+try:
+    from xmlrpclib import ServerProxy
+except ImportError:
+    ServerProxy = None
 
 from magic import Magic
 from PIL import Image
@@ -240,7 +243,7 @@ class Converter(object):
 
         # XXX: ad-hoc for now, refactor later
         if mime_type.startswith("image/"):
-            img = Image.open(StringIO.StringIO(content))
+            img = Image.open(BytesIO(content))
             ret = {}
             if not hasattr(img, '_getexif'):
                 return {}

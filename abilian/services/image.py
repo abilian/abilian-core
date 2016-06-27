@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import hashlib
-from cStringIO import StringIO
+from io import BytesIO
 
 from six import string_types
 from PIL import Image
@@ -34,7 +34,7 @@ cache = {}
 
 def open_image(img):
     if isinstance(img, string_types):
-        img = StringIO(img)
+        img = BytesIO(img)
 
     pos = img.tell()
     image = Image.open(img)
@@ -60,7 +60,7 @@ def get_save_format(fmt):
 
 def resize(orig, width, height, mode=FIT):
     if isinstance(orig, string_types):
-        orig = StringIO(orig)
+        orig = BytesIO(orig)
 
     digest = hashlib.md5(orig.read()).digest()
     cache_key = (digest, mode, width, height)
@@ -89,7 +89,7 @@ def resize(orig, width, height, mode=FIT):
         image = _crop_and_resize(image, width, height)
         assert image.size == (width, height)
 
-    output = StringIO()
+    output = BytesIO()
     image.save(output, get_save_format(format))
     converted = output.getvalue()
     cache[cache_key] = converted
