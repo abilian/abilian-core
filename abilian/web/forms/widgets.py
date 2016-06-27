@@ -24,7 +24,7 @@ from flask import (Markup, current_app, g, json, render_template,
 from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField
-from future.utils import string_types
+from six import string_types, text_type
 from wtforms.widgets import PasswordInput as BasePasswordInput
 from wtforms.widgets import TextArea as BaseTextArea
 from wtforms.widgets import HTMLString, Input, Select, html_params
@@ -99,7 +99,6 @@ def text2html(text):
 
 
 class Column(object):
-
     def __init__(self, **kw):
         for k, w in kw.items():
             setattr(self, k, w)
@@ -107,7 +106,6 @@ class Column(object):
 
 # TODO: rewrite
 class BaseTableView(object):
-
     show_controls = False
     show_search = None
     paginate = False
@@ -176,7 +174,7 @@ class BaseTableView(object):
             });
         ''',
                                     table_id=self.name,
-                                    options=datatable_options,)
+                                    options=datatable_options, )
 
         table = []
         for entity in entities:
@@ -218,7 +216,7 @@ class BaseTableView(object):
             elif column_name in (make_link_on, 'name') \
                     or col.get('linkable'):
                 cell = Markup('<a href="%s">%s</a>' %
-                              (build_url(entity), cgi.escape(unicode(value))))
+                              (build_url(entity), cgi.escape(text_type(value))))
             elif isinstance(value, Entity):
                 cell = Markup('<a href="%s">%s</a>' %
                               (build_url(value), cgi.escape(value.name)))
@@ -234,7 +232,7 @@ class BaseTableView(object):
                     if value is None:
                         value = u''
                     else:
-                        value = unicode(value)
+                        value = text_type(value)
                 cell = value
 
             line.append(cell)
@@ -340,10 +338,10 @@ class AjaxMainTableView(object):
             if not c.has_form_filter:
                 continue
             d = dict(name=c.name,
-                     label=unicode(c.label),
+                     label=text_type(c.label),
                      type=c.form_filter_type,
                      args=c.form_filter_args,
-                     unset=c.form_unset_value,)
+                     unset=c.form_unset_value, )
             if c.has_form_default_value:
                 d['defaultValue'] = c.form_default_value
 
@@ -390,13 +388,13 @@ class AjaxMainTableView(object):
                 cell = Markup('<a href="%s">%s</a>' %
                               (url_for(value), cgi.escape(value.name)))
             elif (isinstance(value, string_types) and
-                  (value.startswith("http://") or value.startswith("www."))):
+                      (value.startswith("http://") or value.startswith("www."))):
                 cell = Markup(linkify_url(value))
             elif col.get('linkable'):
                 cell = Markup('<a href="%s">%s</a>' %
-                              (url_for(entity), cgi.escape(unicode(value))))
+                              (url_for(entity), cgi.escape(text_type(value))))
             else:
-                cell = unicode(value)
+                cell = text_type(value)
 
             line.append(cell)
         return line
@@ -555,7 +553,6 @@ class Row(object):
 
 
 class ModelWidget(object):
-
     edit_template = 'widgets/model_widget_edit.html'
     view_template = 'widgets/model_widget_view.html'
 
@@ -628,16 +625,16 @@ class TextInput(wtforms.widgets.TextInput):
 
         return Markup(render_template_string(
             u'''
-      <div class="input-group input-group-type-{{ widget.typename }}">
-        {%- if widget.pre_icon %}
-          <div class="input-group-addon">{{ widget.pre_icon }}</div>
-        {%- endif %}
-          <input {{ params | safe}}>
-        {%- if widget.post_icon %}
-          <div class="input-group-addon">{{ widget.post_icon }}</div>
-        {%- endif %}
-      </div>
-      ''',
+            <div class="input-group input-group-type-{{ widget.typename }}">
+            {%- if widget.pre_icon %}
+              <div class="input-group-addon">{{ widget.pre_icon }}</div>
+            {%- endif %}
+              <input {{ params | safe}}>
+            {%- if widget.post_icon %}
+              <div class="input-group-addon">{{ widget.post_icon }}</div>
+            {%- endif %}
+            </div>
+            ''',
             widget=self,
             params=self.html_params(name=field.name, **kwargs)))
 
@@ -711,14 +708,14 @@ class FileInput(object):
                 # due to debugtoolbar capturing template parameters
                 del data['file']
 
-        return Markup(render_template(self.template,
-                                      id=field.id,
-                                      field=field,
-                                      widget=self,
-                                      input=input_elem,
-                                      button_label=button_label,
-                                      existing=existing,
-                                      uploaded=uploads,))
+        ctx = dict(id=field.id,
+                   field=field,
+                   widget=self,
+                   input=input_elem,
+                   button_label=button_label,
+                   existing=existing,
+                   uploaded=uploads)
+        return Markup(render_template(self.template, **ctx))
 
     def build_exisiting_files_list(self, field):
         existing = []
@@ -776,7 +773,7 @@ class ImageInput(FileInput):
                  width=120,
                  height=120,
                  resize_mode=image.CROP,
-                 valid_extensions=('jpg', 'jpeg', 'png'),):
+                 valid_extensions=('jpg', 'jpeg', 'png'), ):
         super(ImageInput, self).__init__(template=template)
         self.resize_mode = resize_mode
         self.valid_extensions = valid_extensions
@@ -870,7 +867,7 @@ class Chosen(Select):
         if selected:
             options['selected'] = True
         return HTMLString(u'<option %s>%s</option>' %
-                          (html_params(**options), cgi.escape(unicode(label))))
+                          (html_params(**options), cgi.escape(text_type(label))))
 
 
 class TagInput(Input):
@@ -999,12 +996,13 @@ class TimeInput(Input):
         input_params = {k: Markup(json.dumps(v))
                         for k, v in input_params.items()}
 
-        return Markup(render_template(self.template,
-                                      id=field_id,
+        ctx = dict(id=field_id,
                                       value=value,
                                       field=field,
                                       required=False,
-                                      timepicker_attributes=input_params))
+                                      timepicker_attributes=input_params)
+        return Markup(render_template(self.template, **ctx
+                                      ))
 
 
 class DateTimeInput(object):
@@ -1074,18 +1072,16 @@ class DateTimeInput(object):
 
 
 class DefaultViewWidget(object):
-
     def render_view(self, field, **kwargs):
         value = field.object_data
         if isinstance(value, string_types):
             return text2html(value)
         else:
             # [], None and other must be rendered using empty string
-            return unicode(value or u'')
+            return text_type(value or u'')
 
 
 class BooleanWidget(wtforms.widgets.CheckboxInput):
-
     # valid data-* options when using boostrap-switch
     _ON_OFF_VALID_OPTIONS = frozenset(
         ('animate', 'indeterminate', 'inverse', 'radio-all-off', 'on-color',
@@ -1113,7 +1109,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
         return super(BooleanWidget, self).__call__(field, **kwargs)
 
     def render_view(self, field, **kwargs):
-        return u'\u2713' if field.object_data else u''  # Unicode "Check mark"
+        return u'\u2713' if field.object_data else u''  # Text_type "Check mark"
 
 
 class PasswordInput(BasePasswordInput):
@@ -1151,20 +1147,17 @@ class FloatWidget(wtforms.widgets.TextInput):
 
 
 class DateWidget(wtforms.widgets.TextInput):
-
     def render_view(self, field, **kwargs):
         return (format_date(field.object_data) if field.object_data else u'')
 
 
 class DateTimeWidget(DateWidget):
-
     def render_view(self, field, **kwargs):
         return (format_datetime(field.object_data)
                 if field.object_data else u'')
 
 
 class EntityWidget(object):
-
     def render_view(self, field, **kwargs):
         objs = field.object_data
         if not field.multiple:
@@ -1211,7 +1204,7 @@ class MoneyWidget(TextInput):
             val = int(round(val / 1000.0))
 
         # `format_currency()` is not used since it display numbers with cents
-        #units, which we don't want
+        # units, which we don't want
         #
         # \u00A0: non-breakable whitespace
         return u'{value}\u00A0{unit}'.format(value=format_number(val),
@@ -1237,7 +1230,6 @@ class EmailWidget(TextInput):
 
 
 class URLWidget(object):
-
     def render_view(self, field, **kwargs):
         return (linkify_url(field.object_data) if field.object_data else u'')
 
@@ -1313,13 +1305,14 @@ class ListWidget(wtforms.widgets.ListWidget):
         if not is_empty:
             data = ([label for v, label, checked in field.iter_choices()
                      if checked] if hasattr(field, 'iter_choices') and
-                    callable(field.iter_choices) else field.object_data)
+                                    callable(field.iter_choices) else field.object_data)
         else:
             data = []
 
-        return Markup(render_template_string('''{%- for obj in data %}
-      <span class="badge">{{ obj }}</span>
-      {%- endfor %}''',
+        tpl = '''{%- for obj in data %}
+              <span class="badge">{{ obj }}</span>
+              {%- endfor %}'''
+        return Markup(render_template_string(tpl,
                                              data=data))
 
 
@@ -1378,7 +1371,6 @@ class TabularFieldListWidget(object):
 
 
 class ModelListWidget(object):
-
     def __init__(self, template='widgets/horizontal_table.html'):
         self.template = template
 
@@ -1448,7 +1440,7 @@ class Select2(Select):
         return Select.__call__(self, field, *args, **kwargs)
 
     def render_view(self, field, **kwargs):
-        labels = [unicode(label) for v, label, checked in field.iter_choices()
+        labels = [text_type(label) for v, label, checked in field.iter_choices()
                   if checked]
         return u'; '.join(labels)
 
@@ -1525,9 +1517,9 @@ class Select2Ajax(object):
         s2_params.update(self.s2_params)
 
         if field.ajax_source:
-            s2_params['ajax'] = {'url': unicode(field.ajax_source)}
+            s2_params['ajax'] = {'url': text_type(field.ajax_source)}
 
-        s2_params['placeholder'] = unicode(field.label.text)
+        s2_params['placeholder'] = text_type(field.label.text)
 
         if not field.flags.required:
             s2_params['allowClear'] = True
@@ -1537,7 +1529,7 @@ class Select2Ajax(object):
             data = [data]
 
         values = self.values_builder(data)
-        input_value = u','.join(unicode(o.id) for o in data if o)
+        input_value = u','.join(text_type(o.id) for o in data if o)
         data_node_id = None
 
         json_data = {}
@@ -1550,12 +1542,12 @@ class Select2Ajax(object):
 
         extra_args = Markup(html_params(**kwargs))
 
-        return Markup(render_template(self.template,
-                                      field=field,
-                                      name=field.name,
-                                      id=field.id,
-                                      input_value=input_value,
-                                      json_data=json_data,
-                                      required=not field.allow_blank,
-                                      data_node_id=data_node_id,
-                                      extra_args=extra_args,))
+        ctx = dict(field=field,
+                   name=field.name,
+                   id=field.id,
+                   input_value=input_value,
+                   json_data=json_data,
+                   required=not field.allow_blank,
+                   data_node_id=data_node_id,
+                   extra_args=extra_args)
+        return Markup(render_template(self.template, **ctx))

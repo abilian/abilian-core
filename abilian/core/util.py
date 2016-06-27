@@ -17,15 +17,13 @@ from math import ceil
 import pytz
 from babel.dates import LOCALTZ
 from flask import current_app, request
+from six import text_type
 from werkzeug.local import LocalProxy
 
 try:
     import ipdb as pdb
 except ImportError:
     import pdb
-
-if sys.version_info[0] > 2:
-    unicode = str
 
 
 def pdb_on_error(fn):
@@ -66,7 +64,7 @@ def noproxy(obj):
 def fqcn(cls):
     """Fully Qualified Class Name.
     """
-    return unicode(cls.__module__ + '.' + cls.__name__)
+    return text_type(cls.__module__ + '.' + cls.__name__)
 
 
 def friendly_fqcn(cls_name):
@@ -218,8 +216,8 @@ _NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
 def slugify(value, separator="-"):
     """Slugify an unicode string, to make it URL friendly.
     """
-    value = unicode(value)
-    separator = unicode(separator)
+    value = text_type(value)
+    separator = text_type(separator)
     value = _NOT_WORD_RE.sub(u' ', value)
     value = unicodedata.normalize('NFKD', value)
     value = value.encode('ascii', 'ignore')

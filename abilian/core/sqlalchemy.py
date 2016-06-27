@@ -14,7 +14,7 @@ import flask_sqlalchemy as flask_sa
 import pytz
 import sqlalchemy as sa
 from flask_sqlalchemy import SQLAlchemy as SAExtension
-from future.utils import string_types
+from six import string_types, text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.mutable import Mutable
 
@@ -369,11 +369,11 @@ class Locale(sa.types.TypeDecorator):
                 return None
             value = babel.Locale.parse(value)
 
-        code = unicode(value.language)
+        code = text_type(value.language)
         if value.territory:
-            code += u'_' + unicode(value.territory)
+            code += u'_' + text_type(value.territory)
         elif value.script:
-            code += u'_' + unicode(value.territory)
+            code += u'_' + text_type(value.territory)
 
         return code
 

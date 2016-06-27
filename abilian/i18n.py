@@ -67,7 +67,7 @@ from flask import _request_ctx_stack, current_app, g, render_template, request
 from flask_babel import Babel as BabelBase
 from flask_babel import (LazyString, force_locale, gettext, lazy_gettext,
                          ngettext)
-from future.utils import string_types
+from six import string_types, text_type
 
 __all__ = [
     'babel', 'gettext', '_', 'lazy_gettext', '_l', 'localeselector', 'ngettext',
@@ -199,13 +199,13 @@ class Babel(BabelBase):
             if not (path.exists() and path.is_dir()):
                 continue
 
-            if not os.access(unicode(path), os.R_OK):
+            if not os.access(text_type(path), os.R_OK):
                 self.app.logger.warning(
                     "Babel translations: read access not allowed {}, skipping."
-                    "".format(repr(unicode((path)).encode('utf-8'))))
+                    "".format(repr(text_type((path)).encode('utf-8'))))
                 continue
 
-            self._translations_paths.append((unicode(path), domain))
+            self._translations_paths.append((text_type(path), domain))
 
 
 class Translations(BaseTranslations):
@@ -383,7 +383,7 @@ _NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
 
 
 def to_lower_ascii(value):
-    value = unicode(value)
+    value = text_type(value)
     value = _NOT_WORD_RE.sub(u' ', value)
     value = unicodedata.normalize('NFKD', value)
     value = value.encode('ascii', 'ignore')

@@ -7,6 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 from flask import current_app, request
 from flask_login import user_logged_in
 from raven.contrib.flask import Sentry as RavenExt
+from six import text_type
 
 
 class Sentry(RavenExt):
@@ -22,7 +23,7 @@ class Sentry(RavenExt):
     def raven_js_url(self):
         url = u'//cdn.ravenjs.com/{version}/{plugins}/raven.min.js'
         cfg = current_app.config
-        return url.format(version=unicode(cfg['SENTRY_JS_VERSION']),
+        return url.format(version=text_type(cfg['SENTRY_JS_VERSION']),
                           plugins=','.join(cfg['SENTRY_JS_PLUGINS']))
 
 

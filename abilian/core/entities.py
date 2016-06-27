@@ -13,6 +13,7 @@ from inspect import isclass
 
 import sqlalchemy as sa
 from flask import current_app
+from six import text_type
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import Session, mapper
@@ -324,7 +325,7 @@ class Entity(Indexable, BaseMixin, db.Model):
 
     @property
     def object_type(self):
-        return unicode(self.entity_type)
+        return text_type(self.entity_type)
 
     @classmethod
     def _object_type(cls):
@@ -430,11 +431,11 @@ class Entity(Indexable, BaseMixin, db.Model):
 
     @property
     def _indexable_tag_ids(self):
-        return u' '.join(unicode(t.id) for t in self._indexable_tags)
+        return u' '.join(text_type(t.id) for t in self._indexable_tags)
 
     @property
     def _indexable_tag_text(self):
-        return u' '.join(unicode(t.label) for t in self._indexable_tags)
+        return u' '.join(text_type(t.label) for t in self._indexable_tags)
 
 
 # TODO: make this unecessary
