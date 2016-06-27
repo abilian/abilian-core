@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin, current_app
+from six import text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
@@ -110,7 +111,7 @@ class ClearPasswordStrategy(PasswordStrategy):
         return user.password == password
 
     def process(self, user, password):
-        if not isinstance(password, unicode):
+        if not isinstance(password, text_type):
             password = password.decode('utf-8')
         return password
 
@@ -126,15 +127,15 @@ class BcryptPasswordStrategy(PasswordStrategy):
     def authenticate(self, user, password):
         current_passwd = user.password
         # crypt work only on str, not unicode
-        if isinstance(current_passwd, unicode):
+        if isinstance(current_passwd, text_type):
             current_passwd = current_passwd.encode('utf-8')
-        if isinstance(password, unicode):
+        if isinstance(password, text_type):
             password = password.encode('utf-8')
 
         return bcrypt.hashpw(password, current_passwd) == current_passwd
 
     def process(self, user, password):
-        if isinstance(password, unicode):
+        if isinstance(password, text_type):
             password = password.encode('utf-8')
         return bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
 

@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
-from future.utils import string_types
+from six import string_types
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
 

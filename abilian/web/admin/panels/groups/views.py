@@ -41,7 +41,8 @@ class JsonGroupsList(base.JSONView):
 
         if search:
             # TODO: gérer les accents
-            query = query.filter(func.lower(Group.name).like("%" + search + "%"))
+            query = query.filter(func.lower(Group.name).like("%" + search +
+                                                             "%"))
 
         count = query.count()
         columns = [func.lower(Group.name)]

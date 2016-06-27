@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from flask import g
+from six import text_type
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
@@ -44,7 +45,7 @@ class OwnedMixin(object):
 
     @property
     def creator_name(self):
-        return unicode(self.creator) if self.creator else u''
+        return text_type(self.creator) if self.creator else u''
 
     @declared_attr
     def owner_id(cls):
@@ -61,4 +62,4 @@ class OwnedMixin(object):
 
     @property
     def owner_name(self):
-        return unicode(self.owner) if self.owner else u''
+        return text_type(self.owner) if self.owner else u''

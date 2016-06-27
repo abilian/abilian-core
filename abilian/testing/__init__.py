@@ -6,7 +6,7 @@ from __future__ import absolute_import, print_function, division
 
 import getpass
 
-from future.utils import string_types
+from six import string_types
 
 import os
 from time import time

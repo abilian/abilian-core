@@ -11,6 +11,7 @@ from pprint import pformat
 import sqlalchemy as sa
 from flask import current_app
 from flask_script import Manager, prompt_pass
+from six import text_type
 
 from abilian.core.extensions import db
 from abilian.core.logging import patch_logger
@@ -193,7 +194,7 @@ firstname_opt = manager.option('-f',
 def createuser(email, password, role=None, name=None, first_name=None):
     """Create new user.
     """
-    email = unicode(email)
+    email = text_type(email)
     if User.query.filter(User.email == email).count() > 0:
         print("A user with email '{}' already exists, aborting.".format(email))
         return

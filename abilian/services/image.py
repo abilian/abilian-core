@@ -8,7 +8,7 @@ from __future__ import (absolute_import, division, print_function,
 import hashlib
 from cStringIO import StringIO
 
-from future.utils import string_types
+from six import string_types
 from PIL import Image
 
 __all__ = ['resize', 'RESIZE_MODES', 'SCALE', 'FIT', 'CROP']

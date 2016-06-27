@@ -5,7 +5,7 @@ Field filters for WTForm.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from future.utils import string_types
+from six import string_types
 
 
 def strip(data):

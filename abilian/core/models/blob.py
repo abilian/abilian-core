@@ -10,6 +10,7 @@ import uuid
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
+from six import text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.schema import Column
@@ -90,7 +91,7 @@ class Blob(Model):
         """
         from abilian.services.repository import session_repository as repository
         repository.set(self, self.uuid, value)
-        self.meta['md5'] = unicode(hashlib.md5(self.value).hexdigest())
+        self.meta['md5'] = text_type(hashlib.md5(self.value).hexdigest())
 
         if hasattr(value, 'filename'):
             filename = getattr(value, 'filename')
@@ -114,7 +115,7 @@ class Blob(Model):
         """
         md5 = self.meta.get('md5')
         if md5 is None:
-            md5 = unicode(hashlib.md5(self.value).hexdigest())
+            md5 = text_type(hashlib.md5(self.value).hexdigest())
 
         return md5
 

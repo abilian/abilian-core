@@ -99,6 +99,7 @@ def text2html(text):
 
 
 class Column(object):
+
     def __init__(self, **kw):
         for k, w in kw.items():
             setattr(self, k, w)
@@ -174,7 +175,7 @@ class BaseTableView(object):
             });
         ''',
                                     table_id=self.name,
-                                    options=datatable_options, )
+                                    options=datatable_options,)
 
         table = []
         for entity in entities:
@@ -341,7 +342,7 @@ class AjaxMainTableView(object):
                      label=text_type(c.label),
                      type=c.form_filter_type,
                      args=c.form_filter_args,
-                     unset=c.form_unset_value, )
+                     unset=c.form_unset_value,)
             if c.has_form_default_value:
                 d['defaultValue'] = c.form_default_value
 
@@ -388,7 +389,7 @@ class AjaxMainTableView(object):
                 cell = Markup('<a href="%s">%s</a>' %
                               (url_for(value), cgi.escape(value.name)))
             elif (isinstance(value, string_types) and
-                      (value.startswith("http://") or value.startswith("www."))):
+                  (value.startswith("http://") or value.startswith("www."))):
                 cell = Markup(linkify_url(value))
             elif col.get('linkable'):
                 cell = Markup('<a href="%s">%s</a>' %
@@ -773,7 +774,7 @@ class ImageInput(FileInput):
                  width=120,
                  height=120,
                  resize_mode=image.CROP,
-                 valid_extensions=('jpg', 'jpeg', 'png'), ):
+                 valid_extensions=('jpg', 'jpeg', 'png'),):
         super(ImageInput, self).__init__(template=template)
         self.resize_mode = resize_mode
         self.valid_extensions = valid_extensions
@@ -866,8 +867,9 @@ class Chosen(Select):
         options = dict(kwargs, value=value)
         if selected:
             options['selected'] = True
-        return HTMLString(u'<option %s>%s</option>' %
-                          (html_params(**options), cgi.escape(text_type(label))))
+        return HTMLString(
+            u'<option %s>%s</option>' %
+            (html_params(**options), cgi.escape(text_type(label))))
 
 
 class TagInput(Input):
@@ -997,12 +999,11 @@ class TimeInput(Input):
                         for k, v in input_params.items()}
 
         ctx = dict(id=field_id,
-                                      value=value,
-                                      field=field,
-                                      required=False,
-                                      timepicker_attributes=input_params)
-        return Markup(render_template(self.template, **ctx
-                                      ))
+                   value=value,
+                   field=field,
+                   required=False,
+                   timepicker_attributes=input_params)
+        return Markup(render_template(self.template, **ctx))
 
 
 class DateTimeInput(object):
@@ -1072,6 +1073,7 @@ class DateTimeInput(object):
 
 
 class DefaultViewWidget(object):
+
     def render_view(self, field, **kwargs):
         value = field.object_data
         if isinstance(value, string_types):
@@ -1147,17 +1149,20 @@ class FloatWidget(wtforms.widgets.TextInput):
 
 
 class DateWidget(wtforms.widgets.TextInput):
+
     def render_view(self, field, **kwargs):
         return (format_date(field.object_data) if field.object_data else u'')
 
 
 class DateTimeWidget(DateWidget):
+
     def render_view(self, field, **kwargs):
         return (format_datetime(field.object_data)
                 if field.object_data else u'')
 
 
 class EntityWidget(object):
+
     def render_view(self, field, **kwargs):
         objs = field.object_data
         if not field.multiple:
@@ -1230,6 +1235,7 @@ class EmailWidget(TextInput):
 
 
 class URLWidget(object):
+
     def render_view(self, field, **kwargs):
         return (linkify_url(field.object_data) if field.object_data else u'')
 
@@ -1305,15 +1311,14 @@ class ListWidget(wtforms.widgets.ListWidget):
         if not is_empty:
             data = ([label for v, label, checked in field.iter_choices()
                      if checked] if hasattr(field, 'iter_choices') and
-                                    callable(field.iter_choices) else field.object_data)
+                    callable(field.iter_choices) else field.object_data)
         else:
             data = []
 
         tpl = '''{%- for obj in data %}
               <span class="badge">{{ obj }}</span>
               {%- endfor %}'''
-        return Markup(render_template_string(tpl,
-                                             data=data))
+        return Markup(render_template_string(tpl, data=data))
 
 
 class FieldListWidget(object):
@@ -1371,6 +1376,7 @@ class TabularFieldListWidget(object):
 
 
 class ModelListWidget(object):
+
     def __init__(self, template='widgets/horizontal_table.html'):
         self.template = template
 

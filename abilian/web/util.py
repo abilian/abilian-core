@@ -13,7 +13,7 @@ import sys
 from flask import url_for as flask_url_for
 from flask import current_app, session, stream_with_context
 from flask.helpers import send_from_directory
-from future.utils import string_types
+from six import string_types
 from werkzeug.routing import BuildError
 
 try:

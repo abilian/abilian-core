@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from flask import Blueprint as BaseBlueprint
 from flask import current_app
-from future.utils import string_types
+from six import string_types
 
 from abilian.services.security import Anonymous, Role
 

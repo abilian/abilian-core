@@ -3,6 +3,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from six import text_type
+
 from abilian.core.util import Pagination, slugify
 
 
@@ -49,7 +51,7 @@ def test_pagination_4():
 def test_slugify_basic():
     slug = slugify(u'a b c')
     assert slug == u'a-b-c'
-    assert isinstance(slug, unicode)
+    assert isinstance(slug, text_type)
     assert slugify(slug) == u'a-b-c'  # idempotent
 
 
@@ -61,7 +63,7 @@ def test_slugify_separator():
 def test_slugify_non_unicode_input():
     slug = slugify(b"a b c")
     assert slug == u'a-b-c'
-    assert isinstance(slug, unicode)
+    assert isinstance(slug, text_type)
 
 
 def test_slugify_non_ascii():

@@ -11,7 +11,7 @@ from operator import attrgetter
 
 import sqlalchemy as sa
 from flask import current_app
-from future.utils import string_types
+from six import string_types
 from whoosh.fields import TEXT
 
 from abilian.core.extensions import db

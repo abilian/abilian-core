@@ -8,6 +8,7 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
+from six import text_type
 from sqlalchemy import (Column, Date, ForeignKey, Integer, Text, Unicode,
                         UnicodeText)
 from sqlalchemy.ext.declarative import declared_attr
@@ -27,7 +28,7 @@ class IntegerCollection(db.Model):
     id = Column(Integer, primary_key=True)
 
     def __unicode__(self):
-        return unicode(self.id)
+        return text_type(self.id)
 
 
 class DummyAccount(Entity):

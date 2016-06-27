@@ -12,7 +12,7 @@ from uuid import UUID, uuid1
 import sqlalchemy as sa
 from flask import _app_ctx_stack, current_app
 from flask.globals import _lookup_app_object
-from future.utils import string_types
+from six import string_types
 from sqlalchemy.orm.session import Session
 
 from abilian.services import Service, ServiceState

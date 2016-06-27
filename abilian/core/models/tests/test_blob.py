@@ -7,6 +7,8 @@ from __future__ import (absolute_import, division, print_function,
 import uuid
 from StringIO import StringIO
 
+from six import text_type
+
 from abilian.services import repository_service as repository
 from abilian.services import session_repository_service as session_repository
 from abilian.testing import BaseTestCase as AbilianTestCase
@@ -78,7 +80,7 @@ class BlobTestCase(AbilianTestCase):
         session.flush()
 
         assert Blob.query.by_uuid(b.uuid) is b
-        assert Blob.query.by_uuid(unicode(b.uuid)) is b
+        assert Blob.query.by_uuid(text_type(b.uuid)) is b
 
         u = uuid.uuid4()
         assert Blob.query.by_uuid(u) is None

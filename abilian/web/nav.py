@@ -12,7 +12,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from flask import g
-from future.utils import string_types
+from six import string_types
 from jinja2 import Markup, Template
 
 from .action import ACTIVE, ENABLED, Action, Glyphicon, getset

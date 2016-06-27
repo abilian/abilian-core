@@ -18,7 +18,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
-from future.utils import string_types
+from six import string_types
 
 __all__ = ['patch_logger']
 

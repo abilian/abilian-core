@@ -9,7 +9,7 @@ import re
 
 from flask import current_app, g
 from flask.signals import appcontext_pushed
-from future.utils import string_types
+from six import string_types
 from jinja2 import Markup, Template
 
 from abilian.core.singleton import UniqueName

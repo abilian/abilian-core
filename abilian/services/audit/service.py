@@ -14,6 +14,7 @@ from inspect import isclass
 
 import sqlalchemy as sa
 from flask import current_app, g
+from six import text_type
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
@@ -304,7 +305,7 @@ class AuditService(Service):
                 item = model
                 for attr in path:
                     item = getattr(item, attr)
-                enduser_ids.append(unicode(item))
+                enduser_ids.append(text_type(item))
 
             related_name = u'{} {}'.format(meta.backref_attr,
                                            u' '.join(enduser_ids))

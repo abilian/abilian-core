@@ -13,6 +13,7 @@ from __future__ import (absolute_import, division, print_function,
 from datetime import datetime
 
 from flask import logging
+from six import text_type
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import DateTime, Integer, String, Text
@@ -64,7 +65,7 @@ class ActivityEntry(db.Model):
 
     def __repr__(self):
         return ('<{}.ActivityEntry id={} actor={} verb={} object={} '
-                'target={}>'.format(self.__class__.__module__, self.id,
-                                    repr(unicode(self.actor)), repr(self.verb),
-                                    repr(unicode(self.object)),
-                                    repr(unicode(self.target))))
+                'target={}>'.format(
+                    self.__class__.__module__, self.id,
+                    repr(text_type(self.actor)), repr(self.verb),
+                    repr(text_type(self.object)), repr(text_type(self.target))))

@@ -11,7 +11,7 @@ import progressbar
 import sqlalchemy as sa
 import whoosh
 from flask import current_app
-from future.utils import string_types
+from six import string_types
 from sqlalchemy.orm.session import Session
 from whoosh.writing import CLEAR, AsyncWriter
 

@@ -7,14 +7,14 @@ from __future__ import (absolute_import, division, print_function,
 
 from functools import wraps
 from itertools import chain
-from typing import Dict, Set
 
 import sqlalchemy as sa
 from flask import current_app, g
 from flask_login import current_user
-from future.utils import string_types
+from six import string_types, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
+from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -368,13 +368,13 @@ class SecurityService(Service):
                           if ra.object is not None else None)
             all_roles.setdefault(object_key, set()).add(ra.role)
 
-        for group, all_roles in ra_groups.iteritems():
+        for group, all_roles in ra_groups.items():
             self._set_role_cache(group, all_roles)
 
-        for user, all_roles in ra_users.iteritems():
+        for user, all_roles in ra_users.items():
             for gr in user.groups:
                 group_roles = self._fill_role_cache(gr)
-                for object_key, roles in group_roles.iteritems():
+                for object_key, roles in group_roles.items():
                     obj_roles = all_roles.setdefault(object_key, set())
                     obj_roles |= roles
 
@@ -434,7 +434,7 @@ class SecurityService(Service):
 
         if object:
             assert isinstance(object, Entity)
-            object_key = u"{}:{}".format(object.object_type, unicode(object.id))
+            object_key = u"{}:{}".format(object.object_type, text_type(object.id))
             if Creator in role:
                 if object.creator == principal:
                     return True
@@ -522,13 +522,14 @@ class SecurityService(Service):
                     group=None)
         query = session.query(RoleAssignment)
         query = query.filter(RoleAssignment.role == role,
-                     RoleAssignment.object == object)
+                             RoleAssignment.object == object)
 
         if (principal is AnonymousRole or
             (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             args['anonymous'] = True
             query.filter(RoleAssignment.anonymous == False,
-                     RoleAssignment.user == None, RoleAssignment.group == None)
+                         RoleAssignment.user == None,
+                         RoleAssignment.group == None)
 
         elif isinstance(principal, User):
             args['user'] = principal

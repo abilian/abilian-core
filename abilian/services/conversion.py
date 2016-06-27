@@ -30,10 +30,10 @@ from pathlib import Path
 from tempfile import mkstemp
 from xmlrpclib import ServerProxy
 
-from future.utils import raise_from, string_types
 from magic import Magic
 from PIL import Image
 from PIL.ExifTags import TAGS
+from six import raise_from, string_types, text_type
 
 from abilian.services.image import FIT, resize
 
@@ -77,7 +77,7 @@ class Cache(object):
         if key in self:
             value = self._path(key).open('rb').read()
             if key.startswith("txt:"):
-                value = unicode(value, encoding="utf8")
+                value = text_type(value, encoding="utf8")
             return value
         else:
             return None
@@ -267,7 +267,8 @@ class Converter(object):
             for line in output.split(b"\n"):
                 if b":" in line:
                     key, value = line.strip().split(b":", 1)
-                    ret["PDF:" + key] = unicode(value.strip(), errors="replace")
+                    ret["PDF:" + key] = text_type(value.strip(),
+                                                  errors="replace")
 
             return ret
 
@@ -345,10 +346,10 @@ class PdfToTextHandler(Handler):
         if encoding in ("binary", None):
             encoding = "ascii"
         try:
-            converted_unicode = unicode(converted, encoding, errors="ignore")
+            converted_unicode = text_type(converted, encoding, errors="ignore")
         except:
             traceback.print_exc()
-            converted_unicode = unicode(converted, errors="ignore")
+            converted_unicode = text_type(converted, errors="ignore")
 
         return converted_unicode
 
@@ -378,10 +379,10 @@ class AbiwordTextHandler(Handler):
         if encoding in ("binary", None):
             encoding = "ascii"
         try:
-            converted_unicode = unicode(converted, encoding, errors="ignore")
+            converted_unicode = text_type(converted, encoding, errors="ignore")
         except:
             traceback.print_exc()
-            converted_unicode = unicode(converted, errors="ignore")
+            converted_unicode = text_type(converted, errors="ignore")
 
         return converted_unicode
 
@@ -623,12 +624,12 @@ class WvwareTextHandler(Handler):
             if encoding in ("binary", None):
                 encoding = "ascii"
             try:
-                converted_unicode = unicode(converted,
-                                            encoding,
-                                            errors="ignore")
+                converted_unicode = text_type(converted,
+                                              encoding,
+                                              errors="ignore")
             except:
                 traceback.print_exc()
-                converted_unicode = unicode(converted, errors="ignore")
+                converted_unicode = text_type(converted, errors="ignore")
 
             return converted_unicode
 

@@ -8,6 +8,7 @@ import abc
 from functools import total_ordering
 
 import sqlalchemy as sa
+from six import text_type
 
 from abilian.core.entities import Entity
 
@@ -109,7 +110,7 @@ class Tag(IdMixin, Model):
         return self.label
 
     def __lt__(self, other):
-        return unicode(self).lower().__lt__(unicode(other).lower())
+        return text_type(self).lower().__lt__(text_type(other).lower())
 
     def __repr__(self):
         cls = self.__class__

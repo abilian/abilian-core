@@ -29,8 +29,8 @@ from flask_assets import Bundle
 from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
-from six import string_types, text_type
 from pkg_resources import resource_filename
+from six import string_types, text_type
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
@@ -384,8 +384,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
         if not path.exists():
             if create:
-                logger.info('Create instance folder: %s',
-                            text_type(path))
+                logger.info('Create instance folder: %s', path)
                 path.mkdir(0o775, parents=True)
             else:
                 err = 'Instance folder does not exists'
