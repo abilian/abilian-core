@@ -12,6 +12,7 @@ import pip
 import pkg_resources
 from flask import current_app, render_template
 from pip.vcs import vcs
+from six import text_type
 
 from ..panel import AdminPanel
 
@@ -34,7 +35,7 @@ class SysinfoPanel(AdminPanel):
                            if dist.has_version() else u'Unknown version',
                            vcs=None,)
 
-            location = unicode(Path(dist.location).absolute())
+            location = text_type(Path(dist.location).absolute())
             vcs_name = vcs.get_backend_name(location)
 
             if vcs_name:

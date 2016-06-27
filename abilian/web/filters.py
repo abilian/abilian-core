@@ -17,6 +17,7 @@ from babel.dates import DateTimePattern, format_timedelta, parse_pattern
 from flask import Flask
 from jinja2 import Markup, escape, evalcontextfilter
 from pytz import utc
+from six import text_type
 from werkzeug.routing import BuildError
 
 from abilian.web.decorators import deprecated
@@ -99,7 +100,7 @@ def roughsize(size, above=20, mod=10):
     134 -> '130+'
     """
     if size < above:
-        return unicode(size)
+        return text_type(size)
 
     return u'{:d}+'.format(size - size % mod)
 

@@ -4,6 +4,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sqlalchemy as sa
+from six import text_type
 
 from abilian.core.models.tag import Tag, entity_tag_tbl
 from abilian.i18n import _
@@ -83,4 +84,4 @@ class TagCriterion(BaseCriterion):
     @property
     def form_filter_args(self):
         # expected value: [list of selectable items, is multiple?]
-        return [[(unicode(t.id), t.label) for t in self.valid_tags], True]
+        return [[(text_type(t.id), t.label) for t in self.valid_tags], True]

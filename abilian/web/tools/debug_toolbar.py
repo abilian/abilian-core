@@ -9,6 +9,7 @@ import sys
 from blinker import Namespace, Signal
 from flask import current_app, g
 from flask_debugtoolbar.panels import DebugPanel
+from six import text_type
 
 from abilian.web.action import actions
 
@@ -40,11 +41,11 @@ class ActionDebugPanel(DebugPanel):
                     'class': action.__class__.__name__,
                 }
                 try:
-                    d['endpoint'] = unicode(action.endpoint)
+                    d['endpoint'] = text_type(action.endpoint)
                 except:
                     d['endpoint'] = '<Exception>'
                 try:
-                    d['url'] = unicode(action.url(g.action_context))
+                    d['url'] = text_type(action.url(g.action_context))
                 except:
                     d['url'] = '<Exception>'
                 actions_for_template.append(d)
@@ -100,7 +101,7 @@ class SignalsDebugPanel(DebugPanel):
                         'ns_name': ns_name,
                         'signal_name': signal_name,
                         'signal': signal,
-                        'receivers': [unicode(r)
+                        'receivers': [text_type(r)
                                       for r in signal.receivers.values()]
                     }
                     signals.append(d)
@@ -128,7 +129,7 @@ class SignalsDebugPanel(DebugPanel):
         def wrapped_send(self, *sender, **kwargs):
             d = {
                 'signal_name': self.name,
-                'sender': unicode(sender[0]),
+                'sender': text_type(sender[0]),
                 'args': kwargs,
             }
             events.append(d)

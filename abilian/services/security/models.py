@@ -7,6 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 from datetime import datetime
 from functools import total_ordering
 
+from six import text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import (CheckConstraint, Column, ForeignKey, Index,
@@ -36,16 +37,16 @@ class Permission(UniqueName):
     def __init__(self, name, label=None, assignable=True):
         UniqueName.__init__(self, name)
         if label is None:
-            label = u'permission_' + unicode(name)
-        if isinstance(label, unicode):
+            label = u'permission_' + text_type(name)
+        if isinstance(label, text_type):
             label = _l(label)
         self.label = label
 
     def __unicode__(self):
-        return unicode(self.label)
+        return text_type(self.label)
 
     def __lt__(self, other):
-        return unicode(self).__lt__(unicode(other))
+        return text_type(self).__lt__(text_type(other))
 
 
 class PermissionType(UniqueNameType):
@@ -72,17 +73,17 @@ class Role(UniqueName):
     def __init__(self, name, label=None, assignable=True):
         UniqueName.__init__(self, name)
         if label is None:
-            label = u'role_' + unicode(name)
-        if isinstance(label, unicode):
+            label = u'role_' + text_type(name)
+        if isinstance(label, text_type):
             label = _l(label)
         self.label = label
         self.assignable = assignable
 
     def __unicode__(self):
-        return unicode(self.label)
+        return text_type(self.label)
 
     def __lt__(self, other):
-        return unicode(self).__lt__(unicode(other))
+        return text_type(self).__lt__(text_type(other))
 
     @classmethod
     def assignable_roles(cls):

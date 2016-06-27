@@ -8,6 +8,7 @@ import json
 from datetime import timedelta
 
 import sqlalchemy as sa
+from six import text_type
 
 from abilian.core.extensions import db
 
@@ -110,7 +111,7 @@ register('bool', from_bool, to_bool)
 
 
 def from_unicode(s):
-    return unicode(s).encode('utf-8')
+    return text_type(s).encode('utf-8')
 
 
 def to_unicode(s):

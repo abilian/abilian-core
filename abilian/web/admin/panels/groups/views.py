@@ -8,6 +8,7 @@ from cgi import escape
 
 import sqlalchemy as sa
 from flask import current_app, render_template_string, request
+from six import text_type
 from sqlalchemy.sql.expression import asc, desc, func, nullslast
 
 from abilian.core.models.subjects import Group, User
@@ -67,7 +68,7 @@ class JsonGroupsList(base.JSONView):
             columns = []
             columns.append(u'<a href="{url}">{name}</a>'.format(url=group_url,
                                                                 name=name))
-            columns.append(unicode(members_count or 0))
+            columns.append(text_type(members_count or 0))
             columns.append(render_template_string(u'''{%- for role in roles %}
             <span class="badge badge-default">{{ role }}</span>
             {%- endfor %}''',

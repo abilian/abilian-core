@@ -8,6 +8,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 from flask_login import current_user
+from six import text_type
 from werkzeug.exceptions import BadRequest
 
 from abilian.core.entities import Entity
@@ -92,7 +93,7 @@ class CommentEditView(BaseCommentView, ObjectEdit):
         obj_meta = self.obj.meta.setdefault('abilian.core.models.comment', {})
         history = obj_meta.setdefault('history', [])
         history.append(dict(user_id=current_user.id,
-                            user=unicode(current_user),
+                            user=text_type(current_user),
                             date=utc_dt(datetime.utcnow()).isoformat(),))
         self.obj.meta.changed()
 

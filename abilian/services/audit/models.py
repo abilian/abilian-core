@@ -144,7 +144,7 @@ class AuditEntry(db.Model):
         if isinstance(changes, dict):
             changes = Changes.from_legacy(changes)
 
-        for k, v in changes.columns.iteritems():
+        for k, v in changes.columns.items():
             k = text_type(k)
             uv = []
             if isinstance(v, Changes):

@@ -12,7 +12,7 @@ from uuid import UUID, uuid1
 import sqlalchemy as sa
 from flask import _app_ctx_stack, current_app
 from flask.globals import _lookup_app_object
-from six import string_types
+from six import string_types, text_type
 from sqlalchemy.orm.session import Session
 
 from abilian.services import Service, ServiceState
@@ -93,7 +93,7 @@ class RepositoryService(Service):
             dest.parent.mkdir(0o775, parents=True)
 
         mode = 'tw'
-        if not isinstance(content, unicode):
+        if not isinstance(content, text_type):
             mode = 'bw'
             encoding = None
 
@@ -456,7 +456,7 @@ class RepositoryTransaction(object):
         self._add_to(uuid, self._set, self._deleted)
 
         mode = 'tw'
-        if not isinstance(content, unicode):
+        if not isinstance(content, text_type):
             mode = 'bw'
             encoding = None
 

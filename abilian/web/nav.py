@@ -12,7 +12,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from flask import g
-from six import string_types
+from six import string_types, text_type
 from jinja2 import Markup, Template
 
 from .action import ACTIVE, ENABLED, Action, Glyphicon, getset
@@ -138,7 +138,7 @@ class BreadcrumbItem(object):
 
     @property
     def url(self):
-        return unicode(self._url)
+        return text_type(self._url)
 
     def render(self):
         return Markup(self.__template.render(item=self, url=self.url))

@@ -143,7 +143,7 @@ class SAAdapter(SchemaAdapter):
                 setup_field(name, field_name)
 
         # add missing fields to schema
-        for field_name, field_def in field_definitions.iteritems():
+        for field_name, field_def in field_definitions.items():
             if field_name in schema:
                 continue
 
@@ -171,10 +171,10 @@ class SAAdapter(SchemaAdapter):
         cached = {}
         missed = set()  # negative cache. Might be used especially with dotted names
 
-        for field, attrs in self.doc_attrs.iteritems():
+        for field, attrs in self.doc_attrs.items():
             values = []
 
-            for a, getter in attrs.iteritems():
+            for a, getter in attrs.items():
                 if a in missed:
                     continue
 

@@ -9,7 +9,7 @@ import re
 
 from flask import current_app, g
 from flask.signals import appcontext_pushed
-from six import string_types
+from six import string_types, text_type
 from jinja2 import Markup, Template
 
 from abilian.core.singleton import UniqueName
@@ -213,7 +213,7 @@ class Endpoint(object):
         return self.kwargs.copy()
 
     def __unicode__(self):
-        return unicode(url_for(self.name, *self.args, **self.get_kwargs()))
+        return text_type(url_for(self.name, *self.args, **self.get_kwargs()))
 
     def __repr__(self):
         return '{cls}({name!r}, *{args!r}, **{kwargs!r})'.format(
@@ -442,7 +442,7 @@ class Action(object):
 
         endpoint = self.endpoint
         if endpoint:
-            return unicode(endpoint)
+            return text_type(endpoint)
         return self._url
 
 
@@ -501,22 +501,22 @@ class ActionDropDown(ActionGroup):
     """Renders as a button dropdown
     """
     template_string = u'''
-  <div class="btn-group">
-    <button type="button" class="{{ action.css_class }} dropdown-toggle"
-            data-toggle="dropdown" aria-expanded="false">
-    {%- if action.icon %}{{ action.icon }} {% endif %}
-    {{ action.title }}
-    <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-    {%- for entry in action_items %}
-      {%- if entry.divider %}<li class="divider"></li>{%- endif %}
-      <li>{{ entry.render() }}</a>
-      </li>
-    {%- endfor %}
-    </ul>
-  </div>
-  '''
+    <div class="btn-group">
+        <button type="button" class="{{ action.css_class }} dropdown-toggle"
+                data-toggle="dropdown" aria-expanded="false">
+        {%- if action.icon %}{{ action.icon }} {% endif %}
+        {{ action.title }}
+        <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+        {%- for entry in action_items %}
+            {%- if entry.divider %}<li class="divider"></li>{%- endif %}
+            <li>{{ entry.render() }}</a>
+            </li>
+        {%- endfor %}
+        </ul>
+    </div>
+    '''
 
 
 class ActionGroupItem(Action):

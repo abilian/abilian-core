@@ -11,6 +11,7 @@ from functools import partial
 import whoosh
 import whoosh.sorting
 from flask import Blueprint, current_app, g, render_template, request, url_for
+from six import text_type
 
 from abilian.i18n import _
 from abilian.web import views
@@ -66,7 +67,7 @@ def init_search(endpoint, values):
             url=Endpoint('search.search_main', **page_kw)))
 
     if page > 1:
-        g.breadcrumb.append(BreadcrumbItem(label=unicode(page),
+        g.breadcrumb.append(BreadcrumbItem(label=text_type(page),
                                            url=Endpoint('search.search_main',
                                                         page=page,
                                                         **page_kw)))

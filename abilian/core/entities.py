@@ -197,7 +197,7 @@ class EntityMeta(BaseMeta):
                     for permission, roles in default_permissions)
                 d['__default_permissions__'] = default_permissions
 
-            d['SLUG_SEPARATOR'] = unicode(d.get('SLUG_SEPARATOR',
+            d['SLUG_SEPARATOR'] = text_type(d.get('SLUG_SEPARATOR',
                                                 Entity.SLUG_SEPARATOR))
 
         cls = BaseMeta.__new__(mcs, classname, bases, d)

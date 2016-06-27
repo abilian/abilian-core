@@ -14,6 +14,7 @@ import redis
 
 from flask import (render_template, request, flash, session, redirect, url_for,
                    current_app, make_response)
+from six import text_type
 
 from abilian.services import get_service
 from abilian.services.security import Admin
@@ -162,8 +163,8 @@ def step_db_validate():
     db_uri += u'/'
 
     if dialect == u'sqlite' and (not database or database == u':memory:'):
-        database = unicode(Path(current_app.instance_path) / u'data' /
-                           u'sqlite.db')
+        database = text_type(Path(current_app.instance_path) / u'data' /
+                             u'sqlite.db')
 
     db_uri += database
 

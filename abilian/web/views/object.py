@@ -10,6 +10,7 @@ import logging
 import sqlalchemy as sa
 from flask import (current_app, flash, g, redirect, render_template, request,
                    url_for)
+from six import text_type
 from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.entities import ValidationError
@@ -274,7 +275,7 @@ class ObjectEdit(ObjectView):
         return redirect(self.view_url())
 
     def message_success(self):
-        return unicode(self._message_success)
+        return text_type(self._message_success)
 
     # actions
     def handle_action(self, action):

@@ -12,6 +12,7 @@ from pathlib import Path
 import pkg_resources
 import sqlalchemy as sa
 from flask import Blueprint, make_response, render_template, request
+from six import text_type
 from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.models.blob import Blob
@@ -76,7 +77,7 @@ class BaseImageView(BaseFileDownload):
             raise NotFound()
 
         self.content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
-        ext = u'.' + unicode(fmt.lower())
+        ext = u'.' + text_type(fmt.lower())
 
         filename = kwargs.get('filename')
         if not filename:
@@ -116,7 +117,7 @@ class StaticImageView(BaseImageView):
         BaseImageView.__init__(self, *args, **kwargs)
         self.image_path = Path(image)
         if not self.image_path.exists():
-            p = unicode(self.image_path)
+            p = text_type(self.image_path)
             raise ValueError('Invalid image path: {}'.format(repr(p)))
 
     def prepare_args(self, args, kwargs):
@@ -151,7 +152,7 @@ class BlobView(BaseImageView):
             raise NotFound()
 
         meta = blob.meta
-        filename = meta.get('filename', meta.get('md5', unicode(blob.uuid)))
+        filename = meta.get('filename', meta.get('md5', text_type(blob.uuid)))
         kwargs['filename'] = filename
         kwargs['image'] = blob.file.open('rb')
         return args, kwargs

@@ -196,7 +196,7 @@ class WhooshIndexService(Service):
         """
         state = self.app_state
 
-        for name, schema in self.schemas.iteritems():
+        for name, schema in self.schemas.items():
             if current_app.testing:
                 storage = TestingStorage()
             else:
@@ -221,7 +221,7 @@ class WhooshIndexService(Service):
         logger.info('Resetting indexes')
         state = self.app_state
 
-        for name, idx in state.indexes.iteritems():
+        for name, idx in state.indexes.items():
             writer = AsyncWriter(idx)
             writer.commit(merge=True, optimize=True, mergetype=CLEAR)
 
