@@ -61,15 +61,11 @@ lint-js:
 
 lint-py:
 	@echo "--> Linting Python files"
-	flake8 --max-complexity=8 --config=setup.cfg $(SRC)
-	pylama $(SRC)
+	flake8 --config=setup.cfg $(SRC)
 	@echo ""
 
 lint-readme:
 	rst-lint README.rst
-
-pep8-stats:
-	pep8 -r --statistics -qq $(SRC) | sort -nr
 
 
 #

@@ -380,7 +380,7 @@ def check_for_redirect(target):
         if '.' in endpoint and endpoint.rsplit('.', 1)[0] == 'login':
             # don't redirect to any login view after successful login
             return None
-    except Exception as e:
+    except Exception:
         # exceptions may happen if route is not found for example
         pass
 

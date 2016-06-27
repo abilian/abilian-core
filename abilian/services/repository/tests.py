@@ -187,7 +187,7 @@ class TestSessionRepository(BaseTestCase):
             self.svc.get(session, self.UUID).open('rb').read(), b'new content')
 
         # delete and commit
-        with session.begin(nested=True) as tr:
+        with session.begin(nested=True):
             self.svc.delete(session, self.UUID)
             self.assertIs(self.svc.get(session, self.UUID), None)
 
@@ -206,7 +206,7 @@ class TestSessionRepository(BaseTestCase):
             self.svc.get(session, self.UUID).open('rb').read(), b'first draft')
         session.rollback()
 
-        with session.begin(subtransactions=True) as tr:
+        with session.begin(subtransactions=True):
             self.svc.delete(session, self.UUID)
             self.assertIs(self.svc.get(session, self.UUID), None)
 
