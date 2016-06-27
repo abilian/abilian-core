@@ -11,7 +11,7 @@ import base64
 import cgi
 import logging
 import re
-import urlparse
+from six.moves.urllib import parse
 from collections import namedtuple
 from datetime import datetime
 from itertools import ifilter
@@ -67,7 +67,7 @@ def linkify_url(value):
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "http://" + url
 
-    url = urlparse.urlsplit(url).geturl()
+    url = parse.urlsplit(url).geturl()
     if '"' in url:
         url = url.split('"')[0]
     if '<' in url:

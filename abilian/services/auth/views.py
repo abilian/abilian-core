@@ -11,7 +11,7 @@ from __future__ import (absolute_import, division, print_function,
 import random
 import string
 from datetime import datetime
-from urlparse import urljoin, urlparse
+from six.moves.urllib.parse import urljoin, urlparse
 
 from flask import (current_app, flash, redirect, render_template, request,
                    url_for)
