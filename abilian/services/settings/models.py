@@ -96,7 +96,12 @@ class Setting(db.Model):
 
 
 register = _transformers.register
-register('int', bytes, int)
+
+
+def from_int(i):
+    return "{}".format(i).encode()
+
+register('int', from_int, int)
 
 
 def from_bool(b):
