@@ -83,18 +83,18 @@ class TestActions(BaseTestCase):
 
     def test_render(self):
         assert (BASIC.render() == Markup(
-            u'<a class="action action-cat_1 action-cat_1-basic" '
-            u'href="http://some.where">'
-            u'<i class="glyphicon glyphicon-ok"></i> Basic Action</a>'))
+            '<a class="action action-cat_1 action-cat_1-basic" '
+            'href="http://some.where">'
+            '<i class="glyphicon glyphicon-ok"></i> Basic Action</a>'))
 
         assert (CONDITIONAL.render() == Markup(
-            u'<a class="action action-cat_1 action-cat_1-conditional '
-            u'btn btn-warning" href="http://condition.al">'
-            u'<i class="glyphicon glyphicon-hand-right"></i> '
-            u'Conditional Action</a>'))
+            '<a class="action action-cat_1 action-cat_1-conditional '
+            'btn btn-warning" href="http://condition.al">'
+            '<i class="glyphicon glyphicon-hand-right"></i> '
+            'Conditional Action</a>'))
 
         assert (OTHER_CAT.render() == Markup(
-            u'<a class="action action-cat_2-sub action-cat_2-sub-other '
-            u'custom-class" href="http://count?3">'
-            u'<img src="/static/icons/other.png" width="14" height="14" /> '
-            u'Other Action</a>'))
+            '<a class="action action-cat_2-sub action-cat_2-sub-other '
+            'custom-class" href="http://count?3">'
+            '<img src="/static/icons/other.png" width="14" height="14" /> '
+            'Other Action</a>'))

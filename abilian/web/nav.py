@@ -12,8 +12,8 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from flask import g
-from six import string_types, text_type
 from jinja2 import Markup, Template
+from six import string_types, text_type
 
 from .action import ACTIVE, ENABLED, Action, Glyphicon, getset
 

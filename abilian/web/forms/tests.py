@@ -138,8 +138,8 @@ class FieldsTestCase(BaseTestCase):
 
     def test_datetime_field(self):
         """
-    Test fields supports date with year < 1900
-    """
+        Test fields supports date with year < 1900
+        """
         obj = mock.Mock()
 
         with self.app.test_request_context(
@@ -194,8 +194,8 @@ class FieldsTestCase(BaseTestCase):
 
     def test_date_field(self):
         """
-    Test fields supports date with year < 1900
-    """
+        Test fields supports date with year < 1900
+        """
         headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
         with self.app.test_request_context(headers=headers):
             f = fields.DateField().bind(Form(), 'dt')

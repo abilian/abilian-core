@@ -9,8 +9,8 @@ import re
 
 from flask import current_app, g
 from flask.signals import appcontext_pushed
-from six import string_types, text_type
 from jinja2 import Markup, Template
+from six import string_types, text_type
 
 from abilian.core.singleton import UniqueName
 from abilian.web import csrf
@@ -606,7 +606,7 @@ class ActionRegistry(object):
         if context is None:
             context = self.context
 
-        return filter(lambda a: a.available(context), actions)
+        return [a for a in actions if a.available(context)]
 
     @property
     def _state(self):

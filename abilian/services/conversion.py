@@ -12,7 +12,6 @@ TODO: rename Converter into ConversionService ?
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from io import BytesIO
 import glob
 import hashlib
 import logging
@@ -26,12 +25,9 @@ import traceback
 from abc import ABCMeta, abstractmethod
 from base64 import decodestring, encodestring
 from contextlib import contextmanager
+from io import BytesIO
 from pathlib import Path
 from tempfile import mkstemp
-try:
-    from xmlrpclib import ServerProxy
-except ImportError:
-    ServerProxy = None
 
 from magic import Magic
 from PIL import Image
@@ -39,6 +35,11 @@ from PIL.ExifTags import TAGS
 from six import raise_from, string_types, text_type
 
 from abilian.services.image import FIT, resize
+
+try:
+    from xmlrpclib import ServerProxy
+except ImportError:
+    ServerProxy = None
 
 logger = logging.getLogger(__name__)
 
@@ -443,7 +444,9 @@ class PdfToPpmHandler(Handler):
 
                 converted_images = []
                 for fn in l:
-                    converted = resize(open(fn, 'rb').read(), size, size, mode=FIT)
+                    converted = resize(
+                        open(fn, 'rb').read(),
+                        size, size, mode=FIT)
                     converted_images.append(converted)
 
                 return converted_images

@@ -11,7 +11,6 @@ from __future__ import (absolute_import, division, print_function,
 import random
 import string
 from datetime import datetime
-from six.moves.urllib.parse import urljoin, urlparse
 
 from flask import (current_app, flash, redirect, render_template, request,
                    url_for)
@@ -22,6 +21,7 @@ from flask_login import (login_user, logout_user, user_logged_in,
 from flask_mail import Message
 from flask_security.utils import md5
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+from six.moves.urllib.parse import urljoin, urlparse
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
 

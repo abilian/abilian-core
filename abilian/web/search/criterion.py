@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class UNDEFINED(object):
     pass
 
+
 _UNDEFINED = UNDEFINED()
 
 

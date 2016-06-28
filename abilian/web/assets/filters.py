@@ -9,9 +9,9 @@ import logging
 import os
 import re
 from functools import partial
+from io import StringIO
 from os.path import isabs
 from pathlib import Path
-from io import StringIO
 
 from webassets.filter import ExternalTool, Filter, get_filter, register_filter
 from webassets.filter.closure import ClosureJS as BaseClosureJS

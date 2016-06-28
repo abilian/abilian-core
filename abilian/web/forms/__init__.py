@@ -318,8 +318,7 @@ if not _PATCHED:
         """
         return '<{}.{} at 0x{:x} name={!r}>'.format(self.__class__.__module__,
                                                     self.__class__.__name__,
-                                                    id(self),
-                                                    self.name)
+                                                    id(self), self.name)
 
     patch_logger.info(Field.__module__ + '.Field.__repr__')
     Field.__repr__ = _core_field_repr

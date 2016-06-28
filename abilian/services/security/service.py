@@ -434,7 +434,8 @@ class SecurityService(Service):
 
         if object:
             assert isinstance(object, Entity)
-            object_key = u"{}:{}".format(object.object_type, text_type(object.id))
+            object_key = u"{}:{}".format(object.object_type,
+                                         text_type(object.id))
             if Creator in role:
                 if object.creator == principal:
                     return True

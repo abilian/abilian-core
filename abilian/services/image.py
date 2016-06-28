@@ -8,8 +8,8 @@ from __future__ import (absolute_import, division, print_function,
 import hashlib
 from io import BytesIO
 
-from six import string_types
 from PIL import Image
+from six import string_types
 
 __all__ = ['resize', 'RESIZE_MODES', 'SCALE', 'FIT', 'CROP']
 
