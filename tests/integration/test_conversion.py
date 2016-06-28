@@ -30,11 +30,11 @@ class Test(TestCase):
     def tearDownClass(cls):
         converter.clear()
 
-    def read_file(self, fn):
+    def read_file(self, fn, mode='rb'):
         try:
-            return open(join(BASEDIR, fn), 'rb').read()
+            return open(join(BASEDIR, fn), mode).read()
         except IOError as e:
-            return open(join(BASEDIR2, fn), 'rb').read()
+            return open(join(BASEDIR2, fn), mode).read()
 
     # To text
     def test_pdf_to_text(self):
@@ -61,17 +61,17 @@ class Test(TestCase):
         blob = self.read_file("test.odt")
         pdf = converter.to_pdf("", blob,
                                "application/vnd.oasis.opendocument.text")
-        assert "application/pdf" == mime_sniffer.from_buffer(pdf)
+        assert b"application/pdf" == mime_sniffer.from_buffer(pdf)
 
     def XXXtest_word_to_pdf(self):
         blob = self.read_file("test.doc")
         pdf = converter.to_pdf("", blob, "application/msword")
-        assert "application/pdf" == mime_sniffer.from_buffer(pdf)
+        assert b"application/pdf" == mime_sniffer.from_buffer(pdf)
 
     def test_image_to_pdf(self):
         blob = self.read_file("picture.jpg")
         pdf = converter.to_pdf("", blob, "image/jpeg")
-        assert "application/pdf" == mime_sniffer.from_buffer(pdf)
+        assert b"application/pdf" == mime_sniffer.from_buffer(pdf)
 
     # To images
     def test_pdf_to_images(self):
@@ -80,9 +80,9 @@ class Test(TestCase):
             return
         blob = self.read_file("onepage.pdf")
         image = converter.to_image("", blob, "application/pdf", 0)
-        assert "image/jpeg" == mime_sniffer.from_buffer(image)
+        assert b"image/jpeg" == mime_sniffer.from_buffer(image)
 
     def XXXtest_word_to_images(self):
         blob = self.read_file("test.doc")
         image = converter.to_image("", blob, "application/msword", 0)
-        assert "image/jpeg" == mime_sniffer.from_buffer(image)
+        assert b"image/jpeg" == mime_sniffer.from_buffer(image)

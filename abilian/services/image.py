@@ -59,7 +59,7 @@ def get_save_format(fmt):
 
 
 def resize(orig, width, height, mode=FIT):
-    if isinstance(orig, string_types):
+    if isinstance(orig, bytes):
         orig = BytesIO(orig)
 
     digest = hashlib.md5(orig.read()).digest()

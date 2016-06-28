@@ -422,7 +422,7 @@ class ImageMagickHandler(Handler):
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(['convert', in_fn, "pdf:" + out_fn])
-                converted = open(out_fn).read()
+                converted = open(out_fn, 'rb').read()
                 return converted
             except Exception as e:
                 raise_from(ConversionError('convert failed'), e)
@@ -443,7 +443,7 @@ class PdfToPpmHandler(Handler):
 
                 converted_images = []
                 for fn in l:
-                    converted = resize(open(fn).read(), size, size, mode=FIT)
+                    converted = resize(open(fn, 'rb').read(), size, size, mode=FIT)
                     converted_images.append(converted)
 
                 return converted_images
