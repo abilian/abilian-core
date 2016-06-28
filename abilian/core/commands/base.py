@@ -8,6 +8,7 @@ import runpy
 import urllib
 from pprint import pformat
 
+from six.moves import input
 import sqlalchemy as sa
 from flask import current_app
 from flask_script import Manager, prompt_pass
@@ -142,7 +143,7 @@ def initdb():
 def dropdb():
     """Drop the application DB.
     """
-    confirm = raw_input("Are you sure you want to drop the database? (Y/N) ")
+    confirm = input("Are you sure you want to drop the database? (Y/N) ")
     print("Dropping DB using engine: {}".format(db))
     if confirm.lower() == 'y':
         # with current_app.app_context():
