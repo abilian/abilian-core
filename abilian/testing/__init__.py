@@ -147,7 +147,8 @@ class BaseTestCase(TestCase):
         for p in (tmp_dir / 'tmp', tmp_dir / 'cache', tmp_dir / 'data'):
             p.mkdir()
 
-        sa_warn = 'error' if cls.SQLALCHEMY_WARNINGS_AS_ERROR else 'default'
+        # sa_warn = 'error' if cls.SQLALCHEMY_WARNINGS_AS_ERROR else 'default'
+        sa_warn = 'default'  # FIXME
         warnings.simplefilter(sa_warn, SAWarning)
 
     @classmethod

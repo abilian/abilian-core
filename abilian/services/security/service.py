@@ -621,7 +621,7 @@ class SecurityService(Service):
         #FIXME: obj.__class__ could define default permisssion matrix too
 
         if roles is not None:
-            if isinstance(roles, (Role, bytes, unicode)):
+            if isinstance(roles, (Role,) + string_types):
                 roles = (roles,)
 
             for r in roles:

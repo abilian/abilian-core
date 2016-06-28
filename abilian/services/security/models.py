@@ -50,8 +50,7 @@ class Permission(UniqueName):
 
 
 class PermissionType(UniqueNameType):
-    """
-    Store :class:`Permission`
+    """Store :class:`Permission`
 
     Usage::
     RoleType()
@@ -61,8 +60,7 @@ class PermissionType(UniqueNameType):
 
 @total_ordering
 class Role(UniqueName):
-    """
-    Defines role by name. Roles instances are unique by name.
+    """Defines role by name. Roles instances are unique by name.
 
     :param assignable: this role is can be assigned through security service.
     Non-assignable roles are roles automatically given depending on context (ex:

@@ -22,6 +22,11 @@ class View(BaseView):
     :meth:`actions context <abilian.web.action.ActionRegistry.context>`.
     """
 
+    @classmethod
+    def as_view(cls, name, *class_args, **class_kwargs):
+        name = str(name)
+        return super(View, cls).as_view(name, *class_args, **class_kwargs)
+
     def dispatch_request(self, *args, **kwargs):
         meth = getattr(self, request.method.lower(), None)
         # if the request method is HEAD and we don't have a handler for it

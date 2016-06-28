@@ -4,7 +4,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from six import text_type
+from six import text_type, with_metaclass
 from sqlalchemy.types import String, TypeDecorator
 
 
@@ -27,12 +27,12 @@ class ValueSingletonMeta(type):
         return cls.__instances__[value]
 
 
-class UniqueName(object):
+class UniqueName(with_metaclass(ValueSingletonMeta, object)):
     """Base class to create singletons from strings.
 
     A subclass of :class:`UniqueName` defines a namespace.
     """
-    __metaclass__ = ValueSingletonMeta
+    # __metaclass__ = ValueSingletonMeta
     __slots__ = ('_hash', '__name')
     attr = 'name'
 

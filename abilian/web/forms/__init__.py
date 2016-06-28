@@ -42,7 +42,7 @@ BabelTranslation = _BabelTranslation()
 
 
 class FormPermissions(object):
-    """Form role/permission manager
+    """Form role/permission manager.
     """
 
     def __init__(self,
@@ -153,7 +153,7 @@ class FormPermissions(object):
             if callable(r):
                 r = eval_roles(r)
 
-            if isinstance(r, (Role, bytes, unicode)):
+            if isinstance(r, (Role,) + string_types):
                 roles.append(r)
             else:
                 roles.extend(r)
@@ -167,7 +167,7 @@ class FormContext(object):
     Allows :class:`forms <Form>` to set a context during instanciation, so that
     subforms used in formfields / listformfields / etc can perform proper field
     filtering according to original permission and user passed to top form
-    __init__ method.
+    `__init__` method.
     """
     permission = None
     user = None
@@ -313,13 +313,13 @@ if not _PATCHED:
 
     def _core_field_repr(self):
         """
-        __repr__ that shows the name of the field instance. Useful for tracing field
-        errors (like in sentry)
+        `__repr__` that shows the name of the field instance. Useful for tracing field
+        errors (like in Sentry).
         """
         return '<{}.{} at 0x{:x} name={!r}>'.format(self.__class__.__module__,
                                                     self.__class__.__name__,
                                                     id(self),
-                                                    self.name,)
+                                                    self.name)
 
     patch_logger.info(Field.__module__ + '.Field.__repr__')
     Field.__repr__ = _core_field_repr

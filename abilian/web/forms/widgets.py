@@ -1094,7 +1094,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
         self.on_off_mode = kwargs.pop('on_off_mode', False)
         self.on_off_options = {}
         on_off_options = kwargs.pop('on_off_options', {})
-        for k, v in on_off_options.iteritems():
+        for k, v in on_off_options.items():
             if k not in self._ON_OFF_VALID_OPTIONS:
                 continue
             self.on_off_options['data-' + k] = v
@@ -1116,7 +1116,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 
 class PasswordInput(BasePasswordInput):
     """
-    Supports setting 'autocomplete' at instanciation time
+    Supports setting 'autocomplete' at instanciation time.
     """
 
     def __init__(self, *args, **kwargs):

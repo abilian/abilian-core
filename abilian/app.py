@@ -321,7 +321,7 @@ class Application(Flask, ServiceManager, PluginManager):
         if manager is None or isinstance(manager, ScriptManager):
             return
 
-        if isinstance(manager, (bytes, unicode)):
+        if isinstance(manager, string_types):
             manager = str(manager)
             if manager.startswith('.'):
                 manager = self.import_name + manager

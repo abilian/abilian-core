@@ -13,7 +13,7 @@ from inspect import isclass
 
 import sqlalchemy as sa
 from flask import current_app
-from six import text_type
+from six import text_type, with_metaclass
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import Session, mapper
@@ -215,7 +215,7 @@ class EntityMeta(BaseMeta):
         BaseMeta.__init__(cls, classname, bases, d)
 
 
-class Entity(Indexable, BaseMixin, db.Model):
+class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     """Base class for Abilian entities.
 
     From Sqlalchemy POV, Entities use `Joined-Table inheritance
@@ -239,7 +239,7 @@ class Entity(Indexable, BaseMixin, db.Model):
               args['order_by'] = cls.created_at # for example
               return args
     """
-    __metaclass__ = EntityMeta
+    # __metaclass__ = EntityMeta
     __indexable__ = False
     __indexation_args__ = {}
     __indexation_args__.update(Indexable.__indexation_args__)

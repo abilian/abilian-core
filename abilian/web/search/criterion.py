@@ -11,7 +11,11 @@ from sqlalchemy.sql.expression import or_
 
 logger = logging.getLogger(__name__)
 
-_UNDEFINED = type(b'UNDEFINED', (object,), {})
+
+class UNDEFINED(object):
+    pass
+
+_UNDEFINED = UNDEFINED()
 
 
 class BaseCriterion(object):
