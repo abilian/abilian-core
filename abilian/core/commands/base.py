@@ -5,10 +5,10 @@ from __future__ import (absolute_import, division, print_function,
 import logging
 import os
 import runpy
-import urllib
 from pprint import pformat
 
 from six.moves import input
+from six.moves import urllib
 import sqlalchemy as sa
 from flask import current_app
 from flask_script import Manager, prompt_pass
@@ -157,8 +157,8 @@ def routes():
     output = []
     for rule in current_app.url_map.iter_rules():
         methods = ','.join(rule.methods)
-        path = urllib.unquote(rule.rule)
-        # line = urllib.unquote()
+        path = urllib.parse.unquote(rule.rule)
+        # line = urllib.parse.unquote()
         output.append((rule.endpoint, methods, path))
 
     for endpoint, methods, path in sorted(output):
