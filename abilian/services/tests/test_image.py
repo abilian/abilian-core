@@ -10,7 +10,7 @@ from ..image import CROP, FIT, SCALE, get_save_format, get_size, resize
 @fixture
 def orig_image():
     # 725x518
-    return open(join(dirname(__file__), "cat.jpg")).read()
+    return open(join(dirname(__file__), "cat.jpg"), 'rb').read()
 
 
 def test_get_save_format():

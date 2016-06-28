@@ -98,7 +98,7 @@ class RepositoryService(Service):
             encoding = None
 
         with dest.open(mode, encoding=encoding) as f:
-            if not isinstance(content, string_types):
+            if not isinstance(content, bytes):
                 content = content.read()
             f.write(content)
 
