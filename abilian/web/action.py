@@ -382,8 +382,7 @@ class Action(object):
         self._endpoint = endpoint
 
     def available(self, context):
-        """
-        Determine if this actions is available in this `context`.
+        """Determine if this actions is available in this `context`.
 
         :param context: a dict whose content is left to application needs; if
                         :attr:`.condition` is a callable it receives `context`

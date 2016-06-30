@@ -1,4 +1,4 @@
-.PHONY: develop test pep8 pylama clean docs tox jslint
+.PHONY: develop test lint clean doc
 
 # The source directory
 SRC=abilian
@@ -11,7 +11,8 @@ NCPU=2
 # pytest-sugar seems to be incompatible with pytest-xdist
 PYTEST_MULTI=-n $(NCPU) -p no:sugar
 
-all: test
+
+all: test lint
 
 
 #
@@ -49,23 +50,27 @@ vagrant-tests:
 	vagrant up
 	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
 
+
 #
 # Various Checkers
 #
-lint: lint-py
-
-lint-js:
-	@echo "--> Linting JS files"
-	npm run lint --silent
-	@echo ""
+# TODO: add lint-rst
+lint: lint-py lint-js
 
 lint-py:
 	@echo "--> Linting Python files"
 	flake8 --config=setup.cfg $(SRC)
 	@echo ""
 
-lint-readme:
-	rst-lint README.rst
+lint-js:
+	@echo "--> Linting JS files"
+	eslint ./abilian/web/resources/js/
+	@echo ""
+
+lint-rst:
+	@echo "--> Linting .rst files"
+	rst-lint *.rst docs/*.rst
+	@echo ""
 
 
 #
