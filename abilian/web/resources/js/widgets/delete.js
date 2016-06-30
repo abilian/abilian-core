@@ -45,12 +45,12 @@
           'className': 'btn-danger',   // or btn-primary, or btn-danger, or nothing at all
           'callback': function () {
             self.onConfirm();
-          }
+          },
         },
         cancel: {
           'label': this.options.cancelLabel,
           'className': '',  // or btn-primary, or btn-danger, or nothing at all
-        }
+        },
       },
       'keyboard': true,
     });

@@ -1,6 +1,7 @@
 /* jshint unused: false */
 (function (factory) {
   'use strict';
+
   define('widget.FileInput',
       ['AbilianWidget', 'jquery', 'FileAPI', 'Hogan'], factory);
 }(function (Abilian, $, api, Hogan) {
@@ -18,11 +19,11 @@
     progressTemplate: '<div class="progress">' +
     '<div class="progress-bar" role="progressbar" ' +
     '     aria-valuenow="0" aria-valuemin="0" ' +
-    '     aria-valuemax="100" style="width: 0%;">' +
+    '     aria-valuemax="100" style="width: 0;">' +
     '</div>' +
     '</div>',
     inputTemplate: '<input type="hidden" name="{{ name }}" />',
-    progressBarHeight: '0.2em'
+    progressBarHeight: '0.2em',
   };
 
   function FileInput(node, options) {
@@ -61,8 +62,8 @@
 
   FileInput.prototype = {
     addFiles: function (evt) {
-      var self = this,
-          files = api.getFiles(evt);
+      var self = this;
+      var files = api.getFiles(evt);
 
       if (!this.multiple) {
         this.listNode.empty();
@@ -75,9 +76,9 @@
     },
 
     setupExistingFileNode: function (node) {
-      var button = node.find('button'),
-          unwrappedButton = button.get(0),
-          deleted = button.data('deleted');
+      var button = node.find('button');
+      var unwrappedButton = button.get(0);
+      var deleted = button.data('deleted');
 
       if (!unwrappedButton) {
         return;
@@ -87,7 +88,7 @@
           .attr({
             'type': 'hidden',
             'name': button.data('name'),
-            'value': button.data('value')
+            'value': button.data('value'),
           });
 
       if (deleted) {
@@ -118,13 +119,12 @@
         url: Abilian.api.upload.newFileUrl,
         headers: {
           'Accept': 'application/json',
-          'X-CSRF-Token': Abilian.csrf_token
+          'X-CSRF-Token': Abilian.csrf_token,
         },
         files: {'file': file},
         progress: this.onFileProgress.bind(this),
-        complete: this.onFileComplete.bind(this)
+        complete: this.onFileComplete.bind(this),
       });
-
     },
 
     removeFileNode: function (evt) {
@@ -135,10 +135,10 @@
     },
 
     createFileNode: function (file) {
-      var infos = this.getFileInfos(file),
-          el = $(this.options.fileItemTemplate.render(infos)),
-          progress = $(this.options.progressTemplate)
-              .css({height: this.options.progressBarHeight});
+      var infos = this.getFileInfos(file);
+      var el = $(this.options.fileItemTemplate.render(infos));
+      var progress = $(this.options.progressTemplate)
+          .css({height: this.options.progressBarHeight});
 
       el.append(progress);
       return el;
@@ -154,15 +154,15 @@
         name: this.sanitizeFilename(file.name),
         type: file.type,
         size: this.humanSize(file.size),
-        uid: api.uid(file)
+        uid: api.uid(file),
       };
     },
 
     onExistingNodeChange: function (evt) {
-      var button = $(evt.target),
-          markerInputElement = evt.target.markerInputElement,
-          isActive = button.hasClass('active'),
-          input = $(evt.data.node).find('input');
+      var button = $(evt.target);
+      var markerInputElement = evt.target.markerInputElement;
+      var isActive = button.hasClass('active');
+      var input = $(evt.data.node).find('input');
 
       button.toggleClass('active');
 
@@ -185,8 +185,8 @@
     },
 
     onFileComplete: function (err, xhr, file, options) {
-      var $el = this.getElementForFile(xhr.currentFile),
-          uid = api.uid(xhr.currentFile);
+      var $el = this.getElementForFile(xhr.currentFile);
+      var uid = api.uid(xhr.currentFile);
 
       delete this.currentlyUploaded[uid];
 
@@ -197,11 +197,11 @@
       }
 
       var $input = $('<input>')
-              .attr({
-                'type': 'hidden',
-                'name': this.inputName
-              }),
-          result = JSON.parse(xhr.responseText);
+          .attr({
+            'type': 'hidden',
+            'name': this.inputName,
+          });
+      var result = JSON.parse(xhr.responseText);
 
       $el.find('.progress').remove();
       $input.val(result.handle);
@@ -211,7 +211,7 @@
     onFormSubmit: function (e) {
       if (Object.keys(this.currentlyUploaded).length > 0) {
         e.preventDefault();
-        alert('Des fichiers sont en cours d\'envoi'); //FIXME: i18n
+        alert('Des fichiers sont en cours d\'envoi'); // FIXME: i18n
       }
     },
 
@@ -220,7 +220,9 @@
     },
 
     humanSize: function (size) {
-      var unit = 'b', divider = null;
+      var unit = 'b';
+      var divider = null;
+
       if (size > api.TB) {
         unit = 'TB';
         divider = api.TB;
@@ -240,13 +242,13 @@
       }
 
       return size.toString() + unit;
-    }
+    },
 
   };
 
   function createFileInput(options) {
-    var element = $(this),
-        widget = new FileInput(element, options);
+    var element = $(this);
+    var widget = new FileInput(element, options);
     element.data('file-input', widget);
     return widget;
   }

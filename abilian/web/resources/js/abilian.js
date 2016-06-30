@@ -82,13 +82,16 @@
 
   Abilian.fn.initWidgets = function () {
     $('.js-widget').each(Abilian.initJsWidget);
+
     $('[data-toggle="select2"]').each(function () {
       var el = $(this);
       el.select2({allowClear: !el.hasClass('required')});
     });
+
     $('[data-toggle="on-off"]').each(function () {
-      var parent = this.parentNode,
-          $el = $(this);
+      var parent = this.parentNode;
+      var $el = $(this);
+
       if (parent.tagName == 'LABEL') {
         $el.insertAfter(parent);
         parent = $(parent);
@@ -98,6 +101,7 @@
       }
       $el.bootstrapSwitch();
     });
+
     $(".timepicker").timepicker()
         .on('click.timepicker',
             function (e) {
@@ -151,13 +155,13 @@
               filter: function (response) {
                 return response.results[info[0]] || [];
               },
-              cache: false
+              cache: false,
             },
             limit: 15,
             engine: Hogan,
             header: '<b><i>' + info[1] + '</i></b>',
             valueKey: 'name',
-            template: '{{name}}'
+            template: '{{name}}',
           };
           datasets.push(d);
         });

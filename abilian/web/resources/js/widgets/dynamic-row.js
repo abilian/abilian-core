@@ -11,7 +11,7 @@
     self.tbody = table.children('tbody');
     self.options = options;
     if (self.options == null) {
-      self.options = 'top'
+      self.options = 'top';
     }
     self.currentIndex = table.find('> tbody > tr').length;
     self.table.addClass('dynamic-row-widget');
@@ -56,6 +56,7 @@
     'addRow': function () {
       var self = this;
       var newRow = self.templateRow.clone(true, true);
+
       newRow.find('input').each(
           function () {
             var item = $(this);
@@ -89,7 +90,7 @@
           .each(Abilian.initJsWidget);
 
       self.currentIndex += 1;
-    }
+    },
   };
 
   function dynamicRowWidget(params) {
@@ -108,5 +109,4 @@
         }
     );
   };
-
 }));

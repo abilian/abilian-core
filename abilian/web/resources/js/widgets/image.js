@@ -4,6 +4,7 @@
   require(['AbilianWidget', 'widget.FileInput', 'jquery', 'FileAPI'], factory);
 }(function (Abilian, FileInput, $, api) {
   'use strict';
+
   /**
    * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
    */
@@ -33,20 +34,20 @@
   ImageInput.prototype = Object.create(FileInput.prototype);
 
   ImageInput.prototype.createFileNode = function (file) {
-    var self = this,
-        el = FileInput.prototype.createFileNode.call(self, file),
-        image = api.Image(file);
+    var self = this;
+    var el = FileInput.prototype.createFileNode.call(self, file);
+    var image = api.Image(file);
 
     api.getInfo(file, function (err, infos) {
       if (err) {
         return;
       }
 
-      var resize_fun = self['resize_' + self.resize_mode],
-          preview;
+      var resize_fun = self['resize_' + self.resize_mode];
+      var preview;
 
       preview = resize_fun.call(self, image, infos);
-      preview.get(function (err/**String*/, img/**HTMLElement*/) {
+      preview.get(function (err/** String */, img/** HTMLElement */) {
         el.prepend(img);
       });
     });
@@ -59,9 +60,11 @@
   };
 
   ImageInput.prototype.resize_fit = function (image, infos) {
-    var w_ratio = infos.width / this.width,
-        h_ratio = infos.height / this.height,
-        width, height, preview;
+    var w_ratio = infos.width / this.width;
+    var h_ratio = infos.height / this.height;
+    var width;
+    var height;
+    var preview;
 
     if (w_ratio > h_ratio) {
       /* wider than taller: set target width to max width */
@@ -75,16 +78,14 @@
     return image.resize(width, height, 'preview');
   };
 
-
   ImageInput.prototype.resize_crop = function (image, infos) {
     return image.resize(this.width, this.height, 'preview');
   };
 
-
   function createImageInput(options) {
-    var element = $(this),
-        opts = $.extend({}, defaults, options),
-        widget = new ImageInput(element, opts);
+    var element = $(this);
+    var opts = $.extend({}, defaults, options);
+    var widget = new ImageInput(element, opts);
     element.data('image-input', widget);
     return widget;
   }
@@ -104,5 +105,4 @@
           return widget;
         });
   };
-
 }));

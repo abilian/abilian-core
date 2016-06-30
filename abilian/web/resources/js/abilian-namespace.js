@@ -3,8 +3,9 @@
 
 function setupAbilian($) {
   'use strict';
-  var Abilian = window.Abilian = window.Abilian || {},
-      initialized = false;
+
+  var Abilian = window.Abilian = window.Abilian || {};
+  var initialized = false;
 
   /**
    * @define {?boolean} null if not set, false or true if explicitely set by
@@ -65,7 +66,7 @@ function setupAbilian($) {
    * logged user
    */
   Abilian.current_user = {
-    anonymous: true
+    anonymous: true,
   };
 
   Abilian.init = function () {

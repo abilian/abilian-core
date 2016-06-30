@@ -6,6 +6,7 @@
   require(['jquery', 'jquery.dataTables'], factory);
 }(function ($) {
   'use strict';
+
   $.extend($.fn.dataTableExt.oStdClasses, {
     'sWrapper': 'dataTables_wrapper',
   });
@@ -19,7 +20,7 @@
       "iTotal": oSettings.fnRecordsTotal(),
       "iFilteredTotal": oSettings.fnRecordsDisplay(),
       "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
-      "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+      "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength),
     };
   };
 
@@ -101,8 +102,8 @@
             $('li:last', an[i]).removeClass('disabled');
           }
         }
-      }
-    }
+      },
+    },
   });
 
   /* datatable: sort types and filters */
@@ -129,5 +130,4 @@
       return $.fn.dataTableExt.oSort['string-desc'](x, y);
     },
   });
-
 }));

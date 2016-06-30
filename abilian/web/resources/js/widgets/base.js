@@ -27,10 +27,10 @@
    * Initialiaze a single element.
    */
   Abilian.initJsWidget = function () {
-    var $this = $(this),
-        creatorName = $this.data('init-with'),
-        params = $this.data('init-params'),
-        creatorFunc = widgetsCreators[creatorName];
+    var $this = $(this);
+    var creatorName = $this.data('init-with');
+    var params = $this.data('init-params');
+    var creatorFunc = widgetsCreators[creatorName];
 
     if (creatorFunc === undefined) {
       throw new Error('Unknown widget constructor: "' + creatorName + '"');

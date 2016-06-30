@@ -28,8 +28,8 @@
    * Helper to check equality for filter values
    */
   function hasValueSet(filter) {
-    var unset = filter.unsetValue,
-        val = filter.save();
+    var unset = filter.unsetValue;
+    var val = filter.save();
 
     if (filter.hasValueSet !== undefined) {
       return filter.hasValueSet();
@@ -57,7 +57,7 @@
     return false;
   }
 
-  //helper function to unescape html
+  // helper function to unescape html
   var tagsToReplace = {
     '&amp;': '&',
     '&lt;': '<',
@@ -114,11 +114,11 @@
 
     /* filters container */
     self.$Container = $('<div class="advanced-search-filters"></div>');
-    var filterSelectContainer = $('<div class="row" />'),
-        filterSelect = $('<select />'),
-        sAddAdvancedFilter = (oDTSettings.oLanguage.sAddAdvancedFilter
-            || 'Add a filter') + '...',
-        filtersContainer = $('<div />').attr({'class': 'form-horizontal'});
+    var filterSelectContainer = $('<div class="row" />');
+    var filterSelect = $('<select />');
+    var sAddAdvancedFilter = (oDTSettings.oLanguage.sAddAdvancedFilter
+        || 'Add a filter') + '...';
+    var filtersContainer = $('<div />').attr({'class': 'form-horizontal'});
 
     filterSelectContainer.append(filterSelect);
     filterSelect.append($('<option value=""></option>'));
@@ -130,8 +130,10 @@
     for (var i = 0; i < aoasf_len; i++) {
       var $criterionContainer = $('<div></div>')
           .attr({'class': 'criterion form-group'});
-      var $labelContainer = $('<div></div>').attr({'class': 'col-xs-12 col-sm-3 control-label'});
-      var $filterContainer = $('<div></div>').attr({'class': 'col-xs-12 col-sm-9'});
+      var $labelContainer = $('<div></div>')
+          .attr({'class': 'col-xs-12 col-sm-3 control-label'});
+      var $filterContainer = $('<div></div>')
+          .attr({'class': 'col-xs-12 col-sm-9'});
       var filter = oDTSettings.oInit.aoAdvancedSearchFilters[i];
       var args = [].concat([filter.name, filter.label], filter.args);
       var instance = instantiateFilter(filter.type, args);
@@ -175,7 +177,7 @@
 
     filterSelect.select2({
       'containerCssClass': 'col-xs-4 col-md-3',
-      'placeholder': sAddAdvancedFilter
+      'placeholder': sAddAdvancedFilter,
     });
     filterSelect.on(
         'change',
@@ -383,7 +385,7 @@
       },
       'load': function (vals) {
         this.$input.val(vals[0]);
-      }
+      },
     };
     return TextFilter;
   }();
@@ -404,7 +406,7 @@
             .attr({
               'id': id,
               'name': name,
-              'value': arg.value
+              'value': arg.value,
             });
 
         if (!checked && arg.checked) {
@@ -441,7 +443,7 @@
               this.checked = (this.value == vals[0]);
             }
         );
-      }
+      },
     };
     return RadioFilter;
   }();
@@ -462,7 +464,7 @@
             .attr({
               'id': id,
               'name': name,
-              'value': arg.value
+              'value': arg.value,
             });
 
         if (!checked && arg.checked) {
@@ -525,7 +527,7 @@
           .attr({
             'id': name,
             'name': name,
-            'type': 'hidden'
+            'type': 'hidden',
           });
 
       this.$elements = $elements;
@@ -560,7 +562,6 @@
       return val;
     }
 
-
     SelectFilter.prototype = {
       'getElements': function () {
         return this.$elements;
@@ -587,7 +588,7 @@
           .attr({
             'id': name,
             'name': name,
-            'type': 'hidden'
+            'type': 'hidden',
           });
 
       this.$elements = $elements;
@@ -635,8 +636,7 @@
         if (!this.multiple && !data.length) {
           data = [];
         }
-      }
-      else {
+      } else {
         data = null;
       }
 
@@ -670,14 +670,13 @@
       this.$elements = $('<div class="form-inline">');
       this.multiple = s2_args['multiple'] || false;
 
-
       /* create the select*/
       var selectId = name + '-select';
       var $select = $('<input />')
           .attr({
             'id': selectId,
             'name': selectId,
-            'type': 'hidden'
+            'type': 'hidden',
           });
       var s2Label = $('<label></label>')
           .attr({'class': 'select-inline', 'for': selectId})
@@ -697,6 +696,7 @@
         'containerCss': {'margin-left': '0.5em'},
       });
       this.$elements.append("&nbsp;&nbsp;");
+
       /* create the radios*/
       for (var i = 3; i < argLen; i++) {
         var arg = arguments[i];
@@ -705,7 +705,7 @@
             .attr({
               'id': id,
               'name': name + '-radio',
-              'value': arg.value
+              'value': arg.value,
             });
 
         if (!checked && arg.checked) {
@@ -768,7 +768,7 @@
             'id': name,
             'name': name,
             'value': name,
-            'checked': 'checked'
+            'checked': 'checked',
           });
 
       var select_id = name + '-select';
@@ -792,7 +792,7 @@
         'width': '20em',
         'max-width': '100%',
         'containerCssClass': 'form-control',
-        'containerCss': {'margin-left': '0.5em'}
+        'containerCss': {'margin-left': '0.5em'},
       });
 
       this.$input.on('change', function () {
@@ -820,7 +820,7 @@
         }
         this.$input.get(0).setAttribute('checked', true);
         this.$select.select2('val', vals[0]);
-      }
+      },
     };
     return CheckboxSelectFilter;
   }();
@@ -877,7 +877,7 @@
       delete e.data.instance.criterions[e.data.value];
       e.data.$container.trigger('redraw.DT');
     }
-    
+
     function getValues(self) {
       var result = {
         'selected_filters': [],
@@ -895,6 +895,7 @@
       'getElements': function () {
         return this.$elements;
       },
+
       'installOption': function (option) {
         var $option = $(option);
         var args = $option.data();
@@ -906,18 +907,18 @@
                 .attr({'class': 'glyphicon glyphicon-minus'})
                 .text(args.label))
             .on('click', {
-                  'instance': this,
-                  'value': args.value,
-                  '$option': $option,
-                  '$container': $container
-                },
+              'instance': this,
+              'value': args.value,
+              '$option': $option,
+              '$container': $container,
+            },
                 removeCriterion)
             .appendTo($container);
         $('<input />')
             .attr({
               'type': 'hidden',
               'name': this.name,
-              'value': args.value
+              'value': args.value,
             })
             .appendTo($container);
 
@@ -930,12 +931,15 @@
         $option.hide();
         this.$elements.append($container);
       },
+
       'val': function () {
         return [JSON.stringify(getValues(this))];
       },
+
       'save': function () {
         return [getValues(this)];
       },
+
       'load': function (vals) {
         vals = vals[0];
         for (var filterName in vals.values) {
@@ -946,6 +950,7 @@
           this.criterions[filterName].load(vals.values[filterName]);
         }
       },
+
       'hasValueSet': function () {
         /* jshint camelcase: false */
         return getValues(this).selected_filters.length > 0;
@@ -968,7 +973,7 @@
         return asf.getContainer();
       },
       'cFeature': 'F',
-      'sFeature': 'AdvancedSearchFilters'
+      'sFeature': 'AdvancedSearchFilters',
     });
   } else {
     throw 'Warning: AdvancedSearchFilters requires DataTables 1.7 or greater - www.datatables.net/download';
