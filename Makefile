@@ -54,8 +54,8 @@ vagrant-tests:
 #
 # Various Checkers
 #
-# TODO: add lint-rst
-lint: lint-py lint-js
+# TODO: add lint-js lint-rst
+lint: lint-py
 
 lint-py:
 	@echo "--> Linting Python files"

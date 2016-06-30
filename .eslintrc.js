@@ -46,5 +46,6 @@ module.exports = {
     'space-before-function-paren': 0,
     'operator-linebreak': 0,
     'camelcase': 0,
+    'padded-blocks': 0,
   },
 };
