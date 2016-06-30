@@ -11,7 +11,7 @@ from setuptools.command.develop import develop as _develop
 from setuptools.command.sdist import sdist as _sdist
 
 session = session = pip.download.PipSession()
-_install_requires = pip.req.parse_requirements('requirements.txt',
+_install_requires = pip.req.parse_requirements('requirements.in',
                                                session=session)
 install_requires = [str(ir.req) for ir in _install_requires]
 _dev_requires = pip.req.parse_requirements('etc/dev-requirements.txt',

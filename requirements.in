@@ -1,0 +1,84 @@
+# python 2/3 compat
+future>=0.15.2
+# Or should we use six or pie ?
+
+# Flask and friends
+Flask>=0.10.1
+Flask-Assets>=0.10
+Flask-Babel>=0.11
+Flask-DebugToolbar>=0.10
+Flask-Login>=0.3.0
+Flask-Mail>=0.9.1
+Flask-Migrate>=1.6.0
+Flask-SQLAlchemy>1.0
+Flask-Script
+Flask-Security>=1.7.0
+Flask-Testing>=0.4.2
+Flask-Uploads
+Flask-WTF>=0.9.4
+
+# pathlib is included in python 3.4, and very useful
+pathlib
+
+# can parse isoformat / used in a jinja filter
+python-dateutil>=2.4.0
+
+# Databases / persistence
+SQLAlchemy>=0.9,<1.1
+psycopg2>=2.6.1
+alembic>=0.8,<0.9
+
+# requirement of jinja2; > 0.21 has an important fix for string format. See
+# https://github.com/mitsuhiko/markupsafe/issues/28
+MarkupSafe>0.21
+
+# Indexing
+Whoosh>=2.5,<2.6
+
+# Task queue
+celery>=3.1,<3.2
+redis>=2.10.1
+
+# Plugins (TODO: replace)
+straight.plugin==1.4.0-post-1
+
+# Security
+bleach>=1.4.2
+py-bcrypt
+
+# Others (TODO: document)
+Markdown
+PyYAML
+pygeoip
+typing
+
+progressbar
+
+# Forms (TODO: need some updates)
+WTForms-Alchemy>=0.12,<0.16
+WTForms-Components>=0.10,<0.11
+# required by wtforms-alchemy
+SQLAlchemy-Utils>=0.29,<0.33
+
+# for debug toolbar
+sqlparse
+
+# antivirus interface
+clamd
+
+# Content detection / transformation
+Pillow>=2.7.0
+python-magic
+
+# Reporting
+pandas>=0.17
+
+#
+# Assets management (might not be necessary if distributing compiled assets)
+#
+jsmin
+cssmin
+closure
+cssselect
+lxml
+
