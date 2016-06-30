@@ -23,10 +23,10 @@ addons:
 
 # Install OS dependencies
 before_install:
-  - pip install pip==8.1.1
+  - pip install 'pip>=8.1'
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
-  - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard
+  - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
   - export PATH=~/npm-packages/bin:$PATH
   - wget 'http://jenkins.abilian.com/_fixtures/libsqlite-3.9.1-precise-bin.tar.gz'
   - tar xpvzf libsqlite-3.9.1-precise-bin.tar.gz -C ~
