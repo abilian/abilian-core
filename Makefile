@@ -59,7 +59,7 @@ lint: lint-py
 
 lint-py:
 	@echo "--> Linting Python files"
-	flake8 --config=setup.cfg $(SRC)
+	flake8 $(SRC)
 	@echo ""
 
 lint-js:
