@@ -11,7 +11,7 @@ anyjson==0.3.3            # via kombu
 Babel==2.3.4              # via flask-babel
 billiard==3.3.0.23        # via celery
 bleach==1.4.3
-blinker==1.4              # via flask-debugtoolbar, flask-mail, flask-principal
+Blinker==1.4              # via flask-debugtoolbar, flask-mail, flask-principal
 celery==3.1.23
 clamd==1.0.2
 click==6.6                # via flask
@@ -24,7 +24,7 @@ Flask-Babel==0.11.1
 Flask-DebugToolbar==0.10.0
 Flask-Login==0.3.2        # via flask-security
 Flask-Mail==0.9.1         # via flask-security
-Flask-Migrate==1.8.0
+Flask-Migrate==1.8.1
 Flask-Principal==0.4.0    # via flask-security
 Flask-Script==2.0.5       # via flask-migrate
 Flask-Security==1.7.5
@@ -36,7 +36,7 @@ Flask==0.11.1             # via flask-assets, flask-babel, flask-debugtoolbar, f
 future==0.15.2
 html5lib==0.9999999       # via bleach
 infinity==1.4             # via intervals
-intervals==0.7.1          # via wtforms-components
+intervals==0.8.0          # via wtforms-components
 itsdangerous==0.24        # via flask, flask-debugtoolbar, flask-security
 Jinja2==2.8               # via flask, flask-babel
 jsmin==2.2.1
@@ -49,20 +49,20 @@ numpy==1.11.1             # via pandas
 pandas==0.18.1
 passlib==1.6.5            # via flask-security
 pathlib==1.0.1
-Pillow==3.2.0
+Pillow==3.3.0
 progressbar==2.3
-psycopg2==2.6.1
+psycopg2==2.6.2
 py-bcrypt==0.4
 pygeoip==0.3.2
 python-dateutil==2.5.3
 python-editor==1.0.1      # via alembic
-python-magic==0.4.11
+python-magic==0.4.12
 pytz==2016.4              # via babel, celery, pandas
 PyYAML==3.11
 redis==2.10.5
 six==1.10.0               # via bleach, html5lib, python-dateutil, sqlalchemy-utils, validators, wtforms-alchemy, wtforms-components
-SQLAlchemy-Utils==0.32.7  # via wtforms-alchemy
-SQLAlchemy==1.0.13        # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtforms-alchemy
+SQLAlchemy-Utils==0.32.8  # via wtforms-alchemy
+SQLAlchemy==1.0.14        # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtforms-alchemy
 sqlparse==0.1.19
 straight.plugin==1.4.0-post-1
 typing==3.5.2.2
