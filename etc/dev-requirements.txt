@@ -16,7 +16,7 @@ pytest-cov
 
 # Static code analysis
 flake8
-mastool
+# mastool
 
 # To build docs
 Sphinx
