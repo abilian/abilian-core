@@ -1,7 +1,6 @@
 # For running tests
 pytest>=2.4.0
 pytest-xdist
-tox
 
 # needed to avoid a ResourceClosedError when using some CTE queries with 0 results:
 # https://bitbucket.org/zzzeek/sqlalchemy/issues/3079/select-statement-returning-0-rows
@@ -19,7 +18,8 @@ flake8
 # mastool
 
 # To build docs
-Sphinx
+# (Doesn't work w/ sphinx 1.4.5)
+Sphinx==1.4.4
 
 # Standard theme for readthedocs.com
 sphinx-rtd-theme
