@@ -1,9 +1,9 @@
 # python 2/3 compat
-future>=0.15.2
+# future>=0.15.2
 # Or should we use six or pie ?
 
 # Flask and friends
-Flask>=0.10.1
+Flask>=0.11
 Flask-Assets>=0.10
 Flask-Babel>=0.11
 Flask-DebugToolbar>=0.10
@@ -14,7 +14,7 @@ Flask-SQLAlchemy>1.0
 Flask-Script
 Flask-Security>=1.7.0
 Flask-Testing>=0.4.2
-Flask-Uploads
+# Flask-Uploads
 Flask-WTF>=0.9.4
 
 # pathlib is included in python 3.4, and very useful
@@ -47,7 +47,7 @@ bleach>=1.4.2
 py-bcrypt
 
 # Others (TODO: document)
-Markdown
+# Markdown
 PyYAML
 pygeoip
 typing
@@ -79,6 +79,6 @@ pandas>=0.17
 jsmin
 cssmin
 closure
-cssselect
+# cssselect
 lxml
 

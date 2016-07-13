@@ -1,6 +1,14 @@
 Changelog for Abilian Core
 ==========================
 
+0.7.7 (2016-07-13)
+------------------
+
+- Work on Py3k compatibility (not done yet)
+- Remove unneeded dependencies.
+- Update dependencies.
+- Harder linting.
+
 0.7.0 (2016-05-31)
 ------------------
 

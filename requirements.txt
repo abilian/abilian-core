@@ -17,7 +17,6 @@ clamd==1.0.2
 click==6.6                # via flask
 closure==20160517
 cssmin==0.2.0
-cssselect==0.9.2
 decorator==4.0.10         # via validators
 Flask-Assets==0.11
 Flask-Babel==0.11.1
@@ -30,10 +29,8 @@ Flask-Script==2.0.5       # via flask-migrate
 Flask-Security==1.7.5
 Flask-SQLAlchemy==2.1     # via flask-migrate
 Flask-Testing==0.5.0
-Flask-Uploads==0.2.0
 Flask-WTF==0.12           # via flask-security
-Flask==0.11.1             # via flask-assets, flask-babel, flask-debugtoolbar, flask-login, flask-mail, flask-migrate, flask-principal, flask-script, flask-security, flask-sqlalchemy, flask-testing, flask-uploads, flask-wtf
-future==0.15.2
+Flask==0.11.1             # via flask-assets, flask-babel, flask-debugtoolbar, flask-login, flask-mail, flask-migrate, flask-principal, flask-script, flask-security, flask-sqlalchemy, flask-testing, flask-wtf
 html5lib==0.9999999       # via bleach
 infinity==1.4             # via intervals
 intervals==0.8.0          # via wtforms-components
@@ -43,7 +40,6 @@ jsmin==2.2.1
 kombu==3.0.35             # via celery
 lxml==3.6.0
 Mako==1.0.4               # via alembic
-Markdown==2.6.6
 MarkupSafe==0.23          # via jinja2, mako
 numpy==1.11.1             # via pandas
 pandas==0.18.1
@@ -68,7 +64,7 @@ straight.plugin==1.4.0-post-1
 typing==3.5.2.2
 validators==0.10.3        # via wtforms-components
 webassets==0.11.1         # via flask-assets
-Werkzeug==0.11.10         # via flask, flask-debugtoolbar, flask-wtf
+werkzeug==0.11.10         # via flask, flask-debugtoolbar, flask-wtf
 Whoosh==2.5.7
 WTForms-Alchemy==0.15.0
 WTForms-Components==0.10.0  # via wtforms-alchemy
