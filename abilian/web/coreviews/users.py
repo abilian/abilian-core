@@ -72,9 +72,10 @@ class UserJsonListing(JSONModelSearch):
 
     def filter(self, query, q, **kwargs):
         if q:
-            query = query.filter(or_(
-                func.lower(User.first_name).like(q + "%"), func.lower(
-                    User.last_name).like(q + "%")))
+            query = query.filter(
+                or_(
+                    func.lower(User.first_name).like(q + "%"), func.lower(
+                        User.last_name).like(q + "%")))
         return query
 
     def order_by(self, query):

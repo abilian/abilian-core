@@ -108,9 +108,8 @@ class Length(Rule):
                     message = _(
                         u'Field must be between %(min)d and %(max)d characters long.',
                         min=self.min, max=self.max)
-            raise ValidationError(message % dict(min=self.min,
-                                                 max=self.max,
-                                                 length=l))
+            raise ValidationError(message % dict(
+                min=self.min, max=self.max, length=l))
 
 
 class NumberRange(NumberRange, Rule):

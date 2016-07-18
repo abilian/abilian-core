@@ -36,17 +36,16 @@ def reindex(clear=False, progressive=False, batch_size=None):
     svc = current_app.services['indexing']
     adapted = svc.adapted
     index = svc.app_state.indexes['default']
-    session = Session(bind=current_app.db.session.get_bind(None, None),
-                      autocommit=True)
+    session = Session(
+        bind=current_app.db.session.get_bind(None, None), autocommit=True)
 
     setattr(session, '_model_changes', {})  # please flask-sqlalchemy <= 1.0
     indexed = set()
     cleared = set()
     if batch_size is not None:
         batch_size = int(batch_size)
-    strategy_kw = dict(clear=clear,
-                       progressive=progressive,
-                       batch_size=batch_size)
+    strategy_kw = dict(
+        clear=clear, progressive=progressive, batch_size=batch_size)
     strategy = progressive_mode if progressive else single_transaction
     strategy = strategy(index, **strategy_kw)
     next(strategy)  # starts generator

@@ -37,11 +37,12 @@ class OwnedMixin(object):
     @declared_attr
     def creator(cls):
         pj = "User.id == %s.creator_id" % cls.__name__
-        return relationship(User,
-                            primaryjoin=pj,
-                            lazy='joined',
-                            uselist=False,
-                            info=SYSTEM | SEARCHABLE)
+        return relationship(
+            User,
+            primaryjoin=pj,
+            lazy='joined',
+            uselist=False,
+            info=SYSTEM | SEARCHABLE)
 
     @property
     def creator_name(self):
@@ -54,11 +55,12 @@ class OwnedMixin(object):
     @declared_attr
     def owner(cls):
         pj = "User.id == %s.owner_id" % cls.__name__
-        return relationship(User,
-                            primaryjoin=pj,
-                            lazy='joined',
-                            uselist=False,
-                            info=EDITABLE | AUDITABLE | SEARCHABLE)
+        return relationship(
+            User,
+            primaryjoin=pj,
+            lazy='joined',
+            uselist=False,
+            info=EDITABLE | AUDITABLE | SEARCHABLE)
 
     @property
     def owner_name(self):

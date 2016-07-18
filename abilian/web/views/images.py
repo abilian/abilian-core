@@ -25,8 +25,9 @@ from .files import BaseFileDownload
 blueprint = Blueprint('images', __name__, url_prefix='/images')
 route = blueprint.route
 
-DEFAULT_AVATAR = Path(pkg_resources.resource_filename(
-    'abilian.web', 'resources/img/avatar-default.png'))
+DEFAULT_AVATAR = Path(
+    pkg_resources.resource_filename('abilian.web',
+                                    'resources/img/avatar-default.png'))
 DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
 
 
@@ -201,10 +202,8 @@ class UserMugshot(BaseImageView):
         color = colorsys.hsv_to_rgb(hue, 0.65, 1.0)
         color = [int(x * 255) for x in color]
         color = u'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
-        svg = render_template('default/avatar.svg',
-                              color=color,
-                              letter=letter,
-                              size=size)
+        svg = render_template(
+            'default/avatar.svg', color=color, letter=letter, size=size)
         response = make_response(svg)
         self.content_type = u'image/svg+xml'
         self.filename = u'avatar-{}.svg'.format(id_hash)
@@ -213,9 +212,8 @@ class UserMugshot(BaseImageView):
 
 user_photo = UserMugshot.as_view(b'user_photo', set_expire=True, max_size=500)
 route("/users/<int:user_id>")(user_photo)
-route('/users/default')(StaticImageView.as_view(b'user_default',
-                                                set_expire=True,
-                                                image=DEFAULT_AVATAR))
+route('/users/default')(StaticImageView.as_view(
+    b'user_default', set_expire=True, image=DEFAULT_AVATAR))
 
 
 def user_url_args(user, size):

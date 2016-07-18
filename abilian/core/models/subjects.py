@@ -38,34 +38,36 @@ following = Table('following',
                   Column('follower_id', Integer, ForeignKey('user.id')),
                   Column('followee_id', Integer, ForeignKey('user.id')),
                   UniqueConstraint('follower_id', 'followee_id'),)
-membership = Table('membership',
-                   db.Model.metadata,
-                   Column('user_id',
-                          Integer,
-                          ForeignKey('user.id',
-                                     onupdate='CASCADE',
-                                     ondelete='CASCADE')),
-                   Column('group_id',
-                          Integer,
-                          ForeignKey('group.id',
-                                     onupdate='CASCADE',
-                                     ondelete='CASCADE')),
-                   UniqueConstraint('user_id', 'group_id'),)
+membership = Table(
+    'membership',
+    db.Model.metadata,
+    Column(
+        'user_id',
+        Integer,
+        ForeignKey(
+            'user.id', onupdate='CASCADE', ondelete='CASCADE')),
+    Column(
+        'group_id',
+        Integer,
+        ForeignKey(
+            'group.id', onupdate='CASCADE', ondelete='CASCADE')),
+    UniqueConstraint('user_id', 'group_id'),)
 
 # Should not be needed (?)
-administratorship = Table('administratorship',
-                          db.Model.metadata,
-                          Column('user_id',
-                                 Integer,
-                                 ForeignKey('user.id',
-                                            onupdate='CASCADE',
-                                            ondelete='CASCADE')),
-                          Column('group_id',
-                                 Integer,
-                                 ForeignKey('group.id',
-                                            onupdate='CASCADE',
-                                            ondelete='CASCADE')),
-                          UniqueConstraint('user_id', 'group_id'),)
+administratorship = Table(
+    'administratorship',
+    db.Model.metadata,
+    Column(
+        'user_id',
+        Integer,
+        ForeignKey(
+            'user.id', onupdate='CASCADE', ondelete='CASCADE')),
+    Column(
+        'group_id',
+        Integer,
+        ForeignKey(
+            'group.id', onupdate='CASCADE', ondelete='CASCADE')),
+    UniqueConstraint('user_id', 'group_id'),)
 
 _RANDOM_PASSWORD_CHARS = (
     string.ascii_letters + string.digits + string.punctuation)
@@ -179,9 +181,8 @@ class User(Principal, UserMixin, db.Model):
     # System information
     email = Column(UnicodeText, nullable=False)
     can_login = Column(Boolean, nullable=False, default=True)
-    password = Column(UnicodeText,
-                      default="*",
-                      info={'audit_hide_content': True})
+    password = Column(
+        UnicodeText, default="*", info={'audit_hide_content': True})
 
     photo = deferred(Column(LargeBinary))
 
@@ -258,8 +259,7 @@ class User(Principal, UserMixin, db.Model):
     @property
     def name(self):
         name = u'{first_name} {last_name}'.format(
-            first_name=self.first_name or u'',
-            last_name=self.last_name or u'')
+            first_name=self.first_name or u'', last_name=self.last_name or u'')
         return name.strip() or u'Unknown'
 
     @property
@@ -288,9 +288,10 @@ def _add_user_indexes(mapper, class_):
     # it in __table_args__.
     #
     # see: https://groups.google.com/d/msg/sqlalchemy/CgSJUlelhGs/_Nj3f201hs4J
-    idx = sa.schema.Index('user_unique_lowercase_email',
-                          sa.sql.func.lower(class_.email),
-                          unique=True)
+    idx = sa.schema.Index(
+        'user_unique_lowercase_email',
+        sa.sql.func.lower(class_.email),
+        unique=True)
     idx.info['engines'] = ('postgresql',)
 
 
@@ -305,15 +306,14 @@ class Group(Principal, db.Model):
     name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
     description = Column(UnicodeText, info=SEARCHABLE)
 
-    members = relationship("User",
-                           collection_class=set,
-                           secondary=membership,
-                           backref=backref('groups',
-                                           lazy='select',
-                                           collection_class=set))
-    admins = relationship("User",
-                          collection_class=set,
-                          secondary=administratorship)
+    members = relationship(
+        "User",
+        collection_class=set,
+        secondary=membership,
+        backref=backref(
+            'groups', lazy='select', collection_class=set))
+    admins = relationship(
+        "User", collection_class=set, secondary=administratorship)
 
     photo = deferred(Column(LargeBinary))
 

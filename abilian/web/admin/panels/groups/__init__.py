@@ -21,15 +21,15 @@ class GroupsPanel(AdminPanel):
     icon = 'grain'
 
     def install_additional_rules(self, add_url_rule):
-        add_url_rule('/groups',
-                     view_func=views.JsonGroupsList.as_view(b'json_list'))
+        add_url_rule(
+            '/groups', view_func=views.JsonGroupsList.as_view(b'json_list'))
         add_url_rule('/new', view_func=views.GroupCreate.as_view(b'new'))
-        add_url_rule('/<int:group_id>/',
-                     view_func=views.GroupView.as_view(b'group'))
-        add_url_rule('/<int:group_id>/edit',
-                     view_func=views.GroupEdit.as_view(
-                         b'group_edit',
-                         view_endpoint='.groups_group'))
+        add_url_rule(
+            '/<int:group_id>/', view_func=views.GroupView.as_view(b'group'))
+        add_url_rule(
+            '/<int:group_id>/edit',
+            view_func=views.GroupEdit.as_view(
+                b'group_edit', view_endpoint='.groups_group'))
 
     def get(self):
         # FIXME: use widgets.AjaxMainTableView instead
@@ -62,6 +62,5 @@ class GroupsPanel(AdminPanel):
             'sAjaxSource': url_for('.groups_json_list'),
         }
 
-        return render_template('admin/groups.html',
-                               next=next,
-                               datatable_options=datatable_options)
+        return render_template(
+            'admin/groups.html', next=next, datatable_options=datatable_options)

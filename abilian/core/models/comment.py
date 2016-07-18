@@ -88,18 +88,19 @@ class Comment(Entity):
     entity_id = Column(Integer, ForeignKey(Entity.id), nullable=False)
 
     #: Commented entity
-    entity = relationship(Entity,
-                          lazy='immediate',
-                          foreign_keys=[entity_id],
-                          backref=backref(ATTRIBUTE,
-                                          lazy='select',
-                                          order_by='Comment.created_at',
-                                          cascade="all, delete-orphan",))
+    entity = relationship(
+        Entity,
+        lazy='immediate',
+        foreign_keys=[entity_id],
+        backref=backref(
+            ATTRIBUTE,
+            lazy='select',
+            order_by='Comment.created_at',
+            cascade="all, delete-orphan",))
 
     #: comment's main content
-    body = Column(UnicodeText(),
-                  sa.CheckConstraint("trim(body) != ''"),
-                  nullable=False)
+    body = Column(
+        UnicodeText(), sa.CheckConstraint("trim(body) != ''"), nullable=False)
 
     @property
     def history(self):

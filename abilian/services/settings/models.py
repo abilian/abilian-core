@@ -101,6 +101,7 @@ register = _transformers.register
 def from_int(i):
     return "{}".format(i).encode()
 
+
 register('int', from_int, int)
 
 

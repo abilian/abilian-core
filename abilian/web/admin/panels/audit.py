@@ -53,9 +53,10 @@ class JSONUserSearch(JSONView):
         lower = sa.sql.func.lower
         filters = []
         for part in q.split(u' '):
-            filters.append(sa.sql.or_(
-                lower(User.first_name).like(part + "%"), lower(
-                    User.last_name).like(part + "%")))
+            filters.append(
+                sa.sql.or_(
+                    lower(User.first_name).like(part + "%"), lower(
+                        User.last_name).like(part + "%")))
 
         filters = sa.sql.and_(*filters) if len(filters) > 1 else filters[0]
 
@@ -91,8 +92,8 @@ class AuditPanel(AdminPanel):
     icon = 'list-alt'
 
     def install_additional_rules(self, add_url_rule):
-        add_url_rule('/search_users',
-                     view_func=JSONUserSearch.as_view(b'search_users'))
+        add_url_rule(
+            '/search_users', view_func=JSONUserSearch.as_view(b'search_users'))
 
     # noinspection PyComparisonWithNone
     def get(self):
@@ -165,11 +166,12 @@ class AuditPanel(AdminPanel):
             .limit(LIMIT) \
             .all()
         # audit_entries = []
-        all_entries = list(chain(
-            #
-            (AuditEntryPresenter(e) for e in audit_entries),
-            #
-            (SecurityEntryPresenter(e) for e in security_entries)))
+        all_entries = list(
+            chain(
+                #
+                (AuditEntryPresenter(e) for e in audit_entries),
+                #
+                (SecurityEntryPresenter(e) for e in security_entries)))
         all_entries.sort()
 
         if after:
@@ -236,16 +238,16 @@ class AuditPanel(AdminPanel):
         if filter_types:
             url_params['types'] = list(filter_types)[0]
 
-        return render_template("admin/audit.html",
-                               entries=entries,
-                               filter_user=filter_user,
-                               all_classes=[(c.__name__, c.entity_type)
-                                            for c in all_classes],
-                               filter_types=filter_types,
-                               url_params=url_params,
-                               current_date=current_date,
-                               top_date=top_date,
-                               lowest_date=lowest_date)
+        return render_template(
+            "admin/audit.html",
+            entries=entries,
+            filter_user=filter_user,
+            all_classes=[(c.__name__, c.entity_type) for c in all_classes],
+            filter_types=filter_types,
+            url_params=url_params,
+            current_date=current_date,
+            top_date=top_date,
+            lowest_date=lowest_date)
 
 
 #
@@ -297,10 +299,11 @@ class AuditEntryPresenter(BaseEntryPresenter):
             except (BuildError, ValueError):
                 pass
             else:
-                entity_html = Markup(render(
-                    u'<a href="{{ url }}">{{ entity.path or entity.name }}</a>',
-                    url=entity_url,
-                    entity=e.entity))
+                entity_html = Markup(
+                    render(
+                        u'<a href="{{ url }}">{{ entity.path or entity.name }}</a>',
+                        url=entity_url,
+                        entity=e.entity))
 
         if e.type == 0:
             msg = _(u'{user} created {entity_type} {entity_id} "{entity}"')
@@ -311,11 +314,12 @@ class AuditEntryPresenter(BaseEntryPresenter):
         else:
             raise Exception("Bad entry type: {}".format(e.type))
 
-        self.msg = Markup(msg.format(user=user,
-                                     entity=entity_html,
-                                     entity_type=e.entity_type.rsplit('.', 1)[
-                                         -1],
-                                     entity_id=e.entity_id,))
+        self.msg = Markup(
+            msg.format(
+                user=user,
+                entity=entity_html,
+                entity_type=e.entity_type.rsplit('.', 1)[-1],
+                entity_id=e.entity_id,))
         tmpl = get_template_attribute('admin/_macros.html', 'm_audit_entry')
         return tmpl(self)
 
@@ -355,10 +359,11 @@ class SecurityEntryPresenter(BaseEntryPresenter):
                 entity_name = getattr(e.object, 'path', e.object.name)
                 entity_url = url_for(e.object)
 
-            entity = render(u'{%- if url %}<a href="{{ url }}">{%- endif %}'
-                            u'{{ name }}{%- if url %}</a>{%- endif %}',
-                            url=entity_url,
-                            name=entity_name)
+            entity = render(
+                u'{%- if url %}<a href="{{ url }}">{%- endif %}'
+                u'{{ name }}{%- if url %}</a>{%- endif %}',
+                url=entity_url,
+                name=entity_name)
 
             if e.op == e.SET_INHERIT:
                 msg = _(u'{manager} has activated inheritance on {entity}')
@@ -380,9 +385,11 @@ class SecurityEntryPresenter(BaseEntryPresenter):
             else:
                 raise Exception("Invalid entity op: {}".format(e.op))
 
-        self.msg = Markup(msg.format(manager=manager,
-                                     principal=principal,
-                                     role=e.role,
-                                     entity=entity))
+        self.msg = Markup(
+            msg.format(
+                manager=manager,
+                principal=principal,
+                role=e.role,
+                entity=entity))
         tmpl = get_template_attribute('admin/_macros.html', 'm_security_entry')
         return tmpl(self)

@@ -167,15 +167,16 @@ class BaseTableView(object):
             'bLengthChange': False,
             'iDisplayLength': self.options.get('paginate_length', 50)
         }
-        js = render_template_string('''
+        js = render_template_string(
+            '''
         require(
             ['jquery', 'jquery.dataTables'],
             function($) {
                 $('#{{ table_id  }}').dataTable({{ options|tojson|safe }});
             });
         ''',
-                                    table_id=self.name,
-                                    options=datatable_options,)
+            table_id=self.name,
+            options=datatable_options,)
 
         table = []
         for entity in entities:
@@ -183,10 +184,9 @@ class BaseTableView(object):
 
         template = filter(bool, (self.options.get('template'),
                                  'widgets/render_table.html'))
-        return Markup(render_template(
-            template, table=table,
-            js=Markup(js),
-            view=self, **kwargs))
+        return Markup(
+            render_template(
+                template, table=table, js=Markup(js), view=self, **kwargs))
 
     def render_line(self, entity):
         line = []
@@ -338,11 +338,12 @@ class AjaxMainTableView(object):
         for c in self.search_criterions:
             if not c.has_form_filter:
                 continue
-            d = dict(name=c.name,
-                     label=text_type(c.label),
-                     type=c.form_filter_type,
-                     args=c.form_filter_args,
-                     unset=c.form_unset_value,)
+            d = dict(
+                name=c.name,
+                label=text_type(c.label),
+                type=c.form_filter_type,
+                args=c.form_filter_args,
+                unset=c.form_unset_value,)
             if c.has_form_default_value:
                 d['defaultValue'] = c.form_default_value
 
@@ -352,9 +353,11 @@ class AjaxMainTableView(object):
             datatable_options[
                 'aoAdvancedSearchFilters'] = advanced_search_filters
 
-        return Markup(render_template('widgets/render_ajax_table.html',
-                                      datatable_options=datatable_options,
-                                      view=self))
+        return Markup(
+            render_template(
+                'widgets/render_ajax_table.html',
+                datatable_options=datatable_options,
+                view=self))
 
     def render_line(self, entity):
         line = []
@@ -451,13 +454,15 @@ class SingleView(object):
         template = filter(bool, (self.options.get('view_template'),
                                  'widgets/render_single.html'))
 
-        return Markup(render_template(template,
-                                      view=self,
-                                      related_views=related_views,
-                                      csrf_token=csrf.field(),
-                                      entity=item,
-                                      panels=panels,
-                                      form=form))
+        return Markup(
+            render_template(
+                template,
+                view=self,
+                related_views=related_views,
+                csrf_token=csrf.field(),
+                entity=item,
+                panels=panels,
+                form=form))
 
     def render_form(self, form, for_new=False, has_save_and_add_new=False):
         # Client-side rules for jQuery.validate
@@ -479,12 +484,14 @@ class SingleView(object):
         template = filter(bool, (self.options.get('edit_template'),
                                  'widgets/render_for_edit.html'))
 
-        return Markup(render_template(template,
-                                      view=self,
-                                      form=form,
-                                      for_new=for_new,
-                                      has_save_and_add_new=has_save_and_add_new,
-                                      rules=rules))
+        return Markup(
+            render_template(
+                template,
+                view=self,
+                form=form,
+                for_new=for_new,
+                has_save_and_add_new=has_save_and_add_new,
+                rules=rules))
 
     def label_for(self, field, mapper, name):
         label = field.label
@@ -624,8 +631,9 @@ class TextInput(wtforms.widgets.TextInput):
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
 
-        return Markup(render_template_string(
-            u'''
+        return Markup(
+            render_template_string(
+                u'''
             <div class="input-group input-group-type-{{ widget.typename }}">
             {%- if widget.pre_icon %}
               <div class="input-group-addon">{{ widget.pre_icon }}</div>
@@ -636,8 +644,9 @@ class TextInput(wtforms.widgets.TextInput):
             {%- endif %}
             </div>
             ''',
-            widget=self,
-            params=self.html_params(name=field.name, **kwargs)))
+                widget=self,
+                params=self.html_params(
+                    name=field.name, **kwargs)))
 
     @property
     def typename(self):
@@ -709,13 +718,14 @@ class FileInput(object):
                 # due to debugtoolbar capturing template parameters
                 del data['file']
 
-        ctx = dict(id=field.id,
-                   field=field,
-                   widget=self,
-                   input=input_elem,
-                   button_label=button_label,
-                   existing=existing,
-                   uploaded=uploads)
+        ctx = dict(
+            id=field.id,
+            field=field,
+            widget=self,
+            input=input_elem,
+            button_label=button_label,
+            existing=existing,
+            uploaded=uploads)
         return Markup(render_template(self.template, **ctx))
 
     def build_exisiting_files_list(self, field):
@@ -788,8 +798,8 @@ class ImageInput(FileInput):
                 if hasattr(value, 'url'):
                     image_url = value.url
                 else:
-                    image_url = self.get_b64_thumb_url(self.get_thumb(
-                        value, self.width, self.height))
+                    image_url = self.get_b64_thumb_url(
+                        self.get_thumb(value, self.width, self.height))
 
                 data['image_url'] = image_url
 
@@ -804,8 +814,8 @@ class ImageInput(FileInput):
                     image_url = value.url
                 else:
                     with value.open('rb') as in_:
-                        image_url = self.get_b64_thumb_url(self.get_thumb(
-                            in_, self.width, self.height))
+                        image_url = self.get_b64_thumb_url(
+                            self.get_thumb(in_, self.width, self.height))
 
                 data['image_url'] = image_url
 
@@ -842,10 +852,8 @@ class ImageInput(FileInput):
         width, height = image.get_size(thumb)
 
         tmpl = u'<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
-        return render_template_string(tmpl,
-                                      url=self.get_b64_thumb_url(thumb),
-                                      width=width,
-                                      height=height)
+        return render_template_string(
+            tmpl, url=self.get_b64_thumb_url(thumb), width=width, height=height)
 
 
 class Chosen(Select):
@@ -855,8 +863,8 @@ class Chosen(Select):
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
-        html = [u'<select %s class="chzn-select">' %
-                html_params(name=field.name, **kwargs)]
+        html = [u'<select %s class="chzn-select">' % html_params(
+            name=field.name, **kwargs)]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
         html.append(u'</select>')
@@ -883,8 +891,8 @@ class TagInput(Input):
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
 
-        return HTMLString(u'<input %s>' % self.html_params(name=field.name,
-                                                           **kwargs))
+        return HTMLString(u'<input %s>' % self.html_params(
+            name=field.name, **kwargs))
 
 
 class DateInput(Input):
@@ -928,10 +936,8 @@ class DateInput(Input):
         s = u'<div {}>\n'.format(html_params(**attributes))
 
         s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
-            html_params(name=field_name,
-                        id=field_id,
-                        value=value,
-                        **kwargs))
+            html_params(
+                name=field_name, id=field_id, value=value, **kwargs))
         s += u'  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
         s += u'</div>\n'
         return Markup(s)
@@ -998,11 +1004,12 @@ class TimeInput(Input):
         input_params = {k: Markup(json.dumps(v))
                         for k, v in input_params.items()}
 
-        ctx = dict(id=field_id,
-                   value=value,
-                   field=field,
-                   required=False,
-                   timepicker_attributes=input_params)
+        ctx = dict(
+            id=field_id,
+            value=value,
+            field=field,
+            required=False,
+            timepicker_attributes=input_params)
         return Markup(render_template(self.template, **ctx))
 
 
@@ -1212,8 +1219,8 @@ class MoneyWidget(TextInput):
         # units, which we don't want
         #
         # \u00A0: non-breakable whitespace
-        return u'{value}\u00A0{unit}'.format(value=format_number(val),
-                                             unit=unit)
+        return u'{value}\u00A0{unit}'.format(
+            value=format_number(val), unit=unit)
 
 
 class EmailWidget(TextInput):
@@ -1277,10 +1284,8 @@ class RichTextWidget(object):
     def __call__(self, field, **kwargs):
         value = kwargs.pop('value') if 'value' in kwargs else field._value()
         kwargs.setdefault('allowed_tags', self.allowed_tags)
-        return render_template(self.template,
-                               field=field,
-                               value=value,
-                               kw=kwargs)
+        return render_template(
+            self.template, field=field, value=value, kw=kwargs)
 
 
 class ListWidget(wtforms.widgets.ListWidget):
@@ -1370,9 +1375,9 @@ class TabularFieldListWidget(object):
             Data = namedtuple(data_type, field_names)
             labels = Data(*[f.label for f in field[0] if not f.is_hidden])
 
-        return Markup(render_template(self.template,
-                                      labels=labels,
-                                      field=field))
+        return Markup(
+            render_template(
+                self.template, labels=labels, field=field))
 
 
 class ModelListWidget(object):
@@ -1384,11 +1389,8 @@ class ModelListWidget(object):
         assert isinstance(field, ModelFieldList)
         value = field.object_data
         if not value:
-            return render_template(self.template,
-                                   field=field,
-                                   labels=(),
-                                   rows=(),
-                                   **kwargs)
+            return render_template(
+                self.template, field=field, labels=(), rows=(), **kwargs)
 
         field_names = field._field_names
         labels = field._field_labels
@@ -1404,11 +1406,8 @@ class ModelListWidget(object):
 
             rows.append(Data(*row))
 
-        rendered = render_template(self.template,
-                                   field=field,
-                                   labels=labels,
-                                   rows=rows,
-                                   **kwargs)
+        rendered = render_template(
+            self.template, field=field, labels=labels, rows=rows, **kwargs)
         return rendered
 
 
@@ -1548,12 +1547,13 @@ class Select2Ajax(object):
 
         extra_args = Markup(html_params(**kwargs))
 
-        ctx = dict(field=field,
-                   name=field.name,
-                   id=field.id,
-                   input_value=input_value,
-                   json_data=json_data,
-                   required=not field.allow_blank,
-                   data_node_id=data_node_id,
-                   extra_args=extra_args)
+        ctx = dict(
+            field=field,
+            name=field.name,
+            id=field.id,
+            input_value=input_value,
+            json_data=json_data,
+            required=not field.allow_blank,
+            data_node_id=data_node_id,
+            extra_args=extra_args)
         return Markup(render_template(self.template, **ctx))

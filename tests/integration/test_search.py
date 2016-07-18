@@ -20,11 +20,12 @@ def gen_name(ctx):
 
 class DummyContact1(Entity):
     name = column_property(
-        Column('name',
-               UnicodeText(),
-               info=SEARCHABLE,
-               default=gen_name,
-               onupdate=gen_name),
+        Column(
+            'name',
+            UnicodeText(),
+            info=SEARCHABLE,
+            default=gen_name,
+            onupdate=gen_name),
         Entity.name)
 
     salutation = Column(UnicodeText, default="")
@@ -43,9 +44,8 @@ class IndexingTestCase(IntegrationTestCase):
 
     def test_contacts_are_indexed(self):
         self.login_system()
-        contact = DummyContact1(first_name="John",
-                                last_name="Test User",
-                                email="test@example.com")
+        contact = DummyContact1(
+            first_name="John", last_name="Test User", email="test@example.com")
         self.session.add(contact)
         self.session.commit()
 

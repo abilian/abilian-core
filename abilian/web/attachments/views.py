@@ -35,10 +35,8 @@ def register_default_view(state):
     state.app.default_view.register(Attachment, _default_attachment_view)
 
 
-UPLOAD_BUTTON = ButtonAction('form',
-                             'edit',
-                             btn_class='primary',
-                             title=_l(u'Send'))
+UPLOAD_BUTTON = ButtonAction(
+    'form', 'edit', btn_class='primary', title=_l(u'Send'))
 
 
 class BaseAttachmentView(object):
@@ -92,13 +90,14 @@ class AttachmentDownload(BaseAttachmentView, BaseObjectView):
         content_type = metadata.get('mimetype')
         stream = blob.file.open('rb')
 
-        return send_file(stream,
-                         as_attachment=True,
-                         attachment_filename=filename,
-                         mimetype=content_type,
-                         cache_timeout=0,
-                         add_etags=False,
-                         conditional=False)
+        return send_file(
+            stream,
+            as_attachment=True,
+            attachment_filename=filename,
+            mimetype=content_type,
+            cache_timeout=0,
+            add_etags=False,
+            conditional=False)
 
 
 download_view = AttachmentDownload.as_view(b'download')

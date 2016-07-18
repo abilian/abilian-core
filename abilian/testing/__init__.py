@@ -141,8 +141,10 @@ class BaseTestCase(TestCase):
             else:
                 cls.SERVICES = tuple(cls.SERVICES)
 
-        tmp_dir = Path(tempfile.mkdtemp(prefix='tmp-py-unittest-',
-                                        suffix='-' + cls.__name__,))
+        tmp_dir = Path(
+            tempfile.mkdtemp(
+                prefix='tmp-py-unittest-',
+                suffix='-' + cls.__name__,))
         cls.TEST_INSTANCE_PATH = str(tmp_dir)
         for p in (tmp_dir / 'tmp', tmp_dir / 'cache', tmp_dir / 'data'):
             p.mkdir()
@@ -208,8 +210,8 @@ class BaseTestCase(TestCase):
                         self.__pg_schema))
                     conn.execute(
                         'ALTER ROLE {username} SET search_path TO {schema}'
-                        ''.format(username=username,
-                                  schema=self.__pg_schema))
+                        ''.format(
+                            username=username, schema=self.__pg_schema))
                 conn.execute('COMMIT')
 
         self.app.create_db()
@@ -401,9 +403,10 @@ class BaseTestCase(TestCase):
         self.validate(None, response.data, content_type, validator_url)
 
     def validate(self, url, content, content_type, validator_url):
-        response = requests.post(validator_url + '?out=json',
-                                 content,
-                                 headers={'Content-Type': content_type})
+        response = requests.post(
+            validator_url + '?out=json',
+            content,
+            headers={'Content-Type': content_type})
 
         body = response.json()
 

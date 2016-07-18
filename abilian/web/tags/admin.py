@@ -61,8 +61,8 @@ def schedule_entities_reindex(entities):
     :param entities: as returned by :func:`get_entities_for_reindex`
     """
     entities = [(e[0], e[1], e[2], dict(e[3])) for e in entities]
-    return index_update.apply_async(
-        kwargs=dict(index='default', items=entities))
+    return index_update.apply_async(kwargs=dict(
+        index='default', items=entities))
 
 
 class NSView(View):
@@ -95,9 +95,7 @@ class NSView(View):
             ns=ns,
             tags=tags,
             errors=self.form_errors,
-            merge_to=request.form.get('merge_to',
-                                      default='__None__',
-                                      type=int),
+            merge_to=request.form.get('merge_to', default='__None__', type=int),
             selected_tags=set(t.id for t in self._get_selected_tags()),)
 
     def redirect_to_view(self):
@@ -277,15 +275,18 @@ class TagPanel(AdminPanel):
         add_url_rule(
             ns_base,
             endpoint='ns',
-            view_func=NSView.as_view(b'ns', view_endpoint=panel_endpoint))
+            view_func=NSView.as_view(
+                b'ns', view_endpoint=panel_endpoint))
 
         tag_base = ns_base + '<int:object_id>/'
-        add_url_rule(tag_base,
-                     endpoint='tag_edit',
-                     view_func=TagEdit.as_view(b'tag_edit',
-                                               view_endpoint=panel_endpoint))
+        add_url_rule(
+            tag_base,
+            endpoint='tag_edit',
+            view_func=TagEdit.as_view(
+                b'tag_edit', view_endpoint=panel_endpoint))
 
-        add_url_rule(tag_base + 'delete',
-                     endpoint='tag_delete',
-                     view_func=TagEdit.as_view(b'tag_delete',
-                                               view_endpoint=panel_endpoint))
+        add_url_rule(
+            tag_base + 'delete',
+            endpoint='tag_delete',
+            view_func=TagEdit.as_view(
+                b'tag_delete', view_endpoint=panel_endpoint))

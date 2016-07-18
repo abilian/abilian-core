@@ -247,10 +247,11 @@ class Form(BaseForm):
                 for label, fields in self.__class__._groups.items():
                     self._groups[label] = list(fields)
 
-                has_permission = partial(self._permissions.has_permission,
-                                         ctx.permission,
-                                         obj=ctx.obj,
-                                         user=ctx.user)
+                has_permission = partial(
+                    self._permissions.has_permission,
+                    ctx.permission,
+                    obj=ctx.obj,
+                    user=ctx.user)
                 empty_form = not has_permission()
 
                 for field_name in list(self._fields):

@@ -111,8 +111,9 @@ class Converter(object):
         self.cache = Cache()
 
     def init_app(self, app):
-        self.init_work_dirs(cache_dir=Path(app.instance_path, CACHE_DIR),
-                            tmp_dir=Path(app.instance_path, TMP_DIR),)
+        self.init_work_dirs(
+            cache_dir=Path(app.instance_path, CACHE_DIR),
+            tmp_dir=Path(app.instance_path, TMP_DIR),)
 
         app.extensions['conversion'] = self
 
@@ -271,8 +272,8 @@ class Converter(object):
             for line in output.split(b"\n"):
                 if b":" in line:
                     key, value = line.strip().split(b":", 1)
-                    ret["PDF:" + key] = text_type(value.strip(),
-                                                  errors="replace")
+                    ret["PDF:" + key] = text_type(
+                        value.strip(), errors="replace")
 
             return ret
 
@@ -445,8 +446,7 @@ class PdfToPpmHandler(Handler):
                 converted_images = []
                 for fn in l:
                     converted = resize(
-                        open(fn, 'rb').read(),
-                        size, size, mode=FIT)
+                        open(fn, 'rb').read(), size, size, mode=FIT)
                     converted_images.append(converted)
 
                 return converted_images
@@ -532,9 +532,8 @@ class UnoconvPdfHandler(Handler):
 
             def run_uno():
                 try:
-                    self._process = subprocess.Popen(cmd,
-                                                     close_fds=True,
-                                                     cwd=bytes(self.TMP_DIR))
+                    self._process = subprocess.Popen(
+                        cmd, close_fds=True, cwd=bytes(self.TMP_DIR))
                     self._process.communicate()
                 except Exception as e:
                     logger.error('run_uno error: %s', bytes(e), exc_info=True)
@@ -630,9 +629,8 @@ class WvwareTextHandler(Handler):
             if encoding in ("binary", None):
                 encoding = "ascii"
             try:
-                converted_unicode = text_type(converted,
-                                              encoding,
-                                              errors="ignore")
+                converted_unicode = text_type(
+                    converted, encoding, errors="ignore")
             except:
                 traceback.print_exc()
                 converted_unicode = text_type(converted, errors="ignore")

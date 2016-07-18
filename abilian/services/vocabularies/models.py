@@ -73,14 +73,16 @@ class BaseVocabulary(db.Model):
 
     id = Column(sa.Integer(), primary_key=True, autoincrement=True)
     label = Column(sa.UnicodeText(), nullable=False, unique=True)
-    active = Column(sa.Boolean(),
-                    nullable=False,
-                    server_default=sa.sql.true(),
-                    default=True)
-    default = Column(sa.Boolean(),
-                     nullable=False,
-                     server_default=sa.sql.false(),
-                     default=False)
+    active = Column(
+        sa.Boolean(),
+        nullable=False,
+        server_default=sa.sql.true(),
+        default=True)
+    default = Column(
+        sa.Boolean(),
+        nullable=False,
+        server_default=sa.sql.false(),
+        default=False)
     position = Column(sa.Integer, nullable=False, unique=True)
 
     __table_args__ = (
@@ -101,14 +103,15 @@ class BaseVocabulary(db.Model):
         fmt = ('<{module}.{cls} id={id} label={label} position={position} '
                'active={active} default={default} at 0x{addr:x}')
         cls = self.__class__
-        return fmt.format(module=cls.__module__,
-                          cls=cls.__name__,
-                          id=self.id,
-                          label=repr(self.label),
-                          position=repr(self.position),
-                          active=repr(self.active),
-                          default=repr(self.default),
-                          addr=id(self),)
+        return fmt.format(
+            module=cls.__module__,
+            cls=cls.__name__,
+            id=self.id,
+            label=repr(self.label),
+            position=repr(self.position),
+            active=repr(self.active),
+            default=repr(self.default),
+            addr=id(self),)
 
 
 @sa.event.listens_for(BaseVocabulary, "before_insert", propagate=True)
@@ -145,9 +148,9 @@ _generated_vocabularies = []
 
 def Vocabulary(name, label=None, group=None):
     cls_name = b'Vocabulary' + name.capitalize()
-    Meta = type(b'Meta', (object,),
-                dict(name=name.lower(),
-                     label=label, group=group))
+    Meta = type(
+        b'Meta', (object,), dict(
+            name=name.lower(), label=label, group=group))
     cls = type(cls_name, (BaseVocabulary,), dict(Meta=Meta))
     _generated_vocabularies.append(cls)
     return cls

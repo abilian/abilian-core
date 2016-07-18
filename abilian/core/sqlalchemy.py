@@ -112,8 +112,9 @@ def filter_cols(model, *filtered_columns):
     Useful for defer() for example to retain only columns of interest
     """
     m = sa.orm.class_mapper(model)
-    return list(set(p.key for p in m.iterate_properties
-                    if hasattr(p, 'columns')).difference(filtered_columns))
+    return list(
+        set(p.key for p in m.iterate_properties
+            if hasattr(p, 'columns')).difference(filtered_columns))
 
 
 class MutationDict(Mutable, dict):

@@ -73,8 +73,8 @@ class SecurityInfoDebugPanel(DebugPanel):
         for r in roles:
             info = roles[r]
             info['groups'] = [u'{g} (id={g.id})'.format(g=g)
-                              for g in sorted(info['groups'],
-                                              key=lambda g: g.name)]
+                              for g in sorted(
+                                  info['groups'], key=lambda g: g.name)]
             users = sorted(
                 info['users'],
                 key=lambda u: (u.last_name.lower(), u.first_name.lower()))

@@ -23,8 +23,9 @@ class Sentry(RavenExt):
     def raven_js_url(self):
         url = u'//cdn.ravenjs.com/{version}/{plugins}/raven.min.js'
         cfg = current_app.config
-        return url.format(version=text_type(cfg['SENTRY_JS_VERSION']),
-                          plugins=','.join(cfg['SENTRY_JS_PLUGINS']))
+        return url.format(
+            version=text_type(cfg['SENTRY_JS_VERSION']),
+            plugins=','.join(cfg['SENTRY_JS_PLUGINS']))
 
 
 __all__ = ['Sentry']

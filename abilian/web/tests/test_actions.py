@@ -9,25 +9,25 @@ from jinja2 import Markup
 from abilian.testing import BaseTestCase
 from abilian.web.action import Action, Glyphicon, StaticIcon, actions
 
-BASIC = Action('cat_1',
-               'basic',
-               'Basic Action',
-               url='http://some.where',
-               icon='ok')
-CONDITIONAL = Action('cat_1',
-                     'conditional',
-                     'Conditional Action',
-                     url='http://condition.al',
-                     condition=lambda ctx: ctx['show_all'],
-                     icon=Glyphicon('hand-right'),
-                     button='warning')
+BASIC = Action(
+    'cat_1', 'basic', 'Basic Action', url='http://some.where', icon='ok')
+CONDITIONAL = Action(
+    'cat_1',
+    'conditional',
+    'Conditional Action',
+    url='http://condition.al',
+    condition=lambda ctx: ctx['show_all'],
+    icon=Glyphicon('hand-right'),
+    button='warning')
 
-OTHER_CAT = Action('cat_2:sub',
-                   'other',
-                   'Other Action',
-                   url=lambda ctx: 'http://count?%d' % len(ctx),
-                   icon=StaticIcon('icons/other.png', size=14),
-                   css='custom-class')
+OTHER_CAT = Action(
+    'cat_2:sub',
+    'other',
+    'Other Action',
+    url=lambda ctx: 'http://count?%d' % len(ctx),
+    icon=StaticIcon(
+        'icons/other.png', size=14),
+    css='custom-class')
 
 ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 

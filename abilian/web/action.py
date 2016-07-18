@@ -122,9 +122,8 @@ class FAIconStacked(NamedIconBase):
         self.stack = stack
 
     def __html__(self):
-        return self.template.render(name=self.name,
-                                    second=self.second,
-                                    stack_class=self.stack)
+        return self.template.render(
+            name=self.name, second=self.second, stack_class=self.stack)
 
 
 class DynamicIcon(Icon):
@@ -166,10 +165,11 @@ class DynamicIcon(Icon):
         if self.url_args_callback is not None:
             url_args = self.url_args_callback(self, url_args)
 
-        return self.template.render(url=url_for(endpoint, **url_args),
-                                    width=self.width,
-                                    height=self.height,
-                                    css=self.css)
+        return self.template.render(
+            url=url_for(endpoint, **url_args),
+            width=self.width,
+            height=self.height,
+            css=self.css)
 
 
 class StaticIcon(DynamicIcon):
@@ -186,13 +186,8 @@ class StaticIcon(DynamicIcon):
                  height=12,
                  css='',
                  size=None):
-        DynamicIcon.__init__(self,
-                             endpoint,
-                             width,
-                             height,
-                             css,
-                             size,
-                             filename=filename)
+        DynamicIcon.__init__(
+            self, endpoint, width, height, css, size, filename=filename)
 
 
 class Endpoint(object):
@@ -334,9 +329,8 @@ class Action(object):
         self._title = title
 
     def _build_css_class(self):
-        css_cat = self.CSS_CLASS.format(action=self,
-                                        category=self.category,
-                                        name=self.name)
+        css_cat = self.CSS_CLASS.format(
+            action=self, category=self.category, name=self.name)
         css_cat = re.sub(r'[^ _a-zA-Z0-9-]', '-', css_cat)
         self.css_class = css_cat
 

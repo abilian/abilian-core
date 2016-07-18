@@ -261,9 +261,8 @@ def _get_translations_multi_paths():
         # reverse order: thus the application catalog is loaded last, so that
         # translations from libraries can be overriden
         for (dirname, domain) in reversed(babel_ext._translations_paths):
-            trs = Translations.load(dirname,
-                                    locales=[flask_babel.get_locale()],
-                                    domain=domain)
+            trs = Translations.load(
+                dirname, locales=[flask_babel.get_locale()], domain=domain)
 
             # babel.support.Translations is a subclass of
             # babel.support.NullTranslations, so we test if object has a 'merge'

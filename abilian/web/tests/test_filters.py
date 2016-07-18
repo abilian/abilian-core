@@ -77,9 +77,8 @@ class TestFilters(FlaskTestCase):
         self.assertEqual("2012-06-10 16:30 (2 hours ago)", date_age(dt, now))
 
         # for coverage: test when using default parameter now=None
-        dt_patcher = mock.patch.object(filters.datetime,
-                                       'datetime',
-                                       mock.Mock(wraps=datetime.datetime))
+        dt_patcher = mock.patch.object(
+            filters.datetime, 'datetime', mock.Mock(wraps=datetime.datetime))
         with dt_patcher as mocked:
             mocked.utcnow.return_value = now
             self.assertEqual("2012-06-10 16:30 (2 hours ago)", date_age(dt))
@@ -109,9 +108,8 @@ class TestFilters(FlaskTestCase):
                 u'September 4, 2011, 8:12 PM')
 
         # using default parameter now=None
-        dt_patcher = mock.patch.object(filters.datetime,
-                                       'datetime',
-                                       mock.Mock(wraps=datetime.datetime))
+        dt_patcher = mock.patch.object(
+            filters.datetime, 'datetime', mock.Mock(wraps=datetime.datetime))
         with dt_patcher as mocked:
             mocked.utcnow.return_value = now
             assert age(d1m) == u'1 minute ago'

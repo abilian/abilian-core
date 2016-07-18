@@ -57,12 +57,11 @@ class DeferredJSExtension(Extension):
 
         # now we parse body of the block
         body = parser.parse_statements(
-            ['name:enddeferJS', 'name:enddeferredJS'],
-            drop_needle=True)
+            ['name:enddeferJS', 'name:enddeferredJS'], drop_needle=True)
 
         method = 'defer_nodes' if tag == 'deferJS' else 'collect_deferred'
-        return nodes.CallBlock(
-            self.call_method(method, []), [], [], body).set_lineno(lineno)
+        return nodes.CallBlock(self.call_method(method, []), [], [],
+                               body).set_lineno(lineno)
 
     def defer_nodes(self, caller):
         body = '<div>{}</div>'.format(caller().strip())

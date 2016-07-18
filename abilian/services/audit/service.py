@@ -115,24 +115,18 @@ class AuditService(Service):
 
             if info.get('auditable', True):
                 entity_class.__auditable__.audited_attrs.add(attr)
-                event.listen(attr,
-                             "set",
-                             self.set_attribute,
-                             active_history=True)
+                event.listen(
+                    attr, "set", self.set_attribute, active_history=True)
 
         for relation in mapper.relationships:
             if relation.direction is not sa.orm.interfaces.MANYTOMANY:
                 continue
             attr = getattr(entity_class, relation.key)
             entity_class.__auditable__.collection_attrs.add(attr)
-            event.listen(attr,
-                         "append",
-                         self.collection_append,
-                         active_history=True)
-            event.listen(attr,
-                         "remove",
-                         self.collection_remove,
-                         active_history=True)
+            event.listen(
+                attr, "append", self.collection_append, active_history=True)
+            event.listen(
+                attr, "remove", self.collection_remove, active_history=True)
 
     def setup_auditable_entity(self, entity_class):
         meta = AuditableMeta(entity_class.__name__, 'id')
@@ -171,8 +165,8 @@ class AuditService(Service):
                 raise ValueError(
                     'Audit setup class<{cls}: Could not guess backref name'
                     ' of relationship "{related_attr}", please use tuple annotation '
-                    'on __auditable_entity__'.format(cls=entity_class.__name__,
-                                                     related_attr=related_attr))
+                    'on __auditable_entity__'.format(
+                        cls=entity_class.__name__, related_attr=related_attr))
 
         meta.related = related_path
         meta.backref_attr = backref_attr
@@ -237,8 +231,8 @@ class AuditService(Service):
                         if current_app.config.get(
                                 'DEBUG') or current_app.config.get('TESTING'):
                             raise
-                        log.error('Exception during entry creation',
-                                  exc_info=True)
+                        log.error(
+                            'Exception during entry creation', exc_info=True)
 
                 session.add_all(entries)
         finally:

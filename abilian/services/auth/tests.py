@@ -40,21 +40,21 @@ class TestAuth(BaseTestCase):
 
         # test "next" from referer
         referrer = url_root + u'/some/path'
-        with self.app.test_request_context(form_url(),
-                                           headers=[('Referer', referrer)]):
+        with self.app.test_request_context(
+                form_url(), headers=[('Referer', referrer)]):
             assert get_redirect_target() == referrer
 
         # don't cycle if coming from 'login.*' page, like this kind of cycle:
         # forgot password form ->  login page -> success
         # -> redirect(next = forgot password form) -> ...
         referrer = url_root + url_for('login.forgotten_pw')
-        with self.app.test_request_context(form_url(),
-                                           headers=[('Referer', referrer)]):
+        with self.app.test_request_context(
+                form_url(), headers=[('Referer', referrer)]):
             assert get_redirect_target() is None
 
         # test open redirect is forbidden
-        with self.app.test_request_context(form_url(
-                next='http://google.com/test')):
+        with self.app.test_request_context(
+                form_url(next='http://google.com/test')):
             assert get_redirect_target() is None
 
         # open redirect through malicious construct and browser not checking Location
@@ -62,9 +62,8 @@ class TestAuth(BaseTestCase):
             assert get_redirect_target() == url_root + u'///google.com'
 
     def test_login_post(self):
-        kwargs = dict(email='User@domain.tld',
-                      password='azerty',
-                      can_login=True)
+        kwargs = dict(
+            email='User@domain.tld', password='azerty', can_login=True)
         u = User(**kwargs)
         self.session.add(u)
         self.session.commit()
@@ -85,31 +84,32 @@ class TestAuth(BaseTestCase):
         self.assertEqual(rv.status_code, 401, "expected 401, got:" + rv.status)
 
     def test_api_post(self):
-        kwargs = dict(email='User@domain.tld',
-                      password='azerty',
-                      can_login=True)
+        kwargs = dict(
+            email='User@domain.tld', password='azerty', can_login=True)
         u = User(**kwargs)
         self.session.add(u)
         self.session.commit()
 
-        rv = self.client.post('/user/api/login',
-                              data=json.dumps(kwargs),
-                              content_type='application/json')
+        rv = self.client.post(
+            '/user/api/login',
+            data=json.dumps(kwargs),
+            content_type='application/json')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
-        self.assertEqual(rv.json,
-                         dict(email='User@domain.tld',
-                              username='user@domain.tld',
-                              fullname='Unknown',
-                              next_url=''))
+        self.assertEqual(
+            rv.json,
+            dict(
+                email='User@domain.tld',
+                username='user@domain.tld',
+                fullname='Unknown',
+                next_url=''))
 
         rv = self.client.post('/user/api/logout')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
 
     def test_forgotten_pw(self):
         mail = self.app.extensions['mail']
-        kwargs = dict(email='User@domain.tld',
-                      password='azerty',
-                      can_login=True)
+        kwargs = dict(
+            email='User@domain.tld', password='azerty', can_login=True)
         u = User(**kwargs)
         self.session.add(u)
         self.session.commit()

@@ -165,11 +165,12 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
 
     # don't use (flask.ext.)babel.format_timedelta: as of Flask-Babel 0.9 it
     # doesn't support "threshold" arg.
-    return format_timedelta(delta,
-                            locale=locale,
-                            granularity='minute',
-                            threshold=0.9,
-                            add_direction=add_direction)
+    return format_timedelta(
+        delta,
+        locale=locale,
+        granularity='minute',
+        threshold=0.9,
+        add_direction=add_direction)
 
 
 def date_age(dt, now=None):

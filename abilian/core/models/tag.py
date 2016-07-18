@@ -57,17 +57,16 @@ def is_support_tagging(obj):
     return True
 
 
-entity_tag_tbl = sa.Table('entity_tags',
-                          Model.metadata,
-                          sa.Column('tag_id',
-                                    sa.Integer,
-                                    sa.ForeignKey('tag.id',
-                                                  ondelete='CASCADE')),
-                          sa.Column('entity_id',
-                                    sa.Integer,
-                                    sa.ForeignKey(Entity.id,
-                                                  ondelete='CASCADE')),
-                          sa.UniqueConstraint('tag_id', 'entity_id'),)
+entity_tag_tbl = sa.Table(
+    'entity_tags',
+    Model.metadata,
+    sa.Column(
+        'tag_id', sa.Integer, sa.ForeignKey(
+            'tag.id', ondelete='CASCADE')),
+    sa.Column(
+        'entity_id', sa.Integer, sa.ForeignKey(
+            Entity.id, ondelete='CASCADE')),
+    sa.UniqueConstraint('tag_id', 'entity_id'),)
 
 
 @total_ordering
@@ -80,10 +79,11 @@ class Tag(IdMixin, Model):
     __tablename__ = 'tag'
 
     #: namespace
-    ns = sa.Column(sa.UnicodeText(),
-                   nullable=False,
-                   default='default',
-                   server_default='default')
+    ns = sa.Column(
+        sa.UnicodeText(),
+        nullable=False,
+        default='default',
+        server_default='default')
 
     #: Label visible to the user
     label = sa.Column(sa.UnicodeText(), nullable=False)
@@ -93,18 +93,18 @@ class Tag(IdMixin, Model):
         Entity,
         collection_class=set,
         secondary=entity_tag_tbl,
-        backref=sa.orm.backref(TAGS_ATTR, collection_class=set),)
+        backref=sa.orm.backref(
+            TAGS_ATTR, collection_class=set),)
 
     __mapper_args__ = {'order_by': label,}
 
     __table_args__ = (
         sa.UniqueConstraint(ns, label),
         # namespace is not empty and is not surrounded by space characters
-        sa.CheckConstraint(sa.sql.and_(
-            sa.sql.func.trim(ns) == ns, ns != u''),),
+        sa.CheckConstraint(sa.sql.and_(sa.sql.func.trim(ns) == ns, ns != u''),),
         # label is not empty and is not surrounded by space characters
-        sa.CheckConstraint(sa.sql.and_(
-            sa.sql.func.trim(label) == label, label != u''),),)
+        sa.CheckConstraint(
+            sa.sql.and_(sa.sql.func.trim(label) == label, label != u''),),)
 
     def __unicode__(self):
         return self.label

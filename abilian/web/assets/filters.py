@@ -65,20 +65,22 @@ class ImportCSSFilter(Filter):
                 url_rewriter = get_filter('cssrewrite')
                 url_rewriter.set_context(self.ctx)
                 url_rewriter.setup()
-                url_rewriter.input(included,
-                                   buf,
-                                   source=rel_filename,
-                                   source_path=abs_filename,
-                                   output=source,
-                                   output_path=filepath)
+                url_rewriter.input(
+                    included,
+                    buf,
+                    source=rel_filename,
+                    source_path=abs_filename,
+                    output=source,
+                    output_path=filepath)
             buf.seek(0)
             # now process '@includes' directives in included file
-            self.input(buf,
-                       out,
-                       source=rel_filename,
-                       source_path=abs_filename,
-                       output=source,
-                       output_path=filepath)
+            self.input(
+                buf,
+                out,
+                source=rel_filename,
+                source_path=abs_filename,
+                output=source,
+                output_path=filepath)
 
             if end < len(line):
                 out.write(line[end:])
@@ -274,20 +276,21 @@ class Less(ExternalTool):
         url_rewriter = get_filter('cssrewrite', replace=replace_url)
         url_rewriter.set_context(self.ctx)
         url_rewriter.setup()
-        url_rewriter.input(buf,
-                           out,
-                           source=output,
-                           source_path=output_path,
-                           output=output,
-                           output_path=output_path)
+        url_rewriter.input(
+            buf,
+            out,
+            source=output,
+            source_path=output_path,
+            output=output,
+            output_path=output_path)
 
     def fix_url(self, cur_path, url):
         if url.startswith(u'data:'):
             # base64 embeded
             return url
 
-        src_path = os.path.normpath(os.path.abspath(os.path.join(cur_path,
-                                                                 url)))
+        src_path = os.path.normpath(
+            os.path.abspath(os.path.join(cur_path, url)))
         possible_paths = [p for p in self.ctx.url_mapping.keys()
                           if src_path.startswith(p)]
         if not possible_paths:

@@ -17,10 +17,8 @@ from abilian.web.views import (BaseObjectView, JSONView, ObjectCreate,
 
 from .forms import TagForm
 
-bp = Blueprint('tags',
-               __name__,
-               url_prefix='/tags',
-               template_folder='templates')
+bp = Blueprint(
+    'tags', __name__, url_prefix='/tags', template_folder='templates')
 
 
 class BaseTagView(object):
@@ -117,8 +115,8 @@ class EntityTagManage(BaseEntityTagView, ObjectEdit):
         op(self.entity, ns=ns, label=label)
 
 
-entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view(b'add',
-                                                                mode='add'))
+entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view(
+    b'add', mode='add'))
 entity_bp.route('/<int:object_id>/remove')(EntityTagManage.as_view(
     b'remove', mode='remove'))
 

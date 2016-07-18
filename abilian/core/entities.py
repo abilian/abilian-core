@@ -127,12 +127,12 @@ class _EntityInherit(object):
 
     @declared_attr
     def id(cls):
-        return Column(Integer,
-                      ForeignKey('entity.id',
-                                 use_alter=True,
-                                 name='fk_inherited_entity_id'),
-                      primary_key=True,
-                      info=SYSTEM | SEARCHABLE)
+        return Column(
+            Integer,
+            ForeignKey(
+                'entity.id', use_alter=True, name='fk_inherited_entity_id'),
+            primary_key=True,
+            info=SYSTEM | SEARCHABLE)
 
     @declared_attr
     def __mapper_args__(cls):
@@ -148,9 +148,8 @@ class EntityQuery(db.Model.query_class):
     def with_permission(self, permission, user=None):
         security = current_app.services['security']
         model = self._entity_zero().entity_zero.entity
-        expr = security.query_entity_with_permission(permission,
-                                                     user,
-                                                     Model=model)
+        expr = security.query_entity_with_permission(
+            permission, user, Model=model)
         return self.filter(expr)
 
 
@@ -197,8 +196,8 @@ class EntityMeta(BaseMeta):
                     for permission, roles in default_permissions)
                 d['__default_permissions__'] = default_permissions
 
-            d['SLUG_SEPARATOR'] = text_type(d.get('SLUG_SEPARATOR',
-                                                  Entity.SLUG_SEPARATOR))
+            d['SLUG_SEPARATOR'] = text_type(
+                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR))
 
         cls = BaseMeta.__new__(mcs, classname, bases, d)
 

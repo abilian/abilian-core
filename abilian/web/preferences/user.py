@@ -24,23 +24,24 @@ from abilian.web.forms import Form, fields, validators, widgets
 class UserPreferencesForm(Form):
 
     password = StringField(
-        _l(u'New Password'),
-        widget=widgets.PasswordInput(autocomplete='off'))
+        _l(u'New Password'), widget=widgets.PasswordInput(autocomplete='off'))
     confirm_password = StringField(
         _l(u'Confirm new password'),
         widget=widgets.PasswordInput(autocomplete='off'))
 
     photo = fields.FileField(
-        label=_l('Photo'),
-        widget=widgets.ImageInput(width=55, height=55))
+        label=_l('Photo'), widget=widgets.ImageInput(
+            width=55, height=55))
 
-    locale = fields.LocaleSelectField(label=_l(u'Preferred Language'),
-                                      validators=(validators.required(),),
-                                      default=lambda: get_default_locale(),)
+    locale = fields.LocaleSelectField(
+        label=_l(u'Preferred Language'),
+        validators=(validators.required(),),
+        default=lambda: get_default_locale(),)
 
-    timezone = fields.TimezoneField(label=_l(u'Time zone'),
-                                    validators=(validators.required(),),
-                                    default=babel.dates.LOCALTZ,)
+    timezone = fields.TimezoneField(
+        label=_l(u'Time zone'),
+        validators=(validators.required(),),
+        default=babel.dates.LOCALTZ,)
 
     def validate_password(self, field):
         pwd = field.data
@@ -102,19 +103,17 @@ class UserPreferencesPanel(PreferencePanel):
             # subclass str/bytes to set additional 'url' attribute
             photo = type(
                 b'Photo', (bytes,),
-                dict(object=photo,
-                     url=url_for('users.photo', user_id=g.user.id)))
+                dict(
+                    object=photo, url=url_for(
+                        'users.photo', user_id=g.user.id)))
             data['photo'] = photo
 
-        form = UserPreferencesForm(obj=g.user,
-                                   formdata=None,
-                                   prefix=self.id,
-                                   **data)
+        form = UserPreferencesForm(
+            obj=g.user, formdata=None, prefix=self.id, **data)
         if form['locale'].data is None:
             form['locale'].data = get_default_locale()
-        return render_template('preferences/user.html',
-                               form=form,
-                               title=self.label)
+        return render_template(
+            'preferences/user.html', form=form, title=self.label)
 
     @csrf.support_graceful_failure
     def post(self):

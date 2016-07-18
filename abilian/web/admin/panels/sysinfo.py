@@ -29,11 +29,12 @@ class SysinfoPanel(AdminPanel):
         packages = []
 
         for dist in pkg_resources.working_set:
-            package = dict(name=dist.project_name,
-                           key=dist.key,
-                           version=dist.version
-                           if dist.has_version() else u'Unknown version',
-                           vcs=None,)
+            package = dict(
+                name=dist.project_name,
+                key=dist.key,
+                version=dist.version
+                if dist.has_version() else u'Unknown version',
+                vcs=None,)
 
             location = text_type(Path(dist.location).absolute())
             vcs_name = vcs.get_backend_name(location)
@@ -56,8 +57,9 @@ class SysinfoPanel(AdminPanel):
         config_values = [(k, repr(v))
                          for k, v in sorted(current_app.config.items())]
 
-        return render_template("admin/sysinfo.html",
-                               python_version=python_version,
-                               packages=packages,
-                               uname=uname,
-                               config_values=config_values)
+        return render_template(
+            "admin/sysinfo.html",
+            python_version=python_version,
+            packages=packages,
+            uname=uname,
+            config_values=config_values)

@@ -89,7 +89,6 @@ class LoginSession(db.Model):
             ip_address = request.remote_addr
         else:
             ip_address = forwared_for[0]
-        session = LoginSession(user=current_user,
-                               user_agent=user_agent,
-                               ip_address=ip_address)
+        session = LoginSession(
+            user=current_user, user_agent=user_agent, ip_address=ip_address)
         return session

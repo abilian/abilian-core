@@ -46,27 +46,31 @@ def _user_photo_icon_args(icon, url_args):
     return images.user_url_args(current_user, max(icon.width, icon.height))[1]
 
 
-user_menu = NavGroup('user',
-                     'authenticated',
-                     title=lambda c: current_user.name,
-                     icon=DynamicIcon(endpoint=_user_photo_endpoint,
-                                      css='avatar',
-                                      size=20,
-                                      url_args=_user_photo_icon_args),
-                     condition=is_authenticated,
-                     items=(NavItem('user',
-                                    'logout',
-                                    title=_l(u'Logout'),
-                                    icon='log-out',
-                                    url=lambda context: url_for('login.logout'),
-                                    divider=True),))
+user_menu = NavGroup(
+    'user',
+    'authenticated',
+    title=lambda c: current_user.name,
+    icon=DynamicIcon(
+        endpoint=_user_photo_endpoint,
+        css='avatar',
+        size=20,
+        url_args=_user_photo_icon_args),
+    condition=is_authenticated,
+    items=(NavItem(
+        'user',
+        'logout',
+        title=_l(u'Logout'),
+        icon='log-out',
+        url=lambda context: url_for('login.logout'),
+        divider=True),))
 
-_ACTIONS = (NavItem('user',
-                    'login',
-                    title=_l(u'Login'),
-                    icon='log-in',
-                    url=lambda context: url_for('login.login_form'),
-                    condition=is_anonymous),
+_ACTIONS = (NavItem(
+    'user',
+    'login',
+    title=_l(u'Login'),
+    icon='log-in',
+    url=lambda context: url_for('login.login_form'),
+    condition=is_anonymous),
             user_menu,)
 
 

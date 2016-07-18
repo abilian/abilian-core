@@ -22,9 +22,10 @@ class UserPreference(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
 
     #: The user who set this preference.
-    user = relation(User,
-                    backref=backref('preferences',
-                                    cascade="all, delete, delete-orphan"))
+    user = relation(
+        User,
+        backref=backref(
+            'preferences', cascade="all, delete, delete-orphan"))
     user_id = Column(ForeignKey(User.id))
 
     #: The key

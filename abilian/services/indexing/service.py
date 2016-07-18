@@ -290,8 +290,9 @@ class WhooshIndexService(Service):
         if not fields:
             fields = self.default_search_fields
 
-        valid_fields = set(f for f in index.schema.names(check_names=fields)
-                           if prefix or not f.endswith('_prefix'))
+        valid_fields = set(
+            f for f in index.schema.names(check_names=fields)
+            if prefix or not f.endswith('_prefix'))
 
         for invalid in set(fields) - valid_fields:
             del fields[invalid]
@@ -310,8 +311,8 @@ class WhooshIndexService(Service):
             if not user.is_anonymous:
                 roles.add(indexable_role(Anonymous))
                 roles.add(indexable_role(Authenticated))
-                roles |= set(indexable_role(r)
-                             for r in security.get_roles(user))
+                roles |= set(
+                    indexable_role(r) for r in security.get_roles(user))
 
             filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
                               for role in roles])
@@ -376,10 +377,8 @@ class WhooshIndexService(Service):
             return results
 
     def search_for_class(self, query, cls, index='default', **search_args):
-        return self.search(query,
-                           Models=(fqcn(cls),),
-                           index=index,
-                           **search_args)
+        return self.search(
+            query, Models=(fqcn(cls),), index=index, **search_args)
 
     def register_classes(self):
         state = self.app_state
@@ -513,9 +512,8 @@ class WhooshIndexService(Service):
                 except ValueError:
                     # logger is here to give us more infos in order to catch a weird bug
                     # that happens regularly on CI but is not reliably reproductible.
-                    logger.error('writer.add_document(%r)',
-                                 document,
-                                 exc_info=True)
+                    logger.error(
+                        'writer.add_document(%r)', document, exc_info=True)
                     raise
                 indexed.add(object_key)
 
@@ -571,9 +569,8 @@ def index_update(index, items):
                 except ValueError:
                     # logger is here to give us more infos in order to catch a weird bug
                     # that happens regularly on CI but is not reliably reproductible.
-                    logger.error('writer.add_document(%r)',
-                                 document,
-                                 exc_info=True)
+                    logger.error(
+                        'writer.add_document(%r)', document, exc_info=True)
                     raise
                 updated.add(object_key)
     except:

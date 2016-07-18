@@ -38,8 +38,8 @@ class TagCriterion(BaseCriterion):
         join_clause = entity_tag_tbl.join(
             self.model,
             self.model.id == entity_tag_tbl.c.entity_id,)
-        model_tags = sa.sql.select([entity_tag_tbl.c.tag_id],
-                                   from_obj=join_clause)
+        model_tags = sa.sql.select(
+            [entity_tag_tbl.c.tag_id], from_obj=join_clause)
         return Tag.query.filter(Tag.ns == self.ns,
                                 Tag.id.in_(model_tags))\
                         .all()
@@ -68,9 +68,10 @@ class TagCriterion(BaseCriterion):
         if not tags:
             return query
 
-        cond = sa.sql.exists(sa.sql.select([1], sa.sql.and_(
-            entity_tag_tbl.c.entity_id == self.model.id,
-            entity_tag_tbl.c.tag_id.in_(t.id for t in tags))))
+        cond = sa.sql.exists(
+            sa.sql.select([1], sa.sql.and_(
+                entity_tag_tbl.c.entity_id == self.model.id,
+                entity_tag_tbl.c.tag_id.in_(t.id for t in tags))))
         return query.filter(cond)
 
     @property

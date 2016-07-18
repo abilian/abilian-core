@@ -113,9 +113,8 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         # instanciation so as to have permission filtering
         field_names = []
         labels = []
-        fieldsubform = self.unbound_field.bind(form=None,
-                                               name='dummy',
-                                               _meta=self.meta)
+        fieldsubform = self.unbound_field.bind(
+            form=None, name='dummy', _meta=self.meta)
         subform = fieldsubform.form_class(csrf_enabled=False)
         for f in subform:
             if f.is_hidden:
@@ -126,8 +125,8 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
 
         self._field_names = field_names
         self._field_labels = labels
-        self._field_nameTolabel = dict(zip(self._field_names,
-                                           self._field_labels))
+        self._field_nameTolabel = dict(
+            zip(self._field_names, self._field_labels))
 
     def __call__(self, **kwargs):
         """
@@ -170,8 +169,9 @@ class FileField(BaseFileField):
         self._has_uploads = False
 
         if allow_delete is not None:
-            if any(isinstance(v, DataRequired if allow_delete else Optional)
-                   for v in validators):
+            if any(
+                    isinstance(v, DataRequired if allow_delete else Optional)
+                    for v in validators):
                 raise ValueError(
                     "Field validators are conflicting with `allow_delete`,"
                     "validators={!r}, allow_delete={!r}".format(validators,

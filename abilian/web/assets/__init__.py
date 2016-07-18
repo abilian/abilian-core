@@ -17,10 +17,8 @@ from . import filters  # noqa
 def init_app(app):
     assets = app.extensions['webassets']
     assets.append_path(RESOURCES_DIR, '/static/abilian')
-    app.add_static_url('abilian',
-                       RESOURCES_DIR,
-                       endpoint='abilian_static',
-                       roles=Anonymous)
+    app.add_static_url(
+        'abilian', RESOURCES_DIR, endpoint='abilian_static', roles=Anonymous)
 
     app.before_first_request(requirejs_config)
 
@@ -32,8 +30,8 @@ def requirejs_config():
     # setup ckeditor
     ckeditor_lib = 'ckeditor/ckeditor'
     config['shim']['ckeditor'] = {'exports': 'CKEDITOR'}
-    config['paths']['ckeditor'] = url_for('abilian_static',
-                                          filename=ckeditor_lib)
+    config['paths']['ckeditor'] = url_for(
+        'abilian_static', filename=ckeditor_lib)
 
     d3_lib = 'nvd3/d3.min'
     config['shim']['d3'] = {'exports': 'd3'}

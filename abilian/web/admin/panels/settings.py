@@ -29,9 +29,8 @@ class Key(object):
         self.description = description
 
     def __html__(self):
-        return render_template(self.template,
-                               key=self,
-                               config=current_app.config)
+        return render_template(
+            self.template, key=self, config=current_app.config)
 
     def value_from_request(self):
         return request.form.get(self.id).strip()
@@ -42,13 +41,13 @@ class SessionLifeTimeKey(Key):
     template = 'admin/settings_session_lifetime.html'
 
     def __init__(self):
-        Key.__init__(self,
-                     'PERMANENT_SESSION_LIFETIME',
-                     'timedelta',
-                     label=_l(u'Session lifetime'),
-                     description=_l(
-                         u'Session expiration time after last visit. '
-                         u'When session is expired user must login again.'))
+        Key.__init__(
+            self,
+            'PERMANENT_SESSION_LIFETIME',
+            'timedelta',
+            label=_l(u'Session lifetime'),
+            description=_l(u'Session expiration time after last visit. '
+                           u'When session is expired user must login again.'))
 
     def value_from_request(self):
         form = request.form
@@ -108,8 +107,7 @@ class SettingsPanel(AdminPanel):
         return current_app.services.get('settings').namespace('config')
 
     def get(self):
-        return render_template('admin/settings.html',
-                               keys=self._keys,)
+        return render_template('admin/settings.html', keys=self._keys)
 
     @csrf.protect
     def post(self):

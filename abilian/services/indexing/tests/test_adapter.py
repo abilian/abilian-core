@@ -29,12 +29,13 @@ class SANotIndexable(IdMixin, db.Model):
 
 class Indexable(IdMixin, CoreIndexable, db.Model):
     __tablename__ = 'sa_indexable'
-    __indexation_args__ = dict(index_to=(('related.name', ('name', 'text')),
-                                         ('related.description', 'text'),),)
+    __indexation_args__ = dict(
+        index_to=(('related.name', ('name', 'text')),
+                  ('related.description', 'text'),),)
 
-    num = sa.Column(sa.Integer,
-                    info=SEARCHABLE | dict(index_to=(
-                        ('num', NUMERIC(numtype=int)),)),)
+    num = sa.Column(
+        sa.Integer,
+        info=SEARCHABLE | dict(index_to=(('num', NUMERIC(numtype=int)),)),)
 
 
 class SubclassEntityIndexable(Entity):
@@ -100,11 +101,9 @@ class TestSAAdapter(TestCase):
             'tag_text',
         }
 
-        schema = Schema(id=NUMERIC(numtype=int,
-                                   bits=64,
-                                   signed=False,
-                                   stored=True,
-                                   unique=True),)
+        schema = Schema(
+            id=NUMERIC(
+                numtype=int, bits=64, signed=False, stored=True, unique=True),)
         adapter = SAAdapter(Indexable, schema)
         assert adapter.indexable
         assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
@@ -121,10 +120,11 @@ class DocumentTestCase(AppTestCase):
     def test_get_document(self):
         schema = Schema()
         adapter = SAAdapter(SubclassEntityIndexable, schema)
-        expected = dict(id=2,
-                        name='entity name',
-                        created_at=datetime(2013, 11, 28, 16, 17, 0),
-                        updated_at=datetime(2013, 11, 29, 12, 17, 58))
+        expected = dict(
+            id=2,
+            name='entity name',
+            created_at=datetime(2013, 11, 28, 16, 17, 0),
+            updated_at=datetime(2013, 11, 29, 12, 17, 58))
         obj = SubclassEntityIndexable(**expected)
         obj.slug = u'entity-name'
         expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
@@ -136,11 +136,9 @@ class DocumentTestCase(AppTestCase):
         assert adapter.get_document(obj) == expected
 
         # test retrieve related attributes
-        schema = Schema(id=NUMERIC(numtype=int,
-                                   bits=64,
-                                   signed=False,
-                                   stored=True,
-                                   unique=True),)
+        schema = Schema(
+            id=NUMERIC(
+                numtype=int, bits=64, signed=False, stored=True, unique=True),)
         adapter = SAAdapter(Indexable, schema)
         expected = dict(id=1, num=42)
         obj = Indexable(**expected)

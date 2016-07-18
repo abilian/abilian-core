@@ -14,8 +14,9 @@ from jinja2 import Environment, Markup, PackageLoader
 from .base import log_config, logger
 
 #: sub-manager for config commands
-manager = Manager(description='Show config / create default config',
-                  help='Show config / create default config')
+manager = Manager(
+    description='Show config / create default config',
+    help='Show config / create default config')
 
 
 @manager.command

@@ -7,12 +7,11 @@ import os
 import runpy
 from pprint import pformat
 
-from six.moves import input
-from six.moves import urllib
 import sqlalchemy as sa
 from flask import current_app
 from flask_script import Manager, prompt_pass
 from six import text_type
+from six.moves import input, urllib
 
 from abilian.core.extensions import db
 from abilian.core.logging import patch_logger
@@ -94,23 +93,22 @@ def log_config(config):
         logger.setLevel(original_level)
 
 
-@manager.option('-p',
-                '--port',
-                dest='port',
-                help='listening port',
-                default=5000)
-@manager.option('--show-config',
-                dest='show_config',
-                action='store_const',
-                const=True,
-                default=False,
-                help='show application configuration on startup')
-@manager.option('--ssl',
-                dest='ssl',
-                action='store_const',
-                default=False,
-                const=True,
-                help='Enable werkzeug SSL')
+@manager.option(
+    '-p', '--port', dest='port', help='listening port', default=5000)
+@manager.option(
+    '--show-config',
+    dest='show_config',
+    action='store_const',
+    const=True,
+    default=False,
+    help='show application configuration on startup')
+@manager.option(
+    '--ssl',
+    dest='ssl',
+    action='store_const',
+    default=False,
+    const=True,
+    help='Enable werkzeug SSL')
 def run(port, show_config, ssl):
     """Like runserver. May also print application configuration if used with
     --show-config.
@@ -166,25 +164,25 @@ def routes():
 
 # user commands
 email_opt = manager.option('email', help='user\'s email')
-password_opt = manager.option('-p',
-                              '--password',
-                              dest='password',
-                              default=None,
-                              help='If absent, a prompt will ask for password',)
-role_opt = manager.option('-r',
-                          '--role',
-                          dest='role',
-                          choices=[r.name for r in Role.assignable_roles()],)
-name_opt = manager.option('-n',
-                          '--name',
-                          dest='name',
-                          default=None,
-                          help='Last name (e.g "Smith")')
-firstname_opt = manager.option('-f',
-                               '--firstname',
-                               dest='first_name',
-                               default=None,
-                               help='Fist name (e.g. "John")')
+password_opt = manager.option(
+    '-p',
+    '--password',
+    dest='password',
+    default=None,
+    help='If absent, a prompt will ask for password',)
+role_opt = manager.option(
+    '-r',
+    '--role',
+    dest='role',
+    choices=[r.name for r in Role.assignable_roles()],)
+name_opt = manager.option(
+    '-n', '--name', dest='name', default=None, help='Last name (e.g "Smith")')
+firstname_opt = manager.option(
+    '-f',
+    '--firstname',
+    dest='first_name',
+    default=None,
+    help='Fist name (e.g. "John")')
 
 
 @email_opt
@@ -203,11 +201,12 @@ def createuser(email, password, role=None, name=None, first_name=None):
     if password is None:
         password = prompt_pass(u'Password')
 
-    user = User(email=email,
-                password=password,
-                last_name=name,
-                first_name=first_name,
-                can_login=True)
+    user = User(
+        email=email,
+        password=password,
+        last_name=name,
+        first_name=first_name,
+        can_login=True)
     db.session.add(user)
 
     if role in ('admin',):

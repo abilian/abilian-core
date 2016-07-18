@@ -157,7 +157,8 @@ class BaseEntityView(ModuleView):
     def breadcrumb(self):
         return BreadcrumbItem(
             label=self.obj.name or self.obj.id,
-            url=Endpoint('.entity_view', entity_id=self.obj.id))
+            url=Endpoint(
+                '.entity_view', entity_id=self.obj.id))
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
@@ -170,11 +171,12 @@ class BaseEntityView(ModuleView):
 
     @property
     def single_view(self):
-        return make_single_view(self.form,
-                                view_template=self.module.view_template,
-                                view=self,
-                                module=self.module,
-                                **self.module.view_options)
+        return make_single_view(
+            self.form,
+            view_template=self.module.view_template,
+            view=self,
+            module=self.module,
+            **self.module.view_options)
 
     def check_access(self):
         return self._check_view_permission(self)
@@ -202,10 +204,11 @@ class BaseEntityView(ModuleView):
 
         if self.permission in cls_permissions:
             security = current_app.services['security']
-            return security.has_permission(current_user,
-                                           create_cls.permission,
-                                           obj=self.obj,
-                                           roles=cls_permissions[permission])
+            return security.has_permission(
+                current_user,
+                create_cls.permission,
+                obj=self.obj,
+                roles=cls_permissions[permission])
         return False
 
 
@@ -242,17 +245,17 @@ class EntityView(BaseEntityView, ObjectView):
     def template_kwargs(self):
         module = self.module
         related_views = [v.render(self.obj) for v in module.related_views]
-        rendered_entity = self.single_view.render(self.obj,
-                                                  self.form,
-                                                  related_views=related_views)
+        rendered_entity = self.single_view.render(
+            self.obj, self.form, related_views=related_views)
         audit_entries = audit_service.entries_for(self.obj)
 
-        return dict(rendered_entity=rendered_entity,
-                    related_views=related_views,
-                    audit_entries=audit_entries,
-                    show_new_comment_form=True,
-                    show_new_attachment_form=True,
-                    module=self.module)
+        return dict(
+            rendered_entity=rendered_entity,
+            related_views=related_views,
+            audit_entries=audit_entries,
+            show_new_comment_form=True,
+            show_new_attachment_form=True,
+            module=self.module)
 
 
 class EntityEdit(BaseEntityView, ObjectEdit):
@@ -262,10 +265,11 @@ class EntityEdit(BaseEntityView, ObjectEdit):
     @property
     def template_kwargs(self):
         rendered_entity = self.single_view.render_form(self.form)
-        return dict(rendered_entity=rendered_entity,
-                    show_new_comment_form=False,
-                    show_new_attachment_form=False,
-                    module=self.module)
+        return dict(
+            rendered_entity=rendered_entity,
+            show_new_comment_form=False,
+            show_new_attachment_form=False,
+            module=self.module)
 
 
 class EntityCreate(BaseEntityView, ObjectCreate):
@@ -281,9 +285,8 @@ class EntityCreate(BaseEntityView, ObjectCreate):
     @property
     def template_kwargs(self):
         rendered_entity = self.single_view.render_form(self.form)
-        return dict(rendered_entity=rendered_entity,
-                    for_new=True,
-                    module=self.module)
+        return dict(
+            rendered_entity=rendered_entity, for_new=True, module=self.module)
 
 
 class EntityDelete(BaseEntityView, ObjectDelete):
@@ -443,45 +446,51 @@ class Module(object):
             self.view_form_class = self.edit_form_class
 
         # init class based views
-        kw = dict(Model=self.managed_class,
-                  pk='entity_id',
-                  module=self,
-                  base_template=self.base_template)
-        self._setup_view("/<int:entity_id>",
-                         b'entity_view',
-                         self.view_cls,
-                         Form=self.view_form_class,
-                         **kw)
+        kw = dict(
+            Model=self.managed_class,
+            pk='entity_id',
+            module=self,
+            base_template=self.base_template)
+        self._setup_view(
+            "/<int:entity_id>",
+            b'entity_view',
+            self.view_cls,
+            Form=self.view_form_class,
+            **kw)
         view_endpoint = self.endpoint + '.entity_view'
 
-        self._setup_view("/<int:entity_id>/edit",
-                         b'entity_edit',
-                         self.edit_cls,
-                         Form=self.edit_form_class,
-                         view_endpoint=view_endpoint,
-                         **kw)
+        self._setup_view(
+            "/<int:entity_id>/edit",
+            b'entity_edit',
+            self.edit_cls,
+            Form=self.edit_form_class,
+            view_endpoint=view_endpoint,
+            **kw)
 
-        self._setup_view("/new",
-                         b'entity_new',
-                         self.create_cls,
-                         Form=self.edit_form_class,
-                         chain_create_allowed=self.view_new_save_and_add,
-                         view_endpoint=view_endpoint,
-                         **kw)
+        self._setup_view(
+            "/new",
+            b'entity_new',
+            self.create_cls,
+            Form=self.edit_form_class,
+            chain_create_allowed=self.view_new_save_and_add,
+            view_endpoint=view_endpoint,
+            **kw)
 
-        self._setup_view("/<int:entity_id>/delete",
-                         b'entity_delete',
-                         self.delete_cls,
-                         Form=self.edit_form_class,
-                         view_endpoint=view_endpoint,
-                         **kw)
+        self._setup_view(
+            "/<int:entity_id>/delete",
+            b'entity_delete',
+            self.delete_cls,
+            Form=self.edit_form_class,
+            view_endpoint=view_endpoint,
+            **kw)
 
         self._setup_view("/json", b'list_json', ListJson, module=self)
 
-        self._setup_view('/json_search',
-                         b'json_search',
-                         self.json_search_cls,
-                         Model=self.managed_class)
+        self._setup_view(
+            '/json_search',
+            b'json_search',
+            self.json_search_cls,
+            Model=self.managed_class)
 
         self.init_related_views()
 
@@ -529,13 +538,14 @@ class Module(object):
 
     def register_actions(self):
         ACTIONS = [
-            ModuleAction(self,
-                         u'entity',
-                         u'create',
-                         title=_l(u'Create New'),
-                         icon=FAIcon('plus'),
-                         endpoint=Endpoint(self.endpoint + '.entity_new'),
-                         button='default',),
+            ModuleAction(
+                self,
+                u'entity',
+                u'create',
+                title=_l(u'Create New'),
+                icon=FAIcon('plus'),
+                endpoint=Endpoint(self.endpoint + '.entity_new'),
+                button='default',),
         ]
         for component in self.components:
             ACTIONS.extend(component.get_actions())
@@ -561,15 +571,13 @@ class Module(object):
         self.blueprint = Blueprint(self.endpoint, __name__, url_prefix=self.url)
 
         for url, name, methods in self._urls:
-            self.blueprint.add_url_rule(url,
-                                        name,
-                                        getattr(self, name),
-                                        methods=methods)
+            self.blueprint.add_url_rule(
+                url, name, getattr(self, name), methods=methods)
 
         # run default_view decorator
-        default_view(self.blueprint,
-                     self.managed_class,
-                     id_attr='entity_id')(self.entity_view)
+        default_view(
+            self.blueprint, self.managed_class,
+            id_attr='entity_id')(self.entity_view)
 
         # delay registration of our breadcrumbs to when registered on app; thus
         # 'parents' blueprint can register theirs befores ours
@@ -581,8 +589,9 @@ class Module(object):
         self.blueprint.url_value_preprocessor(self._add_breadcrumb)
 
     def _add_breadcrumb(self, endpoint, values):
-        g.breadcrumb.append(BreadcrumbItem(label=self.label,
-                                           url=Endpoint('.list_view')))
+        g.breadcrumb.append(
+            BreadcrumbItem(
+                label=self.label, url=Endpoint('.list_view')))
 
     @property
     def base_query(self):
@@ -703,16 +712,18 @@ class Module(object):
     @expose("/")
     def list_view(self):
         actions.context['module'] = self
-        table_view = AjaxMainTableView(name=self.managed_class.__name__.lower(),
-                                       columns=self.list_view_columns,
-                                       ajax_source=url_for('.list_json'),
-                                       search_criterions=self.search_criterions,
-                                       options=self.tableview_options)
+        table_view = AjaxMainTableView(
+            name=self.managed_class.__name__.lower(),
+            columns=self.list_view_columns,
+            ajax_source=url_for('.list_json'),
+            search_criterions=self.search_criterions,
+            options=self.tableview_options)
         rendered_table = table_view.render()
 
-        ctx = dict(rendered_table=rendered_table,
-                   module=self,
-                   base_template=self.base_template)
+        ctx = dict(
+            rendered_table=rendered_table,
+            module=self,
+            base_template=self.base_template)
         return render_template("default/list_view.html", **ctx)
 
     @expose("/json2")
@@ -791,12 +802,13 @@ class DefaultRelatedView(RelatedView):
     def render(self, entity):
         view = RelatedTableView(self.column_names, self.options)
         related_entities = getattr(entity, self.attr)
-        return dict(label=self.label,
-                    attr_name=self.attr,
-                    rendered=view.render(related_entities,
-                                         related_to=entity),
-                    show_empty=self.show_empty,
-                    size=len(related_entities))
+        return dict(
+            label=self.label,
+            attr_name=self.attr,
+            rendered=view.render(
+                related_entities, related_to=entity),
+            show_empty=self.show_empty,
+            size=len(related_entities))
 
 
 # TODO: rename to CRMApp ?
@@ -807,8 +819,8 @@ class CRUDApp(object):
     def __init__(self, app, modules=None, name=None):
         if name is None:
             name = self.__class__.__module__
-            modules_signature = ','.join(str(module.id)
-                                         for module in self.modules)
+            modules_signature = ','.join(
+                str(module.id) for module in self.modules)
             name = name + '-' + modules_signature
 
         self.name = name

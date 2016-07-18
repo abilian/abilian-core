@@ -7,6 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from functools import wraps
 from itertools import chain
+from typing import Dict, Set
 
 import sqlalchemy as sa
 from flask import current_app, g
@@ -14,7 +15,6 @@ from flask_login import current_user
 from six import string_types, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
-from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -180,12 +180,13 @@ class SecurityService(Service):
         manager = self._current_user_manager(session=session)
         op = (SecurityAudit.SET_INHERIT
               if inherit_security else SecurityAudit.UNSET_INHERIT)
-        audit = SecurityAudit(manager=manager,
-                              op=op,
-                              object=obj,
-                              object_id=obj.id,
-                              object_type=obj.entity_type,
-                              object_name=obj.name)
+        audit = SecurityAudit(
+            manager=manager,
+            op=op,
+            object=obj,
+            object_id=obj.id,
+            object_type=obj.entity_type,
+            object_name=obj.name)
         session.add(audit)
         self._needs_flush()
 
@@ -349,11 +350,11 @@ class SecurityService(Service):
 
         filter_cond = []
         if users:
-            filter_cond.append(RoleAssignment.user_id.in_((u.id
-                                                           for u in users)))
+            filter_cond.append(
+                RoleAssignment.user_id.in_((u.id for u in users)))
         if groups:
-            filter_cond.append(RoleAssignment.group_id.in_((g.id
-                                                            for g in groups)))
+            filter_cond.append(
+                RoleAssignment.group_id.in_((g.id for g in groups)))
 
         query = query.filter(sql.or_(*filter_cond))
         ra_users = {}
@@ -461,11 +462,8 @@ class SecurityService(Service):
         principal = noproxy(principal)
         session = object_session(obj) if obj is not None else db.session
         manager = self._current_user_manager(session=session)
-        args = dict(role=role,
-                    object=obj,
-                    anonymous=False,
-                    user=None,
-                    group=None)
+        args = dict(
+            role=role, object=obj, anonymous=False, user=None, group=None)
 
         if (principal is AnonymousRole or
             (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
@@ -516,11 +514,8 @@ class SecurityService(Service):
         session = object_session(object) if object is not None else db.session
         manager = self._current_user_manager(session=session)
 
-        args = dict(role=role,
-                    object=object,
-                    anonymous=False,
-                    user=None,
-                    group=None)
+        args = dict(
+            role=role, object=object, anonymous=False, user=None, group=None)
         query = session.query(RoleAssignment)
         query = query.filter(RoleAssignment.role == role,
                              RoleAssignment.object == object)
@@ -770,9 +765,8 @@ class SecurityService(Service):
         pa = query_pa_no_flush(session, permission, role, obj)
 
         if not pa:
-            pa = PermissionAssignment(permission=permission,
-                                      role=role,
-                                      object=obj)
+            pa = PermissionAssignment(
+                permission=permission, role=role, object=obj)
 
         # do it in any case: it could have been found in session.deleted
         session.add(pa)

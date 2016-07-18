@@ -42,9 +42,10 @@ class Edit(ViewBase, views.ObjectEdit):
         return views.ObjectEdit.prepare_args(self, args, kwargs)
 
     def view_url(self):
-        return url_for('.vocabularies_model',
-                       group=self.Model.Meta.group or '_',
-                       Model=self.Model.Meta.name,)
+        return url_for(
+            '.vocabularies_model',
+            group=self.Model.Meta.group or '_',
+            Model=self.Model.Meta.name,)
 
 
 class Create(views.ObjectCreate, Edit):
@@ -72,18 +73,20 @@ class VocabularyPanel(AdminPanel):
         return current_app.services['vocabularies']
 
     def voc_edit_url(self, item):
-        return url_for('.' + self.id + '_edit',
-                       group=item.Meta.group or u'_',
-                       Model=item.Meta.name,
-                       object_id=item.id)
+        return url_for(
+            '.' + self.id + '_edit',
+            group=item.Meta.group or u'_',
+            Model=item.Meta.name,
+            object_id=item.id)
 
     def get(self):
         svc = self.svc
-        return render_template('admin/vocabularies.html',
-                               service=svc,
-                               url_for_voc_edit=self.voc_edit_url,
-                               icon_checked=Glyphicon('check'),
-                               vocabularies=svc.grouped_vocabularies,)
+        return render_template(
+            'admin/vocabularies.html',
+            service=svc,
+            url_for_voc_edit=self.voc_edit_url,
+            icon_checked=Glyphicon('check'),
+            vocabularies=svc.grouped_vocabularies,)
 
     def post(self):
         data = request.form
@@ -158,20 +161,22 @@ class VocabularyPanel(AdminPanel):
         groups = self.svc.grouped_vocabularies
         vocabularies = groups.get(group)
 
-        return render_template('admin/vocabularies.html',
-                               service=self.svc,
-                               url_for_voc_edit=self.voc_edit_url,
-                               icon_checked=Glyphicon('check'),
-                               vocabularies={group: vocabularies},
-                               edit_return_to='group')
+        return render_template(
+            'admin/vocabularies.html',
+            service=self.svc,
+            url_for_voc_edit=self.voc_edit_url,
+            icon_checked=Glyphicon('check'),
+            vocabularies={group: vocabularies},
+            edit_return_to='group')
 
     def model_view(self, Model, group=None):
-        return render_template('admin/vocabularies.html',
-                               service=self.svc,
-                               url_for_voc_edit=self.voc_edit_url,
-                               icon_checked=Glyphicon('check'),
-                               vocabularies={Model.Meta.group: [Model]},
-                               edit_return_to='model')
+        return render_template(
+            'admin/vocabularies.html',
+            service=self.svc,
+            url_for_voc_edit=self.voc_edit_url,
+            icon_checked=Glyphicon('check'),
+            vocabularies={Model.Meta.group: [Model]},
+            edit_return_to='model')
 
     def install_additional_rules(self, add_url_rule):
         panel_endpoint = '.' + self.id
@@ -183,9 +188,10 @@ class VocabularyPanel(AdminPanel):
 
         edit_view = Edit.as_view(b'edit', view_endpoint=panel_endpoint)
         add_url_rule(base + '<int:object_id>', view_func=edit_view)
-        add_url_rule(base + 'new',
-                     view_func=Create.as_view(b'new',
-                                              view_endpoint=panel_endpoint))
+        add_url_rule(
+            base + 'new',
+            view_func=Create.as_view(
+                b'new', view_endpoint=panel_endpoint))
 
     def url_value_preprocess(self, endpoint, view_args):
         Model = view_args.pop('Model', None)
@@ -205,9 +211,11 @@ class VocabularyPanel(AdminPanel):
                 label=Model.Meta.group if group else _('Global'),
                 url=url_for('.vocabularies_group', group=group or u'_'),
             ))
-            g.breadcrumb.append(BreadcrumbItem(label=Model.Meta.label,
-                                               url=url_for(
-                                                   '.vocabularies_model',
-                                                   group=group or u'_',
-                                                   Model=Model.Meta.name),))
+            g.breadcrumb.append(
+                BreadcrumbItem(
+                    label=Model.Meta.label,
+                    url=url_for(
+                        '.vocabularies_model',
+                        group=group or u'_',
+                        Model=Model.Meta.name),))
             view_args['Model'] = Model

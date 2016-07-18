@@ -25,10 +25,8 @@ from abilian.services.security import Anonymous
 from abilian.web.blueprints import Blueprint
 
 logger = logging.getLogger(__name__)
-setup = Blueprint('setup',
-                  __name__,
-                  allowed_roles=Anonymous,
-                  template_folder='templates')
+setup = Blueprint(
+    'setup', __name__, allowed_roles=Anonymous, template_folder='templates')
 
 # list supported dialects and detect unavailable ones due to missing dbapi
 # module ('psycopg2' missing for example)
@@ -50,9 +48,9 @@ Step = namedtuple('SetupStep', ('name', 'endpoint', 'title', 'description'))
 
 _setup_steps = (
     Step('db', 'step_db', 'Setup Database', 'Setup basic database connection'),
-    Step('redis', 'step_redis', 'Setup Redis', 'Redis connection'),
-    Step('site_info', 'step_site_info', 'Basic site informations',
-         'Site name, admin email...'),
+    Step('redis', 'step_redis', 'Setup Redis', 'Redis connection'), Step(
+        'site_info', 'step_site_info', 'Basic site informations',
+        'Site name, admin email...'),
     Step('admin_account', 'step_admin_account', u'Admin account', None),
     Step('finalize', 'finalize', 'Finalize', None))
 
@@ -129,8 +127,8 @@ def step_db():
 
 
 def step_db_form():
-    return render_template('setupwizard/step_db.html',
-                           data=session_get('db', {}))
+    return render_template(
+        'setupwizard/step_db.html', data=session_get('db', {}))
 
 
 def step_db_validate():
@@ -163,19 +161,20 @@ def step_db_validate():
     db_uri += u'/'
 
     if dialect == u'sqlite' and (not database or database == u':memory:'):
-        database = text_type(Path(current_app.instance_path) / u'data' /
-                             u'sqlite.db')
+        database = text_type(
+            Path(current_app.instance_path) / u'data' / u'sqlite.db')
 
     db_uri += database
 
     # store in session
-    db_params = dict(uri=db_uri,
-                     dialect=dialect,
-                     username=username,
-                     password=password,
-                     host=host,
-                     port=port,
-                     database=database,)
+    db_params = dict(
+        uri=db_uri,
+        dialect=dialect,
+        username=username,
+        password=password,
+        host=host,
+        port=port,
+        database=database,)
     session_set('db', db_params)
 
     # test connection
@@ -215,15 +214,16 @@ def step_redis():
 
 
 def step_redis_form():
-    return render_template('setupwizard/step_redis.html',
-                           data=session_get('redis', {}))
+    return render_template(
+        'setupwizard/step_redis.html', data=session_get('redis', {}))
 
 
 def step_redis_validate():
     form = request.form
-    data = dict(host=form.get(u'host', u'localhost').strip(),
-                port=form.get(u'port', u'').strip() or u'6379',
-                db=form.get(u'db', u'').strip() or u'1',)
+    data = dict(
+        host=form.get(u'host', u'localhost').strip(),
+        port=form.get(u'port', u'').strip() or u'6379',
+        db=form.get(u'db', u'').strip() or u'1',)
 
     for k in ('port', 'db'):
         try:
@@ -236,9 +236,8 @@ def step_redis_validate():
     error = None
 
     try:
-        r = redis.StrictRedis(host=data['host'],
-                              port=data['port'],
-                              db=data['db'])
+        r = redis.StrictRedis(
+            host=data['host'], port=data['port'], db=data['db'])
     except Exception as e:
         error = u'Connection error, check parameters'
         raise e
@@ -297,16 +296,18 @@ def step_site_info_form():
         'sitename': cfg.get('SITE_NAME', u'') or u'',
         'mailsender': cfg.get('MAIL_SENDER', u'') or u'',
     }
-    return render_template('setupwizard/step_site_info.html',
-                           data=session_get('site_info', default_data),
-                           suggested_hosts=get_possible_hostnames())
+    return render_template(
+        'setupwizard/step_site_info.html',
+        data=session_get('site_info', default_data),
+        suggested_hosts=get_possible_hostnames())
 
 
 def step_site_info_validate():
     form = request.form
-    data = dict(sitename=form.get('sitename', u'').strip(),
-                mailsender=form.get('mailsender', u'').strip(),
-                server_mode=form.get('server_mode', u'').strip())
+    data = dict(
+        sitename=form.get('sitename', u'').strip(),
+        mailsender=form.get('mailsender', u'').strip(),
+        server_mode=form.get('server_mode', u'').strip())
 
     session_set('site_info', data)
     step_validated('site_info')
@@ -326,19 +327,21 @@ def step_admin_account():
 
 
 def step_admin_account_form():
-    return render_template('setupwizard/step_admin_account.html',
-                           data=session_get('admin_account', {}))
+    return render_template(
+        'setupwizard/step_admin_account.html',
+        data=session_get('admin_account', {}))
 
 
 def step_admin_account_validate():
     form = request.form
     password = form.get('password', u'').strip()
     confirm_password = form.get('confirm_password', u'').strip()
-    admin_user = dict(email=form.get('email', u'').strip(),
-                      name=form.get('name', u'').strip(),
-                      firstname=form.get('firstname', u'').strip(),
-                      password=password,
-                      confirm_password=confirm_password)
+    admin_user = dict(
+        email=form.get('email', u'').strip(),
+        name=form.get('name', u'').strip(),
+        firstname=form.get('firstname', u'').strip(),
+        password=password,
+        confirm_password=confirm_password)
     session_set('admin_account', admin_user)
 
     if password != confirm_password:
@@ -366,8 +369,8 @@ def finalize():
 
 def finalize_form():
     file_location = os.path.join(current_app.instance_path, 'config.py')
-    return render_template('setupwizard/finalize.html',
-                           file_location=file_location)
+    return render_template(
+        'setupwizard/finalize.html', file_location=file_location)
 
 
 def finalize_validate():
@@ -400,19 +403,21 @@ def finalize_validate():
     # create a new app that will be configured with new config, to create database
     # and admin_user
     setup_app = current_app._get_current_object()
-    app = setup_app.__class__(setup_app.import_name,
-                              static_url_path=setup_app.static_url_path,
-                              static_folder=setup_app.static_folder,
-                              template_folder=setup_app.template_folder,
-                              instance_path=setup_app.instance_path,)
+    app = setup_app.__class__(
+        setup_app.import_name,
+        static_url_path=setup_app.static_url_path,
+        static_folder=setup_app.static_folder,
+        template_folder=setup_app.template_folder,
+        instance_path=setup_app.instance_path,)
     with app.test_request_context('/setup/finalize'):
         app.create_db()
         db_session = app.db.session()
-        admin = User(email=admin_account['email'],
-                     password=admin_account['password'],
-                     last_name=admin_account['name'],
-                     first_name=admin_account['firstname'],
-                     can_login=True)
+        admin = User(
+            email=admin_account['email'],
+            password=admin_account['password'],
+            last_name=admin_account['name'],
+            first_name=admin_account['firstname'],
+            can_login=True)
         db_session.add(admin)
         security = get_service('security')
         security.grant_role(admin, Admin)
@@ -421,8 +426,9 @@ def finalize_validate():
     session_clear()
 
     response = make_response(
-        render_template('setupwizard/done.html',
-                        config_file=config_file,
-                        logging_file=logging_file),
+        render_template(
+            'setupwizard/done.html',
+            config_file=config_file,
+            logging_file=logging_file),
         200)
     return response

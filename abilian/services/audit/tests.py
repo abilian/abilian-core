@@ -56,10 +56,10 @@ class AccountRelated(db.Model):
     id = Column(Integer, primary_key=True)
 
     account_id = Column(Integer, ForeignKey(DummyAccount.id), nullable=False)
-    account = relationship(DummyAccount,
-                           backref=backref('data',
-                                           order_by='AccountRelated.id',
-                                           cascade='all, delete-orphan'))
+    account = relationship(
+        DummyAccount,
+        backref=backref(
+            'data', order_by='AccountRelated.id', cascade='all, delete-orphan'))
 
     text = Column(UnicodeText, default="")
 
@@ -71,10 +71,12 @@ class CommentRelated(db.Model):
     id = Column(Integer, primary_key=True)
 
     related_id = Column(Integer, ForeignKey(AccountRelated.id), nullable=False)
-    related = relationship(AccountRelated,
-                           backref=backref('comments',
-                                           order_by='CommentRelated.id',
-                                           cascade='all, delete-orphan'))
+    related = relationship(
+        AccountRelated,
+        backref=backref(
+            'comments',
+            order_by='CommentRelated.id',
+            cascade='all, delete-orphan'))
     text = Column(UnicodeText, default="")
 
 

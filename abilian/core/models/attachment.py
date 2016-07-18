@@ -85,22 +85,25 @@ class Attachment(Entity):
     entity_id = Column(Integer, ForeignKey(Entity.id), nullable=False)
 
     #: owning entity
-    entity = relationship(Entity,
-                          lazy='immediate',
-                          foreign_keys=[entity_id],
-                          backref=backref(ATTRIBUTE,
-                                          lazy='select',
-                                          order_by='Attachment.created_at',
-                                          cascade="all, delete-orphan",))
+    entity = relationship(
+        Entity,
+        lazy='immediate',
+        foreign_keys=[entity_id],
+        backref=backref(
+            ATTRIBUTE,
+            lazy='select',
+            order_by='Attachment.created_at',
+            cascade="all, delete-orphan",))
 
     blob_id = Column(Integer, sa.ForeignKey(Blob.id), nullable=False)
     #: file. Stored in a :class:`Blob`
     blob = relationship(Blob, cascade='all, delete', foreign_keys=[blob_id])
 
-    description = Column(UnicodeText(),
-                         nullable=False,
-                         default='',
-                         server_default='',)
+    description = Column(
+        UnicodeText(),
+        nullable=False,
+        default='',
+        server_default='',)
 
     def __repr__(self):
         class_ = self.__class__

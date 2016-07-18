@@ -36,10 +36,8 @@ def register_default_view(state):
     state.app.default_view.register(Comment, _default_comment_view)
 
 
-COMMENT_BUTTON = ButtonAction('form',
-                              'edit',
-                              btn_class='primary',
-                              title=_l(u'Post'))
+COMMENT_BUTTON = ButtonAction(
+    'form', 'edit', btn_class='primary', title=_l(u'Post'))
 
 
 class BaseCommentView(object):
@@ -92,9 +90,11 @@ class CommentEditView(BaseCommentView, ObjectEdit):
     def after_populate_obj(self):
         obj_meta = self.obj.meta.setdefault('abilian.core.models.comment', {})
         history = obj_meta.setdefault('history', [])
-        history.append(dict(user_id=current_user.id,
-                            user=text_type(current_user),
-                            date=utc_dt(datetime.utcnow()).isoformat(),))
+        history.append(
+            dict(
+                user_id=current_user.id,
+                user=text_type(current_user),
+                date=utc_dt(datetime.utcnow()).isoformat(),))
         self.obj.meta.changed()
 
 

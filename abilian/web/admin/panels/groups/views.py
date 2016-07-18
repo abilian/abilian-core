@@ -42,8 +42,8 @@ class JsonGroupsList(base.JSONView):
 
         if search:
             # TODO: gérer les accents
-            query = query.filter(func.lower(Group.name).like("%" + search +
-                                                             "%"))
+            query = query.filter(
+                func.lower(Group.name).like("%" + search + "%"))
 
         count = query.count()
         columns = [func.lower(Group.name)]
@@ -66,13 +66,15 @@ class JsonGroupsList(base.JSONView):
             name = escape(getattr(group, "name") or "")
             roles = [r for r in security.get_roles(group) if r.assignable]
             columns = []
-            columns.append(u'<a href="{url}">{name}</a>'.format(url=group_url,
-                                                                name=name))
+            columns.append(u'<a href="{url}">{name}</a>'.format(
+                url=group_url, name=name))
             columns.append(text_type(members_count or 0))
-            columns.append(render_template_string(u'''{%- for role in roles %}
+            columns.append(
+                render_template_string(
+                    u'''{%- for role in roles %}
             <span class="badge badge-default">{{ role }}</span>
             {%- endfor %}''',
-                                                  roles=roles))
+                    roles=roles))
             columns.append(u'\u2713' if group.public else u'')
             data.append(columns)
 
@@ -99,18 +101,20 @@ class GroupBase(object):
 
 # those buttons are made to have valid edit actions, but will not be shown in
 # edit forms: they must be availabe only during POST
-ADD_USER_BUTTON = ButtonAction('form',
-                               'add_user',
-                               condition=lambda v: request.method == 'POST',
-                               title=_l(u'Add'),
-                               btn_class='primary')
+ADD_USER_BUTTON = ButtonAction(
+    'form',
+    'add_user',
+    condition=lambda v: request.method == 'POST',
+    title=_l(u'Add'),
+    btn_class='primary')
 
-REMOVE_USER_BUTTON = ButtonAction('form',
-                                  'remove_user',
-                                  condition=lambda v: request.method == 'POST',
-                                  btn_class='danger',
-                                  icon=FAIcon('times'),
-                                  title="",)
+REMOVE_USER_BUTTON = ButtonAction(
+    'form',
+    'remove_user',
+    condition=lambda v: request.method == 'POST',
+    btn_class='danger',
+    icon=FAIcon('times'),
+    title="",)
 
 
 class GroupView(GroupBase, views.ObjectView):
@@ -127,10 +131,10 @@ class GroupView(GroupBase, views.ObjectView):
         members = list(self.obj.members)
         members.sort(key=lambda u: (u.last_name, u.first_name))
         kw['members'] = members
-        kw['roles'] = sorted(
-            [r
-             for r in security.get_roles(self.obj, no_group_roles=True)
-             if r.assignable])
+        kw['roles'] = sorted([r
+                              for r in security.get_roles(
+                                  self.obj, no_group_roles=True)
+                              if r.assignable])
         kw['ADD_USER_BUTTON'] = ADD_USER_BUTTON
         kw['REMOVE_USER_BUTTON'] = REMOVE_USER_BUTTON
         return kw
@@ -152,9 +156,8 @@ class GroupEdit(GroupBase, views.ObjectEdit):
         kw = super(GroupEdit, self).get_form_kwargs()
         security = current_app.services['security']
         roles = [
-            r
-            for r in security.get_roles(self.obj, no_group_roles=True)
-            if r.assignable
+            r for r in security.get_roles(
+                self.obj, no_group_roles=True) if r.assignable
         ]
         kw['roles'] = [r.name for r in roles]
         return kw

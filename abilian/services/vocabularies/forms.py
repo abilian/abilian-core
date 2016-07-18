@@ -20,18 +20,18 @@ ALLOWED_ATTRIBUTES = {}
 class EditForm(ModelForm):
     label = StringField(
         _l(u'Label'),
-        description=_l(u'allowed tags: %(tags)s',
-                       tags=', '.join(ALLOWED_TAGS)),
+        description=_l(u'allowed tags: %(tags)s', tags=', '.join(ALLOWED_TAGS)),
         filters=(strip,),
         validators=[required()])
     default = BooleanField(_l(u'Default'), default=False)
     active = BooleanField(_l(u'Active'), default=True)
 
     def validate_label(self, field):
-        field.data = bleach.clean(field.data,
-                                  tags=ALLOWED_TAGS,
-                                  attributes=ALLOWED_ATTRIBUTES,
-                                  strip=True)
+        field.data = bleach.clean(
+            field.data,
+            tags=ALLOWED_TAGS,
+            attributes=ALLOWED_ATTRIBUTES,
+            strip=True)
 
 
 class ListEditForm(EditForm):

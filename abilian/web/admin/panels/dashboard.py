@@ -50,10 +50,11 @@ class DashboardPanel(AdminPanel):
             {'key': _('Total'), 'color': '#2ca02c', 'values': total_users}
         ]
 
-        return render_template("admin/dashboard.html",
-                               stats=stats,
-                               connections=connections,
-                               new_logins=new_logins)
+        return render_template(
+            "admin/dashboard.html",
+            stats=stats,
+            connections=connections,
+            new_logins=new_logins)
 
 
 def stats_since(dt):

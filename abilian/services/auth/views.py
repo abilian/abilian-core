@@ -35,11 +35,12 @@ from .models import LoginSession
 
 __all__ = []
 
-login = Blueprint("login",
-                  __name__,
-                  url_prefix="/user",
-                  allowed_roles=Anonymous,
-                  template_folder='templates')
+login = Blueprint(
+    "login",
+    __name__,
+    url_prefix="/user",
+    allowed_roles=Anonymous,
+    template_folder='templates')
 route = login.route
 
 
@@ -267,11 +268,8 @@ def send_reset_password_instructions(user):
     subject = _(u"Password reset instruction for {site_name}"
                 ).format(site_name=current_app.config.get('SITE_NAME'))
     mail_template = 'password_reset_instructions'
-    send_mail(subject,
-              user.email,
-              mail_template,
-              user=user,
-              reset_link=reset_link)
+    send_mail(
+        subject, user.email, mail_template, user=user, reset_link=reset_link)
 
 
 def generate_reset_password_token(user):

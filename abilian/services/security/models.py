@@ -103,9 +103,8 @@ class RoleType(UniqueNameType):
 Anonymous = Role('anonymous', _l(u'role_anonymous'), assignable=False)
 
 #: marker for role assigned to 'Authenticated'
-Authenticated = Role('authenticated',
-                     _l('role_authenticated'),
-                     assignable=False)
+Authenticated = Role(
+    'authenticated', _l('role_authenticated'), assignable=False)
 
 #: marker for `admin` role
 Admin = Role('admin', _l('role_administrator'))
@@ -130,42 +129,45 @@ class RoleAssignment(db.Model):
     __tablename__ = "roleassignment"
     __table_args__ = (
         #
-        CheckConstraint("(CAST(anonymous AS INTEGER) = 1)"
-                        " OR "
-                        "((CAST(anonymous AS INTEGER) = 0)"
-                        " AND "
-                        " ((user_id IS NOT NULL AND group_id IS NULL)"
-                        "  OR "
-                        "  (user_id IS NULL AND group_id IS NOT NULL)))",
-                        name="roleassignment_ck_user_xor_group"),
+        CheckConstraint(
+            "(CAST(anonymous AS INTEGER) = 1)"
+            " OR "
+            "((CAST(anonymous AS INTEGER) = 0)"
+            " AND "
+            " ((user_id IS NOT NULL AND group_id IS NULL)"
+            "  OR "
+            "  (user_id IS NULL AND group_id IS NOT NULL)))",
+            name="roleassignment_ck_user_xor_group"),
         #
-        UniqueConstraint('anonymous',
-                         'user_id',
-                         'group_id',
-                         'role',
-                         'object_id',
-                         name='assignment_mapped_role_unique'))
+        UniqueConstraint(
+            'anonymous',
+            'user_id',
+            'group_id',
+            'role',
+            'object_id',
+            name='assignment_mapped_role_unique'))
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     role = Column(RoleType, index=True, nullable=False)
-    anonymous = Column('anonymous',
-                       Boolean,
-                       index=True,
-                       nullable=True,
-                       default=False,
-                       server_default=sql.false())
-    user_id = Column(Integer,
-                     ForeignKey('user.id', ondelete='CASCADE'),
-                     index=True)
+    anonymous = Column(
+        'anonymous',
+        Boolean,
+        index=True,
+        nullable=True,
+        default=False,
+        server_default=sql.false())
+    user_id = Column(
+        Integer, ForeignKey(
+            'user.id', ondelete='CASCADE'), index=True)
     user = relationship(User, lazy='joined')
-    group_id = Column(Integer,
-                      ForeignKey('group.id', ondelete='CASCADE'),
-                      index=True)
+    group_id = Column(
+        Integer, ForeignKey(
+            'group.id', ondelete='CASCADE'), index=True)
     group = relationship(Group, lazy='joined')
 
-    object_id = Column(Integer,
-                       ForeignKey(Entity.id, ondelete='CASCADE'),
-                       index=True)
+    object_id = Column(
+        Integer, ForeignKey(
+            Entity.id, ondelete='CASCADE'), index=True)
     object = relationship(Entity, lazy='select')
 
 
@@ -249,25 +251,27 @@ PERMISSIONS_ATTR = '__permissions__'
 
 class PermissionAssignment(db.Model):
     __tablename__ = 'permission_assignment'
-    __table_args__ = (UniqueConstraint('permission',
-                                       'role',
-                                       'object_id',
-                                       name='assignments_unique'),)
+    __table_args__ = (UniqueConstraint(
+        'permission', 'role', 'object_id', name='assignments_unique'),)
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     permission = Column(PermissionType, index=True, nullable=False)
     role = Column(RoleType, index=True, nullable=False)
-    object_id = Column(Integer,
-                       ForeignKey(Entity.id, ondelete='CASCADE'),
-                       index=True,
-                       nullable=True)
-    object = relationship(Entity,
-                          lazy='select',
-                          backref=backref(PERMISSIONS_ATTR,
-                                          lazy='select',
-                                          collection_class=set,
-                                          cascade='all, delete-orphan',
-                                          passive_deletes=True))
+    object_id = Column(
+        Integer,
+        ForeignKey(
+            Entity.id, ondelete='CASCADE'),
+        index=True,
+        nullable=True)
+    object = relationship(
+        Entity,
+        lazy='select',
+        backref=backref(
+            PERMISSIONS_ATTR,
+            lazy='select',
+            collection_class=set,
+            cascade='all, delete-orphan',
+            passive_deletes=True))
 
     def __hash__(self):
         return hash((self.permission, self.role, self.object))
@@ -288,8 +292,8 @@ class PermissionAssignment(db.Model):
         return ('<{cls} instance at 0x{id:x} '
                 'permission={self.permission.name!r} '
                 'role={self.role.name!r} object={self.object!r}>'
-                ''.format(cls=classname, id=id(self),
-                          self=self))
+                ''.format(
+                    cls=classname, id=id(self), self=self))
 
 
 def _postgres_indexes():
@@ -330,33 +334,36 @@ class SecurityAudit(db.Model):
     __table_args__ = (
         # constraint: either a inherit/no_inherit op on an object AND no user no group
         #             either a grant/revoke on a user XOR a group.
-        CheckConstraint("(op IN ('{grant}', '{revoke}') "
-                        " AND object_id IS NOT NULL"
-                        " AND user_id IS NULL "
-                        " AND group_id IS NULL "
-                        " AND (CAST(anonymous AS INTEGER) = 0)"
-                        ")"
-                        " OR "
-                        "(op NOT IN ('{grant}', '{revoke}')"
-                        " AND "
-                        " (((CAST(anonymous AS INTEGER) = 1) "
-                        "   AND user_id IS NULL AND group_id IS NULL)"
-                        "  OR "
-                        "  ((CAST(anonymous AS INTEGER) = 0) "
-                        "   AND ((user_id IS NOT NULL AND group_id IS NULL)"
-                        "  OR "
-                        "  (user_id IS NULL AND group_id IS NOT NULL)))"
-                        "))".format(grant=SET_INHERIT,
-                                    revoke=UNSET_INHERIT),
-                        name="securityaudit_ck_user_xor_group"),)
+        CheckConstraint(
+            "(op IN ('{grant}', '{revoke}') "
+            " AND object_id IS NOT NULL"
+            " AND user_id IS NULL "
+            " AND group_id IS NULL "
+            " AND (CAST(anonymous AS INTEGER) = 0)"
+            ")"
+            " OR "
+            "(op NOT IN ('{grant}', '{revoke}')"
+            " AND "
+            " (((CAST(anonymous AS INTEGER) = 1) "
+            "   AND user_id IS NULL AND group_id IS NULL)"
+            "  OR "
+            "  ((CAST(anonymous AS INTEGER) = 0) "
+            "   AND ((user_id IS NOT NULL AND group_id IS NULL)"
+            "  OR "
+            "  (user_id IS NULL AND group_id IS NOT NULL)))"
+            "))".format(
+                grant=SET_INHERIT, revoke=UNSET_INHERIT),
+            name="securityaudit_ck_user_xor_group"),)
 
     id = Column(Integer, primary_key=True)
     happened_at = Column(DateTime, default=datetime.utcnow, index=True)
-    op = Column(Enum(GRANT,
-                     REVOKE,
-                     SET_INHERIT,
-                     UNSET_INHERIT,
-                     name='securityaudit_enum_op'))
+    op = Column(
+        Enum(
+            GRANT,
+            REVOKE,
+            SET_INHERIT,
+            UNSET_INHERIT,
+            name='securityaudit_enum_op'))
     role = Column(RoleType)
 
     manager_id = Column(Integer, ForeignKey(User.id))
@@ -379,7 +386,5 @@ class InheritSecurity(object):
     """
     Mixin for objects with a parent relation and security inheritance.
     """
-    inherit_security = Column(Boolean,
-                              default=True,
-                              nullable=False,
-                              info={'auditable': False})
+    inherit_security = Column(
+        Boolean, default=True, nullable=False, info={'auditable': False})

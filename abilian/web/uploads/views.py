@@ -45,7 +45,8 @@ class NewUploadView(BaseUploadsView, JSONView):
     def data(self, *args, **kwargs):
         return {
             'handle': self.handle,
-            'url': url_for('.handle', handle=self.handle),
+            'url': url_for(
+                '.handle', handle=self.handle),
         }
 
     def post(self, *args, **kwargs):
@@ -57,10 +58,8 @@ class NewUploadView(BaseUploadsView, JSONView):
         uploaded = form['file'].data
         filename = secure_filename(uploaded.filename)
         mimetype = uploaded.mimetype
-        self.handle = self.uploads.add_file(self.user,
-                                            uploaded,
-                                            filename=filename,
-                                            mimetype=mimetype)
+        self.handle = self.uploads.add_file(
+            self.user, uploaded, filename=filename, mimetype=mimetype)
         return self.get(*args, **kwargs)
 
     def put(self, *args, **kwargs):
@@ -88,13 +87,14 @@ class UploadView(BaseUploadsView, View):
         content_type = metadata.get('mimetype')
         stream = file_obj.open('rb')
 
-        return send_file(stream,
-                         as_attachment=True,
-                         attachment_filename=filename,
-                         mimetype=content_type,
-                         cache_timeout=0,
-                         add_etags=False,
-                         conditional=False)
+        return send_file(
+            stream,
+            as_attachment=True,
+            attachment_filename=filename,
+            mimetype=content_type,
+            cache_timeout=0,
+            add_etags=False,
+            conditional=False)
 
     def delete(self, handle, *args, **kwargs):
         if self.uploads.get_file(self.user, handle) is None:

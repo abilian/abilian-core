@@ -51,11 +51,7 @@ class BaseObjectView(View):
     #: templates with a custom base
     base_template = "base.html"
 
-    def __init__(self,
-                 Model=None,
-                 pk=None,
-                 base_template=None,
-                 *args,
+    def __init__(self, Model=None, pk=None, base_template=None, *args,
                  **kwargs):
         View.__init__(self, *args, **kwargs)
         cls = self.__class__
@@ -180,10 +176,8 @@ CANCEL_BUTTON = ButtonAction(
     btn_class='default cancel'  # .cancel: if jquery.validate is used it will
 )  # properly skip validation
 
-EDIT_BUTTON = ButtonAction('form',
-                           'edit',
-                           btn_class='primary',
-                           title=_l(u'Save'))
+EDIT_BUTTON = ButtonAction(
+    'form', 'edit', btn_class='primary', title=_l(u'Save'))
 
 
 class ObjectEdit(ObjectView):
@@ -222,13 +216,8 @@ class ObjectEdit(ObjectView):
                  message_success=None,
                  *args,
                  **kwargs):
-        ObjectView.__init__(self,
-                            Model,
-                            pk,
-                            Form,
-                            template=template,
-                            *args,
-                            **kwargs)
+        ObjectView.__init__(
+            self, Model, pk, Form, template=template, *args, **kwargs)
         if view_endpoint is not None:
             self.view_endpoint = view_endpoint
 
@@ -286,8 +275,8 @@ class ObjectEdit(ObjectView):
                                      ''.format(action.encode('utf-8')))
                 break
         else:
-            raise ValueError('Unknown action: "{}"'.format(action.encode(
-                'utf-8')))
+            raise ValueError('Unknown action: "{}"'.format(
+                action.encode('utf-8')))
 
         self.action = action
         self.button = button
@@ -424,11 +413,12 @@ class ObjectEdit(ObjectView):
         return self.get()
 
     def send_activity(self):
-        activity.send(self,
-                      actor=g.user,
-                      verb=self.activity_verb,
-                      object=self.obj,
-                      target=self.activity_target)
+        activity.send(
+            self,
+            actor=g.user,
+            verb=self.activity_verb,
+            object=self.obj,
+            target=self.activity_target)
 
     @property
     def activity_target(self):
@@ -438,10 +428,8 @@ class ObjectEdit(ObjectView):
         return None
 
 
-CREATE_BUTTON = ButtonAction('form',
-                             'create',
-                             btn_class='primary',
-                             title=_l(u'Create'))
+CREATE_BUTTON = ButtonAction(
+    'form', 'create', btn_class='primary', title=_l(u'Create'))
 CHAIN_CREATE_BUTTON = ButtonAction(
     'form',
     'chain_create',
@@ -532,11 +520,12 @@ class ObjectDelete(ObjectEdit):
     def delete(self):
         session = current_app.db.session()
         session.delete(self.obj)
-        activity.send(self,
-                      actor=g.user,
-                      verb="delete",
-                      object=self.obj,
-                      target=self.activity_target)
+        activity.send(
+            self,
+            actor=g.user,
+            verb="delete",
+            object=self.obj,
+            target=self.activity_target)
         try:
             session.commit()
         except sa.exc.IntegrityError as e:

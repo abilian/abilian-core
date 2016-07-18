@@ -44,11 +44,8 @@ class _TagsForm(Form):
         if obj is not None:
             tags = getattr(obj, TAGS_ATTR, set())
 
-        super(_TagsForm, self).process(formdata=formdata,
-                                       obj=None,
-                                       data=data,
-                                       tags=tags,
-                                       **kwargs)
+        super(_TagsForm, self).process(
+            formdata=formdata, obj=None, data=data, tags=tags, **kwargs)
 
 
 class TagsExtension(object):

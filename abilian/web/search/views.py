@@ -20,10 +20,8 @@ from abilian.web.nav import BreadcrumbItem
 
 logger = logging.getLogger(__name__)
 
-BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(tagname='mark',
-                                                              classname='',
-                                                              termclass='term-',
-                                                              between='[…]')
+BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(
+    tagname='mark', classname='', termclass='term-', between='[…]')
 
 RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter()
 
@@ -33,10 +31,8 @@ RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter()
 PAGE_SIZE = 20
 MAX_LIVE_RESULTS_PER_CLASS = 5
 
-search = Blueprint('search',
-                   __name__,
-                   url_prefix="/search",
-                   template_folder='templates')
+search = Blueprint(
+    'search', __name__, url_prefix="/search", template_folder='templates')
 route = search.route
 
 
@@ -52,25 +48,29 @@ def init_search(endpoint, values):
     except:
         page = 1
 
-    g.breadcrumb.append(BreadcrumbItem(label='"{}"'.format(q),
-                                       icon="search",
-                                       url=Endpoint('search.search_main',
-                                                    q=q)))
+    g.breadcrumb.append(
+        BreadcrumbItem(
+            label='"{}"'.format(q),
+            icon="search",
+            url=Endpoint(
+                'search.search_main', q=q)))
 
     page_kw = OrderedDict(q=q)
     object_types = request.args.getlist('object_type')
 
     if object_types:
         page_kw['object_type'] = object_types
-        g.breadcrumb.append(BreadcrumbItem(
-            label=' | '.join(friendly_fqcn(name) for name in object_types),
-            url=Endpoint('search.search_main', **page_kw)))
+        g.breadcrumb.append(
+            BreadcrumbItem(
+                label=' | '.join(friendly_fqcn(name) for name in object_types),
+                url=Endpoint('search.search_main', **page_kw)))
 
     if page > 1:
-        g.breadcrumb.append(BreadcrumbItem(label=text_type(page),
-                                           url=Endpoint('search.search_main',
-                                                        page=page,
-                                                        **page_kw)))
+        g.breadcrumb.append(
+            BreadcrumbItem(
+                label=text_type(page),
+                url=Endpoint(
+                    'search.search_main', page=page, **page_kw)))
 
     values['q'] = q
     values['page'] = page
@@ -151,19 +151,20 @@ def search_main(q='', page=1):
     next_pages_numbered = [(index, page_url(page=index))
                            for index in range(page_min, page_max + 1)]
 
-    return render_template('search/search.html',
-                           q=q,
-                           results=results,
-                           results_count=results_count,
-                           pagecount=pagecount,
-                           filtered_by_type=filtered_by_type,
-                           by_object_type=by_object_type,
-                           prev_page=prev_page,
-                           next_page=next_page,
-                           first_page=first_page,
-                           last_page=last_page,
-                           next_pages_numbered=next_pages_numbered,
-                           friendly_fqcn=friendly_fqcn,)
+    return render_template(
+        'search/search.html',
+        q=q,
+        results=results,
+        results_count=results_count,
+        pagecount=pagecount,
+        filtered_by_type=filtered_by_type,
+        by_object_type=by_object_type,
+        prev_page=prev_page,
+        next_page=next_page,
+        first_page=first_page,
+        last_page=last_page,
+        next_pages_numbered=next_pages_numbered,
+        friendly_fqcn=friendly_fqcn,)
 
 
 class Live(views.JSONView):

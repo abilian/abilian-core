@@ -21,11 +21,11 @@ class UsersPanel(AdminPanel):
     icon = 'user'
 
     def install_additional_rules(self, add_url_rule):
-        add_url_rule('/users',
-                     view_func=views.JsonUsersList.as_view(b'json_list'))
+        add_url_rule(
+            '/users', view_func=views.JsonUsersList.as_view(b'json_list'))
         add_url_rule('/new', view_func=views.UserCreate.as_view(b'new'))
-        add_url_rule('/<int:user_id>',
-                     view_func=views.UserEdit.as_view(b'user'))
+        add_url_rule(
+            '/<int:user_id>', view_func=views.UserEdit.as_view(b'user'))
 
     def get(self):
         # FIXME: use widgets.AjaxMainTableView instead
@@ -62,6 +62,5 @@ class UsersPanel(AdminPanel):
             'sAjaxSource': url_for('.users_json_list'),
         }
 
-        return render_template('admin/users.html',
-                               next=next,
-                               datatable_options=datatable_options)
+        return render_template(
+            'admin/users.html', next=next, datatable_options=datatable_options)

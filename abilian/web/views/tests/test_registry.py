@@ -66,8 +66,8 @@ class TestRegistry(FlaskTestCase):
     def test_default_url_func(self):
         obj = RegEntity(id=1)
 
-        @self.app.route('/regentities_path/<int:object_id>/view',
-                        endpoint='regentity.view')
+        @self.app.route(
+            '/regentities_path/<int:object_id>/view', endpoint='regentity.view')
         def dummy_default_view(object_id):
             pass
 
@@ -75,7 +75,8 @@ class TestRegistry(FlaskTestCase):
             self.app.default_view.url_for(obj), '/regentities_path/1/view')
 
         self.assertEqual(
-            self.app.default_view.url_for(obj, _external=True),
+            self.app.default_view.url_for(
+                obj, _external=True),
             'http://localhost/regentities_path/1/view')
 
     def test_default_view_decorator(self):
@@ -94,5 +95,6 @@ class TestRegistry(FlaskTestCase):
         self.app.register_blueprint(bp)
         self.assertEqual(self.app.default_view.url_for(obj), '/blueprint/1')
         self.assertEqual(
-            self.app.default_view.url_for(obj, _external=True),
+            self.app.default_view.url_for(
+                obj, _external=True),
             'http://localhost/blueprint/1')

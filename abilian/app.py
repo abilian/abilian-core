@@ -250,19 +250,21 @@ class Application(Flask, ServiceManager, PluginManager):
         self.config['BABEL_ACCEPT_LANGUAGES'] = languages
 
         self._jinja_loaders = list()
-        self.register_jinja_loaders(jinja2.PackageLoader('abilian.web',
-                                                         'templates'))
+        self.register_jinja_loaders(
+            jinja2.PackageLoader('abilian.web', 'templates'))
 
         js_filters = (('closure_js',)
                       if self.config.get('PRODUCTION', False) else None)
 
         self._assets_bundles = {
-            'css': {'options': dict(filters=('less', 'cssmin'),
-                                    output='style-%(version)s.min.css',)},
-            'js-top': {'options': dict(output='top-%(version)s.min.js',
-                                       filters=js_filters,)},
-            'js': {'options': dict(output='app-%(version)s.min.js',
-                                   filters=js_filters)},
+            'css': {'options': dict(
+                filters=('less', 'cssmin'),
+                output='style-%(version)s.min.css',)},
+            'js-top': {'options': dict(
+                output='top-%(version)s.min.js',
+                filters=js_filters,)},
+            'js': {'options': dict(
+                output='app-%(version)s.min.js', filters=js_filters)},
         }
 
         # bundles for JS translations
@@ -270,8 +272,8 @@ class Application(Flask, ServiceManager, PluginManager):
             code = 'js-i18n-' + lang
             filename = 'lang-' + lang + '-%(version)s.min.js'
             self._assets_bundles[code] = {
-                'options': dict(output=filename,
-                                filters=js_filters),
+                'options': dict(
+                    output=filename, filters=js_filters),
             }
 
         for http_error_code in (403, 404, 500):
@@ -280,17 +282,17 @@ class Application(Flask, ServiceManager, PluginManager):
         with self.app_context():
             self.init_extensions()
             self.register_plugins()
-            self.add_access_controller('static',
-                                       allow_access_for_roles(Anonymous),
-                                       endpoint=True)
+            self.add_access_controller(
+                'static', allow_access_for_roles(Anonymous), endpoint=True)
             # debugtoolbar: this is needed to have it when not authenticated on a
             # private site. We cannot do this in init_debug_toolbar, since auth
             # service is not yet installed
             self.add_access_controller('debugtoolbar',
                                        allow_access_for_roles(Anonymous),)
-            self.add_access_controller('_debug_toolbar.static',
-                                       allow_access_for_roles(Anonymous),
-                                       endpoint=True)
+            self.add_access_controller(
+                '_debug_toolbar.static',
+                allow_access_for_roles(Anonymous),
+                endpoint=True)
 
         self.maybe_register_setup_wizard()
         self._finalize_assets_setup()
@@ -368,8 +370,9 @@ class Application(Flask, ServiceManager, PluginManager):
         This happens during `request_started` event, which is triggered before any
         url_value_preprocessor and `before_request` handlers.
         """
-        g.breadcrumb.append(BreadcrumbItem(icon='home',
-                                           url='/' + request.script_root))
+        g.breadcrumb.append(
+            BreadcrumbItem(
+                icon='home', url='/' + request.script_root))
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary permissions.
@@ -443,15 +446,15 @@ class Application(Flask, ServiceManager, PluginManager):
 
         logging_file = self.config.get('LOGGING_CONFIG_FILE')
         if logging_file:
-            logging_file = os.path.abspath(os.path.join(self.instance_path,
-                                                        logging_file))
+            logging_file = os.path.abspath(
+                os.path.join(self.instance_path, logging_file))
         else:
             logging_file = resource_filename(__name__, 'default_logging.yml')
 
         if logging_file.endswith('.conf'):
             # old standard 'ini' file config
-            logging.config.fileConfig(logging_file,
-                                      disable_existing_loggers=False)
+            logging.config.fileConfig(
+                logging_file, disable_existing_loggers=False)
         elif logging_file.endswith('.yml'):
             # yml config file
             logging_cfg = yaml.load(open(logging_file, 'r'))
@@ -512,9 +515,8 @@ class Application(Flask, ServiceManager, PluginManager):
         babel.timezone_selector_func = None
 
         babel.init_app(self)
-        babel.add_translations('wtforms',
-                               translations_dir='locale',
-                               domain='wtforms')
+        babel.add_translations(
+            'wtforms', translations_dir='locale', domain='wtforms')
         babel.add_translations('abilian')
         babel.localeselector(abilian.i18n.localeselector)
         babel.timezoneselector(abilian.i18n.timezoneselector)
@@ -605,9 +607,8 @@ class Application(Flask, ServiceManager, PluginManager):
                                               **options)
 
         if roles:
-            self.add_access_controller(endpoint,
-                                       allow_access_for_roles(roles),
-                                       endpoint=True)
+            self.add_access_controller(
+                endpoint, allow_access_for_roles(roles), endpoint=True)
 
     def add_access_controller(self, name, func, endpoint=False):
         """Add an access controller.
@@ -644,29 +645,30 @@ class Application(Flask, ServiceManager, PluginManager):
         `/path/to/myplugin/resources` from url `http://.../static/myplugin`
         """
         url_path = self.static_url_path + '/' + url_path + '/<path:filename>'
-        self.add_url_rule(url_path,
-                          endpoint=endpoint,
-                          view_func=partial(send_file_from_directory,
-                                            directory=directory),
-                          roles=roles)
-        self.add_access_controller(endpoint,
-                                   allow_access_for_roles(Anonymous),
-                                   endpoint=True)
+        self.add_url_rule(
+            url_path,
+            endpoint=endpoint,
+            view_func=partial(
+                send_file_from_directory, directory=directory),
+            roles=roles)
+        self.add_access_controller(
+            endpoint, allow_access_for_roles(Anonymous), endpoint=True)
 
     #
     # Templating and context injection setup
     #
     def create_jinja_environment(self):
         env = Flask.create_jinja_environment(self)
-        env.globals.update(app=current_app,
-                           csrf=csrf,
-                           get_locale=babel_get_locale,
-                           local_dt=abilian.core.util.local_dt,
-                           _n=abilian.i18n._n,
-                           url_for=url_for,
-                           user_photo_url=user_photo_url,
-                           NO_VALUE=NO_VALUE,
-                           NEVER_SET=NEVER_SET,)
+        env.globals.update(
+            app=current_app,
+            csrf=csrf,
+            get_locale=babel_get_locale,
+            local_dt=abilian.core.util.local_dt,
+            _n=abilian.i18n._n,
+            url_for=url_for,
+            user_photo_url=user_photo_url,
+            NO_VALUE=NO_VALUE,
+            NEVER_SET=NEVER_SET,)
         init_filters(env)
         return env
 
@@ -815,10 +817,11 @@ class Application(Flask, ServiceManager, PluginManager):
 
         db.create_all()
         if User.query.get(0) is None:
-            root = User(id=0,
-                        last_name='SYSTEM',
-                        email='system@example.com',
-                        can_login=False)
+            root = User(
+                id=0,
+                last_name='SYSTEM',
+                email='system@example.com',
+                can_login=False)
             db.session.add(root)
             db.session.commit()
 
@@ -858,10 +861,11 @@ class Application(Flask, ServiceManager, PluginManager):
         # static minified are here
         assets.url = self.static_url_path + '/min'
         assets.append_path(str(assets_dir), assets.url)
-        self.add_static_url('min',
-                            str(assets_dir),
-                            endpoint='webassets_static',
-                            roles=Anonymous,)
+        self.add_static_url(
+            'min',
+            str(assets_dir),
+            endpoint='webassets_static',
+            roles=Anonymous,)
 
     def _finalize_assets_setup(self):
         assets = self.extensions['webassets']

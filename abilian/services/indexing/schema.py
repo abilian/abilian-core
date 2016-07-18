@@ -45,10 +45,8 @@ class _DefaultSearchSchema(SchemaClass):
     tag_text = TEXT(stored=False, analyzer=accent_folder)
 
     # hierarchical index of ids path ('/' is the separator)
-    parent_ids = FieldType(format=Existence(),
-                           analyzer=PathTokenizer(),
-                           stored=True,
-                           unique=False)
+    parent_ids = FieldType(
+        format=Existence(), analyzer=PathTokenizer(), stored=True, unique=False)
 
     name = TEXT(stored=True, analyzer=accent_folder)
     slug = ID(stored=True)
@@ -58,7 +56,8 @@ class _DefaultSearchSchema(SchemaClass):
 
 _default_dyn_fields = {
     '*_prefix': EdgeNgramField(),
-    '*_at': DATETIME(stored=True, sortable=True),
+    '*_at': DATETIME(
+        stored=True, sortable=True),
 }
 
 

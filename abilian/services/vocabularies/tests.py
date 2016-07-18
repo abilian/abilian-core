@@ -27,9 +27,8 @@ class TestVocabularies(BaseTestCase):
         assert issubclass(PriorityVoc, BaseVocabulary)
 
         StateVoc = self.DefaultVoc
-        DocCatVoc = Vocabulary(b'categories',
-                               group='documents',
-                               label='Categories')
+        DocCatVoc = Vocabulary(
+            b'categories', group='documents', label='Categories')
 
         # test registered vocabularies
         assert vocabularies.vocabularies == {PriorityVoc, StateVoc, DocCatVoc}
