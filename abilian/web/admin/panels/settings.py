@@ -1,13 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from datetime import timedelta
 
-from flask import (current_app, flash, redirect, render_template, request,
-                   url_for)
+from flask import current_app, flash, redirect, render_template, request, \
+    url_for
 from flask_babel import gettext as _
 from flask_babel import lazy_gettext as _l
 from jinja2 import Template

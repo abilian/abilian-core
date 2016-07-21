@@ -13,8 +13,8 @@ your entry point before anything has been imported:
  logging.getLogger('PATCH').setLevel(logging.INFO)
 
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import logging
 

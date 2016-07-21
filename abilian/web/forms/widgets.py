@@ -4,8 +4,8 @@ Reusable widgets to be included in views.
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import base64
 import cgi
@@ -17,8 +17,8 @@ from datetime import datetime
 import bleach
 import sqlalchemy as sa
 import wtforms
-from flask import (Markup, current_app, g, json, render_template,
-                   render_template_string)
+from flask import Markup, current_app, g, json, render_template, \
+    render_template_string
 from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField

@@ -11,8 +11,8 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :copyright: (c) 2012 by Karl Gyllstrom
 :license: BSD (see LICENSE.txt)
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import logging
 import os

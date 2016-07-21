@@ -1,8 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from datetime import datetime
 from functools import total_ordering
@@ -10,10 +10,10 @@ from functools import total_ordering
 from six import text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy.schema import (CheckConstraint, Column, ForeignKey, Index,
-                               UniqueConstraint)
-from sqlalchemy.types import (Boolean, DateTime, Enum, Integer, String,
-                              UnicodeText)
+from sqlalchemy.schema import CheckConstraint, Column, ForeignKey, Index, \
+    UniqueConstraint
+from sqlalchemy.types import Boolean, DateTime, Enum, Integer, String, \
+    UnicodeText
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db

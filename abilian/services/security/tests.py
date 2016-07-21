@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import unittest
 
@@ -11,9 +11,9 @@ from abilian.core.extensions import db
 from abilian.core.models.subjects import Group, User
 from abilian.testing import BaseTestCase
 
-from . import (READ, WRITE, Admin, Anonymous, Authenticated, Creator,
-               InheritSecurity, Owner, Permission, PermissionAssignment, Reader,
-               Role, RoleAssignment, SecurityAudit, Writer, security)
+from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
+    InheritSecurity, Owner, Permission, PermissionAssignment, Reader, Role, \
+    RoleAssignment, SecurityAudit, Writer, security
 
 TEST_EMAIL = u"joe@example.com"
 TEST_PASSWORD = "tototiti"

@@ -1,8 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from datetime import datetime
 from unittest import TestCase
@@ -10,8 +10,8 @@ from unittest import TestCase
 import sqlalchemy as sa
 
 from abilian.core.entities import Entity
-from abilian.core.models.base import (AUDITABLE, NOT_SEARCHABLE, SEARCHABLE,
-                                      Info)
+from abilian.core.models.base import AUDITABLE, NOT_SEARCHABLE, SEARCHABLE, \
+    Info
 from abilian.core.models.subjects import User
 from abilian.services import security
 from abilian.testing import BaseTestCase as AbilianTestCase

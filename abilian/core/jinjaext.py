@@ -2,8 +2,8 @@
 """
 Jinja2 extensions
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from functools import partial
 
@@ -14,6 +14,7 @@ from flask.signals import got_request_exception, request_started
 from jinja2 import nodes
 from jinja2.ext import Extension
 from werkzeug.local import LocalProxy
+
 
 deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
 

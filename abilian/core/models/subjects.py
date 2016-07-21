@@ -7,8 +7,8 @@ See ICOM-ics-v1.0 "Subject Branch".
 TODO: I'm not a big fan of the "subject" name. Could be replaced by something
 else, like "people" or "principal" ?
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import random
 import string
@@ -23,8 +23,8 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
-from sqlalchemy.types import (Boolean, DateTime, Integer, LargeBinary,
-                              UnicodeText)
+from sqlalchemy.types import Boolean, DateTime, Integer, LargeBinary, \
+    UnicodeText
 
 from abilian.core import sqlalchemy as sa_types
 

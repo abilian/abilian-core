@@ -5,19 +5,19 @@ Login-related views (login / logout / password reminder / ...).
 Notes:
 - Uses code copy/pasted (and modified) from Flask-Security
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import random
 import string
 from datetime import datetime
 
-from flask import (current_app, flash, redirect, render_template, request,
-                   url_for)
+from flask import current_app, flash, redirect, render_template, request, \
+    url_for
 from flask.globals import _request_ctx_stack
 from flask.json import jsonify
-from flask_login import (login_user, logout_user, user_logged_in,
-                         user_logged_out)
+from flask_login import login_user, logout_user, user_logged_in, \
+    user_logged_out
 from flask_mail import Message
 from flask_security.utils import md5
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer

@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import logging
 from datetime import datetime, timedelta
 
 from flask import current_app, g, redirect, request, url_for
 from flask_babel import lazy_gettext as _l
-from flask_login import (current_user, login_user, user_logged_in,
-                         user_logged_out)
+from flask_login import current_user, login_user, user_logged_in, \
+    user_logged_out
 from werkzeug.exceptions import Forbidden
 
 from abilian.core.extensions import db, login_manager

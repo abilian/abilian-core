@@ -1,8 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from abilian.core.models.tag import TAGS_ATTR, Tag, is_support_tagging
 from abilian.i18n import _l

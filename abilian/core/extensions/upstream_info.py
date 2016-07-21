@@ -2,8 +2,8 @@
 """
 Extension for sending informations to upstream server
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from flask import _request_ctx_stack
 from flask.signals import request_finished, request_started

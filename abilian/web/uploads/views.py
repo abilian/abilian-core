@@ -1,8 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from flask import current_app, jsonify, send_file
 from flask_login import current_user

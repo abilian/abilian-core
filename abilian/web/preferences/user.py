@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import imghdr
 from io import BytesIO
 
 import babel
 import PIL.Image
-from flask import (current_app, flash, g, redirect, render_template, request,
-                   url_for)
+from flask import current_app, flash, g, redirect, render_template, request, \
+    url_for
 from werkzeug.exceptions import InternalServerError
 from wtforms.fields import StringField
 from wtforms.validators import ValidationError

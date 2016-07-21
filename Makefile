@@ -119,4 +119,6 @@ release:
 format:
 	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
 		-rc abilian tests *.py
-	yapf --style google -r -i abilian tests *.py
+	-yapf --style google -r -i abilian tests *.py
+	isort -rc abilian tests *.py
+

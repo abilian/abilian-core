@@ -1,5 +1,5 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 # TODO: most of this is currently only stubs and needs to be implemented.
 #
@@ -8,9 +8,9 @@ from __future__ import (absolute_import, division, print_function,
 # NOTE: the `rule` property is supposed to be useful for generating client-side
 # validation code.
 from wtforms.compat import string_types
-from wtforms.validators import (
-    URL, UUID, AnyOf, DataRequired, Email, EqualTo, IPAddress, MacAddress,
-    NoneOf, NumberRange, Optional, Regexp, StopValidation, ValidationError)
+from wtforms.validators import URL, UUID, AnyOf, DataRequired, Email, \
+    EqualTo, IPAddress, MacAddress, NoneOf, NumberRange, Optional, Regexp, \
+    StopValidation, ValidationError
 
 from abilian.i18n import _, _n
 from abilian.services import get_service

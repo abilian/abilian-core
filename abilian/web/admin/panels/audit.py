@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from datetime import datetime
 from itertools import chain
 
 import pytz
 import sqlalchemy as sa
-from flask import (get_template_attribute, render_template,
-                   render_template_string, request)
+from flask import get_template_attribute, render_template, \
+    render_template_string, request
 from flask_babel import format_date, get_locale
 from markupsafe import Markup
 from sqlalchemy.orm.attributes import NO_VALUE

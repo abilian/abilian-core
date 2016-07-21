@@ -1,8 +1,8 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import datetime
 import logging
@@ -19,12 +19,12 @@ from flask_wtf.file import FileField as BaseFileField
 from six import string_types
 from wtforms import FieldList as BaseFieldList
 from wtforms import FormField as BaseFormField
-from wtforms import (Field, SelectField, SelectFieldBase, SelectMultipleField,
-                     ValidationError)
+from wtforms import Field, SelectField, SelectFieldBase, SelectMultipleField, \
+    ValidationError
 from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
-from wtforms.ext.sqlalchemy.fields import (get_pk_from_identity,
-                                           has_identity_key)
+from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, \
+    has_identity_key
 from wtforms.validators import DataRequired, Optional
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 from wtforms_alchemy import ModelFormField as BaseModelFormField

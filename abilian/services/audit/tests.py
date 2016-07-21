@@ -1,16 +1,16 @@
 # coding=utf-8
 """
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import datetime
 from itertools import count
 
 import sqlalchemy as sa
 from six import text_type
-from sqlalchemy import (Column, Date, ForeignKey, Integer, Text, Unicode,
-                        UnicodeText)
+from sqlalchemy import Column, Date, ForeignKey, Integer, Text, Unicode, \
+    UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm.attributes import NEVER_SET

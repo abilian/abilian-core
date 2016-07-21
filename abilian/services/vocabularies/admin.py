@@ -2,8 +2,8 @@
 """
 Admin panel for vocabularies
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from flask import current_app, g, redirect, render_template, request
 
