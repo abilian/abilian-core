@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function, \
 import hashlib
 import uuid
 
+import six
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
 from six import text_type

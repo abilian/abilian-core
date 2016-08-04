@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from datetime import datetime
 from unittest import TestCase
 
+import six
 import sqlalchemy as sa
 from whoosh.fields import NUMERIC, TEXT, Schema
 
@@ -80,7 +81,7 @@ class TestSAAdapter(TestCase):
             'tag_text',
         }
         assert all(lambda f: callable(f)
-                   for f in adapter.doc_attrs.itervalues())
+                   for f in six.itervalues(adapter.doc_attrs))
 
         assert set(schema.names()) == {
             'object_key',
@@ -108,7 +109,7 @@ class TestSAAdapter(TestCase):
         assert adapter.indexable
         assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
         assert all(lambda f: callable(f)
-                   for f in adapter.doc_attrs.itervalues())
+                   for f in six.itervalues(adapter.doc_attrs))
 
         assert set(schema.names()) == {'id', 'text', 'num', 'name'}
         assert isinstance(schema['text'], TEXT)

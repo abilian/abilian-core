@@ -29,6 +29,7 @@ from io import BytesIO
 from pathlib import Path
 from tempfile import mkstemp
 
+import six
 from magic import Magic
 from PIL import Image
 from PIL.ExifTags import TAGS
@@ -157,7 +158,7 @@ class Converter(object):
     def to_text(self, digest, blob, mime_type):
         """Convert a file to plain text.
 
-        Useful for full-text indexing. Returns an unicode string.
+        Useful for full-text indexing. Returns a Unicode string.
         """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):

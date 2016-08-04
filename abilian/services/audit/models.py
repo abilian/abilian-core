@@ -14,6 +14,7 @@ from __future__ import absolute_import, division, print_function, \
 import pickle
 from datetime import datetime
 
+import six
 from flask import current_app
 from six import text_type
 from sqlalchemy.orm import relationship
@@ -153,12 +154,13 @@ class AuditEntry(db.Model):
             else:
                 for val in v:
                     if isinstance(val, str):
-                        # TODO: Temp fix for errors that happen during migration
+                        # TODO: Temp fix for errors that happen during
+                        # migration
                         try:
                             val = val.decode('utf-8')
                         except:
                             current_app.logger.error(
-                                "A unicode error happened on changes %s",
+                                "A Unicode error happened on changes %s",
                                 repr(changes))
                             val = u"[[Somme error occurred. Working on it]]"
                     uv.append(val)

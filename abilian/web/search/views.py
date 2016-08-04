@@ -8,6 +8,7 @@ import logging
 from collections import OrderedDict
 from functools import partial
 
+import six
 import whoosh
 import whoosh.sorting
 from flask import Blueprint, current_app, g, render_template, request, url_for
@@ -180,7 +181,7 @@ class Live(views.JSONView):
         results = svc.search(q, **search_kwargs)
         datasets = {}
 
-        for typename, docs in results.iteritems():
+        for typename, docs in six.iteritems(results):
             dataset = []
             for doc in docs:
                 d = dict(name=doc['name'])

@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from datetime import datetime, timedelta
 
 import pandas as pd
+import six
 import sqlalchemy as sa
 from flask import current_app, render_template
 from numpy import sum as numpysum
@@ -181,11 +182,11 @@ def uniquelogins(sessions):
         .groupby(pd.TimeGrouper(freq='M')) \
         .aggregate(numpysum)
 
-    for date, value in weekly_serie.iteritems():
+    for date, value in six.iteritems(weekly_serie):
         date_epoch = unix_time_millis(date)
         weekly.append({u'x': date_epoch, u'y': value})
 
-    for date, value in monthly_serie.iteritems():
+    for date, value in six.iteritems(monthly_serie):
         date_epoch = unix_time_millis(date)
         monthly.append({u'x': date_epoch, u'y': value})
 

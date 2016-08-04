@@ -10,6 +10,7 @@ import operator
 from functools import partial
 
 import babel
+import six
 import sqlalchemy as sa
 from flask import current_app
 from flask.helpers import locked_cached_property
@@ -443,7 +444,7 @@ class QuerySelect2Field(SelectFieldBase):
 
     This field only works for queries on models whose primary key column(s)
     have a consistent string representation. This means it mostly only works
-    for those composed of string, unicode, and integer types. For the most
+    for those composed of string and integer types. For the most
     part, the primary keys will be auto-detected from the model, alternately
     pass a one-argument callable to `get_pk` which can return a unique
     comparable key.
@@ -603,7 +604,7 @@ class JsonSelect2Field(SelectFieldBase):
 
     This field only works for queries on models whose primary key column(s)
     have a consistent string representation. This means it mostly only works
-    for those composed of string, unicode, and integer types. For the most
+    for those composed of string and integer types. For the most
     part, the primary keys will be auto-detected from the model, alternately
     pass a one-argument callable to `get_pk` which can return a unique
     comparable key.

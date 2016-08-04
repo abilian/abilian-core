@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 import json
 from datetime import timedelta
 
+import six
 import sqlalchemy as sa
 from six import text_type
 
@@ -59,7 +60,7 @@ class Setting(db.Model):
     """A Setting is a very simple key/value object, key being a string
     identifier and the primary key.
 
-    value must be stored as unicode.
+    value must be stored as Unicode.
     """
     transformers = _transformers
     key = sa.Column('key', sa.String(length=1000), primary_key=True)

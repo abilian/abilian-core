@@ -8,6 +8,7 @@ import logging
 import os
 
 import pathlib
+import six
 
 from abilian.core.models.blob import Blob
 from ..base import Service
@@ -86,7 +87,7 @@ class AntiVirusService(Service):
         if isinstance(file_or_stream, Blob):
             # py3 compat: bytes == py2 str(). Pathlib uses os.fsencode()
             file_or_stream = bytes(file_or_stream.file)
-        elif isinstance(file_or_stream, unicode):
+        elif isinstance(file_or_stream, six.text_type):
             file_or_stream = file_or_stream.encode(os.fsencode)
 
         if isinstance(file_or_stream, bytes):

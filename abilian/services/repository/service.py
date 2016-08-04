@@ -9,6 +9,7 @@ import weakref
 from pathlib import Path
 from uuid import UUID, uuid1
 
+import six
 import sqlalchemy as sa
 from flask import _app_ctx_stack, current_app
 from flask.globals import _lookup_app_object
@@ -86,7 +87,7 @@ class RepositoryService(Service):
 
         :param:uuid: :class:`UUID` instance
         :param:content: string, bytes, or any object with a `read()` method
-        :param:encoding: encoding to use when content is unicode
+        :param:encoding: encoding to use when content is Unicode
         """
         dest = self.abs_path(uuid)
         if not dest.parent.exists():

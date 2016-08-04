@@ -14,6 +14,7 @@ import redis
 
 from flask import (render_template, request, flash, session, redirect, url_for,
                    current_app, make_response)
+import six
 from six import text_type
 
 from abilian.services import get_service
@@ -36,7 +37,7 @@ _dialects = OrderedDict((('sqlite', u'SQLite (for demo)'),
 
 _dialects_unavailable = OrderedDict()
 
-for dialect, label in _dialects.iteritems():
+for dialect, label in six.iteritems(_dialects):
     d = sa.dialects.registry.load(dialect)
     try:
         d.dbapi()
@@ -287,7 +288,7 @@ def get_possible_hostnames():
             names.setdefault(a, []).extend(ips)
 
     return sorted(u'{} ({})'.format(name, u', '.join(sorted(set(ips))))
-                  for name, ips in names.iteritems())
+                  for name, ips in six.iteritems(names))
 
 
 def step_site_info_form():
