@@ -125,6 +125,9 @@ class Blob(Model):
         """
         return self.file is not None and self.file.exists()
 
+    # Py3k compat
+    __bool__ = __nonzero__
+
 
 @listens_for(sa.orm.Session, 'after_flush')
 def _blob_propagate_delete_content(session, flush_context):
