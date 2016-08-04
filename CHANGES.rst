@@ -1,6 +1,13 @@
 Changelog for Abilian Core
 ==========================
 
+0.7.8 (not yet released)
+------------------------
+
+- Use `brypt` library instead of `py-bcrypt`.
+- Work on Py3k compatibility (not done yet)
+- Update dependencies.
+
 0.7.7 (2016-07-13)
 ------------------
 

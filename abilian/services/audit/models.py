@@ -81,6 +81,9 @@ class Changes(object):
     def __nonzero__(self):
         return bool(self.columns) or bool(self.collections)
 
+    # Py3k compat
+    __bool__ = __nonzero__
+
 
 class AuditEntry(db.Model):
     """
