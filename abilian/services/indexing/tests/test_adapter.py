@@ -143,7 +143,7 @@ class DocumentTestCase(AppTestCase):
         adapter = SAAdapter(Indexable, schema)
         expected = dict(id=1, num=42)
         obj = Indexable(**expected)
-        obj.related = type(b'Related', (object,), dict(name=None))()
+        obj.related = type(str('Related'), (object,), dict(name=None))()
         expected['name'] = obj.related.name = u'related name'
         obj.related.description = u'description text'
         expected['text'] = obj.related.name + u' ' + obj.related.description

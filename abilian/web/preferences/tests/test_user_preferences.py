@@ -43,5 +43,6 @@ class TestUserPreferences(BaseTestCase):
             form = UserPreferencesForm(request.form)
             form.validate()
             assert form.photo.data is not None
+
             img_type = imghdr.what('ignored', form.photo.data)
             assert img_type == 'jpeg'
