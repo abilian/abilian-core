@@ -456,14 +456,15 @@ class RepositoryTransaction(object):
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 
-        mode = 'tw'
-        if not isinstance(content, text_type):
+        if isinstance(content, bytes):
             mode = 'bw'
             encoding = None
+        else:
+            mode = 'tw'
 
         dest = self.path / str(uuid)
         with dest.open(mode, encoding=encoding) as f:
-            if not isinstance(content, string_types):
+            if hasattr(content, 'read'):
                 content = content.read()
             f.write(content)
 

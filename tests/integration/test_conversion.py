@@ -71,7 +71,7 @@ class Test(TestCase):
     def test_image_to_pdf(self):
         blob = self.read_file("picture.jpg")
         pdf = converter.to_pdf("", blob, "image/jpeg")
-        assert b"application/pdf" == mime_sniffer.from_buffer(pdf)
+        assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
     # To images
     def test_pdf_to_images(self):
@@ -80,7 +80,7 @@ class Test(TestCase):
             return
         blob = self.read_file("onepage.pdf")
         image = converter.to_image("", blob, "application/pdf", 0)
-        assert b"image/jpeg" == mime_sniffer.from_buffer(image)
+        assert "image/jpeg" == mime_sniffer.from_buffer(image)
 
     def XXXtest_word_to_images(self):
         blob = self.read_file("test.doc")
