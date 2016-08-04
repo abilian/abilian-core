@@ -4,7 +4,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from six import text_type, with_metaclass
+from six import text_type, with_metaclass, python_2_unicode_compatible
 from sqlalchemy.types import String, TypeDecorator
 
 
@@ -22,11 +22,14 @@ class ValueSingletonMeta(type):
 
         if value not in cls.__instances__:
             value_instance = type.__call__(cls, value, *args, **kwargs)
+            print(value, getattr(value_instance, cls.attr))
             cls.__instances__[getattr(value_instance,
                                       cls.attr)] = value_instance
-        return cls.__instances__[value]
+        print(cls.__instances__)
+        return cls.__instances__[value.lower()]
 
 
+@python_2_unicode_compatible
 class UniqueName(with_metaclass(ValueSingletonMeta, object)):
     """Base class to create singletons from strings.
 
@@ -47,11 +50,8 @@ class UniqueName(with_metaclass(ValueSingletonMeta, object)):
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, repr(self.name))
 
-    def __unicode__(self):
-        return self.name
-
     def __str__(self):
-        return self.name.encode(u'utf-8')
+        return self.name
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):

@@ -8,7 +8,7 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
-from six import text_type
+from six import text_type, python_2_unicode_compatible
 from sqlalchemy import Column, Date, ForeignKey, Integer, Text, Unicode, \
     UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
@@ -23,11 +23,12 @@ from abilian.testing import BaseTestCase
 from . import CREATION, DELETION, UPDATE, AuditEntry, audit_service
 
 
+@python_2_unicode_compatible
 class IntegerCollection(db.Model):
     __tablename__ = 'integer_collection'
     id = Column(Integer, primary_key=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return text_type(self.id)
 
 

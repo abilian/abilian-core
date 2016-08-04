@@ -5,6 +5,7 @@ from __future__ import absolute_import, print_function, division
 from datetime import datetime
 import json
 
+from six import python_2_unicode_compatible
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.ext.declarative import declared_attr
 
@@ -15,6 +16,7 @@ from .base import (Model, IdMixin, TimestampedMixin, EDITABLE, NOT_EDITABLE,
 from .owned import OwnedMixin
 
 
+@python_2_unicode_compatible
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
     @declared_attr
@@ -62,5 +64,5 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
         else:
             raise NotImplementedError()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name

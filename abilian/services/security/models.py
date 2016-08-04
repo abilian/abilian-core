@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from datetime import datetime
 from functools import total_ordering
 
-from six import text_type
+from six import text_type, python_2_unicode_compatible
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import CheckConstraint, Column, ForeignKey, Index, \
@@ -28,6 +28,7 @@ __all__ = ['RoleAssignment', 'PermissionAssignment', 'SecurityAudit',
 
 
 @total_ordering
+@python_2_unicode_compatible
 class Permission(UniqueName):
     """
     Defines permission by name. Permission instances are unique by name.
@@ -42,11 +43,11 @@ class Permission(UniqueName):
             label = _l(label)
         self.label = label
 
-    def __unicode__(self):
-        return text_type(self.label)
+    def __str__(self):
+        return text_type(self.name)
 
     def __lt__(self, other):
-        return text_type(self).__lt__(text_type(other))
+        return text_type(self.label).__lt__(text_type(other.label))
 
 
 class PermissionType(UniqueNameType):
@@ -59,6 +60,7 @@ class PermissionType(UniqueNameType):
 
 
 @total_ordering
+@python_2_unicode_compatible
 class Role(UniqueName):
     """Defines role by name. Roles instances are unique by name.
 
@@ -77,11 +79,14 @@ class Role(UniqueName):
         self.label = label
         self.assignable = assignable
 
-    def __unicode__(self):
-        return text_type(self.label)
+    def __str__(self):
+        return text_type(self.name)
+
+    def __repr__(self):
+        return "{}({}, {})".format(self.__class__.__name__, self.name, self.label)
 
     def __lt__(self, other):
-        return text_type(self).__lt__(text_type(other))
+        return text_type(self.label).__lt__(text_type(other.label))
 
     @classmethod
     def assignable_roles(cls):

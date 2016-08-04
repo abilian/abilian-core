@@ -2,7 +2,7 @@
 """
 Elements to build test cases for an :class:`abilian.app.Application`
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, print_function, division, unicode_literals
 
 import getpass
 
@@ -51,7 +51,7 @@ class TestConfig(object):
     The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
     test against different databases.
     """
-    SITE_NAME = u'Abilian Test'
+    SITE_NAME = 'Abilian Test'
     SQLALCHEMY_DATABASE_URI = "sqlite://"
     SERVER_NAME = 'localhost'  # needed for url_for with '_external=True'
     SQLALCHEMY_ECHO = False
@@ -69,7 +69,7 @@ class TestConfig(object):
 
     MAIL_SENDER = 'test@testcase.app.tld'
 
-    BABEL_DEFAULT_LOCALE = b'en'
+    BABEL_DEFAULT_LOCALE = 'en'
 
     # It's a good idea to test with a timezone that's not your system timezone nor
     # UTC. It can reveal problem with date handling within app (rule is: all dates
@@ -297,7 +297,7 @@ class BaseTestCase(TestCase):
         success = login_user(user, remember, force)
         if not success:
             raise ValueError(
-                u'User is not active, cannot login; or use force=True')
+                'User is not active, cannot login; or use force=True')
 
         class LoginContext(object):
 
@@ -412,7 +412,6 @@ class BaseTestCase(TestCase):
 
         for message in body['messages']:
             if message['type'] == 'error':
-                detail = u'on line {0} [{1}]\n{2}'.format(
+                detail = 'on line {0} [{1}]\n{2}'.format(
                     message['lastLine'], message['extract'], message['message'])
-                self.fail((u'Got a validation error for %r:\n%s' % (url, detail)
-                          ).encode('utf-8'))
+                self.fail('Got a validation error for %r:\n%s' % (url, detail))

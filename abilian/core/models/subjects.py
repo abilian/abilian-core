@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin, current_app
-from six import text_type
+from six import text_type, python_2_unicode_compatible
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
@@ -162,6 +162,7 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
         return current_app.services['security'].has_role(self, role)
 
 
+@python_2_unicode_compatible
 class User(Principal, UserMixin, db.Model):
     __tablename__ = 'user'
     __editable__ = ['first_name', 'last_name', 'email', 'password']
@@ -269,7 +270,7 @@ class User(Principal, UserMixin, db.Model):
         name = u'{} {}'.format(first_name, last_name)
         return name.strip() or u'Unknown'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def __repr__(self):

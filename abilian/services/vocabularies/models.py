@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
+from six import python_2_unicode_compatible
 from sqlalchemy import Column
 
 from abilian.core.extensions import db
@@ -63,6 +64,7 @@ class _VocabularyMeta(_BaseMeta):
         return _BaseMeta.__new__(cls, name, bases, d)
 
 
+@python_2_unicode_compatible
 class BaseVocabulary(db.Model):
     """
     Base abstract class for vocabularies
@@ -96,7 +98,7 @@ class BaseVocabulary(db.Model):
         label = None
         group = None
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label
 
     def __repr__(self):

@@ -169,6 +169,7 @@ class PermissionsTestCase(AbilianTestCase):
             }
 
         assert isinstance(MyRestrictedType.__default_permissions__, frozenset)
+
         expected = frozenset(((security.READ, frozenset((security.Anonymous,))),
                               (security.WRITE, frozenset((security.Owner,))),
                               (security.CREATE, frozenset((security.Writer,))),

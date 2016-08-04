@@ -10,7 +10,7 @@ import re
 from flask import current_app, g
 from flask.signals import appcontext_pushed
 from jinja2 import Markup, Template
-from six import string_types, text_type
+from six import string_types, text_type, python_2_unicode_compatible
 
 from abilian.core.singleton import UniqueName
 from abilian.web import csrf
@@ -58,6 +58,7 @@ def getset(f):
     return property(f, f)
 
 
+@python_2_unicode_compatible
 class Icon(object):
     """Base abstract class for icons.
     """
@@ -65,7 +66,7 @@ class Icon(object):
     def __html__(self):
         raise NotImplementedError
 
-    def __unicode__(self):
+    def __str__(self):
         return self.__html__()
 
 
@@ -190,6 +191,7 @@ class StaticIcon(DynamicIcon):
             self, endpoint, width, height, css, size, filename=filename)
 
 
+@python_2_unicode_compatible
 class Endpoint(object):
 
     # FIXME: *args doesn't seem to be relevant.
@@ -207,7 +209,7 @@ class Endpoint(object):
         """
         return self.kwargs.copy()
 
-    def __unicode__(self):
+    def __str__(self):
         return text_type(url_for(self.name, *self.args, **self.get_kwargs()))
 
     def __repr__(self):

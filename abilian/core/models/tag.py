@@ -8,7 +8,7 @@ import abc
 from functools import total_ordering
 
 import sqlalchemy as sa
-from six import text_type
+from six import text_type, python_2_unicode_compatible
 
 from abilian.core.entities import Entity
 
@@ -70,6 +70,7 @@ entity_tag_tbl = sa.Table(
 
 
 @total_ordering
+@python_2_unicode_compatible
 class Tag(IdMixin, Model):
     """Tags are text labels that can be attached to :class:`entities <.Entity>`.
 
@@ -106,7 +107,7 @@ class Tag(IdMixin, Model):
         sa.CheckConstraint(
             sa.sql.and_(sa.sql.func.trim(label) == label, label != u''),),)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label
 
     def __lt__(self, other):
