@@ -9,7 +9,7 @@ import hashlib
 from io import BytesIO
 
 from PIL import Image
-from six import string_types
+from six import string_types, binary_type
 
 __all__ = ['resize', 'RESIZE_MODES', 'SCALE', 'FIT', 'CROP']
 
@@ -33,7 +33,7 @@ cache = {}
 
 
 def open_image(img):
-    if isinstance(img, string_types):
+    if isinstance(img, binary_type):
         img = BytesIO(img)
 
     pos = img.tell()
@@ -59,7 +59,7 @@ def get_save_format(fmt):
 
 
 def resize(orig, width, height, mode=FIT):
-    if isinstance(orig, bytes):
+    if isinstance(orig, binary_type):
         orig = BytesIO(orig)
 
     digest = hashlib.md5(orig.read()).digest()
