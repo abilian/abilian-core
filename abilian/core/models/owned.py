@@ -24,11 +24,14 @@ class OwnedMixin(object):
     }
 
     def __init__(self, *args, **kwargs):
-        if hasattr(g, 'user'):
+        try:
+            user = g.user
             if not self.creator and not g.user.is_anonymous:
-                self.creator = g.user
+                self.creator = user
             if not self.owner and not g.user.is_anonymous:
-                self.owner = g.user
+                self.owner = user
+        except (RuntimeError, AttributeError):
+            pass
 
     @declared_attr
     def creator_id(cls):
