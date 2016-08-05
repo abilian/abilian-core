@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin, current_app
-from six import text_type, python_2_unicode_compatible
+from six import python_2_unicode_compatible, text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship

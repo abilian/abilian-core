@@ -8,7 +8,7 @@ import abc
 from functools import total_ordering
 
 import sqlalchemy as sa
-from six import text_type, python_2_unicode_compatible
+from six import python_2_unicode_compatible, text_type
 
 from abilian.core.entities import Entity
 

@@ -100,7 +100,7 @@ class AttachmentDownload(BaseAttachmentView, BaseObjectView):
             conditional=False)
 
 
-download_view = AttachmentDownload.as_view(b'download')
+download_view = AttachmentDownload.as_view('download')
 bp.route('/<int:entity_id>/<int:object_id>/download')(download_view)
 
 
@@ -108,7 +108,7 @@ class AttachmentEdit(BaseAttachmentView, ObjectEdit):
     _message_success = _l(u'Attachment edited')
 
 
-edit_view = AttachmentEdit.as_view(b'edit')
+edit_view = AttachmentEdit.as_view('edit')
 bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
 
 
@@ -136,7 +136,7 @@ class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
         return [UPLOAD_BUTTON]
 
 
-create_view = AttachmentCreateView.as_view(b'create')
+create_view = AttachmentCreateView.as_view('create')
 bp.route('/<int:entity_id>/create')(create_view)
 
 
@@ -144,7 +144,7 @@ class AttachmentDelete(BaseAttachmentView, ObjectDelete):
     pass
 
 
-delete_view = AttachmentDelete.as_view(b'delete')
+delete_view = AttachmentDelete.as_view('delete')
 bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)
 
 
@@ -157,5 +157,5 @@ class AttachmentEntity(BaseObjectView):
         return redirect(url_for(self.obj))
 
 
-entity_view = AttachmentEntity.as_view(b'entity')
+entity_view = AttachmentEntity.as_view('entity')
 bp.route('/<int:object_id>/entity')(entity_view)

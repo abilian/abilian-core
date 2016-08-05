@@ -4,7 +4,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from six import text_type, with_metaclass, python_2_unicode_compatible
+from six import python_2_unicode_compatible, text_type, with_metaclass
 from sqlalchemy.types import String, TypeDecorator
 
 

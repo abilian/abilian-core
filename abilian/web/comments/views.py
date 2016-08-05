@@ -98,7 +98,7 @@ class CommentEditView(BaseCommentView, ObjectEdit):
         self.obj.meta.changed()
 
 
-edit_view = CommentEditView.as_view(b'edit')
+edit_view = CommentEditView.as_view('edit')
 bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
 
 
@@ -128,7 +128,7 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
         return [COMMENT_BUTTON, CANCEL_BUTTON]
 
 
-create_view = CommentCreateView.as_view(b'create')
+create_view = CommentCreateView.as_view('create')
 bp.route('/<int:entity_id>/create')(create_view)
 
 
@@ -137,5 +137,5 @@ class CommentDeleteView(BaseCommentView, ObjectDelete):
     _message_success = _l(u"Comment deleted")
 
 
-delete_view = CommentDeleteView.as_view(b'delete')
+delete_view = CommentDeleteView.as_view('delete')
 bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)

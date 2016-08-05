@@ -10,7 +10,7 @@ import re
 from flask import current_app, g
 from flask.signals import appcontext_pushed
 from jinja2 import Markup, Template
-from six import string_types, text_type, python_2_unicode_compatible
+from six import python_2_unicode_compatible, string_types, text_type
 
 from abilian.core.singleton import UniqueName
 from abilian.web import csrf

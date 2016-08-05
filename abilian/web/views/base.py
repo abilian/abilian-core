@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from flask import g, json, jsonify, redirect, render_template_string, request
 from flask.views import MethodView as BaseView
+from six import PY2
 from werkzeug.exceptions import HTTPException
 
 from ..action import actions
@@ -24,7 +25,8 @@ class View(BaseView):
 
     @classmethod
     def as_view(cls, name, *class_args, **class_kwargs):
-        name = str(name)
+        if PY2:
+            name = bytes(name)
         return super(View, cls).as_view(name, *class_args, **class_kwargs)
 
     def dispatch_request(self, *args, **kwargs):

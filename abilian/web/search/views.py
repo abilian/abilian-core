@@ -195,4 +195,4 @@ class Live(views.JSONView):
         return response
 
 
-route('/live')(Live.as_view(b'live'))
+route('/live')(Live.as_view('live'))

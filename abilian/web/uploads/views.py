@@ -66,7 +66,7 @@ class NewUploadView(BaseUploadsView, JSONView):
         return self.post(*args, **kwargs)
 
 
-bp.add_url_rule('/', view_func=NewUploadView.as_view(b'new_file'))
+bp.add_url_rule('/', view_func=NewUploadView.as_view('new_file'))
 
 
 class UploadView(BaseUploadsView, View):
@@ -104,4 +104,4 @@ class UploadView(BaseUploadsView, View):
         return jsonify({'success': True})
 
 
-bp.add_url_rule('/<string:handle>', view_func=UploadView.as_view(b'handle'))
+bp.add_url_rule('/<string:handle>', view_func=UploadView.as_view('handle'))

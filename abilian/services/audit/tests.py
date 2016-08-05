@@ -8,7 +8,7 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
-from six import text_type, python_2_unicode_compatible
+from six import python_2_unicode_compatible, text_type
 from sqlalchemy import Column, Date, ForeignKey, Integer, Text, Unicode, \
     UnicodeText
 from sqlalchemy.ext.declarative import declared_attr

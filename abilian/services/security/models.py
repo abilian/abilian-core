@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from datetime import datetime
 from functools import total_ordering
 
-from six import text_type, python_2_unicode_compatible
+from six import python_2_unicode_compatible, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import CheckConstraint, Column, ForeignKey, Index, \
@@ -83,7 +83,8 @@ class Role(UniqueName):
         return text_type(self.name)
 
     def __repr__(self):
-        return "{}({}, {})".format(self.__class__.__name__, self.name, self.label)
+        return "{}({}, {})".format(self.__class__.__name__, self.name,
+                                   self.label)
 
     def __lt__(self, other):
         return text_type(self.label).__lt__(text_type(other.label))

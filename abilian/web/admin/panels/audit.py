@@ -93,7 +93,7 @@ class AuditPanel(AdminPanel):
 
     def install_additional_rules(self, add_url_rule):
         add_url_rule(
-            '/search_users', view_func=JSONUserSearch.as_view(b'search_users'))
+            '/search_users', view_func=JSONUserSearch.as_view('search_users'))
 
     # noinspection PyComparisonWithNone
     def get(self):

@@ -40,7 +40,7 @@ class TagEdit(BaseTagView, ObjectEdit):
     _message_success = _l(u'Tag edited')
 
 
-edit_view = TagEdit.as_view(b'edit')
+edit_view = TagEdit.as_view('edit')
 bp.route('/manage/<int:object_id>/edit')(edit_view)
 
 
@@ -48,7 +48,7 @@ class TagCreate(BaseTagView, ObjectCreate):
     _message_success = _l(u'Tag created')
 
 
-create_view = TagCreate.as_view(b'create')
+create_view = TagCreate.as_view('create')
 bp.route('/manage/new')(create_view)
 
 
@@ -56,7 +56,7 @@ class TagDelete(BaseTagView, ObjectDelete):
     _message_success = _l(u'Tag deleted')
 
 
-delete_view = TagDelete.as_view(b'delete')
+delete_view = TagDelete.as_view('delete')
 bp.route('/manage/<int:object_id>/delete')(delete_view)
 
 # Tags on entities
@@ -94,7 +94,7 @@ class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
         return dict(result=tags)
 
 
-entity_bp.route('/<int:object_id>/list')(EntityTagList.as_view(b'list'))
+entity_bp.route('/<int:object_id>/list')(EntityTagList.as_view('list'))
 
 
 class EntityTagManage(BaseEntityTagView, ObjectEdit):
@@ -116,9 +116,9 @@ class EntityTagManage(BaseEntityTagView, ObjectEdit):
 
 
 entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view(
-    b'add', mode='add'))
+    'add', mode='add'))
 entity_bp.route('/<int:object_id>/remove')(EntityTagManage.as_view(
-    b'remove', mode='remove'))
+    'remove', mode='remove'))
 
 
 class EntityTagEdit(ObjectEdit):
@@ -137,4 +137,4 @@ class EntityTagEdit(ObjectEdit):
         return self.view_url()
 
 
-entity_bp.route('/<int:object_id>/edit')(EntityTagEdit.as_view(b'edit'))
+entity_bp.route('/<int:object_id>/edit')(EntityTagEdit.as_view('edit'))
