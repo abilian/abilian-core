@@ -163,7 +163,7 @@ def uniquelogins(sessions):
     for date in sorted(dates.keys()):
         # print u"{} : {}".format(date, len(dates[date]))
         date_epoch = unix_time_millis(datetime.strptime(date, "%Y/%m/%d"))
-        daily.append({u'x': date_epoch, u'y': len(dates[date])})
+        daily.append({'x': date_epoch, 'y': len(dates[date])})
 
     # first_day = data[0]['x']
     # last_day = data[-1]['x']
@@ -184,10 +184,10 @@ def uniquelogins(sessions):
 
     for date, value in six.iteritems(weekly_serie):
         date_epoch = unix_time_millis(date)
-        weekly.append({u'x': date_epoch, u'y': value})
+        weekly.append({'x': date_epoch, 'y': int(value)})
 
     for date, value in six.iteritems(monthly_serie):
         date_epoch = unix_time_millis(date)
-        monthly.append({u'x': date_epoch, u'y': value})
+        monthly.append({'x': date_epoch, 'y': int(value)})
 
     return daily, weekly, monthly

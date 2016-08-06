@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
-from six import python_2_unicode_compatible
+from six import python_2_unicode_compatible, PY2
 from sqlalchemy import Column
 
 from abilian.core.extensions import db
@@ -149,10 +149,17 @@ _generated_vocabularies = []
 
 
 def Vocabulary(name, label=None, group=None):
-    cls_name = b'Vocabulary' + name.capitalize()
-    Meta = type(
-        b'Meta', (object,), dict(
-            name=name.lower(), label=label, group=group))
+    cls_name = 'Vocabulary' + name.capitalize()
+    if PY2:
+        cls_name = bytes(cls_name)
+
+    _name, _label, _group = name.lower(), label, group
+
+    class Meta(object):
+        name = _name
+        label = _label
+        group = _group
+
     cls = type(cls_name, (BaseVocabulary,), dict(Meta=Meta))
     _generated_vocabularies.append(cls)
     return cls

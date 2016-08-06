@@ -15,10 +15,10 @@ from .service import vocabularies
 
 class TestVocabularies(BaseTestCase):
 
-    DefaultVoc = Vocabulary(b'defaultstates', label='States')
+    DefaultVoc = Vocabulary('defaultstates', label='States')
 
     def test_vocabulary_creator(self):
-        PriorityVoc = Vocabulary(b'priorities', label='Priorities')
+        PriorityVoc = Vocabulary('priorities', label='Priorities')
         assert PriorityVoc.__name__ == 'VocabularyPriorities'
         assert PriorityVoc.__tablename__ == 'vocabulary_priorities'
         assert PriorityVoc.Meta.name == u'priorities'
