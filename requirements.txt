@@ -11,7 +11,7 @@ Babel==2.3.4              # via flask-babel
 bcrypt==3.1.0
 billiard==3.3.0.23        # via celery
 bleach==1.4.3
-blinker==1.4              # via flask-debugtoolbar, flask-mail, flask-principal
+Blinker==1.4              # via flask-debugtoolbar, flask-mail, flask-principal
 celery==3.1.23
 cffi==1.7.0               # via bcrypt
 clamd==1.0.2
@@ -60,12 +60,12 @@ redis==2.10.5
 six==1.10.0               # via bcrypt, bleach, html5lib, python-dateutil, sqlalchemy-utils, validators, wtforms-alchemy, wtforms-components
 SQLAlchemy-Utils==0.32.9  # via wtforms-alchemy
 SQLAlchemy==1.0.14        # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtforms-alchemy
-sqlparse==0.2.0
+sqlparse==0.2.1
 straight.plugin==1.4.0-post-1
 typing==3.5.2.2
 validators==0.10.3        # via wtforms-components
 webassets==0.11.1         # via flask-assets
-werkzeug==0.11.10         # via flask, flask-debugtoolbar, flask-wtf
+Werkzeug==0.11.10         # via flask, flask-debugtoolbar, flask-wtf
 Whoosh==2.5.7
 WTForms-Alchemy==0.15.0
 WTForms-Components==0.10.0  # via wtforms-alchemy

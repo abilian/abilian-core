@@ -81,9 +81,11 @@ class I18NTestCase(BaseTestCase):
             self.assertIn('/myfile.txt', result)
 
     def test_render_template_i18n(self):
-        loader = DictLoader({'tmpl.txt': 'default ({{ locale }})',
-                             'tmpl.en.txt': 'en locale ({{ locale }})',
-                             'tmpl.fr.txt': 'fr locale ({{ locale }})',})
+        loader = DictLoader({
+            'tmpl.txt': 'default ({{ locale }})',
+            'tmpl.en.txt': 'en locale ({{ locale }})',
+            'tmpl.fr.txt': 'fr locale ({{ locale }})',
+        })
         app_loader = self.app.jinja_loader
         self.app.jinja_loader = loader
         render = i18n.render_template_i18n

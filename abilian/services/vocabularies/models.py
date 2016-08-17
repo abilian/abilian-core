@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
-from six import python_2_unicode_compatible, PY2
+from six import PY2, python_2_unicode_compatible
 from sqlalchemy import Column
 
 from abilian.core.extensions import db

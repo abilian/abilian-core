@@ -754,8 +754,8 @@ class LocaleSelectField(SelectField):
             return None
 
         raise ValueError(
-            'Value cannot be converted to Locale(), or is not None, {!r}'.format(
-                value))
+            'Value cannot be converted to Locale(), or is not None, {!r}'.
+            format(value))
 
     def iter_choices(self):
         if not self.flags.required:
