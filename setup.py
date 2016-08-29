@@ -21,15 +21,15 @@ dev_requires = [str(ir.req) for ir in _dev_requires]
 LONG_DESCRIPTION = open('README.rst', 'r').read()
 
 
-class build(_build):
+class Build(_build):
     sub_commands = [('compile_catalog', None)] + _build.sub_commands
 
 
-class sdist(_sdist):
+class Sdist(_sdist):
     sub_commands = [('compile_catalog', None)] + _sdist.sub_commands
 
 
-class develop(_develop):
+class Develop(_develop):
 
     def run(self):
         _develop.run(self)
@@ -46,7 +46,7 @@ setuptools.setup(
     description=('A framework for enterprise applications '
                  '(CRM, ERP, collaboration...), based on Flask and SQLAlchemy'),
     long_description=LONG_DESCRIPTION,
-    packages=['abilian'],
+    packages=[b'abilian'],
     zip_safe=False,
     platforms='any',
     setup_requires=['babel', 'setuptools-git', 'setuptools_scm>=1.5.5'],
@@ -66,7 +66,7 @@ setuptools.setup(
         'Framework :: Flask',
     ],
     cmdclass={
-        'build': build,
-        'sdist': sdist,
-        'develop': develop,
+        'build': Build,
+        'sdist': Sdist,
+        'develop': Develop,
     },)
