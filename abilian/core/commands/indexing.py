@@ -44,10 +44,9 @@ def reindex(clear=False, progressive=False, batch_size=None):
     cleared = set()
     if batch_size is not None:
         batch_size = int(batch_size)
-    strategy_kw = dict(
-        clear=clear, progressive=progressive, batch_size=batch_size)
+
     strategy = progressive_mode if progressive else single_transaction
-    strategy = strategy(index, **strategy_kw)
+    strategy = strategy(index, clear=clear, progressive=progressive, batch_size=batch_size)
     next(strategy)  # starts generator
     count_indexed = 0
 
@@ -67,7 +66,11 @@ def reindex(clear=False, progressive=False, batch_size=None):
 
         with session.begin():
             query = session.query(cls).options(sa.orm.lazyload('*'))
-            count = query.count()
+            try:
+                count = query.count()
+            except:
+                current_app.logger.error("error on class {}".format(name))
+                continue
 
             if count == 0:
                 print("{}: 0".format(name))
