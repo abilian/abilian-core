@@ -1,12 +1,20 @@
 Changelog for Abilian Core
 ==========================
 
-0.7.8 (not yet released)
-------------------------
+0.7.9 (2016-08-29)
+------------------
 
-- Use `brypt` library instead of `py-bcrypt`.
+- More robust reindex command.
+- Pytest > 3.0 compat
+
+
+0.7.8 (2016-08-04)
+------------------
+
+- Use `bcrypt` library instead of `py-bcrypt`.
 - Work on Py3k compatibility (not done yet)
 - Update dependencies.
+
 
 0.7.7 (2016-07-13)
 ------------------
