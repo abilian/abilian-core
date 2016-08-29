@@ -183,8 +183,12 @@ def uniquelogins(sessions):
         .aggregate(numpysum)
 
     for date, value in six.iteritems(weekly_serie):
+        try:
+            value = int(value)
+        except ValueError:
+            pass
         date_epoch = unix_time_millis(date)
-        weekly.append({'x': date_epoch, 'y': int(value)})
+        weekly.append({'x': date_epoch, 'y': value})
 
     for date, value in six.iteritems(monthly_serie):
         date_epoch = unix_time_millis(date)
