@@ -4,10 +4,10 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from unittest import TestCase
+import pytest
 
 import sqlalchemy as sa
 from flask.signals import request_started
-from pytest import skip
 from wtforms import Form, IntegerField, StringField
 
 # Import for side-effects (monkey-patch)
@@ -18,6 +18,8 @@ from abilian.web.views import default_view
 
 from ..forms.widgets import EmailWidget, MainTableView, Panel, Row, \
     SingleView, linkify_url, text2html
+
+skip = pytest.mark.skip
 
 
 class WidgetTestModel(Entity):

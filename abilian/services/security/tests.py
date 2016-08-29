@@ -3,8 +3,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import unittest
-
-from pytest import skip
+import pytest
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -17,6 +16,8 @@ from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
 
 TEST_EMAIL = u"joe@example.com"
 TEST_PASSWORD = "tototiti"
+
+skip = pytest.mark.skip
 
 
 def init_user():

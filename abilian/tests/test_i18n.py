@@ -8,10 +8,12 @@ from babel import Locale
 from flask import _app_ctx_stack, _request_ctx_stack
 from flask_babel import force_locale, get_locale
 from jinja2 import DictLoader
-from pytest import skip
+import pytest
 
 from abilian import i18n
 from abilian.testing import BaseTestCase
+
+skip = pytest.mark.skip
 
 
 class I18NTestCase(BaseTestCase):
