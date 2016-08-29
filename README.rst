@@ -90,7 +90,7 @@ User Interface and API
 
 -  REST and AJAX API helpers
 
--  i8n: support for multi-language via Babel, with multiple translation
+-  i18n: support for multi-language via Babel, with multiple translation
    dictionaries
 
 Management and admin

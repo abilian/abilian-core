@@ -2,7 +2,7 @@
 """
 I18n.
 
-To mark strings for transalation::
+To mark strings for translation::
 
     from abilian.i18n import _
     _(u'message to translate')
