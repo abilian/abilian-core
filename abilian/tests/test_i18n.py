@@ -4,11 +4,11 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+import pytest
 from babel import Locale
 from flask import _app_ctx_stack, _request_ctx_stack
 from flask_babel import force_locale, get_locale
 from jinja2 import DictLoader
-import pytest
 
 from abilian import i18n
 from abilian.testing import BaseTestCase

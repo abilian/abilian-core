@@ -4,8 +4,8 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from unittest import TestCase
-import pytest
 
+import pytest
 import sqlalchemy as sa
 from flask.signals import request_started
 from wtforms import Form, IntegerField, StringField
