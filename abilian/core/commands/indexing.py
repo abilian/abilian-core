@@ -46,7 +46,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
         batch_size = int(batch_size)
 
     strategy = progressive_mode if progressive else single_transaction
-    strategy = strategy(index, clear=clear, progressive=progressive, batch_size=batch_size)
+    strategy = strategy(
+        index, clear=clear, progressive=progressive, batch_size=batch_size)
     next(strategy)  # starts generator
     count_indexed = 0
 
