@@ -93,14 +93,15 @@ class RepositoryService(Service):
         if not dest.parent.exists():
             dest.parent.mkdir(0o775, parents=True)
 
+        if hasattr(content, 'read'):
+            content = content.read()
+
         mode = 'tw'
         if not isinstance(content, text_type):
             mode = 'bw'
             encoding = None
 
         with dest.open(mode, encoding=encoding) as f:
-            if not isinstance(content, bytes):
-                content = content.read()
             f.write(content)
 
     def delete(self, uuid):
@@ -456,6 +457,9 @@ class RepositoryTransaction(object):
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 
+        if hasattr(content, 'read'):
+            content = content.read()
+
         if isinstance(content, bytes):
             mode = 'bw'
             encoding = None
@@ -464,8 +468,6 @@ class RepositoryTransaction(object):
 
         dest = self.path / str(uuid)
         with dest.open(mode, encoding=encoding) as f:
-            if hasattr(content, 'read'):
-                content = content.read()
             f.write(content)
 
     def get(self, uuid):
