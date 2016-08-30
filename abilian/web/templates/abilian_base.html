@@ -28,19 +28,6 @@
   <link rel="apple-touch-icon" type="image/png"
       href="{{ app.config['FAVICO_URL'] | string }}"/>
 
-  {%- if app.config.get('SENTRY_INSTALL_CLIENT_JS', True) and app.extensions.get('sentry') %}
-    {%- set ext = app.extensions['sentry'] %}
-    <script src="{{ ext.raven_js_url }}"></script>
-    <script>
-     Raven.config({{ ext.client.get_public_dsn() |tojson }},
-                  {tags: { app_name: {{ app.name+'_front' | tojson }},
-                           configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
-                           process_type: 'javascript'}
-                  })
-          .install();
-    </script>
-  {%- endif %}
-
   <script>
     var require = {{ app.extensions['webassets'].requirejs_config | tojson }};
   </script>
@@ -48,6 +35,19 @@
   {%- assets "js-top" %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
   {%- endassets %}
+
+  {%- if app.config.get('SENTRY_INSTALL_CLIENT_JS', True) and app.extensions.get('sentry') %}
+    {%- set ext = app.extensions['sentry'] %}
+    <script src="{{ ext.raven_js_url }}"></script>
+    <script>
+     Raven.config({{ ext.client.get_public_dsn() |tojson }},
+                  {tags: { app_name: {{ (app.name+'_front') | tojson }},
+                           configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
+                           process_type: 'javascript'}
+                  })
+          .install();
+    </script>
+  {%- endif %}
 
   {%- block top_js %}{%- endblock top_js %}
 </head>

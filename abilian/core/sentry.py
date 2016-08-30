@@ -11,7 +11,6 @@ from six import text_type
 
 
 class Sentry(RavenExt):
-
     def init_app(self, app, *args, **kwargs):
         super(Sentry, self).init_app(app, *args, **kwargs)
         user_logged_in.connect(self._on_user_logged_in, sender=app)
@@ -21,11 +20,13 @@ class Sentry(RavenExt):
 
     @property
     def raven_js_url(self):
-        url = u'//cdn.ravenjs.com/{version}/{plugins}/raven.min.js'
+        url = '//cdn.ravenjs.com/{version}/raven.min.js'
         cfg = current_app.config
-        return url.format(
-            version=text_type(cfg['SENTRY_JS_VERSION']),
-            plugins=','.join(cfg['SENTRY_JS_PLUGINS']))
+        version = text_type(cfg['SENTRY_JS_VERSION'])
+        plugins = cfg.get('SENTRY_JS_PLUGINS', [])
+        if plugins:
+            version = version + '/' + ','.join(plugins)
+        return url.format(version=version)
 
 
 __all__ = ['Sentry']
