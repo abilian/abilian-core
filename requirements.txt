@@ -63,9 +63,9 @@ SQLAlchemy==1.0.14        # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtf
 sqlparse==0.2.1
 straight.plugin==1.4.0-post-1
 typing==3.5.2.2
-validators==0.10.3        # via wtforms-components
+validators==0.11.0        # via wtforms-components
 webassets==0.12.0         # via flask-assets
-Werkzeug==0.11.10         # via flask, flask-debugtoolbar, flask-wtf
+werkzeug==0.11.11         # via flask, flask-debugtoolbar, flask-wtf
 Whoosh==2.5.7
 WTForms-Alchemy==0.15.0
 WTForms-Components==0.10.0  # via wtforms-alchemy
