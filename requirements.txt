@@ -29,7 +29,7 @@ Flask-Principal==0.4.0    # via flask-security
 Flask-Script==2.0.5       # via flask-migrate
 Flask-Security==1.7.5
 Flask-SQLAlchemy==2.1     # via flask-migrate
-Flask-Testing==0.5.0
+Flask-Testing==0.6.1
 Flask-WTF==0.12           # via flask-security
 Flask==0.11.1             # via flask-assets, flask-babel, flask-debugtoolbar, flask-login, flask-mail, flask-migrate, flask-principal, flask-script, flask-security, flask-sqlalchemy, flask-testing, flask-wtf
 html5lib==0.9999999       # via bleach
@@ -59,14 +59,14 @@ PyYAML==3.12
 redis==2.10.5
 six==1.10.0               # via bcrypt, bleach, html5lib, python-dateutil, sqlalchemy-utils, validators, wtforms-alchemy, wtforms-components
 SQLAlchemy-Utils==0.32.9  # via wtforms-alchemy
-SQLAlchemy==1.0.14        # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtforms-alchemy
+SQLAlchemy==1.0.15        # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtforms-alchemy
 sqlparse==0.2.1
 straight.plugin==1.4.1
 typing==3.5.2.2
 validators==0.11.0        # via wtforms-components
 webassets==0.12.0         # via flask-assets
-Werkzeug==0.11.11         # via flask, flask-debugtoolbar, flask-wtf
-Whoosh==2.5.7
+werkzeug==0.11.11         # via flask, flask-debugtoolbar, flask-wtf
+Whoosh==2.7.4
 WTForms-Alchemy==0.15.0
 WTForms-Components==0.10.0  # via wtforms-alchemy
 WTForms==2.1              # via flask-wtf, wtforms-alchemy, wtforms-components
