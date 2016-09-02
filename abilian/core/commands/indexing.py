@@ -69,8 +69,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
             query = session.query(cls).options(sa.orm.lazyload('*'))
             try:
                 count = query.count()
-            except:
-                current_app.logger.error("error on class {}".format(name))
+            except Exception as e:
+                current_app.logger.error("Indexing error on class {}: {}".format(name, repr(e)))
                 continue
 
             if count == 0:
