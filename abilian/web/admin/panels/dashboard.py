@@ -186,12 +186,16 @@ def uniquelogins(sessions):
         try:
             value = int(value)
         except ValueError:
-            pass
+            continue
         date_epoch = unix_time_millis(date)
         weekly.append({'x': date_epoch, 'y': value})
 
     for date, value in six.iteritems(monthly_serie):
+        try:
+            value = int(value)
+        except ValueError:
+            continue
         date_epoch = unix_time_millis(date)
-        monthly.append({'x': date_epoch, 'y': int(value)})
+        monthly.append({'x': date_epoch, 'y': value})
 
     return daily, weekly, monthly
