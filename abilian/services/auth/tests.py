@@ -11,10 +11,10 @@ from flask import request, url_for
 
 from abilian.core.models.subjects import User
 from abilian.services.auth import views
-from abilian.testing import BaseTestCase, TestConfig
+from abilian.testing import BaseTestCase, TestConfig as BaseTestConfig
 
 
-class AuthTestConfig(TestConfig):
+class AuthTestConfig(BaseTestConfig):
     # Most views should not be protected by crsf. Let it fail if @csrf.exempt is
     # forgotten on a view.
     CSRF_ENABLED = True
