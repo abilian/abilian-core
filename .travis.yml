@@ -23,7 +23,7 @@ addons:
 
 # Install OS dependencies
 before_install:
-  - pip install 'pip>=8.1'
+  - pip install -U 'pip>=8.1' setuptools
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less eslint@^2.0.0 eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
