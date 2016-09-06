@@ -45,7 +45,7 @@ before_script:
 
 # Run tests
 script:
-  - py.test --cov abilian abilian tests
+  - pytest -n 2 --cov abilian abilian tests
   - sphinx-build -W -b html docs/ docs/_build/
   - make lint
 

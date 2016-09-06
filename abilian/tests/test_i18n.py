@@ -67,12 +67,12 @@ class I18NTestCase(BaseTestCase):
 
     def test_get_template_i18n(self):
         template_path = '/myfile.txt'
-        en = Locale(b'en')
+        en = Locale('en')
         result = i18n.get_template_i18n(template_path, locale=en)
         self.assertIn('/myfile.en.txt', result)
         self.assertIn('/myfile.txt', result)
 
-        en = Locale(b'en_US')
+        en = Locale('en_US')
         result = i18n.get_template_i18n(template_path, locale=en)
         self.assertIn('/myfile.en_US.txt', result)
         self.assertIn('/myfile.txt', result)
