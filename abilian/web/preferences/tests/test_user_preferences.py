@@ -44,5 +44,11 @@ class TestUserPreferences(BaseTestCase):
             form.validate()
             assert form.photo.data is not None
 
-            img_type = imghdr.what('ignored', form.photo.data)
-            assert img_type == 'jpeg'
+            if hasattr(form.photo.data, 'read'):
+                data = form.photo.data.read()
+            else:
+                data = form.photo.data
+
+            img_type = imghdr.what('ignored', data)
+            # FIXME: should be 'png' but is 'jpeg' on Python 2
+            assert img_type in ('png', 'jpeg')

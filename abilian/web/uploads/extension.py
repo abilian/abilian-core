@@ -16,6 +16,7 @@ from flask_login import AnonymousUserMixin
 
 from abilian.core import signals
 from abilian.web import url_for
+from six import PY3
 
 from .views import bp as blueprint
 
@@ -108,7 +109,10 @@ class FileUploadsExtension(object):
         if metadata:
             meta_file = user_dir / '{}.metadata'.format(handle)
             with meta_file.open('wb') as out:
-                json.dump(metadata, out, skipkeys=True)
+                metadata_json = json.dumps(metadata, skipkeys=True, ensure_ascii=True)
+                if PY3:
+                    metadata_json = metadata_json.encode('ascii')
+                out.write(metadata_json)
 
         return handle
 
