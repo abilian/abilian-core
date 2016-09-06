@@ -5,8 +5,8 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import sqlalchemy as sa
+import six
 from flask_sqlalchemy import BaseQuery
-from six import PY2, python_2_unicode_compatible
 from sqlalchemy import Column
 
 from abilian.core.extensions import db
@@ -53,7 +53,7 @@ class _VocabularyMeta(_BaseMeta):
         meta = d.get('Meta')
         tblprefix = 'vocabulary_'
 
-        group = slugify(meta.group or u'', u'_').encode('ascii')
+        group = slugify(meta.group or u'', u'_')
         if group:
             tblprefix += group + '_'
 
@@ -64,12 +64,12 @@ class _VocabularyMeta(_BaseMeta):
         return _BaseMeta.__new__(cls, name, bases, d)
 
 
-@python_2_unicode_compatible
+@six.python_2_unicode_compatible
+@six.add_metaclass(_VocabularyMeta)
 class BaseVocabulary(db.Model):
     """
     Base abstract class for vocabularies
     """
-    __metaclass__ = _VocabularyMeta
     __abstract__ = True
     query_class = VocabularyQuery
 
@@ -150,7 +150,7 @@ _generated_vocabularies = []
 
 def Vocabulary(name, label=None, group=None):
     cls_name = 'Vocabulary' + name.capitalize()
-    if PY2:
+    if six.PY2:
         cls_name = bytes(cls_name)
 
     _name, _label, _group = name.lower(), label, group

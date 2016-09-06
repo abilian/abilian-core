@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import abc
 
+import six
 import sqlalchemy as sa
 from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
 from sqlalchemy.orm import backref, relationship
@@ -17,8 +18,9 @@ from abilian.services.security import CREATE, DELETE, WRITE, Anonymous, Owner
 ATTRIBUTE = '__comments__'
 
 
+@six.add_metaclass(abc.ABCMeta)
 class Commentable(object):
-    __metaclass__ = abc.ABCMeta
+    pass
 
 
 def register(cls):

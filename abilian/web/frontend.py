@@ -455,7 +455,7 @@ class Module(object):
             base_template=self.base_template)
         self._setup_view(
             "/<int:entity_id>",
-            b'entity_view',
+            'entity_view',
             self.view_cls,
             Form=self.view_form_class,
             **kw)
@@ -463,7 +463,7 @@ class Module(object):
 
         self._setup_view(
             "/<int:entity_id>/edit",
-            b'entity_edit',
+            'entity_edit',
             self.edit_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
@@ -471,7 +471,7 @@ class Module(object):
 
         self._setup_view(
             "/new",
-            b'entity_new',
+            'entity_new',
             self.create_cls,
             Form=self.edit_form_class,
             chain_create_allowed=self.view_new_save_and_add,
@@ -480,17 +480,17 @@ class Module(object):
 
         self._setup_view(
             "/<int:entity_id>/delete",
-            b'entity_delete',
+            'entity_delete',
             self.delete_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
             **kw)
 
-        self._setup_view("/json", b'list_json', ListJson, module=self)
+        self._setup_view("/json", 'list_json', ListJson, module=self)
 
         self._setup_view(
             '/json_search',
-            b'json_search',
+            'json_search',
             self.json_search_cls,
             Model=self.managed_class)
 
