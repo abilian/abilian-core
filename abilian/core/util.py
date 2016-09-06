@@ -216,7 +216,8 @@ _NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
 def slugify(value, separator="-"):
     """Slugify an unicode string, to make it URL friendly.
     """
-    value = text_type(value)
+    if not isinstance(value, text_type):
+        raise ValueError("value must be a unicode string")
     separator = text_type(separator)
     value = _NOT_WORD_RE.sub(u' ', value)
     value = unicodedata.normalize('NFKD', value)
