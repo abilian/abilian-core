@@ -174,6 +174,8 @@ class Live(views.JSONView):
     """
 
     def data(self, q='', page=None, *args, **kwargs):
+        if not q:
+            q = ''
         svc = current_app.services['indexing']
         url_for_hit = svc.app_state.url_for_hit
         search_kwargs = {'facet_by_type': 5}
