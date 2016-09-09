@@ -186,7 +186,13 @@ class Live(views.JSONView):
         for typename, docs in six.iteritems(results):
             dataset = []
             for doc in docs:
-                d = dict(name=doc['name'])
+                # Because it happens sometimes
+                try:
+                    name = doc['name']
+                except KeyError:
+                    continue
+
+                d = {'name': name}
                 url = url_for_hit(doc, None)
                 if url is not None:
                     d['url'] = url
