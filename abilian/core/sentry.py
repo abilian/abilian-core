@@ -11,6 +11,7 @@ from six import text_type
 
 
 class Sentry(RavenExt):
+
     def init_app(self, app, *args, **kwargs):
         super(Sentry, self).init_app(app, *args, **kwargs)
         user_logged_in.connect(self._on_user_logged_in, sender=app)

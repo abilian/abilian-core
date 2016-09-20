@@ -13,10 +13,10 @@ from uuid import UUID, uuid1
 from celery import shared_task
 from flask import current_app
 from flask_login import AnonymousUserMixin
+from six import PY3
 
 from abilian.core import signals
 from abilian.web import url_for
-from six import PY3
 
 from .views import bp as blueprint
 
@@ -109,7 +109,8 @@ class FileUploadsExtension(object):
         if metadata:
             meta_file = user_dir / '{}.metadata'.format(handle)
             with meta_file.open('wb') as out:
-                metadata_json = json.dumps(metadata, skipkeys=True, ensure_ascii=True)
+                metadata_json = json.dumps(
+                    metadata, skipkeys=True, ensure_ascii=True)
                 if PY3:
                     metadata_json = metadata_json.encode('ascii')
                 out.write(metadata_json)

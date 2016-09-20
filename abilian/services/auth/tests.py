@@ -11,7 +11,8 @@ from flask import request, url_for
 
 from abilian.core.models.subjects import User
 from abilian.services.auth import views
-from abilian.testing import BaseTestCase, TestConfig as BaseTestConfig
+from abilian.testing import TestConfig as BaseTestConfig
+from abilian.testing import BaseTestCase
 
 
 class AuthTestConfig(BaseTestConfig):

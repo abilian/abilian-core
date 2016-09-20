@@ -70,7 +70,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
             try:
                 count = query.count()
             except Exception as e:
-                current_app.logger.error("Indexing error on class {}: {}".format(name, repr(e)))
+                current_app.logger.error(
+                    "Indexing error on class {}: {}".format(name, repr(e)))
                 continue
 
             if count == 0:
