@@ -26,7 +26,7 @@ before_install:
   - pip install -U 'pip>=8.1' setuptools
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
-  - npm install -g less eslint@^2.0.0 eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
+  - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
   - export PATH=~/npm-packages/bin:$PATH
   - wget 'http://jenkins.abilian.com/_fixtures/libsqlite-3.9.1-precise-bin.tar.gz'
   - tar xpvzf libsqlite-3.9.1-precise-bin.tar.gz -C ~
