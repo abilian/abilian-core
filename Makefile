@@ -55,13 +55,18 @@ vagrant-tests:
 # Various Checkers
 #
 # TODO: add lint-js lint-rst
-lint: lint-py
+lint: lint-py lint-travis
 
 lint-py:
 	@echo "--> Linting Python files"
 	flake8 $(SRC)
 	@echo ""
 
+lint-travis:
+	@echo "--> Linting .travix.yml files"
+	travis lint
+	@echo ""
+	
 lint-js:
 	@echo "--> Linting JS files"
 	eslint ./abilian/web/resources/js/
