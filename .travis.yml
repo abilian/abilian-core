@@ -47,7 +47,7 @@ before_script:
 script:
   - pytest --cov abilian abilian tests
   - sphinx-build -W -b html docs/ docs/_build/
-  - make lint
+  - make lint-py
 
 # Report coverage
 after_success:
