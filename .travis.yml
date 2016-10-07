@@ -1,3 +1,6 @@
+sudo: required
+dist: trusty
+
 language: python
 cache: pip
 python:
@@ -28,10 +31,10 @@ before_install:
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
   - export PATH=~/npm-packages/bin:$PATH
-  - wget 'http://jenkins.abilian.com/_fixtures/libsqlite-3.9.1-precise-bin.tar.gz'
-  - tar xpvzf libsqlite-3.9.1-precise-bin.tar.gz -C ~
-  - echo $LD_LIBRARY_PATH
-  - ls ~/sqlite-3.9.1/lib
+  #- wget 'http://jenkins.abilian.com/_fixtures/libsqlite-3.9.1-precise-bin.tar.gz'
+  #- tar xpvzf libsqlite-3.9.1-precise-bin.tar.gz -C ~
+  #- echo $LD_LIBRARY_PATH
+  #- ls ~/sqlite-3.9.1/lib
 
 # Install Python dependencies
 install:
