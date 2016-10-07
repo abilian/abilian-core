@@ -38,7 +38,7 @@ intervals==0.8.0          # via wtforms-components
 itsdangerous==0.24        # via flask, flask-debugtoolbar, flask-security
 Jinja2==2.8               # via flask, flask-babel
 jsmin==2.2.1
-kombu==3.0.36             # via celery
+kombu==3.0.37             # via celery
 lxml==3.6.4
 Mako==1.0.4               # via alembic
 MarkupSafe==0.23          # via jinja2, mako
@@ -57,9 +57,9 @@ python-magic==0.4.12
 pytz==2016.7              # via babel, celery, pandas
 PyYAML==3.12
 redis==2.10.5
-six==1.10.0               # via bcrypt, bleach, html5lib, python-dateutil, sqlalchemy-utils, validators, wtforms-alchemy, wtforms-components
+six==1.10.0
 SQLAlchemy-Utils==0.32.9  # via wtforms-alchemy
-SQLAlchemy==1.0.15        # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtforms-alchemy
+SQLAlchemy==1.1.1         # via alembic, flask-sqlalchemy, sqlalchemy-utils, wtforms-alchemy
 sqlparse==0.2.1
 straight.plugin==1.4.1
 typing==3.5.2.2

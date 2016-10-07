@@ -1,6 +1,5 @@
 # python 2/3 compat
-# future>=0.15.2
-# Or should we use six or pie ?
+six
 
 # Flask and friends
 Flask>=0.11
@@ -26,7 +25,7 @@ pathlib
 python-dateutil>=2.4.0
 
 # Databases / persistence
-SQLAlchemy>=0.9,<1.1
+SQLAlchemy>=0.9
 psycopg2>=2.6.1
 alembic>=0.8,<0.9
 
