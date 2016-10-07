@@ -60,8 +60,8 @@ class JsonUsersList(base.JSONView):
             5: [User.last_active],
         }
         columns = list(SORT_COLS.get(sort_col, []))
-        columns.extend([func.lower(User.last_name),
-                        func.lower(User.first_name)])
+        columns.extend(
+            [func.lower(User.last_name), func.lower(User.first_name)])
 
         direction = asc if sort_dir == 'asc' else desc
         order_by = map(direction, columns)
@@ -83,8 +83,10 @@ class JsonUsersList(base.JSONView):
             mugshot = user_photo_url(user, size=MUGSHOT_SIZE)
             name = escape(getattr(user, "name") or "")
             email = escape(getattr(user, "email") or "")
-            roles = [r for r in security.get_roles(
-                user, no_group_roles=True) if r.assignable]
+            roles = [
+                r for r in security.get_roles(
+                    user, no_group_roles=True) if r.assignable
+            ]
             columns = []
             columns.append(
                 u'<a href="{url}"><img src="{src}" width="{size}" height="{size}">'

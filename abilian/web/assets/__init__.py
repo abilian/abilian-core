@@ -74,8 +74,9 @@ FONTAWESOME_LESS = Bundle('font-awesome/less/font-awesome.less')
 
 REQUIRE_JS = Bundle('requirejs/require.js', 'requirejs/domReady.js')
 
-SELECT2_LESS = Bundle('select2/select2.css',
-                      'select2/select2-bootstrap.css',)
+SELECT2_LESS = Bundle(
+    'select2/select2.css',
+    'select2/select2-bootstrap.css',)
 SELECT2_JS = Bundle('select2/select2.js')
 
 TYPEAHEAD_LESS = Bundle('typeahead/typeahead.js-bootstrap.less')
@@ -84,40 +85,44 @@ TYPEAHEAD_JS = Bundle('typeahead/typeahead.js', 'typeahead/hogan-2.0.0.js')
 ABILIAN_LESS = Bundle('less/abilian.less', 'less/print.less')
 
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
-ABILIAN_JS = Bundle('js/abilian.js',
-                    'js/datatables-setup.js',
-                    'js/datatables-advanced-search.js',
-                    'js/widgets/base.js',
-                    'js/widgets/select2.js',
-                    'js/widgets/richtext.js',
-                    'js/widgets/delete.js',
-                    'js/widgets/file.js',
-                    'js/widgets/image.js',
-                    'js/widgets/tags.js',
-                    'js/widgets/dynamic-row.js',)
+ABILIAN_JS = Bundle(
+    'js/abilian.js',
+    'js/datatables-setup.js',
+    'js/datatables-advanced-search.js',
+    'js/widgets/base.js',
+    'js/widgets/select2.js',
+    'js/widgets/richtext.js',
+    'js/widgets/delete.js',
+    'js/widgets/file.js',
+    'js/widgets/image.js',
+    'js/widgets/tags.js',
+    'js/widgets/dynamic-row.js',)
 
-LESS = Bundle(BOOTSTRAP_LESS,
-              FONTAWESOME_LESS,
-              SELECT2_LESS,
-              TYPEAHEAD_LESS,
-              BOOTSTRAP_DATEPICKER_LESS,
-              BOOTSTRAP_SWITCH_LESS,
-              BOOTSTRAP_TIMEPICKER_LESS,
-              DATATABLE_LESS,
-              ABILIAN_LESS,)
+LESS = Bundle(
+    BOOTSTRAP_LESS,
+    FONTAWESOME_LESS,
+    SELECT2_LESS,
+    TYPEAHEAD_LESS,
+    BOOTSTRAP_DATEPICKER_LESS,
+    BOOTSTRAP_SWITCH_LESS,
+    BOOTSTRAP_TIMEPICKER_LESS,
+    DATATABLE_LESS,
+    ABILIAN_LESS,)
 
 TOP_JS = Bundle(REQUIRE_JS, JQUERY, ABILIAN_JS_NS)
 
-JS = Bundle(BOOTSTRAP_JS,
-            TYPEAHEAD_JS,
-            BOOTBOX_JS,
-            SELECT2_JS,
-            BOOTSTRAP_DATEPICKER_JS,
-            BOOTSTRAP_SWITCH_JS,
-            BOOTSTRAP_TIMEPICKER_JS,
-            DATATABLE_JS,
-            FILEAPI_JS,
-            ABILIAN_JS,)
+JS = Bundle(
+    BOOTSTRAP_JS,
+    TYPEAHEAD_JS,
+    BOOTBOX_JS,
+    SELECT2_JS,
+    BOOTSTRAP_DATEPICKER_JS,
+    BOOTSTRAP_SWITCH_JS,
+    BOOTSTRAP_TIMEPICKER_JS,
+    DATATABLE_JS,
+    FILEAPI_JS,
+    ABILIAN_JS,)
 
-JS_I18N = ('select2/select2_locale_{lang}.js',
-           'bootstrap-datepicker/js/locales/bootstrap-datepicker.{lang}.js',)
+JS_I18N = (
+    'select2/select2_locale_{lang}.js',
+    'bootstrap-datepicker/js/locales/bootstrap-datepicker.{lang}.js',)

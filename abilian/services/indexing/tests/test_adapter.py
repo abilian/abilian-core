@@ -31,8 +31,9 @@ class SANotIndexable(IdMixin, db.Model):
 class Indexable(IdMixin, CoreIndexable, db.Model):
     __tablename__ = 'sa_indexable'
     __indexation_args__ = dict(
-        index_to=(('related.name', ('name', 'text')),
-                  ('related.description', 'text'),),)
+        index_to=(
+            ('related.name', ('name', 'text')),
+            ('related.description', 'text'),),)
 
     num = sa.Column(
         sa.Integer,

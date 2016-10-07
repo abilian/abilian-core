@@ -410,11 +410,13 @@ class SecurityTestCase(IntegrationTestCase):
         obj_none = DummyModel(name='none')
         self.session.add_all([obj_reader, obj_writer, obj_none])
 
-        assigments = [PermissionAssignment(
-            role=Reader, permission=READ, object=obj_reader),
-                      #
-                      PermissionAssignment(
-                          role=Writer, permission=WRITE, object=obj_writer)]
+        assigments = [
+            PermissionAssignment(
+                role=Reader, permission=READ, object=obj_reader),
+            #
+            PermissionAssignment(
+                role=Writer, permission=WRITE, object=obj_writer)
+        ]
         self.session.add_all(assigments)
         self.session.flush()
 
@@ -488,11 +490,13 @@ class SecurityTestCase(IntegrationTestCase):
 
         obj_reader.creator = user
         obj_writer.owner = user
-        assigments = [PermissionAssignment(
-            role=Creator, permission=READ, object=obj_reader),
-                      #
-                      PermissionAssignment(
-                          role=Owner, permission=WRITE, object=obj_writer)]
+        assigments = [
+            PermissionAssignment(
+                role=Creator, permission=READ, object=obj_reader),
+            #
+            PermissionAssignment(
+                role=Owner, permission=WRITE, object=obj_writer)
+        ]
         self.session.add_all(assigments)
         self.session.flush()
 

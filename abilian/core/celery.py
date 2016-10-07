@@ -23,11 +23,8 @@ def default_app_factory():
     return Application()
 
 
-CELERY_CONF_KEY_PREFIXES = ('CELERY_',
-                            'CELERYD_',
-                            'BROKER_',
-                            'CELERYBEAT_',
-                            'CELERYMON_',)
+CELERY_CONF_KEY_PREFIXES = ('CELERY_', 'CELERYD_', 'BROKER_', 'CELERYBEAT_',
+                            'CELERYMON_')
 
 
 def is_celery_setting(key):

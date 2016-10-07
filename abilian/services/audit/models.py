@@ -110,9 +110,10 @@ class AuditEntry(db.Model):
 
     def __repr__(self):
         return '<AuditEntry id={} op={} user={} {}entity=<{} id={}>>'.format(
-            repr(self.id), {CREATION: "CREATION",
-                            DELETION: "DELETION",
-                            UPDATE: "UPDATE"}[self.op],
+            repr(self.id),
+            {CREATION: "CREATION",
+             DELETION: "DELETION",
+             UPDATE: "UPDATE"}[self.op],
             repr(text_type(self.user)), 'related '
             if self.related else '', self.entity_type, self.entity_id)
 

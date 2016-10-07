@@ -15,9 +15,11 @@ from .models import BaseVocabulary
 
 
 def _vocabularies():
-    return {cls
-            for cls in BaseVocabulary._decl_class_registry.values()
-            if isclass(cls) and issubclass(cls, BaseVocabulary)}
+    return {
+        cls
+        for cls in BaseVocabulary._decl_class_registry.values()
+        if isclass(cls) and issubclass(cls, BaseVocabulary)
+    }
 
 
 def _grouped_vocabularies():

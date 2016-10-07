@@ -37,9 +37,11 @@ from abilian.core.util import utc_dt
 from .util import babel2datetime
 from .widgets import DateInput, DateTimeInput, FileInput, Select2, Select2Ajax
 
-__all__ = ['ModelFieldList', 'FileField', 'DateField', 'Select2Field',
-           'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',
-           'JsonSelect2MultipleField', 'FormField']
+__all__ = [
+    'ModelFieldList', 'FileField', 'DateField', 'Select2Field',
+    'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',
+    'JsonSelect2MultipleField', 'FormField'
+]
 
 
 class FormField(BaseFormField):
@@ -503,7 +505,8 @@ class QuerySelect2Field(SelectFieldBase):
         if get_pk is None:
             if not has_identity_key:
                 raise Exception(
-                    'The sqlalchemy identity_key function could not be imported.')
+                    'The sqlalchemy identity_key function could not be imported.'
+                )
             self.get_pk = get_pk_from_identity
         else:
             self.get_pk = get_pk
@@ -526,8 +529,9 @@ class QuerySelect2Field(SelectFieldBase):
             if not self.multiple:
                 formdata = [formdata]
             formdata = set(formdata)
-            data = [obj for pk, obj in self._get_object_list()
-                    if pk in formdata]
+            data = [
+                obj for pk, obj in self._get_object_list() if pk in formdata
+            ]
             if all(hasattr(x, 'name') for x in data):
                 data = sorted(data, key=lambda x: x.name)
             else:
@@ -683,8 +687,10 @@ class JsonSelect2Field(SelectFieldBase):
         if formdata:
             if not self.multiple:
                 formdata = [formdata]
-            data = [self.model_class.query.get(int(pk)) for pk in formdata
-                    if pk not in (u'', None)]
+            data = [
+                self.model_class.query.get(int(pk)) for pk in formdata
+                if pk not in (u'', None)
+            ]
             if not self.multiple:
                 data = data[0] if data else None
             self._set_data(data)

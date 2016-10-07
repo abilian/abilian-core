@@ -114,16 +114,20 @@ def test_form_permissions_controller():
         dyn_roles.return_value = [MarkRole]
         fp = FormPermissions(read=dyn_roles)
         fp.has_permission(READ)
-        assert dyn_roles.call_args == [dict(
-            permission=READ, field=None, obj=None)]
+        assert dyn_roles.call_args == [
+            dict(
+                permission=READ, field=None, obj=None)
+        ]
         assert has_role.call_args[-1]['role'] == [MarkRole]
 
         has_role.reset_mock()
         dyn_roles.reset_mock()
         fp = FormPermissions(read=[Owner, dyn_roles])
         fp.has_permission(READ)
-        assert dyn_roles.call_args == [dict(
-            permission=READ, field=None, obj=None)]
+        assert dyn_roles.call_args == [
+            dict(
+                permission=READ, field=None, obj=None)
+        ]
         assert has_role.call_args[-1]['role'] == [Owner, MarkRole]
 
 

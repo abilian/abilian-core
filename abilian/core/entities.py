@@ -136,8 +136,10 @@ class _EntityInherit(object):
 
     @declared_attr
     def __mapper_args__(cls):
-        return {'polymorphic_identity': cls.entity_type,
-                'inherit_condition': cls.id == Entity.id}
+        return {
+            'polymorphic_identity': cls.entity_type,
+            'inherit_condition': cls.id == Entity.id
+        }
 
 
 BaseMeta = db.Model.__class__
@@ -244,10 +246,12 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     __indexation_args__.update(Indexable.__indexation_args__)
     index_to = __indexation_args__.setdefault('index_to', ())
     index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
-    index_to += (('_indexable_roles_and_users', ('allowed_roles_and_users',)),
-                 ('_indexable_tag_ids', ('tag_ids',)),
-                 ('_indexable_tag_text', ('tag_text',
-                                          'text',)),)
+    index_to += (
+        ('_indexable_roles_and_users', ('allowed_roles_and_users',)),
+        ('_indexable_tag_ids', ('tag_ids',)),
+        ('_indexable_tag_text', (
+            'tag_text',
+            'text',)),)
     __indexation_args__['index_to'] = index_to
     del index_to
 
@@ -290,8 +294,10 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
             return {'polymorphic_on': '_entity_type'}
 
         else:
-            return {'polymorphic_identity': cls.entity_type,
-                    'inherit_condition': cls.id == Entity.id}
+            return {
+                'polymorphic_identity': cls.entity_type,
+                'inherit_condition': cls.id == Entity.id
+            }
 
     #: The name is a string that is shown to the user; it could be a title
     #: for document, a folder name, etc.
@@ -365,9 +371,11 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
             if self.id is not None:
                 query = query.filter(Entity.id != self.id)
             slug_re = re.compile(re.escape(slug) + r'-?(-\d+)?')
-            results = [int(m.group(1) or 0)  # 0: for the unnumbered slug
-                       for m in (slug_re.match(s.slug) for s in query.all()
-                                 if s.slug) if m]
+            results = [
+                int(m.group(1) or 0)  # 0: for the unnumbered slug
+                for m in (slug_re.match(s.slug) for s in query.all() if s.slug)
+                if m
+            ]
 
             max_id = max(-1, -1, *results) + 1
             if max_id:
@@ -392,8 +400,9 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         for r in allowed_roles:
             result.append(indexable_role(r))
 
-        for role, attr in ((Creator, 'creator'),
-                           (Owner, 'owner'),):
+        for role, attr in (
+            (Creator, 'creator'),
+            (Owner, 'owner'),):
             if role in allowed_roles:
                 user = getattr(self, attr)
                 if user:
@@ -480,8 +489,10 @@ def all_entity_classes():
     """
     persistent_classes = Entity._decl_class_registry.values()
     # with sqlalchemy 0.8 _decl_class_registry holds object that are not classes
-    return [cls for cls in persistent_classes
-            if isclass(cls) and issubclass(cls, Entity)]
+    return [
+        cls for cls in persistent_classes
+        if isclass(cls) and issubclass(cls, Entity)
+    ]
 
 
 def register_all_entity_classes():

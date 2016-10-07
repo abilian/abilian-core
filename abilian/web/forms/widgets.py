@@ -150,8 +150,10 @@ class BaseTableView(object):
             offset = 1
 
         for idx, c in enumerate(self.columns, offset):
-            aoColumns.append({'asSorting': c['sorting'],
-                              'sWidth': str(c['width'])})
+            aoColumns.append({
+                'asSorting': c['sorting'],
+                'sWidth': str(c['width'])
+            })
             aaSorting.append([idx, c['sorting'][0]])
 
         datatable_options = {
@@ -302,8 +304,10 @@ class AjaxMainTableView(object):
 
     def render(self):
         aoColumns = [{'asSorting': []}] if self.show_controls else []
-        aoColumns += [{'asSorting': col['sorting'],
-                       'bSortable': col['sortable']} for col in self.columns]
+        aoColumns += [{
+            'asSorting': col['sorting'],
+            'bSortable': col['sortable']
+        } for col in self.columns]
         datatable_options = {
             'sDom': 'fFriltip',
             'aoColumns': aoColumns,
@@ -779,12 +783,13 @@ class ImageInput(FileInput):
     data has to provide an attribute named `url`.
     """
 
-    def __init__(self,
-                 template='widgets/image_input.html',
-                 width=120,
-                 height=120,
-                 resize_mode=image.CROP,
-                 valid_extensions=('jpg', 'jpeg', 'png'),):
+    def __init__(
+            self,
+            template='widgets/image_input.html',
+            width=120,
+            height=120,
+            resize_mode=image.CROP,
+            valid_extensions=('jpg', 'jpeg', 'png'),):
         super(ImageInput, self).__init__(template=template)
         self.resize_mode = resize_mode
         self.valid_extensions = valid_extensions
@@ -863,8 +868,10 @@ class Chosen(Select):
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
-        html = [u'<select %s class="chzn-select">' % html_params(
-            name=field.name, **kwargs)]
+        html = [
+            u'<select %s class="chzn-select">' % html_params(
+                name=field.name, **kwargs)
+        ]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
         html.append(u'</select>')
@@ -1001,8 +1008,10 @@ class TimeInput(Input):
             'data-modal-backdrop': self.modalBackdrop
         }
 
-        input_params = {k: Markup(json.dumps(v))
-                        for k, v in input_params.items()}
+        input_params = {
+            k: Markup(json.dumps(v))
+            for k, v in input_params.items()
+        }
 
         ctx = dict(
             id=field_id,
@@ -1250,10 +1259,16 @@ class URLWidget(object):
 class RichTextWidget(object):
     template = 'widgets/richtext.html'
     allowed_tags = {
-        'a': {'href': True,
-              'title': True},
-        'abbr': {'title': True},
-        'acronym': {'title': True},
+        'a': {
+            'href': True,
+            'title': True
+        },
+        'abbr': {
+            'title': True
+        },
+        'acronym': {
+            'title': True
+        },
         'b': True,
         'blockquote': True,
         'br': True,
@@ -1266,7 +1281,9 @@ class RichTextWidget(object):
         'h5': True,
         'h6': True,
         'i': True,
-        'img': {'src': True},
+        'img': {
+            'src': True
+        },
         'li': True,
         'ol': True,
         'strong': True,
@@ -1301,8 +1318,9 @@ class ListWidget(wtforms.widgets.ListWidget):
             return super(ListWidget, self).__call__(field, **kwargs)
 
         kwargs.setdefault('id', field.id)
-        html = [u'<%s %s>' %
-                (self.html_tag, wtforms.widgets.html_params(**kwargs))]
+        html = [
+            u'<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs))
+        ]
         for subfield in field:
             html.append(u'<li>{}</li>'.format(subfield()))
 
@@ -1314,9 +1332,10 @@ class ListWidget(wtforms.widgets.ListWidget):
         is_empty = data == [] if field.multiple else data is None
 
         if not is_empty:
-            data = ([label for v, label, checked in field.iter_choices()
-                     if checked] if hasattr(field, 'iter_choices') and
-                    callable(field.iter_choices) else field.object_data)
+            data = ([
+                label for v, label, checked in field.iter_choices() if checked
+            ] if hasattr(field, 'iter_choices') and callable(field.iter_choices)
+                    else field.object_data)
         else:
             data = []
 
@@ -1445,8 +1464,10 @@ class Select2(Select):
         return Select.__call__(self, field, *args, **kwargs)
 
     def render_view(self, field, **kwargs):
-        labels = [text_type(label) for v, label, checked in field.iter_choices()
-                  if checked]
+        labels = [
+            text_type(label) for v, label, checked in field.iter_choices()
+            if checked
+        ]
         return u'; '.join(labels)
 
     @classmethod

@@ -98,9 +98,10 @@ class SettingsPanel(AdminPanel):
 
     # FIXME: this is very basic, and we support only "string" at this time. A form
     # shoud be used. Really.
-    _keys = (Key('SITE_NAME', 'string', _l(u'Site name')),
-             Key('MAIL_SENDER', 'string', _l(u'Mail sender')),
-             SessionLifeTimeKey(),)
+    _keys = (
+        Key('SITE_NAME', 'string', _l(u'Site name')),
+        Key('MAIL_SENDER', 'string', _l(u'Mail sender')),
+        SessionLifeTimeKey(),)
 
     @property
     def settings(self):

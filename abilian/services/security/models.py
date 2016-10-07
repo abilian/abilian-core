@@ -21,10 +21,12 @@ from abilian.core.models.subjects import Group, User
 from abilian.core.singleton import UniqueName, UniqueNameType
 from abilian.i18n import _l
 
-__all__ = ['RoleAssignment', 'PermissionAssignment', 'SecurityAudit',
-           'InheritSecurity', 'Permission', 'MANAGE', 'READ', 'WRITE', 'CREATE',
-           'DELETE', 'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
-           'Creator', 'Owner', 'Reader', 'Writer', 'RoleType']
+__all__ = [
+    'RoleAssignment', 'PermissionAssignment', 'SecurityAudit',
+    'InheritSecurity', 'Permission', 'MANAGE', 'READ', 'WRITE', 'CREATE',
+    'DELETE', 'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
+    'Creator', 'Owner', 'Reader', 'Writer', 'RoleType'
+]
 
 
 @total_ordering

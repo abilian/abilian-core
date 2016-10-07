@@ -33,11 +33,12 @@ from .base import SEARCHABLE, SYSTEM, IdMixin, Indexable, TimestampedMixin, db
 __all__ = ['User', 'Group', 'Principal']
 
 # Tables for many-to-many relationships
-following = Table('following',
-                  db.Model.metadata,
-                  Column('follower_id', Integer, ForeignKey('user.id')),
-                  Column('followee_id', Integer, ForeignKey('user.id')),
-                  UniqueConstraint('follower_id', 'followee_id'),)
+following = Table(
+    'following',
+    db.Model.metadata,
+    Column('follower_id', Integer, ForeignKey('user.id')),
+    Column('followee_id', Integer, ForeignKey('user.id')),
+    UniqueConstraint('follower_id', 'followee_id'),)
 membership = Table(
     'membership',
     db.Model.metadata,

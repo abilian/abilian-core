@@ -123,9 +123,10 @@ class SettingsServiceTestCase(BaseTestCase):
         self.assertEqual(sorted(svc.keys(prefix='key_')), ['key_1', 'key_2'])
 
         # as dict
-        self.assertEqual(svc.as_dict(), {'other': u'azerty',
-                                         'key_1': 1,
-                                         'key_2': 2})
+        self.assertEqual(svc.as_dict(),
+                         {'other': u'azerty',
+                          'key_1': 1,
+                          'key_2': 2})
         self.assertEqual(svc.as_dict(prefix='key_'), {'key_1': 1, 'key_2': 2})
 
     def test_namespace(self):
@@ -158,10 +159,12 @@ class SettingsServiceTestCase(BaseTestCase):
         self.assertEqual(sub.as_dict(), {'1': 1, '2': 2})
         self.assertEqual(ns.as_dict(prefix='sub:'), {'sub:1': 1, 'sub:2': 2})
         self.assertEqual(ns.as_dict(), {'1': 42, 'sub:1': 1, 'sub:2': 2})
-        self.assertEqual(svc.as_dict(), {'other': u'not in NS',
-                                         'test:1': 42,
-                                         'test:sub:1': 1,
-                                         'test:sub:2': 2})
+        self.assertEqual(svc.as_dict(), {
+            'other': u'not in NS',
+            'test:1': 42,
+            'test:sub:1': 1,
+            'test:sub:2': 2
+        })
 
         # deletion
         sub.delete('1')

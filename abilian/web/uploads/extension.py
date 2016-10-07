@@ -162,8 +162,9 @@ class FileUploadsExtension(object):
         return meta
 
     def remove_file(self, user, handle):
-        paths = (self.get_file(user, handle),
-                 self.get_metadata_file(user, handle),)
+        paths = (
+            self.get_file(user, handle),
+            self.get_metadata_file(user, handle),)
 
         for file_path in paths:
             if file_path is not None:

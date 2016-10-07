@@ -151,10 +151,12 @@ class PreferenceService(Service):
                     continue
                 endpoint = 'preferences.' + panel.id
                 active = endpoint == request.endpoint
-                entry = {'endpoint': endpoint,
-                         'label': panel.label,
-                         'url': url_for(endpoint),
-                         'active': active}
+                entry = {
+                    'endpoint': endpoint,
+                    'label': panel.label,
+                    'url': url_for(endpoint),
+                    'active': active
+                }
                 menu.append(entry)
             return dict(menu=menu)
 

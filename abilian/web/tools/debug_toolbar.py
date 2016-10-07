@@ -101,8 +101,8 @@ class SignalsDebugPanel(DebugPanel):
                         'ns_name': ns_name,
                         'signal_name': signal_name,
                         'signal': signal,
-                        'receivers': [text_type(r)
-                                      for r in signal.receivers.values()]
+                        'receivers':
+                        [text_type(r) for r in signal.receivers.values()]
                     }
                     signals.append(d)
 

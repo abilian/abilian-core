@@ -78,9 +78,11 @@ def reindex(clear=False, progressive=False, batch_size=None):
                 print("{}: 0".format(name))
                 continue
 
-            widgets = [name, ': ', progressbar.Counter(), '/{}'.format(count),
-                       ' ', progressbar.Timer(), ' ', progressbar.Percentage(),
-                       ' ', progressbar.Bar(), ' ', progressbar.ETA()]
+            widgets = [
+                name, ': ', progressbar.Counter(), '/{}'.format(count), ' ',
+                progressbar.Timer(), ' ', progressbar.Percentage(), ' ',
+                progressbar.Bar(), ' ', progressbar.ETA()
+            ]
             progress = progressbar.ProgressBar(widgets=widgets, maxval=count)
             progress.start()
             count_current = 0

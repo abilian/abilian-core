@@ -32,9 +32,10 @@ class TestVocabularies(BaseTestCase):
 
         # test registered vocabularies
         assert vocabularies.vocabularies == {PriorityVoc, StateVoc, DocCatVoc}
-        assert (
-            vocabularies.grouped_vocabularies == {None: [StateVoc, PriorityVoc],
-                                                  'documents': [DocCatVoc]})
+        assert (vocabularies.grouped_vocabularies == {
+            None: [StateVoc, PriorityVoc],
+            'documents': [DocCatVoc]
+        })
         assert vocabularies.get_vocabulary('priorities') is PriorityVoc
         assert vocabularies.get_vocabulary('priorities', 'nogroup') is None
         assert vocabularies.get_vocabulary('categories',

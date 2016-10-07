@@ -314,8 +314,8 @@ class WhooshIndexService(Service):
                 roles |= set(
                     indexable_role(r) for r in security.get_roles(user))
 
-            filter_q = wq.Or([wq.Term('allowed_roles_and_users', role)
-                              for role in roles])
+            filter_q = wq.Or(
+                [wq.Term('allowed_roles_and_users', role) for role in roles])
             filters.append(filter_q)
 
         object_types = set(object_types)
@@ -371,8 +371,9 @@ class WhooshIndexService(Service):
                 sr = results
                 results = {}
                 for typename, doc_ids in sr.groups('object_type').items():
-                    results[typename] = [sr[positions[oid]]
-                                         for oid in doc_ids[:collapse_limit]]
+                    results[typename] = [
+                        sr[positions[oid]] for oid in doc_ids[:collapse_limit]
+                    ]
 
             return results
 
@@ -411,9 +412,10 @@ class WhooshIndexService(Service):
             return
 
         to_update = self.app_state.to_update
-        session_objs = (('new', session.new),
-                        ('deleted', session.deleted),
-                        ('changed', session.dirty),)
+        session_objs = (
+            ('new', session.new),
+            ('deleted', session.deleted),
+            ('changed', session.dirty),)
         for key, objs in session_objs:
             for obj in objs:
                 model_name = fqcn(obj.__class__)

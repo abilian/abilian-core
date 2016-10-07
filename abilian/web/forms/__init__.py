@@ -104,10 +104,10 @@ class FormPermissions(object):
                 roles = (roles,)
             self.form[permission] = roles
 
-        fields_defs = ((fields_read, READ),
-                       (fields_write, WRITE),
-                       (fields_write, CREATE),
-                      )  # checking against CREATE permission
+        fields_defs = (
+            (fields_read, READ),
+            (fields_write, WRITE),
+            (fields_write, CREATE),)  # checking against CREATE permission
         # at field level is the same as
         # WRITE permisssion
         for fields, permission in fields_defs:

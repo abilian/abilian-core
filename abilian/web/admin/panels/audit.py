@@ -55,8 +55,8 @@ class JSONUserSearch(JSONView):
         for part in q.split(u' '):
             filters.append(
                 sa.sql.or_(
-                    lower(User.first_name).like(part + "%"), lower(
-                        User.last_name).like(part + "%")))
+                    lower(User.first_name).like(part + "%"),
+                    lower(User.last_name).like(part + "%")))
 
         filters = sa.sql.and_(*filters) if len(filters) > 1 else filters[0]
 
@@ -69,13 +69,15 @@ class JSONUserSearch(JSONView):
             .filter(filters) \
             .order_by(User.last_name, User.first_name)
 
-        result = {'results': [
-            {'id': obj.id,
-             'text':
-             u'{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)}
-            for obj in query.values(User.id, User.first_name, User.last_name,
-                                    User.email)
-        ]}
+        result = {
+            'results': [{
+                'id': obj.id,
+                'text':
+                u'{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)
+            }
+                        for obj in query.values(User.id, User.first_name,
+                                                User.last_name, User.email)]
+        }
         return result
 
 
@@ -268,8 +270,9 @@ class BaseEntryPresenter(object):
         return cmp(self.date, other.date)
 
     def __repr__(self):
-        return '{}({}, {} @ {})'.format(
-            self.__class__.__name__, repr(self.user), repr(self.date), id(self))
+        return '{}({}, {} @ {})'.format(self.__class__.__name__,
+                                        repr(self.user), repr(self.date),
+                                        id(self))
 
     @staticmethod
     def model(model_name):

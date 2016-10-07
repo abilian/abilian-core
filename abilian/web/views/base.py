@@ -102,8 +102,8 @@ class JSONView(View):
 
     def get(self, *args, **kwargs):
         data = self.data(*args, **kwargs)
-        best_mime = request.accept_mimetypes.best_match(['text/html',
-                                                         'application/json'])
+        best_mime = request.accept_mimetypes.best_match(
+            ['text/html', 'application/json'])
         if best_mime == 'application/json':
             return jsonify(data)
 

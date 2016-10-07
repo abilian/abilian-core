@@ -20,8 +20,9 @@ import sqlalchemy as sa
 from ..sqlalchemy import SQLAlchemy
 from .csrf import wtf_csrf as csrf, abilian_csrf
 
-__all__ = ['get_extension', 'db', 'mail', 'login_manager', 'csrf',
-           'upstream_info']
+__all__ = [
+    'get_extension', 'db', 'mail', 'login_manager', 'csrf', 'upstream_info'
+]
 
 
 # patch flask.ext.mail.Message.send to always set enveloppe_from default mail

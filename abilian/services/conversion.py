@@ -371,9 +371,10 @@ class AbiwordTextHandler(Handler):
              make_temp_file(suffix='.txt') as out_fn:
             try:
                 os.chdir(str(tmp_dir))
-                subprocess.check_call(['abiword', '--to',
-                                       os.path.basename(out_fn),
-                                       os.path.basename(in_fn)])
+                subprocess.check_call([
+                    'abiword', '--to', os.path.basename(out_fn),
+                    os.path.basename(in_fn)
+                ])
             except Exception as e:
                 raise_from(ConversionError('abiword failed'), e)
             finally:
@@ -394,9 +395,11 @@ class AbiwordTextHandler(Handler):
 
 
 class AbiwordPDFHandler(Handler):
-    accepts_mime_types = ['application/msword',
-                          'application/vnd.oasis.opendocument.text',
-                          'text/rtf',]
+    accepts_mime_types = [
+        'application/msword',
+        'application/vnd.oasis.opendocument.text',
+        'text/rtf',
+    ]
     produces_mime_types = ['application/pdf']
 
     def convert(self, blob, **kw):
@@ -405,9 +408,10 @@ class AbiwordPDFHandler(Handler):
              make_temp_file(suffix='.pdf') as out_fn:
             try:
                 os.chdir(bytes(self.TMP_DIR))
-                subprocess.check_call(['abiword', '--to',
-                                       os.path.basename(out_fn),
-                                       os.path.basename(in_fn)])
+                subprocess.check_call([
+                    'abiword', '--to', os.path.basename(out_fn),
+                    os.path.basename(in_fn)
+                ])
             except Exception as e:
                 raise_from(ConversionError('abiword failed'), e)
             finally:
@@ -506,8 +510,10 @@ class UnoconvPdfHandler(Handler):
         # Hack for my Mac, FIXME later
         if os.path.exists(
                 "/Applications/LibreOffice.app/Contents/program/python"):
-            cmd = ['/Applications/LibreOffice.app/Contents/program/python',
-                   '/usr/local/bin/unoconv', '--version']
+            cmd = [
+                '/Applications/LibreOffice.app/Contents/program/python',
+                '/usr/local/bin/unoconv', '--version'
+            ]
         else:
             cmd = [self.unoconv, '--version']
 
@@ -525,9 +531,10 @@ class UnoconvPdfHandler(Handler):
             # Hack for my Mac, FIXME later
             if os.path.exists(
                     "/Applications/LibreOffice.app/Contents/program/python"):
-                cmd = ['/Applications/LibreOffice.app/Contents/program/python',
-                       '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn,
-                       in_fn]
+                cmd = [
+                    '/Applications/LibreOffice.app/Contents/program/python',
+                    '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn
+                ]
             else:
                 cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
 

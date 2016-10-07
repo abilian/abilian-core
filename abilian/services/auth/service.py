@@ -64,14 +64,15 @@ user_menu = NavGroup(
         url=lambda context: url_for('login.logout'),
         divider=True),))
 
-_ACTIONS = (NavItem(
-    'user',
-    'login',
-    title=_l(u'Login'),
-    icon='log-in',
-    url=lambda context: url_for('login.login_form'),
-    condition=is_anonymous),
-            user_menu,)
+_ACTIONS = (
+    NavItem(
+        'user',
+        'login',
+        title=_l(u'Login'),
+        icon='log-in',
+        url=lambda context: url_for('login.login_form'),
+        condition=is_anonymous),
+    user_menu,)
 
 
 class AuthServiceState(ServiceState):

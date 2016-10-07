@@ -32,8 +32,9 @@ setup = Blueprint(
 # list supported dialects and detect unavailable ones due to missing dbapi
 # module ('psycopg2' missing for example)
 
-_dialects = OrderedDict((('sqlite', u'SQLite (for demo)'),
-                         ('postgres', u'PostgreSQL'),))
+_dialects = OrderedDict((
+    ('sqlite', u'SQLite (for demo)'),
+    ('postgres', u'PostgreSQL'),))
 
 _dialects_unavailable = OrderedDict()
 
@@ -49,9 +50,9 @@ Step = namedtuple('SetupStep', ('name', 'endpoint', 'title', 'description'))
 
 _setup_steps = (
     Step('db', 'step_db', 'Setup Database', 'Setup basic database connection'),
-    Step('redis', 'step_redis', 'Setup Redis', 'Redis connection'),
-    Step('site_info', 'step_site_info', 'Basic site informations',
-         'Site name, admin email...'),
+    Step('redis', 'step_redis', 'Setup Redis', 'Redis connection'), Step(
+        'site_info', 'step_site_info', 'Basic site informations',
+        'Site name, admin email...'),
     Step('admin_account', 'step_admin_account', u'Admin account', None),
     Step('finalize', 'finalize', 'Finalize', None))
 

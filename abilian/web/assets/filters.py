@@ -242,9 +242,10 @@ class Less(ExternalTool):
             args.append('--line-numbers=%s' % self.line_numbers)
 
         if self.paths:
-            paths = [path
-                     if isabs(path) else self.ctx.resolver.resolve_source(path)
-                     for path in self.pathsep]
+            paths = [
+                path if isabs(path) else self.ctx.resolver.resolve_source(path)
+                for path in self.pathsep
+            ]
             args.append('--include-path={0}'.format(os.pathsep.join(paths)))
 
         #
@@ -291,8 +292,9 @@ class Less(ExternalTool):
 
         src_path = os.path.normpath(
             os.path.abspath(os.path.join(cur_path, url)))
-        possible_paths = [p for p in self.ctx.url_mapping.keys()
-                          if src_path.startswith(p)]
+        possible_paths = [
+            p for p in self.ctx.url_mapping.keys() if src_path.startswith(p)
+        ]
         if not possible_paths:
             return url
 
@@ -343,7 +345,8 @@ class ClosureJS(BaseClosureJS):
         try:
             smap_idx = self.extra_args.index('--create_source_map')
             smap_path = Path(self.extra_args[smap_idx + 1])
-        except (ValueError,
+        except (
+                ValueError,
                 IndexError,):
             return
 
@@ -355,8 +358,9 @@ class ClosureJS(BaseClosureJS):
         self.fix_source_map_urls(str(smap_path))
 
     def fix_url(self, cur_path, src_path):
-        possible_paths = [p for p in self.ctx.url_mapping.keys()
-                          if src_path.startswith(p)]
+        possible_paths = [
+            p for p in self.ctx.url_mapping.keys() if src_path.startswith(p)
+        ]
         if not possible_paths:
             # FIXME: url is not defined at this point, this can't work.
             return url

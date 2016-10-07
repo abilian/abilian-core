@@ -60,10 +60,10 @@ class Indexable(object):
     """
     __indexable__ = True
     __indexation_args__ = {
-        'index_to': (('object_key', (('object_key', ID(stored=True,
-                                                       unique=True)),)),
-                     ('object_type', (('object_type', ID(stored=True,
-                                                         unique=False)),)),),
+        'index_to': (
+            ('object_key', (('object_key', ID(stored=True, unique=True)),)),
+            ('object_type', (('object_type', ID(stored=True,
+                                                unique=False)),)),),
     }
 
     @classmethod

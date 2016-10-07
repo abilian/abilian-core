@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, \
 
 from functools import wraps
 from itertools import chain
-from typing import Dict, Set
 
 import sqlalchemy as sa
 from flask import current_app, g
@@ -15,6 +14,7 @@ from flask_login import current_user
 from six import string_types, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
+from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -31,8 +31,10 @@ from abilian.services.security.models import CREATE, DELETE, MANAGE, \
 #: instance
 PERMISSIONS = frozenset(['read', 'write', 'manage'])
 
-__all__ = ['security', 'SecurityError', 'SecurityService', 'InheritSecurity',
-           'SecurityAudit']
+__all__ = [
+    'security', 'SecurityError', 'SecurityService', 'InheritSecurity',
+    'SecurityAudit'
+]
 
 #: default security matrix
 DEFAULT_PERMISSION_ROLE = dict()
@@ -789,8 +791,10 @@ class SecurityService(Service):
 
     def filter_with_permission(self, user, permission, obj_list, inherit=False):
         user = noproxy(user)
-        return [obj for obj in obj_list
-                if self.has_permission(user, permission, obj, inherit)]
+        return [
+            obj for obj in obj_list
+            if self.has_permission(user, permission, obj, inherit)
+        ]
 
 # Instanciate the service
 security = SecurityService()

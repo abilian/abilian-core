@@ -110,34 +110,32 @@ default_config.update(
     BABEL_ACCEPT_LANGUAGES=None,
     DEFAULT_COUNTRY=None,
     PLUGINS=(),
-    ADMIN_PANELS=(
-        'abilian.web.admin.panels.dashboard.DashboardPanel',
-        'abilian.web.admin.panels.audit.AuditPanel',
-        'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
-        'abilian.web.admin.panels.settings.SettingsPanel',
-        'abilian.web.admin.panels.users.UsersPanel',
-        'abilian.web.admin.panels.groups.GroupsPanel',
-        'abilian.web.admin.panels.sysinfo.SysinfoPanel',
-        'abilian.services.vocabularies.admin.VocabularyPanel',
-        'abilian.web.tags.admin.TagPanel',
-    ),
+    ADMIN_PANELS=('abilian.web.admin.panels.dashboard.DashboardPanel',
+                  'abilian.web.admin.panels.audit.AuditPanel',
+                  'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
+                  'abilian.web.admin.panels.settings.SettingsPanel',
+                  'abilian.web.admin.panels.users.UsersPanel',
+                  'abilian.web.admin.panels.groups.GroupsPanel',
+                  'abilian.web.admin.panels.sysinfo.SysinfoPanel',
+                  'abilian.services.vocabularies.admin.VocabularyPanel',
+                  'abilian.web.tags.admin.TagPanel'),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
     CELERY_TIMEZONE=LOCALTZ,
-    SENTRY_USER_ATTRS=('email', 'first_name', 'last_name',),
+    SENTRY_USER_ATTRS=('email', 'first_name', 'last_name'),
     SENTRY_INSTALL_CLIENT_JS=True,  # also install client JS
     # TODO: upgrade to SENTRY_JS_VERSION='3.5.1',
     SENTRY_JS_VERSION='1.1.22',
     # TODO: remove, not needed for recent sentry-js
-    SENTRY_JS_PLUGINS=('console', 'jquery', 'native', 'require',),
+    SENTRY_JS_PLUGINS=('console', 'jquery', 'native', 'require'),
     SESSION_COOKIE_NAME=None,
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
+    LOGO_URL=Endpoint(
+        'abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
-    MAIL_ADDRESS_TAG_CHAR=None,
-)
+    MAIL_ADDRESS_TAG_CHAR=None)
 default_config = ImmutableDict(default_config)
 
 
@@ -147,11 +145,9 @@ class Application(Flask, ServiceManager, PluginManager):
     default_config = default_config
 
     #: Custom apps may want to always load some plugins: list them here.
-    APP_PLUGINS = ('abilian.web.search',
-                   'abilian.web.tags',
-                   'abilian.web.comments',
-                   'abilian.web.uploads',
-                   'abilian.web.attachments',)
+    APP_PLUGINS = ('abilian.web.search', 'abilian.web.tags',
+                   'abilian.web.comments', 'abilian.web.uploads',
+                   'abilian.web.attachments')
 
     #: Environment variable used to locate a config file to load last (after
     #: instance config file). Use this if you want to override some settings on a
@@ -259,14 +255,19 @@ class Application(Flask, ServiceManager, PluginManager):
                       if self.config.get('PRODUCTION', False) else None)
 
         self._assets_bundles = {
-            'css': {'options': dict(
-                filters=('less', 'cssmin'),
-                output='style-%(version)s.min.css',)},
-            'js-top': {'options': dict(
-                output='top-%(version)s.min.js',
-                filters=js_filters,)},
-            'js': {'options': dict(
-                output='app-%(version)s.min.js', filters=js_filters)},
+            'css': {
+                'options': dict(
+                    filters=('less', 'cssmin'),
+                    output='style-%(version)s.min.css')
+            },
+            'js-top': {
+                'options': dict(
+                    output='top-%(version)s.min.js', filters=js_filters)
+            },
+            'js': {
+                'options': dict(
+                    output='app-%(version)s.min.js', filters=js_filters)
+            },
         }
 
         # bundles for JS translations
@@ -290,7 +291,7 @@ class Application(Flask, ServiceManager, PluginManager):
             # private site. We cannot do this in init_debug_toolbar, since auth
             # service is not yet installed
             self.add_access_controller('debugtoolbar',
-                                       allow_access_for_roles(Anonymous),)
+                                       allow_access_for_roles(Anonymous))
             self.add_access_controller(
                 '_debug_toolbar.static',
                 allow_access_for_roles(Anonymous),
@@ -482,7 +483,8 @@ class Application(Flask, ServiceManager, PluginManager):
                     self.config['DEBUG_TB_PANELS'] = list(default_config[
                         'DEBUG_TB_PANELS'])
                     self.config['DEBUG_TB_PANELS'].append(
-                        'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel')
+                        'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel'
+                    )
                 init_dbt(self)
                 for view_name in self.view_functions:
                     if view_name.startswith('debugtoolbar.'):
@@ -670,7 +672,7 @@ class Application(Flask, ServiceManager, PluginManager):
             url_for=url_for,
             user_photo_url=user_photo_url,
             NO_VALUE=NO_VALUE,
-            NEVER_SET=NEVER_SET,)
+            NEVER_SET=NEVER_SET)
         init_filters(env)
         return env
 
@@ -712,7 +714,8 @@ class Application(Flask, ServiceManager, PluginManager):
         """
         if not hasattr(self, '_jinja_loaders'):
             raise ValueError(
-                'Cannot register new jinja loaders after first template rendered')
+                'Cannot register new jinja loaders after first template rendered'
+            )
 
         self._jinja_loaders.extend(loaders)
 
@@ -867,7 +870,7 @@ class Application(Flask, ServiceManager, PluginManager):
             'min',
             str(assets_dir),
             endpoint='webassets_static',
-            roles=Anonymous,)
+            roles=Anonymous)
 
     def _finalize_assets_setup(self):
         assets = self.extensions['webassets']
@@ -911,8 +914,8 @@ class Application(Flask, ServiceManager, PluginManager):
         """
         supported = self._assets_bundles.keys()
         if type_ not in supported:
-            raise KeyError("Invalid type: %s. Valid types: ", repr(type_),
-                           ', '.join(sorted(supported)))
+            raise KeyError("Invalid type: %s. Valid types: ",
+                           repr(type_), ', '.join(sorted(supported)))
 
         for asset in assets:
             if not isinstance(asset, Bundle) and callable(asset):

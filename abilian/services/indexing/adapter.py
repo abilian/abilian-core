@@ -152,8 +152,8 @@ class SAAdapter(SchemaAdapter):
 
             logger.debug('Adding field to schema:\n'
                          '  Model: %s\n'
-                         '  Field: "%s" %s', Model._object_type(), field_name,
-                         field_def)
+                         '  Field: "%s" %s',
+                         Model._object_type(), field_name, field_def)
             schema.add(field_name, field_def)
 
     def retrieve(self, pk, _session=None, **data):
@@ -169,7 +169,8 @@ class SAAdapter(SchemaAdapter):
         # cache because the same attribute may be needed by many fields, i.e
         # "title" on "title" field and "full_text" field for example
         cached = {}
-        missed = set()  # negative cache. Might be used especially with dotted names
+        missed = set(
+        )  # negative cache. Might be used especially with dotted names
 
         for field, attrs in self.doc_attrs.items():
             values = []

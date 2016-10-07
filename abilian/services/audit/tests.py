@@ -117,8 +117,9 @@ class TestAudit(BaseTestCase):
         assert entry.type == UPDATE
         assert entry.entity_id == account.id
         assert entry.entity == account
-        assert entry.changes.columns == {'website':
-                                         ('', 'http://www.john.com/')}
+        assert entry.changes.columns == {
+            'website': ('', 'http://www.john.com/')
+        }
 
         account.birthday = datetime.date(2012, 12, 25)
         db.session.commit()
@@ -128,8 +129,9 @@ class TestAudit(BaseTestCase):
         assert entry.type == UPDATE
         assert entry.entity_id == account.id
         assert entry.entity == account
-        assert entry.changes.columns == {'birthday':
-                                         (None, datetime.date(2012, 12, 25))}
+        assert entry.changes.columns == {
+            'birthday': (None, datetime.date(2012, 12, 25))
+        }
 
         # content hiding
         account.password = 'new super secret password'
@@ -191,9 +193,11 @@ class TestAudit(BaseTestCase):
         assert len(changes) == 1
         assert 'data 1' in changes
         changes = changes['data 1']
-        assert changes.columns == {'text': (NEVER_SET, u'text 1'),
-                                   'account_id': (NEVER_SET, 1),
-                                   'id': (NEVER_SET, 1)}
+        assert changes.columns == {
+            'text': (NEVER_SET, u'text 1'),
+            'account_id': (NEVER_SET, 1),
+            'id': (NEVER_SET, 1)
+        }
 
         comment = CommentRelated(related=data, text='comment')
         db.session.add(comment)
@@ -208,9 +212,11 @@ class TestAudit(BaseTestCase):
         assert len(changes) == 1
         assert 'data.comments 1 1' in changes
         changes = changes['data.comments 1 1']
-        assert changes.columns == {'text': (NEVER_SET, u'comment'),
-                                   'related_id': (NEVER_SET, 1),
-                                   'id': (NEVER_SET, 1)}
+        assert changes.columns == {
+            'text': (NEVER_SET, u'comment'),
+            'related_id': (NEVER_SET, 1),
+            'id': (NEVER_SET, 1)
+        }
 
         comment = CommentRelated(related=data, text='comment 2')
         db.session.add(comment)
@@ -226,9 +232,11 @@ class TestAudit(BaseTestCase):
         assert 'data.comments 1 2' in changes
 
         changes = changes['data.comments 1 2']
-        assert changes.columns == {'text': (NEVER_SET, u'comment 2'),
-                                   'related_id': (NEVER_SET, 1),
-                                   'id': (NEVER_SET, 2)}
+        assert changes.columns == {
+            'text': (NEVER_SET, u'comment 2'),
+            'related_id': (NEVER_SET, 1),
+            'id': (NEVER_SET, 2)
+        }
 
         # deletion
         db.session.delete(comment)

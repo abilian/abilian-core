@@ -133,8 +133,8 @@ def _before_insert(mapper, connection, target):
     """
     if target.position is None:
         func = sa.sql.func
-        stmt = sa.select([func.coalesce(
-            func.max(mapper.mapped_table.c.position), -1)])
+        stmt = sa.select(
+            [func.coalesce(func.max(mapper.mapped_table.c.position), -1)])
         target.position = connection.execute(stmt).scalar() + 1
 
 # this is used to hold a reference to Vocabularies generated from
