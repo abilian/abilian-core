@@ -2,5 +2,5 @@
 Deps:
 
 - Upgrade Flaks-WTF to 0.13 and fix metaclass error
-- Run under Python 3.5
+- Run under Python 3.5 and 3.6
 
