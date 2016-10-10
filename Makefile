@@ -63,7 +63,7 @@ lint-py:
 	@echo ""
 
 lint-travis:
-	@echo "--> Linting .travix.yml files"
+	@echo "--> Linting .travis.yml files"
 	travis lint
 	@echo ""
 	
