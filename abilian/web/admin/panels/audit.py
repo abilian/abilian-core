@@ -271,8 +271,8 @@ class BaseEntryPresenter(object):
 
     def __repr__(self):
         return '{}({}, {} @ {})'.format(self.__class__.__name__,
-                                        repr(self.user), repr(self.date),
-                                        id(self))
+                                        repr(self.user),
+                                        repr(self.date), id(self))
 
     @staticmethod
     def model(model_name):

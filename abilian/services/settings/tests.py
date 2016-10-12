@@ -153,7 +153,8 @@ class SettingsServiceTestCase(BaseTestCase):
         self.assertEqual(sub.get('1'), 1)
         self.assertEqual(ns.get('1'), 42)
         self.assertEqual(
-            sorted(svc.keys()), ['other', 'test:1', 'test:sub:1', 'test:sub:2'])
+            sorted(svc.keys()),
+            ['other', 'test:1', 'test:sub:1', 'test:sub:2'])
 
         # as dict
         self.assertEqual(sub.as_dict(), {'1': 1, '2': 2})
