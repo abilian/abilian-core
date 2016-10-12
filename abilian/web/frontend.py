@@ -251,13 +251,14 @@ class EntityView(BaseEntityView, ObjectView):
             self.obj, self.form, related_views=related_views)
         audit_entries = audit_service.entries_for(self.obj)
 
-        return dict(
-            rendered_entity=rendered_entity,
-            related_views=related_views,
-            audit_entries=audit_entries,
-            show_new_comment_form=True,
-            show_new_attachment_form=True,
-            module=self.module)
+        return {
+            'rendered_entity': rendered_entity,
+            'related_views': related_views,
+            'audit_entries': audit_entries,
+            'show_new_comment_form': True,
+            'show_new_attachment_form': True,
+            'module': self.module
+        }
 
 
 class EntityEdit(BaseEntityView, ObjectEdit):
@@ -267,11 +268,12 @@ class EntityEdit(BaseEntityView, ObjectEdit):
     @property
     def template_kwargs(self):
         rendered_entity = self.single_view.render_form(self.form)
-        return dict(
-            rendered_entity=rendered_entity,
-            show_new_comment_form=False,
-            show_new_attachment_form=False,
-            module=self.module)
+        return {
+            'rendered_entity': rendered_entity,
+            'show_new_comment_form': False,
+            'show_new_attachment_form': False,
+            'module': self.module
+        }
 
 
 class EntityCreate(BaseEntityView, ObjectCreate):
@@ -287,8 +289,11 @@ class EntityCreate(BaseEntityView, ObjectCreate):
     @property
     def template_kwargs(self):
         rendered_entity = self.single_view.render_form(self.form)
-        return dict(
-            rendered_entity=rendered_entity, for_new=True, module=self.module)
+        return {
+            'rendered_entity': rendered_entity,
+            'for_new': True,
+            'module': self.module
+        }
 
 
 class EntityDelete(BaseEntityView, ObjectDelete):
@@ -374,8 +379,8 @@ class ModuleComponent(object):
 
     def init(self, *args, **kwargs):
         """
-    Implements this in components
-    """
+        Implements this in components
+        """
         pass
 
     def get_actions(self):
