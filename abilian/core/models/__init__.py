@@ -65,4 +65,4 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
             raise NotImplementedError()
 
     def __str__(self):
-        return self.name
+        return self.name or ""
