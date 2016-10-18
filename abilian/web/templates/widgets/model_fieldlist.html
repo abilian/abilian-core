@@ -1,12 +1,13 @@
 {%- from "macros/form.html" import m_field %}
 <table class="table js-widget model-field-list" data-init-with="dynamicRowWidget" data-prefix="{{ field.name }}">
   <thead>
-    <tr>
-      <th></th>
-    </tr>
+  <tr>
+    <th></th>
+  </tr>
   </thead>
+
   <tbody>
-    {%- for fieldform in field %}
+  {%- for fieldform in field %}
     <tr>
       <td>
         {%- for subfield in fieldform %}
@@ -15,6 +16,6 @@
         {%- endfor %}
       </td>
     </tr>
-    {%- endfor %}
+  {%- endfor %}
   </tbody>
 </table>

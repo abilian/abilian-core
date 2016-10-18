@@ -1,6 +1,7 @@
 {% from "macros/form.html" import  m_field with context %}
 
-<form action="{{ request.path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="edit-form" role="form" novalidate>
+<form action="{{ request.path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="edit-form"
+      role="form" novalidate>
   {{ form.csrf_token }}
 
   <div class="row">
@@ -11,12 +12,12 @@
           {%- set label_id = label | toslug %}
           {%- set has_required = form._has_required
                                  and form._has_required(fields=field_names) %}
-            {%- set error_count = form._count_errors
+          {%- set error_count = form._count_errors
                                   and form._count_errors(fields=field_names) %}
           <li role="presentation" {%- if loop.first %} class="active"{%- endif %}>
             <a href="#{{ label_id }}" role="tab" data-toggle="tab">
               <span{% if has_required %} class="required"{%- endif %}>{{ label }}</span>
-              {%- if error_count %}<span class="label label-danger pull-right">{{ error_count  }}</span>{%- endif %}
+              {%- if error_count %}<span class="label label-danger pull-right">{{ error_count }}</span>{%- endif %}
             </a>
           </li>
         {%- endfor %}
@@ -57,14 +58,15 @@
 </form>
 
 {%- deferJS %}
-{%- if form.js %}
-  <script>
- require(
-     ['Abilian']
-     function(Abilian) {
-         Abilian.fn.onAppInit(function() { {{ form.js|safe }} });
-     }
-   );
-  </script>
-{%- endif %}
+  {%- if form.js %}
+    <script>
+      require(['Abilian'],
+          function (Abilian) {
+            Abilian.fn.onAppInit(function () {
+              {{ form.js|safe }}
+            });
+          }
+      );
+    </script>
+  {%- endif %}
 {%- enddeferJS %}

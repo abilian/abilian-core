@@ -15,56 +15,55 @@
     {%- endif %}
 
     <table class="table table-striped table-bordered table-condensed"
-        id="{{ view.name }}">
+           id="{{ view.name }}">
       <thead>
-        <tr>
+      <tr>
         {%- if view.show_controls %}
           <th style="width: 1%;"></th>
         {%- endif %}
         {%- for col in view.columns %}
           <th style="width: {{ col.width }}%;">{{ col.label }}</th>
         {%- endfor %}
-        </tr>
+      </tr>
       </thead>
 
       <tbody>
       {%- for line in table %}
-          <tr>
+        <tr>
           {%- if view.show_controls %}
             <td><input type="checkbox"></td>
           {%- endif %}
           {%- for cell in line %}
             <td>{{ cell }}</td>
           {%- endfor %}
-          </tr>
+        </tr>
       {%- endfor %}
       </tbody>
 
       <tfoot>
-        <tr>
+      <tr>
         {%- if view.show_controls %}
           <th></th>
         {%- endif %}
         {%- for col in view.columns %}
           <th>{{ col.label }}</th>
         {%- endfor %}
-        </tr>
+      </tr>
       </tfoot>
     </table>
   </form>
 
   {%- deferJS %}
-  <script type="text/javascript">
-require(
-    ['Abilian'],
-    function(Abilian) {
-        Abilian.fn.onAppInit(
-            function() {
-                {{ js }}
-            }
-        );
-    });
-  </script>
+    <script type="text/javascript">
+      require(['Abilian'],
+          function (Abilian) {
+            Abilian.fn.onAppInit(
+                function () {
+                  {{ js }}
+                }
+            );
+          });
+    </script>
   {%- enddeferJS %}
 
 {%- else %}

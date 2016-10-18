@@ -1,5 +1,4 @@
 {%- set widget = view -%}
-
 {%- set view = widget.options.view -%}
 
 <div class="model-view">
@@ -13,7 +12,7 @@
   <small>
     {{ _("Created at:") }} {{ entity.created_at|datetimeformat("medium") }}
     {% if entity.creator %}
-    {{ _("by") }} <a href="{{ url_for(entity.creator) }}">{{ entity.creator }}</a>
+      {{ _("by") }} <a href="{{ url_for(entity.creator) }}">{{ entity.creator }}</a>
     {% endif %}
 
     {% if entity.created_at != entity.updated_at %}
