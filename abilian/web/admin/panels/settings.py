@@ -87,6 +87,7 @@ class SessionLifeTimeKey(Key):
     def minutes(self):
         return self._get_current('minutes')
 
+
 #FIXME: the settings panel should offer hooks for external modules and thus
 #provide unified interface for site settings / customization
 

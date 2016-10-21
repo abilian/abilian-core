@@ -52,6 +52,7 @@ class PatchLoggerAdapter(logging.LoggerAdapter):
 
         return '{}.{}'.format(location, func.__name__), kwargs
 
+
 #: logger for monkey patchs. use like this:
 #: patch_logger.info(<func>`patched_func`)
 patch_logger = PatchLoggerAdapter(_patch_logger, None)

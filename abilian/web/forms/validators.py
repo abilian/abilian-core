@@ -183,6 +183,7 @@ class RenderEmpty(object):
     def __call__(self, form, field):
         pass
 
+
 # These are the canonical names that should be used.
 equalto = EqualTo
 length = Length

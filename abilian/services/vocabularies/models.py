@@ -137,6 +137,7 @@ def _before_insert(mapper, connection, target):
             [func.coalesce(func.max(mapper.mapped_table.c.position), -1)])
         target.position = connection.execute(stmt).scalar() + 1
 
+
 # this is used to hold a reference to Vocabularies generated from
 # :func:`Vocabulary`. We use BaseVocabulary._decl_class_registry to find
 # existing vocabulary, but it's a WeakValueDictionary. When using model

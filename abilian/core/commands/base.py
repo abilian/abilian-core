@@ -162,6 +162,7 @@ def routes():
     for endpoint, methods, path in sorted(output):
         print('{:40s} {:25s} {}'.format(endpoint, methods, path))
 
+
 # user commands
 email_opt = manager.option('email', help='user\'s email')
 password_opt = manager.option(

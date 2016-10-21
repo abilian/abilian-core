@@ -59,4 +59,5 @@ class AppLoader(ModuleLoader):
         except ImportError:
             return None
 
+
 # pymode:lint_ignore=F0401

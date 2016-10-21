@@ -286,6 +286,7 @@ def _get_translations_multi_paths():
 
     return translations
 
+
 # monkey patch flask-babel
 flask_babel.get_translations = _get_translations_multi_paths
 

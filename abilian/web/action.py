@@ -26,6 +26,7 @@ class Status(UniqueName):
     Action UI status names
     """
 
+
 #: default action status: show in UID, usable, not marked "current"
 ENABLED = Status(u'enabled')
 #: action is "active" or "current". For example the current navigation item.

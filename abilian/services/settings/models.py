@@ -55,6 +55,7 @@ class _EmptyValue(object):
     def __repr__(self):
         return '<Empty Value>'
 
+
 #: marker for emptyness, to distinguish from None
 EmptyValue = _EmptyValue()
 

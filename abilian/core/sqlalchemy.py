@@ -407,6 +407,7 @@ class Timezone(sa.types.TypeDecorator):
     def process_result_value(self, value, dialect):
         return None if value is None else babel.dates.get_timezone(value)
 
+
 # SQLAlchemy > 0.9 has a function generator that forget to set __module__
 # attributes in 0.9.x series. This is fixed in 1.0.x. Sphinx will try to include
 # those symbols in documentation, and this may break since we don't have

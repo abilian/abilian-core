@@ -796,5 +796,6 @@ class SecurityService(Service):
             if self.has_permission(user, permission, obj, inherit)
         ]
 
+
 # Instanciate the service
 security = SecurityService()

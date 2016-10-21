@@ -107,6 +107,7 @@ class RoleType(UniqueNameType):
     """
     Type = Role
 
+
 #: marker for role assigned to 'Anonymous'
 Anonymous = Role('anonymous', _l(u'role_anonymous'), assignable=False)
 

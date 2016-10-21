@@ -666,6 +666,7 @@ def make_temp_file(blob=None, prefix='tmp', suffix="", tmp_dir=None):
     except OSError:
         pass
 
+
 # Singleton, yuck!
 converter = Converter()
 converter.register_handler(PdfToTextHandler())

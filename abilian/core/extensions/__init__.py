@@ -69,6 +69,7 @@ def _filter_metadata_for_connection(target, connection, **kw):
             if engine not in idx.info.get('engines', default_engines):
                 table.indexes.remove(idx)
 
+
 # csrf
 
 
