@@ -257,7 +257,7 @@ class EntityView(BaseEntityView, ObjectView):
             'audit_entries': audit_entries,
             'show_new_comment_form': True,
             'show_new_attachment_form': True,
-            'module': self.module
+            'module': self.module,
         }
 
 
