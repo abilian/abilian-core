@@ -6,13 +6,14 @@ Flask>=0.11
 Flask-Assets>=0.10
 Flask-Babel>=0.11
 Flask-DebugToolbar>=0.10
-Flask-Login>=0.3.0
 Flask-Mail>=0.9.1
 Flask-Migrate>=1.6.0
 Flask-SQLAlchemy>1.0
 Flask-Script
-Flask-Security>=1.7.0
 Flask-Testing>=0.4.2
+# Must pin Flask-Login because Flask-Security 1.7.5 wants Flaks-Login < 0.4
+Flask-Login~=0.3.0
+Flask-Security>=1.7.0
 # Flask-Uploads
 
 # Currently broken w/ 0.13

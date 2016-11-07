@@ -11,7 +11,7 @@ Babel==2.3.4              # via flask-babel
 bcrypt==3.1.1
 billiard==3.3.0.23        # via celery
 bleach==1.5.0
-Blinker==1.4              # via flask-debugtoolbar, flask-mail, flask-principal
+blinker==1.4              # via flask-debugtoolbar, flask-mail, flask-principal
 celery==3.1.25
 cffi==1.8.3               # via bcrypt
 clamd==1.0.2
