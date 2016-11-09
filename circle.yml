@@ -4,6 +4,11 @@ machine:
   environment:
     POSTGRES_URI: postgres://ubuntu:@localhost/circle_test
 
+general:
+  branches:
+    only:
+      - master
+
 dependencies:
   cache_directories:
      - "~/.cache/"
