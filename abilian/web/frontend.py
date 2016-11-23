@@ -699,8 +699,12 @@ class Module(object):
                             isinstance(sort_col.property.columns[0].type, sa.types.String):
                 sort_col = func.lower(sort_col)
 
-            direction = desc if sort_dir == 'desc' else asc
-            sort_col = direction(sort_col)
+            try:
+                direction = desc if sort_dir == 'desc' else asc
+                sort_col = direction(sort_col)
+            except:
+                # FIXME
+                pass
 
             # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
             if engine.name != 'sqlite':
@@ -709,7 +713,11 @@ class Module(object):
 
             sort_cols.append(sort_col)
 
-        query = query.order_by(*sort_cols)
+        try:
+            query = query.order_by(*sort_cols)
+        except:
+            # FIXME
+            pass
         query.reset_joinpoint()
         return query
 
