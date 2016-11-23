@@ -20,7 +20,7 @@ all: test lint
 #
 develop:
 	@echo "--> Installing dependencies"
-	pip install -U setuptools
+	pip install -U pip-tools setuptools
 	pip install -U -e '.[dev]'
 	@echo ""
 
