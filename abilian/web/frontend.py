@@ -709,7 +709,11 @@ class Module(object):
             # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
             if engine.name != 'sqlite':
                 nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
-                sort_col = nullsorder(sort_col)
+                try:
+                    sort_col = nullsorder(sort_col)
+                except:
+                    # FIXME
+                    pass
 
             sort_cols.append(sort_col)
 
