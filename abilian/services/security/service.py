@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from functools import wraps
 from itertools import chain
+from typing import Dict, Set
 
 import sqlalchemy as sa
 from flask import current_app, g
@@ -14,7 +15,6 @@ from flask_login import current_user
 from six import string_types, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
-from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db

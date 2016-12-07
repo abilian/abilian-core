@@ -102,8 +102,7 @@ class Tag(IdMixin, Model):
     __table_args__ = (
         sa.UniqueConstraint(ns, label),
         # namespace is not empty and is not surrounded by space characters
-        sa.CheckConstraint(
-            sa.sql.and_(sa.sql.func.trim(ns) == ns, ns != u''),),
+        sa.CheckConstraint(sa.sql.and_(sa.sql.func.trim(ns) == ns, ns != u''),),
         # label is not empty and is not surrounded by space characters
         sa.CheckConstraint(
             sa.sql.and_(sa.sql.func.trim(label) == label, label != u''),),)

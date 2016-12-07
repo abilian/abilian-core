@@ -84,7 +84,7 @@ class SettingsServiceTestCase(BaseTestCase):
         svc = self.service
         svc.set('key_1', 42, 'int')
         self.db.session.flush()
-        self.assertEqual(svc.get('key_1'), 42)
+        assert svc.get('key_1') == 42
 
         # new key with no type: raise error:
         with self.assertRaises(ValueError):
@@ -93,7 +93,7 @@ class SettingsServiceTestCase(BaseTestCase):
         # key already with type_, this should not raise an error
         svc.set('key_1', 24)
         self.db.session.flush()
-        self.assertEqual(svc.get('key_1'), 24)
+        assert svc.get('key_1') == 24
 
         svc.delete('key_1')
         self.db.session.flush()
@@ -113,64 +113,60 @@ class SettingsServiceTestCase(BaseTestCase):
         svc.delete('key_1')
         svc.set('key_1', 1)
         self.db.session.flush()
-        self.assertEqual(svc.get('key_1'), 1)
+        assert svc.get('key_1') == 1
 
         # list keys
         svc.set('key_2', 2, 'int')
         svc.set('other', 'azerty', 'string')
         self.db.session.flush()
-        self.assertEqual(sorted(svc.keys()), ['key_1', 'key_2', 'other'])
-        self.assertEqual(sorted(svc.keys(prefix='key_')), ['key_1', 'key_2'])
+        assert sorted(svc.keys()) == ['key_1', 'key_2', 'other']
+        assert sorted(svc.keys(prefix='key_')) == ['key_1', 'key_2']
 
         # as dict
-        self.assertEqual(svc.as_dict(),
-                         {'other': u'azerty',
-                          'key_1': 1,
-                          'key_2': 2})
-        self.assertEqual(svc.as_dict(prefix='key_'), {'key_1': 1, 'key_2': 2})
+        assert svc.as_dict() == {'other': u'azerty', 'key_1': 1, 'key_2': 2}
+        assert svc.as_dict(prefix='key_') == {'key_1': 1, 'key_2': 2}
 
     def test_namespace(self):
         svc = self.service
         ns = svc.namespace('test')
         ns.set('1', 42, 'int')
         self.db.session.flush()
-        self.assertEqual(ns.get('1'), 42)
-        self.assertEqual(svc.get('test:1'), 42)
+        assert ns.get('1') == 42
+        assert svc.get('test:1') == 42
 
         ns.set('sub:2', 2, 'int')
         svc.set('other', 'not in NS', 'string')
         self.db.session.flush()
-        self.assertEqual(sorted(ns.keys()), ['1', 'sub:2'])
-        self.assertEqual(sorted(svc.keys()), ['other', 'test:1', 'test:sub:2'])
+        assert sorted(ns.keys()) == ['1', 'sub:2']
+        assert sorted(svc.keys()) == ['other', 'test:1', 'test:sub:2']
 
         # sub namespace test:sub:
         sub = ns.namespace('sub')
-        self.assertEqual(sorted(sub.keys()), ['2'])
-        self.assertEqual(sub.get('2'), 2)
+        assert sub.keys() == ['2']
+        assert sub.get('2') == 2
 
         sub.set('1', 1, 'int')
         self.db.session.flush()
-        self.assertEqual(sub.get('1'), 1)
-        self.assertEqual(ns.get('1'), 42)
-        self.assertEqual(
-            sorted(svc.keys()),
-            ['other', 'test:1', 'test:sub:1', 'test:sub:2'])
+        assert sub.get('1') == 1
+        assert ns.get('1') == 42
+        assert sorted(svc.keys(
+        )) == ['other', 'test:1', 'test:sub:1', 'test:sub:2']
 
         # as dict
-        self.assertEqual(sub.as_dict(), {'1': 1, '2': 2})
-        self.assertEqual(ns.as_dict(prefix='sub:'), {'sub:1': 1, 'sub:2': 2})
-        self.assertEqual(ns.as_dict(), {'1': 42, 'sub:1': 1, 'sub:2': 2})
-        self.assertEqual(svc.as_dict(), {
+        assert sub.as_dict() == {'1': 1, '2': 2}
+        assert ns.as_dict(prefix='sub:') == {'sub:1': 1, 'sub:2': 2}
+        assert ns.as_dict() == {'1': 42, 'sub:1': 1, 'sub:2': 2}
+        assert svc.as_dict() == {
             'other': u'not in NS',
             'test:1': 42,
             'test:sub:1': 1,
             'test:sub:2': 2
-        })
+        }
 
         # deletion
         sub.delete('1')
         sub.delete('2')
         self.db.session.flush()
-        self.assertEqual(sorted(sub.keys()), [])
-        self.assertEqual(sorted(ns.keys()), ['1'])
-        self.assertEqual(sorted(svc.keys()), ['other', 'test:1'])
+        assert sub.keys() == []
+        assert ns.keys() == ['1']
+        assert sorted(svc.keys()) == ['other', 'test:1']
