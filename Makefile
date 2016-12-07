@@ -127,3 +127,6 @@ format:
 	-yapf --style google -r -i $(SRC) tests *.py
 	isort -rc $(SRC) tests *.py
 
+update-deps:
+	pip-compile -U
+	pip-compile
