@@ -8,14 +8,14 @@ alembic==0.8.9
 amqp==1.4.9               # via kombu
 anyjson==0.3.3            # via kombu
 babel==2.3.4              # via flask-babel
-bcrypt==3.1.1
+bcrypt==3.1.2
 billiard==3.3.0.23        # via celery
 bleach==1.5.0
 blinker==1.4              # via flask-debugtoolbar, flask-mail, flask-principal
 celery==3.1.25
 cffi==1.9.1               # via bcrypt
 clamd==1.0.2
-click==6.6                # via flask
+click==6.7                # via flask
 closure==20160517
 cssmin==0.2.0
 decorator==4.0.10         # via validators
@@ -24,29 +24,30 @@ flask-babel==0.11.1
 flask-debugtoolbar==0.10.0
 flask-login==0.3.2
 flask-mail==0.9.1
-flask-migrate==2.0.1
+flask-migrate==2.0.2
 flask-principal==0.4.0    # via flask-security
 flask-script==2.0.5
 flask-security==1.7.5
 flask-sqlalchemy==2.1
 flask-testing==0.6.1
 flask-wtf==0.12
-flask==0.11.1
+flask==0.12
 html5lib==0.9999999       # via bleach
 infinity==1.4             # via intervals
 intervals==0.8.0          # via wtforms-components
 itsdangerous==0.24        # via flask, flask-debugtoolbar, flask-security
-jinja2==2.8               # via flask, flask-babel
+jinja2==2.9.1             # via flask, flask-babel
 jsmin==2.2.1
 kombu==3.0.37             # via celery
-lxml==3.6.4
+lxml==3.7.1
 mako==1.0.6               # via alembic
 markupsafe==0.23
-numpy==1.11.2             # via pandas
-pandas==0.19.1
+numpy==1.11.3             # via pandas
+olefile==0.44             # via pillow
+pandas==0.19.2
 passlib==1.7.0            # via flask-security
 pathlib==1.0.1
-pillow==3.4.2
+pillow==4.0.0
 progressbar-latest==2.4
 psycopg2==2.6.2
 pycparser==2.17           # via cffi
@@ -58,14 +59,14 @@ pytz==2016.10             # via babel, celery, pandas
 pyyaml==3.12
 redis==2.10.5
 six==1.10.0
-sqlalchemy-utils==0.32.11
+sqlalchemy-utils==0.32.12
 sqlalchemy==1.1.4
 sqlparse==0.2.2
 straight.plugin==1.4.1
-typing==3.5.2.2
+typing==3.5.3.0
 validators==0.11.1        # via wtforms-components
 webassets==0.12.0         # via flask-assets
-werkzeug==0.11.11         # via flask, flask-debugtoolbar, flask-wtf
+werkzeug==0.11.15         # via flask, flask-debugtoolbar, flask-wtf
 whoosh==2.7.4
 wtforms-alchemy==0.15.0
 wtforms-components==0.10.2
