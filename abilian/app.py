@@ -124,10 +124,7 @@ default_config.update(
     CELERY_TIMEZONE=LOCALTZ,
     SENTRY_USER_ATTRS=('email', 'first_name', 'last_name'),
     SENTRY_INSTALL_CLIENT_JS=True,  # also install client JS
-    # TODO: upgrade to SENTRY_JS_VERSION='3.5.1',
-    SENTRY_JS_VERSION='1.1.22',
-    # TODO: remove, not needed for recent sentry-js
-    SENTRY_JS_PLUGINS=('console', 'jquery', 'native', 'require'),
+    SENTRY_JS_VERSION='3.9.1',
     SESSION_COOKIE_NAME=None,
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
@@ -635,7 +632,7 @@ class Application(Flask, ServiceManager, PluginManager):
         """Add a new url rule for static files.
 
         :param endpoint: flask endpoint name for this url rule.
-        :param url: subpath from application static url path. No heading or trailing
+        :param url_path: subpath from application static url path. No heading or trailing
                     slash.
         :param directory: directory to serve content from.
 
