@@ -56,7 +56,7 @@ class JsonGroupsList(base.JSONView):
             order_by[0] = nullslast(order_by[0])
 
         query = query.order_by(*order_by) \
-          .add_columns(Group.members_count)
+            .add_columns(Group.members_count)
         groups = query.slice(start, end).all()
         data = []
 
@@ -65,17 +65,18 @@ class JsonGroupsList(base.JSONView):
             group_url = url_for(".groups_group", group_id=group.id)
             name = escape(getattr(group, "name") or "")
             roles = [r for r in security.get_roles(group) if r.assignable]
-            columns = []
-            columns.append(u'<a href="{url}">{name}</a>'.format(
-                url=group_url, name=name))
-            columns.append(text_type(members_count or 0))
-            columns.append(
+
+            columns = [
+                u'<a href="{url}">{name}</a>'.format(url=group_url, name=name),
+                text_type(members_count or 0),
                 render_template_string(
                     u'''{%- for role in roles %}
-            <span class="badge badge-default">{{ role }}</span>
-            {%- endfor %}''',
-                    roles=roles))
-            columns.append(u'\u2713' if group.public else u'')
+                        <span class="badge badge-default">{{ role }}</span>
+                        {%- endfor %}''',
+                    roles=roles),
+                u'\u2713' if group.public else u'',
+            ]
+
             data.append(columns)
 
         return {

@@ -24,9 +24,11 @@ def show(only_path=False):
     """Show the current config.
     """
     logger.setLevel(logging.INFO)
-    infos = ['\n']
-    infos.append('Instance path: "{}"'.format(current_app.instance_path))
-    infos.append('CONFIG_ENVVAR: "{}"'.format(current_app.CONFIG_ENVVAR))
+    infos = [
+        '\n',
+        'Instance path: "{}"'.format(current_app.instance_path),
+        'CONFIG_ENVVAR: "{}"'.format(current_app.CONFIG_ENVVAR),
+    ]
 
     logger.info('\n  '.join(infos))
 
@@ -40,7 +42,7 @@ class DefaultConfig(object):
     PRODUCTION = False
     LOGGING_CONFIG_FILE = 'logging.yml'
 
-    #SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     SQLALCHEMY_ECHO = False
     REDIS_URI = 'redis://localhost:6379/1'
 

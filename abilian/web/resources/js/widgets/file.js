@@ -201,7 +201,8 @@
             'type': 'hidden',
             'name': this.inputName,
           });
-      var result = JSON.parse(xhr.responseText);
+      var responseText = xhr.responseText;
+      var result = JSON.parse(responseText);
 
       $el.find('.progress').remove();
       $input.val(result.handle);

@@ -445,7 +445,7 @@ class SecurityTestCase(IntegrationTestCase):
         assert base_query.filter(get_filter(READ, user=user)).all() \
             == [obj_reader]
         assert set(base_query.filter(get_filter(WRITE, user=user)).all()) \
-            == set([obj_reader, obj_writer])
+            == {obj_reader, obj_writer}
         self.session.delete(pa)
         assert base_query.filter(get_filter(WRITE, user=user)).all() \
             == [obj_writer]

@@ -1241,8 +1241,7 @@ class EmailWidget(TextInput):
             for entry in field.entries:
                 link = bleach.linkify(entry.data, parse_email=True)
                 if link:
-                    links = links + u' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(
-                        link)
+                    links += u' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(link)
         else:
             link = bleach.linkify(field.object_data, parse_email=True)
             if link:

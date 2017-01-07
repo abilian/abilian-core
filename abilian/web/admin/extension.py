@@ -133,7 +133,7 @@ class Admin(object):
     def get_panel_url_rule_adder(self, panel, base_url, base_endpoint):
         extension = self
 
-        def add_url_rule(rule, endpoint=None, view_func=None, *args, **kwargs):
+        def add_url_rule(rule, endpoint=None, view_func=None, **kwargs):
             if not rule:
                 # '' is already used for panel get/post
                 raise ValueError('Invalid additional url rule: {}'.format(
@@ -150,7 +150,6 @@ class Admin(object):
                 base_url + rule,
                 endpoint=endpoint,
                 view_func=view_func,
-                *args,
                 **kwargs)
 
         return add_url_rule

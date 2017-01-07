@@ -87,28 +87,23 @@ class JsonUsersList(base.JSONView):
                 r for r in security.get_roles(
                     user, no_group_roles=True) if r.assignable
             ]
-            columns = []
-            columns.append(
-                u'<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
-                u'</a>'.format(
-                    url=user_url, src=mugshot, size=MUGSHOT_SIZE))
-            columns.append(u'<a href="{url}">{name}</a>'.format(
-                url=user_url, name=name))
-            columns.append(u'<a href="{url}"><em>{email}</em></a>'.format(
-                url=user_url, email=email))
-            columns.append(u'\u2713' if user.can_login else u'')
-            columns.append(
+            columns = [
+                '<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
+                '</a>'.format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
+                '<a href="{url}">{name}</a>'.format(url=user_url, name=name),
+                '<a href="{url}"><em>{email}</em></a>'.format(url=user_url, email=email),
+                '\u2713' if user.can_login else u'',
                 render_template_string(
                     u'''{%- for g in groups %}
-            <span class="badge badge-default">{{ g.name }}</span>
-            {%- endfor %}''',
-                    groups=sorted(user.groups)))
-            columns.append(
+                        <span class="badge badge-default">{{ g.name }}</span>
+                    {%- endfor %}''',
+                    groups=sorted(user.groups)),
                 render_template_string(
                     u'''{%- for role in roles %}
-            <span class="badge badge-default">{{ role }}</span>
-            {%- endfor %}''',
-                    roles=roles))
+                       <span class="badge badge-default">{{ role }}</span>
+                    {%- endfor %}''',
+                    roles=roles),
+            ]
 
             if user.last_active:
                 last_active = format_datetime(user.last_active)

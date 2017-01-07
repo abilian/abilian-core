@@ -10,7 +10,6 @@ import operator
 from functools import partial
 
 import babel
-import six
 import sqlalchemy as sa
 from flask import current_app
 from flask.helpers import locked_cached_property

@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function, \
 import pickle
 from datetime import datetime
 
-import six
 from flask import current_app
 from six import text_type
 from sqlalchemy.orm import relationship

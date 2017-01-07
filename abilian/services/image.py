@@ -9,7 +9,7 @@ import hashlib
 from io import BytesIO
 
 from PIL import Image
-from six import binary_type, string_types
+from six import binary_type
 
 __all__ = ['resize', 'RESIZE_MODES', 'SCALE', 'FIT', 'CROP']
 

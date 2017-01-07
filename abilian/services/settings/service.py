@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from flask import current_app
+from six import iteritems
 
 from abilian.services import Service
 
@@ -108,7 +109,8 @@ class SettingsNamespace(object):
     def iteritems(self, prefix=''):
         prefix = ':'.join((self.name, prefix))
         start = len(self.name) + 1  # +1 for colon
-        for k, v in self.service.iteritems(prefix=prefix):
+        iteritems(self.service, prefix=prefix)
+        for k, v in iteritems(self.service, prefix=prefix):
             yield (k[start:], v)
 
     def as_dict(self, prefix=''):

@@ -190,7 +190,9 @@ class Babel(BabelBase):
                          translations_dir='translations',
                          domain='messages'):
         """
-        Adds translations from external module. For example::
+        Add translations from external module.
+
+        For example::
 
             babel.add_translations('abilian.core')
 
@@ -245,9 +247,10 @@ class Translations(BaseTranslations):
 
 
 def _get_translations_multi_paths():
-    """
-    Returns the correct gettext translations that should be used for this
-    request. This will never fail and return a dummy translation object
+    """Return the correct gettext translations that should be used for this
+    request.
+
+    This will never fail and return a dummy translation object
     if used outside of the request or if a translation cannot be found.
     """
     ctx = _request_ctx_stack.top
@@ -317,7 +320,7 @@ def timezoneselector():
 
 
 def get_template_i18n(template_name, locale):
-    """Build template list with preceding locale if found
+    """Build template list with preceding locale if found.
     """
     if locale is None:
         return [template_name]
@@ -359,8 +362,7 @@ class ensure_request_context(object):
 
 
 def render_template_i18n(template_name_or_list, **context):
-    """
-    Try to build an ordered list of template to satisfy the current locale.
+    """Try to build an ordered list of template to satisfy the current locale.
     """
     template_list = []
     # Use locale if present in **context

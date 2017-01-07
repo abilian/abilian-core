@@ -267,7 +267,9 @@ class BaseEntryPresenter(object):
         self.date = local_dt(date)
 
     def __cmp__(self, other):
-        return cmp(self.date, other.date)
+        # Python 3 compatibility. XXX: Really needed?
+        a, b = self.date, other.date
+        return (a > b) - (a < b)
 
     def __repr__(self):
         return '{}({}, {} @ {})'.format(self.__class__.__name__,

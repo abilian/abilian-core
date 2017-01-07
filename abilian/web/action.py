@@ -211,7 +211,7 @@ class Endpoint(object):
         return self.kwargs.copy()
 
     def __str__(self):
-        return text_type(url_for(self.name, *self.args, **self.get_kwargs()))
+        return text_type(url_for(self.name, **self.get_kwargs()))
 
     def __repr__(self):
         return '{cls}({name!r}, *{args!r}, **{kwargs!r})'.format(
@@ -276,7 +276,7 @@ class Action(object):
         self.name = name
 
         if button is not None:
-            self.CSS_CLASS = self.CSS_CLASS + u' btn btn-{}'.format(button)
+            self.CSS_CLASS += u' btn btn-{}'.format(button)
         if css is not None:
             self.CSS_CLASS = self.CSS_CLASS + u' ' + css
         self._build_css_class()
