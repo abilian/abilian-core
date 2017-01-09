@@ -89,9 +89,12 @@ class JsonUsersList(base.JSONView):
             ]
             columns = [
                 '<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
-                '</a>'.format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
-                '<a href="{url}">{name}</a>'.format(url=user_url, name=name),
-                '<a href="{url}"><em>{email}</em></a>'.format(url=user_url, email=email),
+                '</a>'.format(
+                    url=user_url, src=mugshot, size=MUGSHOT_SIZE),
+                '<a href="{url}">{name}</a>'.format(
+                    url=user_url, name=name),
+                '<a href="{url}"><em>{email}</em></a>'.format(
+                    url=user_url, email=email),
                 '\u2713' if user.can_login else u'',
                 render_template_string(
                     u'''{%- for g in groups %}

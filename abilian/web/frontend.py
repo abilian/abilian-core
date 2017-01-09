@@ -122,7 +122,7 @@ def labelize(s):
 def make_single_view(form, **options):
     panels = []
     for gr in form._groups.items():
-        panel = Panel(gr[0], *[Row(x) for x in gr[1]])
+        panel = Panel(gr[0], * [Row(x) for x in gr[1]])
         panels.append(panel)
     return SingleView(form, *panels, **options)
 

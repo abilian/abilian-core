@@ -67,7 +67,8 @@ class JsonGroupsList(base.JSONView):
             roles = [r for r in security.get_roles(group) if r.assignable]
 
             columns = [
-                u'<a href="{url}">{name}</a>'.format(url=group_url, name=name),
+                u'<a href="{url}">{name}</a>'.format(
+                    url=group_url, name=name),
                 text_type(members_count or 0),
                 render_template_string(
                     u'''{%- for role in roles %}
