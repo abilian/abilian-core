@@ -62,6 +62,11 @@ lint-py:
 	flake8 $(SRC)
 	@echo ""
 
+lint-py3k:
+	@echo "--> Checking Python 3 compatibility"
+	pylint --py3k abilian tests
+	@echo ""
+
 lint-travis:
 	@echo "--> Linting .travis.yml files"
 	travis lint

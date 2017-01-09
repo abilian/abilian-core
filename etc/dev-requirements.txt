@@ -16,6 +16,7 @@ pytest-cov
 # Static code analysis
 flake8
 flake8-tidy-imports
+pylint
 # mastool
 
 # To build docs
