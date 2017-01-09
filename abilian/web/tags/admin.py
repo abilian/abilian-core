@@ -115,8 +115,10 @@ class NSView(View):
             self.get(self.ns)
 
     def _get_selected_tags(self):
+        """
+        :rtype: List[Tag]
+        """
         if self.__selected_tags is None:
-
             tag_ids = request.form.getlist('selected', type=int)
             if not tag_ids:
                 self.__selected_tags = []
@@ -124,6 +126,7 @@ class NSView(View):
                 self.__selected_tags = Tag.query \
                     .filter(Tag.ns == self.ns, Tag.id.in_(tag_ids)) \
                     .all()
+
         return self.__selected_tags
 
     def do_delete(self):
