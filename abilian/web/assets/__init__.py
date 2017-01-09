@@ -44,7 +44,8 @@ def requirejs_config():
 
 RESOURCES_DIR = pkg_resources.resource_filename('abilian.web', 'resources')
 
-JQUERY = Bundle('jquery/js/jquery-1.12.4.js')
+JQUERY = Bundle('jquery/js/jquery-1.11.3.js',
+                'jquery/js/jquery-migrate-1.2.1.js')
 
 BOOTBOX_JS = Bundle('bootbox/bootbox.js')
 
