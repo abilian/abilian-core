@@ -40,12 +40,17 @@
     {%- set ext = app.extensions['sentry'] %}
     <script src="{{ ext.raven_js_url }}"></script>
     <script>
-     Raven.config({{ ext.client.get_public_dsn() |tojson }},
-                  {tags: { app_name: {{ (app.name+'_front') | tojson }},
-                           configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
-                           process_type: 'javascript'}
-                  })
-          .install();
+     if (Raven !== undefined) {
+         Raven.config({{ ext.client.get_public_dsn() |tojson }},
+             {
+                 tags: {
+                     app_name: {{ (app.name+'_front') | tojson }},
+                     configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
+                     process_type: 'javascript'
+                 }
+             })
+             .install();
+     }
     </script>
   {%- endif %}
 
