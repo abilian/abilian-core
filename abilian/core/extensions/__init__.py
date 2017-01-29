@@ -90,10 +90,10 @@ def _install_get_display_value(cls):
 
         `display_value` should be used instead of directly getting field value.
 
-        If `value` is provided it is "tranlated" to a human-readable value. This is
-        useful for obtaining a human readable label from a raw value
+        If `value` is provided, it is "translated" to a human-readable value. This is
+        useful for obtaining a human readable label from a raw value.
         """
-        val = getattr(self, field_name) if value is _MARK else value
+        val = getattr(self, field_name, "ERROR") if value is _MARK else value
 
         mapper = sa.orm.object_mapper(self)
         try:

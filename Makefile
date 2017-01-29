@@ -133,5 +133,7 @@ format:
 	isort -rc $(SRC) tests *.py
 
 update-deps:
-	pip-compile -U
-	pip-compile
+	pip-compile -U > /dev/null
+	pip-compile > /dev/null
+	git --no-pager diff requirements.txt
+
