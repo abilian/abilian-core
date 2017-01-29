@@ -22,8 +22,7 @@ class ValueSingletonMeta(type):
 
         if value not in cls.__instances__:
             value_instance = type.__call__(cls, value, *args, **kwargs)
-            cls.__instances__[getattr(value_instance,
-                                      cls.attr)] = value_instance
+            cls.__instances__[getattr(value_instance, cls.attr)] = value_instance
         return cls.__instances__[value.lower()]
 
 

@@ -275,8 +275,8 @@ class ObjectEdit(ObjectView):
                                      ''.format(action.encode('utf-8')))
                 break
         else:
-            raise ValueError('Unknown action: "{}"'.format(
-                action.encode('utf-8')))
+            raise ValueError(
+                'Unknown action: "{}"'.format(action.encode('utf-8')))
 
         self.action = action
         self.button = button

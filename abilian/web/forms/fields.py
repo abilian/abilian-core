@@ -228,8 +228,8 @@ class FileField(BaseFileField):
 
             if fileobj is None:
                 # FIXME: this is a validation task
-                raise ValueError('File with handle {!r} not found'.format(
-                    handle))
+                raise ValueError(
+                    'File with handle {!r} not found'.format(handle))
 
             meta = uploads.get_metadata(current_user, handle)
             filename = meta.get('filename', handle)

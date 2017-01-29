@@ -563,8 +563,8 @@ class UnoconvPdfHandler(Handler):
                                 self._process))
 
                     self._process = None
-                    raise ConversionError("Conversion timeout ({})".format(
-                        timeout))
+                    raise ConversionError(
+                        "Conversion timeout ({})".format(timeout))
 
                 converted = open(out_fn).read()
                 return converted

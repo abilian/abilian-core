@@ -309,8 +309,8 @@ def localeselector():
 
     # Otherwise, try to guess the language from the user accept header the browser
     # transmits.  By default we support en/fr. The best match wins.
-    return request.accept_languages.best_match(current_app.config[
-        'BABEL_ACCEPT_LANGUAGES'])
+    return request.accept_languages.best_match(
+        current_app.config['BABEL_ACCEPT_LANGUAGES'])
 
 
 def timezoneselector():

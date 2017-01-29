@@ -136,8 +136,8 @@ class Admin(object):
         def add_url_rule(rule, endpoint=None, view_func=None, **kwargs):
             if not rule:
                 # '' is already used for panel get/post
-                raise ValueError('Invalid additional url rule: {}'.format(
-                    repr(rule)))
+                raise ValueError(
+                    'Invalid additional url rule: {}'.format(repr(rule)))
 
             if endpoint is None:
                 endpoint = _endpoint_from_view_func(view_func)

@@ -104,8 +104,8 @@ class TestFilters(FlaskTestCase):
         # same year: 2012 not shown
         assert age(d3w, now, date_threshold='day') == u'May 18, 4:00 PM'
         # different year: 2011 shown
-        assert (age(d2011, now, date_threshold='day') ==
-                u'September 4, 2011, 8:12 PM')
+        assert (age(d2011, now,
+                    date_threshold='day') == u'September 4, 2011, 8:12 PM')
 
         # using default parameter now=None
         dt_patcher = mock.patch.object(

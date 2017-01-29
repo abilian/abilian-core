@@ -479,8 +479,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
                 if 'DEBUG_TB_PANELS' not in self.config:
                     # add our panels to default ones
-                    self.config['DEBUG_TB_PANELS'] = list(default_config[
-                        'DEBUG_TB_PANELS'])
+                    self.config['DEBUG_TB_PANELS'] = list(
+                        default_config['DEBUG_TB_PANELS'])
                     self.config['DEBUG_TB_PANELS'].append(
                         'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel'
                     )

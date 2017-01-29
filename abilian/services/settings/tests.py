@@ -149,8 +149,8 @@ class SettingsServiceTestCase(BaseTestCase):
         self.db.session.flush()
         assert sub.get('1') == 1
         assert ns.get('1') == 42
-        assert sorted(svc.keys(
-        )) == ['other', 'test:1', 'test:sub:1', 'test:sub:2']
+        assert sorted(
+            svc.keys()) == ['other', 'test:1', 'test:sub:1', 'test:sub:2']
 
         # as dict
         assert sub.as_dict() == {'1': 1, '2': 2}
