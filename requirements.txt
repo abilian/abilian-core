@@ -24,7 +24,7 @@ flask-babel==0.11.1
 flask-debugtoolbar==0.10.0
 flask-login==0.3.2
 flask-mail==0.9.1
-flask-migrate==2.0.2
+flask-migrate==2.0.3
 flask-principal==0.4.0    # via flask-security
 flask-script==2.0.5
 flask-security==1.7.5
@@ -45,7 +45,7 @@ markupsafe==0.23
 numpy==1.12.0             # via pandas
 olefile==0.44             # via pillow
 pandas==0.19.2
-passlib==1.7.0            # via flask-security
+passlib==1.7.1            # via flask-security
 pathlib==1.0.1
 pillow==4.0.0
 progressbar-latest==2.4
