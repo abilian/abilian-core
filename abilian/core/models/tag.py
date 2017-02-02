@@ -60,12 +60,10 @@ def is_support_tagging(obj):
 entity_tag_tbl = sa.Table(
     'entity_tags',
     Model.metadata,
-    sa.Column(
-        'tag_id', sa.Integer, sa.ForeignKey(
-            'tag.id', ondelete='CASCADE')),
-    sa.Column(
-        'entity_id', sa.Integer, sa.ForeignKey(
-            Entity.id, ondelete='CASCADE')),
+    sa.Column('tag_id', sa.Integer, sa.ForeignKey('tag.id',
+                                                  ondelete='CASCADE')),
+    sa.Column('entity_id', sa.Integer,
+              sa.ForeignKey(Entity.id, ondelete='CASCADE')),
     sa.UniqueConstraint('tag_id', 'entity_id'),)
 
 
@@ -94,8 +92,7 @@ class Tag(IdMixin, Model):
         Entity,
         collection_class=set,
         secondary=entity_tag_tbl,
-        backref=sa.orm.backref(
-            TAGS_ATTR, collection_class=set),)
+        backref=sa.orm.backref(TAGS_ATTR, collection_class=set),)
 
     __mapper_args__ = {'order_by': label,}
 

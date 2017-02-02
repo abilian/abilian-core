@@ -96,13 +96,12 @@ class TestAuth(BaseTestCase):
             data=json.dumps(kwargs),
             content_type='application/json')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
-        self.assertEqual(
-            rv.json,
-            dict(
-                email='User@domain.tld',
-                username='user@domain.tld',
-                fullname='Unknown',
-                next_url=''))
+        self.assertEqual(rv.json,
+                         dict(
+                             email='User@domain.tld',
+                             username='user@domain.tld',
+                             fullname='Unknown',
+                             next_url=''))
 
         rv = self.client.post('/user/api/logout')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)

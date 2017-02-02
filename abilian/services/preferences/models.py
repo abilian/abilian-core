@@ -24,8 +24,7 @@ class UserPreference(db.Model):
     #: The user who set this preference.
     user = relation(
         User,
-        backref=backref(
-            'preferences', cascade="all, delete, delete-orphan"))
+        backref=backref('preferences', cascade="all, delete, delete-orphan"))
     user_id = Column(ForeignKey(User.id))
 
     #: The key

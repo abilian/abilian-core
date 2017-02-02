@@ -190,8 +190,7 @@ class VocabularyPanel(AdminPanel):
         add_url_rule(base + '<int:object_id>', view_func=edit_view)
         add_url_rule(
             base + 'new',
-            view_func=Create.as_view(
-                'new', view_endpoint=panel_endpoint))
+            view_func=Create.as_view('new', view_endpoint=panel_endpoint))
 
     def url_value_preprocess(self, endpoint, view_args):
         Model = view_args.pop('Model', None)

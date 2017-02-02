@@ -130,8 +130,7 @@ default_config.update(
     SESSION_COOKIE_NAME=None,
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    LOGO_URL=Endpoint(
-        'abilian_static', filename='img/logo-abilian-32x32.png'),
+    LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
     MAIL_ADDRESS_TAG_CHAR=None)
@@ -274,8 +273,7 @@ class Application(Flask, ServiceManager, PluginManager):
             code = 'js-i18n-' + lang
             filename = 'lang-' + lang + '-%(version)s.min.js'
             self._assets_bundles[code] = {
-                'options': dict(
-                    output=filename, filters=js_filters),
+                'options': dict(output=filename, filters=js_filters),
             }
 
         for http_error_code in (403, 404, 500):
@@ -373,8 +371,7 @@ class Application(Flask, ServiceManager, PluginManager):
         url_value_preprocessor and `before_request` handlers.
         """
         g.breadcrumb.append(
-            BreadcrumbItem(
-                icon='home', url='/' + request.script_root))
+            BreadcrumbItem(icon='home', url='/' + request.script_root))
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary permissions.
@@ -651,8 +648,7 @@ class Application(Flask, ServiceManager, PluginManager):
         self.add_url_rule(
             url_path,
             endpoint=endpoint,
-            view_func=partial(
-                send_file_from_directory, directory=directory),
+            view_func=partial(send_file_from_directory, directory=directory),
             roles=roles)
         self.add_access_controller(
             endpoint, allow_access_for_roles(Anonymous), endpoint=True)

@@ -25,8 +25,7 @@ OTHER_CAT = Action(
     'other',
     'Other Action',
     url=lambda ctx: 'http://count?%d' % len(ctx),
-    icon=StaticIcon(
-        'icons/other.png', size=14),
+    icon=StaticIcon('icons/other.png', size=14),
     css='custom-class')
 
 ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)

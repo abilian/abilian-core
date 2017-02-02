@@ -431,6 +431,5 @@ def finalize_validate():
         render_template(
             'setupwizard/done.html',
             config_file=config_file,
-            logging_file=logging_file),
-        200)
+            logging_file=logging_file), 200)
     return response

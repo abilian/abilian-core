@@ -42,32 +42,20 @@ following = Table(
 membership = Table(
     'membership',
     db.Model.metadata,
-    Column(
-        'user_id',
-        Integer,
-        ForeignKey(
-            'user.id', onupdate='CASCADE', ondelete='CASCADE')),
-    Column(
-        'group_id',
-        Integer,
-        ForeignKey(
-            'group.id', onupdate='CASCADE', ondelete='CASCADE')),
+    Column('user_id', Integer,
+           ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE')),
+    Column('group_id', Integer,
+           ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE')),
     UniqueConstraint('user_id', 'group_id'),)
 
 # Should not be needed (?)
 administratorship = Table(
     'administratorship',
     db.Model.metadata,
-    Column(
-        'user_id',
-        Integer,
-        ForeignKey(
-            'user.id', onupdate='CASCADE', ondelete='CASCADE')),
-    Column(
-        'group_id',
-        Integer,
-        ForeignKey(
-            'group.id', onupdate='CASCADE', ondelete='CASCADE')),
+    Column('user_id', Integer,
+           ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE')),
+    Column('group_id', Integer,
+           ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE')),
     UniqueConstraint('user_id', 'group_id'),)
 
 _RANDOM_PASSWORD_CHARS = (
@@ -312,8 +300,7 @@ class Group(Principal, db.Model):
         "User",
         collection_class=set,
         secondary=membership,
-        backref=backref(
-            'groups', lazy='select', collection_class=set))
+        backref=backref('groups', lazy='select', collection_class=set))
     admins = relationship(
         "User", collection_class=set, secondary=administratorship)
 

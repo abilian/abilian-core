@@ -44,8 +44,7 @@ class NewUploadView(BaseUploadsView, JSONView):
     def data(self, *args, **kwargs):
         return {
             'handle': self.handle,
-            'url': url_for(
-                '.handle', handle=self.handle),
+            'url': url_for('.handle', handle=self.handle),
         }
 
     def post(self, *args, **kwargs):

@@ -166,17 +166,14 @@ class RoleAssignment(db.Model):
         default=False,
         server_default=sql.false())
     user_id = Column(
-        Integer, ForeignKey(
-            'user.id', ondelete='CASCADE'), index=True)
+        Integer, ForeignKey('user.id', ondelete='CASCADE'), index=True)
     user = relationship(User, lazy='joined')
     group_id = Column(
-        Integer, ForeignKey(
-            'group.id', ondelete='CASCADE'), index=True)
+        Integer, ForeignKey('group.id', ondelete='CASCADE'), index=True)
     group = relationship(Group, lazy='joined')
 
     object_id = Column(
-        Integer, ForeignKey(
-            Entity.id, ondelete='CASCADE'), index=True)
+        Integer, ForeignKey(Entity.id, ondelete='CASCADE'), index=True)
     object = relationship(Entity, lazy='select')
 
 
@@ -268,8 +265,7 @@ class PermissionAssignment(db.Model):
     role = Column(RoleType, index=True, nullable=False)
     object_id = Column(
         Integer,
-        ForeignKey(
-            Entity.id, ondelete='CASCADE'),
+        ForeignKey(Entity.id, ondelete='CASCADE'),
         index=True,
         nullable=True)
     object = relationship(
@@ -301,8 +297,7 @@ class PermissionAssignment(db.Model):
         return ('<{cls} instance at 0x{id:x} '
                 'permission={self.permission.name!r} '
                 'role={self.role.name!r} object={self.object!r}>'
-                ''.format(
-                    cls=classname, id=id(self), self=self))
+                ''.format(cls=classname, id=id(self), self=self))
 
 
 def _postgres_indexes():
@@ -360,8 +355,7 @@ class SecurityAudit(db.Model):
             "   AND ((user_id IS NOT NULL AND group_id IS NULL)"
             "  OR "
             "  (user_id IS NULL AND group_id IS NOT NULL)))"
-            "))".format(
-                grant=SET_INHERIT, revoke=UNSET_INHERIT),
+            "))".format(grant=SET_INHERIT, revoke=UNSET_INHERIT),
             name="securityaudit_ck_user_xor_group"),)
 
     id = Column(Integer, primary_key=True)
