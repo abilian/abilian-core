@@ -482,9 +482,6 @@ class Application(Flask, ServiceManager, PluginManager):
                     # add our panels to default ones
                     self.config['DEBUG_TB_PANELS'] = list(
                         default_config['DEBUG_TB_PANELS'])
-                    self.config['DEBUG_TB_PANELS'].append(
-                        'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel'
-                    )
                 init_dbt(self)
                 for view_name in self.view_functions:
                     if view_name.startswith('debugtoolbar.'):
