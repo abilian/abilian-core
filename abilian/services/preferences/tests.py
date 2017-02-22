@@ -98,9 +98,10 @@ class PreferencesTestCase(BaseTestCase):
                 break
 
         with self.login(user):
-            assert [p['endpoint']
-                    for p in ctx['menu']] == ['preferences.visible']
+            expected = ['preferences.visible']
+            assert [p['endpoint'] for p in ctx['menu']] == expected
+
             security.grant_role(user, 'admin')
             ctx = cp()
-            assert [p['endpoint'] for p in ctx['menu']
-                   ] == ['preferences.visible', 'preferences.admin']
+            expected = ['preferences.visible', 'preferences.admin']
+            assert [p['endpoint'] for p in ctx['menu']] == expected

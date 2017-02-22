@@ -14,7 +14,6 @@ from flask_login import current_user
 from six import string_types, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
-from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -58,7 +57,7 @@ class SecurityServiceState(ServiceState):
 
 
 def require_flush(fun):
-    """ Decorator for methods that need to query security. It ensures all security
+    """Decorator for methods that need to query security. It ensures all security
     related operations are flushed to DB, but avoids unneeded flushes.
     """
 

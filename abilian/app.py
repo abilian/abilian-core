@@ -30,7 +30,7 @@ from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
 from pkg_resources import resource_filename
-from six import string_types, text_type
+from six import string_types
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string

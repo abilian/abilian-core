@@ -68,11 +68,11 @@ class TestActions(BaseTestCase):
         assert actions.for_category('cat_1') == [BASIC]
 
     def test_enabled(self):
-        assert CONDITIONAL.enabled == True
+        assert CONDITIONAL.enabled
         assert actions.for_category('cat_1') == [BASIC, CONDITIONAL]
 
         CONDITIONAL.enabled = False
-        assert CONDITIONAL.enabled == False
+        assert not CONDITIONAL.enabled
         assert actions.for_category('cat_1') == [BASIC]
 
     def test_action_url_from_context(self):

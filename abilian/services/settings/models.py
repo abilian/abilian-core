@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, \
 import json
 from datetime import timedelta
 
-import six
 import sqlalchemy as sa
 from six import text_type
 

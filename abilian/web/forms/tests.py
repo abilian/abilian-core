@@ -61,16 +61,17 @@ def test_form_permissions_controller():
     with mock.patch('abilian.web.forms.current_app', current_app_mock):
         # default role
         fp = FormPermissions()
-        assert fp.has_permission(READ) == True
-        assert has_role.called is True
+        assert fp.has_permission(READ)
+        assert has_role.called
         assert has_role.call_args[-1]['role'] == [Anonymous]
-        has_role.reset_mock()
-        assert fp.has_permission(READ, obj=_MARK) == True
-        assert has_role.called is False
 
         has_role.reset_mock()
-        assert fp.has_permission(READ, obj=_ENTITY_MARK) == True
-        assert has_role.called is True
+        assert fp.has_permission(READ, obj=_MARK)
+        assert not has_role.called
+
+        has_role.reset_mock()
+        assert fp.has_permission(READ, obj=_ENTITY_MARK)
+        assert has_role.called
         assert has_role.call_args[-1]['object'] is _ENTITY_MARK
 
         # change default
