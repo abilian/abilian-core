@@ -8,7 +8,8 @@ Flask-Babel>=0.11
 Flask-DebugToolbar>=0.10
 Flask-Mail>=0.9.1
 Flask-Migrate>=1.6.0
-Flask-SQLAlchemy>1.0
+# flask-sqlachemy 2.2 breaks our apps.
+flask-sqlalchemy<=2.1
 Flask-Script
 Flask-Testing>=0.4.2
 # Must pin Flask-Login because Flask-Security 1.7.5 wants Flaks-Login < 0.4

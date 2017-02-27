@@ -29,7 +29,7 @@ flask-principal==0.4.0    # via flask-security
 flask-script==2.0.5
 flask-security==1.7.5
 flask-sqlalchemy==2.1
-flask-testing==0.6.1
+flask-testing==0.6.2
 flask-wtf==0.12
 flask==0.12
 html5lib==0.9999999       # via bleach
