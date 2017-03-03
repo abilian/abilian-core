@@ -13,6 +13,7 @@ import whoosh
 from flask import current_app
 from six import string_types
 from sqlalchemy.orm.session import Session
+from tqdm import tqdm
 from whoosh.writing import CLEAR, AsyncWriter
 
 from .base import manager
@@ -75,45 +76,38 @@ def reindex(clear=False, progressive=False, batch_size=None):
                 continue
 
             if count == 0:
-                print("{}: 0".format(name))
+                print("*" * 79)
+                print("{}".format(name))
                 continue
 
-            widgets = [
-                name, ': ', progressbar.Counter(), '/{}'.format(count), ' ',
-                progressbar.Timer(), ' ', progressbar.Percentage(), ' ',
-                progressbar.Bar(), ' ', progressbar.ETA()
-            ]
-            progress = progressbar.ProgressBar(widgets=widgets, maxval=count)
-            progress.start()
+            print("*" * 79)
+            print("{}".format(name))
             count_current = 0
+            with tqdm(total=count) as bar:
+                for obj in query.yield_per(1000):
+                    if obj.object_type != current_object_type:
+                        # may happen if obj is a subclass and its parent class is also
+                        # indexable
+                        bar.update(1)
+                        continue
 
-            for obj in query.yield_per(1000):
-                if obj.object_type != current_object_type:
-                    # may happen if obj is a subclass and its parent class is also
-                    # indexable
-                    continue
+                    object_key = obj.object_key
 
-                object_key = obj.object_key
+                    if object_key in indexed:
+                        bar.update(1)
+                        continue
+                    document = svc.get_document(obj, adapter)
+                    strategy.send(document)
+                    indexed.add(object_key)
 
-                if object_key in indexed:
-                    continue
-                document = svc.get_document(obj, adapter)
-                strategy.send(document)
-                indexed.add(object_key)
-                count_indexed += 1
-                count_current += 1
-                try:
-                    progress.update(count_current)
-                except ValueError:
-                    pass
+                    if batch_size is not None and (count_current % batch_size) == 0:
+                        bar.update(1)
+                        strategy.send(COMMIT)
 
-                if batch_size is not None and (count_current % batch_size) == 0:
-                    strategy.send(COMMIT)
+                    bar.update(1)
 
             if batch_size is None:
                 strategy.send(COMMIT)
-
-            progress.finish()
 
         strategy.send(COMMIT)
 
