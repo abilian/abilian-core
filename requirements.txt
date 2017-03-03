@@ -22,7 +22,7 @@ decorator==4.0.11         # via validators
 flask-assets==0.12
 flask-babel==0.11.1
 flask-debugtoolbar==0.10.0
-flask-login==0.3.2
+flask-login==0.4.0
 flask-mail==0.9.1
 flask-migrate==2.0.2
 flask-principal==0.4.0    # via flask-security
