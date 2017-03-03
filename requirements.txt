@@ -49,6 +49,7 @@ passlib==1.7.1            # via flask-security
 pathlib==1.0.1
 pillow==4.0.0
 psycopg2==2.7
+tqdm==4.11                # progress bar
 pycparser==2.17           # via cffi
 pygeoip==0.3.2
 python-dateutil==2.6.0
