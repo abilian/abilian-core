@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, \
 import time
 from collections import deque
 
-import progressbar
 import sqlalchemy as sa
 import whoosh
 from flask import current_app
