@@ -33,3 +33,6 @@ requests
 
 # Check README
 restructuredtext_lint
+
+# To manage dependencies
+pip-tools
