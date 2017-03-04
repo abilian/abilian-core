@@ -16,8 +16,9 @@ pytest-cov
 # Static code analysis
 flake8
 flake8-tidy-imports
-pep8-naming
 pylint
+# These two plugins try too hard..
+# pep8-naming
 # mastool
 
 # To build docs
