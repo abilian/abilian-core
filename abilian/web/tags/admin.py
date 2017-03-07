@@ -278,15 +278,13 @@ class TagPanel(AdminPanel):
         add_url_rule(
             ns_base,
             endpoint='ns',
-            view_func=NSView.as_view(
-                'ns', view_endpoint=panel_endpoint))
+            view_func=NSView.as_view('ns', view_endpoint=panel_endpoint))
 
         tag_base = ns_base + '<int:object_id>/'
         add_url_rule(
             tag_base,
             endpoint='tag_edit',
-            view_func=TagEdit.as_view(
-                'tag_edit', view_endpoint=panel_endpoint))
+            view_func=TagEdit.as_view('tag_edit', view_endpoint=panel_endpoint))
 
         add_url_rule(
             tag_base + 'delete',

@@ -157,8 +157,7 @@ class BaseEntityView(ModuleView):
     def breadcrumb(self):
         return BreadcrumbItem(
             label=self.obj.name or self.obj.id,
-            url=Endpoint(
-                '.entity_view', entity_id=self.obj.id))
+            url=Endpoint('.entity_view', entity_id=self.obj.id))
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
@@ -597,8 +596,7 @@ class Module(object):
 
     def _add_breadcrumb(self, endpoint, values):
         g.breadcrumb.append(
-            BreadcrumbItem(
-                label=self.label, url=Endpoint('.list_view')))
+            BreadcrumbItem(label=self.label, url=Endpoint('.list_view')))
 
     @property
     def base_query(self):
@@ -824,8 +822,7 @@ class DefaultRelatedView(RelatedView):
         return dict(
             label=self.label,
             attr_name=self.attr,
-            rendered=view.render(
-                related_entities, related_to=entity),
+            rendered=view.render(related_entities, related_to=entity),
             show_empty=self.show_empty,
             size=len(related_entities))
 

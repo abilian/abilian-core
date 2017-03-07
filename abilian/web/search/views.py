@@ -53,8 +53,7 @@ def init_search(endpoint, values):
         BreadcrumbItem(
             label='"{}"'.format(q),
             icon="search",
-            url=Endpoint(
-                'search.search_main', q=q)))
+            url=Endpoint('search.search_main', q=q)))
 
     page_kw = OrderedDict(q=q)
     object_types = request.args.getlist('object_type')
@@ -70,8 +69,7 @@ def init_search(endpoint, values):
         g.breadcrumb.append(
             BreadcrumbItem(
                 label=text_type(page),
-                url=Endpoint(
-                    'search.search_main', page=page, **page_kw)))
+                url=Endpoint('search.search_main', page=page, **page_kw)))
 
     values['q'] = q
     values['page'] = page

@@ -17,6 +17,8 @@ pytest-cov
 flake8
 flake8-tidy-imports
 pylint
+# These two plugins try too hard..
+# pep8-naming
 # mastool
 
 # To build docs
@@ -31,3 +33,6 @@ requests
 
 # Check README
 restructuredtext_lint
+
+# To manage dependencies
+pip-tools

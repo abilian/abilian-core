@@ -57,8 +57,7 @@ class _DefaultSearchSchema(SchemaClass):
 
 _default_dyn_fields = {
     '*_prefix': EdgeNgramField(),
-    '*_at': DATETIME(
-        stored=True, sortable=True),
+    '*_at': DATETIME(stored=True, sortable=True),
 }
 
 

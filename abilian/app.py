@@ -30,7 +30,7 @@ from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
 from pkg_resources import resource_filename
-from six import string_types, text_type
+from six import string_types
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
@@ -130,8 +130,7 @@ default_config.update(
     SESSION_COOKIE_NAME=None,
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    LOGO_URL=Endpoint(
-        'abilian_static', filename='img/logo-abilian-32x32.png'),
+    LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
     MAIL_ADDRESS_TAG_CHAR=None)
@@ -274,8 +273,7 @@ class Application(Flask, ServiceManager, PluginManager):
             code = 'js-i18n-' + lang
             filename = 'lang-' + lang + '-%(version)s.min.js'
             self._assets_bundles[code] = {
-                'options': dict(
-                    output=filename, filters=js_filters),
+                'options': dict(output=filename, filters=js_filters),
             }
 
         for http_error_code in (403, 404, 500):
@@ -373,8 +371,7 @@ class Application(Flask, ServiceManager, PluginManager):
         url_value_preprocessor and `before_request` handlers.
         """
         g.breadcrumb.append(
-            BreadcrumbItem(
-                icon='home', url='/' + request.script_root))
+            BreadcrumbItem(icon='home', url='/' + request.script_root))
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary permissions.
@@ -430,7 +427,11 @@ class Application(Flask, ServiceManager, PluginManager):
         except IOError:
             return config
 
-        config.from_envvar(self.CONFIG_ENVVAR, silent=True)
+        # If the ennvar specifies a configuration file, it must exist
+        # (and execute with no exceptions) - we don't want the application
+        # to run with an unprecised or insecure configuration.
+        if self.CONFIG_ENVVAR in os.environ:
+            config.from_envvar(self.CONFIG_ENVVAR, silent=False)
 
         if 'WTF_CSRF_ENABLED' not in config:
             config['WTF_CSRF_ENABLED'] = config.get('CSRF_ENABLED', True)
@@ -481,9 +482,6 @@ class Application(Flask, ServiceManager, PluginManager):
                     # add our panels to default ones
                     self.config['DEBUG_TB_PANELS'] = list(
                         default_config['DEBUG_TB_PANELS'])
-                    self.config['DEBUG_TB_PANELS'].append(
-                        'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel'
-                    )
                 init_dbt(self)
                 for view_name in self.view_functions:
                     if view_name.startswith('debugtoolbar.'):
@@ -651,8 +649,7 @@ class Application(Flask, ServiceManager, PluginManager):
         self.add_url_rule(
             url_path,
             endpoint=endpoint,
-            view_func=partial(
-                send_file_from_directory, directory=directory),
+            view_func=partial(send_file_from_directory, directory=directory),
             roles=roles)
         self.add_access_controller(
             endpoint, allow_access_for_roles(Anonymous), endpoint=True)

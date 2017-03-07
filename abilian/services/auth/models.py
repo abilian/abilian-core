@@ -48,7 +48,8 @@ class LoginSessionQuery(BaseQuery):
         if ip_address is not _MARK:
             if ip_address is None:
                 ip_address = request.headers.getlist("X-Forwarded-For")
-                ip_address = ip_address[0] if ip_address else request.remote_addr
+                ip_address = ip_address[
+                    0] if ip_address else request.remote_addr
             conditions.append(LoginSession.ip_address == ip_address)
 
         session = LoginSession.query \

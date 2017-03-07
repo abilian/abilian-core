@@ -25,8 +25,7 @@ class DummyContact1(Entity):
             UnicodeText(),
             info=SEARCHABLE,
             default=gen_name,
-            onupdate=gen_name),
-        Entity.name)
+            onupdate=gen_name), Entity.name)
 
     salutation = Column(UnicodeText, default="")
     first_name = Column(UnicodeText, default="", info=SEARCHABLE)

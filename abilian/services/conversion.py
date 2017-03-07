@@ -29,7 +29,6 @@ from io import BytesIO
 from pathlib import Path
 from tempfile import mkstemp
 
-import six
 from magic import Magic
 from PIL import Image
 from PIL.ExifTags import TAGS

@@ -649,8 +649,7 @@ class TextInput(wtforms.widgets.TextInput):
             </div>
             ''',
                 widget=self,
-                params=self.html_params(
-                    name=field.name, **kwargs)))
+                params=self.html_params(name=field.name, **kwargs)))
 
     @property
     def typename(self):
@@ -943,8 +942,7 @@ class DateInput(Input):
         s = u'<div {}>\n'.format(html_params(**attributes))
 
         s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
-            html_params(
-                name=field_name, id=field_id, value=value, **kwargs))
+            html_params(name=field_name, id=field_id, value=value, **kwargs))
         s += u'  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
         s += u'</div>\n'
         return Markup(s)
@@ -1395,8 +1393,7 @@ class TabularFieldListWidget(object):
             labels = Data(* [f.label for f in field[0] if not f.is_hidden])
 
         return Markup(
-            render_template(
-                self.template, labels=labels, field=field))
+            render_template(self.template, labels=labels, field=field))
 
 
 class ModelListWidget(object):

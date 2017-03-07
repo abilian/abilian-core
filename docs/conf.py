@@ -47,8 +47,8 @@ intersphinx_mapping = {
     'babel': ('http://babel.pocoo.org/docs/', 'inventories/babel.inv'),
     'flaskbabel': ('http://pythonhosted.org/Flask-Babel/',
                    'inventories/flask_babel.inv'),
-    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_0_9/',
-                    'inventories/sqlalchemy_0_9.inv'),
+    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_1_0/',
+                    'inventories/sqlalchemy_1_0.inv'),
     'webassets': ('http://webassets.readthedocs.org/en/latest',
                   'inventories/webassets.inv'),
     }
