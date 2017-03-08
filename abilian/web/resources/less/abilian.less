@@ -1,5 +1,4 @@
 /* Abilian default theme */
-
 @import 'variables.less';
 @import 'compat.less';
 @import 'layout.less';
@@ -17,6 +16,7 @@
 mark {
   background-color: #fff8bb; /* boostrap uses state-warning-bg, but it's too light to be seen */
 }
+
 a mark {
   /* in normalize.less there is a rule for changing 'mark' color, but we don't want that in links */
   color: inherit;
@@ -27,6 +27,7 @@ a mark {
   when using .carret-down/.carret-up together */
   .caret();
 }
+
 .caret-up {
   .caret();
   border-top: 0;
