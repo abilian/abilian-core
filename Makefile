@@ -22,6 +22,7 @@ develop:
 	@echo "--> Installing dependencies"
 	pip install -U pip-tools setuptools
 	pip install -U -e '.[dev]'
+	yarn
 	@echo ""
 
 setup-git:
