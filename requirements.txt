@@ -21,8 +21,8 @@ cssmin==0.2.0
 decorator==4.0.11         # via validators
 flask-assets==0.12
 flask-babel==0.11.1
-flask-debugtoolbar==0.10.0
-flask-login==0.4.0
+flask-debugtoolbar==0.10.1
+flask-login==0.3.2
 flask-mail==0.9.1
 flask-migrate==2.0.3
 flask-principal==0.4.0    # via flask-security
@@ -41,14 +41,13 @@ jsmin==2.2.1
 kombu==3.0.37             # via celery
 lxml==3.7.3
 mako==1.0.6               # via alembic
-markupsafe==0.23
+markupsafe==1.0
 numpy==1.12.0             # via pandas
 olefile==0.44             # via pillow
 pandas==0.19.2
 passlib==1.7.1            # via flask-security
 pathlib==1.0.1
 pillow==4.0.0
-tqdm==4.11                # progress bar
 psycopg2==2.7
 pycparser==2.17           # via cffi
 pygeoip==0.3.2
@@ -63,6 +62,7 @@ sqlalchemy-utils==0.32.12
 sqlalchemy==1.1.6
 sqlparse==0.2.3
 straight.plugin==1.4.1
+tqdm==4.11.2
 typing==3.5.3.0
 validators==0.11.2        # via wtforms-components
 webassets==0.12.1         # via flask-assets
