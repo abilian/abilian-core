@@ -71,7 +71,7 @@ lint-travis:
 	@echo "--> Linting .travis.yml files"
 	travis lint
 	@echo ""
-	
+
 lint-js:
 	@echo "--> Linting JS files"
 	eslint ./abilian/web/resources/js/
@@ -87,6 +87,7 @@ lint-rst:
 # Everything else
 #
 install:
+	pip install -U pip
 	python setup.py install
 
 doc: doc-html doc-pdf
@@ -136,4 +137,3 @@ update-deps:
 	pip-compile -U > /dev/null
 	pip-compile > /dev/null
 	git --no-pager diff requirements.txt
-
