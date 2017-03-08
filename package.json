@@ -1,0 +1,26 @@
+{
+  "name": "abilian-sbe-front",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "stylelint": "stylelint ./abilian/web/resources/less/**/*.less",
+    "eslint": "eslint ./abilian/web/resources/js/"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-standard": "^7.0.1",
+    "eslint-plugin-html": "^2.0.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
+    "stylelint": "^7.9.0",
+    "stylelint-config-standard": "^16.0.0"
+  },
+  "stylelint": {
+    "extends": "stylelint-config-standard",
+    "selector-list-comma-newline-after": "always-multi-line"
+  }
+}

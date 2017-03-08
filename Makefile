@@ -55,7 +55,7 @@ vagrant-tests:
 # Various Checkers
 #
 # TODO: add lint-js lint-rst
-lint: lint-py lint-travis
+lint: lint-py lint-travis lint-js lint-less lint-rst
 
 lint-py:
 	@echo "--> Linting Python files"
@@ -74,7 +74,12 @@ lint-travis:
 
 lint-js:
 	@echo "--> Linting JS files"
-	eslint ./abilian/web/resources/js/
+	-npm run eslint
+	@echo ""
+
+lint-less:
+	@echo "--> Linting LESS files"
+	-npm run stylelint
 	@echo ""
 
 lint-rst:
@@ -116,6 +121,7 @@ clean:
 
 tidy: clean
 	rm -rf .tox .dox .travis-solo
+	rm -rf node_modules
 
 update-pot:
 	# _n => ngettext, _l => lazy_gettext
