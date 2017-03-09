@@ -3,16 +3,16 @@ ol.comments {
 
   li {
     position: relative;
-    padding: 0.5em;
-    padding-left: 55px; /* avatar size: 45px, + 2*5px for spacing */
+    /* avatar size: 45px, + 2*5px for spacing */
+    padding: 0.5em 0.5em 0.5em 55px;
     margin-bottom: 0.5em;
     background-color: @gray-lighter;
     border-radius: @border-radius-base;
-    
+
     .header {
       margin-bottom: 0.25em;
       min-height: 50px;
-      
+
       .avatar {
         position: absolute;
         top: 5px;
@@ -22,8 +22,10 @@ ol.comments {
       .author {
         font-weight: bold;
       }
-      
-      .date { float: right; }
+
+      .date {
+        float: right;
+      }
     }
 
     .comment-body {
