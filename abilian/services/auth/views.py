@@ -19,7 +19,6 @@ from flask.json import jsonify
 from flask_login import login_user, logout_user, user_logged_in, \
     user_logged_out
 from flask_mail import Message
-from flask_security.utils import md5
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from six.moves.urllib.parse import urljoin, urlparse
 from sqlalchemy import sql
@@ -27,6 +26,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from abilian.core.extensions import csrf, db
 from abilian.core.models.subjects import User
+from abilian.core.util import md5
 from abilian.i18n import _, render_template_i18n
 from abilian.services.security import Anonymous
 from abilian.web.blueprints import Blueprint

@@ -12,9 +12,7 @@ Flask-Migrate>=1.6.0
 flask-sqlalchemy<=2.1
 Flask-Script
 Flask-Testing>=0.4.2
-# Must pin Flask-Login because Flask-Security 1.7.5 wants Flaks-Login < 0.4
 Flask-Login~=0.3.0
-Flask-Security>=1.7.0
 # Flask-Uploads
 
 # Currently broken w/ 0.13
