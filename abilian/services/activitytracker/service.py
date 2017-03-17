@@ -15,9 +15,9 @@ import logging
 class ActivityTracker(Service):
     name = 'activitytracker'
 
-    def __init__(self, signals=False):
-        self.signals = signals
-        if self.signals:
+    def __init__(self, has_signals=False):
+        self.has_signals = has_signals
+        if self.has_signals:
             self.init_signals()
 
     def init_app(self, app):
@@ -41,7 +41,7 @@ class ActivityTracker(Service):
         logging.warn("{} : {} : {}".format(sender.name, action, datetime.utcnow()))
 
     def track_object(self, object_id, user_id):
-        if self.signals:
+        if self.has_signals:
             self.traked_object_signal.send(self, action="object-tracked")
         if not Viewed.query.filter(Viewed.object_id == object_id, Viewed.user_id == user_id).count():
             db.session.add(Viewed(object_id=object_id, user_id=user_id))
@@ -51,13 +51,13 @@ class ActivityTracker(Service):
             .update({Viewed.viewed_at: datetime.utcnow()})
 
     def get_tracked_object(self, object_id, user_id):
-        if self.signals:
+        if self.has_signals:
             self.get_traks_signal.send(self, action="get-tracks")
         track = Viewed.query.filter(Viewed.object_id == object_id, Viewed.user_id == user_id).first()
         return track
 
     def get_viewers(self, object_id):
-        if self.signals:
+        if self.has_signals:
             self.get_viewers_signal.send(self, action="get-viewers")
         viewers = Viewed.query.filter(Viewed.object_id == object_id).all()
         return viewers
