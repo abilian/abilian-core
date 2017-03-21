@@ -13,7 +13,7 @@ from .models import Viewed, SignalLog
 class ActivityTracker(Service):
     name = 'activitytracker'
 
-    def signal_callback(self, sender, object_id, user_id):
+    def object_tracked(self, sender, object_id, user_id):
         db.session.add(SignalLog(sender=sender, object_id=object_id, user_id=user_id))
         db.session.commit()
 

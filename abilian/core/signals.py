@@ -31,3 +31,6 @@ activity = signals.signal("activity")
 #: This signal is sent when user object has been loaded. g.user and current_user
 #: are available.
 user_loaded = signals.signal('user_loaded')
+
+#: signal is sent when object has been tracked
+entity_was_viewed = signals.signal('entity_was_viewed')
