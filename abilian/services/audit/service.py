@@ -15,7 +15,7 @@ from inspect import isclass
 import sqlalchemy as sa
 from flask import current_app, g
 from six import text_type
-from sqlalchemy import event
+from sqlalchemy import event, extract, func
 from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 
@@ -333,3 +333,28 @@ def format_large_value(value):
         # object of type '...' has no len()
         pass
     return value
+
+def get_model_changes(model, year, month=None, day=None):
+    """
+    Get models modified at the given date with the Audit service.
+
+    :param model: string like "extranet_medicen.apps.crm.models.Compte".
+      Beware the typo, there won't be a warning message.
+    :param year: int
+    :param month: int
+    :param day: int
+
+    :returns: a query object
+
+    """
+    query = AuditEntry.query.filter(extract('year', AuditEntry.happened_at) == year)
+
+    if month:
+        query = query.filter(extract('month', AuditEntry.happened_at) == month)
+    if day:
+        query = query.filter(extract('day', AuditEntry.happened_at) == day)
+
+    query = query.filter(AuditEntry.entity_type.like(model)) \
+                 .order_by(AuditEntry.happened_at)
+
+    return query
