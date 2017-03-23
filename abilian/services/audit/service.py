@@ -359,3 +359,21 @@ def get_model_changes(entity_type, year, month=None, day=None):
                  .order_by(AuditEntry.happened_at)
 
     return query
+
+
+def get_columns_diff(changes):
+    """Add the changed columns as a diff attribute.
+
+    - changes: a list of changes (get_model_changes query.all())
+
+    Return: the same list, to which elements we added a "diff"
+    attribute containing the changed columns. Diff defaults to [].
+
+    """
+    for change in changes:
+        change.diff = []
+        elt_changes = change.get_changes()
+        if elt_changes:
+            change.diff = elt_changes.columns
+
+    return changes
