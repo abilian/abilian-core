@@ -334,6 +334,7 @@ def format_large_value(value):
         pass
     return value
 
+
 def get_model_changes(entity_type, year, month=None, day=None):
     """
     Get models modified at the given date with the Audit service.
