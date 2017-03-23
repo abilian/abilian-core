@@ -73,14 +73,14 @@ def do_login(form):
                     User.can_login == True) \
             .one()
     except NoResultFound:
-        auth_failed.send(current_app._get_current_object(), email)
+        auth_failed.send(current_app._get_current_object(), email=email)
         res['error'] = _(u"Sorry, we couldn't find an account for "
                          u"email '{email}'.").format(email=email)
         res['code'] = 401
         return res
 
     if user and not user.authenticate(password):
-        auth_failed.send(current_app._get_current_object(), email)
+        auth_failed.send(current_app._get_current_object(), email=email)
         res['error'] = _(u"Sorry, wrong password.")
         res['code'] = 401
         return res
