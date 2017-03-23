@@ -335,25 +335,34 @@ def format_large_value(value):
     return value
 
 
-def get_model_changes(entity_type, year, month=None, day=None):
+def get_model_changes(entity_type, year=None, month=None, day=None, hour=None, mindate=None):
     """
     Get models modified at the given date with the Audit service.
 
     :param entity_type: string like "extranet_medicen.apps.crm.models.Compte".
       Beware the typo, there won't be a warning message.
+    :param mindate: datetime
     :param year: int
     :param month: int
     :param day: int
+    :param hour: int
 
     :returns: a query object
 
     """
-    query = AuditEntry.query.filter(extract('year', AuditEntry.happened_at) == year)
+    query = AuditEntry.query
 
+    if mindate:
+        query = query.filter(AuditEntry.happened_at >= mindate)
+
+    if year:
+        query = AuditEntry.query.filter(extract('year', AuditEntry.happened_at) == year)
     if month:
         query = query.filter(extract('month', AuditEntry.happened_at) == month)
     if day:
         query = query.filter(extract('day', AuditEntry.happened_at) == day)
+    if hour:
+        query = query.filter(extract('hour', AuditEntry.happened_at) == hour)
 
     query = query.filter(AuditEntry.entity_type.like(entity_type)) \
                  .order_by(AuditEntry.happened_at)
