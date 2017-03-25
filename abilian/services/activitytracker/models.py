@@ -1,11 +1,11 @@
-
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
+
+from datetime import datetime
 
 from sqlalchemy import Column, DateTime, Integer
 
 from abilian.core.extensions import db
-from datetime import datetime
 
 
 class Viewed(db.Model):

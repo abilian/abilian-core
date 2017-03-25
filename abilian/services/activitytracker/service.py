@@ -4,9 +4,11 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from abilian.services import Service
-from abilian.core.extensions import db
 from datetime import datetime
+
+from abilian.core.extensions import db
+from abilian.services import Service
+
 from .models import Viewed
 
 __all__ = ['activitytracker', 'ActivityTracker']
@@ -16,15 +18,20 @@ class ActivityTracker(Service):
     name = 'activitytracker'
 
     def track_object(self, object_id, user_id):
-        if not Viewed.query.filter(Viewed.object_id == object_id, Viewed.user_id == user_id).count():
+        if not Viewed.query.filter(Viewed.object_id == object_id,
+                                   Viewed.user_id == user_id).count():
             db.session.add(Viewed(object_id=object_id, user_id=user_id))
             db.session.commit()
         else:
-            Viewed.query.filter(Viewed.object_id == object_id, Viewed.user_id == user_id).update({Viewed.viewed_at: datetime.utcnow()})
+            Viewed.query.filter(Viewed.object_id == object_id,
+                                Viewed.user_id == user_id).update({
+                                    Viewed.viewed_at: datetime.utcnow()
+                                })
 
     # get a specific tracked object
     def get_tracked_object(self, object_id, user_id):
-        track = Viewed.query.filter(Viewed.object_id == object_id, Viewed.user_id == user_id).first()
+        track = Viewed.query.filter(Viewed.object_id == object_id,
+                                    Viewed.user_id == user_id).first()
         return track
 
     # get all viewers of a specific object
