@@ -27,7 +27,7 @@ class Email(Email):
 
     def __call__(self, form, field):
         if self.message is None:
-            self.message = field.gettext(u'Invalid email address.')
+            self.message = field.gettext('Invalid email address.')
 
         if field.data:
             super(Email, self).__call__(form, field)
@@ -94,19 +94,19 @@ class Length(Rule):
             if message is None:
                 if self.max == -1:
                     message = _n(
-                        u'Field must be at least %(min)d character long.',
-                        u'Field must be at least %(min)d characters long.',
+                        'Field must be at least %(min)d character long.',
+                        'Field must be at least %(min)d characters long.',
                         self.min,
                         min=self.min)
                 elif self.min == -1:
                     message = _n(
-                        u'Field cannot be longer than %(max)d character.',
-                        u'Field cannot be longer than %(max)d characters.',
+                        'Field cannot be longer than %(max)d character.',
+                        'Field cannot be longer than %(max)d characters.',
                         self.max,
                         max=self.max)
                 else:
                     message = _(
-                        u'Field must be between %(min)d and %(max)d characters long.',
+                        'Field must be between %(min)d and %(max)d characters long.',
                         min=self.min, max=self.max)
             raise ValidationError(message % dict(
                 min=self.min, max=self.max, length=l))

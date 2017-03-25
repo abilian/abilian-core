@@ -74,17 +74,17 @@ def filesize(d):
     if d < 1000:
         s = "%d&nbsp;B" % d
 
-    elif d < 1e4:
+    elif d < int(1e4):
         s = "%.1f&nbsp;kB" % (d / 1e3)
-    elif d < 1e6:
+    elif d < int(1e6):
         s = "%.0f&nbsp;kB" % (d / 1e3)
 
-    elif d < 1e7:
+    elif d < int(1e7):
         s = "%.1f&nbsp;MB" % (d / 1e6)
-    elif d < 1e9:
+    elif d < int(1e9):
         s = "%.0f&nbsp;MB" % (d / 1e6)
 
-    elif d < 1e10:
+    elif d < int(1e10):
         s = "%.1f&nbsp;GB" % (d / 1e9)
 
     else:
