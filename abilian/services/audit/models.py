@@ -124,7 +124,6 @@ class AuditEntry(db.Model):
     def related(self):
         return self.type & RELATED
 
-    #noinspection PyTypeChecker
     def get_changes(self):
         # Using Pickle here instead of JSON because we need to pickle values
         # such as dates. This could make schema migration more difficult, though.

@@ -335,7 +335,12 @@ def format_large_value(value):
     return value
 
 
-def get_model_changes(entity_type, year=None, month=None, day=None, hour=None, since=None):
+def get_model_changes(entity_type,
+                      year=None,
+                      month=None,
+                      day=None,
+                      hour=None,
+                      since=None):
     """
     Get models modified at the given date with the Audit service.
 
@@ -356,7 +361,7 @@ def get_model_changes(entity_type, year=None, month=None, day=None, hour=None, s
         query = query.filter(AuditEntry.happened_at >= since)
 
     if year:
-        query = AuditEntry.query.filter(extract('year', AuditEntry.happened_at) == year)
+        query = query.filter(extract('year', AuditEntry.happened_at) == year)
     if month:
         query = query.filter(extract('month', AuditEntry.happened_at) == month)
     if day:
