@@ -18,12 +18,12 @@ class ActivityTracker(Service):
         db.session.add(Viewed(object_id=object_id, user_id=user_id))
         db.session.commit()
 
-    # get a specific tracked object
+    #: get tracks of a specific object and user
     def get_tracked_object(self, object_id, user_id):
         track = Viewed.query \
             .filter(Viewed.object_id == object_id, Viewed.user_id == user_id) \
             .order_by(Viewed.viewed_at.asc()) \
-            .all()[-1]
+            .all()
         return track
 
     #: get all tracks that are related to a specific object
