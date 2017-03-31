@@ -37,7 +37,7 @@ class ActivityTracker(Service):
     def get_viewers(self, object_id):
         view_objects = ViewsTrack.query \
             .filter(ViewsTrack.object_id == object_id) \
-            .group_by(ViewsTrack.user_id) \
+            .group_by(ViewsTrack.user_id, ViewsTrack.id) \
             .all()
         return view_objects
 
