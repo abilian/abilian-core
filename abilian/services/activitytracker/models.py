@@ -26,8 +26,8 @@ def _default_from(column):
     return _default_value
 
 
-class ViewsTrack(db.Model):
-    __tablename__ = "views_track"
+class Track(db.Model):
+    __tablename__ = "track"
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
@@ -39,6 +39,20 @@ class ViewsTrack(db.Model):
     #: user id
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
     user = relationship(User, foreign_keys=user_id)
+
+    track_logs = db.relationship(
+        'TrackLog',
+        backref='track',
+        order_by='TrackLog.viewed_at',
+        lazy='dynamic',)
+
+
+class TrackLog(db.Model):
+    __tablename__ = "track_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    track_id = db.Column(db.Integer, db.ForeignKey('track.id'))
 
     #: time of view
     viewed_at = Column(DateTime, default=datetime.utcnow, nullable=True)
