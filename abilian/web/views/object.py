@@ -634,6 +634,23 @@ class JSONWhooshSearch(JSONBaseSearch):
         svc = current_app.services['indexing']
         search_kwargs = {'limit': 30, 'Models': (self.Model,)}
         results = svc.search(q, **search_kwargs)
+
+        try:
+            # 'nom' doesn't always exist but for Contacts, sorting on
+            # the last name ('nom') feels more natural than 'name',
+            # which starts with the first name ('prenom').
+            res = results[0]
+            fields = res.fields()
+            itemkey = None
+            if 'nom' in fields:
+                itemkey = 'nom'
+            elif 'name' in fields:
+                itemkey = 'name'
+            if itemkey:
+                results = sorted(results, key=lambda it: it.fields().get(itemkey))
+        except Exception:
+            logger.warning("we could not sort whoosh results on fields' key {}.".format(itemkey))
+
         return results
 
     def get_item(self, hit):
