@@ -131,6 +131,7 @@ update-pot:
 	python setup.py extract_messages update_catalog compile_catalog
 
 release:
+	git push --tags
 	rm -rf /tmp/abilian-core
 	git clone . /tmp/abilian-core
 	cd /tmp/abilian-core ; python setup.py sdist
