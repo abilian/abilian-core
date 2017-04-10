@@ -659,15 +659,16 @@ class JSONWhooshSearch(JSONBaseSearch):
             # 'nom' doesn't always exist but for Contacts, sorting on
             # the last name ('nom') feels more natural than 'name',
             # which starts with the first name ('prenom').
-            res = results[0]
-            fields = res.fields()
-            if 'nom' in fields:
-                itemkey = 'nom'
-            elif 'name' in fields:
-                itemkey = 'name'
-            if itemkey:
-                results = sorted(
-                    results, key=lambda it: it.fields().get(itemkey))
+            if not results.is_empty():
+                res = results[0]
+                fields = res.fields()
+                if 'nom' in fields:
+                    itemkey = 'nom'
+                elif 'name' in fields:
+                    itemkey = 'name'
+                if itemkey:
+                    results = sorted(
+                        results, key=lambda it: it.fields().get(itemkey))
         except Exception:
             if itemkey is not None:
                 msg = "we could not sort whoosh results on fields' key {}.".format(
