@@ -263,6 +263,12 @@ class ObjectEdit(ObjectView):
                 return redirect(url)
         return redirect(self.view_url())
 
+    def redirect_to(self, url):
+        """
+        - url: real url, created with url_for.
+        """
+        return redirect(url)
+
     def message_success(self):
         return text_type(self._message_success)
 
@@ -285,9 +291,9 @@ class ObjectEdit(ObjectView):
     def cancel(self):
         return self.redirect_to_view()
 
-    def edit(self):
+    def edit(self, redirect_to=None):
         if self.validate():
-            return self.form_valid()
+            return self.form_valid(redirect_to=redirect_to)
         else:
             if request.csrf_failed:
                 errors = self.form.errors
@@ -347,7 +353,7 @@ class ObjectEdit(ObjectView):
     def validate(self):
         return self.form.validate()
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         """Save object.
 
         Called when form is validated.
@@ -383,7 +389,11 @@ class ObjectEdit(ObjectView):
         else:
             self.commit_success()
             flash(self.message_success(), "success")
-            return self.redirect_to_view()
+
+            if not redirect_to:
+                return self.redirect_to_view()
+            else:
+                return self.redirect_to(redirect_to)
 
     def form_invalid(self):
         """
