@@ -179,6 +179,13 @@ CANCEL_BUTTON = ButtonAction(
 EDIT_BUTTON = ButtonAction(
     'form', 'edit', btn_class='primary', title=_l(u'Save'))
 
+ADD_ANOTHER_BUTTON = ButtonAction(
+    'form',
+    'create_add_another',
+    btn_class='primary',
+    title=_l(u'Create and add another'),
+    condition=lambda ctx: getattr(ctx['view'], 'add_another_button', False),)
+
 
 class ObjectEdit(ObjectView):
     """Edit objects.
