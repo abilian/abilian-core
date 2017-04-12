@@ -25,6 +25,7 @@ addons:
 # Install OS dependencies
 before_install:
   - pip install -U 'pip>=9' setuptools
+  - gem install travis
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
