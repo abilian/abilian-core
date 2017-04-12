@@ -10,6 +10,7 @@ dependencies:
   override:
     - pip install -U pip tox setuptools
     - npm install -g less
+    - gem install travis
     # Just to warm up the cache
     - pip install -r etc/dev-requirements.txt
 
