@@ -263,12 +263,6 @@ class ObjectEdit(ObjectView):
                 return redirect(url)
         return redirect(self.view_url())
 
-    def redirect_to(self, url):
-        """
-        - url: real url, created with url_for.
-        """
-        return redirect(url)
-
     def message_success(self):
         return text_type(self._message_success)
 
@@ -357,6 +351,10 @@ class ObjectEdit(ObjectView):
         """Save object.
 
         Called when form is validated.
+
+        - redirect_to: real url (created with url_for) to redirect to,
+        instead of the view by default.
+
         """
         session = current_app.db.session()
 
@@ -390,10 +388,10 @@ class ObjectEdit(ObjectView):
             self.commit_success()
             flash(self.message_success(), "success")
 
-            if not redirect_to:
-                return self.redirect_to_view()
+            if redirect_to:
+                return redirect(redirect_to)
             else:
-                return self.redirect_to(redirect_to)
+                return self.redirect_to_view()
 
     def form_invalid(self):
         """
