@@ -285,9 +285,9 @@ class ObjectEdit(ObjectView):
     def cancel(self):
         return self.redirect_to_view()
 
-    def edit(self):
+    def edit(self, redirect_to=None):
         if self.validate():
-            return self.form_valid()
+            return self.form_valid(redirect_to=redirect_to)
         else:
             if request.csrf_failed:
                 errors = self.form.errors
@@ -347,10 +347,14 @@ class ObjectEdit(ObjectView):
     def validate(self):
         return self.form.validate()
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         """Save object.
 
         Called when form is validated.
+
+        - redirect_to: real url (created with url_for) to redirect to,
+        instead of the view by default.
+
         """
         session = current_app.db.session()
 
@@ -383,7 +387,11 @@ class ObjectEdit(ObjectView):
         else:
             self.commit_success()
             flash(self.message_success(), "success")
-            return self.redirect_to_view()
+
+            if redirect_to:
+                return redirect(redirect_to)
+            else:
+                return self.redirect_to_view()
 
     def form_invalid(self):
         """
