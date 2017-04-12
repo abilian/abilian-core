@@ -352,9 +352,8 @@ class ObjectEdit(ObjectView):
 
         Called when form is validated.
 
-        - redirect_to: real url (created with url_for) to redirect to,
-        instead of the view by default.
-
+        :param redirect_to: real url (created with url_for) to redirect to,
+          instead of the view by default.
         """
         session = current_app.db.session()
 
