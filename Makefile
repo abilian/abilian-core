@@ -86,9 +86,13 @@ lint-less:
 
 lint-rst:
 	@echo "--> Linting .rst files"
-	rst-lint *.rst docs/*.rst
+	rst-lint *.rst
 	@echo ""
 
+lint-doc:
+	@echo "--> Linting doc"
+	sphinx-build -W -b dummy docs/ docs/_build/
+	@echo ""
 
 #
 # Everything else

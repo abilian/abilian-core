@@ -23,7 +23,7 @@ pylint
 
 # To build docs
 # (Doesn't work w/ sphinx 1.4.5)
-Sphinx==1.4.4
+Sphinx>=1.5.5
 
 # Standard theme for readthedocs.com
 sphinx-rtd-theme
