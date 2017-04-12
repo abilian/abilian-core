@@ -335,7 +335,7 @@ class ObjectEdit(ObjectView):
 
     def handle_commit_exception(self, exc):
         """
-        hook point to handle exception that may happen during commit.
+        Hook point to handle exception that may happen during commit.
 
         It is the responsability of this method to perform a rollback if it is
         required for handling `exc`. If the method does not handle `exc` if should
