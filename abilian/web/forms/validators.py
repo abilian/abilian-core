@@ -205,3 +205,11 @@ anyof = AnyOf
 noneof = NoneOf
 flaghidden = FlagHidden
 renderempty = RenderEmpty
+
+VALIDATORS = {
+    'email': email,
+    'url': url,
+    'siret': siret,
+    'required': required,
+    'optional': optional,
+}
