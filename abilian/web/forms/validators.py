@@ -209,6 +209,8 @@ renderempty = RenderEmpty
 VALIDATORS = {
     'email': email,
     'url': url,
+    'uuid': uuid,
+    'renderempty': renderempty,
     'siret': siret,
     'required': required,
     'optional': optional,
