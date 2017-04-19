@@ -184,6 +184,10 @@ class RenderEmpty(object):
         pass
 
 
+class SIRET(RenderEmpty):
+    pass
+
+
 # These are the canonical names that should be used.
 equalto = EqualTo
 length = Length
@@ -195,8 +199,19 @@ email = Email
 ipaddress = IPAddress
 macaddress = MacAddress
 url = URL
+siret = SIRET
 uuid = UUID
 anyof = AnyOf
 noneof = NoneOf
 flaghidden = FlagHidden
 renderempty = RenderEmpty
+
+VALIDATORS = {
+    'email': email,
+    'url': url,
+    'uuid': uuid,
+    'renderempty': renderempty,
+    'siret': siret,
+    'required': required,
+    'optional': optional,
+}
