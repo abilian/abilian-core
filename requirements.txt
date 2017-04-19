@@ -20,7 +20,7 @@ closure==20161201
 cssmin==0.2.0
 decorator==4.0.11         # via validators
 flask-assets==0.12
-flask-babel==0.11.1
+flask-babel==0.11.2
 flask-debugtoolbar==0.10.1
 flask-login==0.3.2
 flask-mail==0.9.1
