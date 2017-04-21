@@ -8,7 +8,6 @@ import logging
 
 import sqlalchemy as sa
 from flask import current_app, flash, redirect, render_template, request
-from sqlalchemy.sql import functions
 
 from abilian.core.entities import Entity
 from abilian.core.models.tag import Tag, entity_tag_tbl
@@ -23,7 +22,7 @@ from .forms import TagForm
 
 logger = logging.getLogger(__name__)
 
-_OBJ_COUNT = functions.count(entity_tag_tbl.c.entity_id).label('obj_count')
+_OBJ_COUNT = sa.sql.functions.count(entity_tag_tbl.c.entity_id).label('obj_count')
 
 
 def get_entities_for_reindex(tags):

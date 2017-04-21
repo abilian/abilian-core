@@ -58,11 +58,16 @@ vagrant-tests:
 #
 lint: lint-ci lint-travis
 
-lint-ci: lint-py lint-js lint-less lint-rst lint-doc
+lint-ci: lint-py lint-js lint-less lint-rst lint-doc lint-mypy
 
 lint-py:
 	@echo "--> Linting Python files"
 	flake8 $(SRC)
+	@echo ""
+
+lint-mypy:
+	@echo "--> Typechecking Python files w/ mypy"
+	-mypy $(SRC)
 	@echo ""
 
 lint-py3k:

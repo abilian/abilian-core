@@ -25,11 +25,11 @@ class BlobQuery(BaseQuery):
     """
 
     def by_uuid(self, uuid):
+        # type: (str) -> Blob
         """Like `.get()` but by uuid.
 
         :param uuid: a `string` or an `uuid`.
         """
-        # type: (str) -> Blob
         try:
             return self.filter_by(uuid=uuid).one()
         except NoResultFound:
