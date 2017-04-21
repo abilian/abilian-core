@@ -18,6 +18,7 @@ from flask import Blueprint, current_app, g, jsonify, redirect, \
 from flask_login import current_user
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
+from typing import List, Tuple
 from werkzeug.exceptions import BadRequest
 
 from abilian.core.entities import Entity
@@ -133,7 +134,7 @@ class ModuleView(object):
     Provide :attr:`module`.
     """
     #: :class:`Module` instance
-    module = None
+    module = None  # type: Module
 
     def __init__(self, module, *args, **kwargs):
         self.module = module
@@ -363,7 +364,7 @@ class ModuleComponent(object):
     """
     A component that provide new functions for a :class:`Module`
     """
-    name = None
+    name = None  # type: str
 
     def __init__(self, name=None):
         if name is not None:
@@ -389,14 +390,14 @@ class ModuleComponent(object):
 class Module(object):
     __metaclass__ = ModuleMeta
 
-    id = None
-    endpoint = None
-    label = None
-    managed_class = None
+    id = None  # type: str
+    endpoint = None  # type: str
+    label = None  # type: str
+    managed_class = None  # type: type
     list_view = None
-    list_view_columns = []
+    list_view_columns = []  # type: List
     single_view = None
-    components = ()
+    components = ()  # type: Tuple
 
     # class based views. If not provided will be automaticaly created from
     # EntityView etc defined above
