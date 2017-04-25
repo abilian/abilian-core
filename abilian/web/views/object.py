@@ -632,7 +632,7 @@ class JSONWhooshSearch(JSONBaseSearch):
 
     def get_results(self, q, *args, **kwargs):
         svc = current_app.services['indexing']
-        search_kwargs = {'limit': 30, 'Models': (self.Model,)}
+        search_kwargs = {'limit': 50, 'Models': (self.Model,)}
         results = svc.search(q, **search_kwargs)
         return results
 
