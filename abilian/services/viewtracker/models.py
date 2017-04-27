@@ -11,6 +11,7 @@ from abilian.core.entities import Entity, db
 from abilian.core.models.subjects import User
 
 
+# TODO: remove duplicate
 def _default_from(column):
     """
     Helper for default and onupdates parameters in a Column definitions.
@@ -25,34 +26,34 @@ def _default_from(column):
     return _default_value
 
 
-class Track(db.Model):
-    __tablename__ = "track"
+class View(db.Model):
+    __tablename__ = "view"
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
-    #: viewed object id
-    object_id = Column(
-        Integer, default=_default_from('_fk_object_id'), nullable=False)
-    _fk_object_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
-    object = relationship(Entity, foreign_keys=_fk_object_id)
+    #: viewed entity id
+    entity_id = Column(
+        Integer, default=_default_from('_fk_entity_id'), nullable=False)
+    _fk_entity_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
+    entity = relationship(Entity, foreign_keys=_fk_entity_id)
 
     #: user id
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
     user = relationship(User, foreign_keys=user_id)
 
-    track_logs = db.relationship(
-        'TrackLog',
-        backref='track',
-        order_by='TrackLog.viewed_at',
-        lazy='dynamic',)
+    hits = db.relationship(
+        'Hit',
+        backref='view',
+        order_by='Hit.viewed_at',
+        lazy='dynamic')
 
 
-class TrackLog(db.Model):
-    __tablename__ = "track_log"
+class Hit(db.Model):
+    __tablename__ = "hit"
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
-    track_id = db.Column(db.Integer, db.ForeignKey('track.id'))
+    view_id = db.Column(db.Integer, db.ForeignKey(View.id))
 
     #: time of view
     viewed_at = Column(DateTime, default=datetime.utcnow, nullable=True)
