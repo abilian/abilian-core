@@ -22,7 +22,9 @@ from .forms import TagForm
 
 logger = logging.getLogger(__name__)
 
-_OBJ_COUNT = sa.sql.functions.count(entity_tag_tbl.c.entity_id).label('obj_count')
+_OBJ_COUNT = sa.sql.functions \
+        .count(entity_tag_tbl.c.entity_id) \
+        .label('obj_count')
 
 
 def get_entities_for_reindex(tags):
@@ -104,13 +106,13 @@ class NSView(View):
         data = request.form
         action = data.get('__action')
 
-        if action == u'delete':
+        if action == 'delete':
             return self.do_delete()
-        elif action == u'merge':
+        elif action == 'merge':
             return self.do_merge()
 
         else:
-            flash(_(u'Unknown action'))
+            flash(_('Unknown action'))
             self.get(self.ns)
 
     def _get_selected_tags(self):
@@ -133,22 +135,22 @@ class NSView(View):
         confirm = data.get('confirm_delete', False, type=bool)
 
         if not confirm:
-            flash(_(u'Please fix the error(s) below'), 'error')
-            self.form_errors['confirm_delete'] = _(u'Must be checked to ensure you '
-                                                   u'intent to delete these tags')
+            flash(_('Please fix the error(s) below'), 'error')
+            self.form_errors['confirm_delete'] = _('Must be checked to ensure you '
+                                                   'intent to delete these tags')
             return self.get(self.ns)
 
         session = current_app.db.session()
         tags = self._get_selected_tags()
 
         if not tags:
-            flash(_(u'No action performed: no tags selected'), 'warning')
+            flash(_('No action performed: no tags selected'), 'warning')
             return self.redirect_to_view()
 
         count = len(tags)
         entities_to_reindex = get_entities_for_reindex(tags)
-        success_message = _n(u'%(tag)s deleted',
-                             u'%(num)d tags deleted:\n%(tags)s',
+        success_message = _n('%(tag)s deleted',
+                             '%(num)d tags deleted:\n%(tags)s',
                              count,
                              tag=tags[0].label,
                              tags=', '.join(t.label for t in tags))
@@ -162,7 +164,7 @@ class NSView(View):
         target_id = request.form.get('merge_to', type=int)
 
         if not target_id:
-            flash(_(u'You must select a target tag to merge to'), 'error')
+            flash(_('You must select a target tag to merge to'), 'error')
             return self.get(self.ns)
 
         target = Tag.query \
@@ -170,7 +172,7 @@ class NSView(View):
             .scalar()
 
         if not target:
-            flash(_(u'Target tag not found, no action performed'), 'error')
+            flash(_('Target tag not found, no action performed'), 'error')
             return self.get(self.ns)
 
         merge_from = set(self._get_selected_tags())
@@ -179,7 +181,7 @@ class NSView(View):
             merge_from.remove(target)
 
         if not merge_from:
-            flash(_(u'No tag selected for merging'), 'warning')
+            flash(_('No tag selected for merging'), 'warning')
             return self.get(self.ns)
 
         session = current_app.db.session()
@@ -225,7 +227,7 @@ class BaseTagView(object):
 
 
 class TagEdit(BaseTagView, ObjectEdit):
-    _message_success = _l(u'Tag edited')
+    _message_success = _l('Tag edited')
 
     def after_populate_obj(self):
         session = sa.orm.object_session(self.obj)
@@ -247,7 +249,7 @@ class TagPanel(AdminPanel):
     Tags administration
     """
     id = 'tags'
-    label = _l(u'Tags')
+    label = _l('Tags')
     icon = 'tags'
 
     def get(self):
