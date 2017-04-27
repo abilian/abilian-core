@@ -31,3 +31,5 @@ activity = signals.signal("activity")
 #: This signal is sent when user object has been loaded. g.user and current_user
 #: are available.
 user_loaded = signals.signal('user_loaded')
+
+auth_failed = signals.signal('auth_failed')

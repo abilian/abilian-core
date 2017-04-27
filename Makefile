@@ -56,12 +56,18 @@ vagrant-tests:
 #
 # Various Checkers
 #
-# TODO: add lint-js lint-rst
-lint: lint-py lint-travis lint-js lint-less lint-rst
+lint: lint-ci lint-travis
+
+lint-ci: lint-py lint-js lint-less lint-rst lint-doc lint-mypy
 
 lint-py:
 	@echo "--> Linting Python files"
 	flake8 $(SRC)
+	@echo ""
+
+lint-mypy:
+	@echo "--> Typechecking Python files w/ mypy"
+	-mypy $(SRC)
 	@echo ""
 
 lint-py3k:
@@ -86,9 +92,13 @@ lint-less:
 
 lint-rst:
 	@echo "--> Linting .rst files"
-	rst-lint *.rst docs/*.rst
+	rst-lint *.rst
 	@echo ""
 
+lint-doc:
+	@echo "--> Linting doc"
+	sphinx-build -W -b dummy docs/ docs/_build/
+	@echo ""
 
 #
 # Everything else
@@ -131,6 +141,7 @@ update-pot:
 	python setup.py extract_messages update_catalog compile_catalog
 
 release:
+	git push --tags
 	rm -rf /tmp/abilian-core
 	git clone . /tmp/abilian-core
 	cd /tmp/abilian-core ; python setup.py sdist
@@ -146,3 +157,8 @@ update-deps:
 	pip-compile -U > /dev/null
 	pip-compile > /dev/null
 	git --no-pager diff requirements.txt
+
+sync-deps:
+	pip install -r requirements.txt
+	pip install -r etc/dev-requirements.txt
+	pip install -e .

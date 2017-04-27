@@ -27,7 +27,7 @@ class Email(Email):
 
     def __call__(self, form, field):
         if self.message is None:
-            self.message = field.gettext(u'Invalid email address.')
+            self.message = field.gettext('Invalid email address.')
 
         if field.data:
             super(Email, self).__call__(form, field)
@@ -94,19 +94,19 @@ class Length(Rule):
             if message is None:
                 if self.max == -1:
                     message = _n(
-                        u'Field must be at least %(min)d character long.',
-                        u'Field must be at least %(min)d characters long.',
+                        'Field must be at least %(min)d character long.',
+                        'Field must be at least %(min)d characters long.',
                         self.min,
                         min=self.min)
                 elif self.min == -1:
                     message = _n(
-                        u'Field cannot be longer than %(max)d character.',
-                        u'Field cannot be longer than %(max)d characters.',
+                        'Field cannot be longer than %(max)d character.',
+                        'Field cannot be longer than %(max)d characters.',
                         self.max,
                         max=self.max)
                 else:
                     message = _(
-                        u'Field must be between %(min)d and %(max)d characters long.',
+                        'Field must be between %(min)d and %(max)d characters long.',
                         min=self.min, max=self.max)
             raise ValidationError(message % dict(
                 min=self.min, max=self.max, length=l))
@@ -184,6 +184,10 @@ class RenderEmpty(object):
         pass
 
 
+class SIRET(RenderEmpty):
+    pass
+
+
 # These are the canonical names that should be used.
 equalto = EqualTo
 length = Length
@@ -195,8 +199,19 @@ email = Email
 ipaddress = IPAddress
 macaddress = MacAddress
 url = URL
+siret = SIRET
 uuid = UUID
 anyof = AnyOf
 noneof = NoneOf
 flaghidden = FlagHidden
 renderempty = RenderEmpty
+
+VALIDATORS = {
+    'email': email,
+    'url': url,
+    'uuid': uuid,
+    'renderempty': renderempty,
+    'siret': siret,
+    'required': required,
+    'optional': optional,
+}

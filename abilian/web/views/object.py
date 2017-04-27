@@ -179,6 +179,13 @@ CANCEL_BUTTON = ButtonAction(
 EDIT_BUTTON = ButtonAction(
     'form', 'edit', btn_class='primary', title=_l(u'Save'))
 
+ADD_ANOTHER_BUTTON = ButtonAction(
+    'form',
+    'create_add_another',
+    btn_class='primary',
+    title=_l(u'Create and add another'),
+    condition=lambda ctx: getattr(ctx['view'], 'add_another_button', False),)
+
 
 class ObjectEdit(ObjectView):
     """Edit objects.
@@ -285,9 +292,9 @@ class ObjectEdit(ObjectView):
     def cancel(self):
         return self.redirect_to_view()
 
-    def edit(self):
+    def edit(self, redirect_to=None):
         if self.validate():
-            return self.form_valid()
+            return self.form_valid(redirect_to=redirect_to)
         else:
             if request.csrf_failed:
                 errors = self.form.errors
@@ -328,7 +335,7 @@ class ObjectEdit(ObjectView):
 
     def handle_commit_exception(self, exc):
         """
-        hook point to handle exception that may happen during commit.
+        Hook point to handle exception that may happen during commit.
 
         It is the responsability of this method to perform a rollback if it is
         required for handling `exc`. If the method does not handle `exc` if should
@@ -347,10 +354,13 @@ class ObjectEdit(ObjectView):
     def validate(self):
         return self.form.validate()
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         """Save object.
 
         Called when form is validated.
+
+        :param redirect_to: real url (created with url_for) to redirect to,
+          instead of the view by default.
         """
         session = current_app.db.session()
 
@@ -383,7 +393,11 @@ class ObjectEdit(ObjectView):
         else:
             self.commit_success()
             flash(self.message_success(), "success")
-            return self.redirect_to_view()
+
+            if redirect_to:
+                return redirect(redirect_to)
+            else:
+                return self.redirect_to_view()
 
     def form_invalid(self):
         """
@@ -632,8 +646,28 @@ class JSONWhooshSearch(JSONBaseSearch):
 
     def get_results(self, q, *args, **kwargs):
         svc = current_app.services['indexing']
-        search_kwargs = {'limit': 30, 'Models': (self.Model,)}
+        search_kwargs = {'limit': 50, 'Models': (self.Model,)}
         results = svc.search(q, **search_kwargs)
+
+        try:
+            # 'nom' doesn't always exist but for Contacts, sorting on
+            # the last name ('nom') feels more natural than 'name',
+            # which starts with the first name ('prenom').
+            res = results[0]
+            fields = res.fields()
+            itemkey = None
+            if 'nom' in fields:
+                itemkey = 'nom'
+            elif 'name' in fields:
+                itemkey = 'name'
+            if itemkey:
+                results = sorted(
+                    results, key=lambda it: it.fields().get(itemkey))
+        except Exception:
+            logger.warning(
+                "we could not sort whoosh results on fields' key {}.".format(
+                    itemkey))
+
         return results
 
     def get_item(self, hit):

@@ -7,7 +7,9 @@ from __future__ import absolute_import, division, print_function, \
 from datetime import datetime
 from unittest import TestCase
 
-import sqlalchemy as sa
+# import sqlalchemy as sa
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from abilian.core.entities import Entity
 from abilian.core.models.base import AUDITABLE, NOT_SEARCHABLE, SEARCHABLE, \
@@ -22,9 +24,9 @@ from .dummy import DummyContact
 class EntityTestCase(TestCase):
 
     def get_session(self):
-        engine = sa.create_engine('sqlite:///:memory:', echo=False)
-        Session = sa.orm.sessionmaker(bind=engine)
-        session = Session()
+        engine = create_engine('sqlite:///:memory:', echo=False)
+        session_class = sessionmaker(bind=engine)
+        session = session_class()
 
         # flask-sqlalchemy as listeners looking for this
         session._model_changes = {}

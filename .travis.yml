@@ -25,6 +25,7 @@ addons:
 # Install OS dependencies
 before_install:
   - pip install -U 'pip>=9' setuptools
+  - gem install travis
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
@@ -44,8 +45,7 @@ before_script:
 # Run tests
 script:
   - pytest --cov abilian abilian tests
-  - sphinx-build -W -b html docs/ docs/_build/
-  - make lint-py
+  - make lint-ci
 
 # Report coverage
 after_success:
