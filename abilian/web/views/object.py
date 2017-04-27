@@ -661,9 +661,12 @@ class JSONWhooshSearch(JSONBaseSearch):
             elif 'name' in fields:
                 itemkey = 'name'
             if itemkey:
-                results = sorted(results, key=lambda it: it.fields().get(itemkey))
+                results = sorted(
+                    results, key=lambda it: it.fields().get(itemkey))
         except Exception:
-            logger.warning("we could not sort whoosh results on fields' key {}.".format(itemkey))
+            logger.warning(
+                "we could not sort whoosh results on fields' key {}.".format(
+                    itemkey))
 
         return results
 
