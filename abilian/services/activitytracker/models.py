@@ -1,4 +1,3 @@
-
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -32,7 +31,8 @@ class Track(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
     #: viewed object id
-    object_id = Column(Integer, default=_default_from('_fk_object_id'), nullable=False)
+    object_id = Column(
+        Integer, default=_default_from('_fk_object_id'), nullable=False)
     _fk_object_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
     object = relationship(Entity, foreign_keys=_fk_object_id)
 

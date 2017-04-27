@@ -1,8 +1,9 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from abilian.services import Service
 from abilian.core.extensions import db
+from abilian.services import Service
+
 from .models import Track, TrackLog
 
 __all__ = ['activitytracker', 'ActivityTracker']
@@ -12,7 +13,8 @@ class ActivityTracker(Service):
     name = 'activitytracker'
 
     def track_object(self, object_id, user_id):
-        track = Track.query.filter(Track.object_id == object_id, Track.user_id == user_id)
+        track = Track.query.filter(Track.object_id == object_id,
+                                   Track.user_id == user_id)
         if track.count():
             db.session.add(TrackLog(track=track.first()))
         else:
