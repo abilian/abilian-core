@@ -450,7 +450,6 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     def _indexable_tag_text(self):
         return u' '.join(text_type(t.label) for t in self._indexable_tags)
 
-
     def clone(self):
         """
         Copy an entity: copy every field, except the id and sqlalchemy
