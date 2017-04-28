@@ -138,6 +138,33 @@ class timer(object):
         return result
 
 
+class Timer(object):
+    """Context manager to mesure and print (if not muted) the time it
+    takes to run some code.
+
+    By default prints its mesure on stdout.
+
+    Usage:
+
+    with Timer("short description"[, silent=False]):
+        pass
+
+    - silent: False: prints its mesure (default). If True, do nothing.
+
+    """
+    def __init__(self, name="Timer", silent=False):
+        self.name = name
+        self.silent = silent
+
+    def __enter__(self):
+        self.start = time.time()
+
+    def __exit__(self, exc_type, exc_val, traceback):
+        self.end = time.time()
+        if not self.silent:
+            print("{} lasted: {} sec".format(self.name, self.end - self.start))
+
+
 # From http://wiki.python.org/moin/PythonDecoratorLibrary#Memoize
 class memoized(object):
     """Decorator that caches a function's return value each time it is called.
