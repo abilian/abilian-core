@@ -7,6 +7,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import logging
 
 import sqlalchemy as sa
+import sqlalchemy.sql.functions as func
 from flask import current_app, flash, redirect, render_template, request
 
 from abilian.core.entities import Entity
@@ -22,9 +23,8 @@ from .forms import TagForm
 
 logger = logging.getLogger(__name__)
 
-_OBJ_COUNT = sa.sql.functions \
-        .count(entity_tag_tbl.c.entity_id) \
-        .label('obj_count')
+_OBJ_COUNT = func.count(entity_tag_tbl.c.entity_id) \
+    .label('obj_count')
 
 
 def get_entities_for_reindex(tags):
@@ -255,14 +255,14 @@ class TagPanel(AdminPanel):
     def get(self):
         obj_count = sa.sql \
             .select([Tag.ns,
-                     functions.count(entity_tag_tbl.c.entity_id).label('obj_count')]) \
+                     func.count(entity_tag_tbl.c.entity_id).label('obj_count')]) \
             .select_from(Tag.__table__.join(entity_tag_tbl)) \
             .group_by(Tag.ns) \
             .alias()
 
         ns_query = sa.sql \
             .select([Tag.ns,
-                     functions.count(Tag.id).label('tag_count'),
+                     func.count(Tag.id).label('tag_count'),
                      obj_count.c.obj_count],
                     from_obj=[Tag.__table__.outerjoin(obj_count, Tag.ns == obj_count.c.ns)]) \
             .group_by(Tag.ns, obj_count.c.obj_count) \
