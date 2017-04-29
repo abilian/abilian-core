@@ -649,11 +649,11 @@ class JSONWhooshSearch(JSONBaseSearch):
         search_kwargs = {'limit': 50, 'Models': (self.Model,)}
         results = svc.search(q, **search_kwargs)
 
+        itemkey = None
         try:
             # 'nom' doesn't always exist but for Contacts, sorting on
             # the last name ('nom') feels more natural than 'name',
             # which starts with the first name ('prenom').
-            itemkey = None
             res = results[0]
             fields = res.fields()
             if 'nom' in fields:
@@ -665,9 +665,9 @@ class JSONWhooshSearch(JSONBaseSearch):
                     results, key=lambda it: it.fields().get(itemkey))
         except Exception:
             if itemkey is not None:
-                logger.warning(
-                    "we could not sort whoosh results on fields' key {}.".format(
-                        itemkey))
+                msg = "we could not sort whoosh results on fields' key {}.".format(
+                    itemkey)
+                logger.warning(msg)
 
         return results
 
