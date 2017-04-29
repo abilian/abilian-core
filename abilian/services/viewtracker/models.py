@@ -42,10 +42,7 @@ class View(db.Model):
     user = relationship(User, foreign_keys=user_id)
 
     hits = db.relationship(
-        'Hit',
-        backref='view',
-        order_by='Hit.viewed_at',
-        lazy='dynamic')
+        'Hit', backref='view', order_by='Hit.viewed_at', lazy='dynamic')
 
 
 class Hit(db.Model):

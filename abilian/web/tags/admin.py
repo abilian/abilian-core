@@ -7,8 +7,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 import logging
 
 import sqlalchemy as sa
-from flask import current_app, flash, redirect, render_template, request
 import sqlalchemy.sql.functions as func
+from flask import current_app, flash, redirect, render_template, request
 
 from abilian.core.entities import Entity
 from abilian.core.models.tag import Tag, entity_tag_tbl

@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, \
 from abilian.core.extensions import db
 from abilian.services import Service
 
-from .models import View, Hit
+from .models import Hit, View
 
 __all__ = ['viewtracker']
 
@@ -66,6 +66,7 @@ class ViewTracker(Service):
     #         .all()
     #     return view_objects
 
+    # Instanciate the service
 
-# Instanciate the service
+
 viewtracker = ViewTracker()
