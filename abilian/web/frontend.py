@@ -745,10 +745,14 @@ class Module(object):
         return render_template("default/list_view.html", **ctx)
 
     def list_json2_query_all(self, q):
-        """
-        Implements the search query for the list_json2 endpoint.
+        """Implements the search query for the list_json2 endpoint.
 
-        - Return: a list of results (not json).
+        May be re-defined by a Module subclass in order to customize
+        the search results.
+
+        - Return: a list of results (not json) with an 'id' and a
+          'text' (that will be displayed in the select2).
+
         """
         cls = self.managed_class
         query = db.session.query(cls.id, cls.name, cls.adresse_id)
@@ -758,7 +762,7 @@ class Module(object):
             .order_by(cls.name) \
             .limit(50)
         results = query.all()
-        results = {'results': [{'id': r[0], 'text': r[1]} for r in results]}
+        results = [{'id': r[0], 'text': r[1]} for r in results]
 
     @expose("/json2")
     def list_json2(self):
@@ -775,6 +779,7 @@ class Module(object):
             raise BadRequest()
 
         results = self.list_json2_query_all(q)
+        results = {'results': results}
         return jsonify(results)
 
     #
