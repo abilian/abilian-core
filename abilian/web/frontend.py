@@ -744,6 +744,22 @@ class Module(object):
             base_template=self.base_template)
         return render_template("default/list_view.html", **ctx)
 
+    def list_json2_query_all(self, q):
+        """
+        Implements the search query for the list_json2 endpoint.
+
+        - Return: a list of results (not json).
+        """
+        cls = self.managed_class
+        query = db.session.query(cls.id, cls.name, cls.adresse_id)
+        query = query \
+            .filter(cls.name.ilike("%" + q + "%")) \
+            .distinct() \
+            .order_by(cls.name) \
+            .limit(50)
+        results = query.all()
+        results = {'results': [{'id': r[0], 'text': r[1]} for r in results]}
+
     @expose("/json2")
     def list_json2(self):
         """Other JSON endpoint, this time used for filling select boxes dynamically.
@@ -753,25 +769,12 @@ class Module(object):
 
         """
         args = request.args
-        cls = self.managed_class
 
         q = args.get("q", "").replace("%", " ")
         if not q or len(q) < 2:
             raise BadRequest()
 
-        if hasattr(self, "list_json2_query_all"):
-            results = self.list_json2_query_all(q)
-        else:
-
-            query = db.session.query(cls.id, cls.name, cls.adresse_id)
-            query = query \
-                .filter(cls.name.ilike("%" + q + "%")) \
-                .distinct() \
-                .order_by(cls.name) \
-                .limit(50)
-            results = query.all()
-            results = {'results': [{'id': r[0], 'text': r[1]} for r in results]}
-
+        results = self.list_json2_query_all(q)
         return jsonify(results)
 
     #
