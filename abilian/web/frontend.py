@@ -407,6 +407,7 @@ class Module(object):
     create_cls = EntityCreate
     delete_cls = EntityDelete
     json_search_cls = JSONWhooshSearch
+    JSON2_SEARCH_LENGTH = 50
 
     # form_class. Used when view_cls/edit_cls are not provided
     edit_form_class = None
@@ -744,30 +745,44 @@ class Module(object):
             base_template=self.base_template)
         return render_template("default/list_view.html", **ctx)
 
+    def list_json2_query_all(self, q):
+        """Implements the search query for the list_json2 endpoint.
+
+        May be re-defined by a Module subclass in order to customize
+        the search results.
+
+        - Return: a list of results (not json) with an 'id' and a
+          'text' (that will be displayed in the select2).
+
+        """
+        cls = self.managed_class
+        query = db.session.query(cls.id, cls.name, cls.adresse_id)
+        query = query \
+            .filter(cls.name.ilike("%" + q + "%")) \
+            .distinct() \
+            .order_by(cls.name) \
+            .limit(self.JSON2_SEARCH_LENGTH)
+        results = query.all()
+        results = [{'id': r[0], 'text': r[1]} for r in results]
+        return results
+
     @expose("/json2")
     def list_json2(self):
-        """
-        Other JSON endpoint, this time used for filling select boxes dynamically.
+        """Other JSON endpoint, this time used for filling select boxes dynamically.
 
-        NB: not used currently.
+        You can write your own search method in list_json2_query_all,
+        that returns a list of results (not json).
+
         """
         args = request.args
-        cls = self.managed_class
 
         q = args.get("q", "").replace("%", " ")
         if not q or len(q) < 2:
             raise BadRequest()
 
-        query = db.session.query(cls.id, cls.name)
-        query = query \
-            .filter(cls.name.ilike("%" + q + "%")) \
-            .distinct() \
-            .order_by(cls.name) \
-            .limit(50)
-        all = query.all()
-
-        result = {'results': [{'id': r[0], 'text': r[1]} for r in all]}
-        return jsonify(result)
+        results = self.list_json2_query_all(q)
+        results = {'results': results}
+        return jsonify(results)
 
     #
     # Utils

@@ -56,6 +56,9 @@ vagrant-tests:
 #
 # Various Checkers
 #
+flake8:
+	flake8 $(SRC)
+
 lint: lint-ci lint-travis
 
 lint-ci: lint-py lint-js lint-less lint-rst lint-doc lint-mypy
