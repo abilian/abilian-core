@@ -748,13 +748,6 @@ class Module(object):
     def list_json2(self):
         """Other JSON endpoint, this time used for filling select boxes dynamically.
 
-        Used for:
-        - the Visite Compte search
-        - Bilan
-        - Projet partenaire
-        - Adhesion rapprochement
-        and maybe others.
-
         You can write your own search method in list_json2_query_all,
         that returns a list of results (not json).
 
