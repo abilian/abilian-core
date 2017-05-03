@@ -764,6 +764,7 @@ class Module(object):
             .limit(self.JSON2_SEARCH_LENGTH)
         results = query.all()
         results = [{'id': r[0], 'text': r[1]} for r in results]
+        return results
 
     @expose("/json2")
     def list_json2(self):
