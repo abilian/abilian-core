@@ -407,6 +407,7 @@ class Module(object):
     create_cls = EntityCreate
     delete_cls = EntityDelete
     json_search_cls = JSONWhooshSearch
+    JSON2_SEARCH_LENGTH = 50
 
     # form_class. Used when view_cls/edit_cls are not provided
     edit_form_class = None
@@ -760,7 +761,7 @@ class Module(object):
             .filter(cls.name.ilike("%" + q + "%")) \
             .distinct() \
             .order_by(cls.name) \
-            .limit(50)
+            .limit(self.JSON2_SEARCH_LENGTH)
         results = query.all()
         results = [{'id': r[0], 'text': r[1]} for r in results]
 
