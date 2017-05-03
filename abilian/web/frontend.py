@@ -746,10 +746,18 @@ class Module(object):
 
     @expose("/json2")
     def list_json2(self):
-        """
-        Other JSON endpoint, this time used for filling select boxes dynamically.
+        """Other JSON endpoint, this time used for filling select boxes dynamically.
 
-        NB: not used currently.
+        Used for:
+        - the Visite Compte search
+        - Bilan
+        - Projet partenaire
+        - Adhesion rapprochement
+        and maybe others.
+
+        You can write your own search method in list_json2_query_all,
+        that returns a list of results (not json).
+
         """
         args = request.args
         cls = self.managed_class
@@ -758,16 +766,20 @@ class Module(object):
         if not q or len(q) < 2:
             raise BadRequest()
 
-        query = db.session.query(cls.id, cls.name)
-        query = query \
-            .filter(cls.name.ilike("%" + q + "%")) \
-            .distinct() \
-            .order_by(cls.name) \
-            .limit(50)
-        all = query.all()
+        if hasattr(self, "list_json2_query_all"):
+            results = self.list_json2_query_all(q)
+        else:
 
-        result = {'results': [{'id': r[0], 'text': r[1]} for r in all]}
-        return jsonify(result)
+            query = db.session.query(cls.id, cls.name, cls.adresse_id)
+            query = query \
+                .filter(cls.name.ilike("%" + q + "%")) \
+                .distinct() \
+                .order_by(cls.name) \
+                .limit(50)
+            results = query.all()
+            results = {'results': [{'id': r[0], 'text': r[1]} for r in results]}
+
+        return jsonify(results)
 
     #
     # Utils
