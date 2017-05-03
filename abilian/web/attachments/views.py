@@ -4,8 +4,11 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from types import NoneType
+
 import sqlalchemy as sa
 from flask import current_app, send_file
+from typing import Union
 from werkzeug.exceptions import BadRequest
 from werkzeug.utils import redirect
 
@@ -47,7 +50,7 @@ class BaseAttachmentView(object):
     Form = AttachmentForm
 
     #: owning entity
-    entity = None
+    entity = None  # type: Union[NoneType, Entity]
 
     def init_object(self, args, kwargs):
         args, kwargs = super(BaseAttachmentView, self).init_object(args, kwargs)

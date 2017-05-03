@@ -8,6 +8,7 @@ import logging
 from six import string_types
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
+from typing import Union
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ _UNDEFINED = UNDEFINED()
 
 class BaseCriterion(object):
 
-    form_default_value = _UNDEFINED
+    form_default_value = _UNDEFINED  # type: Union[UNDEFINED, str, unicode]
     """
     Values to set by default when adding a filter. The provided value(s) must be
     the ones used in html, not in python.
