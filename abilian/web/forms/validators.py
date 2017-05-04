@@ -201,6 +201,7 @@ def luhn(n):
     return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10))
                                for d in r[1::2])) % 10 == 0
 
+
 # specific SIRET like for MONACO, i.e MONACOCONFO001
 # -  Principauté de Monaco "001"
 # - la Guadeloupe "458"
@@ -208,6 +209,7 @@ def luhn(n):
 # - la Guyane "496"
 # - la Réunion "372
 SIRET_CODES = ('001', "458", "462", "496", "372")
+
 
 def siret_validator():
     """Validate a SIRET: check its length (14), its final code, and

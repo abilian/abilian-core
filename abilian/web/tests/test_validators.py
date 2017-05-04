@@ -11,6 +11,7 @@ class DummyForm(Form):
     name = StringField(u'foo')
     siret = StringField(u'Siret')
 
+
 def test_siret_validator():
     # valid
     form = DummyForm(siret="54207855500514", name="foo")
