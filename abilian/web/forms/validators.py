@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -186,6 +187,53 @@ class RenderEmpty(object):
 
 class SIRET(RenderEmpty):
     pass
+
+
+def luhn(n):
+    """
+    Validate that a string made of numeric characters verify Luhn test. Used by
+    siret validator.
+
+    from http://rosettacode.org/wiki/Luhn_test_of_credit_card_numbers#Python
+    https://en.wikipedia.org/wiki/Luhn_algorithm
+    """
+    r = [int(ch) for ch in str(n)][::-1]
+    return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10))
+                               for d in r[1::2])) % 10 == 0
+
+# specific SIRET like for MONACO, i.e MONACOCONFO001
+# -  Principauté de Monaco "001"
+# - la Guadeloupe "458"
+# - la Martinique "462"
+# - la Guyane "496"
+# - la Réunion "372
+SIRET_CODES = ('001', "458", "462", "496", "372")
+
+def siret_validator():
+    """Validate a SIRET: check its length (14), its final code, and
+    pass it through the Luhn algorithm.
+
+    """
+
+    def _validate_siret(form, field):
+        """ SIRET validator. """
+        siret = (field.data or u'').strip()
+
+        if len(siret) != 14:
+            raise ValidationError(_(u'SIRET must have exactly 14 characters ({count})'
+                                    ).format(count=len(siret)))
+
+        if not all(('0' <= c <= '9') for c in siret):
+            if not siret[-3:] in SIRET_CODES:
+                raise ValidationError(
+                    _('SIRET looks like special SIRET but geographical code seems invalid'
+                      ' ({code})').format(code=siret[-3:]))
+
+        elif not luhn(siret):
+            raise ValidationError(
+                _('SIRET number is invalid (length is ok: verify numbers)'))
+
+    return _validate_siret
 
 
 # These are the canonical names that should be used.
