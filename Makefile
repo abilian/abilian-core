@@ -9,7 +9,8 @@ PKG=abilian
 NCPU=2
 
 # pytest-sugar seems to be incompatible with pytest-xdist
-PYTEST_MULTI=-n $(NCPU) -p no:sugar
+# -s: no terminal capture.
+PYTEST_MULTI=-n $(NCPU) -p no:sugar -s
 
 
 all: test lint
