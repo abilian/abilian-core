@@ -5,10 +5,12 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from datetime import datetime
+from types import NoneType
 
 import sqlalchemy as sa
 from flask_login import current_user
 from six import text_type
+from typing import Union
 from werkzeug.exceptions import BadRequest
 
 from abilian.core.entities import Entity
@@ -45,7 +47,7 @@ class BaseCommentView(object):
     Form = CommentForm
 
     #: commented entity
-    entity = None
+    entity = None  # type: Union[NoneType, Entity]
 
     def init_object(self, args, kwargs):
         args, kwargs = super(BaseCommentView, self).init_object(args, kwargs)
