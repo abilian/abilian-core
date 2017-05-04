@@ -18,6 +18,13 @@ def test_siret_validator():
     validator = siret_validator()
     assert validator(form, field) is None
 
+    # invalid Luhn (changed the first digit)
+    form = DummyForm(siret="64207855500514", name="foo")
+    field = form.siret
+    validator = siret_validator()
+    with pytest.raises(ValidationError):
+        validator(form, field)
+
     # invalid
     form = DummyForm(siret="WRONG542078555", name="foo")
     field = form.siret
