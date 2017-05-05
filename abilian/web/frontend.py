@@ -756,7 +756,7 @@ class Module(object):
 
         """
         cls = self.managed_class
-        query = db.session.query(cls.id, cls.name, cls.adresse_id)
+        query = db.session.query(cls.id, cls.name)
         query = query \
             .filter(cls.name.ilike("%" + q + "%")) \
             .distinct() \
