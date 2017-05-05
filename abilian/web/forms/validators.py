@@ -217,9 +217,14 @@ def siret_validator():
 
     """
 
-    def _validate_siret(form, field):
-        """ SIRET validator. """
-        siret = (field.data or u'').strip()
+    def _validate_siret(form, field, siret=""):
+        """SIRET validator.  A WTForm validator wants a form and a field as
+        parameters. We also want to give directly a siret, for a
+        scripting use.
+
+        """
+        if field is not None:
+            siret = (field.data or u'').strip()
 
         if len(siret) != 14:
             raise ValidationError(_(u'SIRET must have exactly 14 characters ({count})'
