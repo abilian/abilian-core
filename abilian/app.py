@@ -465,7 +465,7 @@ class Application(Flask, ServiceManager, PluginManager):
             logging.config.dictConfig(logging_cfg)
 
     def init_debug_toolbar(self):
-        if (not self.testing and self.config.get('DEBUG_TB_ENABLED') and
+        if (self.testing and self.config.get('DEBUG_TB_ENABLED') and
                 'debugtoolbar' not in self.blueprints):
             try:
                 from flask_debugtoolbar import DebugToolbarExtension
