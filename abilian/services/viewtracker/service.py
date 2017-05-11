@@ -32,13 +32,33 @@ class ViewTracker(Service):
         db.session.commit()
 
     @staticmethod
-    def get_views(entity=None, user=None):
+    def get_views(entity=None, entities=None, user=None, users=None):
         assert object or user
         query = View.query
-        if entity:
+        if entities:
+            entities_id = [entity_.id for entity_ in entities]
+            query = query.filter(View.entity_id.in_(entities_id))
+        elif entity:
             query = query.filter(View.entity_id == entity.id)
-        if user:
+
+        if users:
+            users_id = [user_.id for user_ in users]
+            query = query.filter(View.user_id.in_(users_id))
+        elif user:
             query = query.filter(View.user_id == user.id)
+
+        return query.all()
+
+    @staticmethod
+    def get_hits(views=None, view=None):
+        query = Hit.query
+        if views:
+            views_id = [view_.id for view_ in views]
+            query = query.filter(Hit.view_id.in_(views_id))\
+                .order_by(Hit.viewed_at.asc())
+        elif view:
+            query = query.filter(Hit.view_id == view.id)\
+                .order_by(Hit.viewed_at.asc())
 
         return query.all()
 
