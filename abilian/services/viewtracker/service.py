@@ -33,60 +33,45 @@ class ViewTracker(Service):
 
     @staticmethod
     def get_views(entity=None, entities=None, user=None, users=None):
-        assert object or user
+        assert entity is None or entities is None
+        assert entity is not None or entities is not None
+        assert user is None or users is None
+
+        if entities is None:
+            entities = []
+        if entity:
+            entities += [entity]
+
+        if users is None:
+            users = []
+        if user is not None:
+            users += [user]
+
         query = View.query
         if entities:
-            entities_id = [entity_.id for entity_ in entities]
-            query = query.filter(View.entity_id.in_(entities_id))
-        elif entity:
-            query = query.filter(View.entity_id == entity.id)
+            entity_ids = [entity_.id for entity_ in entities]
+            query = query.filter(View.entity_id.in_(entity_ids))
 
         if users:
-            users_id = [user_.id for user_ in users]
-            query = query.filter(View.user_id.in_(users_id))
-        elif user:
-            query = query.filter(View.user_id == user.id)
+            user_ids = [user_.id for user_ in users]
+            query = query.filter(View.user_id.in_(user_ids))
 
         return query.all()
 
     @staticmethod
     def get_hits(views=None, view=None):
-        query = Hit.query
-        if views:
-            views_id = [view_.id for view_ in views]
-            query = query.filter(Hit.view_id.in_(views_id))\
-                .order_by(Hit.viewed_at.asc())
-        elif view:
-            query = query.filter(Hit.view_id == view.id)\
-                .order_by(Hit.viewed_at.asc())
+        assert view is not None or views is not None
 
-        return query.all()
+        if views is None:
+            views = []
+        if view is not None:
+            views += [view]
 
-    # #: get tracks of a specific object and user
-    # @staticmethod
-    # def get_tracked_object(object, user):
-    #     view_objects = View.query \
-    #         .filter(View.object == object, View.user == user) \
-    #         .first()
-    #     return view_objects
-    #
-    # # get all viewers of a specific object
-    # @staticmethod
-    # def get_viewers(object):
-    #     view_objects = View.query \
-    #         .filter(View.object == object) \
-    #         .all()
-    #     return view_objects
-    #
-    # # get all ViewView objects from a specific user
-    # @staticmethod
-    # def get_viewed_objects(user_id):
-    #     view_objects = View.query \
-    #         .filter(View.user_id == user_id) \
-    #         .all()
-    #     return view_objects
-
-    # Instanciate the service
+        view_ids = [view_.id for view_ in views]
+        return Hit.query \
+            .filter(Hit.view_id.in_(view_ids)) \
+            .order_by(Hit.viewed_at.asc()) \
+            .all()
 
 
 viewtracker = ViewTracker()
