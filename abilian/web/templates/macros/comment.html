@@ -4,9 +4,9 @@
 {% macro m_comments(entity) %}
   {%- if comments.has_comments(entity) %}
     <ol class="comments">
-    {%- for comment in comments.for_entity(entity) %}
-      <li id="comment-{{ comment.id }}">{{ m_comment(comment) }}</li>
-    {%- endfor %}
+      {%- for comment in comments.for_entity(entity) %}
+        <li id="comment-{{ comment.id }}">{{ m_comment(comment) }}</li>
+      {%- endfor %}
     </ol>
   {%- endif %}
 {% endmacro %}
@@ -40,14 +40,14 @@
 
 {% macro m_comment(comment) %}
   <div class="header">
-  {%- call m_user_link(comment.creator) %}
-    {{ m_user_photo(comment.creator, size=45) }}
-  {%- endcall %}
+    {%- call m_user_link(comment.creator) %}
+      {{ m_user_photo(comment.creator, size=45) }}
+    {%- endcall %}
 
-  {%- call m_user_link(comment.creator, css='author') %}
-    {{ comment.creator.name }}
-  {%- endcall %}
-  <span class="date"><small>{{ comment.created_at | age }}</small></span>
+    {%- call m_user_link(comment.creator, css='author') %}
+      {{ comment.creator.name }}
+    {%- endcall %}
+    <span class="date"><small>{{ comment.created_at | age }}</small></span>
   </div>
 
   <p class="comment-body"> {{ comment.body | linkify | paragraphs }} </p>
