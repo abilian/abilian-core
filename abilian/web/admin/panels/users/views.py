@@ -160,7 +160,7 @@ class UserEdit(UserBase, views.ObjectEdit):
                 roles.data.append(Admin.name)
         return True
 
-    def form_valid(self):
+    def form_valid(self, *args, **kwargs):
         del self.form.confirm_password
         if self.form.password.data:
             self.obj.set_password(self.form.password.data)
