@@ -29,7 +29,7 @@ flask-script==2.0.5
 flask-sqlalchemy==2.1
 flask-testing==0.6.2
 flask-wtf==0.12
-flask==0.12.1
+flask==0.12.2
 html5lib==0.9999999       # via bleach
 infinity==1.4             # via intervals
 intervals==0.8.0          # via wtforms-components
@@ -56,14 +56,14 @@ pyyaml==3.12
 redis==2.10.5
 six==1.10.0
 sqlalchemy-utils==0.32.14
-sqlalchemy==1.1.9
+sqlalchemy==1.1.10
 sqlparse==0.2.3
 straight.plugin==1.4.1
 tqdm==4.11.2
 typing==3.6.1
 validators==0.11.3        # via wtforms-components
 webassets==0.12.1         # via flask-assets
-werkzeug==0.12.1          # via flask, flask-debugtoolbar, flask-wtf
+werkzeug==0.12.2          # via flask, flask-debugtoolbar, flask-wtf
 whoosh==2.7.4
 wtforms-alchemy==0.15.0
 wtforms-components==0.10.3
