@@ -833,6 +833,8 @@ class ImageInput(FileInput):
         return image.resize(data, width, height, mode=self.resize_mode)
 
     def get_b64_thumb_url(self, img):
+        if not img:
+            return u''
         try:
             fmt = image.get_format(img).lower()
         except IOError:

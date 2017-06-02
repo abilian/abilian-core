@@ -43,6 +43,8 @@ def open_image(img):
 
 
 def get_format(img):
+    if not img:
+        raise IOError()
     image = open_image(img)
     return image.format
 
