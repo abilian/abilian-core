@@ -37,12 +37,12 @@ itsdangerous==0.24        # via flask, flask-debugtoolbar
 jinja2==2.9.6             # via flask, flask-babel
 jsmin==2.2.2
 kombu==3.0.37             # via celery
-lxml==3.7.3
+lxml==3.8.0
 mako==1.0.6               # via alembic
 markupsafe==1.0
-numpy==1.12.1             # via pandas
+numpy==1.13.0             # via pandas
 olefile==0.44             # via pillow
-pandas==0.20.1
+pandas==0.20.2
 pathlib==1.0.1
 pillow==4.1.1
 psycopg2==2.7.1
@@ -56,12 +56,12 @@ pyyaml==3.12
 redis==2.10.5
 six==1.10.0
 sqlalchemy-utils==0.32.14
-sqlalchemy==1.1.10
+sqlalchemy==1.1.11
 sqlparse==0.2.3
 straight.plugin==1.4.1
 tqdm==4.14.0
 typing==3.6.1
-validators==0.11.3        # via wtforms-components
+validators==0.12.0        # via wtforms-components
 webassets==0.12.1         # via flask-assets
 werkzeug==0.12.2          # via flask, flask-debugtoolbar, flask-wtf
 whoosh==2.7.4
