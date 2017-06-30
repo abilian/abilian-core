@@ -108,7 +108,7 @@ class EntityTagManage(BaseEntityTagView, ObjectEdit):
         assert mode in ('add', 'remove')
         self.mode = mode
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         ns = self.form.ns.data
         label = self.form.label.data
         op = getattr(self.extension, self.mode)

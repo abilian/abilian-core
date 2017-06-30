@@ -198,7 +198,7 @@ class UserCreate(UserBase, views.ObjectCreate):
 
         return kw
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         if not self.form.password.data:
             self.form.password.data = gen_random_password()
 
