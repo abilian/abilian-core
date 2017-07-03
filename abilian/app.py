@@ -117,8 +117,9 @@ default_config.update(
                   'abilian.web.admin.panels.users.UsersPanel',
                   'abilian.web.admin.panels.groups.GroupsPanel',
                   'abilian.web.admin.panels.sysinfo.SysinfoPanel',
+                  'abilian.web.admin.panels.impersonate.ImpersonatePanel',
                   'abilian.services.vocabularies.admin.VocabularyPanel',
-                  'abilian.web.tags.admin.TagPanel'),
+                  'abilian.web.tags.admin.TagPanel',),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
     CELERY_TIMEZONE=LOCALTZ,
@@ -133,7 +134,7 @@ default_config.update(
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
-    MAIL_ADDRESS_TAG_CHAR=None)
+    MAIL_ADDRESS_TAG_CHAR=None,)
 default_config = ImmutableDict(default_config)
 
 
