@@ -80,7 +80,7 @@ class UserPreferencesForm(Form):
         # convert to jpeg
         # FIXME: better do this at model level?
         jpeg = BytesIO()
-        im.convert('RGBA').save(jpeg, 'JPEG')
+        im.convert('RGB').save(jpeg, 'JPEG')
         field.data = jpeg.getvalue()
 
 
