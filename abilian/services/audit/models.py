@@ -16,9 +16,10 @@ from datetime import datetime
 
 from flask import current_app
 from six import text_type
+from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Binary, DateTime, Integer, String, UnicodeText
+from sqlalchemy.types import DateTime, Integer, String, UnicodeText
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -105,7 +106,7 @@ class AuditEntry(db.Model):
     user_id = Column(Integer, ForeignKey(User.id))
     user = relationship(User, foreign_keys=user_id)
 
-    changes_pickle = Column(Binary)
+    changes_pickle = Column(LargeBinary)
 
     def __repr__(self):
         return '<AuditEntry id={} op={} user={} {}entity=<{} id={}>>'.format(
