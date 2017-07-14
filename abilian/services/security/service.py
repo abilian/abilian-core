@@ -38,11 +38,11 @@ __all__ = [
 #: default security matrix
 DEFAULT_PERMISSION_ROLE = dict()
 prm = DEFAULT_PERMISSION_ROLE
-prm[MANAGE] = frozenset((Admin, Manager))
-prm[WRITE] = frozenset((Admin, Manager, Writer))
-prm[CREATE] = frozenset((Admin, Manager, Writer))
-prm[DELETE] = frozenset((Admin, Manager, Writer))
-prm[READ] = frozenset((Admin, Manager, Writer, Reader))
+prm[MANAGE] = frozenset({Admin, Manager})
+prm[WRITE] = frozenset({Admin, Manager, Writer})
+prm[CREATE] = frozenset({Admin, Manager, Writer})
+prm[DELETE] = frozenset({Admin, Manager, Writer})
+prm[READ] = frozenset({Admin, Manager, Writer, Reader})
 del prm
 
 

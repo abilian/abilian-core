@@ -4,6 +4,8 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from typing import Dict, List
+
 import bleach
 from wtforms.fields import BooleanField, IntegerField, StringField
 from wtforms.widgets import HiddenInput
@@ -14,7 +16,7 @@ from abilian.web.forms.filters import strip
 from abilian.web.forms.validators import required
 
 ALLOWED_TAGS = ['b', 'i', 'del', 's', 'u', 'small', 'strong', 'em']
-ALLOWED_ATTRIBUTES = {}
+ALLOWED_ATTRIBUTES = {}  # type: Dict[str, List[str]]
 
 
 class EditForm(ModelForm):

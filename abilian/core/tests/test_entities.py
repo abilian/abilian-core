@@ -172,11 +172,15 @@ class PermissionsTestCase(AbilianTestCase):
 
         assert isinstance(MyRestrictedType.__default_permissions__, frozenset)
 
-        expected = frozenset((
-            (security.READ, frozenset((security.Anonymous,))),
-            (security.WRITE, frozenset((security.Owner,))),
-            (security.CREATE, frozenset((security.Writer,))),
-            (security.DELETE, frozenset((security.Owner,))),))
+        expected = frozenset({
+            (security.READ, frozenset({security.Anonymous})),
+            #
+            (security.WRITE, frozenset({security.Owner})),
+            #
+            (security.CREATE, frozenset({security.Writer})),
+            #
+            (security.DELETE, frozenset({security.Owner})),
+        })
         assert MyRestrictedType.__default_permissions__ == expected
 
         self.app.db.create_all()  # create missing 'mytype' table

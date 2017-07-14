@@ -253,10 +253,14 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
     index_to += (
         ('_indexable_roles_and_users', ('allowed_roles_and_users',)),
+        #
         ('_indexable_tag_ids', ('tag_ids',)),
+        #
         ('_indexable_tag_text', (
             'tag_text',
-            'text',)),)
+            'text',)),
+        #
+    )
     __indexation_args__['index_to'] = index_to
     del index_to
 

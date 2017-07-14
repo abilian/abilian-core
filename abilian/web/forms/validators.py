@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from wtforms import validators
 # TODO: most of this is currently only stubs and needs to be implemented.
 #
 # Validators
@@ -9,9 +10,6 @@ from __future__ import absolute_import, division, print_function, \
 # NOTE: the `rule` property is supposed to be useful for generating client-side
 # validation code.
 from wtforms.compat import string_types
-from wtforms.validators import URL, UUID, AnyOf, DataRequired, Email, \
-    EqualTo, IPAddress, MacAddress, NoneOf, NumberRange, Optional, Regexp, \
-    StopValidation, ValidationError
 
 from abilian.i18n import _, _n
 from abilian.services import get_service
@@ -24,7 +22,7 @@ class Rule(object):
         return None
 
 
-class Email(Email):
+class Email(validators.Email):
 
     def __call__(self, form, field):
         if self.message is None:
@@ -38,20 +36,19 @@ class Email(Email):
         return {"email": True}
 
 
-class CorrectInputRequired(DataRequired):
+class CorrectInputRequired(validators.DataRequired):
 
     def __call__(self, form, field):
-        if field.data is None or (isinstance(field.data, string_types) and
-                                  not field.data.strip()) or (
-                                      isinstance(field.data, (list, dict)) and
-                                      not field.data):
+        if field.data is None \
+                or (isinstance(field.data, string_types) and not field.data.strip()) \
+                or (isinstance(field.data, (list, dict)) and not field.data):
             if self.message is None:
                 message = field.gettext('This field is required.')
             else:
                 message = self.message
 
             field.errors[:] = []
-            raise StopValidation(message)
+            raise validators.StopValidation(message)
 
 
 class Required(CorrectInputRequired):
@@ -62,7 +59,7 @@ class Required(CorrectInputRequired):
         return {"required": True}
 
 
-class EqualTo(EqualTo, Rule):
+class EqualTo(validators.EqualTo, Rule):
     pass
 
 
@@ -109,46 +106,46 @@ class Length(Rule):
                     message = _(
                         'Field must be between %(min)d and %(max)d characters long.',
                         min=self.min, max=self.max)
-            raise ValidationError(message % dict(
+            raise validators.ValidationError(message % dict(
                 min=self.min, max=self.max, length=l))
 
 
-class NumberRange(NumberRange, Rule):
+class NumberRange(validators.NumberRange, Rule):
     pass
 
 
-class Optional(Optional, Rule):
+class Optional(validators.Optional, Rule):
     pass
 
 
-class Regexp(Regexp, Rule):
+class Regexp(validators.Regexp, Rule):
     pass
 
 
-class IPAddress(IPAddress, Rule):
+class IPAddress(validators.IPAddress, Rule):
     pass
 
 
-class MacAddress(MacAddress, Rule):
+class MacAddress(validators.MacAddress, Rule):
     pass
 
 
-class URL(URL):
+class URL(validators.URL):
 
     @property
     def rule(self):
         return {"url": True}
 
 
-class UUID(UUID, Rule):
+class UUID(validators.UUID, Rule):
     pass
 
 
-class AnyOf(AnyOf, Rule):
+class AnyOf(validators.AnyOf, Rule):
     pass
 
 
-class NoneOf(NoneOf, Rule):
+class NoneOf(validators.NoneOf, Rule):
     pass
 
 
@@ -173,7 +170,7 @@ class AntiVirus(Rule):
 
         res = svc.scan(field.data)
         if res is False:
-            raise ValidationError(_(u'Virus detected!'))
+            raise validators.ValidationError(_('Virus detected!'))
 
 
 class RenderEmpty(object):
@@ -224,21 +221,20 @@ def siret_validator():
 
         """
         if field is not None:
-            siret = (field.data or u'').strip()
+            siret = (field.data or '').strip()
 
         if len(siret) != 14:
-            raise ValidationError(_(u'SIRET must have exactly 14 characters ({count})'
-                                    ).format(count=len(siret)))
+            msg = _('SIRET must have exactly 14 characters ({count})').format(count=len(siret))
+            raise validators.ValidationError(msg)
 
         if not all(('0' <= c <= '9') for c in siret):
             if not siret[-3:] in SIRET_CODES:
-                raise ValidationError(
-                    _('SIRET looks like special SIRET but geographical code seems invalid'
-                      ' ({code})').format(code=siret[-3:]))
+                msg = _('SIRET looks like special SIRET but geographical code seems invalid ({code})').format(code=siret[-3:])
+                raise validators.ValidationError(msg)
 
         elif not luhn(siret):
-            raise ValidationError(
-                _('SIRET number is invalid (length is ok: verify numbers)'))
+            msg = _('SIRET number is invalid (length is ok: verify numbers)')
+            raise validators.ValidationError(msg)
 
     return _validate_siret
 
