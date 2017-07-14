@@ -1,7 +1,6 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from .service import ActivityService
+from __future__ import absolute_import, division, print_function
+
 from .models import ActivityEntry
+from .service import ActivityService
 
 __all__ = ['ActivityEntry', 'ActivityService']
