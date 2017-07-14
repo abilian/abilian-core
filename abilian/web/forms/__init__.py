@@ -2,23 +2,23 @@
 """
 Extensions to WTForms fields, widgets and validators.
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import logging
-from functools import partial
 from collections import OrderedDict
+from functools import partial
 
+from flask import current_app, g, has_app_context
+from flask_login import current_user
+from flask_wtf.form import Form as BaseForm
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from wtforms_alchemy import model_form_factory
-from flask import current_app, has_app_context, g
-from flask_login import current_user
-from flask_wtf.form import Form as BaseForm
 
-from abilian.i18n import _, _n
-from abilian.services.security import READ, WRITE, CREATE, Role, Anonymous
-from abilian.core.logging import patch_logger
 from abilian.core.entities import Entity
+from abilian.core.logging import patch_logger
+from abilian.i18n import _, _n
+from abilian.services.security import CREATE, READ, WRITE, Anonymous, Role
 
 from .fields import *  # noqa
 from .filters import *  # noqa

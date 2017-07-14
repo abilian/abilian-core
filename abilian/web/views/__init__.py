@@ -1,13 +1,12 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
-from .base import View, JSONView
+from .base import JSONView, View
+from .object import BaseObjectView, JSONBaseSearch, JSONModelSearch, \
+    JSONWhooshSearch, ObjectCreate, ObjectDelete, ObjectEdit, ObjectView
 from .registry import Registry, default_view
-from .object import (BaseObjectView, ObjectView, ObjectEdit, ObjectCreate,
-                     ObjectDelete, JSONBaseSearch, JSONModelSearch,
-                     JSONWhooshSearch)
 
 __all__ = [
     'View',

@@ -1,13 +1,13 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 from flask import render_template
 
 from abilian.i18n import _, _l
-from abilian.web.util import url_for
 from abilian.web.admin.panel import AdminPanel
+from abilian.web.util import url_for
 
 from . import views
 
