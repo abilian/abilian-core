@@ -185,8 +185,8 @@ class User(Principal, UserMixin, db.Model):
     followers = relationship(
         "User",
         secondary=following,
-        primaryjoin=('User.id == following.c.follower_id'),
-        secondaryjoin=('User.id == following.c.followee_id'),
+        primaryjoin='User.id == following.c.follower_id',
+        secondaryjoin='User.id == following.c.followee_id',
         backref='followees')
 
     def __init__(self, password=None, **kwargs):

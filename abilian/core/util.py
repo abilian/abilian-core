@@ -124,7 +124,6 @@ def get_params(names):
 class timer(object):
     """Decorator that mesures the time it takes to run a function.
     """
-    __instances = {}
 
     def __init__(self, f):
         self.__f = f

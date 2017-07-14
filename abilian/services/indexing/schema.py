@@ -77,7 +77,7 @@ def indexable_role(principal):
     """
     principal = noproxy(principal)
 
-    if (hasattr(principal, 'is_anonymous') and principal.is_anonymous):
+    if hasattr(principal, 'is_anonymous') and principal.is_anonymous:
         # transform anonymous user to anonymous role
         principal = Anonymous
 

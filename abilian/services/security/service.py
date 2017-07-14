@@ -636,7 +636,7 @@ class SecurityService(Service):
         # roles
 
         if inherit and obj is not None:
-            while (obj.inherit_security and obj.parent is not None):
+            while obj.inherit_security and obj.parent is not None:
                 obj = obj.parent
                 checked_objs.append(obj)
 

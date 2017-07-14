@@ -1167,14 +1167,13 @@ class FloatWidget(wtforms.widgets.TextInput):
 class DateWidget(wtforms.widgets.TextInput):
 
     def render_view(self, field, **kwargs):
-        return (format_date(field.object_data) if field.object_data else u'')
+        return format_date(field.object_data) if field.object_data else ''
 
 
 class DateTimeWidget(DateWidget):
 
     def render_view(self, field, **kwargs):
-        return (format_datetime(field.object_data)
-                if field.object_data else u'')
+        return (format_datetime(field.object_data) if field.object_data else '')
 
 
 class EntityWidget(object):
@@ -1183,7 +1182,7 @@ class EntityWidget(object):
         objs = field.object_data
         if not field.multiple:
             objs = [objs]
-        return u', '.join(u'<a href="{}">{}</a>'.format(
+        return ', '.join('<a href="{}">{}</a>'.format(
             url_for(o), cgi.escape(o.name)) for o in objs if o)
 
 
@@ -1191,18 +1190,18 @@ class HoursWidget(TextInput):
     """ Widget used to show / enter hours.
     Currently hardcoded to heure(s)
     """
-    post_icon = _l(u'hour(s)')
+    post_icon = _l('hour(s)')
     input_type = 'number'
 
     def render_view(self, field, **kwargs):
         val = field.object_data
-        unit = u'h'
+        unit = 'h'
 
         if val is None:
-            return u''
+            return ''
 
         # \u00A0: non-breakable whitespace
-        return u'{value}\u00A0{unit}'.format(value=val, unit=unit)
+        return '{value}\u00A0{unit}'.format(value=val, unit=unit)
 
 
 class MoneyWidget(TextInput):
@@ -1210,50 +1209,49 @@ class MoneyWidget(TextInput):
 
     Currently hardcoded to € / k€.
     """
-    post_icon = u'€'
+    post_icon = '€'
     input_type = 'number'
 
     def render_view(self, field, **kwargs):
         val = field.object_data
-        unit = u'€'
+        unit = '€'
 
         if val is None:
-            return u''
+            return ''
 
         if val > 1000:
-            unit = u'k€'
+            unit = 'k€'
             val = int(round(val / 1000.0))
 
         # `format_currency()` is not used since it display numbers with cents
         # units, which we don't want
         #
         # \u00A0: non-breakable whitespace
-        return u'{value}\u00A0{unit}'.format(
-            value=format_number(val), unit=unit)
+        return '{value}\u00A0{unit}'.format(value=format_number(val), unit=unit)
 
 
 class EmailWidget(TextInput):
-    pre_icon = u'@'
+    pre_icon = '@'
 
     def render_view(self, field, **kwargs):
-        links = u''
+        links = ''
         if isinstance(field, wtforms.fields.FieldList):
             for entry in field.entries:
                 link = bleach.linkify(entry.data, parse_email=True)
                 if link:
-                    links += u' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(
+                    links += ' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(
                         link)
         else:
             link = bleach.linkify(field.object_data, parse_email=True)
             if link:
-                links = u'{}&nbsp;<i class="fa fa-envelope"></i>'.format(link)
+                links = '{}&nbsp;<i class="fa fa-envelope"></i>'.format(link)
         return links
 
 
 class URLWidget(object):
 
     def render_view(self, field, **kwargs):
-        return (linkify_url(field.object_data) if field.object_data else u'')
+        return (linkify_url(field.object_data) if field.object_data else '')
 
 
 class RichTextWidget(object):
@@ -1319,12 +1317,12 @@ class ListWidget(wtforms.widgets.ListWidget):
 
         kwargs.setdefault('id', field.id)
         html = [
-            u'<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs))
+            '<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs))
         ]
         for subfield in field:
-            html.append(u'<li>{}</li>'.format(subfield()))
+            html.append('<li>{}</li>'.format(subfield()))
 
-        html.append(u'</%s>' % self.html_tag)
+        html.append('</%s>' % self.html_tag)
         return wtforms.widgets.HTMLString(''.join(html))
 
     def render_view(self, field, **kwargs):
@@ -1447,15 +1445,15 @@ class Select2(Select):
 
     def __call__(self, field, *args, **kwargs):
         # 'placeholder' option presence is required for 'allowClear'
-        params = {'placeholder': u''}
+        params = {'placeholder': ''}
         if self.unescape_html:
             params['makeHtml'] = True
         if not field.flags.required:
             params['allowClear'] = True
 
-        css_class = kwargs.setdefault('class_', u'')
+        css_class = kwargs.setdefault('class_', '')
         if 'js-widget' not in css_class:
-            css_class += u' js-widget'
+            css_class += ' js-widget'
             kwargs['class_'] = css_class
 
         kwargs.setdefault('data-init-with', self.js_init)
@@ -1467,7 +1465,7 @@ class Select2(Select):
             text_type(label) for v, label, checked in field.iter_choices()
             if checked
         ]
-        return u'; '.join(labels)
+        return '; '.join(labels)
 
     @classmethod
     def render_option(cls, value, label, selected, **kwargs):
@@ -1519,7 +1517,7 @@ class Select2Ajax(object):
         string.
         """
         if self.multiple:
-            valuelist = valuelist[0].split(u',')
+            valuelist = valuelist[0].split(',')
         return valuelist
 
     def __call__(self, field, **kwargs):
@@ -1529,13 +1527,13 @@ class Select2Ajax(object):
         if self.multiple:
             kwargs['multiple'] = True
 
-        css_class = kwargs.setdefault('class_', u'')
+        css_class = kwargs.setdefault('class_', '')
         if 'class' in kwargs:
-            css_class += kwargs.pop('class', u'')
+            css_class += kwargs.pop('class', '')
             kwargs['class_'] = css_class
 
         if 'js-widget' not in css_class:
-            css_class += u' js-widget'
+            css_class += ' js-widget'
             kwargs['class_'] = css_class
 
         s2_params = {}
@@ -1554,7 +1552,7 @@ class Select2Ajax(object):
             data = [data]
 
         values = self.values_builder(data)
-        input_value = u','.join(text_type(o.id) for o in data if o)
+        input_value = ','.join(text_type(o.id) for o in data if o)
         data_node_id = None
 
         json_data = {}
@@ -1567,13 +1565,14 @@ class Select2Ajax(object):
 
         extra_args = Markup(html_params(**kwargs))
 
-        ctx = dict(
-            field=field,
-            name=field.name,
-            id=field.id,
-            input_value=input_value,
-            json_data=json_data,
-            required=not field.allow_blank,
-            data_node_id=data_node_id,
-            extra_args=extra_args)
+        ctx = {
+            'field': field,
+            'name': field.name,
+            'id': field.id,
+            'input_value': input_value,
+            'json_data': json_data,
+            'required': not field.allow_blank,
+            'data_node_id': data_node_id,
+            'extra_args': extra_args,
+        }
         return Markup(render_template(self.template, **ctx))

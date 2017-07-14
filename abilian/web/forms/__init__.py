@@ -358,7 +358,7 @@ if not _PATCHED:
         WTForms is not consistent with hidden fields, since `flags.hidden` is not
         set on `HiddenField` :-(
         """
-        return (self.flags.hidden or isinstance(self, HiddenField))
+        return self.flags.hidden or isinstance(self, HiddenField)
 
     patch_logger.info('Add method %s.Field.is_hidden' % Field.__module__)
     Field.is_hidden = property(is_hidden)

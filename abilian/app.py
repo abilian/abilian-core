@@ -14,6 +14,7 @@ import os
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
+from typing import Any, Dict
 
 import jinja2
 import sqlalchemy as sa
@@ -102,7 +103,7 @@ class PluginManager(object):
         module.register_plugin(self)
 
 
-default_config = dict(Flask.default_config)
+default_config = dict(Flask.default_config)  # type: Dict[str, Any]
 default_config.update(
     PRIVATE_SITE=False,
     TEMPLATE_DEBUG=False,
@@ -163,7 +164,7 @@ class Application(Flask, ServiceManager, PluginManager):
     private_site = ConfigAttribute('PRIVATE_SITE')
 
     #: instance of :class:`.web.views.registry.Registry`.
-    default_view = None  # type: web.views.registry.Registry
+    default_view = None  # type: abilian.web.views.registry.Registry
 
     #: json serializable dict to land in Javascript under Abilian.api
     js_api = None

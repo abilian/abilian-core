@@ -499,7 +499,8 @@ class UnoconvPdfHandler(Handler):
             else:
                 self.log.warning('Cannot find "{}", fallback to "unoconv"'
                                  ''.format(unoconv))
-        if (not unoconv or not found or not execute_ok):
+
+        if not unoconv or not found or not execute_ok:
             unoconv = 'unoconv'
 
         self.unoconv = unoconv

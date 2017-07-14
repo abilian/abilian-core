@@ -1,23 +1,23 @@
 @media print {
-  /* things we don't to see printed */
+  // things we don't want to see printed
   .navbar,
   .nav,
   .btn {
     display: none;
   }
 
-  /* things we want to see */
-  /* collapable: alway expand */
+  // things we want to see
+  // collapable: alway expand
   .collapse {
     height: auto !important;
   }
 
-  /* except log entries */
+  // except log entries
   #audit_log_entries {
     height: 0 !important;
   }
 
-  /* margins */
+  // margins
   @page {
     margin: 1.2cm 1cm;
   }
@@ -32,12 +32,12 @@
     padding: 0;
   }
 
-  /* page breaks */
+  // page breaks
   h1, h2, h3 {
     page-break-after: avoid;
   }
 
-  /* flask debug toolbar: hide it! */
+  // flask debug toolbar: hide it!
   #flDebugToolbarHandle, #flDebugToolbar {
     display: none;
   }

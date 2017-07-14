@@ -194,7 +194,7 @@ class AuditService(Service):
         # Hide content if needed (like password columns)
         # FIXME: we can only handle the simplest case: 1 attribute => 1 column
         columns = initiator.parent_token.columns
-        if (len(columns) == 1 and columns[0].info.get('audit_hide_content')):
+        if len(columns) == 1 and columns[0].info.get('audit_hide_content'):
             old_value = new_value = u'******'
 
         old_value = format_large_value(old_value)
