@@ -1,8 +1,7 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
+from .models import CREATE, DELETE, MANAGE, READ, WRITE, Admin, Anonymous, \
+    Authenticated, Creator, InheritSecurity, Manager, Owner, Permission, \
+    PermissionAssignment, Reader, Role, RoleAssignment, RoleType, \
+    SecurityAudit, Writer
 from .service import security
-from .models import (RoleAssignment, PermissionAssignment, SecurityAudit,
-                     InheritSecurity, Permission, MANAGE, READ, WRITE, CREATE,
-                     DELETE, Role, Anonymous, Authenticated, Admin, Manager,
-                     Creator, Owner, Reader, Writer, RoleType)
