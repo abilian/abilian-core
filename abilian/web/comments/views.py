@@ -6,11 +6,11 @@ from __future__ import absolute_import, division, print_function, \
 
 from datetime import datetime
 from types import NoneType
+from typing import Union
 
 import sqlalchemy as sa
 from flask_login import current_user
 from six import text_type
-from typing import Union
 from werkzeug.exceptions import BadRequest
 
 from abilian.core.entities import Entity

@@ -5,10 +5,10 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from types import NoneType
+from typing import Union
 
 import sqlalchemy as sa
 from flask import current_app, send_file
-from typing import Union
 from werkzeug.exceptions import BadRequest
 from werkzeug.utils import redirect
 

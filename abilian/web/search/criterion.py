@@ -4,11 +4,11 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import logging
+from typing import Union
 
 from six import string_types
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
-from typing import Union
 
 logger = logging.getLogger(__name__)
 

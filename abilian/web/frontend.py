@@ -11,6 +11,7 @@ import copy
 import logging
 import re
 from collections import OrderedDict
+from typing import List, Tuple
 
 import sqlalchemy as sa
 from flask import Blueprint, current_app, g, jsonify, redirect, \
@@ -18,7 +19,6 @@ from flask import Blueprint, current_app, g, jsonify, redirect, \
 from flask_login import current_user
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
-from typing import List, Tuple
 from werkzeug.exceptions import BadRequest
 
 from abilian.core.entities import Entity
