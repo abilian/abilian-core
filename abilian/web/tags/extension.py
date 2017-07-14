@@ -99,7 +99,7 @@ class TagsExtension(object):
             ns = self.entity_default_ns(entity)
 
         field = TagsField(label=_l(u'Tags'), ns=ns)
-        cls = type(b'EntityNSTagsForm', (_TagsForm,), {'tags': field})
+        cls = type(b'EntityNSTagsForm', (_TagsForm,), {b'tags': field})
         return cls
 
     def get(self, ns, label=None):
@@ -147,8 +147,8 @@ class TagsExtension(object):
         Return a dict: form instance, action button, submit url...
         Used by macro m_tags_form(entity)
         """
-        ctx = {}
-        ctx['url'] = url_for('entity_tags.edit', object_id=obj.id)
-        ctx['form'] = self.entity_tags_form(obj)(obj=obj, ns=ns)
-        ctx['buttons'] = [EDIT_BUTTON]
-        return ctx
+        return {
+            'url': url_for('entity_tags.create', entity_id=obj.id),
+            'form': self.entity_tags_form(obj)(obj=obj, ns=ns),
+            'buttons': [EDIT_BUTTON],
+        }

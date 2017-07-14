@@ -40,8 +40,8 @@ class CommentExtension(object):
 
         Used by macro m_comment_form(entity)
         """
-        ctx = {}
-        ctx['url'] = url_for('comments.create', entity_id=obj.id)
-        ctx['form'] = CommentForm()
-        ctx['buttons'] = [COMMENT_BUTTON]
-        return ctx
+        return {
+            'url': url_for('comments.create', entity_id=obj.id),
+            'form': CommentForm(),
+            'buttons': [COMMENT_BUTTON],
+        }

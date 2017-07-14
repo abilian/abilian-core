@@ -115,11 +115,11 @@ class AttachmentsManager(object):
         Return a dict: form instance, action button, submit url...
         Used by macro m_attachment_form(entity)
         """
-        ctx = {}
-        ctx['url'] = url_for('attachments.create', entity_id=obj.id)
-        ctx['form'] = self.Form()
-        ctx['buttons'] = [UPLOAD_BUTTON]
-        return ctx
+        return {
+            'url': url_for('attachments.create', entity_id=obj.id),
+            'form': self.Form(),
+            'buttons': [UPLOAD_BUTTON],
+        }
 
     #
     # current user capabilities

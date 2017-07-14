@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import hashlib
 import uuid
+from typing import Optional
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
@@ -25,7 +26,7 @@ class BlobQuery(BaseQuery):
     """
 
     def by_uuid(self, uuid):
-        # type: (str) -> Blob
+        # type: (str) -> Optional[Blob]
         """Like `.get()` but by uuid.
 
         :param uuid: a `string` or an `uuid`.

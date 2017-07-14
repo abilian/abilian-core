@@ -156,7 +156,6 @@ def routes():
     for rule in current_app.url_map.iter_rules():
         methods = ','.join(rule.methods)
         path = urllib.parse.unquote(rule.rule)
-        # line = urllib.parse.unquote()
         output.append((rule.endpoint, methods, path))
 
     for endpoint, methods, path in sorted(output):

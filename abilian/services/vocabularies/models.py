@@ -94,7 +94,7 @@ class BaseVocabulary(db.Model):
     def __mapper_args__(cls):
         return {'order_by': [cls.__table__.c.position.asc()]}
 
-    class Meta:
+    class Meta(object):
         label = None
         group = None
 
