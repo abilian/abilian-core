@@ -177,8 +177,13 @@ class Application(Flask, ServiceManager, PluginManager):
     celery_app_cls = FlaskCelery
 
     def __init__(self, name=None, config=None, *args, **kwargs):
-        kwargs.setdefault('instance_relative_config', True)
         name = name or __name__
+
+        instance_path = os.environ.get('FLASK_INSTANCE_PATH')
+        if instance_path:
+            kwargs['instance_path'] = instance_path
+        else:
+            kwargs.setdefault('instance_relative_config', True)
 
         # used by make_config to determine if we try to load config from instance /
         # environment variable /...
