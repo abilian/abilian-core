@@ -148,7 +148,7 @@ class TagsExtension(object):
         Used by macro m_tags_form(entity)
         """
         return {
-            'url': url_for('entity_tags.create', entity_id=obj.id),
+            'url': url_for('entity_tags.edit', entity_id=obj.id),
             'form': self.entity_tags_form(obj)(obj=obj, ns=ns),
             'buttons': [EDIT_BUTTON],
         }
