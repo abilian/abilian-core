@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 audit Service: logs modifications to audited objects.
 

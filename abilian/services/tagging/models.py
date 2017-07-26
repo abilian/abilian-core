@@ -1,3 +1,4 @@
+# coding=utf-8
 """Tag service.
 
 Manages tags applied to taggable entities.

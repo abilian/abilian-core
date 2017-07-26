@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Useful decorators for web views.
 """

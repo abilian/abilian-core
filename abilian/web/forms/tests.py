@@ -144,8 +144,8 @@ class FieldsTestCase(BaseTestCase):
         """
         obj = mock.Mock()
 
-        with self.app.test_request_context(
-                headers={'Accept-Language': 'fr-FR,fr;q=0.8'}):
+        headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
+        with self.app.test_request_context(headers=headers):
             f = fields.DateTimeField(use_naive=False).bind(Form(), 'dt')
             f.process_formdata(['17/06/1789 | 10:42'])
             # 1789: applied offset for HongKong is equal to LMT+7:37:00,
