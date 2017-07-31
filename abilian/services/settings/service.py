@@ -37,6 +37,8 @@ class SettingsService(Service):
         for s in query.yield_per(1000):
             yield (s.key, s.value)
 
+    items = iteritems
+
     def as_dict(self, prefix=None):
         """Return a mapping key -> value of settings, with optional prefix
         filtering.
