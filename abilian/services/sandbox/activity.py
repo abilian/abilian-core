@@ -11,14 +11,14 @@ from __future__ import absolute_import, division, print_function, \
 
 class Activity(object):
     """
-  Persistent object that represents an activity entry.
-  """
+    Persistent object that represents an activity entry.
+    """
 
 
 class ActivityService(object):
 
     def post(self, activity):
         """Post an activity to the service.
-    """
+        """
 
     # Now we need some methods to query the stream

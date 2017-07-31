@@ -25,17 +25,17 @@ class Contact(Entity):
 
 
 class ContactEditForm(Form):
-    _groups = [[u'Main', ['email', 'first_name', 'last_name']]]
+    _groups = [['Main', ['email', 'first_name', 'last_name']]]
 
 
 class Contacts(Module):
     managed_class = Contact
 
     list_view_columns = [
-        dict(name='_name', width=35),
-        dict(name='first_name', width=25),
-        dict(name='last_name', width=14),
-        dict(name='email', width=20),
+        {'name': '_name', 'width': 35},
+        {'name': 'first_name', 'width': 25},
+        {'name': 'last_name', 'width': 14},
+        {'name': 'email', 'width': 20},
     ]
 
     edit_form_class = ContactEditForm

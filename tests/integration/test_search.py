@@ -15,8 +15,8 @@ from .base import IntegrationTestCase
 
 def gen_name(ctx):
     params = ctx.current_parameters
-    return u'{} {}'.format(
-        params.get('first_name') or u'', params.get('last_name') or u'').strip()
+    return '{} {}'.format(
+        params.get('first_name') or '', params.get('last_name') or '').strip()
 
 
 class DummyContact1(Entity):
@@ -49,8 +49,9 @@ class IndexingTestCase(IntegrationTestCase):
         self.session.add(contact)
         self.session.commit()
 
-        search_result = index_service.search(u'john')
+        search_result = index_service.search('john')
         assert len(search_result) == 1
+
         found = search_result[0]
         assert contact.id == found['id']
         assert contact.name == found['name']

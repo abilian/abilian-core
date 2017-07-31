@@ -77,7 +77,7 @@ class Service(object):
 
     @property
     def app_state(self):
-        """ Current service state in current application.
+        """Current service state in current application.
 
         :raise:RuntimeError if working outside application context.
         """
