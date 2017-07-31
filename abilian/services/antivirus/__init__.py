@@ -23,7 +23,7 @@ try:
 except ImportError:
     CLAMD_AVAILABLE = False
 
-CLAMD_CONF = {'StreamMaxLength': u'25M', 'MaxFileSize': u'25M'}
+CLAMD_CONF = {'StreamMaxLength': '25M', 'MaxFileSize': '25M'}
 CLAMD_STREAMMAXLENGTH = 26214400
 CLAMD_MAXFILESIZE = 26214400
 

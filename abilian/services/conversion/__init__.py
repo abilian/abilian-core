@@ -11,7 +11,7 @@ Assumes poppler-utils and LibreOffice are installed.
 TODO: rename Converter into ConversionService ?
 """
 from abilian.services.conversion.handlers import PdfToTextHandler, PdfToPpmHandler, ImageMagickHandler, \
-    UnoconvPdfHandler
+    LibreOfficePdfHandler
 from .service import Converter, ConversionError, HandlerNotFound
 
 # Singleton, yuck!
@@ -19,7 +19,7 @@ converter = Converter()
 converter.register_handler(PdfToTextHandler())
 converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
-converter.register_handler(UnoconvPdfHandler())
+converter.register_handler(LibreOfficePdfHandler())
 
 # converter.register_handler(AbiwordPDFHandler())
 # converter.register_handler(AbiwordTextHandler())

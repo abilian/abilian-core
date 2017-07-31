@@ -7,6 +7,7 @@ import logging
 import mimetypes
 import os
 import re
+import sys
 import subprocess
 import threading
 import traceback
@@ -308,6 +309,104 @@ class UnoconvPdfHandler(Handler):
                     raise ConversionError(
                         "Conversion timeout ({})".format(timeout))
 
+                converted = open(out_fn).read()
+                return converted
+            finally:
+                self._process = None
+
+
+class LibreOfficePdfHandler(Handler):
+    """Handles conversion from office documents (MS-Office, OOo) to PDF.
+
+    Uses LibreOffice in headless mode.
+    """
+
+    # TODO: add more if needed.
+    accepts_mime_types = [
+        'application/vnd.oasis.*', 'application/msword',
+        'application/mspowerpoint', 'application/vnd.ms-powerpoint',
+        'application/vnd.ms-excel', 'application/ms-excel',
+        'application/vnd.openxmlformats-officedocument.*', 'text/rtf'
+    ]
+    produces_mime_types = ['application/pdf']
+    run_timeout = 60
+    _process = None
+    soffice = 'soffice'
+
+    def init_app(self, app):
+        soffice = app.config.get('SOFFICE_LOCATION')
+        found = False
+        execute_ok = False
+
+        if soffice:
+            # make absolute path: avoid errors when running with different CWD
+            soffice = os.path.abspath(soffice)
+            found = os.path.isfile(soffice)
+            if not found:
+                self.log.error("Can't find executable {}".format(soffice))
+
+        elif os.path.isfile("/usr/local/bin/soffice"):
+            soffice = "/usr/local/bin/soffice"
+
+        elif os.path.isfile("/usr/bin/soffice"):
+            soffice = "/usr/bin/soffice"
+
+        if soffice:
+            execute_ok = os.access(soffice, os.X_OK)
+            if not execute_ok:
+                self.log.warning('Not allowed to execute "{}"'.format(soffice))
+
+        else:
+            self.log.error("Can't find LibreOffice executable")
+            soffice = None
+
+        self.soffice = soffice
+
+    def convert(self, blob, **kw):
+        """Convert using soffice converter.
+        """
+        timeout = self.run_timeout
+        with make_temp_file(blob) as in_fn:
+
+            cmd = [self.soffice, "--headless", "--convert-to", "pdf", in_fn]
+
+            # # TODO: fix this if needed, or remove if not needed
+            # if os.path.exists(
+            #         "/Applications/LibreOffice.app/Contents/program/python"):
+            #     cmd = [
+            #         '/Applications/LibreOffice.app/Contents/program/python',
+            #         '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn
+            #     ]
+
+            def run_soffice():
+                try:
+                    self._process = subprocess.Popen(
+                        cmd, close_fds=True, cwd=bytes(self.TMP_DIR))
+                    self._process.communicate()
+                except Exception as e:
+                    logger.error('soffice error: %s', bytes(e), exc_info=True)
+                    raise_from(ConversionError('unoconv failed'), e)
+
+            run_thread = threading.Thread(target=run_soffice)
+            run_thread.start()
+            run_thread.join(timeout)
+
+            try:
+                if run_thread.is_alive():
+                    # timeout reached
+                    self._process.terminate()
+                    if self._process.poll() is not None:
+                        try:
+                            self._process.kill()
+                        except OSError:
+                            logger.warning("Failed to kill process {}".format(
+                                self._process))
+
+                    self._process = None
+                    raise ConversionError(
+                        "Conversion timeout ({})".format(timeout))
+
+                out_fn = os.path.splitext(in_fn)[0] + ".pdf"
                 converted = open(out_fn).read()
                 return converted
             finally:
