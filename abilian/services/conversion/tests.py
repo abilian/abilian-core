@@ -14,7 +14,6 @@ BASEDIR2 = join(dirname(__file__), "dummy_files2")
 mime_sniffer = Magic(mime=True)
 encoding_sniffer = Magic(mime_encoding=True)
 
-
 # FIXME: tests that rely on OOo are disabled until we fix stability issues.
 
 
@@ -64,8 +63,7 @@ def XXXtest_excel_to_text(converter):
 # To PDF
 def XXXtest_odt_to_pdf(converter):
     blob = read_file("test.odt")
-    pdf = converter.to_pdf("", blob,
-                           "application/vnd.oasis.opendocument.text")
+    pdf = converter.to_pdf("", blob, "application/vnd.oasis.opendocument.text")
     assert b"application/pdf" == mime_sniffer.from_buffer(pdf)
 
 
