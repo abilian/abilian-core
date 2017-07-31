@@ -47,7 +47,7 @@ setuptools.setup(
     description=('A framework for enterprise applications '
                  '(CRM, ERP, collaboration...), based on Flask and SQLAlchemy'),
     long_description=LONG_DESCRIPTION,
-    packages=[b'abilian'],
+    packages=['abilian'],
     zip_safe=False,
     platforms='any',
     setup_requires=['babel', 'setuptools-git', 'setuptools_scm>=1.5.5'],
