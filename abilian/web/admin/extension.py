@@ -181,5 +181,5 @@ class Admin(object):
         panel = self._panels_endpoints.get(endpoint)
         if panel:
             endpoint_bc = self.breadcrumb_items.get(panel)
-        if endpoint_bc:
-            g.breadcrumb.append(endpoint_bc)
+            if endpoint_bc:
+                g.breadcrumb.append(endpoint_bc)

@@ -37,12 +37,12 @@ class SecurityInfoDebugPanel(DebugPanel):
         """Subtitle showing until title in toolbar"""
         obj = self.current_obj
         if not obj:
-            return _(u'No current object')
+            return _('No current object')
 
         try:
-            return u'{}(id={})'.format(obj.__class__.__name__, obj.id)
+            return '{}(id={})'.format(obj.__class__.__name__, obj.id)
         except:
-            return u''
+            return ''
 
     def title(self):
         return self.nav_title()
@@ -73,14 +73,14 @@ class SecurityInfoDebugPanel(DebugPanel):
         for r in roles:
             info = roles[r]
             info['groups'] = [
-                u'{g} (id={g.id})'.format(g=g)
+                '{g} (id={g.id})'.format(g=g)
                 for g in sorted(info['groups'], key=lambda g: g.name)
             ]
             users = sorted(
                 info['users'],
                 key=lambda u: (u.last_name.lower(), u.first_name.lower()))
             info['users'] = [
-                u'{u} (id={u.id}, email="{u.email}")'.format(u=u) for u in users
+                '{u} (id={u.id}, email="{u.email}")'.format(u=u) for u in users
             ]
 
         jinja_env = current_app.jinja_env
