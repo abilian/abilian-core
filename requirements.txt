@@ -18,13 +18,13 @@ clamd==1.0.2
 click==6.7                # via flask
 closure==20161201
 cssmin==0.2.0
-decorator==4.1.1          # via validators
+decorator==4.1.2          # via validators
 flask-assets==0.12
 flask-babel==0.11.2
 flask-debugtoolbar==0.10.1
 flask-login==0.3.2
 flask-mail==0.9.1
-flask-migrate==2.0.4
+flask-migrate==2.1.0
 flask-script==2.0.5
 flask-sqlalchemy==2.1
 flask-testing==0.6.2
@@ -45,7 +45,7 @@ olefile==0.44             # via pillow
 pandas==0.20.3
 pathlib==1.0.1
 pillow==4.2.1
-psycopg2==2.7.1
+psycopg2==2.7.3
 pycparser==2.18           # via cffi
 pygeoip==0.3.2
 python-dateutil==2.6.1
@@ -56,10 +56,10 @@ pyyaml==3.12
 redis==2.10.5
 six==1.10.0
 sqlalchemy-utils==0.32.14
-sqlalchemy==1.1.11
+sqlalchemy==1.1.12
 sqlparse==0.2.3
 straight.plugin==1.4.1
-tqdm==4.14.0
+tqdm==4.15.0
 typing==3.6.1
 validators==0.12.0        # via wtforms-components
 webassets==0.12.1         # via flask-assets
