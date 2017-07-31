@@ -28,7 +28,7 @@ def converter():
     c.clear()
 
 
-def read_file(fn, mode=b'rb'):
+def read_file(fn, mode='rb'):
     return open(join(BASEDIR, fn), mode).read()
 
 
