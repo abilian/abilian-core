@@ -16,7 +16,7 @@ import pickle
 from datetime import datetime
 
 from flask import current_app
-from six import text_type
+from six import text_type, binary_type
 from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
@@ -157,7 +157,7 @@ class AuditEntry(db.Model):
                 uv = self._format_changes(v)
             else:
                 for val in v:
-                    if isinstance(val, str):
+                    if isinstance(val, binary_type):
                         # TODO: Temp fix for errors that happen during
                         # migration
                         try:
