@@ -40,18 +40,21 @@ def read_file(fn, mode='rb'):
 def test_pdf_to_text(converter):
     blob = read_file("onepage.pdf")
     text = converter.to_text("", blob, "application/pdf")
+    assert text
 
 
 @pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_word_to_text(converter):
     blob = read_file("test.doc")
     text = converter.to_text("", blob, "application/msword")
+    assert text
 
 
 @pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_wordx_to_text(converter):
     blob = read_file("test.docx")
     text = converter.to_text("", blob, "application/msword")
+    assert text
 
 
 # def test_excel_to_text(converter):

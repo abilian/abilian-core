@@ -343,7 +343,7 @@ class WhooshIndexService(Service):
 
         if filters:
             filter_q = wq.And(filters) if len(filters) > 1 else filters[0]
-            #search_args['filter'] = filter_q
+            # search_args['filter'] = filter_q
             query = filter_q & query
 
         if facet_by_type:

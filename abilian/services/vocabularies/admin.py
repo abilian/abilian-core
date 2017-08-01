@@ -5,10 +5,10 @@ Admin panel for vocabularies
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from abilian.services import get_service
 from flask import current_app, g, redirect, render_template, request
 
 from abilian.i18n import _, _l
+from abilian.services import get_service
 from abilian.web import url_for, views
 from abilian.web.action import Glyphicon
 from abilian.web.admin import AdminPanel

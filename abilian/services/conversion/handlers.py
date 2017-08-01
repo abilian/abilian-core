@@ -45,7 +45,8 @@ def has_pdftotext():
 def has_libreoffice():
     dev_null = open('/dev/null', 'wb')
     try:
-        status = subprocess.call(["soffice", "--help"], stdout=dev_null, stderr=dev_null)
+        status = subprocess.call(
+            ["soffice", "--help"], stdout=dev_null, stderr=dev_null)
         return status == 0
     except:
         return False

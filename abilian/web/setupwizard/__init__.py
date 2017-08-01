@@ -150,7 +150,7 @@ def step_db_validate():
             if password:
                 db_uri += u':' + password
 
-        #FIXME: it is an error to have a username and no host, SA will interpret
+        # FIXME: it is an error to have a username and no host, SA will interpret
         # username:password as host:port
         if host:
             db_uri += u'@' + host

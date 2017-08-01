@@ -286,7 +286,7 @@ class Less(ExternalTool):
             output_path=output_path)
 
     def fix_url(self, cur_path, url):
-        if url.startswith(u'data:'):
+        if url.startswith('data:'):
             # base64 embeded
             return url
 
@@ -299,7 +299,8 @@ class Less(ExternalTool):
             return url
 
         if len(possible_paths) > 1:
-            possible_paths.sort(lambda p: -len(p))
+            raise RuntimeError("Should not happen")
+            # possible_paths.sort(lambda p: -len(p))
 
         path = possible_paths[0]
         return self.ctx.url_mapping[path] + src_path[len(path):]
@@ -313,8 +314,8 @@ class Less(ExternalTool):
                 data['sources'][idx] = u'-'
                 continue
 
-            path = os.path.join('..',
-                                path)  # apparently less is stripping first part
+            # apparently less is stripping first part
+            path = os.path.join('..', path)
             data['sources'][idx] = self.fix_url(self.ctx.directory, path)
 
         with open(filename, 'w') as f:
@@ -345,9 +346,7 @@ class ClosureJS(BaseClosureJS):
         try:
             smap_idx = self.extra_args.index('--create_source_map')
             smap_path = Path(self.extra_args[smap_idx + 1])
-        except (
-                ValueError,
-                IndexError,):
+        except (ValueError, IndexError):
             return
 
         if not smap_path.exists():
@@ -361,12 +360,15 @@ class ClosureJS(BaseClosureJS):
         possible_paths = [
             p for p in self.ctx.url_mapping.keys() if src_path.startswith(p)
         ]
+
         if not possible_paths:
-            # FIXME: url is not defined at this point, this can't work.
-            return url
+            raise RuntimeError("Should not happen")
+            # # FIXME: url is not defined at this point, this can't work.
+            # return url
 
         if len(possible_paths) > 1:
-            possible_paths.sort(lambda p: -len(p))
+            raise RuntimeError("Should not happen")
+            # possible_paths.sort(lambda p: -len(p))
 
         path = possible_paths[0]
         return self.ctx.url_mapping[path] + src_path[len(path):]

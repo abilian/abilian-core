@@ -15,7 +15,6 @@ from __future__ import absolute_import, division, print_function, \
 
 import hashlib
 import logging
-import os
 import shutil
 import subprocess
 from io import BytesIO
@@ -28,9 +27,6 @@ from six import string_types, text_type
 from abilian.services.conversion.util import make_temp_file
 
 logger = logging.getLogger(__name__)
-
-# # Hack for Mac OS + homebrew
-# os.environ['PATH'] += ":/usr/local/bin"
 
 TMP_DIR = "tmp"
 CACHE_DIR = "cache"

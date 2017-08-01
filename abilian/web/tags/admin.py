@@ -14,6 +14,7 @@ from flask import current_app, flash, redirect, render_template, request
 from abilian.core.entities import Entity
 from abilian.core.models.tag import Tag, entity_tag_tbl
 from abilian.i18n import _, _l, _n
+from abilian.services import get_service
 from abilian.services.indexing.service import index_update
 from abilian.web import url_for
 from abilian.web.admin import AdminPanel

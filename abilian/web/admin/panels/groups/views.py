@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from cgi import escape
 
 import sqlalchemy as sa
-from flask import current_app, render_template_string, request
+from flask import render_template_string, request
 from six import text_type
 from sqlalchemy.sql.expression import asc, desc, func, nullslast
 

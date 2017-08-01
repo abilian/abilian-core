@@ -2,6 +2,7 @@
 """
 """
 from __future__ import absolute_import, print_function, division
+
 from datetime import datetime
 import json
 
@@ -11,7 +12,7 @@ from sqlalchemy.ext.declarative import declared_attr
 
 from .base import (Model, IdMixin, TimestampedMixin, EDITABLE, NOT_EDITABLE,
                    AUDITABLE, AUDITABLE_HIDDEN, NOT_AUDITABLE, SEARCHABLE,
-                   NOT_SEARCHABLE, EXPORTABLE, NOT_EXPORTABLE, SYSTEM)  # noqa
+                   NOT_SEARCHABLE, EXPORTABLE, NOT_EXPORTABLE, SYSTEM)
 
 from .owned import OwnedMixin
 
@@ -54,7 +55,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
         return "/static/icons/%s-%d.png" % (self.__class__.__name__.lower(),
                                             size)
 
-    #FIXME: we can do better than that
+    # FIXME: we can do better than that
     @property
     def _name(self):
         if hasattr(self, 'title'):

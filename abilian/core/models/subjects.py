@@ -17,7 +17,6 @@ from datetime import datetime, timedelta
 
 import bcrypt
 import sqlalchemy as sa
-from flask import current_app
 from flask_login import UserMixin
 from six import python_2_unicode_compatible, text_type
 from sqlalchemy.event import listens_for
@@ -28,6 +27,7 @@ from sqlalchemy.types import Boolean, DateTime, Integer, LargeBinary, \
     UnicodeText
 
 from abilian.core import sqlalchemy as sa_types
+from abilian.core.util import fqcn
 
 from .base import SEARCHABLE, SYSTEM, IdMixin, Indexable, TimestampedMixin, db
 
@@ -40,6 +40,7 @@ following = Table(
     Column('follower_id', Integer, ForeignKey('user.id')),
     Column('followee_id', Integer, ForeignKey('user.id')),
     UniqueConstraint('follower_id', 'followee_id'),)
+
 membership = Table(
     'membership',
     db.Model.metadata,
@@ -155,15 +156,24 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
         return security.has_role(self, role)
 
 
+def set_entity_type(cls):
+    """Decorator used to set the class' entity_type after the class has been declared.
+
+    Actually, it works using __module__ during class declaration, but linters
+    (Flake8, PyCharm) complain.
+    """
+    cls.entity_type = fqcn(cls)
+    return cls
+
+
 @python_2_unicode_compatible
+@set_entity_type
 class User(Principal, UserMixin, db.Model):
     __tablename__ = 'user'
     __editable__ = ['first_name', 'last_name', 'email', 'password']
     __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
 
     __password_strategy__ = BcryptPasswordStrategy()
-
-    entity_type = '{}.{}'.format(__module__, 'User')
 
     query_class = UserQuery
 
@@ -289,13 +299,12 @@ def _add_user_indexes(mapper, class_):
     idx.info['engines'] = ('postgresql',)
 
 
+@set_entity_type
 class Group(Principal, db.Model):
     __indexable__ = False
     __tablename__ = 'group'
     __editable__ = ['name', 'description']
     __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
-
-    entity_type = u'{}.{}'.format(__module__, 'Group')
 
     name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
     description = Column(UnicodeText, info=SEARCHABLE)

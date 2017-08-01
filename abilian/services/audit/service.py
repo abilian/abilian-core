@@ -16,7 +16,7 @@ from inspect import isclass
 import sqlalchemy as sa
 from flask import current_app, g
 from six import text_type
-from sqlalchemy import event, extract, func
+from sqlalchemy import event, extract
 from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 

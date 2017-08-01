@@ -301,7 +301,7 @@ def reset_password_token_status(token):
 
 def get_token_status(token, serializer_name, max_age=None):
     serializer = get_serializer(serializer_name)
-    #max_age = get_max_age(max_age)
+    # max_age = get_max_age(max_age)
     user, data = None, None
     expired, invalid = False, False
 
@@ -335,7 +335,7 @@ def send_mail(subject, recipient, template, **context):
 
     ctx = ('login/email', template)
     msg.body = render_template_i18n('%s/%s.txt' % ctx, **context)
-    #msg.html = render_template('%s/%s.html' % ctx, **context)
+    # msg.html = render_template('%s/%s.html' % ctx, **context)
 
     mail = current_app.extensions.get('mail')
     current_app.logger.debug("Sending mail...")

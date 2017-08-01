@@ -4,12 +4,12 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from abilian.services import get_service
 from flask import current_app
 from flask_debugtoolbar.panels import DebugPanel
 
 from abilian.core.util import fqcn
 from abilian.i18n import _
+from abilian.services import get_service
 from abilian.web.action import actions
 
 
@@ -63,7 +63,8 @@ class IndexedTermsDebugPanel(DebugPanel):
 
         adapter = index_service.adapted.get(fqcn(obj.__class__))
         if adapter and adapter.indexable:
-            doc = context['current_document'] = index_service.get_document(obj, adapter)
+            doc = context['current_document'] = index_service.get_document(
+                obj, adapter)
             indexed = {}
             for name, field in schema.items():
                 value = doc.get(name)

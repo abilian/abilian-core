@@ -32,7 +32,7 @@ class Tag(db.Model, IdMixin):
     term = Column(Unicode, nullable=False, unique=True)
 
     # Not sure we want the extra complexity, even though it's specified by Atom.
-    #label = Column()
+    # label = Column()
 
     # Also we might want: created_at, etc. Maybe a Tag should be an Entity?
 

@@ -126,7 +126,7 @@ def search_main(q='', page=1):
         by_object_type.insert(0, all_types)
 
     if filtered_by_type:
-        #FIXME: sanitize input
+        # FIXME: sanitize input
         results = svc.search(q, object_types=filtered_by_type, **search_kwargs)
 
     results.formatter = BOOTSTRAP_MARKUP_HIGHLIGHTER

@@ -615,7 +615,7 @@ class SecurityService(Service):
         valid_roles |= {Admin}  # always have all permissions
         valid_roles |= DEFAULT_PERMISSION_ROLE.get(permission, set())
 
-        #FIXME: obj.__class__ could define default permisssion matrix too
+        # FIXME: obj.__class__ could define default permisssion matrix too
 
         if roles is not None:
             if isinstance(roles, (Role,) + string_types):
@@ -624,7 +624,7 @@ class SecurityService(Service):
             for r in roles:
                 valid_roles.add(Role(r))
 
-        #FIXME: query permission_role: global and on object
+        # FIXME: query permission_role: global and on object
 
         if AnonymousRole in valid_roles:
             return True
@@ -632,9 +632,8 @@ class SecurityService(Service):
         if Authenticated in valid_roles and not user.is_anonymous:
             return True
 
-        checked_objs = [None, obj]  # first test global roles, then object local
-        # roles
-
+        # first test global roles, then object local roles
+        checked_objs = [None, obj]
         if inherit and obj is not None:
             while obj.inherit_security and obj.parent is not None:
                 obj = obj.parent

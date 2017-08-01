@@ -8,9 +8,11 @@ import logging
 from collections import OrderedDict
 from functools import partial
 
+from abilian.web.forms.widgets import DefaultViewWidget
 from flask import current_app, g, has_app_context
 from flask_login import current_user
 from flask_wtf.form import Form as BaseForm
+from six import string_types
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from wtforms_alchemy import model_form_factory

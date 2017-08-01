@@ -24,6 +24,8 @@ converter.register_handler(PdfToPpmHandler())
 converter.register_handler(ImageMagickHandler())
 converter.register_handler(LibreOfficePdfHandler())
 
+__all__ = ['converter', 'Converter', 'ConversionError', 'HandlerNotFound']
+
 # converter.register_handler(AbiwordPDFHandler())
 # converter.register_handler(AbiwordTextHandler())
 

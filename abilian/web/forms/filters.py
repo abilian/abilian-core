@@ -7,6 +7,8 @@ from __future__ import absolute_import, division, print_function, \
 
 from six import string_types
 
+__all__ = ['strip', 'uppercase', 'lowercase']
+
 
 def strip(data):
     """
