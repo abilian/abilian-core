@@ -144,7 +144,7 @@ class AbiwordTextHandler(Handler):
                 os.chdir(str(tmp_dir))
                 subprocess.check_call([
                     'abiword', '--to', os.path.basename(out_fn),
-                    os.path.basename(in_fn)
+                    os.path.basename(in_fn),
                 ])
             except Exception as e:
                 raise_from(ConversionError('abiword failed'), e)
@@ -181,7 +181,7 @@ class AbiwordPDFHandler(Handler):
                 os.chdir(bytes(self.TMP_DIR))
                 subprocess.check_call([
                     'abiword', '--to', os.path.basename(out_fn),
-                    os.path.basename(in_fn)
+                    os.path.basename(in_fn),
                 ])
             except Exception as e:
                 raise_from(ConversionError('abiword failed'), e)
@@ -247,7 +247,7 @@ class UnoconvPdfHandler(Handler):
         'application/vnd.oasis.*', 'application/msword',
         'application/mspowerpoint', 'application/vnd.ms-powerpoint',
         'application/vnd.ms-excel', 'application/ms-excel',
-        'application/vnd.openxmlformats-officedocument.*', 'text/rtf'
+        'application/vnd.openxmlformats-officedocument.*', 'text/rtf',
     ]
     produces_mime_types = ['application/pdf']
     run_timeout = 60
@@ -284,7 +284,7 @@ class UnoconvPdfHandler(Handler):
                 "/Applications/LibreOffice.app/Contents/program/python"):
             cmd = [
                 '/Applications/LibreOffice.app/Contents/program/python',
-                '/usr/local/bin/unoconv', '--version'
+                '/usr/local/bin/unoconv', '--version',
             ]
         else:
             cmd = [self.unoconv, '--version']
@@ -305,7 +305,7 @@ class UnoconvPdfHandler(Handler):
                     "/Applications/LibreOffice.app/Contents/program/python"):
                 cmd = [
                     '/Applications/LibreOffice.app/Contents/program/python',
-                    '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn
+                    '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn,
                 ]
             else:
                 cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
@@ -355,7 +355,7 @@ class LibreOfficePdfHandler(Handler):
         'application/vnd.oasis.*', 'application/msword',
         'application/mspowerpoint', 'application/vnd.ms-powerpoint',
         'application/vnd.ms-excel', 'application/ms-excel',
-        'application/vnd.openxmlformats-officedocument.*', 'text/rtf'
+        'application/vnd.openxmlformats-officedocument.*', 'text/rtf',
     ]
     produces_mime_types = ['application/pdf']
     run_timeout = 60

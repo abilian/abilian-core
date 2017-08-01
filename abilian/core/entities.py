@@ -140,7 +140,7 @@ class _EntityInherit(object):
     def __mapper_args__(cls):
         return {
             'polymorphic_identity': cls.entity_type,
-            'inherit_condition': cls.id == Entity.id
+            'inherit_condition': cls.id == Entity.id,
         }
 
 
@@ -309,7 +309,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         else:
             return {
                 'polymorphic_identity': cls.entity_type,
-                'inherit_condition': cls.id == Entity.id
+                'inherit_condition': cls.id == Entity.id,
             }
 
     #: The name is a string that is shown to the user; it could be a title

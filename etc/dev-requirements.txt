@@ -18,7 +18,9 @@ pytest-cov
 # Static code analysis
 flake8
 flake8-tidy-imports
+flake8-truveris
 pylint
+
 # These two plugins try too hard..
 # pep8-naming
 # mastool

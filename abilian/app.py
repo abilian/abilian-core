@@ -263,15 +263,15 @@ class Application(Flask, ServiceManager, PluginManager):
             'css': {
                 'options': dict(
                     filters=('less', 'cssmin'),
-                    output='style-%(version)s.min.css')
+                    output='style-%(version)s.min.css'),
             },
             'js-top': {
                 'options': dict(
-                    output='top-%(version)s.min.js', filters=js_filters)
+                    output='top-%(version)s.min.js', filters=js_filters),
             },
             'js': {
                 'options': dict(
-                    output='app-%(version)s.min.js', filters=js_filters)
+                    output='app-%(version)s.min.js', filters=js_filters),
             },
         }
 
@@ -717,7 +717,7 @@ class Application(Flask, ServiceManager, PluginManager):
         """
         if not hasattr(self, '_jinja_loaders'):
             raise ValueError(
-                'Cannot register new jinja loaders after first template rendered'
+                'Cannot register new jinja loaders after first template rendered',
             )
 
         self._jinja_loaders.extend(loaders)

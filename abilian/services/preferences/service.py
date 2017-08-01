@@ -155,7 +155,7 @@ class PreferenceService(Service):
                     'endpoint': endpoint,
                     'label': panel.label,
                     'url': url_for(endpoint),
-                    'active': active
+                    'active': active,
                 }
                 menu.append(entry)
             return dict(menu=menu)

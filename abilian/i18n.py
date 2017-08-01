@@ -72,7 +72,7 @@ from six import string_types, text_type
 
 __all__ = [
     'babel', 'gettext', '_', 'lazy_gettext', '_l', 'localeselector', 'ngettext',
-    '_n', 'timezoneselector', 'VALID_LANGUAGES_CODE', 'render_template_i18n'
+    '_n', 'timezoneselector', 'VALID_LANGUAGES_CODE', 'render_template_i18n',
 ]
 
 #: gettext alias
@@ -182,7 +182,7 @@ class Babel(BabelBase):
     def init_app(self, app):
         super(Babel, self).init_app(app)
         self._translations_paths = [
-            (os.path.join(app.root_path, 'translations'), 'messages')
+            (os.path.join(app.root_path, 'translations'), 'messages'),
         ]
 
     def add_translations(self,

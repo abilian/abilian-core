@@ -273,7 +273,7 @@ class EntityEdit(BaseEntityView, ObjectEdit):
             'rendered_entity': rendered_entity,
             'show_new_comment_form': False,
             'show_new_attachment_form': False,
-            'module': self.module
+            'module': self.module,
         }
 
 
@@ -293,7 +293,7 @@ class EntityCreate(BaseEntityView, ObjectCreate):
         return {
             'rendered_entity': rendered_entity,
             'for_new': True,
-            'module': self.module
+            'module': self.module,
         }
 
 

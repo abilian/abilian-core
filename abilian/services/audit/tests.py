@@ -118,7 +118,7 @@ class TestAudit(BaseTestCase):
         assert entry.entity_id == account.id
         assert entry.entity == account
         assert entry.changes.columns == {
-            'website': ('', 'http://www.john.com/')
+            'website': ('', 'http://www.john.com/'),
         }
 
         account.birthday = datetime.date(2012, 12, 25)
@@ -130,7 +130,7 @@ class TestAudit(BaseTestCase):
         assert entry.entity_id == account.id
         assert entry.entity == account
         assert entry.changes.columns == {
-            'birthday': (None, datetime.date(2012, 12, 25))
+            'birthday': (None, datetime.date(2012, 12, 25)),
         }
 
         # content hiding
@@ -196,7 +196,7 @@ class TestAudit(BaseTestCase):
         assert changes.columns == {
             'text': (NEVER_SET, u'text 1'),
             'account_id': (NEVER_SET, 1),
-            'id': (NEVER_SET, 1)
+            'id': (NEVER_SET, 1),
         }
 
         comment = CommentRelated(related=data, text='comment')
@@ -215,7 +215,7 @@ class TestAudit(BaseTestCase):
         assert changes.columns == {
             'text': (NEVER_SET, u'comment'),
             'related_id': (NEVER_SET, 1),
-            'id': (NEVER_SET, 1)
+            'id': (NEVER_SET, 1),
         }
 
         comment = CommentRelated(related=data, text='comment 2')
@@ -235,7 +235,7 @@ class TestAudit(BaseTestCase):
         assert changes.columns == {
             'text': (NEVER_SET, u'comment 2'),
             'related_id': (NEVER_SET, 1),
-            'id': (NEVER_SET, 2)
+            'id': (NEVER_SET, 2),
         }
 
         # deletion

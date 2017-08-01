@@ -48,7 +48,7 @@ __all__ = [
     'Chosen', 'TagInput', 'DateInput', 'DefaultViewWidget', 'BooleanWidget',
     'FloatWidget', 'DateTimeWidget', 'DateWidget', 'MoneyWidget', 'EmailWidget',
     'URLWidget', 'ListWidget', 'TabularFieldListWidget', 'ModelListWidget',
-    'Select2', 'Select2Ajax', 'RichTextWidget', 'FileInput', 'EntityWidget'
+    'Select2', 'Select2Ajax', 'RichTextWidget', 'FileInput', 'EntityWidget',
 ]
 
 
@@ -152,7 +152,7 @@ class BaseTableView(object):
         for idx, c in enumerate(self.columns, offset):
             aoColumns.append({
                 'asSorting': c['sorting'],
-                'sWidth': str(c['width'])
+                'sWidth': str(c['width']),
             })
             aaSorting.append([idx, c['sorting'][0]])
 
@@ -167,7 +167,7 @@ class BaseTableView(object):
             'bPaginate': self.paginate,
             'sPaginationType': "bootstrap",
             'bLengthChange': False,
-            'iDisplayLength': self.options.get('paginate_length', 50)
+            'iDisplayLength': self.options.get('paginate_length', 50),
         }
         js = render_template_string(
             '''
@@ -306,7 +306,7 @@ class AjaxMainTableView(object):
         aoColumns = [{'asSorting': []}] if self.show_controls else []
         aoColumns += [{
             'asSorting': col['sorting'],
-            'bSortable': col['sortable']
+            'bSortable': col['sortable'],
         } for col in self.columns]
         datatable_options = {
             'sDom': 'fFriltip',
@@ -871,7 +871,7 @@ class Chosen(Select):
         kwargs.setdefault('id', field.id)
         html = [
             u'<select %s class="chzn-select">' % html_params(
-                name=field.name, **kwargs)
+                name=field.name, **kwargs),
         ]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
@@ -1005,7 +1005,7 @@ class TimeInput(Input):
             'data-second-step': self.secondStep,
             'data-show-inputs': self.showInputs,
             'data-disable-focus': self.disableFocus,
-            'data-modal-backdrop': self.modalBackdrop
+            'data-modal-backdrop': self.modalBackdrop,
         }
 
         input_params = {
@@ -1259,13 +1259,13 @@ class RichTextWidget(object):
     allowed_tags = {
         'a': {
             'href': True,
-            'title': True
+            'title': True,
         },
         'abbr': {
-            'title': True
+            'title': True,
         },
         'acronym': {
-            'title': True
+            'title': True,
         },
         'b': True,
         'blockquote': True,
@@ -1280,14 +1280,14 @@ class RichTextWidget(object):
         'h6': True,
         'i': True,
         'img': {
-            'src': True
+            'src': True,
         },
         'li': True,
         'ol': True,
         'strong': True,
         'ul': True,
         'p': True,
-        'u': True
+        'u': True,
     }
 
     def __init__(self, allowed_tags=None, template=None):
@@ -1317,7 +1317,7 @@ class ListWidget(wtforms.widgets.ListWidget):
 
         kwargs.setdefault('id', field.id)
         html = [
-            '<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs))
+            '<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs)),
         ]
         for subfield in field:
             html.append('<li>{}</li>'.format(subfield()))
