@@ -26,7 +26,7 @@ def test_type_set():
 def test_int():
     s = Setting(key='key', type='int')
     s.value = 42
-    assert s._value == '42'
+    assert s._value in ('42', b'42')
 
     s._value = '24'
     assert s.value == 24

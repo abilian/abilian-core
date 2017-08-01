@@ -37,7 +37,7 @@ class JsonGroupsList(base.JSONView):
 
         end = start + length
         query = Group.query \
-          .options(sa.orm.noload('*'))
+            .options(sa.orm.noload('*'))
         total_count = query.count()
 
         if search:
@@ -48,7 +48,7 @@ class JsonGroupsList(base.JSONView):
         count = query.count()
         columns = [func.lower(Group.name)]
         direction = asc if sort_dir == 'asc' else desc
-        order_by = map(direction, columns)
+        order_by = list(map(direction, columns))
 
         # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
         engine = query.session.get_bind(Group.__mapper__)
@@ -67,14 +67,14 @@ class JsonGroupsList(base.JSONView):
             roles = [r for r in security.get_roles(group) if r.assignable]
 
             columns = [
-                u'<a href="{url}">{name}</a>'.format(url=group_url, name=name),
+                '<a href="{url}">{name}</a>'.format(url=group_url, name=name),
                 text_type(members_count or 0),
                 render_template_string(
-                    u'''{%- for role in roles %}
+                    '''{%- for role in roles %}
                         <span class="badge badge-default">{{ role }}</span>
                         {%- endfor %}''',
                     roles=roles),
-                u'\u2713' if group.public else u'',
+                '\u2713' if group.public else '',
             ]
 
             data.append(columns)
@@ -116,14 +116,14 @@ REMOVE_USER_BUTTON = ButtonAction(
     condition=lambda v: request.method == 'POST',
     btn_class='danger',
     icon=FAIcon('times'),
-    title="",)
+    title="")
 
 
 class GroupView(GroupBase, views.ObjectView):
     template = 'admin/group_view.html'
 
     def breadcrumb(self):
-        label = render_template_string(u'<em>{{ g }}</em>', g=self.obj.name)
+        label = render_template_string('<em>{{ g }}</em>', g=self.obj.name)
         return BreadcrumbItem(label=label, url='', description=self.obj.name)
 
     @property
@@ -145,7 +145,7 @@ class GroupView(GroupBase, views.ObjectView):
 class GroupEdit(GroupBase, views.ObjectEdit):
 
     def breadcrumb(self):
-        label = render_template_string(u'<em>{{ g }}</em>', g=self.obj.name)
+        label = render_template_string('<em>{{ g }}</em>', g=self.obj.name)
         return BreadcrumbItem(label=label, url='', description=self.obj.name)
 
     def get_form_buttons(self, *args, **kwargs):
@@ -189,7 +189,6 @@ class GroupEdit(GroupBase, views.ObjectEdit):
 
     def remove_user(self, *args, **kwargs):
         user_id = int(request.form.get('user'))
-        user = User.query.get(user_id)
         user = User.query \
             .options(sa.orm.joinedload(User.groups)) \
             .get(user_id)

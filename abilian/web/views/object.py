@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import logging
 
+import six
 import sqlalchemy as sa
 from flask import current_app, flash, g, redirect, render_template, request, \
     url_for
@@ -210,7 +211,7 @@ class ObjectEdit(ObjectView):
     activity_verb = 'update'
 
     #: UI flash message
-    _message_success = _l(u"Entity successfully edited")
+    _message_success = _l("Entity successfully edited")
 
     view_endpoint = None
 
@@ -307,7 +308,7 @@ class ObjectEdit(ObjectView):
             if resp:
                 return resp
 
-            flash(_(u"Please fix the error(s) below"), "error")
+            flash(_("Please fix the error(s) below"), "error")
 
         # if we end here then something wrong has happened: show form with error
         # messages
@@ -379,7 +380,11 @@ class ObjectEdit(ObjectView):
             if rv is not None:
                 return rv
             session.rollback()
-            flash(e.message, "error")
+            if six.PY2:
+                flash(e.message, "error")
+            else:
+                flash(str(e.args), "error")  # TODO: does it work?
+
             return self.get()
         except sa.exc.IntegrityError as e:
             rv = self.handle_commit_exception(e)
@@ -387,7 +392,7 @@ class ObjectEdit(ObjectView):
                 return rv
             session.rollback()
             logger.error(e)
-            flash(_(u"An entity with this name already exists in the system."),
+            flash(_("An entity with this name already exists in the system."),
                   "error")
             return self.get()
         else:
@@ -458,7 +463,7 @@ class ObjectCreate(ObjectEdit):
     """
     permission = CREATE
     activity_verb = 'post'
-    _message_success = _l(u"Entity successfully added")
+    _message_success = _l("Entity successfully added")
 
     #: set to `True` to show 'Save and add new' button
     chain_create_allowed = False
@@ -524,7 +529,7 @@ class ObjectDelete(ObjectEdit):
     methods = ['POST']
     permission = DELETE
     activity_verb = 'delete'
-    _message_success = _l(u"Entity deleted")
+    _message_success = _l("Entity deleted")
 
     init_object = BaseObjectView.init_object
 
@@ -572,7 +577,7 @@ class JSONBaseSearch(JSONView):
 
     def prepare_args(self, args, kwargs):
         args, kwargs = JSONView.prepare_args(self, args, kwargs)
-        kwargs['q'] = kwargs.get("q", u'').replace(u"%", u" ").lower()
+        kwargs['q'] = kwargs.get("q", '').replace("%", " ").lower()
         return args, kwargs
 
     def data(self, q, *args, **kwargs):

@@ -236,7 +236,7 @@ class Application(Flask, ServiceManager, PluginManager):
                     if not self.testing:
                         # durint tests this message will show up on every test, since db is
                         # always recreated
-                        logging.error(exc.message)
+                        logging.error(exc)
                     self.db.session.rollback()
                 else:
                     self.config.update(settings)

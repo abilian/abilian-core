@@ -5,6 +5,7 @@ Admin panel for tags
 from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
+from typing import List
 
 import sqlalchemy as sa
 import sqlalchemy.sql.functions as func
@@ -116,9 +117,8 @@ class NSView(View):
             self.get(self.ns)
 
     def _get_selected_tags(self):
-        """
-        :rtype: List[Tag]
-        """
+        # type: () -> List[Tag]
+
         if self.__selected_tags is None:
             tag_ids = request.form.getlist('selected', type=int)
             if not tag_ids:
@@ -228,6 +228,8 @@ class BaseTagView(object):
 
 class TagEdit(BaseTagView, ObjectEdit):
     _message_success = _l('Tag edited')
+    has_changes = False
+    _entities_to_reindex = []
 
     def after_populate_obj(self):
         session = sa.orm.object_session(self.obj)

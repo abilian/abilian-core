@@ -45,11 +45,11 @@ _transformers = TransformerRegistry()
 
 class _EmptyValue(object):
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
 
-    # Py3k compat
-    __bool__ = __nonzero__
+    # Py2 compat
+    __nonzero__ = __bool__
 
     def __repr__(self):
         return '<Empty Value>'

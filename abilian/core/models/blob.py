@@ -120,13 +120,13 @@ class Blob(Model):
 
         return md5
 
-    def __nonzero__(self):
+    def __bool__(self):
         """A blob is considered null if it has no file.
         """
         return self.file is not None and self.file.exists()
 
     # Py3k compat
-    __bool__ = __nonzero__
+    __nonzero__ = __bool__
 
 
 @listens_for(sa.orm.Session, 'after_flush')

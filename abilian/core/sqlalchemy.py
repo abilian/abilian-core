@@ -210,13 +210,13 @@ class MutationList(Mutable, list):
         list.insert(self, idx, value)
         self.changed()
 
-    def __setslice__(self, i, j, other):
-        list.__setslice__(self, i, j, other)
-        self.changed()
-
-    def __delslice__(self, i, j):
-        list.__delslice__(self, i, j)
-        self.changed()
+    # def __setslice__(self, i, j, other):
+    #     list.__setslice__(self, i, j, other)
+    #     self.changed()
+    #
+    # def __delslice__(self, i, j):
+    #     list.__delslice__(self, i, j)
+    #     self.changed()
 
     def __iadd__(self, other):
         l = list.__iadd__(self, other)

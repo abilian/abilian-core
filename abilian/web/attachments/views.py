@@ -4,7 +4,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from typing import Union, Optional
+from typing import Optional, Union
 
 import sqlalchemy as sa
 from flask import current_app, send_file

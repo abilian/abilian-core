@@ -16,7 +16,7 @@ import pickle
 from datetime import datetime
 
 from flask import current_app
-from six import text_type, binary_type
+from six import binary_type, text_type
 from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey

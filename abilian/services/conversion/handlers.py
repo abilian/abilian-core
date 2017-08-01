@@ -7,8 +7,8 @@ import logging
 import mimetypes
 import os
 import re
-import sys
 import subprocess
+import sys
 import threading
 import traceback
 from abc import ABCMeta, abstractmethod
@@ -88,7 +88,7 @@ class PdfToTextHandler(Handler):
             except Exception as e:
                 raise raise_from(ConversionError('pdftotext failed'), e)
 
-            converted = open(out_fn).read()
+            converted = open(out_fn, 'rb').read()
             encoding = self.encoding_sniffer.from_file(out_fn)
 
         if encoding in ("binary", None):

@@ -251,6 +251,7 @@ class Converter(object):
             for line in output.split(b"\n"):
                 if b":" in line:
                     key, value = line.strip().split(b":", 1)
+                    key = text_type(key)
                     ret["PDF:" + key] = text_type(
                         value.strip(), errors="replace")
 
