@@ -61,16 +61,17 @@ def test_form_permissions_controller():
     with mock.patch('abilian.web.forms.current_app', current_app_mock):
         # default role
         fp = FormPermissions()
-        assert fp.has_permission(READ) == True
-        assert has_role.called is True
+        assert fp.has_permission(READ)
+        assert has_role.called
         assert has_role.call_args[-1]['role'] == [Anonymous]
-        has_role.reset_mock()
-        assert fp.has_permission(READ, obj=_MARK) == True
-        assert has_role.called is False
 
         has_role.reset_mock()
-        assert fp.has_permission(READ, obj=_ENTITY_MARK) == True
-        assert has_role.called is True
+        assert fp.has_permission(READ, obj=_MARK)
+        assert not has_role.called
+
+        has_role.reset_mock()
+        assert fp.has_permission(READ, obj=_ENTITY_MARK)
+        assert has_role.called
         assert has_role.call_args[-1]['object'] is _ENTITY_MARK
 
         # change default
@@ -115,8 +116,7 @@ def test_form_permissions_controller():
         fp = FormPermissions(read=dyn_roles)
         fp.has_permission(READ)
         assert dyn_roles.call_args == [
-            dict(
-                permission=READ, field=None, obj=None)
+            dict(permission=READ, field=None, obj=None)
         ]
         assert has_role.call_args[-1]['role'] == [MarkRole]
 
@@ -125,8 +125,7 @@ def test_form_permissions_controller():
         fp = FormPermissions(read=[Owner, dyn_roles])
         fp.has_permission(READ)
         assert dyn_roles.call_args == [
-            dict(
-                permission=READ, field=None, obj=None)
+            dict(permission=READ, field=None, obj=None)
         ]
         assert has_role.call_args[-1]['role'] == [Owner, MarkRole]
 
@@ -145,8 +144,8 @@ class FieldsTestCase(BaseTestCase):
         """
         obj = mock.Mock()
 
-        with self.app.test_request_context(
-                headers={'Accept-Language': 'fr-FR,fr;q=0.8'}):
+        headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
+        with self.app.test_request_context(headers=headers):
             f = fields.DateTimeField(use_naive=False).bind(Form(), 'dt')
             f.process_formdata(['17/06/1789 | 10:42'])
             # 1789: applied offset for HongKong is equal to LMT+7:37:00,
@@ -188,7 +187,7 @@ class FieldsTestCase(BaseTestCase):
             assert obj.dt == datetime.datetime(1789, 6, 17, 10, 42)
 
     def test_datetimefield_force_4digit_year(self):
-        # use 'en': short date pattern is u'M/d/yy'
+        # use 'en': short date pattern is 'M/d/yy'
         headers = {'Accept-Language': 'en'}
         with self.app.test_request_context(headers=headers):
             f = fields.DateTimeField().bind(Form(), 'dt')
@@ -207,7 +206,7 @@ class FieldsTestCase(BaseTestCase):
             assert f._value() == u'17/06/1789'
 
     def test_datefield_force_4digit_year(self):
-        # use 'en': short date pattern is u'M/d/yy'
+        # use 'en': short date pattern is 'M/d/yy'
         headers = {'Accept-Language': 'en'}
         with self.app.test_request_context(headers=headers):
             f = fields.DateField().bind(Form(), 'dt')

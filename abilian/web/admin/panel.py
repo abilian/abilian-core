@@ -13,9 +13,9 @@ class AdminPanel(object):
     registration), or to add some common functionnalities. Otherwise, it
     will be removed.
     """
-    id = None
-    label = None
-    icon = None
+    id = ""
+    label = ""
+    icon = ""
 
     def url_value_preprocess(self, endpoint, view_args):
         """

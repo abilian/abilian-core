@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Audit Service: logs modifications to audited objects.
 
@@ -15,10 +16,11 @@ import pickle
 from datetime import datetime
 
 from flask import current_app
-from six import text_type
+from six import binary_type, text_type
+from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Binary, DateTime, Integer, String, UnicodeText
+from sqlalchemy.types import DateTime, Integer, String, UnicodeText
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -105,7 +107,7 @@ class AuditEntry(db.Model):
     user_id = Column(Integer, ForeignKey(User.id))
     user = relationship(User, foreign_keys=user_id)
 
-    changes_pickle = Column(Binary)
+    changes_pickle = Column(LargeBinary)
 
     def __repr__(self):
         return '<AuditEntry id={} op={} user={} {}entity=<{} id={}>>'.format(
@@ -124,7 +126,6 @@ class AuditEntry(db.Model):
     def related(self):
         return self.type & RELATED
 
-    #noinspection PyTypeChecker
     def get_changes(self):
         # Using Pickle here instead of JSON because we need to pickle values
         # such as dates. This could make schema migration more difficult, though.
@@ -156,7 +157,7 @@ class AuditEntry(db.Model):
                 uv = self._format_changes(v)
             else:
                 for val in v:
-                    if isinstance(val, str):
+                    if isinstance(val, binary_type):
                         # TODO: Temp fix for errors that happen during
                         # migration
                         try:

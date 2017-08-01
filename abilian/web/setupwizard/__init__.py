@@ -1,28 +1,26 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
+import logging
 import os
 import socket
-import logging
 from collections import OrderedDict, namedtuple
 from pathlib import Path
 
-import sqlalchemy as sa
 import redis
-
-from flask import (render_template, request, flash, session, redirect, url_for,
-                   current_app, make_response)
 import six
+import sqlalchemy as sa
+from flask import current_app, flash, make_response, redirect, \
+    render_template, request, session, url_for
 from six import text_type
 
-from abilian.services import get_service
-from abilian.services.security import Admin
-from abilian.core.models.subjects import User
 from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf
-from abilian.services.security import Anonymous
+from abilian.core.models.subjects import User
+from abilian.services import get_service
+from abilian.services.security import Admin, Anonymous
 from abilian.web.blueprints import Blueprint
 
 logger = logging.getLogger(__name__)
@@ -431,6 +429,5 @@ def finalize_validate():
         render_template(
             'setupwizard/done.html',
             config_file=config_file,
-            logging_file=logging_file),
-        200)
+            logging_file=logging_file), 200)
     return response

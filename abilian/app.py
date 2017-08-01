@@ -14,6 +14,7 @@ import os
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
+from typing import Any, Dict
 
 import jinja2
 import sqlalchemy as sa
@@ -30,7 +31,7 @@ from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
 from pkg_resources import resource_filename
-from six import string_types, text_type
+from six import string_types
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
@@ -102,7 +103,7 @@ class PluginManager(object):
         module.register_plugin(self)
 
 
-default_config = dict(Flask.default_config)
+default_config = dict(Flask.default_config)  # type: Dict[str, Any]
 default_config.update(
     PRIVATE_SITE=False,
     TEMPLATE_DEBUG=False,
@@ -110,15 +111,17 @@ default_config.update(
     BABEL_ACCEPT_LANGUAGES=None,
     DEFAULT_COUNTRY=None,
     PLUGINS=(),
-    ADMIN_PANELS=('abilian.web.admin.panels.dashboard.DashboardPanel',
-                  'abilian.web.admin.panels.audit.AuditPanel',
-                  'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
-                  'abilian.web.admin.panels.settings.SettingsPanel',
-                  'abilian.web.admin.panels.users.UsersPanel',
-                  'abilian.web.admin.panels.groups.GroupsPanel',
-                  'abilian.web.admin.panels.sysinfo.SysinfoPanel',
-                  'abilian.services.vocabularies.admin.VocabularyPanel',
-                  'abilian.web.tags.admin.TagPanel'),
+    ADMIN_PANELS=(
+        'abilian.web.admin.panels.dashboard.DashboardPanel',
+        'abilian.web.admin.panels.audit.AuditPanel',
+        'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
+        'abilian.web.admin.panels.settings.SettingsPanel',
+        'abilian.web.admin.panels.users.UsersPanel',
+        'abilian.web.admin.panels.groups.GroupsPanel',
+        'abilian.web.admin.panels.sysinfo.SysinfoPanel',
+        'abilian.web.admin.panels.impersonate.ImpersonatePanel',
+        'abilian.services.vocabularies.admin.VocabularyPanel',
+        'abilian.web.tags.admin.TagPanel',),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
     CELERY_TIMEZONE=LOCALTZ,
@@ -130,11 +133,10 @@ default_config.update(
     SESSION_COOKIE_NAME=None,
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    LOGO_URL=Endpoint(
-        'abilian_static', filename='img/logo-abilian-32x32.png'),
+    LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
-    MAIL_ADDRESS_TAG_CHAR=None)
+    MAIL_ADDRESS_TAG_CHAR=None,)
 default_config = ImmutableDict(default_config)
 
 
@@ -162,8 +164,7 @@ class Application(Flask, ServiceManager, PluginManager):
     private_site = ConfigAttribute('PRIVATE_SITE')
 
     #: instance of :class:`.web.views.registry.Registry`.
-    # type: web.views.registry.Registry
-    default_view = None
+    default_view = None  # type: abilian.web.views.registry.Registry
 
     #: json serializable dict to land in Javascript under Abilian.api
     js_api = None
@@ -176,8 +177,13 @@ class Application(Flask, ServiceManager, PluginManager):
     celery_app_cls = FlaskCelery
 
     def __init__(self, name=None, config=None, *args, **kwargs):
-        kwargs.setdefault('instance_relative_config', True)
         name = name or __name__
+
+        instance_path = os.environ.get('FLASK_INSTANCE_PATH')
+        if instance_path:
+            kwargs['instance_path'] = instance_path
+        else:
+            kwargs.setdefault('instance_relative_config', True)
 
         # used by make_config to determine if we try to load config from instance /
         # environment variable /...
@@ -230,7 +236,7 @@ class Application(Flask, ServiceManager, PluginManager):
                     if not self.testing:
                         # durint tests this message will show up on every test, since db is
                         # always recreated
-                        logging.error(exc.message)
+                        logging.error(exc)
                     self.db.session.rollback()
                 else:
                     self.config.update(settings)
@@ -274,8 +280,7 @@ class Application(Flask, ServiceManager, PluginManager):
             code = 'js-i18n-' + lang
             filename = 'lang-' + lang + '-%(version)s.min.js'
             self._assets_bundles[code] = {
-                'options': dict(
-                    output=filename, filters=js_filters),
+                'options': dict(output=filename, filters=js_filters),
             }
 
         for http_error_code in (403, 404, 500):
@@ -373,8 +378,7 @@ class Application(Flask, ServiceManager, PluginManager):
         url_value_preprocessor and `before_request` handlers.
         """
         g.breadcrumb.append(
-            BreadcrumbItem(
-                icon='home', url='/' + request.script_root))
+            BreadcrumbItem(icon='home', url='/' + request.script_root))
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary permissions.
@@ -430,7 +434,11 @@ class Application(Flask, ServiceManager, PluginManager):
         except IOError:
             return config
 
-        config.from_envvar(self.CONFIG_ENVVAR, silent=True)
+        # If the env var specifies a configuration file, it must exist
+        # (and execute with no exceptions) - we don't want the application
+        # to run with an unprecised or insecure configuration.
+        if self.CONFIG_ENVVAR in os.environ:
+            config.from_envvar(self.CONFIG_ENVVAR, silent=False)
 
         if 'WTF_CSRF_ENABLED' not in config:
             config['WTF_CSRF_ENABLED'] = config.get('CSRF_ENABLED', True)
@@ -481,9 +489,6 @@ class Application(Flask, ServiceManager, PluginManager):
                     # add our panels to default ones
                     self.config['DEBUG_TB_PANELS'] = list(
                         default_config['DEBUG_TB_PANELS'])
-                    self.config['DEBUG_TB_PANELS'].append(
-                        'abilian.services.indexing.debug_toolbar.IndexedTermsDebugPanel'
-                    )
                 init_dbt(self)
                 for view_name in self.view_functions:
                     if view_name.startswith('debugtoolbar.'):
@@ -651,8 +656,7 @@ class Application(Flask, ServiceManager, PluginManager):
         self.add_url_rule(
             url_path,
             endpoint=endpoint,
-            view_func=partial(
-                send_file_from_directory, directory=directory),
+            view_func=partial(send_file_from_directory, directory=directory),
             roles=roles)
         self.add_access_controller(
             endpoint, allow_access_for_roles(Anonymous), endpoint=True)

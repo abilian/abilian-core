@@ -5,10 +5,11 @@ Admin panel for tags
 from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
+from typing import List
 
 import sqlalchemy as sa
+import sqlalchemy.sql.functions as func
 from flask import current_app, flash, redirect, render_template, request
-from sqlalchemy.sql import functions
 
 from abilian.core.entities import Entity
 from abilian.core.models.tag import Tag, entity_tag_tbl
@@ -23,7 +24,8 @@ from .forms import TagForm
 
 logger = logging.getLogger(__name__)
 
-_OBJ_COUNT = functions.count(entity_tag_tbl.c.entity_id).label('obj_count')
+_OBJ_COUNT = func.count(entity_tag_tbl.c.entity_id) \
+    .label('obj_count')
 
 
 def get_entities_for_reindex(tags):
@@ -105,19 +107,18 @@ class NSView(View):
         data = request.form
         action = data.get('__action')
 
-        if action == u'delete':
+        if action == 'delete':
             return self.do_delete()
-        elif action == u'merge':
+        elif action == 'merge':
             return self.do_merge()
 
         else:
-            flash(_(u'Unknown action'))
+            flash(_('Unknown action'))
             self.get(self.ns)
 
     def _get_selected_tags(self):
-        """
-        :rtype: List[Tag]
-        """
+        # type: () -> List[Tag]
+
         if self.__selected_tags is None:
             tag_ids = request.form.getlist('selected', type=int)
             if not tag_ids:
@@ -134,22 +135,22 @@ class NSView(View):
         confirm = data.get('confirm_delete', False, type=bool)
 
         if not confirm:
-            flash(_(u'Please fix the error(s) below'), 'error')
-            self.form_errors['confirm_delete'] = _(u'Must be checked to ensure you '
-                                                   u'intent to delete these tags')
+            flash(_('Please fix the error(s) below'), 'error')
+            self.form_errors['confirm_delete'] = _('Must be checked to ensure you '
+                                                   'intent to delete these tags')
             return self.get(self.ns)
 
         session = current_app.db.session()
         tags = self._get_selected_tags()
 
         if not tags:
-            flash(_(u'No action performed: no tags selected'), 'warning')
+            flash(_('No action performed: no tags selected'), 'warning')
             return self.redirect_to_view()
 
         count = len(tags)
         entities_to_reindex = get_entities_for_reindex(tags)
-        success_message = _n(u'%(tag)s deleted',
-                             u'%(num)d tags deleted:\n%(tags)s',
+        success_message = _n('%(tag)s deleted',
+                             '%(num)d tags deleted:\n%(tags)s',
                              count,
                              tag=tags[0].label,
                              tags=', '.join(t.label for t in tags))
@@ -163,7 +164,7 @@ class NSView(View):
         target_id = request.form.get('merge_to', type=int)
 
         if not target_id:
-            flash(_(u'You must select a target tag to merge to'), 'error')
+            flash(_('You must select a target tag to merge to'), 'error')
             return self.get(self.ns)
 
         target = Tag.query \
@@ -171,7 +172,7 @@ class NSView(View):
             .scalar()
 
         if not target:
-            flash(_(u'Target tag not found, no action performed'), 'error')
+            flash(_('Target tag not found, no action performed'), 'error')
             return self.get(self.ns)
 
         merge_from = set(self._get_selected_tags())
@@ -180,7 +181,7 @@ class NSView(View):
             merge_from.remove(target)
 
         if not merge_from:
-            flash(_(u'No tag selected for merging'), 'warning')
+            flash(_('No tag selected for merging'), 'warning')
             return self.get(self.ns)
 
         session = current_app.db.session()
@@ -226,7 +227,9 @@ class BaseTagView(object):
 
 
 class TagEdit(BaseTagView, ObjectEdit):
-    _message_success = _l(u'Tag edited')
+    _message_success = _l('Tag edited')
+    has_changes = False
+    _entities_to_reindex = []
 
     def after_populate_obj(self):
         session = sa.orm.object_session(self.obj)
@@ -248,20 +251,20 @@ class TagPanel(AdminPanel):
     Tags administration
     """
     id = 'tags'
-    label = _l(u'Tags')
+    label = _l('Tags')
     icon = 'tags'
 
     def get(self):
         obj_count = sa.sql \
             .select([Tag.ns,
-                     functions.count(entity_tag_tbl.c.entity_id).label('obj_count')]) \
+                     func.count(entity_tag_tbl.c.entity_id).label('obj_count')]) \
             .select_from(Tag.__table__.join(entity_tag_tbl)) \
             .group_by(Tag.ns) \
             .alias()
 
         ns_query = sa.sql \
             .select([Tag.ns,
-                     functions.count(Tag.id).label('tag_count'),
+                     func.count(Tag.id).label('tag_count'),
                      obj_count.c.obj_count],
                     from_obj=[Tag.__table__.outerjoin(obj_count, Tag.ns == obj_count.c.ns)]) \
             .group_by(Tag.ns, obj_count.c.obj_count) \
@@ -278,15 +281,13 @@ class TagPanel(AdminPanel):
         add_url_rule(
             ns_base,
             endpoint='ns',
-            view_func=NSView.as_view(
-                'ns', view_endpoint=panel_endpoint))
+            view_func=NSView.as_view('ns', view_endpoint=panel_endpoint))
 
         tag_base = ns_base + '<int:object_id>/'
         add_url_rule(
             tag_base,
             endpoint='tag_edit',
-            view_func=TagEdit.as_view(
-                'tag_edit', view_endpoint=panel_endpoint))
+            view_func=TagEdit.as_view('tag_edit', view_endpoint=panel_endpoint))
 
         add_url_rule(
             tag_base + 'delete',

@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Base TestCase for integration tests.
 """

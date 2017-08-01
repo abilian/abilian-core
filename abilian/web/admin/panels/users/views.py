@@ -40,9 +40,9 @@ class JsonUsersList(base.JSONView):
 
         end = start + length
         query = User.query \
-          .options(sa.orm.subqueryload('groups'),
-                   sa.orm.undefer('photo'), ) \
-          .filter(User.id != 0)
+            .options(sa.orm.subqueryload('groups'),
+                     sa.orm.undefer('photo')) \
+            .filter(User.id != 0)
         total_count = query.count()
 
         if search:
@@ -64,7 +64,7 @@ class JsonUsersList(base.JSONView):
             [func.lower(User.last_name), func.lower(User.first_name)])
 
         direction = asc if sort_dir == 'asc' else desc
-        order_by = map(direction, columns)
+        order_by = list(map(direction, columns))
 
         # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
         engine = query.session.get_bind(User.__mapper__)
@@ -84,25 +84,23 @@ class JsonUsersList(base.JSONView):
             name = escape(getattr(user, "name") or "")
             email = escape(getattr(user, "email") or "")
             roles = [
-                r for r in security.get_roles(
-                    user, no_group_roles=True) if r.assignable
+                r for r in security.get_roles(user, no_group_roles=True)
+                if r.assignable
             ]
             columns = [
                 '<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
-                '</a>'.format(
-                    url=user_url, src=mugshot, size=MUGSHOT_SIZE),
-                '<a href="{url}">{name}</a>'.format(
-                    url=user_url, name=name),
+                '</a>'.format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
+                '<a href="{url}">{name}</a>'.format(url=user_url, name=name),
                 '<a href="{url}"><em>{email}</em></a>'.format(
                     url=user_url, email=email),
-                '\u2713' if user.can_login else u'',
+                '\u2713' if user.can_login else '',
                 render_template_string(
-                    u'''{%- for g in groups %}
+                    '''{%- for g in groups %}
                         <span class="badge badge-default">{{ g.name }}</span>
                     {%- endfor %}''',
                     groups=sorted(user.groups)),
                 render_template_string(
-                    u'''{%- for role in roles %}
+                    '''{%- for role in roles %}
                        <span class="badge badge-default">{{ role }}</span>
                     {%- endfor %}''',
                     roles=roles),
@@ -111,7 +109,7 @@ class JsonUsersList(base.JSONView):
             if user.last_active:
                 last_active = format_datetime(user.last_active)
             else:
-                last_active = _(u'Never logged in')
+                last_active = _('Never logged in')
             columns.append(last_active)
 
             data.append(columns)
@@ -140,7 +138,7 @@ class UserBase(object):
 class UserEdit(UserBase, views.ObjectEdit):
 
     def breadcrumb(self):
-        label = render_template_string(u'<em>{{ u.email }}</em>', u=self.obj)
+        label = render_template_string('<em>{{ u.email }}</em>', u=self.obj)
         return BreadcrumbItem(label=label, url='', description=self.obj.name)
 
     def get_form_kwargs(self):
@@ -162,7 +160,7 @@ class UserEdit(UserBase, views.ObjectEdit):
                 roles.data.append(Admin.name)
         return True
 
-    def form_valid(self):
+    def form_valid(self, *args, **kwargs):
         del self.form.confirm_password
         if self.form.password.data:
             self.obj.set_password(self.form.password.data)
@@ -200,7 +198,7 @@ class UserCreate(UserBase, views.ObjectCreate):
 
         return kw
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         if not self.form.password.data:
             self.form.password.data = gen_random_password()
 

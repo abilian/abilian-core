@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import logging
+from typing import Union
 
 from six import string_types
 from sqlalchemy import func, orm
@@ -21,7 +22,7 @@ _UNDEFINED = UNDEFINED()
 
 class BaseCriterion(object):
 
-    form_default_value = _UNDEFINED
+    form_default_value = _UNDEFINED  # type: Union[UNDEFINED, str, unicode]
     """
     Values to set by default when adding a filter. The provided value(s) must be
     the ones used in html, not in python.

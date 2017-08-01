@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, \
 import time
 from collections import deque
 
-import progressbar
 import sqlalchemy as sa
 import whoosh
 from flask import current_app
@@ -75,6 +74,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     "Indexing error on class {}: {}".format(name, repr(e)))
                 continue
 
+            print("*" * 79)
+            print("{}".format(name))
             if count == 0:
                 print("*" * 79)
                 print("{}".format(name))

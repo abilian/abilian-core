@@ -7,8 +7,9 @@ from __future__ import absolute_import, division, print_function, \
 import abc
 
 import six
-import sqlalchemy as sa
-from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
+from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, \
+    UnicodeText
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
 
 from abilian.core.entities import Entity
@@ -42,17 +43,17 @@ def register(cls):
     return cls
 
 
-def is_commentable(obj):
+def is_commentable(obj_or_class):
     """
-    :param obj: a class or instance
+    :param obj_or_class: a class or instance
     """
-    if isinstance(obj, type):
-        return issubclass(obj, Commentable)
+    if isinstance(obj_or_class, type):
+        return issubclass(obj_or_class, Commentable)
 
-    if not isinstance(obj, Commentable):
+    if not isinstance(obj_or_class, Commentable):
         return False
 
-    if obj.id is None:
+    if obj_or_class.id is None:
         return False
 
     return True
@@ -76,7 +77,7 @@ class Comment(Entity):
         CREATE: {Anonymous},
     }
 
-    @sa.ext.declarative.declared_attr
+    @declared_attr
     def __mapper_args__(cls):
         # we cannot use super(Comment, cls): declared_attr happens during class
         # construction. super(cls, cls) could work; as long as `cls` is not a
@@ -102,16 +103,17 @@ class Comment(Entity):
 
     #: comment's main content
     body = Column(
-        UnicodeText(), sa.CheckConstraint("trim(body) != ''"), nullable=False)
+        UnicodeText(), CheckConstraint("trim(body) != ''"), nullable=False)
 
     @property
     def history(self):
-        return self.meta.get('abilian.core.models.comment', {}).get('history',
-                                                                    [])
+        return self.meta \
+            .get('abilian.core.models.comment', {}) \
+            .get('history', [])
 
     def __repr__(self):
         class_ = self.__class__
         mod_ = class_.__module__
         classname = class_.__name__
-        return '<{}.{} instance at 0x{:x} entity id={!r}'\
+        return '<{}.{} instance at 0x{:x} entity id={!r}' \
             .format(mod_, classname, id(self), self.entity_id)

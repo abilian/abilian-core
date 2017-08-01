@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import functools
+import hashlib
 import logging
 import re
 import sys
@@ -123,7 +124,6 @@ def get_params(names):
 class timer(object):
     """Decorator that mesures the time it takes to run a function.
     """
-    __instances = {}
 
     def __init__(self, f):
         self.__f = f
@@ -253,3 +253,26 @@ class BasePresenter(object):
     @classmethod
     def wrap_collection(cls, models):
         return [cls(model) for model in models]
+
+
+def encode_string(string):
+    """
+    Encodes a string to bytes, if it isn't already.
+
+    :param string: The string to encode
+    """
+    # from pysecurity
+
+    if isinstance(string, text_type):
+        string = string.encode('utf-8')
+    return string
+
+
+def md5(data):
+    """
+    md5 function, as in flask-security.
+    """
+    # flask-security is not needed anywhere else and as of 1.7.5 has
+    # strong dependency requirements that prevent us from upgrading a
+    # few packages (flask-login 0.4).
+    return hashlib.md5(encode_string(data)).hexdigest()

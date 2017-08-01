@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import logging
 
+import six
 import sqlalchemy as sa
 from flask import current_app, flash, g, redirect, render_template, request, \
     url_for
@@ -179,6 +180,13 @@ CANCEL_BUTTON = ButtonAction(
 EDIT_BUTTON = ButtonAction(
     'form', 'edit', btn_class='primary', title=_l(u'Save'))
 
+ADD_ANOTHER_BUTTON = ButtonAction(
+    'form',
+    'create_add_another',
+    btn_class='primary',
+    title=_l(u'Create and add another'),
+    condition=lambda ctx: getattr(ctx['view'], 'add_another_button', False),)
+
 
 class ObjectEdit(ObjectView):
     """Edit objects.
@@ -203,7 +211,7 @@ class ObjectEdit(ObjectView):
     activity_verb = 'update'
 
     #: UI flash message
-    _message_success = _l(u"Entity successfully edited")
+    _message_success = _l("Entity successfully edited")
 
     view_endpoint = None
 
@@ -285,9 +293,9 @@ class ObjectEdit(ObjectView):
     def cancel(self):
         return self.redirect_to_view()
 
-    def edit(self):
+    def edit(self, redirect_to=None):
         if self.validate():
-            return self.form_valid()
+            return self.form_valid(redirect_to=redirect_to)
         else:
             if request.csrf_failed:
                 errors = self.form.errors
@@ -300,7 +308,7 @@ class ObjectEdit(ObjectView):
             if resp:
                 return resp
 
-            flash(_(u"Please fix the error(s) below"), "error")
+            flash(_("Please fix the error(s) below"), "error")
 
         # if we end here then something wrong has happened: show form with error
         # messages
@@ -328,7 +336,7 @@ class ObjectEdit(ObjectView):
 
     def handle_commit_exception(self, exc):
         """
-        hook point to handle exception that may happen during commit.
+        Hook point to handle exception that may happen during commit.
 
         It is the responsability of this method to perform a rollback if it is
         required for handling `exc`. If the method does not handle `exc` if should
@@ -347,10 +355,13 @@ class ObjectEdit(ObjectView):
     def validate(self):
         return self.form.validate()
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         """Save object.
 
         Called when form is validated.
+
+        :param redirect_to: real url (created with url_for) to redirect to,
+          instead of the view by default.
         """
         session = current_app.db.session()
 
@@ -369,7 +380,11 @@ class ObjectEdit(ObjectView):
             if rv is not None:
                 return rv
             session.rollback()
-            flash(e.message, "error")
+            if six.PY2:
+                flash(e.message, "error")
+            else:
+                flash(str(e.args), "error")  # TODO: does it work?
+
             return self.get()
         except sa.exc.IntegrityError as e:
             rv = self.handle_commit_exception(e)
@@ -377,13 +392,17 @@ class ObjectEdit(ObjectView):
                 return rv
             session.rollback()
             logger.error(e)
-            flash(_(u"An entity with this name already exists in the system."),
+            flash(_("An entity with this name already exists in the system."),
                   "error")
             return self.get()
         else:
             self.commit_success()
             flash(self.message_success(), "success")
-            return self.redirect_to_view()
+
+            if redirect_to:
+                return redirect(redirect_to)
+            else:
+                return self.redirect_to_view()
 
     def form_invalid(self):
         """
@@ -444,7 +463,7 @@ class ObjectCreate(ObjectEdit):
     """
     permission = CREATE
     activity_verb = 'post'
-    _message_success = _l(u"Entity successfully added")
+    _message_success = _l("Entity successfully added")
 
     #: set to `True` to show 'Save and add new' button
     chain_create_allowed = False
@@ -510,7 +529,7 @@ class ObjectDelete(ObjectEdit):
     methods = ['POST']
     permission = DELETE
     activity_verb = 'delete'
-    _message_success = _l(u"Entity deleted")
+    _message_success = _l("Entity deleted")
 
     init_object = BaseObjectView.init_object
 
@@ -558,7 +577,7 @@ class JSONBaseSearch(JSONView):
 
     def prepare_args(self, args, kwargs):
         args, kwargs = JSONView.prepare_args(self, args, kwargs)
-        kwargs['q'] = kwargs.get("q", u'').replace(u"%", u" ").lower()
+        kwargs['q'] = kwargs.get("q", '').replace("%", " ").lower()
         return args, kwargs
 
     def data(self, q, *args, **kwargs):
@@ -632,8 +651,30 @@ class JSONWhooshSearch(JSONBaseSearch):
 
     def get_results(self, q, *args, **kwargs):
         svc = current_app.services['indexing']
-        search_kwargs = {'limit': 30, 'Models': (self.Model,)}
+        search_kwargs = {'limit': 50, 'Models': (self.Model,)}
         results = svc.search(q, **search_kwargs)
+
+        itemkey = None
+        try:
+            # 'nom' doesn't always exist but for Contacts, sorting on
+            # the last name ('nom') feels more natural than 'name',
+            # which starts with the first name ('prenom').
+            if not results.is_empty():
+                res = results[0]
+                fields = res.fields()
+                if 'nom' in fields:
+                    itemkey = 'nom'
+                elif 'name' in fields:
+                    itemkey = 'name'
+                if itemkey:
+                    results = sorted(
+                        results, key=lambda it: it.fields().get(itemkey))
+        except Exception:
+            if itemkey is not None:
+                msg = "we could not sort whoosh results on fields' key {}.".format(
+                    itemkey)
+                logger.warning(msg)
+
         return results
 
     def get_item(self, hit):

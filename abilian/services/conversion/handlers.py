@@ -1,14 +1,3 @@
-"""
-Conversion service.
-
-Hardcoded to manage only conversion to PDF, to text and to image series.
-
-Includes result caching (on filesystem).
-
-Assumes poppler-utils and LibreOffice are installed.
-
-TODO: rename Converter into ConversionService ?
-"""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -18,24 +7,20 @@ import logging
 import mimetypes
 import os
 import re
-import shutil
 import subprocess
+import sys
 import threading
 import traceback
 from abc import ABCMeta, abstractmethod
 from base64 import decodestring, encodestring
-from contextlib import contextmanager
-from io import BytesIO
-from pathlib import Path
-from tempfile import mkstemp
 
-import six
 from magic import Magic
-from PIL import Image
-from PIL.ExifTags import TAGS
-from six import raise_from, string_types, text_type
+from six import raise_from, text_type
 
 from abilian.services.image import FIT, resize
+
+from .service import ConversionError
+from .util import get_tmp_dir, make_temp_file
 
 try:
     from xmlrpclib import ServerProxy
@@ -43,249 +28,6 @@ except ImportError:
     ServerProxy = None
 
 logger = logging.getLogger(__name__)
-
-# For some reason, twill includes a broken version of subprocess.
-assert 'twill' not in subprocess.__file__
-
-# Hack for Mac OS + homebrew
-os.environ['PATH'] += ":/usr/local/bin"
-
-TMP_DIR = "tmp"
-CACHE_DIR = "cache"
-
-
-def get_tmp_dir():
-    return converter.TMP_DIR
-
-
-class ConversionError(Exception):
-    pass
-
-
-class HandlerNotFound(ConversionError):
-    pass
-
-
-class Cache(object):
-
-    CACHE_DIR = None
-
-    def _path(self, key):
-        """File path for `key`:
-        """
-        return self.CACHE_DIR / "{}.blob".format(key)
-
-    def __contains__(self, key):
-        return self._path(key).exists()
-
-    def get(self, key):
-        if key in self:
-            value = self._path(key).open('rb').read()
-            if key.startswith("txt:"):
-                value = text_type(value, encoding="utf8")
-            return value
-        else:
-            return None
-
-    __getitem__ = get
-
-    def set(self, key, value):
-        # if not os.path.exists(self.CACHE_DIR):
-        #   os.mkdir(CACHE_DIR)
-        fd = self._path(key).open("wb")
-        if key.startswith("txt:"):
-            fd.write(value.encode("utf8"))
-        else:
-            fd.write(value)
-        fd.close()
-
-    __setitem__ = set
-
-    def clear(self):
-        pass
-
-
-class Converter(object):
-
-    def __init__(self):
-        self.handlers = []
-        self.cache = Cache()
-
-    def init_app(self, app):
-        self.init_work_dirs(
-            cache_dir=Path(app.instance_path, CACHE_DIR),
-            tmp_dir=Path(app.instance_path, TMP_DIR),)
-
-        app.extensions['conversion'] = self
-
-        for handler in self.handlers:
-            handler.init_app(app)
-
-    def init_work_dirs(self, cache_dir, tmp_dir):
-        self.TMP_DIR = Path(tmp_dir)
-        self.CACHE_DIR = Path(cache_dir)
-        self.cache.CACHE_DIR = self.CACHE_DIR
-
-        if not self.TMP_DIR.exists():
-            self.TMP_DIR.mkdir()
-        if not self.CACHE_DIR.exists():
-            self.CACHE_DIR.mkdir()
-
-    def clear(self):
-        self.cache.clear()
-        for d in (self.TMP_DIR, self.CACHE_DIR):
-            shutil.rmtree(bytes(d))
-            d.mkdir()
-
-    def register_handler(self, handler):
-        self.handlers.append(handler)
-
-    # TODO: refactor, pass a "File" or "Document" or "Blob" object
-    def to_pdf(self, digest, blob, mime_type):
-        cache_key = "pdf:" + digest
-        pdf = self.cache.get(cache_key)
-        if pdf:
-            return pdf
-
-        for handler in self.handlers:
-            if handler.accept(mime_type, "application/pdf"):
-                pdf = handler.convert(blob)
-                self.cache[cache_key] = pdf
-                return pdf
-        raise HandlerNotFound("No handler found to convert from %s to PDF" %
-                              mime_type)
-
-    def to_text(self, digest, blob, mime_type):
-        """Convert a file to plain text.
-
-        Useful for full-text indexing. Returns a Unicode string.
-        """
-        # Special case, for now (XXX).
-        if mime_type.startswith("image/"):
-            return u""
-
-        cache_key = "txt:" + digest
-
-        text = self.cache.get(cache_key)
-        if text:
-            return text
-
-        # Direct conversion possible
-        for handler in self.handlers:
-            if handler.accept(mime_type, "text/plain"):
-                text = handler.convert(blob)
-                self.cache[cache_key] = text
-                return text
-
-        # Use PDF as a pivot format
-        pdf = self.to_pdf(digest, blob, mime_type)
-        for handler in self.handlers:
-            if handler.accept("application/pdf", "text/plain"):
-                text = handler.convert(pdf)
-                self.cache[cache_key] = text
-                return text
-
-        raise HandlerNotFound("No handler found to convert from %s to text" %
-                              mime_type)
-
-    def has_image(self, digest, mime_type, index, size=500):
-        """Tell if there is a preview image.
-        """
-        cache_key = "img:%s:%s:%s" % (index, size, digest)
-        return mime_type.startswith("image/") or cache_key in self.cache
-
-    def get_image(self, digest, blob, mime_type, index, size=500):
-        """Return an image for the given content, only if it already exists in
-        the image cache.
-        """
-        # Special case, for now (XXX).
-        if mime_type.startswith("image/"):
-            return ""
-
-        cache_key = "img:%s:%s:%s" % (index, size, digest)
-        return self.cache.get(cache_key)
-
-    def to_image(self, digest, blob, mime_type, index, size=500):
-        """Convert a file to a list of images. Returns image at the given index.
-        """
-        # Special case, for now (XXX).
-        if mime_type.startswith("image/"):
-            return ""
-
-        cache_key = "img:%s:%s:%s" % (index, size, digest)
-        converted = self.cache.get(cache_key)
-        if converted:
-            return converted
-
-        # Direct conversion possible
-        for handler in self.handlers:
-            if handler.accept(mime_type, "image/jpeg"):
-                converted_images = handler.convert(blob, size=size)
-                for i in range(0, len(converted_images)):
-                    converted = converted_images[i]
-                    self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
-                return converted_images[index]
-
-        # Use PDF as a pivot format
-        pdf = self.to_pdf(digest, blob, mime_type)
-        for handler in self.handlers:
-            if handler.accept("application/pdf", "image/jpeg"):
-                converted_images = handler.convert(pdf, size=size)
-                for i in range(0, len(converted_images)):
-                    converted = converted_images[i]
-                    self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
-                return converted_images[index]
-
-        raise HandlerNotFound("No handler found to convert from %s to image" %
-                              mime_type)
-
-    def get_metadata(self, digest, content, mime_type):
-        """Get a dictionary representing the metadata embedded in the given
-        content.
-        """
-
-        # XXX: ad-hoc for now, refactor later
-        if mime_type.startswith("image/"):
-            img = Image.open(BytesIO(content))
-            ret = {}
-            if not hasattr(img, '_getexif'):
-                return {}
-            info = img._getexif()
-            if not info:
-                return {}
-            for tag, value in info.items():
-                decoded = TAGS.get(tag, tag)
-                ret["EXIF:" + str(decoded)] = value
-            return ret
-        else:
-            if mime_type != "application/pdf":
-                content = self.to_pdf(digest, content, mime_type)
-
-            with make_temp_file(content) as in_fn:
-                try:
-                    output = subprocess.check_output(['pdfinfo', in_fn])
-                except OSError:
-                    logger.error(
-                        "Conversion failed, probably pdfinfo is not installed")
-                    raise
-
-            ret = {}
-            for line in output.split(b"\n"):
-                if b":" in line:
-                    key, value = line.strip().split(b":", 1)
-                    ret["PDF:" + key] = text_type(
-                        value.strip(), errors="replace")
-
-            return ret
-
-    @staticmethod
-    def digest(blob):
-        assert isinstance(blob, string_types)
-        if isinstance(blob, str):
-            digest = hashlib.md5(blob).hexdigest()
-        else:
-            digest = hashlib.md5(blob.encode("utf8")).hexdigest()
-        return digest
 
 
 class Handler(object):
@@ -346,7 +88,7 @@ class PdfToTextHandler(Handler):
             except Exception as e:
                 raise raise_from(ConversionError('pdftotext failed'), e)
 
-            converted = open(out_fn).read()
+            converted = open(out_fn, 'rb').read()
             encoding = self.encoding_sniffer.from_file(out_fn)
 
         if encoding in ("binary", None):
@@ -500,7 +242,8 @@ class UnoconvPdfHandler(Handler):
             else:
                 self.log.warning('Cannot find "{}", fallback to "unoconv"'
                                  ''.format(unoconv))
-        if (not unoconv or not found or not execute_ok):
+
+        if not unoconv or not found or not execute_ok:
             unoconv = 'unoconv'
 
         self.unoconv = unoconv
@@ -566,6 +309,104 @@ class UnoconvPdfHandler(Handler):
                     raise ConversionError(
                         "Conversion timeout ({})".format(timeout))
 
+                converted = open(out_fn).read()
+                return converted
+            finally:
+                self._process = None
+
+
+class LibreOfficePdfHandler(Handler):
+    """Handles conversion from office documents (MS-Office, OOo) to PDF.
+
+    Uses LibreOffice in headless mode.
+    """
+
+    # TODO: add more if needed.
+    accepts_mime_types = [
+        'application/vnd.oasis.*', 'application/msword',
+        'application/mspowerpoint', 'application/vnd.ms-powerpoint',
+        'application/vnd.ms-excel', 'application/ms-excel',
+        'application/vnd.openxmlformats-officedocument.*', 'text/rtf'
+    ]
+    produces_mime_types = ['application/pdf']
+    run_timeout = 60
+    _process = None
+    soffice = 'soffice'
+
+    def init_app(self, app):
+        soffice = app.config.get('SOFFICE_LOCATION')
+        found = False
+        execute_ok = False
+
+        if soffice:
+            # make absolute path: avoid errors when running with different CWD
+            soffice = os.path.abspath(soffice)
+            found = os.path.isfile(soffice)
+            if not found:
+                self.log.error("Can't find executable {}".format(soffice))
+
+        elif os.path.isfile("/usr/local/bin/soffice"):
+            soffice = "/usr/local/bin/soffice"
+
+        elif os.path.isfile("/usr/bin/soffice"):
+            soffice = "/usr/bin/soffice"
+
+        if soffice:
+            execute_ok = os.access(soffice, os.X_OK)
+            if not execute_ok:
+                self.log.warning('Not allowed to execute "{}"'.format(soffice))
+
+        else:
+            self.log.error("Can't find LibreOffice executable")
+            soffice = None
+
+        self.soffice = soffice
+
+    def convert(self, blob, **kw):
+        """Convert using soffice converter.
+        """
+        timeout = self.run_timeout
+        with make_temp_file(blob) as in_fn:
+
+            cmd = [self.soffice, "--headless", "--convert-to", "pdf", in_fn]
+
+            # # TODO: fix this if needed, or remove if not needed
+            # if os.path.exists(
+            #         "/Applications/LibreOffice.app/Contents/program/python"):
+            #     cmd = [
+            #         '/Applications/LibreOffice.app/Contents/program/python',
+            #         '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn
+            #     ]
+
+            def run_soffice():
+                try:
+                    self._process = subprocess.Popen(
+                        cmd, close_fds=True, cwd=bytes(self.TMP_DIR))
+                    self._process.communicate()
+                except Exception as e:
+                    logger.error('soffice error: %s', bytes(e), exc_info=True)
+                    raise_from(ConversionError('unoconv failed'), e)
+
+            run_thread = threading.Thread(target=run_soffice)
+            run_thread.start()
+            run_thread.join(timeout)
+
+            try:
+                if run_thread.is_alive():
+                    # timeout reached
+                    self._process.terminate()
+                    if self._process.poll() is not None:
+                        try:
+                            self._process.kill()
+                        except OSError:
+                            logger.warning("Failed to kill process {}".format(
+                                self._process))
+
+                    self._process = None
+                    raise ConversionError(
+                        "Conversion timeout ({})".format(timeout))
+
+                out_fn = os.path.splitext(in_fn)[0] + ".pdf"
                 converted = open(out_fn).read()
                 return converted
             finally:
@@ -644,40 +485,3 @@ class WvwareTextHandler(Handler):
                 converted_unicode = text_type(converted, errors="ignore")
 
             return converted_unicode
-
-
-# Utils
-@contextmanager
-def make_temp_file(blob=None, prefix='tmp', suffix="", tmp_dir=None):
-    if tmp_dir is None:
-        tmp_dir = get_tmp_dir()
-
-    fd, filename = mkstemp(dir=str(tmp_dir), prefix=prefix, suffix=suffix)
-    if blob is not None:
-        fd = os.fdopen(fd, 'wb')
-        fd.write(blob)
-        fd.close()
-    else:
-        os.close(fd)
-
-    yield filename
-    try:
-        os.remove(filename)
-    except OSError:
-        pass
-
-
-# Singleton, yuck!
-converter = Converter()
-converter.register_handler(PdfToTextHandler())
-converter.register_handler(PdfToPpmHandler())
-converter.register_handler(ImageMagickHandler())
-
-_unoconv_handler = UnoconvPdfHandler()
-converter.register_handler(_unoconv_handler)
-
-#converter.register_handler(AbiwordPDFHandler())
-#converter.register_handler(AbiwordTextHandler())
-
-# Needs to be rewriten
-#converter.register_handler(CloudoooPdfHandler())

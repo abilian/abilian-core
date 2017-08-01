@@ -59,9 +59,8 @@ class BaseFileDownload(View):
                     repr(self.expire_vary_arg)))
 
         args, kwargs = super(BaseFileDownload, self).prepare_args(args, kwargs)
-        kwargs['attach'] = request.args.get('attach',
-                                            self.as_attachment,
-                                            type=bool)
+        kwargs['attach'] = request.args.get(
+            'attach', self.as_attachment, type=bool)
         return args, kwargs
 
     def make_response(self, *args, **kwargs):
@@ -88,9 +87,8 @@ class BaseFileDownload(View):
             filename = self.get_filename(*args, **kwargs)
             if not filename:
                 filename = u'file.bin'
-            response.headers.add('Content-Disposition',
-                                 u'attachment',
-                                 filename=filename)
+            response.headers.add(
+                'Content-Disposition', u'attachment', filename=filename)
 
         self.set_cache_headers(response)
         return response

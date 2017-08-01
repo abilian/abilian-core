@@ -253,10 +253,14 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
     index_to += (
         ('_indexable_roles_and_users', ('allowed_roles_and_users',)),
+        #
         ('_indexable_tag_ids', ('tag_ids',)),
+        #
         ('_indexable_tag_text', (
             'tag_text',
-            'text',)),)
+            'text',)),
+        #
+    )
     __indexation_args__['index_to'] = index_to
     del index_to
 
@@ -449,6 +453,19 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     @property
     def _indexable_tag_text(self):
         return u' '.join(text_type(t.label) for t in self._indexable_tags)
+
+    def clone(self):
+        """Copy an entity: copy every field, except the id and sqlalchemy
+        internals, without forgetting about the n-n relationships.
+
+        Specifically, in implementing this method you should ensure to
+        remove the id and `_sa_instance_state`. Then you will add the
+        n-n relationships.
+
+        - return: the newly created entity
+
+        """
+        raise NotImplementedError
 
 
 # TODO: make this unecessary

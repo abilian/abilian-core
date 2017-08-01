@@ -9,7 +9,8 @@ PKG=abilian
 NCPU=2
 
 # pytest-sugar seems to be incompatible with pytest-xdist
-PYTEST_MULTI=-n $(NCPU) -p no:sugar
+# -s: no terminal capture.
+PYTEST_MULTI=-n $(NCPU) -p no:sugar -s
 
 
 all: test lint
@@ -22,6 +23,8 @@ develop:
 	@echo "--> Installing dependencies"
 	pip install -U pip-tools setuptools
 	pip install -U -e '.[dev]'
+	pip install -r etc/dev-requirements.txt
+	yarn
 	@echo ""
 
 setup-git:
@@ -54,12 +57,21 @@ vagrant-tests:
 #
 # Various Checkers
 #
-# TODO: add lint-js lint-rst
-lint: lint-py lint-travis
+flake8:
+	flake8 $(SRC)
+
+lint: lint-ci lint-travis
+
+lint-ci: lint-py lint-js lint-less lint-rst lint-doc lint-mypy
 
 lint-py:
 	@echo "--> Linting Python files"
 	flake8 $(SRC)
+	@echo ""
+
+lint-mypy:
+	@echo "--> Typechecking Python files w/ mypy"
+	-mypy $(SRC)
 	@echo ""
 
 lint-py3k:
@@ -74,14 +86,23 @@ lint-travis:
 
 lint-js:
 	@echo "--> Linting JS files"
-	eslint ./abilian/web/resources/js/
+	-npm run eslint
+	@echo ""
+
+lint-less:
+	@echo "--> Linting LESS files"
+	-npm run stylelint
 	@echo ""
 
 lint-rst:
 	@echo "--> Linting .rst files"
-	rst-lint *.rst docs/*.rst
+	rst-lint *.rst
 	@echo ""
 
+lint-doc:
+	@echo "--> Linting doc"
+	sphinx-build -W -b dummy docs/ docs/_build/
+	@echo ""
 
 #
 # Everything else
@@ -113,15 +134,18 @@ clean:
 	rm -rf htmlcov coverage.xml
 	rm -rf docs/_build
 	rm -f junit-*.xml
+	rm -f npm-debug.log
 
 tidy: clean
 	rm -rf .tox .dox .travis-solo
+	rm -rf node_modules
 
 update-pot:
 	# _n => ngettext, _l => lazy_gettext
 	python setup.py extract_messages update_catalog compile_catalog
 
 release:
+	git push --tags
 	rm -rf /tmp/abilian-core
 	git clone . /tmp/abilian-core
 	cd /tmp/abilian-core ; python setup.py sdist
@@ -137,3 +161,8 @@ update-deps:
 	pip-compile -U > /dev/null
 	pip-compile > /dev/null
 	git --no-pager diff requirements.txt
+
+sync-deps:
+	pip install -r requirements.txt
+	pip install -r etc/dev-requirements.txt
+	pip install -e .

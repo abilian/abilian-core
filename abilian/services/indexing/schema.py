@@ -57,8 +57,7 @@ class _DefaultSearchSchema(SchemaClass):
 
 _default_dyn_fields = {
     '*_prefix': EdgeNgramField(),
-    '*_at': DATETIME(
-        stored=True, sortable=True),
+    '*_at': DATETIME(stored=True, sortable=True),
 }
 
 
@@ -78,7 +77,7 @@ def indexable_role(principal):
     """
     principal = noproxy(principal)
 
-    if (hasattr(principal, 'is_anonymous') and principal.is_anonymous):
+    if hasattr(principal, 'is_anonymous') and principal.is_anonymous:
         # transform anonymous user to anonymous role
         principal = Anonymous
 

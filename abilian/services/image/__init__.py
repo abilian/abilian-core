@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Provides tools (currently: only functions, not a real service) for image
 processing.
@@ -43,6 +44,8 @@ def open_image(img):
 
 
 def get_format(img):
+    if not img:
+        raise IOError()
     image = open_image(img)
     return image.format
 
@@ -80,7 +83,7 @@ def resize(orig, width, height, mode=FIT):
         image = image.resize((width, height), Image.LANCZOS)
         assert image.size == (width, height)
     elif mode is FIT:
-        if (x >= width or y >= height):
+        if x >= width or y >= height:
             # resize only if images exceed desired dimensions
             image.thumbnail((width, height), Image.LANCZOS)
             x1, y1 = image.size

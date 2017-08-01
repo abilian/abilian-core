@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, \
 import json
 from datetime import timedelta
 
-import six
 import sqlalchemy as sa
 from six import text_type
 
@@ -46,11 +45,11 @@ _transformers = TransformerRegistry()
 
 class _EmptyValue(object):
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
 
-    # Py3k compat
-    __bool__ = __nonzero__
+    # Py2 compat
+    __nonzero__ = __bool__
 
     def __repr__(self):
         return '<Empty Value>'

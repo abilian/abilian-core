@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from datetime import datetime
+from typing import Optional, Union
 
 import sqlalchemy as sa
 from flask_login import current_user
@@ -45,7 +46,7 @@ class BaseCommentView(object):
     Form = CommentForm
 
     #: commented entity
-    entity = None
+    entity = None  # type: Optional[Entity]
 
     def init_object(self, args, kwargs):
         args, kwargs = super(BaseCommentView, self).init_object(args, kwargs)

@@ -30,8 +30,7 @@ class UserPreferencesForm(Form):
         widget=widgets.PasswordInput(autocomplete='off'))
 
     photo = fields.FileField(
-        label=_l('Photo'), widget=widgets.ImageInput(
-            width=55, height=55))
+        label=_l('Photo'), widget=widgets.ImageInput(width=55, height=55))
 
     locale = fields.LocaleSelectField(
         label=_l(u'Preferred Language'),
@@ -81,7 +80,7 @@ class UserPreferencesForm(Form):
         # convert to jpeg
         # FIXME: better do this at model level?
         jpeg = BytesIO()
-        im.convert('RGBA').save(jpeg, 'JPEG')
+        im.convert('RGB').save(jpeg, 'JPEG')
         field.data = jpeg.getvalue()
 
 
@@ -101,11 +100,10 @@ class UserPreferencesPanel(PreferencePanel):
         photo = g.user.photo
         if photo:
             # subclass str/bytes to set additional 'url' attribute
-            photo = type(
-                b'Photo', (bytes,),
-                dict(
-                    object=photo, url=url_for(
-                        'users.photo', user_id=g.user.id)))
+            photo = type(b'Photo', (bytes,),
+                         dict(
+                             object=photo,
+                             url=url_for('users.photo', user_id=g.user.id)))
             data['photo'] = photo
 
         form = UserPreferencesForm(

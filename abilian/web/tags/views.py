@@ -108,17 +108,17 @@ class EntityTagManage(BaseEntityTagView, ObjectEdit):
         assert mode in ('add', 'remove')
         self.mode = mode
 
-    def form_valid(self):
+    def form_valid(self, redirect_to=None):
         ns = self.form.ns.data
         label = self.form.label.data
         op = getattr(self.extension, self.mode)
         op(self.entity, ns=ns, label=label)
 
 
-entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view(
-    'add', mode='add'))
-entity_bp.route('/<int:object_id>/remove')(EntityTagManage.as_view(
-    'remove', mode='remove'))
+entity_bp.route('/<int:object_id>/add')(
+    EntityTagManage.as_view('add', mode='add'))
+entity_bp.route('/<int:object_id>/remove')(
+    EntityTagManage.as_view('remove', mode='remove'))
 
 
 class EntityTagEdit(ObjectEdit):

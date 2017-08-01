@@ -14,7 +14,6 @@ from flask_login import current_user
 from six import string_types, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
-from typing import Dict, Set
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -39,11 +38,11 @@ __all__ = [
 #: default security matrix
 DEFAULT_PERMISSION_ROLE = dict()
 prm = DEFAULT_PERMISSION_ROLE
-prm[MANAGE] = frozenset((Admin, Manager))
-prm[WRITE] = frozenset((Admin, Manager, Writer))
-prm[CREATE] = frozenset((Admin, Manager, Writer))
-prm[DELETE] = frozenset((Admin, Manager, Writer))
-prm[READ] = frozenset((Admin, Manager, Writer, Reader))
+prm[MANAGE] = frozenset({Admin, Manager})
+prm[WRITE] = frozenset({Admin, Manager, Writer})
+prm[CREATE] = frozenset({Admin, Manager, Writer})
+prm[DELETE] = frozenset({Admin, Manager, Writer})
+prm[READ] = frozenset({Admin, Manager, Writer, Reader})
 del prm
 
 
@@ -58,7 +57,7 @@ class SecurityServiceState(ServiceState):
 
 
 def require_flush(fun):
-    """ Decorator for methods that need to query security. It ensures all security
+    """Decorator for methods that need to query security. It ensures all security
     related operations are flushed to DB, but avoids unneeded flushes.
     """
 
@@ -637,7 +636,7 @@ class SecurityService(Service):
         # roles
 
         if inherit and obj is not None:
-            while (obj.inherit_security and obj.parent is not None):
+            while obj.inherit_security and obj.parent is not None:
                 obj = obj.parent
                 checked_objs.append(obj)
 

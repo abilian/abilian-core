@@ -3,7 +3,6 @@
     {{ m_user_photo(user, size=size) }}
     {{ user.name }}
   {%- endcall %}
-  </a>
 {% endmacro %}
 
 {% macro m_user_photo(user, size=20) %}
@@ -12,5 +11,5 @@
 
 {% macro m_user_link(user, css="") %}
   {%- set content = caller() if caller|default(None) else user.name %}
-  <a href="{{ url_for(user) }}" {%- if css %} class="{{ css }}"{%- endif %}>{{ content }}</a>
+  <a href="{{ url_for(user) }}" title="{{user}}" {%- if css %} class="{{ css }}"{%- endif %}>{{ content }}</a>
 {% endmacro %}

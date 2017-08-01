@@ -11,6 +11,7 @@ import copy
 import logging
 import re
 from collections import OrderedDict
+from typing import List, Tuple
 
 import sqlalchemy as sa
 from flask import Blueprint, current_app, g, jsonify, redirect, \
@@ -133,7 +134,7 @@ class ModuleView(object):
     Provide :attr:`module`.
     """
     #: :class:`Module` instance
-    module = None
+    module = None  # type: Module
 
     def __init__(self, module, *args, **kwargs):
         self.module = module
@@ -157,8 +158,7 @@ class BaseEntityView(ModuleView):
     def breadcrumb(self):
         return BreadcrumbItem(
             label=self.obj.name or self.obj.id,
-            url=Endpoint(
-                '.entity_view', entity_id=self.obj.id))
+            url=Endpoint('.entity_view', entity_id=self.obj.id))
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
@@ -364,7 +364,7 @@ class ModuleComponent(object):
     """
     A component that provide new functions for a :class:`Module`
     """
-    name = None
+    name = None  # type: str
 
     def __init__(self, name=None):
         if name is not None:
@@ -390,14 +390,14 @@ class ModuleComponent(object):
 class Module(object):
     __metaclass__ = ModuleMeta
 
-    id = None
-    endpoint = None
-    label = None
-    managed_class = None
+    id = None  # type: str
+    endpoint = None  # type: str
+    label = None  # type: str
+    managed_class = None  # type: type
     list_view = None
-    list_view_columns = []
+    list_view_columns = []  # type: List
     single_view = None
-    components = ()
+    components = ()  # type: Tuple
 
     # class based views. If not provided will be automaticaly created from
     # EntityView etc defined above
@@ -407,6 +407,7 @@ class Module(object):
     create_cls = EntityCreate
     delete_cls = EntityDelete
     json_search_cls = JSONWhooshSearch
+    JSON2_SEARCH_LENGTH = 50
 
     # form_class. Used when view_cls/edit_cls are not provided
     edit_form_class = None
@@ -597,8 +598,7 @@ class Module(object):
 
     def _add_breadcrumb(self, endpoint, values):
         g.breadcrumb.append(
-            BreadcrumbItem(
-                label=self.label, url=Endpoint('.list_view')))
+            BreadcrumbItem(label=self.label, url=Endpoint('.list_view')))
 
     @property
     def base_query(self):
@@ -745,30 +745,44 @@ class Module(object):
             base_template=self.base_template)
         return render_template("default/list_view.html", **ctx)
 
-    @expose("/json2")
-    def list_json2(self):
-        """
-        Other JSON endpoint, this time used for filling select boxes dynamically.
+    def list_json2_query_all(self, q):
+        """Implements the search query for the list_json2 endpoint.
 
-        NB: not used currently.
+        May be re-defined by a Module subclass in order to customize
+        the search results.
+
+        - Return: a list of results (not json) with an 'id' and a
+          'text' (that will be displayed in the select2).
+
         """
-        args = request.args
         cls = self.managed_class
-
-        q = args.get("q", "").replace("%", " ")
-        if not q or len(q) < 2:
-            raise BadRequest()
-
         query = db.session.query(cls.id, cls.name)
         query = query \
             .filter(cls.name.ilike("%" + q + "%")) \
             .distinct() \
             .order_by(cls.name) \
-            .limit(50)
-        all = query.all()
+            .limit(self.JSON2_SEARCH_LENGTH)
+        results = query.all()
+        results = [{'id': r[0], 'text': r[1]} for r in results]
+        return results
 
-        result = {'results': [{'id': r[0], 'text': r[1]} for r in all]}
-        return jsonify(result)
+    @expose("/json2")
+    def list_json2(self):
+        """Other JSON endpoint, this time used for filling select boxes dynamically.
+
+        You can write your own search method in list_json2_query_all,
+        that returns a list of results (not json).
+
+        """
+        args = request.args
+
+        q = args.get("q", "").replace("%", " ")
+        if not q or len(q) < 2:
+            raise BadRequest()
+
+        results = self.list_json2_query_all(q)
+        results = {'results': results}
+        return jsonify(results)
 
     #
     # Utils
@@ -824,8 +838,7 @@ class DefaultRelatedView(RelatedView):
         return dict(
             label=self.label,
             attr_name=self.attr,
-            rendered=view.render(
-                related_entities, related_to=entity),
+            rendered=view.render(related_entities, related_to=entity),
             show_empty=self.show_empty,
             size=len(related_entities))
 

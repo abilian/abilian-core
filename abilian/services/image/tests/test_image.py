@@ -1,10 +1,11 @@
+# coding=utf-8
 from __future__ import absolute_import, print_function, unicode_literals
 
 from os.path import dirname, join
 
 from pytest import fixture
 
-from ..image import CROP, FIT, SCALE, get_save_format, get_size, resize
+from .. import CROP, FIT, SCALE, get_save_format, get_size, resize
 
 
 @fixture

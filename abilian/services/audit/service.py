@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 audit Service: logs modifications to audited objects.
 
@@ -15,7 +16,7 @@ from inspect import isclass
 import sqlalchemy as sa
 from flask import current_app, g
 from six import text_type
-from sqlalchemy import event
+from sqlalchemy import event, extract, func
 from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 
@@ -194,7 +195,7 @@ class AuditService(Service):
         # Hide content if needed (like password columns)
         # FIXME: we can only handle the simplest case: 1 attribute => 1 column
         columns = initiator.parent_token.columns
-        if (len(columns) == 1 and columns[0].info.get('audit_hide_content')):
+        if len(columns) == 1 and columns[0].info.get('audit_hide_content'):
             old_value = new_value = u'******'
 
         old_value = format_large_value(old_value)
@@ -333,3 +334,61 @@ def format_large_value(value):
         # object of type '...' has no len()
         pass
     return value
+
+
+def get_model_changes(entity_type,
+                      year=None,
+                      month=None,
+                      day=None,
+                      hour=None,
+                      since=None):
+    """
+    Get models modified at the given date with the Audit service.
+
+    :param entity_type: string like "extranet_medicen.apps.crm.models.Compte".
+      Beware the typo, there won't be a warning message.
+    :param since: datetime
+    :param year: int
+    :param month: int
+    :param day: int
+    :param hour: int
+
+    :returns: a query object
+
+    """
+    query = AuditEntry.query
+
+    if since:
+        query = query.filter(AuditEntry.happened_at >= since)
+
+    if year:
+        query = query.filter(extract('year', AuditEntry.happened_at) == year)
+    if month:
+        query = query.filter(extract('month', AuditEntry.happened_at) == month)
+    if day:
+        query = query.filter(extract('day', AuditEntry.happened_at) == day)
+    if hour:
+        query = query.filter(extract('hour', AuditEntry.happened_at) == hour)
+
+    query = query.filter(AuditEntry.entity_type.like(entity_type)) \
+                 .order_by(AuditEntry.happened_at)
+
+    return query
+
+
+def get_columns_diff(changes):
+    """Add the changed columns as a diff attribute.
+
+    - changes: a list of changes (get_model_changes query.all())
+
+    Return: the same list, to which elements we added a "diff"
+    attribute containing the changed columns. Diff defaults to [].
+
+    """
+    for change in changes:
+        change.diff = []
+        elt_changes = change.get_changes()
+        if elt_changes:
+            change.diff = elt_changes.columns
+
+    return changes

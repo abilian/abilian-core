@@ -42,12 +42,13 @@ class TestRegistry(FlaskTestCase):
 
         registry.register(RegEntity, lambda ignored: '')
         assert RegEntity.entity_type in registry._map
+
         registry._map = {}
         registry.register(obj, lambda ignored: '')
         assert RegEntity.entity_type in registry._map
 
     def test_custom_url_func(self):
-        name = u'obj'
+        name = 'obj'
         obj = RegEntity(id=1, name=name)
         registry = self.app.default_view
 
@@ -55,13 +56,13 @@ class TestRegistry(FlaskTestCase):
             return obj.name
 
         registry.register(obj, custom_url)
-        self.assertEqual(registry.url_for(obj), name)
+        assert registry.url_for(obj) == name
 
         def url_from_type_and_id(obj, obj_type, obj_id):
-            return u'{}:{}'.format(obj_type, obj_id)
+            return '{}:{}'.format(obj_type, obj_id)
 
         registry.register(obj, url_from_type_and_id)
-        self.assertEqual(registry.url_for(obj), u'test_registry.RegEntity:1')
+        assert registry.url_for(obj) == 'test_registry.RegEntity:1'
 
     def test_default_url_func(self):
         obj = RegEntity(id=1)
@@ -71,13 +72,9 @@ class TestRegistry(FlaskTestCase):
         def dummy_default_view(object_id):
             pass
 
-        self.assertEqual(
-            self.app.default_view.url_for(obj), '/regentities_path/1/view')
-
-        self.assertEqual(
-            self.app.default_view.url_for(
-                obj, _external=True),
-            'http://localhost/regentities_path/1/view')
+        assert self.app.default_view.url_for(obj) == '/regentities_path/1/view'
+        assert self.app.default_view.url_for(obj, _external=True) == \
+            'http://localhost/regentities_path/1/view'
 
     def test_default_view_decorator(self):
         bp = Blueprint('registry', __name__, url_prefix='/blueprint')
@@ -93,8 +90,6 @@ class TestRegistry(FlaskTestCase):
 
         # blueprint registered: default view is set
         self.app.register_blueprint(bp)
-        self.assertEqual(self.app.default_view.url_for(obj), '/blueprint/1')
-        self.assertEqual(
-            self.app.default_view.url_for(
-                obj, _external=True),
-            'http://localhost/blueprint/1')
+        assert self.app.default_view.url_for(obj) == '/blueprint/1'
+        assert self.app.default_view.url_for(obj, _external=True) == \
+            'http://localhost/blueprint/1'

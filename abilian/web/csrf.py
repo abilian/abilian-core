@@ -36,7 +36,7 @@ def name():
     Field name expected to have CSRF token. Useful for passing it to
     JavaScript for instance.
     """
-    return u'csrf_token'
+    return 'csrf_token'
 
 
 def token():

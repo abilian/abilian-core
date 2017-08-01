@@ -148,7 +148,8 @@ class TestVocabularies(BaseTestCase):
         data.update(base_data)
         r = self.client.post(url, data=data)
         assert r.status_code == 302
-        assert r.headers['Location'] == u'http://localhost/admin/vocabularies/_/'
+        assert r.headers[
+            'Location'] == u'http://localhost/admin/vocabularies/_/'
         assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
         data = {'up': first.id, 'return_to': 'model'}

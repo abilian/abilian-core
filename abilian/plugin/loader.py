@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Plugin loader, initially from Flask-Foundation.
 """

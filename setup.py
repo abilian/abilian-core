@@ -14,6 +14,7 @@ session = session = pip.download.PipSession()
 _install_requires = pip.req.parse_requirements(
     'requirements.in', session=session)
 install_requires = [str(ir.req) for ir in _install_requires]
+
 _dev_requires = pip.req.parse_requirements(
     'etc/dev-requirements.txt', session=session)
 dev_requires = [str(ir.req) for ir in _dev_requires]
@@ -46,7 +47,7 @@ setuptools.setup(
     description=('A framework for enterprise applications '
                  '(CRM, ERP, collaboration...), based on Flask and SQLAlchemy'),
     long_description=LONG_DESCRIPTION,
-    packages=[b'abilian'],
+    packages=['abilian'],
     zip_safe=False,
     platforms='any',
     setup_requires=['babel', 'setuptools-git', 'setuptools_scm>=1.5.5'],

@@ -206,7 +206,7 @@ class Babel(BabelBase):
             if not os.access(text_type(path), os.R_OK):
                 self.app.logger.warning(
                     "Babel translations: read access not allowed {}, skipping."
-                    "".format(repr(text_type((path)).encode('utf-8'))))
+                    "".format(repr(text_type(path).encode('utf-8'))))
                 continue
 
             self._translations_paths.append((text_type(path), domain))
@@ -276,7 +276,7 @@ def _get_translations_multi_paths():
             if not trs or not hasattr(trs, 'merge'):
                 # got None or NullTranslations instance
                 continue
-            elif (translations is not None and hasattr(translations, 'merge')):
+            elif translations is not None and hasattr(translations, 'merge'):
                 translations.merge(trs)
             else:
                 translations = trs

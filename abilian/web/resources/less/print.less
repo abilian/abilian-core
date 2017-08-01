@@ -1,41 +1,43 @@
 @media print {
-  /* things we don't to see printed */
+  // things we don't want to see printed
   .navbar,
   .nav,
-  .btn
-  {
+  .btn {
     display: none;
   }
 
-  /* things we want to see */
-  /* collapable: alway expand */
+  // things we want to see
+  // collapable: alway expand
   .collapse {
     height: auto !important;
   }
-  /* except log entries */
+
+  // except log entries
   #audit_log_entries {
-    height: 0px !important;
+    height: 0 !important;
   }
 
-  /* margins */
+  // margins
   @page {
     margin: 1.2cm 1cm;
   }
+
   body {
-    padding: 0px;
-  }
-  #wrapper {
-    width: auto !important;
-    margin: 0px;
-    padding: 0px;
+    padding: 0;
   }
 
-  /* page breaks */
+  #wrapper {
+    width: auto !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  // page breaks
   h1, h2, h3 {
     page-break-after: avoid;
   }
 
-  /* flask debug toolbar: hide it! */
+  // flask debug toolbar: hide it!
   #flDebugToolbarHandle, #flDebugToolbar {
     display: none;
   }

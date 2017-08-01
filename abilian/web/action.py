@@ -28,11 +28,11 @@ class Status(UniqueName):
 
 
 #: default action status: show in UID, usable, not marked "current"
-ENABLED = Status(u'enabled')
+ENABLED = Status('enabled')
 #: action is "active" or "current". For example the current navigation item.
-ACTIVE = Status(u'active')
+ACTIVE = Status('active')
 #: action should be shown in a disabled state
-DISABLED = Status(u'disabled')
+DISABLED = Status('disabled')
 
 
 def getset(f):
@@ -86,24 +86,24 @@ class NamedIconBase(Icon):
 class Glyphicon(NamedIconBase):
     """Renders markup for bootstrap's glyphicons.
     """
-    template = Template(u'<i class="glyphicon glyphicon-{{ name }}"></i>')
+    template = Template('<i class="glyphicon glyphicon-{{ name }}"></i>')
 
 
 class FAIcon(NamedIconBase):
     """Renders markup for FontAwesome icons.
     """
-    template = Template(u'<i class="fa fa-{{ name }}"></i>')
+    template = Template('<i class="fa fa-{{ name }}"></i>')
 
 
 class FAIconStacked(NamedIconBase):
     """Stacked FA icons.
     """
     template = Template(
-        u'<span class="fa-stack {%- if stack_class %} {{ stack_class }}'
-        u'{%- endif %}">\n'
-        u'  <i class="fa fa-{{ name }}"></i>\n'
-        u'  <i class="fa fa-{{ second }}"></i>\n'
-        u'</span>')
+        '<span class="fa-stack {%- if stack_class %} {{ stack_class }}'
+        '{%- endif %}">\n'
+        '  <i class="fa fa-{{ name }}"></i>\n'
+        '  <i class="fa fa-{{ second }}"></i>\n'
+        '</span>')
 
     def __init__(self, name, second, stack=''):
         """
@@ -114,10 +114,10 @@ class FAIconStacked(NamedIconBase):
 
         @param stack: additional class on top-level element, i.e 'fa-lg'.
         """
-        if u'fa-stack-' not in name:
-            name += u' fa-stack-1x'
-        if u'fa-stack-' not in second:
-            second += u' fa-stack-1x'
+        if 'fa-stack-' not in name:
+            name += ' fa-stack-1x'
+        if 'fa-stack-' not in second:
+            second += ' fa-stack-1x'
 
         super(FAIconStacked, self).__init__(name)
         self.second = second
@@ -129,9 +129,9 @@ class FAIconStacked(NamedIconBase):
 
 
 class DynamicIcon(Icon):
-    template = Template(u'<img {%- if css %} class="{{ css }}"{% endif %} '
-                        u'src="{{ url }}" '
-                        u'width="{{ width }}" height="{{ height }}" />')
+    template = Template('<img {%- if css %} class="{{ css }}"{% endif %} '
+                        'src="{{ url }}" '
+                        'width="{{ width }}" height="{{ height }}" />')
 
     def __init__(self,
                  endpoint=None,
@@ -231,7 +231,7 @@ class Action(object):
     description = None
     icon = None
     _url = None
-    CSS_CLASS = u'action action-{category} action-{category}-{name}'
+    CSS_CLASS = 'action action-{category} action-{category}-{name}'
 
     #: A :class:`Endpoint` instance, a string for a simple endpoint, a tuple
     #: ``(endpoint_name, kwargs)``  or a callable which accept a : context dict
@@ -242,10 +242,10 @@ class Action(object):
     #: which accepts a context dict as parameter. See :meth:`available`.
     condition = None
 
-    template_string = (u'<a class="{{ action.css_class }}" href="{{ url }}">'
-                       u'{%- if action.icon %}{{ action.icon }} {% endif %}'
-                       u'{{ action.title }}'
-                       u'</a>')
+    template_string = ('<a class="{{ action.css_class }}" href="{{ url }}">'
+                       '{%- if action.icon %}{{ action.icon }} {% endif %}'
+                       '{{ action.title }}'
+                       '</a>')
 
     def __init__(self,
                  category,
@@ -276,9 +276,9 @@ class Action(object):
         self.name = name
 
         if button is not None:
-            self.CSS_CLASS += u' btn btn-{}'.format(button)
+            self.CSS_CLASS += ' btn btn-{}'.format(button)
         if css is not None:
-            self.CSS_CLASS = self.CSS_CLASS + u' ' + css
+            self.CSS_CLASS = self.CSS_CLASS + ' ' + css
         self._build_css_class()
 
         self.title = title
@@ -444,20 +444,20 @@ class Action(object):
 
 class ModalActionMixin(object):
     template_string = (
-        u'<a class="{{ action.css_class }}" href="{{ url }}" data-toggle="modal">'
-        u'{%- if action.icon %}{{ action.icon}} {% endif %}'
-        u'{{ action.title }}'
-        u'</a>')
+        '<a class="{{ action.css_class }}" href="{{ url }}" data-toggle="modal">'
+        '{%- if action.icon %}{{ action.icon}} {% endif %}'
+        '{{ action.title }}'
+        '</a>')
 
 
 class ButtonAction(Action):
     template_string = (
-        u'<button type="submit" '
-        u'class="btn btn-{{ action.btn_class }} {{ action.css_class}}" '
-        u'name="{{ action.submit_name }}" '
-        u'value="{{ action.name }}">'
-        u'{%- if action.icon %}{{ action.icon }} {% endif %}'
-        u'{{ action.title }}</button>')
+        '<button type="submit" '
+        'class="btn btn-{{ action.btn_class }} {{ action.css_class}}" '
+        'name="{{ action.submit_name }}" '
+        'value="{{ action.name }}">'
+        '{%- if action.icon %}{{ action.icon }} {% endif %}'
+        '{{ action.title }}</button>')
 
     btn_class = 'default'
 
@@ -477,11 +477,11 @@ class ActionGroup(Action):
     """A group of single actions
     """
     template_string = (
-        u'<div class="btn-group" role="group" aria-label="{{ action.name}}">'
-        u'{%- for entry in action_items %}'
-        u'{{ entry.render() }}'
-        u'{%- endfor %}'
-        u'</div>')
+        '<div class="btn-group" role="group" aria-label="{{ action.name}}">'
+        '{%- for entry in action_items %}'
+        '{{ entry.render() }}'
+        '{%- endfor %}'
+        '</div>')
 
     def __init__(self, category, name, items=(), *args, **kwargs):
         super(ActionGroup, self).__init__(category, name, *args, **kwargs)
@@ -496,7 +496,7 @@ class ActionGroup(Action):
 class ActionDropDown(ActionGroup):
     """Renders as a button dropdown
     """
-    template_string = u'''
+    template_string = '''
     <div class="btn-group">
         <button type="button" class="{{ action.css_class }} dropdown-toggle"
                 data-toggle="dropdown" aria-expanded="false">

@@ -4,6 +4,8 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from typing import Optional, Union
+
 import sqlalchemy as sa
 from flask import current_app, send_file
 from werkzeug.exceptions import BadRequest
@@ -47,7 +49,7 @@ class BaseAttachmentView(object):
     Form = AttachmentForm
 
     #: owning entity
-    entity = None
+    entity = None  # type: Optional[Entity]
 
     def init_object(self, args, kwargs):
         args, kwargs = super(BaseAttachmentView, self).init_object(args, kwargs)

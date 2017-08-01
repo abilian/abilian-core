@@ -11,14 +11,14 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import os
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
-
 
 # -- General configuration -----------------------------------------------------
 
@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'exts.intersphinx_flask_ext', # custom extension to convert 'flask_' to flask.ext.
+    'exts.intersphinx_flask_ext',  # custom extension to convert 'flask_' to flask.ext.
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
@@ -42,16 +42,16 @@ autodoc_default_flags = ['members', 'undoc-members']
 
 # sphinx.ext.intersphinx configuration
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/2.7/', 'inventories/python27.inv',),
+    'python': ('http://docs.python.org/2.7/', 'inventories/python27.inv'),
     'flask': ('http://flask.pocoo.org/docs/', 'inventories/flask.inv'),
     'babel': ('http://babel.pocoo.org/docs/', 'inventories/babel.inv'),
     'flaskbabel': ('http://pythonhosted.org/Flask-Babel/',
                    'inventories/flask_babel.inv'),
-    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_0_9/',
-                    'inventories/sqlalchemy_0_9.inv'),
+    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_1_0/',
+                   'inventories/sqlalchemy_1_0.inv'),
     'webassets': ('http://webassets.readthedocs.org/en/latest',
                   'inventories/webassets.inv'),
-    }
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -111,7 +111,6 @@ pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
-
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -200,39 +199,34 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'abiliandoc'
 
-
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-  ('index', 'abilian-core.tex', u'Abilian Core Documentation',
-   u'Stefane Fermigier', 'manual'),
-]
+latex_documents = [('index', 'abilian-core.tex', u'Abilian Core Documentation',
+                    u'Stefane Fermigier', 'manual'),]
 
 # From Flask doc
-latex_use_modindex = False
+latex_domain_indices = False
 latex_elements = {
-  'fontpkg':      r'\usepackage{mathpazo}',
-  'papersize':    'a4paper',
-  'pointsize':    '12pt',
-  'preamble':     r'\usepackage{flaskstyle}'
+    'fontpkg': r'\usepackage{mathpazo}',
+    'papersize': 'a4paper',
+    'pointsize': '12pt',
+    'preamble': r'\usepackage{flaskstyle}'
 }
-latex_use_parts = True
+latex_toplevel_sectioning = "part"
 latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
-
-
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -254,19 +248,15 @@ latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
 # If false, no module index is generated.
 #latex_domain_indices = True
 
-
 # -- Options for manual page output --------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'abilian', u'Abilian Documentation',
-     [u'Stefane Fermigier'], 1)
-]
+man_pages = [('index', 'abilian', u'Abilian Documentation',
+              [u'Stefane Fermigier'], 1)]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False
-
 
 # -- Options for Texinfo output ------------------------------------------------
 
@@ -274,9 +264,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Abilian', u'Abilian Documentation',
-   u'Stefane Fermigier', 'Abilian', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'Abilian', u'Abilian Documentation', u'Stefane Fermigier',
+     'Abilian', 'One line description of project.', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -287,7 +276,6 @@ texinfo_documents = [
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
-
 
 # -- Options for Epub output ---------------------------------------------------
 

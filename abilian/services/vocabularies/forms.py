@@ -4,6 +4,8 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from typing import Dict, List
+
 import bleach
 from wtforms.fields import BooleanField, IntegerField, StringField
 from wtforms.widgets import HiddenInput
@@ -14,17 +16,17 @@ from abilian.web.forms.filters import strip
 from abilian.web.forms.validators import required
 
 ALLOWED_TAGS = ['b', 'i', 'del', 's', 'u', 'small', 'strong', 'em']
-ALLOWED_ATTRIBUTES = {}
+ALLOWED_ATTRIBUTES = {}  # type: Dict[str, List[str]]
 
 
 class EditForm(ModelForm):
     label = StringField(
-        _l(u'Label'),
-        description=_l(u'allowed tags: %(tags)s', tags=', '.join(ALLOWED_TAGS)),
+        _l('Label'),
+        description=_l('allowed tags: %(tags)s', tags=', '.join(ALLOWED_TAGS)),
         filters=(strip,),
         validators=[required()])
-    default = BooleanField(_l(u'Default'), default=False)
-    active = BooleanField(_l(u'Active'), default=True)
+    default = BooleanField(_l('Default'), default=False)
+    active = BooleanField(_l('Active'), default=True)
 
     def validate_label(self, field):
         field.data = bleach.clean(

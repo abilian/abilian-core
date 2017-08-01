@@ -7,8 +7,8 @@ from __future__ import absolute_import, division, print_function, \
 
 import hashlib
 import uuid
+from typing import Optional
 
-import six
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
 from six import text_type
@@ -26,11 +26,11 @@ class BlobQuery(BaseQuery):
     """
 
     def by_uuid(self, uuid):
+        # type: (str) -> Optional[Blob]
         """Like `.get()` but by uuid.
 
         :param uuid: a `string` or an `uuid`.
         """
-        # type: (str) -> Blob
         try:
             return self.filter_by(uuid=uuid).one()
         except NoResultFound:
@@ -120,13 +120,13 @@ class Blob(Model):
 
         return md5
 
-    def __nonzero__(self):
+    def __bool__(self):
         """A blob is considered null if it has no file.
         """
         return self.file is not None and self.file.exists()
 
     # Py3k compat
-    __bool__ = __nonzero__
+    __nonzero__ = __bool__
 
 
 @listens_for(sa.orm.Session, 'after_flush')

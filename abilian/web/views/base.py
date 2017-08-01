@@ -63,7 +63,7 @@ class View(BaseView):
         raise Redirect(response=redirect(url))
 
 
-_JSON_HTML = u'''
+_JSON_HTML = '''
 <!DOCTYPE html>
 <html lang="en">
 <head>

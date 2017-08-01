@@ -210,8 +210,7 @@ class BaseTestCase(TestCase):
                         'SET search_path TO {}'.format(self.__pg_schema))
                     conn.execute(
                         'ALTER ROLE {username} SET search_path TO {schema}'
-                        ''.format(
-                            username=username, schema=self.__pg_schema))
+                        ''.format(username=username, schema=self.__pg_schema))
                 conn.execute('COMMIT')
 
         self.app.create_db()

@@ -592,7 +592,7 @@ class QuerySelect2Field(SelectFieldBase):
 
             data = set(data)
             valid = {obj for pk, obj in self._get_object_list()}
-            if (data - valid):
+            if data - valid:
                 raise ValidationError(self.gettext('Not a valid choice'))
 
 

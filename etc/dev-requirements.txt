@@ -1,6 +1,7 @@
 # For running tests
 tox
 pytest>=2.4.0
+pytest-sugar
 pytest-xdist
 
 # needed to avoid a ResourceClosedError when using some CTE queries with 0 results:
@@ -18,11 +19,13 @@ pytest-cov
 flake8
 flake8-tidy-imports
 pylint
+# These two plugins try too hard..
+# pep8-naming
 # mastool
 
 # To build docs
 # (Doesn't work w/ sphinx 1.4.5)
-Sphinx==1.4.4
+Sphinx>=1.5.5
 
 # Standard theme for readthedocs.com
 sphinx-rtd-theme
@@ -32,3 +35,8 @@ requests
 
 # Check README
 restructuredtext_lint
+
+# To manage dependencies
+pip-tools
+
+ipdb

@@ -1,16 +1,17 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import io
 import logging
 import os
-
 import pathlib
+
 import six
 
 from abilian.core.models.blob import Blob
+
 from ..base import Service
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ try:
 except ImportError:
     CLAMD_AVAILABLE = False
 
-CLAMD_CONF = {'StreamMaxLength': u'25M', 'MaxFileSize': u'25M'}
+CLAMD_CONF = {'StreamMaxLength': '25M', 'MaxFileSize': '25M'}
 CLAMD_STREAMMAXLENGTH = 26214400
 CLAMD_MAXFILESIZE = 26214400
 

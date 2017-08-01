@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import inspect
 from operator import attrgetter, itemgetter
+from typing import Callable, Optional
 
 from flask import Blueprint, url_for
 from whoosh.searching import Hit
@@ -60,7 +61,7 @@ class Registry(object):
             object_id = getter('id')(entity)
             object_type = getter('object_type')(entity)
 
-        url_func = self._map.get(object_type)
+        url_func = self._map.get(object_type)  # type: Optional[Callable]
         if url_func is not None:
             return url_func(entity, object_type, object_id, **kwargs)
 
