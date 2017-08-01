@@ -1,5 +1,6 @@
 # For running tests
 pytest>=2.4.0
+pytest-sugar
 pytest-xdist
 
 # needed to avoid a ResourceClosedError when using some CTE queries with 0 results:
@@ -36,3 +37,5 @@ restructuredtext_lint
 
 # To manage dependencies
 pip-tools
+
+ipdb
