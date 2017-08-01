@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from cgi import escape
 
 import sqlalchemy as sa
+from abilian.services import get_service
 from flask import current_app, render_template_string, request
 from flask_babel import format_datetime
 from flask_login import current_user
@@ -30,7 +31,7 @@ class JsonUsersList(base.JSONView):
     """
 
     def data(self, *args, **kw):
-        security = current_app.services['security']
+        security = get_service('security')
         length = int(kw.get("iDisplayLength", 0))
         start = int(kw.get("iDisplayStart", 0))
         sort_col = int(kw.get("iSortCol_0", 1))
@@ -143,7 +144,7 @@ class UserEdit(UserBase, views.ObjectEdit):
 
     def get_form_kwargs(self):
         kw = super(UserEdit, self).get_form_kwargs()
-        security = current_app.services['security']
+        security = get_service('security')
         roles = security.get_roles(self.obj, no_group_roles=True)
         kw['roles'] = [r.name for r in roles if r.assignable]
         return kw
@@ -169,7 +170,7 @@ class UserEdit(UserBase, views.ObjectEdit):
         return super(UserEdit, self).form_valid()
 
     def after_populate_obj(self):
-        security = current_app.services['security']
+        security = get_service('security')
         current_roles = security.get_roles(self.obj, no_group_roles=True)
         current_roles = set(r for r in current_roles if r.assignable)
         new_roles = {Role(r) for r in self.form.roles.data}

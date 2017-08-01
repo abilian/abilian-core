@@ -36,7 +36,7 @@ def get_entities_for_reindex(tags):
         tags = (tags,)
 
     session = current_app.db.session()
-    indexing = current_app.services['indexing']
+    indexing = get_service('indexing')
     tbl = Entity.__table__
     tag_ids = [t.id for t in tags]
     query = sa.sql \

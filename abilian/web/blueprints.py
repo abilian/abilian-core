@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from flask import Blueprint as BaseBlueprint
-from flask import current_app
 from six import string_types
 
 from abilian.services.security import Anonymous, Role
@@ -27,7 +26,8 @@ def allow_access_for_roles(roles):
         return allow_anonymous
 
     def check_role(user, roles, **kwargs):
-        security = current_app.services['security']
+        from abilian.services import get_service
+        security = get_service('security')
         return security.has_role(user, valid_roles)
 
     return check_role
@@ -40,7 +40,7 @@ class Blueprint(BaseBlueprint):
 
     def __init__(self, name, import_name, allowed_roles=None, **kwargs):
         """
-        :param roles: role or list of roles required to access any view in this
+        :param allowed_roles: role or list of roles required to access any view in this
             blueprint.
         """
         BaseBlueprint.__init__(self, name, import_name, **kwargs)

@@ -8,8 +8,6 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-from flask import current_app
-
 from .base import Service, ServiceState
 
 # Homegrown extensions.
@@ -39,4 +37,5 @@ settings_service = SettingsService()
 
 
 def get_service(service):
-    return current_app.services.get(service)
+    from flask import current_app
+    return current_app.services[service]

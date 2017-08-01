@@ -46,7 +46,7 @@ def autoescape(filter_func):
 def nl2br(value):
     """Replace newlines with <br />.
     """
-    result = escape(value).replace(u'\n', Markup(u'<br />\n'))
+    result = escape(value).replace('\n', Markup('<br />\n'))
     return result
 
 
@@ -57,14 +57,14 @@ _PARAGRAPH_RE = re.compile(r'(?:\r\n|\r|\n){2,}')
 def paragraphs(value):
     """Blank lines delimitates paragraphs.
     """
-    result = u'\n\n'.join(
-        (u'<p>{}</p>'.format(p.strip().replace('\n', Markup('<br />\n')))
+    result = '\n\n'.join(
+        ('<p>{}</p>'.format(p.strip().replace('\n', Markup('<br />\n')))
          for p in _PARAGRAPH_RE.split(escape(value))))
     return result
 
 
 def labelize(s):
-    return u" ".join([w.capitalize() for w in s.split(u"_")])
+    return " ".join([w.capitalize() for w in s.split(u"_")])
 
 
 def filesize(d):
@@ -102,7 +102,7 @@ def roughsize(size, above=20, mod=10):
     if size < above:
         return text_type(size)
 
-    return u'{:d}+'.format(size - size % mod)
+    return '{:d}+'.format(size - size % mod)
 
 
 def datetimeparse(s):
@@ -114,7 +114,7 @@ def datetimeparse(s):
     """
     try:
         dt = dateutil.parser.parse(s)
-    except:
+    except ValueError:
         return None
 
     return utc_dt(dt)
@@ -158,7 +158,7 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
             if remove_year:
                 date_fmt = date_fmt.replace('y', '').strip()
                 # remove leading or trailing spaces, comma, etc...
-                date_fmt = re.sub(u'^[^A-Za-z]*|[^A-Za-z]*$', u'', date_fmt)
+                date_fmt = re.sub('^[^A-Za-z]*|[^A-Za-z]*$', u'', date_fmt)
 
             fmt = fmt.format(time_fmt, date_fmt)
             return babel.format_datetime(dt, format=fmt)
@@ -179,7 +179,7 @@ def date_age(dt, now=None):
         return ""
 
     formatted_date = babel.format_datetime(dt, format='yyyy-MM-dd HH:mm')
-    return u"{} ({})".format(formatted_date, age(dt, now))
+    return "{} ({})".format(formatted_date, age(dt, now))
 
 
 @deprecated

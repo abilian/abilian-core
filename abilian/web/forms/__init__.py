@@ -8,9 +8,11 @@ import logging
 from collections import OrderedDict
 from functools import partial
 
+from abilian.services import get_service
 from flask import current_app, g, has_app_context
 from flask_login import current_user
 from flask_wtf.form import Form as BaseForm
+from six import string_types
 from wtforms.fields import HiddenField
 from wtforms.fields.core import Field
 from wtforms_alchemy import model_form_factory
@@ -158,8 +160,11 @@ class FormPermissions(object):
             else:
                 roles.extend(r)
 
-        svc = current_app.services['security']
-        return svc.has_role(user, role=roles, object=obj)
+        # TODO: replace w/: security = get_service('security')
+        # (Doing it now breaks a test)
+        security = current_app.services['security']
+        # security = get_service('security')
+        return security.has_role(user, role=roles, object=obj)
 
 
 class FormContext(object):

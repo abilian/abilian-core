@@ -11,6 +11,7 @@ from functools import partial
 import six
 import whoosh
 import whoosh.sorting
+from abilian.services import get_service
 from flask import Blueprint, current_app, g, render_template, request, url_for
 from six import text_type
 
@@ -87,7 +88,7 @@ _COUNT_OBJECT_TYPE_FACET = whoosh.sorting.FieldFacet(
 
 @route('')
 def search_main(q='', page=1):
-    svc = current_app.services['indexing']
+    svc = get_service('indexing')
     q = q.strip()
     page = int(request.args.get('page', page))
     search_kwargs = {'limit': page * PAGE_SIZE}
@@ -174,7 +175,7 @@ class Live(views.JSONView):
     def data(self, q='', page=None, *args, **kwargs):
         if not q:
             q = ''
-        svc = current_app.services['indexing']
+        svc = get_service('indexing')
         url_for_hit = svc.app_state.url_for_hit
         search_kwargs = {'facet_by_type': 5}
         response = {}

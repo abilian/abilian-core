@@ -18,6 +18,7 @@ from magic import Magic
 from six import raise_from, text_type
 
 from abilian.services.image import FIT, resize
+from typing import List
 
 from .service import ConversionError
 from .util import get_tmp_dir, make_temp_file
@@ -33,8 +34,8 @@ logger = logging.getLogger(__name__)
 class Handler(object):
     __metaclass__ = ABCMeta
 
-    accepts_mime_types = []
-    produces_mime_types = []
+    accepts_mime_types = []  # type: List[str]
+    produces_mime_types = []  # type: List[str]
 
     def __init__(self, *args, **kwargs):
         self.log = logger.getChild(self.__class__.__name__)

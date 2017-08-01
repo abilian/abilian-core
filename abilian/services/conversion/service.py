@@ -29,8 +29,8 @@ from abilian.services.conversion.util import make_temp_file
 
 logger = logging.getLogger(__name__)
 
-# Hack for Mac OS + homebrew
-os.environ['PATH'] += ":/usr/local/bin"
+# # Hack for Mac OS + homebrew
+# os.environ['PATH'] += ":/usr/local/bin"
 
 TMP_DIR = "tmp"
 CACHE_DIR = "cache"

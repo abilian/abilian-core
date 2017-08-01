@@ -12,6 +12,7 @@ from flask_debugtoolbar.panels import DebugPanel
 from six import text_type
 
 from abilian.web.action import actions
+from typing import List
 
 
 class ActionDebugPanel(DebugPanel):
@@ -67,7 +68,7 @@ class SignalsDebugPanel(DebugPanel):
     user_enable = True
     has_content = True
 
-    events = []
+    events = []  # type: List[dict]
 
     def nav_title(self):
         return 'Signals'

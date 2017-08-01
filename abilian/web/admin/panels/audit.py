@@ -44,7 +44,7 @@ class JSONUserSearch(JSONView):
     """
 
     def data(self, q, *args, **kwargs):
-        q = q.replace(u'%', u' ').strip().lower()
+        q = q.replace('%', ' ').strip().lower()
 
         if not q or len(q) < 2:
             raise InternalServerError()
@@ -52,7 +52,7 @@ class JSONUserSearch(JSONView):
         query = User.query
         lower = sa.sql.func.lower
         filters = []
-        for part in q.split(u' '):
+        for part in q.split(' '):
             filters.append(
                 sa.sql.or_(
                     lower(User.first_name).like(part + "%"),
@@ -60,7 +60,7 @@ class JSONUserSearch(JSONView):
 
         filters = sa.sql.and_(*filters) if len(filters) > 1 else filters[0]
 
-        if u'@' in q:
+        if '@' in q:
             # FIXME: where does this 'part' variable come from ?
             filters = sa.sql.or_(
                 lower(User.email).like('%' + part + '%'), filters)
@@ -73,10 +73,10 @@ class JSONUserSearch(JSONView):
             'results': [{
                 'id': obj.id,
                 'text':
-                u'{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)
+                    '{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)
             }
-                        for obj in query.values(User.id, User.first_name,
-                                                User.last_name, User.email)]
+                for obj in query.values(User.id, User.first_name,
+                                        User.last_name, User.email)]
         }
         return result
 
@@ -150,11 +150,11 @@ class AuditPanel(AdminPanel):
                 .order_by(model.happened_at.desc())
 
         if after:
-            after = datetime.strptime(after, u'%Y-%m-%dT%H:%M:%S.%f')
+            after = datetime.strptime(after, '%Y-%m-%dT%H:%M:%S.%f')
             audit_q = after_query(base_audit_q, AuditEntry, after)
             security_q = after_query(base_security_q, SecurityAudit, after)
         else:
-            before = (datetime.strptime(before, u'%Y-%m-%dT%H:%M:%S.%f')
+            before = (datetime.strptime(before, '%Y-%m-%dT%H:%M:%S.%f')
                       if before else datetime.utcnow())
             audit_q = before_query(base_audit_q, AuditEntry, before)
             security_q = before_query(base_security_q, SecurityAudit, before)
@@ -197,8 +197,8 @@ class AuditPanel(AdminPanel):
                 entries.append((e_date.date(), day_entries))
             day_entries.append(e)
 
-        top_date = u''
-        lowest_date = u''
+        top_date = ''
+        lowest_date = ''
 
         if entries:
             # top_date and lowest_date are converted to naive datetime (from UTC), so
@@ -220,12 +220,12 @@ class AuditPanel(AdminPanel):
                              lowest_date).limit(1),)
 
             if not any(q.limit(1).first() is not None for q in after_queries):
-                top_date = u''
+                top_date = ''
             else:
                 top_date = top_date.isoformat()
 
             if not any(q.first() is not None for q in before_queries):
-                lowest_date = u''
+                lowest_date = ''
             else:
                 lowest_date = lowest_date.isoformat()
 
@@ -257,9 +257,9 @@ class AuditPanel(AdminPanel):
 #
 class BaseEntryPresenter(object):
 
-    _USER_FMT = (u'<a href="{{ url_for("social.user", user_id=user.id) }}">'
+    _USER_FMT = ('<a href="{{ url_for("social.user", user_id=user.id) }}">'
                  '{{ user.name }}</a>')
-    _GROUP_FMT = (u'<a href="{{ url_for("social.group_home", group_id=group.id)'
+    _GROUP_FMT = ('<a href="{{ url_for("social.group_home", group_id=group.id)'
                   ' }}">{{ group.name }}</a>')
 
     def __init__(self, user, date):
@@ -306,16 +306,16 @@ class AuditEntryPresenter(BaseEntryPresenter):
             else:
                 entity_html = Markup(
                     render(
-                        u'<a href="{{ url }}">{{ entity.path or entity.name }}</a>',
+                        '<a href="{{ url }}">{{ entity.path or entity.name }}</a>',
                         url=entity_url,
                         entity=e.entity))
 
         if e.type == 0:
-            msg = _(u'{user} created {entity_type} {entity_id} "{entity}"')
+            msg = _('{user} created {entity_type} {entity_id} "{entity}"')
         elif e.related or e.op == 1:
-            msg = _(u'{user} made changes on {entity_type} {entity_id} "{entity}"')
+            msg = _('{user} made changes on {entity_type} {entity_id} "{entity}"')
         elif e.op == 2:
-            msg = _(u'{user} has deleted {entity_type}: {entity_id} "{entity}"')
+            msg = _('{user} has deleted {entity_type}: {entity_id} "{entity}"')
         else:
             raise Exception("Bad entry type: {}".format(e.type))
 
@@ -342,11 +342,11 @@ class SecurityEntryPresenter(BaseEntryPresenter):
         e = self.entry
 
         manager = render(
-            u'<img class="avatar" '
-            u'src="{{ user_photo_url(user=e.manager, size=16) }}" alt="" />'
-            u'<a href="'
+            '<img class="avatar" '
+            'src="{{ user_photo_url(user=e.manager, size=16) }}" alt="" />'
+            '<a href="'
             '{{ url_for("social.user", user_id=e.manager.id) }}">'
-            u'{{ e.manager.name }}</a>',
+            '{{ e.manager.name }}</a>',
             e=e)
 
         if self.entry.user:
@@ -354,9 +354,9 @@ class SecurityEntryPresenter(BaseEntryPresenter):
         elif self.entry.group:
             principal = render(self._GROUP_FMT, group=self.entry.group)
         else:
-            principal = u''
+            principal = ''
 
-        entity = u''
+        entity = ''
         if e.object_id:
             entity_url = None
             entity_name = e.object_name
@@ -365,28 +365,28 @@ class SecurityEntryPresenter(BaseEntryPresenter):
                 entity_url = url_for(e.object)
 
             entity = render(
-                u'{%- if url %}<a href="{{ url }}">{%- endif %}'
-                u'{{ name }}{%- if url %}</a>{%- endif %}',
+                '{%- if url %}<a href="{{ url }}">{%- endif %}'
+                '{{ name }}{%- if url %}</a>{%- endif %}',
                 url=entity_url,
                 name=entity_name)
 
             if e.op == e.SET_INHERIT:
-                msg = _(u'{manager} has activated inheritance on {entity}')
+                msg = _('{manager} has activated inheritance on {entity}')
             elif e.op == e.UNSET_INHERIT:
-                msg = _(u'{manager} has deactivated inheritance on {entity}')
+                msg = _('{manager} has deactivated inheritance on {entity}')
             elif e.op == e.GRANT:
-                msg = _(u'{manager} has given role "{role}" to {principal} '
+                msg = _('{manager} has given role "{role}" to {principal} '
                         'on {entity}')
             elif e.op == e.REVOKE:
-                msg = _(u'{manager} has revoked role "{role}" from '
+                msg = _('{manager} has revoked role "{role}" from '
                         '{principal} on {entity}')
             else:
                 raise Exception("Invalid entity op: {}".format(e.op))
         else:
             if e.op == e.GRANT:
-                msg = _(u'{manager} has given role "{role}" to {principal}')
+                msg = _('{manager} has given role "{role}" to {principal}')
             elif e.op == e.REVOKE:
-                msg = _(u'{manager} has revoked role "{role}" from {principal}')
+                msg = _('{manager} has revoked role "{role}" from {principal}')
             else:
                 raise Exception("Invalid entity op: {}".format(e.op))
 

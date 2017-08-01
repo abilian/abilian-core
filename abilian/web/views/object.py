@@ -9,6 +9,7 @@ import logging
 
 import six
 import sqlalchemy as sa
+from abilian.services import get_service
 from flask import current_app, flash, g, redirect, render_template, request, \
     url_for
 from six import text_type
@@ -650,7 +651,7 @@ class JSONWhooshSearch(JSONBaseSearch):
     """
 
     def get_results(self, q, *args, **kwargs):
-        svc = current_app.services['indexing']
+        svc = get_service('indexing')
         search_kwargs = {'limit': 50, 'Models': (self.Model,)}
         results = svc.search(q, **search_kwargs)
 
@@ -667,12 +668,11 @@ class JSONWhooshSearch(JSONBaseSearch):
                 elif 'name' in fields:
                     itemkey = 'name'
                 if itemkey:
-                    results = sorted(
-                        results, key=lambda it: it.fields().get(itemkey))
+                    results.sort(key=lambda it: it.fields().get(itemkey))
         except Exception:
             if itemkey is not None:
-                msg = "we could not sort whoosh results on fields' key {}.".format(
-                    itemkey)
+                msg = "we could not sort whoosh results on fields' key {}." \
+                        .format(itemkey)
                 logger.warning(msg)
 
         return results

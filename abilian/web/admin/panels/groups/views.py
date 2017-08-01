@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from cgi import escape
 
 import sqlalchemy as sa
+from abilian.services import get_service
 from flask import current_app, render_template_string, request
 from six import text_type
 from sqlalchemy.sql.expression import asc, desc, func, nullslast
@@ -28,7 +29,7 @@ class JsonGroupsList(base.JSONView):
     """
 
     def data(self, *args, **kw):
-        security = current_app.services['security']
+        security = get_service('security')
         length = int(kw.get("iDisplayLength", 0))
         start = int(kw.get("iDisplayStart", 0))
         sort_dir = kw.get("sSortDir_0", "asc")
@@ -128,7 +129,7 @@ class GroupView(GroupBase, views.ObjectView):
 
     @property
     def template_kwargs(self):
-        security = current_app.services['security']
+        security = get_service('security')
         kw = super(GroupView, self).template_kwargs
         members = list(self.obj.members)
         members.sort(key=lambda u: (u.last_name, u.first_name))
@@ -156,7 +157,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
 
     def get_form_kwargs(self):
         kw = super(GroupEdit, self).get_form_kwargs()
-        security = current_app.services['security']
+        security = get_service('security')
         roles = [
             r for r in security.get_roles(self.obj, no_group_roles=True)
             if r.assignable
@@ -165,7 +166,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
         return kw
 
     def after_populate_obj(self):
-        security = current_app.services['security']
+        security = get_service('security')
         current_roles = security.get_roles(self.obj, no_group_roles=True)
         current_roles = set(r for r in current_roles if r.assignable)
         new_roles = {Role(r) for r in self.form.roles.data}

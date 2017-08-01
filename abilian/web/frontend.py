@@ -24,7 +24,7 @@ from werkzeug.exceptions import BadRequest
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.i18n import _l
-from abilian.services import audit_service
+from abilian.services import audit_service, get_service
 from abilian.services.security import READ  # noqa
 from abilian.services.vocabularies.models import BaseVocabulary
 
@@ -185,7 +185,7 @@ class BaseEntityView(ModuleView):
         """
         :param view: a :class:`ObjectView` class or instance
         """
-        security = current_app.services['security']
+        security = get_service('security')
         return security.has_permission(current_user, view.permission, self.obj)
 
     @property
@@ -203,7 +203,7 @@ class BaseEntityView(ModuleView):
         cls_permissions = dict(self.Model.__default_permissions__)
 
         if self.permission in cls_permissions:
-            security = current_app.services['security']
+            security = get_service('security')
             return security.has_permission(
                 current_user,
                 create_cls.permission,
