@@ -33,20 +33,25 @@ logger = logging.getLogger(__name__)
 
 # Quick check for tests
 def has_pdftotext():
+    dev_null = open('/dev/null', 'wb')
     try:
-        status = subprocess.call("pdftotext", stderr=open('/dev/null', 'wb'))
+        status = subprocess.call("pdftotext", stderr=dev_null)
         return status == 0
     except:
         return False
+    finally:
+        dev_null.close()
 
 
 def has_libreoffice():
+    dev_null = open('/dev/null', 'wb')
     try:
-        status = subprocess.call(
-            ["libreoffice", "--help"], stderr=open('/dev/null', 'wb'))
+        status = subprocess.call(["soffice", "--help"], stdout=dev_null, stderr=dev_null)
         return status == 0
     except:
         return False
+    finally:
+        dev_null.close()
 
 
 HAS_PDFTOTEXT = has_pdftotext()

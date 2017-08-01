@@ -42,19 +42,19 @@ def test_pdf_to_text(converter):
     text = converter.to_text("", blob, "application/pdf")
 
 
-def XXXtest_word_to_text(converter):
+def test_word_to_text(converter):
     blob = read_file("test.doc")
     text = converter.to_text("", blob, "application/msword")
 
 
-def XXXtest_wordx_to_text(converter):
+def test_wordx_to_text(converter):
     blob = read_file("test.docx")
     text = converter.to_text("", blob, "application/msword")
 
 
-def XXXtest_excel_to_text(converter):
-    blob = read_file("test.xls")
-    text = converter.to_text("", blob, "application/excel")
+# def test_excel_to_text(converter):
+#     blob = read_file("test.xls")
+#     text = converter.to_text("", blob, "application/excel")
 
 
 # To PDF
