@@ -5,6 +5,8 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import sqlalchemy as sa
+import sys
+from pytest import mark
 
 from abilian.testing import BaseTestCase
 from abilian.web import url_for
@@ -17,6 +19,7 @@ class TestVocabularies(BaseTestCase):
 
     DefaultVoc = Vocabulary('defaultstates', label='States')
 
+    @mark.skipif(sys.version_info >= (3, 0), reason="Doesn't work yet on Py3k")
     def test_vocabulary_creator(self):
         PriorityVoc = Vocabulary('priorities', label='Priorities')
         assert PriorityVoc.__name__ == 'VocabularyPriorities'

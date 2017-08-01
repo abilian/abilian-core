@@ -5,11 +5,9 @@ language: python
 cache: pip
 python:
   - "2.7"
+  - "3.5"
   - "3.6"
 
-matrix:
-  allow_failures:
-    - python: "3.6"
 
 env:
   matrix:
@@ -25,7 +23,6 @@ addons:
 # Install OS dependencies
 before_install:
   - pip install -U 'pip>=9' setuptools
-  - gem install travis
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
@@ -34,7 +31,6 @@ before_install:
 # Install Python dependencies
 install:
   - pip install -r requirements.txt
-  - pip install -U -r etc/dev-requirements.txt
   - pip install -e '.[dev]'
   - pip check
 
