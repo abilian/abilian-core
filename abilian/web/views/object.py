@@ -81,8 +81,9 @@ class BaseObjectView(View):
 
     def init_object(self, args, kwargs):
         """
-        This method is reponsible for setting :attr:`obj`. It is called during
-        :meth:`prepare_args`.
+        This method is reponsible for setting :attr:`obj`.
+
+        It is called during :meth:`prepare_args`.
         """
         self.object_id = kwargs.pop(self.pk, None)
         if self.object_id is not None:
@@ -107,8 +108,9 @@ class BaseObjectView(View):
     @property
     def template_kwargs(self):
         """
-        Template render arguments. You can override `base_template` for
-        instance. Only `view` cannot be overriden.
+        Get template render arguments.
+
+        You may override `base_template` for instance. Only `view` cannot be overriden.
         """
         return {}
 
@@ -376,14 +378,15 @@ class ObjectEdit(ObjectView):
             session.flush()
             self.send_activity()
             session.commit()
+
         except ValidationError as e:
             rv = self.handle_commit_exception(e)
             if rv is not None:
                 return rv
             session.rollback()
             flash(str(e), "error")
-
             return self.get()
+
         except sa.exc.IntegrityError as e:
             rv = self.handle_commit_exception(e)
             if rv is not None:
@@ -393,6 +396,7 @@ class ObjectEdit(ObjectView):
             flash(_("An entity with this name already exists in the system."),
                   "error")
             return self.get()
+
         else:
             self.commit_success()
             flash(self.message_success(), "success")
