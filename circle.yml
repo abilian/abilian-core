@@ -15,5 +15,5 @@ dependencies:
 
 test:
   override:
-    - tox
+    - tox -e py27
  

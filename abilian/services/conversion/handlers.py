@@ -436,7 +436,7 @@ class LibreOfficePdfHandler(Handler):
                         "Conversion timeout ({})".format(timeout))
 
                 out_fn = os.path.splitext(in_fn)[0] + ".pdf"
-                converted = open(out_fn).read()
+                converted = open(out_fn, 'rb').read()
                 return converted
             finally:
                 self._process = None
