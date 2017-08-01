@@ -107,7 +107,9 @@ def setup_default_permissions(session, instance):
 def _setup_default_permissions(instance):
     """Separate method to conveniently call it from scripts for example.
     """
-    security = current_app.services['security']
+    from abilian.services import get_service
+
+    security = get_service('security')
     for permission, roles in instance.__default_permissions__:
         if permission == u'create':
             # use str for comparison instead of `abilian.services.security.CREATE`
@@ -148,7 +150,9 @@ BaseMeta = db.Model.__class__
 class EntityQuery(db.Model.query_class):
 
     def with_permission(self, permission, user=None):
-        security = current_app.services['security']
+        from abilian.services import get_service
+
+        security = get_service('security')
         if hasattr(self, '_query_entity_zero'):
             # SQLAlchemy 1.1+
             model = self._query_entity_zero().entity_zero.entity
@@ -398,11 +402,14 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         """
         from abilian.services.indexing import indexable_role
         from abilian.services.security import READ, Admin, Anonymous, Creator, Owner
+        from abilian.services import get_service
+
         result = []
-        svc = current_app.services['security']
+        security = get_service('security')
 
         # roles - required to match when user has a global role
-        assignments = svc.get_permissions_assignments(permission=READ, obj=self)
+        assignments = security.get_permissions_assignments(
+            permission=READ, obj=self)
         allowed_roles = assignments.get(READ, set())
         allowed_roles.add(Admin)
 
@@ -419,7 +426,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
         # users and groups
         principals = set()
-        for user, role in svc.get_role_assignements(self):
+        for user, role in security.get_role_assignements(self):
             if role in allowed_roles:
                 principals.add(user)
 

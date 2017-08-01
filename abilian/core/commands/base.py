@@ -56,7 +56,7 @@ def _log_config(config):
     lines = ["Application configuration:"]
 
     if config.get('CONFIGURED'):
-        settings = current_app.services['settings']
+        settings = get_service("settings")
         try:
             db_settings = set(settings.namespace('config').keys())
         except sa.exc.ProgrammingError:

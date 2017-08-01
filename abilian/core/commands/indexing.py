@@ -15,6 +15,8 @@ from sqlalchemy.orm.session import Session
 from tqdm import tqdm
 from whoosh.writing import CLEAR, AsyncWriter
 
+from abilian.services import get_service
+
 from .base import manager
 
 STOP = object()
@@ -33,13 +35,13 @@ def reindex(clear=False, progressive=False, batch_size=None):
                      index. Unused in single transaction mode. If `None` then
                      all documents of same content type are written at once.
     """
-    svc = current_app.services['indexing']
-    adapted = svc.adapted
-    index = svc.app_state.indexes['default']
+    index_service = get_service('indexing')
+    adapted = index_service.adapted
+    index = index_service.app_state.indexes['default']
     session = Session(
         bind=current_app.db.session.get_bind(None, None), autocommit=True)
 
-    setattr(session, '_model_changes', {})  # please flask-sqlalchemy <= 1.0
+    session._model_changes = {}  # please flask-sqlalchemy <= 1.0
     indexed = set()
     cleared = set()
     if batch_size is not None:
@@ -49,9 +51,9 @@ def reindex(clear=False, progressive=False, batch_size=None):
     strategy = strategy(
         index, clear=clear, progressive=progressive, batch_size=batch_size)
     next(strategy)  # starts generator
-    count_indexed = 0
 
-    for cls in sorted(svc.app_state.indexed_classes, key=lambda c: c.__name__):
+    for cls in sorted(
+            index_service.app_state.indexed_classes, key=lambda c: c.__name__):
         current_object_type = cls._object_type()
 
         if not clear and current_object_type not in cleared:
@@ -97,7 +99,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     if object_key in indexed:
                         bar.update(1)
                         continue
-                    document = svc.get_document(obj, adapter)
+                    document = index_service.get_document(obj, adapter)
                     strategy.send(document)
                     indexed.add(object_key)
 
