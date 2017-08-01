@@ -187,7 +187,7 @@ class FieldsTestCase(BaseTestCase):
             assert obj.dt == datetime.datetime(1789, 6, 17, 10, 42)
 
     def test_datetimefield_force_4digit_year(self):
-        # use 'en': short date pattern is u'M/d/yy'
+        # use 'en': short date pattern is 'M/d/yy'
         headers = {'Accept-Language': 'en'}
         with self.app.test_request_context(headers=headers):
             f = fields.DateTimeField().bind(Form(), 'dt')
@@ -206,7 +206,7 @@ class FieldsTestCase(BaseTestCase):
             assert f._value() == u'17/06/1789'
 
     def test_datefield_force_4digit_year(self):
-        # use 'en': short date pattern is u'M/d/yy'
+        # use 'en': short date pattern is 'M/d/yy'
         headers = {'Accept-Language': 'en'}
         with self.app.test_request_context(headers=headers):
             f = fields.DateField().bind(Form(), 'dt')
