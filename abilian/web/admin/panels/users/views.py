@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, \
 from cgi import escape
 
 import sqlalchemy as sa
-from abilian.services import get_service
 from flask import current_app, render_template_string, request
 from flask_babel import format_datetime
 from flask_login import current_user
@@ -16,6 +15,7 @@ from werkzeug.datastructures import MultiDict
 
 from abilian.core.models.subjects import User, gen_random_password
 from abilian.i18n import _
+from abilian.services import get_service
 from abilian.services.security.models import Admin, Role
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.util import url_for

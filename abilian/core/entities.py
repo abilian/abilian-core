@@ -105,7 +105,7 @@ def setup_default_permissions(session, instance):
 
 
 def _setup_default_permissions(instance):
-    """eparate method to conveniently call it from scripts for example.
+    """Separate method to conveniently call it from scripts for example.
     """
     security = current_app.services['security']
     for permission, roles in instance.__default_permissions__:

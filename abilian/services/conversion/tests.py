@@ -8,6 +8,8 @@ from warnings import warn
 import pytest
 from magic import Magic, os
 
+from abilian.services.conversion.handlers import HAS_PDFTOTEXT
+
 BASEDIR = join(dirname(__file__), "dummy_files")
 
 mime_sniffer = Magic(mime=True)
@@ -33,6 +35,8 @@ def read_file(fn, mode='rb'):
 
 
 # To text
+@pytest.mark.skipif(
+    not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_pdf_to_text(converter):
     blob = read_file("onepage.pdf")
     text = converter.to_text("", blob, "application/pdf")
@@ -73,6 +77,8 @@ def test_image_to_pdf(converter):
 
 
 # To images
+@pytest.mark.skipif(
+    not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_pdf_to_images(converter):
     if not os.popen("which pdftoppm").read().strip():
         warn("pdftoppm not found, skipping test")

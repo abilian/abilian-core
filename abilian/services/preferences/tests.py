@@ -4,10 +4,10 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from flask import current_app
 from flask_login import current_user
 
 from abilian.core.models.subjects import User
+from abilian.services import get_service
 from abilian.testing import BaseTestCase
 
 from .models import UserPreference
@@ -29,8 +29,8 @@ class AdminPanel(PreferencePanel):
     id = label = 'admin'
 
     def is_accessible(self):
-        security_service = current_app.services['security']
-        return security_service.has_role(current_user, "admin")
+        security = get_service('security')
+        return security.has_role(current_user, "admin")
 
     def get(self):
         return 'Admin'

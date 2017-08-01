@@ -6,13 +6,13 @@ from __future__ import absolute_import, division, print_function, \
 
 from datetime import timedelta
 
-from abilian.services import get_service
 from flask import current_app, flash, redirect, render_template, request, \
     url_for
 from flask_babel import gettext as _
 from flask_babel import lazy_gettext as _l
 from jinja2 import Template
 
+from abilian.services import get_service
 from abilian.web import csrf
 
 from ..panel import AdminPanel

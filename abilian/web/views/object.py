@@ -9,7 +9,6 @@ import logging
 
 import six
 import sqlalchemy as sa
-from abilian.services import get_service
 from flask import current_app, flash, g, redirect, render_template, request, \
     url_for
 from six import text_type
@@ -18,6 +17,7 @@ from werkzeug.exceptions import BadRequest, NotFound
 from abilian.core.entities import ValidationError
 from abilian.core.signals import activity
 from abilian.i18n import _, _l
+from abilian.services import get_service
 from abilian.services.security import CREATE, DELETE, READ, WRITE
 
 from .. import csrf, forms, nav

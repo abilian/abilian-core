@@ -17,7 +17,8 @@ from datetime import datetime, timedelta
 
 import bcrypt
 import sqlalchemy as sa
-from flask_login import UserMixin, current_app
+from flask import current_app
+from flask_login import UserMixin
 from six import python_2_unicode_compatible, text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -159,7 +160,7 @@ class User(Principal, UserMixin, db.Model):
 
     __password_strategy__ = BcryptPasswordStrategy()
 
-    entity_type = u'{}.{}'.format(__module__, 'User')
+    entity_type = '{}.{}'.format(__module__, 'User')
 
     query_class = UserQuery
 

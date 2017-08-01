@@ -7,13 +7,13 @@ from __future__ import absolute_import, division, print_function, \
 from cgi import escape
 
 import sqlalchemy as sa
-from abilian.services import get_service
 from flask import current_app, render_template_string, request
 from six import text_type
 from sqlalchemy.sql.expression import asc, desc, func, nullslast
 
 from abilian.core.models.subjects import Group, User
 from abilian.i18n import _l
+from abilian.services import get_service
 from abilian.services.security.models import Role
 from abilian.web.action import ButtonAction, FAIcon
 from abilian.web.nav import BreadcrumbItem

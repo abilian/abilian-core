@@ -13,12 +13,12 @@ import threading
 import traceback
 from abc import ABCMeta, abstractmethod
 from base64 import decodestring, encodestring
+from typing import List
 
 from magic import Magic
 from six import raise_from, text_type
 
 from abilian.services.image import FIT, resize
-from typing import List
 
 from .service import ConversionError
 from .util import get_tmp_dir, make_temp_file
@@ -76,6 +76,10 @@ class Handler(object):
     @abstractmethod
     def convert(self, key, **kw):
         pass
+
+
+HAS_PDFTOTEXT = subprocess.call(
+    "pdftotext", stderr=open('/dev/null', 'wb')) == 0
 
 
 class PdfToTextHandler(Handler):

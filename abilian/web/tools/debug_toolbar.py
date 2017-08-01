@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import sys
+from typing import List
 
 from blinker import Namespace, Signal
 from flask import current_app, g
@@ -12,7 +13,6 @@ from flask_debugtoolbar.panels import DebugPanel
 from six import text_type
 
 from abilian.web.action import actions
-from typing import List
 
 
 class ActionDebugPanel(DebugPanel):
