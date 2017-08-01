@@ -9,6 +9,7 @@ from flask_debugtoolbar.panels import DebugPanel
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import Group
 from abilian.i18n import _
+from abilian.services import get_service
 from abilian.web.action import actions
 
 from .models import Anonymous
@@ -52,13 +53,13 @@ class SecurityInfoDebugPanel(DebugPanel):
 
     def content(self):
         obj = self.current_obj
-        svc = current_app.services['security']
+        security = get_service('security')
         context = self.context.copy()
 
-        context['permissions'] = svc.get_permissions_assignments(obj=obj)
+        context['permissions'] = security.get_permissions_assignments(obj=obj)
         context['roles'] = roles = dict()
 
-        for principal, r in svc.get_role_assignements(obj=obj):
+        for principal, r in security.get_role_assignements(obj=obj):
             if r not in roles:
                 roles[r] = dict(anonymous=False, users=set(), groups=set())
 

@@ -31,6 +31,17 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def has_pdftotext():
+    try:
+        status = subprocess.call("pdftotext", stderr=open('/dev/null', 'wb'))
+        return status == 0
+    except:
+        return False
+
+
+HAS_PDFTOTEXT = has_pdftotext()
+
+
 class Handler(object):
     __metaclass__ = ABCMeta
 
@@ -76,10 +87,6 @@ class Handler(object):
     @abstractmethod
     def convert(self, key, **kw):
         pass
-
-
-HAS_PDFTOTEXT = subprocess.call(
-    "pdftotext", stderr=open('/dev/null', 'wb')) == 0
 
 
 class PdfToTextHandler(Handler):

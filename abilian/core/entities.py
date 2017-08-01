@@ -455,20 +455,6 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         return u' '.join(text_type(t.label) for t in self._indexable_tags)
 
     def clone(self):
-        """Copy an entity: copy every field, except the id and sqlalchemy
-        internals, without forgetting about the n-n relationships.
-
-        Specifically, in implementing this method you should ensure to
-        remove the id and `_sa_instance_state`. Then you will add the
-        n-n relationships.
-
-        - return: the newly created entity
-
-        """
-        raise NotImplementedError
-
-
-    def clone(self):
         """
         Copy an entity: copy every field, except the id and sqlalchemy
         internals, without forgetting about the n-n relationships.
