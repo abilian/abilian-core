@@ -19,6 +19,7 @@ pytest-cov
 flake8
 flake8-tidy-imports
 flake8-truveris
+flake8-mutable
 pylint
 
 # These two plugins try too hard..

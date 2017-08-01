@@ -75,7 +75,7 @@ class ModelFormField(FormField, BaseModelFormField):
 
 class FilterFieldListMixin(object):
 
-    def validate(self, form, extra_validators=tuple()):
+    def validate(self, form, extra_validators=()):
         to_remove = []
         for field in self.entries:
             is_subform = isinstance(field, BaseFormField)
