@@ -8,7 +8,6 @@ import mimetypes
 import os
 import re
 import subprocess
-import sys
 import threading
 import traceback
 from abc import ABCMeta, abstractmethod
@@ -414,7 +413,7 @@ class LibreOfficePdfHandler(Handler):
                     self._process.communicate()
                 except Exception as e:
                     logger.error('soffice error: %s', bytes(e), exc_info=True)
-                    raise_from(ConversionError('unoconv failed'), e)
+                    raise_from(ConversionError('soffice conversion failed'), e)
 
             run_thread = threading.Thread(target=run_soffice)
             run_thread.start()

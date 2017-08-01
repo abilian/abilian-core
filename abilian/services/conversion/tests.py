@@ -42,11 +42,13 @@ def test_pdf_to_text(converter):
     text = converter.to_text("", blob, "application/pdf")
 
 
+@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_word_to_text(converter):
     blob = read_file("test.doc")
     text = converter.to_text("", blob, "application/msword")
 
 
+@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_wordx_to_text(converter):
     blob = read_file("test.docx")
     text = converter.to_text("", blob, "application/msword")
