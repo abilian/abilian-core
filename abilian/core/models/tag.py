@@ -8,7 +8,7 @@ import abc
 from functools import total_ordering
 
 import sqlalchemy as sa
-from six import python_2_unicode_compatible, text_type
+from six import python_2_unicode_compatible, text_type, add_metaclass
 
 from abilian.core.entities import Entity
 
@@ -18,8 +18,9 @@ from .base import IdMixin, Model
 TAGS_ATTR = '__tags__'
 
 
+@add_metaclass(abc.ABCMeta)
 class SupportTagging(object):
-    __metaclass__ = abc.ABCMeta
+    pass
 
 
 def register(cls):

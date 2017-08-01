@@ -11,7 +11,7 @@ from operator import attrgetter
 
 import sqlalchemy as sa
 from flask import current_app
-from six import string_types
+from six import string_types, add_metaclass
 from whoosh.fields import TEXT
 
 from abilian.core.extensions import db
@@ -23,12 +23,12 @@ __all__ = ['SchemaAdapter', 'SAAdapter']
 logger = logging.getLogger(__name__)
 
 
+@add_metaclass(ABCMeta)
 class SchemaAdapter(object):
     """
     Abstract base class for objects to schema adapter. The purpose of adapters is
     that given an object they return kwargs for document.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, Model, schema):
         """

@@ -354,7 +354,7 @@ class SecurityTestCase(IntegrationTestCase):
 
         # Owner / Creator
         for role in (Owner, Creator):
-            pa = PermissionAssignment(role=Owner, permission=READ, object=obj)
+            pa = PermissionAssignment(role=role, permission=READ, object=obj)
             self.session.add(pa)
             self.session.flush()
             assert has_permission(user, READ, obj=obj)

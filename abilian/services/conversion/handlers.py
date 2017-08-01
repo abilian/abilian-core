@@ -15,7 +15,7 @@ from base64 import decodestring, encodestring
 from typing import List
 
 from magic import Magic
-from six import raise_from, text_type
+from six import raise_from, text_type, add_metaclass
 
 from abilian.services.image import FIT, resize
 
@@ -58,9 +58,9 @@ HAS_PDFTOTEXT = has_pdftotext()
 HAS_LIBREOFFICE = has_libreoffice()
 
 
+@add_metaclass(ABCMeta)
 class Handler(object):
     """Abstract base class for handlers."""
-    __metaclass__ = ABCMeta
 
     accepts_mime_types = []  # type: List[str]
     produces_mime_types = []  # type: List[str]

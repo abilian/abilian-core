@@ -36,12 +36,12 @@ _dialects = OrderedDict((
 
 _dialects_unavailable = OrderedDict()
 
-for dialect, label in six.iteritems(_dialects):
+for dialect, _label in _dialects.items():
     d = sa.dialects.registry.load(dialect)
     try:
         d.dbapi()
     except ImportError as e:
-        _dialects_unavailable[dialect] = e.message
+        _dialects_unavailable[dialect] = str(e)
 
 # enumerate steps for left column progress
 Step = namedtuple('SetupStep', ('name', 'endpoint', 'title', 'description'))
@@ -183,7 +183,7 @@ def step_db_validate():
     try:
         conn = engine.connect()
     except sa.exc.OperationalError as e:
-        error = e.message
+        error = str(e)
     else:
         conn.close()
         del conn

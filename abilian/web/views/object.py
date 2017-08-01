@@ -381,10 +381,7 @@ class ObjectEdit(ObjectView):
             if rv is not None:
                 return rv
             session.rollback()
-            if six.PY2:
-                flash(e.message, "error")
-            else:
-                flash(str(e.args), "error")  # TODO: does it work?
+            flash(str(e), "error")
 
             return self.get()
         except sa.exc.IntegrityError as e:

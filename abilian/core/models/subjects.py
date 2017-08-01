@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin
-from six import python_2_unicode_compatible, text_type
+from six import python_2_unicode_compatible, text_type, add_metaclass
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
@@ -69,9 +69,8 @@ def gen_random_password(length=15):
     return u''.join(rg.choice(_RANDOM_PASSWORD_CHARS) for i in range(length))
 
 
+@add_metaclass(ABCMeta)
 class PasswordStrategy(object):
-
-    __metaclass__ = ABCMeta
 
     @abstractproperty
     def name(self):

@@ -243,7 +243,7 @@ def reset_password_post(token):
 
 def random_password():
     pw = []
-    for i in range(0, 10):
+    for _i in range(0, 10):
         pw.append(random.choice(string.letters + string.digits))
     return pw
 
@@ -259,6 +259,7 @@ def get_serializer(name):
 
 
 def send_reset_password_instructions(user):
+    # type: (User) -> None
     """Send the reset password instructions email for the specified user.
 
     :param user: The user to send the instructions to

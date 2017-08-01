@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 import abc
 
 import sqlalchemy as sa
+from six import add_metaclass
 from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
 from sqlalchemy.orm import backref, relationship
 
@@ -18,8 +19,9 @@ from .blob import Blob
 ATTRIBUTE = '__attachments__'
 
 
+@add_metaclass(abc.ABCMeta)
 class SupportAttachment(object):
-    __metaclass__ = abc.ABCMeta
+    pass
 
 
 def register(cls):
