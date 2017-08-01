@@ -61,13 +61,13 @@ def XXXtest_excel_to_text(converter):
 def test_odt_to_pdf(converter):
     blob = read_file("test.odt")
     pdf = converter.to_pdf("", blob, "application/vnd.oasis.opendocument.text")
-    assert b"application/pdf" == mime_sniffer.from_buffer(pdf)
+    assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
 
 def test_word_to_pdf(converter):
     blob = read_file("test.doc")
     pdf = converter.to_pdf("", blob, "application/msword")
-    assert b"application/pdf" == mime_sniffer.from_buffer(pdf)
+    assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
 
 def test_image_to_pdf(converter):
@@ -88,7 +88,9 @@ def test_pdf_to_images(converter):
     assert "image/jpeg" == mime_sniffer.from_buffer(image)
 
 
+@pytest.mark.skipif(
+    not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_word_to_images(converter):
     blob = read_file("test.doc")
     image = converter.to_image("", blob, "application/msword", 0)
-    assert b"image/jpeg" == mime_sniffer.from_buffer(image)
+    assert "image/jpeg" == mime_sniffer.from_buffer(image)
