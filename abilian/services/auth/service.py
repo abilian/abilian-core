@@ -164,6 +164,8 @@ class AuthService(Service):
         `before_request` handler to check if user should be redirected to login
         page.
         """
+        from abilian.services import get_service
+
         if current_app.testing and current_app.config.get("NO_LOGIN"):
             # Special case for tests
             user = User.query.get(0)
@@ -172,7 +174,8 @@ class AuthService(Service):
 
         state = self.app_state
         user = current_user._get_current_object()
-        roles = frozenset(current_app.services['security'].get_roles(user))
+        security = get_service('security')
+        roles = frozenset(security.get_roles(user))
         endpoint = request.endpoint
         bp = request.blueprint
 

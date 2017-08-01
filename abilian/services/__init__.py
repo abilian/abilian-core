@@ -38,4 +38,5 @@ settings_service = SettingsService()
 
 def get_service(service):
     from flask import current_app
+
     return current_app.services[service]

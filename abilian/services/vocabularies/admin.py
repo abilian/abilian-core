@@ -5,6 +5,7 @@ Admin panel for vocabularies
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from abilian.services import get_service
 from flask import current_app, g, redirect, render_template, request
 
 from abilian.i18n import _, _l
@@ -19,7 +20,7 @@ _MARKER = object()
 
 
 class ViewBase(object):
-    title = _l(u'Vocabulary entry')
+    title = _l('Vocabulary entry')
     base_template = "admin/_base.html"
     Form = EditForm
     Model = None
@@ -65,22 +66,18 @@ class VocabularyPanel(AdminPanel):
     Vocabularies administration
     """
     id = 'vocabularies'
-    label = _l(u'Vocabularies')
+    label = _l('Vocabularies')
     icon = 'list'
-
-    @property
-    def svc(self):
-        return current_app.services['vocabularies']
 
     def voc_edit_url(self, item):
         return url_for(
             '.' + self.id + '_edit',
-            group=item.Meta.group or u'_',
+            group=item.Meta.group or '_',
             Model=item.Meta.name,
             object_id=item.id)
 
     def get(self):
-        svc = self.svc
+        svc = get_service('vocabularies')
         return render_template(
             'admin/vocabularies.html',
             service=svc,
@@ -90,8 +87,8 @@ class VocabularyPanel(AdminPanel):
 
     def post(self):
         data = request.form
-        group = data.get('group', u'').strip()
-        Model = data.get('Model', u'').strip()
+        group = data.get('group', '').strip()
+        Model = data.get('Model', '').strip()
         return_to = data.get('return_to')
         return_endpoint = '.vocabularies'
         return_args = {}
@@ -105,11 +102,11 @@ class VocabularyPanel(AdminPanel):
         if not Model:
             return do_return()
 
-        if not group or group == u'_':
+        if not group or group == '_':
             # default group
             group = None
 
-        svc = self.svc
+        svc = get_service('vocabularies')
         Model = svc.get_vocabulary(name=Model, group=group)
         if not Model:
             return do_return()
@@ -158,21 +155,25 @@ class VocabularyPanel(AdminPanel):
         return do_return()
 
     def group_view(self, group):
-        groups = self.svc.grouped_vocabularies
+        svc = get_service('vocabularies')
+
+        groups = svc.grouped_vocabularies
         vocabularies = groups.get(group)
 
         return render_template(
             'admin/vocabularies.html',
-            service=self.svc,
+            service=svc,
             url_for_voc_edit=self.voc_edit_url,
             icon_checked=Glyphicon('check'),
             vocabularies={group: vocabularies},
             edit_return_to='group')
 
     def model_view(self, Model, group=None):
+        svc = get_service('vocabularies')
+
         return render_template(
             'admin/vocabularies.html',
-            service=self.svc,
+            service=svc,
             url_for_voc_edit=self.voc_edit_url,
             icon_checked=Glyphicon('check'),
             vocabularies={Model.Meta.group: [Model]},
@@ -196,7 +197,7 @@ class VocabularyPanel(AdminPanel):
         Model = view_args.pop('Model', None)
         group = view_args.pop('group', _MARKER)
 
-        if group == u'_':
+        if group == '_':
             # "General" group
             group = None
 
@@ -204,17 +205,17 @@ class VocabularyPanel(AdminPanel):
             view_args['group'] = group
 
         if Model is not None:
-            svc = self.svc
+            svc = get_service('vocabularies')
             Model = svc.get_vocabulary(name=Model, group=group)
             g.breadcrumb.append(BreadcrumbItem(
                 label=Model.Meta.group if group else _('Global'),
-                url=url_for('.vocabularies_group', group=group or u'_'),
+                url=url_for('.vocabularies_group', group=group or '_'),
             ))
             g.breadcrumb.append(
                 BreadcrumbItem(
                     label=Model.Meta.label,
                     url=url_for(
                         '.vocabularies_model',
-                        group=group or u'_',
+                        group=group or '_',
                         Model=Model.Meta.name),))
             view_args['Model'] = Model

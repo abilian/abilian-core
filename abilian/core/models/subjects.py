@@ -149,7 +149,10 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     del index_to
 
     def has_role(self, role):
-        return current_app.services['security'].has_role(self, role)
+        from abilian.services import get_service
+
+        security = get_service('security')
+        return security.has_role(self, role)
 
 
 @python_2_unicode_compatible

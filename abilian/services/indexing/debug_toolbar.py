@@ -4,6 +4,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from abilian.services import get_service
 from flask import current_app
 from flask_debugtoolbar.panels import DebugPanel
 
@@ -52,16 +53,17 @@ class IndexedTermsDebugPanel(DebugPanel):
 
     def content(self):
         obj = self.current_obj
-        svc = current_app.services['indexing']
-        index = svc.app_state.indexes['default']
+
+        index_service = get_service('indexing')
+        index = index_service.app_state.indexes['default']
         schema = index.schema
         context = self.context.copy()
         context['schema'] = schema
         context['sorted_fields'] = sorted(schema.names())
 
-        adapter = svc.adapted.get(fqcn(obj.__class__))
+        adapter = index_service.adapted.get(fqcn(obj.__class__))
         if adapter and adapter.indexable:
-            doc = context['current_document'] = svc.get_document(obj, adapter)
+            doc = context['current_document'] = index_service.get_document(obj, adapter)
             indexed = {}
             for name, field in schema.items():
                 value = doc.get(name)
