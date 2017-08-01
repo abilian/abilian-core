@@ -77,8 +77,12 @@ def reindex(clear=False, progressive=False, batch_size=None):
             print("*" * 79)
             print("{}".format(name))
             if count == 0:
+                print("*" * 79)
+                print("{}".format(name))
                 continue
 
+            print("*" * 79)
+            print("{}".format(name))
             count_current = 0
             with tqdm(total=count) as bar:
                 for obj in query.yield_per(1000):
@@ -97,8 +101,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     strategy.send(document)
                     indexed.add(object_key)
 
-                    if batch_size is not None and (count_current %
-                                                   batch_size) == 0:
+                    if batch_size is not None and (count_current % batch_size) == 0:
                         bar.update(1)
                         strategy.send(COMMIT)
 

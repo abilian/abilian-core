@@ -1,4 +1,5 @@
 # For running tests
+tox
 pytest>=2.4.0
 pytest-sugar
 pytest-xdist
