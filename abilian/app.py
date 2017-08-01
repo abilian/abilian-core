@@ -434,7 +434,7 @@ class Application(Flask, ServiceManager, PluginManager):
         except IOError:
             return config
 
-        # If the ennvar specifies a configuration file, it must exist
+        # If the env var specifies a configuration file, it must exist
         # (and execute with no exceptions) - we don't want the application
         # to run with an unprecised or insecure configuration.
         if self.CONFIG_ENVVAR in os.environ:
