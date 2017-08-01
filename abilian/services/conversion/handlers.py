@@ -31,6 +31,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+# Quick check for tests
 def has_pdftotext():
     try:
         status = subprocess.call("pdftotext", stderr=open('/dev/null', 'wb'))
@@ -39,10 +40,21 @@ def has_pdftotext():
         return False
 
 
+def has_libreoffice():
+    try:
+        status = subprocess.call(
+            ["libreoffice", "--help"], stderr=open('/dev/null', 'wb'))
+        return status == 0
+    except:
+        return False
+
+
 HAS_PDFTOTEXT = has_pdftotext()
+HAS_LIBREOFFICE = has_libreoffice()
 
 
 class Handler(object):
+    """Abstract base class for handlers."""
     __metaclass__ = ABCMeta
 
     accepts_mime_types = []  # type: List[str]

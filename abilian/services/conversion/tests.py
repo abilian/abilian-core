@@ -8,7 +8,7 @@ from warnings import warn
 import pytest
 from magic import Magic, os
 
-from abilian.services.conversion.handlers import HAS_PDFTOTEXT
+from abilian.services.conversion.handlers import HAS_LIBREOFFICE, HAS_PDFTOTEXT
 
 BASEDIR = join(dirname(__file__), "dummy_files")
 
@@ -58,12 +58,14 @@ def XXXtest_excel_to_text(converter):
 
 
 # To PDF
+@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_odt_to_pdf(converter):
     blob = read_file("test.odt")
     pdf = converter.to_pdf("", blob, "application/vnd.oasis.opendocument.text")
     assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
 
+@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_word_to_pdf(converter):
     blob = read_file("test.doc")
     pdf = converter.to_pdf("", blob, "application/msword")
