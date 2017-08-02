@@ -5,12 +5,14 @@ SRC=abilian
 # The package name
 PKG=abilian
 
-# On a 4 core laptop, 2 is optimal
-NCPU=2
+# FIXME: We have a parallelism issue with soffice conversion
+# NCPU ?= $(shell sysctl -n hw.ncpu || echo 1)
+NCPU=1
 
 # pytest-sugar seems to be incompatible with pytest-xdist
 # -s: no terminal capture.
-PYTEST_MULTI=-n $(NCPU) -p no:sugar -s
+# PYTEST_MULTI=-n $(NCPU) -p no:sugar -s
+PYTEST_MULTI=-n $(NCPU)
 
 
 all: test lint
