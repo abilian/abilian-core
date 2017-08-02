@@ -42,7 +42,9 @@ class TestAuth(BaseTestCase):
         # test "next" from referer
         referrer = url_root + u'/some/path'
         with self.app.test_request_context(
-                form_url(), headers=[('Referer', referrer)]):
+                form_url(),
+                headers=[('Referer', referrer)],
+        ):
             assert get_redirect_target() == referrer
 
         # don't cycle if coming from 'login.*' page, like this kind of cycle:
@@ -50,12 +52,15 @@ class TestAuth(BaseTestCase):
         # -> redirect(next = forgot password form) -> ...
         referrer = url_root + url_for('login.forgotten_pw')
         with self.app.test_request_context(
-                form_url(), headers=[('Referer', referrer)]):
+                form_url(),
+                headers=[('Referer', referrer)],
+        ):
             assert get_redirect_target() is None
 
         # test open redirect is forbidden
         with self.app.test_request_context(
-                form_url(next='http://google.com/test')):
+                form_url(next='http://google.com/test'),
+        ):
             assert get_redirect_target() is None
 
         # open redirect through malicious construct and browser not checking Location
@@ -64,7 +69,10 @@ class TestAuth(BaseTestCase):
 
     def test_login_post(self):
         kwargs = dict(
-            email='User@domain.tld', password='azerty', can_login=True)
+            email='User@domain.tld',
+            password='azerty',
+            can_login=True,
+        )
         u = User(**kwargs)
         self.session.add(u)
         self.session.commit()
@@ -86,7 +94,10 @@ class TestAuth(BaseTestCase):
 
     def test_api_post(self):
         kwargs = dict(
-            email='User@domain.tld', password='azerty', can_login=True)
+            email='User@domain.tld',
+            password='azerty',
+            can_login=True,
+        )
         u = User(**kwargs)
         self.session.add(u)
         self.session.commit()
@@ -94,14 +105,18 @@ class TestAuth(BaseTestCase):
         rv = self.client.post(
             '/user/api/login',
             data=json.dumps(kwargs),
-            content_type='application/json')
+            content_type='application/json',
+        )
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
-        self.assertEqual(rv.json,
-                         dict(
-                             email='User@domain.tld',
-                             username='user@domain.tld',
-                             fullname='Unknown',
-                             next_url=''))
+        self.assertEqual(
+            rv.json,
+            dict(
+                email='User@domain.tld',
+                username='user@domain.tld',
+                fullname='Unknown',
+                next_url='',
+            ),
+        )
 
         rv = self.client.post('/user/api/logout')
         self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
@@ -109,7 +124,10 @@ class TestAuth(BaseTestCase):
     def test_forgotten_pw(self):
         mail = self.app.extensions['mail']
         kwargs = dict(
-            email='User@domain.tld', password='azerty', can_login=True)
+            email='User@domain.tld',
+            password='azerty',
+            can_login=True,
+        )
         u = User(**kwargs)
         self.session.add(u)
         self.session.commit()
@@ -120,11 +138,16 @@ class TestAuth(BaseTestCase):
 
         with mail.record_messages() as outbox:
             rv = self.client.post('/user/forgotten_pw', data=kwargs)
-            self.assertEqual(rv.status_code, 302,
-                             "expected 302, got:" + rv.status)
+            self.assertEqual(
+                rv.status_code,
+                302,
+                "expected 302, got:" + rv.status,
+            )
             self.assertEqual(len(outbox), 1)
             msg = outbox[0]
-            self.assertEqual(msg.subject,
-                             u'Password reset instruction for Abilian Test')
+            self.assertEqual(
+                msg.subject,
+                u'Password reset instruction for Abilian Test',
+            )
             self.assertEqual(msg.recipients, [u'User@domain.tld'])
             self.assertEqual(msg.cc, [])

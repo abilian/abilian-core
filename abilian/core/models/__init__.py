@@ -10,9 +10,21 @@ from six import python_2_unicode_compatible
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.ext.declarative import declared_attr
 
-from .base import (Model, IdMixin, TimestampedMixin, EDITABLE, NOT_EDITABLE,
-                   AUDITABLE, AUDITABLE_HIDDEN, NOT_AUDITABLE, SEARCHABLE,
-                   NOT_SEARCHABLE, EXPORTABLE, NOT_EXPORTABLE, SYSTEM)
+from .base import (
+    Model,
+    IdMixin,
+    TimestampedMixin,
+    EDITABLE,
+    NOT_EDITABLE,
+    AUDITABLE,
+    AUDITABLE_HIDDEN,
+    NOT_AUDITABLE,
+    SEARCHABLE,
+    NOT_SEARCHABLE,
+    EXPORTABLE,
+    NOT_EXPORTABLE,
+    SYSTEM,
+)
 
 from .owned import OwnedMixin
 
@@ -29,7 +41,11 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
     def __repr__(self):
         return '<{} instance at 0x{:x} name={!r} id={}>'.format(
-            self.__class__.__name__, id(self), self.name, str(self.id))
+            self.__class__.__name__,
+            id(self),
+            self.name,
+            str(self.id),
+        )
 
     @property
     def column_names(self):
@@ -52,8 +68,10 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
         return json.dumps(self.to_dict())
 
     def _icon(self, size=12):
-        return "/static/icons/%s-%d.png" % (self.__class__.__name__.lower(),
-                                            size)
+        return "/static/icons/%s-%d.png" % (
+            self.__class__.__name__.lower(),
+            size,
+        )
 
     # FIXME: we can do better than that
     @property

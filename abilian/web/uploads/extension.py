@@ -27,7 +27,7 @@ CHUNK_SIZE = 64 * 1024
 DEFAULT_CONFIG = {
     'USER_QUOTA': 100 * 1024**2,  # max 100 Mb for all current files
     'USER_MAX_FILES': 1000,  # max number of files per user
-    'DELETE_STALLED_AFTER': 60 * 60 * 24  # delete files remaining after 1 day
+    'DELETE_STALLED_AFTER': 60 * 60 * 24,  # delete files remaining after 1 day
 }
 
 CLEANUP_SCHEDULE_ID = __name__ + '.periodic_clean_upload_directory'
@@ -86,8 +86,10 @@ class FileUploadsExtension(object):
         js_api['newFileUrl'] = url_for('uploads.new_file')
 
     def user_dir(self, user):
-        user_id = (str(user.id)
-                   if not isinstance(user, AnonymousUserMixin) else 'anonymous')
+        user_id = (
+            str(user.id)
+            if not isinstance(user, AnonymousUserMixin) else 'anonymous'
+        )
         return self.UPLOAD_DIR / user_id
 
     def add_file(self, user, file_obj, **metadata):
@@ -110,7 +112,10 @@ class FileUploadsExtension(object):
             meta_file = user_dir / '{}.metadata'.format(handle)
             with meta_file.open('wb') as out:
                 metadata_json = json.dumps(
-                    metadata, skipkeys=True, ensure_ascii=True)
+                    metadata,
+                    skipkeys=True,
+                    ensure_ascii=True,
+                )
                 if PY3:
                     metadata_json = metadata_json.encode('ascii')
                 out.write(metadata_json)
@@ -164,7 +169,8 @@ class FileUploadsExtension(object):
     def remove_file(self, user, handle):
         paths = (
             self.get_file(user, handle),
-            self.get_metadata_file(user, handle),)
+            self.get_metadata_file(user, handle),
+        )
 
         for file_path in paths:
             if file_path is not None:
@@ -185,14 +191,18 @@ class FileUploadsExtension(object):
 
         for user_dir in self.UPLOAD_DIR.iterdir():
             if not user_dir.is_dir():
-                logger.error('Found non-directory in upload dir: %r',
-                             bytes(user_dir))
+                logger.error(
+                    'Found non-directory in upload dir: %r',
+                    bytes(user_dir),
+                )
                 continue
 
             for content in user_dir.iterdir():
                 if not content.is_file():
-                    logger.error('Found non-file in user upload dir: %r',
-                                 bytes(content))
+                    logger.error(
+                        'Found non-file in user upload dir: %r',
+                        bytes(content),
+                    )
                     continue
 
                 if content.stat().st_ctime < minimum_age:

@@ -5,10 +5,10 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import datetime
+import sys
 
 import mock
 import pytz
-import sys
 from pytest import mark
 from wtforms.form import Form
 
@@ -102,7 +102,10 @@ def test_form_permissions_controller():
         # field roles
         has_role.reset_mock()
         fp = FormPermissions(
-            default=MarkRole, read=Anonymous, fields_read={'test': Owner})
+            default=MarkRole,
+            read=Anonymous,
+            fields_read={'test': Owner},
+        )
         fp.has_permission(READ)
         assert has_role.call_args[-1]['role'] == [Anonymous]
 
@@ -157,7 +160,13 @@ class FieldsTestCase(BaseTestCase):
             # 1789: applied offset for HongKong is equal to LMT+7:37:00,
             # thus we compare with tzinfo=user_tz
             assert f.data == datetime.datetime(
-                1789, 6, 17, 10, 42, tzinfo=USER_TZ)
+                1789,
+                6,
+                17,
+                10,
+                42,
+                tzinfo=USER_TZ,
+            )
             # UTC stored
             assert f.data.tzinfo is pytz.UTC
             # displayed in user current timezone
@@ -167,16 +176,34 @@ class FieldsTestCase(BaseTestCase):
             f.process_data(f.data)
             assert f.data.tzinfo is USER_TZ
             assert f.data == datetime.datetime(
-                1789, 6, 17, 10, 42, tzinfo=USER_TZ)
+                1789,
+                6,
+                17,
+                10,
+                42,
+                tzinfo=USER_TZ,
+            )
 
             f.populate_obj(obj, 'dt')
             assert obj.dt == datetime.datetime(
-                1789, 6, 17, 10, 42, tzinfo=USER_TZ)
+                1789,
+                6,
+                17,
+                10,
+                42,
+                tzinfo=USER_TZ,
+            )
 
             # test more recent date: offset is GMT+8
             f.process_formdata(['23/01/2011 | 10:42'])
             assert f.data == datetime.datetime(
-                2011, 1, 23, 2, 42, tzinfo=pytz.utc)
+                2011,
+                1,
+                23,
+                2,
+                42,
+                tzinfo=pytz.utc,
+            )
 
             # NAIVE mode: dates without timezone. Those are the problematic ones when
             # year < 1900: strptime will raise an Exception use naive dates; by
@@ -186,7 +213,13 @@ class FieldsTestCase(BaseTestCase):
             # UTC stored
             assert f.data.tzinfo is pytz.UTC
             assert f.data == datetime.datetime(
-                1789, 6, 17, 10, 42, tzinfo=pytz.UTC)
+                1789,
+                6,
+                17,
+                10,
+                42,
+                tzinfo=pytz.UTC,
+            )
 
             # naive stored
             f.populate_obj(obj, 'dt')

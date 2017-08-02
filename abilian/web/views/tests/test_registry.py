@@ -68,7 +68,9 @@ class TestRegistry(FlaskTestCase):
         obj = RegEntity(id=1)
 
         @self.app.route(
-            '/regentities_path/<int:object_id>/view', endpoint='regentity.view')
+            '/regentities_path/<int:object_id>/view',
+            endpoint='regentity.view',
+        )
         def dummy_default_view(object_id):
             pass
 

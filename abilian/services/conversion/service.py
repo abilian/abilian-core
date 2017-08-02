@@ -88,7 +88,8 @@ class Converter(object):
     def init_app(self, app):
         self.init_work_dirs(
             cache_dir=Path(app.instance_path, CACHE_DIR),
-            tmp_dir=Path(app.instance_path, TMP_DIR),)
+            tmp_dir=Path(app.instance_path, TMP_DIR),
+        )
 
         app.extensions['conversion'] = self
 
@@ -126,8 +127,10 @@ class Converter(object):
                 pdf = handler.convert(blob)
                 self.cache[cache_key] = pdf
                 return pdf
-        raise HandlerNotFound("No handler found to convert from %s to PDF" %
-                              mime_type)
+        raise HandlerNotFound(
+            "No handler found to convert from %s to PDF" %
+            mime_type,
+        )
 
     def to_text(self, digest, blob, mime_type):
         """Convert a file to plain text.
@@ -159,8 +162,10 @@ class Converter(object):
                 self.cache[cache_key] = text
                 return text
 
-        raise HandlerNotFound("No handler found to convert from %s to text" %
-                              mime_type)
+        raise HandlerNotFound(
+            "No handler found to convert from %s to text" %
+            mime_type,
+        )
 
     def has_image(self, digest, mime_type, index, size=500):
         """Tell if there is a preview image.
@@ -210,8 +215,10 @@ class Converter(object):
                     self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
                 return converted_images[index]
 
-        raise HandlerNotFound("No handler found to convert from %s to image" %
-                              mime_type)
+        raise HandlerNotFound(
+            "No handler found to convert from %s to image" %
+            mime_type,
+        )
 
     def get_metadata(self, digest, content, mime_type):
         """Get a dictionary representing the metadata embedded in the given
@@ -240,7 +247,8 @@ class Converter(object):
                     output = subprocess.check_output(['pdfinfo', in_fn])
                 except OSError:
                     logger.error(
-                        "Conversion failed, probably pdfinfo is not installed")
+                        "Conversion failed, probably pdfinfo is not installed",
+                    )
                     raise
 
             ret = {}
@@ -249,7 +257,9 @@ class Converter(object):
                     key, value = line.strip().split(b":", 1)
                     key = text_type(key)
                     ret["PDF:" + key] = text_type(
-                        value.strip(), errors="replace")
+                        value.strip(),
+                        errors="replace",
+                    )
 
             return ret
 

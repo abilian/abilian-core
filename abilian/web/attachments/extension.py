@@ -47,7 +47,8 @@ class AttachmentExtension(object):
     def for_entity(self, obj, check_support_attachments=False):
         return self.manager(obj).for_entity(
             obj,
-            check_support_attachments=check_support_attachments,)
+            check_support_attachments=check_support_attachments,
+        )
 
     def has_attachments(self, obj):
         return self.manager(obj).has_attachments(obj)
@@ -75,9 +76,11 @@ class AttachmentsManager(object):
     Form = AttachmentForm
     macros_template = 'macros/attachment.html'
 
-    def __init__(self,
-                 Form=AttachmentForm,
-                 macros_template='macros/attachment_default.html'):
+    def __init__(
+            self,
+            Form=AttachmentForm,
+            macros_template='macros/attachment_default.html',
+    ):
         self.Form = Form
         self.macros_template = macros_template
 
@@ -94,15 +97,21 @@ class AttachmentsManager(object):
         return dict(
             m_attachments=getattr(m, 'm_attachments', default.m_attachments),
             m_attachment=getattr(m, 'm_attachment', default.m_attachment),
-            m_attachment_form=getattr(m, 'm_attachment_form',
-                                      default.m_attachment_form))
+            m_attachment_form=getattr(
+                m,
+                'm_attachment_form',
+                default.m_attachment_form,
+            ),
+        )
 
     def is_support_attachments(self, obj):
         return attachments.is_support_attachments(obj)
 
     def for_entity(self, obj, check_support_attachments=False):
         return attachments.for_entity(
-            obj, check_support_attachments=check_support_attachments)
+            obj,
+            check_support_attachments=check_support_attachments,
+        )
 
     def has_attachments(self, obj):
         return bool(self.for_entity(obj, check_support_attachments=True))

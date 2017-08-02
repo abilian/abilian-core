@@ -22,7 +22,9 @@ class UsersPanel(AdminPanel):
 
     def install_additional_rules(self, add_url_rule):
         add_url_rule(
-            '/users', view_func=views.JsonUsersList.as_view('json_list'))
+            '/users',
+            view_func=views.JsonUsersList.as_view('json_list'),
+        )
         add_url_rule('/new', view_func=views.UserCreate.as_view('new'))
         add_url_rule('/<int:user_id>', view_func=views.UserEdit.as_view('user'))
 
@@ -62,4 +64,7 @@ class UsersPanel(AdminPanel):
         }
 
         return render_template(
-            'admin/users.html', next=next, datatable_options=datatable_options)
+            'admin/users.html',
+            next=next,
+            datatable_options=datatable_options,
+        )

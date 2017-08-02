@@ -38,7 +38,11 @@ def register_default_view(state):
 
 
 UPLOAD_BUTTON = ButtonAction(
-    'form', 'edit', btn_class='primary', title=_l(u'Send'))
+    'form',
+    'edit',
+    btn_class='primary',
+    title=_l(u'Send'),
+)
 
 
 class BaseAttachmentView(object):
@@ -99,7 +103,8 @@ class AttachmentDownload(BaseAttachmentView, BaseObjectView):
             mimetype=content_type,
             cache_timeout=0,
             add_etags=False,
-            conditional=False)
+            conditional=False,
+        )
 
 
 download_view = AttachmentDownload.as_view('download')
@@ -119,8 +124,10 @@ class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
     _message_success = _l(u'Attachment added')
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(AttachmentCreateView, self).init_object(args,
-                                                                     kwargs)
+        args, kwargs = super(AttachmentCreateView, self).init_object(
+            args,
+            kwargs,
+        )
 
         self.obj.entity = self.entity
         session = sa.orm.object_session(self.entity)

@@ -33,11 +33,14 @@ class Indexable(IdMixin, CoreIndexable, db.Model):
     __indexation_args__ = dict(
         index_to=(
             ('related.name', ('name', 'text')),
-            ('related.description', 'text'),),)
+            ('related.description', 'text'),
+        ),
+    )
 
     num = sa.Column(
         sa.Integer,
-        info=SEARCHABLE | dict(index_to=(('num', NUMERIC(numtype=int)),)),)
+        info=SEARCHABLE | dict(index_to=(('num', NUMERIC(numtype=int)),)),
+    )
 
 
 class SubclassEntityIndexable(Entity):
@@ -105,7 +108,13 @@ class TestSAAdapter(TestCase):
 
         schema = Schema(
             id=NUMERIC(
-                numtype=int, bits=64, signed=False, stored=True, unique=True),)
+                numtype=int,
+                bits=64,
+                signed=False,
+                stored=True,
+                unique=True,
+            ),
+        )
         adapter = SAAdapter(Indexable, schema)
         assert adapter.indexable
         assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
@@ -126,7 +135,8 @@ class DocumentTestCase(AppTestCase):
             id=2,
             name='entity name',
             created_at=datetime(2013, 11, 28, 16, 17, 0),
-            updated_at=datetime(2013, 11, 29, 12, 17, 58))
+            updated_at=datetime(2013, 11, 29, 12, 17, 58),
+        )
         obj = SubclassEntityIndexable(**expected)
         obj.slug = u'entity-name'
         expected['object_type'] = u'test_adapter.SubclassEntityIndexable'
@@ -140,7 +150,13 @@ class DocumentTestCase(AppTestCase):
         # test retrieve related attributes
         schema = Schema(
             id=NUMERIC(
-                numtype=int, bits=64, signed=False, stored=True, unique=True),)
+                numtype=int,
+                bits=64,
+                signed=False,
+                stored=True,
+                unique=True,
+            ),
+        )
         adapter = SAAdapter(Indexable, schema)
         expected = dict(id=1, num=42)
         obj = Indexable(**expected)

@@ -95,19 +95,25 @@ class Length(Rule):
                         'Field must be at least %(min)d character long.',
                         'Field must be at least %(min)d characters long.',
                         self.min,
-                        min=self.min)
+                        min=self.min,
+                    )
                 elif self.min == -1:
                     message = _n(
                         'Field cannot be longer than %(max)d character.',
                         'Field cannot be longer than %(max)d characters.',
                         self.max,
-                        max=self.max)
+                        max=self.max,
+                    )
                 else:
                     message = _(
                         'Field must be between %(min)d and %(max)d characters long.',
-                        min=self.min, max=self.max)
+                        min=self.min, max=self.max,
+                    )
             raise validators.ValidationError(message % dict(
-                min=self.min, max=self.max, length=l))
+                min=self.min,
+                max=self.max,
+                length=l,
+            ))
 
 
 class NumberRange(validators.NumberRange, Rule):

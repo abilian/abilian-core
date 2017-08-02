@@ -28,8 +28,10 @@ class SecurityInfoDebugPanel(DebugPanel):
     @property
     def has_content(self):
         obj = self.current_obj
-        return (obj is not None and isinstance(obj, Entity) and
-                obj.id is not None)
+        return (
+            obj is not None and isinstance(obj, Entity) and
+            obj.id is not None
+        )
 
     def nav_title(self):
         return _('Security Info')
@@ -79,7 +81,8 @@ class SecurityInfoDebugPanel(DebugPanel):
             ]
             users = sorted(
                 info['users'],
-                key=lambda u: (u.last_name.lower(), u.first_name.lower()))
+                key=lambda u: (u.last_name.lower(), u.first_name.lower()),
+            )
             info['users'] = [
                 '{u} (id={u.id}, email="{u.email}")'.format(u=u) for u in users
             ]
@@ -87,6 +90,7 @@ class SecurityInfoDebugPanel(DebugPanel):
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)
         template = jinja_env.get_or_select_template(
-            'debug_panels/security_info_panel.html')
+            'debug_panels/security_info_panel.html',
+        )
 
         return template.render(context)

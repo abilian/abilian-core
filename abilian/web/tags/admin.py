@@ -42,8 +42,10 @@ def get_entities_for_reindex(tags):
     tag_ids = [t.id for t in tags]
     query = sa.sql \
         .select([tbl.c.entity_type, tbl.c.id]) \
-        .select_from(tbl.join(entity_tag_tbl,
-                              entity_tag_tbl.c.entity_id == tbl.c.id)) \
+        .select_from(tbl.join(
+            entity_tag_tbl,
+            entity_tag_tbl.c.entity_id == tbl.c.id,
+        )) \
         .where(entity_tag_tbl.c.tag_id.in_(tag_ids))
 
     entities = set()
@@ -65,7 +67,9 @@ def schedule_entities_reindex(entities):
     """
     entities = [(e[0], e[1], e[2], dict(e[3])) for e in entities]
     return index_update.apply_async(kwargs=dict(
-        index='default', items=entities))
+        index='default',
+        items=entities,
+    ))
 
 
 class NSView(View):
@@ -99,7 +103,8 @@ class NSView(View):
             tags=tags,
             errors=self.form_errors,
             merge_to=request.form.get('merge_to', default='__None__', type=int),
-            selected_tags=set(t.id for t in self._get_selected_tags()),)
+            selected_tags=set(t.id for t in self._get_selected_tags()),
+        )
 
     def redirect_to_view(self):
         return redirect(url_for('.tags_ns', ns=self.ns))
@@ -137,8 +142,10 @@ class NSView(View):
 
         if not confirm:
             flash(_('Please fix the error(s) below'), 'error')
-            self.form_errors['confirm_delete'] = _('Must be checked to ensure you '
-                                                   'intent to delete these tags')
+            self.form_errors['confirm_delete'] = _(
+                'Must be checked to ensure you '
+                'intent to delete these tags',
+            )
             return self.get(self.ns)
 
         session = current_app.db.session()
@@ -150,11 +157,13 @@ class NSView(View):
 
         count = len(tags)
         entities_to_reindex = get_entities_for_reindex(tags)
-        success_message = _n('%(tag)s deleted',
-                             '%(num)d tags deleted:\n%(tags)s',
-                             count,
-                             tag=tags[0].label,
-                             tags=', '.join(t.label for t in tags))
+        success_message = _n(
+            '%(tag)s deleted',
+            '%(num)d tags deleted:\n%(tags)s',
+            count,
+            tag=tags[0].label,
+            tags=', '.join(t.label for t in tags),
+        )
         map(session.delete, tags)
         session.commit()
         flash(success_message)
@@ -193,8 +202,10 @@ class NSView(View):
             .select([tbl.c.entity_id]) \
             .where(tbl.c.tag_id == target.id)
         del_dup = tbl.delete() \
-            .where(sa.sql.and_(tbl.c.tag_id.in_(merge_from_ids),
-                               tbl.c.entity_id.in_(already_tagged)))
+            .where(sa.sql.and_(
+                tbl.c.tag_id.in_(merge_from_ids),
+                tbl.c.entity_id.in_(already_tagged),
+            ))
         session.execute(del_dup)
         update = tbl.update() \
             .where(tbl.c.tag_id.in_(merge_from_ids)) \
@@ -257,17 +268,23 @@ class TagPanel(AdminPanel):
 
     def get(self):
         obj_count = sa.sql \
-            .select([Tag.ns,
-                     func.count(entity_tag_tbl.c.entity_id).label('obj_count')]) \
+            .select([
+                Tag.ns,
+                func.count(entity_tag_tbl.c.entity_id).label('obj_count'),
+            ]) \
             .select_from(Tag.__table__.join(entity_tag_tbl)) \
             .group_by(Tag.ns) \
             .alias()
 
         ns_query = sa.sql \
-            .select([Tag.ns,
-                     func.count(Tag.id).label('tag_count'),
-                     obj_count.c.obj_count],
-                    from_obj=[Tag.__table__.outerjoin(obj_count, Tag.ns == obj_count.c.ns)]) \
+            .select(
+                [
+                    Tag.ns,
+                    func.count(Tag.id).label('tag_count'),
+                    obj_count.c.obj_count,
+                ],
+                from_obj=[Tag.__table__.outerjoin(obj_count, Tag.ns == obj_count.c.ns)],
+            ) \
             .group_by(Tag.ns, obj_count.c.obj_count) \
             .order_by(Tag.ns)
 
@@ -282,16 +299,21 @@ class TagPanel(AdminPanel):
         add_url_rule(
             ns_base,
             endpoint='ns',
-            view_func=NSView.as_view('ns', view_endpoint=panel_endpoint))
+            view_func=NSView.as_view('ns', view_endpoint=panel_endpoint),
+        )
 
         tag_base = ns_base + '<int:object_id>/'
         add_url_rule(
             tag_base,
             endpoint='tag_edit',
-            view_func=TagEdit.as_view('tag_edit', view_endpoint=panel_endpoint))
+            view_func=TagEdit.as_view('tag_edit', view_endpoint=panel_endpoint),
+        )
 
         add_url_rule(
             tag_base + 'delete',
             endpoint='tag_delete',
             view_func=TagEdit.as_view(
-                'tag_delete', view_endpoint=panel_endpoint))
+                'tag_delete',
+                view_endpoint=panel_endpoint,
+            ),
+        )

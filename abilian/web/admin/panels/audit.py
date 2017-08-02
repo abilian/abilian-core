@@ -55,14 +55,18 @@ class JSONUserSearch(JSONView):
             filters.append(
                 sa.sql.or_(
                     lower(User.first_name).like(part + "%"),
-                    lower(User.last_name).like(part + "%")))
+                    lower(User.last_name).like(part + "%"),
+                ),
+            )
 
         filters = sa.sql.and_(*filters) if len(filters) > 1 else filters[0]
 
         if '@' in q:
             # FIXME: where does this 'part' variable come from ?
             filters = sa.sql.or_(
-                lower(User.email).like('%' + part + '%'), filters)
+                lower(User.email).like('%' + part + '%'),
+                filters,
+            )
 
         query = query \
             .filter(filters) \
@@ -72,10 +76,14 @@ class JSONUserSearch(JSONView):
             'results': [{
                 'id': obj.id,
                 'text':
-                '{} {} ({})'.format(obj.first_name, obj.last_name, obj.email)
+                '{} {} ({})'.format(obj.first_name, obj.last_name, obj.email),
             }
-                        for obj in query.values(User.id, User.first_name,
-                                                User.last_name, User.email)]
+                        for obj in query.values(
+                            User.id,
+                            User.first_name,
+                            User.last_name,
+                            User.email,
+                        )],
         }
         return result
 
@@ -94,7 +102,9 @@ class AuditPanel(AdminPanel):
 
     def install_additional_rules(self, add_url_rule):
         add_url_rule(
-            '/search_users', view_func=JSONUserSearch.as_view('search_users'))
+            '/search_users',
+            view_func=JSONUserSearch.as_view('search_users'),
+        )
 
     # noinspection PyComparisonWithNone
     def get(self):
@@ -125,12 +135,16 @@ class AuditPanel(AdminPanel):
             if len(filter_types) == 1:
                 t = list(filter_types)[0]
                 audit_expr = AuditEntry.entity_type == t
-                sec_expr = sa.sql.or_(SecurityAudit.object == None,
-                                      Entity._entity_type == t)
+                sec_expr = sa.sql.or_(
+                    SecurityAudit.object == None,
+                    Entity._entity_type == t,
+                )
             else:
                 audit_expr = AuditEntry.entity_type.in_(filter_types)
-                sec_expr = sa.sql.or_(SecurityAudit.object == None,
-                                      Entity._entity_type.in_(filter_types))
+                sec_expr = sa.sql.or_(
+                    SecurityAudit.object == None,
+                    Entity._entity_type.in_(filter_types),
+                )
 
             base_audit_q = base_audit_q.filter(audit_expr)
             base_security_q = base_security_q \
@@ -172,7 +186,9 @@ class AuditPanel(AdminPanel):
                 #
                 (AuditEntryPresenter(e) for e in audit_entries),
                 #
-                (SecurityEntryPresenter(e) for e in security_entries)))
+                (SecurityEntryPresenter(e) for e in security_entries),
+            ),
+        )
         all_entries.sort()
 
         if after:
@@ -204,19 +220,25 @@ class AuditPanel(AdminPanel):
             # that isoformat does not include TZ shift (else we should fix strptime
             # above)
             top_date = entries[0][1][0].date.astimezone(pytz.utc).replace(
-                tzinfo=None)
+                tzinfo=None,
+            )
             lowest_date = entries[-1][1][-1].date \
                 .astimezone(pytz.utc) \
                 .replace(tzinfo=None)
 
             after_queries = (
                 after_query(base_audit_q, AuditEntry, top_date),
-                after_query(base_security_q, SecurityAudit, top_date),)
+                after_query(base_security_q, SecurityAudit, top_date),
+            )
 
             before_queries = (
                 before_query(base_audit_q, AuditEntry, lowest_date),
-                before_query(base_security_q, SecurityAudit,
-                             lowest_date).limit(1),)
+                before_query(
+                    base_security_q,
+                    SecurityAudit,
+                    lowest_date,
+                ).limit(1),
+            )
 
             if not any(q.limit(1).first() is not None for q in after_queries):
                 top_date = ''
@@ -248,7 +270,8 @@ class AuditPanel(AdminPanel):
             url_params=url_params,
             current_date=current_date,
             top_date=top_date,
-            lowest_date=lowest_date)
+            lowest_date=lowest_date,
+        )
 
 
 #
@@ -256,10 +279,14 @@ class AuditPanel(AdminPanel):
 #
 class BaseEntryPresenter(object):
 
-    _USER_FMT = ('<a href="{{ url_for("social.user", user_id=user.id) }}">'
-                 '{{ user.name }}</a>')
-    _GROUP_FMT = ('<a href="{{ url_for("social.group_home", group_id=group.id)'
-                  ' }}">{{ group.name }}</a>')
+    _USER_FMT = (
+        '<a href="{{ url_for("social.user", user_id=user.id) }}">'
+        '{{ user.name }}</a>'
+    )
+    _GROUP_FMT = (
+        '<a href="{{ url_for("social.group_home", group_id=group.id)'
+        ' }}">{{ group.name }}</a>'
+    )
 
     def __init__(self, user, date):
         self.user = user
@@ -271,9 +298,12 @@ class BaseEntryPresenter(object):
         return (a > b) - (a < b)
 
     def __repr__(self):
-        return '{}({}, {} @ {})'.format(self.__class__.__name__,
-                                        repr(self.user),
-                                        repr(self.date), id(self))
+        return '{}({}, {} @ {})'.format(
+            self.__class__.__name__,
+            repr(self.user),
+            repr(self.date),
+            id(self),
+        )
 
     @staticmethod
     def model(model_name):
@@ -307,7 +337,9 @@ class AuditEntryPresenter(BaseEntryPresenter):
                     render(
                         '<a href="{{ url }}">{{ entity.path or entity.name }}</a>',
                         url=entity_url,
-                        entity=e.entity))
+                        entity=e.entity,
+                    ),
+                )
 
         if e.type == 0:
             msg = _('{user} created {entity_type} {entity_id} "{entity}"')
@@ -323,7 +355,9 @@ class AuditEntryPresenter(BaseEntryPresenter):
                 user=user,
                 entity=entity_html,
                 entity_type=e.entity_type.rsplit('.', 1)[-1],
-                entity_id=e.entity_id,))
+                entity_id=e.entity_id,
+            ),
+        )
         tmpl = get_template_attribute('admin/_macros.html', 'm_audit_entry')
         return tmpl(self)
 
@@ -332,8 +366,10 @@ class SecurityEntryPresenter(BaseEntryPresenter):
 
     def __init__(self, entry):
         assert isinstance(entry, SecurityAudit)
-        super(SecurityEntryPresenter, self).__init__(entry.manager,
-                                                     entry.happened_at)
+        super(SecurityEntryPresenter, self).__init__(
+            entry.manager,
+            entry.happened_at,
+        )
         self.entry = entry
 
     def render(self):
@@ -346,7 +382,8 @@ class SecurityEntryPresenter(BaseEntryPresenter):
             '<a href="'
             '{{ url_for("social.user", user_id=e.manager.id) }}">'
             '{{ e.manager.name }}</a>',
-            e=e)
+            e=e,
+        )
 
         if self.entry.user:
             principal = render(self._USER_FMT, user=self.entry.user)
@@ -367,18 +404,23 @@ class SecurityEntryPresenter(BaseEntryPresenter):
                 '{%- if url %}<a href="{{ url }}">{%- endif %}'
                 '{{ name }}{%- if url %}</a>{%- endif %}',
                 url=entity_url,
-                name=entity_name)
+                name=entity_name,
+            )
 
             if e.op == e.SET_INHERIT:
                 msg = _('{manager} has activated inheritance on {entity}')
             elif e.op == e.UNSET_INHERIT:
                 msg = _('{manager} has deactivated inheritance on {entity}')
             elif e.op == e.GRANT:
-                msg = _('{manager} has given role "{role}" to {principal} '
-                        'on {entity}')
+                msg = _(
+                    '{manager} has given role "{role}" to {principal} '
+                    'on {entity}',
+                )
             elif e.op == e.REVOKE:
-                msg = _('{manager} has revoked role "{role}" from '
-                        '{principal} on {entity}')
+                msg = _(
+                    '{manager} has revoked role "{role}" from '
+                    '{principal} on {entity}',
+                )
             else:
                 raise Exception("Invalid entity op: {}".format(e.op))
         else:
@@ -394,6 +436,8 @@ class SecurityEntryPresenter(BaseEntryPresenter):
                 manager=manager,
                 principal=principal,
                 role=e.role,
-                entity=entity))
+                entity=entity,
+            ),
+        )
         tmpl = get_template_attribute('admin/_macros.html', 'm_security_entry')
         return tmpl(self)

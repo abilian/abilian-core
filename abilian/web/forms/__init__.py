@@ -47,13 +47,15 @@ class FormPermissions(object):
     """Form role/permission manager.
     """
 
-    def __init__(self,
-                 default=Anonymous,
-                 read=None,
-                 write=None,
-                 fields_read=None,
-                 fields_write=None,
-                 existing=None):
+    def __init__(
+            self,
+            default=Anonymous,
+            read=None,
+            write=None,
+            fields_read=None,
+            fields_write=None,
+            existing=None,
+    ):
         """
         :param default: default roles when not specified for field. Can be:
 
@@ -74,13 +76,15 @@ class FormPermissions(object):
         elif isinstance(default, dict):
             if 'default' not in default:
                 raise ValueError(
-                    '`default` parameter must have a "default" key')
+                    '`default` parameter must have a "default" key',
+                )
         elif callable(default):
             default = {'default': default}
         else:
             raise ValueError(
                 "No valid value for `default`. Use a Role, an iterable "
-                "of Roles, a callable, or a dict.")
+                "of Roles, a callable, or a dict.",
+            )
 
         self.default = default
         self.form = dict()
@@ -109,7 +113,8 @@ class FormPermissions(object):
         fields_defs = (
             (fields_read, READ),
             (fields_write, WRITE),
-            (fields_write, CREATE),)  # checking against CREATE permission
+            (fields_write, CREATE),
+        )  # checking against CREATE permission
         # at field level is the same as
         # WRITE permisssion
         for fields, permission in fields_defs:
@@ -117,14 +122,18 @@ class FormPermissions(object):
                 for field_name, allowed_roles in fields.items():
                     if isinstance(allowed_roles, Role):
                         allowed_roles = (allowed_roles,)
-                    self.fields.setdefault(field_name,
-                                           dict())[permission] = allowed_roles
+                    self.fields.setdefault(
+                        field_name,
+                        dict(),
+                    )[permission] = allowed_roles
 
-    def has_permission(self,
-                       permission,
-                       field=None,
-                       obj=None,
-                       user=current_user):
+    def has_permission(
+            self,
+            permission,
+            field=None,
+            obj=None,
+            user=current_user,
+    ):
         if obj is not None and not isinstance(obj, Entity):
             # permission/role can be set only on entities
             return True
@@ -256,14 +265,18 @@ class Form(BaseForm):
                     self._permissions.has_permission,
                     ctx.permission,
                     obj=ctx.obj,
-                    user=ctx.user)
+                    user=ctx.user,
+                )
                 empty_form = not has_permission()
 
                 for field_name in list(self._fields):
                     if empty_form or not has_permission(field=field_name):
                         logger.debug('{}(permission={!r}): field {!r}: removed'
-                                     ''.format(self.__class__.__name__,
-                                               ctx.permission, field_name))
+                                     ''.format(
+                                         self.__class__.__name__,
+                                         ctx.permission,
+                                         field_name,
+                                     ))
                         del self[field_name]
                         group = self._field_groups.get(field_name)
                         if group:
@@ -322,9 +335,12 @@ if not _PATCHED:
         `__repr__` that shows the name of the field instance. Useful for tracing field
         errors (like in Sentry).
         """
-        return '<{}.{} at 0x{:x} name={!r}>'.format(self.__class__.__module__,
-                                                    self.__class__.__name__,
-                                                    id(self), self.name)
+        return '<{}.{} at 0x{:x} name={!r}>'.format(
+            self.__class__.__module__,
+            self.__class__.__name__,
+            id(self),
+            self.name,
+        )
 
     patch_logger.info(Field.__module__ + '.Field.__repr__')
     Field.__repr__ = _core_field_repr

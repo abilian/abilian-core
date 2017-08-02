@@ -155,6 +155,7 @@ format:
 	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
 		-rc $(SRC) tests *.py
 	-yapf --style google -r -i $(SRC) tests *.py
+	-add-trailing-comma `find abilian -name '*.py'`
 	isort -rc $(SRC) tests *.py
 
 update-deps:

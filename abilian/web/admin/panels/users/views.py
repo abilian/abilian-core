@@ -41,8 +41,10 @@ class JsonUsersList(base.JSONView):
 
         end = start + length
         query = User.query \
-            .options(sa.orm.subqueryload('groups'),
-                     sa.orm.undefer('photo')) \
+            .options(
+                sa.orm.subqueryload('groups'),
+                sa.orm.undefer('photo'),
+            ) \
             .filter(User.id != 0)
         total_count = query.count()
 
@@ -51,7 +53,8 @@ class JsonUsersList(base.JSONView):
             filter = or_(
                 func.lower(User.first_name).like("%" + search + "%"),
                 func.lower(User.last_name).like("%" + search + "%"),
-                func.lower(User.email).like("%" + search + "%"))
+                func.lower(User.email).like("%" + search + "%"),
+            )
             query = query.filter(filter)
 
         count = query.count()
@@ -62,7 +65,8 @@ class JsonUsersList(base.JSONView):
         }
         columns = list(SORT_COLS.get(sort_col, []))
         columns.extend(
-            [func.lower(User.last_name), func.lower(User.first_name)])
+            [func.lower(User.last_name), func.lower(User.first_name)],
+        )
 
         direction = asc if sort_dir == 'asc' else desc
         order_by = list(map(direction, columns))
@@ -93,18 +97,22 @@ class JsonUsersList(base.JSONView):
                 '</a>'.format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
                 '<a href="{url}">{name}</a>'.format(url=user_url, name=name),
                 '<a href="{url}"><em>{email}</em></a>'.format(
-                    url=user_url, email=email),
+                    url=user_url,
+                    email=email,
+                ),
                 '\u2713' if user.can_login else '',
                 render_template_string(
                     '''{%- for g in groups %}
                         <span class="badge badge-default">{{ g.name }}</span>
                     {%- endfor %}''',
-                    groups=sorted(user.groups)),
+                    groups=sorted(user.groups),
+                ),
                 render_template_string(
                     '''{%- for role in roles %}
                        <span class="badge badge-default">{{ role }}</span>
                     {%- endfor %}''',
-                    roles=roles),
+                    roles=roles,
+                ),
             ]
 
             if user.last_active:

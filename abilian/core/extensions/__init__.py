@@ -21,7 +21,12 @@ from ..sqlalchemy import SQLAlchemy
 from .csrf import wtf_csrf as csrf, abilian_csrf
 
 __all__ = [
-    'get_extension', 'db', 'mail', 'login_manager', 'csrf', 'upstream_info'
+    'get_extension',
+    'db',
+    'mail',
+    'login_manager',
+    'csrf',
+    'upstream_info',
 ]
 
 

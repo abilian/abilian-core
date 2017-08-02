@@ -37,7 +37,8 @@ def register(cls):
     """
     if not issubclass(cls, Entity):
         raise ValueError(
-            'Class must be a subclass of abilian.core.entities.Entity')
+            'Class must be a subclass of abilian.core.entities.Entity',
+        )
 
     Commentable.register(cls)
     return cls
@@ -99,11 +100,16 @@ class Comment(Entity):
             ATTRIBUTE,
             lazy='select',
             order_by='Comment.created_at',
-            cascade="all, delete-orphan",))
+            cascade="all, delete-orphan",
+        ),
+    )
 
     #: comment's main content
     body = Column(
-        UnicodeText(), CheckConstraint("trim(body) != ''"), nullable=False)
+        UnicodeText(),
+        CheckConstraint("trim(body) != ''"),
+        nullable=False,
+    )
 
     @property
     def history(self):

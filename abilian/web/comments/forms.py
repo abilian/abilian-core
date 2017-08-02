@@ -20,7 +20,8 @@ class CommentForm(Form):
         label=_l(u'Comment'),
         validators=[required()],
         filters=(strip,),
-        widget=TextArea(rows=5, resizeable='vertical'),)
+        widget=TextArea(rows=5, resizeable='vertical'),
+    )
 
     class Meta:
         model = Comment

@@ -23,8 +23,13 @@ def default_app_factory():
     return Application()
 
 
-CELERY_CONF_KEY_PREFIXES = ('CELERY_', 'CELERYD_', 'BROKER_', 'CELERYBEAT_',
-                            'CELERYMON_')
+CELERY_CONF_KEY_PREFIXES = (
+    'CELERY_',
+    'CELERYD_',
+    'BROKER_',
+    'CELERYBEAT_',
+    'CELERYMON_',
+)
 
 
 def is_celery_setting(key):
@@ -36,8 +41,10 @@ def is_eager():
     True when tasks are run eagerly. As of celery 3.1.17 it seems that when
     CELERY_ALWAYS_EAGER is set in config, request.is_eager is *False*.
     """
-    return ((current_task and current_task.request.is_eager) or
-            celery_current_app.conf.CELERY_ALWAYS_EAGER)
+    return (
+        (current_task and current_task.request.is_eager) or
+        celery_current_app.conf.CELERY_ALWAYS_EAGER
+    )
 
 
 def safe_session():

@@ -15,7 +15,6 @@ from jinja2 import nodes
 from jinja2.ext import Extension
 from werkzeug.local import LocalProxy
 
-
 deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
 
 
@@ -58,11 +57,17 @@ class DeferredJSExtension(Extension):
 
         # now we parse body of the block
         body = parser.parse_statements(
-            ['name:enddeferJS', 'name:enddeferredJS'], drop_needle=True)
+            ['name:enddeferJS', 'name:enddeferredJS'],
+            drop_needle=True,
+        )
 
         method = 'defer_nodes' if tag == 'deferJS' else 'collect_deferred'
-        return nodes.CallBlock(self.call_method(method, []), [], [],
-                               body).set_lineno(lineno)
+        return nodes.CallBlock(
+            self.call_method(method, []),
+            [],
+            [],
+            body,
+        ).set_lineno(lineno)
 
     def defer_nodes(self, caller):
         body = '<div>{}</div>'.format(caller().strip())
@@ -87,7 +92,9 @@ class DeferredJSExtension(Extension):
         return u''
 
     def collect_deferred(self, caller):
-        result = '\n'.join('(function(){{\n{}\n}})();'.format(js)
-                           for js in deferred_js)
+        result = '\n'.join(
+            '(function(){{\n{}\n}})();'.format(js)
+            for js in deferred_js
+        )
         current_app.extensions[DeferredJS.name].reset_deferred()
         return result

@@ -59,7 +59,8 @@ def paragraphs(value):
     """
     result = '\n\n'.join(
         ('<p>{}</p>'.format(p.strip().replace('\n', Markup('<br />\n')))
-         for p in _PARAGRAPH_RE.split(escape(value))))
+         for p in _PARAGRAPH_RE.split(escape(value)))
+    )
     return result
 
 
@@ -170,7 +171,8 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
         locale=locale,
         granularity='minute',
         threshold=0.9,
-        add_direction=add_direction)
+        add_direction=add_direction,
+    )
 
 
 def date_age(dt, now=None):

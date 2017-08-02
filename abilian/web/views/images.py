@@ -26,8 +26,11 @@ blueprint = Blueprint('images', __name__, url_prefix='/images')
 route = blueprint.route
 
 DEFAULT_AVATAR = Path(
-    pkg_resources.resource_filename('abilian.web',
-                                    'resources/img/avatar-default.png'))
+    pkg_resources.resource_filename(
+        'abilian.web',
+        'resources/img/avatar-default.png',
+    ),
+)
 DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
 
 
@@ -48,12 +51,15 @@ class BaseImageView(BaseFileDownload):
             size = int(size)
         except ValueError:
             raise BadRequest(
-                'Invalid value for "s": {}. Not an integer.'.format(repr(size)))
+                'Invalid value for "s": {}. Not an integer.'.format(repr(size)),
+            )
 
         if self.max_size is not None:
             if size > self.max_size:
                 raise BadRequest('Size too large: {:d} (max: {:d})'.format(
-                    size, self.max_size))
+                    size,
+                    self.max_size,
+                ))
 
         kwargs['size'] = size
 
@@ -184,8 +190,10 @@ class UserMugshot(BaseImageView):
     def make_response(self, user, image, size, *args, **kwargs):
         if image:
             #  user has set a photo
-            return super(UserMugshot, self).make_response(image, size, *args,
-                                                          **kwargs)
+            return super(UserMugshot, self).make_response(
+                image, size, *args,
+                **kwargs
+            )
 
         # render svg avatar
         if user.last_name:
@@ -203,7 +211,11 @@ class UserMugshot(BaseImageView):
         color = [int(x * 255) for x in color]
         color = u'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
         svg = render_template(
-            'default/avatar.svg', color=color, letter=letter, size=size)
+            'default/avatar.svg',
+            color=color,
+            letter=letter,
+            size=size,
+        )
         response = make_response(svg)
         self.content_type = u'image/svg+xml'
         self.filename = u'avatar-{}.svg'.format(id_hash)
@@ -213,7 +225,10 @@ class UserMugshot(BaseImageView):
 user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
 route("/users/<int:user_id>")(user_photo)
 route('/users/default')(StaticImageView.as_view(
-    'user_default', set_expire=True, image=DEFAULT_AVATAR))
+    'user_default',
+    set_expire=True,
+    image=DEFAULT_AVATAR,
+))
 
 
 def user_url_args(user, size):

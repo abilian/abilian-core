@@ -45,7 +45,7 @@ class Admin(object):
             'root',
             title=_l(u'Admin'),
             endpoint=None,
-            condition=lambda context: (not current_user.is_anonymous and security.has_role(current_user, AdminRole))
+            condition=lambda context: (not current_user.is_anonymous and security.has_role(current_user, AdminRole)),
         )
 
         for panel in panels:
@@ -65,8 +65,11 @@ class Admin(object):
                 logger.warning('Could not import panel: "%s"', fqn)
                 continue
             if not issubclass(panel_class, AdminPanel):
-                logger.error('"%s" is not a %s.AdminPanel, skipping', fqn,
-                             AdminPanel.__module__)
+                logger.error(
+                    '"%s" is not a %s.AdminPanel, skipping',
+                    fqn,
+                    AdminPanel.__module__,
+                )
                 continue
 
             self.register_panel(panel_class())
@@ -84,7 +87,8 @@ class Admin(object):
 
         self.root_breadcrumb_item = BreadcrumbItem(
             label=self.nav_root.title,
-            url=self.nav_root.endpoint,)
+            url=self.nav_root.endpoint,
+        )
 
         app.register_blueprint(self.blueprint)
 
@@ -98,7 +102,8 @@ class Admin(object):
         if self.app:
             raise ValueError(
                 'Extension already initialized for app, cannot add more'
-                ' panel')
+                ' panel',
+            )
 
         self.panels.append(panel)
         panel.admin = self
@@ -112,11 +117,16 @@ class Admin(object):
         if hasattr(panel, 'post'):
             post_endpoint = endpoint + "_post"
             self.blueprint.add_url_rule(
-                rule, post_endpoint, panel.post, methods=['POST'])
+                rule,
+                post_endpoint,
+                panel.post,
+                methods=['POST'],
+            )
             self._panels_endpoints['admin.' + post_endpoint] = panel
 
         panel.install_additional_rules(
-            self.get_panel_url_rule_adder(panel, rule, endpoint))
+            self.get_panel_url_rule_adder(panel, rule, endpoint),
+        )
 
         nav = NavItem(
             'admin:panel',
@@ -124,11 +134,15 @@ class Admin(object):
             title=panel.label,
             icon=panel.icon,
             divider=False,
-            endpoint=abs_endpoint)
+            endpoint=abs_endpoint,
+        )
         self.nav_root.append(nav)
         self.nav_paths[abs_endpoint] = nav.path
         self.breadcrumb_items[panel] = BreadcrumbItem(
-            label=panel.label, icon=panel.icon, url=Endpoint(abs_endpoint))
+            label=panel.label,
+            icon=panel.icon,
+            url=Endpoint(abs_endpoint),
+        )
 
     def get_panel_url_rule_adder(self, panel, base_url, base_endpoint):
         extension = self
@@ -137,7 +151,8 @@ class Admin(object):
             if not rule:
                 # '' is already used for panel get/post
                 raise ValueError(
-                    'Invalid additional url rule: {}'.format(repr(rule)))
+                    'Invalid additional url rule: {}'.format(repr(rule)),
+                )
 
             if endpoint is None:
                 endpoint = _endpoint_from_view_func(view_func)
@@ -150,7 +165,8 @@ class Admin(object):
                 base_url + rule,
                 endpoint=endpoint,
                 view_func=view_func,
-                **kwargs)
+                **kwargs
+            )
 
         return add_url_rule
 
@@ -159,7 +175,8 @@ class Admin(object):
             "admin",
             __name__,
             template_folder='templates',
-            url_prefix='/' + _BP_PREFIX)
+            url_prefix='/' + _BP_PREFIX,
+        )
 
         self.blueprint.url_value_preprocessor(self.build_breadcrumbs)
         self.blueprint.url_value_preprocessor(self.panel_preprocess_value)

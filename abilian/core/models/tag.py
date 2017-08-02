@@ -8,7 +8,7 @@ import abc
 from functools import total_ordering
 
 import sqlalchemy as sa
-from six import python_2_unicode_compatible, text_type, add_metaclass
+from six import add_metaclass, python_2_unicode_compatible, text_type
 
 from abilian.core.entities import Entity
 
@@ -36,7 +36,8 @@ def register(cls):
     """
     if not issubclass(cls, Entity):
         raise ValueError(
-            'Class must be a subclass of abilian.core.entities.Entity')
+            'Class must be a subclass of abilian.core.entities.Entity',
+        )
 
     SupportTagging.register(cls)
     return cls
@@ -61,11 +62,21 @@ def is_support_tagging(obj):
 entity_tag_tbl = sa.Table(
     'entity_tags',
     Model.metadata,
-    sa.Column('tag_id', sa.Integer, sa.ForeignKey('tag.id',
-                                                  ondelete='CASCADE')),
-    sa.Column('entity_id', sa.Integer,
-              sa.ForeignKey(Entity.id, ondelete='CASCADE')),
-    sa.UniqueConstraint('tag_id', 'entity_id'),)
+    sa.Column(
+        'tag_id',
+        sa.Integer,
+        sa.ForeignKey(
+            'tag.id',
+            ondelete='CASCADE',
+        ),
+    ),
+    sa.Column(
+        'entity_id',
+        sa.Integer,
+        sa.ForeignKey(Entity.id, ondelete='CASCADE'),
+    ),
+    sa.UniqueConstraint('tag_id', 'entity_id'),
+)
 
 
 @total_ordering
@@ -83,7 +94,8 @@ class Tag(IdMixin, Model):
         sa.UnicodeText(),
         nullable=False,
         default='default',
-        server_default='default')
+        server_default='default',
+    )
 
     #: Label visible to the user
     label = sa.Column(sa.UnicodeText(), nullable=False)
@@ -93,7 +105,8 @@ class Tag(IdMixin, Model):
         Entity,
         collection_class=set,
         secondary=entity_tag_tbl,
-        backref=sa.orm.backref(TAGS_ATTR, collection_class=set),)
+        backref=sa.orm.backref(TAGS_ATTR, collection_class=set),
+    )
 
     __mapper_args__ = {'order_by': label,}
 
@@ -103,7 +116,9 @@ class Tag(IdMixin, Model):
         sa.CheckConstraint(sa.sql.and_(sa.sql.func.trim(ns) == ns, ns != u''),),
         # label is not empty and is not surrounded by space characters
         sa.CheckConstraint(
-            sa.sql.and_(sa.sql.func.trim(label) == label, label != u''),),)
+            sa.sql.and_(sa.sql.func.trim(label) == label, label != u''),
+        ),
+    )
 
     def __str__(self):
         return self.label
@@ -117,4 +132,5 @@ class Tag(IdMixin, Model):
             mod=cls.__module__,
             cls=cls.__name__,
             t=self,
-            addr=id(self),)
+            addr=id(self),
+        )

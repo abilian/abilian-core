@@ -26,7 +26,8 @@ def init_user():
         first_name="Joe",
         last_name="User",
         email=TEST_EMAIL,
-        password=TEST_PASSWORD)
+        password=TEST_PASSWORD,
+    )
     db.session.add(user)
     db.session.flush()
 
@@ -342,7 +343,10 @@ class SecurityTestCase(IntegrationTestCase):
         assert not has_permission(user, WRITE, obj=obj)
 
         pa = PermissionAssignment(
-            role=Authenticated, permission=READ, object=obj)
+            role=Authenticated,
+            permission=READ,
+            object=obj,
+        )
         self.session.add(pa)
         self.session.flush()
         assert has_permission(user, READ, obj=obj)
@@ -412,10 +416,16 @@ class SecurityTestCase(IntegrationTestCase):
 
         assigments = [
             PermissionAssignment(
-                role=Reader, permission=READ, object=obj_reader),
+                role=Reader,
+                permission=READ,
+                object=obj_reader,
+            ),
             #
             PermissionAssignment(
-                role=Writer, permission=WRITE, object=obj_writer)
+                role=Writer,
+                permission=WRITE,
+                object=obj_writer,
+            ),
         ]
         self.session.add_all(assigments)
         self.session.flush()
@@ -439,7 +449,10 @@ class SecurityTestCase(IntegrationTestCase):
 
         # Permission granted to anonymous: objects returned
         pa = PermissionAssignment(
-            role=Anonymous, permission=WRITE, object=obj_reader)
+            role=Anonymous,
+            permission=WRITE,
+            object=obj_reader,
+        )
         self.session.add(pa)
 
         assert base_query.filter(get_filter(READ, user=user)).all() \
@@ -458,9 +471,11 @@ class SecurityTestCase(IntegrationTestCase):
         self.session.flush()
 
         assert base_query.filter(
-            get_filter(READ, user=user)).all() == [obj_reader]
+            get_filter(READ, user=user),
+        ).all() == [obj_reader]
         assert base_query.filter(
-            get_filter(WRITE, user=user)).all() == [obj_writer]
+            get_filter(WRITE, user=user),
+        ).all() == [obj_writer]
 
         # admin role has all permissions
         # 1: local role
@@ -492,10 +507,16 @@ class SecurityTestCase(IntegrationTestCase):
         obj_writer.owner = user
         assigments = [
             PermissionAssignment(
-                role=Creator, permission=READ, object=obj_reader),
+                role=Creator,
+                permission=READ,
+                object=obj_reader,
+            ),
             #
             PermissionAssignment(
-                role=Owner, permission=WRITE, object=obj_writer)
+                role=Owner,
+                permission=WRITE,
+                object=obj_writer,
+            ),
         ]
         self.session.add_all(assigments)
         self.session.flush()

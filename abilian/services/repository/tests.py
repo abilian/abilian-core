@@ -155,7 +155,8 @@ class TestSessionRepository(BaseTestCase):
         self.svc.set(session, self.UUID, b'my file content')
         self.assertEqual(
             self.svc.get(session, self.UUID).open('rb').read(),
-            b'my file content')
+            b'my file content',
+        )
         self.assertIs(repository.get(self.UUID), None)
 
         # delete
@@ -173,7 +174,9 @@ class TestSessionRepository(BaseTestCase):
         session = self.session
         repository.set(self.UUID, b'first draft')
         self.assertEqual(
-            self.svc.get(session, self.UUID).open('rb').read(), b'first draft')
+            self.svc.get(session, self.UUID).open('rb').read(),
+            b'first draft',
+        )
 
         self.svc.set(session, self.UUID, b'new content')
 
@@ -184,7 +187,9 @@ class TestSessionRepository(BaseTestCase):
         self.assertIs(self.svc.get(session, self.UUID), None)
         db_tr.rollback()
         self.assertEqual(
-            self.svc.get(session, self.UUID).open('rb').read(), b'new content')
+            self.svc.get(session, self.UUID).open('rb').read(),
+            b'new content',
+        )
 
         # delete and commit
         with session.begin(nested=True):
@@ -203,7 +208,9 @@ class TestSessionRepository(BaseTestCase):
         self.assertIs(self.svc.get(session, self.UUID), None)
         db_tr.rollback()
         self.assertEqual(
-            self.svc.get(session, self.UUID).open('rb').read(), b'first draft')
+            self.svc.get(session, self.UUID).open('rb').read(),
+            b'first draft',
+        )
         session.rollback()
 
         with session.begin(subtransactions=True):
@@ -230,7 +237,8 @@ class TestSessionRepository(BaseTestCase):
 
             self.assertEqual(
                 self.svc.get(session, self.UUID).open('rb').read(),
-                b'transaction 2')
+                b'transaction 2',
+            )
 
     def test_transaction_path(self):
         """

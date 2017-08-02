@@ -54,7 +54,8 @@ def deprecated(func):
             "Call to deprecated function {}.".format(func.__name__),
             category=DeprecationWarning,
             filename=func.__code__.co_filename,
-            lineno=func.__code__.co_firstlineno + 1)
+            lineno=func.__code__.co_firstlineno + 1,
+        )
         return func(*args, **kwargs)
 
     return new_func

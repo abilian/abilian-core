@@ -46,7 +46,8 @@ class Edit(ViewBase, views.ObjectEdit):
         return url_for(
             '.vocabularies_model',
             group=self.Model.Meta.group or '_',
-            Model=self.Model.Meta.name,)
+            Model=self.Model.Meta.name,
+        )
 
 
 class Create(views.ObjectCreate, Edit):
@@ -74,7 +75,8 @@ class VocabularyPanel(AdminPanel):
             '.' + self.id + '_edit',
             group=item.Meta.group or '_',
             Model=item.Meta.name,
-            object_id=item.id)
+            object_id=item.id,
+        )
 
     def get(self):
         svc = get_service('vocabularies')
@@ -83,7 +85,8 @@ class VocabularyPanel(AdminPanel):
             service=svc,
             url_for_voc_edit=self.voc_edit_url,
             icon_checked=Glyphicon('check'),
-            vocabularies=svc.grouped_vocabularies,)
+            vocabularies=svc.grouped_vocabularies,
+        )
 
     def post(self):
         data = request.form
@@ -166,7 +169,8 @@ class VocabularyPanel(AdminPanel):
             url_for_voc_edit=self.voc_edit_url,
             icon_checked=Glyphicon('check'),
             vocabularies={group: vocabularies},
-            edit_return_to='group')
+            edit_return_to='group',
+        )
 
     def model_view(self, Model, group=None):
         svc = get_service('vocabularies')
@@ -177,7 +181,8 @@ class VocabularyPanel(AdminPanel):
             url_for_voc_edit=self.voc_edit_url,
             icon_checked=Glyphicon('check'),
             vocabularies={Model.Meta.group: [Model]},
-            edit_return_to='model')
+            edit_return_to='model',
+        )
 
     def install_additional_rules(self, add_url_rule):
         panel_endpoint = '.' + self.id
@@ -191,7 +196,8 @@ class VocabularyPanel(AdminPanel):
         add_url_rule(base + '<int:object_id>', view_func=edit_view)
         add_url_rule(
             base + 'new',
-            view_func=Create.as_view('new', view_endpoint=panel_endpoint))
+            view_func=Create.as_view('new', view_endpoint=panel_endpoint),
+        )
 
     def url_value_preprocess(self, endpoint, view_args):
         Model = view_args.pop('Model', None)
@@ -217,5 +223,8 @@ class VocabularyPanel(AdminPanel):
                     url=url_for(
                         '.vocabularies_model',
                         group=group or '_',
-                        Model=Model.Meta.name),))
+                        Model=Model.Meta.name,
+                    ),
+                ),
+            )
             view_args['Model'] = Model

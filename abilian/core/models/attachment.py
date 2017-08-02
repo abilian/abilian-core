@@ -37,7 +37,8 @@ def register(cls):
     """
     if not issubclass(cls, Entity):
         raise ValueError(
-            'Class must be a subclass of abilian.core.entities.Entity')
+            'Class must be a subclass of abilian.core.entities.Entity',
+        )
 
     SupportAttachment.register(cls)
     return cls
@@ -95,7 +96,9 @@ class Attachment(Entity):
             ATTRIBUTE,
             lazy='select',
             order_by='Attachment.created_at',
-            cascade="all, delete-orphan",))
+            cascade="all, delete-orphan",
+        ),
+    )
 
     blob_id = Column(Integer, sa.ForeignKey(Blob.id), nullable=False)
     #: file. Stored in a :class:`Blob`
@@ -105,7 +108,8 @@ class Attachment(Entity):
         UnicodeText(),
         nullable=False,
         default='',
-        server_default='',)
+        server_default='',
+    )
 
     def __repr__(self):
         class_ = self.__class__

@@ -75,8 +75,10 @@ def _calling_context(app_path):
     frm = sys._getframe(1)
     entered_sa_code = exited_sa_code = False
     sa_caller = '<unknown>'
-    format_name = ('{frm.f_code.co_filename}:{frm.f_lineno} '
-                   '({frm.f_code.co_name})'.format)
+    format_name = (
+        '{frm.f_code.co_filename}:{frm.f_lineno} '
+        '({frm.f_code.co_name})'.format
+    )
 
     while frm.f_back is not None:
         name = frm.f_globals.get('__name__')
@@ -114,7 +116,8 @@ def filter_cols(model, *filtered_columns):
     m = sa.orm.class_mapper(model)
     return list(
         set(p.key for p in m.iterate_properties
-            if hasattr(p, 'columns')).difference(filtered_columns))
+            if hasattr(p, 'columns')).difference(filtered_columns),
+    )
 
 
 class MutationDict(Mutable, dict):

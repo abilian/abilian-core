@@ -18,7 +18,8 @@ from abilian.services.security.models import Anonymous, Role
 #: A Whoosh analyzer that splits on word boundaries and folds accents and case.
 accent_folder = (
     RegexTokenizer(r'\w+')  # defaults doesn't split on '.'
-    | LowercaseFilter() | CharsetFilter(accent_map))
+    | LowercaseFilter() | CharsetFilter(accent_map)
+)
 
 #: Analyzer for edge-ngrams, from 2 to 6 characters long
 edge_ngram = accent_folder | NgramFilter(minsize=2, maxsize=6, at='start')
@@ -47,7 +48,11 @@ class _DefaultSearchSchema(SchemaClass):
 
     # hierarchical index of ids path ('/' is the separator)
     parent_ids = FieldType(
-        format=Existence(), analyzer=PathTokenizer(), stored=True, unique=False)
+        format=Existence(),
+        analyzer=PathTokenizer(),
+        stored=True,
+        unique=False,
+    )
 
     name = TEXT(stored=True, analyzer=accent_folder)
     slug = ID(stored=True)

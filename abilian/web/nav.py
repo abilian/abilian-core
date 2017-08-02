@@ -115,10 +115,12 @@ class BreadcrumbItem(object):
     #: either an unicode string or an :class:`Endpoint` instance.
     _url = None
 
-    template_string = (u'{%- if url %}<a href="{{ url }}">{%- endif %}'
-                       u'{%- if item.icon %}{{ item.icon }} {%- endif %}'
-                       u'{{ item.label }}'
-                       u'{%- if url %}</a>{%- endif %}')
+    template_string = (
+        u'{%- if url %}<a href="{{ url }}">{%- endif %}'
+        u'{%- if item.icon %}{{ item.icon }} {%- endif %}'
+        u'{{ item.label }}'
+        u'{%- if url %}</a>{%- endif %}'
+    )
 
     def __init__(self, label='', url='#', icon=None, description=None):
         # don't test 'label or...': if label is a lazy_gettext, it will be

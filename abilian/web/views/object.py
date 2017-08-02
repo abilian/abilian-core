@@ -53,14 +53,18 @@ class BaseObjectView(View):
     #: templates with a custom base
     base_template = "base.html"
 
-    def __init__(self, Model=None, pk=None, base_template=None, *args,
-                 **kwargs):
+    def __init__(
+        self, Model=None, pk=None, base_template=None, *args,
+        **kwargs
+    ):
         View.__init__(self, *args, **kwargs)
         cls = self.__class__
         self.pk = pk if pk is not None else cls.pk
         self.Model = Model if Model is not None else cls.Model
-        self.base_template = (base_template if base_template is not None else
-                              cls.base_template)
+        self.base_template = (
+            base_template if base_template is not None else
+            cls.base_template
+        )
 
     def prepare_args(self, args, kwargs):
         args, kwargs = self.init_object(args, kwargs)
@@ -132,13 +136,15 @@ class ObjectView(BaseObjectView):
     #: form instance for this view
     form = None
 
-    def __init__(self,
-                 Model=None,
-                 pk=None,
-                 Form=None,
-                 template=None,
-                 *args,
-                 **kwargs):
+    def __init__(
+        self,
+        Model=None,
+        pk=None,
+        Form=None,
+        template=None,
+        *args,
+        **kwargs
+    ):
         super(ObjectView, self).__init__(Model, pk, *args, **kwargs)
         cls = self.__class__
         self.Form = Form if Form is not None else cls.Form
@@ -177,18 +183,23 @@ CANCEL_BUTTON = ButtonAction(
     'form',
     'cancel',
     title=_l(u'Cancel'),
-    btn_class='default cancel'  # .cancel: if jquery.validate is used it will
+    btn_class='default cancel',  # .cancel: if jquery.validate is used it will
 )  # properly skip validation
 
 EDIT_BUTTON = ButtonAction(
-    'form', 'edit', btn_class='primary', title=_l(u'Save'))
+    'form',
+    'edit',
+    btn_class='primary',
+    title=_l(u'Save'),
+)
 
 ADD_ANOTHER_BUTTON = ButtonAction(
     'form',
     'create_add_another',
     btn_class='primary',
     title=_l(u'Create and add another'),
-    condition=lambda ctx: getattr(ctx['view'], 'add_another_button', False),)
+    condition=lambda ctx: getattr(ctx['view'], 'add_another_button', False),
+)
 
 
 class ObjectEdit(ObjectView):
@@ -218,17 +229,20 @@ class ObjectEdit(ObjectView):
 
     view_endpoint = None
 
-    def __init__(self,
-                 Model=None,
-                 pk=None,
-                 Form=None,
-                 template=None,
-                 view_endpoint=None,
-                 message_success=None,
-                 *args,
-                 **kwargs):
+    def __init__(
+        self,
+        Model=None,
+        pk=None,
+        Form=None,
+        template=None,
+        view_endpoint=None,
+        message_success=None,
+        *args,
+        **kwargs
+    ):
         ObjectView.__init__(
-            self, Model, pk, Form, template=template, *args, **kwargs)
+            self, Model, pk, Form, template=template, *args, **kwargs
+        )
         if view_endpoint is not None:
             self.view_endpoint = view_endpoint
 
@@ -287,7 +301,8 @@ class ObjectEdit(ObjectView):
                 break
         else:
             raise ValueError(
-                'Unknown action: "{}"'.format(action.encode('utf-8')))
+                'Unknown action: "{}"'.format(action.encode('utf-8')),
+            )
 
         self.action = action
         self.button = button
@@ -393,8 +408,10 @@ class ObjectEdit(ObjectView):
                 return rv
             session.rollback()
             logger.error(e)
-            flash(_("An entity with this name already exists in the system."),
-                  "error")
+            flash(
+                _("An entity with this name already exists in the system."),
+                "error",
+            )
             return self.get()
 
         else:
@@ -439,7 +456,8 @@ class ObjectEdit(ObjectView):
             actor=g.user,
             verb=self.activity_verb,
             object=self.obj,
-            target=self.activity_target)
+            target=self.activity_target,
+        )
 
     @property
     def activity_target(self):
@@ -450,14 +468,19 @@ class ObjectEdit(ObjectView):
 
 
 CREATE_BUTTON = ButtonAction(
-    'form', 'create', btn_class='primary', title=_l(u'Create'))
+    'form',
+    'create',
+    btn_class='primary',
+    title=_l(u'Create'),
+)
 CHAIN_CREATE_BUTTON = ButtonAction(
     'form',
     'chain_create',
     btn_class='primary',
     title=_l(u'Create and add new'),
     endpoint=lambda ctx: Endpoint(request.endpoint, **request.view_args),
-    condition=lambda ctx: getattr(ctx['view'], 'chain_create_allowed', False))
+    condition=lambda ctx: getattr(ctx['view'], 'chain_create_allowed', False),
+)
 
 
 class ObjectCreate(ObjectEdit):
@@ -546,7 +569,8 @@ class ObjectDelete(ObjectEdit):
             actor=g.user,
             verb="delete",
             object=self.obj,
-            target=self.activity_target)
+            target=self.activity_target,
+        )
         try:
             session.commit()
         except sa.exc.IntegrityError as e:
@@ -555,8 +579,10 @@ class ObjectDelete(ObjectEdit):
                 return rv
             session.rollback()
             logger.error(e)
-            flash(_("This entity is referenced by another object and cannot be deleted."),
-                  "error")
+            flash(
+                _("This entity is referenced by another object and cannot be deleted."),
+                "error",
+            )
             return self.redirect_to_view()
         else:
             flash(self.message_success(), 'success')
@@ -571,8 +597,10 @@ class JSONBaseSearch(JSONView):
 
     def __init__(self, *args, **kwargs):
         Model = kwargs.pop('Model', self.Model)
-        minimum_input_length = kwargs.pop('minimum_input_length',
-                                          self.minimum_input_length)
+        minimum_input_length = kwargs.pop(
+            'minimum_input_length',
+            self.minimum_input_length,
+        )
         super(JSONBaseSearch, self).__init__(*args, **kwargs)
         self.Model = Model
         self.minimum_input_length = minimum_input_length
@@ -584,8 +612,11 @@ class JSONBaseSearch(JSONView):
 
     def data(self, q, *args, **kwargs):
         if self.minimum_input_length and len(q) < self.minimum_input_length:
-            raise BadRequest('Minimum query length is {:d}'.format(
-                self.minimum_input_length),)
+            raise BadRequest(
+                'Minimum query length is {:d}'.format(
+                self.minimum_input_length,
+                ),
+            )
 
         results = []
         for obj in self.get_results(q, **kwargs):

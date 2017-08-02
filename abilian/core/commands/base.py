@@ -81,7 +81,8 @@ def _log_config(config):
                 "Version: {version}".format(
                     configured_path=unoconv,
                     abspath=os.path.abspath(unoconv),
-                    version=conversion._unoconv_handler.unoconv_version))
+                    version=conversion._unoconv_handler.unoconv_version,
+                ))
 
 
 def log_config(config):
@@ -94,21 +95,28 @@ def log_config(config):
 
 
 @manager.option(
-    '-p', '--port', dest='port', help='listening port', default=5000)
+    '-p',
+    '--port',
+    dest='port',
+    help='listening port',
+    default=5000,
+)
 @manager.option(
     '--show-config',
     dest='show_config',
     action='store_const',
     const=True,
     default=False,
-    help='show application configuration on startup')
+    help='show application configuration on startup',
+)
 @manager.option(
     '--ssl',
     dest='ssl',
     action='store_const',
     default=False,
     const=True,
-    help='Enable werkzeug SSL')
+    help='Enable werkzeug SSL',
+)
 def run(port, show_config, ssl):
     """Like runserver. May also print application configuration if used with
     --show-config.
@@ -169,20 +177,28 @@ password_opt = manager.option(
     '--password',
     dest='password',
     default=None,
-    help='If absent, a prompt will ask for password',)
+    help='If absent, a prompt will ask for password',
+)
 role_opt = manager.option(
     '-r',
     '--role',
     dest='role',
-    choices=[r.name for r in Role.assignable_roles()],)
+    choices=[r.name for r in Role.assignable_roles()],
+)
 name_opt = manager.option(
-    '-n', '--name', dest='name', default=None, help='Last name (e.g "Smith")')
+    '-n',
+    '--name',
+    dest='name',
+    default=None,
+    help='Last name (e.g "Smith")',
+)
 firstname_opt = manager.option(
     '-f',
     '--firstname',
     dest='first_name',
     default=None,
-    help='Fist name (e.g. "John")')
+    help='Fist name (e.g. "John")',
+)
 
 
 @email_opt
@@ -206,7 +222,8 @@ def createuser(email, password, role=None, name=None, first_name=None):
         password=password,
         last_name=name,
         first_name=first_name,
-        can_login=True)
+        can_login=True,
+    )
     db.session.add(user)
 
     if role in ('admin',):

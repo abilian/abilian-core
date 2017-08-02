@@ -41,7 +41,8 @@ login = Blueprint(
     __name__,
     url_prefix="/user",
     allowed_roles=Anonymous,
-    template_folder='templates')
+    template_folder='templates',
+)
 route = login.route
 
 
@@ -69,13 +70,17 @@ def do_login(form):
 
     try:
         user = User.query \
-            .filter(sql.func.lower(User.email) == email,
-                    User.can_login == True) \
+            .filter(
+                sql.func.lower(User.email) == email,
+                User.can_login == True,
+            ) \
             .one()
     except NoResultFound:
         auth_failed.send(current_app._get_current_object(), email=email)
-        res['error'] = _(u"Sorry, we couldn't find an account for "
-                         u"email '{email}'.").format(email=email)
+        res['error'] = _(
+            u"Sorry, we couldn't find an account for "
+            u"email '{email}'.",
+        ).format(email=email)
         res['code'] = 401
         return res
 
@@ -163,12 +168,18 @@ def forgotten_pw(new_user=False):
 
     try:
         user = User.query \
-            .filter(sql.func.lower(User.email) == email,
-                    User.can_login == True) \
+            .filter(
+                sql.func.lower(User.email) == email,
+                User.can_login == True,
+            ) \
             .one()
     except NoResultFound:
-        flash(_(u"Sorry, we couldn't find an account for "
-                "email '{email}'.").format(email=email), 'error')
+        flash(
+            _(
+                u"Sorry, we couldn't find an account for "
+                "email '{email}'.",
+            ).format(email=email), 'error',
+        )
         return render_template("login/forgotten_password.html"), 401
 
     if user.can_login and not user.password:
@@ -176,8 +187,10 @@ def forgotten_pw(new_user=False):
         db.session.commit()
 
     send_reset_password_instructions(user)
-    flash(_("Password reset instructions have been sent to your email address."),
-          'info')
+    flash(
+        _("Password reset instructions have been sent to your email address."),
+        'info',
+    )
 
     return redirect(url_for("login.login_form"))
 
@@ -223,8 +236,12 @@ def reset_password_post(token):
         return redirect(url_for("login.reset_password_post", token=token))
 
     if password.lower() == password:
-        flash(_(u"Your new password must contain upper case and lower case "
-                "letters"), "error")
+        flash(
+            _(
+                u"Your new password must contain upper case and lower case "
+                "letters",
+            ), "error",
+        )
         return redirect(url_for("login.reset_password_post", token=token))
 
     if not len([x for x in password if x.isdigit()]) > 0:
@@ -234,9 +251,13 @@ def reset_password_post(token):
     user.set_password(password)
     db.session.commit()
 
-    flash(_(u"Your password has been changed. "
-            u"You can now login with your new password"),
-          "success")
+    flash(
+        _(
+            u"Your password has been changed. "
+            u"You can now login with your new password",
+        ),
+        "success",
+    )
 
     return redirect(url_for("login.login_form", next_url=request.url_root))
 
@@ -269,11 +290,17 @@ def send_reset_password_instructions(user):
     url = url_for('login.reset_password', token=token)
     reset_link = request.url_root[:-1] + url
 
-    subject = _(u"Password reset instruction for {site_name}"
-                ).format(site_name=current_app.config.get('SITE_NAME'))
+    subject = _(
+        u"Password reset instruction for {site_name}",
+    ).format(site_name=current_app.config.get('SITE_NAME'))
     mail_template = 'password_reset_instructions'
     send_mail(
-        subject, user.email, mail_template, user=user, reset_link=reset_link)
+        subject,
+        user.email,
+        mail_template,
+        user=user,
+        reset_link=reset_link,
+    )
 
 
 def generate_reset_password_token(user):

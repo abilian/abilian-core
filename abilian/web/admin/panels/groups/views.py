@@ -44,7 +44,8 @@ class JsonGroupsList(base.JSONView):
         if search:
             # TODO: gérer les accents
             query = query.filter(
-                func.lower(Group.name).like("%" + search + "%"))
+                func.lower(Group.name).like("%" + search + "%"),
+            )
 
         count = query.count()
         columns = [func.lower(Group.name)]
@@ -74,7 +75,8 @@ class JsonGroupsList(base.JSONView):
                     '''{%- for role in roles %}
                         <span class="badge badge-default">{{ role }}</span>
                         {%- endfor %}''',
-                    roles=roles),
+                    roles=roles,
+                ),
                 '\u2713' if group.public else '',
             ]
 
@@ -109,7 +111,8 @@ ADD_USER_BUTTON = ButtonAction(
     'add_user',
     condition=lambda v: request.method == 'POST',
     title=_l(u'Add'),
-    btn_class='primary')
+    btn_class='primary',
+)
 
 REMOVE_USER_BUTTON = ButtonAction(
     'form',
@@ -117,7 +120,8 @@ REMOVE_USER_BUTTON = ButtonAction(
     condition=lambda v: request.method == 'POST',
     btn_class='danger',
     icon=FAIcon('times'),
-    title="")
+    title="",
+)
 
 
 class GroupView(GroupBase, views.ObjectView):

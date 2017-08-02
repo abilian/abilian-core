@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from datetime import datetime, timedelta
 
-from _pytest.python import raises
+from pytest import raises
 
 from abilian.core.entities import Entity
 from abilian.testing import BaseTestCase as AbilianTestCase

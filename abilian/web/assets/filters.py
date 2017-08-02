@@ -28,7 +28,8 @@ class ImportCSSFilter(Filter):
 
     logger = logging.getLogger(__name__ + '.ImportCssFilter')
     _IMPORT_RE = re.compile(
-        '''@import ("|')(?P<filename>(/?[-a-zA-Z0-9_\.]+)+\.css)("|');''')
+        '''@import ("|')(?P<filename>(/?[-a-zA-Z0-9_\.]+)+\.css)("|');''',
+    )
 
     def input(self, _in, out, **kwargs):
         filepath = kwargs['source_path']
@@ -71,7 +72,8 @@ class ImportCSSFilter(Filter):
                     source=rel_filename,
                     source_path=abs_filename,
                     output=source,
-                    output_path=filepath)
+                    output_path=filepath,
+                )
             buf.seek(0)
             # now process '@includes' directives in included file
             self.input(
@@ -80,7 +82,8 @@ class ImportCSSFilter(Filter):
                 source=rel_filename,
                 source_path=abs_filename,
                 output=source,
-                output_path=filepath)
+                output_path=filepath,
+            )
 
             if end < len(line):
                 out.write(line[end:])
@@ -210,7 +213,7 @@ class Less(ExternalTool):
         'extra_args': 'less_extra_args',
         'paths': 'LESS_PATHS',
         'as_output': 'less_as_output',
-        'source_map_file': 'less_source_map_file'
+        'source_map_file': 'less_source_map_file',
     }
     max_debug_level = None
 
@@ -283,7 +286,8 @@ class Less(ExternalTool):
             source=output,
             source_path=output_path,
             output=output,
-            output_path=output_path)
+            output_path=output_path,
+        )
 
     def fix_url(self, cur_path, url):
         if url.startswith('data:'):
@@ -291,7 +295,8 @@ class Less(ExternalTool):
             return url
 
         src_path = os.path.normpath(
-            os.path.abspath(os.path.join(cur_path, url)))
+            os.path.abspath(os.path.join(cur_path, url)),
+        )
         possible_paths = [
             p for p in self.ctx.url_mapping.keys() if src_path.startswith(p)
         ]

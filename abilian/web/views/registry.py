@@ -69,7 +69,8 @@ class Registry(object):
             return url_for(
                 '{}.view'.format(object_type.rsplit('.')[-1].lower()),
                 object_id=object_id,
-                **kwargs)
+                **kwargs
+            )
         except:
             raise KeyError(object_type)
 
@@ -85,12 +86,14 @@ class default_view(object):
        obj_id, \*\*kwargs. It must return kw.
     """
 
-    def __init__(self,
-                 app_or_blueprint,
-                 entity,
-                 id_attr='object_id',
-                 endpoint=None,
-                 kw_func=None):
+    def __init__(
+            self,
+            app_or_blueprint,
+            entity,
+            id_attr='object_id',
+            endpoint=None,
+            kw_func=None,
+    ):
         self.app_or_blueprint = app_or_blueprint
         self.is_bp = isinstance(app_or_blueprint, Blueprint)
         self.entity = entity
@@ -126,7 +129,9 @@ class default_view(object):
             def set_default_view(state):
                 state.app.default_view.register(self.entity, default_url)
         else:
-            self.app_or_blueprint.default_view.register(self.entity,
-                                                        default_url)
+            self.app_or_blueprint.default_view.register(
+                self.entity,
+                default_url,
+            )
 
         return view

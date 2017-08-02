@@ -117,7 +117,11 @@ class AuditService(Service):
             if info.get('auditable', True):
                 entity_class.__auditable__.audited_attrs.add(attr)
                 event.listen(
-                    attr, "set", self.set_attribute, active_history=True)
+                    attr,
+                    "set",
+                    self.set_attribute,
+                    active_history=True,
+                )
 
         for relation in mapper.relationships:
             if relation.direction is not sa.orm.interfaces.MANYTOMANY:
@@ -125,9 +129,17 @@ class AuditService(Service):
             attr = getattr(entity_class, relation.key)
             entity_class.__auditable__.collection_attrs.add(attr)
             event.listen(
-                attr, "append", self.collection_append, active_history=True)
+                attr,
+                "append",
+                self.collection_append,
+                active_history=True,
+            )
             event.listen(
-                attr, "remove", self.collection_remove, active_history=True)
+                attr,
+                "remove",
+                self.collection_remove,
+                active_history=True,
+            )
 
     def setup_auditable_entity(self, entity_class):
         meta = AuditableMeta(entity_class.__name__, 'id')
@@ -145,7 +157,8 @@ class AuditService(Service):
             if not relation:
                 raise ValueError(
                     'Invalid relation: "{}", invalid attribute is "{}"'
-                    ''.format(related_attr, attr))
+                    ''.format(related_attr, attr),
+                )
 
             mapper = relation.mapper
             if inferred_backref is not None:
@@ -167,7 +180,10 @@ class AuditService(Service):
                     'Audit setup class<{cls}: Could not guess backref name'
                     ' of relationship "{related_attr}", please use tuple annotation '
                     'on __auditable_entity__'.format(
-                        cls=entity_class.__name__, related_attr=related_attr))
+                        cls=entity_class.__name__,
+                        related_attr=related_attr,
+                    ),
+                )
 
         meta.related = related_path
         meta.backref_attr = backref_attr
@@ -220,9 +236,11 @@ class AuditService(Service):
             # the application, and db session should be left clean. Only the developper
             # (and raven/sentry/whatever) should know
             entries = []
-            for identity_set, op in ((session.new, CREATION),
-                                     (session.deleted, DELETION),
-                                     (session.dirty, UPDATE)):
+            for identity_set, op in (
+                (session.new, CREATION),
+                (session.deleted, DELETION),
+                (session.dirty, UPDATE),
+            ):
                 for model in identity_set:
                     try:
                         entry = self.log(session, model, op)
@@ -230,10 +248,13 @@ class AuditService(Service):
                             entries.append(entry)
                     except:
                         if current_app.config.get(
-                                'DEBUG') or current_app.config.get('TESTING'):
+                                'DEBUG',
+                        ) or current_app.config.get('TESTING'):
                             raise
                         log.error(
-                            'Exception during entry creation', exc_info=True)
+                            'Exception during entry creation',
+                            exc_info=True,
+                        )
 
                 session.add_all(entries)
         finally:
@@ -278,8 +299,12 @@ class AuditService(Service):
         if op == CREATION:
             for instrumented_attr in meta.audited_attrs:
                 value = getattr(model, instrumented_attr.key)
-                self.set_attribute(model, value, NEVER_SET,
-                                   instrumented_attr.impl)
+                self.set_attribute(
+                    model,
+                    value,
+                    NEVER_SET,
+                    instrumented_attr.impl,
+                )
 
             for instrumented_attr in meta.collection_attrs:
                 for obj in getattr(model, instrumented_attr.key):
@@ -302,8 +327,10 @@ class AuditService(Service):
                     item = getattr(item, attr)
                 enduser_ids.append(text_type(item))
 
-            related_name = u'{} {}'.format(meta.backref_attr,
-                                           u' '.join(enduser_ids))
+            related_name = u'{} {}'.format(
+                meta.backref_attr,
+                u' '.join(enduser_ids),
+            )
             related_changes = changes
             log.debug('related changes: %s', repr(related_changes))
             changes = Changes()
@@ -336,12 +363,14 @@ def format_large_value(value):
     return value
 
 
-def get_model_changes(entity_type,
-                      year=None,
-                      month=None,
-                      day=None,
-                      hour=None,
-                      since=None):
+def get_model_changes(
+        entity_type,
+        year=None,
+        month=None,
+        day=None,
+        hour=None,
+        since=None,
+):
     """
     Get models modified at the given date with the Audit service.
 

@@ -34,7 +34,10 @@ class View(db.Model):
 
     #: viewed entity id
     entity_id = Column(
-        Integer, default=_default_from('_fk_entity_id'), nullable=False)
+        Integer,
+        default=_default_from('_fk_entity_id'),
+        nullable=False,
+    )
     _fk_entity_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
     entity = relationship(Entity, foreign_keys=_fk_entity_id)
 
@@ -43,7 +46,11 @@ class View(db.Model):
     user = relationship(User, foreign_keys=user_id)
 
     hits = db.relationship(
-        'Hit', backref='view', order_by='Hit.viewed_at', lazy='dynamic')
+        'Hit',
+        backref='view',
+        order_by='Hit.viewed_at',
+        lazy='dynamic',
+    )
 
 
 class Hit(db.Model):

@@ -260,18 +260,22 @@ class WhooshIndexService(Service):
             indexed = sorted(set(r.field_terms('object_type')))
         app_indexed = self.app_state.indexed_fqcn
 
-        return [(name, friendly_fqcn(name)) for name in indexed
-                if name in app_indexed]
+        return [
+            (name, friendly_fqcn(name)) for name in indexed
+            if name in app_indexed
+        ]
 
-    def search(self,
-               q,
-               index='default',
-               fields=None,
-               Models=(),
-               object_types=(),
-               prefix=True,
-               facet_by_type=None,
-               **search_args):
+    def search(
+        self,
+        q,
+        index='default',
+        fields=None,
+        Models=(),
+        object_types=(),
+        prefix=True,
+        facet_by_type=None,
+        **search_args
+    ):
         """Interface to search indexes.
 
         :param q: unparsed search string.
@@ -292,7 +296,8 @@ class WhooshIndexService(Service):
 
         valid_fields = set(
             f for f in index.schema.names(check_names=fields)
-            if prefix or not f.endswith('_prefix'))
+            if prefix or not f.endswith('_prefix')
+        )
 
         for invalid in set(fields) - valid_fields:
             del fields[invalid]
@@ -312,10 +317,12 @@ class WhooshIndexService(Service):
                 roles.add(indexable_role(Anonymous))
                 roles.add(indexable_role(Authenticated))
                 roles |= set(
-                    indexable_role(r) for r in security.get_roles(user))
+                    indexable_role(r) for r in security.get_roles(user)
+                )
 
             filter_q = wq.Or(
-                [wq.Term('allowed_roles_and_users', role) for role in roles])
+                [wq.Term('allowed_roles_and_users', role) for role in roles],
+            )
             filters.append(filter_q)
 
         object_types = set(object_types)
@@ -356,7 +363,9 @@ class WhooshIndexService(Service):
             search_args['collapse'] = 'object_type'
             search_args['collapse_limit'] = collapse_limit
             search_args['limit'] = (search_args['collapse_limit'] * max(
-                len(object_types), 1))
+                len(object_types),
+                1,
+            ))
 
         with index.searcher(closereader=False) as searcher:
             # 'closereader' is needed, else results cannot by used outside 'with'
@@ -379,7 +388,8 @@ class WhooshIndexService(Service):
 
     def search_for_class(self, query, cls, index='default', **search_args):
         return self.search(
-            query, Models=(fqcn(cls),), index=index, **search_args)
+            query, Models=(fqcn(cls),), index=index, **search_args
+        )
 
     def register_classes(self):
         state = self.app_state
@@ -415,7 +425,8 @@ class WhooshIndexService(Service):
         session_objs = (
             ('new', session.new),
             ('deleted', session.deleted),
-            ('changed', session.dirty),)
+            ('changed', session.dirty),
+        )
         for key, objs in session_objs:
             for obj in objs:
                 model_name = fqcn(obj.__class__)
@@ -515,7 +526,10 @@ class WhooshIndexService(Service):
                     # logger is here to give us more infos in order to catch a weird bug
                     # that happens regularly on CI but is not reliably reproductible.
                     logger.error(
-                        'writer.add_document(%r)', document, exc_info=True)
+                        'writer.add_document(%r)',
+                        document,
+                        exc_info=True,
+                    )
                     raise
                 indexed.add(object_key)
 
@@ -572,7 +586,10 @@ def index_update(index, items):
                     # logger is here to give us more infos in order to catch a weird bug
                     # that happens regularly on CI but is not reliably reproductible.
                     logger.error(
-                        'writer.add_document(%r)', document, exc_info=True)
+                        'writer.add_document(%r)',
+                        document,
+                        exc_info=True,
+                    )
                     raise
                 updated.add(object_key)
     except:

@@ -75,12 +75,16 @@ class UserJsonListing(JSONModelSearch):
             query = query.filter(
                 or_(
                     func.lower(User.first_name).like(q + "%"),
-                    func.lower(User.last_name).like(q + "%")))
+                    func.lower(User.last_name).like(q + "%"),
+                ),
+            )
         return query
 
     def order_by(self, query):
         return query.order_by(
-            func.lower(User.last_name), func.lower(User.first_name))
+            func.lower(User.last_name),
+            func.lower(User.first_name),
+        )
 
     def get_item(self, obj):
         d = super(UserJsonListing, self).get_item(obj)

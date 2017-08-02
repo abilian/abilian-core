@@ -121,7 +121,8 @@ default_config.update(
         'abilian.web.admin.panels.sysinfo.SysinfoPanel',
         'abilian.web.admin.panels.impersonate.ImpersonatePanel',
         'abilian.services.vocabularies.admin.VocabularyPanel',
-        'abilian.web.tags.admin.TagPanel',),
+        'abilian.web.tags.admin.TagPanel',
+    ),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
     CELERY_TIMEZONE=LOCALTZ,
@@ -136,7 +137,8 @@ default_config.update(
     LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
-    MAIL_ADDRESS_TAG_CHAR=None,)
+    MAIL_ADDRESS_TAG_CHAR=None,
+)
 default_config = ImmutableDict(default_config)
 
 
@@ -146,9 +148,13 @@ class Application(Flask, ServiceManager, PluginManager):
     default_config = default_config
 
     #: Custom apps may want to always load some plugins: list them here.
-    APP_PLUGINS = ('abilian.web.search', 'abilian.web.tags',
-                   'abilian.web.comments', 'abilian.web.uploads',
-                   'abilian.web.attachments')
+    APP_PLUGINS = (
+        'abilian.web.search',
+        'abilian.web.tags',
+        'abilian.web.comments',
+        'abilian.web.uploads',
+        'abilian.web.attachments',
+    )
 
     #: Environment variable used to locate a config file to load last (after
     #: instance config file). Use this if you want to override some settings on a
@@ -187,8 +193,10 @@ class Application(Flask, ServiceManager, PluginManager):
 
         # used by make_config to determine if we try to load config from instance /
         # environment variable /...
-        self._ABILIAN_INIT_TESTING_FLAG = (getattr(config, 'TESTING', False)
-                                           if config else False)
+        self._ABILIAN_INIT_TESTING_FLAG = (
+            getattr(config, 'TESTING', False)
+            if config else False
+        )
         Flask.__init__(self, name, *args, **kwargs)
         del self._ABILIAN_INIT_TESTING_FLAG
 
@@ -228,7 +236,8 @@ class Application(Flask, ServiceManager, PluginManager):
             with self.app_context():
                 try:
                     settings = self.services['settings'].namespace(
-                        'config').as_dict()
+                        'config',
+                    ).as_dict()
                 except sa.exc.DatabaseError as exc:
                     # we may get here if DB is not initialized and "settings" table is
                     # missing. Command "initdb" must be run to initialize db, but first we
@@ -248,30 +257,40 @@ class Application(Flask, ServiceManager, PluginManager):
         if languages is None:
             languages = abilian.i18n.VALID_LANGUAGES_CODE
         else:
-            languages = tuple(lang for lang in languages
-                              if lang in abilian.i18n.VALID_LANGUAGES_CODE)
+            languages = tuple(
+                lang for lang in languages
+                if lang in abilian.i18n.VALID_LANGUAGES_CODE
+            )
         self.config['BABEL_ACCEPT_LANGUAGES'] = languages
 
         self._jinja_loaders = list()
         self.register_jinja_loaders(
-            jinja2.PackageLoader('abilian.web', 'templates'))
+            jinja2.PackageLoader('abilian.web', 'templates'),
+        )
 
-        js_filters = (('closure_js',)
-                      if self.config.get('PRODUCTION', False) else None)
+        js_filters = (
+            ('closure_js',)
+            if self.config.get('PRODUCTION', False) else None
+        )
 
         self._assets_bundles = {
             'css': {
                 'options': dict(
                     filters=('less', 'cssmin'),
-                    output='style-%(version)s.min.css'),
+                    output='style-%(version)s.min.css',
+                ),
             },
             'js-top': {
                 'options': dict(
-                    output='top-%(version)s.min.js', filters=js_filters),
+                    output='top-%(version)s.min.js',
+                    filters=js_filters,
+                ),
             },
             'js': {
                 'options': dict(
-                    output='app-%(version)s.min.js', filters=js_filters),
+                    output='app-%(version)s.min.js',
+                    filters=js_filters,
+                ),
             },
         }
 
@@ -290,16 +309,22 @@ class Application(Flask, ServiceManager, PluginManager):
             self.init_extensions()
             self.register_plugins()
             self.add_access_controller(
-                'static', allow_access_for_roles(Anonymous), endpoint=True)
+                'static',
+                allow_access_for_roles(Anonymous),
+                endpoint=True,
+            )
             # debugtoolbar: this is needed to have it when not authenticated on a
             # private site. We cannot do this in init_debug_toolbar, since auth
             # service is not yet installed
-            self.add_access_controller('debugtoolbar',
-                                       allow_access_for_roles(Anonymous))
+            self.add_access_controller(
+                'debugtoolbar',
+                allow_access_for_roles(Anonymous),
+            )
             self.add_access_controller(
                 '_debug_toolbar.static',
                 allow_access_for_roles(Anonymous),
-                endpoint=True)
+                endpoint=True,
+            )
 
         self.maybe_register_setup_wizard()
         self._finalize_assets_setup()
@@ -343,7 +368,9 @@ class Application(Flask, ServiceManager, PluginManager):
                     '\n' + ('*' * 79) + '\n'
                     'Could not find command manager at %r, using a default one\n'
                     'Some commands might not be available\n' +
-                    ('*' * 79) + '\n', manager_import_path)
+                    ('*' * 79) + '\n',
+                    manager_import_path,
+                )
                 from abilian.core.commands import setup_abilian_commands
                 manager = ScriptManager()
                 setup_abilian_commands(manager)
@@ -378,7 +405,8 @@ class Application(Flask, ServiceManager, PluginManager):
         url_value_preprocessor and `before_request` handlers.
         """
         g.breadcrumb.append(
-            BreadcrumbItem(icon='home', url='/' + request.script_root))
+            BreadcrumbItem(icon='home', url='/' + request.script_root),
+        )
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary permissions.
@@ -457,14 +485,17 @@ class Application(Flask, ServiceManager, PluginManager):
         logging_file = self.config.get('LOGGING_CONFIG_FILE')
         if logging_file:
             logging_file = os.path.abspath(
-                os.path.join(self.instance_path, logging_file))
+                os.path.join(self.instance_path, logging_file),
+            )
         else:
             logging_file = resource_filename(__name__, 'default_logging.yml')
 
         if logging_file.endswith('.conf'):
             # old standard 'ini' file config
             logging.config.fileConfig(
-                logging_file, disable_existing_loggers=False)
+                logging_file,
+                disable_existing_loggers=False,
+            )
         elif logging_file.endswith('.yml'):
             # yml config file
             logging_cfg = yaml.load(open(logging_file, 'r'))
@@ -473,13 +504,17 @@ class Application(Flask, ServiceManager, PluginManager):
             logging.config.dictConfig(logging_cfg)
 
     def init_debug_toolbar(self):
-        if (not self.testing and self.config.get('DEBUG_TB_ENABLED') and
-                'debugtoolbar' not in self.blueprints):
+        if (
+            not self.testing and self.config.get('DEBUG_TB_ENABLED') and
+            'debugtoolbar' not in self.blueprints
+        ):
             try:
                 from flask_debugtoolbar import DebugToolbarExtension
             except ImportError:
-                logger.warning('DEBUG_TB_ENABLED is on but flask_debugtoolbar '
-                               'is not installed.')
+                logger.warning(
+                    'DEBUG_TB_ENABLED is on but flask_debugtoolbar '
+                    'is not installed.',
+                )
             else:
                 dbt = DebugToolbarExtension()
                 default_config = dbt._default_config(self)
@@ -488,7 +523,8 @@ class Application(Flask, ServiceManager, PluginManager):
                 if 'DEBUG_TB_PANELS' not in self.config:
                     # add our panels to default ones
                     self.config['DEBUG_TB_PANELS'] = list(
-                        default_config['DEBUG_TB_PANELS'])
+                        default_config['DEBUG_TB_PANELS'],
+                    )
                 init_dbt(self)
                 for view_name in self.view_functions:
                     if view_name.startswith('debugtoolbar.'):
@@ -524,7 +560,10 @@ class Application(Flask, ServiceManager, PluginManager):
 
         babel.init_app(self)
         babel.add_translations(
-            'wtforms', translations_dir='locale', domain='wtforms')
+            'wtforms',
+            translations_dir='locale',
+            domain='wtforms',
+        )
         babel.add_translations('abilian')
         babel.localeselector(abilian.i18n.localeselector)
         babel.timezoneselector(abilian.i18n.timezoneselector)
@@ -611,12 +650,17 @@ class Application(Flask, ServiceManager, PluginManager):
         Role instances.
         """
         roles = options.pop('roles', None)
-        super(Application, self).add_url_rule(rule, endpoint, view_func,
-                                              **options)
+        super(Application, self).add_url_rule(
+            rule, endpoint, view_func,
+            **options
+        )
 
         if roles:
             self.add_access_controller(
-                endpoint, allow_access_for_roles(roles), endpoint=True)
+                endpoint,
+                allow_access_for_roles(roles),
+                endpoint=True,
+            )
 
     def add_access_controller(self, name, func, endpoint=False):
         """Add an access controller.
@@ -657,9 +701,13 @@ class Application(Flask, ServiceManager, PluginManager):
             url_path,
             endpoint=endpoint,
             view_func=partial(send_file_from_directory, directory=directory),
-            roles=roles)
+            roles=roles,
+        )
         self.add_access_controller(
-            endpoint, allow_access_for_roles(Anonymous), endpoint=True)
+            endpoint,
+            allow_access_for_roles(Anonymous),
+            endpoint=True,
+        )
 
     #
     # Templating and context injection setup
@@ -675,7 +723,8 @@ class Application(Flask, ServiceManager, PluginManager):
             url_for=url_for,
             user_photo_url=user_photo_url,
             NO_VALUE=NO_VALUE,
-            NEVER_SET=NEVER_SET)
+            NEVER_SET=NEVER_SET,
+        )
         init_filters(env)
         return env
 
@@ -694,7 +743,9 @@ class Application(Flask, ServiceManager, PluginManager):
                 cache_dir.mkdir(0o775, parents=True)
 
             options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(
-                str(cache_dir), '%s.cache')
+                str(cache_dir),
+                '%s.cache',
+            )
 
         if (self.config.get('DEBUG', False) and
                 self.config.get('TEMPLATE_DEBUG', False)):
@@ -803,7 +854,8 @@ class Application(Flask, ServiceManager, PluginManager):
             except ImportError:
                 logger.error(
                     'SENTRY_DSN is defined in config but package "raven" is not '
-                    'installed.')
+                    'installed.',
+                )
                 return
 
             ext = Sentry(self, logging=True, level=logging.ERROR)
@@ -829,7 +881,8 @@ class Application(Flask, ServiceManager, PluginManager):
                 id=0,
                 last_name='SYSTEM',
                 email='system@example.com',
-                can_login=False)
+                can_login=False,
+            )
             db.session.add(root)
             db.session.commit()
 
@@ -873,7 +926,8 @@ class Application(Flask, ServiceManager, PluginManager):
             'min',
             str(assets_dir),
             endpoint='webassets_static',
-            roles=Anonymous)
+            roles=Anonymous,
+        )
 
     def _finalize_assets_setup(self):
         assets = self.extensions['webassets']
@@ -917,8 +971,11 @@ class Application(Flask, ServiceManager, PluginManager):
         """
         supported = self._assets_bundles.keys()
         if type_ not in supported:
-            raise KeyError("Invalid type: %s. Valid types: ",
-                           repr(type_), ', '.join(sorted(supported)))
+            raise KeyError(
+                "Invalid type: %s. Valid types: ",
+                repr(type_),
+                ', '.join(sorted(supported)),
+            )
 
         for asset in assets:
             if not isinstance(asset, Bundle) and callable(asset):
@@ -962,8 +1019,10 @@ class Application(Flask, ServiceManager, PluginManager):
         The default error handler renders a template named error404.html for
         http_error_code 404.
         """
-        logger.debug('Set Default HTTP error handler for status code %d',
-                     http_error_code)
+        logger.debug(
+            'Set Default HTTP error handler for status code %d',
+            http_error_code,
+        )
         handler = partial(self.handle_http_error, http_error_code)
         self.errorhandler(http_error_code)(handler)
 

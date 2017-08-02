@@ -107,8 +107,10 @@ class BlobTestCase(AbilianTestCase):
             session.delete(b)
             # object marked for deletion, but instance attribute should still be
             # readable
-            assert session_repository.get(b,
-                                          b.uuid).open('rb').read() == content
+            assert session_repository.get(
+                b,
+                b.uuid,
+            ).open('rb').read() == content
 
         # commit in transaction: session_repository has no content, 'physical'
         # repository still has content

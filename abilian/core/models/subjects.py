@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin
-from six import python_2_unicode_compatible, text_type, add_metaclass
+from six import add_metaclass, python_2_unicode_compatible, text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
@@ -39,29 +39,45 @@ following = Table(
     db.Model.metadata,
     Column('follower_id', Integer, ForeignKey('user.id')),
     Column('followee_id', Integer, ForeignKey('user.id')),
-    UniqueConstraint('follower_id', 'followee_id'),)
+    UniqueConstraint('follower_id', 'followee_id'),
+)
 
 membership = Table(
     'membership',
     db.Model.metadata,
-    Column('user_id', Integer,
-           ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE')),
-    Column('group_id', Integer,
-           ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE')),
-    UniqueConstraint('user_id', 'group_id'),)
+    Column(
+        'user_id',
+        Integer,
+        ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE'),
+    ),
+    Column(
+        'group_id',
+        Integer,
+        ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE'),
+    ),
+    UniqueConstraint('user_id', 'group_id'),
+)
 
 # Should not be needed (?)
 administratorship = Table(
     'administratorship',
     db.Model.metadata,
-    Column('user_id', Integer,
-           ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE')),
-    Column('group_id', Integer,
-           ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE')),
-    UniqueConstraint('user_id', 'group_id'),)
+    Column(
+        'user_id',
+        Integer,
+        ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE'),
+    ),
+    Column(
+        'group_id',
+        Integer,
+        ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE'),
+    ),
+    UniqueConstraint('user_id', 'group_id'),
+)
 
 _RANDOM_PASSWORD_CHARS = (
-    string.ascii_letters + string.digits + string.punctuation)
+    string.ascii_letters + string.digits + string.punctuation
+)
 
 
 def gen_random_password(length=15):
@@ -144,8 +160,12 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     __indexation_args__ = {}
     __indexation_args__.update(Indexable.__indexation_args__)
     index_to = __indexation_args__.setdefault('index_to', ())
-    __indexation_args__['index_to'] += (('name',
-                                         ('name', 'name_prefix', 'text')),)
+    __indexation_args__['index_to'] += (
+        (
+        'name',
+        ('name', 'name_prefix', 'text'),
+        ),
+    )
     del index_to
 
     def has_role(self, role):
@@ -185,7 +205,10 @@ class User(Principal, UserMixin, db.Model):
     email = Column(UnicodeText, nullable=False)
     can_login = Column(Boolean, nullable=False, default=True)
     password = Column(
-        UnicodeText, default="*", info={'audit_hide_content': True})
+        UnicodeText,
+        default="*",
+        info={'audit_hide_content': True},
+    )
 
     photo = deferred(Column(LargeBinary))
 
@@ -200,7 +223,8 @@ class User(Principal, UserMixin, db.Model):
         secondary=following,
         primaryjoin='User.id == following.c.follower_id',
         secondaryjoin='User.id == following.c.followee_id',
-        backref='followees')
+        backref='followees',
+    )
 
     def __init__(self, password=None, **kwargs):
         Principal.__init__(self)
@@ -262,7 +286,9 @@ class User(Principal, UserMixin, db.Model):
     @property
     def name(self):
         name = u'{first_name} {last_name}'.format(
-            first_name=self.first_name or u'', last_name=self.last_name or u'')
+            first_name=self.first_name or u'',
+            last_name=self.last_name or u'',
+        )
         return name.strip() or u'Unknown'
 
     @property
@@ -282,7 +308,8 @@ class User(Principal, UserMixin, db.Model):
             cls=cls.__name__,
             id=self.id,
             email=self.email,
-            addr=id(self))
+            addr=id(self),
+        )
 
 
 @listens_for(User, "mapper_configured", propagate=True)
@@ -294,7 +321,8 @@ def _add_user_indexes(mapper, class_):
     idx = sa.schema.Index(
         'user_unique_lowercase_email',
         sa.sql.func.lower(class_.email),
-        unique=True)
+        unique=True,
+    )
     idx.info['engines'] = ('postgresql',)
 
 
@@ -312,9 +340,13 @@ class Group(Principal, db.Model):
         "User",
         collection_class=set,
         secondary=membership,
-        backref=backref('groups', lazy='select', collection_class=set))
+        backref=backref('groups', lazy='select', collection_class=set),
+    )
     admins = relationship(
-        "User", collection_class=set, secondary=administratorship)
+        "User",
+        collection_class=set,
+        secondary=administratorship,
+    )
 
     photo = deferred(Column(LargeBinary))
 

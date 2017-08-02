@@ -48,14 +48,15 @@ class DashboardPanel(AdminPanel):
         ]
         new_logins = [
             {'key': _('New'), 'color': '#ff7f0e', "bar": True, 'values': new_logins},
-            {'key': _('Total'), 'color': '#2ca02c', 'values': total_users}
+            {'key': _('Total'), 'color': '#2ca02c', 'values': total_users},
         ]
 
         return render_template(
             "admin/dashboard.html",
             stats=stats,
             connections=connections,
-            new_logins=new_logins)
+            new_logins=new_logins,
+        )
 
 
 def stats_since(dt):
@@ -63,8 +64,10 @@ def stats_since(dt):
     after_date = datetime.utcnow() - dt
     session = current_app.db.session()
     counts_per_type = session \
-        .query(AuditEntry.entity_type.label('type'),
-               sa.func.count(AuditEntry.entity_type).label('count')) \
+        .query(
+            AuditEntry.entity_type.label('type'),
+            sa.func.count(AuditEntry.entity_type).label('count'),
+        ) \
         .group_by(AuditEntry.entity_type) \
         .filter(AuditEntry.happened_at > after_date) \
         .filter(AuditEntry.type == CREATION) \

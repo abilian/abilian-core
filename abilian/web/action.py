@@ -103,7 +103,8 @@ class FAIconStacked(NamedIconBase):
         '{%- endif %}">\n'
         '  <i class="fa fa-{{ name }}"></i>\n'
         '  <i class="fa fa-{{ second }}"></i>\n'
-        '</span>')
+        '</span>',
+    )
 
     def __init__(self, name, second, stack=''):
         """
@@ -125,22 +126,29 @@ class FAIconStacked(NamedIconBase):
 
     def __html__(self):
         return self.template.render(
-            name=self.name, second=self.second, stack_class=self.stack)
+            name=self.name,
+            second=self.second,
+            stack_class=self.stack,
+        )
 
 
 class DynamicIcon(Icon):
-    template = Template('<img {%- if css %} class="{{ css }}"{% endif %} '
-                        'src="{{ url }}" '
-                        'width="{{ width }}" height="{{ height }}" />')
+    template = Template(
+        '<img {%- if css %} class="{{ css }}"{% endif %} '
+        'src="{{ url }}" '
+        'width="{{ width }}" height="{{ height }}" />',
+    )
 
-    def __init__(self,
-                 endpoint=None,
-                 width=12,
-                 height=12,
-                 css='',
-                 size=None,
-                 url_args=None,
-                 **fixed_url_args):
+    def __init__(
+        self,
+        endpoint=None,
+        width=12,
+        height=12,
+        css='',
+        size=None,
+        url_args=None,
+        **fixed_url_args
+    ):
         self.endpoint = endpoint
         self.css = css
         self.fixed_url_args = dict()
@@ -171,7 +179,8 @@ class DynamicIcon(Icon):
             url=url_for(endpoint, **url_args),
             width=self.width,
             height=self.height,
-            css=self.css)
+            css=self.css,
+        )
 
 
 class StaticIcon(DynamicIcon):
@@ -181,15 +190,24 @@ class StaticIcon(DynamicIcon):
     Default endpoint is application static folder.
     """
 
-    def __init__(self,
-                 filename,
-                 endpoint='static',
-                 width=12,
-                 height=12,
-                 css='',
-                 size=None):
+    def __init__(
+            self,
+            filename,
+            endpoint='static',
+            width=12,
+            height=12,
+            css='',
+            size=None,
+    ):
         DynamicIcon.__init__(
-            self, endpoint, width, height, css, size, filename=filename)
+            self,
+            endpoint,
+            width,
+            height,
+            css,
+            size,
+            filename=filename,
+        )
 
 
 @python_2_unicode_compatible
@@ -218,7 +236,8 @@ class Endpoint(object):
             cls=self.__class__.__name__,
             name=self.name,
             args=self.args,
-            kwargs=self.kwargs,)
+            kwargs=self.kwargs,
+        )
 
 
 class Action(object):
@@ -242,25 +261,29 @@ class Action(object):
     #: which accepts a context dict as parameter. See :meth:`available`.
     condition = None
 
-    template_string = ('<a class="{{ action.css_class }}" href="{{ url }}">'
-                       '{%- if action.icon %}{{ action.icon }} {% endif %}'
-                       '{{ action.title }}'
-                       '</a>')
+    template_string = (
+        '<a class="{{ action.css_class }}" href="{{ url }}">'
+        '{%- if action.icon %}{{ action.icon }} {% endif %}'
+        '{{ action.title }}'
+        '</a>'
+    )
 
-    def __init__(self,
-                 category,
-                 name,
-                 title=None,
-                 description=None,
-                 icon=None,
-                 url=None,
-                 endpoint=None,
-                 condition=None,
-                 status=None,
-                 template=None,
-                 template_string=None,
-                 button=None,
-                 css=None):
+    def __init__(
+            self,
+            category,
+            name,
+            title=None,
+            description=None,
+            icon=None,
+            url=None,
+            endpoint=None,
+            condition=None,
+            status=None,
+            template=None,
+            template_string=None,
+            button=None,
+            css=None,
+    ):
         """
         :param button: if not `None`, a valid `btn` class (i.e `default`,
         `primary`...)
@@ -333,7 +356,10 @@ class Action(object):
 
     def _build_css_class(self):
         css_cat = self.CSS_CLASS.format(
-            action=self, category=self.category, name=self.name)
+            action=self,
+            category=self.category,
+            name=self.name,
+        )
         css_cat = re.sub(r'[^ _a-zA-Z0-9-]', '-', css_cat)
         self.css_class = css_cat
 
@@ -389,7 +415,8 @@ class Action(object):
             return False
         try:
             return self.pre_condition(context) and self._check_condition(
-                context)
+                context,
+            )
         except:
             return False
 
@@ -447,7 +474,8 @@ class ModalActionMixin(object):
         '<a class="{{ action.css_class }}" href="{{ url }}" data-toggle="modal">'
         '{%- if action.icon %}{{ action.icon}} {% endif %}'
         '{{ action.title }}'
-        '</a>')
+        '</a>'
+    )
 
 
 class ButtonAction(Action):
@@ -457,17 +485,20 @@ class ButtonAction(Action):
         'name="{{ action.submit_name }}" '
         'value="{{ action.name }}">'
         '{%- if action.icon %}{{ action.icon }} {% endif %}'
-        '{{ action.title }}</button>')
+        '{{ action.title }}</button>'
+    )
 
     btn_class = 'default'
 
-    def __init__(self,
-                 category,
-                 name,
-                 submit_name="__action",
-                 btn_class='default',
-                 *args,
-                 **kwargs):
+    def __init__(
+        self,
+        category,
+        name,
+        submit_name="__action",
+        btn_class='default',
+        *args,
+        **kwargs
+    ):
         Action.__init__(self, category, name, *args, **kwargs)
         self.submit_name = submit_name
         self.btn_class = btn_class
@@ -481,7 +512,8 @@ class ActionGroup(Action):
         '{%- for entry in action_items %}'
         '{{ entry.render() }}'
         '{%- endfor %}'
-        '</div>')
+        '</div>'
+    )
 
     def __init__(self, category, name, items=(), *args, **kwargs):
         super(ActionGroup, self).__init__(category, name, *args, **kwargs)
@@ -539,7 +571,7 @@ class ActionRegistry(object):
     def init_app(self, app):
         if self.__EXTENSION_NAME in app.extensions:
             log.warning(
-                'ActionRegistry.init_app: actions already enabled on this application'
+                'ActionRegistry.init_app: actions already enabled on this application',
             )
             return
 

@@ -20,8 +20,10 @@ from ..panel import AdminPanel
 
 class Key(object):
 
-    template = Template('<input type="text" class="form-control" '
-                        'name="{{ key.id }}" value="{{ config[key.id] }}" />')
+    template = Template(
+        '<input type="text" class="form-control" '
+        'name="{{ key.id }}" value="{{ config[key.id] }}" />',
+    )
 
     def __init__(self, id, type_, label=None, description=None):
         self.id = id
@@ -31,7 +33,10 @@ class Key(object):
 
     def __html__(self):
         return render_template(
-            self.template, key=self, config=current_app.config)
+            self.template,
+            key=self,
+            config=current_app.config,
+        )
 
     def value_from_request(self):
         return request.form.get(self.id).strip()
@@ -47,8 +52,11 @@ class SessionLifeTimeKey(Key):
             'PERMANENT_SESSION_LIFETIME',
             'timedelta',
             label=_l('Session lifetime'),
-            description=_l('Session expiration time after last visit. '
-                           'When session is expired user must login again.'))
+            description=_l(
+                'Session expiration time after last visit. '
+                'When session is expired user must login again.',
+            ),
+        )
 
     def value_from_request(self):
         form = request.form
@@ -58,9 +66,13 @@ class SessionLifeTimeKey(Key):
 
         if (days + hours) == 0 and minutes < 10:
             # avoid dummy sessions durations: minimum is 10 minutes
-            flash(_('Minimum session lifetime is 10 minutes. '
-                    'Value has been adjusted.'),
-                  'warning',)
+            flash(
+                _(
+                    'Minimum session lifetime is 10 minutes. '
+                    'Value has been adjusted.',
+                ),
+                'warning',
+            )
             minutes = 10
 
         return timedelta(days=days, hours=hours, minutes=minutes)
@@ -103,7 +115,8 @@ class SettingsPanel(AdminPanel):
     _keys = (
         Key('SITE_NAME', 'string', _l('Site name')),
         Key('MAIL_SENDER', 'string', _l('Mail sender')),
-        SessionLifeTimeKey(),)
+        SessionLifeTimeKey(),
+    )
 
     @property
     def settings(self):

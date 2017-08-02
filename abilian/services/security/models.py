@@ -22,10 +22,26 @@ from abilian.core.singleton import UniqueName, UniqueNameType
 from abilian.i18n import _l
 
 __all__ = [
-    'RoleAssignment', 'PermissionAssignment', 'SecurityAudit',
-    'InheritSecurity', 'Permission', 'MANAGE', 'READ', 'WRITE', 'CREATE',
-    'DELETE', 'Role', 'Anonymous', 'Authenticated', 'Admin', 'Manager',
-    'Creator', 'Owner', 'Reader', 'Writer', 'RoleType'
+    'RoleAssignment',
+    'PermissionAssignment',
+    'SecurityAudit',
+    'InheritSecurity',
+    'Permission',
+    'MANAGE',
+    'READ',
+    'WRITE',
+    'CREATE',
+    'DELETE',
+    'Role',
+    'Anonymous',
+    'Authenticated',
+    'Admin',
+    'Manager',
+    'Creator',
+    'Owner',
+    'Reader',
+    'Writer',
+    'RoleType',
 ]
 
 
@@ -85,8 +101,11 @@ class Role(UniqueName):
         return text_type(self.name)
 
     def __repr__(self):
-        return "{}({}, {})".format(self.__class__.__name__, self.name,
-                                   self.label)
+        return "{}({}, {})".format(
+            self.__class__.__name__,
+            self.name,
+            self.label,
+        )
 
     def __lt__(self, other):
         return text_type(self.label).__lt__(text_type(other.label))
@@ -113,7 +132,10 @@ Anonymous = Role('anonymous', _l(u'role_anonymous'), assignable=False)
 
 #: marker for role assigned to 'Authenticated'
 Authenticated = Role(
-    'authenticated', _l('role_authenticated'), assignable=False)
+    'authenticated',
+    _l('role_authenticated'),
+    assignable=False,
+)
 
 #: marker for `admin` role
 Admin = Role('admin', _l('role_administrator'))
@@ -146,7 +168,8 @@ class RoleAssignment(db.Model):
             " ((user_id IS NOT NULL AND group_id IS NULL)"
             "  OR "
             "  (user_id IS NULL AND group_id IS NOT NULL)))",
-            name="roleassignment_ck_user_xor_group"),
+            name="roleassignment_ck_user_xor_group",
+        ),
         #
         UniqueConstraint(
             'anonymous',
@@ -154,7 +177,9 @@ class RoleAssignment(db.Model):
             'group_id',
             'role',
             'object_id',
-            name='assignment_mapped_role_unique'))
+            name='assignment_mapped_role_unique',
+        ),
+    )
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     role = Column(RoleType, index=True, nullable=False)
@@ -164,16 +189,26 @@ class RoleAssignment(db.Model):
         index=True,
         nullable=True,
         default=False,
-        server_default=sql.false())
+        server_default=sql.false(),
+    )
     user_id = Column(
-        Integer, ForeignKey('user.id', ondelete='CASCADE'), index=True)
+        Integer,
+        ForeignKey('user.id', ondelete='CASCADE'),
+        index=True,
+    )
     user = relationship(User, lazy='joined')
     group_id = Column(
-        Integer, ForeignKey('group.id', ondelete='CASCADE'), index=True)
+        Integer,
+        ForeignKey('group.id', ondelete='CASCADE'),
+        index=True,
+    )
     group = relationship(Group, lazy='joined')
 
     object_id = Column(
-        Integer, ForeignKey(Entity.id, ondelete='CASCADE'), index=True)
+        Integer,
+        ForeignKey(Entity.id, ondelete='CASCADE'),
+        index=True,
+    )
     object = relationship(Entity, lazy='select')
 
 
@@ -204,20 +239,23 @@ def _postgres_indexes():
             role,
             unique=True,
             postgresql_where=((anonymous == False) & (group_id == None) &
-                              (obj == None))),
+                              (obj == None)),
+        ),
         Index(
             name('group_role'),
             group_id,
             role,
             unique=True,
             postgresql_where=((anonymous == False) & (user_id == None) &
-                              (obj == None))),
+                              (obj == None)),
+        ),
         Index(
             name('anonymous_role'),
             role,
             unique=True,
             postgresql_where=((anonymous == True) & (user_id == None) &
-                              (group_id == None) & (obj == None))),
+                              (group_id == None) & (obj == None)),
+        ),
         Index(
             name('user_role_object'),
             user_id,
@@ -225,7 +263,8 @@ def _postgres_indexes():
             obj,
             unique=True,
             postgresql_where=((anonymous == False) & (group_id == None) &
-                              (obj != None))),
+                              (obj != None)),
+        ),
         Index(
             name('group_role_object'),
             group_id,
@@ -233,14 +272,16 @@ def _postgres_indexes():
             obj,
             unique=True,
             postgresql_where=((anonymous == False) & (user_id == None) &
-                              (obj != None))),
+                              (obj != None)),
+        ),
         Index(
             name('anonymous_role_object'),
             role,
             obj,
             unique=True,
             postgresql_where=((anonymous == True) & (user_id == None) &
-                              (group_id == None) & (obj != None))),
+                              (group_id == None) & (obj != None)),
+        ),
     ]
 
     for idx in indexes:
@@ -257,8 +298,14 @@ PERMISSIONS_ATTR = '__permissions__'
 
 class PermissionAssignment(db.Model):
     __tablename__ = 'permission_assignment'
-    __table_args__ = (UniqueConstraint(
-        'permission', 'role', 'object_id', name='assignments_unique'),)
+    __table_args__ = (
+        UniqueConstraint(
+        'permission',
+        'role',
+        'object_id',
+        name='assignments_unique',
+        ),
+    )
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     permission = Column(PermissionType, index=True, nullable=False)
@@ -267,7 +314,8 @@ class PermissionAssignment(db.Model):
         Integer,
         ForeignKey(Entity.id, ondelete='CASCADE'),
         index=True,
-        nullable=True)
+        nullable=True,
+    )
     object = relationship(
         Entity,
         lazy='select',
@@ -276,7 +324,9 @@ class PermissionAssignment(db.Model):
             lazy='select',
             collection_class=set,
             cascade='all, delete-orphan',
-            passive_deletes=True))
+            passive_deletes=True,
+        ),
+    )
 
     def __hash__(self):
         return hash((self.permission, self.role, self.object))
@@ -285,8 +335,10 @@ class PermissionAssignment(db.Model):
         if not isinstance(other, PermissionAssignment):
             return False
 
-        return (self.permission == other.permission and
-                self.role == other.role and self.object == other.object)
+        return (
+            self.permission == other.permission and
+            self.role == other.role and self.object == other.object
+        )
 
     def __neq__(self, other):
         return not self.__eq__(other)
@@ -312,7 +364,8 @@ def _postgres_indexes():
             PA.permission,
             PA.role,
             unique=True,
-            postgresql_where=(PA.object_id == None))
+            postgresql_where=(PA.object_id == None),
+        ),
     ]
 
     for idx in indexes:
@@ -356,7 +409,9 @@ class SecurityAudit(db.Model):
             "  OR "
             "  (user_id IS NULL AND group_id IS NOT NULL)))"
             "))".format(grant=SET_INHERIT, revoke=UNSET_INHERIT),
-            name="securityaudit_ck_user_xor_group"),)
+            name="securityaudit_ck_user_xor_group",
+        ),
+    )
 
     id = Column(Integer, primary_key=True)
     happened_at = Column(DateTime, default=datetime.utcnow, index=True)
@@ -366,7 +421,9 @@ class SecurityAudit(db.Model):
             REVOKE,
             SET_INHERIT,
             UNSET_INHERIT,
-            name='securityaudit_enum_op'))
+            name='securityaudit_enum_op',
+        ),
+    )
     role = Column(RoleType)
 
     manager_id = Column(Integer, ForeignKey(User.id))
@@ -390,4 +447,8 @@ class InheritSecurity(object):
     Mixin for objects with a parent relation and security inheritance.
     """
     inherit_security = Column(
-        Boolean, default=True, nullable=False, info={'auditable': False})
+        Boolean,
+        default=True,
+        nullable=False,
+        info={'auditable': False},
+    )

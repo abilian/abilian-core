@@ -11,7 +11,7 @@ from operator import attrgetter
 
 import sqlalchemy as sa
 from flask import current_app
-from six import string_types, add_metaclass
+from six import add_metaclass, string_types
 from whoosh.fields import TEXT
 
 from abilian.core.extensions import db
@@ -112,8 +112,10 @@ class SAAdapter(SchemaAdapter):
                 field_name, field_def = field_name
 
             if field_name not in schema:
-                if (field_name not in field_definitions or
-                        field_definitions[field_name] is False):
+                if (
+                    field_name not in field_definitions or
+                    field_definitions[field_name] is False
+                ):
                     field_definitions[field_name] = field_def
 
             # attrgetter offers dotted name support. Useful for attributes on related
@@ -150,10 +152,14 @@ class SAAdapter(SchemaAdapter):
             if field_def is False:
                 field_def = TEXT(stored=True, analyzer=accent_folder)
 
-            logger.debug('Adding field to schema:\n'
-                         '  Model: %s\n'
-                         '  Field: "%s" %s',
-                         Model._object_type(), field_name, field_def)
+            logger.debug(
+                'Adding field to schema:\n'
+                '  Model: %s\n'
+                '  Field: "%s" %s',
+                Model._object_type(),
+                field_name,
+                field_def,
+            )
             schema.add(field_name, field_def)
 
     def retrieve(self, pk, _session=None, **data):

@@ -57,7 +57,11 @@ class NewUploadView(BaseUploadsView, JSONView):
         filename = secure_filename(uploaded.filename)
         mimetype = uploaded.mimetype
         self.handle = self.uploads.add_file(
-            self.user, uploaded, filename=filename, mimetype=mimetype)
+            self.user,
+            uploaded,
+            filename=filename,
+            mimetype=mimetype,
+        )
         return self.get(*args, **kwargs)
 
     def put(self, *args, **kwargs):
@@ -91,7 +95,8 @@ class UploadView(BaseUploadsView, View):
             mimetype=content_type,
             cache_timeout=0,
             add_etags=False,
-            conditional=False)
+            conditional=False,
+        )
 
     def delete(self, handle, *args, **kwargs):
         if self.uploads.get_file(self.user, handle) is None:

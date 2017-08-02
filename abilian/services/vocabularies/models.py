@@ -79,16 +79,19 @@ class BaseVocabulary(db.Model):
         sa.Boolean(),
         nullable=False,
         server_default=sa.sql.true(),
-        default=True)
+        default=True,
+    )
     default = Column(
         sa.Boolean(),
         nullable=False,
         server_default=sa.sql.false(),
-        default=False)
+        default=False,
+    )
     position = Column(sa.Integer, nullable=False, unique=True)
 
     __table_args__ = (
-        sa.CheckConstraint(sa.sql.func.trim(sa.sql.text('label')) != u''),)
+        sa.CheckConstraint(sa.sql.func.trim(sa.sql.text('label')) != u''),
+    )
 
     @sa.ext.declarative.declared_attr
     def __mapper_args__(cls):
@@ -102,8 +105,10 @@ class BaseVocabulary(db.Model):
         return self.label
 
     def __repr__(self):
-        fmt = ('<{module}.{cls} id={id} label={label} position={position} '
-               'active={active} default={default} at 0x{addr:x}')
+        fmt = (
+            '<{module}.{cls} id={id} label={label} position={position} '
+            'active={active} default={default} at 0x{addr:x}'
+        )
         cls = self.__class__
         return fmt.format(
             module=cls.__module__,
@@ -113,7 +118,8 @@ class BaseVocabulary(db.Model):
             position=repr(self.position),
             active=repr(self.active),
             default=repr(self.default),
-            addr=id(self),)
+            addr=id(self),
+        )
 
 
 @sa.event.listens_for(BaseVocabulary, "before_insert", propagate=True)
@@ -134,7 +140,8 @@ def _before_insert(mapper, connection, target):
     if target.position is None:
         func = sa.sql.func
         stmt = sa.select(
-            [func.coalesce(func.max(mapper.mapped_table.c.position), -1)])
+            [func.coalesce(func.max(mapper.mapped_table.c.position), -1)],
+        )
         target.position = connection.execute(stmt).scalar() + 1
 
 

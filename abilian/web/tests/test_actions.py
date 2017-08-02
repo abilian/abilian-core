@@ -10,7 +10,12 @@ from abilian.testing import BaseTestCase
 from abilian.web.action import Action, Glyphicon, StaticIcon, actions
 
 BASIC = Action(
-    'cat_1', 'basic', 'Basic Action', url='http://some.where', icon='ok')
+    'cat_1',
+    'basic',
+    'Basic Action',
+    url='http://some.where',
+    icon='ok',
+)
 CONDITIONAL = Action(
     'cat_1',
     'conditional',
@@ -18,7 +23,8 @@ CONDITIONAL = Action(
     url='http://condition.al',
     condition=lambda ctx: ctx['show_all'],
     icon=Glyphicon('hand-right'),
-    button='warning')
+    button='warning',
+)
 
 OTHER_CAT = Action(
     'cat_2:sub',
@@ -26,7 +32,8 @@ OTHER_CAT = Action(
     'Other Action',
     url=lambda ctx: 'http://count?%d' % len(ctx),
     icon=StaticIcon('icons/other.png', size=14),
-    css='custom-class')
+    css='custom-class',
+)
 
 ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 
@@ -84,16 +91,19 @@ class TestActions(BaseTestCase):
         assert (BASIC.render() == Markup(
             '<a class="action action-cat_1 action-cat_1-basic" '
             'href="http://some.where">'
-            '<i class="glyphicon glyphicon-ok"></i> Basic Action</a>'))
+            '<i class="glyphicon glyphicon-ok"></i> Basic Action</a>',
+        ))
 
         assert (CONDITIONAL.render() == Markup(
             '<a class="action action-cat_1 action-cat_1-conditional '
             'btn btn-warning" href="http://condition.al">'
             '<i class="glyphicon glyphicon-hand-right"></i> '
-            'Conditional Action</a>'))
+            'Conditional Action</a>',
+        ))
 
         assert (OTHER_CAT.render() == Markup(
             '<a class="action action-cat_2-sub action-cat_2-sub-other '
             'custom-class" href="http://count?3">'
             '<img src="/static/icons/other.png" width="14" height="14" /> '
-            'Other Action</a>'))
+            'Other Action</a>',
+        ))

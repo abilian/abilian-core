@@ -54,15 +54,20 @@ user_menu = NavGroup(
         endpoint=_user_photo_endpoint,
         css='avatar',
         size=20,
-        url_args=_user_photo_icon_args),
+        url_args=_user_photo_icon_args,
+    ),
     condition=is_authenticated,
-    items=(NavItem(
+    items=(
+        NavItem(
         'user',
         'logout',
         title=_l(u'Logout'),
         icon='log-out',
         url=lambda context: url_for('login.logout'),
-        divider=True),))
+        divider=True,
+        ),
+    ),
+)
 
 _ACTIONS = (
     NavItem(
@@ -71,8 +76,10 @@ _ACTIONS = (
         title=_l(u'Login'),
         icon='log-in',
         url=lambda context: url_for('login.login_form'),
-        condition=is_anonymous),
-    user_menu,)
+        condition=is_anonymous,
+    ),
+    user_menu,
+)
 
 
 class AuthServiceState(ServiceState):
@@ -144,7 +151,8 @@ class AuthService(Service):
         security = app.services.get('security')
         g.is_manager = (user and not is_anonymous and (
             (security.has_role(user, 'admin') or
-             security.has_role(user, 'manager'))))
+             security.has_role(user, 'manager'))
+        ))
 
     def user_logged_out(self, app, user):
         if hasattr(g, 'user'):

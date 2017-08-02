@@ -31,7 +31,8 @@ _PREF_NAV_ITEM = NavItem(
     title=_l(u'Preferences'),
     icon='cog',
     url=lambda context: request.url_root + 'preferences',
-    condition=lambda context: not current_user.is_anonymous)
+    condition=lambda context: not current_user.is_anonymous,
+)
 
 user_menu.insert(0, _PREF_NAV_ITEM)
 
@@ -102,8 +103,10 @@ class PreferenceService(Service):
     def register_panel(self, panel, app=None):
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
-            raise ValueError("Extension already initialized for app, "
-                             "cannot add more panel")
+            raise ValueError(
+                "Extension already initialized for app, "
+                "cannot add more panel",
+            )
 
         state.panels.append(panel)
         panel.preferences = self
@@ -116,19 +119,25 @@ class PreferenceService(Service):
         if hasattr(panel, 'post'):
             endpoint += "_post"
             state.blueprint.add_url_rule(
-                rule, endpoint, panel.post, methods=['POST'])
+                rule,
+                endpoint,
+                panel.post,
+                methods=['POST'],
+            )
 
         state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
             label=panel.label,
             icon=None,
-            url=Endpoint(abs_endpoint),)
+            url=Endpoint(abs_endpoint),
+        )
 
     def setup_blueprint(self, app):
         bp = self.app_state.blueprint = Blueprint(
             "preferences",
             __name__,
             template_folder='templates',
-            url_prefix="/preferences")
+            url_prefix="/preferences",
+        )
 
         # we need to delay blueprint registration to allow adding more panels during
         # initialization
@@ -139,7 +148,8 @@ class PreferenceService(Service):
 
         self.app_state.root_breadcrumb_item = BreadcrumbItem(
             label=_(u'Preferences'),
-            url=Endpoint('preferences.index'))
+            url=Endpoint('preferences.index'),
+        )
 
         bp.url_value_preprocessor(self.build_breadcrumbs)
 

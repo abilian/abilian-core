@@ -22,6 +22,10 @@ flake8-truveris
 flake8-mutable
 pylint
 
+# Format
+yapf==0.15.2
+add-trailing-comma
+
 # These two plugins try too hard..
 # pep8-naming
 # mastool

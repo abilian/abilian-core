@@ -24,7 +24,8 @@ class EditForm(ModelForm):
         _l('Label'),
         description=_l('allowed tags: %(tags)s', tags=', '.join(ALLOWED_TAGS)),
         filters=(strip,),
-        validators=[required()])
+        validators=[required()],
+    )
     default = BooleanField(_l('Default'), default=False)
     active = BooleanField(_l('Active'), default=True)
 
@@ -33,7 +34,8 @@ class EditForm(ModelForm):
             field.data,
             tags=ALLOWED_TAGS,
             attributes=ALLOWED_ATTRIBUTES,
-            strip=True)
+            strip=True,
+        )
 
 
 class ListEditForm(EditForm):

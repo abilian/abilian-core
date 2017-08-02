@@ -43,12 +43,35 @@ from .util import babel2datetime
 logger = logging.getLogger(__name__)
 
 __all__ = [
-    'linkify_url', 'text2html', 'Column', 'BaseTableView', 'MainTableView',
-    'RelatedTableView', 'AjaxMainTableView', 'SingleView', 'Panel', 'Row',
-    'Chosen', 'TagInput', 'DateInput', 'DefaultViewWidget', 'BooleanWidget',
-    'FloatWidget', 'DateTimeWidget', 'DateWidget', 'MoneyWidget', 'EmailWidget',
-    'URLWidget', 'ListWidget', 'TabularFieldListWidget', 'ModelListWidget',
-    'Select2', 'Select2Ajax', 'RichTextWidget', 'FileInput', 'EntityWidget',
+    'linkify_url',
+    'text2html',
+    'Column',
+    'BaseTableView',
+    'MainTableView',
+    'RelatedTableView',
+    'AjaxMainTableView',
+    'SingleView',
+    'Panel',
+    'Row',
+    'Chosen',
+    'TagInput',
+    'DateInput',
+    'DefaultViewWidget',
+    'BooleanWidget',
+    'FloatWidget',
+    'DateTimeWidget',
+    'DateWidget',
+    'MoneyWidget',
+    'EmailWidget',
+    'URLWidget',
+    'ListWidget',
+    'TabularFieldListWidget',
+    'ModelListWidget',
+    'Select2',
+    'Select2Ajax',
+    'RichTextWidget',
+    'FileInput',
+    'EntityWidget',
 ]
 
 
@@ -82,7 +105,9 @@ def linkify_url(value):
         value = value[0:-1]
 
     return '<a href="%s">%s</a>&nbsp;<i class="fa fa-external-link"></i>' % (
-        url, value)
+        url,
+        value,
+    )
 
 
 def text2html(text):
@@ -117,14 +142,20 @@ class BaseTableView(object):
             self.show_search = self.show_controls
 
         self.init_columns(columns)
-        self.name = u'{}-{:d}'.format(self.__class__.__name__.lower(),
-                                      next(g.id_generator))
+        self.name = u'{}-{:d}'.format(
+            self.__class__.__name__.lower(),
+            next(g.id_generator),
+        )
         if options is not None:
             self.options = options
-            self.show_controls = self.options.get('show_controls',
-                                                  self.show_controls)
-            self.show_search = self.options.get('show_search',
-                                                self.show_controls)
+            self.show_controls = self.options.get(
+                'show_controls',
+                self.show_controls,
+            )
+            self.show_search = self.options.get(
+                'show_search',
+                self.show_controls,
+            )
             self.paginate = self.options.get('paginate', self.paginate)
 
     def init_columns(self, columns):
@@ -178,17 +209,25 @@ class BaseTableView(object):
             });
         ''',
             table_id=self.name,
-            options=datatable_options,)
+            options=datatable_options,
+        )
 
         table = []
         for entity in entities:
             table.append(self.render_line(entity))
 
-        template = filter(bool, (self.options.get('template'),
-                                 'widgets/render_table.html'))
+        template = filter(
+            bool,
+            (
+                self.options.get('template'),
+                'widgets/render_table.html',
+            ),
+        )
         return Markup(
             render_template(
-                template, table=table, js=Markup(js), view=self, **kwargs))
+                template, table=table, js=Markup(js), view=self, **kwargs
+            ),
+        )
 
     def render_line(self, entity):
         line = []
@@ -268,12 +307,14 @@ class AjaxMainTableView(object):
     paginate = True
     options = {}
 
-    def __init__(self,
-                 columns,
-                 ajax_source,
-                 search_criterions=(),
-                 name=None,
-                 options=None):
+    def __init__(
+            self,
+            columns,
+            ajax_source,
+            search_criterions=(),
+            name=None,
+            options=None,
+    ):
         self.init_columns(columns)
         self.ajax_source = ajax_source
         self.search_criterions = search_criterions
@@ -304,10 +345,12 @@ class AjaxMainTableView(object):
 
     def render(self):
         aoColumns = [{'asSorting': []}] if self.show_controls else []
-        aoColumns += [{
-            'asSorting': col['sorting'],
-            'bSortable': col['sortable'],
-        } for col in self.columns]
+        aoColumns += [
+            {
+                'asSorting': col['sorting'],
+                'bSortable': col['sortable'],
+            } for col in self.columns
+        ]
         datatable_options = {
             'sDom': 'fFriltip',
             'aoColumns': aoColumns,
@@ -347,7 +390,8 @@ class AjaxMainTableView(object):
                 label=text_type(c.label),
                 type=c.form_filter_type,
                 args=c.form_filter_args,
-                unset=c.form_unset_value,)
+                unset=c.form_unset_value,
+            )
             if c.has_form_default_value:
                 d['defaultValue'] = c.form_default_value
 
@@ -355,13 +399,16 @@ class AjaxMainTableView(object):
 
         if advanced_search_filters:
             datatable_options[
-                'aoAdvancedSearchFilters'] = advanced_search_filters
+                'aoAdvancedSearchFilters'
+            ] = advanced_search_filters
 
         return Markup(
             render_template(
                 'widgets/render_ajax_table.html',
                 datatable_options=datatable_options,
-                view=self))
+                view=self,
+            ),
+        )
 
     def render_line(self, entity):
         line = []
@@ -434,8 +481,10 @@ class SingleView(object):
                     continue
 
                 value = field.data
-                if not isinstance(field,
-                                  FileField) and not field.flags.render_empty:
+                if not isinstance(
+                        field,
+                        FileField,
+                ) and not field.flags.render_empty:
                     if value in _to_skip:
                         continue
 
@@ -455,8 +504,13 @@ class SingleView(object):
             if data:
                 panels.append((panel, data))
 
-        template = filter(bool, (self.options.get('view_template'),
-                                 'widgets/render_single.html'))
+        template = filter(
+            bool,
+            (
+                self.options.get('view_template'),
+                'widgets/render_single.html',
+            ),
+        )
 
         return Markup(
             render_template(
@@ -466,7 +520,9 @@ class SingleView(object):
                 csrf_token=csrf.field(),
                 entity=item,
                 panels=panels,
-                form=form))
+                form=form,
+            ),
+        )
 
     def render_form(self, form, for_new=False, has_save_and_add_new=False):
         # Client-side rules for jQuery.validate
@@ -485,8 +541,13 @@ class SingleView(object):
         else:
             rules = None
 
-        template = filter(bool, (self.options.get('edit_template'),
-                                 'widgets/render_for_edit.html'))
+        template = filter(
+            bool,
+            (
+                self.options.get('edit_template'),
+                'widgets/render_for_edit.html',
+            ),
+        )
 
         return Markup(
             render_template(
@@ -495,7 +556,9 @@ class SingleView(object):
                 form=form,
                 for_new=for_new,
                 has_save_and_add_new=has_save_and_add_new,
-                rules=rules))
+                rules=rules,
+            ),
+        )
 
     def label_for(self, field, mapper, name):
         label = field.label
@@ -614,12 +677,14 @@ class TextInput(wtforms.widgets.TextInput):
     pre_icon = None
     post_icon = None
 
-    def __init__(self,
-                 input_type=None,
-                 pre_icon=None,
-                 post_icon=None,
-                 *args,
-                 **kwargs):
+    def __init__(
+        self,
+        input_type=None,
+        pre_icon=None,
+        post_icon=None,
+        *args,
+        **kwargs
+    ):
         super(TextInput, self).__init__(input_type, *args, **kwargs)
 
         if pre_icon is not None:
@@ -649,7 +714,9 @@ class TextInput(wtforms.widgets.TextInput):
             </div>
             ''',
                 widget=self,
-                params=self.html_params(name=field.name, **kwargs)))
+                params=self.html_params(name=field.name, **kwargs),
+            ),
+        )
 
     @property
     def typename(self):
@@ -670,7 +737,8 @@ class TextArea(BaseTextArea):
         if resizeable not in self._resizeable_valid:
             raise ValueError(
                 'Invalid value for resizeable: {}, valid values are: {!r}'
-                ''.format(resizeable, self._resizeable_valid))
+                ''.format(resizeable, self._resizeable_valid),
+            )
         if resizeable:
             self.resizeable = 'resizeable-' + resizeable
         else:
@@ -728,7 +796,8 @@ class FileInput(object):
             input=input_elem,
             button_label=button_label,
             existing=existing,
-            uploaded=uploads)
+            uploaded=uploads,
+        )
         return Markup(render_template(self.template, **ctx))
 
     def build_exisiting_files_list(self, field):
@@ -788,7 +857,8 @@ class ImageInput(FileInput):
             width=120,
             height=120,
             resize_mode=image.CROP,
-            valid_extensions=('jpg', 'jpeg', 'png'),):
+            valid_extensions=('jpg', 'jpeg', 'png'),
+    ):
         super(ImageInput, self).__init__(template=template)
         self.resize_mode = resize_mode
         self.valid_extensions = valid_extensions
@@ -803,7 +873,8 @@ class ImageInput(FileInput):
                     image_url = value.url
                 else:
                     image_url = self.get_b64_thumb_url(
-                        self.get_thumb(value, self.width, self.height))
+                        self.get_thumb(value, self.width, self.height),
+                    )
 
                 data['image_url'] = image_url
 
@@ -819,7 +890,8 @@ class ImageInput(FileInput):
                 else:
                     with value.open('rb') as in_:
                         image_url = self.get_b64_thumb_url(
-                            self.get_thumb(in_, self.width, self.height))
+                            self.get_thumb(in_, self.width, self.height),
+                        )
 
                 data['image_url'] = image_url
 
@@ -859,7 +931,11 @@ class ImageInput(FileInput):
 
         tmpl = u'<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
         return render_template_string(
-            tmpl, url=self.get_b64_thumb_url(thumb), width=width, height=height)
+            tmpl,
+            url=self.get_b64_thumb_url(thumb),
+            width=width,
+            height=height,
+        )
 
 
 class Chosen(Select):
@@ -871,7 +947,8 @@ class Chosen(Select):
         kwargs.setdefault('id', field.id)
         html = [
             u'<select %s class="chzn-select">' % html_params(
-                name=field.name, **kwargs),
+                name=field.name, **kwargs
+            ),
         ]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
@@ -885,7 +962,8 @@ class Chosen(Select):
             options['selected'] = True
         return HTMLString(
             u'<option %s>%s</option>' %
-            (html_params(**options), cgi.escape(text_type(label))))
+            (html_params(**options), cgi.escape(text_type(label))),
+        )
 
 
 class TagInput(Input):
@@ -900,7 +978,8 @@ class TagInput(Input):
             kwargs['value'] = field._value()
 
         return HTMLString(u'<input %s>' % self.html_params(
-            name=field.name, **kwargs))
+            name=field.name, **kwargs
+        ))
 
 
 class DateInput(Input):
@@ -944,7 +1023,8 @@ class DateInput(Input):
         s = u'<div {}>\n'.format(html_params(**attributes))
 
         s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
-            html_params(name=field_name, id=field_id, value=value, **kwargs))
+            html_params(name=field_name, id=field_id, value=value, **kwargs),
+        )
         s += u'  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
         s += u'</div>\n'
         return Markup(s)
@@ -960,16 +1040,18 @@ class TimeInput(Input):
     """
     template = 'widgets/timepicker.html'
 
-    def __init__(self,
-                 template=None,
-                 widget_mode='dropdown',
-                 h24_mode=True,
-                 minuteStep=1,
-                 showSeconds=False,
-                 secondStep=1,
-                 showInputs=False,
-                 disableFocus=False,
-                 modalBackdrop=False):
+    def __init__(
+            self,
+            template=None,
+            widget_mode='dropdown',
+            h24_mode=True,
+            minuteStep=1,
+            showSeconds=False,
+            secondStep=1,
+            showInputs=False,
+            disableFocus=False,
+            modalBackdrop=False,
+    ):
         Input.__init__(self)
 
         if template is not None:
@@ -1018,7 +1100,8 @@ class TimeInput(Input):
             value=value,
             field=field,
             required=False,
-            timepicker_attributes=input_params)
+            timepicker_attributes=input_params,
+        )
         return Markup(render_template(self.template, **ctx))
 
 
@@ -1042,7 +1125,9 @@ class DateTimeInput(object):
         date_fmt = locale.date_formats['short'].pattern
         date_fmt = babel2datetime(date_fmt)
         date_fmt = date_fmt.replace('%B', '%m').replace(
-            '%b', '%m')  # force numerical months
+            '%b',
+            '%m',
+        )  # force numerical months
         time_fmt = u'%H:%M'
 
         value = kwargs.pop('value', None)
@@ -1073,18 +1158,24 @@ class DateTimeInput(object):
         return Markup(u'<div class="form-inline">\n'
                       u'<input class="datetimepicker" type="hidden" id="{id}" name="{name}" '
                       u'value="{date} | {time}" />\n'
-                      u''.format(id=field_id,
-                                 name=field_name,
-                                 date=date_value,
-                                 time=time_value)) \
-               + self.date(field,
-                           id=field_id + '-date',
-                           name=field_name + '-date',
-                           value=date_value) \
-               + self.time(field,
-                           id=field_id + '-time',
-                           name=field_name + '-time',
-                           value=time_value) \
+                      u''.format(
+                          id=field_id,
+                          name=field_name,
+                          date=date_value,
+                          time=time_value,
+                      )) \
+               + self.date(
+                   field,
+                   id=field_id + '-date',
+                   name=field_name + '-date',
+                   value=date_value,
+               ) \
+               + self.time(
+                   field,
+                   id=field_id + '-time',
+                   name=field_name + '-time',
+                   value=time_value,
+               ) \
                + Markup(u'</div>')
 
 
@@ -1102,9 +1193,22 @@ class DefaultViewWidget(object):
 class BooleanWidget(wtforms.widgets.CheckboxInput):
     # valid data-* options when using boostrap-switch
     _ON_OFF_VALID_OPTIONS = frozenset(
-        ('animate', 'indeterminate', 'inverse', 'radio-all-off', 'on-color',
-         'off-color', 'on-text', 'off-text', 'label-text', 'handle-width',
-         'label-width', 'base-class', 'wrapper-class'))
+        (
+        'animate',
+        'indeterminate',
+        'inverse',
+        'radio-all-off',
+        'on-color',
+        'off-color',
+        'on-text',
+        'off-text',
+        'label-text',
+        'handle-width',
+        'label-width',
+        'base-class',
+        'wrapper-class',
+        ),
+    )
 
     def __init__(self, *args, **kwargs):
         self.on_off_mode = kwargs.pop('on_off_mode', False)
@@ -1182,8 +1286,12 @@ class EntityWidget(object):
         objs = field.object_data
         if not field.multiple:
             objs = [objs]
-        return ', '.join('<a href="{}">{}</a>'.format(
-            url_for(o), cgi.escape(o.name)) for o in objs if o)
+        return ', '.join(
+            '<a href="{}">{}</a>'.format(
+            url_for(o),
+            cgi.escape(o.name),
+            ) for o in objs if o
+        )
 
 
 class HoursWidget(TextInput):
@@ -1240,7 +1348,8 @@ class EmailWidget(TextInput):
                 link = bleach.linkify(entry.data, parse_email=True)
                 if link:
                     links += ' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(
-                        link)
+                        link,
+                    )
         else:
             link = bleach.linkify(field.object_data, parse_email=True)
             if link:
@@ -1300,7 +1409,11 @@ class RichTextWidget(object):
         value = kwargs.pop('value') if 'value' in kwargs else field._value()
         kwargs.setdefault('allowed_tags', self.allowed_tags)
         return render_template(
-            self.template, field=field, value=value, kw=kwargs)
+            self.template,
+            field=field,
+            value=value,
+            kw=kwargs,
+        )
 
 
 class ListWidget(wtforms.widgets.ListWidget):
@@ -1330,10 +1443,12 @@ class ListWidget(wtforms.widgets.ListWidget):
         is_empty = data == [] if field.multiple else data is None
 
         if not is_empty:
-            data = ([
-                label for v, label, checked in field.iter_choices() if checked
-            ] if hasattr(field, 'iter_choices') and callable(field.iter_choices)
-                    else field.object_data)
+            data = (
+                [
+                    label for v, label, checked in field.iter_choices() if checked
+                ] if hasattr(field, 'iter_choices') and callable(field.iter_choices)
+                        else field.object_data
+            )
         else:
             data = []
 
@@ -1393,7 +1508,8 @@ class TabularFieldListWidget(object):
             labels = Data(* [f.label for f in field[0] if not f.is_hidden])
 
         return Markup(
-            render_template(self.template, labels=labels, field=field))
+            render_template(self.template, labels=labels, field=field),
+        )
 
 
 class ModelListWidget(object):
@@ -1406,7 +1522,8 @@ class ModelListWidget(object):
         value = field.object_data
         if not value:
             return render_template(
-                self.template, field=field, labels=(), rows=(), **kwargs)
+                self.template, field=field, labels=(), rows=(), **kwargs
+            )
 
         field_names = field._field_names
         labels = field._field_labels
@@ -1423,7 +1540,8 @@ class ModelListWidget(object):
             rows.append(Data(*row))
 
         rendered = render_template(
-            self.template, field=field, labels=labels, rows=rows, **kwargs)
+            self.template, field=field, labels=labels, rows=rows, **kwargs
+        )
         return rendered
 
 
@@ -1491,12 +1609,14 @@ class Select2Ajax(object):
     generally needed when using custom format_result/format_selection.
     """
 
-    def __init__(self,
-                 template='widgets/select2ajax.html',
-                 multiple=False,
-                 format_result=None,
-                 format_selection=None,
-                 values_builder=None):
+    def __init__(
+            self,
+            template='widgets/select2ajax.html',
+            multiple=False,
+            format_result=None,
+            format_selection=None,
+            values_builder=None,
+    ):
         self.template = template
         self.multiple = multiple
         self.values_builder = (

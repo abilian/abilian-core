@@ -14,7 +14,8 @@ from ..panel import AdminPanel
 
 DATA_FILES = (
     '/usr/share/GeoIP/GeoIP.dat',
-    '/usr/share/GeoIP/GeoIPv6.dat',)
+    '/usr/share/GeoIP/GeoIPv6.dat',
+)
 
 
 class LoginSessionsPanel(AdminPanel):
@@ -30,8 +31,10 @@ class LoginSessionsPanel(AdminPanel):
             except (pygeoip.GeoIPError, IOError):
                 pass
 
-        sessions = LoginSession.query.order_by(
-            LoginSession.id.desc()).limit(50).all()
+        sessions = LoginSession.query \
+            .order_by(LoginSession.id.desc()) \
+            .limit(50) \
+            .all()
         unknown_country = _(u'Country unknown')
 
         for session in sessions:

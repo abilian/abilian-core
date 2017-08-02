@@ -112,11 +112,16 @@ class AuditEntry(db.Model):
     def __repr__(self):
         return '<AuditEntry id={} op={} user={} {}entity=<{} id={}>>'.format(
             repr(self.id),
-            {CREATION: "CREATION",
-             DELETION: "DELETION",
-             UPDATE: "UPDATE"}[self.op],
-            repr(text_type(self.user)), 'related '
-            if self.related else '', self.entity_type, self.entity_id)
+            {
+                CREATION: "CREATION",
+                DELETION: "DELETION",
+                UPDATE: "UPDATE",
+            }[self.op],
+            repr(text_type(self.user)),
+            'related ' if self.related else '',
+            self.entity_type,
+            self.entity_id,
+        )
 
     @property
     def op(self):
@@ -165,7 +170,8 @@ class AuditEntry(db.Model):
                         except:
                             current_app.logger.error(
                                 "A Unicode error happened on changes %s",
-                                repr(changes))
+                                repr(changes),
+                            )
                             val = u"[[Somme error occurred. Working on it]]"
                     uv.append(val)
                 uv = tuple(uv)

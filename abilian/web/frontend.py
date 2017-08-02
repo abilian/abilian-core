@@ -56,8 +56,10 @@ class ModuleAction(Action):
 
     def __init__(self, module, group, name, *args, **kwargs):
         self.group = group
-        super(ModuleAction, self).__init__(module.action_category, name, *args,
-                                           **kwargs)
+        super(ModuleAction, self).__init__(
+            module.action_category, name, *args,
+            **kwargs
+        )
 
     def pre_condition(self, context):
         module = actions.context.get('module')
@@ -159,7 +161,8 @@ class BaseEntityView(ModuleView):
     def breadcrumb(self):
         return BreadcrumbItem(
             label=self.obj.name or self.obj.id,
-            url=Endpoint('.entity_view', entity_id=self.obj.id))
+            url=Endpoint('.entity_view', entity_id=self.obj.id),
+        )
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
@@ -177,7 +180,8 @@ class BaseEntityView(ModuleView):
             view_template=self.module.view_template,
             view=self,
             module=self.module,
-            **self.module.view_options)
+            **self.module.view_options
+        )
 
     def check_access(self):
         return self._check_view_permission(self)
@@ -209,7 +213,8 @@ class BaseEntityView(ModuleView):
                 current_user,
                 create_cls.permission,
                 obj=self.obj,
-                roles=cls_permissions[permission])
+                roles=cls_permissions[permission],
+            )
         return False
 
 
@@ -249,7 +254,10 @@ class EntityView(BaseEntityView, ObjectView):
         module = self.module
         related_views = [v.render(self.obj) for v in module.related_views]
         rendered_entity = self.single_view.render(
-            self.obj, self.form, related_views=related_views)
+            self.obj,
+            self.form,
+            related_views=related_views,
+        )
         audit_entries = audit_service.entries_for(self.obj)
 
         return {
@@ -320,7 +328,8 @@ class ListJson(ModuleView, JSONView):
         table_view = AjaxMainTableView(
             columns=self.module.list_view_columns,
             name=self.module.managed_class.__name__.lower(),
-            ajax_source=url_for('.list_json'))
+            ajax_source=url_for('.list_json'),
+        )
 
         data = [table_view.render_line(e) for e in entities]
         result = {
@@ -422,8 +431,12 @@ class Module(object):
     view_options = None
     related_views = []
     blueprint = None
-    search_criterions = (search.TextSearchCriterion(
-        "name", attributes=('name', 'nom')),)
+    search_criterions = (
+        search.TextSearchCriterion(
+        "name",
+        attributes=('name', 'nom'),
+        ),
+    )
     tableview_options = {}  # used mostly to change datatable search_label
     _urls = []
 
@@ -459,13 +472,15 @@ class Module(object):
             Model=self.managed_class,
             pk='entity_id',
             module=self,
-            base_template=self.base_template)
+            base_template=self.base_template,
+        )
         self._setup_view(
             "/<int:entity_id>",
             'entity_view',
             self.view_cls,
             Form=self.view_form_class,
-            **kw)
+            **kw
+        )
         view_endpoint = self.endpoint + '.entity_view'
 
         self._setup_view(
@@ -474,7 +489,8 @@ class Module(object):
             self.edit_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
-            **kw)
+            **kw
+        )
 
         self._setup_view(
             "/new",
@@ -483,7 +499,8 @@ class Module(object):
             Form=self.edit_form_class,
             chain_create_allowed=self.view_new_save_and_add,
             view_endpoint=view_endpoint,
-            **kw)
+            **kw
+        )
 
         self._setup_view(
             "/<int:entity_id>/delete",
@@ -491,7 +508,8 @@ class Module(object):
             self.delete_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
-            **kw)
+            **kw
+        )
 
         self._setup_view("/json", 'list_json', ListJson, module=self)
 
@@ -499,13 +517,16 @@ class Module(object):
             '/json_search',
             'json_search',
             self.json_search_cls,
-            Model=self.managed_class)
+            Model=self.managed_class,
+        )
 
         self.init_related_views()
 
         # copy criterions instances; without that they may be shared by subclasses
-        self.search_criterions = tuple((copy.deepcopy(c)
-                                        for c in self.search_criterions))
+        self.search_criterions = tuple((
+            copy.deepcopy(c)
+            for c in self.search_criterions
+        ))
         for sc in self.search_criterions:
             sc.model = self.managed_class
 
@@ -554,7 +575,8 @@ class Module(object):
                 title=_l(u'Create New'),
                 icon=FAIcon('plus'),
                 endpoint=Endpoint(self.endpoint + '.entity_new'),
-                button='default',),
+                button='default',
+            ),
         ]
         for component in self.components:
             ACTIONS.extend(component.get_actions())
@@ -581,12 +603,18 @@ class Module(object):
 
         for url, name, methods in self._urls:
             self.blueprint.add_url_rule(
-                url, name, getattr(self, name), methods=methods)
+                url,
+                name,
+                getattr(self, name),
+                methods=methods,
+            )
 
         # run default_view decorator
         default_view(
-            self.blueprint, self.managed_class,
-            id_attr='entity_id')(self.entity_view)
+            self.blueprint,
+            self.managed_class,
+            id_attr='entity_id',
+        )(self.entity_view)
 
         # delay registration of our breadcrumbs to when registered on app; thus
         # 'parents' blueprint can register theirs befores ours
@@ -599,7 +627,8 @@ class Module(object):
 
     def _add_breadcrumb(self, endpoint, values):
         g.breadcrumb.append(
-            BreadcrumbItem(label=self.label, url=Endpoint('.list_view')))
+            BreadcrumbItem(label=self.label, url=Endpoint('.list_view')),
+        )
 
     @property
     def base_query(self):
@@ -677,7 +706,9 @@ class Module(object):
         for rel_col in rel_sort_names:
             sort_col = getattr(self.managed_class, rel_col)
             if hasattr(sort_col, 'property') and isinstance(
-                    sort_col.property, orm.properties.RelationshipProperty):
+                    sort_col.property,
+                    orm.properties.RelationshipProperty,
+            ):
                 # this is a related model: find attribute to filter on
                 query = query.outerjoin(sort_col_name, aliased=True)
 
@@ -688,8 +719,10 @@ class Module(object):
 
                 rel_sort_name = sort_col_def.get('relationship_sort_on', None)
                 if rel_sort_name is None:
-                    rel_sort_name = sort_col_def.get('sort_on',
-                                                     default_sort_name)
+                    rel_sort_name = sort_col_def.get(
+                        'sort_on',
+                        default_sort_name,
+                    )
                 sort_col = getattr(rel_model, rel_sort_name)
 
             # XXX: Big hack, date are sorted in reverse order by default
@@ -737,13 +770,15 @@ class Module(object):
             columns=self.list_view_columns,
             ajax_source=url_for('.list_json'),
             search_criterions=self.search_criterions,
-            options=self.tableview_options)
+            options=self.tableview_options,
+        )
         rendered_table = table_view.render()
 
         ctx = dict(
             rendered_table=rendered_table,
             module=self,
-            base_template=self.base_template)
+            base_template=self.base_template,
+        )
         return render_template("default/list_view.html", **ctx)
 
     def list_json2_query_all(self, q):
@@ -818,12 +853,14 @@ class DefaultRelatedView(RelatedView):
     """ Default view used by Module for items directly related to entity
     """
 
-    def __init__(self,
-                 label,
-                 attr,
-                 column_names,
-                 options=None,
-                 show_empty=False):
+    def __init__(
+            self,
+            label,
+            attr,
+            column_names,
+            options=None,
+            show_empty=False,
+    ):
         self.label = label
         self.attr = attr
         self.show_empty = show_empty
@@ -841,7 +878,8 @@ class DefaultRelatedView(RelatedView):
             attr_name=self.attr,
             rendered=view.render(related_entities, related_to=entity),
             show_empty=self.show_empty,
-            size=len(related_entities))
+            size=len(related_entities),
+        )
 
 
 # TODO: rename to CRMApp ?
@@ -853,7 +891,8 @@ class CRUDApp(object):
         if name is None:
             name = self.__class__.__module__
             modules_signature = ','.join(
-                str(module.id) for module in self.modules)
+                str(module.id) for module in self.modules
+            )
             name = name + '-' + modules_signature
 
         self.name = name

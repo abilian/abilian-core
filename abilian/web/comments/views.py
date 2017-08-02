@@ -38,7 +38,11 @@ def register_default_view(state):
 
 
 COMMENT_BUTTON = ButtonAction(
-    'form', 'edit', btn_class='primary', title=_l(u'Post'))
+    'form',
+    'edit',
+    btn_class='primary',
+    title=_l(u'Post'),
+)
 
 
 class BaseCommentView(object):
@@ -95,7 +99,9 @@ class CommentEditView(BaseCommentView, ObjectEdit):
             dict(
                 user_id=current_user.id,
                 user=text_type(current_user),
-                date=utc_dt(datetime.utcnow()).isoformat(),))
+                date=utc_dt(datetime.utcnow()).isoformat(),
+            ),
+        )
         self.obj.meta.changed()
 
 

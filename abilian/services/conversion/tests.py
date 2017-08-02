@@ -36,7 +36,9 @@ def read_file(fn, mode='rb'):
 
 # To text
 @pytest.mark.skipif(
-    not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
+    not HAS_PDFTOTEXT,
+    reason="requires poppler or poppler-util",
+)
 def test_pdf_to_text(converter):
     blob = read_file("onepage.pdf")
     text = converter.to_text("", blob, "application/pdf")
@@ -85,7 +87,9 @@ def test_image_to_pdf(converter):
 
 # To images
 @pytest.mark.skipif(
-    not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
+    not HAS_PDFTOTEXT,
+    reason="requires poppler or poppler-util",
+)
 def test_pdf_to_images(converter):
     if not os.popen("which pdftoppm").read().strip():
         warn("pdftoppm not found, skipping test")
@@ -96,7 +100,9 @@ def test_pdf_to_images(converter):
 
 
 @pytest.mark.skipif(
-    not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
+    not HAS_PDFTOTEXT,
+    reason="requires poppler or poppler-util",
+)
 def test_word_to_images(converter):
     blob = read_file("test.doc")
     image = converter.to_image("", blob, "application/msword", 0)

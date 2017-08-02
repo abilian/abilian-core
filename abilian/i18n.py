@@ -71,8 +71,17 @@ from flask_babel import LazyString, force_locale, gettext, lazy_gettext, \
 from six import string_types, text_type
 
 __all__ = [
-    'babel', 'gettext', '_', 'lazy_gettext', '_l', 'localeselector', 'ngettext',
-    '_n', 'timezoneselector', 'VALID_LANGUAGES_CODE', 'render_template_i18n',
+    'babel',
+    'gettext',
+    '_',
+    'lazy_gettext',
+    '_l',
+    'localeselector',
+    'ngettext',
+    '_n',
+    'timezoneselector',
+    'VALID_LANGUAGES_CODE',
+    'render_template_i18n',
 ]
 
 #: gettext alias
@@ -84,8 +93,10 @@ _l = lazy_gettext
 _n = ngettext
 
 #: accepted languages codes
-VALID_LANGUAGES_CODE = frozenset(lang for lang in locale_identifiers()
-                                 if len(lang) == 2)
+VALID_LANGUAGES_CODE = frozenset(
+    lang for lang in locale_identifiers()
+    if len(lang) == 2
+)
 
 
 def get_default_locale():
@@ -127,9 +138,11 @@ def country_choices(first=None, default_country_first=True):
     :param first: Country code to be placed at the top
     """
     locale = _get_locale()
-    territories = [(code, name)
-                   for code, name in six.iteritems(locale.territories)
-                   if len(code) == 2]  # skip 3-digit regions
+    territories = [
+        (code, name)
+        for code, name in six.iteritems(locale.territories)
+        if len(code) == 2
+    ]  # skip 3-digit regions
 
     if first is None and default_country_first:
         first = default_country()
@@ -151,8 +164,10 @@ def supported_app_locales():
     """
     locale = _get_locale()
     codes = current_app.config['BABEL_ACCEPT_LANGUAGES']
-    return ((Locale.parse(code), locale.languages.get(code, code))
-            for code in codes)
+    return (
+        (Locale.parse(code), locale.languages.get(code, code))
+        for code in codes
+    )
 
 
 def timezones_choices():
@@ -185,10 +200,12 @@ class Babel(BabelBase):
             (os.path.join(app.root_path, 'translations'), 'messages'),
         ]
 
-    def add_translations(self,
-                         module_name,
-                         translations_dir='translations',
-                         domain='messages'):
+    def add_translations(
+            self,
+            module_name,
+            translations_dir='translations',
+            domain='messages',
+    ):
         """
         Add translations from external module.
 
@@ -206,7 +223,8 @@ class Babel(BabelBase):
             if not os.access(text_type(path), os.R_OK):
                 self.app.logger.warning(
                     "Babel translations: read access not allowed {}, skipping."
-                    "".format(repr(text_type(path).encode('utf-8'))))
+                    "".format(repr(text_type(path).encode('utf-8'))),
+                )
                 continue
 
             self._translations_paths.append((text_type(path), domain))
@@ -267,7 +285,10 @@ def _get_translations_multi_paths():
         # translations from libraries can be overriden
         for (dirname, domain) in reversed(babel_ext._translations_paths):
             trs = Translations.load(
-                dirname, locales=[flask_babel.get_locale()], domain=domain)
+                dirname,
+                locales=[flask_babel.get_locale()],
+                domain=domain,
+            )
 
             # babel.support.Translations is a subclass of
             # babel.support.NullTranslations, so we test if object has a 'merge'
@@ -310,7 +331,8 @@ def localeselector():
     # Otherwise, try to guess the language from the user accept header the browser
     # transmits.  By default we support en/fr. The best match wins.
     return request.accept_languages.best_match(
-        current_app.config['BABEL_ACCEPT_LANGUAGES'])
+        current_app.config['BABEL_ACCEPT_LANGUAGES'],
+    )
 
 
 def timezoneselector():

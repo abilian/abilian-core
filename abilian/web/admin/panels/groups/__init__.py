@@ -22,14 +22,21 @@ class GroupsPanel(AdminPanel):
 
     def install_additional_rules(self, add_url_rule):
         add_url_rule(
-            '/groups', view_func=views.JsonGroupsList.as_view('json_list'))
+            '/groups',
+            view_func=views.JsonGroupsList.as_view('json_list'),
+        )
         add_url_rule('/new', view_func=views.GroupCreate.as_view('new'))
         add_url_rule(
-            '/<int:group_id>/', view_func=views.GroupView.as_view('group'))
+            '/<int:group_id>/',
+            view_func=views.GroupView.as_view('group'),
+        )
         add_url_rule(
             '/<int:group_id>/edit',
             view_func=views.GroupEdit.as_view(
-                'group_edit', view_endpoint='.groups_group'))
+                'group_edit',
+                view_endpoint='.groups_group',
+            ),
+        )
 
     def get(self):
         # FIXME: use widgets.AjaxMainTableView instead
@@ -63,4 +70,7 @@ class GroupsPanel(AdminPanel):
         }
 
         return render_template(
-            'admin/groups.html', next=next, datatable_options=datatable_options)
+            'admin/groups.html',
+            next=next,
+            datatable_options=datatable_options,
+        )

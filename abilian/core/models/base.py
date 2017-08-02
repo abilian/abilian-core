@@ -62,8 +62,19 @@ class Indexable(object):
     __indexation_args__ = {
         'index_to': (
             ('object_key', (('object_key', ID(stored=True, unique=True)),)),
-            ('object_type', (('object_type', ID(stored=True,
-                                                unique=False)),)),),
+            (
+                'object_type',
+                (
+                    (
+                    'object_type',
+                    ID(
+                        stored=True,
+                        unique=False,
+                    ),
+                    ),
+                ),
+            ),
+        ),
     }
 
     @classmethod
@@ -82,11 +93,15 @@ class Indexable(object):
 class TimestampedMixin(object):
     #: creation date
     created_at = Column(
-        DateTime, default=datetime.utcnow, info=SYSTEM | SEARCHABLE)
+        DateTime,
+        default=datetime.utcnow,
+        info=SYSTEM | SEARCHABLE,
+    )
     #: last modification date
     updated_at = Column(
         DateTime,
         default=datetime.utcnow,
         onupdate=datetime.utcnow,
-        info=SYSTEM | SEARCHABLE)
+        info=SYSTEM | SEARCHABLE,
+    )
     deleted_at = Column(DateTime, default=None, info=SYSTEM)

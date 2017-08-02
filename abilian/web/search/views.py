@@ -23,7 +23,11 @@ from abilian.web.nav import BreadcrumbItem
 logger = logging.getLogger(__name__)
 
 BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(
-    tagname='mark', classname='', termclass='term-', between='[…]')
+    tagname='mark',
+    classname='',
+    termclass='term-',
+    between='[…]',
+)
 
 RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter()
 
@@ -34,7 +38,11 @@ PAGE_SIZE = 20
 MAX_LIVE_RESULTS_PER_CLASS = 5
 
 search = Blueprint(
-    'search', __name__, url_prefix="/search", template_folder='templates')
+    'search',
+    __name__,
+    url_prefix="/search",
+    template_folder='templates',
+)
 route = search.route
 
 
@@ -54,7 +62,9 @@ def init_search(endpoint, values):
         BreadcrumbItem(
             label='"{}"'.format(q),
             icon="search",
-            url=Endpoint('search.search_main', q=q)))
+            url=Endpoint('search.search_main', q=q),
+        ),
+    )
 
     page_kw = OrderedDict(q=q)
     object_types = request.args.getlist('object_type')
@@ -64,13 +74,17 @@ def init_search(endpoint, values):
         g.breadcrumb.append(
             BreadcrumbItem(
                 label=' | '.join(friendly_fqcn(name) for name in object_types),
-                url=Endpoint('search.search_main', **page_kw)))
+                url=Endpoint('search.search_main', **page_kw),
+            ),
+        )
 
     if page > 1:
         g.breadcrumb.append(
             BreadcrumbItem(
                 label=text_type(page),
-                url=Endpoint('search.search_main', page=page, **page_kw)))
+                url=Endpoint('search.search_main', page=page, **page_kw),
+            ),
+        )
 
     values['q'] = q
     values['page'] = page
@@ -83,7 +97,8 @@ def install_hit_to_url():
 
 _COUNT_OBJECT_TYPE_FACET = whoosh.sorting.FieldFacet(
     "object_type",
-    maptype=whoosh.sorting.Count,)
+    maptype=whoosh.sorting.Count,
+)
 
 
 @route('')
@@ -121,8 +136,10 @@ def search_main(q='', page=1):
     if by_object_type:
         # Insert 'all' to clear all filters
         is_active = len(filtered_by_type) == 0
-        all_types = (_(u'All'), len(results), page_url(object_type=(),),
-                     is_active,)
+        all_types = (
+            _(u'All'), len(results), page_url(object_type=(),),
+            is_active,
+        )
         by_object_type.insert(0, all_types)
 
     if filtered_by_type:
@@ -164,7 +181,8 @@ def search_main(q='', page=1):
         first_page=first_page,
         last_page=last_page,
         next_pages_numbered=next_pages_numbered,
-        friendly_fqcn=friendly_fqcn,)
+        friendly_fqcn=friendly_fqcn,
+    )
 
 
 class Live(views.JSONView):

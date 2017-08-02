@@ -32,7 +32,8 @@ if CLAMD_AVAILABLE:
     if conf_path.exists():
         conf_lines = [l.strip() for l in conf_path.open('rt').readlines()]
         CLAMD_CONF = dict(
-            l.split(u' ', 1) for l in conf_lines if not l.startswith('#'))
+            l.split(u' ', 1) for l in conf_lines if not l.startswith('#')
+        )
 
         def _size_to_int(size_str):
             multiplier = 0
@@ -106,7 +107,8 @@ class AntiVirusService(Service):
                     size,
                     CLAMD_STREAMMAXLENGTH,
                     CLAMD_CONF['StreamMaxLength'].encode('utf-8'),
-                    extra={'stack': True},)
+                    extra={'stack': True},
+                )
                 return None
 
         # use stream scan. When using scan by filename, clamd runnnig user must have

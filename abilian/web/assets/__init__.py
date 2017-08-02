@@ -17,7 +17,11 @@ def init_app(app):
     assets = app.extensions['webassets']
     assets.append_path(RESOURCES_DIR, '/static/abilian')
     app.add_static_url(
-        'abilian', RESOURCES_DIR, endpoint='abilian_static', roles=Anonymous)
+        'abilian',
+        RESOURCES_DIR,
+        endpoint='abilian_static',
+        roles=Anonymous,
+    )
 
     app.before_first_request(requirejs_config)
 
@@ -30,7 +34,9 @@ def requirejs_config():
     ckeditor_lib = 'ckeditor/ckeditor'
     config['shim']['ckeditor'] = {'exports': 'CKEDITOR'}
     config['paths']['ckeditor'] = url_for(
-        'abilian_static', filename=ckeditor_lib)
+        'abilian_static',
+        filename=ckeditor_lib,
+    )
 
     d3_lib = 'nvd3/d3.min'
     config['shim']['d3'] = {'exports': 'd3'}
@@ -52,18 +58,23 @@ BOOTSTRAP_JS = Bundle('bootstrap/js/bootstrap.js')
 
 BOOTSTRAP_DATEPICKER_LESS = 'bootstrap-datepicker/less/datepicker.less'
 BOOTSTRAP_DATEPICKER_JS = Bundle(
-    'bootstrap-datepicker/js/bootstrap-datepicker.js')
+    'bootstrap-datepicker/js/bootstrap-datepicker.js',
+)
 
 BOOTSTRAP_SWITCH_LESS = Bundle(
-    'bootstrap-switch/less/bootstrap3/bootstrap-switch.less')
+    'bootstrap-switch/less/bootstrap3/bootstrap-switch.less',
+)
 BOOTSTRAP_SWITCH_JS = Bundle('bootstrap-switch/bootstrap-switch.js')
 
 BOOTSTRAP_TIMEPICKER_LESS = Bundle('bootstrap-timepicker/less/timepicker.less')
 BOOTSTRAP_TIMEPICKER_JS = Bundle(
-    'bootstrap-timepicker/js/bootstrap-timepicker.js')
+    'bootstrap-timepicker/js/bootstrap-timepicker.js',
+)
 
-DATATABLE_LESS = Bundle('datatables/css/jquery.dataTables.css',
-                        'datatables/css/jquery.dataTables_themeroller.css')
+DATATABLE_LESS = Bundle(
+    'datatables/css/jquery.dataTables.css',
+    'datatables/css/jquery.dataTables_themeroller.css',
+)
 DATATABLE_JS = Bundle('datatables/js/jquery.dataTables.js')
 
 FILEAPI_JS = Bundle('fileapi/FileAPI.js')
@@ -74,7 +85,8 @@ REQUIRE_JS = Bundle('requirejs/require.js', 'requirejs/domReady.js')
 
 SELECT2_LESS = Bundle(
     'select2/select2.css',
-    'select2/select2-bootstrap.css',)
+    'select2/select2-bootstrap.css',
+)
 SELECT2_JS = Bundle('select2/select2.js')
 
 TYPEAHEAD_LESS = Bundle('typeahead/typeahead.js-bootstrap.less')
@@ -94,7 +106,8 @@ ABILIAN_JS = Bundle(
     'js/widgets/file.js',
     'js/widgets/image.js',
     'js/widgets/tags.js',
-    'js/widgets/dynamic-row.js',)
+    'js/widgets/dynamic-row.js',
+)
 
 LESS = Bundle(
     BOOTSTRAP_LESS,
@@ -105,7 +118,8 @@ LESS = Bundle(
     BOOTSTRAP_SWITCH_LESS,
     BOOTSTRAP_TIMEPICKER_LESS,
     DATATABLE_LESS,
-    ABILIAN_LESS,)
+    ABILIAN_LESS,
+)
 
 TOP_JS = Bundle(REQUIRE_JS, JQUERY, ABILIAN_JS_NS)
 
@@ -119,8 +133,10 @@ JS = Bundle(
     BOOTSTRAP_TIMEPICKER_JS,
     DATATABLE_JS,
     FILEAPI_JS,
-    ABILIAN_JS,)
+    ABILIAN_JS,
+)
 
 JS_I18N = (
     'select2/select2_locale_{lang}.js',
-    'bootstrap-datepicker/js/locales/bootstrap-datepicker.{lang}.js',)
+    'bootstrap-datepicker/js/locales/bootstrap-datepicker.{lang}.js',
+)

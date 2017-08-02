@@ -85,7 +85,8 @@ def auto_slug_after_insert(mapper, connection, target):
         target.slug = u'{name}{sep}{id}'.format(
             name=target.entity_class.lower(),
             sep=target.SLUG_SEPARATOR,
-            id=target.id)
+            id=target.id,
+        )
 
 
 @event.listens_for(Session, 'after_attach')
@@ -132,9 +133,13 @@ class _EntityInherit(object):
         return Column(
             Integer,
             ForeignKey(
-                'entity.id', use_alter=True, name='fk_inherited_entity_id'),
+                'entity.id',
+                use_alter=True,
+                name='fk_inherited_entity_id',
+            ),
             primary_key=True,
-            info=SYSTEM | SEARCHABLE)
+            info=SYSTEM | SEARCHABLE,
+        )
 
     @declared_attr
     def __mapper_args__(cls):
@@ -160,7 +165,10 @@ class EntityQuery(db.Model.query_class):
             # SQLAlchemy 1.0
             model = self._entity_zero().entity_zero.entity
         expr = security.query_entity_with_permission(
-            permission, user, Model=model)
+            permission,
+            user,
+            Model=model,
+        )
         return self.filter(expr)
 
 
@@ -182,8 +190,11 @@ class EntityMeta(BaseMeta):
                 entity_type_base = d.get('ENTITY_TYPE_BASE')
                 if not entity_type_base:
                     for base in bases:
-                        entity_type_base = getattr(base, 'ENTITY_TYPE_BASE',
-                                                   None)
+                        entity_type_base = getattr(
+                            base,
+                            'ENTITY_TYPE_BASE',
+                            None,
+                        )
                         if entity_type_base:
                             break
                     else:
@@ -199,16 +210,19 @@ class EntityMeta(BaseMeta):
                 elif not isinstance(default_permissions, collections.Set):
                     raise TypeError(
                         '__default_permissions__ is neither a dict or set, '
-                        'cannot create class {}'.format(classname))
+                        'cannot create class {}'.format(classname),
+                    )
 
                 # also ensure that `roles` set is immutable, too
                 default_permissions = frozenset(
                     (permission, frozenset(roles))
-                    for permission, roles in default_permissions)
+                    for permission, roles in default_permissions
+                )
                 d['__default_permissions__'] = default_permissions
 
             d['SLUG_SEPARATOR'] = text_type(
-                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR))
+                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR),
+            )
 
         cls = BaseMeta.__new__(mcs, classname, bases, d)
 
@@ -256,14 +270,21 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     index_to = __indexation_args__.setdefault('index_to', ())
     index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
     index_to += (
-        ('_indexable_roles_and_users', ('allowed_roles_and_users',)),
-        #
-        ('_indexable_tag_ids', ('tag_ids',)),
-        #
-        ('_indexable_tag_text', (
-            'tag_text',
-            'text',)),
-        #
+        (
+            '_indexable_roles_and_users',
+            ('allowed_roles_and_users',),
+        ),
+        (
+            '_indexable_tag_ids',
+            ('tag_ids',),
+        ),
+        (
+            '_indexable_tag_text',
+            (
+                'tag_text',
+                'text',
+            ),
+        ),
     )
     __indexation_args__['index_to'] = index_to
     del index_to
@@ -409,7 +430,9 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
         # roles - required to match when user has a global role
         assignments = security.get_permissions_assignments(
-            permission=READ, obj=self)
+            permission=READ,
+            obj=self,
+        )
         allowed_roles = assignments.get(READ, set())
         allowed_roles.add(Admin)
 
@@ -418,7 +441,8 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
         for role, attr in (
             (Creator, 'creator'),
-            (Owner, 'owner'),):
+            (Owner, 'owner'),
+        ):
             if role in allowed_roles:
                 user = getattr(self, attr)
                 if user:

@@ -16,7 +16,8 @@ from .base import log_config, logger
 #: sub-manager for config commands
 manager = Manager(
     description='Show config / create default config',
-    help='Show config / create default config')
+    help='Show config / create default config',
+)
 
 
 @manager.command
@@ -114,7 +115,8 @@ def maybe_write_logging(logging_file):
     else:
         logger.info(
             'Logging config file "%s" already exists, skipping creation.',
-            logging_file)
+            logging_file,
+        )
 
 
 @manager.command

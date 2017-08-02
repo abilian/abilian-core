@@ -67,8 +67,11 @@ class ActivityEntry(db.Model):
 
     def __repr__(self):
         tpl = '<{}.ActivityEntry id={} actor={} verb={} object={} target={}>'
-        return tpl.format(self.__class__.__module__, self.id,
-                          repr(text_type(self.actor)),
-                          repr(self.verb),
-                          repr(text_type(self.object)),
-                          repr(text_type(self.target)))
+        return tpl.format(
+            self.__class__.__module__,
+            self.id,
+            repr(text_type(self.actor)),
+            repr(self.verb),
+            repr(text_type(self.object)),
+            repr(text_type(self.target)),
+        )

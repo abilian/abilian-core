@@ -144,7 +144,9 @@ class BaseTestCase(TestCase):
         tmp_dir = Path(
             tempfile.mkdtemp(
                 prefix='tmp-py-unittest-',
-                suffix='-' + cls.__name__,))
+                suffix='-' + cls.__name__,
+            ),
+        )
         cls.TEST_INSTANCE_PATH = str(tmp_dir)
         for p in (tmp_dir / 'tmp', tmp_dir / 'cache', tmp_dir / 'data'):
             p.mkdir()
@@ -178,7 +180,8 @@ class BaseTestCase(TestCase):
         config = self.get_setup_config()
         self.app = self.application_class(
             config=config,
-            instance_path=self.TEST_INSTANCE_PATH,)
+            instance_path=self.TEST_INSTANCE_PATH,
+        )
         return self.app
 
     def setUp(self):
@@ -204,13 +207,16 @@ class BaseTestCase(TestCase):
             with self.db.engine.connect() as conn:
                 with conn.begin():
                     conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(
-                        self.__pg_schema))
+                        self.__pg_schema,
+                    ))
                     conn.execute('CREATE SCHEMA {}'.format(self.__pg_schema))
                     conn.execute(
-                        'SET search_path TO {}'.format(self.__pg_schema))
+                        'SET search_path TO {}'.format(self.__pg_schema),
+                    )
                     conn.execute(
                         'ALTER ROLE {username} SET search_path TO {schema}'
-                        ''.format(username=username, schema=self.__pg_schema))
+                        ''.format(username=username, schema=self.__pg_schema),
+                    )
                 conn.execute('COMMIT')
 
         self.app.create_db()
@@ -235,10 +241,12 @@ class BaseTestCase(TestCase):
                     with conn.begin():
                         conn.execute(
                             'ALTER ROLE {username} SET search_path TO public'
-                            ''.format(username=username))
+                            ''.format(username=username),
+                        )
                         conn.execute('SET search_path TO public')
                         conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(
-                            self.__pg_schema))
+                            self.__pg_schema,
+                        ))
                     conn.execute('COMMIT')
                 del self.__pg_schema
             else:
@@ -271,13 +279,16 @@ class BaseTestCase(TestCase):
         application will not perform auth or security checks.
         """
         if self.app.config.get('NO_LOGIN'):
-            raise RuntimeError('login is useless when "NO_LOGIN" is set. '
-                               'Fix testcase.')
+            raise RuntimeError(
+                'login is useless when "NO_LOGIN" is set. '
+                'Fix testcase.',
+            )
 
         if not self.app.services['security'].running:
             raise RuntimeError(
                 'trying to use login in test but security service is '
-                'not running. Fix testcase.')
+                'not running. Fix testcase.',
+            )
 
     def login(self, user, remember=False, force=False):
         """
@@ -296,7 +307,8 @@ class BaseTestCase(TestCase):
         success = login_user(user, remember, force)
         if not success:
             raise ValueError(
-                'User is not active, cannot login; or use force=True')
+                'User is not active, cannot login; or use force=True',
+            )
 
         class LoginContext(object):
 
@@ -339,8 +351,11 @@ class BaseTestCase(TestCase):
 
         r = self.client.post(
             url_for('login.login_post'),
-            data={'email': email,
-                  'password': password})
+            data={
+                'email': email,
+                'password': password,
+            },
+        )
         self.assertEqual(r.status_code, 302)
 
         class LoginContext(object):
@@ -405,12 +420,16 @@ class BaseTestCase(TestCase):
         response = requests.post(
             validator_url + '?out=json',
             content,
-            headers={'Content-Type': content_type})
+            headers={'Content-Type': content_type},
+        )
 
         body = response.json()
 
         for message in body['messages']:
             if message['type'] == 'error':
                 detail = 'on line {0} [{1}]\n{2}'.format(
-                    message['lastLine'], message['extract'], message['message'])
+                    message['lastLine'],
+                    message['extract'],
+                    message['message'],
+                )
                 self.fail('Got a validation error for %r:\n%s' % (url, detail))

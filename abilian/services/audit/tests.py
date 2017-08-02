@@ -46,7 +46,8 @@ class DummyAccount(Entity):
             db.Model.metadata,
             Column('integer_id', ForeignKey(IntegerCollection.id)),
             Column('account_id', ForeignKey(cls.id)),
-            sa.schema.UniqueConstraint('account_id', 'integer_id'),)
+            sa.schema.UniqueConstraint('account_id', 'integer_id'),
+        )
 
         return sa.orm.relationship(IntegerCollection, secondary=secondary_tbl)
 
@@ -60,15 +61,22 @@ class AccountRelated(db.Model):
     account = relationship(
         DummyAccount,
         backref=backref(
-            'data', order_by='AccountRelated.id', cascade='all, delete-orphan'))
+            'data',
+            order_by='AccountRelated.id',
+            cascade='all, delete-orphan',
+        ),
+    )
 
     text = Column(UnicodeText, default="")
 
 
 class CommentRelated(db.Model):
     __tablename__ = 'account_related_comment'
-    __auditable_entity__ = ('related.account', 'data.comments',
-                            ('related.id', 'id'))
+    __auditable_entity__ = (
+        'related.account',
+        'data.comments',
+        ('related.id', 'id'),
+    )
     id = Column(Integer, primary_key=True)
 
     related_id = Column(Integer, ForeignKey(AccountRelated.id), nullable=False)
@@ -77,7 +85,9 @@ class CommentRelated(db.Model):
         backref=backref(
             'comments',
             order_by='CommentRelated.id',
-            cascade='all, delete-orphan'))
+            cascade='all, delete-orphan',
+        ),
+    )
     text = Column(UnicodeText, default="")
 
 

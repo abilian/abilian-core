@@ -4,8 +4,9 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-import sqlalchemy as sa
 import sys
+
+import sqlalchemy as sa
 from pytest import mark
 
 from abilian.testing import BaseTestCase
@@ -31,18 +32,23 @@ class TestVocabularies(BaseTestCase):
 
         StateVoc = self.DefaultVoc
         DocCatVoc = Vocabulary(
-            'categories', group='documents', label='Categories')
+            'categories',
+            group='documents',
+            label='Categories',
+        )
 
         # test registered vocabularies
         assert vocabularies.vocabularies == {PriorityVoc, StateVoc, DocCatVoc}
         assert (vocabularies.grouped_vocabularies == {
             None: [StateVoc, PriorityVoc],
-            'documents': [DocCatVoc]
+            'documents': [DocCatVoc],
         })
         assert vocabularies.get_vocabulary('priorities') is PriorityVoc
         assert vocabularies.get_vocabulary('priorities', 'nogroup') is None
-        assert vocabularies.get_vocabulary('categories',
-                                           'documents') is DocCatVoc
+        assert vocabularies.get_vocabulary(
+            'categories',
+            'documents',
+        ) is DocCatVoc
 
         self.app.db.create_all()
 
@@ -151,16 +157,16 @@ class TestVocabularies(BaseTestCase):
         data.update(base_data)
         r = self.client.post(url, data=data)
         assert r.status_code == 302
-        assert r.headers[
-            'Location'] == u'http://localhost/admin/vocabularies/_/'
+        assert r.headers['Location'] \
+            == 'http://localhost/admin/vocabularies/_/'
         assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
         data = {'up': first.id, 'return_to': 'model'}
         data.update(base_data)
         r = self.client.post(url, data=data)
         assert r.status_code == 302
-        assert (r.headers['Location'] ==
-                u'http://localhost/admin/vocabularies/_/defaultstates/')
+        assert r.headers['Location'] \
+            == 'http://localhost/admin/vocabularies/_/defaultstates/'
         assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
         data = {'down': third.id}

@@ -85,7 +85,8 @@ class TextSearchCriterion(BaseCriterion):
     def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
         super(TextSearchCriterion, self).__init__(name, label)
         self.attributes = dict.fromkeys(
-            attributes if attributes is not None else (name,))
+            attributes if attributes is not None else (name,),
+        )
         self._attributes_prepared = False
 
         if isinstance(search_fmt, string_types):
@@ -110,8 +111,11 @@ class TextSearchCriterion(BaseCriterion):
                 attr = getattr(self.model, attr_name, None)
 
             if attr is None:
-                logger.debug('Model: "%s", could not find "%s"',
-                             self.model.__class__.__name__, attr_name)
+                logger.debug(
+                    'Model: "%s", could not find "%s"',
+                    self.model.__class__.__name__,
+                    attr_name,
+                )
                 to_del.append(attr_name)
             else:
                 val.update(
@@ -119,7 +123,9 @@ class TextSearchCriterion(BaseCriterion):
                         attr=attr,
                         name=name,
                         model=model,
-                        rel_attr_name=rel_attr_name,))
+                        rel_attr_name=rel_attr_name,
+                    ),
+                )
 
         for k in to_del:
             del self.attributes[k]
@@ -202,9 +208,11 @@ class TextCriterion(TextSearchCriterion):
     def filter(self, query, module, request, searched_text, *args, **kwargs):
         my_searched_text = request.values.get(self.name, u'').strip()
         if my_searched_text:
-            return super(TextCriterion, self).filter(query, module, request,
-                                                     my_searched_text.lower(),
-                                                     *args, **kwargs)
+            return super(TextCriterion, self).filter(
+                query, module, request,
+                my_searched_text.lower(),
+                *args, **kwargs
+            )
         else:
             return query
 

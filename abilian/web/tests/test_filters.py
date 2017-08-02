@@ -79,7 +79,10 @@ class TestFilters(FlaskTestCase):
 
         # for coverage: test when using default parameter now=None
         dt_patcher = mock.patch.object(
-            filters.datetime, 'datetime', mock.Mock(wraps=datetime.datetime))
+            filters.datetime,
+            'datetime',
+            mock.Mock(wraps=datetime.datetime),
+        )
         with dt_patcher as mocked:
             mocked.utcnow.return_value = now
             self.assertEqual("2012-06-10 16:30 (2 hours ago)", date_age(dt))
@@ -105,12 +108,20 @@ class TestFilters(FlaskTestCase):
         # same year: 2012 not shown
         assert age(d3w, now, date_threshold='day') == u'May 18, 4:00 PM'
         # different year: 2011 shown
-        assert (age(d2011, now,
-                    date_threshold='day') == u'September 4, 2011, 8:12 PM')
+        assert (
+            age(
+            d2011,
+            now,
+            date_threshold='day',
+            ) == u'September 4, 2011, 8:12 PM'
+        )
 
         # using default parameter now=None
         dt_patcher = mock.patch.object(
-            filters.datetime, 'datetime', mock.Mock(wraps=datetime.datetime))
+            filters.datetime,
+            'datetime',
+            mock.Mock(wraps=datetime.datetime),
+        )
         with dt_patcher as mocked:
             mocked.utcnow.return_value = now
             assert age(d1m) == u'1 minute ago'
@@ -118,8 +129,10 @@ class TestFilters(FlaskTestCase):
     def test_abbrev(self):
         abbrev = filters.abbrev
         self.assertEqual(u'test', abbrev(u'test', 20))
-        self.assertEqual(u'Longer test...e truncated',
-                         abbrev(u'Longer test. it should be truncated', 25))
+        self.assertEqual(
+            u'Longer test...e truncated',
+            abbrev(u'Longer test. it should be truncated', 25),
+        )
 
     def test_linkify(self):
         tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
@@ -130,15 +143,21 @@ class TestFilters(FlaskTestCase):
         self.assertEqual(el.tag, u'{http://www.w3.org/1999/xhtml}a')
         self.assertEqual(el.text, u'http://test.example.com')
         self.assertEqual(
-            sorted(el.items()), [(u'href', u'http://test.example.com'),
-                                 (u'rel', u'nofollow')])
+            sorted(el.items()),
+            [
+                (u'href', u'http://test.example.com'),
+                (u'rel', u'nofollow'),
+            ],
+        )
 
     def test_nl2br(self):
         tmpl = env.from_string(
-            '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}')
+            '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',
+        )
         self.assertEqual(
             tmpl.render(),
-            u'first line<br />\nsecond line<br />\n<br />\n  third, indented')
+            u'first line<br />\nsecond line<br />\n<br />\n  third, indented',
+        )
 
     def test_paragraphs(self):
         tmpl = env.from_string('''{{ "First paragraph
@@ -151,7 +170,9 @@ class TestFilters(FlaskTestCase):
     Last one - a single line" | paragraphs }}
     ''')
 
-        self.assertEqual(tmpl.render(), u'''<p>First paragraph<br />
+        self.assertEqual(
+            tmpl.render(),
+            u'''<p>First paragraph<br />
     some text<br />
     with line return</p>
 
@@ -159,4 +180,5 @@ class TestFilters(FlaskTestCase):
     ... lorem</p>
 
 <p>Last one - a single line</p>
-    ''')
+    ''',
+        )

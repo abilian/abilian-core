@@ -21,7 +21,8 @@ class OwnedMixin(object):
             ('creator', ('creator',)),
             ('creator_name', (('creator_name', STORED),)),
             ('owner', ('owner',)),
-            ('owner_name', (('owner_name', STORED),)),)
+            ('owner_name', (('owner_name', STORED),)),
+        ),
     }
 
     def __init__(self, *args, **kwargs):
@@ -46,7 +47,8 @@ class OwnedMixin(object):
             primaryjoin=pj,
             lazy='joined',
             uselist=False,
-            info=SYSTEM | SEARCHABLE)
+            info=SYSTEM | SEARCHABLE,
+        )
 
     @property
     def creator_name(self):
@@ -64,7 +66,8 @@ class OwnedMixin(object):
             primaryjoin=pj,
             lazy='joined',
             uselist=False,
-            info=EDITABLE | AUDITABLE | SEARCHABLE)
+            info=EDITABLE | AUDITABLE | SEARCHABLE,
+        )
 
     @property
     def owner_name(self):

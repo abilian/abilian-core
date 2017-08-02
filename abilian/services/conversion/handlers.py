@@ -15,7 +15,7 @@ from base64 import decodestring, encodestring
 from typing import List
 
 from magic import Magic
-from six import raise_from, text_type, add_metaclass
+from six import add_metaclass, raise_from, text_type
 
 from abilian.services.image import FIT, resize
 
@@ -46,7 +46,10 @@ def has_libreoffice():
     dev_null = open('/dev/null', 'wb')
     try:
         status = subprocess.call(
-            ["soffice", "--help"], stdout=dev_null, stderr=dev_null)
+            ["soffice", "--help"],
+            stdout=dev_null,
+            stderr=dev_null,
+        )
         return status == 0
     except:
         return False
@@ -143,7 +146,9 @@ class AbiwordTextHandler(Handler):
             try:
                 os.chdir(str(tmp_dir))
                 subprocess.check_call([
-                    'abiword', '--to', os.path.basename(out_fn),
+                    'abiword',
+                    '--to',
+                    os.path.basename(out_fn),
                     os.path.basename(in_fn),
                 ])
             except Exception as e:
@@ -180,7 +185,9 @@ class AbiwordPDFHandler(Handler):
             try:
                 os.chdir(bytes(self.TMP_DIR))
                 subprocess.check_call([
-                    'abiword', '--to', os.path.basename(out_fn),
+                    'abiword',
+                    '--to',
+                    os.path.basename(out_fn),
                     os.path.basename(in_fn),
                 ])
             except Exception as e:
@@ -222,7 +229,11 @@ class PdfToPpmHandler(Handler):
                 converted_images = []
                 for fn in l:
                     converted = resize(
-                        open(fn, 'rb').read(), size, size, mode=FIT)
+                        open(fn, 'rb').read(),
+                        size,
+                        size,
+                        mode=FIT,
+                    )
                     converted_images.append(converted)
 
                 return converted_images
@@ -244,10 +255,14 @@ class UnoconvPdfHandler(Handler):
 
     # TODO: add more if needed.
     accepts_mime_types = [
-        'application/vnd.oasis.*', 'application/msword',
-        'application/mspowerpoint', 'application/vnd.ms-powerpoint',
-        'application/vnd.ms-excel', 'application/ms-excel',
-        'application/vnd.openxmlformats-officedocument.*', 'text/rtf',
+        'application/vnd.oasis.*',
+        'application/msword',
+        'application/mspowerpoint',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.ms-excel',
+        'application/ms-excel',
+        'application/vnd.openxmlformats-officedocument.*',
+        'text/rtf',
     ]
     produces_mime_types = ['application/pdf']
     run_timeout = 60
@@ -281,10 +296,12 @@ class UnoconvPdfHandler(Handler):
     def unoconv_version(self):
         # Hack for my Mac, FIXME later
         if os.path.exists(
-                "/Applications/LibreOffice.app/Contents/program/python"):
+                "/Applications/LibreOffice.app/Contents/program/python",
+        ):
             cmd = [
                 '/Applications/LibreOffice.app/Contents/program/python',
-                '/usr/local/bin/unoconv', '--version',
+                '/usr/local/bin/unoconv',
+                '--version',
             ]
         else:
             cmd = [self.unoconv, '--version']
@@ -302,10 +319,16 @@ class UnoconvPdfHandler(Handler):
 
             # Hack for my Mac, FIXME later
             if os.path.exists(
-                    "/Applications/LibreOffice.app/Contents/program/python"):
+                    "/Applications/LibreOffice.app/Contents/program/python",
+            ):
                 cmd = [
                     '/Applications/LibreOffice.app/Contents/program/python',
-                    '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn,
+                    '/usr/local/bin/unoconv',
+                    '-f',
+                    'pdf',
+                    '-o',
+                    out_fn,
+                    in_fn,
                 ]
             else:
                 cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
@@ -313,7 +336,10 @@ class UnoconvPdfHandler(Handler):
             def run_uno():
                 try:
                     self._process = subprocess.Popen(
-                        cmd, close_fds=True, cwd=bytes(self.TMP_DIR))
+                        cmd,
+                        close_fds=True,
+                        cwd=bytes(self.TMP_DIR),
+                    )
                     self._process.communicate()
                 except Exception as e:
                     logger.error('run_uno error: %s', bytes(e), exc_info=True)
@@ -332,11 +358,13 @@ class UnoconvPdfHandler(Handler):
                             self._process.kill()
                         except OSError:
                             logger.warning("Failed to kill process {}".format(
-                                self._process))
+                                self._process,
+                            ))
 
                     self._process = None
                     raise ConversionError(
-                        "Conversion timeout ({})".format(timeout))
+                        "Conversion timeout ({})".format(timeout),
+                    )
 
                 converted = open(out_fn).read()
                 return converted
@@ -352,10 +380,14 @@ class LibreOfficePdfHandler(Handler):
 
     # TODO: add more if needed.
     accepts_mime_types = [
-        'application/vnd.oasis.*', 'application/msword',
-        'application/mspowerpoint', 'application/vnd.ms-powerpoint',
-        'application/vnd.ms-excel', 'application/ms-excel',
-        'application/vnd.openxmlformats-officedocument.*', 'text/rtf',
+        'application/vnd.oasis.*',
+        'application/msword',
+        'application/mspowerpoint',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.ms-excel',
+        'application/ms-excel',
+        'application/vnd.openxmlformats-officedocument.*',
+        'text/rtf',
     ]
     produces_mime_types = ['application/pdf']
     run_timeout = 60
@@ -410,7 +442,10 @@ class LibreOfficePdfHandler(Handler):
             def run_soffice():
                 try:
                     self._process = subprocess.Popen(
-                        cmd, close_fds=True, cwd=bytes(self.TMP_DIR))
+                        cmd,
+                        close_fds=True,
+                        cwd=bytes(self.TMP_DIR),
+                    )
                     self._process.communicate()
                 except Exception as e:
                     logger.error('soffice error: %s', bytes(e), exc_info=True)
@@ -429,11 +464,13 @@ class LibreOfficePdfHandler(Handler):
                             self._process.kill()
                         except OSError:
                             logger.warning("Failed to kill process {}".format(
-                                self._process))
+                                self._process,
+                            ))
 
                     self._process = None
                     raise ConversionError(
-                        "Conversion timeout ({})".format(timeout))
+                        "Conversion timeout ({})".format(timeout),
+                    )
 
                 out_fn = os.path.splitext(in_fn)[0] + ".pdf"
                 converted = open(out_fn, 'rb').read()
@@ -508,7 +545,10 @@ class WvwareTextHandler(Handler):
                 encoding = "ascii"
             try:
                 converted_unicode = text_type(
-                    converted, encoding, errors="ignore")
+                    converted,
+                    encoding,
+                    errors="ignore",
+                )
             except:
                 traceback.print_exc()
                 converted_unicode = text_type(converted, errors="ignore")

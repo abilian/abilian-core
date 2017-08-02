@@ -37,9 +37,15 @@ from .util import babel2datetime
 from .widgets import DateInput, DateTimeInput, FileInput, Select2, Select2Ajax
 
 __all__ = [
-    'ModelFieldList', 'FileField', 'DateField', 'Select2Field',
-    'Select2MultipleField', 'QuerySelect2Field', 'JsonSelect2Field',
-    'JsonSelect2MultipleField', 'FormField'
+    'ModelFieldList',
+    'FileField',
+    'DateField',
+    'Select2Field',
+    'Select2MultipleField',
+    'QuerySelect2Field',
+    'JsonSelect2Field',
+    'JsonSelect2MultipleField',
+    'FormField',
 ]
 
 
@@ -95,8 +101,10 @@ class FilterFieldListMixin(object):
             # 3) by setting raw_data optional() does not reset the errors dict
             # -> subfields errors are propagated
             self.raw_data = [True]
-        return super(FilterFieldListMixin, self).validate(form,
-                                                          extra_validators)
+        return super(FilterFieldListMixin, self).validate(
+            form,
+            extra_validators,
+        )
 
 
 class FieldList(FilterFieldListMixin, BaseFieldList):
@@ -116,7 +124,10 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         field_names = []
         labels = []
         fieldsubform = self.unbound_field.bind(
-            form=None, name='dummy', _meta=self.meta)
+            form=None,
+            name='dummy',
+            _meta=self.meta,
+        )
         subform = fieldsubform.form_class(csrf_enabled=False)
         for f in subform:
             if f.is_hidden:
@@ -128,7 +139,8 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         self._field_names = field_names
         self._field_labels = labels
         self._field_nameTolabel = dict(
-            zip(self._field_names, self._field_labels))
+            zip(self._field_names, self._field_labels),
+        )
 
     def __call__(self, **kwargs):
         """
@@ -173,11 +185,15 @@ class FileField(BaseFileField):
         if allow_delete is not None:
             if any(
                     isinstance(v, DataRequired if allow_delete else Optional)
-                    for v in validators):
+                    for v in validators
+            ):
                 raise ValueError(
                     "Field validators are conflicting with `allow_delete`,"
-                    "validators={!r}, allow_delete={!r}".format(validators,
-                                                                allow_delete))
+                    "validators={!r}, allow_delete={!r}".format(
+                        validators,
+                        allow_delete,
+                    ),
+                )
             if not allow_delete:
                 validators.append(DataRequired())
 
@@ -229,7 +245,8 @@ class FileField(BaseFileField):
             if fileobj is None:
                 # FIXME: this is a validation task
                 raise ValueError(
-                    'File with handle {!r} not found'.format(handle))
+                    'File with handle {!r} not found'.format(handle),
+                )
 
             meta = uploads.get_metadata(current_user, handle)
             filename = meta.get('filename', handle)
@@ -261,7 +278,8 @@ class FileField(BaseFileField):
         rel = getattr(mapper.relationships, name)
         if rel.uselist:
             raise ValueError(
-                "Only single target supported; else use ModelFieldList")
+                "Only single target supported; else use ModelFieldList",
+            )
 
         if delete_value:
             setattr(obj, name, None)
@@ -396,8 +414,10 @@ class DateField(Field):
                 .replace('%b', '%m')
 
             try:
-                self.data = datetime.datetime.strptime(date_str,
-                                                       date_fmt).date()
+                self.data = datetime.datetime.strptime(
+                    date_str,
+                    date_fmt,
+                ).date()
             except ValueError:
                 self.data = None
                 raise ValueError(self.gettext('Not a valid datetime value'))
@@ -464,18 +484,20 @@ class QuerySelect2Field(SelectFieldBase):
     :param allow_blank: DEPRECATED. Use optional()/required() validators instead.
     """
 
-    def __init__(self,
-                 label=None,
-                 validators=None,
-                 query_factory=None,
-                 get_pk=None,
-                 get_label=None,
-                 allow_blank=False,
-                 blank_text='',
-                 widget=None,
-                 multiple=False,
-                 collection_class=list,
-                 **kwargs):
+    def __init__(
+        self,
+        label=None,
+        validators=None,
+        query_factory=None,
+        get_pk=None,
+        get_label=None,
+        allow_blank=False,
+        blank_text='',
+        widget=None,
+        multiple=False,
+        collection_class=list,
+        **kwargs
+    ):
 
         if widget is None:
             widget = Select2(multiple=multiple)
@@ -491,7 +513,8 @@ class QuerySelect2Field(SelectFieldBase):
             logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
             logger.warning(
                 u'Use deprecated parameter `allow_blank` for field "{}".'
-                .format(label))
+                .format(label),
+            )
             if not allow_blank:
                 validators.append(DataRequired())
 
@@ -504,7 +527,7 @@ class QuerySelect2Field(SelectFieldBase):
         if get_pk is None:
             if not has_identity_key:
                 raise Exception(
-                    'The sqlalchemy identity_key function could not be imported.'
+                    'The sqlalchemy identity_key function could not be imported.',
                 )
             self.get_pk = get_pk_from_identity
         else:
@@ -544,7 +567,8 @@ class QuerySelect2Field(SelectFieldBase):
     def _set_data(self, data):
         if self.multiple and not isinstance(data, self.collection_class):
             data = self.collection_class(
-                data) if data else self.collection_class()
+                data,
+            ) if data else self.collection_class()
         self._data = data
         self._formdata = None
 
@@ -554,17 +578,24 @@ class QuerySelect2Field(SelectFieldBase):
         if self._object_list is None:
             query = self.query or self.query_factory()
             get_pk = self.get_pk
-            self._object_list = list((text_type(get_pk(obj)), obj)
-                                     for obj in query)
+            self._object_list = list(
+                (text_type(get_pk(obj)), obj)
+                for obj in query
+            )
         return self._object_list
 
     def iter_choices(self):
         if not self.flags.required:
-            yield (None, None, self.data == []
-                   if self.multiple else self.data is None)
+            yield (
+                None,
+                None,
+                self.data == [] if self.multiple else self.data is None,
+            )
 
-        predicate = (operator.contains if
-                     (self.multiple and self.data is not None) else operator.eq)
+        predicate = (
+            operator.contains if
+            (self.multiple and self.data is not None) else operator.eq
+        )
         # remember: operator.contains(b, a) ==> a in b
         # so: obj in data ==> contains(data, obj)
         predicate = partial(predicate, self.data)
@@ -634,15 +665,17 @@ class JsonSelect2Field(SelectFieldBase):
     declaration.
     """
 
-    def __init__(self,
-                 label=None,
-                 validators=None,
-                 ajax_source=None,
-                 widget=None,
-                 blank_text='',
-                 model_class=None,
-                 multiple=False,
-                 **kwargs):
+    def __init__(
+        self,
+        label=None,
+        validators=None,
+        ajax_source=None,
+        widget=None,
+        blank_text='',
+        model_class=None,
+        multiple=False,
+        **kwargs
+    ):
 
         self.multiple = multiple
 
@@ -760,7 +793,8 @@ class LocaleSelectField(SelectField):
 
         raise ValueError(
             'Value cannot be converted to Locale(), or is not None, {!r}'.
-            format(value))
+            format(value),
+        )
 
     def iter_choices(self):
         if not self.flags.required:

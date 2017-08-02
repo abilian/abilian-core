@@ -58,7 +58,8 @@ class ActionDebugPanel(DebugPanel):
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)
         template = jinja_env.get_or_select_template(
-            'debug_panels/actions_panel.html')
+            'debug_panels/actions_panel.html',
+        )
         return template.render(ctx)
 
 
@@ -103,19 +104,21 @@ class SignalsDebugPanel(DebugPanel):
                         'signal_name': signal_name,
                         'signal': signal,
                         'receivers':
-                        [text_type(r) for r in signal.receivers.values()]
+                        [text_type(r) for r in signal.receivers.values()],
                     }
                     signals.append(d)
 
         signals.sort(
-            key=lambda x: (d['module_name'], d['ns_name'], d['signal_name']))
+            key=lambda x: (d['module_name'], d['ns_name'], d['signal_name']),
+        )
 
         ctx = {'signals': signals, 'events': self.events}
 
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)
         template = jinja_env.get_or_select_template(
-            'debug_panels/signals_panel.html')
+            'debug_panels/signals_panel.html',
+        )
         return template.render(ctx)
 
     def process_request(self, request):

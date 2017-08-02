@@ -34,28 +34,27 @@ class Contacts(Module):
     list_view_columns = [
         {
             'name': '_name',
-            'width': 35
+            'width': 35,
         },
         {
             'name': 'first_name',
-            'width': 25
+            'width': 25,
         },
         {
             'name': 'last_name',
-            'width': 14
+            'width': 14,
         },
         {
             'name': 'email',
-            'width': 20
+            'width': 20,
         },
     ]
 
     edit_form_class = ContactEditForm
 
-    related_views = [
-        # TODO
-        # ('Visites', 'visites', ('partenaire', 'visiteur', 'date')),
-    ]
+    related_views = []
+    # TODO
+    # [('Visites', 'visites', ('partenaire', 'visiteur', 'date')),]
 
 
 class SimpleCRM(CRUDApp):

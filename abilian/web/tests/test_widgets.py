@@ -81,9 +81,13 @@ class ModelViewTestCase(BaseTestCase):
         with self.app.test_request_context():
             panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
             view = SingleView(
-                DummyForm, *panels, view=dict(can_edit=False, can_delete=False))
+                DummyForm, *panels, view=dict(can_edit=False, can_delete=False)
+            )
             model = WidgetTestModel(
-                name="Renault Megane", price=10000, email="joe@example.com")
+                name="Renault Megane",
+                price=10000,
+                email="joe@example.com",
+            )
             form = DummyForm(obj=model)
             res = view.render(model, form)
 
@@ -108,8 +112,10 @@ class ModelViewTestCase(BaseTestCase):
 
 class TestLinkify(TestCase):
 
-    EXPECTED = (u'<a href="http://example.com">example.com</a>'
-                u'&nbsp;<i class="fa fa-external-link"></i>')
+    EXPECTED = (
+        u'<a href="http://example.com">example.com</a>'
+        u'&nbsp;<i class="fa fa-external-link"></i>'
+    )
 
     def test_http(self):
         value = "http://example.com"
@@ -139,4 +145,6 @@ class TestText2Html(TestCase):
     def test4(self):
         result = text2html("a\n<a>toto</a>")
         self.assertEqual(
-            str(result), "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>")
+            str(result),
+            "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>",
+        )
