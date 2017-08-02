@@ -1,10 +1,15 @@
 Changelog for Abilian Core
 ==========================
 
+0.9.10 (2017-08-02)
+-------------------
+
+- Cleanup and prepare for Python 3.
+
 0.9.9 (2017-08-01)
 ------------------
 
-- Cleanup and prepar for Python 3.
+- Cleanup and prepare for Python 3.
 - Use headless libreoffce for conversion instead of unoconv.  
 
 0.9.3 (2017-07-03)
