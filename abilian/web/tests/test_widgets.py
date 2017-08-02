@@ -41,9 +41,9 @@ class WidgetTestModel(Entity):
 
 
 class DummyForm(Form):
-    name = StringField(u'Nom du véhicule')
-    price = IntegerField(u"Prix du véhicule")
-    email = StringField(u'email', view_widget=EmailWidget())
+    name = StringField('Nom du véhicule')
+    price = IntegerField("Prix du véhicule")
+    email = StringField('email', view_widget=EmailWidget())
 
 
 class TableViewTestCase(BaseTestCase):
@@ -113,8 +113,8 @@ class ModelViewTestCase(BaseTestCase):
 class TestLinkify(TestCase):
 
     EXPECTED = (
-        u'<a href="http://example.com">example.com</a>'
-        u'&nbsp;<i class="fa fa-external-link"></i>'
+        '<a href="http://example.com">example.com</a>'
+        '&nbsp;<i class="fa fa-external-link"></i>'
     )
 
     def test_http(self):

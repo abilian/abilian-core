@@ -221,7 +221,7 @@ class BaseEntityView(ModuleView):
 EDIT_ACTION = Action(
     'module',
     'object:view',
-    title=_l(u'Edit'),
+    title=_l('Edit'),
     button='default',
     condition=lambda ctx: ctx['view'].can_edit,
     icon=FAIcon('edit'),
@@ -231,7 +231,7 @@ EDIT_ACTION = Action(
 DELETE_ACTION = Action(
     'module',
     'object:view',
-    title=_l(u'Delete'),
+    title=_l('Delete'),
     button='danger',
     condition=lambda ctx: ctx['view'].can_delete,
     icon=FAIcon('trash fa-inverse'),
@@ -556,7 +556,7 @@ class Module(object):
 
     @property
     def action_category(self):
-        return u'module:{}'.format(self.endpoint)
+        return 'module:{}'.format(self.endpoint)
 
     def get_grouped_actions(self):
         items = actions.for_category(self.action_category)
@@ -570,9 +570,9 @@ class Module(object):
         ACTIONS = [
             ModuleAction(
                 self,
-                u'entity',
-                u'create',
-                title=_l(u'Create New'),
+                'entity',
+                'create',
+                title=_l('Create New'),
                 icon=FAIcon('plus'),
                 endpoint=Endpoint(self.endpoint + '.entity_new'),
                 button='default',

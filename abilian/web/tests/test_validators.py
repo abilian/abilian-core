@@ -10,8 +10,8 @@ from abilian.web.forms.validators import siret_validator
 
 
 class DummyForm(Form):
-    name = StringField(u'foo')
-    siret = StringField(u'Siret')
+    name = StringField('foo')
+    siret = StringField('Siret')
 
 
 def test_siret_validator():

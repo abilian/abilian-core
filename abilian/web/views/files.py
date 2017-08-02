@@ -96,10 +96,10 @@ class BaseFileDownload(View):
         if attach:
             filename = self.get_filename(*args, **kwargs)
             if not filename:
-                filename = u'file.bin'
+                filename = 'file.bin'
             response.headers.add(
                 'Content-Disposition',
-                u'attachment',
+                'attachment',
                 filename=filename,
             )
 

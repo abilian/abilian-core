@@ -82,7 +82,7 @@ def auto_slug_after_insert(mapper, connection, target):
     Generate a slug from entity_type and id, unless slug is already set.
     """
     if target.slug is None:
-        target.slug = u'{name}{sep}{id}'.format(
+        target.slug = '{name}{sep}{id}'.format(
             name=target.entity_class.lower(),
             sep=target.SLUG_SEPARATOR,
             id=target.id,
@@ -112,7 +112,7 @@ def _setup_default_permissions(instance):
 
     security = get_service('security')
     for permission, roles in instance.__default_permissions__:
-        if permission == u'create':
+        if permission == 'create':
             # use str for comparison instead of `abilian.services.security.CREATE`
             # symbol to avoid imports that quickly become circular.
             #
@@ -318,7 +318,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
          del dp
     """
 
-    SLUG_SEPARATOR = u'-'  # \x2d \u002d HYPHEN-MINUS
+    SLUG_SEPARATOR = '-'  # \x2d \u002d HYPHEN-MINUS
 
     query_class = EntityQuery
 
@@ -413,7 +413,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
             max_id = max(-1, -1, *results) + 1
             if max_id:
-                slug = u'{}-{}'.format(slug, max_id)
+                slug = '{}-{}'.format(slug, max_id)
         return slug
 
     @property
@@ -462,7 +462,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         for p in principals:
             result.append(indexable_role(p))
 
-        return u' '.join(result)
+        return ' '.join(result)
 
     @property
     def _indexable_tags(self):
@@ -472,18 +472,18 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         tags = current_app.extensions['tags']
 
         if not tags.is_support_tagging(self):
-            return u''
+            return ''
 
         default_ns = tags.entity_default_ns(self)
         return [t for t in tags.entity_tags(self) if t.ns == default_ns]
 
     @property
     def _indexable_tag_ids(self):
-        return u' '.join(text_type(t.id) for t in self._indexable_tags)
+        return ' '.join(text_type(t.id) for t in self._indexable_tags)
 
     @property
     def _indexable_tag_text(self):
-        return u' '.join(text_type(t.label) for t in self._indexable_tags)
+        return ' '.join(text_type(t.label) for t in self._indexable_tags)
 
     def clone(self):
         """

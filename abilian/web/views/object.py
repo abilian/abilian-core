@@ -182,7 +182,7 @@ class ObjectView(BaseObjectView):
 CANCEL_BUTTON = ButtonAction(
     'form',
     'cancel',
-    title=_l(u'Cancel'),
+    title=_l('Cancel'),
     btn_class='default cancel',  # .cancel: if jquery.validate is used it will
 )  # properly skip validation
 
@@ -190,14 +190,14 @@ EDIT_BUTTON = ButtonAction(
     'form',
     'edit',
     btn_class='primary',
-    title=_l(u'Save'),
+    title=_l('Save'),
 )
 
 ADD_ANOTHER_BUTTON = ButtonAction(
     'form',
     'create_add_another',
     btn_class='primary',
-    title=_l(u'Create and add another'),
+    title=_l('Create and add another'),
     condition=lambda ctx: getattr(ctx['view'], 'add_another_button', False),
 )
 
@@ -254,8 +254,8 @@ class ObjectEdit(ObjectView):
 
     def post(self, *args, **kwargs):
         # conservative: no action submitted -> cancel
-        action = self.data.get('__action', u'cancel')
-        if action == u'cancel':
+        action = self.data.get('__action', 'cancel')
+        if action == 'cancel':
             return self.cancel()
 
         return self.handle_action(action)
@@ -471,13 +471,13 @@ CREATE_BUTTON = ButtonAction(
     'form',
     'create',
     btn_class='primary',
-    title=_l(u'Create'),
+    title=_l('Create'),
 )
 CHAIN_CREATE_BUTTON = ButtonAction(
     'form',
     'chain_create',
     btn_class='primary',
-    title=_l(u'Create and add new'),
+    title=_l('Create and add new'),
     endpoint=lambda ctx: Endpoint(request.endpoint, **request.view_args),
     condition=lambda ctx: getattr(ctx['view'], 'chain_create_allowed', False),
 )
@@ -545,7 +545,7 @@ class ObjectCreate(ObjectEdit):
         return self.redirect_to_index()
 
 
-DELETE_BUTTON = ButtonAction('form', 'delete', title=_l(u'Delete'))
+DELETE_BUTTON = ButtonAction('form', 'delete', title=_l('Delete'))
 
 
 class ObjectDelete(ObjectEdit):

@@ -129,7 +129,7 @@ class AuditPanel(AdminPanel):
 
         # filter by types
         all_classes = sorted(all_entity_classes(), key=lambda c: c.__name__)
-        all_types = set(e.entity_type for e in all_classes)
+        all_types = {e.entity_type for e in all_classes}
         filter_types = set(request.args.getlist('types')) & all_types
         if filter_types:
             if len(filter_types) == 1:

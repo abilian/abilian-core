@@ -60,11 +60,11 @@ def login_form():
 def do_login(form):
     email = form.get('email', "").lower()
     password = form.get('password')
-    next_url = form.get('next', u'')
+    next_url = form.get('next', '')
     res = dict(username=email, email=email, next_url=next_url)
 
     if not email or not password:
-        res['error'] = _(u"You must provide your email and password.")
+        res['error'] = _("You must provide your email and password.")
         res['code'] = 401
         return res
 
@@ -78,15 +78,15 @@ def do_login(form):
     except NoResultFound:
         auth_failed.send(current_app._get_current_object(), email=email)
         res['error'] = _(
-            u"Sorry, we couldn't find an account for "
-            u"email '{email}'.",
+            "Sorry, we couldn't find an account for "
+            "email '{email}'.",
         ).format(email=email)
         res['code'] = 401
         return res
 
     if user and not user.authenticate(password):
         auth_failed.send(current_app._get_current_object(), email=email)
-        res['error'] = _(u"Sorry, wrong password.")
+        res['error'] = _("Sorry, wrong password.")
         res['code'] = 401
         return res
 
@@ -138,7 +138,7 @@ def logout():
 @route("/api/logout", methods=['POST'])
 def logout_json():
     logout_user()
-    return u'Logged out, ok.', 200
+    return 'Logged out, ok.', 200
 
 
 #
@@ -163,7 +163,7 @@ def forgotten_pw(new_user=False):
         return redirect(url_for("login.login_form"))
 
     if not email:
-        flash(_(u"You must provide your email address."), 'error')
+        flash(_("You must provide your email address."), 'error')
         return render_template("login/forgotten_password.html")
 
     try:
@@ -176,7 +176,7 @@ def forgotten_pw(new_user=False):
     except NoResultFound:
         flash(
             _(
-                u"Sorry, we couldn't find an account for "
+                "Sorry, we couldn't find an account for "
                 "email '{email}'.",
             ).format(email=email), 'error',
         )
@@ -199,9 +199,9 @@ def forgotten_pw(new_user=False):
 def reset_password(token):
     expired, invalid, user = reset_password_token_status(token)
     if invalid:
-        flash(_(u"Invalid reset password token."), "error")
+        flash(_("Invalid reset password token."), "error")
     elif expired:
-        flash(_(u"Password reset expired"), "error")
+        flash(_("Password reset expired"), "error")
     if invalid or expired:
         return redirect(url_for('login.forgotten_pw'))
 
@@ -218,34 +218,34 @@ def reset_password_post(token):
     expired, invalid, user = reset_password_token_status(token)
 
     if invalid or not user:
-        flash(_(u"Invalid reset password token."), "error")
+        flash(_("Invalid reset password token."), "error")
     elif expired:
-        flash(_(u"Password reset expired"), "error")
+        flash(_("Password reset expired"), "error")
     if invalid or expired or not user:
         return redirect(url_for('login.forgotten_pw'))
 
     password = request.form.get('password')
 
     if not password:
-        flash(_(u"You must provide a password."), "error")
+        flash(_("You must provide a password."), "error")
         return redirect(url_for("login.reset_password_post", token=token))
 
     # TODO: check entropy
     if len(password) < 7:
-        flash(_(u"Your new password must be at least 8 characters long"), "error")
+        flash(_("Your new password must be at least 8 characters long"), "error")
         return redirect(url_for("login.reset_password_post", token=token))
 
     if password.lower() == password:
         flash(
             _(
-                u"Your new password must contain upper case and lower case "
+                "Your new password must contain upper case and lower case "
                 "letters",
             ), "error",
         )
         return redirect(url_for("login.reset_password_post", token=token))
 
     if not len([x for x in password if x.isdigit()]) > 0:
-        flash(_(u"Your new password must contain at least one digit"), "error")
+        flash(_("Your new password must contain at least one digit"), "error")
         return redirect(url_for("login.reset_password_post", token=token))
 
     user.set_password(password)
@@ -253,8 +253,8 @@ def reset_password_post(token):
 
     flash(
         _(
-            u"Your password has been changed. "
-            u"You can now login with your new password",
+            "Your password has been changed. "
+            "You can now login with your new password",
         ),
         "success",
     )
@@ -291,7 +291,7 @@ def send_reset_password_instructions(user):
     reset_link = request.url_root[:-1] + url
 
     subject = _(
-        u"Password reset instruction for {site_name}",
+        "Password reset instruction for {site_name}",
     ).format(site_name=current_app.config.get('SITE_NAME'))
     mail_template = 'password_reset_instructions'
     send_mail(

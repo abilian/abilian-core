@@ -40,12 +40,12 @@ class IndexedTermsDebugPanel(DebugPanel):
         """Subtitle showing until title in toolbar"""
         obj = self.current_obj
         if not obj:
-            return _(u'No current object')
+            return _('No current object')
 
         try:
-            return u'{}(id={})'.format(obj.__class__.__name__, obj.id)
+            return '{}(id={})'.format(obj.__class__.__name__, obj.id)
         except:
-            return u''
+            return ''
 
     def title(self):
         return _('Indexed Terms')

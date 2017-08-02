@@ -41,7 +41,7 @@ UPLOAD_BUTTON = ButtonAction(
     'form',
     'edit',
     btn_class='primary',
-    title=_l(u'Send'),
+    title=_l('Send'),
 )
 
 
@@ -112,7 +112,7 @@ bp.route('/<int:entity_id>/<int:object_id>/download')(download_view)
 
 
 class AttachmentEdit(BaseAttachmentView, ObjectEdit):
-    _message_success = _l(u'Attachment edited')
+    _message_success = _l('Attachment edited')
 
 
 edit_view = AttachmentEdit.as_view('edit')
@@ -121,7 +121,7 @@ bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
 
 class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
 
-    _message_success = _l(u'Attachment added')
+    _message_success = _l('Attachment added')
 
     def init_object(self, args, kwargs):
         args, kwargs = super(AttachmentCreateView, self).init_object(
@@ -138,7 +138,7 @@ class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
         return args, kwargs
 
     def breadcrumb(self):
-        label = _(u'New attachment on "{title}"').format(title=self.entity.name)
+        label = _('New attachment on "{title}"').format(title=self.entity.name)
         return nav.BreadcrumbItem(label=label)
 
     def get_form_buttons(self, *args, **kwargs):

@@ -110,7 +110,7 @@ ADD_USER_BUTTON = ButtonAction(
     'form',
     'add_user',
     condition=lambda v: request.method == 'POST',
-    title=_l(u'Add'),
+    title=_l('Add'),
     btn_class='primary',
 )
 
@@ -172,7 +172,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
     def after_populate_obj(self):
         security = get_service('security')
         current_roles = security.get_roles(self.obj, no_group_roles=True)
-        current_roles = set(r for r in current_roles if r.assignable)
+        current_roles = {r for r in current_roles if r.assignable}
         new_roles = {Role(r) for r in self.form.roles.data}
 
         for r in (current_roles - new_roles):

@@ -25,8 +25,8 @@ class TestVocabularies(BaseTestCase):
         PriorityVoc = Vocabulary('priorities', label='Priorities')
         assert PriorityVoc.__name__ == 'VocabularyPriorities'
         assert PriorityVoc.__tablename__ == 'vocabulary_priorities'
-        assert PriorityVoc.Meta.name == u'priorities'
-        assert PriorityVoc.Meta.label == u'Priorities'
+        assert PriorityVoc.Meta.name == 'priorities'
+        assert PriorityVoc.Meta.label == 'Priorities'
         assert PriorityVoc.Meta.group is None
         assert issubclass(PriorityVoc, BaseVocabulary)
 
@@ -65,21 +65,21 @@ class TestVocabularies(BaseTestCase):
         self.session.add(low_item)
         self.session.flush()
         assert low_item.position == 4
-        assert low_item.label == u'Low'
+        assert low_item.label == 'Low'
 
         # test strip label on update
-        IMMEDIATE.label = u'  Immediate  '
+        IMMEDIATE.label = '  Immediate  '
         self.session.flush()
-        assert IMMEDIATE.label == u'Immediate'
+        assert IMMEDIATE.label == 'Immediate'
 
         # test default ordering
         assert ([i.label for i in PriorityVoc.query.active().all()] ==
-                [u'Immediate', u'Urgent', u'High', u'Normal', u'Low'])
+                ['Immediate', 'Urgent', 'High', 'Normal', 'Low'])
 
         # no default ordering when using .values(): explicit ordering required
         query = PriorityVoc.query.active().order_by(PriorityVoc.position.asc())
         assert ([i.label for i in query.values(PriorityVoc.label)] ==
-                [u'Immediate', u'Urgent', u'High', u'Normal', u'Low'])
+                ['Immediate', 'Urgent', 'High', 'Normal', 'Low'])
 
         # test db-side constraint for non-empty labels
         try:
@@ -123,7 +123,7 @@ class TestVocabularies(BaseTestCase):
         assert item is URGENT
         item.active = False
         assert ([i.label for i in PriorityVoc.query.active().all()] ==
-                [u'Immediate', u'High', u'Normal', u'Low'])
+                ['Immediate', 'High', 'Normal', 'Low'])
         assert PriorityVoc.query.active().by_position(URGENT.position) is None
 
         # test by_label()
@@ -150,7 +150,7 @@ class TestVocabularies(BaseTestCase):
         data.update(base_data)
         r = self.client.post(url, data=data)
         assert r.status_code == 302
-        assert r.headers['Location'] == u'http://localhost/admin/vocabularies'
+        assert r.headers['Location'] == 'http://localhost/admin/vocabularies'
         assert Voc.query.order_by(Voc.position).all() == [second, first, third]
 
         data = {'up': first.id, 'return_to': 'group'}
@@ -173,12 +173,12 @@ class TestVocabularies(BaseTestCase):
         data.update(base_data)
         r = self.client.post(url, data=data)
         assert r.status_code == 302
-        assert r.headers['Location'] == u'http://localhost/admin/vocabularies'
+        assert r.headers['Location'] == 'http://localhost/admin/vocabularies'
         assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
         data = {'up': third.id}
         data.update(base_data)
         r = self.client.post(url, data=data)
         assert r.status_code == 302
-        assert r.headers['Location'] == u'http://localhost/admin/vocabularies'
+        assert r.headers['Location'] == 'http://localhost/admin/vocabularies'
         assert Voc.query.order_by(Voc.position).all() == [first, third, second]

@@ -24,11 +24,11 @@ from abilian.web.forms import Form, fields, validators, widgets
 class UserPreferencesForm(Form):
 
     password = StringField(
-        _l(u'New Password'),
+        _l('New Password'),
         widget=widgets.PasswordInput(autocomplete='off'),
     )
     confirm_password = StringField(
-        _l(u'Confirm new password'),
+        _l('Confirm new password'),
         widget=widgets.PasswordInput(autocomplete='off'),
     )
 
@@ -38,13 +38,13 @@ class UserPreferencesForm(Form):
     )
 
     locale = fields.LocaleSelectField(
-        label=_l(u'Preferred Language'),
+        label=_l('Preferred Language'),
         validators=(validators.required(),),
         default=lambda: get_default_locale(),
     )
 
     timezone = fields.TimezoneField(
-        label=_l(u'Time zone'),
+        label=_l('Time zone'),
         validators=(validators.required(),),
         default=babel.dates.LOCALTZ,
     )
@@ -56,8 +56,8 @@ class UserPreferencesForm(Form):
         if pwd != confirmed:
             raise ValidationError(
                 _(
-                    u'Passwords differ. Ensure you have typed same password in both'
-                    u' "password" field and "confirm password" field.',
+                    'Passwords differ. Ensure you have typed same password in both'
+                    ' "password" field and "confirm password" field.',
                 ),
             )
 
@@ -72,12 +72,12 @@ class UserPreferencesForm(Form):
                     for ext in ('.png', '.jpg', '.jpeg'))
 
         if not valid:
-            raise ValidationError(_(u'Only PNG or JPG image files are accepted'))
+            raise ValidationError(_('Only PNG or JPG image files are accepted'))
 
         img_type = imghdr.what('ignored', data.read())
 
         if img_type not in ('png', 'jpeg'):
-            raise ValidationError(_(u'Only PNG or JPG image files are accepted'))
+            raise ValidationError(_('Only PNG or JPG image files are accepted'))
 
         data.seek(0)
         try:
@@ -85,7 +85,7 @@ class UserPreferencesForm(Form):
             im = PIL.Image.open(data)
             im.load()
         except:
-            raise ValidationError(_(u'Could not decode image file'))
+            raise ValidationError(_('Could not decode image file'))
 
         # convert to jpeg
         # FIXME: better do this at model level?
@@ -96,7 +96,7 @@ class UserPreferencesForm(Form):
 
 class UserPreferencesPanel(PreferencePanel):
     id = 'user'
-    label = _l(u'About me')
+    label = _l('About me')
 
     def is_accessible(self):
         return True
@@ -152,13 +152,13 @@ class UserPreferencesPanel(PreferencePanel):
             del form.confirm_password
             if form.password.data:
                 g.user.set_password(form.password.data)
-                flash(_(u'Password changed'), 'success')
+                flash(_('Password changed'), 'success')
             del form.password
 
             form.populate_obj(g.user)
 
             current_app.db.session.commit()
-            flash(_(u"Preferences saved."), "info")
+            flash(_("Preferences saved."), "info")
             return redirect(url_for(".user"))
         else:
             return render_template('preferences/user.html', form=form)

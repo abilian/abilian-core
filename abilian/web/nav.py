@@ -116,10 +116,10 @@ class BreadcrumbItem(object):
     _url = None
 
     template_string = (
-        u'{%- if url %}<a href="{{ url }}">{%- endif %}'
-        u'{%- if item.icon %}{{ item.icon }} {%- endif %}'
-        u'{{ item.label }}'
-        u'{%- if url %}</a>{%- endif %}'
+        '{%- if url %}<a href="{{ url }}">{%- endif %}'
+        '{%- if item.icon %}{{ item.icon }} {%- endif %}'
+        '{{ item.label }}'
+        '{%- if url %}</a>{%- endif %}'
     )
 
     def __init__(self, label='', url='#', icon=None, description=None):

@@ -133,7 +133,7 @@ class timer(object):
         self.__start = time.time()
         result = self.__f(*args, **kwargs)
         value = time.time() - self.__start
-        self.log.info('elapsed time: {0:.2f}ms'.format(value * 1000))
+        self.log.info('elapsed time: {:.2f}ms'.format(value * 1000))
         return result
 
 
@@ -225,7 +225,7 @@ def slugify(value, separator="-"):
         value = text_type(value)
     if not isinstance(value, text_type):
         raise ValueError("value must be a unicode string")
-    value = _NOT_WORD_RE.sub(u' ', value)
+    value = _NOT_WORD_RE.sub(' ', value)
     value = unicodedata.normalize('NFKD', value)
     value = value.encode('ascii', 'ignore')
     value = value.decode('ascii')

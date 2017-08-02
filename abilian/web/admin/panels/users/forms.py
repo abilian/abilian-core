@@ -20,33 +20,33 @@ from abilian.web.forms.validators import optional, required
 class BaseUserAdminForm(Form):
 
     email = StringField(
-        _l(u'Email'),
-        description=_l(u'Users log in with their email address.'),
+        _l('Email'),
+        description=_l('Users log in with their email address.'),
         view_widget=widgets.EmailWidget(),
         filters=(strip,),
         validators=[required()],
     )
     first_name = StringField(
-        _l(u'First Name'),
-        description=_l(u'ex: John'),
+        _l('First Name'),
+        description=_l('ex: John'),
         filters=(strip,),
         validators=[required()],
     )
     last_name = StringField(
-        _l(u'Last Name'),
-        description=_l(u'ex: Smith'),
+        _l('Last Name'),
+        description=_l('ex: Smith'),
         filters=(strip,),
         validators=[required()],
     )
 
     can_login = BooleanField(
-        _l(u'Login enabled'),
-        description=_l(u'If unchecked, user will not be able to connect.'),
+        _l('Login enabled'),
+        description=_l('If unchecked, user will not be able to connect.'),
         widget=widgets.BooleanWidget(),
     )
 
     groups = QuerySelect2Field(
-        _l(u'Groups'),
+        _l('Groups'),
         validators=(optional(),),
         multiple=True,
         collection_class=set,
@@ -55,17 +55,17 @@ class BaseUserAdminForm(Form):
     )
 
     roles = Select2MultipleField(
-        _l(u'Roles'),
+        _l('Roles'),
         description=_l(
-            u'Prefer groups to manage access rights. Directly assigning roles '
-            u'to users is possible but discouraged.',
+            'Prefer groups to manage access rights. Directly assigning roles '
+            'to users is possible but discouraged.',
         ),
         choices=lambda: [(r.name, r.label) for r in Role.assignable_roles()],
     )
 
     password = StringField(
-        _l(u'New Password'),
-        description=_l(u'If empty the current password will not be changed.'),
+        _l('New Password'),
+        description=_l('If empty the current password will not be changed.'),
         widget=widgets.PasswordInput(autocomplete='off'),
     )
 
@@ -73,7 +73,7 @@ class BaseUserAdminForm(Form):
 class UserAdminForm(BaseUserAdminForm):
 
     confirm_password = StringField(
-        _l(u'Confirm new password'),
+        _l('Confirm new password'),
         widget=widgets.PasswordInput(autocomplete='off'),
     )
 
@@ -84,8 +84,8 @@ class UserAdminForm(BaseUserAdminForm):
         if pwd != confirmed:
             raise ValidationError(
                 _(
-                    u'Passwords differ. Ensure you have typed same password in both'
-                    u' "password" field and "confirm password" field.',
+                    'Passwords differ. Ensure you have typed same password in both'
+                    ' "password" field and "confirm password" field.',
                 ),
             )
 
@@ -93,7 +93,7 @@ class UserAdminForm(BaseUserAdminForm):
 class UserCreateForm(BaseUserAdminForm):
 
     password = StringField(
-        _l(u'Password'),
-        description=_l(u'If empty a random password will be generated.'),
+        _l('Password'),
+        description=_l('If empty a random password will be generated.'),
         widget=widgets.PasswordInput(autocomplete='off'),
     )

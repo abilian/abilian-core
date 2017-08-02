@@ -47,7 +47,7 @@ route = search.route
 
 
 def friendly_fqcn(fqcn):
-    return fqcn.rsplit(u'.', 1)[-1]
+    return fqcn.rsplit('.', 1)[-1]
 
 
 @search.url_value_preprocessor
@@ -137,7 +137,7 @@ def search_main(q='', page=1):
         # Insert 'all' to clear all filters
         is_active = len(filtered_by_type) == 0
         all_types = (
-            _(u'All'), len(results), page_url(object_type=(),),
+            _('All'), len(results), page_url(object_type=(),),
             is_active,
         )
         by_object_type.insert(0, all_types)

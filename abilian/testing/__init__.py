@@ -427,7 +427,7 @@ class BaseTestCase(TestCase):
 
         for message in body['messages']:
             if message['type'] == 'error':
-                detail = 'on line {0} [{1}]\n{2}'.format(
+                detail = 'on line {} [{}]\n{}'.format(
                     message['lastLine'],
                     message['extract'],
                     message['message'],

@@ -56,7 +56,7 @@ class Permission(UniqueName):
     def __init__(self, name, label=None, assignable=True):
         UniqueName.__init__(self, name)
         if label is None:
-            label = u'permission_' + text_type(name)
+            label = 'permission_' + text_type(name)
         if isinstance(label, text_type):
             label = _l(label)
         self.label = label
@@ -91,7 +91,7 @@ class Role(UniqueName):
     def __init__(self, name, label=None, assignable=True):
         UniqueName.__init__(self, name)
         if label is None:
-            label = u'role_' + text_type(name)
+            label = 'role_' + text_type(name)
         if isinstance(label, text_type):
             label = _l(label)
         self.label = label
@@ -128,7 +128,7 @@ class RoleType(UniqueNameType):
 
 
 #: marker for role assigned to 'Anonymous'
-Anonymous = Role('anonymous', _l(u'role_anonymous'), assignable=False)
+Anonymous = Role('anonymous', _l('role_anonymous'), assignable=False)
 
 #: marker for role assigned to 'Authenticated'
 Authenticated = Role(
@@ -382,10 +382,10 @@ class SecurityAudit(db.Model):
     """
     Logs changes on security.
     """
-    GRANT = u'GRANT'
-    REVOKE = u'REVOKE'
-    SET_INHERIT = u'SET_INHERIT'
-    UNSET_INHERIT = u'UNSET_INHERIT'
+    GRANT = 'GRANT'
+    REVOKE = 'REVOKE'
+    SET_INHERIT = 'SET_INHERIT'
+    UNSET_INHERIT = 'UNSET_INHERIT'
 
     __tablename__ = "securityaudit"
     __table_args__ = (

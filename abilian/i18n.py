@@ -149,7 +149,7 @@ def country_choices(first=None, default_country_first=True):
 
     def sortkey(item):
         if first is not None and item[0] == first:
-            return u'0'
+            return '0'
         return to_lower_ascii(item[1])
 
     territories.sort(key=sortkey)
@@ -181,7 +181,7 @@ def timezones_choices():
     for tz in sorted(pytz.common_timezones):
         tz = get_timezone(tz)
         now = tz.normalize(utcnow.astimezone(tz))
-        label = u'({}) {}'.format(get_timezone_gmt(now, locale=locale), tz.zone)
+        label = '({}) {}'.format(get_timezone_gmt(now, locale=locale), tz.zone)
         yield (tz, label)  # get_timezone_name(tz, locale=locale))
 
 
@@ -354,10 +354,10 @@ def get_template_i18n(template_name, locale):
 
     if locale.territory is not None:
         locale_string = '_'.join([locale.language, locale.territory])
-        localized_template_path = u'.'.join([root, locale_string, suffix])
+        localized_template_path = '.'.join([root, locale_string, suffix])
         template_list.append(localized_template_path)
 
-    localized_template_path = u'.'.join([root, locale.language, suffix])
+    localized_template_path = '.'.join([root, locale.language, suffix])
     template_list.append(localized_template_path)
 
     # append the default
@@ -410,10 +410,10 @@ _NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
 
 def to_lower_ascii(value):
     value = text_type(value)
-    value = _NOT_WORD_RE.sub(u' ', value)
+    value = _NOT_WORD_RE.sub(' ', value)
     value = unicodedata.normalize('NFKD', value)
     value = value.encode('ascii', 'ignore')
     value = value.decode('ascii')
     value = value.strip().lower()
-    value = re.sub(r'[_\s]+', u' ', value)
+    value = re.sub(r'[_\s]+', ' ', value)
     return value

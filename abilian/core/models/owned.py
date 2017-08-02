@@ -52,7 +52,7 @@ class OwnedMixin(object):
 
     @property
     def creator_name(self):
-        return text_type(self.creator) if self.creator else u''
+        return text_type(self.creator) if self.creator else ''
 
     @declared_attr
     def owner_id(cls):
@@ -71,4 +71,4 @@ class OwnedMixin(object):
 
     @property
     def owner_name(self):
-        return text_type(self.owner) if self.owner else u''
+        return text_type(self.owner) if self.owner else ''

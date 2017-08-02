@@ -56,7 +56,7 @@ class TagsField(Field):
 
     def process_formdata(self, valuelist):
         extension = current_app.extensions['tags']
-        valuelist = set(valuelist[0].split(u';'))
+        valuelist = set(valuelist[0].split(';'))
         data = set()
 
         for label in valuelist:
@@ -85,14 +85,14 @@ class TagsField(Field):
             all_tags.add(tag)
 
 
-_NS = StringField(u'Namespace', validators=[required()], filters=[strip])
+_NS = StringField('Namespace', validators=[required()], filters=[strip])
 
 
 class TagForm(Form):
     """
     Form for a single tag
     """
-    label = StringField(u'Label', filters=[strip], validators=[required()])
+    label = StringField('Label', filters=[strip], validators=[required()])
 
 
 class TagNSForm(TagForm):

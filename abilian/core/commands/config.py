@@ -63,9 +63,9 @@ class DefaultConfig(object):
 
     WHOOSH_BASE = 'whoosh'
 
-    SITE_NAME = u''
-    MAIL_SENDER = u''
-    UNOCONV_LOCATION = u'/usr/bin/unoconv'
+    SITE_NAME = ''
+    MAIL_SENDER = ''
+    UNOCONV_LOCATION = '/usr/bin/unoconv'
 
     def __init__(self, logging_file=None):
         self.SESSION_COOKIE_NAME = '{}-session'.format(current_app.name)

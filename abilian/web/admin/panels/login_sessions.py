@@ -35,7 +35,7 @@ class LoginSessionsPanel(AdminPanel):
             .order_by(LoginSession.id.desc()) \
             .limit(50) \
             .all()
-        unknown_country = _(u'Country unknown')
+        unknown_country = _('Country unknown')
 
         for session in sessions:
             country = unknown_country

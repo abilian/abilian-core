@@ -48,24 +48,24 @@ class EntityTestCase(TestCase):
         obj = DummyContact(name='a b c')
         session.add(obj)
         session.flush()
-        assert obj.auto_slug == u'a-b-c'
+        assert obj.auto_slug == 'a-b-c'
 
-        obj.name = u"C'est l'été !"
-        assert obj.auto_slug == u'c-est-l-ete'
+        obj.name = "C'est l'été !"
+        assert obj.auto_slug == 'c-est-l-ete'
 
         # with a special space character
-        obj.name = u"a_b\u205fc"  # U+205F: MEDIUM MATHEMATICAL SPACE
-        assert obj.auto_slug == u'a-b-c'
+        obj.name = "a_b\u205fc"  # U+205F: MEDIUM MATHEMATICAL SPACE
+        assert obj.auto_slug == 'a-b-c'
 
         # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH
         # U+2014 (—). Standard separator is \u002d (\x2d) "-" HYPHEN-MINUS.
         # this test may fails depending on how  unicode normalization + char
         # substitution is done (order matters).
-        obj.name = u'a\u2013b\u2014c'  # u'a–b—c'
+        obj.name = 'a\u2013b\u2014c'  # u'a–b—c'
         slug = obj.auto_slug
-        assert slug == u'a-b-c'
-        assert u'\u2013' not in slug
-        assert u'\u002d' in slug
+        assert slug == 'a-b-c'
+        assert '\u2013' not in slug
+        assert '\u002d' in slug
 
     def test_updated_at(self):
         session = self.get_session()
@@ -75,7 +75,7 @@ class EntityTestCase(TestCase):
         assert isinstance(contact.updated_at, datetime)
 
         updated = contact.updated_at
-        contact.first_name = u'John'
+        contact.first_name = 'John'
         session.commit()
         assert isinstance(contact.updated_at, datetime)
         assert contact.updated_at > updated
@@ -85,20 +85,20 @@ class EntityTestCase(TestCase):
         contact1 = DummyContact(name='Pacôme Hégésippe Adélard Ladislas')
         session.add(contact1)
         session.flush()
-        assert contact1.slug == u'pacome-hegesippe-adelard-ladislas'
+        assert contact1.slug == 'pacome-hegesippe-adelard-ladislas'
 
         # test when name is None
         contact2 = DummyContact()
         session.add(contact2)
         session.flush()
-        expected = u'dummycontact-{}'.format(contact2.id)
+        expected = 'dummycontact-{}'.format(contact2.id)
         assert contact2.slug == expected
 
         # test numbering if slug already exists:
         contact3 = DummyContact(name='Pacôme Hégésippe Adélard Ladislas')
         session.add(contact3)
         session.flush()
-        assert contact3.slug == u'pacome-hegesippe-adelard-ladislas-1'
+        assert contact3.slug == 'pacome-hegesippe-adelard-ladislas-1'
 
     def test_polymorphic_update_timestamp(self):
         session = self.get_session()
@@ -108,14 +108,14 @@ class EntityTestCase(TestCase):
 
         updated_at = contact.updated_at
         assert updated_at
-        contact.email = u'p@example.com'
+        contact.email = 'p@example.com'
         session.flush()
         assert contact.updated_at > updated_at
 
     def test_meta(self):
         session = self.get_session()
         e = DummyContact(name='test')
-        e.meta['key'] = u'value'
+        e.meta['key'] = 'value'
         e.meta['number'] = 42
         session.add(e)
         session.flush()
@@ -123,7 +123,7 @@ class EntityTestCase(TestCase):
         session.expunge(e)
         del e
         e = session.query(DummyContact).get(e_id)
-        assert e.meta['key'] == u'value'
+        assert e.meta['key'] == 'value'
         assert e.meta['number'] == 42
 
     def test_entity_type(self):

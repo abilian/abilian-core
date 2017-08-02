@@ -101,7 +101,7 @@ class TagsExtension(object):
         if ns is None:
             ns = self.entity_default_ns(entity)
 
-        field = TagsField(label=_l(u'Tags'), ns=ns)
+        field = TagsField(label=_l('Tags'), ns=ns)
         if six.PY2:
             cls = type(b'EntityNSTagsForm', (_TagsForm,), {b'tags': field})
         else:

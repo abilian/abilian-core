@@ -15,7 +15,7 @@ from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
     InheritSecurity, Owner, Permission, PermissionAssignment, Reader, Role, \
     RoleAssignment, SecurityAudit, Writer, security
 
-TEST_EMAIL = u"joe@example.com"
+TEST_EMAIL = "joe@example.com"
 TEST_PASSWORD = "tototiti"
 
 skip = pytest.mark.skip
@@ -43,7 +43,7 @@ class RoleTestCase(unittest.TestCase):
     def test_equality(self):
         admin = Role('admin')
         self.assertEqual(admin, 'admin')
-        self.assertEqual(admin, u'admin')
+        self.assertEqual(admin, 'admin')
 
     def test_ordering(self):
         roles = [Authenticated, Admin, Anonymous]

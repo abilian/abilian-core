@@ -17,13 +17,13 @@ from abilian.web.forms.validators import required
 class AttachmentForm(Form):
 
     blob = FileField(
-        _l(u'file'),
+        _l('file'),
         validators=[required()],
         filters=[strip],
         multiple=False,
     )
 
-    description = StringField(_l(u'description (optional)'), filters=[strip])
+    description = StringField(_l('description (optional)'), filters=[strip])
 
     class Meta:
         model = Attachment

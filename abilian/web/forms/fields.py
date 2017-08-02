@@ -217,7 +217,7 @@ class FileField(BaseFileField):
         return self._has_uploads
 
     def process(self, formdata, *args, **kwargs):
-        delete_arg = u'__{name}_delete__'.format(name=self.name)
+        delete_arg = '__{name}_delete__'.format(name=self.name)
         self.delete_files_index = (formdata.getlist(delete_arg) if formdata and
                                    delete_arg in formdata else [])
 
@@ -293,7 +293,7 @@ class FileField(BaseFileField):
             val = cls()
             setattr(obj, name, val)
 
-        data = u''
+        data = ''
         if self.has_file():
             data = self.data
             if not issubclass(cls, Blob):
@@ -355,7 +355,7 @@ class DateTimeField(Field):
                 .replace('%b', '%m')  # force numerical months
             time_fmt = locale.time_formats['short']
             time_fmt = babel2datetime(time_fmt)
-            datetime_fmt = u'{} | {}'.format(date_fmt, time_fmt)
+            datetime_fmt = '{} | {}'.format(date_fmt, time_fmt)
             try:
                 self.data = datetime.datetime.strptime(date_str, datetime_fmt)
                 if not self.use_naive:
@@ -512,7 +512,7 @@ class QuerySelect2Field(SelectFieldBase):
         if not any(isinstance(v, (Optional, DataRequired)) for v in validators):
             logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
             logger.warning(
-                u'Use deprecated parameter `allow_blank` for field "{}".'
+                'Use deprecated parameter `allow_blank` for field "{}".'
                 .format(label),
             )
             if not allow_blank:
@@ -721,7 +721,7 @@ class JsonSelect2Field(SelectFieldBase):
                 formdata = [formdata]
             data = [
                 self.model_class.query.get(int(pk)) for pk in formdata
-                if pk not in (u'', None)
+                if pk not in ('', None)
             ]
             if not self.multiple:
                 data = data[0] if data else None

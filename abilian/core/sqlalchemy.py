@@ -115,8 +115,8 @@ def filter_cols(model, *filtered_columns):
     """
     m = sa.orm.class_mapper(model)
     return list(
-        set(p.key for p in m.iterate_properties
-            if hasattr(p, 'columns')).difference(filtered_columns),
+        {p.key for p in m.iterate_properties
+            if hasattr(p, 'columns')}.difference(filtered_columns),
     )
 
 
@@ -375,9 +375,9 @@ class Locale(sa.types.TypeDecorator):
 
         code = text_type(value.language)
         if value.territory:
-            code += u'_' + text_type(value.territory)
+            code += '_' + text_type(value.territory)
         elif value.script:
-            code += u'_' + text_type(value.territory)
+            code += '_' + text_type(value.territory)
 
         return code
 

@@ -44,7 +44,7 @@ def token():
     Value of current csrf token. Useful for passing it to JavaScript for
     instance.
     """
-    return field().current_token or u''
+    return field().current_token or ''
 
 
 def support_graceful_failure(view):

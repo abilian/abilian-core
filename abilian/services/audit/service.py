@@ -212,7 +212,7 @@ class AuditService(Service):
         # FIXME: we can only handle the simplest case: 1 attribute => 1 column
         columns = initiator.parent_token.columns
         if len(columns) == 1 and columns[0].info.get('audit_hide_content'):
-            old_value = new_value = u'******'
+            old_value = new_value = '******'
 
         old_value = format_large_value(old_value)
         new_value = format_large_value(new_value)
@@ -288,7 +288,7 @@ class AuditService(Service):
         entry.entity_id = entity.id
         entry.entity_type = entity.entity_type
 
-        entity_name = u''
+        entity_name = ''
         for attr_name in ('name', 'path', '__path_before_delete'):
             if hasattr(entity, attr_name):
                 entity_name = getattr(entity, attr_name)
@@ -327,9 +327,9 @@ class AuditService(Service):
                     item = getattr(item, attr)
                 enduser_ids.append(text_type(item))
 
-            related_name = u'{} {}'.format(
+            related_name = '{} {}'.format(
                 meta.backref_attr,
-                u' '.join(enduser_ids),
+                ' '.join(enduser_ids),
             )
             related_changes = changes
             log.debug('related changes: %s', repr(related_changes))

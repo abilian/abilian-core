@@ -28,7 +28,7 @@ from .models import UserPreference
 _PREF_NAV_ITEM = NavItem(
     'user',
     'preferences',
-    title=_l(u'Preferences'),
+    title=_l('Preferences'),
     icon='cog',
     url=lambda context: request.url_root + 'preferences',
     condition=lambda context: not current_user.is_anonymous,
@@ -147,7 +147,7 @@ class PreferenceService(Service):
             app.extensions[self.name].blueprint_registered = True
 
         self.app_state.root_breadcrumb_item = BreadcrumbItem(
-            label=_(u'Preferences'),
+            label=_('Preferences'),
             url=Endpoint('preferences.index'),
         )
 

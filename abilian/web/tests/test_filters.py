@@ -41,7 +41,7 @@ class TestFilters(FlaskTestCase):
 
     def test_labelize(self):
         labelize = filters.labelize
-        self.assertEqual(u'Test Case', labelize(u'test_case'))
+        self.assertEqual('Test Case', labelize('test_case'))
 
     def test_filesize(self):
         filesize = filters.filesize
@@ -57,11 +57,11 @@ class TestFilters(FlaskTestCase):
 
     def test_roughsize(self):
         roughsize = filters.roughsize
-        self.assertEqual(u'6', roughsize(6))
-        self.assertEqual(u'15', roughsize(15))
-        self.assertEqual(u'130+', roughsize(134))
-        self.assertEqual(u'10+', roughsize(15, above=10))
-        self.assertEqual(u'55+', roughsize(57, mod=5))
+        self.assertEqual('6', roughsize(6))
+        self.assertEqual('15', roughsize(15))
+        self.assertEqual('130+', roughsize(134))
+        self.assertEqual('10+', roughsize(15, above=10))
+        self.assertEqual('55+', roughsize(57, mod=5))
 
     def test_date_age(self):
         date_age = filters.date_age
@@ -95,25 +95,25 @@ class TestFilters(FlaskTestCase):
         d2011 = datetime.datetime(2011, 9, 4, 12, 12, 0, tzinfo=utc)
 
         # default parameters
-        assert age(None) == u''
-        assert age(d1m, now) == u'1 minute ago'
-        assert age(d3w, now) == u'3 weeks ago'
+        assert age(None) == ''
+        assert age(d1m, now) == '1 minute ago'
+        assert age(d3w, now) == '3 weeks ago'
 
         # with direction
-        assert age(d1m, now, add_direction=False) == u'1 minute'
-        assert age(d3w, now, add_direction=False) == u'3 weeks'
+        assert age(d1m, now, add_direction=False) == '1 minute'
+        assert age(d3w, now, add_direction=False) == '3 weeks'
 
         # with date_threshold
-        assert age(d1m, now, date_threshold='day') == u'1 minute ago'
+        assert age(d1m, now, date_threshold='day') == '1 minute ago'
         # same year: 2012 not shown
-        assert age(d3w, now, date_threshold='day') == u'May 18, 4:00 PM'
+        assert age(d3w, now, date_threshold='day') == 'May 18, 4:00 PM'
         # different year: 2011 shown
         assert (
             age(
             d2011,
             now,
             date_threshold='day',
-            ) == u'September 4, 2011, 8:12 PM'
+            ) == 'September 4, 2011, 8:12 PM'
         )
 
         # using default parameter now=None
@@ -124,14 +124,14 @@ class TestFilters(FlaskTestCase):
         )
         with dt_patcher as mocked:
             mocked.utcnow.return_value = now
-            assert age(d1m) == u'1 minute ago'
+            assert age(d1m) == '1 minute ago'
 
     def test_abbrev(self):
         abbrev = filters.abbrev
-        self.assertEqual(u'test', abbrev(u'test', 20))
+        self.assertEqual('test', abbrev('test', 20))
         self.assertEqual(
-            u'Longer test...e truncated',
-            abbrev(u'Longer test. it should be truncated', 25),
+            'Longer test...e truncated',
+            abbrev('Longer test. it should be truncated', 25),
         )
 
     def test_linkify(self):
@@ -140,13 +140,13 @@ class TestFilters(FlaskTestCase):
         el = html5lib.parseFragment(rendered)
         self.assertEqual(len(el.getchildren()), 1)
         el = el.getchildren()[0]
-        self.assertEqual(el.tag, u'{http://www.w3.org/1999/xhtml}a')
-        self.assertEqual(el.text, u'http://test.example.com')
+        self.assertEqual(el.tag, '{http://www.w3.org/1999/xhtml}a')
+        self.assertEqual(el.text, 'http://test.example.com')
         self.assertEqual(
             sorted(el.items()),
             [
-                (u'href', u'http://test.example.com'),
-                (u'rel', u'nofollow'),
+                ('href', 'http://test.example.com'),
+                ('rel', 'nofollow'),
             ],
         )
 
@@ -156,7 +156,7 @@ class TestFilters(FlaskTestCase):
         )
         self.assertEqual(
             tmpl.render(),
-            u'first line<br />\nsecond line<br />\n<br />\n  third, indented',
+            'first line<br />\nsecond line<br />\n<br />\n  third, indented',
         )
 
     def test_paragraphs(self):
@@ -172,7 +172,7 @@ class TestFilters(FlaskTestCase):
 
         self.assertEqual(
             tmpl.render(),
-            u'''<p>First paragraph<br />
+            '''<p>First paragraph<br />
     some text<br />
     with line return</p>
 

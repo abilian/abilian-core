@@ -17,41 +17,41 @@ class TestIcons(BaseTestCase):
         icon = Glyphicon('ok')
         self.assertEqual(
             icon.__html__(),
-            u'<i class="glyphicon glyphicon-ok"></i>',
+            '<i class="glyphicon glyphicon-ok"></i>',
         )
 
     def test_faicons(self):
         icon = FAIcon('check')
-        self.assertEqual(icon.__html__(), u'<i class="fa fa-check"></i>')
+        self.assertEqual(icon.__html__(), '<i class="fa fa-check"></i>')
 
     def test_staticicon(self):
         icon = StaticIcon('path/to/icon.png')
         self.assertEqual(
             icon.__html__(),
-            u'<img src="/static/path/to/icon.png" width="12" height="12" />',
+            '<img src="/static/path/to/icon.png" width="12" height="12" />',
         )
 
         icon = StaticIcon('path/to/icon.png', width=14)
         self.assertEqual(
             icon.__html__(),
-            u'<img src="/static/path/to/icon.png" width="14" height="12" />',
+            '<img src="/static/path/to/icon.png" width="14" height="12" />',
         )
 
         icon = StaticIcon('path/to/icon.png', height=14)
         self.assertEqual(
             icon.__html__(),
-            u'<img src="/static/path/to/icon.png" width="12" height="14" />',
+            '<img src="/static/path/to/icon.png" width="12" height="14" />',
         )
 
         icon = StaticIcon('path/to/icon.png', size=14)
         self.assertEqual(
             icon.__html__(),
-            u'<img src="/static/path/to/icon.png" width="14" height="14" />',
+            '<img src="/static/path/to/icon.png" width="14" height="14" />',
         )
 
         icon = StaticIcon('path/to/icon.png', size=14, css='avatar')
         self.assertEqual(
             icon.__html__(),
-            u'<img class="avatar" src="/static/path/to/icon.png" width="14" '
-            u'height="14" />',
+            '<img class="avatar" src="/static/path/to/icon.png" width="14" '
+            'height="14" />',
         )

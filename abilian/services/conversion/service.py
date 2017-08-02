@@ -139,7 +139,7 @@ class Converter(object):
         """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
-            return u""
+            return ""
 
         cache_key = "txt:" + digest
 

@@ -41,7 +41,7 @@ class BaseTagView(object):
 
 
 class TagEdit(BaseTagView, ObjectEdit):
-    _message_success = _l(u'Tag edited')
+    _message_success = _l('Tag edited')
 
 
 edit_view = TagEdit.as_view('edit')
@@ -49,7 +49,7 @@ bp.route('/manage/<int:object_id>/edit')(edit_view)
 
 
 class TagCreate(BaseTagView, ObjectCreate):
-    _message_success = _l(u'Tag created')
+    _message_success = _l('Tag created')
 
 
 create_view = TagCreate.as_view('create')
@@ -57,7 +57,7 @@ bp.route('/manage/new')(create_view)
 
 
 class TagDelete(BaseTagView, ObjectDelete):
-    _message_success = _l(u'Tag deleted')
+    _message_success = _l('Tag deleted')
 
 
 delete_view = TagDelete.as_view('delete')

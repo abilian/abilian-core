@@ -197,7 +197,7 @@ class SAAdapter(SchemaAdapter):
                 val = cached[a]
                 if val is not None:
                     if isinstance(val, (list, tuple)):
-                        val = u' '.join(val).strip()
+                        val = ' '.join(val).strip()
                     values.append(val)
 
             values = [v for v in values if v]
@@ -206,6 +206,6 @@ class SAAdapter(SchemaAdapter):
                 if len(values) == 1:
                     kwargs[field] = values[0]
                 else:
-                    kwargs[field] = u' '.join(values)
+                    kwargs[field] = ' '.join(values)
 
         return kwargs

@@ -294,10 +294,10 @@ class WhooshIndexService(Service):
         if not fields:
             fields = self.default_search_fields
 
-        valid_fields = set(
+        valid_fields = {
             f for f in index.schema.names(check_names=fields)
             if prefix or not f.endswith('_prefix')
-        )
+        }
 
         for invalid in set(fields) - valid_fields:
             del fields[invalid]
@@ -316,9 +316,9 @@ class WhooshIndexService(Service):
             if not user.is_anonymous:
                 roles.add(indexable_role(Anonymous))
                 roles.add(indexable_role(Authenticated))
-                roles |= set(
+                roles |= {
                     indexable_role(r) for r in security.get_roles(user)
-                )
+                }
 
             filter_q = wq.Or(
                 [wq.Term('allowed_roles_and_users', role) for role in roles],
@@ -557,7 +557,7 @@ def index_update(index, items):
 
             # always delete. Whoosh manual says that 'update' is actually delete + add
             # operation
-            object_key = u'{}:{}'.format(cls_name, pk)
+            object_key = '{}:{}'.format(cls_name, pk)
             writer.delete_by_term('object_key', object_key)
 
             adapter = adapted.get(cls_name)

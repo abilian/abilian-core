@@ -142,7 +142,7 @@ class BaseTableView(object):
             self.show_search = self.show_controls
 
         self.init_columns(columns)
-        self.name = u'{}-{:d}'.format(
+        self.name = '{}-{:d}'.format(
             self.__class__.__name__.lower(),
             next(g.id_generator),
         )
@@ -266,13 +266,13 @@ class BaseTableView(object):
                     and (value.startswith("http://") or value.startswith("www.")):
                 cell = Markup(linkify_url(value))
             elif value in (True, False):
-                cell = u'\u2713' if value else u''  # Unicode "Check mark"
+                cell = '\u2713' if value else ''  # Unicode "Check mark"
             elif isinstance(value, list):
                 cell = "; ".join(value)
             else:
                 if not isinstance(value, (Markup,) + string_types):
                     if value is None:
-                        value = u''
+                        value = ''
                     else:
                         value = text_type(value)
                 cell = value
@@ -356,18 +356,18 @@ class AjaxMainTableView(object):
             'aoColumns': aoColumns,
             'bFilter': True,
             'oLanguage': {
-                'sSearch': self.options.get('search_label', _(u'Filter records:')),
+                'sSearch': self.options.get('search_label', _('Filter records:')),
                 'oPaginate': {
-                    'sPrevious': _(u'Previous'),
-                    'sNext': _(u'Next'),
+                    'sPrevious': _('Previous'),
+                    'sNext': _('Next'),
                 },
-                'sLengthMenu': _(u'Entries per page: _MENU_'),
-                'sInfo': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
-                'sInfoEmpty': _(u'Showing _START_ to _END_ of _TOTAL_ entries'),
-                'sInfoFiltered': _(u'(filtered from _MAX_ total entries)'),
-                'sAddAdvancedFilter': _(u'Add a filter'),
-                'sZeroRecords': _(u'No matching records found'),
-                'sEmptyTable': _(u'No matching records found'),
+                'sLengthMenu': _('Entries per page: _MENU_'),
+                'sInfo': _('Showing _START_ to _END_ of _TOTAL_ entries'),
+                'sInfoEmpty': _('Showing _START_ to _END_ of _TOTAL_ entries'),
+                'sInfoFiltered': _('(filtered from _MAX_ total entries)'),
+                'sAddAdvancedFilter': _('Add a filter'),
+                'sZeroRecords': _('No matching records found'),
+                'sEmptyTable': _('No matching records found'),
             },
             'bPaginate': self.paginate,
             'sPaginationType': "bootstrap",
@@ -469,7 +469,7 @@ class SingleView(object):
     def render(self, item, form, related_views=()):
         mapper = sa.orm.class_mapper(item.__class__)
         panels = []
-        _to_skip = (None, False, 0, 0.0, '', u'-')
+        _to_skip = (None, False, 0, 0.0, '', '-')
 
         for panel in self.panels:
             data = {}
@@ -489,7 +489,7 @@ class SingleView(object):
                         continue
 
                 value = Markup(field.render_view(entity=item))
-                if value == u'':
+                if value == '':
                     # related models may have [] as value, but we don't discard this type
                     # of value in order to let widget a chance to render something useful
                     # like an 'add model' button.
@@ -641,7 +641,7 @@ class ModelWidget(object):
         return render_template(self.edit_template, form=field)
 
     def render_view(self, field, *args, **kwargs):
-        _to_skip = (None, False, 0, 0.0, '', u'-')
+        _to_skip = (None, False, 0, 0.0, '', '-')
         rows = []
         for f in field.form:
             if f.is_hidden:
@@ -652,7 +652,7 @@ class ModelWidget(object):
                 continue
 
             value = Markup(f.render_view())
-            if value == u'':
+            if value == '':
                 # related models may have [] as value, but we don't discard this type
                 # of value in order to let widget a chance to render something useful
                 # like an 'add model' button.
@@ -702,7 +702,7 @@ class TextInput(wtforms.widgets.TextInput):
 
         return Markup(
             render_template_string(
-                u'''
+                '''
             <div class="input-group input-group-type-{{ widget.typename }}">
             {%- if widget.pre_icon %}
               <div class="input-group-addon">{{ widget.pre_icon }}</div>
@@ -772,8 +772,8 @@ class FileInput(object):
         kwargs['name'] = field.name
         kwargs['type'] = 'file'
         kwargs['disabled'] = 'disabled'  # JS widget will activate it
-        input_elem = u'<input {}>'.format(html_params(**kwargs))
-        button_label = _(u'Add file') if 'multiple' in kwargs else _(u'Select file')
+        input_elem = '<input {}>'.format(html_params(**kwargs))
+        button_label = _('Add file') if 'multiple' in kwargs else _('Select file')
 
         existing = self.build_exisiting_files_list(field)
         uploads = self.build_uploads_list(field)
@@ -822,7 +822,7 @@ class FileInput(object):
                 if hasattr(data, 'filename'):
                     existing[-1]['filename'] = data.filename
                 elif blob and isinstance(blob, Blob):
-                    existing[-1]['filename'] = blob.meta.get('filename', u'')
+                    existing[-1]['filename'] = blob.meta.get('filename', '')
 
         return existing
 
@@ -901,27 +901,27 @@ class ImageInput(FileInput):
         try:
             get_format(data)
         except IOError:
-            return u''
+            return ''
         return image.resize(data, width, height, mode=self.resize_mode)
 
     def get_b64_thumb_url(self, img):
         if not img:
-            return u''
+            return ''
         try:
             fmt = image.get_format(img).lower()
         except IOError:
-            return u''
+            return ''
         thumb = base64.b64encode(img)
-        return u'data:image/{format};base64,{img}'.format(format=fmt, img=thumb)
+        return 'data:image/{format};base64,{img}'.format(format=fmt, img=thumb)
 
     def render_view(self, field, **kwargs):
         data = field.data
         if not data:
-            return u''
+            return ''
         try:
             get_format(data)
         except IOError:
-            return u''
+            return ''
 
         width = kwargs.get('width', self.width)
         height = kwargs.get('heigth', self.height)
@@ -929,7 +929,7 @@ class ImageInput(FileInput):
         thumb = self.get_thumb(data, width, height)
         width, height = image.get_size(thumb)
 
-        tmpl = u'<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
+        tmpl = '<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
         return render_template_string(
             tmpl,
             url=self.get_b64_thumb_url(thumb),
@@ -946,14 +946,14 @@ class Chosen(Select):
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
         html = [
-            u'<select %s class="chzn-select">' % html_params(
+            '<select %s class="chzn-select">' % html_params(
                 name=field.name, **kwargs
             ),
         ]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
-        html.append(u'</select>')
-        return HTMLString(u''.join(html))
+        html.append('</select>')
+        return HTMLString(''.join(html))
 
     @classmethod
     def render_option(cls, value, label, selected, **kwargs):
@@ -961,7 +961,7 @@ class Chosen(Select):
         if selected:
             options['selected'] = True
         return HTMLString(
-            u'<option %s>%s</option>' %
+            '<option %s>%s</option>' %
             (html_params(**options), cgi.escape(text_type(label))),
         )
 
@@ -977,7 +977,7 @@ class TagInput(Input):
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
 
-        return HTMLString(u'<input %s>' % self.html_params(
+        return HTMLString('<input %s>' % self.html_params(
             name=field.name, **kwargs
         ))
 
@@ -1020,17 +1020,17 @@ class DateInput(Input):
             'data-date-autoclose': 'true',
         }
 
-        s = u'<div {}>\n'.format(html_params(**attributes))
+        s = '<div {}>\n'.format(html_params(**attributes))
 
-        s += u'  <input size="13" type="text" class="form-control" {} />\n'.format(
+        s += '  <input size="13" type="text" class="form-control" {} />\n'.format(
             html_params(name=field_name, id=field_id, value=value, **kwargs),
         )
-        s += u'  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
-        s += u'</div>\n'
+        s += '  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
+        s += '</div>\n'
         return Markup(s)
 
     def render_view(self, field, **kwargs):
-        return format_date(field.data) if field.data else u''
+        return format_date(field.data) if field.data else ''
 
 
 class TimeInput(Input):
@@ -1065,7 +1065,7 @@ class TimeInput(Input):
         self.showInputs = showInputs
         self.disableFocus = disableFocus
         self.modalBackdrop = modalBackdrop
-        self.strptime = u'%H:%M' if self.h24_mode else u'%I:%M %p'
+        self.strptime = '%H:%M' if self.h24_mode else '%I:%M %p'
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
@@ -1128,37 +1128,37 @@ class DateTimeInput(object):
             '%b',
             '%m',
         )  # force numerical months
-        time_fmt = u'%H:%M'
+        time_fmt = '%H:%M'
 
         value = kwargs.pop('value', None)
         if value is None:
             if field.data:
                 value = field.data
-                date_value = value.strftime(date_fmt) if value else u''
-                time_value = value.strftime(time_fmt) if value else u''
+                date_value = value.strftime(date_fmt) if value else ''
+                time_value = value.strftime(time_fmt) if value else ''
             elif field.raw_data:
                 value = field.raw_data  # example "10/10/16 | 09:00"
-                value = u''.join(value)
-                value = value.split(u'|')
+                value = ''.join(value)
+                value = value.split('|')
 
                 try:
                     date_value = datetime.strptime(value[0].strip(), date_fmt)
                 except (ValueError, IndexError):
-                    date_value = u''
+                    date_value = ''
 
                 try:
                     time_value = value[1].strip()  # example  "09:00"
                 except IndexError:
-                    time_value = u''
+                    time_value = ''
 
             else:
-                date_value = u''
-                time_value = u''
+                date_value = ''
+                time_value = ''
 
-        return Markup(u'<div class="form-inline">\n'
-                      u'<input class="datetimepicker" type="hidden" id="{id}" name="{name}" '
-                      u'value="{date} | {time}" />\n'
-                      u''.format(
+        return Markup('<div class="form-inline">\n'
+                      '<input class="datetimepicker" type="hidden" id="{id}" name="{name}" '
+                      'value="{date} | {time}" />\n'
+                      ''.format(
                           id=field_id,
                           name=field_name,
                           date=date_value,
@@ -1176,7 +1176,7 @@ class DateTimeInput(object):
                    name=field_name + '-time',
                    value=time_value,
                ) \
-               + Markup(u'</div>')
+               + Markup('</div>')
 
 
 class DefaultViewWidget(object):
@@ -1187,7 +1187,7 @@ class DefaultViewWidget(object):
             return text2html(value)
         else:
             # [], None and other must be rendered using empty string
-            return text_type(value or u'')
+            return text_type(value or '')
 
 
 class BooleanWidget(wtforms.widgets.CheckboxInput):
@@ -1220,7 +1220,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
             self.on_off_options['data-' + k] = v
 
         if self.on_off_mode:
-            self.on_off_options['data-toggle'] = u'on-off'
+            self.on_off_options['data-toggle'] = 'on-off'
 
         super(BooleanWidget, self).__init__(*args, **kwargs)
 
@@ -1231,7 +1231,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
         return super(BooleanWidget, self).__call__(field, **kwargs)
 
     def render_view(self, field, **kwargs):
-        return u'\u2713' if field.object_data else u''  # Text_type "Check mark"
+        return '\u2713' if field.object_data else ''  # Text_type "Check mark"
 
 
 class PasswordInput(BasePasswordInput):
@@ -1248,7 +1248,7 @@ class PasswordInput(BasePasswordInput):
         return BasePasswordInput.__call__(self, field, **kwargs)
 
     def render_view(self, field, **kwargs):
-        return u'*****'
+        return '*****'
 
 
 class FloatWidget(wtforms.widgets.TextInput):
@@ -1263,7 +1263,7 @@ class FloatWidget(wtforms.widgets.TextInput):
     def render_view(self, field, **kwargs):
         data = field.object_data
         if data is None:
-            return u''
+            return ''
 
         return format(data, self._fmt)
 

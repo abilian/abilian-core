@@ -86,10 +86,10 @@ class DeferredJSExtension(Extension):
         for child in fragment:
             body.append(lxml.html.tostring(child))
             body.append(child.tail)
-        body = u''.join(body)
+        body = ''.join(body)
 
         deferred_js.append(body)
-        return u''
+        return ''
 
     def collect_deferred(self, caller):
         result = '\n'.join(

@@ -206,7 +206,7 @@ class TextCriterion(TextSearchCriterion):
         super(TextCriterion, self).__init__(name, label, attributes, search_fmt)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
-        my_searched_text = request.values.get(self.name, u'').strip()
+        my_searched_text = request.values.get(self.name, '').strip()
         if my_searched_text:
             return super(TextCriterion, self).filter(
                 query, module, request,
@@ -230,4 +230,4 @@ class TextCriterion(TextSearchCriterion):
 
     @property
     def form_unset_value(self):
-        return u''
+        return ''

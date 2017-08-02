@@ -131,9 +131,9 @@ def newlogins(sessions):
     for date in sorted(dates.keys()):
         # print u"{} : {}".format(date, len(dates[date]))
         date_epoch = unix_time_millis(datetime.strptime(date, "%Y/%m/%d"))
-        data.append({u'x': date_epoch, u'y': len(dates[date])})
+        data.append({'x': date_epoch, 'y': len(dates[date])})
         previous += len(dates[date])
-        total.append({u'x': date_epoch, u'y': previous})
+        total.append({'x': date_epoch, 'y': previous})
 
     return data, total
 

@@ -65,7 +65,7 @@ def paragraphs(value):
 
 
 def labelize(s):
-    return " ".join([w.capitalize() for w in s.split(u"_")])
+    return " ".join([w.capitalize() for w in s.split("_")])
 
 
 def filesize(d):
@@ -159,7 +159,7 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
             if remove_year:
                 date_fmt = date_fmt.replace('y', '').strip()
                 # remove leading or trailing spaces, comma, etc...
-                date_fmt = re.sub('^[^A-Za-z]*|[^A-Za-z]*$', u'', date_fmt)
+                date_fmt = re.sub('^[^A-Za-z]*|[^A-Za-z]*$', '', date_fmt)
 
             fmt = fmt.format(time_fmt, date_fmt)
             return babel.format_datetime(dt, format=fmt)
@@ -274,7 +274,7 @@ def obj_to_url(obj):
     try:
         return url_for(obj)
     except BuildError:
-        return u''
+        return ''
 
 
 def init_filters(env):

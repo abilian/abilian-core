@@ -17,14 +17,14 @@ class TagCriterion(BaseCriterion):
     """
     Filter entities with selected tag(s).
     """
-    form_default_value = u''
+    form_default_value = ''
 
     def __init__(self, *args, **kwargs):
         if len(args) == 0:
             kwargs.setdefault('name', 'tags')
 
         if len(args) < 2:
-            kwargs.setdefault('label', _(u'Tags'))
+            kwargs.setdefault('label', _('Tags'))
 
         super(TagCriterion, self).__init__(*args, **kwargs)
 

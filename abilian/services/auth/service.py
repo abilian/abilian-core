@@ -61,7 +61,7 @@ user_menu = NavGroup(
         NavItem(
         'user',
         'logout',
-        title=_l(u'Logout'),
+        title=_l('Logout'),
         icon='log-out',
         url=lambda context: url_for('login.logout'),
         divider=True,
@@ -73,7 +73,7 @@ _ACTIONS = (
     NavItem(
         'user',
         'login',
-        title=_l(u'Login'),
+        title=_l('Login'),
         icon='log-in',
         url=lambda context: url_for('login.login_form'),
         condition=is_anonymous,

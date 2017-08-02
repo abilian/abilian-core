@@ -25,9 +25,9 @@ class AbilianCsrf(object):
     #: displayed to user. It can be changed if you have a better one for your
     #: users.
     csrf_failed_message = _l(
-        u'Security informations are missing or expired. '
-        u'This may happen if you have opened the form for a long time. <br /><br />'
-        u'Please try to resubmit the form.',
+        'Security informations are missing or expired. '
+        'This may happen if you have opened the form for a long time. <br /><br />'
+        'Please try to resubmit the form.',
     )
 
     def init_app(self, app):

@@ -25,7 +25,7 @@ def test_singleton():
 def test_equality():
     val = NS1('val')
     assert val == 'val'
-    assert val == u'val'
+    assert val == 'val'
 
 
 def test_namespaces():

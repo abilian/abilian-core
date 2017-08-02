@@ -83,12 +83,12 @@ class BaseImageView(BaseFileDownload):
             #  not a known image file
             raise NotFound()
 
-        self.content_type = u'image/png' if fmt == 'PNG' else u'image/jpeg'
-        ext = u'.' + text_type(fmt.lower())
+        self.content_type = 'image/png' if fmt == 'PNG' else 'image/jpeg'
+        ext = '.' + text_type(fmt.lower())
 
         filename = kwargs.get('filename')
         if not filename:
-            filename = u'image'
+            filename = 'image'
         if not filename.lower().endswith(ext):
             filename += ext
         self.filename = filename
@@ -201,7 +201,7 @@ class UserMugshot(BaseImageView):
         elif user.first_name:
             letter = user.first_name[0]
         else:
-            letter = u"?"
+            letter = "?"
         letter = letter.upper()
         # generate bg color, pastel: sat=65% in hsl color space
         id_hash = hash((user.name + user.email).encode('utf-8'))
@@ -209,7 +209,7 @@ class UserMugshot(BaseImageView):
         hue = (hue * 36) / 360.0  # 10 colors: 360 / 10
         color = colorsys.hsv_to_rgb(hue, 0.65, 1.0)
         color = [int(x * 255) for x in color]
-        color = u'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
+        color = 'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
         svg = render_template(
             'default/avatar.svg',
             color=color,
@@ -217,8 +217,8 @@ class UserMugshot(BaseImageView):
             size=size,
         )
         response = make_response(svg)
-        self.content_type = u'image/svg+xml'
-        self.filename = u'avatar-{}.svg'.format(id_hash)
+        self.content_type = 'image/svg+xml'
+        self.filename = 'avatar-{}.svg'.format(id_hash)
         return response
 
 

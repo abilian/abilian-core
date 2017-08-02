@@ -215,7 +215,7 @@ def createuser(email, password, role=None, name=None, first_name=None):
         return
 
     if password is None:
-        password = prompt_pass(u'Password')
+        password = prompt_pass('Password')
 
     user = User(
         email=email,
@@ -254,7 +254,7 @@ def passwd(email, password=None):
     """
     user = User.query.filter(User.email == email).one()
     if password is None:
-        password = prompt_pass(u'New password: ')
+        password = prompt_pass('New password: ')
 
     user.set_password(password)
     db.session.commit()

@@ -49,19 +49,19 @@ def test_bool():
 
 def test_string():
     s = Setting(key='key', type='string')
-    s.value = u'ascii'
+    s.value = 'ascii'
     assert s._value == b'ascii'
 
-    s.value = u'bel été'
+    s.value = 'bel été'
     assert s._value == b'bel \xc3\xa9t\xc3\xa9'
 
     s._value = b'd\xc3\xa9code'
-    assert s.value == u'décode'
+    assert s.value == 'décode'
 
 
 def test_json():
     s = Setting(key='key', type='json')
-    s.value = [1, 2, u'été', {1: '1', 2: '2'}]
+    s.value = [1, 2, 'été', {1: '1', 2: '2'}]
     assert s._value == '[1, 2, "\\u00e9t\\u00e9", {"1": "1", "2": "2"}]'
 
     s.value = None
@@ -123,7 +123,7 @@ class SettingsServiceTestCase(BaseTestCase):
         assert sorted(svc.keys(prefix='key_')) == ['key_1', 'key_2']
 
         # as dict
-        assert svc.as_dict() == {'other': u'azerty', 'key_1': 1, 'key_2': 2}
+        assert svc.as_dict() == {'other': 'azerty', 'key_1': 1, 'key_2': 2}
         assert svc.as_dict(prefix='key_') == {'key_1': 1, 'key_2': 2}
 
     def test_namespace(self):
@@ -158,7 +158,7 @@ class SettingsServiceTestCase(BaseTestCase):
         assert ns.as_dict(prefix='sub:') == {'sub:1': 1, 'sub:2': 2}
         assert ns.as_dict() == {'1': 42, 'sub:1': 1, 'sub:2': 2}
         assert svc.as_dict() == {
-            'other': u'not in NS',
+            'other': 'not in NS',
             'test:1': 42,
             'test:sub:1': 1,
             'test:sub:2': 2,

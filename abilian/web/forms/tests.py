@@ -32,21 +32,21 @@ def test_strip():
     assert filters.strip(None) == ''
     assert filters.strip(4) == 4
     assert filters.strip(' a string ') == 'a string'
-    assert filters.strip(' voilà ') == u'voilà'
+    assert filters.strip(' voilà ') == 'voilà'
 
 
 def test_uppercase():
     assert filters.uppercase(None) is None
     assert filters.uppercase(4) == 4
     assert filters.uppercase(' a string ') == ' A STRING '
-    assert filters.uppercase(' Voilà ') == u' VOILÀ '
+    assert filters.uppercase(' Voilà ') == ' VOILÀ '
 
 
 def test_lowercase():
     assert filters.lowercase(None) is None
     assert filters.lowercase(4) == 4
     assert filters.lowercase(' A STRING ') == ' a string '
-    assert filters.lowercase(' VOILÀ ') == u' voilà '
+    assert filters.lowercase(' VOILÀ ') == ' voilà '
 
 
 # FormPermissions
@@ -232,7 +232,7 @@ class FieldsTestCase(BaseTestCase):
         with self.app.test_request_context(headers=headers):
             f = fields.DateTimeField().bind(Form(), 'dt')
             f.data = datetime.datetime(2011, 1, 23, 10, 42, tzinfo=pytz.utc)
-            assert f._value() == u'1/23/2011, 6:42 PM'
+            assert f._value() == '1/23/2011, 6:42 PM'
 
     def test_date_field(self):
         """
@@ -243,7 +243,7 @@ class FieldsTestCase(BaseTestCase):
             f = fields.DateField().bind(Form(), 'dt')
             f.process_formdata(['17/06/1789'])
             assert f.data == datetime.date(1789, 6, 17)
-            assert f._value() == u'17/06/1789'
+            assert f._value() == '17/06/1789'
 
     def test_datefield_force_4digit_year(self):
         # use 'en': short date pattern is 'M/d/yy'
@@ -251,4 +251,4 @@ class FieldsTestCase(BaseTestCase):
         with self.app.test_request_context(headers=headers):
             f = fields.DateField().bind(Form(), 'dt')
             f.data = datetime.date(2011, 1, 23)
-            assert f._value() == u'1/23/2011'
+            assert f._value() == '1/23/2011'

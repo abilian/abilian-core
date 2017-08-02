@@ -249,7 +249,7 @@ class Less(ExternalTool):
                 path if isabs(path) else self.ctx.resolver.resolve_source(path)
                 for path in self.pathsep
             ]
-            args.append('--include-path={0}'.format(os.pathsep.join(paths)))
+            args.append('--include-path={}'.format(os.pathsep.join(paths)))
 
         #
         # Commented out since this doesn't work with the current lessc compiler.
@@ -315,8 +315,8 @@ class Less(ExternalTool):
             data = json.load(f)
 
         for idx, path in enumerate(data['sources']):
-            if path == u'-':
-                data['sources'][idx] = u'-'
+            if path == '-':
+                data['sources'][idx] = '-'
                 continue
 
             # apparently less is stripping first part
@@ -383,8 +383,8 @@ class ClosureJS(BaseClosureJS):
             data = json.load(f)
 
         for idx, path in enumerate(data['sources']):
-            if path == u'-':
-                data['sources'][idx] = u'-'
+            if path == '-':
+                data['sources'][idx] = '-'
                 continue
 
             data['sources'][idx] = self.fix_url(self.ctx.directory, path)

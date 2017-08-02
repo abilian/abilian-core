@@ -87,7 +87,7 @@ class Indexable(object):
 
     @property
     def object_key(self):
-        return u'{}:{}'.format(self.object_type, self.id)
+        return '{}:{}'.format(self.object_type, self.id)
 
 
 class TimestampedMixin(object):

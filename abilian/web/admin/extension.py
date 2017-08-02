@@ -43,7 +43,7 @@ class Admin(object):
         self.nav_root = NavGroup(
             'admin',
             'root',
-            title=_l(u'Admin'),
+            title=_l('Admin'),
             endpoint=None,
             condition=lambda context: (not current_user.is_anonymous and security.has_role(current_user, AdminRole)),
         )

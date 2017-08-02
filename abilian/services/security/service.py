@@ -305,7 +305,7 @@ class SecurityService(Service):
             if object_id is None:
                 object_key = None
             else:
-                object_key = u'{}:{}'.format(object_type, object_id)
+                object_key = '{}:{}'.format(object_type, object_id)
             all_roles.setdefault(object_key, set()).add(role)
 
         return all_roles
@@ -345,13 +345,13 @@ class SecurityService(Service):
             return
 
         query = db.session.query(RoleAssignment)
-        users = set((u for u in principals if isinstance(u, User)))
-        groups = set((g for g in principals if isinstance(g, Group)))
-        groups |= set((g for u in users for g in u.groups))
+        users = {u for u in principals if isinstance(u, User)}
+        groups = {g for g in principals if isinstance(g, Group)}
+        groups |= {g for u in users for g in u.groups}
 
         if not overwrite:
-            users = set((u for u in users if not self._has_role_cache(u)))
-            groups = set((g for g in groups if not self._has_role_cache(g)))
+            users = {u for u in users if not self._has_role_cache(u)}
+            groups = {g for g in groups if not self._has_role_cache(g)}
 
         if not (users or groups):
             return
@@ -384,7 +384,7 @@ class SecurityService(Service):
                 all_roles = ra_groups.setdefault(ra.group, {})
 
             object_key = (
-                u'{}:{:d}'.format(ra.object.entity_type, ra.object_id)
+                '{}:{:d}'.format(ra.object.entity_type, ra.object_id)
                 if ra.object is not None else None
             )
             all_roles.setdefault(object_key, set()).add(ra.role)
@@ -457,7 +457,7 @@ class SecurityService(Service):
 
         if object:
             assert isinstance(object, Entity)
-            object_key = u"{}:{}".format(
+            object_key = "{}:{}".format(
                 object.object_type,
                 text_type(object.id),
             )
@@ -522,7 +522,7 @@ class SecurityService(Service):
         if obj is not None:
             audit.object_id = obj.id
             audit.object_type = obj.entity_type
-            object_name = u''
+            object_name = ''
             for attr_name in ('name', 'path', '__path_before_delete'):
                 if hasattr(obj, attr_name):
                     object_name = getattr(obj, attr_name)

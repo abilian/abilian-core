@@ -37,10 +37,10 @@ class TestAuth(BaseTestCase):
             url_root = request.url_root[:-1]
 
         with self.app.test_request_context(form_url(next='/')):
-            assert get_redirect_target() == url_root + u'/'
+            assert get_redirect_target() == url_root + '/'
 
         # test "next" from referer
-        referrer = url_root + u'/some/path'
+        referrer = url_root + '/some/path'
         with self.app.test_request_context(
                 form_url(),
                 headers=[('Referer', referrer)],
@@ -65,7 +65,7 @@ class TestAuth(BaseTestCase):
 
         # open redirect through malicious construct and browser not checking Location
         with self.app.test_request_context(form_url(next='/////google.com')):
-            assert get_redirect_target() == url_root + u'///google.com'
+            assert get_redirect_target() == url_root + '///google.com'
 
     def test_login_post(self):
         kwargs = dict(
@@ -147,7 +147,7 @@ class TestAuth(BaseTestCase):
             msg = outbox[0]
             self.assertEqual(
                 msg.subject,
-                u'Password reset instruction for Abilian Test',
+                'Password reset instruction for Abilian Test',
             )
-            self.assertEqual(msg.recipients, [u'User@domain.tld'])
+            self.assertEqual(msg.recipients, ['User@domain.tld'])
             self.assertEqual(msg.cc, [])

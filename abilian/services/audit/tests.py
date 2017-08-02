@@ -204,7 +204,7 @@ class TestAudit(BaseTestCase):
         assert 'data 1' in changes
         changes = changes['data 1']
         assert changes.columns == {
-            'text': (NEVER_SET, u'text 1'),
+            'text': (NEVER_SET, 'text 1'),
             'account_id': (NEVER_SET, 1),
             'id': (NEVER_SET, 1),
         }
@@ -223,7 +223,7 @@ class TestAudit(BaseTestCase):
         assert 'data.comments 1 1' in changes
         changes = changes['data.comments 1 1']
         assert changes.columns == {
-            'text': (NEVER_SET, u'comment'),
+            'text': (NEVER_SET, 'comment'),
             'related_id': (NEVER_SET, 1),
             'id': (NEVER_SET, 1),
         }
@@ -243,7 +243,7 @@ class TestAudit(BaseTestCase):
 
         changes = changes['data.comments 1 2']
         assert changes.columns == {
-            'text': (NEVER_SET, u'comment 2'),
+            'text': (NEVER_SET, 'comment 2'),
             'related_id': (NEVER_SET, 1),
             'id': (NEVER_SET, 2),
         }

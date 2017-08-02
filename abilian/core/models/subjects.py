@@ -82,7 +82,7 @@ _RANDOM_PASSWORD_CHARS = (
 
 def gen_random_password(length=15):
     rg = random.SystemRandom()
-    return u''.join(rg.choice(_RANDOM_PASSWORD_CHARS) for i in range(length))
+    return ''.join(rg.choice(_RANDOM_PASSWORD_CHARS) for i in range(length))
 
 
 @add_metaclass(ABCMeta)
@@ -285,18 +285,18 @@ class User(Principal, UserMixin, db.Model):
     #
     @property
     def name(self):
-        name = u'{first_name} {last_name}'.format(
-            first_name=self.first_name or u'',
-            last_name=self.last_name or u'',
+        name = '{first_name} {last_name}'.format(
+            first_name=self.first_name or '',
+            last_name=self.last_name or '',
         )
-        return name.strip() or u'Unknown'
+        return name.strip() or 'Unknown'
 
     @property
     def short_name(self):
-        first_name = self.first_name or u''
-        last_name = self.last_name[0:1] + "." if self.last_name else u''
-        name = u'{} {}'.format(first_name, last_name)
-        return name.strip() or u'Unknown'
+        first_name = self.first_name or ''
+        last_name = self.last_name[0:1] + "." if self.last_name else ''
+        name = '{} {}'.format(first_name, last_name)
+        return name.strip() or 'Unknown'
 
     def __str__(self):
         return self.name

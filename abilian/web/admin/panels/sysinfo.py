@@ -33,7 +33,7 @@ class SysinfoPanel(AdminPanel):
                 name=dist.project_name,
                 key=dist.key,
                 version=dist.version
-                if dist.has_version() else u'Unknown version',
+                if dist.has_version() else 'Unknown version',
                 vcs=None,
             )
 

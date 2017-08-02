@@ -41,7 +41,7 @@ COMMENT_BUTTON = ButtonAction(
     'form',
     'edit',
     btn_class='primary',
-    title=_l(u'Post'),
+    title=_l('Post'),
 )
 
 
@@ -83,10 +83,10 @@ class BaseCommentView(object):
 
 class CommentEditView(BaseCommentView, ObjectEdit):
 
-    _message_success = _l(u'Comment edited')
+    _message_success = _l('Comment edited')
 
     def breadcrumb(self):
-        label = _(u'Edit comment on "{title}"').format(title=self.entity.name)
+        label = _('Edit comment on "{title}"').format(title=self.entity.name)
         return nav.BreadcrumbItem(label=label)
 
     def get_form_buttons(self, *args, **kwargs):
@@ -112,7 +112,7 @@ bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
 class CommentCreateView(BaseCommentView, ObjectCreate):
     """
   """
-    _message_success = _l(u"Comment added")
+    _message_success = _l("Comment added")
 
     def __init__(self, *args, **kwargs):
         super(CommentCreateView, self).__init__(*args, **kwargs)
@@ -128,7 +128,7 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
         return args, kwargs
 
     def breadcrumb(self):
-        label = _(u'New comment on "{title}"').format(title=self.entity.name)
+        label = _('New comment on "{title}"').format(title=self.entity.name)
         return nav.BreadcrumbItem(label=label)
 
     def get_form_buttons(self, *args, **kwargs):
@@ -141,7 +141,7 @@ bp.route('/<int:entity_id>/create')(create_view)
 
 class CommentDeleteView(BaseCommentView, ObjectDelete):
 
-    _message_success = _l(u"Comment deleted")
+    _message_success = _l("Comment deleted")
 
 
 delete_view = CommentDeleteView.as_view('delete')

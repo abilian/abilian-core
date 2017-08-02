@@ -53,7 +53,7 @@ class _VocabularyMeta(_BaseMeta):
         meta = d.get('Meta')
         tblprefix = 'vocabulary_'
 
-        group = slugify(meta.group or u'', u'_')
+        group = slugify(meta.group or '', '_')
         if group:
             tblprefix += group + '_'
 
@@ -90,7 +90,7 @@ class BaseVocabulary(db.Model):
     position = Column(sa.Integer, nullable=False, unique=True)
 
     __table_args__ = (
-        sa.CheckConstraint(sa.sql.func.trim(sa.sql.text('label')) != u''),
+        sa.CheckConstraint(sa.sql.func.trim(sa.sql.text('label')) != ''),
     )
 
     @sa.ext.declarative.declared_attr

@@ -87,11 +87,11 @@ def indexable_role(principal):
         principal = Anonymous
 
     if isinstance(principal, Role):
-        return u'role:{}'.format(principal.name)
+        return 'role:{}'.format(principal.name)
     elif isinstance(principal, User):
-        fmt = u'user:{:d}'
+        fmt = 'user:{:d}'
     elif isinstance(principal, Group):
-        fmt = u'group:{:d}'
+        fmt = 'group:{:d}'
     else:
         raise ValueError(repr(principal))
 

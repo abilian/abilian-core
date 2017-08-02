@@ -41,30 +41,30 @@ def test_meta():
 class BlobTestCase(AbilianTestCase):
 
     def test_md5(self):
-        b = Blob(u'test md5')
+        b = Blob('test md5')
         assert 'md5' in b.meta
-        assert b.meta['md5'] == u'0e4e3b2681e8931c067a23c583c878d5'
+        assert b.meta['md5'] == '0e4e3b2681e8931c067a23c583c878d5'
 
     def test_size(self):
-        b = Blob(u'test')
+        b = Blob('test')
         assert b.size == 4
 
     def test_filename(self):
-        content = StringIO(u'test')
+        content = StringIO('test')
         content.filename = 'test.txt'
         b = Blob(content)
         assert 'filename' in b.meta
-        assert b.meta['filename'] == u'test.txt'
+        assert b.meta['filename'] == 'test.txt'
 
     def test_mimetype(self):
-        content = StringIO(u'test')
+        content = StringIO('test')
         content.content_type = 'text/plain'
         b = Blob(content)
         assert 'mimetype' in b.meta
-        assert b.meta['mimetype'] == u'text/plain'
+        assert b.meta['mimetype'] == 'text/plain'
 
     def test_nonzero(self):
-        b = Blob(u'test md5')
+        b = Blob('test md5')
         assert bool(b)
 
         # change uuid: repository will return None for blob.file

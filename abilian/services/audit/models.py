@@ -172,7 +172,7 @@ class AuditEntry(db.Model):
                                 "A Unicode error happened on changes %s",
                                 repr(changes),
                             )
-                            val = u"[[Somme error occurred. Working on it]]"
+                            val = "[[Somme error occurred. Working on it]]"
                     uv.append(val)
                 uv = tuple(uv)
             uchanges.columns[k] = uv
