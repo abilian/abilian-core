@@ -10,6 +10,7 @@ dependencies:
   override:
     - pip install -U pip tox setuptools
     - npm install -g less
+    - npm install
     # Just to warm up the cache
     - pip install -r etc/dev-requirements.txt
 
