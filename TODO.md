@@ -6,6 +6,10 @@
 - [] Ugrade flask-sqlalchemy and other SQLA releated deps
 - [] Fix all tests (including skipped ones) under Python 3.6
 
+## Testing & QA
+
+- [] Install `pytest-randomly` and fix errors
+
 ## Other
 
 See: <https://github.com/abilian/abilian-core/projects/1>
