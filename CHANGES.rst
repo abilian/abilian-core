@@ -1,6 +1,11 @@
 Changelog for Abilian Core
 ==========================
 
+0.9.11 (2017-08-03)
+-------------------
+
+- Workaround bug in Babel related to Python 3.
+
 0.9.10 (2017-08-02)
 -------------------
 
