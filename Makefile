@@ -106,6 +106,12 @@ lint-doc:
 	sphinx-build -W -b dummy docs/ docs/_build/
 	@echo ""
 
+
+lint-bandit:
+	@echo "--> Linting python w/ Bandit"
+	bandit -s B101 `find abilian -name '*.py' | grep -v test`
+	@echo ""
+
 #
 # Everything else
 #

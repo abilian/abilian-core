@@ -498,7 +498,7 @@ class Application(Flask, ServiceManager, PluginManager):
             )
         elif logging_file.endswith('.yml'):
             # yml config file
-            logging_cfg = yaml.load(open(logging_file, 'r'))
+            logging_cfg = yaml.safe_load(open(logging_file, 'r'))
             logging_cfg.setdefault('version', 1)
             logging_cfg.setdefault('disable_existing_loggers', False)
             logging.config.dictConfig(logging_cfg)

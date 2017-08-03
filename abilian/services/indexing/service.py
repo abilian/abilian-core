@@ -295,7 +295,8 @@ class WhooshIndexService(Service):
             fields = self.default_search_fields
 
         valid_fields = {
-            f for f in index.schema.names(check_names=fields)
+            f
+            for f in index.schema.names(check_names=fields)
             if prefix or not f.endswith('_prefix')
         }
 
@@ -316,9 +317,7 @@ class WhooshIndexService(Service):
             if not user.is_anonymous:
                 roles.add(indexable_role(Anonymous))
                 roles.add(indexable_role(Authenticated))
-                roles |= {
-                    indexable_role(r) for r in security.get_roles(user)
-                }
+                roles |= {indexable_role(r) for r in security.get_roles(user)}
 
             filter_q = wq.Or(
                 [wq.Term('allowed_roles_and_users', role) for role in roles],

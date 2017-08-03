@@ -14,6 +14,7 @@ from abilian.core.entities import Entity
 from abilian.core.models.base import AUDITABLE, NOT_SEARCHABLE, SEARCHABLE, \
     Info
 from abilian.core.models.subjects import User
+
 from .dummy import DummyContact
 
 
@@ -124,6 +125,7 @@ def test_meta(session):
 
 
 def test_entity_type():
+
     class MyType(Entity):
         pass
 

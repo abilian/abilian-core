@@ -103,7 +103,8 @@ class NSView(View):
             tags=tags,
             errors=self.form_errors,
             merge_to=request.form.get('merge_to', default='__None__', type=int),
-            selected_tags={t.id for t in self._get_selected_tags()},
+            selected_tags={t.id
+                           for t in self._get_selected_tags()},
         )
 
     def redirect_to_view(self):
