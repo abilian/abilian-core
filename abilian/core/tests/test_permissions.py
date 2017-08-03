@@ -9,9 +9,6 @@ from abilian.services import security
 from abilian.testing import BaseTestCase as AbilianTestCase
 
 
-# import sqlalchemy as sa
-
-
 class PermissionsTestCase(AbilianTestCase):
 
     def test_default_permissions(self):
@@ -58,8 +55,8 @@ class PermissionsTestCase(AbilianTestCase):
         assert query.filter(PA.permission == security.CREATE).all() \
                == []
 
-        svc = self.app.services['security']
-        permissions = svc.get_permissions_assignments(obj)
+        security_svc = self.app.services['security']
+        permissions = security_svc.get_permissions_assignments(obj)
         assert permissions == {
             security.READ: {security.Anonymous},
             security.WRITE: {security.Owner},

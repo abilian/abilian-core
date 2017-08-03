@@ -146,20 +146,17 @@ class FieldsTestCase(BaseTestCase):
         app.extensions['babel'].timezoneselector(user_tz)
         return app
 
-    @mark.skipif(sys.version_info >= (3, 0), reason="Doesn't work yet on Py3k")
     def test_datetime_field(self):
-        """
-        Test fields supports date with year < 1900
-        """
+        """Test fields supports date with year < 1900."""
         obj = mock.Mock()
 
         headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
         with self.app.test_request_context(headers=headers):
-            f = fields.DateTimeField(use_naive=False).bind(Form(), 'dt')
-            f.process_formdata(['17/06/1789 | 10:42'])
+            field = fields.DateTimeField(use_naive=False).bind(Form(), 'dt')
+            field.process_formdata(['17/06/1789 | 10:42'])
             # 1789: applied offset for HongKong is equal to LMT+7:37:00,
             # thus we compare with tzinfo=user_tz
-            assert f.data == datetime.datetime(
+            assert field.data == datetime.datetime(
                 1789,
                 6,
                 17,
@@ -168,14 +165,14 @@ class FieldsTestCase(BaseTestCase):
                 tzinfo=USER_TZ,
             )
             # UTC stored
-            assert f.data.tzinfo is pytz.UTC
+            assert field.data.tzinfo is pytz.UTC
             # displayed in user current timezone
-            assert f._value() == '17/06/1789 10:42'
+            assert field._value() == '17/06/1789 10:42'
 
             # non-naive mode: test process_data change TZ to user's TZ
-            f.process_data(f.data)
-            assert f.data.tzinfo is USER_TZ
-            assert f.data == datetime.datetime(
+            field.process_data(field.data)
+            assert field.data.tzinfo is USER_TZ
+            assert field.data == datetime.datetime(
                 1789,
                 6,
                 17,
@@ -184,7 +181,7 @@ class FieldsTestCase(BaseTestCase):
                 tzinfo=USER_TZ,
             )
 
-            f.populate_obj(obj, 'dt')
+            field.populate_obj(obj, 'dt')
             assert obj.dt == datetime.datetime(
                 1789,
                 6,
@@ -195,8 +192,8 @@ class FieldsTestCase(BaseTestCase):
             )
 
             # test more recent date: offset is GMT+8
-            f.process_formdata(['23/01/2011 | 10:42'])
-            assert f.data == datetime.datetime(
+            field.process_formdata(['23/01/2011 | 10:42'])
+            assert field.data == datetime.datetime(
                 2011,
                 1,
                 23,
@@ -205,14 +202,20 @@ class FieldsTestCase(BaseTestCase):
                 tzinfo=pytz.utc,
             )
 
+    def test_datetime_field_naive(self):
+        """Test fields supports date with year < 1900."""
+        obj = mock.Mock()
+
+        headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
+        with self.app.test_request_context(headers=headers):
             # NAIVE mode: dates without timezone. Those are the problematic ones when
             # year < 1900: strptime will raise an Exception use naive dates; by
             # default
-            f = fields.DateTimeField().bind(Form(), 'dt')
-            f.process_formdata(['17/06/1789 | 10:42'])
+            field = fields.DateTimeField().bind(Form(), 'dt')
+            field.process_formdata(['17/06/1789 | 10:42'])
             # UTC stored
-            assert f.data.tzinfo is pytz.UTC
-            assert f.data == datetime.datetime(
+            assert field.data.tzinfo is pytz.UTC
+            assert field.data == datetime.datetime(
                 1789,
                 6,
                 17,
@@ -222,17 +225,16 @@ class FieldsTestCase(BaseTestCase):
             )
 
             # naive stored
-            f.populate_obj(obj, 'dt')
+            field.populate_obj(obj, 'dt')
             assert obj.dt == datetime.datetime(1789, 6, 17, 10, 42)
 
-    @mark.skipif(sys.version_info >= (3, 0), reason="Doesn't work yet on Py3k")
-    def test_datetimefield_force_4digit_year(self):
+    def test_datetime_field_force_4digit_year(self):
         # use 'en': short date pattern is 'M/d/yy'
         headers = {'Accept-Language': 'en'}
         with self.app.test_request_context(headers=headers):
-            f = fields.DateTimeField().bind(Form(), 'dt')
-            f.data = datetime.datetime(2011, 1, 23, 10, 42, tzinfo=pytz.utc)
-            assert f._value() == '1/23/2011, 6:42 PM'
+            field = fields.DateTimeField().bind(Form(), 'dt')
+            field.data = datetime.datetime(2011, 1, 23, 10, 42, tzinfo=pytz.utc)
+            assert field._value() == '1/23/2011, 6:42 PM'
 
     def test_date_field(self):
         """
@@ -240,15 +242,15 @@ class FieldsTestCase(BaseTestCase):
         """
         headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
         with self.app.test_request_context(headers=headers):
-            f = fields.DateField().bind(Form(), 'dt')
-            f.process_formdata(['17/06/1789'])
-            assert f.data == datetime.date(1789, 6, 17)
-            assert f._value() == '17/06/1789'
+            field = fields.DateField().bind(Form(), 'dt')
+            field.process_formdata(['17/06/1789'])
+            assert field.data == datetime.date(1789, 6, 17)
+            assert field._value() == '17/06/1789'
 
     def test_datefield_force_4digit_year(self):
         # use 'en': short date pattern is 'M/d/yy'
         headers = {'Accept-Language': 'en'}
         with self.app.test_request_context(headers=headers):
-            f = fields.DateField().bind(Form(), 'dt')
-            f.data = datetime.date(2011, 1, 23)
-            assert f._value() == '1/23/2011'
+            field = fields.DateField().bind(Form(), 'dt')
+            field.data = datetime.date(2011, 1, 23)
+            assert field._value() == '1/23/2011'

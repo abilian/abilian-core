@@ -16,7 +16,7 @@ from flask.helpers import locked_cached_property
 from flask_babel import format_date, format_datetime, get_locale, get_timezone
 from flask_login import current_user
 from flask_wtf.file import FileField as BaseFileField
-from six import string_types
+from six import string_types, PY2
 from wtforms import FieldList as BaseFieldList
 from wtforms import FormField as BaseFormField
 from wtforms import Field, SelectField, SelectFieldBase, SelectMultipleField, \
@@ -329,6 +329,9 @@ class DateTimeField(Field):
                 .replace('yy', 'y') \
                 .replace('y', 'yyyy')
             time_fmt = locale.time_formats['short']
+            # Workaround bug in Babel (at least <= 2.4) under Python 3
+            if not PY2:
+                time_fmt = time_fmt.pattern
             dt_fmt = locale.datetime_formats['short'].format(time_fmt, date_fmt)
             return format_datetime(self.data, dt_fmt) if self.data else ''
 
