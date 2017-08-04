@@ -62,18 +62,20 @@ vagrant-tests:
 flake8:
 	flake8 $(SRC)
 
+lint-ci: lint-py lint-py3k lint-rst lint-doc lint-travis
+
 lint: lint-ci lint-travis
 
-lint-ci: lint-py lint-py3k lint-js lint-less lint-rst lint-doc lint-mypy
+lint-all: lint lint-mypy lint-js lint-less lint-bandit
 
 lint-py:
-	@echo "--> Linting Python files"
+	@echo "--> Linting Python files /w flake8"
 	flake8 $(SRC)
 	@echo ""
 
 lint-mypy:
 	@echo "--> Typechecking Python files w/ mypy"
-	-mypy $(SRC)
+	mypy $(SRC)
 	@echo ""
 
 lint-py3k:
@@ -88,12 +90,12 @@ lint-travis:
 
 lint-js:
 	@echo "--> Linting JS files"
-	-npm run eslint
+	npm run eslint
 	@echo ""
 
 lint-less:
 	@echo "--> Linting LESS files"
-	-npm run stylelint
+	npm run stylelint
 	@echo ""
 
 lint-rst:
@@ -105,7 +107,6 @@ lint-doc:
 	@echo "--> Linting doc"
 	sphinx-build -W -b dummy docs/ docs/_build/
 	@echo ""
-
 
 lint-bandit:
 	@echo "--> Linting python w/ Bandit"

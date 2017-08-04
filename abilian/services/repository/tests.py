@@ -75,6 +75,7 @@ class TestRepository(BaseTestCase):
         # __setitem__
         p.unlink()
         self.assertEqual(p.exists(), False)
+
         repository[self.UUID] = b'my file content'
         self.assertEqual(p.open('rb').read(), b'my file content')
         # FIXME: test unicode content
