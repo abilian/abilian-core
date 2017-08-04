@@ -88,7 +88,7 @@ class Blob(Model):
         `self.meta['md5']`.
 
         :param:content: string, bytes, or any object with a `read()` method
-        :param:encoding: encoding to use when content is unicode
+        :param:encoding: encoding to use when content is Unicode
         """
         from abilian.services.repository import session_repository as repository
         repository.set(self, self.uuid, value)

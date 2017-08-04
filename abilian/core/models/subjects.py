@@ -134,7 +134,7 @@ class BcryptPasswordStrategy(PasswordStrategy):
 
     def authenticate(self, user, password):
         current_passwd = user.password
-        # crypt work only on str, not unicode
+        # crypt work only on bytes, not str (Unicode)
         if isinstance(current_passwd, text_type):
             current_passwd = current_passwd.encode('utf-8')
         if isinstance(password, text_type):

@@ -219,12 +219,11 @@ _NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
 
 
 def slugify(value, separator="-"):
-    """Slugify an unicode string, to make it URL friendly.
-    """
+    """Slugify an Unicode string, to make it URL friendly."""
     if six.PY2:
         value = text_type(value)
     if not isinstance(value, text_type):
-        raise ValueError("value must be a unicode string")
+        raise ValueError("value must be a Unicode string")
     value = _NOT_WORD_RE.sub(' ', value)
     value = unicodedata.normalize('NFKD', value)
     value = value.encode('ascii', 'ignore')

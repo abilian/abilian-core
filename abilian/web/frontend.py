@@ -429,7 +429,7 @@ class Module(object):
     static_folder = None
     view_template = None
     view_options = None
-    related_views = []
+    related_views = []  # type: List[RelatedView]
     blueprint = None
     search_criterions = (
         search.TextSearchCriterion(
@@ -437,8 +437,9 @@ class Module(object):
         attributes=('name', 'nom'),
         ),
     )
-    tableview_options = {}  # used mostly to change datatable search_label
-    _urls = []
+    # used mostly to change datatable search_label
+    tableview_options = {}  # type: ignore
+    _urls = []  # type: List[Tuple]
 
     def __init__(self):
         # If endpoint name is not provided, get it from the class name

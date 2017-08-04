@@ -68,7 +68,7 @@ class Setting(db.Model):
     transformers = _transformers
     key = sa.Column('key', sa.String(length=1000), primary_key=True)
 
-    #: Can be a string (unicode), int, bool, json... or even a long dotted name
+    #: Can be a string (Unicode), int, bool, json... or even a long dotted name
     #: if that's what you need. Type must be set before setting `value`
     _type = sa.Column('type', sa.String(length=1000), nullable=False)
 

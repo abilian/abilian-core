@@ -116,8 +116,8 @@ class BaseTestCase(TestCase):
     #: By default sqlalchemy treats warnings as info. This settings makes
     #: sqlalchemy warnings treated as errors (and thus making test fail). The
     #: rationale is that it improves code quality (for example most frequent warnings
-    #: are non-unicode string assigned on a Unicode column; this setting force you to
-    #: be explicit and ensure unicode where appropriate)
+    #: are non-Unicode string assigned on a Unicode column; this setting force you to
+    #: be explicit and ensure Unicode where appropriate)
     SQLALCHEMY_WARNINGS_AS_ERROR = True
 
     #: list services names that should be started during setUp. 'repository' and

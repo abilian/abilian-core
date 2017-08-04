@@ -56,7 +56,7 @@ def test_auto_slug_property(session):
 
     # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH
     # U+2014 (—). Standard separator is \u002d (\x2d) "-" HYPHEN-MINUS.
-    # this test may fails depending on how  unicode normalization + char
+    # this test may fails depending on how  Unicode normalization + char
     # substitution is done (order matters).
     obj.name = 'a\u2013b\u2014c'  # u'a–b—c'
     slug = obj.auto_slug

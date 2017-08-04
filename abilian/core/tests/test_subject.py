@@ -17,7 +17,7 @@ def test_non_ascii_password():
     user.set_password('Hé')
 
     if not isinstance(user.password, text_type):
-        # when actually retrieved from database, it should be unicode
+        # when actually retrieved from database, it should be Unicode
         user.password = text_type(user.password)
 
     assert user.authenticate('Hé')

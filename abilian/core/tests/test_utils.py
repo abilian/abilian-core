@@ -70,5 +70,5 @@ def test_slugify_non_ascii():
 
     # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH
     # U+2014 (—).
-    # this test fails if regexp subst is done after unicode normalization
+    # this test fails if regexp subst is done after Unicode normalization
     assert slugify('a\u2013b\u2014c') == 'a-b-c'

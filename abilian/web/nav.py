@@ -112,7 +112,7 @@ class BreadcrumbItem(object):
     #: Additional text, can be used as tooltip for example
     description = None
 
-    #: either an unicode string or an :class:`Endpoint` instance.
+    #: either an Unicode string or an :class:`Endpoint` instance.
     _url = None
 
     template_string = (

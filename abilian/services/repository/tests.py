@@ -78,7 +78,7 @@ class TestRepository(BaseTestCase):
 
         repository[self.UUID] = b'my file content'
         self.assertEqual(p.open('rb').read(), b'my file content')
-        # FIXME: test unicode content
+        # FIXME: test Unicode content
 
     def test_delete(self):
         self.assertRaises(ValueError, repository.delete, self.UUID_STR)
