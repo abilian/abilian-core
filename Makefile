@@ -64,7 +64,7 @@ flake8:
 
 lint: lint-ci lint-travis
 
-lint-ci: lint-py lint-js lint-less lint-rst lint-doc lint-mypy
+lint-ci: lint-py lint-py3k lint-js lint-less lint-rst lint-doc lint-mypy
 
 lint-py:
 	@echo "--> Linting Python files"
