@@ -62,7 +62,7 @@ vagrant-tests:
 flake8:
 	flake8 $(SRC)
 
-lint-ci: lint-py lint-py3k lint-rst lint-doc lint-travis
+lint-ci: lint-py lint-py3k lint-rst lint-doc
 
 lint: lint-ci lint-travis
 
