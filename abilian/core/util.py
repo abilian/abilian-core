@@ -260,15 +260,16 @@ class BasePresenter(object):
 
 def encode_string(string):
     """
-    Encodes a string to bytes, if it isn't already.
+    Encode a string to bytes, if it isn't already.
 
     :param string: The string to encode
     """
     # from pysecurity
 
     if isinstance(string, text_type):
-        string = string.encode('utf-8')
-    return string
+        return string.encode('utf-8')
+    else:
+        return string
 
 
 def md5(data):
