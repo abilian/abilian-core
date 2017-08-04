@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function, \
 from importlib import import_module
 
 from straight.plugin.loaders import ModuleLoader
+from six.moves import filter
 
 
 class AppLoader(ModuleLoader):

@@ -80,7 +80,7 @@ lint-mypy:
 
 lint-py3k:
 	@echo "--> Checking Python 3 compatibility"
-	pylint --py3k abilian tests
+	pylint --py3k -d W1633,W1629,W1630 abilian tests
 	@echo ""
 
 lint-travis:

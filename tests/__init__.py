@@ -1,6 +1,5 @@
 # coding=utf-8
-import subprocess
-assert 'twill' not in subprocess.__file__
+from __future__ import absolute_import
 
 # TODO: enable (currently this breaks the tests)
 # from sqlalchemy.exc import SAWarning
