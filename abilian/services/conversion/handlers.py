@@ -23,7 +23,7 @@ from .service import ConversionError
 from .util import get_tmp_dir, make_temp_file
 
 try:
-    from xmlrpclib import ServerProxy
+    from six.moves.xmlrpc_client import ServerProxy
 except ImportError:
     ServerProxy = None
 

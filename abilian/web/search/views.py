@@ -200,7 +200,7 @@ class Live(views.JSONView):
         results = svc.search(q, **search_kwargs)
         datasets = {}
 
-        for typename, docs in six.iteritems(results):
+        for typename, docs in results.items():
             dataset = []
             for doc in docs:
                 # Because it happens sometimes

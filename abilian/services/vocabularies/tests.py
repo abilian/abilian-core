@@ -57,7 +57,8 @@ class TestVocabularies(BaseTestCase):
         URGENT = PriorityVoc(label='Urgent', position=1)
         HIGH = PriorityVoc(label='High', position=2)
         items = (IMMEDIATE, NORMAL, URGENT, HIGH)
-        map(self.session.add, items)
+        for item in items:
+            self.session.add(item)
         self.session.flush()
 
         # test position=4 set automatically; Label stripped

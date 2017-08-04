@@ -10,7 +10,7 @@ from contextlib import contextmanager
 from tempfile import mkstemp
 
 try:
-    from xmlrpclib import ServerProxy
+    from six.moves.xmlrpc_client import ServerProxy
 except ImportError:
     ServerProxy = None
 

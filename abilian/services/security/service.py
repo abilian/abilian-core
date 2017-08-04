@@ -359,10 +359,8 @@ class SecurityService(Service):
         # ensure principals processed here will have role cache. Thus users or
         # groups without any role will have an empty role cache, to avoid unneeded
         # individual DB query when calling self._fill_role_cache(p).
-        map(
-            lambda p: self._set_role_cache(p, {}),
-            (p for p in chain(users, groups)),
-        )
+        for p in chain(users, groups):
+            self._set_role_cache(p, {})
 
         filter_cond = []
         if users:

@@ -165,7 +165,8 @@ class NSView(View):
             tag=tags[0].label,
             tags=', '.join(t.label for t in tags),
         )
-        map(session.delete, tags)
+        for tag in tags:
+            session.delete(tag)
         session.commit()
         flash(success_message)
         schedule_entities_reindex(entities_to_reindex)
@@ -212,7 +213,8 @@ class NSView(View):
             .where(tbl.c.tag_id.in_(merge_from_ids)) \
             .values(tag_id=target.id)
         session.execute(update)
-        map(session.delete, merge_from)
+        for merged in merge_from:
+            session.delete(merged)
         session.commit()
         schedule_entities_reindex(entities_to_reindex)
         return self.redirect_to_view()

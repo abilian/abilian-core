@@ -597,7 +597,7 @@ class ActionRegistry(object):
         action with same name and category; else `ValueError` is raised.
         """
         assert self.installed(), "Actions not enabled on this application"
-        assert all(map(lambda a: isinstance(a, Action), actions))
+        assert all([isinstance(a, Action) for a in actions])
 
         for action in actions:
             cat = action.category

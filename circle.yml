@@ -13,6 +13,7 @@ dependencies:
     - npm install
     # Just to warm up the cache
     - pip install -r etc/dev-requirements.txt
+    - python3 -m pip install -U mypy
 
 test:
   override:
