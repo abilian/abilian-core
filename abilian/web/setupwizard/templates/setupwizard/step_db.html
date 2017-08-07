@@ -5,11 +5,11 @@
 {% block formfields %}
   <div class="form-group">
     <label for="dialect" class="col-sm-2 control-label">Server type</label>
-    
+
     <div class="col-sm-10">
       <select class="form-control" data-toggle="select2" name="dialect">
         {%- set selected = data.get('dialect', 'sqlite') %}
-        {%- for dialect, label in dialects.iteritems() %}
+        {%- for dialect, label in dialects.items() %}
           <option value="{{ dialect }}"
             {%- if dialect == selected %}selected="selected"{%- endif %}
             {%- if dialect in dialects_unavailable %}disabled="disabled"{%- endif %}>
@@ -20,7 +20,7 @@
 
       {%- if dialects_unavailable %}
         <ul class="list-unstyled text-warning">
-          {%- for dialect, error_msg in dialects_unavailable.iteritems() %}
+          {%- for dialect, error_msg in dialects_unavailable.items() %}
             <li>"{{ dialects[dialect] }}" not available: {{ error_msg }}</li>
           {%- endfor %}
         </ul>

@@ -21,6 +21,7 @@ flake8-tidy-imports
 flake8-truveris
 flake8-mutable
 pylint
+pre-commit
 
 # Format
 yapf==0.15.2

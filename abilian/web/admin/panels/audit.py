@@ -297,6 +297,9 @@ class BaseEntryPresenter(object):
         a, b = self.date, other.date
         return (a > b) - (a < b)
 
+    def __lt__(self, other):
+        return self.date < other.date
+
     def __repr__(self):
         return '{}({}, {} @ {})'.format(
             self.__class__.__name__,
@@ -319,6 +322,9 @@ class AuditEntryPresenter(BaseEntryPresenter):
         assert isinstance(entry, AuditEntry)
         super(AuditEntryPresenter, self).__init__(entry.user, entry.happened_at)
         self.entry = entry
+
+    # def __lt__(self, other):
+    #     return self.entry < other.entry
 
     def render(self):
         render = render_template_string
