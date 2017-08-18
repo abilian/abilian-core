@@ -12,7 +12,7 @@ from flask import current_app
 from flask.globals import _lookup_req_object, _request_ctx_stack
 from flask.signals import got_request_exception, request_started
 from jinja2 import nodes
-from jinja2.ext import Extension
+from jinja2.ext import Extension as JinjaExtension
 from werkzeug.local import LocalProxy
 
 
@@ -20,7 +20,7 @@ deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
 
 
 class DeferredJS(object):
-    """Flask extentions for use with DeferredJSExtension for jinja
+    """Flask extension for use with DeferredJSExtension for jinja.
     """
     name = 'deferred_js'
 
@@ -43,7 +43,7 @@ class DeferredJS(object):
         _request_ctx_stack.top.deferred_js = []
 
 
-class DeferredJSExtension(Extension):
+class DeferredJSExtension(JinjaExtension):
     """Put JS fragment at the end of the document in a script tag.
 
     The JS fragment can contains <script> tag so that your favorite editor
