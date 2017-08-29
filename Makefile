@@ -168,7 +168,7 @@ format:
 	-add-trailing-comma `find abilian -name '*.py'`
 	-add-trailing-comma `find tests -name '*.py'`
 	-add-trailing-comma *.py
-	autopep8 -r --in-place -a --ignore E711 abilian tests *.py
+	autopep8 -j3 -r --in-place -a --ignore E711 abilian tests *.py
 	isort -rc $(SRC) tests *.py
 
 update-deps:
