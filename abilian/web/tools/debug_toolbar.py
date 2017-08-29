@@ -43,11 +43,11 @@ class ActionDebugPanel(DebugPanel):
                 }
                 try:
                     d['endpoint'] = text_type(action.endpoint)
-                except:
+                except BaseException:
                     d['endpoint'] = '<Exception>'
                 try:
                     d['url'] = text_type(action.url(g.action_context))
-                except:
+                except BaseException:
                     d['url'] = '<Exception>'
                 actions_for_template.append(d)
 
@@ -81,8 +81,7 @@ class SignalsDebugPanel(DebugPanel):
         return ''
 
     def content(self):
-        module_names = sys.modules.keys()
-        module_names.sort()
+        module_names = sorted(sys.modules.keys())
 
         signals = []
 

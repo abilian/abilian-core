@@ -253,7 +253,7 @@ class Translations(BaseTranslations):
                     # string: skip it.
 
                     # logger.debug('Catalog: %r, skip msgkey: %r, existing: %r',
-                    #                translations, msgkey, self._catalog[msgkey])
+                    # translations, msgkey, self._catalog[msgkey])
                     continue
 
                 self._catalog[msgkey] = msgstr

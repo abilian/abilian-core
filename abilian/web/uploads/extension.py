@@ -161,7 +161,7 @@ class FileUploadsExtension(object):
         try:
             with metafile.open('rb') as in_:
                 meta = json.load(in_)
-        except:
+        except BaseException:
             meta = {}
 
         return meta
@@ -176,7 +176,7 @@ class FileUploadsExtension(object):
             if file_path is not None:
                 try:
                     file_path.unlink()
-                except:
+                except BaseException:
                     logger.exception('Error during remove file')
 
     def clear_stalled_files(self):

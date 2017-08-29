@@ -64,7 +64,8 @@ def send_file_from_directory(filename, directory, app=None):
     if app is None:
         app = current_app
     cache_timeout = app.get_send_file_max_age(filename)
-    return send_from_directory(directory, filename, cache_timeout=cache_timeout)
+    return send_from_directory(
+        directory, filename, cache_timeout=cache_timeout)
 
 
 def capture_stream_errors(logger, msg):
@@ -99,7 +100,8 @@ def capture_stream_errors(logger, msg):
                 type_, value, tb = sys.exc_info()
                 if tb.tb_next is not None:
                     # error has happened inside decorated function, remove us from top
-                    # stack: better readability in logs, accurate label in sentry
+                    # stack: better readability in logs, accurate label in
+                    # sentry
                     tb = tb.tb_next
 
                 logger.error(msg, exc_info=(type_, value, tb))

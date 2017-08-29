@@ -50,7 +50,8 @@ class SysinfoPanel(AdminPanel):
                     revision = vc.get_revision(location)
                 except pip.exceptions.InstallationError:
                     revision = 'None'
-                package['vcs'] = dict(name=vcs_name, url=url, revision=revision)
+                package['vcs'] = dict(
+                    name=vcs_name, url=url, revision=revision)
 
             packages.append(package)
             packages.sort(key=lambda d: d.get('key'))

@@ -165,7 +165,7 @@ class BaseTableView(object):
         for col in columns:
             if isinstance(col, string_types):
                 col = dict(name=col, width=default_width)
-            assert type(col) == dict
+            assert isinstance(col, dict)
             col.setdefault('width', default_width)
             col.setdefault('sorting', ('asc', 'desc'))
             if 'label' not in col:
@@ -234,7 +234,7 @@ class BaseTableView(object):
         make_link_on = self.options.get("make_link_on")
 
         for col in self.columns:
-            if type(col) == str:
+            if isinstance(col, str):
                 column_name = col
                 build_url = url_for
             else:
@@ -330,9 +330,9 @@ class AjaxMainTableView(object):
         self.columns = []
         default_width = 0.99 / len(columns)
         for col in columns:
-            if type(col) == str:
+            if isinstance(col, str):
                 col = dict(name=col, width=default_width)
-            assert type(col) == dict
+            assert isinstance(col, dict)
             if 'label' not in col:
                 col['label'] = labelize(col['name'])
 
@@ -415,7 +415,7 @@ class AjaxMainTableView(object):
     def render_line(self, entity):
         line = []
         for col in self.columns:
-            if type(col) == str:
+            if isinstance(col, str):
                 column_name = col
             else:
                 column_name = col['name']
@@ -673,7 +673,7 @@ class ModelWidget(object):
         return render_template(self.view_template, field=field, rows=rows)
 
 
-# Form field widgets ###########################################################
+# Form field widgets #####################################################
 class TextInput(wtforms.widgets.TextInput):
     """Support pre and post icons.
 
@@ -779,7 +779,9 @@ class FileInput(object):
         kwargs['type'] = 'file'
         kwargs['disabled'] = 'disabled'  # JS widget will activate it
         input_elem = '<input {}>'.format(html_params(**kwargs))
-        button_label = _('Add file') if 'multiple' in kwargs else _('Select file')
+        button_label = _('Add file') if 'multiple' in kwargs else _(
+            'Select file',
+        )
 
         existing = self.build_exisiting_files_list(field)
         uploads = self.build_uploads_list(field)
@@ -1285,7 +1287,8 @@ class DateWidget(wtforms.widgets.TextInput):
 class DateTimeWidget(DateWidget):
 
     def render_view(self, field, **kwargs):
-        return (format_datetime(field.object_data) if field.object_data else '')
+        return (format_datetime(field.object_data)
+                if field.object_data else '')
 
 
 class EntityWidget(object):
@@ -1343,7 +1346,8 @@ class MoneyWidget(TextInput):
         # units, which we don't want
         #
         # \u00A0: non-breakable whitespace
-        return '{value}\u00A0{unit}'.format(value=format_number(val), unit=unit)
+        return '{value}\u00A0{unit}'.format(
+            value=format_number(val), unit=unit)
 
 
 class EmailWidget(TextInput):
@@ -1562,7 +1566,8 @@ class Select2(Select):
     """
     unescape_html = False
 
-    def __init__(self, unescape_html=False, js_init='select2', *args, **kwargs):
+    def __init__(self, unescape_html=False,
+                 js_init='select2', *args, **kwargs):
         super(Select2, self).__init__(*args, **kwargs)
         self.js_init = js_init
 

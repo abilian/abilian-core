@@ -125,11 +125,12 @@ class AuthService(Service):
                 # if a user is edited and should not have access any more, this will
                 # ensure he cannot continue if he had an active session
                 return None
-        except:
+        except BaseException:
             logger.warning("Error during login.", exc_info=True)
             session = current_app.db.session()
             if not session.is_active:
-                # session is not usable, rollback should restore a usable session
+                # session is not usable, rollback should restore a usable
+                # session
                 session.rollback()
 
             return None

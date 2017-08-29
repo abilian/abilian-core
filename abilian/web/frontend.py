@@ -225,7 +225,8 @@ EDIT_ACTION = Action(
     button='default',
     condition=lambda ctx: ctx['view'].can_edit,
     icon=FAIcon('edit'),
-    url=lambda ctx: url_for('.entity_edit', **{ctx['view'].pk: ctx['view'].obj.id}),
+    url=lambda ctx: url_for('.entity_edit',
+                            **{ctx['view'].pk: ctx['view'].obj.id}),
 )
 
 DELETE_ACTION = Action(
@@ -235,7 +236,10 @@ DELETE_ACTION = Action(
     button='danger',
     condition=lambda ctx: ctx['view'].can_delete,
     icon=FAIcon('trash fa-inverse'),
-    url=lambda ctx: url_for('.entity_delete', **{ctx['view'].pk: ctx['view'].obj.id}),
+    url=lambda ctx: url_for(
+        '.entity_delete',
+        **{ctx['view'].pk: ctx['view'].obj.id}
+    ),
 )
 DELETE_ACTION.template = 'widgets/frontend_action_delete_confim.html'
 
@@ -523,7 +527,8 @@ class Module(object):
 
         self.init_related_views()
 
-        # copy criterions instances; without that they may be shared by subclasses
+        # copy criterions instances; without that they may be shared by
+        # subclasses
         self.search_criterions = tuple((
             copy.deepcopy(c)
             for c in self.search_criterions
@@ -600,7 +605,8 @@ class Module(object):
                 self.url = '%s/%s' % (self.crud_app.url, self.url)
 
         # Create blueprint and register rules
-        self.blueprint = Blueprint(self.endpoint, __name__, url_prefix=self.url)
+        self.blueprint = Blueprint(
+            self.endpoint, __name__, url_prefix=self.url)
 
         for url, name, methods in self._urls:
             self.blueprint.add_url_rule(
@@ -737,7 +743,7 @@ class Module(object):
             try:
                 direction = desc if sort_dir == 'desc' else asc
                 sort_col = direction(sort_col)
-            except:
+            except BaseException:
                 # FIXME
                 pass
 
@@ -746,7 +752,7 @@ class Module(object):
                 nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
                 try:
                     sort_col = nullsorder(sort_col)
-                except:
+                except BaseException:
                     # FIXME
                     pass
 
@@ -754,7 +760,7 @@ class Module(object):
 
         try:
             query = query.order_by(*sort_cols)
-        except:
+        except BaseException:
             # FIXME
             pass
         query.reset_joinpoint()

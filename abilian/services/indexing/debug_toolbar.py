@@ -44,7 +44,7 @@ class IndexedTermsDebugPanel(DebugPanel):
 
         try:
             return '{}(id={})'.format(obj.__class__.__name__, obj.id)
-        except:
+        except BaseException:
             return ''
 
     def title(self):

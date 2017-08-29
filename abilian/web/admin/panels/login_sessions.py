@@ -44,7 +44,8 @@ class LoginSessionsPanel(AdminPanel):
                 ip_address = session.ip_address
                 multiple = ip_address.split(',')
                 if multiple:
-                    # only use last ip in the list, most likely the public address
+                    # only use last ip in the list, most likely the public
+                    # address
                     ip_address = multiple[-1]
                 for g in geoips:
                     try:

@@ -66,7 +66,11 @@ class TestRepository(BaseTestCase):
 
     def test_set(self):
         self.assertRaises(ValueError, repository.set, self.UUID_STR, '')
-        self.assertRaises(ValueError, repository.__setitem__, self.UUID_STR, '')
+        self.assertRaises(
+            ValueError,
+            repository.__setitem__,
+            self.UUID_STR,
+            '')
 
         p = repository.abs_path(self.UUID)
         repository.set(self.UUID, b'my file content')

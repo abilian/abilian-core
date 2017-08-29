@@ -195,7 +195,8 @@ class SessionRepositoryState(ServiceState):
         tr = self.get_transaction(session)
         if tr is not None:
             if not tr.cleared:
-                # root and nested transactions emit "commit", but subtransactions don't
+                # root and nested transactions emit "commit", but
+                # subtransactions don't
                 tr.commit(session)
             self.set_transaction(session, tr._parent)
 
@@ -264,7 +265,10 @@ class SessionRepositoryService(Service):
         if not self.__listening:
             self.__listening = True
             listen = sa.event.listen
-            listen(Session, "after_transaction_create", self.create_transaction)
+            listen(
+                Session,
+                "after_transaction_create",
+                self.create_transaction)
             listen(Session, "after_transaction_end", self.end_transaction)
             listen(Session, "after_begin", self.begin)
             listen(Session, "after_commit", self.commit)

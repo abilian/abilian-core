@@ -72,19 +72,23 @@ class UserPreferencesForm(Form):
                     for ext in ('.png', '.jpg', '.jpeg'))
 
         if not valid:
-            raise ValidationError(_('Only PNG or JPG image files are accepted'))
+            raise ValidationError(
+                _('Only PNG or JPG image files are accepted'),
+            )
 
         img_type = imghdr.what('ignored', data.read())
 
         if img_type not in ('png', 'jpeg'):
-            raise ValidationError(_('Only PNG or JPG image files are accepted'))
+            raise ValidationError(
+                _('Only PNG or JPG image files are accepted'),
+            )
 
         data.seek(0)
         try:
             # check this is actually an image file
             im = PIL.Image.open(data)
             im.load()
-        except:
+        except BaseException:
             raise ValidationError(_('Could not decode image file'))
 
         # convert to jpeg

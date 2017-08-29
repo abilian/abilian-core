@@ -55,7 +55,7 @@ def init_search(endpoint, values):
     q = request.args.get("q")
     try:
         page = max(int(request.args.get('page', 1), 1))
-    except:
+    except BaseException:
         page = 1
 
     g.breadcrumb.append(

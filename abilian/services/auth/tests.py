@@ -63,7 +63,8 @@ class TestAuth(BaseTestCase):
         ):
             assert get_redirect_target() is None
 
-        # open redirect through malicious construct and browser not checking Location
+        # open redirect through malicious construct and browser not checking
+        # Location
         with self.app.test_request_context(form_url(next='/////google.com')):
             assert get_redirect_target() == url_root + '///google.com'
 

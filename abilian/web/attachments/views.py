@@ -56,7 +56,9 @@ class BaseAttachmentView(object):
     entity = None  # type: Optional[Entity]
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(BaseAttachmentView, self).init_object(args, kwargs)
+        args, kwargs = super(
+            BaseAttachmentView, self).init_object(
+            args, kwargs)
         entity_id = kwargs.pop('entity_id', None)
 
         if entity_id is not None:

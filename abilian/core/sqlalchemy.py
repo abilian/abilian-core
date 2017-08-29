@@ -34,7 +34,7 @@ def ping_connection(dbapi_connection, connection_record, connection_proxy):
     cursor = dbapi_connection.cursor()
     try:
         cursor.execute("SELECT 1")
-    except:
+    except BaseException:
         # optional - dispose the whole pool
         # instead of invalidating one at a time
         # connection_proxy._pool.dispose()
@@ -417,6 +417,7 @@ class Timezone(sa.types.TypeDecorator):
 # those symbols in documentation, and this may break since we don't have
 # sphinx's extensions used by sqlalchemy author.
 #
-# Ref: https://bitbucket.org/zzzeek/sqlalchemy/issues/3218/__module__-should-be-set-on-functions
+# Ref:
+# https://bitbucket.org/zzzeek/sqlalchemy/issues/3218/__module__-should-be-set-on-functions
 if not sa.orm.relationship.__module__:
     sa.orm.relationship.__module__ = 'sqlalchemy.orm'

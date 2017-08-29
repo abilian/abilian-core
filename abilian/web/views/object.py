@@ -319,7 +319,8 @@ class ObjectEdit(ObjectView):
                 errors = self.form.errors
                 csrf_failed = errors.pop('csrf_token', False)
                 if csrf_failed and not errors:
-                    # failed only because of invalid/expired csrf, no error on form
+                    # failed only because of invalid/expired csrf, no error on
+                    # form
                     return self.form_csrf_invalid()
 
             resp = self.form_invalid()

@@ -102,7 +102,8 @@ class NSView(View):
             ns=ns,
             tags=tags,
             errors=self.form_errors,
-            merge_to=request.form.get('merge_to', default='__None__', type=int),
+            merge_to=request.form.get(
+                'merge_to', default='__None__', type=int),
             selected_tags={t.id
                            for t in self._get_selected_tags()},
         )
@@ -286,7 +287,12 @@ class TagPanel(AdminPanel):
                     func.count(Tag.id).label('tag_count'),
                     obj_count.c.obj_count,
                 ],
-                from_obj=[Tag.__table__.outerjoin(obj_count, Tag.ns == obj_count.c.ns)],
+                from_obj=[
+                    Tag.__table__.outerjoin(
+                        obj_count,
+                        Tag.ns == obj_count.c.ns,
+                    ),
+                ],
             ) \
             .group_by(Tag.ns, obj_count.c.obj_count) \
             .order_by(Tag.ns)
@@ -309,7 +315,8 @@ class TagPanel(AdminPanel):
         add_url_rule(
             tag_base,
             endpoint='tag_edit',
-            view_func=TagEdit.as_view('tag_edit', view_endpoint=panel_endpoint),
+            view_func=TagEdit.as_view(
+                'tag_edit', view_endpoint=panel_endpoint),
         )
 
         add_url_rule(

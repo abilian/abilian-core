@@ -46,8 +46,7 @@ class RoleTestCase(unittest.TestCase):
         self.assertEqual(admin, 'admin')
 
     def test_ordering(self):
-        roles = [Authenticated, Admin, Anonymous]
-        roles.sort()
+        roles = sorted([Authenticated, Admin, Anonymous])
         assert roles == [Admin, Anonymous, Authenticated]
 
     def test_enumerate_assignables(self):
@@ -567,5 +566,6 @@ class PermissionNoSAWarnTestCase(IntegrationTestCase):
         # them just after (as of sqlalchemy 0.8, at least)
 
         # Finally the test! IntegrityError will be raised if we have done something
-        # wrong (`Key (permission, role, object_id)=(..., ..., ...) already exists`)
+        # wrong (`Key (permission, role, object_id)=(..., ..., ...) already
+        # exists`)
         self.session.flush()

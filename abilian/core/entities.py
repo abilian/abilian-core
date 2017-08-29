@@ -354,7 +354,11 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     _entity_type = Column('entity_type', String(1000), nullable=False)
     entity_type = None
 
-    meta = Column(JSONDict(), nullable=False, default=dict, server_default='{}')
+    meta = Column(
+        JSONDict(),
+        nullable=False,
+        default=dict,
+        server_default='{}')
     """
     A dictionnary of simple values (JSON-serializable) to conveniently annotate
     the entity.
@@ -551,7 +555,8 @@ def all_entity_classes():
     Entity.
     """
     persistent_classes = Entity._decl_class_registry.values()
-    # with sqlalchemy 0.8 _decl_class_registry holds object that are not classes
+    # with sqlalchemy 0.8 _decl_class_registry holds object that are not
+    # classes
     return [
         cls for cls in persistent_classes
         if isclass(cls) and issubclass(cls, Entity)

@@ -108,6 +108,7 @@ class JSONView(View):
         if best_mime == 'application/json':
             return jsonify(data)
 
-        # dev requesting from browser? serve html, let debugtoolbar show up, etc...
+        # dev requesting from browser? serve html, let debugtoolbar show up,
+        # etc...
         content = json.dumps(data, indent=2)
         return render_template_string(_JSON_HTML, content=content)

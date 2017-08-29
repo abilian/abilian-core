@@ -347,7 +347,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
         # Initialize Abilian core services.
         # Must come after all entity classes have been declared.
-        # Inherited from ServiceManager. Will need some configuration love later.
+        # Inherited from ServiceManager. Will need some configuration love
+        # later.
         if not self.config.get('TESTING', False):
             with self.app_context():
                 self.start_services()
@@ -833,7 +834,8 @@ class Application(Flask, ServiceManager, PluginManager):
         session = db.session()
 
         for key, obj, load in g_objs:
-            # replace obj instance in bad session by new instance in fresh session
+            # replace obj instance in bad session by new instance in fresh
+            # session
             setattr(g, key, session.merge(obj, load=load))
 
         # refresh `current_user`
@@ -908,7 +910,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
         # set up load_path for application static dir. This is required since we are
         # setting Environment.load_path for other assets (like core_bundle below),
-        # in this case Flask-Assets uses webasssets resolvers instead of Flask's one
+        # in this case Flask-Assets uses webasssets resolvers instead of
+        # Flask's one
         assets.append_path(self.static_folder, self.static_url_path)
 
         # filters options

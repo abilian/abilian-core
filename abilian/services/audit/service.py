@@ -246,7 +246,7 @@ class AuditService(Service):
                         entry = self.log(session, model, op)
                         if entry:
                             entries.append(entry)
-                    except:
+                    except BaseException:
                         if current_app.config.get(
                                 'DEBUG',
                         ) or current_app.config.get('TESTING'):
@@ -267,7 +267,7 @@ class AuditService(Service):
         entity = model
         try:
             user_id = g.user.id
-        except:
+        except BaseException:
             user_id = 0
 
         meta = model.__auditable__

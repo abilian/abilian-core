@@ -182,15 +182,16 @@ class AuditPanel(AdminPanel):
             .limit(LIMIT) \
             .all()
         # audit_entries = []
-        all_entries = list(
-            chain(
-                #
-                (AuditEntryPresenter(e) for e in audit_entries),
-                #
-                (SecurityEntryPresenter(e) for e in security_entries),
+        all_entries = sorted(
+            list(
+                chain(
+                    #
+                    (AuditEntryPresenter(e) for e in audit_entries),
+                    #
+                    (SecurityEntryPresenter(e) for e in security_entries),
+                ),
             ),
         )
-        all_entries.sort()
 
         if after:
             all_entries = all_entries[:LIMIT]
@@ -321,7 +322,11 @@ class AuditEntryPresenter(BaseEntryPresenter):
 
     def __init__(self, entry):
         assert isinstance(entry, AuditEntry)
-        super(AuditEntryPresenter, self).__init__(entry.user, entry.happened_at)
+        super(
+            AuditEntryPresenter,
+            self).__init__(
+            entry.user,
+            entry.happened_at)
         self.entry = entry
 
     # def __lt__(self, other):

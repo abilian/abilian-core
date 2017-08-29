@@ -36,7 +36,7 @@ def has_pdftotext():
     try:
         status = subprocess.call("pdftotext", stderr=dev_null)
         return status == 0
-    except:
+    except BaseException:
         return False
     finally:
         dev_null.close()
@@ -51,7 +51,7 @@ def has_libreoffice():
             stderr=dev_null,
         )
         return status == 0
-    except:
+    except BaseException:
         return False
     finally:
         dev_null.close()
@@ -127,7 +127,7 @@ class PdfToTextHandler(Handler):
             encoding = "ascii"
         try:
             converted_unicode = text_type(converted, encoding, errors="ignore")
-        except:
+        except BaseException:
             traceback.print_exc()
             converted_unicode = text_type(converted, errors="ignore")
 
@@ -163,7 +163,7 @@ class AbiwordTextHandler(Handler):
             encoding = "ascii"
         try:
             converted_unicode = text_type(converted, encoding, errors="ignore")
-        except:
+        except BaseException:
             traceback.print_exc()
             converted_unicode = text_type(converted, errors="ignore")
 
@@ -223,8 +223,7 @@ class PdfToPpmHandler(Handler):
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(['pdftoppm', '-jpeg', in_fn, out_fn])
-                l = glob.glob("%s-*.jpg" % out_fn)
-                l.sort()
+                l = sorted(glob.glob("%s-*.jpg" % out_fn))
 
                 converted_images = []
                 for fn in l:
@@ -277,7 +276,8 @@ class UnoconvPdfHandler(Handler):
         if unoconv:
             found = os.path.isfile(unoconv)
             if found:
-                # make absolute path: avoid errors when running with different CWD
+                # make absolute path: avoid errors when running with different
+                # CWD
                 unoconv = os.path.abspath(unoconv)
                 execute_ok = os.access(unoconv, os.X_OK)
                 if not execute_ok:
@@ -549,7 +549,7 @@ class WvwareTextHandler(Handler):
                     encoding,
                     errors="ignore",
                 )
-            except:
+            except BaseException:
                 traceback.print_exc()
                 converted_unicode = text_type(converted, errors="ignore")
 

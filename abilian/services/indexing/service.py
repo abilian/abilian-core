@@ -253,7 +253,8 @@ class WhooshIndexService(Service):
         try:
             idx = self.index()
         except KeyError:
-            # index does not exists: service never started, may happens during tests
+            # index does not exists: service never started, may happens during
+            # tests
             return []
 
         with idx.reader() as r:
@@ -524,7 +525,8 @@ class WhooshIndexService(Service):
                     writer.add_document(**document)
                 except ValueError:
                     # logger is here to give us more infos in order to catch a weird bug
-                    # that happens regularly on CI but is not reliably reproductible.
+                    # that happens regularly on CI but is not reliably
+                    # reproductible.
                     logger.error(
                         'writer.add_document(%r)',
                         document,
@@ -584,7 +586,8 @@ def index_update(index, items):
                     writer.add_document(**document)
                 except ValueError:
                     # logger is here to give us more infos in order to catch a weird bug
-                    # that happens regularly on CI but is not reliably reproductible.
+                    # that happens regularly on CI but is not reliably
+                    # reproductible.
                     logger.error(
                         'writer.add_document(%r)',
                         document,
@@ -592,7 +595,7 @@ def index_update(index, items):
                     )
                     raise
                 updated.add(object_key)
-    except:
+    except BaseException:
         writer.cancel()
         raise
 

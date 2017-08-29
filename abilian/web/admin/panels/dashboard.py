@@ -43,11 +43,20 @@ class DashboardPanel(AdminPanel):
         # let's format the data into NVD3 datastructures
         connections = [
             {'key': _('Daily'), 'color': '#7777ff', 'values': daily},
-            {'key': _('Weekly'), 'color': '#2ca02c', 'values': weekly, 'disabled': True},
-            {'key': _('Monthly'), 'color': '#ff7f0e', 'values': monthly, 'disabled': True},
+            {
+                'key': _('Weekly'), 'color': '#2ca02c',
+                'values': weekly, 'disabled': True,
+            },
+            {
+                'key': _('Monthly'), 'color': '#ff7f0e',
+                'values': monthly, 'disabled': True,
+            },
         ]
         new_logins = [
-            {'key': _('New'), 'color': '#ff7f0e', "bar": True, 'values': new_logins},
+            {
+                'key': _('New'), 'color': '#ff7f0e',
+                "bar": True, 'values': new_logins,
+            },
             {'key': _('Total'), 'color': '#2ca02c', 'values': total_users},
         ]
 

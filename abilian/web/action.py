@@ -418,7 +418,7 @@ class Action(object):
             return self.pre_condition(context) and self._check_condition(
                 context,
             )
-        except:
+        except BaseException:
             return False
 
     def pre_condition(self, context):

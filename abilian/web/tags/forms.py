@@ -73,9 +73,11 @@ class TagsField(Field):
 
     def populate_obj(self, obj, name):
         extension = current_app.extensions['tags']
-        # all_tags is an InstrumentedSet. add/remove will result in DB operations.
+        # all_tags is an InstrumentedSet. add/remove will result in DB
+        # operations.
         all_tags = extension.entity_tags(obj)
-        all_ns_tags = {t for t in extension.entity_tags(obj) if t.ns == self.ns}
+        all_ns_tags = {
+            t for t in extension.entity_tags(obj) if t.ns == self.ns}
         to_remove = all_ns_tags - self.data
 
         for tag in to_remove:

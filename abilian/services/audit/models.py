@@ -133,7 +133,8 @@ class AuditEntry(db.Model):
 
     def get_changes(self):
         # Using Pickle here instead of JSON because we need to pickle values
-        # such as dates. This could make schema migration more difficult, though.
+        # such as dates. This could make schema migration more difficult,
+        # though.
         if self.changes_pickle:
             changes = pickle.loads(self.changes_pickle)
             if isinstance(changes, dict):
@@ -167,7 +168,7 @@ class AuditEntry(db.Model):
                         # migration
                         try:
                             val = val.decode('utf-8')
-                        except:
+                        except BaseException:
                             current_app.logger.error(
                                 "A Unicode error happened on changes %s",
                                 repr(changes),

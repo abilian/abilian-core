@@ -233,7 +233,8 @@ class FieldsTestCase(BaseTestCase):
         headers = {'Accept-Language': 'en'}
         with self.app.test_request_context(headers=headers):
             field = fields.DateTimeField().bind(Form(), 'dt')
-            field.data = datetime.datetime(2011, 1, 23, 10, 42, tzinfo=pytz.utc)
+            field.data = datetime.datetime(
+                2011, 1, 23, 10, 42, tzinfo=pytz.utc)
             assert field._value() == '1/23/2011, 6:42 PM'
 
     def test_date_field(self):

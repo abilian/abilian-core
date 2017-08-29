@@ -39,12 +39,13 @@ def pdb_on_error(fn):
     def decorator(*args, **kwargs):
         try:
             return fn(*args, **kwargs)
-        except:
+        except BaseException:
             if current_app and current_app.debug:
                 type_, value, tb = sys.exc_info()
                 if tb.tb_next is not None:
                     # error has happened inside decorated function, remove us from top
-                    # stack: better readability in logs, accurate label in sentry
+                    # stack: better readability in logs, accurate label in
+                    # sentry
                     tb = tb.tb_next
 
                 pdb.post_mortem(tb)

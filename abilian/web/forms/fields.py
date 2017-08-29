@@ -66,7 +66,8 @@ class FormField(BaseFormField):
         if not isinstance(self.form, SecureForm):
             return self.form.data
 
-        # SecureForm will try to pop 'csrf_token', but we removed it during process
+        # SecureForm will try to pop 'csrf_token', but we removed it during
+        # process
         self.form._fields['csrf_token'] = self._subform_csrf
         data = self.form.data
         del self.form['csrf_token']
@@ -332,7 +333,8 @@ class DateTimeField(Field):
             # Workaround bug in Babel (at least <= 2.4) under Python 3
             if not PY2:
                 time_fmt = time_fmt.pattern
-            dt_fmt = locale.datetime_formats['short'].format(time_fmt, date_fmt)
+            dt_fmt = locale.datetime_formats['short'].format(
+                time_fmt, date_fmt)
             return format_datetime(self.data, dt_fmt) if self.data else ''
 
     def process_data(self, value):
@@ -512,8 +514,10 @@ class QuerySelect2Field(SelectFieldBase):
         if validators is None:
             validators = []
 
-        if not any(isinstance(v, (Optional, DataRequired)) for v in validators):
-            logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
+        if not any(isinstance(v, (Optional, DataRequired))
+                   for v in validators):
+            logger = logging.getLogger(
+                __name__ + '.' + self.__class__.__name__)
             logger.warning(
                 'Use deprecated parameter `allow_blank` for field "{}".'
                 .format(label),
@@ -765,7 +769,8 @@ class JsonSelect2Field(SelectFieldBase):
         if self.multiple and name in relations:
             prop = relations[name]
             if prop.collection_class:
-                # data is a list, try to convert to actual type; generally `set()`
+                # data is a list, try to convert to actual type; generally
+                # `set()`
                 data = prop.collection_class(data)
 
         setattr(obj, name, data)

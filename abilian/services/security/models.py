@@ -112,8 +112,7 @@ class Role(UniqueName):
 
     @classmethod
     def assignable_roles(cls):
-        roles = [r for r in cls.__instances__.values() if r.assignable]
-        roles.sort()
+        roles = sorted([r for r in cls.__instances__.values() if r.assignable])
         return roles
 
 

@@ -203,7 +203,13 @@ class TextSearchCriterion(BaseCriterion):
 class TextCriterion(TextSearchCriterion):
 
     def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
-        super(TextCriterion, self).__init__(name, label, attributes, search_fmt)
+        super(
+            TextCriterion,
+            self).__init__(
+            name,
+            label,
+            attributes,
+            search_fmt)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
         my_searched_text = request.values.get(self.name, '').strip()

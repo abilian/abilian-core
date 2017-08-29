@@ -45,7 +45,11 @@ class Admin(object):
             'root',
             title=_l('Admin'),
             endpoint=None,
-            condition=lambda context: (not current_user.is_anonymous and security.has_role(current_user, AdminRole)),
+            condition=lambda context: (
+                not current_user.is_anonymous and security.has_role(
+                    current_user, AdminRole,
+                )
+            ),
         )
 
         for panel in panels:

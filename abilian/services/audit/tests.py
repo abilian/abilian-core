@@ -145,7 +145,8 @@ class TestAudit(BaseTestCase):
 
         # content hiding
         account.password = 'new super secret password'
-        assert account.__changes__.columns == {'password': ('******', '******')}
+        assert account.__changes__.columns == {
+            'password': ('******', '******')}
         db.session.commit()
 
         entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[3]
@@ -164,7 +165,8 @@ class TestAudit(BaseTestCase):
         assert entry.entity_id == account.id
         assert entry.entity is None
 
-        # check all entries are still present (but have lost reference to entity)
+        # check all entries are still present (but have lost reference to
+        # entity)
         entries = AuditEntry.query.all()
         assert len(entries) == 5
         assert all(e.entity_id == account.id for e in entries)

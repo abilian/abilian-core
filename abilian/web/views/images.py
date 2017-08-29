@@ -51,7 +51,8 @@ class BaseImageView(BaseFileDownload):
             size = int(size)
         except ValueError:
             raise BadRequest(
-                'Invalid value for "s": {}. Not an integer.'.format(repr(size)),
+                'Invalid value for "s": {}. Not an integer.'.format(
+                    repr(size)),
             )
 
         if self.max_size is not None:

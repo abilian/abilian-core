@@ -230,12 +230,16 @@ def siret_validator():
             siret = (field.data or '').strip()
 
         if len(siret) != 14:
-            msg = _('SIRET must have exactly 14 characters ({count})').format(count=len(siret))
+            msg = _('SIRET must have exactly 14 characters ({count})').format(
+                count=len(siret),
+            )
             raise validators.ValidationError(msg)
 
         if not all(('0' <= c <= '9') for c in siret):
             if not siret[-3:] in SIRET_CODES:
-                msg = _('SIRET looks like special SIRET but geographical code seems invalid ({code})').format(code=siret[-3:])
+                msg = _('SIRET looks like special SIRET but geographical code seems invalid ({code})').format(
+                    code=siret[-3:],
+                )
                 raise validators.ValidationError(msg)
 
         elif not luhn(siret):

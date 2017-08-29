@@ -156,14 +156,15 @@ class SecurityService(Service):
 
         try:
             user = g.user
-        except:
+        except BaseException:
             return session.query(User).get(0)
 
         if sa.orm.object_session(user) is not session:
             # this can happen when called from a celery task during development (with
             # CELERY_ALWAYS_EAGER=True): the task SA session is not app.db.session,
             # and we should not attach this object to the other session, because it
-            # can make weird, hard-to-debug errors related to session.identity_map.
+            # can make weird, hard-to-debug errors related to
+            # session.identity_map.
             return session.query(User).get(user.id)
         else:
             return user
@@ -684,7 +685,8 @@ class SecurityService(Service):
             for principal in principals for item in checked_objs
         ))
 
-    def query_entity_with_permission(self, permission, user=None, Model=Entity):
+    def query_entity_with_permission(
+            self, permission, user=None, Model=Entity):
         """
         Filter a query on an :class:`Entity` or on of its subclasses.
 
@@ -839,7 +841,8 @@ class SecurityService(Service):
                 # this seems to be required with sqlalchemy > 0.9
                 session.expire(obj, [PERMISSIONS_ATTR])
 
-    def filter_with_permission(self, user, permission, obj_list, inherit=False):
+    def filter_with_permission(
+            self, user, permission, obj_list, inherit=False):
         user = noproxy(user)
         return [
             obj for obj in obj_list

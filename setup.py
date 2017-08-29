@@ -12,11 +12,13 @@ from setuptools.command.sdist import sdist as _sdist
 
 session = session = pip.download.PipSession()
 _install_requires = pip.req.parse_requirements(
-    'requirements.in', session=session)
+    'requirements.in', session=session,
+)
 install_requires = [str(ir.req) for ir in _install_requires]
 
 _dev_requires = pip.req.parse_requirements(
-    'etc/dev-requirements.txt', session=session)
+    'etc/dev-requirements.txt', session=session,
+)
 dev_requires = [str(ir.req) for ir in _dev_requires]
 
 LONG_DESCRIPTION = open('README.rst', 'r').read()
@@ -44,8 +46,10 @@ setuptools.setup(
     license='LGPL',
     author='Abilian SAS',
     author_email='contact@abilian.com',
-    description=('A framework for enterprise applications '
-                 '(CRM, ERP, collaboration...), based on Flask and SQLAlchemy'),
+    description=(
+        'A framework for enterprise applications '
+        '(CRM, ERP, collaboration...), based on Flask and SQLAlchemy'
+    ),
     long_description=LONG_DESCRIPTION,
     packages=['abilian'],
     zip_safe=False,
@@ -70,4 +74,5 @@ setuptools.setup(
         'build': Build,
         'sdist': Sdist,
         'develop': Develop,
-    },)
+    },
+)
