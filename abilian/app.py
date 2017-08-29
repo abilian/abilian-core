@@ -275,19 +275,22 @@ class Application(Flask, ServiceManager, PluginManager):
 
         self._assets_bundles = {
             'css': {
-                'options': dict(
+                'options':
+                dict(
                     filters=('less', 'cssmin'),
                     output='style-%(version)s.min.css',
                 ),
             },
             'js-top': {
-                'options': dict(
+                'options':
+                dict(
                     output='top-%(version)s.min.js',
                     filters=js_filters,
                 ),
             },
             'js': {
-                'options': dict(
+                'options':
+                dict(
                     output='app-%(version)s.min.js',
                     filters=js_filters,
                 ),

@@ -394,7 +394,8 @@ class WhooshIndexService(Service):
         state = self.app_state
         classes = (
             cls for cls in db.Model._decl_class_registry.values()
-            if isclass(cls) and issubclass(cls, Indexable) and cls.__indexable__
+            if isclass(cls) and issubclass(cls, Indexable) and
+            cls.__indexable__
         )
         for cls in classes:
             if cls not in state.indexed_classes:

@@ -65,7 +65,10 @@ class JsonUsersList(base.JSONView):
         }
         columns = list(SORT_COLS.get(sort_col, []))
         columns.extend(
-            [func.lower(User.last_name), func.lower(User.first_name)],
+            [
+                func.lower(User.last_name),
+                func.lower(User.first_name),
+            ],
         )
 
         direction = asc if sort_dir == 'asc' else desc

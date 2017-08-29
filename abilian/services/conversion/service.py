@@ -128,8 +128,7 @@ class Converter(object):
                 self.cache[cache_key] = pdf
                 return pdf
         raise HandlerNotFound(
-            "No handler found to convert from %s to PDF" %
-            mime_type,
+            "No handler found to convert from %s to PDF" % mime_type,
         )
 
     def to_text(self, digest, blob, mime_type):
@@ -163,8 +162,7 @@ class Converter(object):
                 return text
 
         raise HandlerNotFound(
-            "No handler found to convert from %s to text" %
-            mime_type,
+            "No handler found to convert from %s to text" % mime_type,
         )
 
     def has_image(self, digest, mime_type, index, size=500):
@@ -216,8 +214,7 @@ class Converter(object):
                 return converted_images[index]
 
         raise HandlerNotFound(
-            "No handler found to convert from %s to image" %
-            mime_type,
+            "No handler found to convert from %s to image" % mime_type,
         )
 
     def get_metadata(self, digest, content, mime_type):

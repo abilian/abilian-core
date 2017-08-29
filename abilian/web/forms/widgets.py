@@ -260,8 +260,10 @@ class BaseTableView(object):
                 cell = Markup('<a href="%s">%s</a>' %
                               (build_url(entity), cgi.escape(text_type(value))))
             elif isinstance(value, Entity):
-                cell = Markup('<a href="%s">%s</a>' %
-                              (build_url(value), cgi.escape(value.name)))
+                cell = Markup('<a href="%s">%s</a>' % (
+                    build_url(value),
+                    cgi.escape(value.name),
+                ))
             elif isinstance(value, string_types) \
                     and (value.startswith("http://") or value.startswith("www.")):
                 cell = Markup(linkify_url(value))
@@ -437,11 +439,15 @@ class AjaxMainTableView(object):
             if has_custom_display:
                 cell = value
             elif column_name == 'name':
-                cell = Markup('<a href="%s">%s</a>' %
-                              (url_for(entity), cgi.escape(value)))
+                cell = Markup('<a href="%s">%s</a>' % (
+                    url_for(entity),
+                    cgi.escape(value),
+                ))
             elif isinstance(value, Entity):
-                cell = Markup('<a href="%s">%s</a>' %
-                              (url_for(value), cgi.escape(value.name)))
+                cell = Markup('<a href="%s">%s</a>' % (
+                    url_for(value),
+                    cgi.escape(value.name),
+                ))
             elif (isinstance(value, string_types) and
                   (value.startswith("http://") or value.startswith("www."))):
                 cell = Markup(linkify_url(value))
@@ -961,8 +967,10 @@ class Chosen(Select):
         if selected:
             options['selected'] = True
         return HTMLString(
-            '<option %s>%s</option>' %
-            (html_params(**options), cgi.escape(text_type(label))),
+            '<option %s>%s</option>' % (
+            html_params(**options),
+            cgi.escape(text_type(label)),
+            ),
         )
 
 
@@ -977,9 +985,9 @@ class TagInput(Input):
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
 
-        return HTMLString('<input %s>' % self.html_params(
-            name=field.name, **kwargs
-        ))
+        return HTMLString(
+            '<input %s>' % self.html_params(name=field.name, **kwargs),
+        )
 
 
 class DateInput(Input):
@@ -1446,8 +1454,8 @@ class ListWidget(wtforms.widgets.ListWidget):
             data = (
                 [
                     label for v, label, checked in field.iter_choices() if checked
-                ] if hasattr(field, 'iter_choices') and callable(field.iter_choices)
-                        else field.object_data
+                ] if hasattr(field, 'iter_choices') and
+                        callable(field.iter_choices) else field.object_data
             )
         else:
             data = []

@@ -99,10 +99,14 @@ class SignalsDebugPanel(DebugPanel):
                 ns_name = var_name
                 for signal_name, signal in ns.items():
                     d = {
-                        'module_name': module_name,
-                        'ns_name': ns_name,
-                        'signal_name': signal_name,
-                        'signal': signal,
+                        'module_name':
+                        module_name,
+                        'ns_name':
+                        ns_name,
+                        'signal_name':
+                        signal_name,
+                        'signal':
+                        signal,
                         'receivers':
                         [text_type(r) for r in signal.receivers.values()],
                     }

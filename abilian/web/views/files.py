@@ -89,8 +89,7 @@ class BaseFileDownload(View):
         """
         response = self.make_response(*args, **kwargs)
         response.headers['content-type'] = self.get_content_type(
-            *args,
-            **kwargs
+            *args, **kwargs
         )
 
         if attach:

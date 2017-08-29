@@ -316,7 +316,11 @@ class SecurityTestCase(IntegrationTestCase):
 
         # set/get/delete global permission
         security.add_permission(READ, Writer)
-        assert security.get_permissions_assignments() == {READ: {Writer,},}
+        assert security.get_permissions_assignments() == {
+            READ: {
+                Writer,
+            },
+        }
 
     def test_has_permission_on_objects(self):
         has_permission = security.has_permission
@@ -546,7 +550,9 @@ class PermissionNoSAWarnTestCase(IntegrationTestCase):
         security.add_permission(READ, Owner, None)
         obj = DummyModel()
         # override default permission at instance level
-        obj.__default_permissions__ = frozenset({(READ, frozenset({Owner})),})
+        obj.__default_permissions__ = frozenset({
+            (READ, frozenset({Owner})),
+        })
         # core.entities._setup_default_permissions creates
         self.session.add(obj)
         # permissions

@@ -37,7 +37,9 @@ class UpstreamInfo(object):
             config[key] = val
 
     def request_started(self, app):
-        _request_ctx_stack.top.upstream_info = {'Username': 'Anonymous',}
+        _request_ctx_stack.top.upstream_info = {
+            'Username': 'Anonymous',
+        }
 
     def request_finished(self, app, response):
         info = _request_ctx_stack.top.upstream_info
@@ -48,8 +50,8 @@ class UpstreamInfo(object):
 
         for key, val in info.items():
             if (
-                default_enabled and key in disabled or not default_enabled and
-                key not in enabled
+                default_enabled and key in disabled or
+                not default_enabled and key not in enabled
             ):
                 continue
 

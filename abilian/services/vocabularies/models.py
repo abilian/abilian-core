@@ -90,7 +90,9 @@ class BaseVocabulary(db.Model):
     position = Column(sa.Integer, nullable=False, unique=True)
 
     __table_args__ = (
-        sa.CheckConstraint(sa.sql.func.trim(sa.sql.text('label')) != ''),
+        sa.CheckConstraint(
+        sa.sql.func.trim(sa.sql.text('label')) != '',
+        ),
     )
 
     @sa.ext.declarative.declared_attr

@@ -74,7 +74,8 @@ class JSONUserSearch(JSONView):
 
         result = {
             'results': [{
-                'id': obj.id,
+                'id':
+                obj.id,
                 'text':
                 '{} {} ({})'.format(obj.first_name, obj.last_name, obj.email),
             }

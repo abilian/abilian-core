@@ -74,13 +74,23 @@ class TestVocabularies(BaseTestCase):
         assert IMMEDIATE.label == 'Immediate'
 
         # test default ordering
-        assert ([i.label for i in PriorityVoc.query.active().all()] ==
-                ['Immediate', 'Urgent', 'High', 'Normal', 'Low'])
+        assert ([i.label for i in PriorityVoc.query.active().all()] == [
+            'Immediate',
+            'Urgent',
+            'High',
+            'Normal',
+            'Low',
+        ])
 
         # no default ordering when using .values(): explicit ordering required
         query = PriorityVoc.query.active().order_by(PriorityVoc.position.asc())
-        assert ([i.label for i in query.values(PriorityVoc.label)] ==
-                ['Immediate', 'Urgent', 'High', 'Normal', 'Low'])
+        assert ([i.label for i in query.values(PriorityVoc.label)] == [
+            'Immediate',
+            'Urgent',
+            'High',
+            'Normal',
+            'Low',
+        ])
 
         # test db-side constraint for non-empty labels
         try:
@@ -123,8 +133,12 @@ class TestVocabularies(BaseTestCase):
         item = PriorityVoc.query.by_position(URGENT.position)
         assert item is URGENT
         item.active = False
-        assert ([i.label for i in PriorityVoc.query.active().all()] ==
-                ['Immediate', 'High', 'Normal', 'Low'])
+        assert ([i.label for i in PriorityVoc.query.active().all()] == [
+            'Immediate',
+            'High',
+            'Normal',
+            'Low',
+        ])
         assert PriorityVoc.query.active().by_position(URGENT.position) is None
 
         # test by_label()
