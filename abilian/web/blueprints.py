@@ -57,7 +57,8 @@ class Blueprint(BaseBlueprint):
         if allowed_roles:
             self.record_once(
                 lambda s: s.app.add_access_controller(
-                    self.name, allow_access_for_roles(allowed_roles),
+                    self.name,
+                    allow_access_for_roles(allowed_roles),
                 ),
             )
 
