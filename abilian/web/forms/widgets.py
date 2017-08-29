@@ -968,8 +968,8 @@ class Chosen(Select):
             options['selected'] = True
         return HTMLString(
             '<option %s>%s</option>' % (
-            html_params(**options),
-            cgi.escape(text_type(label)),
+                html_params(**options),
+                cgi.escape(text_type(label)),
             ),
         )
 
@@ -1172,19 +1172,19 @@ class DateTimeInput(object):
                           date=date_value,
                           time=time_value,
                       )) \
-               + self.date(
-                   field,
-                   id=field_id + '-date',
-                   name=field_name + '-date',
-                   value=date_value,
-               ) \
-               + self.time(
-                   field,
-                   id=field_id + '-time',
-                   name=field_name + '-time',
-                   value=time_value,
-               ) \
-               + Markup('</div>')
+            + self.date(
+            field,
+            id=field_id + '-date',
+            name=field_name + '-date',
+            value=date_value,
+        ) \
+            + self.time(
+            field,
+            id=field_id + '-time',
+            name=field_name + '-time',
+            value=time_value,
+        ) \
+            + Markup('</div>')
 
 
 class DefaultViewWidget(object):
@@ -1202,19 +1202,19 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
     # valid data-* options when using boostrap-switch
     _ON_OFF_VALID_OPTIONS = frozenset(
         (
-        'animate',
-        'indeterminate',
-        'inverse',
-        'radio-all-off',
-        'on-color',
-        'off-color',
-        'on-text',
-        'off-text',
-        'label-text',
-        'handle-width',
-        'label-width',
-        'base-class',
-        'wrapper-class',
+            'animate',
+            'indeterminate',
+            'inverse',
+            'radio-all-off',
+            'on-color',
+            'off-color',
+            'on-text',
+            'off-text',
+            'label-text',
+            'handle-width',
+            'label-width',
+            'base-class',
+            'wrapper-class',
         ),
     )
 
@@ -1296,8 +1296,8 @@ class EntityWidget(object):
             objs = [objs]
         return ', '.join(
             '<a href="{}">{}</a>'.format(
-            url_for(o),
-            cgi.escape(o.name),
+                url_for(o),
+                cgi.escape(o.name),
             ) for o in objs if o
         )
 
@@ -1455,7 +1455,7 @@ class ListWidget(wtforms.widgets.ListWidget):
                 [
                     label for v, label, checked in field.iter_choices() if checked
                 ] if hasattr(field, 'iter_choices') and
-                        callable(field.iter_choices) else field.object_data
+                callable(field.iter_choices) else field.object_data
             )
         else:
             data = []

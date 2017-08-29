@@ -110,9 +110,9 @@ class TestFilters(FlaskTestCase):
         # different year: 2011 shown
         assert (
             age(
-            d2011,
-            now,
-            date_threshold='day',
+                d2011,
+                now,
+                date_threshold='day',
             ) == 'September 4, 2011, 8:12 PM'
         )
 

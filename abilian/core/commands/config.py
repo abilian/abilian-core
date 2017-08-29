@@ -75,7 +75,7 @@ class DefaultConfig(object):
         if not os.path.exists(db_dir):
             os.mkdir(db_dir)
         self.SQLALCHEMY_DATABASE_URI = \
-          "sqlite:///{}/data/db.sqlite".format(current_app.instance_path)
+            "sqlite:///{}/data/db.sqlite".format(current_app.instance_path)
 
         if logging_file:
             self.LOGGING_CONFIG_FILE = logging_file

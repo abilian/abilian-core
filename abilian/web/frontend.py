@@ -225,8 +225,7 @@ EDIT_ACTION = Action(
     button='default',
     condition=lambda ctx: ctx['view'].can_edit,
     icon=FAIcon('edit'),
-    url=
-    lambda ctx: url_for('.entity_edit', **{ctx['view'].pk: ctx['view'].obj.id}),
+    url=lambda ctx: url_for('.entity_edit', **{ctx['view'].pk: ctx['view'].obj.id}),
 )
 
 DELETE_ACTION = Action(
@@ -434,8 +433,8 @@ class Module(object):
     blueprint = None
     search_criterions = (
         search.TextSearchCriterion(
-        "name",
-        attributes=('name', 'nom'),
+            "name",
+            attributes=('name', 'nom'),
         ),
     )
     # used mostly to change datatable search_label
@@ -731,8 +730,8 @@ class Module(object):
             if isinstance(sort_col, _DateAffinity):
                 sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
             elif isinstance(sort_col, sa.types.String) or \
-                            hasattr(sort_col, 'property') and \
-                            isinstance(sort_col.property.columns[0].type, sa.types.String):
+                    hasattr(sort_col, 'property') and \
+                    isinstance(sort_col.property.columns[0].type, sa.types.String):
                 sort_col = func.lower(sort_col)
 
             try:

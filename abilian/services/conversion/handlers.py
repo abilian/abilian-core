@@ -142,7 +142,7 @@ class AbiwordTextHandler(Handler):
         tmp_dir = self.TMP_DIR
         cur_dir = os.getcwd()
         with make_temp_file(blob, suffix=".doc") as in_fn,\
-             make_temp_file(suffix='.txt') as out_fn:
+                make_temp_file(suffix='.txt') as out_fn:
             try:
                 os.chdir(str(tmp_dir))
                 subprocess.check_call([
@@ -181,7 +181,7 @@ class AbiwordPDFHandler(Handler):
     def convert(self, blob, **kw):
         cur_dir = os.getcwd()
         with make_temp_file(blob, suffix=".doc") as in_fn,\
-             make_temp_file(suffix='.pdf') as out_fn:
+                make_temp_file(suffix='.pdf') as out_fn:
             try:
                 os.chdir(bytes(self.TMP_DIR))
                 subprocess.check_call([

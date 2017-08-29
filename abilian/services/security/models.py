@@ -300,10 +300,10 @@ class PermissionAssignment(db.Model):
     __tablename__ = 'permission_assignment'
     __table_args__ = (
         UniqueConstraint(
-        'permission',
-        'role',
-        'object_id',
-        name='assignments_unique',
+            'permission',
+            'role',
+            'object_id',
+            name='assignments_unique',
         ),
     )
 

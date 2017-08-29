@@ -79,12 +79,12 @@ class JSONUserSearch(JSONView):
                 'text':
                 '{} {} ({})'.format(obj.first_name, obj.last_name, obj.email),
             }
-                        for obj in query.values(
-                            User.id,
-                            User.first_name,
-                            User.last_name,
-                            User.email,
-                        )],
+                for obj in query.values(
+                User.id,
+                User.first_name,
+                User.last_name,
+                User.email,
+            )],
         }
         return result
 

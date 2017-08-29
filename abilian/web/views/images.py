@@ -177,8 +177,8 @@ class UserMugshot(BaseImageView):
 
         user_id = kwargs['user_id']
         user = User.query \
-          .options(sa.orm.undefer(User.photo)) \
-          .get(user_id)
+            .options(sa.orm.undefer(User.photo)) \
+            .get(user_id)
 
         if user is None:
             raise NotFound()

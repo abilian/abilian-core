@@ -126,7 +126,7 @@ def query_pa_no_flush(session, permission, role, obj):
                 PermissionAssignment.permission == permission,
                 PermissionAssignment.role == role,
                 PermissionAssignment.object == obj,
-            ) \
+        ) \
             .first()
 
 
@@ -445,7 +445,7 @@ class SecurityService(Service):
             return True
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
+                (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             # anonymous user, and anonymous role isn't in valid_roles
             return False
 
@@ -493,7 +493,7 @@ class SecurityService(Service):
         )
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
+                (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             args['anonymous'] = True
         elif isinstance(principal, User):
             args['user'] = principal
@@ -555,7 +555,7 @@ class SecurityService(Service):
         )
 
         if (principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
+                (hasattr(principal, 'is_anonymous') and principal.is_anonymous)):
             args['anonymous'] = True
             query.filter(
                 RoleAssignment.anonymous == False,
@@ -734,12 +734,12 @@ class SecurityService(Service):
         RA = sa.sql.select([RA], principal_filter).cte()
         permission_exists = \
             sa.sql.exists([1]) \
-                .where(sa.sql.and_(
-                    PA.permission == permission,
-                    PA.object_id == id_column,
-                    (RA.c.role == PA.role) | (PA.role == AnonymousRole),
-                    (RA.c.object_id == PA.object_id) | (RA.c.object_id == None),
-                ))
+            .where(sa.sql.and_(
+                PA.permission == permission,
+                PA.object_id == id_column,
+                (RA.c.role == PA.role) | (PA.role == AnonymousRole),
+                (RA.c.object_id == PA.object_id) | (RA.c.object_id == None),
+            ))
 
         # is_admin: self-explanatory. It search for local or global admin
         # role, but PermissionAssignment is not involved, thus it can match on
@@ -747,11 +747,11 @@ class SecurityService(Service):
         # expressions cannot.
         is_admin = \
             sa.sql.exists([1]) \
-                .where(sa.sql.and_(
-                    RA.c.role == Admin,
-                    (RA.c.object_id == id_column) | (RA.c.object_id == None),
-                    principal_filter,
-                ))
+            .where(sa.sql.and_(
+                RA.c.role == Admin,
+                (RA.c.object_id == id_column) | (RA.c.object_id == None),
+                principal_filter,
+            ))
 
         filter_expr = permission_exists | is_admin
 

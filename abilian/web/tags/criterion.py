@@ -47,7 +47,7 @@ class TagCriterion(BaseCriterion):
             Tag.ns == self.ns,
             Tag.id.in_(model_tags),
         )\
-                        .all()
+            .all()
 
     def get_request_values(self, request):
         tag_ids = []

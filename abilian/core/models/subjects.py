@@ -162,8 +162,8 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     index_to = __indexation_args__.setdefault('index_to', ())
     __indexation_args__['index_to'] += (
         (
-        'name',
-        ('name', 'name_prefix', 'text'),
+            'name',
+            ('name', 'name_prefix', 'text'),
         ),
     )
     del index_to

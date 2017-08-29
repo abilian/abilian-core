@@ -614,7 +614,7 @@ class JSONBaseSearch(JSONView):
         if self.minimum_input_length and len(q) < self.minimum_input_length:
             raise BadRequest(
                 'Minimum query length is {:d}'.format(
-                self.minimum_input_length,
+                    self.minimum_input_length,
                 ),
             )
 
@@ -704,7 +704,7 @@ class JSONWhooshSearch(JSONBaseSearch):
         except Exception:
             if itemkey is not None:
                 msg = "we could not sort whoosh results on fields' key {}." \
-                        .format(itemkey)
+                    .format(itemkey)
                 logger.warning(msg)
 
         return results

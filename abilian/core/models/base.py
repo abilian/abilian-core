@@ -66,11 +66,11 @@ class Indexable(object):
                 'object_type',
                 (
                     (
-                    'object_type',
-                    ID(
-                        stored=True,
-                        unique=False,
-                    ),
+                        'object_type',
+                        ID(
+                            stored=True,
+                            unique=False,
+                        ),
                     ),
                 ),
             ),

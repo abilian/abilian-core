@@ -43,17 +43,17 @@ class PermissionsTestCase(AbilianTestCase):
             .filter(PA.object == obj)
 
         assert query.filter(PA.permission == security.READ).all() \
-               == [(security.Anonymous,)]
+            == [(security.Anonymous,)]
 
         assert query.filter(PA.permission == security.WRITE).all() \
-               == [(security.Owner,)]
+            == [(security.Owner,)]
 
         assert query.filter(PA.permission == security.DELETE).all() \
-               == [(security.Owner,)]
+            == [(security.Owner,)]
 
         # special case:
         assert query.filter(PA.permission == security.CREATE).all() \
-               == []
+            == []
 
         security_svc = self.app.services['security']
         permissions = security_svc.get_permissions_assignments(obj)

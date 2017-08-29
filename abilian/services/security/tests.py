@@ -490,9 +490,9 @@ class SecurityTestCase(IntegrationTestCase):
         self.session.flush()
 
         assert set(base_query.filter(get_filter(READ, user=user)).all()) == \
-          {obj_reader, obj_none}
+            {obj_reader, obj_none}
         assert set(base_query.filter(get_filter(WRITE, user=user)).all()) == \
-          {obj_reader, obj_none}
+            {obj_reader, obj_none}
 
         # 2: global role
         security.ungrant_role(user, Admin, object=obj_reader)
