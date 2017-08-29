@@ -76,8 +76,7 @@ class Registry(object):
 
 
 class default_view(object):
-    """
-    Decorator to register a view as default view for given entity class.
+    r"""Decorator to register a view as default view for given entity class.
 
     :param id_attr: url parameter name for object id.
     :param endpoint: endpoint to use, defaults to view function's name.

@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Blueprint for views of dynamic images
+Blueprint for views of dynamic images.
 """
 from __future__ import absolute_import, division, print_function, \
     unicode_literals

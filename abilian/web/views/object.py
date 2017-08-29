@@ -202,7 +202,8 @@ ADD_ANOTHER_BUTTON = ButtonAction(
 
 
 class ObjectEdit(ObjectView):
-    """Edit objects.
+    """Edit object.
+
     """
     template = 'default/object_edit.html'
     decorators = (csrf.support_graceful_failure,)
@@ -353,8 +354,7 @@ class ObjectEdit(ObjectView):
         pass
 
     def handle_commit_exception(self, exc):
-        """
-        Hook point to handle exception that may happen during commit.
+        """Hook point to handle exception that may happen during commit.
 
         It is the responsability of this method to perform a rollback if it is
         required for handling `exc`. If the method does not handle `exc` if should
@@ -366,9 +366,7 @@ class ObjectEdit(ObjectView):
         return None
 
     def commit_success(self):
-        """
-        Called after object has been successfully saved to database
-        """
+        "Called after object has been successfully saved to database."
 
     def validate(self):
         return self.form.validate()
@@ -549,7 +547,9 @@ DELETE_BUTTON = ButtonAction('form', 'delete', title=_l('Delete'))
 
 
 class ObjectDelete(ObjectEdit):
-    """Delete object. Supports DELETE verb.
+    """Delete object.
+
+    Supports the DELETE verb.
     """
     methods = ['POST']
     permission = DELETE
@@ -628,8 +628,7 @@ class JSONBaseSearch(JSONView):
         raise NotImplementedError
 
     def get_item(self, obj):
-        """
-        Return a result item
+        """Return a result item.
 
         :param obj: Instance object
         :returns: a dictionnary with at least `id` and `text` values
@@ -638,9 +637,9 @@ class JSONBaseSearch(JSONView):
 
 
 class JSONModelSearch(JSONBaseSearch):
-    """
-    Base class for json sqlalchemy model search, as used by select2 widgets for
-    example
+    """Base class for json sqlalchemy model search.
+
+    As used by select2 widgets for example.
     """
 
     def get_results(self, q, *args, **kwargs):
@@ -668,8 +667,7 @@ class JSONModelSearch(JSONBaseSearch):
         return obj.name
 
     def get_item(self, obj):
-        """
-        Return a result item.
+        """Return a result item.
 
         :param obj: Instance object
         :returns: a dictionnary with at least `id` and `text` values
@@ -679,7 +677,7 @@ class JSONModelSearch(JSONBaseSearch):
 
 class JSONWhooshSearch(JSONBaseSearch):
     """
-    Base class for JSON Whoosh search, as used by select2 widgets for example
+    Base class for JSON Whoosh search, as used by select2 widgets for example.
     """
 
     def get_results(self, q, *args, **kwargs):
