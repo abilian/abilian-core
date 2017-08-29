@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, \
 
 import logging
 
-import six
 import sqlalchemy as sa
 from flask import current_app, flash, g, redirect, render_template, request, \
     url_for

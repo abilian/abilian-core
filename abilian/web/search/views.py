@@ -8,7 +8,6 @@ import logging
 from collections import OrderedDict
 from functools import partial
 
-import six
 import whoosh
 import whoosh.sorting
 from flask import Blueprint, current_app, g, render_template, request, url_for

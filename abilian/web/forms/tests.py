@@ -5,11 +5,9 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import datetime
-import sys
 
 import mock
 import pytz
-from pytest import mark
 from wtforms.form import Form
 
 from abilian.core.entities import Entity

@@ -28,10 +28,10 @@ isort==4.2.15
 yapf==0.17.0
 autopep8==1.3.2
 add-trailing-comma
+mastool
 
 # These two plugins try too hard..
 # pep8-naming
-# mastool
 
 # To build docs
 # (Doesn't work w/ sphinx 1.4.5)
