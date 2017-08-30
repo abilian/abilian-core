@@ -5,13 +5,12 @@ language: python
 cache: pip
 python:
   - "2.7"
-  - "3.6"
-
+  # - "3.6"
 
 env:
   matrix:
     - SQLALCHEMY_DATABASE_URI="sqlite://"
-    - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost:5432/abilian_core"
+    - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost/abilian_core"
 
 services:
   - redis-server
@@ -21,7 +20,7 @@ addons:
 
 # Install OS dependencies
 before_install:
-  - pip install -U 'pip>=9' setuptools
+  - pip install -U pip setuptools wheel
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
@@ -54,4 +53,3 @@ notifications:
       - abilian:dTtRD7DHS4Dw3jfRrqytQWU6#code
     on_success: change
     on_failure: always
-
