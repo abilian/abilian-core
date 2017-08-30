@@ -66,7 +66,7 @@ flake8:
 
 lint-ci: lint-py lint-py3k lint-rst lint-doc
 
-lint: lint-ci lint-travis
+lint: lint-py lint-rst lint-doc lint-travis
 
 lint-all: lint lint-mypy lint-js lint-less lint-bandit
 
