@@ -1,19 +1,3 @@
-// {
-//     'rules': {
-//         'indent': [1, 2],
-//         'quotes': [1, 'double'],
-//         'linebreak-style': [1, 'unix'],
-//         'semi': [1, 'always'],
-// 	'comma-dangle': [2, 'always-multiline']
-//     },
-//     'env': {
-//         'es6': true,
-//         'browser': true
-//     },
-//     'extends': 'defaults/configurations/eslint'
-// }
-
-
 module.exports = {
   root: true,
   // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
