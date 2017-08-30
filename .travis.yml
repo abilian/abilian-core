@@ -23,7 +23,7 @@ before_install:
   - pip install -U pip setuptools wheel
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
-  - npm install -g less eslint eslint-config-standard eslint-plugin-promise eslint-plugin-standard eslint-plugin-html
+  - npm install -g less
   - export PATH=~/npm-packages/bin:$PATH
 
 # Install Python dependencies
@@ -31,6 +31,7 @@ install:
   - pip install -r requirements.txt
   - pip install -e '.[dev]'
   - pip check
+  - npm install
 
 # Create DB
 before_script:
