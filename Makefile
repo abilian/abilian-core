@@ -64,7 +64,7 @@ vagrant-tests:
 flake8:
 	flake8 $(SRC)
 
-lint-ci: lint-py lint-py3k lint-rst lint-doc
+lint-ci: lint-py lint-py3k lint-less lint-rst lint-doc
 
 lint: lint-py lint-rst lint-doc lint-travis
 
@@ -92,12 +92,12 @@ lint-travis:
 
 lint-js:
 	@echo "--> Linting JS files"
-	npm run eslint
+	node_modules/.bin/eslint abilian/web/resources/js/
 	@echo ""
 
 lint-less:
 	@echo "--> Linting LESS files"
-	npm run stylelint
+	node_modules/.bin/stylelint ./abilian/web/resources/less/*.less
 	@echo ""
 
 lint-rst:
@@ -162,15 +162,20 @@ release:
 	cd /tmp/abilian-core ; python setup.py sdist
 	cd /tmp/abilian-core ; python setup.py sdist upload
 
-format:
+
+format: format-py format-js
+
+format-py:
 	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
 		-rc $(SRC) tests *.py
 	-yapf --style google -r -i $(SRC) tests *.py
-	-add-trailing-comma `find abilian -name '*.py'`
-	-add-trailing-comma `find tests -name '*.py'`
-	-add-trailing-comma *.py
+	-add-trailing-comma `find abilian -name '*.py'` `find tests -name '*.py'` *.py
 	autopep8 -j3 -r --in-place -a --ignore E711 abilian tests *.py
 	isort -rc $(SRC) tests *.py
+
+format-js:
+	./node_modules/.bin/prettier --trailing-comma es5 --write \
+		'abilian/web/resources/js/**/*.js'
 
 update-deps:
 	pip-compile -U > /dev/null
