@@ -26,8 +26,9 @@ develop:
 	pip install -U pip-tools setuptools
 	pip install -U -e '.[dev]'
 	pip install -r etc/dev-requirements.txt
-	pre-commit install
 	yarn
+	@echo "--> Activating pre-commit hook"
+	pre-commit install
 	@echo ""
 
 setup-git:
