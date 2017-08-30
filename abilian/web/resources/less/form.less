@@ -45,14 +45,14 @@ form [role="tabpanel"] > .form-group:nth-of-type(odd) {
   }
 }
 
-form [role="tablist"] .required:after,
-.form-group.required > label:after,
-label.required:after {
+form [role="tablist"] .required::after,
+.form-group.required > label::after,
+label.required::after {
   content: '\2605'; // U+2605: BLACK STAR ★
   vertical-align: super;
   font-size: 85%;
   margin-left: 0.25ex;
-  color: #B00;
+  color: #b00;
 }
 
 /* to disable resize on textareas */
@@ -118,6 +118,7 @@ table.tabular-form {
     .make-md-column(6);
     .well();
     .well-sm();
+
     margin-bottom: 0;
 
     canvas, img {
