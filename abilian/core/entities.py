@@ -280,10 +280,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         ),
         (
             '_indexable_tag_text',
-            (
-                'tag_text',
-                'text',
-            ),
+            ('tag_text', 'text'),
         ),
     )
     __indexation_args__['index_to'] = index_to

@@ -16,8 +16,8 @@ from .base import IntegrationTestCase
 def gen_name(ctx):
     params = ctx.current_parameters
     return '{} {}'.format(
-        params.get('first_name') or '',
-        params.get('last_name') or '',
+        params.get('first_name', ""),
+        params.get('last_name', ""),
     ).strip()
 
 
