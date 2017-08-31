@@ -704,7 +704,7 @@
       });
       this.$elements.append("&nbsp;&nbsp;");
 
-      /* create the radios*/
+      /* create the radios */
       for (var i = 3; i < argLen; i++) {
         var arg = arguments[i];
         var id = name + "-radio" + "_" + i;
@@ -954,7 +954,7 @@
       load: function(vals) {
         vals = vals[0];
         for (var filterName in vals.values) {
-          if (this.options == null || !this.options[filterName]) {
+          if (this.options === null || !this.options[filterName]) {
             continue;
           }
           this.installOption(this.options[filterName]);

@@ -1,4 +1,3 @@
-/* jshint unused: false */
 /**
  Allow to setup a delete button for urls managed by abilian.web.views.object.ObjectDelete.
  */

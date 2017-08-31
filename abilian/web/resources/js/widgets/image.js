@@ -63,7 +63,6 @@
     var h_ratio = infos.height / this.height;
     var width;
     var height;
-    var preview;
 
     if (w_ratio > h_ratio) {
       /* wider than taller: set target width to max width */

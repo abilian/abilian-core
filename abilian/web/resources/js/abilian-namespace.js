@@ -1,5 +1,4 @@
 /* Abilian namespace */
-/* jshint camelcase: false */
 
 function setupAbilian($) {
   "use strict";

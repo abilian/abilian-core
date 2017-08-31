@@ -10,7 +10,7 @@
     self.prefix = table.data("prefix");
     self.tbody = table.children("tbody");
     self.options = options;
-    if (self.options == null) {
+    if (self.options === null) {
       self.options = "top";
     }
     self.currentIndex = table.find("> tbody > tr").length;
