@@ -29,12 +29,8 @@ develop:
 	yarn
 	@echo "--> Activating pre-commit hook"
 	pre-commit install
-	@echo ""
-
-setup-git:
-	@echo "--> Configuring git and installing hooks"
+	@echo "--> Configuring git"
 	git config branch.autosetuprebase always
-	cd .git/hooks && ln -sf ../../tools/hooks/* ./
 	@echo ""
 
 
