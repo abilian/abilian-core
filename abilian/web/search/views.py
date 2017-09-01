@@ -9,6 +9,8 @@ from collections import OrderedDict
 from functools import partial
 
 import whoosh
+import whoosh.highlight
+import whoosh.searching
 import whoosh.sorting
 from flask import Blueprint, current_app, g, render_template, request, url_for
 from six import text_type
@@ -53,7 +55,7 @@ def friendly_fqcn(fqcn):
 def init_search(endpoint, values):
     q = request.args.get("q")
     try:
-        page = max(int(request.args.get('page', 1), 1))
+        page = max(int(request.args.get('page', 1)), 1)
     except BaseException:
         page = 1
 
