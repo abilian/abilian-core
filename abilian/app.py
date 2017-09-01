@@ -11,6 +11,7 @@ import importlib
 import logging
 import logging.config
 import os
+import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
@@ -18,6 +19,7 @@ from typing import Any, Dict
 
 import jinja2
 import sqlalchemy as sa
+import sqlalchemy.exc
 import yaml
 from babel.dates import LOCALTZ
 from flask import Blueprint, Flask, _request_ctx_stack, abort, \
@@ -61,6 +63,9 @@ from abilian.web.views.images import user_photo_url
 logger = logging.getLogger(__name__)
 db = extensions.db
 __all__ = ['create_app', 'Application', 'ServiceManager']
+
+# Silence those warnings for now.
+warnings.simplefilter("ignore", category=sa.exc.SAWarning)
 
 
 class ServiceManager(object):

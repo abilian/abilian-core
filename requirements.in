@@ -48,11 +48,9 @@ bleach>=1.4.2,<2
 bcrypt
 
 # Others (TODO: document)
-# Markdown
 PyYAML
 pygeoip
 typing
-
 tqdm
 
 # Forms (TODO: need some updates)
