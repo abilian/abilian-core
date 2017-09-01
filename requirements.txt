@@ -55,7 +55,7 @@ pytz==2017.2              # via babel, celery, pandas
 pyyaml==3.12
 redis==2.10.6
 six==1.10.0
-sqlalchemy-utils==0.32.14
+sqlalchemy-utils==0.32.16
 sqlalchemy==1.1.13
 sqlparse==0.2.3
 straight.plugin==1.4.1
