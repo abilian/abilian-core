@@ -2,6 +2,7 @@
 six
 
 # Flask and friends
+Jinja2>=2.9
 Flask>=0.11
 Flask-Assets>=0.10
 Flask-Babel>=0.11
