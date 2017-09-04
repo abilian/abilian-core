@@ -1,8 +1,8 @@
-(function (factory) {
-  'use strict';
-  require(['AbilianWidget', 'jquery'], factory);
-}(function (Abilian, $) {
-  'use strict';
+(function(factory) {
+  "use strict";
+  require(["AbilianWidget", "jquery"], factory);
+})(function(Abilian, $) {
+  "use strict";
 
   function tagsFormatter(tagsToReplace) {
     function replaceTag(tag) {
@@ -20,7 +20,7 @@
   }
 
   var DEFAULT_PARAMS = {
-    'containerCssClass': 'form-control',
+    containerCssClass: "form-control",
   };
 
   function initSelect2(params) {
@@ -28,11 +28,11 @@
 
     // replace the escaped html with proper tags
     // to be displayed in the select
-    if ('makeHtml' in params) {
+    if ("makeHtml" in params) {
       var tagsToReplace = {
-        '&amp;': '&',
-        '&lt;': '<',
-        '&gt;': '>',
+        "&amp;": "&",
+        "&lt;": "<",
+        "&gt;": ">",
       };
 
       // select2 parameters for formating function
@@ -44,16 +44,16 @@
     this.select2(initParams);
   }
 
-  Abilian.registerWidgetCreator('select2', initSelect2);
+  Abilian.registerWidgetCreator("select2", initSelect2);
 
   var DEFAULT_AJAX_PARAMS = {
-    dataType: 'json',
+    dataType: "json",
     quietMillis: 100,
-    data: function (term, page) {
-      return {q: term};
+    data: function(term, page) {
+      return { q: term };
     },
-    results: function (data, page) {
-      return {results: data.results, more: false};
+    results: function(data, page) {
+      return { results: data.results, more: false };
     },
   };
 
@@ -62,9 +62,9 @@
     var data = null;
 
     if (params.dataNodeId !== undefined) {
-      data = JSON.parse($('#' + params.dataNodeId).html());
+      data = JSON.parse($("#" + params.dataNodeId).html());
 
-      initParams.initSelection = function (element, callback) {
+      initParams.initSelection = function(element, callback) {
         if (data.values.length > 0) {
           callback(data.values.length == 1 ? data.values[0] : data.values);
         }
@@ -73,7 +73,7 @@
 
     if (params.ajax) {
       initParams.ajax = $.extend({}, DEFAULT_AJAX_PARAMS, params.ajax);
-      if (!('minimumInputLength' in params)) {
+      if (!("minimumInputLength" in params)) {
         initParams.minimumInputLength = 2;
       }
     } else if (!params.data || !params.tags) {
@@ -84,8 +84,8 @@
     }
 
     if (params.formatResult) {
-      initParams.formatResult = function () {
-        var f = params.formatResult.split('.');
+      initParams.formatResult = function() {
+        var f = params.formatResult.split(".");
         var formatter = window;
 
         for (var i = 0; i < f.length; i++) {
@@ -97,8 +97,8 @@
     }
 
     if (params.formatSelection) {
-      initParams.formatSelection = function () {
-        var f = params.formatSelection.split('.');
+      initParams.formatSelection = function() {
+        var f = params.formatSelection.split(".");
         var formatter = window;
 
         for (var i = 0; i < f.length; i++) {
@@ -112,5 +112,5 @@
     this.select2(initParams);
   }
 
-  Abilian.registerWidgetCreator('select2ajax', initSelect2Ajax);
-}));
+  Abilian.registerWidgetCreator("select2ajax", initSelect2Ajax);
+});

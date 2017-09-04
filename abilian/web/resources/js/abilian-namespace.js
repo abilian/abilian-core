@@ -2,9 +2,9 @@
 /* jshint camelcase: false */
 
 function setupAbilian($) {
-  'use strict';
+  "use strict";
 
-  var Abilian = window.Abilian = window.Abilian || {};
+  var Abilian = (window.Abilian = window.Abilian || {});
   var initialized = false;
 
   /**
@@ -18,7 +18,7 @@ function setupAbilian($) {
    *  default templates and scripts set it based on locale from user
    *  preferences or negociated by HTTP request.  Defaults to 'en'.
    */
-  Abilian.locale = 'en';
+  Abilian.locale = "en";
 
   /**
    * Abilian events. Listeners should be registered using
@@ -26,18 +26,18 @@ function setupAbilian($) {
    * string value
    */
   Abilian.events = {};
-  Abilian.events.appInit = 'abilian.app-init';
-  Abilian.events.appAfterInit = 'abilian.app-after-init';
+  Abilian.events.appInit = "abilian.app-init";
+  Abilian.events.appAfterInit = "abilian.app-after-init";
 
   /**
    * CSRF field name to use, if CSRF is used
    */
-  Abilian.csrf_fieldname = '';
+  Abilian.csrf_fieldname = "";
 
   /**
    * CSRF token to use, if defined.
    */
-  Abilian.csrf_token = '';
+  Abilian.csrf_token = "";
 
   /**
    * Abilian remote API
@@ -53,7 +53,7 @@ function setupAbilian($) {
    * Shortcut to register a function that must execute when application is
    * initialized. This is the preferred way to register init handlers.
    */
-  Abilian.fn.onAppInit = function (callback) {
+  Abilian.fn.onAppInit = function(callback) {
     if (!initialized) {
       $(window).on(Abilian.events.appInit, callback);
     } else {
@@ -69,7 +69,7 @@ function setupAbilian($) {
     anonymous: true,
   };
 
-  Abilian.init = function () {
+  Abilian.init = function() {
     initialized = true;
     $(window).trigger(Abilian.events.appInit);
     $(window).trigger(Abilian.events.appAfterInit);
@@ -78,4 +78,4 @@ function setupAbilian($) {
   return Abilian;
 }
 
-define('AbilianNS', ['jquery'], setupAbilian);
+define("AbilianNS", ["jquery"], setupAbilian);
