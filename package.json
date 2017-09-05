@@ -21,5 +21,9 @@
     "rules": {
       "selector-list-comma-newline-after": "always-multi-line"
     }
+  },
+  "dependencies": {
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1"
   }
 }
