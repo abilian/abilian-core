@@ -25,7 +25,7 @@ flask-debugtoolbar==0.10.1
 flask-login==0.4.0
 flask-mail==0.9.1
 flask-migrate==2.1.1
-flask-script==2.0.5
+flask-script==2.0.6
 flask-sqlalchemy==2.1
 flask-testing==0.6.2
 flask-wtf==0.12
