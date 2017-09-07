@@ -17,8 +17,8 @@ from abilian.services.security.models import Anonymous, Role
 
 #: A Whoosh analyzer that splits on word boundaries and folds accents and case.
 accent_folder = (
-    RegexTokenizer(r'\w+')  # defaults doesn't split on '.'
-    | LowercaseFilter() | CharsetFilter(accent_map)
+    RegexTokenizer(r'\w+') |  # defaults doesn't split on '.'
+    LowercaseFilter() | CharsetFilter(accent_map)
 )
 
 #: Analyzer for edge-ngrams, from 2 to 6 characters long
