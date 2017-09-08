@@ -22,8 +22,7 @@ from abilian.core.sqlalchemy import UUID, JSONDict
 
 
 class BlobQuery(BaseQuery):
-    """Query class for :class:`Blob` objects
-    """
+    """Query class for :class:`Blob` objects."""
 
     def by_uuid(self, uuid):
         # type: (str) -> Optional[Blob]
@@ -43,6 +42,7 @@ class Blob(Model):
     Files are stored on-disk, named after their uuid. Repository is located in
     instance folder/data/files.
     """
+
     __tablename__ = "blob"
     query_class = BlobQuery
 
@@ -70,15 +70,13 @@ class Blob(Model):
 
     @property
     def size(self):
-        """Return size in bytes of value.
-        """
+        """Return size in bytes of value."""
         f = self.file
         return f.stat().st_size if f is not None else 0
 
     @property
     def value(self):
-        """Binary value content.
-        """
+        """Binary value content."""
         v = self.file
         return v.open('rb').read() if v is not None else v
 
@@ -105,15 +103,13 @@ class Blob(Model):
 
     @value.deleter
     def value(self):
-        """Remove value from repository.
-        """
+        """Remove value from repository."""
         from abilian.services.repository import session_repository as repository
         repository.delete(self, self.uuid)
 
     @property
     def md5(self):
-        """Return md5 from meta, or compute it if absent.
-        """
+        """Return md5 from meta, or compute it if absent."""
         md5 = self.meta.get('md5')
         if md5 is None:
             md5 = text_type(hashlib.md5(self.value).hexdigest())
@@ -121,8 +117,7 @@ class Blob(Model):
         return md5
 
     def __bool__(self):
-        """A blob is considered null if it has no file.
-        """
+        """A blob is considered falsy if it has no file."""
         return self.file is not None and self.file.exists()
 
     # Py3k compat

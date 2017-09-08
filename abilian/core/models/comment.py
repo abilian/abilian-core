@@ -61,8 +61,7 @@ def is_commentable(obj_or_class):
 
 
 def for_entity(obj, check_commentable=False):
-    """Return comments on an entity.
-    """
+    """Return comments on an entity."""
     if check_commentable and not is_commentable(obj):
         return []
 
@@ -70,8 +69,7 @@ def for_entity(obj, check_commentable=False):
 
 
 class Comment(Entity):
-    """A Comment related to an :class:`Entity`.
-    """
+    """A Comment related to an :class:`Entity`."""
     __default_permissions__ = {
         WRITE: {Owner},
         DELETE: {Owner},
