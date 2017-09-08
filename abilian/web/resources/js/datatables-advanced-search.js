@@ -678,7 +678,7 @@
       this.$elements = $('<div class="form-inline">');
       this.multiple = s2_args["multiple"] || false;
 
-      /* create the select*/
+      /* create the select */
       var selectId = name + "-select";
       var $select = $("<input />").attr({
         id: selectId,
@@ -704,7 +704,7 @@
       });
       this.$elements.append("&nbsp;&nbsp;");
 
-      /* create the radios*/
+      /* create the radios */
       for (var i = 3; i < argLen; i++) {
         var arg = arguments[i];
         var id = name + "-radio" + "_" + i;

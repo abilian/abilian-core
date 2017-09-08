@@ -1,4 +1,3 @@
-/* jshint unused: false */
 /**
  Allow to setup a delete button for urls managed by abilian.web.views.object.ObjectDelete.
  */
@@ -61,12 +60,14 @@
     form.setAttribute("method", "POST");
     form.setAttribute("action", this.url);
     form.setAttribute("enctype", "multipart/form-data");
+
     // csrf
     var input = document.createElement("input");
     input.setAttribute("type", "hidden");
     input.setAttribute("name", Abilian.csrf_fieldname);
     input.setAttribute("value", Abilian.csrf_token);
     form.appendChild(input);
+
     // action value
     input = document.createElement("input");
     input.setAttribute("type", "hidden");

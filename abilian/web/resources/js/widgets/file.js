@@ -113,7 +113,7 @@
       var uid = api.uid(file);
       this.currentlyUploaded[uid] = true;
 
-      var xhr = api.upload({
+      api.upload({
         url: Abilian.api.upload.newFileUrl,
         headers: {
           Accept: "application/json",
@@ -161,7 +161,6 @@
       var button = $(evt.target);
       var markerInputElement = evt.target.markerInputElement;
       var isActive = button.hasClass("active");
-      var input = $(evt.data.node).find("input");
 
       button.toggleClass("active");
 

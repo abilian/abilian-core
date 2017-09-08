@@ -6,13 +6,13 @@
 
   function initRichTextWidget(params) {
     var element = this;
-    var name = this.attr["name"];
-    var rows = parseInt(element.attr("rows")) || 10;
-    var editor = null;
+    // var name = this.attr["name"];
+    // var rows = parseInt(element.attr("rows")) || 10;
+    // var editor = null;
 
     function setupCkEditor($, ckeditor) {
       ckeditor.editorConfig = function(config) {};
-      editor = ckeditor.replace(element.get(0));
+      ckeditor.replace(element.get(0));
     }
 
     require(["jquery", "ckeditor"], setupCkEditor);
