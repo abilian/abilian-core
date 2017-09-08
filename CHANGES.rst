@@ -1,6 +1,12 @@
 Changelog for Abilian Core
 ==========================
 
+0.9.16 (2017-09-08)
+-------------------
+
+- JS cleanup and linting
+- Deps updates
+
 0.9.15 (2017-09-04)
 -------------------
 

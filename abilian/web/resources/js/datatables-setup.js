@@ -87,7 +87,7 @@
 
           // Add the new list items and their event handlers
           for (j = iStart; j <= iEnd; j++) {
-            sClass = j == oPaging.iPage + 1 ? 'class="active"' : "";
+            sClass = (j === oPaging.iPage + 1) ? 'class="active"' : "";
             $("<li " + sClass + '><a href="#">' + j + "</a></li>")
               .insertBefore($("li:last", an[i])[0])
               .bind("click", function(e) {
@@ -122,17 +122,17 @@
   $.extend($.fn.dataTableExt.oSort, {
     "string-non-null-pre": $.fn.dataTableExt.oSort["html-pre"],
     "string-non-null-asc": function(x, y) {
-      if (x == y) {
+      if (x === y) {
         return 0;
-      } else if (x == "") {
+      } else if (x === "") {
         return -1;
-      } else if (y == "") {
+      } else if (y === "") {
         return 1;
       }
       return $.fn.dataTableExt.oSort["string-asc"](x, y);
     },
     "string-non-null-desc": function(x, y) {
-      if (x == y) {
+      if (x === y) {
         return 0;
       } else if (!x) {
         return 1;

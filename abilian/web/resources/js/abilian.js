@@ -30,7 +30,7 @@
    */
   $.fn.preventEnterKey = function() {
     return $(this).on("keypress", function(e) {
-      if (e.keyCode == 13) {
+      if (e.keyCode === 13) {
         e.preventDefault();
       }
     });
@@ -95,10 +95,10 @@
       var parent = this.parentNode;
       var $el = $(this);
 
-      if (parent.tagName == "LABEL") {
+      if (parent.tagName === "LABEL") {
         $el.insertAfter(parent);
         parent = $(parent);
-        if (parent.text().trim().length == 0) {
+        if (parent.text().trim().length === 0) {
           parent.remove();
         }
       }
@@ -162,11 +162,11 @@
 
     var search_box = $("#search-box");
 
-    if (search_box.length == 0) {
+    if (search_box.length === 0) {
       return;
     }
 
-    if (datasets.length == 0) {
+    if (datasets.length === 0) {
       search_box.attr("disabled", true);
       return;
     }

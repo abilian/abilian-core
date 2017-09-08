@@ -954,7 +954,7 @@
       load: function(vals) {
         vals = vals[0];
         for (var filterName in vals.values) {
-          if (this.options == null || !this.options[filterName]) {
+          if (this.options === null || !this.options[filterName]) {
             continue;
           }
           this.installOption(this.options[filterName]);
