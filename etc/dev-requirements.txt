@@ -19,6 +19,7 @@ pytest-cov
 flake8
 flake8-tidy-imports
 flake8-mutable
+mccabe
 pylint
 pre-commit
 
