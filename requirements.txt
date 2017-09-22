@@ -59,7 +59,7 @@ sqlalchemy-utils==0.32.16
 sqlalchemy==1.1.14
 sqlparse==0.2.3
 straight.plugin==1.4.1
-tqdm==4.15.0
+tqdm==4.17.0
 typing==3.6.2
 validators==0.12.0        # via wtforms-components
 webassets==0.12.1         # via flask-assets
