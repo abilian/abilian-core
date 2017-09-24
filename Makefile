@@ -41,7 +41,7 @@ test-all: test test-readme
 
 test:
 	@echo "--> Running Python tests"
-	py.test $(PYTEST_MULTI) .
+	pytest --ff -x $(PYTEST_MULTI) .
 	@echo ""
 
 test-with-coverage:
