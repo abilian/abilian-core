@@ -57,7 +57,7 @@ redis==2.10.6
 six==1.11.0
 sqlalchemy-utils==0.32.16
 sqlalchemy==1.1.14
-sqlparse==0.2.3
+sqlparse==0.2.4
 straight.plugin==1.4.1
 tqdm==4.17.1
 typing==3.6.2
