@@ -6,6 +6,10 @@ from __future__ import absolute_import, division, print_function, \
 
 import six
 import sqlalchemy as sa
+import sqlalchemy.event
+import sqlalchemy.ext
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy import Column
 
@@ -35,7 +39,7 @@ class VocabularyQuery(BaseQuery):
 
     def by_position(self, position):
         """
-        Like `.get()`, but by position number
+        Like `.get()`, but by position number.
         """
         # don't use .first(), so that MultipleResultsFound can be raised
         try:
@@ -107,12 +111,12 @@ class BaseVocabulary(db.Model):
         return self.label
 
     def __repr__(self):
-        fmt = (
+        tpl = (
             '<{module}.{cls} id={id} label={label} position={position} '
-            'active={active} default={default} at 0x{addr:x}'
+            'active={active} default={default} at 0x{addr:x}>'
         )
         cls = self.__class__
-        return fmt.format(
+        return tpl.format(
             module=cls.__module__,
             cls=cls.__name__,
             id=self.id,
@@ -128,7 +132,7 @@ class BaseVocabulary(db.Model):
 @sa.event.listens_for(BaseVocabulary, "before_update", propagate=True)
 def strip_label(mapper, connection, target):
     """
-    Strip labels at ORM level so the unique=True means something
+    Strip labels at ORM level so the unique=True means something.
     """
     if target.label is not None:
         target.label = target.label.strip()
@@ -137,7 +141,7 @@ def strip_label(mapper, connection, target):
 @sa.event.listens_for(BaseVocabulary, "before_insert", propagate=True)
 def _before_insert(mapper, connection, target):
     """
-    Set item to last position if position not defined
+    Set item to last position if position not defined.
     """
     if target.position is None:
         func = sa.sql.func
