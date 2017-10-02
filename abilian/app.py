@@ -54,6 +54,7 @@ from abilian.web.action import Endpoint, actions
 from abilian.web.admin import Admin
 from abilian.web.assets.filters import ClosureJS
 from abilian.web.blueprints import allow_access_for_roles
+from abilian.web.decorators import deprecated
 from abilian.web.filters import init_filters
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.util import send_file_from_directory, url_for
@@ -90,6 +91,7 @@ class PluginManager(object):
     Mixin that provides support for loading plugins.
     """
 
+    @deprecated
     def load_plugins(self):
         """Discover and load plugins.
 
