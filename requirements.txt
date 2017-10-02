@@ -40,7 +40,7 @@ kombu==3.0.37             # via celery
 lxml==4.0.0
 mako==1.0.7               # via alembic
 markupsafe==1.0
-numpy==1.13.1             # via pandas
+numpy==1.13.3             # via pandas
 olefile==0.44             # via pillow
 pandas==0.20.3
 pathlib==1.0.1
@@ -55,11 +55,11 @@ pytz==2017.2              # via babel, celery, pandas
 pyyaml==3.12
 redis==2.10.6
 six==1.11.0
-sqlalchemy-utils==0.32.16
+sqlalchemy-utils==0.32.17
 sqlalchemy==1.1.14
 sqlparse==0.2.4
 straight.plugin==1.4.1
-tqdm==4.17.1
+tqdm==4.18.0
 typing==3.6.2
 validators==0.12.0        # via wtforms-components
 webassets==0.12.1         # via flask-assets
@@ -67,4 +67,5 @@ werkzeug==0.12.2          # via flask, flask-debugtoolbar, flask-wtf
 whoosh==2.7.4
 wtforms-alchemy==0.15.0
 wtforms-components==0.10.3
-wtforms==2.1              # via flask-wtf, wtforms-alchemy, wtforms-components
+wtforms-sqlalchemy==0.1
+wtforms==2.1              # via flask-wtf, wtforms-alchemy, wtforms-components, wtforms-sqlalchemy
