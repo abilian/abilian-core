@@ -18,7 +18,7 @@ from wtforms.validators import ValidationError
 from abilian.i18n import _, _l, get_default_locale
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
-from abilian.web.forms import Form, fields, validators, widgets
+from abilian.web.forms import Form, fields, widgets, required
 
 
 class UserPreferencesForm(Form):
@@ -39,13 +39,13 @@ class UserPreferencesForm(Form):
 
     locale = fields.LocaleSelectField(
         label=_l('Preferred Language'),
-        validators=(validators.required(),),
+        validators=[required()],
         default=lambda: get_default_locale(),
     )
 
     timezone = fields.TimezoneField(
         label=_l('Time zone'),
-        validators=(validators.required(),),
+        validators=(required(),),
         default=babel.dates.LOCALTZ,
     )
 

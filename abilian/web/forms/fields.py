@@ -23,7 +23,7 @@ from wtforms import Field, SelectField, SelectFieldBase, SelectMultipleField, \
     ValidationError
 from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
-from wtforms.ext.sqlalchemy.fields import get_pk_from_identity, \
+from wtforms_sqlalchemy.fields import get_pk_from_identity, \
     has_identity_key
 from wtforms.validators import DataRequired, Optional
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
