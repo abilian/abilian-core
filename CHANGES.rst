@@ -1,6 +1,12 @@
 Changelog for Abilian Core
 ==========================
 
+0.9.18 (2017-10-06)
+-------------------
+
+- Relax dependency constraint on Bleach to allow upgrade
+  of other deps.
+
 0.9.17 (2017-10-02)
 -------------------
 
