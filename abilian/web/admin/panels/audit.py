@@ -263,8 +263,7 @@ class AuditPanel(AdminPanel):
         if filter_types:
             url_params['types'] = list(filter_types)[0]
 
-        return render_template(
-            "admin/audit.html",
+        ctx = dict(
             entries=entries,
             filter_user=filter_user,
             all_classes=[(c.__name__, c.entity_type) for c in all_classes],
@@ -274,6 +273,7 @@ class AuditPanel(AdminPanel):
             top_date=top_date,
             lowest_date=lowest_date,
         )
+        return render_template("admin/audit.html", **ctx)
 
 
 #

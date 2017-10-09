@@ -23,11 +23,10 @@ from wtforms import Field, SelectField, SelectFieldBase, SelectMultipleField, \
     ValidationError
 from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
-from wtforms_sqlalchemy.fields import get_pk_from_identity, \
-    has_identity_key
 from wtforms.validators import DataRequired, Optional
 from wtforms_alchemy import ModelFieldList as BaseModelFieldList
 from wtforms_alchemy import ModelFormField as BaseModelFormField
+from wtforms_sqlalchemy.fields import get_pk_from_identity, has_identity_key
 
 from abilian import i18n
 from abilian.core.extensions import db
@@ -419,10 +418,8 @@ class DateField(Field):
                 .replace('%b', '%m')
 
             try:
-                self.data = datetime.datetime.strptime(
-                    date_str,
-                    date_fmt,
-                ).date()
+                strptime = datetime.datetime.strptime
+                self.data = strptime(date_str, date_fmt).date()
             except ValueError:
                 self.data = None
                 raise ValueError(self.gettext('Not a valid datetime value'))

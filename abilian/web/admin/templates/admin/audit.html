@@ -8,7 +8,7 @@
       <a href="{{ url_for(request.endpoint, after=top_date|default, **url_params) }}">&larr; {{ _("Newer") }}</a>
     </li>
 
-    <li class="next {%- if not lowest_date %} disabled"{% endif %}">
+    <li class="next {%- if not lowest_date %} disabled{% endif %}">
       <a href="{{ url_for(request.endpoint, before=lowest_date|default, **url_params) }}">{{ _("Older") }} &rarr;</a>
     </li>
   </ul>

@@ -18,7 +18,7 @@ from wtforms.validators import ValidationError
 from abilian.i18n import _, _l, get_default_locale
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
-from abilian.web.forms import Form, fields, widgets, required
+from abilian.web.forms import Form, fields, required, widgets
 
 
 class UserPreferencesForm(Form):

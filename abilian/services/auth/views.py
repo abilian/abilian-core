@@ -138,7 +138,7 @@ def logout():
 @route("/api/logout", methods=['POST'])
 def logout_json():
     logout_user()
-    return 'Logged out, ok.', 200
+    return '{}', 200, {'content-type': 'application/json'}
 
 
 #

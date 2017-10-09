@@ -8,13 +8,16 @@ from __future__ import absolute_import, division, print_function, \
 
 import errno
 import importlib
+import json
 import logging
 import logging.config
 import os
+import subprocess
 import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Any, Dict
 
 import jinja2
@@ -317,6 +320,9 @@ class Application(Flask, ServiceManager, PluginManager):
             with self.app_context():
                 self.start_services()
 
+        if os.environ.get("FLASK_VALIDATE_HTML"):
+            self.after_request(self.validate_response)
+
     def init_assets(self):
         languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
         if languages is None:
@@ -334,24 +340,24 @@ class Application(Flask, ServiceManager, PluginManager):
         self._assets_bundles = {
             'css': {
                 'options':
-                    dict(
-                        filters=('less', 'cssmin'),
-                        output='style-%(version)s.min.css',
-                    ),
+                dict(
+                    filters=('less', 'cssmin'),
+                    output='style-%(version)s.min.css',
+                ),
             },
             'js-top': {
                 'options':
-                    dict(
-                        output='top-%(version)s.min.js',
-                        filters=js_filters,
-                    ),
+                dict(
+                    output='top-%(version)s.min.js',
+                    filters=js_filters,
+                ),
             },
             'js': {
                 'options':
-                    dict(
-                        output='app-%(version)s.min.js',
-                        filters=js_filters,
-                    ),
+                dict(
+                    output='app-%(version)s.min.js',
+                    filters=js_filters,
+                ),
             },
         }
         # bundles for JS translations
@@ -1058,6 +1064,48 @@ class Application(Flask, ServiceManager, PluginManager):
 
         template = 'error{:d}.html'.format(code)
         return render_template(template, error=error), code
+
+    def validate_response(self, response):
+        SKIPPED_URLS = [
+            # FIXME: later
+            'http://localhost/admin/settings',
+        ]
+
+        if self.testing:
+            data = response.data
+            assert isinstance(data, bytes)
+            # assert response.status_code in [200, 302, 401]
+
+            if response.status_code == 302:
+                return response
+
+            if request.url in SKIPPED_URLS:
+                return response
+
+            if response.mimetype == 'text/html':
+                with NamedTemporaryFile() as tmpfile:
+                    tmpfile.write(data)
+                    tmpfile.flush()
+                    try:
+                        subprocess.check_output(["htmlhint", tmpfile.name])
+                    except subprocess.CalledProcessError as e:
+                        print("htmllhint output:")
+                        print(e.output)
+                        raise AssertionError("HTML was not valid for URL: {}".
+                                             format(request.url))
+
+            elif response.mimetype == 'application/json':
+                try:
+                    json.loads(response.data)
+                except BaseException:
+                    raise AssertionError(
+                        "JSON was not valid for URL: {}".format(request.url),
+                    )
+
+            # else:
+            #     raise AssertionError("Unknown mime type: " + response.mimetype)
+
+        return response
 
 
 def create_app(config=None):
