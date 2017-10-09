@@ -1070,40 +1070,41 @@ class Application(Flask, ServiceManager, PluginManager):
             # FIXME: later
             'http://localhost/admin/settings',
         ]
+        if response.direct_passthrough:
+            return response
 
-        if self.testing:
-            data = response.data
-            assert isinstance(data, bytes)
-            # assert response.status_code in [200, 302, 401]
+        data = response.data
+        assert isinstance(data, bytes)
+        # assert response.status_code in [200, 302, 401]
 
-            if response.status_code == 302:
-                return response
+        if response.status_code == 302:
+            return response
 
-            if request.url in SKIPPED_URLS:
-                return response
+        if request.url in SKIPPED_URLS:
+            return response
 
-            if response.mimetype == 'text/html':
-                with NamedTemporaryFile() as tmpfile:
-                    tmpfile.write(data)
-                    tmpfile.flush()
-                    try:
-                        subprocess.check_output(["htmlhint", tmpfile.name])
-                    except subprocess.CalledProcessError as e:
-                        print("htmllhint output:")
-                        print(e.output)
-                        raise AssertionError("HTML was not valid for URL: {}".
-                                             format(request.url))
-
-            elif response.mimetype == 'application/json':
+        if response.mimetype == 'text/html':
+            with NamedTemporaryFile() as tmpfile:
+                tmpfile.write(data)
+                tmpfile.flush()
                 try:
-                    json.loads(response.data)
-                except BaseException:
-                    raise AssertionError(
-                        "JSON was not valid for URL: {}".format(request.url),
-                    )
+                    subprocess.check_output(["htmlhint", tmpfile.name])
+                except subprocess.CalledProcessError as e:
+                    print("htmllhint output:")
+                    print(e.output)
+                    raise AssertionError("HTML was not valid for URL: {}".
+                                         format(request.url))
 
-            # else:
-            #     raise AssertionError("Unknown mime type: " + response.mimetype)
+        elif response.mimetype == 'application/json':
+            try:
+                json.loads(response.data)
+            except BaseException:
+                raise AssertionError(
+                    "JSON was not valid for URL: {}".format(request.url),
+                )
+
+        # else:
+        #     raise AssertionError("Unknown mime type: " + response.mimetype)
 
         return response
 
