@@ -102,6 +102,7 @@ class PluginManager(object):
         loader.load(__name__.split('.')[0])
         loader.register(self)
 
+    @deprecated
     def register_plugin(self, name):
         """Load and register a plugin given its package name.
         """
@@ -260,57 +261,12 @@ class Application(Flask, ServiceManager, PluginManager):
         if not self.config.get('FAVICO_URL'):
             self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
 
-        languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
-        if languages is None:
-            languages = abilian.i18n.VALID_LANGUAGES_CODE
-        else:
-            languages = tuple(
-                lang for lang in languages
-                if lang in abilian.i18n.VALID_LANGUAGES_CODE
-            )
-        self.config['BABEL_ACCEPT_LANGUAGES'] = languages
-
         self._jinja_loaders = list()
         self.register_jinja_loaders(
             jinja2.PackageLoader('abilian.web', 'templates'),
         )
 
-        js_filters = (
-            ('closure_js',)
-            if self.config.get('PRODUCTION', False) else None
-        )
-
-        self._assets_bundles = {
-            'css': {
-                'options':
-                dict(
-                    filters=('less', 'cssmin'),
-                    output='style-%(version)s.min.css',
-                ),
-            },
-            'js-top': {
-                'options':
-                dict(
-                    output='top-%(version)s.min.js',
-                    filters=js_filters,
-                ),
-            },
-            'js': {
-                'options':
-                dict(
-                    output='app-%(version)s.min.js',
-                    filters=js_filters,
-                ),
-            },
-        }
-
-        # bundles for JS translations
-        for lang in languages:
-            code = 'js-i18n-' + lang
-            filename = 'lang-' + lang + '-%(version)s.min.js'
-            self._assets_bundles[code] = {
-                'options': dict(output=filename, filters=js_filters),
-            }
+        self.init_assets()
 
         for http_error_code in (403, 404, 500):
             self.install_default_handler(http_error_code)
@@ -338,6 +294,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
         self.maybe_register_setup_wizard()
         self._finalize_assets_setup()
+
         # At this point all models should have been imported: time to configure
         # mappers. Normally Sqlalchemy does it when needed but mappers may be
         # configured inside sa.orm.class_mapper() which hides a misconfiguration: if
@@ -359,6 +316,51 @@ class Application(Flask, ServiceManager, PluginManager):
         if not self.config.get('TESTING', False):
             with self.app_context():
                 self.start_services()
+
+    def init_assets(self):
+        languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
+        if languages is None:
+            languages = abilian.i18n.VALID_LANGUAGES_CODE
+        else:
+            languages = tuple(
+                lang for lang in languages
+                if lang in abilian.i18n.VALID_LANGUAGES_CODE
+            )
+        self.config['BABEL_ACCEPT_LANGUAGES'] = languages
+        js_filters = (
+            ('closure_js',)
+            if self.config.get('PRODUCTION', False) else None
+        )
+        self._assets_bundles = {
+            'css': {
+                'options':
+                    dict(
+                        filters=('less', 'cssmin'),
+                        output='style-%(version)s.min.css',
+                    ),
+            },
+            'js-top': {
+                'options':
+                    dict(
+                        output='top-%(version)s.min.js',
+                        filters=js_filters,
+                    ),
+            },
+            'js': {
+                'options':
+                    dict(
+                        output='app-%(version)s.min.js',
+                        filters=js_filters,
+                    ),
+            },
+        }
+        # bundles for JS translations
+        for lang in languages:
+            code = 'js-i18n-' + lang
+            filename = 'lang-' + lang + '-%(version)s.min.js'
+            self._assets_bundles[code] = {
+                'options': dict(output=filename, filters=js_filters),
+            }
 
     def _setup_script_manager(self):
         manager = self.script_manager
