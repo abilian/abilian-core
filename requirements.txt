@@ -5,14 +5,13 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 alembic==0.8.10
-amqp==1.4.9               # via kombu
-anyjson==0.3.3            # via kombu
+amqp==2.2.2               # via kombu
 babel==2.5.1              # via flask-babel
 bcrypt==3.1.4
-billiard==3.3.0.23        # via celery
+billiard==3.5.0.3         # via celery
 bleach==2.1.1
 blinker==1.4              # via flask-debugtoolbar, flask-mail
-celery==3.1.25
+celery==4.1.0
 cffi==1.11.2              # via bcrypt
 clamd==1.0.2
 click==6.7                # via flask
@@ -36,7 +35,7 @@ intervals==0.8.0          # via wtforms-components
 itsdangerous==0.24        # via flask, flask-debugtoolbar
 jinja2==2.9.6
 jsmin==2.2.2
-kombu==3.0.37             # via celery
+kombu==4.1.0              # via celery
 lxml==4.0.0
 mako==1.0.7               # via alembic
 markupsafe==1.0
@@ -62,6 +61,7 @@ straight.plugin==1.4.1
 tqdm==4.19.2
 typing==3.6.2
 validators==0.12.0        # via wtforms-components
+vine==1.1.4               # via amqp
 webassets==0.12.1         # via flask-assets
 webencodings==0.5.1       # via html5lib
 werkzeug==0.12.2          # via flask, flask-debugtoolbar, flask-wtf
