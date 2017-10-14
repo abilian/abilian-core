@@ -259,6 +259,8 @@ class UnoconvPdfHandler(Handler):
         'application/mspowerpoint',
         'application/vnd.ms-powerpoint',
         'application/vnd.ms-excel',
+        'application/vnd.ms-office',
+        'application/vnd.ms-word',
         'application/ms-excel',
         'application/vnd.openxmlformats-officedocument.*',
         'text/rtf',
