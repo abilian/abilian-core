@@ -387,6 +387,7 @@ class LibreOfficePdfHandler(Handler):
         'application/mspowerpoint',
         'application/vnd.ms-powerpoint',
         'application/vnd.ms-excel',
+        'application/vnd.ms-office',
         'application/ms-excel',
         'application/vnd.openxmlformats-officedocument.*',
         'text/rtf',
