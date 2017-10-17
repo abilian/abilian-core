@@ -16,6 +16,7 @@ from datetime import datetime
 
 import bleach
 import sqlalchemy as sa
+import sqlalchemy.orm
 import wtforms
 from flask import Markup, current_app, g, json, render_template, \
     render_template_string
@@ -421,8 +422,8 @@ class AjaxMainTableView(object):
                 column_name = col['name']
 
             value = entity.display_value(column_name)
-            cell = None
             has_custom_display = False
+
             # Manual massage.
             # 'display_fun' gets value *and* entity: useful to perform
             # specific markup based on other entity values.
@@ -1372,7 +1373,7 @@ class EmailWidget(TextInput):
 class URLWidget(object):
 
     def render_view(self, field, **kwargs):
-        return (linkify_url(field.object_data) if field.object_data else '')
+        return linkify_url(field.object_data) if field.object_data else ''
 
 
 class RichTextWidget(object):

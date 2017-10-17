@@ -118,7 +118,9 @@ def log_config(config):
     help='Enable werkzeug SSL',
 )
 def run(port, show_config, ssl):
-    """Like runserver. May also print application configuration if used with
+    """Like runserver.
+
+    May also print application configuration if used with
     --show-config.
     """
     app = current_app

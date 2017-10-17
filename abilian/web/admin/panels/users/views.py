@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from cgi import escape
 
 import sqlalchemy as sa
+import sqlalchemy.orm
 from flask import render_template_string, request
 from flask_babel import format_datetime
 from flask_login import current_user

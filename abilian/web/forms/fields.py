@@ -11,6 +11,7 @@ from functools import partial
 
 import babel
 import sqlalchemy as sa
+import sqlalchemy.exc
 from flask import current_app
 from flask.helpers import locked_cached_property
 from flask_babel import format_date, format_datetime, get_locale, get_timezone
