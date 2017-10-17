@@ -16,6 +16,7 @@ cffi==1.11.2              # via bcrypt
 clamd==1.0.2
 click==6.7                # via flask
 closure==20161201
+contextlib2==0.5.5        # via raven
 cssmin==0.2.0
 decorator==4.1.2          # via validators
 flask-assets==0.12
@@ -52,6 +53,7 @@ python-editor==1.0.3      # via alembic
 python-magic==0.4.13
 pytz==2017.2              # via babel, celery, pandas
 pyyaml==3.12
+raven==6.2.1
 redis==2.10.6
 six==1.11.0
 sqlalchemy-utils==0.32.19

@@ -54,6 +54,7 @@ PyYAML
 pygeoip
 typing
 tqdm
+raven
 
 # Forms (TODO: need some updates)
 WTForms-Alchemy>=0.12,<0.16
