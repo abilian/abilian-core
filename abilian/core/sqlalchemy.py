@@ -13,6 +13,10 @@ import babel
 import flask_sqlalchemy as flask_sa
 import pytz
 import sqlalchemy as sa
+import sqlalchemy.exc
+import sqlalchemy.pool
+import sqlalchemy.orm
+import sqlalchemy.dialects
 from flask_sqlalchemy import SQLAlchemy as SAExtension
 from six import string_types, text_type
 from sqlalchemy.event import listens_for

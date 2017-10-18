@@ -221,33 +221,27 @@ class BaseTestCase(TestCase):
 
         self.app.create_db()
 
-        for svc in self.SERVICES:
-            svc = self.app.services[svc]
-            if not svc.running:
-                svc.start()
+        self._start_services()
 
     def tearDown(self):
-        for svc in self.SERVICES:
-            svc = self.app.services[svc]
-            if svc.running:
-                svc.stop()
+        self._stop_services()
 
         self.db.session.remove()
 
         with self.db.engine.connect() as conn:
             if self.db.engine.name == 'postgresql':
                 username = self.db.engine.url.username or getpass.getuser()
-                with self.db.engine.connect() as conn:
-                    with conn.begin():
-                        conn.execute(
+                with self.db.engine.connect() as conn2:
+                    with conn2.begin():
+                        conn2.execute(
                             'ALTER ROLE {username} SET search_path TO public'
                             ''.format(username=username),
                         )
-                        conn.execute('SET search_path TO public')
-                        conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(
+                        conn2.execute('SET search_path TO public')
+                        conn2.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(
                             self.__pg_schema,
                         ))
-                    conn.execute('COMMIT')
+                    conn2.execute('COMMIT')
                 del self.__pg_schema
             else:
                 if self.db.engine.name == 'sqlite':
@@ -266,12 +260,26 @@ class BaseTestCase(TestCase):
 
         User.__password_strategy__ = _DEFAULT_PWD
 
-        # Resets babel extension
+        self._reset_babel_extension()
+
+        TestCase.tearDown(self)
+
+    def _reset_babel_extension(self):
         babel = self.app.extensions['babel']
         babel.locale_selector_func = None
         babel.timezone_selector_func = None
 
-        TestCase.tearDown(self)
+    def _start_services(self):
+        for svc in self.SERVICES:
+            svc = self.app.services[svc]
+            if not svc.running:
+                svc.start()
+
+    def _stop_services(self):
+        for svc in self.SERVICES:
+            svc = self.app.services[svc]
+            if svc.running:
+                svc.stop()
 
     def _login_tests_sanity_check(self):
         """

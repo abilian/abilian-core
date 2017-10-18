@@ -5,12 +5,13 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from distutils.command.build import build as _build
 
-import pip
+import pip.download
+import pip.req
 import setuptools
 from setuptools.command.develop import develop as _develop
 from setuptools.command.sdist import sdist as _sdist
 
-session = session = pip.download.PipSession()
+session = pip.download.PipSession()
 _install_requires = pip.req.parse_requirements(
     'requirements.in',
     session=session,
@@ -23,7 +24,7 @@ _dev_requires = pip.req.parse_requirements(
 )
 dev_requires = [str(ir.req) for ir in _dev_requires]
 
-LONG_DESCRIPTION = open('README.rst', 'r').read()
+LONG_DESCRIPTION = open('README.rst').read()
 
 
 class Build(_build):

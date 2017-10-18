@@ -11,6 +11,7 @@ from flask.signals import request_started
 from wtforms import Form, IntegerField, StringField
 
 # Import for side-effects (monkey-patch)
+# noinspection PyUnresolvedReferences
 import abilian.web.forms  # noqa
 from abilian.core.entities import Entity
 from abilian.testing import BaseTestCase

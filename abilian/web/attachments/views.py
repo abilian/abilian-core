@@ -4,9 +4,10 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from typing import Optional, Union
+from typing import Optional
 
 import sqlalchemy as sa
+import sqlalchemy.orm
 from flask import current_app, send_file
 from werkzeug.exceptions import BadRequest
 from werkzeug.utils import redirect

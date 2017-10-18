@@ -5,9 +5,10 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional
 
 import sqlalchemy as sa
+import sqlalchemy.orm
 from flask_login import current_user
 from six import text_type
 from werkzeug.exceptions import BadRequest

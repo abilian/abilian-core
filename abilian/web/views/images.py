@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pkg_resources
 import sqlalchemy as sa
+import sqlalchemy.orm
 from flask import Blueprint, make_response, render_template, request
 from six import text_type
 from werkzeug.exceptions import BadRequest, NotFound
