@@ -1092,8 +1092,9 @@ class Application(Flask, ServiceManager, PluginManager):
                 except subprocess.CalledProcessError as e:
                     print("htmllhint output:")
                     print(e.output)
-                    raise AssertionError("HTML was not valid for URL: {}".
-                                         format(request.url))
+                    raise AssertionError(
+                        "HTML was not valid for URL: {}".format(request.url),
+                    )
 
         elif response.mimetype == 'application/json':
             try:
