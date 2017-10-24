@@ -69,7 +69,8 @@ _JSON_HTML = '''
 <head>
   <meta charset="utf-8">
   <title>JSON preview</title>
-  <link rel="stylesheet" href="{{ url_for('abilian_static', filename="highlightjs/default.min.css") }}" />
+  <link rel="stylesheet"
+    href="{{ url_for('abilian_static', filename="highlightjs/default.min.css") }}" />
 </head>
 <body>
   <pre>

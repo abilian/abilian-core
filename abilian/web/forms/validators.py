@@ -237,9 +237,8 @@ def siret_validator():
 
         if not all(('0' <= c <= '9') for c in siret):
             if not siret[-3:] in SIRET_CODES:
-                msg = _('SIRET looks like special SIRET but geographical code seems invalid ({code})').format(
-                    code=siret[-3:],
-                )
+                msg = _('SIRET looks like special SIRET but geographical '
+                        'code seems invalid (%s)', code=siret[-3:])
                 raise validators.ValidationError(msg)
 
         elif not luhn(siret):

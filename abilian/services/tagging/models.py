@@ -3,7 +3,8 @@
 
 Manages tags applied to taggable entities.
 
-Cf. ATOM specs  (+ for instance this discussion: http://edward.oconnor.cx/2007/02/representing-tags-in-atom)
+Cf. ATOM specs  (+ for instance this discussion:
+  http://edward.oconnor.cx/2007/02/representing-tags-in-atom)
 Cf. ICOM 3.6.12 (Tag) et 3.6.13 (TagApplication.
 
 Warning: the Activity Steams spec has a notion of tagging, but it's slightly

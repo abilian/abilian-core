@@ -13,8 +13,8 @@ TODO: rename Converter into ConversionService ?
 
 from __future__ import absolute_import
 
-from abilian.services.conversion.handlers import PdfToTextHandler, PdfToPpmHandler, ImageMagickHandler, \
-    LibreOfficePdfHandler
+from abilian.services.conversion.handlers import PdfToTextHandler, \
+    PdfToPpmHandler, ImageMagickHandler, LibreOfficePdfHandler
 from .service import Converter, ConversionError, HandlerNotFound
 
 # Singleton, yuck!
