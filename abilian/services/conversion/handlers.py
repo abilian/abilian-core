@@ -93,7 +93,7 @@ class Handler(object):
         match_target = False
 
         for pat in self.accepts_mime_types:
-            if re.match("^%s$" % pat, source_mime_type):
+            if re.match("^{}$".format(pat), source_mime_type):
                 match_source = True
                 break
 

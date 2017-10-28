@@ -82,7 +82,7 @@ def linkify_url(value):
 
     rjs = r'[\s]*(&#x.{1,7})?'.join(list('javascript:'))
     rvb = r'[\s]*(&#x.{1,7})?'.join(list('vbscript:'))
-    re_scripts = re.compile('(%s)|(%s)' % (rjs, rvb), re.IGNORECASE)
+    re_scripts = re.compile('({})|({})'.format(rjs, rvb), re.IGNORECASE)
 
     value = re_scripts.sub('', value)
 
@@ -104,10 +104,8 @@ def linkify_url(value):
     if value.count("/") == 1 and value.endswith("/"):
         value = value[0:-1]
 
-    return '<a href="%s">%s</a>&nbsp;<i class="fa fa-external-link"></i>' % (
-        url,
-        value,
-    )
+    return '<a href="{}">{}</a>&nbsp;<i class="fa fa-external-link"></i>' \
+        .format(url, value)
 
 
 def text2html(text):
@@ -119,7 +117,7 @@ def text2html(text):
 
     lines = text.split("\n")
     lines = [line for line in lines if line]
-    paragraphs = ['<p>%s</p>' % line for line in lines]
+    paragraphs = ['<p>{}</p>'.format(line) for line in lines]
     return Markup(bleach.clean("\n".join(paragraphs), tags=['p']))
 
 
@@ -202,12 +200,12 @@ class BaseTableView(object):
         }
         js = render_template_string(
             '''
-        require(
-            ['jquery', 'jquery.dataTables'],
-            function($) {
-                $('#{{ table_id  }}').dataTable({{ options|tojson|safe }});
-            });
-        ''',
+            require(
+                ['jquery', 'jquery.dataTables'],
+                function($) {
+                    $('#{{ table_id  }}').dataTable({{ options|tojson|safe }});
+                });
+            ''',
             table_id=self.name,
             options=datatable_options,
         )
@@ -257,10 +255,12 @@ class BaseTableView(object):
                 cell = format(value)
             elif column_name in (make_link_on, 'name') \
                     or col.get('linkable'):
-                cell = Markup('<a href="%s">%s</a>' %
-                              (build_url(entity), cgi.escape(text_type(value))))
+                cell = Markup(
+                    '<a href="{}">{}</a>'
+                    .format(build_url(entity), cgi.escape(text_type(value))),
+                )
             elif isinstance(value, Entity):
-                cell = Markup('<a href="%s">%s</a>' % (
+                cell = Markup('<a href="{}">{}</a>'.format(
                     build_url(value),
                     cgi.escape(value.name),
                 ))
@@ -434,12 +434,12 @@ class AjaxMainTableView(object):
             if has_custom_display:
                 cell = value
             elif column_name == 'name':
-                cell = Markup('<a href="%s">%s</a>' % (
+                cell = Markup('<a href="{}">{}</a>'.format(
                     url_for(entity),
                     cgi.escape(value),
                 ))
             elif isinstance(value, Entity):
-                cell = Markup('<a href="%s">%s</a>' % (
+                cell = Markup('<a href="{}">{}</a>'.format(
                     url_for(value),
                     cgi.escape(value.name),
                 ))
@@ -447,8 +447,10 @@ class AjaxMainTableView(object):
                   (value.startswith("http://") or value.startswith("www."))):
                 cell = Markup(linkify_url(value))
             elif col.get('linkable'):
-                cell = Markup('<a href="%s">%s</a>' %
-                              (url_for(entity), cgi.escape(text_type(value))))
+                cell = Markup(
+                    '<a href="{}">{}</a>'
+                    .format(url_for(entity), cgi.escape(text_type(value))),
+                )
             else:
                 cell = text_type(value)
 

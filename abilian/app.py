@@ -689,7 +689,9 @@ class Application(Flask, ServiceManager, PluginManager):
         if endpoint:
             adder = auth_state.add_endpoint_access_controller
             if not isinstance(name, string_types):
-                raise ValueError('{} is not a valid endpoint name'.format(repr(name)))
+                raise ValueError(
+                    '{} is not a valid endpoint name'.format(repr(name)),
+                )
 
         adder(name, func)
 

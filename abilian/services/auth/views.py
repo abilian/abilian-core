@@ -358,8 +358,8 @@ def send_mail(subject, recipient, template, **context):
     sender = config['MAIL_SENDER']
     msg = Message(subject, sender=sender, recipients=[recipient])
 
-    ctx = ('login/email', template)
-    msg.body = render_template_i18n('%s/%s.txt' % ctx, **context)
+    template_name = 'login/email/{}.txt'.format(template)
+    msg.body = render_template_i18n(template_name, **context)
     # msg.html = render_template('%s/%s.html' % ctx, **context)
 
     mail = current_app.extensions.get('mail')
