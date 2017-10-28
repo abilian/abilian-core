@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 from functools import wraps
 
 from flask import Blueprint, current_app, jsonify, request
-from flask_wtf import Form
+from flask_wtf import Form as FlaskForm
 from werkzeug.exceptions import Forbidden
 
 blueprint = Blueprint('csrf', __name__, url_prefix='/csrf')
@@ -23,7 +23,7 @@ def field():
 
     Renders an empty string if `config.CSRF_ENABLED` is not set.
     """
-    return Form().csrf_token
+    return FlaskForm().csrf_token
 
 
 def time_limit():
@@ -70,7 +70,7 @@ def protect(view):
     @wraps(view)
     def csrf_check(*args, **kwargs):
         # an empty form is used to validate current csrf token and only that!
-        if not Form().validate():
+        if not FlaskForm().validate():
             raise Forbidden('CSRF validation failed.')
 
         return view(*args, **kwargs)

@@ -519,17 +519,15 @@ class SingleView(object):
             ),
         )
 
-        return Markup(
-            render_template(
-                template,
-                view=self,
-                related_views=related_views,
-                csrf_token=csrf.field(),
-                entity=item,
-                panels=panels,
-                form=form,
-            ),
-        )
+        ctx = {
+            'view': self,
+            'related_views': related_views,
+            'csrf_token': csrf.field(),
+            'entity': item,
+            'panels': panels,
+            'form': form,
+        }
+        return Markup(render_template(template, **ctx))
 
     def render_form(self, form, for_new=False, has_save_and_add_new=False):
         # Client-side rules for jQuery.validate
@@ -555,17 +553,14 @@ class SingleView(object):
                 'widgets/render_for_edit.html',
             ),
         )
-
-        return Markup(
-            render_template(
-                template,
-                view=self,
-                form=form,
-                for_new=for_new,
-                has_save_and_add_new=has_save_and_add_new,
-                rules=rules,
-            ),
-        )
+        ctx = {
+            'view': self,
+            'form': form,
+            'for_new': for_new,
+            'has_save_and_add_new': has_save_and_add_new,
+            'rules': rules,
+        }
+        return Markup(render_template(template, **ctx))
 
     def label_for(self, field, mapper, name):
         label = field.label
@@ -705,21 +700,22 @@ class TextInput(wtforms.widgets.TextInput):
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
 
+        params = self.html_params(name=field.name, **kwargs)
         return Markup(
             render_template_string(
                 '''
-            <div class="input-group input-group-type-{{ widget.typename }}">
-            {%- if widget.pre_icon %}
-              <div class="input-group-addon">{{ widget.pre_icon }}</div>
-            {%- endif %}
-              <input {{ params | safe}}>
-            {%- if widget.post_icon %}
-              <div class="input-group-addon">{{ widget.post_icon }}</div>
-            {%- endif %}
-            </div>
-            ''',
+                <div class="input-group input-group-type-{{ widget.typename }}">
+                {%- if widget.pre_icon %}
+                  <div class="input-group-addon">{{ widget.pre_icon }}</div>
+                {%- endif %}
+                  <input {{ params | safe}}>
+                {%- if widget.post_icon %}
+                  <div class="input-group-addon">{{ widget.post_icon }}</div>
+                {%- endif %}
+                </div>
+                ''',
                 widget=self,
-                params=self.html_params(name=field.name, **kwargs),
+                params=params,
             ),
         )
 
@@ -796,15 +792,15 @@ class FileInput(object):
                 # due to debugtoolbar capturing template parameters
                 del data['file']
 
-        ctx = dict(
-            id=field.id,
-            field=field,
-            widget=self,
-            input=input_elem,
-            button_label=button_label,
-            existing=existing,
-            uploaded=uploads,
-        )
+        ctx = {
+            'id': field.id,
+            'field': field,
+            'widget': self,
+            'input': input_elem,
+            'button_label': button_label,
+            'existing': existing,
+            'uploaded': uploads,
+        }
         return Markup(render_template(self.template, **ctx))
 
     def build_exisiting_files_list(self, field):
@@ -938,12 +934,12 @@ class ImageInput(FileInput):
         width, height = image.get_size(thumb)
 
         tmpl = '<img src="{{ url }}" width="{{ width }}" height="{{ height }}" />'
-        return render_template_string(
-            tmpl,
-            url=self.get_b64_thumb_url(thumb),
-            width=width,
-            height=height,
-        )
+        ctx = {
+            'url': self.get_b64_thumb_url(thumb),
+            'width': width,
+            'height': height,
+        }
+        return render_template_string(tmpl, **ctx)
 
 
 class Chosen(Select):
@@ -951,11 +947,8 @@ class Chosen(Select):
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
-        html = [
-            '<select %s class="chzn-select">' % html_params(
-                name=field.name, **kwargs
-            ),
-        ]
+        params = html_params(name=field.name, **kwargs)
+        html = ['<select {} class="chzn-select">'.format(params)]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
         html.append('</select>')
@@ -966,9 +959,10 @@ class Chosen(Select):
         options = dict(kwargs, value=value)
         if selected:
             options['selected'] = True
+        params = html_params(**options)
         return HTMLString(
-            '<option %s>%s</option>' % (
-                html_params(**options),
+            '<option {}>{}</option>'.format(
+                params,
                 cgi.escape(text_type(label)),
             ),
         )
@@ -983,9 +977,8 @@ class TagInput(Input):
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
 
-        return HTMLString(
-            '<input %s>' % self.html_params(name=field.name, **kwargs),
-        )
+        params = self.html_params(name=field.name, **kwargs)
+        return HTMLString('<input {}>'.format(params),)
 
 
 class DateInput(Input):
