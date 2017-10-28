@@ -6,6 +6,8 @@ from __future__ import absolute_import, division, print_function, \
 import abc
 
 import sqlalchemy as sa
+import sqlalchemy.event
+import sqlalchemy.ext.declarative
 from six import add_metaclass
 from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
 from sqlalchemy.orm import backref, relationship

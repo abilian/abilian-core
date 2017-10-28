@@ -65,10 +65,7 @@ entity_tag_tbl = sa.Table(
     sa.Column(
         'tag_id',
         sa.Integer,
-        sa.ForeignKey(
-            'tag.id',
-            ondelete='CASCADE',
-        ),
+        sa.ForeignKey('tag.id', ondelete='CASCADE'),
     ),
     sa.Column(
         'entity_id',
