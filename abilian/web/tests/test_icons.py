@@ -12,21 +12,16 @@ class TestIcons(BaseTestCase):
 
     def test_glyphicons(self):
         icon = Glyphicon('ok')
-        self.assertEqual(
-            icon.__html__(),
-            '<i class="glyphicon glyphicon-ok"></i>',
-        )
+        assert icon.__html__() == '<i class="glyphicon glyphicon-ok"></i>'
 
     def test_faicons(self):
         icon = FAIcon('check')
-        self.assertEqual(icon.__html__(), '<i class="fa fa-check"></i>')
+        assert icon.__html__() == '<i class="fa fa-check"></i>'
 
     def test_staticicon(self):
         icon = StaticIcon('path/to/icon.png')
-        self.assertEqual(
-            icon.__html__(),
-            '<img src="/static/path/to/icon.png" width="12" height="12" />',
-        )
+        assert icon.__html__() == \
+            '<img src="/static/path/to/icon.png" width="12" height="12" />'
 
         icon = StaticIcon('path/to/icon.png', width=14)
         self.assertEqual(

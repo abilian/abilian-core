@@ -41,41 +41,42 @@ class TestFilters(FlaskTestCase):
 
     def test_labelize(self):
         labelize = filters.labelize
-        self.assertEqual('Test Case', labelize('test_case'))
+        assert labelize('test_case') == 'Test Case'
 
     def test_filesize(self):
         filesize = filters.filesize
-        self.assertEqual("100&nbsp;B", str(filesize('100')))
-        self.assertEqual("100&nbsp;B", str(filesize(100)))
-        self.assertEqual("1.0&nbsp;kB", str(filesize(1000)))
-        self.assertEqual("1.1&nbsp;kB", str(filesize(1100)))
-        self.assertEqual("10&nbsp;kB", str(filesize(10000)))
-        self.assertEqual("1.1&nbsp;MB", str(filesize(1100100)))
-        self.assertEqual("10&nbsp;MB", str(filesize(10000000)))
-        self.assertEqual("1.1&nbsp;GB", str(filesize(1100100000)))
-        self.assertEqual("100&nbsp;GB", str(filesize(100000000000)))
+        assert str(filesize('100')) == "100&nbsp;B"
+        assert str(filesize(100)) == "100&nbsp;B"
+        assert str(filesize(1000)) == "1.0&nbsp;kB"
+        assert str(filesize(1100)) == "1.1&nbsp;kB"
+        assert str(filesize(10000)) == "10&nbsp;kB"
+        assert str(filesize(1100100)) == "1.1&nbsp;MB"
+        assert str(filesize(10000000)) == "10&nbsp;MB"
+        assert str(filesize(1100100000)) == "1.1&nbsp;GB"
+        assert str(filesize(100000000000)) == "100&nbsp;GB"
 
     def test_roughsize(self):
         roughsize = filters.roughsize
-        self.assertEqual('6', roughsize(6))
-        self.assertEqual('15', roughsize(15))
-        self.assertEqual('130+', roughsize(134))
-        self.assertEqual('10+', roughsize(15, above=10))
-        self.assertEqual('55+', roughsize(57, mod=5))
+        assert '6' == roughsize(6)
+        assert '15' == roughsize(15)
+        assert '130+' == roughsize(134)
+        assert '10+' == roughsize(15, above=10)
+        assert '55+' == roughsize(57, mod=5)
 
     def test_date_age(self):
         date_age = filters.date_age
         now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
 
-        self.assertEqual("", date_age(None))
+        assert date_age(None) == ""
+
         dt = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
-        self.assertEqual("2012-06-10 18:10 (1 minute ago)", date_age(dt, now))
+        assert date_age(dt, now) == "2012-06-10 18:10 (1 minute ago)"
 
         dt = datetime.datetime(2012, 6, 10, 10, 8, 10, tzinfo=utc)
-        self.assertEqual("2012-06-10 18:08 (2 minutes ago)", date_age(dt, now))
+        assert date_age(dt, now) == "2012-06-10 18:08 (2 minutes ago)"
 
         dt = datetime.datetime(2012, 6, 10, 8, 30, 10, tzinfo=utc)
-        self.assertEqual("2012-06-10 16:30 (2 hours ago)", date_age(dt, now))
+        assert date_age(dt, now) == "2012-06-10 16:30 (2 hours ago)"
 
         # for coverage: test when using default parameter now=None
         dt_patcher = mock.patch.object(
@@ -85,7 +86,7 @@ class TestFilters(FlaskTestCase):
         )
         with dt_patcher as mocked:
             mocked.utcnow.return_value = now
-            self.assertEqual("2012-06-10 16:30 (2 hours ago)", date_age(dt))
+            assert date_age(dt) == "2012-06-10 16:30 (2 hours ago)"
 
     def test_age(self):
         age = filters.age
@@ -138,26 +139,23 @@ class TestFilters(FlaskTestCase):
         tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
         rendered = tmpl.render()
         el = html5lib.parseFragment(rendered)
-        self.assertEqual(len(el.getchildren()), 1)
+        assert len(el.getchildren()) == 1
+
         el = el.getchildren()[0]
-        self.assertEqual(el.tag, '{http://www.w3.org/1999/xhtml}a')
-        self.assertEqual(el.text, 'http://test.example.com')
-        self.assertEqual(
-            sorted(el.items()),
+        assert el.tag == '{http://www.w3.org/1999/xhtml}a'
+        assert el.text == 'http://test.example.com'
+        assert sorted(el.items()) == \
             [
                 ('href', 'http://test.example.com'),
                 ('rel', 'nofollow'),
-            ],
-        )
+        ]
 
     def test_nl2br(self):
         tmpl = env.from_string(
             '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',
         )
-        self.assertEqual(
-            tmpl.render(),
-            'first line<br />\nsecond line<br />\n<br />\n  third, indented',
-        )
+        assert tmpl.render() == \
+            'first line<br />\nsecond line<br />\n<br />\n  third, indented'
 
     def test_paragraphs(self):
         tmpl = env.from_string('''{{ "First paragraph

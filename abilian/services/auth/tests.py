@@ -78,19 +78,19 @@ class TestAuth(BaseTestCase):
         self.session.commit()
 
         rv = self.client.post('/user/login', data=kwargs)
-        self.assertEqual(rv.status_code, 302, "expected 302, got:" + rv.status)
+        assert rv.status_code == 302
 
         # wrong password
         d = dict(kwargs)
         d['password'] = 'wrong one'
         rv = self.client.post('/user/login', data=d)
-        self.assertEqual(rv.status_code, 401, "expected 401, got:" + rv.status)
+        assert rv.status_code == 401
 
         # login disabled
         u.can_login = False
         self.session.commit()
         rv = self.client.post('/user/login', data=kwargs)
-        self.assertEqual(rv.status_code, 401, "expected 401, got:" + rv.status)
+        assert rv.status_code == 401
 
     def test_api_post(self):
         kwargs = dict(
@@ -107,19 +107,16 @@ class TestAuth(BaseTestCase):
             data=json.dumps(kwargs),
             content_type='application/json',
         )
-        self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
-        self.assertEqual(
-            rv.json,
-            dict(
-                email='User@domain.tld',
-                username='user@domain.tld',
-                fullname='Unknown',
-                next_url='',
-            ),
-        )
+        assert rv.status_code == 200
+        assert rv.json == {
+            'email': 'User@domain.tld',
+            'username': 'user@domain.tld',
+            'fullname': 'Unknown',
+            'next_url': '',
+        }
 
         rv = self.client.post('/user/api/logout')
-        self.assertEqual(rv.status_code, 200, "expected 200, got:" + rv.status)
+        assert rv.status_code == 200
 
     def test_forgotten_pw(self):
         mail = self.app.extensions['mail']
@@ -138,16 +135,10 @@ class TestAuth(BaseTestCase):
 
         with mail.record_messages() as outbox:
             rv = self.client.post('/user/forgotten_pw', data=kwargs)
-            self.assertEqual(
-                rv.status_code,
-                302,
-                "expected 302, got:" + rv.status,
-            )
-            self.assertEqual(len(outbox), 1)
+            assert rv.status_code == 302
+            assert len(outbox) == 1
+
             msg = outbox[0]
-            self.assertEqual(
-                msg.subject,
-                'Password reset instruction for Abilian Test',
-            )
-            self.assertEqual(msg.recipients, ['User@domain.tld'])
-            self.assertEqual(msg.cc, [])
+            assert msg.subject == 'Password reset instruction for Abilian Test'
+            assert msg.recipients == ['User@domain.tld']
+            assert msg.cc == []
