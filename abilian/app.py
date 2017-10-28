@@ -429,7 +429,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
         :param:create: if `True`, creates directory hierarchy
 
-        :raises: OSError with relevant errno
+        :raises: OSError with relevant errno if something is wrong.
         """
         path = Path(self.instance_path)
         err = None
@@ -791,7 +791,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
     @locked_cached_property
     def jinja_loader(self):
-        """Search templates in custom app templates dir (default flask
+        """Search templates in custom app templates dir (default Flask
         behaviour), fallback on abilian templates."""
         loaders = self._jinja_loaders
         del self._jinja_loaders

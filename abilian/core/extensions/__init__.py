@@ -6,14 +6,17 @@
 
 from __future__ import absolute_import, print_function, division
 
-from abilian.core.logging import patch_logger
-from sqlalchemy.engine import Engine
-
-from flask import current_app
-from . import upstream_info
-from .login import login_manager
 import flask_mail
 import sqlalchemy as sa
+import sqlalchemy.orm
+import sqlalchemy.event
+from flask import current_app
+from sqlalchemy.engine import Engine
+
+from abilian.core.logging import patch_logger
+
+from . import upstream_info
+from .login import login_manager
 from ..sqlalchemy import SQLAlchemy
 from .csrf import wtf_csrf as csrf, abilian_csrf
 
@@ -72,9 +75,9 @@ def _filter_metadata_for_connection(target, connection, **kw):
                 table.indexes.remove(idx)
 
 
-# csrf
-
-
+#
+# CSRF
+#
 def get_extension(name):
     """Get the named extension from the current app, returning None if not
     found."""

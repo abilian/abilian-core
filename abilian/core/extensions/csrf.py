@@ -15,7 +15,7 @@ wtf_csrf = CsrfProtect()
 
 
 class AbilianCsrf(object):
-    """Csrf error handler, that allows supporting views to gracefully report
+    """CSRF error handler, that allows supporting views to gracefully report
     error instead of a plain 400 error.
 
     views supporting this must
