@@ -1,5 +1,4 @@
 # coding=utf-8
-""""""
 from __future__ import absolute_import, division, print_function
 
 from .base import JSONView, View
@@ -7,7 +6,7 @@ from .object import BaseObjectView, JSONBaseSearch, JSONModelSearch, \
     JSONWhooshSearch, ObjectCreate, ObjectDelete, ObjectEdit, ObjectView
 from .registry import Registry, default_view
 
-__all__ = [
+__all__ = (
     'View',
     'JSONView',
     'Registry',
@@ -20,4 +19,4 @@ __all__ = [
     'JSONBaseSearch',
     'JSONModelSearch',
     'JSONWhooshSearch',
-]
+)

@@ -327,13 +327,15 @@ class ObjectEdit(ObjectView):
 
     def before_populate_obj(self):
         """This method is called after form has been validated and before
-        calling `form.populate_obj()`. Sometimes one may want to remove a field
+        calling `form.populate_obj()`.
+
+        Sometimes one may want to remove a field
         from the form because it's non-sense to store it on edited object, and
         use it in a specific manner, for example::
 
-        image = form.image
-        del form.image
-        store_image(image)
+            image = form.image
+            del form.image
+            store_image(image)
         """
         pass
 

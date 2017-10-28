@@ -1,8 +1,8 @@
 # coding=utf-8
-"""Abilian script commands to be used in a project. See `Flask-Script
-documentation.
+"""Abilian script commands to be used in a project.
 
-<http://flask-script.readthedocs.org>`_ for full documentation.
+See `Flask-Script documentation. <http://flask-script.readthedocs.org>`_
+for full documentation.
 
 Here is how a `manage.py` can include these commands::
 
