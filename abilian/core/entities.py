@@ -167,7 +167,7 @@ class EntityQuery(db.Model.query_class):
 
 
 class EntityMeta(BaseMeta):
-    """Metaclass for Entities. It properly sets-up subclasses by adding
+    """Metaclass for Entities. It properly sets up subclasses by adding
     _EntityInherit to `__bases__`.
 
     `_EntityInherit` provides `id` attibute and `__mapper_args__`

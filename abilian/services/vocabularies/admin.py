@@ -76,13 +76,13 @@ class VocabularyPanel(AdminPanel):
 
     def get(self):
         svc = get_service('vocabularies')
-        return render_template(
-            'admin/vocabularies.html',
-            service=svc,
-            url_for_voc_edit=self.voc_edit_url,
-            icon_checked=Glyphicon('check'),
-            vocabularies=svc.grouped_vocabularies,
-        )
+        ctx = {
+            'service': svc,
+            'url_for_voc_edit': self.voc_edit_url,
+            'icon_checked': Glyphicon('check'),
+            'vocabularies': svc.grouped_vocabularies,
+        }
+        return render_template('admin/vocabularies.html', **ctx)
 
     def post(self):
         data = request.form
@@ -159,26 +159,26 @@ class VocabularyPanel(AdminPanel):
         groups = svc.grouped_vocabularies
         vocabularies = groups.get(group)
 
-        return render_template(
-            'admin/vocabularies.html',
-            service=svc,
-            url_for_voc_edit=self.voc_edit_url,
-            icon_checked=Glyphicon('check'),
-            vocabularies={group: vocabularies},
-            edit_return_to='group',
-        )
+        ctx = {
+            'service': svc,
+            'url_for_voc_edit': self.voc_edit_url,
+            'icon_checked': Glyphicon('check'),
+            'vocabularies': {group: vocabularies},
+            'edit_return_to': 'group',
+        }
+        return render_template('admin/vocabularies.html', **ctx)
 
     def model_view(self, Model, group=None):
         svc = get_service('vocabularies')
 
-        return render_template(
-            'admin/vocabularies.html',
-            service=svc,
-            url_for_voc_edit=self.voc_edit_url,
-            icon_checked=Glyphicon('check'),
-            vocabularies={Model.Meta.group: [Model]},
-            edit_return_to='model',
-        )
+        ctx = {
+            'service': svc,
+            'url_for_voc_edit': self.voc_edit_url,
+            'icon_checked': Glyphicon('check'),
+            'vocabularies': {Model.Meta.group: [Model]},
+            'edit_return_to': 'model',
+        }
+        return render_template('admin/vocabularies.html', **ctx)
 
     def install_additional_rules(self, add_url_rule):
         panel_endpoint = '.' + self.id

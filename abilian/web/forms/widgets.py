@@ -256,8 +256,9 @@ class BaseTableView(object):
             elif column_name in (make_link_on, 'name') \
                     or col.get('linkable'):
                 cell = Markup(
-                    '<a href="{}">{}</a>'
-                    .format(build_url(entity), cgi.escape(text_type(value))),
+                    '<a href="{}">{}</a>'.format(
+                        build_url(entity), cgi.escape(text_type(value)),
+                    ),
                 )
             elif isinstance(value, Entity):
                 cell = Markup('<a href="{}">{}</a>'.format(
@@ -448,8 +449,9 @@ class AjaxMainTableView(object):
                 cell = Markup(linkify_url(value))
             elif col.get('linkable'):
                 cell = Markup(
-                    '<a href="{}">{}</a>'
-                    .format(url_for(entity), cgi.escape(text_type(value))),
+                    '<a href="{}">{}</a>'.format(
+                        url_for(entity), cgi.escape(text_type(value)),
+                    ),
                 )
             else:
                 cell = text_type(value)

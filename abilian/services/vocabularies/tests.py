@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 import sys
 
 import sqlalchemy as sa
+import sqlalchemy.exc
 from pytest import mark
 
 from abilian.testing import BaseTestCase
