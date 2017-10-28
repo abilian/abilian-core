@@ -24,26 +24,18 @@ class TestIcons(BaseTestCase):
             '<img src="/static/path/to/icon.png" width="12" height="12" />'
 
         icon = StaticIcon('path/to/icon.png', width=14)
-        self.assertEqual(
-            icon.__html__(),
-            '<img src="/static/path/to/icon.png" width="14" height="12" />',
-        )
+        assert icon.__html__() == \
+            '<img src="/static/path/to/icon.png" width="14" height="12" />'
 
         icon = StaticIcon('path/to/icon.png', height=14)
-        self.assertEqual(
-            icon.__html__(),
-            '<img src="/static/path/to/icon.png" width="12" height="14" />',
-        )
+        assert icon.__html__() == \
+            '<img src="/static/path/to/icon.png" width="12" height="14" />'
 
         icon = StaticIcon('path/to/icon.png', size=14)
-        self.assertEqual(
-            icon.__html__(),
-            '<img src="/static/path/to/icon.png" width="14" height="14" />',
-        )
+        assert icon.__html__() == \
+            '<img src="/static/path/to/icon.png" width="14" height="14" />'
 
         icon = StaticIcon('path/to/icon.png', size=14, css='avatar')
-        self.assertEqual(
-            icon.__html__(),
-            '<img class="avatar" src="/static/path/to/icon.png" width="14" '
-            'height="14" />',
-        )
+        assert icon.__html__() == \
+            '<img class="avatar" src="/static/path/to/icon.png" width="14" ' \
+            'height="14" />'

@@ -168,21 +168,21 @@ def search_main(q='', page=1):
     next_pages_numbered = [(index, page_url(page=index))
                            for index in range(page_min, page_max + 1)]
 
-    return render_template(
-        'search/search.html',
-        q=q,
-        results=results,
-        results_count=results_count,
-        pagecount=pagecount,
-        filtered_by_type=filtered_by_type,
-        by_object_type=by_object_type,
-        prev_page=prev_page,
-        next_page=next_page,
-        first_page=first_page,
-        last_page=last_page,
-        next_pages_numbered=next_pages_numbered,
-        friendly_fqcn=friendly_fqcn,
-    )
+    ctx = {
+        'q': q,
+        'results': results,
+        'results_count': results_count,
+        'pagecount': pagecount,
+        'filtered_by_type': filtered_by_type,
+        'by_object_type': by_object_type,
+        'prev_page': prev_page,
+        'next_page': next_page,
+        'first_page': first_page,
+        'last_page': last_page,
+        'next_pages_numbered': next_pages_numbered,
+        'friendly_fqcn': friendly_fqcn,
+    }
+    return render_template('search/search.html', **ctx)
 
 
 class Live(views.JSONView):

@@ -10,6 +10,7 @@ from __future__ import absolute_import, division, print_function, \
 import random
 import string
 from datetime import datetime
+from typing import Any
 
 from flask import current_app, flash, redirect, render_template, request, \
     url_for
@@ -267,9 +268,7 @@ def random_password():
 
 
 def get_serializer(name):
-    """
-    :type name: str
-    """
+    # type: (str) -> Any
     config = current_app.config
     secret_key = config.get('SECRET_KEY')
     salt = config.get('SECURITY_{}_SALT'.format(name.upper()))
@@ -281,7 +280,6 @@ def send_reset_password_instructions(user):
     """Send the reset password instructions email for the specified user.
 
     :param user: The user to send the instructions to
-    :type user: User
     """
     token = generate_reset_password_token(user)
     url = url_for('login.reset_password', token=token)
@@ -301,16 +299,17 @@ def send_reset_password_instructions(user):
 
 
 def generate_reset_password_token(user):
+    # type: (User) -> Any
     """Generate a unique reset password token for the specified user.
 
     :param user: The user to work with
-    :type user: User
     """
     data = [str(user.id), md5(user.password)]
     return get_serializer("reset").dumps(data)
 
 
 def reset_password_token_status(token):
+    # type: (str) -> Any
     """Return the expired status, invalid status, and user of a password reset
     token.
 
@@ -319,7 +318,6 @@ def reset_password_token_status(token):
         expired, invalid, user = reset_password_token_status('...')
 
     :param token: The password reset token
-    :type token: str
     """
     return get_token_status(token, 'reset', 'RESET_PASSWORD')
 

@@ -9,6 +9,7 @@ from io import BytesIO
 
 from PIL import Image
 from six import binary_type
+from typing import Dict
 
 __all__ = ['resize', 'RESIZE_MODES', 'SCALE', 'FIT', 'CROP']
 
@@ -28,7 +29,7 @@ CROP = 'crop'
 RESIZE_MODES = frozenset({SCALE, FIT, CROP})
 
 # TODO: cache to file
-cache = {}
+cache = {}  # type: Dict[str, bytes]
 
 
 def open_image(img):

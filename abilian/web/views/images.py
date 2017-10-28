@@ -16,7 +16,8 @@ from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.models.blob import Blob
 from abilian.core.models.subjects import User
-from abilian.services.image import CROP, RESIZE_MODES, get_size
+from abilian.services.image import CROP, RESIZE_MODES, get_format, get_size, \
+    resize
 from abilian.web.util import url_for
 
 from .files import BaseFileDownload
@@ -50,16 +51,14 @@ class BaseImageView(BaseFileDownload):
             size = int(size)
         except ValueError:
             raise BadRequest(
-                'Invalid value for "s": {}. Not an integer.'.format(
-                    repr(size)),
+                'Invalid value for "s": {:d}. Not an integer.'.format(size),
             )
 
-        if self.max_size is not None:
-            if size > self.max_size:
-                raise BadRequest('Size too large: {:d} (max: {:d})'.format(
-                    size,
-                    self.max_size,
-                ))
+        if self.max_size is not None and size > self.max_size:
+            raise BadRequest('Size too large: {:d} (max: {:d})'.format(
+                size,
+                self.max_size,
+            ))
 
         kwargs['size'] = size
 
@@ -75,8 +74,6 @@ class BaseImageView(BaseFileDownload):
         :param image: image as bytes
         :param s: requested maximum width/height size
         """
-        from abilian.services.image import resize, get_format
-
         try:
             fmt = get_format(image)
         except IOError:
@@ -147,13 +144,13 @@ class BlobView(BaseImageView):
 
     def prepare_args(self, args, kwargs):
         args, kwargs = BaseImageView.prepare_args(self, args, kwargs)
-        b_id = kwargs.get(self.id_arg)
+        blob_id = kwargs.get(self.id_arg)
         try:
-            b_id = int(b_id)
+            blob_id = int(blob_id)
         except ValueError:
-            raise BadRequest('Invalid image id: {}'.format(repr(b_id)))
+            raise BadRequest('Invalid blob id: {}'.format(repr(blob_id)))
 
-        blob = Blob.query.get(b_id)
+        blob = Blob.query.get(blob_id)
         if not blob:
             raise NotFound()
 
@@ -189,9 +186,8 @@ class UserMugshot(BaseImageView):
     def make_response(self, user, image, size, *args, **kwargs):
         if image:
             #  user has set a photo
-            return super(UserMugshot, self).make_response(
-                image, size, *args, **kwargs
-            )
+            return super(UserMugshot, self) \
+                .make_response(image, size, *args, **kwargs)
 
         # render svg avatar
         if user.last_name:

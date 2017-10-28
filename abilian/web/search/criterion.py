@@ -21,7 +21,6 @@ _UNDEFINED = UNDEFINED()
 
 
 class BaseCriterion(object):
-
     form_default_value = _UNDEFINED  # type: Union[UNDEFINED, text_type]
     """
     Values to set by default when adding a filter. The provided value(s) must be
@@ -54,7 +53,6 @@ class BaseCriterion(object):
     model = property(_get_model, _set_model)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
-
         raise NotImplementedError
 
     @property
@@ -202,22 +200,14 @@ class TextSearchCriterion(BaseCriterion):
 class TextCriterion(TextSearchCriterion):
 
     def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
-        super(
-            TextCriterion,
-            self).__init__(
-            name,
-            label,
-            attributes,
-            search_fmt)
+        super(TextCriterion, self) \
+            .__init__(name, label, attributes, search_fmt)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
         my_searched_text = request.values.get(self.name, '').strip()
         if my_searched_text:
-            return super(TextCriterion, self).filter(
-                query, module, request,
-                my_searched_text.lower(),
-                *args, **kwargs
-            )
+            return super(TextCriterion, self) \
+                .filter(query, module, request, my_searched_text.lower(), *args, **kwargs)
         else:
             return query
 
