@@ -585,7 +585,7 @@ class ActionRegistry(object):
         is raised.
         """
         assert self.installed(), "Actions not enabled on this application"
-        assert all([isinstance(a, Action) for a in actions])
+        assert all(isinstance(a, Action) for a in actions)
 
         for action in actions:
             cat = action.category

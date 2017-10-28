@@ -137,10 +137,10 @@ class GroupView(GroupBase, views.ObjectView):
         members = list(self.obj.members)
         members.sort(key=lambda u: (u.last_name, u.first_name))
         kw['members'] = members
-        kw['roles'] = sorted([
+        kw['roles'] = sorted(
             r for r in security.get_roles(self.obj, no_group_roles=True)
             if r.assignable
-        ])
+        )
         kw['ADD_USER_BUTTON'] = ADD_USER_BUTTON
         kw['REMOVE_USER_BUTTON'] = REMOVE_USER_BUTTON
         return kw
