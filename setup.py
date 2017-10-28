@@ -5,20 +5,20 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from distutils.command.build import build as _build
 
-import pip.download
-import pip.req
 import setuptools
+from pip.download import PipSession
+from pip.req import parse_requirements
 from setuptools.command.develop import develop as _develop
 from setuptools.command.sdist import sdist as _sdist
 
-session = pip.download.PipSession()
-_install_requires = pip.req.parse_requirements(
+session = PipSession()
+_install_requires = parse_requirements(
     'requirements.in',
     session=session,
 )
 install_requires = [str(ir.req) for ir in _install_requires]
 
-_dev_requires = pip.req.parse_requirements(
+_dev_requires = parse_requirements(
     'etc/dev-requirements.txt',
     session=session,
 )
