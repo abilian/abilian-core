@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Objects to schema adapters
-"""
+"""Objects to schema adapters."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -25,9 +23,10 @@ logger = logging.getLogger(__name__)
 
 @add_metaclass(ABCMeta)
 class SchemaAdapter(object):
-    """
-    Abstract base class for objects to schema adapter. The purpose of adapters is
-    that given an object they return kwargs for document.
+    """Abstract base class for objects to schema adapter.
+
+    The purpose of adapters is that given an object they return kwargs
+    for document.
     """
 
     def __init__(self, Model, schema):
@@ -39,8 +38,7 @@ class SchemaAdapter(object):
 
     @staticmethod
     def can_adapt(obj_cls):
-        """Return True if this class can adapt objects of class `obj_cls`.
-        """
+        """Return True if this class can adapt objects of class `obj_cls`."""
         raise NotImplementedError
 
     @abstractmethod

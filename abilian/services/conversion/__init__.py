@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Conversion service.
+"""Conversion service.
 
 Hardcoded to manage only conversion to PDF, to text and to image series.
 

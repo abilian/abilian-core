@@ -313,8 +313,7 @@ class UnoconvPdfHandler(Handler):
         return out
 
     def convert(self, blob, **kw):
-        """Convert using unoconv converter.
-        """
+        """Convert using unoconv converter."""
         timeout = self.run_timeout
         with make_temp_file(blob) as in_fn, \
                 make_temp_file(prefix='tmp-unoconv-', suffix=".pdf") as out_fn:
@@ -427,8 +426,7 @@ class LibreOfficePdfHandler(Handler):
         self.soffice = soffice
 
     def convert(self, blob, **kw):
-        """Convert using soffice converter.
-        """
+        """Convert using soffice converter."""
         timeout = self.run_timeout
         with make_temp_file(blob) as in_fn:
 

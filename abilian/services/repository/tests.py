@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -246,9 +245,7 @@ class TestSessionRepository(BaseTestCase):
             )
 
     def test_transaction_path(self):
-        """
-    Test RepositoryTransaction create storage only when needed
-    """
+        """Test RepositoryTransaction create storage only when needed."""
         session = self.session
         state = self.svc.app_state
         root_transaction = state.get_transaction(self.session)

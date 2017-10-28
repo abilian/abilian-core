@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -12,8 +11,7 @@ from abilian.testing import BaseTestCase
 class TestViews(BaseTestCase):
 
     def get_setup_config(self):
-        """Called before creating application class.
-        """
+        """Called before creating application class."""
         config = BaseTestCase.get_setup_config(self)
         config.NO_LOGIN = True
         return config

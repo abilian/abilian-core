@@ -156,8 +156,7 @@ class NoneOf(validators.NoneOf, Rule):
 
 
 class FlagHidden(Rule):
-    """Flag the field as hidden.
-    """
+    """Flag the field as hidden."""
     field_flags = ('hidden',)
 
     def __call__(self, form, field):
@@ -165,8 +164,7 @@ class FlagHidden(Rule):
 
 
 class AntiVirus(Rule):
-    """Check content for viruses.
-    """
+    """Check content for viruses."""
     field_flags = ('antivirus',)
 
     def __call__(self, form, field):
@@ -180,8 +178,7 @@ class AntiVirus(Rule):
 
 
 class RenderEmpty(object):
-    """Force display.
-    """
+    """Force display."""
     field_flags = ('render_empty',)
 
     def __call__(self, form, field):
@@ -193,11 +190,11 @@ class SIRET(RenderEmpty):
 
 
 def luhn(n):
-    """
-    Validate that a string made of numeric characters verify Luhn test. Used by
-    siret validator.
+    """Validate that a string made of numeric characters verify Luhn test. Used
+    by siret validator.
 
-    from http://rosettacode.org/wiki/Luhn_test_of_credit_card_numbers#Python
+    from
+    http://rosettacode.org/wiki/Luhn_test_of_credit_card_numbers#Python
     https://en.wikipedia.org/wiki/Luhn_algorithm
     """
     r = [int(ch) for ch in str(n)][::-1]
@@ -215,16 +212,14 @@ SIRET_CODES = ('001', "458", "462", "496", "372")
 
 
 def siret_validator():
-    """Validate a SIRET: check its length (14), its final code, and
-    pass it through the Luhn algorithm.
-
-    """
+    """Validate a SIRET: check its length (14), its final code, and pass it
+    through the Luhn algorithm."""
 
     def _validate_siret(form, field, siret=""):
-        """SIRET validator.  A WTForm validator wants a form and a field as
-        parameters. We also want to give directly a siret, for a
-        scripting use.
+        """SIRET validator.
 
+        A WTForm validator wants a form and a field as parameters. We
+        also want to give directly a siret, for a scripting use.
         """
         if field is not None:
             siret = (field.data or '').strip()

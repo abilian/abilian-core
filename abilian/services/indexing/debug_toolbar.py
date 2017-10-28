@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -37,7 +36,7 @@ class IndexedTermsDebugPanel(DebugPanel):
         return _('Indexed Terms')
 
     def nav_subtitle(self):
-        """Subtitle showing until title in toolbar"""
+        """Subtitle showing until title in toolbar."""
         obj = self.current_obj
         if not obj:
             return _('No current object')

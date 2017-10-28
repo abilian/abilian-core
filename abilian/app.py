@@ -1,8 +1,6 @@
 # coding=utf-8
-"""
-Base Flask application class, used by tests or to be extended
-in real applications.
-"""
+"""Base Flask application class, used by tests or to be extended in real
+applications."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -73,9 +71,8 @@ warnings.simplefilter("ignore", category=sa.exc.SAWarning)
 
 
 class ServiceManager(object):
-    """
-    Mixin that provides lifecycle (register/start/stop) support for services.
-    """
+    """Mixin that provides lifecycle (register/start/stop) support for
+    services."""
 
     def __init__(self):
         self.services = {}
@@ -90,16 +87,14 @@ class ServiceManager(object):
 
 
 class PluginManager(object):
-    """
-    Mixin that provides support for loading plugins.
-    """
+    """Mixin that provides support for loading plugins."""
 
     @deprecated
     def load_plugins(self):
         """Discover and load plugins.
 
-        At this point, prefer explicit loading using the :method:~`register_plugin`
-        method.
+        At this point, prefer explicit loading using the
+        :method:~`register_plugin` method.
         """
         loader = AppLoader()
         loader.load(__name__.split('.')[0])
@@ -107,8 +102,7 @@ class PluginManager(object):
 
     @deprecated
     def register_plugin(self, name):
-        """Load and register a plugin given its package name.
-        """
+        """Load and register a plugin given its package name."""
         logger.info("Registering plugin: " + name)
         module = importlib.import_module(name)
         module.register_plugin(self)
@@ -154,7 +148,9 @@ default_config = ImmutableDict(default_config)
 
 
 class Application(Flask, ServiceManager, PluginManager):
-    """Base application class. Extend it in your own app.
+    """Base application class.
+
+    Extend it in your own app.
     """
     default_config = default_config
 
@@ -402,8 +398,8 @@ class Application(Flask, ServiceManager, PluginManager):
     def _set_current_celery_app(self):
         """Listener for `before_first_request`.
 
-        Set our celery app as current, so that task use the correct config.
-        Without that tasks may use their default set app.
+        Set our celery app as current, so that task use the correct
+        config. Without that tasks may use their default set app.
         """
         self.extensions['celery'].set_current()
 
@@ -420,15 +416,16 @@ class Application(Flask, ServiceManager, PluginManager):
     def init_breadcrumbs(self):
         """Insert the first element in breadcrumbs.
 
-        This happens during `request_started` event, which is triggered before any
-        url_value_preprocessor and `before_request` handlers.
+        This happens during `request_started` event, which is triggered
+        before any url_value_preprocessor and `before_request` handlers.
         """
         g.breadcrumb.append(
             BreadcrumbItem(icon='home', url='/' + request.script_root),
         )
 
     def check_instance_folder(self, create=False):
-        """Verify instance folder exists, is a directory, and has necessary permissions.
+        """Verify instance folder exists, is a directory, and has necessary
+        permissions.
 
         :param:create: if `True`, creates directory hierarchy
 
@@ -550,8 +547,7 @@ class Application(Flask, ServiceManager, PluginManager):
                         extensions.csrf.exempt(self.view_functions[view_name])
 
     def init_extensions(self):
-        """Initialize flask extensions, helpers and services.
-        """
+        """Initialize flask extensions, helpers and services."""
         self.init_debug_toolbar()
         redis.Extension(self)
         extensions.mail.init_app(self)
@@ -638,14 +634,13 @@ class Application(Flask, ServiceManager, PluginManager):
 
             @http_error_pages.route('/<int:code>')
             def error_page(code):
-                """ Helper for development to show 403, 404, 500..."""
+                """Helper for development to show 403, 404, 500..."""
                 abort(code)
 
             self.register_blueprint(http_error_pages, url_prefix='/http_error')
 
     def register_plugins(self):
-        """Load plugins listed in config variable 'PLUGINS'.
-        """
+        """Load plugins listed in config variable 'PLUGINS'."""
         registered = set()
         for plugin_fqdn in chain(self.APP_PLUGINS, self.config['PLUGINS']):
             if plugin_fqdn not in registered:
@@ -794,9 +789,8 @@ class Application(Flask, ServiceManager, PluginManager):
 
     @locked_cached_property
     def jinja_loader(self):
-        """Search templates in custom app templates dir (default flask behaviour),
-        fallback on abilian templates.
-        """
+        """Search templates in custom app templates dir (default flask
+        behaviour), fallback on abilian templates."""
         loaders = self._jinja_loaders
         del self._jinja_loaders
         loaders.append(Flask.jinja_loader.func(self))
@@ -828,10 +822,8 @@ class Application(Flask, ServiceManager, PluginManager):
         return Flask.handle_exception(self, e)
 
     def _remove_session_save_objects(self):
-        """
-        Used during exception handling in case we need to remove() session: keep
-        instances and merge them in the new session.
-        """
+        """Used during exception handling in case we need to remove() session:
+        keep instances and merge them in the new session."""
         if self.testing:
             return
         # Before destroying the session, get all instances to be attached to the
@@ -859,15 +851,13 @@ class Application(Flask, ServiceManager, PluginManager):
             _request_ctx_stack.top.user = session.merge(user, load=load)
 
     def log_exception(self, exc_info):
-        """Log exception only if sentry is not installed (this avoids getting error
-        twice in sentry).
-        """
+        """Log exception only if sentry is not installed (this avoids getting
+        error twice in sentry)."""
         if 'sentry' not in self.extensions:
             super(Application, self).log_exception(exc_info)
 
     def init_sentry(self):
-        """Install Sentry handler if config defines 'SENTRY_DSN'.
-        """
+        """Install Sentry handler if config defines 'SENTRY_DSN'."""
         if self.config.get('SENTRY_DSN'):
             try:
                 from abilian.core.sentry import Sentry
@@ -1005,7 +995,8 @@ class Application(Flask, ServiceManager, PluginManager):
             self._assets_bundles[type_].setdefault('bundles', []).append(asset)
 
     def register_i18n_js(self, *paths):
-        """Register templates path translations files, like `select2/select2_locale_{lang}.js`.
+        """Register templates path translations files, like
+        `select2/select2_locale_{lang}.js`.
 
         Only existing files are registered.
         """
@@ -1025,7 +1016,8 @@ class Application(Flask, ServiceManager, PluginManager):
     def _register_base_assets(self):
         """Register assets needed by Abilian.
 
-        This is done in a separate method in order to allow applications to redefine it at will.
+        This is done in a separate method in order to allow applications
+        to redefine it at will.
         """
         from abilian.web import assets as bundles
 
@@ -1037,8 +1029,8 @@ class Application(Flask, ServiceManager, PluginManager):
     def install_default_handler(self, http_error_code):
         """Install a default error handler for `http_error_code`.
 
-        The default error handler renders a template named error404.html for
-        http_error_code 404.
+        The default error handler renders a template named error404.html
+        for http_error_code 404.
         """
         logger.debug(
             'Set Default HTTP error handler for status code %d',

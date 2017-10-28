@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -39,9 +38,7 @@ def format_date_for_input(date):
 
 
 class JSONUserSearch(JSONView):
-    """
-    Search users by fullname
-    """
+    """Search users by fullname."""
 
     def data(self, q, *args, **kwargs):
         q = q.replace('%', ' ').strip().lower()

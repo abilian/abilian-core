@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -9,8 +8,7 @@ from redis import from_url as redis_from_url
 
 
 class Extension(object):
-    """Redis extension for flask
-    """
+    """Redis extension for flask."""
     client = None
 
     def __init__(self, app=None):

@@ -1,6 +1,5 @@
 # coding=utf-8
-""" Additional data types for sqlalchemy
-"""
+"""Additional data types for sqlalchemy."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -183,9 +182,7 @@ class MutationDict(Mutable, dict):
 
 
 class MutationList(Mutable, list):
-    """
-    Provides a list type with mutability support.
-    """
+    """Provides a list type with mutability support."""
 
     @classmethod
     def coerce(cls, key, value):
@@ -266,9 +263,7 @@ class MutationList(Mutable, list):
 class JSON(sa.types.TypeDecorator):
     """Stores any structure serializable with json.
 
-    Usage
-    JSON()
-    Takes same parameters as sqlalchemy.types.Text
+    Usage JSON() Takes same parameters as sqlalchemy.types.Text
     """
     impl = sa.types.Text
 
@@ -284,8 +279,7 @@ class JSON(sa.types.TypeDecorator):
 
 
 class JSONUniqueListType(JSON):
-    """Store a list in JSON format, with items made unique and sorted.
-    """
+    """Store a list in JSON format, with items made unique and sorted."""
 
     @property
     def python_type(self):
@@ -301,16 +295,15 @@ class JSONUniqueListType(JSON):
 
 
 def JSONDict(*args, **kwargs):
-    """Stores a dict as JSON on database, with mutability support.
-    """
+    """Stores a dict as JSON on database, with mutability support."""
     return MutationDict.as_mutable(JSON(*args, **kwargs))
 
 
 def JSONList(*args, **kwargs):
     """Stores a list as JSON on database, with mutability support.
 
-    If kwargs has a param `unique_sorted` (which evaluated to True), list values
-    are made unique and sorted.
+    If kwargs has a param `unique_sorted` (which evaluated to True),
+    list values are made unique and sorted.
     """
     type_ = JSON
     try:
@@ -360,8 +353,7 @@ class UUID(sa.types.TypeDecorator):
 
 
 class Locale(sa.types.TypeDecorator):
-    """Store a :class:`babel.Locale` instance
-    """
+    """Store a :class:`babel.Locale` instance."""
     impl = sa.types.UnicodeText
 
     @property
@@ -392,8 +384,7 @@ class Locale(sa.types.TypeDecorator):
 
 
 class Timezone(sa.types.TypeDecorator):
-    """Store a :class:`pytz.tzfile.DstTzInfo` instance
-    """
+    """Store a :class:`pytz.tzfile.DstTzInfo` instance."""
     impl = sa.types.UnicodeText
 
     @property

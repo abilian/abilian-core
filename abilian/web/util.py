@@ -1,9 +1,8 @@
 # coding=utf-8
-"""
-A few utility functions.
+"""A few utility functions.
 
-See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for more ideas
-of stuff to implement.
+See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for
+more ideas of stuff to implement.
 """
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
@@ -26,8 +25,8 @@ except ImportError:
 def url_for(obj, **kw):
     """Polymorphic variant of Flask's `url_for` function.
 
-    Behaves like the original function when the first argument is a string.
-    When it's an object, it
+    Behaves like the original function when the first argument is a
+    string. When it's an object, it
     """
     if isinstance(obj, string_types):
         return flask_url_for(obj, **kw)
@@ -44,14 +43,13 @@ def url_for(obj, **kw):
 
 
 def get_object_or_404(cls, *args):
-    """Shorthand similar to Django's `get_object_or_404`.
-    """
+    """Shorthand similar to Django's `get_object_or_404`."""
 
     return cls.query.filter(*args).first_or_404()
 
 
 def send_file_from_directory(filename, directory, app=None):
-    """Helper to add static rules, like in `abilian.app`.app
+    """Helper to add static rules, like in `abilian.app`.app.
 
     Example use::
 

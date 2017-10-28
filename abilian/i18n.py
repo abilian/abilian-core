@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-I18n.
+"""I18n.
 
 To mark strings for translation::
 
@@ -43,8 +42,6 @@ And just type:
 .. code-block:: bash
 
     $ python setup.py extract_messages
-
-
 """
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
@@ -131,8 +128,7 @@ def default_country():
 
 
 def country_choices(first=None, default_country_first=True):
-    """
-    Return a list of (code, countries), alphabetically sorted on localized
+    """Return a list of (code, countries), alphabetically sorted on localized
     country name.
 
     :param first: Country code to be placed at the top
@@ -186,9 +182,7 @@ def timezones_choices():
 
 
 class Babel(BabelBase):
-    """
-    Allow to load translations from other modules
-    """
+    """Allow to load translations from other modules."""
     _translations_paths = None
 
     def __init__(self, *args, **kwargs):
@@ -206,8 +200,7 @@ class Babel(BabelBase):
             translations_dir='translations',
             domain='messages',
     ):
-        """
-        Add translations from external module.
+        """Add translations from external module.
 
         For example::
 
@@ -233,8 +226,8 @@ class Babel(BabelBase):
 class Translations(BaseTranslations):
     """Merge only non-empty translations.
 
-    This avoids having uncomplete catalog that "clear" existing translations, when
-    used with :func:`_get_translations_multi_paths`.
+    This avoids having uncomplete catalog that "clear" existing
+    translations, when used with :func:`_get_translations_multi_paths`.
     """
 
     def merge(self, translations):
@@ -268,8 +261,8 @@ def _get_translations_multi_paths():
     """Return the correct gettext translations that should be used for this
     request.
 
-    This will never fail and return a dummy translation object
-    if used outside of the request or if a translation cannot be found.
+    This will never fail and return a dummy translation object if used
+    outside of the request or if a translation cannot be found.
     """
     ctx = _request_ctx_stack.top
     if ctx is None:
@@ -319,8 +312,7 @@ babel = Babel()
 
 
 def localeselector():
-    """Default locale selector used in abilian applications.
-    """
+    """Default locale selector used in abilian applications."""
     # if a user is logged in, use the locale from the user settings
     user = getattr(g, 'user', None)
     if user is not None:
@@ -336,14 +328,12 @@ def localeselector():
 
 
 def timezoneselector():
-    """Default timezone selector used in abilian applications.
-    """
+    """Default timezone selector used in abilian applications."""
     return LOCALTZ
 
 
 def get_template_i18n(template_name, locale):
-    """Build template list with preceding locale if found.
-    """
+    """Build template list with preceding locale if found."""
     if locale is None:
         return [template_name]
 
@@ -366,8 +356,7 @@ def get_template_i18n(template_name, locale):
 
 
 class ensure_request_context(object):
-    """Context manager that ensures a request context is set up.
-    """
+    """Context manager that ensures a request context is set up."""
     _rq_ctx = None
 
     def __enter__(self):
@@ -384,8 +373,8 @@ class ensure_request_context(object):
 
 
 def render_template_i18n(template_name_or_list, **context):
-    """Try to build an ordered list of template to satisfy the current locale.
-    """
+    """Try to build an ordered list of template to satisfy the current
+    locale."""
     template_list = []
     # Use locale if present in **context
     if 'locale' in context:

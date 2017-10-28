@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-All signals used by Abilian Core.
+"""All signals used by Abilian Core.
 
 Signals are the main tools used for decoupling applications components by
 sending notifications. In short, signals allow certain senders to notify

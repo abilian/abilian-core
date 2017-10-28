@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Admin panel for tags
-"""
+"""Admin panel for tags."""
 from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
@@ -31,9 +29,7 @@ _OBJ_COUNT = func.count(entity_tag_tbl.c.entity_id) \
 
 
 def get_entities_for_reindex(tags):
-    """
-    Collect entities for theses tags.
-    """
+    """Collect entities for theses tags."""
     if isinstance(tags, Tag):
         tags = (tags,)
 
@@ -74,9 +70,7 @@ def schedule_entities_reindex(entities):
 
 
 class NSView(View):
-    """
-    View a Namespace
-    """
+    """View a Namespace."""
 
     def __init__(self, view_endpoint, *args, **kwargs):
         super(NSView, self).__init__(*args, **kwargs)
@@ -223,9 +217,7 @@ class NSView(View):
 
 
 class BaseTagView(object):
-    """
-    Mixin for tag views
-    """
+    """Mixin for tag views."""
     Model = Tag
     Form = TagForm
 
@@ -264,9 +256,7 @@ class TagEdit(BaseTagView, ObjectEdit):
 
 
 class TagPanel(AdminPanel):
-    """
-    Tags administration
-    """
+    """Tags administration."""
     id = 'tags'
     label = _l('Tags')
     icon = 'tags'

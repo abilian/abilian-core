@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -30,8 +29,7 @@ def EdgeNgramField():
 
 
 class _DefaultSearchSchema(SchemaClass):
-    """General search schema.
-    """
+    """General search schema."""
     object_key = ID(stored=True, unique=True)
     id = NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=False)
     object_type = ID(stored=True, unique=False)

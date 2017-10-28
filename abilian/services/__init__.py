@@ -1,8 +1,8 @@
 # coding=utf-8
-"""
-Modules that provide services. They are implemented as
-Flask extensions (see: http://flask.pocoo.org/docs/extensiondev/ )
+"""Modules that provide services.
 
+They are implemented as Flask extensions (see:
+http://flask.pocoo.org/docs/extensiondev/ )
 """
 from __future__ import print_function
 from __future__ import division

@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Plugin loader, initially from Flask-Foundation.
-"""
+"""Plugin loader, initially from Flask-Foundation."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -15,7 +13,10 @@ from abilian.web.decorators import deprecated
 
 
 class AppLoader(ModuleLoader):
-    """Deprecated. Will be removed in next version (0.10)."""
+    """Deprecated.
+
+    Will be removed in next version (0.10).
+    """
 
     @deprecated
     def __init__(self, subtype=None):

@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -19,8 +18,7 @@ _MANAGER_ATTR = '__attachments_manager__'
 
 
 class AttachmentExtension(object):
-    """
-    API for comments, installed as an application extension.
+    """API for comments, installed as an application extension.
 
     It is also available in templates as `attachments`.
     """
@@ -31,9 +29,7 @@ class AttachmentExtension(object):
         app.register_blueprint(blueprint)
 
     def manager(self, obj):
-        """
-        Returns the :class:`AttachmentsManager` instance for this object.
-        """
+        """Returns the :class:`AttachmentsManager` instance for this object."""
         manager = getattr(obj, _MANAGER_ATTR, None)
         if manager is None:
             manager = AttachmentsManager()
@@ -57,8 +53,8 @@ class AttachmentExtension(object):
         return self.manager(obj).count(obj)
 
     def get_form_context(self, obj):
-        """
-        Return a dict: form instance, action button, submit url...
+        """Return a dict: form instance, action button, submit url...
+
         Used by macro m_attachment_form(entity)
         """
         return self.manager(obj).get_form_context(obj)
@@ -68,8 +64,7 @@ _DEFAULT_TEMPLATE = 'macros/attachment_default.html'
 
 
 class AttachmentsManager(object):
-    """
-    Allow customization of attachments form, display macros, etc
+    """Allow customization of attachments form, display macros, etc.
 
     can be used as class decorator
     """
@@ -121,8 +116,8 @@ class AttachmentsManager(object):
         return len(self.for_entity(obj, check_support_attachments=True))
 
     def get_form_context(self, obj):
-        """
-        Return a dict: form instance, action button, submit url...
+        """Return a dict: form instance, action button, submit url...
+
         Used by macro m_attachment_form(entity)
         """
         return {
@@ -135,25 +130,17 @@ class AttachmentsManager(object):
     # current user capabilities
     #
     def can_view(self, entity):
-        """
-        True if user can view attachments on entity
-        """
+        """True if user can view attachments on entity."""
         return security.has_permission(current_user, READ, obj=entity)
 
     def can_edit(self, entity):
-        """
-        True if user can edit attachments on entity
-        """
+        """True if user can edit attachments on entity."""
         return security.has_permission(current_user, WRITE, obj=entity)
 
     def can_create(self, entity):
-        """
-        True if user can add attachments
-        """
+        """True if user can add attachments."""
         return security.has_permission(current_user, WRITE, obj=entity)
 
     def can_delete(self, entity):
-        """
-        True if user can delete attachments
-        """
+        """True if user can delete attachments."""
         return security.has_permission(current_user, WRITE, obj=entity)

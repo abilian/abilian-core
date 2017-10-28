@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-audit Service: logs modifications to audited objects.
+"""audit Service: logs modifications to audited objects.
 
 TODO: In the future, we may decide to:
 
@@ -371,8 +370,7 @@ def get_model_changes(
         hour=None,
         since=None,
 ):
-    """
-    Get models modified at the given date with the Audit service.
+    """Get models modified at the given date with the Audit service.
 
     :param entity_type: string like "extranet_medicen.apps.crm.models.Compte".
       Beware the typo, there won't be a warning message.
@@ -383,7 +381,6 @@ def get_model_changes(
     :param hour: int
 
     :returns: a query object
-
     """
     query = AuditEntry.query
 
@@ -412,7 +409,6 @@ def get_columns_diff(changes):
 
     Return: the same list, to which elements we added a "diff"
     attribute containing the changed columns. Diff defaults to [].
-
     """
     for change in changes:
         change.diff = []

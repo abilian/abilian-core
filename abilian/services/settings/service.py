@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -41,8 +40,7 @@ class SettingsService(Service):
 
     def as_dict(self, prefix=None):
         """Return a mapping key -> value of settings, with optional prefix
-        filtering.
-        """
+        filtering."""
         return dict(self.iteritems(prefix))
 
     def _get_setting(self, key):
@@ -83,9 +81,9 @@ class SettingsService(Service):
 
 
 class SettingsNamespace(object):
-    """
-    Allow to query :class:`SettingsService` service within a
-    namespace. Basically it prefixes keys with namespace name and a colon.
+    """Allow to query :class:`SettingsService` service within a namespace.
+
+    Basically it prefixes keys with namespace name and a colon.
     """
 
     def __init__(self, name, service):
@@ -93,15 +91,11 @@ class SettingsNamespace(object):
         self.service = service
 
     def namespace(self, name):
-        """
-        A namespace within this namespace.
-        """
+        """A namespace within this namespace."""
         return SettingsNamespace(self.ns(name), self.service)
 
     def ns(self, key):
-        """
-        Returns full key name for use in settings service.
-        """
+        """Returns full key name for use in settings service."""
         return ':'.join((self.name, key))
 
     def keys(self, prefix=''):
@@ -120,9 +114,7 @@ class SettingsNamespace(object):
         return dict(self.iteritems(prefix))
 
     def get(self, key):
-        """
-        Proxy to :meth:`SettingsService.get`
-        """
+        """Proxy to :meth:`SettingsService.get`"""
         return self.service.get(self.ns(key))
 
     def set(self, key, *args, **kwargs):

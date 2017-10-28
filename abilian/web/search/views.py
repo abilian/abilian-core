@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -187,9 +186,7 @@ def search_main(q='', page=1):
 
 
 class Live(views.JSONView):
-    """
-    JSON response for live search
-    """
+    """JSON response for live search."""
 
     def data(self, q='', page=None, *args, **kwargs):
         if not q:

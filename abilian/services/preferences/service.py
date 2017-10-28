@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-User preference service.
+"""User preference service.
 
 Notes:
 
@@ -50,10 +49,8 @@ class PreferenceState(ServiceState):
 
 
 class PreferenceService(Service):
-    """
-    Flask extension for a user-level preference service, with pluggable
-    panels.
-    """
+    """Flask extension for a user-level preference service, with pluggable
+    panels."""
     name = 'preferences'
     AppStateClass = PreferenceState
 
@@ -76,8 +73,7 @@ class PreferenceService(Service):
         return {pref.key: pref.value for pref in user.preferences}
 
     def set_preferences(self, user=None, **kwargs):
-        """Set preferences from keyword arguments.
-        """
+        """Set preferences from keyword arguments."""
         if user is None:
             user = current_user
 
@@ -90,8 +86,7 @@ class PreferenceService(Service):
                 db.session.add(d[k])
 
     def clear_preferences(self, user=None):
-        """Clear the user preferences.
-        """
+        """Clear the user preferences."""
         if user is None:
             user = current_user
 
@@ -172,8 +167,7 @@ class PreferenceService(Service):
 
         @bp.route("/")
         def index():
-            """Index redirects to the first accessible panel.
-            """
+            """Index redirects to the first accessible panel."""
 
             # Work around unit test failure. FIXME.
             if current_user.is_anonymous:

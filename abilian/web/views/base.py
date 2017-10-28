@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -45,18 +44,16 @@ class View(BaseView):
             return exc.response
 
     def prepare_args(self, args, kwargs):
-        """
-        If view arguments need to be prepared it can be done here.
+        """If view arguments need to be prepared it can be done here.
 
-        A typical use case is to take an identifier, convert it to an object
-        instance and maybe store it on view instance and/or replace
-        identifier by object in arguments.
+        A typical use case is to take an identifier, convert it to an
+        object instance and maybe store it on view instance and/or
+        replace identifier by object in arguments.
         """
         return args, kwargs
 
     def redirect(self, url):
-        """
-        Shortcut all call stack and return response.
+        """Shortcut all call stack and return response.
 
         usage: `self.response(url_for(...))`
         """
@@ -89,8 +86,8 @@ _JSON_HTML = '''
 class JSONView(View):
     """Base view for JSON GET.
 
-    Renders as JSON when requested by Ajax, renders as HTML when requested
-    from browser.
+    Renders as JSON when requested by Ajax, renders as HTML when
+    requested from browser.
     """
 
     def prepare_args(self, args, kwargs):
@@ -98,8 +95,7 @@ class JSONView(View):
         return args, kwargs
 
     def data(self, *args, **kwargs):
-        """This method should return data to be serialized using JSON
-        """
+        """This method should return data to be serialized using JSON."""
         raise NotImplementedError
 
     def get(self, *args, **kwargs):

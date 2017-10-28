@@ -1,7 +1,5 @@
 # coding: utf-8
-"""
-Add a few specific filters to Jinja2.
-"""
+"""Add a few specific filters to Jinja2."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -27,9 +25,7 @@ from .util import url_for
 
 
 def autoescape(filter_func):
-    """
-    Decorator to autoescape result from filters.
-    """
+    """Decorator to autoescape result from filters."""
 
     @evalcontextfilter
     @wraps(filter_func)
@@ -44,8 +40,7 @@ def autoescape(filter_func):
 
 @autoescape
 def nl2br(value):
-    """Replace newlines with <br />.
-    """
+    """Replace newlines with <br />."""
     result = escape(value).replace('\n', Markup('<br />\n'))
     return result
 
@@ -55,8 +50,7 @@ _PARAGRAPH_RE = re.compile(r'(?:\r\n|\r|\n){2,}')
 
 @autoescape
 def paragraphs(value):
-    """Blank lines delimitates paragraphs.
-    """
+    """Blank lines delimitates paragraphs."""
     result = '\n\n'.join(
         ('<p>{}</p>'.format(p.strip().replace('\n', Markup('<br />\n')))
          for p in _PARAGRAPH_RE.split(escape(value)))
@@ -95,11 +89,7 @@ def filesize(d):
 
 
 def roughsize(size, above=20, mod=10):
-    """
-    6 -> '6'
-    15 -> '15'
-    134 -> '130+'
-    """
+    """6 -> '6' 15 -> '15' 134 -> '130+'."""
     if size < above:
         return text_type(size)
 
@@ -196,10 +186,8 @@ def date(value, format="EE, d MMMM y"):
 
 
 def babel2datepicker(pattern):
-    """Convert date format from babel
-    (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
-    bootstrap-datepicker.
-    """
+    """Convert date format from babel (http://babel.pocoo.org/docs/dates/#date-
+    fields)) to a format understood by bootstrap-datepicker."""
     if not isinstance(pattern, DateTimePattern):
         pattern = parse_pattern(pattern)
 
@@ -255,8 +243,7 @@ def abbrev(s, max_size):
 
 
 def bool2check(val, true='\u2713', false=''):
-    """Filter value as boolean and show check mark (✓) or nothing.
-    """
+    """Filter value as boolean and show check mark (✓) or nothing."""
     return true if val else false
 
 
@@ -266,7 +253,8 @@ def linkify(s):
 
 
 def obj_to_url(obj):
-    """Find url for obj using :func:`url_for`, return empty string is not found.
+    """Find url for obj using :func:`url_for`, return empty string is not
+    found.
 
     :func:`url_for` is also provided in jinja context, the filtering version is
     forgiving when `obj` has no default view set.

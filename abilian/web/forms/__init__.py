@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Extensions to WTForms fields, widgets and validators.
-"""
+"""Extensions to WTForms fields, widgets and validators."""
 from __future__ import absolute_import, division, print_function
 
 import logging
@@ -44,8 +42,7 @@ BabelTranslation = _BabelTranslation()
 
 
 class FormPermissions(object):
-    """Form role/permission manager.
-    """
+    """Form role/permission manager."""
 
     def __init__(
             self,
@@ -177,12 +174,10 @@ class FormPermissions(object):
 
 
 class FormContext(object):
-    """
-    Allows :class:`forms <Form>` to set a context during instanciation, so that
-    subforms used in formfields / listformfields / etc can perform proper field
-    filtering according to original permission and user passed to top form
-    `__init__` method.
-    """
+    """Allows :class:`forms <Form>` to set a context during instanciation, so
+    that subforms used in formfields / listformfields / etc can perform proper
+    field filtering according to original permission and user passed to top
+    form `__init__` method."""
     permission = None
     user = None
 
@@ -331,9 +326,9 @@ if not _PATCHED:
     del _core_field_init
 
     def _core_field_repr(self):
-        """
-        `__repr__` that shows the name of the field instance. Useful for tracing field
-        errors (like in Sentry).
+        """`__repr__` that shows the name of the field instance.
+
+        Useful for tracing field errors (like in Sentry).
         """
         return '<{}.{} at 0x{:x} name={!r}>'.format(
             self.__class__.__module__,
@@ -360,8 +355,7 @@ if not _PATCHED:
     del _core_field_render
 
     def render_view(self, **kwargs):
-        """Render data.
-        """
+        """Render data."""
         if 'widget_options' in kwargs and not kwargs['widget_options']:
             kwargs.pop('widget_options')
 
@@ -375,10 +369,8 @@ if not _PATCHED:
     del render_view
 
     def is_hidden(self):
-        """
-        WTForms is not consistent with hidden fields, since `flags.hidden` is not
-        set on `HiddenField` :-(
-        """
+        """WTForms is not consistent with hidden fields, since `flags.hidden`
+        is not set on `HiddenField` :-("""
         return self.flags.hidden or isinstance(self, HiddenField)
 
     patch_logger.info('Add method %s.Field.is_hidden' % Field.__module__)

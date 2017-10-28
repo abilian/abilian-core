@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -20,9 +19,8 @@ ENTITY_DEFAULT_NS_ATTR = '__tags_default_ns__'
 
 
 def ns(ns):
-    """
-    Class decorator that sets default tags namespace to use with its instances.
-    """
+    """Class decorator that sets default tags namespace to use with its
+    instances."""
 
     def setup_ns(cls):
         setattr(cls, ENTITY_DEFAULT_NS_ATTR, ns)
@@ -32,8 +30,7 @@ def ns(ns):
 
 
 class _TagsForm(Form):
-    """
-    Form to workaround a wtforms limitation: fields cannot start with an
+    """Form to workaround a wtforms limitation: fields cannot start with an
     underscore, so '__tags__' is not accepted.
 
     This form help process tags (and only tags).
@@ -52,8 +49,7 @@ class _TagsForm(Form):
 
 
 class TagsExtension(object):
-    """
-    API for tags, installed as an application extension.
+    """API for tags, installed as an application extension.
 
     It is also available in templates as `tags`.
     """
@@ -95,9 +91,7 @@ class TagsExtension(object):
         return getattr(entity, ENTITY_DEFAULT_NS_ATTR, 'default')
 
     def entity_tags_form(self, entity, ns=None):
-        """
-        Construct a form class with a field for tags in namespace `ns`.
-        """
+        """Construct a form class with a field for tags in namespace `ns`."""
         if ns is None:
             ns = self.entity_default_ns(entity)
 
@@ -109,12 +103,11 @@ class TagsExtension(object):
         return cls
 
     def get(self, ns, label=None):
-        """
-        Return :class:`tags instances<~Tag>` for the namespace `ns`, ordered by
-        label.
+        """Return :class:`tags instances<~Tag>` for the namespace `ns`, ordered
+        by label.
 
-        If `label` is not None the only one instance may be returned, or `None` if
-        no tags exists for this label.
+        If `label` is not None the only one instance may be returned, or
+        `None` if no tags exists for this label.
         """
         query = Tag.query.filter(Tag.ns == ns)
 
@@ -149,8 +142,8 @@ class TagsExtension(object):
             pass
 
     def get_form_context(self, obj, ns=None):
-        """
-        Return a dict: form instance, action button, submit url...
+        """Return a dict: form instance, action button, submit url...
+
         Used by macro m_tags_form(entity)
         """
         return {

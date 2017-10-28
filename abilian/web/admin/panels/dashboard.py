@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -110,8 +109,7 @@ def unix_time_millis(dt):
 
 
 def newlogins(sessions):
-    """
-    Brand new logins each day, and total of users each day.
+    """Brand new logins each day, and total of users each day.
 
     :return: data, total
       2 lists of dictionaries of the following format [{'x':epoch, 'y': value},]

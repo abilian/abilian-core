@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -16,8 +15,8 @@ wtf_csrf = CsrfProtect()
 
 
 class AbilianCsrf(object):
-    """Csrf error handler, that allows supporting views to gracefully report error
-    instead of a plain 400 error.
+    """Csrf error handler, that allows supporting views to gracefully report
+    error instead of a plain 400 error.
 
     views supporting this must
     """

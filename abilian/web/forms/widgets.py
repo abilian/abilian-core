@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Reusable widgets to be included in views.
+"""Reusable widgets to be included in views.
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
@@ -285,24 +284,19 @@ class BaseTableView(object):
 
 
 class MainTableView(BaseTableView):
-    """
-    Table view for main objects list.
-    """
+    """Table view for main objects list."""
     show_controls = True
     paginate = True
 
 
 class RelatedTableView(BaseTableView):
-    """
-    Table view for related objects list.
-    """
+    """Table view for related objects list."""
     show_controls = False
     paginate = False
 
 
 class AjaxMainTableView(object):
-    """
-    Variant of the MainTableView that gets content from AJAX requests.
+    """Variant of the MainTableView that gets content from AJAX requests.
 
     TODO: refactor all of this (currently code is copy/pasted!).
     """
@@ -590,12 +584,11 @@ class SingleView(object):
 # Used to describe single entity views.
 #
 class Panel(object):
-    """
-    `Panel` and `Row` classes help implement a trivial internal DSL for
+    """`Panel` and `Row` classes help implement a trivial internal DSL for
     specifying multi-column layouts in forms or object views.
 
-    They are currently not really used, since we went with 1-column designs
-    eventually.
+    They are currently not really used, since we went with 1-column
+    designs eventually.
     """
 
     def __init__(self, label=None, *rows):
@@ -613,12 +606,11 @@ class Panel(object):
 
 
 class Row(object):
-    """
-    `Panel` and `Row` classes help implement a trivial internal DSL for
+    """`Panel` and `Row` classes help implement a trivial internal DSL for
     specifying multi-column layouts in forms or object views.
 
-    They are currently not really used, since we went with 1-column designs
-    eventually.
+    They are currently not really used, since we went with 1-column
+    designs eventually.
     """
 
     def __init__(self, *cols):
@@ -731,9 +723,8 @@ class TextInput(wtforms.widgets.TextInput):
 
 
 class TextArea(BaseTextArea):
-    """
-    Accepts "resizeable" parameter: "vertical", "horizontal", "both", None
-    """
+    """Accepts "resizeable" parameter: "vertical", "horizontal", "both",
+    None."""
     _resizeable_valid = ("vertical", "horizontal", "both", None)
     resizeable = None
     rows = None
@@ -766,9 +757,10 @@ class TextArea(BaseTextArea):
 
 
 class FileInput(object):
-    """
-    Renders a file input.  Inspired from
-    http://www.abeautifulsite.net/blog/2013/08/whipping-file-inputs-into-shape-with-bootstrap-3/
+    """Renders a file input.
+
+    Inspired from http://www.abeautifulsite.net/blog/2013/08/whipping-
+    file-inputs-into-shape-with-bootstrap-3/
     """
 
     def __init__(self, template='widgets/file_input.html'):
@@ -855,9 +847,10 @@ class FileInput(object):
 
 
 class ImageInput(FileInput):
-    """
-    An image widget with client-side preview. To show current image field
-    data has to provide an attribute named `url`.
+    """An image widget with client-side preview.
+
+    To show current image field data has to provide an attribute named
+    `url`.
     """
 
     def __init__(
@@ -948,9 +941,7 @@ class ImageInput(FileInput):
 
 
 class Chosen(Select):
-    """
-    Extends the Select widget using the Chosen jQuery plugin.
-    """
+    """Extends the Select widget using the Chosen jQuery plugin."""
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
@@ -978,9 +969,7 @@ class Chosen(Select):
 
 
 class TagInput(Input):
-    """
-    Extends the Select widget using the Chosen jQuery plugin.
-    """
+    """Extends the Select widget using the Chosen jQuery plugin."""
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
@@ -994,8 +983,8 @@ class TagInput(Input):
 
 
 class DateInput(Input):
-    """
-    Renders date inputs using the fancy Bootstrap Datepicker:
+    """Renders date inputs using the fancy Bootstrap Datepicker:
+
     https://github.com/eternicode/bootstrap-datepicker
     """
     input_type = 'date'
@@ -1045,8 +1034,8 @@ class DateInput(Input):
 
 
 class TimeInput(Input):
-    """
-    Renders time inputs using boostrap timepicker:
+    """Renders time inputs using boostrap timepicker:
+
     https://github.com/jdewit/bootstrap-timepicker
     """
     template = 'widgets/timepicker.html'
@@ -1117,10 +1106,8 @@ class TimeInput(Input):
 
 
 class DateTimeInput(object):
-    """
-    if corresponding field.raw_data exist it is used
-    to initialize default date & time (raw_data example: ["10/10/16 | 09:00"])
-    """
+    """if corresponding field.raw_data exist it is used to initialize default
+    date & time (raw_data example: ["10/10/16 | 09:00"])"""
 
     def __init__(self):
         self.date = DateInput()
@@ -1246,9 +1233,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 
 
 class PasswordInput(BasePasswordInput):
-    """
-    Supports setting 'autocomplete' at instanciation time.
-    """
+    """Supports setting 'autocomplete' at instanciation time."""
 
     def __init__(self, *args, **kwargs):
         self.autocomplete = kwargs.pop('autocomplete', None)
@@ -1263,8 +1248,7 @@ class PasswordInput(BasePasswordInput):
 
 
 class FloatWidget(wtforms.widgets.TextInput):
-    """ In view mode, format float number to 'precision' decimal
-    """
+    """In view mode, format float number to 'precision' decimal."""
 
     def __init__(self, precision=None):
         self.precision = precision
@@ -1307,7 +1291,8 @@ class EntityWidget(object):
 
 
 class HoursWidget(TextInput):
-    """ Widget used to show / enter hours.
+    """Widget used to show / enter hours.
+
     Currently hardcoded to heure(s)
     """
     post_icon = _l('hour(s)')
@@ -1430,8 +1415,7 @@ class RichTextWidget(object):
 
 
 class ListWidget(wtforms.widgets.ListWidget):
-    """ display field label is optionnal
-    """
+    """display field label is optionnal."""
 
     def __init__(self, html_tag='ul', prefix_label=True, show_label=True):
         wtforms.widgets.ListWidget.__init__(self, html_tag, prefix_label)
@@ -1472,8 +1456,7 @@ class ListWidget(wtforms.widgets.ListWidget):
 
 
 class FieldListWidget(object):
-    """For list of Fields (using <tr><td>)
-    """
+    """For list of Fields (using <tr><td>)"""
     view_template = 'widgets/fieldlist_view.html'
     template = 'widgets/fieldlist.html'
 
@@ -1496,7 +1479,7 @@ class FieldListWidget(object):
 
 
 class TabularFieldListWidget(object):
-    """For list of formfields
+    """For list of formfields.
 
     2 templates are available:
 
@@ -1562,8 +1545,9 @@ class ModelListWidget(object):
 # Selection widget.
 #
 class Select2(Select):
-    """
-    Transforms a Select widget into a Select2 widget. Depends on global JS code.
+    """Transforms a Select widget into a Select2 widget.
+
+    Depends on global JS code.
     """
     unescape_html = False
 
@@ -1646,18 +1630,14 @@ class Select2Ajax(object):
             self.s2_params['formatSelection'] = format_selection
 
     def process_formdata(self, valuelist):
-        """
-        field helper: as of select2 3.x, multiple values are passed as a single
-        string.
-        """
+        """field helper: as of select2 3.x, multiple values are passed as a
+        single string."""
         if self.multiple:
             valuelist = valuelist[0].split(',')
         return valuelist
 
     def __call__(self, field, **kwargs):
-        """
-        Render widget
-        """
+        """Render widget."""
         if self.multiple:
             kwargs['multiple'] = True
 

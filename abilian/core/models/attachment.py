@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -61,8 +60,7 @@ def is_support_attachments(obj):
 
 
 def for_entity(obj, check_support_attachments=False):
-    """Return attachments on an entity.
-    """
+    """Return attachments on an entity."""
     if check_support_attachments and not is_support_attachments(obj):
         return []
 
@@ -70,8 +68,7 @@ def for_entity(obj, check_support_attachments=False):
 
 
 class Attachment(Entity):
-    """An Attachment owned by an :class:`Entity`.
-    """
+    """An Attachment owned by an :class:`Entity`."""
     __auditable_entity__ = ('entity', 'attachment', ('id', 'name'))
 
     @sa.ext.declarative.declared_attr

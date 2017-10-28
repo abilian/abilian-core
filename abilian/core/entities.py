@@ -1,8 +1,6 @@
 # coding=utf-8
-"""
-Base class for entities, objects that are managed by the Abilian framwework
-(unlike SQLAlchemy models which are considered lower-level).
-"""
+"""Base class for entities, objects that are managed by the Abilian framwework
+(unlike SQLAlchemy models which are considered lower-level)."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -69,18 +67,14 @@ event.listen(mapper, 'before_delete', before_delete_listener)
 
 
 def auto_slug_on_insert(mapper, connection, target):
-    """
-    Generate a slug from :prop:`Entity.auto_slug` for new entities, unless slug
-    is already set.
-    """
+    """Generate a slug from :prop:`Entity.auto_slug` for new entities, unless
+    slug is already set."""
     if target.slug is None and target.name:
         target.slug = target.auto_slug
 
 
 def auto_slug_after_insert(mapper, connection, target):
-    """
-    Generate a slug from entity_type and id, unless slug is already set.
-    """
+    """Generate a slug from entity_type and id, unless slug is already set."""
     if target.slug is None:
         target.slug = '{name}{sep}{id}'.format(
             name=target.entity_class.lower(),
@@ -91,8 +85,8 @@ def auto_slug_after_insert(mapper, connection, target):
 
 @event.listens_for(Session, 'after_attach')
 def setup_default_permissions(session, instance):
-    """
-    Setup default permissions on newly created entities according to
+    """Setup default permissions on newly created entities according to.
+
     :attr:`Entity.__default_permissions__`.
     """
     if instance not in session.new or not isinstance(instance, Entity):
@@ -106,8 +100,7 @@ def setup_default_permissions(session, instance):
 
 
 def _setup_default_permissions(instance):
-    """Separate method to conveniently call it from scripts for example.
-    """
+    """Separate method to conveniently call it from scripts for example."""
     from abilian.services import get_service
 
     security = get_service('security')
@@ -123,8 +116,9 @@ def _setup_default_permissions(instance):
 
 
 class _EntityInherit(object):
-    """Mixin for Entity subclasses. Entity meta-class takes care of inserting it in
-    base classes.
+    """Mixin for Entity subclasses.
+
+    Entity meta-class takes care of inserting it in base classes.
     """
     __indexable__ = True
 
@@ -173,8 +167,7 @@ class EntityQuery(db.Model.query_class):
 
 
 class EntityMeta(BaseMeta):
-    """
-    Metaclass for Entities. It properly sets-up subclasses by adding
+    """Metaclass for Entities. It properly sets-up subclasses by adding
     _EntityInherit to `__bases__`.
 
     `_EntityInherit` provides `id` attibute and `__mapper_args__`
@@ -391,8 +384,9 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
     @property
     def auto_slug(self):
-        """
-        This property is used to auto-generate a slug from the name attribute.
+        """This property is used to auto-generate a slug from the name
+        attribute.
+
         It can be customized by subclasses.
         """
         slug = self.name
@@ -420,8 +414,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     @property
     def _indexable_roles_and_users(self):
         """Return a string made for indexing roles having :any:`READ`
-        permission on this object.
-        """
+        permission on this object."""
         from abilian.services.indexing import indexable_role
         from abilian.services.security import READ, Admin, Anonymous, Creator, Owner
         from abilian.services import get_service
@@ -468,8 +461,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     @property
     def _indexable_tags(self):
         """Index tag ids for tags defined in this Entity's default tags
-        namespace.
-        """
+        namespace."""
         tags = current_app.extensions['tags']
 
         if not tags.is_support_tagging(self):
@@ -487,8 +479,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         return ' '.join(text_type(t.label) for t in self._indexable_tags)
 
     def clone(self):
-        """
-        Copy an entity: copy every field, except the id and sqlalchemy
+        """Copy an entity: copy every field, except the id and sqlalchemy
         internals, without forgetting about the n-n relationships.
 
         - return: the newly created entity
@@ -505,7 +496,6 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
                 new.related_projects = self.related_projects
                 new.ancestor = self
                 return new
-
         """
         raise NotImplementedError
 
@@ -548,9 +538,8 @@ def polymorphic_update_timestamp(session, flush_context, instances):
 
 @memoized
 def all_entity_classes():
-    """Return the list of all concrete persistent classes that are subclasses of
-    Entity.
-    """
+    """Return the list of all concrete persistent classes that are subclasses
+    of Entity."""
     persistent_classes = Entity._decl_class_registry.values()
     # with sqlalchemy 0.8 _decl_class_registry holds object that are not
     # classes

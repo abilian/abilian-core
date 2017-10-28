@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -8,10 +7,8 @@ from babel.dates import DateTimePattern, parse_pattern
 
 
 def babel2datetime(pattern):
-    """Convert date format from babel
-    (http://babel.pocoo.org/docs/dates/#date-fields)) to a format understood by
-    datetime.strptime.
-    """
+    """Convert date format from babel (http://babel.pocoo.org/docs/dates/#date-
+    fields)) to a format understood by datetime.strptime."""
     if not isinstance(pattern, DateTimePattern):
         pattern = parse_pattern(pattern)
 

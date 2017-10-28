@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Security service, manages roles and permissions.
-"""
+"""Security service, manages roles and permissions."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -60,8 +58,10 @@ class SecurityServiceState(ServiceState):
 
 
 def require_flush(fun):
-    """Decorator for methods that need to query security. It ensures all security
-    related operations are flushed to DB, but avoids unneeded flushes.
+    """Decorator for methods that need to query security.
+
+    It ensures all security related operations are flushed to DB, but
+    avoids unneeded flushes.
     """
 
     @wraps(fun)
@@ -141,16 +141,15 @@ class SecurityService(Service):
         state.use_cache = True
 
     def _needs_flush(self):
-        """Mark next security queries needs DB flush to have up to date information
-        """
+        """Mark next security queries needs DB flush to have up to date
+        information."""
         self.app_state.needs_db_flush = True
 
     def clear(self):
         pass
 
     def _current_user_manager(self, session=None):
-        """Return the current user, or SYSTEM user.
-        """
+        """Return the current user, or SYSTEM user."""
         if session is None:
             session = db.session()
 
@@ -208,7 +207,8 @@ class SecurityService(Service):
     #
     @require_flush
     def get_roles(self, principal, object=None, no_group_roles=False):
-        """Get all the roles attached to given `principal`, on a given `object`.
+        """Get all the roles attached to given `principal`, on a given
+        `object`.
 
         :param principal: a :class:`User` or :class:`Group`
 
@@ -255,8 +255,7 @@ class SecurityService(Service):
             object=None,
             as_list=True,
     ):
-        """Return all users which are assigned given role.
-        """
+        """Return all users which are assigned given role."""
         if not isinstance(role, Role):
             role = Role(role)
         assert role
@@ -340,8 +339,7 @@ class SecurityService(Service):
     @require_flush
     def _fill_role_cache_batch(self, principals, overwrite=False):
         """Fill role cache for `principals` (Users and/or Groups), in order to
-        avoid too many queries when checking role access with 'has_role'.
-        """
+        avoid too many queries when checking role access with 'has_role'."""
         if not self.app_state.use_cache:
             return
 
@@ -410,8 +408,8 @@ class SecurityService(Service):
                     del u.__roles_cache__
 
     def has_role(self, principal, role, object=None):
-        """True if `principal` has `role` (either globally, if `object`
-        is None, or on the specific `object`).
+        """True if `principal` has `role` (either globally, if `object` is
+        None, or on the specific `object`).
 
         :param:role:  can be a list or tuple of strings or a :class:`Role` instance
 
@@ -478,9 +476,8 @@ class SecurityService(Service):
         return len(valid_roles & roles) > 0
 
     def grant_role(self, principal, role, obj=None):
-        """Grant `role` to `user` (either globally, if `obj` is None, or on
-        the specific `obj`).
-        """
+        """Grant `role` to `user` (either globally, if `obj` is None, or on the
+        specific `obj`)."""
         assert principal
         principal = noproxy(principal)
         session = object_session(obj) if obj is not None else db.session
@@ -534,9 +531,8 @@ class SecurityService(Service):
             del principal.__roles_cache__
 
     def ungrant_role(self, principal, role, object=None):
-        """Ungrant `role` to `user` (either globally, if `object` is None,
-        or on the specific `object`).
-        """
+        """Ungrant `role` to `user` (either globally, if `object` is None, or
+        on the specific `object`)."""
         assert principal
         principal = noproxy(principal)
         session = object_session(object) if object is not None else db.session
@@ -687,8 +683,7 @@ class SecurityService(Service):
 
     def query_entity_with_permission(
             self, permission, user=None, Model=Entity):
-        """
-        Filter a query on an :class:`Entity` or on of its subclasses.
+        """Filter a query on an :class:`Entity` or on of its subclasses.
 
         Usage::
 

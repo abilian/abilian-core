@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -26,8 +25,7 @@ _BP_PREFIX = 'admin'
 
 
 class Admin(object):
-    """
-    Flask extension for an admin interface with pluggable admin panels.
+    """Flask extension for an admin interface with pluggable admin panels.
 
     Note: this is quite different that a Django-style admin interface.
     """

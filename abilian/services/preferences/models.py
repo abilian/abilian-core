@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Models for user preferences.
-"""
+"""Models for user preferences."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -14,8 +12,7 @@ from abilian.core.sqlalchemy import JSON
 
 
 class UserPreference(db.Model):
-    """An atom of user preference.
-    """
+    """An atom of user preference."""
     __tablename__ = 'user_preference'
     __table_args__ = (UniqueConstraint('user_id', 'key'),)
 

@@ -141,16 +141,14 @@ def run(port, show_config, ssl):
 
 @manager.command
 def initdb():
-    """Create application DB.
-    """
+    """Create application DB."""
     print("Creating DB using engine: {}".format(db))
     current_app.create_db()
 
 
 @manager.command
 def dropdb():
-    """Drop the application DB.
-    """
+    """Drop the application DB."""
     confirm = input("Are you sure you want to drop the database? (Y/N) ")
     print("Dropping DB using engine: {}".format(db))
     if confirm.lower() == 'y':
@@ -160,8 +158,7 @@ def dropdb():
 
 @manager.command
 def routes():
-    """Show all the routes registered in Flask.
-    """
+    """Show all the routes registered in Flask."""
     output = []
     for rule in current_app.url_map.iter_rules():
         methods = ','.join(rule.methods)
@@ -209,8 +206,7 @@ firstname_opt = manager.option(
 @name_opt
 @firstname_opt
 def createuser(email, password, role=None, name=None, first_name=None):
-    """Create new user.
-    """
+    """Create new user."""
     email = text_type(email)
     if User.query.filter(User.email == email).count() > 0:
         print("A user with email '{}' already exists, aborting.".format(email))
@@ -252,8 +248,7 @@ def createadmin(email, password, name=None, first_name=None):
 @email_opt
 @password_opt
 def passwd(email, password=None):
-    """Change the password for the given user.
-    """
+    """Change the password for the given user."""
     user = User.query.filter(User.email == email).one()
     if password is None:
         password = prompt_pass('New password: ')
@@ -265,6 +260,5 @@ def passwd(email, password=None):
 
 @manager.command
 def script(path):
-    """Run given script in the app context.
-    """
+    """Run given script in the app context."""
     runpy.run_path(path, run_name='__main__')

@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function
 
 from flask import render_template
@@ -13,9 +12,7 @@ from . import views
 
 
 class GroupsPanel(AdminPanel):
-    """
-    Group administration panel.
-    """
+    """Group administration panel."""
     id = 'groups'
     label = _l(u'Groups')
     icon = 'grain'

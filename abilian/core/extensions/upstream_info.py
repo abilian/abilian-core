@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Extension for sending informations to upstream server
-"""
+"""Extension for sending informations to upstream server."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -12,8 +10,7 @@ from abilian.core.signals import user_loaded
 
 
 class UpstreamInfo(object):
-    """Extension for sending informations to upstream server
-    """
+    """Extension for sending informations to upstream server."""
 
     def __init__(self, app=None):
         if app is not None:

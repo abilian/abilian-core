@@ -1,8 +1,8 @@
 # coding=utf-8
-"""
-Front-end for a CRM app.
+"""Front-end for a CRM app.
 
-This should eventually allow implementing very custom CRM-style application.
+This should eventually allow implementing very custom CRM-style
+application.
 """
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
@@ -104,10 +104,8 @@ def add_to_recent_items(entity, type='ignored'):
 def expose(url='/', methods=('GET',)):
     """Use this decorator to expose views in your view classes.
 
-    `url`
-      Relative URL for the view
-    `methods`
-      Allowed HTTP methods. By default only GET is allowed.
+    `url`   Relative URL for the view `methods`   Allowed HTTP methods.
+    By default only GET is allowed.
     """
 
     def wrap(f):
@@ -314,8 +312,7 @@ class EntityDelete(BaseEntityView, ObjectDelete):
 
 
 class ListJson(ModuleView, JSONView):
-    """JSON endpoint, for AJAX-backed table views.
-    """
+    """JSON endpoint, for AJAX-backed table views."""
 
     def data(self, *args, **kwargs):
         echo = int(kwargs.get("sEcho", 0))
@@ -348,8 +345,8 @@ class ListJson(ModuleView, JSONView):
 class ModuleMeta(type):
     """Module metaclass.
 
-    Does some precalculations (like getting list of view methods from the
-    class) to avoid calculating them for each view class instance.
+    Does some precalculations (like getting list of view methods from
+    the class) to avoid calculating them for each view class instance.
     """
 
     def __init__(cls, classname, bases, fields):
@@ -375,9 +372,7 @@ class ModuleMeta(type):
 
 
 class ModuleComponent(object):
-    """
-    A component that provide new functions for a :class:`Module`
-    """
+    """A component that provide new functions for a :class:`Module`"""
     name = None  # type: str
 
     def __init__(self, name=None):
@@ -392,9 +387,7 @@ class ModuleComponent(object):
         self.init()
 
     def init(self, *args, **kwargs):
-        """
-        Implements this in components
-        """
+        """Implements this in components."""
         pass
 
     def get_actions(self):
@@ -545,9 +538,7 @@ class Module(object):
         return self.__components.get(name)
 
     def _setup_view(self, url, attr, cls, *args, **kwargs):
-        """
-        Register class based views
-        """
+        """Register class based views."""
         view = cls.as_view(attr, *args, **kwargs)
         setattr(self, attr, view)
         self._urls.append((url, attr, view.methods))
@@ -590,9 +581,7 @@ class Module(object):
         actions.register(*ACTIONS)
 
     def create_blueprint(self, crud_app):
-        """
-        Create a Flask blueprint for this module.
-        """
+        """Create a Flask blueprint for this module."""
         # Store admin instance
         self.crud_app = crud_app
         self.app = crud_app.app
@@ -639,33 +628,27 @@ class Module(object):
 
     @property
     def base_query(self):
-        """Return a query instance for :attr:`managed_class`.
-        """
+        """Return a query instance for :attr:`managed_class`."""
         return self.managed_class.query
 
     @property
     def read_query(self):
-        """
-        Return a query instance for :attr:`managed_class` filtering on `READ`
-        permission
-        """
+        """Return a query instance for :attr:`managed_class` filtering on
+        `READ` permission."""
         return self.base_query.with_permission(READ)
 
     @property
     def listing_query(self):
-        """
-        Like `read_query`, but can be made lightweight with only columns and joins
-        of interest.
+        """Like `read_query`, but can be made lightweight with only columns and
+        joins of interest.
 
-        `read_query` can be used with exports for example, with lot more columns
-        (generallly it means more joins).
+        `read_query` can be used with exports for example, with lot more
+        columns (generallly it means more joins).
         """
         return self.base_query.with_permission(READ)
 
     def query(self, request):
-        """
-        Return filtered query based on request args
-        """
+        """Return filtered query based on request args."""
         args = request.args
         search = args.get("sSearch", "").replace("%", "").lower()
         query = self.read_query.distinct()
@@ -676,11 +659,10 @@ class Module(object):
         return query
 
     def list_query(self, request):
-        """
-        Return a filtered query based on request args, for listings.
+        """Return a filtered query based on request args, for listings.
 
-        Like `query`, but subclasses can modify it to remove costly joined loads for
-        example.
+        Like `query`, but subclasses can modify it to remove costly
+        joined loads for example.
         """
         args = request.args
         search = args.get("sSearch", "").replace("%", "").lower()
@@ -695,8 +677,8 @@ class Module(object):
     def ordered_query(self, request, query=None):
         """Order query according to request args.
 
-        If query is None, the query is generated according to request args with
-        self.query(request)
+        If query is None, the query is generated according to request
+        args with self.query(request)
         """
         if query is None:
             query = self.query(request)
@@ -796,7 +778,6 @@ class Module(object):
 
         - Return: a list of results (not json) with an 'id' and a
           'text' (that will be displayed in the select2).
-
         """
         cls = self.managed_class
         query = db.session.query(cls.id, cls.name)
@@ -811,11 +792,11 @@ class Module(object):
 
     @expose("/json2")
     def list_json2(self):
-        """Other JSON endpoint, this time used for filling select boxes dynamically.
+        """Other JSON endpoint, this time used for filling select boxes
+        dynamically.
 
         You can write your own search method in list_json2_query_all,
         that returns a list of results (not json).
-
         """
         args = request.args
 
@@ -846,19 +827,16 @@ class Module(object):
 
 
 class RelatedView(object):
-    """A base class for related views"""
+    """A base class for related views."""
 
     def render(self, entity):
-        """
-        Return a dict with keys 'label', 'attr_name', 'rendered', 'size',
-        'show_empty', 'default_collapsed'
-        """
+        """Return a dict with keys 'label', 'attr_name', 'rendered', 'size',
+        'show_empty', 'default_collapsed'."""
         raise NotImplementedError
 
 
 class DefaultRelatedView(RelatedView):
-    """ Default view used by Module for items directly related to entity
-    """
+    """Default view used by Module for items directly related to entity."""
 
     def __init__(
             self,

@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Indexing service for Abilian.
+"""Indexing service for Abilian.
 
 Adds Whoosh indexing capabilities to SQLAlchemy models.
 
@@ -71,9 +70,7 @@ if not _PATCHED:
 
 
 def url_for_hit(hit, default='#'):
-    """
-    Helper for building URLs from results
-    """
+    """Helper for building URLs from results."""
     try:
         object_type = hit['object_type']
         object_id = int(hit['id'])
@@ -123,9 +120,7 @@ class IndexServiceState(ServiceState):
 
 
 class WhooshIndexService(Service):
-    """
-    Index documents using whoosh
-    """
+    """Index documents using whoosh."""
     name = 'indexing'
     AppStateClass = IndexServiceState
 
@@ -167,7 +162,8 @@ class WhooshIndexService(Service):
         """Register a function that returns a query used for filtering search
         results. This query is And'ed with other filters.
 
-        If no filtering should be performed the function must return None.
+        If no filtering should be performed the function must return
+        None.
         """
         self.app_state.search_filter_funcs.append(func)
 
@@ -192,8 +188,7 @@ class WhooshIndexService(Service):
         self.clear_update_queue()
 
     def init_indexes(self):
-        """Create indexes for schemas.
-        """
+        """Create indexes for schemas."""
         state = self.app_state
 
         for name, schema in self.schemas.items():
@@ -215,8 +210,8 @@ class WhooshIndexService(Service):
     def clear(self):
         """Remove all content from indexes, and unregister all classes.
 
-        After clear() the service is stopped. It must be started again to create
-        new indexes and register classes.
+        After clear() the service is stopped. It must be started again
+        to create new indexes and register classes.
         """
         logger.info('Resetting indexes')
         state = self.app_state
@@ -238,9 +233,9 @@ class WhooshIndexService(Service):
 
     @property
     def default_search_fields(self):
-        """
-        Return default field names and boosts to be used for searching. Can be
-        configured with `SEARCH_DEFAULT_BOOSTS`
+        """Return default field names and boosts to be used for searching.
+
+        Can be configured with `SEARCH_DEFAULT_BOOSTS`
         """
         config = current_app.config.get('SEARCH_DEFAULT_BOOSTS')
         if not config:
@@ -248,8 +243,7 @@ class WhooshIndexService(Service):
             return config
 
     def searchable_object_types(self):
-        """List of (object_types, friendly name) present in the index.
-        """
+        """List of (object_types, friendly name) present in the index."""
         try:
             idx = self.index()
         except KeyError:
@@ -403,8 +397,7 @@ class WhooshIndexService(Service):
                 self.register_class(cls, app_state=state)
 
     def register_class(self, cls, app_state=None):
-        """Register a model class.
-        """
+        """Register a model class."""
         state = app_state if app_state is not None else self.app_state
 
         for Adapter in self.adapters_cls:
@@ -439,11 +432,13 @@ class WhooshIndexService(Service):
                 to_update.append((key, obj))
 
     def after_commit(self, session):
-        """
-        Any db updates go through here. We check if any of these models have
-        ``__searchable__`` fields, indicating they need to be indexed. With these
-        we update the whoosh index for the model. If no index exists, it will be
-        created here; this could impose a penalty on the initial commit of a model.
+        """Any db updates go through here.
+
+        We check if any of these models have ``__searchable__`` fields,
+        indicating they need to be indexed. With these we update the
+        whoosh index for the model. If no index exists, it will be
+        created here; this could impose a penalty on the initial commit
+        of a model.
         """
         if (not self.running or
                 session.transaction.nested  # inside a sub-transaction:
@@ -501,8 +496,7 @@ class WhooshIndexService(Service):
         return document
 
     def index_objects(self, objects, index='default'):
-        """Bulk index a list of objects.
-        """
+        """Bulk index a list of objects."""
         if not objects:
             return
 
@@ -611,8 +605,7 @@ def index_update(index, items):
 
 
 class TestingStorage(RamStorage):
-    """
-    RamStorage whoses temp_storage method returns another TestingStorage
+    """RamStorage whoses temp_storage method returns another TestingStorage
     instead of a FileStorage.
 
     Reason is that FileStorage.temp_storage() creates temp file in

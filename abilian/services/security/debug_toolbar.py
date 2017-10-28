@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, print_function, unicode_literals
 
 from flask import current_app
@@ -16,9 +15,8 @@ from .models import Anonymous
 
 
 class SecurityInfoDebugPanel(DebugPanel):
-    """
-    A panel to display current roles and permissions for "current" object.
-    """
+    """A panel to display current roles and permissions for "current"
+    object."""
     name = 'SecurityInfo'
 
     @property
@@ -37,7 +35,7 @@ class SecurityInfoDebugPanel(DebugPanel):
         return _('Security Info')
 
     def nav_subtitle(self):
-        """Subtitle showing until title in toolbar"""
+        """Subtitle showing until title in toolbar."""
         obj = self.current_obj
         if not obj:
             return _('No current object')

@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function
 
 import io
@@ -62,8 +61,7 @@ if CLAMD_AVAILABLE:
 
 
 class AntiVirusService(Service):
-    """Antivirus service.
-    """
+    """Antivirus service."""
     name = 'antivirus'
 
     def scan(self, file_or_stream):

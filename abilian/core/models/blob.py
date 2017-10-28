@@ -1,6 +1,7 @@
 # coding=utf-8
-"""
-Blob. References to files stored in a on-disk repository
+"""Blob.
+
+References to files stored in a on-disk repository
 """
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
@@ -39,8 +40,8 @@ class BlobQuery(BaseQuery):
 class Blob(Model):
     """Model for storing large file content.
 
-    Files are stored on-disk, named after their uuid. Repository is located in
-    instance folder/data/files.
+    Files are stored on-disk, named after their uuid. Repository is
+    located in instance folder/data/files.
     """
 
     __tablename__ = "blob"
@@ -63,8 +64,7 @@ class Blob(Model):
 
     @property
     def file(self):
-        """Return :class:`pathlib.Path` object used for storing value.
-        """
+        """Return :class:`pathlib.Path` object used for storing value."""
         from abilian.services.repository import session_repository as repository
         return repository.get(self, self.uuid)
 

@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -26,9 +25,7 @@ bp = Blueprint(
 
 
 class BaseTagView(object):
-    """
-    Mixin for tag views
-    """
+    """Mixin for tag views."""
     Model = Tag
     Form = TagForm
 

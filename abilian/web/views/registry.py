@@ -13,8 +13,7 @@ from abilian.core.extensions import db
 
 
 class Registry(object):
-    """
-    Registry for default (canonical) views for entities.
+    """Registry for default (canonical) views for entities.
 
     There is one registry per application instance.
     """
@@ -23,8 +22,7 @@ class Registry(object):
         self._map = dict()
 
     def register(self, entity, url_func):
-        """
-        Associate a `url_func` with entity's type.
+        """Associate a `url_func` with entity's type.
 
         :param:entity: an :class:`abilian.core.extensions.db.Model` class or
         instance.
@@ -38,8 +36,7 @@ class Registry(object):
         self._map[entity.entity_type] = url_func
 
     def url_for(self, entity=None, object_type=None, object_id=None, **kwargs):
-        """
-        Return canonical view URL for given entity instance.
+        """Return canonical view URL for given entity instance.
 
         If no view has been registered the registry will try to find an
         endpoint named with entity's class lowercased followed by '.view'

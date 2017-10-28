@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Subject classes (i.e. people, groups, etc.).
+"""Subject classes (i.e. people, groups, etc.).
 
 See ICOM-ics-v1.0 "Subject Branch".
 
@@ -90,25 +89,22 @@ class PasswordStrategy(object):
 
     @abstractproperty
     def name(self):
-        """Strategy name.
-        """
+        """Strategy name."""
 
     @abstractmethod
     def authenticate(self, user, password):
-        """Predicate to tell wether password match user's or not.
-        """
+        """Predicate to tell wether password match user's or not."""
 
     @abstractmethod
     def process(self, user, password):
-        """Return a string to be stored as user password
-        """
+        """Return a string to be stored as user password."""
 
 
 class ClearPasswordStrategy(PasswordStrategy):
     """Don't encrypt at all.
 
-    This strategy should not ever be used elsewhere than in tests. It's useful
-    in tests since a hash like bcrypt is designed to be slow.
+    This strategy should not ever be used elsewhere than in tests. It's
+    useful in tests since a hash like bcrypt is designed to be slow.
     """
 
     @property
@@ -125,8 +121,7 @@ class ClearPasswordStrategy(PasswordStrategy):
 
 
 class BcryptPasswordStrategy(PasswordStrategy):
-    """Hash passwords using bcrypt.
-    """
+    """Hash passwords using bcrypt."""
 
     @property
     def name(self):
@@ -176,10 +171,11 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
 
 
 def set_entity_type(cls):
-    """Decorator used to set the class' entity_type after the class has been declared.
+    """Decorator used to set the class' entity_type after the class has been
+    declared.
 
-    Actually, it works using __module__ during class declaration, but linters
-    (Flake8, PyCharm) complain.
+    Actually, it works using __module__ during class declaration, but
+    linters (Flake8, PyCharm) complain.
     """
     cls.entity_type = fqcn(cls)
     return cls

@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Various tools that don't belong some place specific.
-"""
+"""Various tools that don't belong some place specific."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -31,8 +29,8 @@ except ImportError:
 def pdb_on_error(fn):
     """Decorator to trigger (i)pdb on exception inside decorated function.
 
-    Active only in DEBUG mode.
-    Useful to debug POST only views for example.
+    Active only in DEBUG mode. Useful to debug POST only views for
+    example.
     """
 
     @functools.wraps(fn)
@@ -65,8 +63,7 @@ def noproxy(obj):
 
 
 def fqcn(cls):
-    """Fully Qualified Class Name.
-    """
+    """Fully Qualified Class Name."""
     return text_type(cls.__module__ + '.' + cls.__name__)
 
 
@@ -82,8 +79,7 @@ def friendly_fqcn(cls_name):
 
 
 def utcnow():
-    """Return a new aware datetime with current date and time, in UTC TZ.
-    """
+    """Return a new aware datetime with current date and time, in UTC TZ."""
     return datetime.now(pytz.utc)
 
 
@@ -111,8 +107,8 @@ def utc_dt(dt):
 def get_params(names):
     """Return a dictionary with params from request.
 
-    TODO: I think we don't use it anymore and it should be removed before
-    someone gets hurt.
+    TODO: I think we don't use it anymore and it should be removed
+    before someone gets hurt.
     """
     params = {}
     for name in names:
@@ -123,8 +119,7 @@ def get_params(names):
 
 
 class timer(object):
-    """Decorator that mesures the time it takes to run a function.
-    """
+    """Decorator that mesures the time it takes to run a function."""
 
     def __init__(self, f):
         self.__f = f
@@ -142,8 +137,8 @@ class timer(object):
 class memoized(object):
     """Decorator that caches a function's return value each time it is called.
 
-    If called later with the same arguments, the cached value is returned
-    (not reevaluated).
+    If called later with the same arguments, the cached value is
+    returned (not reevaluated).
     """
 
     def __init__(self, func):
@@ -235,7 +230,8 @@ def slugify(value, separator="-"):
 
 
 class BasePresenter(object):
-    """A presenter wraps a model an adds specific (often, web-centric) accessors.
+    """A presenter wraps a model an adds specific (often, web-centric)
+    accessors.
 
     Subclass to make it useful. Presenters are immutable.
     """
@@ -247,8 +243,7 @@ class BasePresenter(object):
         return getattr(self._model, key)
 
     def __setattr__(self, key, value):
-        """Make presenter immutable.
-        """
+        """Make presenter immutable."""
         if key == '_model':
             self.__dict__[key] = value
         else:
@@ -260,8 +255,7 @@ class BasePresenter(object):
 
 
 def encode_string(string):
-    """
-    Encode a string to bytes, if it isn't already.
+    """Encode a string to bytes, if it isn't already.
 
     :param string: The string to encode
     """
@@ -274,9 +268,7 @@ def encode_string(string):
 
 
 def md5(data):
-    """
-    md5 function, as in flask-security.
-    """
+    """md5 function, as in flask-security."""
     # flask-security is not needed anywhere else and as of 1.7.5 has
     # strong dependency requirements that prevent us from upgrading a
     # few packages (flask-login 0.4).

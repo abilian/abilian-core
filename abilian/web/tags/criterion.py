@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sqlalchemy as sa
@@ -14,9 +13,7 @@ from .extension import ENTITY_DEFAULT_NS_ATTR
 
 
 class TagCriterion(BaseCriterion):
-    """
-    Filter entities with selected tag(s).
-    """
+    """Filter entities with selected tag(s)."""
     form_default_value = ''
 
     def __init__(self, *args, **kwargs):

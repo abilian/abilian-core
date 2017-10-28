@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -50,9 +49,7 @@ __all__ = [
 
 
 class FormField(BaseFormField):
-    """
-    Discard csrf_token on subform
-    """
+    """Discard csrf_token on subform."""
 
     def process(self, *args, **kwargs):
         super(FormField, self).process(*args, **kwargs)
@@ -75,9 +72,7 @@ class FormField(BaseFormField):
 
 
 class ModelFormField(FormField, BaseModelFormField):
-    """
-    Discard csrf_token on subform
-    """
+    """Discard csrf_token on subform."""
 
 
 class FilterFieldListMixin(object):
@@ -113,9 +108,7 @@ class FieldList(FilterFieldListMixin, BaseFieldList):
 
 
 class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
-    """
-    Filter empty entries before saving and refills before displaying
-    """
+    """Filter empty entries before saving and refills before displaying."""
 
     def __init__(self, *args, **kwargs):
         super(ModelFieldList, self).__init__(*args, **kwargs)
@@ -144,12 +137,11 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         )
 
     def __call__(self, **kwargs):
-        """
-        Refill with default min_entry, which were possibly
-        removed by FilterFieldListMixin.
+        """Refill with default min_entry, which were possibly removed by
+        FilterFieldListMixin.
 
-        Mandatory for proper function of DynamicRowWidget which clones an existing
-        field
+        Mandatory for proper function of DynamicRowWidget which clones
+        an existing field
         """
         while len(self) < self.min_entries:
             self.append_entry()
@@ -157,8 +149,8 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
 
 
 class FileField(BaseFileField):
-    """
-    Support 'multiple' attribute, enabling html5 multiple file input in widget.
+    """Support 'multiple' attribute, enabling html5 multiple file input in
+    widget.
 
     Can store file using a related model.
 
@@ -261,8 +253,7 @@ class FileField(BaseFileField):
             self._has_uploads = True
 
     def populate_obj(self, obj, name):
-        """Store file.
-        """
+        """Store file."""
         from abilian.core.models.blob import Blob
         delete_value = self.allow_delete and self.delete_files_index
 
@@ -385,9 +376,7 @@ class DateTimeField(Field):
 
 
 class DateField(Field):
-    """
-    A text field which stores a `datetime.date` matching a format.
-    """
+    """A text field which stores a `datetime.date` matching a format."""
     widget = DateInput()
 
     def __init__(self, label=None, validators=None, **kwargs):
@@ -429,8 +418,7 @@ class DateField(Field):
 
 
 class Select2Field(SelectField):
-    """Allows choices to be a function instead of an iterable.
-    """
+    """Allows choices to be a function instead of an iterable."""
     widget = Select2()
 
     @property
@@ -458,8 +446,7 @@ class Select2MultipleField(SelectMultipleField):
 
 
 class QuerySelect2Field(SelectFieldBase):
-    """
-    COPY/PASTED (and patched) from WTForms!
+    """COPY/PASTED (and patched) from WTForms!
 
     Will display a select drop-down field to choose between ORM results in a
     sqlalchemy `Query`.  The `data` property actually will store/keep an ORM
@@ -633,8 +620,7 @@ class QuerySelect2Field(SelectFieldBase):
 
 
 class JsonSelect2Field(SelectFieldBase):
-    """
-    TODO: rewrite this docstring. This is copy-pasted from QuerySelectField
+    """TODO: rewrite this docstring. This is copy-pasted from QuerySelectField.
 
     Will display a select drop-down field to choose between ORM results in a
     sqlalchemy `Query`.  The `data` property actually will store/keep an ORM

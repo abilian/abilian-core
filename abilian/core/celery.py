@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -37,9 +36,10 @@ def is_celery_setting(key):
 
 
 def is_eager():
-    """
-    True when tasks are run eagerly. As of celery 3.1.17 it seems that when
-    CELERY_ALWAYS_EAGER is set in config, request.is_eager is *False*.
+    """True when tasks are run eagerly.
+
+    As of celery 3.1.17 it seems that when CELERY_ALWAYS_EAGER is set in
+    config, request.is_eager is *False*.
     """
     return (
         (current_task and current_task.request.is_eager) or
@@ -50,9 +50,9 @@ def is_eager():
 def safe_session():
     """Return a sqlalchemy session that can be safely used in a task.
 
-    During standard async task processing, there is generally no problem. When
-    developping with task run in eager mode, the session is not usable when task
-    is called during an `after_commit` event.
+    During standard async task processing, there is generally no
+    problem. When developping with task run in eager mode, the session
+    is not usable when task is called during an `after_commit` event.
     """
     db = flask_current_app.db
 
@@ -107,8 +107,7 @@ class FlaskLoader(BaseLoader):
 
 
 class FlaskTask(Task):
-    """Base Task class for :FlaskCelery: based applications.
-    """
+    """Base Task class for :FlaskCelery: based applications."""
     abstract = True
 
     def __call__(self, *args, **kwargs):

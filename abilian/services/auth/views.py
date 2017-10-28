@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Login-related views (login / logout / password reminder / ...).
+"""Login-related views (login / logout / password reminder / ...).
 
 Notes:
 - Uses code copy/pasted (and modified) from Flask-Security
@@ -51,8 +50,7 @@ route = login.route
 #
 @route("/login")
 def login_form():
-    """Display the login form.
-    """
+    """Display the login form."""
     next_url = get_redirect_target()
     return render_template("login/login.html", next_url=next_url)
 
@@ -154,8 +152,7 @@ def forgotten_pw_form():
 @route("/forgotten_pw", methods=['POST'])
 @csrf.exempt
 def forgotten_pw(new_user=False):
-    """Reset password for users who have already activated their accounts.
-    """
+    """Reset password for users who have already activated their accounts."""
     email = request.form.get('email', "").lower()
 
     action = request.form.get('action')

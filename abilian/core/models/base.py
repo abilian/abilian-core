@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -55,9 +54,7 @@ class IdMixin(object):
 
 
 class Indexable(object):
-    """
-    Mixin with sensible defaults for indexable objects.
-    """
+    """Mixin with sensible defaults for indexable objects."""
     __indexable__ = True
     __indexation_args__ = {
         'index_to': (

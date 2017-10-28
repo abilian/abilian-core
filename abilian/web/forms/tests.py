@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -236,9 +235,7 @@ class FieldsTestCase(BaseTestCase):
             assert field._value() == '1/23/2011, 6:42 PM'
 
     def test_date_field(self):
-        """
-        Test fields supports date with year < 1900
-        """
+        """Test fields supports date with year < 1900."""
         headers = {'Accept-Language': 'fr-FR,fr;q=0.8'}
         with self.app.test_request_context(headers=headers):
             field = fields.DateField().bind(Form(), 'dt')

@@ -1,8 +1,5 @@
 # coding=utf-8
-"""
-Create all standard extensions.
-
-"""
+"""Create all standard extensions."""
 
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
@@ -79,8 +76,8 @@ def _filter_metadata_for_connection(target, connection, **kw):
 
 
 def get_extension(name):
-    """Get the named extension from the current app, returning None if not found.
-    """
+    """Get the named extension from the current app, returning None if not
+    found."""
     return current_app.extensions.get(name)
 
 
@@ -89,7 +86,9 @@ def _install_get_display_value(cls):
     _MARK = object()
 
     def display_value(self, field_name, value=_MARK):
-        """ Return display value for fields having 'choices' mapping (stored value
+        """Return display value for fields having 'choices' mapping (stored
+        value.
+
         -> human readable value). For other fields it will simply return field
         value.
 

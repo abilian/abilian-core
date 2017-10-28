@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Elements to build test cases for an :class:`abilian.app.Application`
-"""
+"""Elements to build test cases for an :class:`abilian.app.Application`"""
 from __future__ import absolute_import, print_function, division, unicode_literals
 
 import getpass
@@ -35,9 +33,9 @@ _DEFAULT_PWD = User.__password_strategy__
 
 
 class NullBundle(Bundle):
-    """
-    This bundle class emits no url, thus avoid any asset build. Saves a lot of
-    time during tests.
+    """This bundle class emits no url, thus avoid any asset build.
+
+    Saves a lot of time during tests.
     """
 
     def urls(self):
@@ -45,11 +43,10 @@ class NullBundle(Bundle):
 
 
 class TestConfig(object):
-    """
-    Base class config settings for test cases.
+    """Base class config settings for test cases.
 
-    The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be set to easily
-    test against different databases.
+    The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be
+    set to easily test against different databases.
     """
     SITE_NAME = 'Abilian Test'
     SQLALCHEMY_DATABASE_URI = "sqlite://"
@@ -87,8 +84,7 @@ class TestConfig(object):
 
 
 class BaseTestCase(TestCase):
-    """
-    Base test case to test an :class:`abilian.app.Application`.
+    """Base test case to test an :class:`abilian.app.Application`.
 
     It will create an instance path that will be used and shared for all tests
     defined in this test case.
@@ -167,9 +163,8 @@ class BaseTestCase(TestCase):
         TestCase.tearDownClass()
 
     def get_setup_config(self):
-        """
-        Called by :meth:`create_app` Override this if you want to tweak the config
-        before :attr:`application_class` is instanciated.
+        """Called by :meth:`create_app` Override this if you want to tweak the
+        config before :attr:`application_class` is instanciated.
 
         :return: an instance of :attr:`config_class`, or anything that is a valid
                  config object for Flask.
@@ -282,10 +277,8 @@ class BaseTestCase(TestCase):
                 svc.stop()
 
     def _login_tests_sanity_check(self):
-        """
-        For login methods: perform checks to avoid using login methods whereas
-        application will not perform auth or security checks.
-        """
+        """For login methods: perform checks to avoid using login methods
+        whereas application will not perform auth or security checks."""
         if self.app.config.get('NO_LOGIN'):
             raise RuntimeError(
                 'login is useless when "NO_LOGIN" is set. '
@@ -299,9 +292,8 @@ class BaseTestCase(TestCase):
             )
 
     def login(self, user, remember=False, force=False):
-        """
-        Perform user login for `user`, so that code needing a logged-in user can
-        work.
+        """Perform user login for `user`, so that code needing a logged-in user
+        can work.
 
         This method can also be used as a context manager, so that logout is
         performed automatically::
@@ -332,24 +324,21 @@ class BaseTestCase(TestCase):
         return LoginContext(self)
 
     def logout(self):
-        """
-        Perform user logout.
+        """Perform user logout.
 
         .. seealso:: :meth:`login`
         """
         logout_user()
 
     def login_system(self):
-        """
-        Perform login with SYSTEM user. Can be used as a context manager.
+        """Perform login with SYSTEM user. Can be used as a context manager.
 
         .. seealso:: :meth:`login`, :meth:`logout`
         """
         return self.login(User.query.get(0), force=True)
 
     def client_login(self, email, password):
-        """
-        Like :meth:`login` but with a web login request. Can be used as
+        """Like :meth:`login` but with a web login request. Can be used as
         contextmanager.
 
         All subsequent request made with `self.client` will be authentifed until
@@ -380,25 +369,19 @@ class BaseTestCase(TestCase):
         return LoginContext(self)
 
     def client_logout(self):
-        """
-        Like :meth:`logout` but with a web logout
-        """
+        """Like :meth:`logout` but with a web logout."""
         self.client.post(url_for('login.logout'))
 
     @property
     def db(self):
-        """
-        Shortcut to the application db object.
-        """
+        """Shortcut to the application db object."""
         return self.app.extensions['sqlalchemy'].db
 
     def assert_302(self, response):
         self.assert_status(response, 302)
 
     def get(self, url, validate=True):
-        """
-        Validates HTML if asked by the config or the Unix environment.
-        """
+        """Validates HTML if asked by the config or the Unix environment."""
         response = self.client.get(url)
         if validate and response == 200:
             self.assert_valid(response)
@@ -408,10 +391,8 @@ class BaseTestCase(TestCase):
     # TODO: post(), put(), etc.
 
     def assert_valid(self, response):
-        """
-        Validate `response.data` as HTML using validator provided by
-        `config.VALIDATOR_URL`.
-        """
+        """Validate `response.data` as HTML using validator provided by
+        `config.VALIDATOR_URL`."""
         # FIXME: put this and document in TestConfig class
         validator_url = self.app.config.get('VALIDATOR_URL') \
             or os.environ.get('VALIDATOR_URL')

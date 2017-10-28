@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -19,10 +18,8 @@ from webassets.utils import working_directory
 
 
 class ImportCSSFilter(Filter):
-    """
-    This filter searches (recursively) '@import' rules and replaces them by
-    content of target file.
-    """
+    """This filter searches (recursively) '@import' rules and replaces them by
+    content of target file."""
     name = 'cssimporter'
     max_debug_level = None
 
@@ -95,10 +92,10 @@ register_filter(ImportCSSFilter)
 
 
 class LessImportFilter(Filter):
-    """
-    This filter outputs `@import` statements for listed files. This allows
-    to generate a single less file for application, where abilian properties
-    can be overridden by application.
+    """This filter outputs `@import` statements for listed files.
+
+    This allows to generate a single less file for application, where
+    abilian properties can be overridden by application.
     """
     name = 'less_import'
     options = {

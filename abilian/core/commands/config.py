@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -22,8 +21,7 @@ manager = Manager(
 
 @manager.command
 def show(only_path=False):
-    """Show the current config.
-    """
+    """Show the current config."""
     logger.setLevel(logging.INFO)
     infos = [
         '\n',

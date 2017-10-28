@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -22,9 +21,7 @@ __all__ = ('Action', 'ModalActionMixin', 'actions')
 
 
 class Status(UniqueName):
-    """
-    Action UI status names
-    """
+    """Action UI status names."""
 
 
 #: default action status: show in UID, usable, not marked "current"
@@ -36,8 +33,7 @@ DISABLED = Status('disabled')
 
 
 def getset(f):
-    """
-    Shortcut for a custom getter/ standard setter.
+    """Shortcut for a custom getter/ standard setter.
 
     Usage::
 
@@ -61,8 +57,7 @@ def getset(f):
 
 @python_2_unicode_compatible
 class Icon(object):
-    """Base abstract class for icons.
-    """
+    """Base abstract class for icons."""
 
     def __html__(self):
         raise NotImplementedError
@@ -72,8 +67,7 @@ class Icon(object):
 
 
 class NamedIconBase(Icon):
-    """Renders markup for named icons set.
-    """
+    """Renders markup for named icons set."""
     template = None
 
     def __init__(self, name=''):
@@ -84,20 +78,17 @@ class NamedIconBase(Icon):
 
 
 class Glyphicon(NamedIconBase):
-    """Renders markup for bootstrap's glyphicons.
-    """
+    """Renders markup for bootstrap's glyphicons."""
     template = Template('<i class="glyphicon glyphicon-{{ name }}"></i>')
 
 
 class FAIcon(NamedIconBase):
-    """Renders markup for FontAwesome icons.
-    """
+    """Renders markup for FontAwesome icons."""
     template = Template('<i class="fa fa-{{ name }}"></i>')
 
 
 class FAIconStacked(NamedIconBase):
-    """Stacked FA icons.
-    """
+    """Stacked FA icons."""
     template = Template(
         '<span class="fa-stack {%- if stack_class %} {{ stack_class }}'
         '{%- endif %}">\n'
@@ -184,8 +175,7 @@ class DynamicIcon(Icon):
 
 
 class StaticIcon(DynamicIcon):
-    """
-    Renders markup for icon located in static folder served by `endpoint`.
+    """Renders markup for icon located in static folder served by `endpoint`.
 
     Default endpoint is application static folder.
     """
@@ -222,9 +212,9 @@ class Endpoint(object):
     def get_kwargs(self):
         """Hook for subclasses.
 
-        The key and values in the returned dictionnary can be safely changed
-        without side effects on self.kwargs (provided you don't alter
-        mutable values, like calling list.pop()).
+        The key and values in the returned dictionnary can be safely
+        changed without side effects on self.kwargs (provided you don't
+        alter mutable values, like calling list.pop()).
         """
         return self.kwargs.copy()
 
@@ -241,8 +231,7 @@ class Endpoint(object):
 
 
 class Action(object):
-    """Action interface.
-    """
+    """Action interface."""
     Endpoint = Endpoint
     category = None
     name = None
@@ -422,12 +411,11 @@ class Action(object):
             return False
 
     def pre_condition(self, context):
-        """
-        Called by :meth:`.available` before checking condition.
+        """Called by :meth:`.available` before checking condition.
 
-        Subclasses may override it to ease creating actions with repetitive
-        check (for example: actions that apply on a given content type
-        only).
+        Subclasses may override it to ease creating actions with
+        repetitive check (for example: actions that apply on a given
+        content type only).
         """
         return True
 
@@ -506,8 +494,7 @@ class ButtonAction(Action):
 
 
 class ActionGroup(Action):
-    """A group of single actions
-    """
+    """A group of single actions."""
     template_string = (
         '<div class="btn-group" role="group" aria-label="{{ action.name}}">'
         '{%- for entry in action_items %}'
@@ -527,8 +514,7 @@ class ActionGroup(Action):
 
 
 class ActionDropDown(ActionGroup):
-    """Renders as a button dropdown
-    """
+    """Renders as a button dropdown."""
     template_string = '''
     <div class="btn-group">
         <button type="button" class="{{ action.css_class }} dropdown-toggle"
@@ -584,18 +570,19 @@ class ActionRegistry(object):
             return dict(actions=self)
 
     def installed(self, app=None):
-        """Return `True` if the registry has been installed in current applications
-        """
+        """Return `True` if the registry has been installed in current
+        applications."""
         if app is None:
             app = current_app
         return self.__EXTENSION_NAME in app.extensions
 
     def register(self, *actions):
-        """ Register `actions` in the current application. All `actions` must be an
-        instance of :class:`.Action` or one of its subclasses.
+        """Register `actions` in the current application. All `actions` must be
+        an instance of :class:`.Action` or one of its subclasses.
 
-        If `overwrite` is `True`, then it is allowed to overwrite an existing
-        action with same name and category; else `ValueError` is raised.
+        If `overwrite` is `True`, then it is allowed to overwrite an
+        existing action with same name and category; else `ValueError`
+        is raised.
         """
         assert self.installed(), "Actions not enabled on this application"
         assert all([isinstance(a, Action) for a in actions])
@@ -606,7 +593,7 @@ class ActionRegistry(object):
             reg.append(action)
 
     def actions(self, context=None):
-        """ Return a mapping of category => actions list.
+        """Return a mapping of category => actions list.
 
         Actions are filtered according to :meth:`.Action.available`.
 
@@ -623,7 +610,7 @@ class ActionRegistry(object):
         return result
 
     def for_category(self, category, context=None):
-        """ Returns actions list for this category in current application.
+        """Returns actions list for this category in current application.
 
         Actions are filtered according to :meth:`.Action.available`.
 
@@ -647,8 +634,9 @@ class ActionRegistry(object):
 
     @property
     def context(self):
-        """ Return action context (dict type). Applications can modify it to suit
-        their needs.
+        """Return action context (dict type).
+
+        Applications can modify it to suit their needs.
         """
         return g.action_context
 

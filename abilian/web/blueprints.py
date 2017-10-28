@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -15,9 +14,8 @@ def allow_anonymous(user, roles, **kwargs):
 
 
 def allow_access_for_roles(roles):
-    """
-    Access control helper to check user's roles against a list of valid roles
-    """
+    """Access control helper to check user's roles against a list of valid
+    roles."""
     if isinstance(roles, Role):
         roles = (roles,)
     valid_roles = frozenset(roles)
@@ -34,9 +32,8 @@ def allow_access_for_roles(roles):
 
 
 class Blueprint(BaseBlueprint):
-    """
-    An enhanced :class:`flask.blueprints.Blueprint` with access control helpers.
-    """
+    """An enhanced :class:`flask.blueprints.Blueprint` with access control
+    helpers."""
 
     def __init__(self, name, import_name, allowed_roles=None, **kwargs):
         """

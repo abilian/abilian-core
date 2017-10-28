@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -47,9 +46,7 @@ UPLOAD_BUTTON = ButtonAction(
 
 
 class BaseAttachmentView(object):
-    """
-    Mixin for attachment views
-    """
+    """Mixin for attachment views."""
     Model = Attachment
     Form = AttachmentForm
 
@@ -161,8 +158,7 @@ bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)
 
 
 class AttachmentEntity(BaseObjectView):
-    """Redirects to an attachment's entity view.
-    """
+    """Redirects to an attachment's entity view."""
     Model = Attachment
 
     def get(self):

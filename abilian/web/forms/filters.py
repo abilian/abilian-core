@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Field filters for WTForm.
-"""
+"""Field filters for WTForm."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -11,9 +9,7 @@ __all__ = ['strip', 'uppercase', 'lowercase']
 
 
 def strip(data):
-    """
-    Strip data if data is a string
-    """
+    """Strip data if data is a string."""
     if data is None:
         return ""
     if not isinstance(data, string_types):

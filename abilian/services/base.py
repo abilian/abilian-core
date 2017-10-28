@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -17,9 +16,7 @@ class ServiceNotRegistered(Exception):
 
 
 class ServiceState(object):
-    """
-    Service state stored in Application.extensions
-    """
+    """Service state stored in Application.extensions."""
     #: reference to :class:`Service` instance
     service = None
 
@@ -32,9 +29,7 @@ class ServiceState(object):
 
 
 class Service(object):
-    """
-    Base class for services.
-    """
+    """Base class for services."""
     #: State class to use for this Service
     AppStateClass = ServiceState
 
@@ -56,16 +51,12 @@ class Service(object):
         app.services[self.name] = self
 
     def start(self, ignore_state=False):
-        """
-        Starts the service.
-        """
+        """Starts the service."""
         self.logger.debug('Start service')
         self._toggle_running(True, ignore_state)
 
     def stop(self, ignore_state=False):
-        """
-        Stops the service.
-        """
+        """Stops the service."""
         self.logger.debug('Stop service')
         self._toggle_running(False, ignore_state)
 
@@ -103,10 +94,8 @@ class Service(object):
 
     @staticmethod
     def if_running(meth):
-        """
-        Decorator for service methods that must be ran only if service is in
-        running state.
-        """
+        """Decorator for service methods that must be ran only if service is in
+        running state."""
 
         @wraps(meth)
         def check_running(self, *args, **kwargs):

@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Admin panel for vocabularies
-"""
+"""Admin panel for vocabularies."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 

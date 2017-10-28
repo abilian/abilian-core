@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Base classes for file download
-"""
+"""Base classes for file download."""
 from __future__ import absolute_import, print_function, unicode_literals
 
 from datetime import datetime, timedelta

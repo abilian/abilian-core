@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -83,9 +82,7 @@ _ACTIONS = (
 
 
 class AuthServiceState(ServiceState):
-    """
-    State class for :class:`AuthService`
-    """
+    """State class for :class:`AuthService`"""
 
     def __init__(self, *args, **kwargs):
         super(AuthServiceState, self).__init__(*args, **kwargs)
@@ -168,10 +165,8 @@ class AuthService(Service):
         return redirect(url_for(login_manager.login_view, **kw))
 
     def do_access_control(self):
-        """
-        `before_request` handler to check if user should be redirected to login
-        page.
-        """
+        """`before_request` handler to check if user should be redirected to
+        login page."""
         from abilian.services import get_service
 
         if current_app.testing and current_app.config.get("NO_LOGIN"):

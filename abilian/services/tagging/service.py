@@ -1,14 +1,11 @@
 # coding=utf-8
-"""
-
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 
 class Taggable(object):
-    """
-    Mixin trait for taggable objects.
+    """Mixin trait for taggable objects.
 
     Currently not used.
     """
@@ -16,9 +13,7 @@ class Taggable(object):
 
 
 class TagService(object):
-    """
-    The tag service.
-    """
+    """The tag service."""
 
     def tag(self, object, term, user=None):
         """Apply a tag on a taggable object.
@@ -27,13 +22,13 @@ class TagService(object):
         """
 
     def untag(self, object, term, user=None):
-        """Remove the given tag from the given object. See tag().
+        """Remove the given tag from the given object.
+
+        See tag().
         """
 
     def get_objects_tagged_with(self, term):
-        """Returns a list of objects tagged with a given term.
-        """
+        """Returns a list of objects tagged with a given term."""
 
     def get_tags_applied_on(self, object):
-        """Returns a list of tags applied on a given document.
-        """
+        """Returns a list of tags applied on a given document."""

@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -47,8 +46,7 @@ def is_valid_handle(handle):
 
 
 class FileUploadsExtension(object):
-    """
-    API for Out-Of-Band file uploads.
+    """API for Out-Of-Band file uploads.
 
     Allow to manage files in forms: file is uploaded to an upload url, a handle is
     returned will be used in the form to refer to this uploaded filed.
@@ -182,8 +180,8 @@ class FileUploadsExtension(object):
     def clear_stalled_files(self):
         """Scan upload directory and delete stalled files.
 
-        Stalled files are files uploaded more than `DELETE_STALLED_AFTER` seconds
-        ago.
+        Stalled files are files uploaded more than
+        `DELETE_STALLED_AFTER` seconds ago.
         """
         # FIXME: put lock in directory?
         CLEAR_AFTER = self.config['DELETE_STALLED_AFTER']

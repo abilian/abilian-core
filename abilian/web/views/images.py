@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Blueprint for views of dynamic images.
-"""
+"""Blueprint for views of dynamic images."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -112,8 +110,7 @@ class BaseImageView(BaseFileDownload):
 
 
 class StaticImageView(BaseImageView):
-    """
-    View for static assets not served by static directory.
+    """View for static assets not served by static directory.
 
     Useful for default avatars for example.
     """
@@ -136,8 +133,8 @@ class StaticImageView(BaseImageView):
 
 
 class BlobView(BaseImageView):
-    """
-    Default :attr:`expire_vary_arg` to `"md5"`.
+    """Default :attr:`expire_vary_arg` to `"md5"`.
+
     :attr:`set_expire` is set to `False` by default.
     """
     expire_vary_arg = 'md5'
@@ -247,7 +244,6 @@ def user_url_args(user, size):
 
 
 def user_photo_url(user, size):
-    """Return url to use for this user.
-    """
+    """Return url to use for this user."""
     endpoint, kwargs = user_url_args(user, size)
     return url_for(endpoint, **kwargs)

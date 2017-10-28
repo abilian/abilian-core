@@ -18,31 +18,31 @@ def json_token_view():
 
 
 def field():
-    """
-    Return an instance of `wtforms.ext.csrf.fields.CSRFTokenField`, suitable for
-    rendering. Renders an empty string if `config.CSRF_ENABLED` is not set.
+    """Return an instance of `wtforms.ext.csrf.fields.CSRFTokenField`, suitable
+    for rendering.
+
+    Renders an empty string if `config.CSRF_ENABLED` is not set.
     """
     return Form().csrf_token
 
 
 def time_limit():
-    """Return current time limit for CSRF token.
-    """
+    """Return current time limit for CSRF token."""
     return current_app.config.get('WTF_CSRF_TIME_LIMIT', 3600)
 
 
 def name():
-    """
-    Field name expected to have CSRF token. Useful for passing it to
-    JavaScript for instance.
+    """Field name expected to have CSRF token.
+
+    Useful for passing it to JavaScript for instance.
     """
     return 'csrf_token'
 
 
 def token():
-    """
-    Value of current csrf token. Useful for passing it to JavaScript for
-    instance.
+    """Value of current csrf token.
+
+    Useful for passing it to JavaScript for instance.
     """
     return field().current_token or ''
 

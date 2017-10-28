@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -18,8 +17,7 @@ class AdminPanel(object):
     icon = ""
 
     def url_value_preprocess(self, endpoint, view_args):
-        """
-        Panel can preprocess values for their views.
+        """Panel can preprocess values for their views.
 
         This method is called only if the endpoint is for `get()`, `post()`, or
         one of the views installed with `install_additional_rules`.
@@ -29,8 +27,8 @@ class AdminPanel(object):
         pass
 
     def install_additional_rules(self, add_url_rule):
-        """
-        This method can be redefined in subclasses to install custom url rules
+        """This method can be redefined in subclasses to install custom url
+        rules.
 
         All rules are relative to panel 'base' rule, don't prefix rules with panel
         id, it will be done by `add_url_rule`.

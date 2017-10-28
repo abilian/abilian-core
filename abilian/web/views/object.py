@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Class based views
-"""
+"""Class based views."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -29,9 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseObjectView(View):
-    """
-    Base class common to all database objects views.
-    """
+    """Base class common to all database objects views."""
     #: form title
     title = None
 
@@ -76,17 +72,15 @@ class BaseObjectView(View):
         return args, kwargs
 
     def breadcrumb(self):
-        """
-        Return :class:`..nav.BreadcrumbItem` instance for this object.
+        """Return :class:`..nav.BreadcrumbItem` instance for this object.
 
-        This method may return a list of BreadcrumbItem instances. Return
-        `None` if nothing.
+        This method may return a list of BreadcrumbItem instances.
+        Return `None` if nothing.
         """
         return None
 
     def init_object(self, args, kwargs):
-        """
-        This method is reponsible for setting :attr:`obj`.
+        """This method is reponsible for setting :attr:`obj`.
 
         It is called during :meth:`prepare_args`.
         """
@@ -112,17 +106,16 @@ class BaseObjectView(View):
 
     @property
     def template_kwargs(self):
-        """
-        Get template render arguments.
+        """Get template render arguments.
 
-        You may override `base_template` for instance. Only `view` cannot be overriden.
+        You may override `base_template` for instance. Only `view`
+        cannot be overriden.
         """
         return {}
 
 
 class ObjectView(BaseObjectView):
-    """View objects.
-    """
+    """View objects."""
 
     #: html template
     template = 'default/object_view.html'
@@ -173,8 +166,7 @@ class ObjectView(BaseObjectView):
 
     @property
     def template_kwargs(self):
-        """Provides :attr:`form` to templates
-        """
+        """Provides :attr:`form` to templates."""
         kw = super(ObjectView, self).template_kwargs
         kw['form'] = self.form
         return kw
@@ -204,9 +196,7 @@ ADD_ANOTHER_BUTTON = ButtonAction(
 
 
 class ObjectEdit(ObjectView):
-    """Edit object.
-
-    """
+    """Edit object."""
     template = 'default/object_edit.html'
     decorators = (csrf.support_graceful_failure,)
     permission = WRITE
@@ -336,23 +326,20 @@ class ObjectEdit(ObjectView):
         return self.get()
 
     def before_populate_obj(self):
-        """
-        This method is called after form has been validated and before calling
-        `form.populate_obj()`. Sometimes one may want to remove a field from
-        the form because it's non-sense to store it on edited object, and use it in
-        a specific manner, for example::
+        """This method is called after form has been validated and before
+        calling `form.populate_obj()`. Sometimes one may want to remove a field
+        from the form because it's non-sense to store it on edited object, and
+        use it in a specific manner, for example::
 
-            image = form.image
-            del form.image
-            store_image(image)
+        image = form.image
+        del form.image
+        store_image(image)
         """
         pass
 
     def after_populate_obj(self):
-        """
-        Called after `self.obj` values have been updated, and `self.obj`
-        attached to an ORM session.
-        """
+        """Called after `self.obj` values have been updated, and `self.obj`
+        attached to an ORM session."""
         pass
 
     def handle_commit_exception(self, exc):
@@ -424,8 +411,7 @@ class ObjectEdit(ObjectView):
                 return self.redirect_to_view()
 
     def form_invalid(self):
-        """
-        When a form doesn't validate this method is called.
+        """When a form doesn't validate this method is called.
 
         It may return a :class:`Flask.Response` instance, to handle specific
         errors in custom screens.
@@ -438,8 +424,8 @@ class ObjectEdit(ObjectView):
         return None
 
     def form_csrf_invalid(self):
-        """
-        Called when a form doesn't validate *only* because of csrf token expiration.
+        """Called when a form doesn't validate *only* because of csrf token
+        expiration.
 
         This works only if form is an instance of :class:`flask_wtf.form.SecureForm`.
         Else default CSRF protection (before request) will take place.
@@ -461,9 +447,7 @@ class ObjectEdit(ObjectView):
 
     @property
     def activity_target(self):
-        """
-        Return `target` to use when creating activity.
-        """
+        """Return `target` to use when creating activity."""
         return None
 
 
@@ -484,8 +468,7 @@ CHAIN_CREATE_BUTTON = ButtonAction(
 
 
 class ObjectCreate(ObjectEdit):
-    """Create a new object.
-    """
+    """Create a new object."""
     permission = CREATE
     activity_verb = 'post'
     _message_success = _l("Entity successfully added")
@@ -678,9 +661,8 @@ class JSONModelSearch(JSONBaseSearch):
 
 
 class JSONWhooshSearch(JSONBaseSearch):
-    """
-    Base class for JSON Whoosh search, as used by select2 widgets for example.
-    """
+    """Base class for JSON Whoosh search, as used by select2 widgets for
+    example."""
 
     def get_results(self, q, *args, **kwargs):
         svc = get_service('indexing')

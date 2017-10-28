@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Jinja2 extensions
-"""
+"""Jinja2 extensions."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -20,8 +18,7 @@ deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
 
 
 class DeferredJS(object):
-    """Flask extension for use with DeferredJSExtension for jinja.
-    """
+    """Flask extension for use with DeferredJSExtension for jinja."""
     name = 'deferred_js'
 
     def __init__(self, app=None):
@@ -46,8 +43,8 @@ class DeferredJS(object):
 class DeferredJSExtension(JinjaExtension):
     """Put JS fragment at the end of the document in a script tag.
 
-    The JS fragment can contains <script> tag so that your favorite editor
-    keeps doing proper indentation, syntax highlighting...
+    The JS fragment can contains <script> tag so that your favorite
+    editor keeps doing proper indentation, syntax highlighting...
     """
     tags = {'deferJS', 'deferredJS'}
 

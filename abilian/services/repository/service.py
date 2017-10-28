@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -31,9 +30,7 @@ class RepositoryServiceState(ServiceState):
 
 
 class RepositoryService(Service):
-    """
-    Service for storage of binary objects referenced in database
-    """
+    """Service for storage of binary objects referenced in database."""
     name = 'repository'
     AppStateClass = RepositoryServiceState
 
@@ -70,9 +67,8 @@ class RepositoryService(Service):
         return dest
 
     def get(self, uuid, default=None):
-        """
-        Return absolute :class:`Path` object for given uuid, if this uuid exists in
-        repository, or `default` if it doesn't.
+        """Return absolute :class:`Path` object for given uuid, if this uuid
+        exists in repository, or `default` if it doesn't.
 
         :param:uuid: :class:`UUID` instance
         """
@@ -82,7 +78,7 @@ class RepositoryService(Service):
         return path
 
     def set(self, uuid, content, encoding='utf-8'):
-        """Store binary content with uuid as key
+        """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
         :param:content: string, bytes, or any object with a `read()` method
@@ -239,8 +235,7 @@ class SessionRepositoryState(ServiceState):
 
 
 class SessionRepositoryService(Service):
-    """
-    A repository service that is session aware, i.e content is actually
+    """A repository service that is session aware, i.e content is actually
     written or delete at commit time.
 
     All content is stored using the main :class:`RepositoryService`.
@@ -396,8 +391,7 @@ class RepositoryTransaction(object):
         self._clear()
 
     def commit(self, session=None):
-        """
-        Merge modified objects into parent transaction.
+        """Merge modified objects into parent transaction.
 
         Once commited a transaction object is not usable anymore
 
@@ -443,9 +437,8 @@ class RepositoryTransaction(object):
             content_path.rename(p.path / str(uuid))
 
     def _add_to(self, uuid, dest, other):
-        """
-        Add `item` to `dest` set, ensuring `item` is not present in `other` set.
-        """
+        """Add `item` to `dest` set, ensuring `item` is not present in `other`
+        set."""
         _assert_uuid(uuid)
         try:
             other.remove(uuid)

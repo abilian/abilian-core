@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -82,10 +81,11 @@ entity_tag_tbl = sa.Table(
 @total_ordering
 @python_2_unicode_compatible
 class Tag(IdMixin, Model):
-    """Tags are text labels that can be attached to :class:`entities <.Entity>`.
+    """Tags are text labels that can be attached to :class:`entities
+    <.Entity>`.
 
-    They are namespaced, so that independent group of tags can be defined in the
-    application. The default namespace is `"default"`.
+    They are namespaced, so that independent group of tags can be
+    defined in the application. The default namespace is `"default"`.
     """
     __tablename__ = 'tag'
 

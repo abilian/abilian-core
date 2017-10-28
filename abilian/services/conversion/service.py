@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Conversion service.
+"""Conversion service.
 
 Hardcoded to manage only conversion to PDF, to text and to image series.
 
@@ -45,8 +44,7 @@ class Cache(object):
     CACHE_DIR = None
 
     def _path(self, key):
-        """File path for `key`:
-        """
+        """File path for `key`:"""
         return self.CACHE_DIR / "{}.blob".format(key)
 
     def __contains__(self, key):
@@ -166,15 +164,13 @@ class Converter(object):
         )
 
     def has_image(self, digest, mime_type, index, size=500):
-        """Tell if there is a preview image.
-        """
+        """Tell if there is a preview image."""
         cache_key = "img:%s:%s:%s" % (index, size, digest)
         return mime_type.startswith("image/") or cache_key in self.cache
 
     def get_image(self, digest, blob, mime_type, index, size=500):
         """Return an image for the given content, only if it already exists in
-        the image cache.
-        """
+        the image cache."""
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
             return ""
@@ -183,7 +179,9 @@ class Converter(object):
         return self.cache.get(cache_key)
 
     def to_image(self, digest, blob, mime_type, index, size=500):
-        """Convert a file to a list of images. Returns image at the given index.
+        """Convert a file to a list of images.
+
+        Returns image at the given index.
         """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
@@ -219,8 +217,7 @@ class Converter(object):
 
     def get_metadata(self, digest, content, mime_type):
         """Get a dictionary representing the metadata embedded in the given
-        content.
-        """
+        content."""
 
         # XXX: ad-hoc for now, refactor later
         if mime_type.startswith("image/"):

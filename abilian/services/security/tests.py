@@ -95,8 +95,7 @@ class SecurityTestCase(IntegrationTestCase):
         assert security.has_role(user, Authenticated)
 
     def test_root_user(self):
-        """Root user always has any role, any permission.
-        """
+        """Root user always has any role, any permission."""
         root = User.query.get(0)
         assert security.has_role(root, Admin)
         assert security.has_role(root, Anonymous)

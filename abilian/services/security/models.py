@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-"""
+""""""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -48,8 +47,9 @@ __all__ = [
 @total_ordering
 @python_2_unicode_compatible
 class Permission(UniqueName):
-    """
-    Defines permission by name. Permission instances are unique by name.
+    """Defines permission by name.
+
+    Permission instances are unique by name.
     """
     __slots__ = ('label',)
 
@@ -71,8 +71,7 @@ class Permission(UniqueName):
 class PermissionType(UniqueNameType):
     """Store :class:`Permission`
 
-    Usage::
-    RoleType()
+    Usage:: RoleType()
     """
     Type = Permission
 
@@ -117,11 +116,9 @@ class Role(UniqueName):
 
 
 class RoleType(UniqueNameType):
-    """
-    Store :class:`Role`
+    """Store :class:`Role`
 
-    Usage::
-    RoleType()
+    Usage:: RoleType()
     """
     Type = Role
 
@@ -378,9 +375,7 @@ del _postgres_indexes
 
 
 class SecurityAudit(db.Model):
-    """
-    Logs changes on security.
-    """
+    """Logs changes on security."""
     GRANT = 'GRANT'
     REVOKE = 'REVOKE'
     SET_INHERIT = 'SET_INHERIT'
@@ -442,9 +437,7 @@ class SecurityAudit(db.Model):
 
 
 class InheritSecurity(object):
-    """
-    Mixin for objects with a parent relation and security inheritance.
-    """
+    """Mixin for objects with a parent relation and security inheritance."""
     inherit_security = Column(
         Boolean,
         default=True,
