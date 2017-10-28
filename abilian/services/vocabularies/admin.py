@@ -163,7 +163,9 @@ class VocabularyPanel(AdminPanel):
             'service': svc,
             'url_for_voc_edit': self.voc_edit_url,
             'icon_checked': Glyphicon('check'),
-            'vocabularies': {group: vocabularies},
+            'vocabularies': {
+                group: vocabularies,
+            },
             'edit_return_to': 'group',
         }
         return render_template('admin/vocabularies.html', **ctx)
@@ -175,7 +177,9 @@ class VocabularyPanel(AdminPanel):
             'service': svc,
             'url_for_voc_edit': self.voc_edit_url,
             'icon_checked': Glyphicon('check'),
-            'vocabularies': {Model.Meta.group: [Model]},
+            'vocabularies': {
+                Model.Meta.group: [Model],
+            },
             'edit_return_to': 'model',
         }
         return render_template('admin/vocabularies.html', **ctx)

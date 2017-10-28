@@ -25,9 +25,9 @@ class TransformerRegistry(object):
         return self.encoders.get(type_, bytes)(value)
 
     def decode(self, type_, value):
-        dec = self.decoders.get(type_)
-        if dec is not None:
-            value = dec(value)
+        decoder = self.decoders.get(type_)
+        if decoder is not None:
+            value = decoder(value)
         return value
 
     def register(self, type_, encoder=None, decoder=None):
