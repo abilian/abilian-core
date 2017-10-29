@@ -42,7 +42,7 @@ mako==1.0.7               # via alembic
 markupsafe==1.0
 numpy==1.13.3             # via pandas
 olefile==0.44             # via pillow
-pandas==0.20.3
+pandas==0.21.0
 pathlib==1.0.1
 pillow==4.3.0
 psycopg2==2.7.3.2
