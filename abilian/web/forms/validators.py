@@ -1,18 +1,40 @@
 # coding=utf-8
+"""
+Validators
+
+TODO: most of this is currently only stubs and needs to be implemented.
+
+NOTE: the `rule` property is supposed to be useful for generating client-side
+validation code.
+"""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from wtforms import validators
-# TODO: most of this is currently only stubs and needs to be implemented.
-#
-# Validators
-#
-# NOTE: the `rule` property is supposed to be useful for generating client-side
-# validation code.
 from wtforms.compat import string_types
 
 from abilian.i18n import _, _n
 from abilian.services import get_service
+
+__all__ = (
+    "equalto",
+    "length",
+    "numberrange",
+    "optional",
+    "required",
+    "regexp",
+    "email",
+    "ipaddress",
+    "macaddress",
+    "url",
+    "siret",
+    "uuid",
+    "anyof",
+    "noneof",
+    "flaghidden",
+    "renderempty",
+    "VALIDATORS",
+)
 
 
 class Rule(object):

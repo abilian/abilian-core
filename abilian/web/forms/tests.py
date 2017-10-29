@@ -51,13 +51,15 @@ def test_form_permissions_controller():
     security_mock = mock.Mock()
     has_role = security_mock.has_role = mock.Mock()
     has_role.return_value = True
+
     current_app_mock = mock.Mock()
-    current_app_mock.services = dict(security=security_mock)
+    current_app_mock.services = {'security': security_mock}
+
     MarkRole = Role('tests:mark-role')
     _MARK = object()
     _ENTITY_MARK = Entity()
 
-    with mock.patch('abilian.web.forms.current_app', current_app_mock):
+    with mock.patch('abilian.services.current_app', current_app_mock):
         # default role
         fp = FormPermissions()
         assert fp.has_permission(READ)
@@ -153,7 +155,7 @@ class FieldsTestCase(BaseTestCase):
             field.process_formdata(['17/06/1789 | 10:42'])
             # 1789: applied offset for HongKong is equal to LMT+7:37:00,
             # thus we compare with tzinfo=user_tz
-            assert field.data == datetime.datetime(
+            expected_datetime = datetime.datetime(
                 1789,
                 6,
                 17,
@@ -161,6 +163,7 @@ class FieldsTestCase(BaseTestCase):
                 42,
                 tzinfo=USER_TZ,
             )
+            assert field.data == expected_datetime
             # UTC stored
             assert field.data.tzinfo is pytz.UTC
             # displayed in user current timezone
@@ -169,28 +172,14 @@ class FieldsTestCase(BaseTestCase):
             # non-naive mode: test process_data change TZ to user's TZ
             field.process_data(field.data)
             assert field.data.tzinfo is USER_TZ
-            assert field.data == datetime.datetime(
-                1789,
-                6,
-                17,
-                10,
-                42,
-                tzinfo=USER_TZ,
-            )
+            assert field.data == expected_datetime
 
             field.populate_obj(obj, 'dt')
-            assert obj.dt == datetime.datetime(
-                1789,
-                6,
-                17,
-                10,
-                42,
-                tzinfo=USER_TZ,
-            )
+            assert obj.dt == expected_datetime
 
             # test more recent date: offset is GMT+8
             field.process_formdata(['23/01/2011 | 10:42'])
-            assert field.data == datetime.datetime(
+            expected_datetime = datetime.datetime(
                 2011,
                 1,
                 23,
@@ -198,6 +187,7 @@ class FieldsTestCase(BaseTestCase):
                 42,
                 tzinfo=pytz.utc,
             )
+            assert field.data == expected_datetime
 
     def test_datetime_field_naive(self):
         """Test fields supports date with year < 1900."""
@@ -210,9 +200,10 @@ class FieldsTestCase(BaseTestCase):
             # default
             field = fields.DateTimeField().bind(Form(), 'dt')
             field.process_formdata(['17/06/1789 | 10:42'])
+
             # UTC stored
             assert field.data.tzinfo is pytz.UTC
-            assert field.data == datetime.datetime(
+            expected_datetime = datetime.datetime(
                 1789,
                 6,
                 17,
@@ -220,6 +211,7 @@ class FieldsTestCase(BaseTestCase):
                 42,
                 tzinfo=pytz.UTC,
             )
+            assert field.data == expected_datetime
 
             # naive stored
             field.populate_obj(obj, 'dt')
