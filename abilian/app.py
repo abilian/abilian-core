@@ -242,9 +242,8 @@ class Application(Flask, ServiceManager, PluginManager):
         if configured:
             with self.app_context():
                 try:
-                    settings = self.services['settings'].namespace(
-                        'config',
-                    ).as_dict()
+                    settings = self.services['settings']
+                    config = settings.namespace('config').as_dict()
                 except sa.exc.DatabaseError as exc:
                     # we may get here if DB is not initialized and "settings" table is
                     # missing. Command "initdb" must be run to initialize db, but first we
@@ -255,7 +254,7 @@ class Application(Flask, ServiceManager, PluginManager):
                         logging.error(exc)
                     self.db.session.rollback()
                 else:
-                    self.config.update(settings)
+                    self.config.update(config)
 
         if not self.config.get('FAVICO_URL'):
             self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
