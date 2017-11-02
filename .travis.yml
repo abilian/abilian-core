@@ -5,7 +5,7 @@ language: python
 cache: pip
 python:
   - "2.7"
-  # - "3.6"
+  - "3.6"
 
 env:
   matrix:
@@ -16,11 +16,12 @@ services:
   - redis-server
 
 addons:
-  postgresql: "9.3"
+  postgresql: "9.4"
 
 # Install OS dependencies
 before_install:
   - pip install -U pip setuptools wheel
+
   - export NPM_CONFIG_PREFIX=~/npm-packages
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less
