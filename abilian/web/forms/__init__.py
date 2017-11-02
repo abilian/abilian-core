@@ -12,8 +12,7 @@ from flask import g, has_app_context
 from flask_login import current_user
 from flask_wtf import Form as BaseForm
 from six import string_types
-from wtforms.fields import HiddenField
-from wtforms.fields.core import Field
+from wtforms.fields import HiddenField, Field
 from wtforms_alchemy import model_form_factory
 
 from abilian.core.entities import Entity
