@@ -37,7 +37,7 @@ itsdangerous==0.24        # via flask, flask-debugtoolbar
 jinja2==2.9.6
 jsmin==2.2.2
 kombu==4.1.0              # via celery
-lxml==4.1.0
+lxml==4.1.1
 mako==1.0.7               # via alembic
 markupsafe==1.0
 numpy==1.13.3             # via pandas
@@ -57,7 +57,7 @@ raven==6.3.0
 redis==2.10.6
 six==1.11.0
 sqlalchemy-utils==0.32.19
-sqlalchemy==1.1.14
+sqlalchemy==1.1.15
 sqlparse==0.2.4
 straight.plugin==1.4.1
 tqdm==4.19.4
