@@ -163,11 +163,11 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     )
     del index_to
 
-    def has_role(self, role):
+    def has_role(self, role, context=None):
         from abilian.services import get_service
 
         security = get_service('security')
-        return security.has_role(self, role)
+        return security.has_role(self, role, context)
 
 
 def set_entity_type(cls):
