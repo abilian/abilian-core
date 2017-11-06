@@ -9,6 +9,7 @@ from pathlib import Path
 from uuid import UUID, uuid1
 
 import sqlalchemy as sa
+import sqlalchemy.event
 from flask import _app_ctx_stack, current_app
 from flask.globals import _lookup_app_object
 from six import text_type

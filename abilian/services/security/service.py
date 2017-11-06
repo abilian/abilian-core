@@ -608,11 +608,11 @@ class SecurityService(Service):
             roles=None,
     ):
         """
-        @param `obj`: target object to check permissions.
-        @param `inherit`: check with permission inheritance. By default, check only
-        local roles.
-        @param `roles`: additional valid role or iterable of roles having
-                        `permission`.
+        :param obj: target object to check permissions.
+        :param inherit: check with permission inheritance. By default, check only
+                        local roles.
+        :param roles: additional valid role or iterable of roles having
+                      `permission`.
         """
         if not isinstance(permission, Permission):
             assert permission in PERMISSIONS
@@ -699,7 +699,7 @@ class SecurityService(Service):
         :param permission: required :class:`Permission`
 
         :param Model: An :class:`Entity` based class. Useful when there is more than
-        on Entity based object in query, or if an alias should be used.
+        one Entity based object in query, or if an alias should be used.
 
         :returns: a `sqlalchemy.sql.exists()` expression.
         """

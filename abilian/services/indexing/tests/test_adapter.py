@@ -145,6 +145,7 @@ class DocumentTestCase(AppTestCase):
         expected['allowed_roles_and_users'] = 'role:admin'
         assert adapter.get_document(obj) == expected
 
+    def test_get_document_with_schema(self):
         # test retrieve related attributes
         schema = Schema(
             id=NUMERIC(

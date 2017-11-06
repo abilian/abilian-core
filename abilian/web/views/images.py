@@ -72,7 +72,7 @@ class BaseImageView(BaseFileDownload):
     def make_response(self, image, size, mode, *args, **kwargs):
         """
         :param image: image as bytes
-        :param s: requested maximum width/height size
+        :param size: requested maximum width/height size
         """
         try:
             fmt = get_format(image)

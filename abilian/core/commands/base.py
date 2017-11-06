@@ -8,6 +8,7 @@ import runpy
 from pprint import pformat
 
 import sqlalchemy as sa
+import sqlalchemy.exc
 from flask import current_app
 from flask_script import Manager, prompt_pass
 from six import text_type

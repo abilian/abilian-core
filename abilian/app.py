@@ -974,7 +974,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
         :param type_: `"css"`, `"js-top"` or `"js""`.
 
-        :param \*asset:
+        :param assets:
             a path to file, a :ref:`webassets.Bundle <webassets:bundles>` instance
             or a callable that returns a :ref:`webassets.Bundle <webassets:bundles>`
             instance.
