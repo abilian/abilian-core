@@ -3,11 +3,7 @@ tox
 pytest>=2.4.0
 pytest-sugar
 pytest-xdist
-
-# needed to avoid a ResourceClosedError when using some CTE queries with 0 results:
-# https://bitbucket.org/zzzeek/sqlalchemy/issues/3079/select-statement-returning-0-rows
-# http://bugs.python.org/issue21718
-#pysqlite >= 2.8.1
+pytest-randomly
 
 # Backport of Python 3 mocking library
 mock>=1.0.1
@@ -20,20 +16,20 @@ flake8
 flake8-tidy-imports
 flake8-mutable
 flake8-comprehensions
+mastool
 # flake8-bugbear (py3k only)
 mccabe
 pylint
 pre-commit
+# These two plugins try too hard..
+# pep8-naming
 
 # Formatting (update version explicitely when needed)
 isort==4.2.15
 yapf==0.17.0
 autopep8==1.3.2
 add-trailing-comma
-mastool
 
-# These two plugins try too hard..
-# pep8-naming
 
 # To build docs
 # (Doesn't work w/ sphinx 1.4.5)
