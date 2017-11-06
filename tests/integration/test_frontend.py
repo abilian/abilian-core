@@ -53,8 +53,6 @@ class Contacts(Module):
     edit_form_class = ContactEditForm
 
     related_views = []
-    # TODO
-    # [('Visites', 'visites', ('partenaire', 'visiteur', 'date')),]
 
 
 class SimpleCRM(CRUDApp):
@@ -70,32 +68,4 @@ class FrontendTestCase(BaseTestCase):
 
     def test(self):
         response = self.client.get("/crm/contacts/json")
-        self.assert_200(response)
-
-        # TODO: test more endpoints (but these needs the templates).
-        # /crm/contacts/export_xls
-        # /crm/contacts/export
-        # /crm/contacts/json2
-        # /crm/contacts/json
-        # /crm/contacts/new
-        # /crm/contacts/new
-        # /crm/contacts/
-        # /crm/contacts/<int:entity_id>/delete
-        # /crm/contacts/<int:entity_id>/edit
-        # /crm/contacts/<int:entity_id>/edit
-        # /crm/contacts/<int:entity_id>
-
-        # response = self.client.get("/crm/contacts/")
-        # self.assert_200(response)
-        #
-        # response = self.client.get("/crm/contacts/new")
-        # self.assert_200(response)
-
-        # response = self.client.get("/crm/contacts/json2")
-        # self.assert_200(response)
-
-        # response = self.client.get("/crm/contacts/export")
-        # self.assert_200(response)
-
-        # response = self.client.get("/crm/contacts/export_xls")
-        # self.assert_200(response)
+        assert response.status_code == 200

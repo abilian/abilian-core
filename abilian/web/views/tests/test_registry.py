@@ -3,6 +3,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+import pytest
 import sqlalchemy as sa
 from flask import Blueprint, Flask
 from flask_testing import TestCase as FlaskTestCase
@@ -88,7 +89,8 @@ class TestRegistry(FlaskTestCase):
 
         obj = RegEntity(id=1)
         # blueprint not registered: no rule set
-        self.assertRaises(KeyError, self.app.default_view.url_for, obj)
+        with pytest.raises(KeyError):
+            self.app.default_view.url_for(obj)
 
         # blueprint registered: default view is set
         self.app.register_blueprint(bp)

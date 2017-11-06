@@ -3,8 +3,6 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from unittest import TestCase
-
 import pytest
 import sqlalchemy as sa
 from flask.signals import request_started
@@ -109,41 +107,39 @@ class ModelViewTestCase(BaseTestCase):
             assert "10000" in res
 
 
-class TestLinkify(TestCase):
-
-    EXPECTED = (
-        '<a href="http://example.com">example.com</a>'
-        '&nbsp;<i class="fa fa-external-link"></i>'
-    )
-
-    def test_http(self):
-        value = "http://example.com"
-        result = linkify_url(value)
-        assert result == self.EXPECTED
-
-    def test_no_http(self):
-        value = "example.com"
-        result = linkify_url(value)
-        assert result == self.EXPECTED
+EXPECTED = (
+    '<a href="http://example.com">example.com</a>'
+    '&nbsp;<i class="fa fa-external-link"></i>'
+)
 
 
-class TestText2Html(TestCase):
+def test_http():
+    value = "http://example.com"
+    result = linkify_url(value)
+    assert result == EXPECTED
 
-    def test1(self):
-        result = text2html("a")
-        self.assertEqual(result, "a")
 
-    def test2(self):
-        result = text2html("a\nb")
-        self.assertEqual(str(result), "<p>a</p>\n<p>b</p>")
+def test_no_http():
+    value = "example.com"
+    result = linkify_url(value)
+    assert result == EXPECTED
 
-    def test3(self):
-        result = text2html("a\n\nb")
-        self.assertEqual(str(result), "<p>a</p>\n<p>b</p>")
 
-    def test4(self):
-        result = text2html("a\n<a>toto</a>")
-        self.assertEqual(
-            str(result),
-            "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>",
-        )
+def test1():
+    result = text2html("a")
+    assert result == "a"
+
+
+def test2():
+    result = text2html("a\nb")
+    assert str(result) == "<p>a</p>\n<p>b</p>"
+
+
+def test3():
+    result = text2html("a\n\nb")
+    assert str(result) == "<p>a</p>\n<p>b</p>"
+
+
+def test4():
+    result = text2html("a\n<a>toto</a>")
+    assert str(result) == "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>"

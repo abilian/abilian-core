@@ -353,7 +353,7 @@ class BaseTestCase(TestCase):
                 'password': password,
             },
         )
-        self.assertEqual(r.status_code, 302)
+        assert r.status_code == 302
 
         class LoginContext(object):
 
@@ -378,7 +378,7 @@ class BaseTestCase(TestCase):
         return self.app.extensions['sqlalchemy'].db
 
     def assert_302(self, response):
-        self.assert_status(response, 302)
+        assert response.status_code == 302
 
     def get(self, url, validate=True):
         """Validates HTML if asked by the config or the Unix environment."""

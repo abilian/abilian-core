@@ -32,25 +32,25 @@ def init_user():
     db.session.flush()
 
 
-class RoleTestCase(unittest.TestCase):
+def test_singleton():
+    admin = Role('admin')
+    other_admin = Role('admin')
+    assert admin is other_admin
+    assert id(admin) == id(other_admin)
 
-    def test_singleton(self):
-        admin = Role('admin')
-        other_admin = Role('admin')
-        self.assertIs(admin, other_admin)
-        self.assertEqual(id(admin), id(other_admin))
 
-    def test_equality(self):
-        admin = Role('admin')
-        self.assertEqual(admin, 'admin')
-        self.assertEqual(admin, 'admin')
+def test_equality():
+    admin = Role('admin')
+    assert admin == 'admin'
 
-    def test_ordering(self):
-        roles = sorted([Authenticated, Admin, Anonymous])
-        assert roles == [Admin, Anonymous, Authenticated]
 
-    def test_enumerate_assignables(self):
-        assert Role.assignable_roles() == [Admin]
+def test_ordering():
+    roles = sorted([Authenticated, Admin, Anonymous])
+    assert roles == [Admin, Anonymous, Authenticated]
+
+
+def test_enumerate_assignables():
+    assert Role.assignable_roles() == [Admin]
 
 
 class IntegrationTestCase(BaseTestCase):
@@ -273,17 +273,17 @@ class SecurityTestCase(IntegrationTestCase):
         self.session.add(folder)
         self.session.flush()
 
-        self.assertEqual(SecurityAudit.query.count(), 0)
+        assert SecurityAudit.query.count() == 0
 
         security.set_inherit_security(folder, False)
         self.session.flush()
-        self.assertFalse(folder.inherit_security)
-        self.assertEqual(SecurityAudit.query.count(), 1)
+        assert not folder.inherit_security
+        assert SecurityAudit.query.count() == 1
 
         security.set_inherit_security(folder, True)
         self.session.flush()
-        self.assertTrue(folder.inherit_security)
-        self.assertEqual(SecurityAudit.query.count(), 2)
+        assert folder.inherit_security
+        assert SecurityAudit.query.count() == 2
 
     def test_add_list_delete_permissions(self):
         obj = DummyModel()

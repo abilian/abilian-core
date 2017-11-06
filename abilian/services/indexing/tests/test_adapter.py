@@ -4,7 +4,6 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from datetime import datetime
-from unittest import TestCase
 
 import six
 import sqlalchemy as sa
@@ -46,83 +45,82 @@ class SubclassEntityIndexable(Entity):
     pass
 
 
-class TestSAAdapter(TestCase):
+def test_can_adapt():
+    assert not SAAdapter.can_adapt(SANotAdaptable)
+    assert SAAdapter.can_adapt(SANotIndexable)
+    assert SAAdapter.can_adapt(Indexable)
+    assert SAAdapter.can_adapt(Entity)
 
-    def test_can_adapt(self):
-        assert not SAAdapter.can_adapt(SANotAdaptable)
-        assert SAAdapter.can_adapt(SANotIndexable)
-        assert SAAdapter.can_adapt(Indexable)
-        assert SAAdapter.can_adapt(Entity)
 
-    def test_build_attrs(self):
-        schema = Schema()
-        adapter = SAAdapter(SANotIndexable, schema)
-        assert not adapter.indexable
-        assert adapter.doc_attrs == {}
+def test_build_attrs():
+    schema = Schema()
+    adapter = SAAdapter(SANotIndexable, schema)
+    assert not adapter.indexable
+    assert adapter.doc_attrs == {}
 
-        adapter = SAAdapter(Entity, schema)
-        assert adapter.indexable == False
+    adapter = SAAdapter(Entity, schema)
+    assert adapter.indexable == False
 
-        adapter = SAAdapter(SubclassEntityIndexable, schema)
-        assert adapter.indexable
-        assert set(adapter.doc_attrs) == {
-            'object_key',
-            'id',
-            'name',
-            'slug',
-            'object_type',
-            'text',
-            'created_at',
-            'updated_at',
-            'name_prefix',
-            'owner',
-            'owner_name',
-            'creator_name',
-            'creator',
-            'allowed_roles_and_users',
-            'tag_ids',
-            'tag_text',
-        }
-        assert all(lambda f: callable(f)
-                   for f in six.itervalues(adapter.doc_attrs))
+    adapter = SAAdapter(SubclassEntityIndexable, schema)
+    assert adapter.indexable
+    assert set(adapter.doc_attrs) == {
+        'object_key',
+        'id',
+        'name',
+        'slug',
+        'object_type',
+        'text',
+        'created_at',
+        'updated_at',
+        'name_prefix',
+        'owner',
+        'owner_name',
+        'creator_name',
+        'creator',
+        'allowed_roles_and_users',
+        'tag_ids',
+        'tag_text',
+    }
+    assert all(lambda f: callable(f)
+               for f in six.itervalues(adapter.doc_attrs))
 
-        assert set(schema.names()) == {
-            'object_key',
-            'id',
-            'object_type',
-            'name',
-            'slug',
-            'text',
-            'created_at',
-            'updated_at',
-            'name_prefix',
-            'owner',
-            'owner_name',
-            'creator_name',
-            'creator',
-            'allowed_roles_and_users',
-            'tag_ids',
-            'tag_text',
-        }
+    assert set(schema.names()) == {
+        'object_key',
+        'id',
+        'object_type',
+        'name',
+        'slug',
+        'text',
+        'created_at',
+        'updated_at',
+        'name_prefix',
+        'owner',
+        'owner_name',
+        'creator_name',
+        'creator',
+        'allowed_roles_and_users',
+        'tag_ids',
+        'tag_text',
+    }
 
-        schema = Schema(
-            id=NUMERIC(
-                numtype=int,
-                bits=64,
-                signed=False,
-                stored=True,
-                unique=True,
-            ),
-        )
-        adapter = SAAdapter(Indexable, schema)
-        assert adapter.indexable
-        assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
-        assert all(lambda f: callable(f)
-                   for f in six.itervalues(adapter.doc_attrs))
+    schema = Schema(
+        id=NUMERIC(
+            numtype=int,
+            bits=64,
+            signed=False,
+            stored=True,
+            unique=True,
+        ),
+    )
+    adapter = SAAdapter(Indexable, schema)
+    assert adapter.indexable
+    assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
+    assert all(lambda f: callable(f)
+               for f in six.itervalues(adapter.doc_attrs))
 
-        assert set(schema.names()) == {'id', 'text', 'num', 'name'}
-        assert isinstance(schema['text'], TEXT)
-        assert isinstance(schema['num'], NUMERIC)
+    assert set(schema.names()) == {'id', 'text', 'num', 'name'}
+    assert isinstance(schema['text'], TEXT)
+    assert isinstance(schema['num'], NUMERIC)
 
 
 class DocumentTestCase(AppTestCase):
@@ -138,6 +136,7 @@ class DocumentTestCase(AppTestCase):
         )
         obj = SubclassEntityIndexable(**expected)
         obj.slug = 'entity-name'
+
         expected['object_type'] = 'test_adapter.SubclassEntityIndexable'
         expected['object_key'] = 'test_adapter.SubclassEntityIndexable:2'
         expected['text'] = 'entity name'

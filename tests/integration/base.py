@@ -18,7 +18,7 @@ class IntegrationTestCase(BaseTestCase):
     no_login = False
 
     def assert_302(self, response):
-        self.assert_status(response, 302)
+        assert response.status_core == 302
 
     def assert_204(self, response):
-        self.assert_status(response, 204)
+        assert response.status_core == 204

@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import datetime
+from textwrap import dedent
 
 import html5lib
 import mock
@@ -30,6 +31,33 @@ def user_tz():
 USER_TZ = timezone(user_tz())
 
 
+def test_labelize():
+    labelize = filters.labelize
+    assert labelize('test_case') == 'Test Case'
+
+
+def test_filesize():
+    filesize = filters.filesize
+    assert str(filesize('100')) == "100&nbsp;B"
+    assert str(filesize(100)) == "100&nbsp;B"
+    assert str(filesize(1000)) == "1.0&nbsp;kB"
+    assert str(filesize(1100)) == "1.1&nbsp;kB"
+    assert str(filesize(10000)) == "10&nbsp;kB"
+    assert str(filesize(1100100)) == "1.1&nbsp;MB"
+    assert str(filesize(10000000)) == "10&nbsp;MB"
+    assert str(filesize(1100100000)) == "1.1&nbsp;GB"
+    assert str(filesize(100000000000)) == "100&nbsp;GB"
+
+
+def test_roughsize():
+    roughsize = filters.roughsize
+    assert '6' == roughsize(6)
+    assert '15' == roughsize(15)
+    assert '130+' == roughsize(134)
+    assert '10+' == roughsize(15, above=10)
+    assert '55+' == roughsize(57, mod=5)
+
+
 class TestFilters(FlaskTestCase):
 
     def create_app(self):
@@ -38,30 +66,6 @@ class TestFilters(FlaskTestCase):
         babel.localeselector(en_locale)
         babel.timezoneselector(user_tz)
         return app
-
-    def test_labelize(self):
-        labelize = filters.labelize
-        assert labelize('test_case') == 'Test Case'
-
-    def test_filesize(self):
-        filesize = filters.filesize
-        assert str(filesize('100')) == "100&nbsp;B"
-        assert str(filesize(100)) == "100&nbsp;B"
-        assert str(filesize(1000)) == "1.0&nbsp;kB"
-        assert str(filesize(1100)) == "1.1&nbsp;kB"
-        assert str(filesize(10000)) == "10&nbsp;kB"
-        assert str(filesize(1100100)) == "1.1&nbsp;MB"
-        assert str(filesize(10000000)) == "10&nbsp;MB"
-        assert str(filesize(1100100000)) == "1.1&nbsp;GB"
-        assert str(filesize(100000000000)) == "100&nbsp;GB"
-
-    def test_roughsize(self):
-        roughsize = filters.roughsize
-        assert '6' == roughsize(6)
-        assert '15' == roughsize(15)
-        assert '130+' == roughsize(134)
-        assert '10+' == roughsize(15, above=10)
-        assert '55+' == roughsize(57, mod=5)
 
     def test_date_age(self):
         date_age = filters.date_age
@@ -129,11 +133,9 @@ class TestFilters(FlaskTestCase):
 
     def test_abbrev(self):
         abbrev = filters.abbrev
-        self.assertEqual('test', abbrev('test', 20))
-        self.assertEqual(
-            'Longer test...e truncated',
-            abbrev('Longer test. it should be truncated', 25),
-        )
+        assert 'test' == abbrev('test', 20)
+        assert 'Longer test...e truncated' == \
+            abbrev('Longer test. it should be truncated', 25)
 
     def test_linkify(self):
         tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
@@ -158,25 +160,26 @@ class TestFilters(FlaskTestCase):
             'first line<br />\nsecond line<br />\n<br />\n  third, indented'
 
     def test_paragraphs(self):
-        tmpl = env.from_string('''{{ "First paragraph
-    some text
-    with line return
+        markdown_text = dedent('''\
+            {{ "First paragraph
+            some text
+            with line return
 
-    Second paragraph
-    ... lorem
+            Second paragraph
+            ... lorem
 
-    Last one - a single line" | paragraphs }}
-    ''')
+            Last one - a single line" | paragraphs }}
+            ''')
+        tmpl = env.from_string(markdown_text)
 
-        self.assertEqual(
-            tmpl.render(),
-            '''<p>First paragraph<br />
-    some text<br />
-    with line return</p>
+        expected = dedent('''\
+            <p>First paragraph<br />
+            some text<br />
+            with line return</p>
 
-<p>Second paragraph<br />
-    ... lorem</p>
+            <p>Second paragraph<br />
+            ... lorem</p>
 
-<p>Last one - a single line</p>
-    ''',
-        )
+            <p>Last one - a single line</p>
+            ''')
+        assert tmpl.render().strip() == expected.strip()

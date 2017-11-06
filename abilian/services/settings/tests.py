@@ -86,7 +86,7 @@ class SettingsServiceTestCase(BaseTestCase):
         assert svc.get('key_1') == 42
 
         # new key with no type: raise error:
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             svc.set('key_err', 42)
 
         # key already with type_, this should not raise an error
@@ -96,14 +96,14 @@ class SettingsServiceTestCase(BaseTestCase):
 
         svc.delete('key_1')
         self.db.session.flush()
-        with self.assertRaises(KeyError):
+        with pytest.raises(KeyError):
             svc.get('key_1')
 
         # delete: silent by default
         svc.delete('non_existent')
 
         # delete: non-silent
-        with self.assertRaises(KeyError):
+        with pytest.raises(KeyError):
             svc.delete('non_existent', silent=False)
 
         # tricky use case: ask key delete, set it later, then flush

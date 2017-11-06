@@ -68,18 +68,18 @@ class I18NTestCase(BaseTestCase):
         template_path = '/myfile.txt'
         en = Locale('en')
         result = i18n.get_template_i18n(template_path, locale=en)
-        self.assertIn('/myfile.en.txt', result)
-        self.assertIn('/myfile.txt', result)
+        assert '/myfile.en.txt' in result
+        assert '/myfile.txt' in result
 
         en = Locale('en_US')
         result = i18n.get_template_i18n(template_path, locale=en)
-        self.assertIn('/myfile.en_US.txt', result)
-        self.assertIn('/myfile.txt', result)
+        assert '/myfile.en_US.txt' in result
+        assert '/myfile.txt' in result
 
         with force_locale('fr'):
             result = i18n.get_template_i18n(template_path, get_locale())
-            self.assertIn('/myfile.fr.txt', result)
-            self.assertIn('/myfile.txt', result)
+            assert '/myfile.fr.txt' in result
+            assert '/myfile.txt' in result
 
     def test_render_template_i18n(self):
         loader = DictLoader({

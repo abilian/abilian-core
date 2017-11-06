@@ -41,7 +41,7 @@ test-all: test test-readme
 
 test:
 	@echo "--> Running Python tests"
-	pytest --ff -x $(PYTEST_MULTI)
+	pytest --ff -x -p no:randomly $(PYTEST_MULTI)
 	@echo ""
 
 test-with-coverage:
