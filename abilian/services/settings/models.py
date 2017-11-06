@@ -82,7 +82,7 @@ class Setting(db.Model):
             type_ in self.transformers.decoders
         ):
             raise ValueError(
-                'Invalid type "{}": not encoder and/or decoder registered'.
+                'Invalid type "{}": no encoder and/or decoder registered'.
                 format(type_),
             )
         self._type = type_
