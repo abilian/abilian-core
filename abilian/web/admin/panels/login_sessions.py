@@ -36,10 +36,9 @@ class LoginSessionsPanel(AdminPanel):
             .all()
         unknown_country = _('Country unknown')
 
-        for session in sessions:
+        def update_country(session):
             country = unknown_country
-
-            if geoips and session.ip_address:
+            if session.ip_address:
                 ip_address = session.ip_address
                 multiple = ip_address.split(',')
                 if multiple:
@@ -57,6 +56,11 @@ class LoginSessionsPanel(AdminPanel):
                     else:
                         country = unknown_country
 
-                session.country = country
+                    session.country = country
 
-        return render_template("admin/login_sessions.html", **locals())
+        if geoips:
+            for session in sessions:
+                update_country(session)
+
+        ctx = {'sessions': sessions}
+        return render_template("admin/login_sessions.html", **ctx)

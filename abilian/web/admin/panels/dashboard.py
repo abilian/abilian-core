@@ -90,8 +90,8 @@ def stats_since(dt):
         elif entity_class == 'Message':
             new_messages = count
 
-    active_users = session.query(sa.func.count(User.id))\
-                          .filter(User.last_active > after_date).scalar()
+    active_users = session.query(sa.func.count(User.id)) \
+        .filter(User.last_active > after_date).scalar()
 
     return {
         'new_members': new_members,

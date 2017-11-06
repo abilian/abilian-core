@@ -70,19 +70,22 @@ class JSONUserSearch(JSONView):
             .filter(filters) \
             .order_by(User.last_name, User.first_name)
 
+        values = query.values(
+            User.id,
+            User.first_name,
+            User.last_name,
+            User.email,
+        )
+        results = [
+            {
+                'id': obj.id,
+                'text': '{} {} ({})'
+                .format(obj.first_name, obj.last_name, obj.email),
+            } for obj in values
+        ]
+
         result = {
-            'results': [{
-                'id':
-                obj.id,
-                'text':
-                '{} {} ({})'.format(obj.first_name, obj.last_name, obj.email),
-            }
-                for obj in query.values(
-                User.id,
-                User.first_name,
-                User.last_name,
-                User.email,
-            )],
+            'results': results,
         }
         return result
 
@@ -261,16 +264,16 @@ class AuditPanel(AdminPanel):
         if filter_types:
             url_params['types'] = list(filter_types)[0]
 
-        ctx = dict(
-            entries=entries,
-            filter_user=filter_user,
-            all_classes=[(c.__name__, c.entity_type) for c in all_classes],
-            filter_types=filter_types,
-            url_params=url_params,
-            current_date=current_date,
-            top_date=top_date,
-            lowest_date=lowest_date,
-        )
+        ctx = {
+            'entries': entries,
+            'filter_user': filter_user,
+            'all_classes': [(c.__name__, c.entity_type) for c in all_classes],
+            'filter_types': filter_types,
+            'url_params': url_params,
+            'current_date': current_date,
+            'top_date': top_date,
+            'lowest_date': lowest_date,
+        }
         return render_template("admin/audit.html", **ctx)
 
 
@@ -376,10 +379,8 @@ class SecurityEntryPresenter(BaseEntryPresenter):
 
     def __init__(self, entry):
         assert isinstance(entry, SecurityAudit)
-        super(SecurityEntryPresenter, self).__init__(
-            entry.manager,
-            entry.happened_at,
-        )
+        super(SecurityEntryPresenter, self) \
+            .__init__(entry.manager, entry.happened_at)
         self.entry = entry
 
     def render(self):
