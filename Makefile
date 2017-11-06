@@ -41,12 +41,12 @@ test-all: test test-readme
 
 test:
 	@echo "--> Running Python tests"
-	pytest --ff -x $(PYTEST_MULTI) .
+	pytest --ff -x $(PYTEST_MULTI)
 	@echo ""
 
 test-with-coverage:
 	@echo "--> Running Python tests"
-	py.test $(PYTEST_MULTI) --cov $(PKG) $(PKG) tests
+	py.test $(PYTEST_MULTI) --cov $(PKG)
 	@echo ""
 
 vagrant-tests:
