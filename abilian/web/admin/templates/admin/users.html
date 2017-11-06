@@ -12,15 +12,15 @@
     {% set table_id = next(g.id_generator) %}
     <table class="table table-condensed table-striped" id="{{ table_id }}">
       <thead>
-        <tr>
-          <th></th>
-          <th>{{ _("Name") }}</th>
-          <th>{{ _('Email') }}</th>
-          <th width="10%">{{ _('Login enabled') }}</th>
-          <th>{{ _("Groups") }}</th>
-          <th>{{ _("Roles") }}</th>
-          <th>{{ _('Last connection') }}</th>
-        </tr>
+      <tr>
+        <th></th>
+        <th>{{ _("Name") }}</th>
+        <th>{{ _('Email') }}</th>
+        <th width="10%">{{ _('Login enabled') }}</th>
+        <th>{{ _("Groups") }}</th>
+        <th>{{ _("Roles") }}</th>
+        <th>{{ _('Last connection') }}</th>
+      </tr>
       </thead>
 
       <tbody>
@@ -31,14 +31,14 @@
 
 
     {%- deferJS %}
-    <script type="text/javascript">
-     require(
-       ['jquery', 'jquery.dataTables'],
-       function ($) {
-         var id = "#{{ table_id }}"; // Should be unique enough
-         $(id).dataTable({{ datatable_options|tojson|safe }});
-       });
-    </script>
+      <script type="text/javascript">
+        require(
+            ['jquery', 'jquery.dataTables'],
+            function ($) {
+              var id = "#{{ table_id }}"; // Should be unique enough
+              $(id).dataTable({{ datatable_options|tojson|safe }});
+            });
+      </script>
     {%- enddeferJS %}
   {% endcall %}
 
