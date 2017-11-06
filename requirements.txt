@@ -16,7 +16,6 @@ cffi==1.11.2              # via bcrypt
 clamd==1.0.2
 click==6.7                # via flask
 closure==20161201
-contextlib2==0.5.5        # via raven
 cssmin==0.2.0
 decorator==4.1.2          # via validators
 flask-assets==0.12
