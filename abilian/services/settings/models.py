@@ -8,6 +8,7 @@ from datetime import timedelta
 
 import sqlalchemy as sa
 from six import text_type
+from typing import Callable, Optional, Dict
 
 from abilian.core.extensions import db
 
@@ -17,8 +18,8 @@ __all__ = ['Setting']
 class TransformerRegistry(object):
 
     def __init__(self):
-        self.encoders = {}
-        self.decoders = {}
+        self.encoders = {}  # type: Dict[text_type, Optional[Callable]]
+        self.decoders = {}  # type: Dict[text_type, Optional[Callable]]
 
     def encode(self, type_, value):
         # bytes is str for python2

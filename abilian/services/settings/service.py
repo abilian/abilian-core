@@ -15,6 +15,7 @@ class SettingsService(Service):
     name = 'settings'
 
     def namespace(self, name):
+        # type: (unicode) -> SettingsNamespace
         return SettingsNamespace(name, self)
 
     def keys(self, prefix=None):
