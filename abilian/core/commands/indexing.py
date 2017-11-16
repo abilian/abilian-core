@@ -8,6 +8,7 @@ from collections import deque
 
 import sqlalchemy as sa
 import whoosh
+import whoosh.index
 from flask import current_app
 from six import string_types
 from sqlalchemy.orm.session import Session

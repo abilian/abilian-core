@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import random
 import string
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 from datetime import datetime, timedelta
 
 import bcrypt
@@ -87,7 +87,8 @@ def gen_random_password(length=15):
 @add_metaclass(ABCMeta)
 class PasswordStrategy(object):
 
-    @abstractproperty
+    @abstractmethod
+    @property
     def name(self):
         """Strategy name."""
 

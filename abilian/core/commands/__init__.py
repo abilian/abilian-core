@@ -51,11 +51,11 @@ def setup_abilian_commands(manager):
 
     Usage exemple::
 
-      from flask_script import Manager
-      from abilian.commands import setup_abilian_commands
+        from flask_script import Manager
+        from abilian.commands import setup_abilian_commands
 
-      my_manager = Manager(app)
-      setup_abilian_commands(my_manager)
+        my_manager = Manager(app)
+        setup_abilian_commands(my_manager)
     """
     abilian_manager = globals()['manager']
     manager._options.extend(abilian_manager._options)
