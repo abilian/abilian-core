@@ -87,8 +87,8 @@ def gen_random_password(length=15):
 @add_metaclass(ABCMeta)
 class PasswordStrategy(object):
 
-    @abstractmethod
     @property
+    @abstractmethod
     def name(self):
         """Strategy name."""
 
