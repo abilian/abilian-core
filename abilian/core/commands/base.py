@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import logging
-import os
 import runpy
 from pprint import pformat
 
@@ -75,15 +74,6 @@ def _log_config(config):
         v = pformat(v, width=width).replace('\n', '\n' + ' ' * indent)
         lines.append("{}{}: {}".format(prefix, k, v))
     logger.info('\n'.join(lines))
-
-    from abilian.services import conversion
-    unoconv = conversion._unoconv_handler.unoconv
-    logger.info("Unoconv: {configured_path} ({abspath})\n"
-                "Version: {version}".format(
-                    configured_path=unoconv,
-                    abspath=os.path.abspath(unoconv),
-                    version=conversion._unoconv_handler.unoconv_version,
-                ))
 
 
 def log_config(config):
