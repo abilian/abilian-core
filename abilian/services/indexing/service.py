@@ -256,7 +256,8 @@ class WhooshIndexService(Service):
         app_indexed = self.app_state.indexed_fqcn
 
         return [
-            (name, friendly_fqcn(name)) for name in indexed
+            (name, friendly_fqcn(name))
+            for name in indexed
             if name in app_indexed
         ]
 

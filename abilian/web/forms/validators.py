@@ -220,8 +220,9 @@ def luhn(n):
     https://en.wikipedia.org/wiki/Luhn_algorithm
     """
     r = [int(ch) for ch in str(n)][::-1]
-    return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10))
-                               for d in r[1::2])) % 10 == 0
+    return (
+        sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])
+    ) % 10 == 0
 
 
 # specific SIRET like for MONACO, i.e MONACOCONFO001

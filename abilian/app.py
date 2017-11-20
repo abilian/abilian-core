@@ -689,7 +689,9 @@ class Application(Flask, ServiceManager, PluginManager):
             adder = auth_state.add_endpoint_access_controller
             if not isinstance(name, string_types):
                 raise ValueError(
-                    '{} is not a valid endpoint name'.format(repr(name)),
+                    '{} is not a valid endpoint name'.format(
+                        repr(name),
+                    ),
                 )
 
         adder(name, func)
@@ -1094,7 +1096,9 @@ class Application(Flask, ServiceManager, PluginManager):
                 json.loads(response.data)
             except BaseException:
                 raise AssertionError(
-                    "JSON was not valid for URL: {}".format(request.url),
+                    "JSON was not valid for URL: {}".format(
+                        request.url,
+                    ),
                 )
 
         # else:

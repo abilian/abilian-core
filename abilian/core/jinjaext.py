@@ -91,8 +91,7 @@ class DeferredJSExtension(JinjaExtension):
 
     def collect_deferred(self, caller):
         result = '\n'.join(
-            '(function(){{\n{}\n}})();'.format(js)
-            for js in deferred_js
+            '(function(){{\n{}\n}})();'.format(js) for js in deferred_js
         )
         current_app.extensions[DeferredJS.name].reset_deferred()
         return result

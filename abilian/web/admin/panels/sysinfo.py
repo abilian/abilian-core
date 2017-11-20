@@ -56,8 +56,7 @@ class SysinfoPanel(AdminPanel):
             packages.sort(key=lambda d: d.get('key'))
 
         config_values = [
-            (k, repr(v))
-            for k, v in sorted(current_app.config.items())
+            (k, repr(v)) for k, v in sorted(current_app.config.items())
         ]
 
         return render_template(

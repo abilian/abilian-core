@@ -68,8 +68,9 @@ class UserPreferencesForm(Form):
 
         data = field.data
         filename = data.filename
-        valid = any(filename.lower().endswith(ext)
-                    for ext in ('.png', '.jpg', '.jpeg'))
+        valid = any(
+            filename.lower().endswith(ext) for ext in ('.png', '.jpg', '.jpeg')
+        )
 
         if not valid:
             raise ValidationError(

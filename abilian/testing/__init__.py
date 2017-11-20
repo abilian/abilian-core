@@ -206,7 +206,9 @@ class BaseTestCase(TestCase):
                     ))
                     conn.execute('CREATE SCHEMA {}'.format(self.__pg_schema))
                     conn.execute(
-                        'SET search_path TO {}'.format(self.__pg_schema),
+                        'SET search_path TO {}'.format(
+                            self.__pg_schema,
+                        ),
                     )
                     conn.execute(
                         'ALTER ROLE {username} SET search_path TO {schema}'

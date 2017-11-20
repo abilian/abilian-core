@@ -5,10 +5,10 @@ from __future__ import absolute_import, division, print_function, \
 
 import json
 from datetime import timedelta
+from typing import Callable, Dict, Optional
 
 import sqlalchemy as sa
 from six import text_type
-from typing import Callable, Optional, Dict
 
 from abilian.core.extensions import db
 

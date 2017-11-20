@@ -104,8 +104,9 @@ def query_pa_no_flush(session, permission, role, obj):
         if obj:
             to_visit.append(getattr(obj, PERMISSIONS_ATTR))
 
-        permissions = (p for p in chain(*to_visit)
-                       if isinstance(p, PermissionAssignment))
+        permissions = (
+            p for p in chain(*to_visit) if isinstance(p, PermissionAssignment)
+        )
 
         for instance in permissions:
             if (
@@ -678,7 +679,8 @@ class SecurityService(Service):
 
         return any((
             self.has_role(principal, valid_roles, item)
-            for principal in principals for item in checked_objs
+            for principal in principals
+            for item in checked_objs
         ))
 
     def query_entity_with_permission(

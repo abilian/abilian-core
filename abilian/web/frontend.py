@@ -124,7 +124,7 @@ def labelize(s):
 def make_single_view(form, **options):
     panels = []
     for gr in form._groups.items():
-        panel = Panel(gr[0], * [Row(x) for x in gr[1]])
+        panel = Panel(gr[0], *[Row(x) for x in gr[1]])
         panels.append(panel)
     return SingleView(form, *panels, **options)
 
@@ -223,8 +223,10 @@ EDIT_ACTION = Action(
     button='default',
     condition=lambda ctx: ctx['view'].can_edit,
     icon=FAIcon('edit'),
-    url=lambda ctx: url_for('.entity_edit',
-                            **{ctx['view'].pk: ctx['view'].obj.id}),
+    url=lambda ctx: url_for(
+        '.entity_edit',
+        **{ctx['view'].pk: ctx['view'].obj.id}
+    ),
 )
 
 DELETE_ACTION = Action(
@@ -522,10 +524,9 @@ class Module(object):
 
         # copy criterions instances; without that they may be shared by
         # subclasses
-        self.search_criterions = tuple((
-            copy.deepcopy(c)
-            for c in self.search_criterions
-        ))
+        self.search_criterions = tuple(
+            (copy.deepcopy(c) for c in self.search_criterions)
+        )
         for sc in self.search_criterions:
             sc.model = self.managed_class
 

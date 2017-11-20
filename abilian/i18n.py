@@ -91,8 +91,7 @@ _n = ngettext
 
 #: accepted languages codes
 VALID_LANGUAGES_CODE = frozenset(
-    lang for lang in locale_identifiers()
-    if len(lang) == 2
+    lang for lang in locale_identifiers() if len(lang) == 2
 )
 
 

@@ -152,7 +152,9 @@ class Admin(object):
             if not rule:
                 # '' is already used for panel get/post
                 raise ValueError(
-                    'Invalid additional url rule: {}'.format(repr(rule)),
+                    'Invalid additional url rule: {}'.format(
+                        repr(rule),
+                    ),
                 )
 
             if endpoint is None:

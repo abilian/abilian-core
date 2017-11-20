@@ -710,7 +710,8 @@ class JsonSelect2Field(SelectFieldBase):
             if not self.multiple:
                 formdata = [formdata]
             data = [
-                self.model_class.query.get(int(pk)) for pk in formdata
+                self.model_class.query.get(int(pk))
+                for pk in formdata
                 if pk not in ('', None)
             ]
             if not self.multiple:
@@ -769,8 +770,9 @@ class LocaleSelectField(SelectField):
 
     def __init__(self, *args, **kwargs):
         kwargs['coerce'] = LocaleSelectField.coerce
-        kwargs['choices'] = (locale_info
-                             for locale_info in i18n.supported_app_locales())
+        kwargs['choices'] = (
+            locale_info for locale_info in i18n.supported_app_locales()
+        )
         super(LocaleSelectField, self).__init__(*args, **kwargs)
 
     @staticmethod

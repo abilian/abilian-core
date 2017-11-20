@@ -63,10 +63,12 @@ def schedule_entities_reindex(entities):
     :param entities: as returned by :func:`get_entities_for_reindex`
     """
     entities = [(e[0], e[1], e[2], dict(e[3])) for e in entities]
-    return index_update.apply_async(kwargs=dict(
-        index='default',
-        items=entities,
-    ))
+    return index_update.apply_async(
+        kwargs=dict(
+            index='default',
+            items=entities,
+        ),
+    )
 
 
 class NSView(View):

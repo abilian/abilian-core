@@ -1500,7 +1500,7 @@ class TabularFieldListWidget(object):
             field_names = [f.short_name for f in field[0] if not f.is_hidden]
             data_type = field.entries[0].__class__.__name__ + 'Data'
             Data = namedtuple(data_type, field_names)
-            labels = Data(* [f.label for f in field[0] if not f.is_hidden])
+            labels = Data(*[f.label for f in field[0] if not f.is_hidden])
 
         return Markup(
             render_template(self.template, labels=labels, field=field),
@@ -1577,7 +1577,8 @@ class Select2(Select):
 
     def render_view(self, field, **kwargs):
         labels = [
-            text_type(label) for v, label, checked in field.iter_choices()
+            text_type(label)
+            for v, label, checked in field.iter_choices()
             if checked
         ]
         return '; '.join(labels)
