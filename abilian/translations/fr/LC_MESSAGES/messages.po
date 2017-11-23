@@ -302,7 +302,7 @@ msgstr "Total"
 
 #: abilian/web/admin/panels/login_sessions.py:37
 msgid "Country unknown"
-msgstr ""
+msgstr "Pays inconnu"
 
 #: abilian/web/admin/panels/settings.py:53
 msgid "Session lifetime"
@@ -667,16 +667,16 @@ msgstr "Virus détecté!"
 
 #: abilian/web/forms/validators.py:251
 msgid "SIRET must have exactly 14 characters ({count})"
-msgstr ""
+msgstr "Un numéro SIRET doit avoir exactement 14 caractères"
 
 #: abilian/web/forms/validators.py:258
 #, python-format
 msgid "SIRET looks like special SIRET but geographical code seems invalid (%s)"
-msgstr ""
+msgstr "Ce SIRET ressemble à un SIRET spécial, mais le code géographique semble invalide (%s)"
 
 #: abilian/web/forms/validators.py:265
 msgid "SIRET number is invalid (length is ok: verify numbers)"
-msgstr ""
+msgstr "Ce numéro SIRET est invalide (la longueur est correcte - vérifiez les chiffres)"
 
 #: abilian/web/forms/widgets.py:363
 msgid "Entries per page: _MENU_"
@@ -994,7 +994,6 @@ msgid "Updated at:"
 msgstr "Mis à jour le:"
 
 #: abilian/web/views/object.py:193
-#, fuzzy
 msgid "Create and add another"
 msgstr "Créer et ajouter un nouveau"
 
