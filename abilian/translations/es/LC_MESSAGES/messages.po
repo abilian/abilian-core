@@ -1,18 +1,13 @@
-# English translations for abilian-core.
-# Copyright (C) 2016 ORGANIZATION
-# This file is distributed under the same license as the abilian-core
-# project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
-#
+
 msgid ""
 msgstr ""
-"Project-Id-Version: abilian-core 0.3.3.dev88+ng11c50b5.d20150311\n"
+"Project-Id-Version:  abilian-core\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2017-12-11 15:19+0100\n"
-"PO-Revision-Date: 2015-03-20 15:19+0100\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: en\n"
-"Language-Team: en <LL@li.org>\n"
+"PO-Revision-Date: 2017-12-11 07:38-0500\n"
+"Last-Translator: sf <sf@fermigier.com>\n"
+"Language: es_ES\n"
+"Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -28,11 +23,11 @@ msgstr ""
 
 #: abilian/services/auth/service.py:63
 msgid "Logout"
-msgstr ""
+msgstr "Cerrar sesión"
 
 #: abilian/services/auth/service.py:75
 msgid "Login"
-msgstr ""
+msgstr "Iniciar sesión"
 
 #: abilian/services/auth/views.py:66
 msgid "You must provide your email and password."
@@ -44,7 +39,7 @@ msgstr ""
 
 #: abilian/services/auth/views.py:88
 msgid "Sorry, wrong password."
-msgstr ""
+msgstr "Contraseña incorrecta."
 
 #: abilian/services/auth/views.py:164
 msgid "You must provide your email address."
@@ -60,7 +55,7 @@ msgstr ""
 
 #: abilian/services/auth/views.py:202 abilian/services/auth/views.py:221
 msgid "Password reset expired"
-msgstr ""
+msgstr "Restablecimiento de contraseña caducado"
 
 #: abilian/services/auth/views.py:228
 msgid "You must provide a password."
@@ -89,27 +84,27 @@ msgstr ""
 #: abilian/services/auth/templates/login/forgotten_password.html:8
 #: abilian/services/auth/templates/login/login.html:23
 msgid "Forgot password?"
-msgstr ""
+msgstr "¿Olvidó su contraseña?"
 
 #: abilian/services/auth/templates/login/forgotten_password.html:17
 msgid "Send me a new password"
-msgstr ""
+msgstr "Enviarme una nueva contraseña"
 
 #: abilian/services/auth/templates/login/login.html:8
 #, python-format
 msgid "Login to %(site_name)s"
-msgstr ""
+msgstr "Ingresa a %(site_name)s"
 
 #: abilian/services/auth/templates/login/login.html:16
 #: abilian/services/auth/templates/login/password_reset.fr.html:18
 #: abilian/services/auth/templates/login/password_reset.html:18
 #: abilian/web/admin/panels/users/forms.py:96
 msgid "Password"
-msgstr ""
+msgstr "Contraseña"
 
 #: abilian/services/auth/templates/login/login.html:21
 msgid "Sign in"
-msgstr ""
+msgstr "Iniciar sesión"
 
 #: abilian/services/auth/templates/login/password_reset.fr.html:8
 #: abilian/services/auth/templates/login/password_reset.html:8
@@ -119,7 +114,7 @@ msgstr ""
 #: abilian/services/auth/templates/login/password_reset.fr.html:22
 #: abilian/services/auth/templates/login/password_reset.html:22
 msgid "Change password"
-msgstr ""
+msgstr "Cambiar contraseña"
 
 #: abilian/services/auth/templates/login/password_reset.fr.html:23
 #: abilian/services/auth/templates/login/password_reset.html:23
@@ -130,80 +125,80 @@ msgstr ""
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:8
 #: abilian/web/views/object.py:178
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: abilian/services/indexing/debug_toolbar.py:36
 #: abilian/services/indexing/debug_toolbar.py:50
 msgid "Indexed Terms"
-msgstr ""
+msgstr "Términos indexados"
 
 #: abilian/services/indexing/debug_toolbar.py:42
 #: abilian/services/security/debug_toolbar.py:41
 msgid "No current object"
-msgstr ""
+msgstr "Ningún objeto actual"
 
 #: abilian/services/preferences/service.py:30
 #: abilian/services/preferences/service.py:145
 #: abilian/web/templates/preferences/_base.html:8
 msgid "Preferences"
-msgstr ""
+msgstr "Preferencias"
 
 #: abilian/services/security/debug_toolbar.py:35
 msgid "Security Info"
-msgstr ""
+msgstr "Información de seguridad"
 
 #: abilian/services/security/models.py:126
 msgid "role_anonymous"
-msgstr "Anonymous"
+msgstr "role_anonymous"
 
 #: abilian/services/security/models.py:131
 msgid "role_authenticated"
-msgstr "Authenticated"
+msgstr "role_authenticated"
 
 #: abilian/services/security/models.py:136
 msgid "role_administrator"
-msgstr "Administrator"
+msgstr "role_administrator"
 
 #: abilian/services/security/models.py:139
 msgid "role_manager"
-msgstr "Manager"
+msgstr "role_manager"
 
 #: abilian/services/vocabularies/admin.py:21
 msgid "Vocabulary entry"
-msgstr ""
+msgstr "Entrada de vocabulario"
 
 #: abilian/services/vocabularies/admin.py:66
 msgid "Vocabularies"
-msgstr ""
+msgstr "Vocabularios"
 
 #: abilian/services/vocabularies/admin.py:217
 #: abilian/services/vocabularies/templates/admin/vocabularies.html:7
 msgid "Global"
-msgstr ""
+msgstr "Global"
 
 #: abilian/services/vocabularies/forms.py:23
 #: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:23
 msgid "Label"
-msgstr ""
+msgstr "Etiqueta"
 
 #: abilian/services/vocabularies/forms.py:24
 #, python-format
 msgid "allowed tags: %(tags)s"
-msgstr ""
+msgstr "etiquetas permitidas: %(tags)s"
 
 #: abilian/services/vocabularies/forms.py:28
 #: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:24
 msgid "Default"
-msgstr ""
+msgstr "Predeterminado"
 
 #: abilian/services/vocabularies/forms.py:29
 #: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:25
 msgid "Active"
-msgstr ""
+msgstr "Activo"
 
 #: abilian/services/vocabularies/templates/admin/vocabularies.html:14
 msgid "Add new value"
-msgstr ""
+msgstr "Añadir nuevo valor"
 
 #: abilian/services/vocabularies/templates/admin/macros/vocabularies.html:51
 msgid "No item in this vocabulary"
@@ -214,7 +209,7 @@ msgstr ""
 #: abilian/web/templates/macros/attachment_default.html:32
 #: abilian/web/templates/macros/comment.html:19
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: abilian/web/frontend.py:235
 #: abilian/web/templates/macros/attachment_default.html:42
@@ -223,15 +218,15 @@ msgstr ""
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
 #: abilian/web/views/object.py:535
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: abilian/web/frontend.py:573
 msgid "Create New"
-msgstr ""
+msgstr "Crear Nuevo"
 
 #: abilian/web/admin/extension.py:44
 msgid "Admin"
-msgstr ""
+msgstr "Administrador"
 
 #: abilian/web/admin/panels/audit.py:361
 msgid "{user} created {entity_type} {entity_id} \"{entity}\""
@@ -271,35 +266,35 @@ msgstr ""
 
 #: abilian/web/admin/panels/dashboard.py:25
 msgid "Dashboard"
-msgstr ""
+msgstr "Panel de control"
 
 #: abilian/web/admin/panels/dashboard.py:44
 msgid "Daily"
-msgstr ""
+msgstr "Diario"
 
 #: abilian/web/admin/panels/dashboard.py:46
 msgid "Weekly"
-msgstr ""
+msgstr "Semanal"
 
 #: abilian/web/admin/panels/dashboard.py:50
 msgid "Monthly"
-msgstr ""
+msgstr "Mensual"
 
 #: abilian/web/admin/panels/dashboard.py:56
 msgid "New"
-msgstr ""
+msgstr "Nuevo"
 
 #: abilian/web/admin/panels/dashboard.py:59
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: abilian/web/admin/panels/login_sessions.py:37
 msgid "Country unknown"
-msgstr ""
+msgstr "País desconocido"
 
 #: abilian/web/admin/panels/settings.py:53
 msgid "Session lifetime"
-msgstr ""
+msgstr "Duración de la sesión"
 
 #: abilian/web/admin/panels/settings.py:54
 msgid ""
@@ -314,44 +309,44 @@ msgstr ""
 #: abilian/web/admin/panels/settings.py:109
 #: abilian/web/admin/templates/admin/settings.html:6
 msgid "Settings"
-msgstr ""
+msgstr "Configuración"
 
 #: abilian/web/admin/panels/settings.py:115
 msgid "Site name"
-msgstr ""
+msgstr "Nombre del sitio"
 
 #: abilian/web/admin/panels/settings.py:116
 msgid "Mail sender"
-msgstr ""
+msgstr "Remitente"
 
 #: abilian/web/admin/panels/settings.py:143
 msgid "Changes saved."
-msgstr ""
+msgstr "Cambios guardados."
 
 #: abilian/web/admin/panels/groups/__init__.py:17
 #: abilian/web/admin/panels/users/forms.py:48
 #: abilian/web/admin/templates/admin/groups.html:8
 #: abilian/web/admin/templates/admin/users.html:20
 msgid "Groups"
-msgstr ""
+msgstr "Grupos"
 
 #: abilian/web/admin/panels/groups/__init__.py:52
 #: abilian/web/admin/panels/users/__init__.py:48
 #: abilian/web/forms/widgets.py:193 abilian/web/forms/widgets.py:358
 msgid "Filter records:"
-msgstr ""
+msgstr "Filtrar registros:"
 
 #: abilian/web/admin/panels/groups/__init__.py:53
 #: abilian/web/admin/panels/users/__init__.py:49
 #: abilian/web/forms/widgets.py:360
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: abilian/web/admin/panels/groups/__init__.py:54
 #: abilian/web/admin/panels/users/__init__.py:50
 #: abilian/web/forms/widgets.py:361
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: abilian/web/admin/panels/groups/__init__.py:55
 #: abilian/web/admin/panels/users/__init__.py:51
@@ -369,22 +364,22 @@ msgstr ""
 #: abilian/web/admin/panels/users/__init__.py:53
 #: abilian/web/forms/widgets.py:367
 msgid "Add a filter"
-msgstr ""
+msgstr "Añadir filtro"
 
 #: abilian/web/admin/panels/groups/forms.py:16
 #: abilian/web/admin/templates/admin/groups.html:16
 #: abilian/web/admin/templates/admin/users.html:17
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: abilian/web/admin/panels/groups/forms.py:17
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: abilian/web/admin/panels/groups/forms.py:20
 #: abilian/web/admin/templates/admin/groups.html:19
 msgid "Public"
-msgstr ""
+msgstr "Público"
 
 #: abilian/web/admin/panels/groups/forms.py:25
 #: abilian/web/admin/panels/users/forms.py:58
@@ -392,23 +387,23 @@ msgstr ""
 #: abilian/web/admin/templates/admin/groups.html:18
 #: abilian/web/admin/templates/admin/users.html:21
 msgid "Roles"
-msgstr ""
+msgstr "Roles"
 
 #: abilian/web/admin/panels/groups/views.py:112
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
 #: abilian/web/admin/panels/users/__init__.py:17
 #: abilian/web/admin/templates/admin/dashboard.html:114
 #: abilian/web/admin/templates/admin/dashboard.html:120
 #: abilian/web/admin/templates/admin/users.html:8
 msgid "Users"
-msgstr ""
+msgstr "Usuarios"
 
 #: abilian/web/admin/panels/users/forms.py:22
 #: abilian/web/admin/templates/admin/users.html:18
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: abilian/web/admin/panels/users/forms.py:23
 msgid "Users log in with their email address."
@@ -416,24 +411,24 @@ msgstr ""
 
 #: abilian/web/admin/panels/users/forms.py:29
 msgid "First Name"
-msgstr ""
+msgstr "Nombre"
 
 #: abilian/web/admin/panels/users/forms.py:30
 msgid "ex: John"
-msgstr ""
+msgstr "ej: Juan"
 
 #: abilian/web/admin/panels/users/forms.py:35
 msgid "Last Name"
-msgstr ""
+msgstr "Apellido"
 
 #: abilian/web/admin/panels/users/forms.py:36
 msgid "ex: Smith"
-msgstr ""
+msgstr "ej: López"
 
 #: abilian/web/admin/panels/users/forms.py:42
 #: abilian/web/admin/templates/admin/users.html:19
 msgid "Login enabled"
-msgstr ""
+msgstr "Inicio de sesión permitido"
 
 #: abilian/web/admin/panels/users/forms.py:43
 msgid "If unchecked, user will not be able to connect."
@@ -448,7 +443,7 @@ msgstr ""
 #: abilian/web/admin/panels/users/forms.py:67
 #: abilian/web/preferences/user.py:27
 msgid "New Password"
-msgstr ""
+msgstr "Nueva contraseña"
 
 #: abilian/web/admin/panels/users/forms.py:68
 msgid "If empty the current password will not be changed."
@@ -457,7 +452,7 @@ msgstr ""
 #: abilian/web/admin/panels/users/forms.py:76
 #: abilian/web/preferences/user.py:31
 msgid "Confirm new password"
-msgstr ""
+msgstr "Confirme nueva contraseña"
 
 #: abilian/web/admin/panels/users/forms.py:86
 #: abilian/web/preferences/user.py:58
@@ -472,114 +467,114 @@ msgstr ""
 
 #: abilian/web/admin/panels/users/views.py:123
 msgid "Never logged in"
-msgstr ""
+msgstr "Nunca ha iniciado sesión"
 
 #: abilian/web/admin/templates/admin/_macros.html:22
 msgid "active users"
-msgstr ""
+msgstr "usuarios activos"
 
 #: abilian/web/admin/templates/admin/_macros.html:27
 msgid "new members"
-msgstr ""
+msgstr "nuevos miembros"
 
 #: abilian/web/admin/templates/admin/_macros.html:32
 msgid "new documents"
-msgstr ""
+msgstr "nuevos documentos"
 
 #: abilian/web/admin/templates/admin/_macros.html:37
 msgid "new messages"
-msgstr ""
+msgstr "nuevos mensajes"
 
 #: abilian/web/admin/templates/admin/audit.html:8
 msgid "Newer"
-msgstr ""
+msgstr "Más reciente"
 
 #: abilian/web/admin/templates/admin/audit.html:12
 msgid "Older"
-msgstr ""
+msgstr "Más antiguo"
 
 #: abilian/web/admin/templates/admin/audit.html:38
 msgid "All contents"
-msgstr ""
+msgstr "Todos los contenidos"
 
 #: abilian/web/admin/templates/admin/audit.html:95
 msgid "Select user"
-msgstr ""
+msgstr "Seleccionar usuario"
 
 #: abilian/web/admin/templates/admin/dashboard.html:72
 msgid "[Right axis]"
-msgstr ""
+msgstr "[Eje de la derecha]"
 
 #: abilian/web/admin/templates/admin/dashboard.html:73
 msgid "[Left axis]"
-msgstr ""
+msgstr "[Eje izquierdo]"
 
 #: abilian/web/admin/templates/admin/dashboard.html:158
 msgid "unique connections"
-msgstr ""
+msgstr "conexiones únicas"
 
 #: abilian/web/admin/templates/admin/group_view.html:21
 msgid "Members"
-msgstr ""
+msgstr "Miembros"
 
 #: abilian/web/admin/templates/admin/group_view.html:29
 msgid "User"
-msgstr ""
+msgstr "Usuario"
 
 #: abilian/web/admin/templates/admin/group_view.html:38
 #: abilian/web/admin/templates/admin/group_view.html:58
 msgid "account disabled"
-msgstr ""
+msgstr "cuenta deshabilitada"
 
 #: abilian/web/admin/templates/admin/groups.html:10
 msgid "New Group..."
-msgstr ""
+msgstr "Nuevo grupo..."
 
 #: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:16
 #: abilian/web/views/object.py:186
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #: abilian/web/admin/templates/admin/settings_session_lifetime.html:3
 msgid "Days"
-msgstr ""
+msgstr "Días"
 
 #: abilian/web/admin/templates/admin/settings_session_lifetime.html:8
 msgid "Hours"
-msgstr ""
+msgstr "Horas"
 
 #: abilian/web/admin/templates/admin/settings_session_lifetime.html:13
 msgid "Minutes"
-msgstr ""
+msgstr "Minutos"
 
 #: abilian/web/admin/templates/admin/users.html:10
 msgid "New user..."
-msgstr ""
+msgstr "Nuevo usuario..."
 
 #: abilian/web/admin/templates/admin/users.html:22
 msgid "Last connection"
-msgstr ""
+msgstr "Última conexión"
 
 #: abilian/web/attachments/forms.py:19
 msgid "file"
-msgstr ""
+msgstr "archivo"
 
 #: abilian/web/attachments/forms.py:25
 msgid "description (optional)"
-msgstr ""
+msgstr "descripción (opcional)"
 
 #: abilian/web/attachments/views.py:44
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 #: abilian/web/attachments/views.py:115
 msgid "Attachment edited"
-msgstr ""
+msgstr "Archivo adjunto editado"
 
 #: abilian/web/attachments/views.py:124
 msgid "Attachment added"
-msgstr ""
+msgstr "Archivo adjunto añadido"
 
 #: abilian/web/attachments/views.py:141
 msgid "New attachment on \"{title}\""
@@ -587,15 +582,15 @@ msgstr ""
 
 #: abilian/web/comments/forms.py:19
 msgid "Comment"
-msgstr ""
+msgstr "Comentario"
 
 #: abilian/web/comments/views.py:44
 msgid "Post"
-msgstr ""
+msgstr "Publicar"
 
 #: abilian/web/comments/views.py:86
 msgid "Comment edited"
-msgstr ""
+msgstr "Comentario editado"
 
 #: abilian/web/comments/views.py:89
 msgid "Edit comment on \"{title}\""
@@ -603,16 +598,15 @@ msgstr ""
 
 #: abilian/web/comments/views.py:114
 msgid "Comment added"
-msgstr ""
+msgstr "Comentario añadido"
 
 #: abilian/web/comments/views.py:130
 msgid "New comment on \"{title}\""
 msgstr ""
 
 #: abilian/web/comments/views.py:143
-#, fuzzy
 msgid "Comment deleted"
-msgstr ""
+msgstr "Comentario borrado"
 
 #: abilian/web/forms/fields.py:369 abilian/web/forms/fields.py:416
 msgid "Not a valid datetime value"
@@ -620,15 +614,15 @@ msgstr ""
 
 #: abilian/web/forms/fields.py:618
 msgid "Not a valid choice"
-msgstr ""
+msgstr "Opción no válida"
 
 #: abilian/web/forms/validators.py:51
 msgid "Invalid email address."
-msgstr ""
+msgstr "Dirección de email no válida."
 
 #: abilian/web/forms/validators.py:68
 msgid "This field is required."
-msgstr ""
+msgstr "Este campo es requerido."
 
 #: abilian/web/forms/validators.py:116
 #, python-format
@@ -651,7 +645,7 @@ msgstr ""
 
 #: abilian/web/forms/validators.py:199
 msgid "Virus detected!"
-msgstr ""
+msgstr "¡Virus detectado!"
 
 #: abilian/web/forms/validators.py:251
 msgid "SIRET must have exactly 14 characters ({count})"
@@ -676,27 +670,27 @@ msgstr ""
 
 #: abilian/web/forms/widgets.py:777
 msgid "Add file"
-msgstr ""
+msgstr "Añadir archivo"
 
 #: abilian/web/forms/widgets.py:777
 msgid "Select file"
-msgstr ""
+msgstr "Seleccionar archivo"
 
 #: abilian/web/forms/widgets.py:1297
 msgid "hour(s)"
-msgstr ""
+msgstr "hora(s)"
 
 #: abilian/web/preferences/user.py:36
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 #: abilian/web/preferences/user.py:41
 msgid "Preferred Language"
-msgstr ""
+msgstr "Lenguaje preferido"
 
 #: abilian/web/preferences/user.py:47
 msgid "Time zone"
-msgstr ""
+msgstr "Zona horaria"
 
 #: abilian/web/preferences/user.py:77 abilian/web/preferences/user.py:84
 msgid "Only PNG or JPG image files are accepted"
@@ -708,24 +702,24 @@ msgstr ""
 
 #: abilian/web/preferences/user.py:104
 msgid "About me"
-msgstr ""
+msgstr "Sobre mí"
 
 #: abilian/web/preferences/user.py:160
 msgid "Password changed"
-msgstr ""
+msgstr "Contraseña cambiada"
 
 #: abilian/web/preferences/user.py:166
 msgid "Preferences saved."
-msgstr ""
+msgstr "Preferencias guardadas."
 
 #: abilian/web/search/views.py:140
 msgid "All"
-msgstr ""
+msgstr "Todo"
 
 #: abilian/web/search/templates/search/search.html:15
 #: abilian/web/templates/navbar.html:40
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: abilian/web/search/templates/search/search.html:27
 msgid "Your query didn't match any results."
@@ -734,16 +728,16 @@ msgstr ""
 #: abilian/web/search/templates/search/search.html:30
 #, python-format
 msgid "%(count)d items found"
-msgstr ""
+msgstr "%(count)d artículos encontrados"
 
 #: abilian/web/search/templates/search/search.html:40
 msgid "Filter by type"
-msgstr ""
+msgstr "Filtrar por tipo"
 
 #: abilian/web/search/templates/search/search.html:78
 #: abilian/web/templates/widgets/render_single.html:15
 msgid "by"
-msgstr ""
+msgstr "por"
 
 #: abilian/web/search/templates/search/search.html:81
 #, python-format
@@ -752,7 +746,7 @@ msgstr ""
 
 #: abilian/web/tags/admin.py:121
 msgid "Unknown action"
-msgstr ""
+msgstr "Acción desconocida"
 
 #: abilian/web/tags/admin.py:143 abilian/web/views/object.py:324
 msgid "Please fix the error(s) below"
@@ -772,8 +766,8 @@ msgid "%(tag)s deleted"
 msgid_plural ""
 "%(num)d tags deleted:\n"
 "%(tags)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(tag)s eliminado"
+msgstr[1] "%(num)d etiquetas eliminadas: %(tags)s"
 
 #: abilian/web/tags/admin.py:177
 msgid "You must select a target tag to merge to"
@@ -789,21 +783,21 @@ msgstr ""
 
 #: abilian/web/tags/admin.py:241 abilian/web/tags/views.py:41
 msgid "Tag edited"
-msgstr ""
+msgstr "Etiqueta editada"
 
 #: abilian/web/tags/admin.py:263 abilian/web/tags/criterion.py:24
 #: abilian/web/tags/extension.py:98
 #: abilian/web/templates/default/single_view.html:15
 msgid "Tags"
-msgstr ""
+msgstr "Etiquetas"
 
 #: abilian/web/tags/views.py:49
 msgid "Tag created"
-msgstr ""
+msgstr "Etiqueta creada"
 
 #: abilian/web/tags/views.py:57
 msgid "Tag deleted"
-msgstr ""
+msgstr "Etiqueta eliminada"
 
 #: abilian/web/tags/templates/admin/tags.html:5
 msgid ""
@@ -815,34 +809,34 @@ msgstr ""
 
 #: abilian/web/tags/templates/admin/tags.html:14
 msgid "Namespace"
-msgstr ""
+msgstr "Espacio del nombre"
 
 #: abilian/web/tags/templates/admin/tags.html:15
 msgid "# Tags"
-msgstr ""
+msgstr "# Etiquetas"
 
 #: abilian/web/tags/templates/admin/tags.html:16
 #: abilian/web/tags/templates/admin/tags_ns.html:14
 msgid "# Tagged objects"
-msgstr ""
+msgstr "# Objetos etiquetados"
 
 #: abilian/web/tags/templates/admin/tags_ns.html:13
 msgid "Tag"
-msgstr ""
+msgstr "Etiqueta"
 
 #: abilian/web/tags/templates/admin/tags_ns.html:33
 #: abilian/web/tags/templates/admin/tags_ns.html:45
 msgid "Merge tags"
-msgstr ""
+msgstr "Combinar etiquetas"
 
 #: abilian/web/tags/templates/admin/tags_ns.html:35
 msgid "Target tag"
-msgstr ""
+msgstr "Etiqueta de destino"
 
 #: abilian/web/tags/templates/admin/tags_ns.html:50
 #: abilian/web/tags/templates/admin/tags_ns.html:60
 msgid "Delete selected tags"
-msgstr ""
+msgstr "Eliminar etiquetas seleccionadas"
 
 #: abilian/web/tags/templates/admin/tags_ns.html:54
 msgid "Check to confirm definitive deletion of selected tags"
@@ -850,7 +844,7 @@ msgstr ""
 
 #: abilian/web/templates/abilian_base.html:63
 msgid "Skip to content"
-msgstr ""
+msgstr "Saltar al contenido"
 
 #: abilian/web/templates/error404.html:7
 msgid ""
@@ -861,33 +855,33 @@ msgstr ""
 #: abilian/web/templates/macros.html:44
 #: abilian/web/templates/macros/box.html:32
 msgid "Menu"
-msgstr ""
+msgstr "Menú"
 
 #: abilian/web/templates/macros.html:126
 #: abilian/web/templates/macros/audit.html:55
 msgid "Audit Log"
-msgstr ""
+msgstr "Registro de auditoría"
 
 #: abilian/web/templates/macros.html:173
 #: abilian/web/templates/macros/recent.html:5
 msgid "Recent items"
-msgstr ""
+msgstr "Artículos recientes"
 
 #: abilian/web/templates/debug_panels/security_info_panel.html:21
 msgid "No permissions defined"
-msgstr ""
+msgstr "No hay permisos denegados"
 
 #: abilian/web/templates/debug_panels/security_info_panel.html:54
 msgid "No roles set"
-msgstr ""
+msgstr "Ningún rol seleccionado"
 
 #: abilian/web/templates/default/list_view.html:28
 msgid "Export to Excel"
-msgstr ""
+msgstr "Exportar a Excel"
 
 #: abilian/web/templates/default/list_view.html:40
 msgid "Import from Excel"
-msgstr ""
+msgstr "Importar desde Excel"
 
 #: abilian/web/templates/default/list_view.html:42
 msgid "Download a file suitable for importing new objects"
@@ -899,29 +893,29 @@ msgstr ""
 
 #: abilian/web/templates/default/list_view.html:54
 msgid "Upload Excel file"
-msgstr ""
+msgstr "Subir archivo Excel"
 
 #: abilian/web/templates/default/list_view.html:65
 msgid "Upload"
-msgstr ""
+msgstr "Subir"
 
 #: abilian/web/templates/default/list_view.html:76
 msgid "Export XML"
-msgstr ""
+msgstr "Exportar a XML"
 
 #: abilian/web/templates/default/single_view.html:35
 #, python-format
 msgid "Comments (%(count)d)"
-msgstr ""
+msgstr "Comentarios (%(count)d)"
 
 #: abilian/web/templates/default/single_view.html:55
 #, python-format
 msgid "Attachments (%(count)d)"
-msgstr ""
+msgstr "Archivos adjuntos (%(count)d)"
 
 #: abilian/web/templates/macros/attachment_default.html:40
 msgid "Delete attachment ?"
-msgstr ""
+msgstr "¿Eliminar archivo adjunto?"
 
 #: abilian/web/templates/macros/attachment_default.html:41
 msgid "Do you really want to delete this attachment?"
@@ -929,11 +923,11 @@ msgstr ""
 
 #: abilian/web/templates/macros/attachment_default.html:54
 msgid "Download"
-msgstr ""
+msgstr "Descargar"
 
 #: abilian/web/templates/macros/audit.html:10
 msgid "{key} changed:"
-msgstr ""
+msgstr "{key} cambiado:"
 
 #: abilian/web/templates/macros/audit.html:15
 msgid "{key} changed from {old_value} to {new_value}"
@@ -945,7 +939,7 @@ msgstr ""
 
 #: abilian/web/templates/macros/comment.html:30
 msgid "Delete comment ?"
-msgstr ""
+msgstr "¿Borrar comentario?"
 
 #: abilian/web/templates/macros/comment.html:31
 msgid "Do you really want to delete this comment?"
@@ -955,8 +949,8 @@ msgstr ""
 #, python-format
 msgid "edited"
 msgid_plural "edited %(count)d times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "editado"
+msgstr[1] "editado %(count)d veces"
 
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:6
 msgid "Do you really want to delete this entity?"
@@ -964,19 +958,19 @@ msgstr ""
 
 #: abilian/web/templates/widgets/render_ajax_table.html:30
 msgid "Loading..."
-msgstr ""
+msgstr "Cargando..."
 
 #: abilian/web/templates/widgets/render_single.html:13
 msgid "Created at:"
-msgstr ""
+msgstr "Creado en:"
 
 #: abilian/web/templates/widgets/render_single.html:19
 msgid "Updated at:"
-msgstr ""
+msgstr "Actualizado en:"
 
 #: abilian/web/views/object.py:193
 msgid "Create and add another"
-msgstr ""
+msgstr "Crear y añadir otro"
 
 #: abilian/web/views/object.py:220
 msgid "Entity successfully edited"
@@ -988,11 +982,11 @@ msgstr ""
 
 #: abilian/web/views/object.py:462
 msgid "Create"
-msgstr ""
+msgstr "Create"
 
 #: abilian/web/views/object.py:468
 msgid "Create and add new"
-msgstr ""
+msgstr "Crear y agregar nuevo"
 
 #: abilian/web/views/object.py:478
 msgid "Entity successfully added"
@@ -1000,110 +994,8 @@ msgstr ""
 
 #: abilian/web/views/object.py:546
 msgid "Entity deleted"
-msgstr ""
+msgstr "Entidad borrada"
 
 #: abilian/web/views/object.py:572
 msgid "This entity is referenced by another object and cannot be deleted."
 msgstr ""
-
-#~ msgid "Advanced filtering"
-#~ msgstr ""
-
-#~ msgid "Send an email to selected contacts"
-#~ msgstr ""
-
-#~ msgid "Send an email"
-#~ msgstr ""
-
-#~ msgid "Your query didn't find any results."
-#~ msgstr ""
-
-#~ msgid "%(count)d corresponding items"
-#~ msgstr ""
-
-#~ msgid "Filter by types"
-#~ msgstr ""
-
-#~ msgid "Delete image"
-#~ msgstr ""
-
-#~ msgid " in the community {target}."
-#~ msgstr ""
-
-#~ msgid "has posted an object of type {object_type} called \"{object}\""
-#~ msgstr ""
-
-#~ msgid "has joined the community {object}."
-#~ msgstr ""
-
-#~ msgid "has left the community {object}."
-#~ msgstr ""
-
-#~ msgid "has done action \"{verb}\" on object \"{object}\"."
-#~ msgstr ""
-
-#~ msgid "Paragraph"
-#~ msgstr ""
-
-#~ msgid "Heading 1"
-#~ msgstr ""
-
-#~ msgid "Heading 2"
-#~ msgstr ""
-
-#~ msgid "Heading 3"
-#~ msgstr ""
-
-#~ msgid "bold"
-#~ msgstr ""
-
-#~ msgid "italic"
-#~ msgstr ""
-
-#~ msgid "underline"
-#~ msgstr ""
-
-#~ msgid "bulleted list"
-#~ msgstr ""
-
-#~ msgid "numbered list"
-#~ msgstr ""
-
-#~ msgid "Add link"
-#~ msgstr ""
-
-#~ msgid "Remove link"
-#~ msgstr ""
-
-#~ msgid "cite"
-#~ msgstr ""
-
-#~ msgid "undo"
-#~ msgstr ""
-
-#~ msgid "redo"
-#~ msgstr ""
-
-#~ msgid ""
-#~ msgstr ""
-
-#~ msgid "%(date)s at %(time)s"
-#~ msgstr ""
-
-#~ msgid "Your password has been reset. You can now login with your new password"
-#~ msgstr ""
-
-#~ msgid "[Ordonnée droite]"
-#~ msgstr ""
-
-#~ msgid "[Ordonnée gauche]"
-#~ msgstr ""
-
-#~ msgid "New users"
-#~ msgstr ""
-
-#~ msgid "Total users"
-#~ msgstr ""
-
-#~ msgid "An entity with this name already exists in the database."
-#~ msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  abilian-core\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-11-23 21:06+0100\n"
+"POT-Creation-Date: 2017-12-11 15:19+0100\n"
 "PO-Revision-Date: 2016-02-11 12:30+0100\n"
 "Last-Translator: ybourbotte@abilian.com\n"
 "Language: fr\n"
@@ -672,11 +672,15 @@ msgstr "Un numéro SIRET doit avoir exactement 14 caractères"
 #: abilian/web/forms/validators.py:258
 #, python-format
 msgid "SIRET looks like special SIRET but geographical code seems invalid (%s)"
-msgstr "Ce SIRET ressemble à un SIRET spécial, mais le code géographique semble invalide (%s)"
+msgstr ""
+"Ce SIRET ressemble à un SIRET spécial, mais le code géographique semble "
+"invalide (%s)"
 
 #: abilian/web/forms/validators.py:265
 msgid "SIRET number is invalid (length is ok: verify numbers)"
-msgstr "Ce numéro SIRET est invalide (la longueur est correcte - vérifiez les chiffres)"
+msgstr ""
+"Ce numéro SIRET est invalide (la longueur est correcte - vérifiez les "
+"chiffres)"
 
 #: abilian/web/forms/widgets.py:363
 msgid "Entries per page: _MENU_"
