@@ -713,39 +713,42 @@ class Module(object):
                         'sort_on',
                         default_sort_name,
                     )
-                sort_col = getattr(rel_model, rel_sort_name)
+                sort_col = getattr(rel_model, rel_sort_name, None)
 
             # XXX: Big hack, date are sorted in reverse order by default
             if isinstance(sort_col, _DateAffinity):
                 sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
+
             elif isinstance(sort_col, sa.types.String) or \
                     hasattr(sort_col, 'property') and \
                     isinstance(sort_col.property.columns[0].type, sa.types.String):
                 sort_col = func.lower(sort_col)
 
-            try:
-                direction = desc if sort_dir == 'desc' else asc
-                sort_col = direction(sort_col)
-            except BaseException:
-                # FIXME
-                pass
-
-            # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
-            if engine.name != 'sqlite':
-                nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
+            if sort_col is not None:
                 try:
-                    sort_col = nullsorder(sort_col)
+                    direction = desc if sort_dir == 'desc' else asc
+                    sort_col = direction(sort_col)
                 except BaseException:
                     # FIXME
                     pass
 
-            sort_cols.append(sort_col)
+                # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
+                if engine.name != 'sqlite':
+                    nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
+                    try:
+                        sort_col = nullsorder(sort_col)
+                    except BaseException:
+                        # FIXME
+                        pass
 
-        try:
-            query = query.order_by(*sort_cols)
-        except BaseException:
-            # FIXME
-            pass
+                sort_cols.append(sort_col)
+
+        if sort_cols:
+            try:
+                query = query.order_by(*sort_cols)
+            except BaseException:
+                # FIXME
+                pass
         query.reset_joinpoint()
         return query
 
