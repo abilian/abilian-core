@@ -732,7 +732,8 @@ class Module(object):
                     # FIXME
                     pass
 
-                # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
+                # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY
+                # clauses
                 if engine.name != 'sqlite':
                     nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
                     try:
