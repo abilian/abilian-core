@@ -151,6 +151,9 @@ _generated_vocabularies = []
 
 
 def Vocabulary(name, label=None, group=None):
+    if isinstance(name, bytes):
+        name = name.decode()
+
     cls_name = 'Vocabulary' + name.capitalize()
     if six.PY2:
         cls_name = bytes(cls_name)
