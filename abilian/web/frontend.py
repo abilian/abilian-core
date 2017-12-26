@@ -524,9 +524,8 @@ class Module(object):
 
         # copy criterions instances; without that they may be shared by
         # subclasses
-        self.search_criterions = tuple(
-            (copy.deepcopy(c) for c in self.search_criterions)
-        )
+        self.search_criterions = copy.deepcopy(self.__class__.search_criterions)
+
         for sc in self.search_criterions:
             sc.model = self.managed_class
 

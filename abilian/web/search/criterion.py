@@ -75,6 +75,9 @@ class BaseCriterion(object):
     def has_form_default_value(self):
         return self.form_default_value is not _UNDEFINED
 
+    def __repr__(self):
+        return "<{} name={}>".format(self.__class__.__name__, self.name)
+
 
 class TextSearchCriterion(BaseCriterion):
     """Fulltext search on given attributes."""
