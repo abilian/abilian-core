@@ -18,7 +18,7 @@ from flask import Blueprint, current_app, g, jsonify, redirect, \
     render_template, request, session, url_for
 from flask_login import current_user
 from six import add_metaclass
-from sqlalchemy import func, orm
+from sqlalchemy import Date, DateTime, func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from werkzeug.exceptions import BadRequest
 
@@ -39,12 +39,6 @@ from .views import JSONView, JSONWhooshSearch, ObjectCreate, ObjectDelete, \
     ObjectEdit, ObjectView, default_view
 
 logger = logging.getLogger(__name__)
-
-try:
-    # sqlalchemy 0.8
-    _DateAffinity = sa.types._DateAffinity
-except AttributeError:
-    _DateAffinity = sa.sql.sqltypes._DateAffinity
 
 
 class ModuleAction(Action):
@@ -716,7 +710,7 @@ class Module(object):
                 sort_col = getattr(rel_model, rel_sort_name, None)
 
             # XXX: Big hack, date are sorted in reverse order by default
-            if isinstance(sort_col, _DateAffinity):
+            if isinstance(sort_col, (Date, DateTime)):
                 sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
 
             elif isinstance(sort_col, sa.types.String) or \
