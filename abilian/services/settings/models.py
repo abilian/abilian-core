@@ -128,6 +128,8 @@ def from_unicode(s):
 
 
 def to_unicode(s):
+    if isinstance(s, text_type):
+        return s
     return s.decode('utf-8')
 
 

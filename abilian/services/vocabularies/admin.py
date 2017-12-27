@@ -76,11 +76,12 @@ class VocabularyPanel(AdminPanel):
 
     def get(self):
         svc = get_service('vocabularies')
+        vocabularies = svc.grouped_vocabularies
         ctx = {
             'service': svc,
             'url_for_voc_edit': self.voc_edit_url,
             'icon_checked': Glyphicon('check'),
-            'vocabularies': svc.grouped_vocabularies,
+            'vocabularies': vocabularies,
         }
         return render_template('admin/vocabularies.html', **ctx)
 
@@ -154,8 +155,9 @@ class VocabularyPanel(AdminPanel):
         return do_return()
 
     def group_view(self, group):
+        if group is None:
+            group = ''
         svc = get_service('vocabularies')
-
         groups = svc.grouped_vocabularies
         vocabularies = groups.get(group)
 
