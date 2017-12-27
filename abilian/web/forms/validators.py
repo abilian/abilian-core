@@ -257,7 +257,7 @@ def siret_validator():
             if not siret[-3:] in SIRET_CODES:
                 msg = _(
                     'SIRET looks like special SIRET but geographical '
-                    'code seems invalid (%s)', code=siret[-3:],
+                    'code seems invalid (%(code)s)', code=siret[-3:],
                 )
                 raise validators.ValidationError(msg)
 
