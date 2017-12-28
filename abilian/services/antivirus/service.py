@@ -32,7 +32,7 @@ if CLAMD_AVAILABLE:
     if conf_path.exists():
         conf_lines = [l.strip() for l in conf_path.open('rt').readlines()]
         CLAMD_CONF = dict(
-            l.split(u' ', 1) for l in conf_lines if not l.startswith('#')
+            l.split(' ', 1) for l in conf_lines if not l.startswith('#')
         )
 
         def _size_to_int(size_str):
@@ -125,7 +125,7 @@ class AntiVirusService(Service):
             return False
 
         res = res['stream']
-        return res[0] == u'OK'
+        return res[0] == 'OK'
 
 
 service = AntiVirusService()

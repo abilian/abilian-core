@@ -64,6 +64,6 @@ class IndexingTestCase(IntegrationTestCase):
         assert contact.id == found['id']
         assert contact.name == found['name']
 
-        search_result = index_service.search(u"john")
+        search_result = index_service.search("john")
         assert len(search_result) == 1
         assert contact.id == int(search_result[0]['id'])
