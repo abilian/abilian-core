@@ -81,7 +81,7 @@ class PermissionType(UniqueNameType):
 class Role(UniqueName):
     """Defines role by name. Roles instances are unique by name.
 
-    :param assignable: this role is can be assigned through security service.
+    :param assignable: true if this role is can be assigned through security service.
     Non-assignable roles are roles automatically given depending on context (ex:
     Anonymous/Authenticated).
     """
