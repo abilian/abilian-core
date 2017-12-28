@@ -403,7 +403,7 @@ class Module(object):
     components = ()  # type: Tuple
 
     # class based views. If not provided will be automaticaly created from
-    # EntityView etc defined above
+    # EntityView etc defined below
     base_template = 'base.html'
     view_cls = EntityView
     edit_cls = EntityEdit
