@@ -40,7 +40,7 @@ kombu==4.1.0              # via celery
 lxml==4.1.1
 mako==1.0.7               # via alembic
 markupsafe==1.0
-numpy==1.13.3             # via pandas
+numpy==1.14.0             # via pandas
 pandas==0.22.0
 pathlib==1.0.1
 pillow==5.0.0
