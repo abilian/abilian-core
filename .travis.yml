@@ -30,7 +30,8 @@ before_install:
 # Install Python dependencies
 install:
   - pip install -r requirements.txt
-  - pip install -e '.[dev]'
+  - pip install -r etc/dev-requirements.txt
+  - pip install psycopg2
   - pip check
   - npm install
 
