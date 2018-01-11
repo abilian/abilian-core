@@ -16,17 +16,17 @@
   {%- block css %}{%- endblock css %}
 
   {% block ie_support %}
-  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   {%- endblock ie_support %}
 
   <!-- Le fav and touch icons -->
   <link rel="shortcut icon" type="image/png"
-      href="{{ app.config['FAVICO_URL'] | string }}"/>
+        href="{{ app.config['FAVICO_URL'] | string }}"/>
   <link rel="apple-touch-icon" type="image/png"
-      href="{{ app.config['FAVICO_URL'] | string }}"/>
+        href="{{ app.config['FAVICO_URL'] | string }}"/>
 
   <script>
     var require = {{ app.extensions['webassets'].requirejs_config | tojson }};
@@ -40,17 +40,17 @@
     {%- set ext = app.extensions['sentry'] %}
     <script src="{{ ext.raven_js_url }}"></script>
     <script>
-     if (Raven !== undefined) {
-         Raven.config({{ ext.client.get_public_dsn() |tojson }},
-             {
-                 tags: {
-                     app_name: {{ (app.name+'_front') | tojson }},
-                     configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
-                     process_type: 'javascript'
-                 }
-             })
-             .install();
-     }
+      if (Raven !== undefined) {
+        Raven.config({{ ext.client.get_public_dsn() |tojson }},
+            {
+              tags: {
+                app_name: {{ (app.name+'_front') | tojson }},
+                configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
+                process_type: 'javascript'
+              }
+            })
+            .install();
+      }
     </script>
   {%- endif %}
 
@@ -66,15 +66,15 @@
   {% include "navbar.html" %}
 
   <div id="content"
-      class="container{%- if full_width %}-fluid {% endif %} clearfix">
+       class="container{%- if full_width %}-fluid {% endif %} clearfix">
 
     <!-- breadcrumbs -->
     {% if g.breadcrumb|length > 1 %}
-    <div class="row">
-      <div class="col-xs-12">
-        {% include "breadcrumbs.html" %}
+      <div class="row">
+        <div class="col-xs-12">
+          {% include "breadcrumbs.html" %}
+        </div>
       </div>
-    </div>
     {% endif %}
 
     <!-- flash messages -->

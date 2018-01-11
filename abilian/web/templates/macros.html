@@ -3,15 +3,16 @@
 #}
 
 {% macro deprecated(name, newfile) %}
-<small class="text-warning"><strong>This block is generated from macro "{{ name
-}}" in deprecated file "macros.html". Import from "macros/{{ newfile }}.html" instead.
-</strong></small>
- {% endmacro %}
+  <small class="text-warning"><strong>This block is generated from macro "{{ name }}"
+    in deprecated file "macros.html".
+    Import from "macros/{{ newfile }}.html" instead.
+  </strong></small>
+{% endmacro %}
 
 {# Generic renderer for boxes / portlets #}
 {% macro m_box(title, color="blue", with_toolbar=False) %}
   <div class="box">
-  {{ deprecated("m_box", "box") }}
+    {{ deprecated("m_box", "box") }}
 
     {% if title %}
       <div class="box-header box-header-small box-header-color-{{ color }}">
@@ -52,7 +53,7 @@
 
 {% macro m_box_content(title=None, color="blue", with_toolbar=False) %}
   <div class="box">
-  {{ deprecated("m_box_content", "box") }}
+    {{ deprecated("m_box_content", "box") }}
     {% if title %}
       <div class="box-header box-header-small box-header-color-{{ color }}">
         <h5>{{ title }}</h5>
@@ -77,8 +78,8 @@
       {% set actor_img = user_photo_url(entry.actor, size=45) %}
 
       <li>
-        <a href="{{ actor_href }}"><img class="avatar" alt=""
-            src="{{ actor_img }}"></a>
+        <a href="{{ actor_href }}"><img
+          class="avatar" alt="" src="{{ actor_img }}"></a>
 
         <div class="entry">
           <span class="arrow"></span>
@@ -88,7 +89,7 @@
 
           {% set body = entry.body() %}
           {% if body %}
-          <span class="body">"<a href="{{ entry.object_url }}">{{ body }}"</a></span>
+            <span class="body">"<a href="{{ entry.object_url }}">{{ body }}"</a></span>
           {% endif %}
         </div>
       </li>
@@ -151,15 +152,15 @@
 {% macro m_breadcrumbs(breadcrumbs) %}
   <small class="text-warning">
     <strong>Breadcrumb is no more generated from a macro. Just include
-"breadcrumb.html" if you are overriding "body" block from "base.html".</strong>
+      "breadcrumb.html" if you are overriding "body" block from "base.html".</strong>
   </small>
- {% endmacro %}
+{% endmacro %}
 
 {% macro m_flashed_messages() %}
   <small class="text-warning">
     <strong>Flash message block is no more generated from a macro. Just include
-"flash-messages.html" if you are overriding "body" block from
-"base.html".</strong>
+      "flash-messages.html" if you are overriding "body" block from
+      "base.html".</strong>
   </small>
 {% endmacro %}
 
@@ -175,7 +176,7 @@
           <li class="recent-item">
             <a href="{{ item.url }}">
               <img alt=""
-                  src="/static/icons/{{ item.type }}-12.png"/>&nbsp;{{ item.name }}
+                   src="/static/icons/{{ item.type }}-12.png"/>&nbsp;{{ item.name }}
             </a>
           </li>
         {%- endfor %}
@@ -194,7 +195,7 @@
   {{ deprecated("m_table", "?") }}
 
   <table class="table table-striped table-condensed"
-      style="margin: 10px 0 15px 0;">
+         style="margin: 10px 0 15px 0;">
     <tbody>
     {%- for line in lines %}
       <tr class="row">

@@ -488,10 +488,12 @@ class SingleView(object):
                     continue
 
                 value = field.data
-                if (not isinstance(
+                if (
+                    not isinstance(
                         field,
                         FileField,
-                ) and not field.flags.render_empty):
+                    ) and not field.flags.render_empty
+                ):
                     if value in _to_skip:
                         continue
 
@@ -522,7 +524,6 @@ class SingleView(object):
         ctx = {
             'view': self,
             'related_views': related_views,
-            'csrf_token': csrf.field(),
             'entity': item,
             'panels': panels,
             'form': form,
