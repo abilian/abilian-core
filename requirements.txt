@@ -44,7 +44,6 @@ numpy==1.14.0             # via pandas
 pandas==0.22.0
 pathlib==1.0.1
 pillow==5.0.0
-psycopg2==2.7.3.2
 pycparser==2.18           # via cffi
 pygeoip==0.3.2
 python-dateutil==2.6.1

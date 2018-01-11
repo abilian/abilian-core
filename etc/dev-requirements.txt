@@ -1,9 +1,9 @@
 # For running tests
 tox
 pytest>=2.4.0
-pytest-sugar
 pytest-xdist
 pytest-randomly
+pytest-repeat
 
 # Backport of Python 3 mocking library
 mock>=1.0.1
@@ -46,5 +46,3 @@ restructuredtext_lint
 
 # To manage dependencies
 pip-tools
-
-ipdb

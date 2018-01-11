@@ -1,6 +1,20 @@
 Changelog for Abilian Core
 ==========================
 
+0.9.30 (2018-01-11)
+-------------------
+
+- Don't depend on psycopg2, so you can use your favorite driver
+  (ex: pg8000).
+
+0.9.19-0.9.29
+-------------
+
+- Cleanup
+- Bug fixes
+- Python 3 compatibility
+- Dependencies updates
+
 0.9.18 (2017-10-06)
 -------------------
 

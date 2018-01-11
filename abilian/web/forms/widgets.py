@@ -488,10 +488,10 @@ class SingleView(object):
                     continue
 
                 value = field.data
-                if not isinstance(
+                if (not isinstance(
                         field,
                         FileField,
-                ) and not field.flags.render_empty:
+                ) and not field.flags.render_empty):
                     if value in _to_skip:
                         continue
 
