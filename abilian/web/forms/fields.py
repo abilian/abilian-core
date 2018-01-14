@@ -411,7 +411,7 @@ class DateField(Field):
             try:
                 strptime = datetime.datetime.strptime
                 self.data = strptime(date_str, date_fmt).date()
-            except ValueError:
+            except (ValueError, TypeError):
                 self.data = None
                 raise ValueError(self.gettext('Not a valid datetime value'))
         else:

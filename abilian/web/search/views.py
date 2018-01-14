@@ -52,7 +52,7 @@ def friendly_fqcn(fqcn):
 
 @search.url_value_preprocessor
 def init_search(endpoint, values):
-    q = request.args.get("q")
+    q = request.args.get("q", "")
     try:
         page = max(int(request.args.get('page', 1)), 1)
     except BaseException:
