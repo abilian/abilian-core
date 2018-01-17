@@ -522,7 +522,7 @@ class QuerySelect2Field(SelectFieldBase):
                 raise Exception(
                     'The sqlalchemy identity_key function could not be imported.',
                 )
-            self.get_pk = get_pk_from_identity
+            self.get_pk = self._get_pk_from_identity
         else:
             self.get_pk = get_pk
 
@@ -537,6 +537,16 @@ class QuerySelect2Field(SelectFieldBase):
         self.blank_text = blank_text
         self.query = None
         self._object_list = None
+
+    @staticmethod
+    def _get_pk_from_identity(obj):
+        """Copied / pasted, and fixed, from WTForms_sqlalchemy due to issue
+        w/ SQLAlchemy >= 1.2.
+        """
+        from sqlalchemy.orm.util import identity_key
+
+        cls, key = identity_key(instance=obj)[0:2]
+        return ':'.join(text_type(x) for x in key)
 
     def _get_data(self):
         formdata = self._formdata
