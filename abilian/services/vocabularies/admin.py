@@ -202,19 +202,19 @@ class VocabularyPanel(AdminPanel):
         )
 
     def url_value_preprocess(self, endpoint, view_args):
-        Model = view_args.pop('Model', None)
+        model_name = view_args.pop('Model', None)
         group = view_args.pop('group', _MARKER)
 
         if group == '_':
             # "General" group
-            group = None
+            group = ""
 
         if group is not _MARKER:
             view_args['group'] = group
 
-        if Model is not None:
+        if model_name is not None:
             svc = get_service('vocabularies')
-            Model = svc.get_vocabulary(name=Model, group=group)
+            Model = svc.get_vocabulary(name=model_name, group=group)
             g.breadcrumb.append(BreadcrumbItem(
                 label=Model.Meta.group if group else _('Global'),
                 url=url_for('.vocabularies_group', group=group or '_'),

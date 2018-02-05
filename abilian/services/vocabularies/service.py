@@ -27,10 +27,14 @@ def _grouped_vocabularies():
     return by_group
 
 
-def get_vocabulary(name, group=None):
+def get_vocabulary(name, group=""):
     name = name.lower()
     vocs = _grouped_vocabularies()
+    print(group)
+    print(vocs)
     for voc in vocs.get(group, ()):
+        print(voc.Meta)
+        print(voc.Meta.name)
         if voc.Meta.name == name:
             return voc
 
@@ -52,7 +56,7 @@ class VocabularyService(Service):
     def grouped_vocabularies(self):
         return _grouped_vocabularies()
 
-    def get_vocabulary(self, name, group=None):
+    def get_vocabulary(self, name, group=""):
         return get_vocabulary(name, group=group)
 
 
