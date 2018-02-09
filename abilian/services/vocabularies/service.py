@@ -30,11 +30,7 @@ def _grouped_vocabularies():
 def get_vocabulary(name, group=""):
     name = name.lower()
     vocs = _grouped_vocabularies()
-    print(group)
-    print(vocs)
     for voc in vocs.get(group, ()):
-        print(voc.Meta)
-        print(voc.Meta.name)
         if voc.Meta.name == name:
             return voc
 

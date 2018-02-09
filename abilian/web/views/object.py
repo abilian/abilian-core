@@ -46,8 +46,8 @@ class BaseObjectView(View):
     #: template to render
     template = None
 
-    #: default templates inherit from "base_template". This allows to use generic
-    #: templates with a custom base
+    #: default templates inherit from "base_template". This allows to use
+    #: generic templates with a custom base
     base_template = "base.html"
 
     def __init__(
@@ -176,8 +176,9 @@ CANCEL_BUTTON = ButtonAction(
     'form',
     'cancel',
     title=_l('Cancel'),
-    btn_class='default cancel',  # .cancel: if jquery.validate is used it will
-)  # properly skip validation
+    # .cancel: if jquery.validate is used it will properly skip validation
+    btn_class='default cancel',
+)
 
 EDIT_BUTTON = ButtonAction(
     'form',
@@ -480,16 +481,15 @@ class ObjectCreate(ObjectEdit):
     #: set to `True` to show 'Save and add new' button
     chain_create_allowed = False
 
-    def __init__(self, *args, **kwargs):
-        chain_create_allowed = kwargs.pop('chain_create_allowed', None)
+    def __init__(self, chain_create_allowed=None, *args, **kwargs):
         if chain_create_allowed is not None:
             self.chain_create_allowed = bool(chain_create_allowed)
 
         ObjectEdit.__init__(self, *args, **kwargs)
 
     def prepare_args(self, args, kwargs):
-        # we must ensure that no flush() occurs and that obj is not registered in
-        # session (to prevent accidental insert of an incomplete object)
+        # we must ensure that no flush() occurs and that obj is not registered
+        # in session (to prevent accidental insert of an incomplete object)
         session = current_app.db.session()
         with session.no_autoflush:
             args, kwargs = super(ObjectCreate, self).prepare_args(args, kwargs)
@@ -601,11 +601,8 @@ class JSONBaseSearch(JSONView):
 
     def data(self, q, *args, **kwargs):
         if self.minimum_input_length and len(q) < self.minimum_input_length:
-            raise BadRequest(
-                'Minimum query length is {:d}'.format(
-                    self.minimum_input_length,
-                ),
-            )
+            msg = 'Minimum query length is {:d}'.format(self.minimum_input_length)
+            raise BadRequest(msg)
 
         results = []
         for obj in self.get_results(q, **kwargs):

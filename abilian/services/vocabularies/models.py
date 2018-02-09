@@ -69,7 +69,7 @@ class BaseVocabulary(db.Model):
     __abstract__ = True
     query_class = VocabularyQuery
 
-    id = Column(sa.Integer(), primary_key=True, autoincrement=True)
+    id = Column(sa.Integer(), primary_key=True, autoincrement=True, nullable=False)
     label = Column(sa.UnicodeText(), nullable=False, unique=True)
     active = Column(
         sa.Boolean(),
