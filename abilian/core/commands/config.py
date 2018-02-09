@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import logging
 import os
+from pathlib import Path
 
 from flask import current_app
 from flask_script import Manager
@@ -69,14 +70,14 @@ class DefaultConfig(object):
         self.SESSION_COOKIE_NAME = '{}-session'.format(current_app.name)
         self.SECRET_KEY = os.urandom(24)
 
-        db_dir = os.path.join(current_app.instance_path, 'data')
-        if not os.path.exists(db_dir):
-            os.mkdir(db_dir)
+        db_dir = Path(current_app.instance_path) / 'data'
+        if not db_dir.exists():
+            db_dir.mkdir()
         self.SQLALCHEMY_DATABASE_URI = \
             "sqlite:///{}/data/db.sqlite".format(current_app.instance_path)
 
         if logging_file:
-            self.LOGGING_CONFIG_FILE = logging_file
+            self.LOGGING_CONFIG_FILE = str(logging_file)
 
 
 class ReprProxy(object):
@@ -96,25 +97,25 @@ def write_config(config_file, config):
     jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
     template = jinja_env.get_template('config.py.jinja2')
 
-    with open(config_file, 'w') as f:
+    with Path(config_file).open('w') as f:
         f.write(template.render(cfg=ReprProxy(config)))
     logger.info('Generated "%s"', config_file)
 
 
 def maybe_write_logging(logging_file):
-    if not os.path.exists(logging_file):
-        jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
-        template = jinja_env.get_template('logging.yml.jinja2')
-
-        with open(logging_file, 'w') as f:
-            f.write(template.render())
-        logger.info('Generated "%s"', logging_file)
-
-    else:
+    if Path(logging_file).exists():
         logger.info(
             'Logging config file "%s" already exists, skipping creation.',
             logging_file,
         )
+        return
+
+    jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
+    template = jinja_env.get_template('logging.yml.jinja2')
+
+    with Path(logging_file).open('w') as f:
+        f.write(template.render())
+    logger.info('Generated "%s"', logging_file)
 
 
 @manager.command
@@ -126,11 +127,10 @@ def init(filename='config.py', logging_config='logging.yml'):
 
     Defaults are tailored for development.
     """
-    app = current_app
-    config_file = os.path.join(app.instance_path, filename)
-    logging_file = os.path.join(app.instance_path, logging_config)
+    config_file = Path(current_app.instance_path) / filename
+    logging_file = Path(current_app.instance_path) / logging_config
 
-    if os.path.exists(config_file):
+    if config_file.exists():
         logger.info('Config file  "%s" already exists! Abort.', config_file)
         return 1
 

@@ -12,7 +12,7 @@ from werkzeug.exceptions import BadRequest
 from werkzeug.utils import redirect
 
 from abilian.core.entities import Entity
-from abilian.core.models.attachment import Attachment, is_support_attachments
+from abilian.core.models.attachment import Attachment, supports_attachments
 from abilian.i18n import _, _l
 from abilian.web import nav, url_for
 from abilian.web.action import ButtonAction, actions
@@ -65,8 +65,8 @@ class BaseAttachmentView(object):
         if self.entity is None:
             raise BadRequest('No entity provided')
 
-        if not is_support_attachments(self.entity):
-            raise BadRequest('This entity is doesn\'t support attachments')
+        if not supports_attachments(self.entity):
+            raise BadRequest("This entity is doesn't support attachments")
 
         extension = current_app.extensions['attachments']
         self.Form = extension.manager(self.entity).Form

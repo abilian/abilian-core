@@ -70,7 +70,10 @@ class BaseVocabulary(db.Model):
     query_class = VocabularyQuery
 
     id = Column(
-        sa.Integer(), primary_key=True, autoincrement=True, nullable=False,
+        sa.Integer(),
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
     label = Column(sa.UnicodeText(), nullable=False, unique=True)
     active = Column(

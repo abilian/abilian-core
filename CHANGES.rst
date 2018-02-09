@@ -1,6 +1,13 @@
 Changelog for Abilian Core
 ==========================
 
+
+0.10.0 (2018-02-09)
+-------------------
+
+- Removed deprecated plugin loader
+- Renamed `is_support_attachments` to `supports_attachments`
+
 0.9.30 (2018-01-11)
 -------------------
 

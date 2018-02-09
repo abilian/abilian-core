@@ -37,8 +37,8 @@ class AttachmentExtension(object):
 
         return manager
 
-    def is_support_attachments(self, obj):
-        return self.manager(obj).is_support_attachments(obj)
+    def supports_attachments(self, obj):
+        return self.manager(obj).supports_attachments(obj)
 
     def for_entity(self, obj, check_support_attachments=False):
         return self.manager(obj).for_entity(
@@ -100,8 +100,8 @@ class AttachmentsManager(object):
             ),
         )
 
-    def is_support_attachments(self, obj):
-        return attachments.is_support_attachments(obj)
+    def supports_attachments(self, obj):
+        return attachments.supports_attachments(obj)
 
     def for_entity(self, obj, check_support_attachments=False):
         return attachments.for_entity(

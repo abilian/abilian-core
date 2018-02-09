@@ -39,8 +39,8 @@ class BaseImageView(BaseFileDownload):
 
     def __init__(self, max_size=None, *args, **kwargs):
         super(BaseImageView, self).__init__(*args, **kwargs)
-        # override class default value only if arg is specified in constructor. This
-        # allows subclasses to easily override theses defaults.
+        # Override class default value only if arg is specified in constructor.
+        # This allows subclasses to easily override theses defaults.
         if max_size is not None:
             self.max_size = max_size
 
@@ -69,21 +69,22 @@ class BaseImageView(BaseFileDownload):
         kwargs['mode'] = resize_mode
         return args, kwargs
 
-    def make_response(self, image, size, mode, *args, **kwargs):
+    def make_response(self, image, size, mode, filename=None, *args, **kwargs):
         """
         :param image: image as bytes
         :param size: requested maximum width/height size
+        :param mode: one of 'scale', 'fit' or 'crop'
+        :param filename: filename
         """
         try:
             fmt = get_format(image)
         except IOError:
-            #  not a known image file
+            # not a known image file
             raise NotFound()
 
         self.content_type = 'image/png' if fmt == 'PNG' else 'image/jpeg'
         ext = '.' + text_type(fmt.lower())
 
-        filename = kwargs.get('filename')
         if not filename:
             filename = 'image'
         if not filename.lower().endswith(ext):
@@ -185,7 +186,7 @@ class UserMugshot(BaseImageView):
 
     def make_response(self, user, image, size, *args, **kwargs):
         if image:
-            #  user has set a photo
+            # user has set a photo
             return super(UserMugshot, self) \
                 .make_response(image, size, *args, **kwargs)
 

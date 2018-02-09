@@ -36,8 +36,8 @@ setup = Blueprint(
 # module ('psycopg2' missing for example)
 
 _dialects = OrderedDict((
-    ('sqlite', u'SQLite (for demo)'),
-    ('postgres', u'PostgreSQL'),
+    ('sqlite', 'SQLite (for demo)'),
+    ('postgres', 'PostgreSQL'),
 ))
 
 _dialects_unavailable = OrderedDict()
@@ -147,49 +147,49 @@ def step_db_form():
 def step_db_validate():
     form = request.form
     dialect = form['dialect']
-    username = form.get(u'username', u'').strip()
-    password = form.get(u'password', u'').strip()
-    host = form.get(u'host', u'').strip()
-    port = form.get(u'port', u'').strip()
-    database = form.get(u'database', u'').strip()
+    username = form.get('username', '').strip()
+    password = form.get('password', '').strip()
+    host = form.get('host', '').strip()
+    port = form.get('port', '').strip()
+    database = form.get('database', '').strip()
 
     # build db_uri
-    db_uri = u'{}://'.format(dialect)
+    db_uri = '{}://'.format(dialect)
 
-    if dialect != u'sqlite':
+    if dialect != 'sqlite':
         if username:
             db_uri += username
             # check password only if we have a username
             if password:
-                db_uri += u':' + password
+                db_uri += ':' + password
 
-        # FIXME: it is an error to have a username and no host, SA will interpret
-        # username:password as host:port
+        # FIXME: it is an error to have a username and no host,
+        # SA will interpret username:password as host:port
         if host:
-            db_uri += u'@' + host
+            db_uri += '@' + host
             port = port
             if port:
-                db_uri += u':' + port
+                db_uri += ':' + port
 
-    db_uri += u'/'
+    db_uri += '/'
 
-    if dialect == u'sqlite' and (not database or database == u':memory:'):
+    if dialect == 'sqlite' and (not database or database == ':memory:'):
         database = text_type(
-            Path(current_app.instance_path) / u'data' / u'sqlite.db',
+            Path(current_app.instance_path) / 'data' / 'sqlite.db',
         )
 
     db_uri += database
 
     # store in session
-    db_params = dict(
-        uri=db_uri,
-        dialect=dialect,
-        username=username,
-        password=password,
-        host=host,
-        port=port,
-        database=database,
-    )
+    db_params = {
+        'uri': db_uri,
+        'dialect': dialect,
+        'username': username,
+        'password': password,
+        'host': host,
+        'port': port,
+        'database': database,
+    }
     session_set('db', db_params)
 
     # test connection
@@ -214,7 +214,8 @@ def step_db_validate():
 
     step_validated('db')
     next_step = request.setup_step_progress['next_step']
-    return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
+    endpoint = '{}.{}'.format(setup.name, next_step.endpoint)
+    return redirect(url_for(endpoint))
 
 
 #
@@ -281,7 +282,8 @@ def step_redis_validate():
 
     step_validated('redis')
     next_step = request.setup_step_progress['next_step']
-    return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
+    endpoint = '{}.{}'.format(setup.name, next_step.endpoint)
+    return redirect(url_for(endpoint))
 
 
 #
@@ -310,7 +312,7 @@ def get_possible_hostnames():
             names.setdefault(a, []).extend(ips)
 
     return sorted(
-        u'{} ({})'.format(name, u', '.join(sorted(set(ips))))
+        '{} ({})'.format(name, ', '.join(sorted(set(ips))))
         for name, ips in six.iteritems(names)
     )
 
@@ -330,16 +332,17 @@ def step_site_info_form():
 
 def step_site_info_validate():
     form = request.form
-    data = dict(
-        sitename=form.get('sitename', u'').strip(),
-        mailsender=form.get('mailsender', u'').strip(),
-        server_mode=form.get('server_mode', u'').strip(),
-    )
+    data = {
+        'sitename': form.get('sitename', u'').strip(),
+        'mailsender': form.get('mailsender', u'').strip(),
+        'server_mode': form.get('server_mode', u'').strip(),
+    }
 
     session_set('site_info', data)
     step_validated('site_info')
     next_step = request.setup_step_progress['next_step']
-    return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
+    endpoint = '{}.{}'.format(setup.name, next_step.endpoint)
+    return redirect(url_for(endpoint))
 
 
 #
@@ -364,13 +367,13 @@ def step_admin_account_validate():
     form = request.form
     password = form.get('password', u'').strip()
     confirm_password = form.get('confirm_password', u'').strip()
-    admin_user = dict(
-        email=form.get('email', u'').strip(),
-        name=form.get('name', u'').strip(),
-        firstname=form.get('firstname', u'').strip(),
-        password=password,
-        confirm_password=confirm_password,
-    )
+    admin_user = {
+        'email': form.get('email', u'').strip(),
+        'name': form.get('name', u'').strip(),
+        'firstname': form.get('firstname', u'').strip(),
+        'password': password,
+        'confirm_password': confirm_password,
+    }
     session_set('admin_account', admin_user)
 
     if password != confirm_password:
@@ -379,7 +382,8 @@ def step_admin_account_validate():
 
     step_validated('admin_account')
     next_step = request.setup_step_progress['next_step']
-    return redirect(url_for('{}.{}'.format(setup.name, next_step.endpoint)))
+    endpoint = '{}.{}'.format(setup.name, next_step.endpoint)
+    return redirect(url_for(endpoint))
 
 
 #
@@ -405,10 +409,10 @@ def finalize_form():
 
 
 def finalize_validate():
-    config_file = os.path.join(current_app.instance_path, 'config.py')
-    logging_file = os.path.join(current_app.instance_path, 'logging.yml')
+    config_file = Path(current_app.instance_path) / 'config.py'
+    logging_file = Path(current_app.instance_path) / 'logging.yml'
 
-    assert not os.path.exists(config_file)
+    assert not config_file.exists()
     config = cmd_config.DefaultConfig(logging_file='logging.yml')
     config.SQLALCHEMY_DATABASE_URI = session_get('db')['uri']
 
@@ -431,8 +435,8 @@ def finalize_validate():
     cmd_config.maybe_write_logging(logging_file)
 
     admin_account = session_get('admin_account')
-    # create a new app that will be configured with new config, to create database
-    # and admin_user
+    # create a new app that will be configured with new config,
+    # to create database and admin_user
     setup_app = current_app._get_current_object()
     app = setup_app.__class__(
         setup_app.import_name,
@@ -458,12 +462,8 @@ def finalize_validate():
 
     session_clear()
 
-    response = make_response(
-        render_template(
-            'setupwizard/done.html',
-            config_file=config_file,
-            logging_file=logging_file,
-        ),
-        200,
+    return render_template(
+        'setupwizard/done.html',
+        config_file=config_file,
+        logging_file=logging_file,
     )
-    return response

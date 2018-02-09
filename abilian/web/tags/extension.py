@@ -68,7 +68,8 @@ class TagsExtension(object):
 
     def tags_from_hit(self, tag_ids):
         """
-        :param tag_ids: indexed ids of tags in hit result. Do not pass hit instance.
+        :param tag_ids: indexed ids of tags in hit result.
+            Do not pass hit instances.
 
         :returns: an iterable of :class:`Tag` instances.
         """

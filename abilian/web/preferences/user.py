@@ -56,8 +56,8 @@ class UserPreferencesForm(Form):
         if pwd != confirmed:
             raise ValidationError(
                 _(
-                    'Passwords differ. Ensure you have typed same password in both'
-                    ' "password" field and "confirm password" field.',
+                    'Passwords differ. Ensure you have typed same password '
+                    'in both "password" field and "confirm password" field.',
                 ),
             )
 
@@ -130,11 +130,9 @@ class UserPreferencesPanel(PreferencePanel):
         )
         if form['locale'].data is None:
             form['locale'].data = get_default_locale()
-        return render_template(
-            'preferences/user.html',
-            form=form,
-            title=self.label,
-        )
+
+        ctx = {'form': form, 'title': self.label}
+        return render_template('preferences/user.html', **ctx)
 
     @csrf.support_graceful_failure
     def post(self):

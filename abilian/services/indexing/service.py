@@ -16,6 +16,7 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 import os
 from inspect import isclass
+from pathlib import Path
 
 import sqlalchemy as sa
 import whoosh.index
@@ -195,10 +196,10 @@ class WhooshIndexService(Service):
             if current_app.testing:
                 storage = TestingStorage()
             else:
-                index_path = os.path.join(state.whoosh_base, name)
-                if not os.path.exists(index_path):
-                    os.makedirs(index_path)
-                storage = FileStorage(index_path)
+                index_path = Path(state.whoosh_base) / name
+                if not index_path.exists():
+                    index_path.mkdir()
+                storage = FileStorage(index_path.absolute())
 
             FileIndex = whoosh.index.FileIndex
             if not storage.index_exists(name):

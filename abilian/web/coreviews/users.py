@@ -39,8 +39,8 @@ def photo(user):
     self_photo = (user.id == g.user.id)
 
     if self_photo:
-        # special case: for its own photo user has an etag, so that on change photo
-        # is immediatly reloaded from server.
+        # special case: for their own photo user has an etag, so that on change,
+        # photo is immediatly reloaded from server.
         #
         # FIXME: there should be a photo_digest field on user object
         acc = hashlib.md5(data)
@@ -49,18 +49,18 @@ def photo(user):
         if request.if_none_match and etag in request.if_none_match:
             return Response(status=304)
 
-    r = make_response(data)
-    r.headers['content-type'] = 'image/jpeg'
+    response = make_response(data)  # type: Response
+    response.content_type = 'image/jpeg'
 
     if not self_photo:
-        r.headers.add('Cache-Control', 'public, max-age=600')
+        response.headers.add('Cache-Control', 'public, max-age=600')
     else:
-        # user always checks its own mugshot is up-to-date, in order to avoid seeing
-        # old one immediatly after having uploaded of a new picture.
-        r.headers.add('Cache-Control', 'private, must-revalidate')
-        r.set_etag(etag)
+        # user always checks its own mugshot is up-to-date, in order to avoid
+        # seeing old one immediatly after having uploaded of a new picture.
+        response.headers.add('Cache-Control', 'private, must-revalidate')
+        response.set_etag(etag)
 
-    return r
+    return response
 
 
 # JSON search

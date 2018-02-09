@@ -45,9 +45,11 @@ def register(cls):
     return cls
 
 
-def is_support_attachments(obj):
+def supports_attachments(obj):
     """
     :param obj: a class or instance
+
+    :returns: True is obj supports attachments.
     """
     if isinstance(obj, type):
         return issubclass(obj, SupportAttachment)
@@ -63,7 +65,7 @@ def is_support_attachments(obj):
 
 def for_entity(obj, check_support_attachments=False):
     """Return attachments on an entity."""
-    if check_support_attachments and not is_support_attachments(obj):
+    if check_support_attachments and not supports_attachments(obj):
         return []
 
     return getattr(obj, ATTRIBUTE)

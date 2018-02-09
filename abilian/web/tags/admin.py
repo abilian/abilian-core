@@ -246,8 +246,8 @@ class TagEdit(BaseTagView, ObjectEdit):
         session = sa.orm.object_session(self.obj)
         self.has_changes = self.obj in (session.dirty | session.deleted)
         if self.has_changes:
-            # since the tag may be in pending-delete, we must collect them before
-            # flush
+            # since the tag may be in pending-delete, we must collect them
+            # before flush
             self._entities_to_reindex = get_entities_for_reindex(self.obj)
 
     def commit_success(self):

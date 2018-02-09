@@ -12,6 +12,7 @@ import threading
 import traceback
 from abc import ABCMeta, abstractmethod
 from base64 import decodestring, encodestring
+from pathlib import Path
 from typing import List
 
 from magic import Magic
@@ -297,9 +298,9 @@ class UnoconvPdfHandler(Handler):
     @property
     def unoconv_version(self):
         # Hack for my Mac, FIXME later
-        if os.path.exists(
-                "/Applications/LibreOffice.app/Contents/program/python",
-        ):
+        if Path(
+            "/Applications/LibreOffice.app/Contents/program/python",
+        ).exists():
             cmd = [
                 '/Applications/LibreOffice.app/Contents/program/python',
                 '/usr/local/bin/unoconv',
@@ -319,9 +320,9 @@ class UnoconvPdfHandler(Handler):
                 make_temp_file(prefix='tmp-unoconv-', suffix=".pdf") as out_fn:
 
             # Hack for my Mac, FIXME later
-            if os.path.exists(
-                    "/Applications/LibreOffice.app/Contents/program/python",
-            ):
+            if Path(
+                "/Applications/LibreOffice.app/Contents/program/python",
+            ).exists():
                 cmd = [
                     '/Applications/LibreOffice.app/Contents/program/python',
                     '/usr/local/bin/unoconv',
