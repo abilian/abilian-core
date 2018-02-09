@@ -4,7 +4,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from datetime import datetime, timedelta
 
-from flask import request, send_file
+from flask import Response, request, send_file
 from werkzeug.exceptions import BadRequest
 
 from abilian.core.util import utc_dt
@@ -30,8 +30,8 @@ class BaseFileDownload(View):
             expire_vary_arg=None,
             as_attachment=None,
     ):
-        # override class default value only if arg is specified in constructor. This
-        # allows subclasses to easily override theses defaults.
+        # Override class default value only if arg is specified in constructor.
+        # This allows subclasses to easily override these defaults.
         if set_expire is not None:
             self.set_expire = set_expire
         if expire_offset is not None:
@@ -54,8 +54,9 @@ class BaseFileDownload(View):
                 request.args.get(self.expire_vary_arg),
             )
             if vary_arg is None:
-                # argument for timestamp, serial etc is missing. We must refuse to serve
-                # an image with expiry date set up to maybe 1 year from now.
+                # Argument for timestamp, serial etc is missing.
+                # We must refuse to serve an image with expiry date set up
+                # to maybe 1 year from now.
                 # Check the code that has generated this url!
                 raise BadRequest('File version marker is missing ({}=?)'.format(
                     repr(self.expire_vary_arg),
@@ -82,23 +83,17 @@ class BaseFileDownload(View):
 
     def get(self, attach, *args, **kwargs):
         """
-        :param image: image as bytes
-        :param s: requested maximum width/height size
+        :param attach: if True, return file as an attachment.
         """
-        response = self.make_response(*args, **kwargs)
-        response.headers['content-type'] = self.get_content_type(
-            *args, **kwargs
-        )
+        response = self.make_response(*args, **kwargs)  # type: Response
+        response.content_type = self.get_content_type(*args, **kwargs)
 
         if attach:
             filename = self.get_filename(*args, **kwargs)
             if not filename:
                 filename = 'file.bin'
-            response.headers.add(
-                'Content-Disposition',
-                'attachment',
-                filename=filename,
-            )
+            headers = response.headers
+            headers.add('Content-Disposition', 'attachment', filename=filename)
 
         self.set_cache_headers(response)
         return response

@@ -601,7 +601,9 @@ class JSONBaseSearch(JSONView):
 
     def data(self, q, *args, **kwargs):
         if self.minimum_input_length and len(q) < self.minimum_input_length:
-            msg = 'Minimum query length is {:d}'.format(self.minimum_input_length)
+            msg = 'Minimum query length is {:d}'.format(
+                self.minimum_input_length,
+            )
             raise BadRequest(msg)
 
         results = []
