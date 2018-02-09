@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import logging
 import os
@@ -61,7 +62,7 @@ _setup_steps = (
         'Basic site informations',
         'Site name, admin email...',
     ),
-    Step('admin_account', 'step_admin_account', u'Admin account', None),
+    Step('admin_account', 'step_admin_account', 'Admin account', None),
     Step('finalize', 'finalize', 'Finalize', None),
 )
 
@@ -96,7 +97,6 @@ def common_context():
         'dialects_unavailable': _dialects_unavailable,
         'validated_steps': session_get('validated', ()),
     }
-
     ctx.update(request.setup_step_progress)
     return ctx
 
@@ -239,9 +239,9 @@ def step_redis_form():
 def step_redis_validate():
     form = request.form
     data = dict(
-        host=form.get(u'host', u'localhost').strip(),
-        port=form.get(u'port', u'').strip() or u'6379',
-        db=form.get(u'db', u'').strip() or u'1',
+        host=form.get('host', 'localhost').strip(),
+        port=form.get('port', '').strip() or '6379',
+        db=form.get('db', '').strip() or '1',
     )
 
     for k in ('port', 'db'):
@@ -250,7 +250,7 @@ def step_redis_validate():
         except ValueError:
             pass
 
-    data['uri'] = u'redis://{host}:{port}/{db}'.format(**data)
+    data['uri'] = 'redis://{host}:{port}/{db}'.format(**data)
     session_set('redis', data)
     error = None
 
@@ -261,20 +261,20 @@ def step_redis_validate():
             db=data['db'],
         )
     except Exception as e:
-        error = u'Connection error, check parameters'
+        error = 'Connection error, check parameters'
         raise e
 
     try:
         r.info()
     except redis.exceptions.InvalidResponse:
         error = (
-            u"Connection error: doesn't look like it's a redis server. "
-            u"Verify host and port are those of your redis server."
+            "Connection error: doesn't look like it's a redis server. "
+            "Verify host and port are those of your redis server."
         )
     except redis.exceptions.ResponseError as e:
-        error = u'Redis server response: {}'.format(e)
+        error = 'Redis server response: {}'.format(e)
     except redis.exceptions.RedisError as e:
-        error = u'Unknown redis error ({})'.format(e)
+        error = 'Unknown redis error ({})'.format(e)
 
     if error:
         flash(error, 'error')
@@ -320,8 +320,8 @@ def get_possible_hostnames():
 def step_site_info_form():
     cfg = current_app.config
     default_data = {
-        'sitename': cfg.get('SITE_NAME', u'') or u'',
-        'mailsender': cfg.get('MAIL_SENDER', u'') or u'',
+        'sitename': cfg.get('SITE_NAME', '') or '',
+        'mailsender': cfg.get('MAIL_SENDER', '') or '',
     }
     return render_template(
         'setupwizard/step_site_info.html',
@@ -333,9 +333,9 @@ def step_site_info_form():
 def step_site_info_validate():
     form = request.form
     data = {
-        'sitename': form.get('sitename', u'').strip(),
-        'mailsender': form.get('mailsender', u'').strip(),
-        'server_mode': form.get('server_mode', u'').strip(),
+        'sitename': form.get('sitename', '').strip(),
+        'mailsender': form.get('mailsender', '').strip(),
+        'server_mode': form.get('server_mode', '').strip(),
     }
 
     session_set('site_info', data)
@@ -365,12 +365,12 @@ def step_admin_account_form():
 
 def step_admin_account_validate():
     form = request.form
-    password = form.get('password', u'').strip()
-    confirm_password = form.get('confirm_password', u'').strip()
+    password = form.get('password', '').strip()
+    confirm_password = form.get('confirm_password', '').strip()
     admin_user = {
-        'email': form.get('email', u'').strip(),
-        'name': form.get('name', u'').strip(),
-        'firstname': form.get('firstname', u'').strip(),
+        'email': form.get('email', '').strip(),
+        'name': form.get('name', '').strip(),
+        'firstname': form.get('firstname', '').strip(),
         'password': password,
         'confirm_password': confirm_password,
     }
@@ -425,7 +425,7 @@ def finalize_validate():
     config.SITE_NAME = d['sitename']
     config.MAIL_SENDER = d['mailsender']
 
-    is_production = d['server_mode'] == u'production'
+    is_production = d['server_mode'] == 'production'
     config.PRODUCTION = is_production
     config.DEBUG = not is_production
     config.DEBUG_TB_ENABLED = config.DEBUG

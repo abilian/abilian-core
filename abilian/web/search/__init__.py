@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from abilian.core.signals import register_js_api
 from abilian.web import url_for
@@ -14,7 +15,7 @@ def _do_register_js_api(sender):
     app = sender
     js_api = app.js_api.setdefault('search', {})
     # hack to avoid url_for escape '%'
-    js_api['live'] = url_for('search.live', q='') + u'%QUERY'
+    js_api['live'] = url_for('search.live', q='') + '%QUERY'
 
 
 def register_plugin(app):

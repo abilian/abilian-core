@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 from flask import render_template
 
@@ -14,7 +15,7 @@ from . import views
 class UsersPanel(AdminPanel):
     """User administration panel."""
     id = 'users'
-    label = _l(u'Users')
+    label = _l('Users')
     icon = 'user'
 
     def install_additional_rules(self, add_url_rule):
@@ -32,7 +33,7 @@ class UsersPanel(AdminPanel):
         datatable_options = {
             'sDom': 'lfFritip',
             'aaSorting': [
-                [1, u'asc'],
+                [1, 'asc'],
             ],
             'aoColumns': [
                 dict(bSortable=False),
