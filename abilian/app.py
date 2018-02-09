@@ -43,7 +43,6 @@ import abilian.core.util
 import abilian.i18n
 from abilian.core import extensions, redis, signals
 from abilian.core.celery import FlaskCelery
-from abilian.plugin.loader import AppLoader
 from abilian.services import converter as conversion_service
 from abilian.services import activity_service, antivirus, audit_service, \
     auth_service, index_service, preferences_service, repository_service, \
@@ -88,17 +87,6 @@ class ServiceManager(object):
 
 class PluginManager(object):
     """Mixin that provides support for loading plugins."""
-
-    @deprecated
-    def load_plugins(self):
-        """Discover and load plugins.
-
-        At this point, prefer explicit loading using the
-        :method:~`register_plugin` method.
-        """
-        loader = AppLoader()
-        loader.load(__name__.split('.')[0])
-        loader.register(self)
 
     @deprecated
     def register_plugin(self, name):

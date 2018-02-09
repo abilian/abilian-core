@@ -22,12 +22,6 @@ Module :mod:`abilian.i18n`
    .. autodata:: babel
 
 
-Package ``abilian.plugin``
---------------------------
-
-.. automodule:: abilian.plugin
-
-
 Package ``abilian.core``
 ------------------------
 
@@ -45,7 +39,7 @@ Module :mod:`abilian.core.entities`
       :show-inheritance:
       :members:
       :special-members:
-      
+
 
 Module :mod:`abilian.core.extensions`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -150,7 +144,7 @@ Module :mod:`abilian.web.comments`
 
 .. automodule:: abilian.web.comments
 
-                
+
 Module :mod:`abilian.web.decorators`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -183,7 +177,7 @@ Module :mod:`abilian.web.forms`
 Module :mod:`abilian.web.views`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: abilian.web.views   
+.. automodule:: abilian.web.views
 
 Module :mod:`abilian.web.frontend`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -195,7 +189,7 @@ Module :mod:`abilian.web.tags`
 
 .. automodule:: abilian.web.tags
 
-                
+
 Module :mod:`abilian.web.util`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -206,4 +200,3 @@ Package ``abilian.testing``
 ---------------------------
 
 .. automodule:: abilian.testing
-

@@ -57,7 +57,6 @@ six==1.11.0
 sqlalchemy-utils==0.32.21
 sqlalchemy==1.2.2
 sqlparse==0.2.4
-straight.plugin==1.4.1
 tqdm==4.19.5
 typing==3.6.4
 validators==0.12.1        # via wtforms-components
