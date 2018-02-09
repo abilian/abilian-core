@@ -152,12 +152,12 @@ class Application(Flask, ServiceManager, PluginManager):
     )
 
     #: Environment variable used to locate a config file to load last (after
-    #: instance config file). Use this if you want to override some settings on a
-    #: configured instance.
+    #: instance config file). Use this if you want to override some settings
+    #: on a configured instance.
     CONFIG_ENVVAR = 'ABILIAN_CONFIG'
 
-    #: True if application has a config file and can be considered configured for
-    #: site.
+    #: True if application has a config file and can be considered configured
+    #: for site.
     configured = ConfigAttribute('CONFIGURED')
 
     #: If True all views will require by default an authenticated user, unless
@@ -233,12 +233,12 @@ class Application(Flask, ServiceManager, PluginManager):
                     settings = self.services['settings']
                     config = settings.namespace('config').as_dict()
                 except sa.exc.DatabaseError as exc:
-                    # we may get here if DB is not initialized and "settings" table is
-                    # missing. Command "initdb" must be run to initialize db, but first we
-                    # must pass app init
+                    # We may get here if DB is not initialized and "settings"
+                    # table is missing. Command "initdb" must be run to
+                    # initialize db, but first we must pass app init.
                     if not self.testing:
-                        # durint tests this message will show up on every test, since db is
-                        # always recreated
+                        # durint tests this message will show up on every test,
+                        # since db is always recreated
                         logging.error(exc)
                     self.db.session.rollback()
                 else:
@@ -265,9 +265,9 @@ class Application(Flask, ServiceManager, PluginManager):
                 allow_access_for_roles(Anonymous),
                 endpoint=True,
             )
-            # debugtoolbar: this is needed to have it when not authenticated on a
-            # private site. We cannot do this in init_debug_toolbar, since auth
-            # service is not yet installed
+            # debugtoolbar: this is needed to have it when not authenticated
+            # on a private site. We cannot do this in init_debug_toolbar,
+            # since auth service is not yet installed.
             self.add_access_controller(
                 'debugtoolbar',
                 allow_access_for_roles(Anonymous),
@@ -283,10 +283,10 @@ class Application(Flask, ServiceManager, PluginManager):
 
         # At this point all models should have been imported: time to configure
         # mappers. Normally Sqlalchemy does it when needed but mappers may be
-        # configured inside sa.orm.class_mapper() which hides a misconfiguration: if
-        # a mapper is misconfigured its exception is swallowed by
-        # class_mapper(model) results in this laconic (and misleading) message:
-        # "model is not mapped"
+        # configured inside sa.orm.class_mapper() which hides a
+        # misconfiguration: if a mapper is misconfigured its exception is
+        # swallowed by class_mapper(model) results in this laconic
+        # (and misleading) message: "model is not mapped"
         sa.orm.configure_mappers()
 
         signals.components_registered.send(self)
@@ -368,7 +368,8 @@ class Application(Flask, ServiceManager, PluginManager):
                 # fallback on abilian-core's
                 logger.warning(
                     '\n' + ('*' * 79) + '\n'
-                    'Could not find command manager at %r, using a default one\n'
+                    'Could not find command manager at %r, '
+                    'using a default one\n'
                     'Some commands might not be available\n' +
                     ('*' * 79) + '\n',
                     manager_import_path,
@@ -447,8 +448,8 @@ class Application(Flask, ServiceManager, PluginManager):
         if not config.get('SESSION_COOKIE_NAME'):
             config['SESSION_COOKIE_NAME'] = self.name + '-session'
 
-        # during testing DATA_DIR is not created by instance app, but we still need
-        # this attribute to be set
+        # during testing DATA_DIR is not created by instance app,
+        # but we still need this attribute to be set
         self.DATA_DIR = Path(self.instance_path, 'data')
 
         if self._ABILIAN_INIT_TESTING_FLAG:
@@ -545,9 +546,9 @@ class Application(Flask, ServiceManager, PluginManager):
         DeferredJS(self)
 
         # auth_service installs a `before_request` handler (actually it's
-        # flask-login). We want to authenticate user ASAP, so that sentry and logs
-        # can report which user encountered any error happening later, in particular
-        # in a before_request handler (like csrf validator)
+        # flask-login). We want to authenticate user ASAP, so that sentry and
+        # logs can report which user encountered any error happening later,
+        # in particular in a before_request handler (like csrf validator)
         auth_service.init_app(self)
 
         # webassets
@@ -688,8 +689,8 @@ class Application(Flask, ServiceManager, PluginManager):
         """Add a new url rule for static files.
 
         :param endpoint: flask endpoint name for this url rule.
-        :param url_path: subpath from application static url path. No heading or trailing
-                    slash.
+        :param url_path: subpath from application static url path. No heading
+            or trailing slash.
         :param directory: directory to serve content from.
 
         Example::
@@ -806,8 +807,8 @@ class Application(Flask, ServiceManager, PluginManager):
     def handle_exception(self, e):
         session = db.session()
         if not session.is_active:
-            # something happened in error handlers and session is not usable anymore.
-            #
+            # something happened in error handlers and session is not usable
+            # anymore.
             self._remove_session_save_objects()
 
         return Flask.handle_exception(self, e)
