@@ -198,7 +198,7 @@ class WhooshIndexService(Service):
             else:
                 index_path = Path(state.whoosh_base) / name
                 if not index_path.exists():
-                    index_path.mkdir()
+                    index_path.mkdir(parents=True)
                 storage = FileStorage(index_path.absolute())
 
             FileIndex = whoosh.index.FileIndex

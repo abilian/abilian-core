@@ -160,6 +160,7 @@ clean:
 tidy: clean
 	rm -rf .tox .dox .travis-solo
 	rm -rf node_modules
+	rm -rf instance
 
 update-pot:
 	# _n => ngettext, _l => lazy_gettext
