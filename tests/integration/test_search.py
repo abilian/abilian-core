@@ -55,6 +55,7 @@ class IndexingTestCase(IntegrationTestCase):
             email="test@example.com",
         )
         self.session.add(contact)
+        # commit is needed here to trigger change in index
         self.session.commit()
 
         search_result = index_service.search('john')

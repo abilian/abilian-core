@@ -141,7 +141,7 @@ class TestSessionRepository(BaseTestCase):
         assert isinstance(transaction, RepositoryTransaction)
         assert transaction._parent is root_transaction
 
-        self.session.commit()
+        self.session.flush()
         transaction = state.get_transaction(self.session)
         assert transaction is root_transaction
 
@@ -151,7 +151,7 @@ class TestSessionRepository(BaseTestCase):
         assert isinstance(transaction, RepositoryTransaction)
         assert transaction._parent is root_transaction
 
-        self.session.commit()
+        self.session.flush()
         transaction = state.get_transaction(self.session)
         assert transaction is root_transaction
 

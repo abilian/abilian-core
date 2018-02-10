@@ -24,8 +24,6 @@ from flask_assets import Bundle
 from abilian.app import Application
 from abilian.core.models.subjects import User, ClearPasswordStrategy
 
-assert 'twill' not in subprocess.__file__
-
 __all__ = ['TestConfig', 'BaseTestCase']
 
 _CLEAR_PWD = ClearPasswordStrategy()

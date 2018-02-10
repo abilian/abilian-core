@@ -75,7 +75,7 @@ class TestAuth(BaseTestCase):
         )
         u = User(**kwargs)
         self.session.add(u)
-        self.session.commit()
+        self.session.flush()
 
         rv = self.client.post('/user/login', data=kwargs)
         assert rv.status_code == 302
@@ -88,7 +88,7 @@ class TestAuth(BaseTestCase):
 
         # login disabled
         u.can_login = False
-        self.session.commit()
+        self.session.flush()
         rv = self.client.post('/user/login', data=kwargs)
         assert rv.status_code == 401
 
@@ -100,7 +100,7 @@ class TestAuth(BaseTestCase):
         )
         u = User(**kwargs)
         self.session.add(u)
-        self.session.commit()
+        self.session.flush()
 
         rv = self.client.post(
             '/user/api/login',
@@ -127,7 +127,7 @@ class TestAuth(BaseTestCase):
         )
         u = User(**kwargs)
         self.session.add(u)
-        self.session.commit()
+        self.session.flush()
 
         payload = dict()
         payload.update(kwargs)

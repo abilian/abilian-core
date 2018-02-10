@@ -27,7 +27,7 @@ class TestUserPreferences(BaseTestCase):
             can_login=True,
         )
         self.session.add(self.user)
-        self.session.commit()
+        self.session.flush()
 
     def test_form_photo(self):
         url = url_for('preferences.user')

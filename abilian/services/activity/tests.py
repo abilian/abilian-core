@@ -30,7 +30,7 @@ class ActivityTestCase(BaseTestCase):
             self.session.add(user)
             self.session.add(message)
         service.log_activity(None, user, "post", message)
-        self.session.commit()
+        self.session.flush()
 
         m_id, m_type = message.id, message.entity_type
 
