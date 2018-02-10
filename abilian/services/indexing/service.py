@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import logging
-import os
 from inspect import isclass
 from pathlib import Path
 
@@ -137,14 +136,12 @@ class WhooshIndexService(Service):
         Service.init_app(self, app)
         state = app.extensions[self.name]
 
-        whoosh_base = app.config.get("WHOOSH_BASE")
-        if not whoosh_base:
-            whoosh_base = "whoosh"  # Default value
+        whoosh_base = Path(app.config.get("WHOOSH_BASE", "whoosh"))
 
-        if not os.path.isabs(whoosh_base):
-            whoosh_base = os.path.join(app.instance_path, whoosh_base)
+        if not whoosh_base.is_absolute():
+            whoosh_base = app.instance_path / whoosh_base
 
-        state.whoosh_base = os.path.abspath(whoosh_base)
+        state.whoosh_base = whoosh_base.absolute()
 
         if not self._listening:
             event.listen(Session, "after_flush", self.after_flush)

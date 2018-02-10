@@ -334,7 +334,7 @@ class ClosureJS(BaseClosureJS):
         self.source_files = []
 
     def input(self, _in, out, source_path, output_path, **kwargs):
-        if not os.path.isfile(source_path):
+        if not Path(source_path).is_file():
             # we are not processing files but webassets intermediate hunks
             return
         self.source_files.append(source_path)

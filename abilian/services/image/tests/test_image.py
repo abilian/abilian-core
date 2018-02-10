@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function, unicode_literals
 
-from os.path import dirname, join
+from pathlib import Path
 
 from pytest import fixture
 
@@ -11,7 +11,7 @@ from .. import CROP, FIT, SCALE, get_save_format, get_size, resize
 @fixture
 def orig_image():
     # 725x518
-    return open(join(dirname(__file__), "cat.jpg"), 'rb').read()
+    return (Path(__file__).parent / "cat.jpg").open('rb').read()
 
 
 def test_get_save_format():

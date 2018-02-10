@@ -240,9 +240,9 @@ class Translations(BaseTranslations):
 
                 msgstr = msgstr.strip()
                 if msgkey in self._catalog and (msgid == msgstr):
-                    # when msgstr is empty, compile_catalog sets msgstr = msgid so this is
-                    # probable an existing translation that would be "erased" by msgid
-                    # string: skip it.
+                    # when msgstr is empty, compile_catalog sets msgstr = msgid
+                    # so this is probable an existing translation that would
+                    # be "erased" by msgid string: skip it.
 
                     # logger.debug('Catalog: %r, skip msgkey: %r, existing: %r',
                     # translations, msgkey, self._catalog[msgkey])

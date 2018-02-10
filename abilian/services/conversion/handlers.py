@@ -277,18 +277,19 @@ class UnoconvPdfHandler(Handler):
         execute_ok = False
 
         if unoconv:
-            found = os.path.isfile(unoconv)
+            unoconv_path = Path(unoconv)
+            found = unoconv_path.is_file()
             if found:
                 # make absolute path: avoid errors when running with different
                 # CWD
                 unoconv = os.path.abspath(unoconv)
                 execute_ok = os.access(unoconv, os.X_OK)
                 if not execute_ok:
-                    self.log.warning('Not allowed to execute "{}", fallback to '
-                                     '"unoconv"'.format(unoconv))
+                    self.log.warning('Not allowed to execute "%s", fallback to '
+                                     '"unoconv"', unoconv)
             else:
-                self.log.warning('Cannot find "{}", fallback to "unoconv"'
-                                 ''.format(unoconv))
+                self.log.warning('Cannot find "%s", fallback to "unoconv"'
+                                 '', unoconv)
 
         if not unoconv or not found or not execute_ok:
             unoconv = 'unoconv'
@@ -404,15 +405,15 @@ class LibreOfficePdfHandler(Handler):
 
         if soffice:
             # make absolute path: avoid errors when running with different CWD
-            soffice = os.path.abspath(soffice)
-            found = os.path.isfile(soffice)
+            soffice_path = Path(soffice).absolute()
+            found = soffice_path.is_file()
             if not found:
-                self.log.error("Can't find executable {}".format(soffice))
+                self.log.error("Can't find executable %s", soffice)
 
-        elif os.path.isfile("/usr/local/bin/soffice"):
+        elif Path("/usr/local/bin/soffice").is_file():
             soffice = "/usr/local/bin/soffice"
 
-        elif os.path.isfile("/usr/bin/soffice"):
+        elif Path("/usr/bin/soffice").is_file():
             soffice = "/usr/bin/soffice"
 
         if soffice:
@@ -465,9 +466,7 @@ class LibreOfficePdfHandler(Handler):
                         try:
                             self._process.kill()
                         except OSError:
-                            logger.warning("Failed to kill process {}".format(
-                                self._process,
-                            ))
+                            logger.warning("Failed to kill process %s", self._process)
 
                     self._process = None
                     raise ConversionError(

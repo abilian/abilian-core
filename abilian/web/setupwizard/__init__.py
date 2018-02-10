@@ -401,7 +401,7 @@ def finalize():
 
 
 def finalize_form():
-    file_location = os.path.join(current_app.instance_path, 'config.py')
+    file_location = Path(current_app.instance_path) / 'config.py'
     return render_template(
         'setupwizard/finalize.html',
         file_location=file_location,

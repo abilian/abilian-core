@@ -2,15 +2,13 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import tempfile
-from os.path import dirname, join
 from warnings import warn
+from pathlib import Path
 
 import pytest
 from magic import Magic, os
 
 from abilian.services.conversion.handlers import HAS_LIBREOFFICE, HAS_PDFTOTEXT
-
-BASEDIR = join(dirname(__file__), "dummy_files")
 
 mime_sniffer = Magic(mime=True)
 encoding_sniffer = Magic(mime_encoding=True)
@@ -31,7 +29,7 @@ def converter():
 
 
 def read_file(fn, mode='rb'):
-    return open(join(BASEDIR, fn), mode).read()
+    return (Path(__file__).parent / "dummy_files" / fn).open(mode).read()
 
 
 # To text

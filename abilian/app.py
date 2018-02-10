@@ -459,7 +459,7 @@ class Application(Flask, ServiceManager, PluginManager):
         if instance_relative:
             self.check_instance_folder(create=True)
 
-        cfg_path = os.path.join(config.root_path, 'config.py')
+        cfg_path = Path(config.root_path) / 'config.py'
         logger.info('Try to load config: "%s"', cfg_path)
         try:
             config.from_pyfile(cfg_path, silent=False)
@@ -488,21 +488,19 @@ class Application(Flask, ServiceManager, PluginManager):
 
         logging_file = self.config.get('LOGGING_CONFIG_FILE')
         if logging_file:
-            logging_file = os.path.abspath(
-                os.path.join(self.instance_path, logging_file),
-            )
+            logging_file = (Path(self.instance_path) / logging_file).absolute()
         else:
-            logging_file = resource_filename(__name__, 'default_logging.yml')
+            logging_file = Path(resource_filename(__name__, 'default_logging.yml'))
 
-        if logging_file.endswith('.conf'):
+        if logging_file.suffix == '.ini':
             # old standard 'ini' file config
             logging.config.fileConfig(
                 logging_file,
                 disable_existing_loggers=False,
             )
-        elif logging_file.endswith('.yml'):
-            # yml config file
-            logging_cfg = yaml.safe_load(open(logging_file, 'r'))
+        elif logging_file.suffix == '.yml':
+            # yaml config file
+            logging_cfg = yaml.safe_load(logging_file.open('r'))
             logging_cfg.setdefault('version', 1)
             logging_cfg.setdefault('disable_existing_loggers', False)
             logging.config.dictConfig(logging_cfg)
