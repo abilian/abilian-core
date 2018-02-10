@@ -2,8 +2,8 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import tempfile
-from warnings import warn
 from pathlib import Path
+from warnings import warn
 
 import pytest
 from magic import Magic, os

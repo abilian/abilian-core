@@ -11,6 +11,7 @@ from flask import Flask
 from flask_babel import Babel
 from flask_testing import TestCase as FlaskTestCase
 from jinja2 import Environment
+from pytest import fixture, yield_fixture
 from pytz import timezone, utc
 
 from .. import filters
@@ -58,128 +59,128 @@ def test_roughsize():
     assert '55+' == roughsize(57, mod=5)
 
 
-class TestFilters(FlaskTestCase):
+def test_abbrev():
+    abbrev = filters.abbrev
+    assert 'test' == abbrev('test', 20)
+    assert 'Longer test...e truncated' == \
+           abbrev('Longer test. it should be truncated', 25)
 
-    def create_app(self):
-        app = Flask(__name__)
-        babel = Babel(app, default_locale='fr', default_timezone=USER_TZ)
-        babel.localeselector(en_locale)
-        babel.timezoneselector(user_tz)
-        return app
 
-    def test_date_age(self):
-        date_age = filters.date_age
-        now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
+def test_linkify():
+    tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
+    rendered = tmpl.render()
+    el = html5lib.parseFragment(rendered)
+    assert len(el.getchildren()) == 1
 
-        assert date_age(None) == ""
+    el = el.getchildren()[0]
+    assert el.tag == '{http://www.w3.org/1999/xhtml}a'
+    assert el.text == 'http://test.example.com'
+    assert sorted(el.items()) == \
+        [
+        ('href', 'http://test.example.com'),
+        ('rel', 'nofollow'),
+    ]
 
-        dt = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
-        assert date_age(dt, now) == "2012-06-10 18:10 (1 minute ago)"
 
-        dt = datetime.datetime(2012, 6, 10, 10, 8, 10, tzinfo=utc)
-        assert date_age(dt, now) == "2012-06-10 18:08 (2 minutes ago)"
+def test_nl2br():
+    tmpl = env.from_string(
+        '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',
+    )
+    assert tmpl.render() == \
+        'first line<br />\nsecond line<br />\n<br />\n  third, indented'
 
-        dt = datetime.datetime(2012, 6, 10, 8, 30, 10, tzinfo=utc)
-        assert date_age(dt, now) == "2012-06-10 16:30 (2 hours ago)"
 
-        # for coverage: test when using default parameter now=None
-        dt_patcher = mock.patch.object(
-            filters.datetime,
-            'datetime',
-            mock.Mock(wraps=datetime.datetime),
-        )
-        with dt_patcher as mocked:
-            mocked.utcnow.return_value = now
-            assert date_age(dt) == "2012-06-10 16:30 (2 hours ago)"
+def test_paragraphs():
+    markdown_text = dedent('''\
+        {{ "First paragraph
+        some text
+        with line return
 
-    def test_age(self):
-        age = filters.age
-        now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
-        d1m = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
-        d3w = datetime.datetime(2012, 5, 18, 8, 0, 0, tzinfo=utc)
-        d2011 = datetime.datetime(2011, 9, 4, 12, 12, 0, tzinfo=utc)
+        Second paragraph
+        ... lorem
 
-        # default parameters
-        assert age(None) == ''
-        assert age(d1m, now) == '1 minute ago'
-        assert age(d3w, now) == '3 weeks ago'
+        Last one - a single line" | paragraphs }}
+        ''')
+    tmpl = env.from_string(markdown_text)
 
-        # with direction
-        assert age(d1m, now, add_direction=False) == '1 minute'
-        assert age(d3w, now, add_direction=False) == '3 weeks'
+    expected = dedent('''\
+        <p>First paragraph<br />
+        some text<br />
+        with line return</p>
 
-        # with date_threshold
-        assert age(d1m, now, date_threshold='day') == '1 minute ago'
-        # same year: 2012 not shown
-        assert age(d3w, now, date_threshold='day') == 'May 18, 4:00 PM'
-        # different year: 2011 shown
-        assert (
-            age(
-                d2011,
-                now,
-                date_threshold='day',
-            ) == 'September 4, 2011, 8:12 PM'
-        )
+        <p>Second paragraph<br />
+        ... lorem</p>
 
-        # using default parameter now=None
-        dt_patcher = mock.patch.object(
-            filters.datetime,
-            'datetime',
-            mock.Mock(wraps=datetime.datetime),
-        )
-        with dt_patcher as mocked:
-            mocked.utcnow.return_value = now
-            assert age(d1m) == '1 minute ago'
+        <p>Last one - a single line</p>
+        ''')
+    assert tmpl.render().strip() == expected.strip()
 
-    def test_abbrev(self):
-        abbrev = filters.abbrev
-        assert 'test' == abbrev('test', 20)
-        assert 'Longer test...e truncated' == \
-            abbrev('Longer test. it should be truncated', 25)
 
-    def test_linkify(self):
-        tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
-        rendered = tmpl.render()
-        el = html5lib.parseFragment(rendered)
-        assert len(el.getchildren()) == 1
+@yield_fixture
+def app():
+    app = Flask(__name__)
+    babel = Babel(app, default_locale='fr', default_timezone=USER_TZ)
+    babel.localeselector(en_locale)
+    babel.timezoneselector(user_tz)
+    with app.app_context():
+        yield app
 
-        el = el.getchildren()[0]
-        assert el.tag == '{http://www.w3.org/1999/xhtml}a'
-        assert el.text == 'http://test.example.com'
-        assert sorted(el.items()) == \
-            [
-                ('href', 'http://test.example.com'),
-                ('rel', 'nofollow'),
-        ]
 
-    def test_nl2br(self):
-        tmpl = env.from_string(
-            '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',
-        )
-        assert tmpl.render() == \
-            'first line<br />\nsecond line<br />\n<br />\n  third, indented'
+def test_date_age(app):
+    date_age = filters.date_age
+    now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
+    assert date_age(None) == ""
 
-    def test_paragraphs(self):
-        markdown_text = dedent('''\
-            {{ "First paragraph
-            some text
-            with line return
+    dt = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
+    assert date_age(dt, now) == "2012-06-10 18:10 (1 minute ago)"
 
-            Second paragraph
-            ... lorem
+    dt = datetime.datetime(2012, 6, 10, 10, 8, 10, tzinfo=utc)
+    assert date_age(dt, now) == "2012-06-10 18:08 (2 minutes ago)"
 
-            Last one - a single line" | paragraphs }}
-            ''')
-        tmpl = env.from_string(markdown_text)
+    dt = datetime.datetime(2012, 6, 10, 8, 30, 10, tzinfo=utc)
+    assert date_age(dt, now) == "2012-06-10 16:30 (2 hours ago)"
 
-        expected = dedent('''\
-            <p>First paragraph<br />
-            some text<br />
-            with line return</p>
+    # for coverage: test when using default parameter now=None
+    dt_patcher = mock.patch.object(
+        filters.datetime,
+        'datetime',
+        mock.Mock(wraps=datetime.datetime),
+    )
+    with dt_patcher as mocked:
+        mocked.utcnow.return_value = now
+        assert date_age(dt) == "2012-06-10 16:30 (2 hours ago)"
 
-            <p>Second paragraph<br />
-            ... lorem</p>
 
-            <p>Last one - a single line</p>
-            ''')
-        assert tmpl.render().strip() == expected.strip()
+def test_age(app):
+    age = filters.age
+    now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
+    d1m = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)
+    d3w = datetime.datetime(2012, 5, 18, 8, 0, 0, tzinfo=utc)
+    d2011 = datetime.datetime(2011, 9, 4, 12, 12, 0, tzinfo=utc)
+
+    # default parameters
+    assert age(None) == ''
+    assert age(d1m, now) == '1 minute ago'
+    assert age(d3w, now) == '3 weeks ago'
+
+    # with direction
+    assert age(d1m, now, add_direction=False) == '1 minute'
+    assert age(d3w, now, add_direction=False) == '3 weeks'
+
+    # with date_threshold
+    assert age(d1m, now, date_threshold='day') == '1 minute ago'
+    # same year: 2012 not shown
+    assert age(d3w, now, date_threshold='day') == 'May 18, 4:00 PM'
+    # different year: 2011 shown
+    assert age(d2011, now, date_threshold='day') \
+        == 'September 4, 2011, 8:12 PM'
+
+    # using default parameter now=None
+    dt_patcher = mock.patch.object(
+        filters.datetime,
+        'datetime',
+        mock.Mock(wraps=datetime.datetime),
+    )
+    with dt_patcher as mocked:
+        mocked.utcnow.return_value = now
+        assert age(d1m) == '1 minute ago'

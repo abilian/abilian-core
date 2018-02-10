@@ -490,7 +490,9 @@ class Application(Flask, ServiceManager, PluginManager):
         if logging_file:
             logging_file = (Path(self.instance_path) / logging_file).absolute()
         else:
-            logging_file = Path(resource_filename(__name__, 'default_logging.yml'))
+            logging_file = Path(
+                resource_filename(__name__, 'default_logging.yml'),
+            )
 
         if logging_file.suffix == '.ini':
             # old standard 'ini' file config

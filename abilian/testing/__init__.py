@@ -296,7 +296,7 @@ class BaseTestCase(TestCase):
         .. seealso:: :meth:`logout`
         """
         self._login_tests_sanity_check()
-        success = login_user(user, remember, force)
+        success = login_user(user, remember=remember, force=force)
         if not success:
             raise ValueError(
                 'User is not active, cannot login; or use force=True',

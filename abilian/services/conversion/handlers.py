@@ -285,11 +285,15 @@ class UnoconvPdfHandler(Handler):
                 unoconv = os.path.abspath(unoconv)
                 execute_ok = os.access(unoconv, os.X_OK)
                 if not execute_ok:
-                    self.log.warning('Not allowed to execute "%s", fallback to '
-                                     '"unoconv"', unoconv)
+                    self.log.warning(
+                        'Not allowed to execute "%s", fallback to "unoconv"',
+                        unoconv,
+                    )
             else:
-                self.log.warning('Cannot find "%s", fallback to "unoconv"'
-                                 '', unoconv)
+                self.log.warning(
+                    'Cannot find "%s", fallback to "unoconv"',
+                    unoconv,
+                )
 
         if not unoconv or not found or not execute_ok:
             unoconv = 'unoconv'
@@ -320,6 +324,7 @@ class UnoconvPdfHandler(Handler):
         with make_temp_file(blob) as in_fn, \
                 make_temp_file(prefix='tmp-unoconv-', suffix=".pdf") as out_fn:
 
+            args = ['-f', 'pdf', '-o', out_fn, in_fn]
             # Hack for my Mac, FIXME later
             if Path(
                 "/Applications/LibreOffice.app/Contents/program/python",
@@ -327,14 +332,9 @@ class UnoconvPdfHandler(Handler):
                 cmd = [
                     '/Applications/LibreOffice.app/Contents/program/python',
                     '/usr/local/bin/unoconv',
-                    '-f',
-                    'pdf',
-                    '-o',
-                    out_fn,
-                    in_fn,
-                ]
+                ] + args
             else:
-                cmd = [self.unoconv, '-f', 'pdf', '-o', out_fn, in_fn]
+                cmd = [self.unoconv] + args
 
             def run_uno():
                 try:
@@ -360,9 +360,10 @@ class UnoconvPdfHandler(Handler):
                         try:
                             self._process.kill()
                         except OSError:
-                            logger.warning("Failed to kill process {}".format(
+                            logger.warning(
+                                "Failed to kill process %s",
                                 self._process,
-                            ))
+                            )
 
                     self._process = None
                     raise ConversionError(
@@ -466,7 +467,10 @@ class LibreOfficePdfHandler(Handler):
                         try:
                             self._process.kill()
                         except OSError:
-                            logger.warning("Failed to kill process %s", self._process)
+                            logger.warning(
+                                "Failed to kill process %s",
+                                self._process,
+                            )
 
                     self._process = None
                     raise ConversionError(
