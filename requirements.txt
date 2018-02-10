@@ -54,7 +54,7 @@ pyyaml==3.12
 raven==6.5.0
 redis==2.10.6
 six==1.11.0
-sqlalchemy-utils==0.32.21
+sqlalchemy-utils==0.32.21  # via wtforms-alchemy
 sqlalchemy==1.2.2
 sqlparse==0.2.4
 tqdm==4.19.5
@@ -65,7 +65,7 @@ webassets==0.12.1         # via flask-assets
 webencodings==0.5.1       # via html5lib
 werkzeug==0.14.1          # via flask, flask-debugtoolbar, flask-wtf
 whoosh==2.7.4
-wtforms-alchemy==0.15.0
+wtforms-alchemy==0.16.6
 wtforms-components==0.10.3
 wtforms-sqlalchemy==0.1
 wtforms==2.1              # via flask-wtf, wtforms-alchemy, wtforms-components, wtforms-sqlalchemy

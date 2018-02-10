@@ -19,6 +19,11 @@ flask-sqlalchemy<=2.1
 # Currently broken w/ 0.13
 Flask-WTF>=0.12,<0.13
 
+# Forms add-ons
+WTForms-Alchemy>=0.12
+WTForms-Components>=0.10
+wtforms-sqlalchemy
+
 # pathlib is included in python 3.4, and very useful
 pathlib
 
@@ -50,13 +55,6 @@ pygeoip
 typing
 tqdm
 raven
-
-# Forms (TODO: need some updates)
-WTForms-Alchemy>=0.12,<0.16
-WTForms-Components>=0.10,<0.11
-wtforms-sqlalchemy
-# required by wtforms-alchemy
-SQLAlchemy-Utils>=0.29,<0.33
 
 # for debug toolbar
 sqlparse
