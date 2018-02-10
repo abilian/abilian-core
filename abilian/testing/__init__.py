@@ -8,7 +8,6 @@ from six import string_types
 
 import os
 from time import time
-import subprocess
 import requests
 import tempfile
 import shutil
@@ -23,6 +22,7 @@ from flask_assets import Bundle
 
 from abilian.app import Application
 from abilian.core.models.subjects import User, ClearPasswordStrategy
+from abilian.web.decorators import deprecated
 
 __all__ = ['TestConfig', 'BaseTestCase']
 
@@ -66,12 +66,12 @@ class TestConfig(object):
 
     BABEL_DEFAULT_LOCALE = 'en'
 
-    # It's a good idea to test with a timezone that's not your system timezone nor
-    # UTC. It can reveal problem with date handling within app (rule is: all dates
-    # are manipulated in UTC, and shown in user timezone).
+    # It's a good idea to test with a timezone that's not your system timezone
+    # nor UTC. It can reveal problem with date handling within app
+    # (rule is: all dates are manipulated in UTC, and shown in user timezone).
     #
-    # For example this one is GMT+8 and has no DST (tests should pass any time in
-    # year)
+    # For example this one is GMT+8 and has no DST (tests should pass any time
+    # in year)
     # BABEL_DEFAULT_TIMEZONE = 'Asia/Hong_Kong'
     BABEL_DEFAULT_TIMEZONE = 'UTC'  # this is flask-babel default
 
@@ -127,8 +127,6 @@ class BaseTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        TestCase.setUpClass()
-
         if not isinstance(cls.SERVICES, tuple):
             if isinstance(cls.SERVICES, string_types):
                 cls.SERVICES = (cls.SERVICES,)
@@ -158,8 +156,6 @@ class BaseTestCase(TestCase):
                 shutil.rmtree(cls.TEST_INSTANCE_PATH)
                 cls.TEST_INSTANCE_PATH = None
 
-        TestCase.tearDownClass()
-
     def get_setup_config(self):
         """Called by :meth:`create_app` Override this if you want to tweak the
         config before :attr:`application_class` is instanciated.
@@ -178,8 +174,6 @@ class BaseTestCase(TestCase):
         return self.app
 
     def setUp(self):
-        TestCase.setUp(self)
-
         User.__password_strategy__ = _CLEAR_PWD if self.CLEAR_PASSWORDS else _DEFAULT_PWD
 
         if not self.TESTING_BUILD_ASSETS:
@@ -240,11 +234,11 @@ class BaseTestCase(TestCase):
                 del self.__pg_schema
             else:
                 if self.db.engine.name == 'sqlite':
-                    # core.extension.sqlalchemy performs a 'PRAGMA foreign_keys=ON' on a
-                    # connection listener.
+                    # core.extension.sqlalchemy performs a
+                    # 'PRAGMA foreign_keys=ON' on a connection listener.
                     #
-                    # We must revert it to perform drop_all without ever encounting a
-                    # foreign key error
+                    # We must revert it to perform drop_all without ever
+                    # encounting a foreign key error
                     conn.execute("PRAGMA foreign_keys=OFF;")
 
                 self.db.metadata.drop_all(bind=conn)
@@ -256,8 +250,6 @@ class BaseTestCase(TestCase):
         User.__password_strategy__ = _DEFAULT_PWD
 
         self._reset_babel_extension()
-
-        TestCase.tearDown(self)
 
     def _reset_babel_extension(self):
         babel = self.app.extensions['babel']
@@ -377,6 +369,7 @@ class BaseTestCase(TestCase):
         """Shortcut to the application db object."""
         return self.app.extensions['sqlalchemy'].db
 
+    @deprecated
     def assert_302(self, response):
         assert response.status_code == 302
 

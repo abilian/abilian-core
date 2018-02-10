@@ -12,7 +12,7 @@ from uuid import UUID, uuid1
 from celery import shared_task
 from flask import current_app
 from flask_login import AnonymousUserMixin
-from six import PY3
+from six import PY3, text_type
 
 from abilian.core import signals
 from abilian.web import url_for
@@ -74,7 +74,7 @@ class FileUploadsExtension(object):
 
         path = self.UPLOAD_DIR = app.DATA_DIR / 'uploads'
         if not path.exists():
-            path.mkdir(0o775)
+            path.mkdir(mode=0o775, parents=True)
 
         path.resolve()
 
@@ -84,10 +84,10 @@ class FileUploadsExtension(object):
         js_api['newFileUrl'] = url_for('uploads.new_file')
 
     def user_dir(self, user):
-        user_id = (
-            str(user.id)
-            if not isinstance(user, AnonymousUserMixin) else 'anonymous'
-        )
+        if isinstance(user, AnonymousUserMixin):
+            user_id = 'anonymous'
+        else:
+            user_id = text_type(user.id)
         return self.UPLOAD_DIR / user_id
 
     def add_file(self, user, file_obj, **metadata):
@@ -97,7 +97,7 @@ class FileUploadsExtension(object):
         """
         user_dir = self.user_dir(user)
         if not user_dir.exists():
-            user_dir.mkdir(0o775)
+            user_dir.mkdir(mode=0o775)
 
         handle = str(uuid1())
         file_path = user_dir / handle
@@ -123,8 +123,8 @@ class FileUploadsExtension(object):
     def get_file(self, user, handle):
         """Retrieve a file for a user.
 
-        :returns: a :class:`pathlib.Path` instance to this file, or None if no file
-        can be found for this handle.
+        :returns: a :class:`pathlib.Path` instance to this file,
+            or None if no file can be found for this handle.
         """
         user_dir = self.user_dir(user)
         if not user_dir.exists():

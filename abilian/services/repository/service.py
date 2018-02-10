@@ -40,7 +40,7 @@ class RepositoryService(Service):
 
         path = app.DATA_DIR / 'files'
         if not path.exists():
-            path.mkdir(0o775)
+            path.mkdir(mode=0o775, parents=True)
 
         with app.app_context():
             self.app_state.path = path.resolve()

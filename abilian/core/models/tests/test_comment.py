@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from pytest import raises
 
 from abilian.core.entities import Entity
-from abilian.testing import BaseTestCase as AbilianTestCase
 
 from ..comment import Comment, is_commentable, register
 
@@ -39,23 +38,21 @@ def test_cannot_register_non_entities():
         register(Dummy)
 
 
-class TestComment(AbilianTestCase):
+def test_default_ordering(app, db):
+    commentable = CommentableContent(name='commentable objet')
+    db.session.add(commentable)
 
-    def test_default_ordering(self):
-        commentable = CommentableContent(name='commentable objet')
-        self.session.add(commentable)
+    now = datetime.now()
+    c1 = Comment(entity=commentable, body='comment #1')
+    c1.created_at = now - timedelta(10)
+    db.session.flush()
+    c2 = Comment(entity=commentable, body='comment #2')
+    c2.created_at = now - timedelta(5)
+    db.session.flush()
 
-        now = datetime.now()
-        c1 = Comment(entity=commentable, body='comment #1')
-        c1.created_at = now - timedelta(10)
-        self.session.flush()
-        c2 = Comment(entity=commentable, body='comment #2')
-        c2.created_at = now - timedelta(5)
-        self.session.flush()
+    query = Comment.query.filter(Comment.entity == commentable)
+    assert query.all() == [c1, c2]
 
-        query = Comment.query.filter(Comment.entity == commentable)
-        assert query.all() == [c1, c2]
-
-        c1.created_at = c2.created_at
-        c2.created_at = c1.created_at - timedelta(5)
-        assert query.all() == [c2, c1]
+    c1.created_at = c2.created_at
+    c2.created_at = c1.created_at - timedelta(5)
+    assert query.all() == [c2, c1]

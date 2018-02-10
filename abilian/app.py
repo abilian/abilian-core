@@ -186,8 +186,8 @@ class Application(Flask, ServiceManager, PluginManager):
         else:
             kwargs.setdefault('instance_relative_config', True)
 
-        # used by make_config to determine if we try to load config from instance /
-        # environment variable /...
+        # used by make_config to determine if we try to load config from
+        # instance / environment variable /...
         self._ABILIAN_INIT_TESTING_FLAG = (
             getattr(config, 'TESTING', False)
             if config else False
@@ -217,9 +217,9 @@ class Application(Flask, ServiceManager, PluginManager):
             self.init_sentry()
 
         if not configured:
-            # set fixed secret_key so that any unconfigured worker will use, so that
-            # session can be used during setup even if multiple processes are
-            # processing requests.
+            # set fixed secret_key so that any unconfigured worker will use,
+            # so that session can be used during setup even if
+            # multiple processes are processing requests.
             self.config['SECRET_KEY'] = 'abilian_setup_key'
 
         # time to load config bits from database: 'settings'
@@ -1095,4 +1095,4 @@ class Application(Flask, ServiceManager, PluginManager):
 
 
 def create_app(config=None):
-    return Application(config)
+    return Application(config=config)
