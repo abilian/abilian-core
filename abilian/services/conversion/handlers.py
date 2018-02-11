@@ -406,7 +406,7 @@ class LibreOfficePdfHandler(Handler):
 
         if soffice:
             # make absolute path: avoid errors when running with different CWD
-            soffice_path = Path(soffice).absolute()
+            soffice_path = Path(soffice).resolve()
             found = soffice_path.is_file()
             if not found:
                 self.log.error("Can't find executable %s", soffice)

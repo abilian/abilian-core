@@ -36,7 +36,7 @@ class SysinfoPanel(AdminPanel):
                 vcs=None,
             )
 
-            location = text_type(Path(dist.location).absolute())
+            location = text_type(Path(dist.location).resolve())
             vcs_name = vcs.get_backend_name(location)
 
             if vcs_name:

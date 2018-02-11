@@ -34,7 +34,7 @@ from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
 from flask_script import Manager as ScriptManager
 from pkg_resources import resource_filename
-from six import string_types
+from six import string_types, text_type
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
@@ -488,7 +488,7 @@ class Application(Flask, ServiceManager, PluginManager):
 
         logging_file = self.config.get('LOGGING_CONFIG_FILE')
         if logging_file:
-            logging_file = (Path(self.instance_path) / logging_file).absolute()
+            logging_file = (Path(self.instance_path) / logging_file).resolve()
         else:
             logging_file = Path(
                 resource_filename(__name__, 'default_logging.yml'),
@@ -497,7 +497,7 @@ class Application(Flask, ServiceManager, PluginManager):
         if logging_file.suffix == '.ini':
             # old standard 'ini' file config
             logging.config.fileConfig(
-                logging_file,
+                text_type(logging_file),
                 disable_existing_loggers=False,
             )
         elif logging_file.suffix == '.yml':

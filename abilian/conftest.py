@@ -26,8 +26,7 @@ class TestConfig:
 @fixture(scope='session')
 def app():
     """We usually only create an app once per session."""
-    _app = create_app(config=TestConfig)
-    return _app
+    return create_app(config=TestConfig)
 
 
 @yield_fixture
@@ -46,6 +45,11 @@ def db(app):
         db.session.remove()
         cleanup_db(db)
         stop_all_services(app)
+
+
+@fixture
+def session(db):
+    return db.session
 
 
 @fixture

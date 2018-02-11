@@ -18,17 +18,18 @@ from inspect import isclass
 from pathlib import Path
 
 import sqlalchemy as sa
-import whoosh.index
 import whoosh.query as wq
 from celery import shared_task
 from flask import _app_ctx_stack, appcontext_pushed, current_app, g
 from flask.globals import _lookup_app_object
 from flask_login import current_user
+from six import text_type
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 from whoosh.analysis import CharsetFilter, StemmingAnalyzer
 from whoosh.collectors import WrappingCollector
 from whoosh.filedb.filestore import FileStorage, RamStorage
+from whoosh.index import FileIndex
 from whoosh.qparser import DisMaxParser
 from whoosh.support.charset import accent_map
 from whoosh.writing import CLEAR, AsyncWriter
@@ -141,7 +142,10 @@ class WhooshIndexService(Service):
         if not whoosh_base.is_absolute():
             whoosh_base = app.instance_path / whoosh_base
 
-        state.whoosh_base = whoosh_base.absolute()
+        if not whoosh_base.is_dir():
+            whoosh_base.mkdir(parents=True)
+
+        state.whoosh_base = text_type(whoosh_base.resolve())
 
         if not self._listening:
             event.listen(Session, "after_flush", self.after_flush)
@@ -193,16 +197,16 @@ class WhooshIndexService(Service):
             if current_app.testing:
                 storage = TestingStorage()
             else:
-                index_path = Path(state.whoosh_base) / name
+                index_path = (Path(state.whoosh_base) / name).absolute()
                 if not index_path.exists():
                     index_path.mkdir(parents=True)
-                storage = FileStorage(index_path.absolute())
+                storage = FileStorage(text_type(index_path))
 
-            FileIndex = whoosh.index.FileIndex
-            if not storage.index_exists(name):
-                FileIndex = whoosh.index.FileIndex.create
+            if storage.index_exists(name):
+                index = FileIndex(storage, schema, name)
+            else:
+                index = FileIndex.create(storage, schema, name)
 
-            index = FileIndex(storage, schema, name)
             state.indexes[name] = index
 
     def clear(self):

@@ -21,8 +21,8 @@ class TestIdGenerator(BaseTestCase):
         gen = g.id_generator
         with self.app.app_context():
             # new app context: new id generator.
-            # Note: if this behaviour is not desired and got changed, this test will
-            # flag behaviour change.
+            # Note: if this behavior is not desired and got changed,
+            # this test will flag behavior change.
             assert g.id_generator is not gen
             assert next(g.id_generator) == 1
 

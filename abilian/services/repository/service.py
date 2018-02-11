@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 import shutil
 import weakref
 from pathlib import Path
+from typing import Any, Optional
 from uuid import UUID, uuid1
 
 import sqlalchemy as sa
@@ -47,6 +48,7 @@ class RepositoryService(Service):
 
     # data management: paths and accessors
     def rel_path(self, uuid):
+        # type: (UUID) -> Path
         """Contruct relative path from repository top directory to the file
         named after this uuid.
 
@@ -57,6 +59,7 @@ class RepositoryService(Service):
         return Path(filename[0:2], filename[2:4], filename)
 
     def abs_path(self, uuid):
+        # type: (UUID) -> Path
         """Return absolute :class:`Path` object for given uuid.
 
         :param:uuid: :class:`UUID` instance
@@ -68,6 +71,7 @@ class RepositoryService(Service):
         return dest
 
     def get(self, uuid, default=None):
+        # type: (UUID) -> Path
         """Return absolute :class:`Path` object for given uuid, if this uuid
         exists in repository, or `default` if it doesn't.
 
@@ -79,6 +83,7 @@ class RepositoryService(Service):
         return path
 
     def set(self, uuid, content, encoding='utf-8'):
+        # type: (UUID, Any) -> None
         """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
@@ -101,6 +106,7 @@ class RepositoryService(Service):
             f.write(content)
 
     def delete(self, uuid):
+        # type: (UUID) -> None
         """Delete file with given uuid.
 
         :param:uuid: :class:`UUID` instance
@@ -113,15 +119,18 @@ class RepositoryService(Service):
         dest.unlink()
 
     def __getitem__(self, uuid):
-        v = self.get(uuid, default=_NULL_MARK)
-        if v is _NULL_MARK:
+        # type: (UUID) -> Any
+        value = self.get(uuid, default=_NULL_MARK)
+        if value is _NULL_MARK:
             raise KeyError('No file can be found for this uuid', uuid)
-        return v
+        return value
 
     def __setitem__(self, uuid, content):
+        # type: (UUID, Any) -> None
         self.set(uuid, content)
 
     def __delitem__(self, uuid):
+        # type: (UUID) -> None
         self.delete(uuid)
 
 
@@ -152,6 +161,7 @@ class SessionRepositoryState(ServiceState):
 
     # transaction <-> db session accessors
     def get_transaction(self, session):
+        # type: (Session) -> Optional[RepositoryTransaction]
         if isinstance(session, sa.orm.scoped_session):
             session = session()
 
@@ -166,6 +176,7 @@ class SessionRepositoryState(ServiceState):
         return transaction
 
     def set_transaction(self, session, transaction):
+        # type: (Session, RepositoryTransaction) -> None
         """
         :param:session: :class:`sqlalchemy.orm.session.Session` instance
         :param:transaction: :class:`RepositoryTransaction` instance
@@ -177,6 +188,7 @@ class SessionRepositoryState(ServiceState):
         self.transactions[s_id] = (weakref.ref(session), transaction)
 
     def create_transaction(self, session, transaction):
+        # type: (Session, RepositoryTransaction) -> None
         if not self.running:
             return
 
@@ -186,6 +198,7 @@ class SessionRepositoryState(ServiceState):
         self.set_transaction(session, transaction)
 
     def end_transaction(self, session, transaction):
+        # type: (Session, RepositoryTransaction) -> None
         if not self.running:
             return
 
@@ -209,6 +222,7 @@ class SessionRepositoryState(ServiceState):
         return tr.begin(session)
 
     def commit(self, session):
+        # type: (Session) -> None
         if not self.running:
             return
 
@@ -219,9 +233,10 @@ class SessionRepositoryState(ServiceState):
         tr.commit(session)
 
     def flush(self, session, flush_context):
-        # when sqlalchemy is flushing it is done in a sub-transaction, not the root
-        # one. So when calling our 'commit' from here we are not in our root
-        # transaction, so changes will not be written to repository.
+        # when sqlalchemy is flushing it is done in a sub-transaction,
+        # not the root one. So when calling our 'commit' from here
+        # we are not in our root transaction, so changes will not be
+        # written to repository.
         self.commit(session)
 
     def rollback(self, session):
@@ -259,18 +274,18 @@ class SessionRepositoryService(Service):
             self.app_state.path = path.resolve()
 
         if not self.__listening:
-            self.__listening = True
-            listen = sa.event.listen
-            listen(
-                Session,
-                "after_transaction_create",
-                self.create_transaction)
-            listen(Session, "after_transaction_end", self.end_transaction)
-            listen(Session, "after_begin", self.begin)
-            listen(Session, "after_commit", self.commit)
-            listen(Session, "after_flush", self.flush)
-            listen(Session, "after_rollback", self.rollback)
-            # appcontext_tearing_down.connect(self.clear_transaction, app)
+            self.start_listening()
+
+    def start_listening(self):
+        self.__listening = True
+        listen = sa.event.listen
+        listen(Session, "after_transaction_create", self.create_transaction)
+        listen(Session, "after_transaction_end", self.end_transaction)
+        listen(Session, "after_begin", self.begin)
+        listen(Session, "after_commit", self.commit)
+        listen(Session, "after_flush", self.flush)
+        listen(Session, "after_rollback", self.rollback)
+        # appcontext_tearing_down.connect(self.clear_transaction, app)
 
     def _session_for(self, model_or_session):
         """Return session instance for object parameter.
@@ -300,9 +315,9 @@ class SessionRepositoryService(Service):
     # repository interface
     def get(self, session, uuid, default=None):
         session = self._session_for(session)
-        tr = self.app_state.get_transaction(session)
+        transaction = self.app_state.get_transaction(session)
         try:
-            val = tr.get(uuid)
+            val = transaction.get(uuid)
         except KeyError:
             return default
 
@@ -313,14 +328,14 @@ class SessionRepositoryService(Service):
 
     def set(self, session, uuid, content, encoding='utf-8'):
         session = self._session_for(session)
-        tr = self.app_state.get_transaction(session)
-        tr.set(uuid, content, encoding)
+        transaction = self.app_state.get_transaction(session)
+        transaction.set(uuid, content, encoding)
 
     def delete(self, session, uuid):
         session = self._session_for(session)
-        tr = self.app_state.get_transaction(session)
+        transaction = self.app_state.get_transaction(session)
         if self.get(session, uuid) is not None:
-            tr.delete(uuid)
+            transaction.delete(uuid)
 
     # session event handlers
     @Service.if_running
@@ -448,9 +463,11 @@ class RepositoryTransaction(object):
         dest.add(uuid)
 
     def delete(self, uuid):
+        # type: (UUID) -> None
         self._add_to(uuid, self._deleted, self._set)
 
     def set(self, uuid, content, encoding='utf-8'):
+        # type: (UUID, Any) -> None
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 
@@ -458,16 +475,17 @@ class RepositoryTransaction(object):
             content = content.read()
 
         if isinstance(content, bytes):
-            mode = 'bw'
+            mode = 'wb'
             encoding = None
         else:
-            mode = 'tw'
+            mode = 'wt'
 
         dest = self.path / str(uuid)
         with dest.open(mode, encoding=encoding) as f:
             f.write(content)
 
     def get(self, uuid):
+        # type: (UUID) -> Any
         if uuid in self._deleted:
             raise KeyError
 

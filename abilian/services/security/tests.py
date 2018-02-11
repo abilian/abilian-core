@@ -2,32 +2,15 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-import pytest
+from pytest import mark
 
 from abilian.core.entities import Entity
-from abilian.core.extensions import db
 from abilian.core.models.subjects import Group, User
 from abilian.testing import BaseTestCase
 
 from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
     InheritSecurity, Owner, Permission, PermissionAssignment, Reader, Role, \
     RoleAssignment, SecurityAudit, Writer, security
-
-TEST_EMAIL = "joe@example.com"
-TEST_PASSWORD = "tototiti"
-
-skip = pytest.mark.skip
-
-
-def init_user():
-    user = User(
-        first_name="Joe",
-        last_name="User",
-        email=TEST_EMAIL,
-        password=TEST_PASSWORD,
-    )
-    db.session.add(user)
-    db.session.flush()
 
 
 def test_singleton():
@@ -47,7 +30,7 @@ def test_ordering():
     assert roles == [Admin, Anonymous, Authenticated]
 
 
-def test_enumerate_assignables():
+def test_enumerate_assignables(db):
     assert Role.assignable_roles() == [Admin]
 
 
@@ -403,7 +386,7 @@ class SecurityTestCase(IntegrationTestCase):
         assert security.has_permission(user, 'write')
         assert security.has_permission(user, 'manage')
 
-    @skip
+    @mark.skip
     def test_query_entity_with_permission(self):
         get_filter = security.query_entity_with_permission
         user = User(email="john@example.com", password="x")
@@ -539,8 +522,8 @@ class PermissionNoSAWarnTestCase(IntegrationTestCase):
         #
         # At save time, the object is added again to session. The bug is that
         # without precaution we may create permissions assignment twice, because
-        # assignments created in the first place are not yet again in session.(new,
-        # dirty, deleted) and cannot be found with a filtered query on
+        # assignments created in the first place are not yet again in session
+        # (new, dirty, deleted) and cannot be found with a filtered query on
         # PermissionAssignment because they have not been flushed yet.
         #
         security.add_permission(READ, Owner, None)
@@ -562,7 +545,7 @@ class PermissionNoSAWarnTestCase(IntegrationTestCase):
         # yet back in session. The cascading rule will add
         # them just after (as of sqlalchemy 0.8, at least)
 
-        # Finally the test! IntegrityError will be raised if we have done something
-        # wrong (`Key (permission, role, object_id)=(..., ..., ...) already
-        # exists`)
+        # Finally the test! IntegrityError will be raised if we have done
+        # something wrong (`Key (permission, role, object_id)=(..., ..., ...)
+        # already exists`)
         self.session.flush()

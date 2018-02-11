@@ -22,9 +22,9 @@ class I18NTestCase(BaseTestCase):
         en = Locale(b'en')
         fr = Locale(b'fr')
 
-        # by default, a request context is present is test case setup.  first let's
-        # show no new request context is set up and that set_locale works as
-        # advertised
+        # By default, a request context is present is test case setup.
+        # First let's show no new request context is set up and that
+        # set_locale works as advertised.
         app_ctx = _app_ctx_stack.top
         current_ctx = _request_ctx_stack.top
         assert current_ctx is not None
