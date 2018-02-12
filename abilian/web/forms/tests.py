@@ -155,7 +155,12 @@ def test_datetime_field(app):
         # 1789: applied offset for HongKong is equal to LMT+7:37:00,
         # thus we compare with tzinfo=user_tz
         expected_datetime = datetime.datetime(
-            1789, 6, 17, 10, 42, tzinfo=USER_TZ,
+            1789,
+            6,
+            17,
+            10,
+            42,
+            tzinfo=USER_TZ,
         )
         assert field.data == expected_datetime
         # UTC stored

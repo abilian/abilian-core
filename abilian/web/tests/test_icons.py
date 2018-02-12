@@ -7,18 +7,18 @@ from abilian.testing import BaseTestCase
 from abilian.web.action import FAIcon, Glyphicon, StaticIcon
 
 
-class TestIcons(BaseTestCase):
-    """test abilian.web.actions icons."""
+def test_glyphicons():
+    icon = Glyphicon('ok')
+    assert icon.__html__() == '<i class="glyphicon glyphicon-ok"></i>'
 
-    def test_glyphicons(self):
-        icon = Glyphicon('ok')
-        assert icon.__html__() == '<i class="glyphicon glyphicon-ok"></i>'
 
-    def test_faicons(self):
-        icon = FAIcon('check')
-        assert icon.__html__() == '<i class="fa fa-check"></i>'
+def test_faicons():
+    icon = FAIcon('check')
+    assert icon.__html__() == '<i class="fa fa-check"></i>'
 
-    def test_staticicon(self):
+
+def test_staticicon(app):
+    with app.test_request_context():
         icon = StaticIcon('path/to/icon.png')
         assert icon.__html__() == \
             '<img src="/static/path/to/icon.png" width="12" height="12" />'
