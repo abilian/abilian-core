@@ -875,9 +875,12 @@ class Application(Flask, ServiceManager, PluginManager):
         return self.extensions['redis'].client
 
     def create_db(self):
-        from abilian.core.models.subjects import User
-
         db.create_all()
+
+        self.create_root_user()
+
+    def create_root_user(self):
+        from abilian.core.models.subjects import User
         if User.query.get(0) is None:
             root = User(
                 id=0,

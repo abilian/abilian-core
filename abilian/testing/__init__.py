@@ -181,8 +181,9 @@ class BaseTestCase(TestCase):
             assets_ext = extensions['webassets.ext.jinja2.AssetsExtension']
             assets_ext.BundleClass = NullBundle
 
-        # session_repository must be started before session is created, as it must
-        # receive all transactions events. It also requires 'repository'.
+        # session_repository must be started before session is created,
+        # as it must receive all transactions events.
+        # It also requires 'repository'.
         self.app.services['repository'].start()
         self.app.services['session_repository'].start()
         self.session = self.db.session()
