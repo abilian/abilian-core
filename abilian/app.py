@@ -881,15 +881,17 @@ class Application(Flask, ServiceManager, PluginManager):
 
     def create_root_user(self):
         from abilian.core.models.subjects import User
-        if User.query.get(0) is None:
-            root = User(
+        user = User.query.get(0)
+        if user is None:
+            user = User(
                 id=0,
                 last_name='SYSTEM',
                 email='system@example.com',
                 can_login=False,
             )
-            db.session.add(root)
+            db.session.add(user)
             db.session.commit()
+        return user
 
     def _setup_asset_extension(self):
         assets = self.extensions['webassets'] = AssetsEnv(self)

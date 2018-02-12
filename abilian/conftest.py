@@ -23,9 +23,11 @@ class TestConfig:
     # CSRF_ENABLED = False
 
 
-@fixture(scope='session')
+@fixture
 def app():
-    """We usually only create an app once per session."""
+    # We currently return a fresh app for each test.
+    # Using session-scoped app doesn't currently work.
+    # Note: the impact on speed is minimal.
     return create_app(config=TestConfig)
 
 
