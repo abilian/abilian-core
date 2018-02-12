@@ -4,8 +4,9 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import uuid
+from io import StringIO
 
-from six import StringIO, text_type
+from six import text_type
 
 from abilian.services import repository_service as repository
 from abilian.services import session_repository_service as session_repository
@@ -22,7 +23,7 @@ def test_auto_uuid():
     assert isinstance(b.uuid, uuid.UUID)
 
     # test provided uuid is not replaced by a new one
-    u = uuid.UUID('4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
+    u = uuid.UUID(b'4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
     b = Blob(uuid=u)
     assert isinstance(b.uuid, uuid.UUID)
     assert b.uuid, u

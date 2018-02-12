@@ -1153,15 +1153,17 @@ class DateTimeInput(object):
                 date_value = ''
                 time_value = ''
 
-        return Markup('<div class="form-inline">\n'
-                      '<input class="datetimepicker" type="hidden" id="{id}" name="{name}" '
-                      'value="{date} | {time}" />\n'
-                      ''.format(
-                          id=field_id,
-                          name=field_name,
-                          date=date_value,
-                          time=time_value,
-                      )) \
+        return Markup(
+            '<div class="form-inline">\n'
+            '<input class="datetimepicker" type="hidden" id="{id}" '
+            'name="{name}" value="{date} | {time}" />\n'
+            ''.format(
+                id=field_id,
+                name=field_name,
+                date=date_value,
+                time=time_value,
+            ),
+        ) \
             + self.date(
             field,
             id=field_id + '-date',
