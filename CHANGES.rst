@@ -1,6 +1,11 @@
 Changelog for Abilian Core
 ==========================
 
+0.10.1 (unreleased)
+-------------------
+
+- Fix Py3k compatibility.
+
 
 0.10.0 (2018-02-12)
 -------------------

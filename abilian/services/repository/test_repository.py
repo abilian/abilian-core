@@ -10,7 +10,7 @@ import pytest
 
 from . import repository
 
-UUID_STR = b'4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9'
+UUID_STR = '4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9'
 UUID = uuid.UUID(UUID_STR)
 
 
@@ -54,7 +54,7 @@ def test_get(session):
     assert val.open('rb').read() == b'my file content'
 
     # non-existent
-    u = uuid.UUID(b'bcdc32ac-498d-4544-9e7f-fb2c75097011')
+    u = uuid.UUID('bcdc32ac-498d-4544-9e7f-fb2c75097011')
     null = object()
     assert repository.get(u) is None
     assert repository.get(u, default=null) is null
