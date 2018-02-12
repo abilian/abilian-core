@@ -876,7 +876,6 @@ class Application(Flask, ServiceManager, PluginManager):
 
     def create_db(self):
         db.create_all()
-
         self.create_root_user()
 
     def create_root_user(self):
@@ -910,8 +909,9 @@ class Application(Flask, ServiceManager, PluginManager):
         manifest_file = assets_base_dir / 'manifest.json'
         assets.manifest = 'json:{}'.format(str(manifest_file))
 
-        # set up load_path for application static dir. This is required since we are
-        # setting Environment.load_path for other assets (like core_bundle below),
+        # set up load_path for application static dir. This is required
+        # since we are setting Environment.load_path for other assets
+        # (like core_bundle below),
         # in this case Flask-Assets uses webasssets resolvers instead of
         # Flask's one
         assets.append_path(self.static_folder, self.static_url_path)
@@ -971,9 +971,9 @@ class Application(Flask, ServiceManager, PluginManager):
         :param type_: `"css"`, `"js-top"` or `"js""`.
 
         :param assets:
-            a path to file, a :ref:`webassets.Bundle <webassets:bundles>` instance
-            or a callable that returns a :ref:`webassets.Bundle <webassets:bundles>`
-            instance.
+            a path to file, a :ref:`webassets.Bundle <webassets:bundles>`
+            instance or a callable that returns a
+            :ref:`webassets.Bundle <webassets:bundles>` instance.
 
         :raises KeyError: if `type_` is not supported.
         """

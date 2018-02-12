@@ -17,20 +17,8 @@ from abilian.web.preferences.user import UserPreferencesForm
 AVATAR_COLORMAP = Path(__file__).parent / 'avatar-colormap.png'
 
 
-@fixture
-def user(db):
-    user = User(
-        email='john@example.com',
-        first_name='John',
-        last_name='Doe',
-        can_login=True,
-    )
-    db.session.add(user)
-    db.session.flush()
-    return user
-
-
-def test_form_photo(app, user):
+def test_form_photo(app, db):
+    user = app.create_root_user()
     url = url_for('preferences.user')
     uploads = app.extensions['uploads']
     with AVATAR_COLORMAP.open('rb') as f:
