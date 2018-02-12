@@ -2,11 +2,19 @@ Changelog for Abilian Core
 ==========================
 
 
-0.10.0 (2018-02-09)
+0.10.0 (2018-02-12)
 -------------------
+
+Breaking changes:
 
 - Removed deprecated plugin loader
 - Renamed `is_support_attachments` to `supports_attachments`
+
+Other:
+
+- Refactoring tests to use pytest's function-based tests instead
+  of unittest's class-based tests.
+
 
 0.9.30 (2018-01-11)
 -------------------
