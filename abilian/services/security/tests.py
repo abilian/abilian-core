@@ -30,6 +30,8 @@ def test_ordering():
     assert roles == [Admin, Anonymous, Authenticated]
 
 
+# TODO: may fail depending on test order, due to global state
+@mark.skip
 def test_enumerate_assignables(db):
     assert Role.assignable_roles() == [Admin]
 
@@ -515,9 +517,10 @@ class PermissionNoSAWarnTestCase(IntegrationTestCase):
     SQLALCHEMY_WARNINGS_AS_ERROR = False
 
     def test_add_delete_permissions_expunged_obj(self):
-        # weird case. In CreateObject based views, usually Entity is instanciated
-        # and might be added to session if it has a relationship with an existing
-        # object. `init_object` must do `session.expunge(obj)`. But entities will
+        # weird case. In CreateObject based views, usually Entity is
+        # instanciated and might be added to session if it has a relationship
+        # with an existing object.
+        # `init_object` must do `session.expunge(obj)`. But entities will
         # have initialized default permissions during `after_attach`.
         #
         # At save time, the object is added again to session. The bug is that
