@@ -7,6 +7,7 @@ from warnings import warn
 
 import pytest
 from magic import Magic, os
+from pytest import mark
 
 from abilian.services.conversion.handlers import HAS_LIBREOFFICE, HAS_PDFTOTEXT
 
@@ -33,7 +34,7 @@ def read_file(fn, mode='rb'):
 
 
 # To text
-@pytest.mark.skipif(
+@mark.skipif(
     not HAS_PDFTOTEXT,
     reason="requires poppler or poppler-util",
 )
@@ -43,14 +44,14 @@ def test_pdf_to_text(converter):
     assert text
 
 
-@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
+@mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_word_to_text(converter):
     blob = read_file("test.doc")
     text = converter.to_text("", blob, "application/msword")
     assert text
 
 
-@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
+@mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_wordx_to_text(converter):
     blob = read_file("test.docx")
     text = converter.to_text("", blob, "application/msword")
@@ -63,14 +64,14 @@ def test_wordx_to_text(converter):
 
 
 # To PDF
-@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
+@mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_odt_to_pdf(converter):
     blob = read_file("test.odt")
     pdf = converter.to_pdf("", blob, "application/vnd.oasis.opendocument.text")
     assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
 
-@pytest.mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
+@mark.skipif(not HAS_LIBREOFFICE, reason="requires libreoffice")
 def test_word_to_pdf(converter):
     blob = read_file("test.doc")
     pdf = converter.to_pdf("", blob, "application/msword")
@@ -84,7 +85,7 @@ def test_image_to_pdf(converter):
 
 
 # To images
-@pytest.mark.skipif(
+@mark.skipif(
     not HAS_PDFTOTEXT,
     reason="requires poppler or poppler-util",
 )
@@ -97,7 +98,7 @@ def test_pdf_to_images(converter):
     assert "image/jpeg" == mime_sniffer.from_buffer(image)
 
 
-@pytest.mark.skipif(
+@mark.skipif(
     not HAS_PDFTOTEXT,
     reason="requires poppler or poppler-util",
 )
