@@ -459,7 +459,7 @@ class Application(Flask, ServiceManager, PluginManager):
         if instance_relative:
             self.check_instance_folder(create=True)
 
-        cfg_path = Path(config.root_path) / 'config.py'
+        cfg_path = text_type(Path(config.root_path) / 'config.py')
         logger.info('Try to load config: "%s"', cfg_path)
         try:
             config.from_pyfile(cfg_path, silent=False)

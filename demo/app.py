@@ -9,14 +9,14 @@ from werkzeug.datastructures import ImmutableDict
 from abilian.app import Application as BaseApplication
 from abilian.core.celery import FlaskCelery as BaseCelery
 from abilian.core.celery import FlaskLoader as CeleryBaseLoader
-from abilian.i18n import _l
 from abilian.services.vocabularies import Vocabulary
-from abilian.web.nav import NavItem
 from abilian.web.util import url_for
 
 from .config import Config
 
 __all__ = ['create_app']
+
+APP_NAME = 'abilian_core_demo'
 
 
 def create_app(config=None):
@@ -55,7 +55,7 @@ class Application(BaseApplication):
     default_config = default_config
     celery_app_cls = CeleryApp
 
-    def __init__(self, name='abilian_core_demo', config=None, **kwargs):
+    def __init__(self, name=APP_NAME, config=None, **kwargs):
         super(Application, self).__init__(
             name, config=config, instance_relative_config=True, **kwargs
         )
