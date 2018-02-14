@@ -81,8 +81,8 @@ class Service(object):
     def running(self):
         """
         :returns: `False` if working outside application context, if service is
-                  not registered on current application,  or if service is halted
-                  for current application.
+            not registered on current application, or if service is halted
+            for current application.
         """
         try:
             return self.app_state.running

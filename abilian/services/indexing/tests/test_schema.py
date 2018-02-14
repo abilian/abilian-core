@@ -10,7 +10,6 @@ from abilian.services.security.models import Anonymous, Reader
 
 
 def test_indexable_role():
-
     assert indexable_role(Anonymous) == 'role:anonymous'
     assert indexable_role(AnonymousUserMixin()) == 'role:anonymous'
     assert indexable_role(Reader) == 'role:reader'
