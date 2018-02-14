@@ -14,7 +14,6 @@ from abilian.core.extensions import db
 from abilian.core.models.base import Indexable as CoreIndexable
 from abilian.core.models.base import SEARCHABLE, IdMixin
 from abilian.services.indexing.adapter import SAAdapter
-from abilian.testing import BaseTestCase as AppTestCase
 
 
 class SANotAdaptable(object):
@@ -123,51 +122,52 @@ def test_build_attrs():
     assert isinstance(schema['num'], NUMERIC)
 
 
-class DocumentTestCase(AppTestCase):
+def test_get_document(app, db):
+    schema = Schema()
+    adapter = SAAdapter(SubclassEntityIndexable, schema)
+    expected = {
+        'id': 2,
+        'name': 'entity name',
+        'created_at': datetime(2013, 11, 28, 16, 17, 0),
+        'updated_at': datetime(2013, 11, 29, 12, 17, 58),
+    }
+    obj = SubclassEntityIndexable(**expected)
+    obj.slug = 'entity-name'
 
-    def test_get_document(self):
-        schema = Schema()
-        adapter = SAAdapter(SubclassEntityIndexable, schema)
-        expected = dict(
-            id=2,
-            name='entity name',
-            created_at=datetime(2013, 11, 28, 16, 17, 0),
-            updated_at=datetime(2013, 11, 29, 12, 17, 58),
-        )
-        obj = SubclassEntityIndexable(**expected)
-        obj.slug = 'entity-name'
+    expected['object_type'] = 'test_adapter.SubclassEntityIndexable'
+    expected['object_key'] = 'test_adapter.SubclassEntityIndexable:2'
+    expected['text'] = 'entity name'
+    expected['slug'] = 'entity-name'
+    expected['name_prefix'] = 'entity name'
+    expected['allowed_roles_and_users'] = 'role:admin'
 
-        expected['object_type'] = 'test_adapter.SubclassEntityIndexable'
-        expected['object_key'] = 'test_adapter.SubclassEntityIndexable:2'
-        expected['text'] = 'entity name'
-        expected['slug'] = 'entity-name'
-        expected['name_prefix'] = 'entity name'
-        expected['allowed_roles_and_users'] = 'role:admin'
+    with app.test_request_context():
         assert adapter.get_document(obj) == expected
 
-    def test_get_document_with_schema(self):
-        # test retrieve related attributes
-        schema = Schema(
-            id=NUMERIC(
-                numtype=int,
-                bits=64,
-                signed=False,
-                stored=True,
-                unique=True,
-            ),
-        )
-        adapter = SAAdapter(Indexable, schema)
-        expected = dict(id=1, num=42)
-        obj = Indexable(**expected)
-        obj.related = type(str('Related'), (object,), dict(name=None))()
-        expected['name'] = obj.related.name = 'related name'
-        obj.related.description = 'description text'
-        expected['text'] = obj.related.name + ' ' + obj.related.description
-        doc = adapter.get_document(obj)
 
-        assert set(doc) == {'id', 'name', 'num', 'text'}
-        assert doc['id'] == 1
-        assert doc['num'] == 42
-        assert doc['name'] == 'related name'
-        assert 'related name' in doc['text']
-        assert 'description text' in doc['text']
+def test_get_document_with_schema():
+    # test retrieve related attributes
+    schema = Schema(
+        id=NUMERIC(
+            numtype=int,
+            bits=64,
+            signed=False,
+            stored=True,
+            unique=True,
+        ),
+    )
+    adapter = SAAdapter(Indexable, schema)
+    expected = dict(id=1, num=42)
+    obj = Indexable(**expected)
+    obj.related = type(str('Related'), (object,), dict(name=None))()
+    expected['name'] = obj.related.name = 'related name'
+    obj.related.description = 'description text'
+    expected['text'] = obj.related.name + ' ' + obj.related.description
+    doc = adapter.get_document(obj)
+
+    assert set(doc) == {'id', 'name', 'num', 'text'}
+    assert doc['id'] == 1
+    assert doc['num'] == 42
+    assert doc['name'] == 'related name'
+    assert 'related name' in doc['text']
+    assert 'description text' in doc['text']
