@@ -43,68 +43,63 @@ class DummyForm(Form):
     email = StringField('email', view_widget=EmailWidget())
 
 
-class TableViewTestCase(BaseTestCase):
+def test_table_view(app):
 
-    def test_table_view(self):
+    @default_view(app, WidgetTestModel)
+    @app.route('/dummy_view/<object_id>')
+    def dummy_view(object_id):
+        pass
 
-        @default_view(self.app, WidgetTestModel)
-        @self.app.route('/dummy_view/<object_id>')
-        def dummy_view(object_id):
-            pass
+    with app.test_request_context():
+        request_started.send(app)  # needed for deferJS tag
+        columns = ['name', 'price']
+        view = MainTableView(columns)
 
-        with self.app.test_request_context():
-            request_started.send(self.app)  # needed for deferJS tag
-            columns = ['name', 'price']
-            view = MainTableView(columns)
+        model1 = WidgetTestModel(id=1, name="Renault Megane", price=10000)
+        model2 = WidgetTestModel(id=2, name="Peugeot 308", price=12000)
 
-            model1 = WidgetTestModel(id=1, name="Renault Megane", price=10000)
-            model2 = WidgetTestModel(id=2, name="Peugeot 308", price=12000)
+        models = [model1, model2]
 
-            models = [model1, model2]
+        res = view.render(models)
 
-            res = view.render(models)
-
-            assert model1._display_value_called
-            assert model2._display_value_called
-            assert "Renault Megane" in res
-            assert "10000" in res
+        assert model1._display_value_called
+        assert model2._display_value_called
+        assert "Renault Megane" in res
+        assert "10000" in res
 
 
-class ModelViewTestCase(BaseTestCase):
-    # Hack to silence test harness bug
-    __name__ = "ModelView test case"
+def test_single_view(app):
+    with app.test_request_context():
+        panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
+        view = SingleView(
+            DummyForm, *panels, view=dict(can_edit=False, can_delete=False)
+        )
+        model = WidgetTestModel(
+            name="Renault Megane",
+            price=10000,
+            email="joe@example.com",
+        )
+        form = DummyForm(obj=model)
+        res = view.render(model, form)
 
-    def test_single_view(self):
-        with self.app.test_request_context():
-            panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
-            view = SingleView(
-                DummyForm, *panels, view=dict(can_edit=False, can_delete=False)
-            )
-            model = WidgetTestModel(
-                name="Renault Megane",
-                price=10000,
-                email="joe@example.com",
-            )
-            form = DummyForm(obj=model)
-            res = view.render(model, form)
+        assert "Renault Megane" in res
+        assert "10000" in res
+        # 'mailto:' is created by EmailWidget
+        assert "mailto:joe@example.com" in res
 
-            assert "Renault Megane" in res
-            assert "10000" in res
-            # 'mailto:' is created by EmailWidget
-            assert "mailto:joe@example.com" in res
 
-    @skip
-    def test_edit_view(self):
-        with self.app.test_request_context():
-            panels = [Panel('main', Row('name'), Row('price'))]
-            view = SingleView(DummyForm, *panels)
-            model = WidgetTestModel(name="Renault Megane", price=10000)
-            form = DummyForm(obj=model)
-            res = view.render_form(form)
+@skip
+def test_edit_view(app):
+    with app.test_request_context():
+        panels = [Panel('main', Row('name'), Row('price'))]
+        view = SingleView(DummyForm, *panels)
+        model = WidgetTestModel(name="Renault Megane", price=10000)
+        form = DummyForm(obj=model)
+        res = view.render_form(form)
 
-            assert model._display_value_called
-            assert "Renault Megane" in res
-            assert "10000" in res
+        assert model._display_value_called
+        assert "Renault Megane" in res
+        assert "10000" in res
 
 
 EXPECTED = (
