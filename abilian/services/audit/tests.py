@@ -7,6 +7,7 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
+from pytest import mark
 from six import python_2_unicode_compatible, text_type
 from sqlalchemy import Column, Date, ForeignKey, Integer, Text, Unicode, \
     UnicodeText
@@ -17,7 +18,6 @@ from sqlalchemy.orm.attributes import NEVER_SET
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.models.base import AUDITABLE_HIDDEN, SEARCHABLE
-from abilian.testing import BaseTestCase
 
 from . import CREATION, DELETION, UPDATE, AuditEntry, audit_service
 
@@ -90,188 +90,184 @@ class CommentRelated(db.Model):
     text = Column(UnicodeText, default="")
 
 
-class TestAudit(BaseTestCase):
+def test_audit(app, session):
+    app.create_root_user()
+    audit_service.start()
+    assert len(AuditEntry.query.all()) == 0
 
-    def setUp(self):
-        audit_service.start()
-        BaseTestCase.setUp(self)
+    # Creation of system user(0) should have created one entry.
+    # We clear it for this test.
+    AuditEntry.query.delete()
+    session.flush()
+    assert len(AuditEntry.query.all()) == 0
 
-    def tearDown(self):
-        BaseTestCase.tearDown(self)
-        if audit_service.running:
-            audit_service.stop()
+    account = DummyAccount(name="John SARL")
+    session.add(account)
+    session.commit()
+    assert len(AuditEntry.query.all()) == 1
 
-    def test_audit(self):
-        # Creation of system user(0) should have created one entry.
-        # We clear it for this test.
-        AuditEntry.query.delete()
-        db.session.flush()
-        assert len(AuditEntry.query.all()) == 0
+    entry = AuditEntry.query.one()
+    assert entry.type == CREATION
+    assert entry.entity_id == account.id
+    assert entry.entity == account
 
-        account = DummyAccount(name="John SARL")
-        db.session.add(account)
-        db.session.commit()
-        assert len(AuditEntry.query.all()) == 1
+    account.website = "http://www.john.com/"
+    session.commit()
+    assert len(AuditEntry.query.all()) == 2
 
-        entry = AuditEntry.query.one()
-        assert entry.type == CREATION
-        assert entry.entity_id == account.id
-        assert entry.entity == account
+    entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[1]
+    assert entry.type == UPDATE
+    assert entry.entity_id == account.id
+    assert entry.entity == account
+    assert entry.changes.columns == {
+        'website': ('', 'http://www.john.com/'),
+    }
 
-        account.website = "http://www.john.com/"
-        db.session.commit()
-        assert len(AuditEntry.query.all()) == 2
+    account.birthday = datetime.date(2012, 12, 25)
+    session.commit()
+    assert len(AuditEntry.query.all()) == 3
 
-        entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[1]
-        assert entry.type == UPDATE
-        assert entry.entity_id == account.id
-        assert entry.entity == account
-        assert entry.changes.columns == {
-            'website': ('', 'http://www.john.com/'),
-        }
+    entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[2]
+    assert entry.type == UPDATE
+    assert entry.entity_id == account.id
+    assert entry.entity == account
+    assert entry.changes.columns == {
+        'birthday': (None, datetime.date(2012, 12, 25)),
+    }
 
-        account.birthday = datetime.date(2012, 12, 25)
-        db.session.commit()
-        assert len(AuditEntry.query.all()) == 3
+    # content hiding
+    account.password = 'new super secret password'
+    assert account.__changes__.columns == {'password': ('******', '******')}
+    session.commit()
 
-        entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[2]
-        assert entry.type == UPDATE
-        assert entry.entity_id == account.id
-        assert entry.entity == account
-        assert entry.changes.columns == {
-            'birthday': (None, datetime.date(2012, 12, 25)),
-        }
+    entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[3]
+    assert entry.type == UPDATE
+    assert entry.entity_id == account.id
+    assert entry.entity == account
+    assert entry.changes.columns == {'password': ('******', '******')}
 
-        # content hiding
-        account.password = 'new super secret password'
-        assert account.__changes__.columns == {
-            'password': ('******', '******')}
-        db.session.commit()
+    # deletion
+    session.delete(account)
+    session.commit()
+    assert len(AuditEntry.query.all()) == 5
 
-        entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[3]
-        assert entry.type == UPDATE
-        assert entry.entity_id == account.id
-        assert entry.entity == account
-        assert entry.changes.columns == {'password': ('******', '******')}
+    entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[4]
+    assert entry.type == DELETION
+    assert entry.entity_id == account.id
+    assert entry.entity is None
 
-        # deletion
-        db.session.delete(account)
-        db.session.commit()
-        assert len(AuditEntry.query.all()) == 5
+    # check all entries are still present (but have lost reference to
+    # entity)
+    entries = AuditEntry.query.all()
+    assert len(entries) == 5
+    assert all(e.entity_id == account.id for e in entries)
+    assert all(e.entity is None for e in entries)
 
-        entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[4]
-        assert entry.type == DELETION
-        assert entry.entity_id == account.id
-        assert entry.entity is None
 
-        # check all entries are still present (but have lost reference to
-        # entity)
-        entries = AuditEntry.query.all()
-        assert len(entries) == 5
-        assert all(e.entity_id == account.id for e in entries)
-        assert all(e.entity is None for e in entries)
+def test_audit_related(app, session):
+    app.create_root_user()
+    audit_service.start()
 
-    def test_audit_related(self):
-        AuditEntry.query.delete()
-        db.session.flush()
-        assert len(AuditEntry.query.all()) == 0
+    #  helper
+    audit_idx = count()
+    audit_query = AuditEntry.query.order_by(AuditEntry.happened_at)
 
-        #  helper
-        audit_idx = count()
-        audit_query = AuditEntry.query.order_by(AuditEntry.happened_at)
+    def next_entry():
+        return audit_query.all()[next(audit_idx)]
 
-        def next_entry():
-            return audit_query.all()[next(audit_idx)]
+    account = DummyAccount(name="John SARL")
+    session.add(account)
+    session.commit()
+    assert len(AuditEntry.query.all()) == 1
+    next(audit_idx)
 
-        account = DummyAccount(name="John SARL")
-        db.session.add(account)
-        db.session.commit()
-        assert len(AuditEntry.query.all()) == 1
-        next(audit_idx)
+    data = AccountRelated(account=account, text='text 1')
+    session.add(data)
+    session.commit()
 
-        data = AccountRelated(account=account, text='text 1')
-        db.session.add(data)
-        db.session.commit()
+    entry = next_entry()
+    assert entry.op == CREATION
+    assert entry.related
+    assert entry.entity_type == account.entity_type
+    assert entry.entity_id == account.id
+    assert entry.entity == account
 
-        entry = next_entry()
-        assert entry.op == CREATION
-        assert entry.related
-        assert entry.entity_type == account.entity_type
-        assert entry.entity_id == account.id
-        assert entry.entity == account
+    changes = entry.changes.columns
+    assert len(changes) == 1
+    assert 'data 1' in changes
+    changes = changes['data 1']
+    assert changes.columns == {
+        'text': (NEVER_SET, 'text 1'),
+        'account_id': (NEVER_SET, 1),
+        'id': (NEVER_SET, 1),
+    }
 
-        changes = entry.changes.columns
-        assert len(changes) == 1
-        assert 'data 1' in changes
-        changes = changes['data 1']
-        assert changes.columns == {
-            'text': (NEVER_SET, 'text 1'),
-            'account_id': (NEVER_SET, 1),
-            'id': (NEVER_SET, 1),
-        }
+    comment = CommentRelated(related=data, text='comment')
+    session.add(comment)
+    session.commit()
+    entry = next_entry()
+    assert entry.op == CREATION
+    assert entry.related
+    assert entry.entity_type == account.entity_type
+    assert entry.entity_id == account.id
 
-        comment = CommentRelated(related=data, text='comment')
-        db.session.add(comment)
-        db.session.commit()
-        entry = next_entry()
-        assert entry.op == CREATION
-        assert entry.related
-        assert entry.entity_type == account.entity_type
-        assert entry.entity_id == account.id
+    changes = entry.changes.columns
+    assert len(changes) == 1
+    assert 'data.comments 1 1' in changes
+    changes = changes['data.comments 1 1']
+    assert changes.columns == {
+        'text': (NEVER_SET, 'comment'),
+        'related_id': (NEVER_SET, 1),
+        'id': (NEVER_SET, 1),
+    }
 
-        changes = entry.changes.columns
-        assert len(changes) == 1
-        assert 'data.comments 1 1' in changes
-        changes = changes['data.comments 1 1']
-        assert changes.columns == {
-            'text': (NEVER_SET, 'comment'),
-            'related_id': (NEVER_SET, 1),
-            'id': (NEVER_SET, 1),
-        }
+    comment = CommentRelated(related=data, text='comment 2')
+    session.add(comment)
+    session.commit()
+    entry = next_entry()
+    assert entry.op == CREATION
+    assert entry.related
+    assert entry.entity_type == account.entity_type
+    assert entry.entity_id == account.id
 
-        comment = CommentRelated(related=data, text='comment 2')
-        db.session.add(comment)
-        db.session.commit()
-        entry = next_entry()
-        assert entry.op == CREATION
-        assert entry.related
-        assert entry.entity_type == account.entity_type
-        assert entry.entity_id == account.id
+    changes = entry.changes.columns
+    assert len(changes) == 1
+    assert 'data.comments 1 2' in changes
 
-        changes = entry.changes.columns
-        assert len(changes) == 1
-        assert 'data.comments 1 2' in changes
+    changes = changes['data.comments 1 2']
+    assert changes.columns == {
+        'text': (NEVER_SET, 'comment 2'),
+        'related_id': (NEVER_SET, 1),
+        'id': (NEVER_SET, 2),
+    }
 
-        changes = changes['data.comments 1 2']
-        assert changes.columns == {
-            'text': (NEVER_SET, 'comment 2'),
-            'related_id': (NEVER_SET, 1),
-            'id': (NEVER_SET, 2),
-        }
+    # deletion
+    session.delete(comment)
+    session.commit()
 
-        # deletion
-        db.session.delete(comment)
-        db.session.commit()
+    entry = next_entry()
+    assert entry.op == DELETION
+    assert entry.related
+    assert entry.entity_id == account.id
+    # entity not deleted: audit should still have reference to it
+    assert entry.entity == account
 
-        entry = next_entry()
-        assert entry.op == DELETION
-        assert entry.related
-        assert entry.entity_id == account.id
-        # entity not deleted: audit should still have reference to it
-        assert entry.entity == account
 
-    def test_audit_collections(self):
-        I1 = IntegerCollection(id=1)
-        I2 = IntegerCollection(id=2)
-        self.session.add(I1)
-        self.session.add(I2)
-        self.session.flush()
+def test_audit_collections(app, session):
+    app.create_root_user()
+    audit_service.start()
 
-        account = DummyAccount(name='John')
-        account.integers.append(I1)
-        self.session.add(account)
-        self.session.flush()
+    I1 = IntegerCollection(id=1)
+    I2 = IntegerCollection(id=2)
+    session.add(I1)
+    session.add(I2)
+    session.flush()
 
-        entry = AuditEntry.query.one()
-        changes = entry.changes
-        assert changes.collections == {'integers': (['1'], [])}
+    account = DummyAccount(name='John')
+    account.integers.append(I1)
+    session.add(account)
+    session.flush()
+
+    entry = AuditEntry.query.one()
+    changes = entry.changes
+    assert changes.collections == {'integers': (['1'], [])}

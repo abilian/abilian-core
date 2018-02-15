@@ -59,7 +59,7 @@ def test_custom_url_func(app, registry):
     assert registry.url_for(obj) == 'test_registry.RegEntity:1'
 
 
-def test_default_url_func(app, registry):
+def test_default_url_func(app, registry, test_request_context):
     obj = RegEntity(id=1)
 
     @app.route(
@@ -69,13 +69,12 @@ def test_default_url_func(app, registry):
     def dummy_default_view(object_id):
         pass
 
-    with app.test_request_context():
-        assert registry.url_for(obj) == '/regentities_path/1/view'
-        assert registry.url_for(obj, _external=True) == \
-            'http://localhost/regentities_path/1/view'
+    assert registry.url_for(obj) == '/regentities_path/1/view'
+    assert registry.url_for(obj, _external=True) == \
+        'http://localhost/regentities_path/1/view'
 
 
-def test_default_view_decorator(app, registry):
+def test_default_view_decorator(app, registry, test_request_context):
     bp = Blueprint('registry', __name__, url_prefix='/blueprint')
 
     @default_view(bp, RegEntity)
@@ -91,7 +90,6 @@ def test_default_view_decorator(app, registry):
     # blueprint registered: default view is set
     app.register_blueprint(bp)
 
-    with app.test_request_context():
-        assert registry.url_for(obj) == '/blueprint/1'
-        assert registry.url_for(obj, _external=True) == \
-            'http://localhost/blueprint/1'
+    assert registry.url_for(obj) == '/blueprint/1'
+    assert registry.url_for(obj, _external=True) == \
+        'http://localhost/blueprint/1'
