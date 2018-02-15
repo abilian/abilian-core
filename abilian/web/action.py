@@ -293,14 +293,14 @@ class Action(object):
             self.CSS_CLASS = self.CSS_CLASS + ' ' + css
         self._build_css_class()
 
-        self.title = title
-        self.description = description
+        self._title = title
+        self._description = description
         if isinstance(icon, string_types):
             icon = Glyphicon(icon)
-        self.icon = icon
+        self._icon = icon
         self._url = url
         self._status = Status(status) if status is not None else ENABLED
-        self.endpoint = endpoint
+        self._endpoint = endpoint
         if not callable(endpoint) and not isinstance(endpoint, Endpoint):
             # property getter will make it and Endpoint instance
             self.endpoint = self.endpoint

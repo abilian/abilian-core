@@ -59,7 +59,7 @@ def safe_session():
     if not is_eager():
         return db.session()
 
-    return Session(bind=db.session.get_bind(None, None), autocommit=False)
+    return Session(bind=db.session.get_bind(None, None))
 
 
 class FlaskLoader(BaseLoader):

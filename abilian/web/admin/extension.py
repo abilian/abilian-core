@@ -135,7 +135,6 @@ class Admin(object):
             nav_id,
             title=panel.label,
             icon=panel.icon,
-            divider=False,
             endpoint=abs_endpoint,
         )
         self.nav_root.append(nav)

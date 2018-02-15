@@ -98,15 +98,15 @@ def reindex(clear=False, progressive=False, batch_size=None):
             with tqdm(total=count) as bar:
                 for obj in query.yield_per(1000):
                     if obj.object_type != current_object_type:
-                        # may happen if obj is a subclass and its parent class is also
-                        # indexable
-                        bar.update(1)
+                        # may happen if obj is a subclass and its parent class
+                        # is also indexable
+                        bar.update()
                         continue
 
                     object_key = obj.object_key
 
                     if object_key in indexed:
-                        bar.update(1)
+                        bar.update()
                         continue
                     document = index_service.get_document(obj, adapter)
                     strategy.send(document)
@@ -115,10 +115,10 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     if batch_size is not None and (
                             count_current % batch_size
                     ) == 0:
-                        bar.update(1)
+                        bar.update()
                         strategy.send(COMMIT)
 
-                    bar.update(1)
+                    bar.update()
 
             if batch_size is None:
                 strategy.send(COMMIT)

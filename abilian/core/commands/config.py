@@ -94,7 +94,7 @@ class ReprProxy(object):
 
 
 def write_config(config_file, config):
-    jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
+    jinja_env = Environment(loader=PackageLoader(__name__))
     template = jinja_env.get_template('config.py.jinja2')
 
     with Path(config_file).open('w') as f:
@@ -110,7 +110,7 @@ def maybe_write_logging(logging_file):
         )
         return
 
-    jinja_env = Environment(loader=PackageLoader(__name__, 'templates'))
+    jinja_env = Environment(loader=PackageLoader(__name__))
     template = jinja_env.get_template('logging.yml.jinja2')
 
     with Path(logging_file).open('w') as f:

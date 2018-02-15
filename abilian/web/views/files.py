@@ -133,9 +133,7 @@ class BaseBlobDownload(BaseFileDownload):
 
         return send_file(
             stream,
-            as_attachment=False,
             mimetype=self.content_type,
             cache_timeout=0,
             add_etags=False,
-            conditional=False,
         )

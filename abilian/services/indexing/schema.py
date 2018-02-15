@@ -25,14 +25,14 @@ edge_ngram = accent_folder | NgramFilter(minsize=2, maxsize=6, at='start')
 
 
 def EdgeNgramField():
-    return TEXT(stored=False, analyzer=edge_ngram)
+    return TEXT(analyzer=edge_ngram)
 
 
 class _DefaultSearchSchema(SchemaClass):
     """General search schema."""
     object_key = ID(stored=True, unique=True)
-    id = NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=False)
-    object_type = ID(stored=True, unique=False)
+    id = NUMERIC(numtype=int, bits=64, signed=False, stored=True)
+    object_type = ID(stored=True)
     creator = ID(stored=True)
     owner = ID(stored=True)
 
@@ -42,20 +42,19 @@ class _DefaultSearchSchema(SchemaClass):
 
     #: tags indexing
     tag_ids = KEYWORD(stored=True)
-    tag_text = TEXT(stored=False, analyzer=accent_folder)
+    tag_text = TEXT(analyzer=accent_folder)
 
     # hierarchical index of ids path ('/' is the separator)
     parent_ids = FieldType(
         format=Existence(),
         analyzer=PathTokenizer(),
         stored=True,
-        unique=False,
     )
 
     name = TEXT(stored=True, analyzer=accent_folder)
     slug = ID(stored=True)
     description = TEXT(stored=True, analyzer=accent_folder)
-    text = TEXT(stored=False, analyzer=accent_folder)
+    text = TEXT(analyzer=accent_folder)
 
 
 _default_dyn_fields = {

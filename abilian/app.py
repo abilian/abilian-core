@@ -247,9 +247,7 @@ class Application(Flask, ServiceManager, PluginManager):
             self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
 
         self._jinja_loaders = list()
-        self.register_jinja_loaders(
-            jinja2.PackageLoader('abilian.web', 'templates'),
-        )
+        self.register_jinja_loaders(jinja2.PackageLoader('abilian.web'))
 
         self.init_assets()
 
@@ -501,7 +499,7 @@ class Application(Flask, ServiceManager, PluginManager):
             )
         elif logging_file.suffix == '.yml':
             # yaml config file
-            logging_cfg = yaml.safe_load(logging_file.open('r'))
+            logging_cfg = yaml.safe_load(logging_file.open())
             logging_cfg.setdefault('version', 1)
             logging_cfg.setdefault('disable_existing_loggers', False)
             logging.config.dictConfig(logging_cfg)
