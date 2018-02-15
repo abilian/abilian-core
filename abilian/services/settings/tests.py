@@ -5,8 +5,6 @@ from __future__ import absolute_import, division, print_function, \
 
 import pytest
 
-from abilian.testing import BaseTestCase
-
 from .models import EmptyValue, Setting
 
 

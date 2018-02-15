@@ -10,7 +10,6 @@ DI and functions over complex inheritance hierarchies FTW!
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from flask_login import login_user
 from pytest import fixture, yield_fixture
 from sqlalchemy.exc import DatabaseError
 
@@ -46,21 +45,26 @@ def app_context(app):
 
 
 @yield_fixture
-def db(app):
+def test_request_context(app):
+    with app.test_request_context() as ctx:
+        yield ctx
+
+
+@yield_fixture
+def db(app, app_context):
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
 
-    with app.app_context():
-        stop_all_services(app)
-        ensure_services_started(['repository', 'session_repository'])
+    stop_all_services(app)
+    ensure_services_started(['repository', 'session_repository'])
 
-        cleanup_db(db)
-        db.create_all()
-        yield db
+    cleanup_db(db)
+    db.create_all()
+    yield db
 
-        db.session.remove()
-        cleanup_db(db)
-        stop_all_services(app)
+    db.session.remove()
+    cleanup_db(db)
+    stop_all_services(app)
 
 
 @fixture

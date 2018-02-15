@@ -5,24 +5,15 @@ from __future__ import absolute_import, division, print_function, \
 
 import pytest
 from babel import Locale
-from flask import _app_ctx_stack, _request_ctx_stack
 from flask_babel import force_locale, get_locale
 from jinja2 import DictLoader
-from pytest import yield_fixture
 
 from abilian import i18n
-from abilian.testing import BaseTestCase
 
 skip = pytest.mark.skip
 
 
-@yield_fixture
-def ctx(app):
-    with app.test_request_context() as ctx:
-        yield ctx
-
-
-def test_get_template_i18n(app, ctx):
+def test_get_template_i18n(app, test_request_context):
     template_path = '/myfile.txt'
     en = Locale('en')
     result = i18n.get_template_i18n(template_path, locale=en)
@@ -40,7 +31,7 @@ def test_get_template_i18n(app, ctx):
         assert '/myfile.txt' in result
 
 
-def test_render_template_i18n(app, ctx):
+def test_render_template_i18n(app, test_request_context):
     loader = DictLoader({
         'tmpl.txt': 'default ({{ locale }})',
         'tmpl.en.txt': 'en locale ({{ locale }})',
@@ -57,7 +48,7 @@ def test_render_template_i18n(app, ctx):
         app.jinja_loader = app_loader
 
 
-def test_default_country(app, ctx):
+def test_default_country(app, test_request_context):
     assert 'DEFAULT_COUNTRY' in app.config
     assert app.config['DEFAULT_COUNTRY'] is None
     assert i18n.default_country() is None
