@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from datetime import datetime
 
-import pytest
+from pytest import fixture
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -17,7 +17,7 @@ from abilian.core.models.subjects import User
 from .dummy import DummyContact
 
 
-@pytest.fixture
+@fixture
 def session():
     engine = create_engine('sqlite:///:memory:', echo=False)
     session_class = sessionmaker(bind=engine)

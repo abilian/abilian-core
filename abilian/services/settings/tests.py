@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-import pytest
+from pytest import raises
 
 from .models import EmptyValue, Setting
 
@@ -16,7 +16,7 @@ def test_type_set():
     s.type = 'json'
     s.type = 'string'
 
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         s.type = 'dummy type name'
 
 
@@ -78,7 +78,7 @@ def test_service_facade(app, session):
     assert svc.get('key_1') == 42
 
     # new key with no type: raise error:
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         svc.set('key_err', 42)
 
     # key already with type_, this should not raise an error
@@ -88,14 +88,14 @@ def test_service_facade(app, session):
 
     svc.delete('key_1')
     session.flush()
-    with pytest.raises(KeyError):
+    with raises(KeyError):
         svc.get('key_1')
 
     # delete: silent by default
     svc.delete('non_existent')
 
     # delete: non-silent
-    with pytest.raises(KeyError):
+    with raises(KeyError):
         svc.delete('non_existent', silent=False)
 
     # tricky use case: ask key delete, set it later, then flush

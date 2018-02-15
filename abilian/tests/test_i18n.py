@@ -3,14 +3,11 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-import pytest
 from babel import Locale
 from flask_babel import force_locale, get_locale
 from jinja2 import DictLoader
 
 from abilian import i18n
-
-skip = pytest.mark.skip
 
 
 def test_get_template_i18n(app, test_request_context):

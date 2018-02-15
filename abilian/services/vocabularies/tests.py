@@ -102,7 +102,8 @@ def test_items(db, session):
 
     # test unique position constraint
     with raises(
-            sa.exc.IntegrityError, message="Could insert duplicate position",
+            sa.exc.IntegrityError,
+            message="Could insert duplicate position",
     ):
         with session.begin_nested():
             v = PriorityVoc(label='New one', position=1)

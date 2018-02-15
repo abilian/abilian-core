@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-import pytest
+from pytest import fixture, raises
 from wtforms import Form, StringField
 from wtforms.validators import ValidationError
 
@@ -29,7 +29,7 @@ def error_message(validator, form, field):
         return e.args[0]
 
 
-@pytest.fixture()
+@fixture()
 def validator():
     yield siret_validator()
 
@@ -52,7 +52,7 @@ def test_siret_validator_invalid_luhn(validator):
     # invalid Luhn (changed the first digit)
     form = DummyForm(siret="64207855500514", name="foo")
     field = form.siret
-    with pytest.raises(ValidationError):
+    with raises(ValidationError):
         validator(form, field)
 
 
@@ -60,7 +60,7 @@ def test_siret_validator_invalid_2(validator):
     # invalid
     form = DummyForm(siret="WRONG542078555", name="foo")
     field = form.siret
-    with pytest.raises(ValidationError):
+    with raises(ValidationError):
         validator(form, field)
 
 
@@ -68,7 +68,7 @@ def test_siret_validator_too_short(validator):
     # too short
     form = DummyForm(siret="54207", name="foo")
     field = form.siret
-    with pytest.raises(ValidationError):
+    with raises(ValidationError):
         validator(form, field)
 
 
@@ -90,7 +90,7 @@ def test_siret_ko_special_siret(validator):
     form = DummyForm()
 
     field = DummyField('MONACOCONFO999')
-    with pytest.raises(ValidationError):
+    with raises(ValidationError):
         validator(form, field)
     assert error_message(validator, form, field) == \
         'SIRET looks like special SIRET but geographical code seems invalid (999)'
@@ -100,7 +100,7 @@ def test_siret_ko_invalid_length(validator):
     # invalid length
     form = DummyForm()
     field = DummyField('42342435')
-    with pytest.raises(ValidationError):
+    with raises(ValidationError):
         validator(form, field)
     assert error_message(validator, form, field) == \
         'SIRET must have exactly 14 characters (8)'
@@ -110,7 +110,7 @@ def test_siret_ko_invalid_luhn(validator):
     # invalid checksum
     form = DummyForm()
     field = DummyField('78913349300011')
-    with pytest.raises(ValidationError):
+    with raises(ValidationError):
         validator(form, field)
     assert error_message(validator, form, field) == \
         'SIRET number is invalid (length is ok: verify numbers)'

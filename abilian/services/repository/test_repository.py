@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 import uuid
 from pathlib import Path
 
-import pytest
+from pytest import raises
 
 from . import repository
 
@@ -15,7 +15,7 @@ UUID = uuid.UUID(UUID_STR)
 
 
 def test_rel_path(session):
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         repository.rel_path(UUID_STR)
 
     p = repository.rel_path(UUID)
@@ -25,7 +25,7 @@ def test_rel_path(session):
 
 
 def test_abs_path(session):
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         repository.abs_path(UUID_STR)
 
     p = repository.abs_path(UUID)
@@ -38,10 +38,10 @@ def test_abs_path(session):
 
 
 def test_get(session):
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         repository.get(UUID_STR)
 
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         assert repository[UUID_STR]
 
     p = repository.abs_path(UUID)
@@ -65,7 +65,7 @@ def test_get(session):
     assert val.open('rb').read() == b'my file content'
 
     # __getitem__ non-existent
-    with pytest.raises(KeyError):
+    with raises(KeyError):
         assert repository[u]
 
 
@@ -107,9 +107,9 @@ def test_delitem(session):
 def test_delete_non_existent(session):
     # non-existent
     u1 = uuid.uuid4()
-    with pytest.raises(KeyError):
+    with raises(KeyError):
         repository.delete(u1)
 
     # same w/ __delitem__
-    with pytest.raises(KeyError):
+    with raises(KeyError):
         del repository[u1]

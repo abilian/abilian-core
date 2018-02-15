@@ -8,10 +8,7 @@ from pathlib import Path
 
 from flask import request, url_for
 from flask_login import login_user
-from pytest import fixture
 
-from abilian.core.models.subjects import User
-from abilian.testing import BaseTestCase
 from abilian.web.preferences.user import UserPreferencesForm
 
 AVATAR_COLORMAP = Path(__file__).parent / 'avatar-colormap.png'

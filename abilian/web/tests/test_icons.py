@@ -3,7 +3,6 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from abilian.testing import BaseTestCase
 from abilian.web.action import FAIcon, Glyphicon, StaticIcon
 
 

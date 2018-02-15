@@ -3,11 +3,9 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-import pytest
 import sqlalchemy as sa
-from flask import Blueprint, Flask
-from flask_testing import TestCase as FlaskTestCase
-from pytest import fixture
+from flask import Blueprint
+from pytest import fixture, raises
 
 from abilian.core.entities import Entity
 # needed if running only this test, else SA won't have registered this mapping
@@ -84,7 +82,7 @@ def test_default_view_decorator(app, registry, test_request_context):
 
     obj = RegEntity(id=1)
     # blueprint not registered: no rule set
-    with pytest.raises(KeyError):
+    with raises(KeyError):
         registry.url_for(obj)
 
     # blueprint registered: default view is set

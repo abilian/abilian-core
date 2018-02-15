@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import uuid
 
-import pytest
+from pytest import raises
 
 from . import repository, session_repository
 from .service import RepositoryTransaction
@@ -43,11 +43,11 @@ def test_transaction_lifetime(session):
 def test_accessors_bad_uuid_type(session):
     uuid_str = b'4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9'
 
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         session_repository.get(session, uuid_str)
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         session_repository.set(session, uuid_str, '')
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         session_repository.delete(session, uuid_str)
 
 
