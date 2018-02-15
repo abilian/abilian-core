@@ -41,7 +41,7 @@ before_script:
 
 # Run tests
 script:
-  - pytest --cov abilian abilian tests
+  - pytest --cov abilian abilian
   - make lint-ci
 
 # Report coverage
