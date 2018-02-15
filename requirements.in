@@ -49,10 +49,13 @@ redis>=2.10.1
 bleach>=2
 bcrypt
 
+# low-level tools
+python-deprecated
+typing
+
 # Others (TODO: document)
 PyYAML
 pygeoip
-typing
 tqdm
 raven
 

@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function, division, unicode_litera
 
 import getpass
 
+from deprecated import deprecated
 from six import string_types
 
 import os
@@ -22,9 +23,8 @@ from flask_assets import Bundle
 
 from abilian.app import Application
 from abilian.core.models.subjects import User, ClearPasswordStrategy
-from abilian.web.decorators import deprecated
 
-__all__ = ['TestConfig', 'BaseTestCase']
+__all__ = ('TestConfig', 'BaseTestCase')
 
 _CLEAR_PWD = ClearPasswordStrategy()
 _DEFAULT_PWD = User.__password_strategy__
@@ -93,6 +93,8 @@ class BaseTestCase(TestCase):
     Additionaly if the database is postgresql a schema is created for each test
     and the connection role is altered to use this DB schema. This is done to
     ensure harder test isolation.
+
+    DEPRECATED. Will be removed in 0.11.
     """
 
     #: Config class to use for :attr:`.application_class` configuration.
@@ -124,6 +126,10 @@ class BaseTestCase(TestCase):
     #: set to False to use cryptographic scheme (standard) for user password. By
     #: default the testcase switches to clear text to avoid longer running.
     CLEAR_PASSWORDS = True
+
+    @deprecated
+    def __init__(self, *args, **kwargs):
+        super(BaseTestCase, self).__init__(*args, **kwargs)
 
     @classmethod
     def setUpClass(cls):
