@@ -88,7 +88,6 @@ class ServiceManager(object):
 class PluginManager(object):
     """Mixin that provides support for loading plugins."""
 
-    @deprecated
     def register_plugin(self, name):
         """Load and register a plugin given its package name."""
         logger.info("Registering plugin: " + name)
