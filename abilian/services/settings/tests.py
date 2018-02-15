@@ -73,10 +73,10 @@ def test_empty_value():
     assert s.value == EmptyValue
 
 
-def test_service_facade(app, db):
+def test_service_facade(app, session):
     svc = app.services.get('settings')
     svc.set('key_1', 42, 'int')
-    db.session.flush()
+    session.flush()
     assert svc.get('key_1') == 42
 
     # new key with no type: raise error:
@@ -85,11 +85,11 @@ def test_service_facade(app, db):
 
     # key already with type_, this should not raise an error
     svc.set('key_1', 24)
-    db.session.flush()
+    session.flush()
     assert svc.get('key_1') == 24
 
     svc.delete('key_1')
-    db.session.flush()
+    session.flush()
     with pytest.raises(KeyError):
         svc.get('key_1')
 
@@ -102,16 +102,16 @@ def test_service_facade(app, db):
 
     # tricky use case: ask key delete, set it later, then flush
     svc.set('key_1', 42, 'int')
-    db.session.flush()
+    session.flush()
     svc.delete('key_1')
     svc.set('key_1', 1)
-    db.session.flush()
+    session.flush()
     assert svc.get('key_1') == 1
 
     # list keys
     svc.set('key_2', 2, 'int')
     svc.set('other', 'azerty', 'string')
-    db.session.flush()
+    session.flush()
     assert sorted(svc.keys()) == ['key_1', 'key_2', 'other']
     assert sorted(svc.keys(prefix='key_')) == ['key_1', 'key_2']
 
@@ -120,17 +120,17 @@ def test_service_facade(app, db):
     assert svc.as_dict(prefix='key_') == {'key_1': 1, 'key_2': 2}
 
 
-def test_namespace(app, db):
+def test_namespace(app, session):
     svc = app.services.get('settings')
     ns = svc.namespace('test')
     ns.set('1', 42, 'int')
-    db.session.flush()
+    session.flush()
     assert ns.get('1') == 42
     assert svc.get('test:1') == 42
 
     ns.set('sub:2', 2, 'int')
     svc.set('other', 'not in NS', 'string')
-    db.session.flush()
+    session.flush()
     assert sorted(ns.keys()) == ['1', 'sub:2']
     assert sorted(svc.keys()) == ['other', 'test:1', 'test:sub:2']
 
@@ -140,7 +140,7 @@ def test_namespace(app, db):
     assert sub.get('2') == 2
 
     sub.set('1', 1, 'int')
-    db.session.flush()
+    session.flush()
     assert sub.get('1') == 1
     assert ns.get('1') == 42
     assert sorted(
@@ -161,106 +161,7 @@ def test_namespace(app, db):
     # deletion
     sub.delete('1')
     sub.delete('2')
-    db.session.flush()
+    session.flush()
     assert sub.keys() == []
     assert ns.keys() == ['1']
     assert sorted(svc.keys()) == ['other', 'test:1']
-
-
-class SettingsServiceTestCase(BaseTestCase):
-
-    def setUp(self):
-        BaseTestCase.setUp(self)
-        self.service = self.app.services.get('settings')
-
-    def test_service_facade(self):
-        svc = self.service
-        svc.set('key_1', 42, 'int')
-        self.db.session.flush()
-        assert svc.get('key_1') == 42
-
-        # new key with no type: raise error:
-        with pytest.raises(ValueError):
-            svc.set('key_err', 42)
-
-        # key already with type_, this should not raise an error
-        svc.set('key_1', 24)
-        self.db.session.flush()
-        assert svc.get('key_1') == 24
-
-        svc.delete('key_1')
-        self.db.session.flush()
-        with pytest.raises(KeyError):
-            svc.get('key_1')
-
-        # delete: silent by default
-        svc.delete('non_existent')
-
-        # delete: non-silent
-        with pytest.raises(KeyError):
-            svc.delete('non_existent', silent=False)
-
-        # tricky use case: ask key delete, set it later, then flush
-        svc.set('key_1', 42, 'int')
-        self.db.session.flush()
-        svc.delete('key_1')
-        svc.set('key_1', 1)
-        self.db.session.flush()
-        assert svc.get('key_1') == 1
-
-        # list keys
-        svc.set('key_2', 2, 'int')
-        svc.set('other', 'azerty', 'string')
-        self.db.session.flush()
-        assert sorted(svc.keys()) == ['key_1', 'key_2', 'other']
-        assert sorted(svc.keys(prefix='key_')) == ['key_1', 'key_2']
-
-        # as dict
-        assert svc.as_dict() == {'other': 'azerty', 'key_1': 1, 'key_2': 2}
-        assert svc.as_dict(prefix='key_') == {'key_1': 1, 'key_2': 2}
-
-    def test_namespace(self):
-        svc = self.service
-        ns = svc.namespace('test')
-        ns.set('1', 42, 'int')
-        self.db.session.flush()
-        assert ns.get('1') == 42
-        assert svc.get('test:1') == 42
-
-        ns.set('sub:2', 2, 'int')
-        svc.set('other', 'not in NS', 'string')
-        self.db.session.flush()
-        assert sorted(ns.keys()) == ['1', 'sub:2']
-        assert sorted(svc.keys()) == ['other', 'test:1', 'test:sub:2']
-
-        # sub namespace test:sub:
-        sub = ns.namespace('sub')
-        assert sub.keys() == ['2']
-        assert sub.get('2') == 2
-
-        sub.set('1', 1, 'int')
-        self.db.session.flush()
-        assert sub.get('1') == 1
-        assert ns.get('1') == 42
-        assert sorted(
-            svc.keys(),
-        ) == ['other', 'test:1', 'test:sub:1', 'test:sub:2']
-
-        # as dict
-        assert sub.as_dict() == {'1': 1, '2': 2}
-        assert ns.as_dict(prefix='sub:') == {'sub:1': 1, 'sub:2': 2}
-        assert ns.as_dict() == {'1': 42, 'sub:1': 1, 'sub:2': 2}
-        assert svc.as_dict() == {
-            'other': 'not in NS',
-            'test:1': 42,
-            'test:sub:1': 1,
-            'test:sub:2': 2,
-        }
-
-        # deletion
-        sub.delete('1')
-        sub.delete('2')
-        self.db.session.flush()
-        assert sub.keys() == []
-        assert ns.keys() == ['1']
-        assert sorted(svc.keys()) == ['other', 'test:1']
