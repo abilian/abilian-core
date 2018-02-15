@@ -40,6 +40,12 @@ def app(config):
 
 
 @yield_fixture
+def app_context(app):
+    with app.app_context() as ctx:
+        yield ctx
+
+
+@yield_fixture
 def db(app):
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
