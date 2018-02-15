@@ -3,14 +3,10 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-import sys
-import warnings
-
 import sqlalchemy as sa
 import sqlalchemy.exc
-from pytest import fail, mark, raises
+from pytest import mark, raises
 
-from abilian.testing import BaseTestCase
 from abilian.web import url_for
 
 from .models import BaseVocabulary, Vocabulary
@@ -26,9 +22,6 @@ StateVoc = Vocabulary('defaultstates', group='', label='States')
 DocCatVoc = Vocabulary('categories', group='documents', label='Categories')
 
 
-# FIXME
-# @mark.skipif(sys.version_info >= (3, 0), reason="Doesn't work yet on Py3k")
-# @mark.skip
 def test_vocabulary_factory(session):
     assert Voc.__name__ == 'VocabularyVoc'
     assert Voc.__tablename__ == 'vocabulary_voc'
@@ -76,18 +69,9 @@ def test_items(db, session):
     assert IMMEDIATE.label == 'Immediate'
 
     # test default ordering
-    default_ordering = [
-        'Immediate',
-        'Urgent',
-        'High',
-        'Normal',
-        'Low',
-    ]
-    assert (
-        [
-            i.label for i in PriorityVoc.query.active().all()
-        ] == default_ordering
-    )
+    default_ordering = ['Immediate', 'Urgent', 'High', 'Normal', 'Low']
+    query = PriorityVoc.query
+    assert [i.label for i in query.active().all()] == default_ordering
 
     # no default ordering when using .values(): explicit ordering required
     query = PriorityVoc.query \
