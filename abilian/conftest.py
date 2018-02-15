@@ -22,7 +22,11 @@ class TestConfig:
     SERVER_NAME = 'localhost'
     CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+    MAIL_SENDER = 'tester@exampler.com'
+    SITE_NAME = "Abilian Test"
     # CSRF_ENABLED = False
+    CSRF_ENABLED = True
+    WTF_CSRF_ENABLED = True
 
 
 @fixture
