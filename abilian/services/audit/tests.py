@@ -7,7 +7,6 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
-from pytest import mark
 from six import python_2_unicode_compatible, text_type
 from sqlalchemy import Column, Date, ForeignKey, Integer, Text, Unicode, \
     UnicodeText

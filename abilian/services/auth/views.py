@@ -111,7 +111,7 @@ def login_post():
 @csrf.exempt
 @route("/api/login", methods=['POST'])
 def login_json():
-    res = do_login(request.json)
+    res = do_login(request.get_json())
     code = None
 
     if 'error' in res:

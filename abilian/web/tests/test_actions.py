@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function, \
 from flask import Flask
 from jinja2 import Markup
 
-from abilian.testing import BaseTestCase
 from abilian.web.action import Action, Glyphicon, StaticIcon, actions
 
 BASIC = Action(

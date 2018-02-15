@@ -38,7 +38,7 @@ setup = Blueprint(
 
 _dialects = OrderedDict((
     ('sqlite', 'SQLite (for demo)'),
-    ('postgres', 'PostgreSQL'),
+    ('postgresql', 'PostgreSQL'),
 ))
 
 _dialects_unavailable = OrderedDict()
