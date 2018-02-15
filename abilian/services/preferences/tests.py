@@ -3,11 +3,12 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from flask_login import current_user
+from flask_login import current_user, login_user
+from pytest import fixture
 
+from abilian.app import Application as BaseApplication
 from abilian.core.models.subjects import User
 from abilian.services import get_service
-from abilian.testing import BaseTestCase
 
 from .models import UserPreference
 from .panel import PreferencePanel
@@ -35,72 +36,76 @@ class AdminPanel(PreferencePanel):
         return 'Admin'
 
 
-class App(BaseTestCase.application_class):
+class Application(BaseApplication):
 
     def init_extensions(self):
-        super(App, self).init_extensions()
+        super(Application, self).init_extensions()
         prefs = self.services['preferences']
         prefs.app_state.panels = []
         prefs.register_panel(VisiblePanel(), self)
         prefs.register_panel(AdminPanel(), self)
 
 
-class PreferencesTestCase(BaseTestCase):
+@fixture
+def app(config):
+    return Application(config=config)
 
-    application_class = App
 
-    def test_preferences(self):
-        user = User(email="test@example.com")
-        assert UserPreference.query.all() == []
+def test_preferences(app, session):
+    user = User(email="test@example.com")
+    assert UserPreference.query.all() == []
 
-        preference_service = PreferenceService()
+    preference_service = PreferenceService()
 
-        preferences = preference_service.get_preferences(user)
-        assert preferences == {}
+    preferences = preference_service.get_preferences(user)
+    assert preferences == {}
 
-        preference_service.set_preferences(user, digest='daily')
-        self.session.flush()
+    preference_service.set_preferences(user, digest='daily')
+    session.flush()
 
-        preferences = preference_service.get_preferences(user)
-        assert preferences == {'digest': 'daily'}
+    preferences = preference_service.get_preferences(user)
+    assert preferences == {'digest': 'daily'}
 
-        preference_service.clear_preferences(user)
-        self.session.flush()
+    preference_service.clear_preferences(user)
+    session.flush()
 
-        preferences = preference_service.get_preferences(user)
-        assert preferences == {}
-        assert UserPreference.query.all() == []
+    preferences = preference_service.get_preferences(user)
+    assert preferences == {}
+    assert UserPreference.query.all() == []
 
-    def test_preferences_with_various_types(self):
-        user = User(email="test@example.com")
-        preference_service = PreferenceService()
 
-        preference_service.set_preferences(user, some_int=1)
-        self.session.flush()
-        preferences = preference_service.get_preferences(user)
-        assert preferences == {'some_int': 1}
+def test_preferences_with_various_types(app, session):
+    user = User(email="test@example.com")
+    preference_service = PreferenceService()
 
-        preference_service.set_preferences(user, some_bool=True)
-        self.session.flush()
-        preferences = preference_service.get_preferences(user)
-        assert preferences == {'some_int': 1, 'some_bool': True}
+    preference_service.set_preferences(user, some_int=1)
+    session.flush()
+    preferences = preference_service.get_preferences(user)
+    assert preferences == {'some_int': 1}
 
-    def test_visible_panels(self):
-        user = User(email="test@example.com")
-        app = self.app
-        security = app.services['security']
+    preference_service.set_preferences(user, some_bool=True)
+    session.flush()
+    preferences = preference_service.get_preferences(user)
+    assert preferences == {'some_int': 1, 'some_bool': True}
+
+
+def test_visible_panels(app, db):
+    user = User(email="test@example.com")
+    security = app.services['security']
+
+    with app.test_request_context():
         security.start()
+        login_user(user)
 
         for cp in app.template_context_processors['preferences']:
             ctx = cp()
             if 'menu' in ctx:
                 break
 
-        with self.login(user):
-            expected = ['preferences.visible']
-            assert [p['endpoint'] for p in ctx['menu']] == expected
+        expected = ['preferences.visible']
+        assert [p['endpoint'] for p in ctx['menu']] == expected
 
-            security.grant_role(user, 'admin')
-            ctx = cp()
-            expected = ['preferences.visible', 'preferences.admin']
-            assert [p['endpoint'] for p in ctx['menu']] == expected
+        security.grant_role(user, 'admin')
+        ctx = cp()
+        expected = ['preferences.visible', 'preferences.admin']
+        assert [p['endpoint'] for p in ctx['menu']] == expected

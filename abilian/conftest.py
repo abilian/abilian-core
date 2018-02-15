@@ -27,11 +27,16 @@ class TestConfig:
 
 
 @fixture
-def app():
+def config():
+    return TestConfig
+
+
+@fixture
+def app(config):
     # We currently return a fresh app for each test.
     # Using session-scoped app doesn't currently work.
     # Note: the impact on speed is minimal.
-    return create_app(config=TestConfig)
+    return create_app(config=config)
 
 
 @yield_fixture
