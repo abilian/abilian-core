@@ -10,6 +10,7 @@ DI and functions over complex inheritance hierarchies FTW!
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from flask_login import login_user
 from pytest import fixture, yield_fixture
 from sqlalchemy.exc import DatabaseError
 
@@ -20,6 +21,8 @@ from abilian.services import get_service
 class TestConfig:
     TESTING = True
     SERVER_NAME = 'localhost'
+    CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
+    CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
     # CSRF_ENABLED = False
 
 

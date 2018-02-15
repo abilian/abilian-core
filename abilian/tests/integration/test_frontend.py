@@ -8,7 +8,6 @@ from flask_wtf import Form
 from sqlalchemy import Column, String, UnicodeText
 
 from abilian.core.entities import Entity
-from abilian.testing import BaseTestCase
 from abilian.web.frontend import CRUDApp, Module
 
 
@@ -60,12 +59,13 @@ class SimpleCRM(CRUDApp):
     url = "/crm"
 
 
-class FrontendTestCase(BaseTestCase):
+def test_json(app, client):
+    SimpleCRM(app)
+    response = client.get("/crm/contacts/json")
+    assert response.status_code == 200
 
-    def setUp(self):
-        BaseTestCase.setUp(self)
-        self.crm = SimpleCRM(self.app)
 
-    def test(self):
-        response = self.client.get("/crm/contacts/json")
-        assert response.status_code == 200
+def test_contact_list(app, client):
+    SimpleCRM(app)
+    response = client.get("/crm/contacts/")
+    assert response.status_code == 200

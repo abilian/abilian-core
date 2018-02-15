@@ -78,7 +78,7 @@ lint-mypy:
 
 lint-py3k:
 	@echo "--> Checking Python 3 compatibility"
-	-pylint --py3k -j3 -d W1633,W1629,W1630 abilian tests
+	-pylint --py3k -j3 -d W1633,W1629,W1630 abilian
 	@echo ""
 
 lint-travis:
@@ -115,11 +115,11 @@ format: format-py format-js
 
 format-py:
 	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
-		-rc $(SRC) tests *.py
-	-yapf --style google -r -i $(SRC) tests *.py
-	-add-trailing-comma `find abilian -name '*.py'` `find tests -name '*.py'` *.py
-	autopep8 -j3 -r --in-place -a --ignore E711 abilian tests *.py
-	isort -rc $(SRC) tests *.py
+		-rc $(SRC) *.py
+	-yapf --style google -r -i $(SRC) *.py
+	-add-trailing-comma `find abilian -name '*.py'` *.py
+	autopep8 -j3 -r --in-place -a --ignore E711 abilian *.py
+	isort -rc $(SRC) *.py
 
 format-js:
 	./node_modules/.bin/prettier --trailing-comma es5 --write \
@@ -148,7 +148,6 @@ clean:
 	find . -name abilian.db -delete
 	find . -type d -empty -delete
 	rm -rf *.egg-info *.egg .coverage .eggs .cache .mypy_cache
-	rm -rf whoosh tests/whoosh tests/integration/whoosh
 	rm -rf docs/_build docs/cache docs/tmp
 	rm -rf $(SRC)/static/gen
 	rm -rf dist build

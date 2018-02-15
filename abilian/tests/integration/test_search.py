@@ -4,13 +4,12 @@ Test the index service.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
+from flask_login import login_user
 from sqlalchemy import Column, Text, UnicodeText
 from sqlalchemy.orm import column_property
 
 from abilian.core.entities import SEARCHABLE, Entity
 from abilian.services import index_service
-
-from .base import IntegrationTestCase
 
 
 def gen_name(ctx):
@@ -39,24 +38,21 @@ class DummyContact1(Entity):
     email = Column(Text, default="")
 
 
-class IndexingTestCase(IntegrationTestCase):
-    SERVICES = ('security', 'indexing')
+def test_contacts_are_indexed(app, session):
+    index_service.start()
 
-    def tearDown(self):
-        if index_service.running:
-            index_service.stop()
-        IntegrationTestCase.tearDown(self)
+    with app.test_request_context():
+        root_user = app.create_root_user()
+        login_user(root_user)
 
-    def test_contacts_are_indexed(self):
-        self.login_system()
         contact = DummyContact1(
             first_name="John",
             last_name="Test User",
             email="test@example.com",
         )
-        self.session.add(contact)
+        session.add(contact)
         # commit is needed here to trigger change in index
-        self.session.commit()
+        session.commit()
 
         search_result = index_service.search('john')
         assert len(search_result) == 1
