@@ -70,12 +70,14 @@ class Blob(Model):
 
     @property
     def size(self):
+        # type: () -> int
         """Return size in bytes of value."""
         f = self.file
         return f.stat().st_size if f is not None else 0
 
     @property
     def value(self):
+        # type: () -> bytes
         """Binary value content."""
         v = self.file
         return v.open('rb').read() if v is not None else v

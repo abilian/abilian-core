@@ -116,8 +116,8 @@ class SAAdapter(SchemaAdapter):
                 ):
                     field_definitions[field_name] = field_def
 
-            # attrgetter offers dotted name support. Useful for attributes on related
-            # objects.
+            # attrgetter offers dotted name support. Useful for attributes on
+            # related objects.
             args.setdefault(field_name, {})[name] = attrgetter(name)
 
         # model level definitions

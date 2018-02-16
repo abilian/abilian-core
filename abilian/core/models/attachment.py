@@ -77,9 +77,10 @@ class Attachment(Entity):
 
     @sa.ext.declarative.declared_attr
     def __mapper_args__(cls):
-        # we cannot use super(Attachment, cls): declared_attr happens during class
-        # construction. super(cls, cls) could work; as long as `cls` is not a
-        # subclass of `Attachment`: it would enter into an infinite loop.
+        # we cannot use super(Attachment, cls): declared_attr happens during
+        # class construction. super(cls, cls) could work; as long as `cls`
+        # is not a subclass of `Attachment`: it would enter into
+        # an infinite loop.
         #
         # Entity.__mapper_args__ calls the descriptor with 'Entity', not `cls`.
         args = Entity.__dict__['__mapper_args__'].fget(cls)
@@ -116,7 +117,7 @@ class Attachment(Entity):
         class_ = self.__class__
         mod_ = class_.__module__
         classname = class_.__name__
-        return '<{}.{} instance at 0x{:x} entity id={!r}'\
+        return '<{}.{} instance at 0x{:x} entity id={!r}>' \
             .format(mod_, classname, id(self), self.entity_id)
 
 
