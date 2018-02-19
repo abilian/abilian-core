@@ -55,8 +55,8 @@ pyyaml==3.12
 raven==6.5.0
 redis==2.10.6
 six==1.11.0
-sqlalchemy-utils==0.32.21  # via wtforms-alchemy
-sqlalchemy==1.2.2
+sqlalchemy-utils==0.33.0  # via wtforms-alchemy
+sqlalchemy==1.2.3
 sqlparse==0.2.4
 tqdm==4.19.5
 typing==3.6.4
