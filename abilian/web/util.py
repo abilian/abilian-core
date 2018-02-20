@@ -10,8 +10,8 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 import sys
 
-from flask import url_for as flask_url_for
 from flask import current_app, session, stream_with_context
+from flask import url_for as flask_url_for
 from flask.helpers import send_from_directory
 from six import string_types
 from werkzeug.routing import BuildError

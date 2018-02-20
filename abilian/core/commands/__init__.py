@@ -32,14 +32,13 @@ Extensions can add their own commands to :py:data:`~abilian.core.commands.manage
 """
 from __future__ import absolute_import, print_function, division
 
-from flask_migrate import MigrateCommand
 from flask_assets import ManageAssets
-
-from .base import manager
-from .config import manager as config_manager
+from flask_migrate import MigrateCommand
 
 # Additional commands
 from . import indexing  # noqa
+from .base import manager
+from .config import manager as config_manager
 
 __all__ = ['manager', 'setup_abilian_commands']
 

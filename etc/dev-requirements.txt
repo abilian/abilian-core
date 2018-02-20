@@ -25,7 +25,7 @@ pre-commit
 # pep8-naming
 
 # Formatting (update version explicitely when needed)
-isort==4.2.15
+isort==4.3.4
 yapf==0.20.0
 autopep8==1.3.3
 add-trailing-comma

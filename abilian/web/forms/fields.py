@@ -18,9 +18,10 @@ from flask_babel import format_date, format_datetime, get_locale, get_timezone
 from flask_login import current_user
 from flask_wtf.file import FileField as BaseFileField
 from six import PY2, string_types
+from wtforms import Field
 from wtforms import FieldList as BaseFieldList
 from wtforms import FormField as BaseFormField
-from wtforms import Field, SelectField, SelectFieldBase, SelectMultipleField, \
+from wtforms import SelectField, SelectFieldBase, SelectMultipleField, \
     ValidationError
 from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm

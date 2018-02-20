@@ -18,9 +18,10 @@ from abilian.core.extensions import db
 from abilian.core.models.subjects import Group, User
 from abilian.core.util import noproxy
 from abilian.services import Service, ServiceState
-from abilian.services.security.models import Anonymous as AnonymousRole
 from abilian.services.security.models import CREATE, DELETE, MANAGE, \
-    PERMISSIONS_ATTR, READ, WRITE, Admin, Authenticated, Creator, \
+    PERMISSIONS_ATTR, READ, WRITE, Admin
+from abilian.services.security.models import Anonymous as AnonymousRole
+from abilian.services.security.models import Authenticated, Creator, \
     InheritSecurity, Manager, Owner, Permission, PermissionAssignment, \
     Reader, Role, RoleAssignment, SecurityAudit, Writer
 

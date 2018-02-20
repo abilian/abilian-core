@@ -8,17 +8,16 @@ from __future__ import absolute_import, print_function, division
 
 import flask_mail
 import sqlalchemy as sa
-import sqlalchemy.orm
 import sqlalchemy.event
+import sqlalchemy.orm
 from flask import current_app
 from sqlalchemy.engine import Engine
 
 from abilian.core.logging import patch_logger
-
 from . import upstream_info
+from .csrf import wtf_csrf as csrf, abilian_csrf
 from .login import login_manager
 from ..sqlalchemy import SQLAlchemy
-from .csrf import wtf_csrf as csrf, abilian_csrf
 
 __all__ = [
     'get_extension',

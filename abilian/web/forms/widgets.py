@@ -25,9 +25,11 @@ from flask_wtf.file import FileField
 from six import string_types, text_type
 from six.moves import filter
 from six.moves.urllib import parse
+from wtforms.widgets import HTMLString, Input
 from wtforms.widgets import PasswordInput as BasePasswordInput
+from wtforms.widgets import Select
 from wtforms.widgets import TextArea as BaseTextArea
-from wtforms.widgets import HTMLString, Input, Select, html_params
+from wtforms.widgets import html_params
 from wtforms_alchemy import ModelFieldList
 
 from abilian.core.entities import Entity

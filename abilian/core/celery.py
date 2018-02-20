@@ -5,8 +5,9 @@ from __future__ import absolute_import, division, print_function, \
 
 from multiprocessing.util import register_after_fork
 
+from celery import Celery
 from celery import current_app as celery_current_app
-from celery import Celery, current_task, task
+from celery import current_task, task
 from celery.app.task import Task
 from celery.loaders.base import BaseLoader
 from celery.task import PeriodicTask as CeleryPeriodicTask

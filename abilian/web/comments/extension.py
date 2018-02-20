@@ -7,8 +7,8 @@ from abilian.core.models import comment as comments
 from abilian.web import url_for
 
 from .forms import CommentForm
-from .views import bp as blueprint
 from .views import COMMENT_BUTTON
+from .views import bp as blueprint
 
 
 class CommentExtension(object):

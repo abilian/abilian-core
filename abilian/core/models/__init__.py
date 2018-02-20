@@ -2,12 +2,12 @@
 """"""
 from __future__ import absolute_import, print_function, division
 
-from datetime import datetime
 import json
+from datetime import datetime
 
 from six import python_2_unicode_compatible
-from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm.util import class_mapper
 
 from .base import (
     Model,
@@ -24,7 +24,6 @@ from .base import (
     NOT_EXPORTABLE,
     SYSTEM,
 )
-
 from .owned import OwnedMixin
 
 

@@ -18,8 +18,8 @@ from abilian.services.security.models import Role
 from abilian.web.action import ButtonAction, FAIcon
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.util import url_for
-from abilian.web.views import object as views
 from abilian.web.views import base
+from abilian.web.views import object as views
 
 from .forms import GroupAdminForm
 
