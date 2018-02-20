@@ -115,10 +115,9 @@ def query_pa_no_flush(session, permission, role, obj):
             ):
                 return instance
 
-        # last chance: perform a filtered query. If obj is not None, sometimes
-        # getattr(obj, PERMISSIONS_ATTR) has objects not present in session not in
-        # this query (maybe in a parent session transaction `new`?). This happens
-        # when
+        # Last chance: perform a filtered query. If obj is not None, sometimes
+        # getattr(obj, PERMISSIONS_ATTR) has objects not present in session
+        # not in this query (maybe in a parent session transaction `new`?).
         if obj is not None and obj.id is None:
             obj = None
 
@@ -131,7 +130,6 @@ def query_pa_no_flush(session, permission, role, obj):
             .first()
 
 
-# noinspection PyComparisonWithNone
 class SecurityService(Service):
     name = 'security'
     AppStateClass = SecurityServiceState
@@ -160,11 +158,11 @@ class SecurityService(Service):
             return session.query(User).get(0)
 
         if sa.orm.object_session(user) is not session:
-            # this can happen when called from a celery task during development (with
-            # CELERY_ALWAYS_EAGER=True): the task SA session is not app.db.session,
-            # and we should not attach this object to the other session, because it
-            # can make weird, hard-to-debug errors related to
-            # session.identity_map.
+            # this can happen when called from a celery task during development
+            # (with CELERY_ALWAYS_EAGER=True): the task SA session is not
+            # app.db.session, and we should not attach this object to
+            # the other session, because it can make weird, hard-to-debug
+            # errors related to session.identity_map.
             return session.query(User).get(user.id)
         else:
             return user
@@ -357,8 +355,8 @@ class SecurityService(Service):
             return
 
         # ensure principals processed here will have role cache. Thus users or
-        # groups without any role will have an empty role cache, to avoid unneeded
-        # individual DB query when calling self._fill_role_cache(p).
+        # groups without any role will have an empty role cache, to avoid
+        # unneeded individual DB query when calling self._fill_role_cache(p).
         for p in chain(users, groups):
             self._set_role_cache(p, {})
 
@@ -412,7 +410,8 @@ class SecurityService(Service):
         """True if `principal` has `role` (either globally, if `object` is
         None, or on the specific `object`).
 
-        :param:role:  can be a list or tuple of strings or a :class:`Role` instance
+        :param:role: can be a list or tuple of strings or a :class:`Role`
+            instance
 
         `object` can be an :class:`Entity`, a string, or `None`.
 
@@ -506,8 +505,8 @@ class SecurityService(Service):
 
         # same as above but in current, not yet flushed objects in session. We
         # cannot call flush() in grant_role() since this method may be called a
-        # great number of times in the same transaction, and sqlalchemy limits to
-        # 100 flushes before triggering a warning
+        # great number of times in the same transaction, and sqlalchemy limits
+        # to 100 flushes before triggering a warning
         for ra in (o for models in (session.new, session.dirty) for o in models
                    if isinstance(o, RoleAssignment)):
             if all(getattr(ra, attr) == val for attr, val in args.items()):

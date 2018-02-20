@@ -172,7 +172,7 @@ class AuthService(Service):
         if current_app.testing and current_app.config.get("NO_LOGIN"):
             # Special case for tests
             user = User.query.get(0)
-            login_user(user, False, True)
+            login_user(user, force=True)
             return
 
         state = self.app_state
@@ -211,8 +211,8 @@ class AuthService(Service):
         if current_user.is_anonymous:
             return
 
-        # Update last_active every 60 seconds only so as to not stress the database
-        # too much.
+        # Update last_active every 60 seconds only so as to not stress
+        # the database too much.
         now = datetime.utcnow()
         if (user.last_active is None or
                 (now - user.last_active) > timedelta(minutes=1)):
