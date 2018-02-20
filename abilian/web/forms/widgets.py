@@ -37,7 +37,7 @@ from abilian.core.models.blob import Blob
 from abilian.i18n import _, _l
 from abilian.services import image
 from abilian.services.image import get_format
-from abilian.web import csrf, url_for
+from abilian.web import url_for
 from abilian.web.filters import babel2datepicker, labelize
 
 from .util import babel2datetime

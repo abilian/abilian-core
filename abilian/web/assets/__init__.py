@@ -7,7 +7,6 @@ from flask import current_app, url_for
 from flask_assets import Bundle
 
 from abilian.services.security import Anonymous
-
 # register custom filters for webassets
 from . import filters  # noqa
 

@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function, \
 import imghdr
 from io import BytesIO
 
-import babel
 import babel.dates
 import PIL.Image
 from flask import current_app, flash, g, redirect, render_template, request, \

@@ -4,18 +4,17 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import logging
-import os
 import socket
 from collections import OrderedDict, namedtuple
-from pathlib import Path
 
 import redis
 import six
 import sqlalchemy as sa
 import sqlalchemy.dialects
 import sqlalchemy.exc
-from flask import current_app, flash, make_response, redirect, \
+from flask import current_app, flash, redirect, \
     render_template, request, session, url_for
+from pathlib import Path
 from six import text_type
 
 from abilian.core.commands import config as cmd_config
