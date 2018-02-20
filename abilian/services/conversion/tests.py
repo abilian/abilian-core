@@ -6,7 +6,7 @@ from pathlib import Path
 from warnings import warn
 
 from magic import Magic, os
-from pytest import mark, fixture
+from pytest import fixture, mark
 
 from abilian.services.conversion.handlers import HAS_LIBREOFFICE, HAS_PDFTOTEXT
 

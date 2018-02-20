@@ -2,7 +2,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from pytest import mark, fixture
+from pytest import fixture, mark
 
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import Group, User
