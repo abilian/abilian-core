@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import sqlalchemy as sa
-from pytest import yield_fixture
+from pytest import fixture
 
 from abilian.core.entities import Entity
 
@@ -15,7 +15,7 @@ class IndexedContact(Entity):
     name = sa.Column(sa.UnicodeText)
 
 
-@yield_fixture
+@fixture
 def svc(app):
     svc = app.services['indexing']
     with app.app_context():

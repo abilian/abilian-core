@@ -6,7 +6,7 @@ from pathlib import Path
 from warnings import warn
 
 from magic import Magic, os
-from pytest import mark, yield_fixture
+from pytest import mark, fixture
 
 from abilian.services.conversion.handlers import HAS_LIBREOFFICE, HAS_PDFTOTEXT
 
@@ -16,7 +16,7 @@ encoding_sniffer = Magic(mime_encoding=True)
 # FIXME: tests that rely on OOo are disabled until we fix stability issues.
 
 
-@yield_fixture
+@fixture
 def converter():
     from abilian.services.conversion import converter as c
 

@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from pytest import yield_fixture
+from pytest import fixture
 
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import User
@@ -15,7 +15,7 @@ class Message1(Entity):
     pass
 
 
-@yield_fixture
+@fixture
 def activity_service(app, db):
     service = ActivityService()
     service.start()

@@ -9,9 +9,8 @@ import html5lib
 import mock
 from flask import Flask
 from flask_babel import Babel
-from flask_testing import TestCase as FlaskTestCase
 from jinja2 import Environment
-from pytest import fixture, yield_fixture
+from pytest import fixture
 from pytz import timezone, utc
 
 from .. import filters
@@ -116,7 +115,7 @@ def test_paragraphs():
     assert tmpl.render().strip() == expected.strip()
 
 
-@yield_fixture
+@fixture
 def app():
     app = Flask(__name__)
     babel = Babel(app, default_locale='fr', default_timezone=USER_TZ)

@@ -2,7 +2,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from pytest import mark, yield_fixture
+from pytest import mark, fixture
 
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import Group, User
@@ -35,7 +35,7 @@ def test_enumerate_assignables(db):
     assert Role.assignable_roles() == [Admin]
 
 
-@yield_fixture
+@fixture
 def session(app, db):
     security.start()
     app.create_root_user()

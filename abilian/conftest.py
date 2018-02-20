@@ -10,7 +10,7 @@ DI and functions over complex inheritance hierarchies FTW!
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from pytest import fixture, yield_fixture
+from pytest import fixture
 from sqlalchemy.exc import DatabaseError
 
 from abilian.app import create_app
@@ -22,9 +22,8 @@ class TestConfig:
     SERVER_NAME = 'localhost'
     CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-    MAIL_SENDER = 'tester@exampler.com'
+    MAIL_SENDER = 'tester@example.com'
     SITE_NAME = "Abilian Test"
-    # CSRF_ENABLED = False
     CSRF_ENABLED = True
     WTF_CSRF_ENABLED = True
 
@@ -42,19 +41,19 @@ def app(config):
     return create_app(config=config)
 
 
-@yield_fixture
+@fixture
 def app_context(app):
     with app.app_context() as ctx:
         yield ctx
 
 
-@yield_fixture
+@fixture
 def test_request_context(app):
     with app.test_request_context() as ctx:
         yield ctx
 
 
-@yield_fixture
+@fixture
 def db(app, app_context):
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
