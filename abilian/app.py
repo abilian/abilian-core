@@ -12,8 +12,6 @@ import os
 import warnings
 from functools import partial
 from itertools import chain, count
-
-from deprecated import deprecated
 from pathlib import Path
 from typing import Any, Dict
 
@@ -22,6 +20,7 @@ import sqlalchemy as sa
 import sqlalchemy.exc
 import yaml
 from babel.dates import LOCALTZ
+from deprecated import deprecated
 from flask import Blueprint, Flask, _request_ctx_stack, abort, \
     appcontext_pushed, current_app, g, render_template, request, \
     request_started
@@ -64,7 +63,6 @@ __all__ = ['create_app', 'Application', 'ServiceManager']
 
 # Silence those warnings for now.
 warnings.simplefilter("ignore", category=sa.exc.SAWarning)
-
 
 default_config = dict(Flask.default_config)  # type: Dict[str, Any]
 default_config.update(
@@ -266,7 +264,8 @@ class AssetManagerMixin(Flask):
         supported = self._assets_bundles.keys()
         if type_ not in supported:
             msg = "Invalid type: {}. Valid types: {}".format(
-                repr(type_), ', '.join(sorted(supported)),
+                repr(type_),
+                ', '.join(sorted(supported)),
             )
             raise KeyError(msg)
 
@@ -444,8 +443,44 @@ class ErrorManagerMixin(Flask):
             server_name = str(self.config.get('SERVER_NAME'))
             ext.client.tags['configured_server_name'] = server_name
 
+    def install_default_handlers(self):
+        for http_error_code in (403, 404, 500):
+            self.install_default_handler(http_error_code)
+
+    def install_default_handler(self, http_error_code):
+        """Install a default error handler for `http_error_code`.
+
+        The default error handler renders a template named error404.html
+        for http_error_code 404.
+        """
+        logger.debug(
+            'Set Default HTTP error handler for status code %d',
+            http_error_code,
+        )
+        handler = partial(self.handle_http_error, http_error_code)
+        self.errorhandler(http_error_code)(handler)
+
+    def handle_http_error(self, code, error):
+        """Helper that renders `error{code}.html`.
+
+        Convenient way to use it::
+
+           from functools import partial
+           handler = partial(app.handle_http_error, code)
+           app.errorhandler(code)(handler)
+        """
+        # 5xx code: error on server side
+        if (code // 100) == 5:
+            # ensure rollback if needed, else error page may
+            # have an error, too, resulting in raw 500 page :-(
+            db.session.rollback()
+
+        template = 'error{:d}.html'.format(code)
+        return render_template(template, error=error), code
+
 
 class JinjaManagerMixin(Flask):
+
     def __init__(self):
         self._jinja_loaders = []
 
@@ -524,8 +559,10 @@ class JinjaManagerMixin(Flask):
         return jinja2.ChoiceLoader(loaders)
 
 
-class Application(ServiceManager, PluginManager, AssetManagerMixin,
-                  ErrorManagerMixin, JinjaManagerMixin, Flask):
+class Application(
+    ServiceManager, PluginManager, AssetManagerMixin,
+    ErrorManagerMixin, JinjaManagerMixin, Flask
+):
     """Base application class.
 
     Extend it in your own app.
@@ -640,13 +677,10 @@ class Application(ServiceManager, PluginManager, AssetManagerMixin,
         if not self.config.get('FAVICO_URL'):
             self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
 
-        # self._jinja_loaders = list()
         self.register_jinja_loaders(jinja2.PackageLoader('abilian.web'))
 
         self.init_assets()
-
-        for http_error_code in (403, 404, 500):
-            self.install_default_handler(http_error_code)
+        self.install_default_handlers()
 
         with self.app_context():
             self.init_extensions()
@@ -966,11 +1000,8 @@ class Application(ServiceManager, PluginManager, AssetManagerMixin,
         if endpoint:
             adder = auth_state.add_endpoint_access_controller
             if not isinstance(name, string_types):
-                raise ValueError(
-                    '{} is not a valid endpoint name'.format(
-                        repr(name),
-                    ),
-                )
+                msg = '{} is not a valid endpoint name'.format(repr(name))
+                raise ValueError(msg)
 
         adder(name, func)
 
@@ -1031,37 +1062,6 @@ class Application(ServiceManager, PluginManager, AssetManagerMixin,
             db.session.add(user)
             db.session.commit()
         return user
-
-    def install_default_handler(self, http_error_code):
-        """Install a default error handler for `http_error_code`.
-
-        The default error handler renders a template named error404.html
-        for http_error_code 404.
-        """
-        logger.debug(
-            'Set Default HTTP error handler for status code %d',
-            http_error_code,
-        )
-        handler = partial(self.handle_http_error, http_error_code)
-        self.errorhandler(http_error_code)(handler)
-
-    def handle_http_error(self, code, error):
-        """Helper that renders `error{code}.html`.
-
-        Convenient way to use it::
-
-           from functools import partial
-           handler = partial(app.handle_http_error, code)
-           app.errorhandler(code)(handler)
-        """
-        # 5xx code: error on server side
-        if (code // 100) == 5:
-            # ensure rollback if needed, else error page may
-            # have an error, too, resulting in raw 500 page :-(
-            db.session.rollback()
-
-        template = 'error{:d}.html'.format(code)
-        return render_template(template, error=error), code
 
     def validate_response(self, response):
         # work around circular import
