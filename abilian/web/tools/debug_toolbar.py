@@ -96,17 +96,15 @@ class SignalsDebugPanel(DebugPanel):
                 ns = var
                 ns_name = var_name
                 for signal_name, signal in ns.items():
+                    receivers = [
+                        text_type(r) for r in signal.receivers.values()
+                    ]
                     d = {
-                        'module_name':
-                        module_name,
-                        'ns_name':
-                        ns_name,
-                        'signal_name':
-                        signal_name,
-                        'signal':
-                        signal,
-                        'receivers':
-                        [text_type(r) for r in signal.receivers.values()],
+                        'module_name': module_name,
+                        'ns_name': ns_name,
+                        'signal_name': signal_name,
+                        'signal': signal,
+                        'receivers': receivers,
                     }
                     signals.append(d)
 
