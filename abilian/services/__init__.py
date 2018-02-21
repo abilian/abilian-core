@@ -15,7 +15,7 @@ from .activity import ActivityService
 from .antivirus import service as antivirus
 from .audit import audit_service
 from .auth import AuthService
-from .conversion import converter
+from .conversion import conversion_service
 from .indexing import service as index_service
 from .preferences import preferences as preferences_service
 from .repository import repository as repository_service

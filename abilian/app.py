@@ -6,16 +6,13 @@ from __future__ import absolute_import, division, print_function, \
 
 import errno
 import importlib
-import json
 import logging
 import logging.config
 import os
-import subprocess
 import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import Any, Dict
 
 import jinja2
@@ -44,9 +41,7 @@ import abilian.i18n
 from abilian.core import extensions, redis, signals
 from abilian.core.celery import FlaskCelery
 from abilian.services import activity_service, antivirus, audit_service, \
-    auth_service
-from abilian.services import converter as conversion_service
-from abilian.services import index_service, preferences_service, \
+    auth_service, conversion_service, index_service, preferences_service, \
     repository_service, security_service, session_repository_service, \
     settings_service, vocabularies_service
 from abilian.services.security import Anonymous
@@ -55,7 +50,6 @@ from abilian.web.action import Endpoint, actions
 from abilian.web.admin import Admin
 from abilian.web.assets.filters import ClosureJS
 from abilian.web.blueprints import allow_access_for_roles
-from abilian.web.decorators import deprecated
 from abilian.web.filters import init_filters
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.util import send_file_from_directory, url_for
@@ -135,7 +129,186 @@ default_config.update(
 default_config = ImmutableDict(default_config)
 
 
-class Application(Flask, ServiceManager, PluginManager):
+class AssetManagerMixin(object):
+
+    def init_assets(self):
+        languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
+        if languages is None:
+            languages = abilian.i18n.VALID_LANGUAGES_CODE
+        else:
+            languages = tuple(
+                lang for lang in languages
+                if lang in abilian.i18n.VALID_LANGUAGES_CODE
+            )
+        self.config['BABEL_ACCEPT_LANGUAGES'] = languages
+        js_filters = (
+            ('closure_js',)
+            if self.config.get('PRODUCTION', False) else None
+        )
+        self._assets_bundles = {
+            'css': {
+                'options':
+                dict(
+                    filters=('less', 'cssmin'),
+                    output='style-%(version)s.min.css',
+                ),
+            },
+            'js-top': {
+                'options':
+                dict(
+                    output='top-%(version)s.min.js',
+                    filters=js_filters,
+                ),
+            },
+            'js': {
+                'options':
+                dict(
+                    output='app-%(version)s.min.js',
+                    filters=js_filters,
+                ),
+            },
+        }
+        # bundles for JS translations
+        for lang in languages:
+            code = 'js-i18n-' + lang
+            filename = 'lang-' + lang + '-%(version)s.min.js'
+            self._assets_bundles[code] = {
+                'options': dict(output=filename, filters=js_filters),
+            }
+
+    def _setup_asset_extension(self):
+        assets = self.extensions['webassets'] = AssetsEnv(self)
+        assets.debug = not self.config.get('PRODUCTION', False)
+        assets.requirejs_config = {'waitSeconds': 90, 'shim': {}, 'paths': {}}
+
+        assets_base_dir = Path(self.instance_path, 'webassets')
+        assets_dir = assets_base_dir / 'compiled'
+        assets_cache_dir = assets_base_dir / 'cache'
+        for path in (assets_base_dir, assets_dir, assets_cache_dir):
+            if not path.exists():
+                path.mkdir()
+
+        assets.directory = str(assets_dir)
+        assets.cache = str(assets_cache_dir)
+        manifest_file = assets_base_dir / 'manifest.json'
+        assets.manifest = 'json:{}'.format(str(manifest_file))
+
+        # set up load_path for application static dir. This is required
+        # since we are setting Environment.load_path for other assets
+        # (like core_bundle below),
+        # in this case Flask-Assets uses webasssets resolvers instead of
+        # Flask's one
+        assets.append_path(self.static_folder, self.static_url_path)
+
+        # filters options
+        less_args = ['-ru']
+        assets.config['less_extra_args'] = less_args
+        assets.config['less_as_output'] = True
+        if assets.debug:
+            assets.config['less_source_map_file'] = 'style.map'
+
+        # setup static url for our assets
+        from abilian.web import assets as core_bundles
+        core_bundles.init_app(self)
+
+        # static minified are here
+        assets.url = self.static_url_path + '/min'
+        assets.append_path(str(assets_dir), assets.url)
+        self.add_static_url(
+            'min',
+            str(assets_dir),
+            endpoint='webassets_static',
+            roles=Anonymous,
+        )
+
+    def _finalize_assets_setup(self):
+        assets = self.extensions['webassets']
+        assets_dir = Path(assets.directory)
+        closure_base_args = [
+            '--jscomp_warning',
+            'internetExplorerChecks',
+            '--source_map_format',
+            'V3',
+            '--create_source_map',
+        ]
+
+        for name, data in self._assets_bundles.items():
+            bundles = data.get('bundles', [])
+            options = data.get('options', {})
+            filters = options.get('filters') or []
+            options['filters'] = []
+            for f in filters:
+                if f == 'closure_js':
+                    js_map_file = str(assets_dir / '{}.map'.format(name))
+                    f = ClosureJS(extra_args=closure_base_args + [js_map_file])
+                options['filters'].append(f)
+
+            if not options['filters']:
+                options['filters'] = None
+
+            if bundles:
+                assets.register(name, Bundle(*bundles, **options))
+
+    def register_asset(self, type_, *assets):
+        """Register webassets bundle to be served on all pages.
+
+        :param type_: `"css"`, `"js-top"` or `"js""`.
+
+        :param assets:
+            a path to file, a :ref:`webassets.Bundle <webassets:bundles>`
+            instance or a callable that returns a
+            :ref:`webassets.Bundle <webassets:bundles>` instance.
+
+        :raises KeyError: if `type_` is not supported.
+        """
+        supported = self._assets_bundles.keys()
+        if type_ not in supported:
+            raise KeyError(
+                "Invalid type: %s. Valid types: ",
+                repr(type_),
+                ', '.join(sorted(supported)),
+            )
+
+        for asset in assets:
+            if not isinstance(asset, Bundle) and callable(asset):
+                asset = asset()
+
+            self._assets_bundles[type_].setdefault('bundles', []).append(asset)
+
+    def register_i18n_js(self, *paths):
+        """Register templates path translations files, like
+        `select2/select2_locale_{lang}.js`.
+
+        Only existing files are registered.
+        """
+        languages = self.config['BABEL_ACCEPT_LANGUAGES']
+        assets = self.extensions['webassets']
+
+        for path in paths:
+            for lang in languages:
+                filename = path.format(lang=lang)
+                try:
+                    assets.resolver.search_for_source(assets, filename)
+                except IOError:
+                    logger.debug('i18n JS not found, skipped: "%s"', filename)
+                else:
+                    self.register_asset('js-i18n-' + lang, filename)
+
+    def _register_base_assets(self):
+        """Register assets needed by Abilian.
+
+        This is done in a separate method in order to allow applications
+        to redefine it at will.
+        """
+        from abilian.web import assets as bundles
+
+        self.register_asset('css', bundles.LESS)
+        self.register_asset('js-top', bundles.TOP_JS)
+        self.register_asset('js', bundles.JS)
+        self.register_i18n_js(*bundles.JS_I18N)
+
+
+class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin):
     """Base application class.
 
     Extend it in your own app.
@@ -303,51 +476,6 @@ class Application(Flask, ServiceManager, PluginManager):
 
         if os.environ.get("FLASK_VALIDATE_HTML"):
             self.after_request(self.validate_response)
-
-    def init_assets(self):
-        languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
-        if languages is None:
-            languages = abilian.i18n.VALID_LANGUAGES_CODE
-        else:
-            languages = tuple(
-                lang for lang in languages
-                if lang in abilian.i18n.VALID_LANGUAGES_CODE
-            )
-        self.config['BABEL_ACCEPT_LANGUAGES'] = languages
-        js_filters = (
-            ('closure_js',)
-            if self.config.get('PRODUCTION', False) else None
-        )
-        self._assets_bundles = {
-            'css': {
-                'options':
-                dict(
-                    filters=('less', 'cssmin'),
-                    output='style-%(version)s.min.css',
-                ),
-            },
-            'js-top': {
-                'options':
-                dict(
-                    output='top-%(version)s.min.js',
-                    filters=js_filters,
-                ),
-            },
-            'js': {
-                'options':
-                dict(
-                    output='app-%(version)s.min.js',
-                    filters=js_filters,
-                ),
-            },
-        }
-        # bundles for JS translations
-        for lang in languages:
-            code = 'js-i18n-' + lang
-            filename = 'lang-' + lang + '-%(version)s.min.js'
-            self._assets_bundles[code] = {
-                'options': dict(output=filename, filters=js_filters),
-            }
 
     def _setup_script_manager(self):
         manager = self.script_manager
@@ -890,137 +1018,6 @@ class Application(Flask, ServiceManager, PluginManager):
             db.session.commit()
         return user
 
-    def _setup_asset_extension(self):
-        assets = self.extensions['webassets'] = AssetsEnv(self)
-        assets.debug = not self.config.get('PRODUCTION', False)
-        assets.requirejs_config = {'waitSeconds': 90, 'shim': {}, 'paths': {}}
-
-        assets_base_dir = Path(self.instance_path, 'webassets')
-        assets_dir = assets_base_dir / 'compiled'
-        assets_cache_dir = assets_base_dir / 'cache'
-        for path in (assets_base_dir, assets_dir, assets_cache_dir):
-            if not path.exists():
-                path.mkdir()
-
-        assets.directory = str(assets_dir)
-        assets.cache = str(assets_cache_dir)
-        manifest_file = assets_base_dir / 'manifest.json'
-        assets.manifest = 'json:{}'.format(str(manifest_file))
-
-        # set up load_path for application static dir. This is required
-        # since we are setting Environment.load_path for other assets
-        # (like core_bundle below),
-        # in this case Flask-Assets uses webasssets resolvers instead of
-        # Flask's one
-        assets.append_path(self.static_folder, self.static_url_path)
-
-        # filters options
-        less_args = ['-ru']
-        assets.config['less_extra_args'] = less_args
-        assets.config['less_as_output'] = True
-        if assets.debug:
-            assets.config['less_source_map_file'] = 'style.map'
-
-        # setup static url for our assets
-        from abilian.web import assets as core_bundles
-        core_bundles.init_app(self)
-
-        # static minified are here
-        assets.url = self.static_url_path + '/min'
-        assets.append_path(str(assets_dir), assets.url)
-        self.add_static_url(
-            'min',
-            str(assets_dir),
-            endpoint='webassets_static',
-            roles=Anonymous,
-        )
-
-    def _finalize_assets_setup(self):
-        assets = self.extensions['webassets']
-        assets_dir = Path(assets.directory)
-        closure_base_args = [
-            '--jscomp_warning',
-            'internetExplorerChecks',
-            '--source_map_format',
-            'V3',
-            '--create_source_map',
-        ]
-
-        for name, data in self._assets_bundles.items():
-            bundles = data.get('bundles', [])
-            options = data.get('options', {})
-            filters = options.get('filters') or []
-            options['filters'] = []
-            for f in filters:
-                if f == 'closure_js':
-                    js_map_file = str(assets_dir / '{}.map'.format(name))
-                    f = ClosureJS(extra_args=closure_base_args + [js_map_file])
-                options['filters'].append(f)
-
-            if not options['filters']:
-                options['filters'] = None
-
-            if bundles:
-                assets.register(name, Bundle(*bundles, **options))
-
-    def register_asset(self, type_, *assets):
-        """Register webassets bundle to be served on all pages.
-
-        :param type_: `"css"`, `"js-top"` or `"js""`.
-
-        :param assets:
-            a path to file, a :ref:`webassets.Bundle <webassets:bundles>`
-            instance or a callable that returns a
-            :ref:`webassets.Bundle <webassets:bundles>` instance.
-
-        :raises KeyError: if `type_` is not supported.
-        """
-        supported = self._assets_bundles.keys()
-        if type_ not in supported:
-            raise KeyError(
-                "Invalid type: %s. Valid types: ",
-                repr(type_),
-                ', '.join(sorted(supported)),
-            )
-
-        for asset in assets:
-            if not isinstance(asset, Bundle) and callable(asset):
-                asset = asset()
-
-            self._assets_bundles[type_].setdefault('bundles', []).append(asset)
-
-    def register_i18n_js(self, *paths):
-        """Register templates path translations files, like
-        `select2/select2_locale_{lang}.js`.
-
-        Only existing files are registered.
-        """
-        languages = self.config['BABEL_ACCEPT_LANGUAGES']
-        assets = self.extensions['webassets']
-
-        for path in paths:
-            for lang in languages:
-                filename = path.format(lang=lang)
-                try:
-                    assets.resolver.search_for_source(assets, filename)
-                except IOError:
-                    logger.debug('i18n JS not found, skipped: "%s"', filename)
-                else:
-                    self.register_asset('js-i18n-' + lang, filename)
-
-    def _register_base_assets(self):
-        """Register assets needed by Abilian.
-
-        This is done in a separate method in order to allow applications
-        to redefine it at will.
-        """
-        from abilian.web import assets as bundles
-
-        self.register_asset('css', bundles.LESS)
-        self.register_asset('js-top', bundles.TOP_JS)
-        self.register_asset('js', bundles.JS)
-        self.register_i18n_js(*bundles.JS_I18N)
-
     def install_default_handler(self, http_error_code):
         """Install a default error handler for `http_error_code`.
 
@@ -1053,49 +1050,10 @@ class Application(Flask, ServiceManager, PluginManager):
         return render_template(template, error=error), code
 
     def validate_response(self, response):
-        SKIPPED_URLS = [
-            # FIXME: later
-            'http://localhost/admin/settings',
-        ]
-        if response.direct_passthrough:
-            return response
+        # work around circular import
+        from abilian.testing.util import assert_valid
 
-        data = response.data
-        assert isinstance(data, bytes)
-        # assert response.status_code in [200, 302, 401]
-
-        if response.status_code == 302:
-            return response
-
-        if request.url in SKIPPED_URLS:
-            return response
-
-        if response.mimetype == 'text/html':
-            with NamedTemporaryFile() as tmpfile:
-                tmpfile.write(data)
-                tmpfile.flush()
-                try:
-                    subprocess.check_output(["htmlhint", tmpfile.name])
-                except subprocess.CalledProcessError as e:
-                    print("htmllhint output:")
-                    print(e.output)
-                    raise AssertionError(
-                        "HTML was not valid for URL: {}".format(request.url),
-                    )
-
-        elif response.mimetype == 'application/json':
-            try:
-                json.loads(response.data)
-            except BaseException:
-                raise AssertionError(
-                    "JSON was not valid for URL: {}".format(
-                        request.url,
-                    ),
-                )
-
-        # else:
-        #     raise AssertionError("Unknown mime type: " + response.mimetype)
-
+        assert_valid(response)
         return response
 
 
