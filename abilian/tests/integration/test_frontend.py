@@ -29,7 +29,6 @@ class ContactEditForm(Form):
 
 class Contacts(Module):
     managed_class = Contact
-
     list_view_columns = [
         {
             'name': '_name',
@@ -48,10 +47,8 @@ class Contacts(Module):
             'width': 20,
         },
     ]
-
     edit_form_class = ContactEditForm
-
-    related_views = []
+    related_views = ()
 
 
 class SimpleCRM(CRUDApp):

@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 import shutil
 import weakref
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Text
 from uuid import UUID, uuid1
 
 import sqlalchemy as sa
@@ -72,7 +72,7 @@ class RepositoryService(Service):
         return dest
 
     def get(self, uuid, default=None):
-        # type: (UUID) -> Path
+        # type: (UUID, Any) -> Path
         """Return absolute :class:`Path` object for given uuid, if this uuid
         exists in repository, or `default` if it doesn't.
 
@@ -84,7 +84,7 @@ class RepositoryService(Service):
         return path
 
     def set(self, uuid, content, encoding='utf-8'):
-        # type: (UUID, Any) -> None
+        # type: (UUID, Any, Text) -> None
         """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
@@ -468,7 +468,7 @@ class RepositoryTransaction(object):
         self._add_to(uuid, self._deleted, self._set)
 
     def set(self, uuid, content, encoding='utf-8'):
-        # type: (UUID, Any) -> None
+        # type: (UUID, Any, Text) -> None
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 

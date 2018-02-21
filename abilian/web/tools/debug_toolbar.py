@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import sys
-from typing import List
+from typing import List, Text
 
 from blinker import Namespace, Signal
 from flask import current_app, g
@@ -30,6 +30,7 @@ class ActionDebugPanel(DebugPanel):
         return ''
 
     def content(self):
+        # type: () -> Text
         actions_for_template = []
 
         for category in actions.actions().keys():
@@ -80,6 +81,7 @@ class SignalsDebugPanel(DebugPanel):
         return ''
 
     def content(self):
+        # type: () -> Text
         module_names = sorted(sys.modules.keys())
 
         signals = []
