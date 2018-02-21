@@ -13,7 +13,7 @@ import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Text, Callable
 
 import jinja2
 import sqlalchemy as sa
@@ -988,6 +988,7 @@ class Application(
             )
 
     def add_access_controller(self, name, func, endpoint=False):
+        # type: (Text, Callable, bool) -> None
         """Add an access controller.
 
         If `name` is None it is added at application level, else if is
