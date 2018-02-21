@@ -131,7 +131,7 @@ class PluginManager(object):
         module.register_plugin(self)
 
 
-class AssetManagerMixin(object):
+class AssetManagerMixin(Flask):
 
     def init_assets(self):
         languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
@@ -309,8 +309,65 @@ class AssetManagerMixin(object):
         self.register_i18n_js(*bundles.JS_I18N)
 
 
-class ErrorManagerMixin(object):
-    # Error handling
+class ErrorManagerMixin(Flask):
+
+    def setup_logging(self):
+        # Force flask to create application logger before logging
+        # configuration; else, flask will overwrite our settings
+        self.logger  # noqa
+
+        log_level = self.config.get("LOG_LEVEL")
+        if log_level:
+            self.logger.setLevel(log_level)
+
+        logging_file = self.config.get('LOGGING_CONFIG_FILE')
+        if logging_file:
+            logging_file = (Path(self.instance_path) / logging_file).resolve()
+        else:
+            logging_file = Path(
+                resource_filename(__name__, 'default_logging.yml'),
+            )
+
+        if logging_file.suffix == '.ini':
+            # old standard 'ini' file config
+            logging.config.fileConfig(
+                text_type(logging_file),
+                disable_existing_loggers=False,
+            )
+        elif logging_file.suffix == '.yml':
+            # yaml config file
+            logging_cfg = yaml.safe_load(logging_file.open())
+            logging_cfg.setdefault('version', 1)
+            logging_cfg.setdefault('disable_existing_loggers', False)
+            logging.config.dictConfig(logging_cfg)
+
+    def init_debug_toolbar(self):
+        if (
+            not self.testing and self.config.get('DEBUG_TB_ENABLED') and
+            'debugtoolbar' not in self.blueprints
+        ):
+            try:
+                from flask_debugtoolbar import DebugToolbarExtension
+            except ImportError:
+                logger.warning(
+                    'DEBUG_TB_ENABLED is on but flask_debugtoolbar '
+                    'is not installed.',
+                )
+            else:
+                dbt = DebugToolbarExtension()
+                default_config = dbt._default_config(self)
+                init_dbt = dbt.init_app
+
+                if 'DEBUG_TB_PANELS' not in self.config:
+                    # add our panels to default ones
+                    self.config['DEBUG_TB_PANELS'] = list(
+                        default_config['DEBUG_TB_PANELS'],
+                    )
+                init_dbt(self)
+                for view_name in self.view_functions:
+                    if view_name.startswith('debugtoolbar.'):
+                        extensions.csrf.exempt(self.view_functions[view_name])
+
     def handle_user_exception(self, e):
         # If session.transaction._parent is None, then exception has occured in
         # after_commit(): doing a rollback() raises an error and would hide
@@ -388,8 +445,87 @@ class ErrorManagerMixin(object):
             ext.client.tags['configured_server_name'] = server_name
 
 
-class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin,
-                  ErrorManagerMixin):
+class JinjaManagerMixin(Flask):
+    def __init__(self):
+        self._jinja_loaders = []
+
+    #
+    # Templating and context injection setup
+    #
+    def create_jinja_environment(self):
+        env = Flask.create_jinja_environment(self)
+        env.globals.update(
+            app=current_app,
+            csrf=csrf,
+            get_locale=babel_get_locale,
+            local_dt=abilian.core.util.local_dt,
+            _n=abilian.i18n._n,
+            url_for=url_for,
+            user_photo_url=user_photo_url,
+            NO_VALUE=NO_VALUE,
+            NEVER_SET=NEVER_SET,
+        )
+        init_filters(env)
+        return env
+
+    @property
+    def jinja_options(self):
+        options = dict(Flask.jinja_options)
+
+        extensions = options.setdefault('extensions', [])
+        ext = 'abilian.core.jinjaext.DeferredJSExtension'
+        if ext not in extensions:
+            extensions.append(ext)
+
+        if 'bytecode_cache' not in options:
+            cache_dir = Path(self.instance_path, 'cache', 'jinja')
+            if not cache_dir.exists():
+                cache_dir.mkdir(0o775, parents=True)
+
+            options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(
+                str(cache_dir),
+                '%s.cache',
+            )
+
+        if (self.config.get('DEBUG', False) and
+                self.config.get('TEMPLATE_DEBUG', False)):
+            options['undefined'] = jinja2.StrictUndefined
+        return options
+
+    def register_jinja_loaders(self, *loaders):
+        """Register one or many `jinja2.Loader` instances for templates lookup.
+
+        During application initialization plugins can register a loader so that
+        their templates are available to jinja2 renderer.
+
+        Order of registration matters: last registered is first looked up (after
+        standard Flask lookup in app template folder). This allows a plugin to
+        override templates provided by others, or by base application. The
+        application can override any template from any plugins from its template
+        folder (See `Flask.Application.template_folder`).
+
+        :raise: `ValueError` if a template has already been rendered
+        """
+        if not hasattr(self, '_jinja_loaders'):
+            raise ValueError(
+                'Cannot register new jinja loaders after first template rendered',
+            )
+
+        self._jinja_loaders.extend(loaders)
+
+    @locked_cached_property
+    def jinja_loader(self):
+        """Search templates in custom app templates dir (default Flask
+        behaviour), fallback on abilian templates."""
+        loaders = self._jinja_loaders
+        del self._jinja_loaders
+        loaders.append(Flask.jinja_loader.func(self))
+        loaders.reverse()
+        return jinja2.ChoiceLoader(loaders)
+
+
+class Application(ServiceManager, PluginManager, AssetManagerMixin,
+                  ErrorManagerMixin, JinjaManagerMixin, Flask):
     """Base application class.
 
     Extend it in your own app.
@@ -451,8 +587,11 @@ class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin,
 
         self._setup_script_manager()
         appcontext_pushed.connect(self._install_id_generator)
+
         ServiceManager.__init__(self)
         PluginManager.__init__(self)
+        JinjaManagerMixin.__init__(self)
+
         self.default_view = ViewRegistry()
         self.js_api = dict()
 
@@ -501,7 +640,7 @@ class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin,
         if not self.config.get('FAVICO_URL'):
             self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
 
-        self._jinja_loaders = list()
+        # self._jinja_loaders = list()
         self.register_jinja_loaders(jinja2.PackageLoader('abilian.web'))
 
         self.init_assets()
@@ -684,63 +823,6 @@ class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin,
 
         return config
 
-    def setup_logging(self):
-        # Force flask to create application logger before logging
-        # configuration; else, flask will overwrite our settings
-        self.logger  # noqa
-
-        log_level = self.config.get("LOG_LEVEL")
-        if log_level:
-            self.logger.setLevel(log_level)
-
-        logging_file = self.config.get('LOGGING_CONFIG_FILE')
-        if logging_file:
-            logging_file = (Path(self.instance_path) / logging_file).resolve()
-        else:
-            logging_file = Path(
-                resource_filename(__name__, 'default_logging.yml'),
-            )
-
-        if logging_file.suffix == '.ini':
-            # old standard 'ini' file config
-            logging.config.fileConfig(
-                text_type(logging_file),
-                disable_existing_loggers=False,
-            )
-        elif logging_file.suffix == '.yml':
-            # yaml config file
-            logging_cfg = yaml.safe_load(logging_file.open())
-            logging_cfg.setdefault('version', 1)
-            logging_cfg.setdefault('disable_existing_loggers', False)
-            logging.config.dictConfig(logging_cfg)
-
-    def init_debug_toolbar(self):
-        if (
-            not self.testing and self.config.get('DEBUG_TB_ENABLED') and
-            'debugtoolbar' not in self.blueprints
-        ):
-            try:
-                from flask_debugtoolbar import DebugToolbarExtension
-            except ImportError:
-                logger.warning(
-                    'DEBUG_TB_ENABLED is on but flask_debugtoolbar '
-                    'is not installed.',
-                )
-            else:
-                dbt = DebugToolbarExtension()
-                default_config = dbt._default_config(self)
-                init_dbt = dbt.init_app
-
-                if 'DEBUG_TB_PANELS' not in self.config:
-                    # add our panels to default ones
-                    self.config['DEBUG_TB_PANELS'] = list(
-                        default_config['DEBUG_TB_PANELS'],
-                    )
-                init_dbt(self)
-                for view_name in self.view_functions:
-                    if view_name.startswith('debugtoolbar.'):
-                        extensions.csrf.exempt(self.view_functions[view_name])
-
     def init_extensions(self):
         """Initialize flask extensions, helpers and services."""
         self.init_debug_toolbar()
@@ -921,80 +1003,6 @@ class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin,
             allow_access_for_roles(Anonymous),
             endpoint=True,
         )
-
-    #
-    # Templating and context injection setup
-    #
-    def create_jinja_environment(self):
-        env = Flask.create_jinja_environment(self)
-        env.globals.update(
-            app=current_app,
-            csrf=csrf,
-            get_locale=babel_get_locale,
-            local_dt=abilian.core.util.local_dt,
-            _n=abilian.i18n._n,
-            url_for=url_for,
-            user_photo_url=user_photo_url,
-            NO_VALUE=NO_VALUE,
-            NEVER_SET=NEVER_SET,
-        )
-        init_filters(env)
-        return env
-
-    @property
-    def jinja_options(self):
-        options = dict(Flask.jinja_options)
-
-        extensions = options.setdefault('extensions', [])
-        ext = 'abilian.core.jinjaext.DeferredJSExtension'
-        if ext not in extensions:
-            extensions.append(ext)
-
-        if 'bytecode_cache' not in options:
-            cache_dir = Path(self.instance_path, 'cache', 'jinja')
-            if not cache_dir.exists():
-                cache_dir.mkdir(0o775, parents=True)
-
-            options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(
-                str(cache_dir),
-                '%s.cache',
-            )
-
-        if (self.config.get('DEBUG', False) and
-                self.config.get('TEMPLATE_DEBUG', False)):
-            options['undefined'] = jinja2.StrictUndefined
-        return options
-
-    def register_jinja_loaders(self, *loaders):
-        """Register one or many `jinja2.Loader` instances for templates lookup.
-
-        During application initialization plugins can register a loader so that
-        their templates are available to jinja2 renderer.
-
-        Order of registration matters: last registered is first looked up (after
-        standard Flask lookup in app template folder). This allows a plugin to
-        override templates provided by others, or by base application. The
-        application can override any template from any plugins from its template
-        folder (See `Flask.Application.template_folder`).
-
-        :raise: `ValueError` if a template has already been rendered
-        """
-        if not hasattr(self, '_jinja_loaders'):
-            raise ValueError(
-                'Cannot register new jinja loaders after first template rendered',
-            )
-
-        self._jinja_loaders.extend(loaders)
-
-    @locked_cached_property
-    def jinja_loader(self):
-        """Search templates in custom app templates dir (default Flask
-        behaviour), fallback on abilian templates."""
-        loaders = self._jinja_loaders
-        del self._jinja_loaders
-        loaders.append(Flask.jinja_loader.func(self))
-        loaders.reverse()
-        return jinja2.ChoiceLoader(loaders)
 
     @property
     @deprecated
