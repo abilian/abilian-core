@@ -13,7 +13,7 @@ import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
-from typing import Any, Dict, Text, Callable
+from typing import Any, Callable, Dict, Text
 
 import jinja2
 import sqlalchemy as sa

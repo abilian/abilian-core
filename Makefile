@@ -122,7 +122,8 @@ format-py:
 	isort -rc $(SRC) *.py
 
 format-js:
-	./node_modules/.bin/prettier --trailing-comma es5 --write \
+	./node_modules/.bin/prettier --write \
+		--trailing-comma es5 --tab-width 2 \
 		'abilian/web/resources/js/**/*.js'
 
 #
