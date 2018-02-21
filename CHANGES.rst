@@ -1,7 +1,14 @@
 Changelog for Abilian Core
 ==========================
 
-0.10.1 (unreleased)
+0.10.2 (2018-02-21)
+-------------------
+
+- Refactor tests (use pytest fixtures)
+- Refactor Application class
+
+
+0.10.2 (2018-02-15)
 -------------------
 
 - Fix Py3k compatibility.
