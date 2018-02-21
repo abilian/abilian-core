@@ -20,6 +20,7 @@ from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 
 from abilian.core.entities import Entity
+from abilian.core.extensions import db
 from abilian.services import Service, ServiceState
 
 from .models import CREATION, DELETION, RELATED, UPDATE, AuditEntry, Changes
@@ -87,7 +88,7 @@ class AuditService(Service):
 
     def register_classes(self):
         state = self.app_state
-        BaseModel = current_app.db.Model
+        BaseModel = db.Model
         all_models = (cls for cls in BaseModel._decl_class_registry.values()
                       if isclass(cls) and self.is_auditable(cls))
         for cls in all_models:

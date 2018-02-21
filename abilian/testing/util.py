@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import json
 import os
+import subprocess
 from tempfile import NamedTemporaryFile
 
 import requests
@@ -53,8 +54,8 @@ def validate_html_using_htmlhint(response):
         tmpfile.write(response.data)
         tmpfile.flush()
         try:
-            os.subprocess.check_output(["htmlhint", tmpfile.name])
-        except os.subprocess.CalledProcessError as e:
+            subprocess.check_output(["htmlhint", tmpfile.name])
+        except subprocess.CalledProcessError as e:
             print("htmllhint output:")
             print(e.output)
             msg = "HTML was not valid for URL: {}".format(request.url)

@@ -18,7 +18,7 @@ from pathlib import Path
 from six import text_type
 
 from abilian.core.commands import config as cmd_config
-from abilian.core.extensions import csrf
+from abilian.core.extensions import csrf, db
 from abilian.core.models.subjects import User
 from abilian.services import get_service
 from abilian.services.security import Admin, Anonymous
@@ -446,7 +446,7 @@ def finalize_validate():
     )
     with app.test_request_context('/setup/finalize'):
         app.create_db()
-        db_session = app.db.session()
+        db_session = db.session()
         admin = User(
             email=admin_account['email'],
             password=admin_account['password'],

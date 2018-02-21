@@ -15,6 +15,7 @@ from sqlalchemy.orm.session import Session
 from tqdm import tqdm
 from whoosh.writing import CLEAR, AsyncWriter
 
+from abilian.core.extensions import db
 from abilian.services import get_service
 
 from .base import manager
@@ -39,7 +40,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
     adapted = index_service.adapted
     index = index_service.app_state.indexes['default']
     session = Session(
-        bind=current_app.db.session.get_bind(None, None),
+        bind=db.session.get_bind(None, None),
         autocommit=True,
     )
 

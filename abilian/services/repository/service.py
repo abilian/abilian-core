@@ -16,6 +16,7 @@ from flask.globals import _lookup_app_object
 from six import text_type
 from sqlalchemy.orm.session import Session
 
+from abilian.core.extensions import db
 from abilian.services import Service, ServiceState
 
 _NULL_MARK = object()
@@ -294,7 +295,7 @@ class SessionRepositoryService(Service):
         If parameter is a registered model instance, its session will be used.
 
         If parameter is a detached model instance, or None, application scoped
-        session will be used (app.db.session())
+        session will be used (db.session())
 
         If parameter is a scoped_session instance, a new session will be
         instanciated.
@@ -305,7 +306,7 @@ class SessionRepositoryService(Service):
                 session = sa.orm.object_session(model_or_session)
 
             if session is None:
-                session = current_app.db.session
+                session = db.session
 
         if isinstance(session, sa.orm.scoped_session):
             session = session()

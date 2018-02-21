@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 from flask import current_app
 from six import iteritems
 
+from abilian.core.extensions import db
 from abilian.services import Service
 
 from .models import Setting
@@ -66,9 +67,9 @@ class SettingsService(Service):
                 )
             s = Setting(key=key, type=type_)
 
-        # always add to session. This covers the case delete(key);set(key). Without
-        # it Setting would still be in session 'delete' queue
-        current_app.db.session.add(s)
+        # Always add to session. This covers the case delete(key);set(key).
+        # Without it, Setting would still be in session 'delete' queue.
+        db.session.add(s)
         s.value = value
 
     def delete(self, key, silent=True):
@@ -78,7 +79,7 @@ class SettingsService(Service):
             if not silent:
                 raise
         else:
-            current_app.db.session.delete(s)
+            db.session.delete(s)
 
 
 class SettingsNamespace(object):

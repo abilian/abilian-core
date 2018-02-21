@@ -14,6 +14,7 @@ from six import text_type
 from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.entities import ValidationError
+from abilian.core.extensions import db
 from abilian.core.signals import activity
 from abilian.i18n import _, _l
 from abilian.services import get_service
@@ -373,7 +374,7 @@ class ObjectEdit(ObjectView):
         :param redirect_to: real url (created with url_for) to redirect to,
           instead of the view by default.
         """
-        session = current_app.db.session()
+        session = db.session()
 
         with session.no_autoflush:
             self.before_populate_obj()
@@ -490,7 +491,7 @@ class ObjectCreate(ObjectEdit):
     def prepare_args(self, args, kwargs):
         # we must ensure that no flush() occurs and that obj is not registered
         # in session (to prevent accidental insert of an incomplete object)
-        session = current_app.db.session()
+        session = db.session()
         with session.no_autoflush:
             args, kwargs = super(ObjectCreate, self).prepare_args(args, kwargs)
 
@@ -551,7 +552,7 @@ class ObjectDelete(ObjectEdit):
         return [DELETE_BUTTON, CANCEL_BUTTON]
 
     def delete(self):
-        session = current_app.db.session()
+        session = db.session()
         session.delete(self.obj)
         activity.send(
             self,

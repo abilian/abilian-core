@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from flask import current_app, g, redirect, render_template, request
 
+from abilian.core.extensions import db
 from abilian.i18n import _, _l
 from abilian.services import get_service
 from abilian.web import url_for, views
@@ -131,7 +132,7 @@ class VocabularyPanel(AdminPanel):
         else:
             return do_return()
 
-        session = current_app.db.session()
+        session = db.session()
         query = Model.query.with_lockmode('update')
         item = query.get(object_id)
         other = query \

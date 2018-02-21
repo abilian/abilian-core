@@ -26,7 +26,10 @@ converter.register_handler(LibreOfficePdfHandler())
 conversion_service = converter
 
 __all__ = (
-    'conversion_service', 'converter', 'Converter', 'ConversionError',
+    'conversion_service',
+    'converter',
+    'Converter',
+    'ConversionError',
     'HandlerNotFound',
 )
 

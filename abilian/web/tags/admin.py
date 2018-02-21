@@ -11,6 +11,7 @@ import sqlalchemy.sql.functions as func
 from flask import current_app, flash, redirect, render_template, request
 
 from abilian.core.entities import Entity
+from abilian.core.extensions import db
 from abilian.core.models.tag import Tag, entity_tag_tbl
 from abilian.i18n import _, _l, _n
 from abilian.services import get_service
@@ -33,7 +34,7 @@ def get_entities_for_reindex(tags):
     if isinstance(tags, Tag):
         tags = (tags,)
 
-    session = current_app.db.session()
+    session = db.session()
     indexing = get_service('indexing')
     tbl = Entity.__table__
     tag_ids = [t.id for t in tags]
@@ -147,7 +148,7 @@ class NSView(View):
             )
             return self.get(self.ns)
 
-        session = current_app.db.session()
+        session = db.session()
         tags = self._get_selected_tags()
 
         if not tags:
@@ -194,7 +195,7 @@ class NSView(View):
             flash(_('No tag selected for merging'), 'warning')
             return self.get(self.ns)
 
-        session = current_app.db.session()
+        session = db.session()
         merge_from_ids = [t.id for t in merge_from]
         tbl = entity_tag_tbl
         entities_to_reindex = get_entities_for_reindex(merge_from)
@@ -290,7 +291,7 @@ class TagPanel(AdminPanel):
             .group_by(Tag.ns, obj_count.c.obj_count) \
             .order_by(Tag.ns)
 
-        session = current_app.db.session()
+        session = db.session()
         namespaces = session.execute(ns_query)
 
         return render_template('admin/tags.html', namespaces=namespaces)

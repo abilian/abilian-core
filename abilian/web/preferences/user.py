@@ -14,6 +14,7 @@ from werkzeug.exceptions import InternalServerError
 from wtforms.fields import StringField
 from wtforms.validators import ValidationError
 
+from abilian.core.extensions import db
 from abilian.i18n import _, _l, get_default_locale
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
@@ -159,7 +160,7 @@ class UserPreferencesPanel(PreferencePanel):
 
             form.populate_obj(g.user)
 
-            current_app.db.session.commit()
+            db.session.commit()
             flash(_("Preferences saved."), "info")
             return redirect(url_for(".user"))
         else:

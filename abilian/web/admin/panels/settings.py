@@ -11,6 +11,7 @@ from flask_babel import gettext as _
 from flask_babel import lazy_gettext as _l
 from jinja2 import Template
 
+from abilian.core.extensions import db
 from abilian.services import get_service
 from abilian.web import csrf
 
@@ -109,8 +110,8 @@ class SettingsPanel(AdminPanel):
     label = _l('Settings')
     icon = 'cog'
 
-    # FIXME: this is very basic, and we support only "string" at this time. A form
-    # shoud be used. Really.
+    # FIXME: this is very basic, and we support only "string" at this time.
+    # A form shoud be used. Really.
     _keys = (
         Key('SITE_NAME', 'string', _l('Site name')),
         Key('MAIL_SENDER', 'string', _l('Mail sender')),
@@ -134,7 +135,7 @@ class SettingsPanel(AdminPanel):
                 value = key.value_from_request()
                 settings.set(key.id, value, key.type)
 
-            current_app.db.session.commit()
+            db.session.commit()
 
             # FIXME: this is weak: only this process will have its config changed;
             # full reload of app stack (web workers + celery workers) has to be done

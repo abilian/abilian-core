@@ -11,6 +11,7 @@ import sqlalchemy as sa
 from flask import current_app, render_template
 from numpy import sum as numpysum
 
+from abilian.core.extensions import db
 from abilian.core.models.subjects import User
 from abilian.i18n import _, _l
 from abilian.services.audit import CREATION, AuditEntry
@@ -70,7 +71,7 @@ class DashboardPanel(AdminPanel):
 def stats_since(dt):
     new_members = new_documents = new_messages = 0
     after_date = datetime.utcnow() - dt
-    session = current_app.db.session()
+    session = db.session()
     counts_per_type = session \
         .query(
             AuditEntry.entity_type.label('type'),

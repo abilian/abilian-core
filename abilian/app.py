@@ -12,6 +12,8 @@ import os
 import warnings
 from functools import partial
 from itertools import chain, count
+
+from deprecated import deprecated
 from pathlib import Path
 from typing import Any, Dict
 
@@ -64,32 +66,6 @@ __all__ = ['create_app', 'Application', 'ServiceManager']
 warnings.simplefilter("ignore", category=sa.exc.SAWarning)
 
 
-class ServiceManager(object):
-    """Mixin that provides lifecycle (register/start/stop) support for
-    services."""
-
-    def __init__(self):
-        self.services = {}
-
-    def start_services(self):
-        for svc in self.services.values():
-            svc.start()
-
-    def stop_services(self):
-        for svc in self.services.values():
-            svc.stop()
-
-
-class PluginManager(object):
-    """Mixin that provides support for loading plugins."""
-
-    def register_plugin(self, name):
-        """Load and register a plugin given its package name."""
-        logger.info("Registering plugin: " + name)
-        module = importlib.import_module(name)
-        module.register_plugin(self)
-
-
 default_config = dict(Flask.default_config)  # type: Dict[str, Any]
 default_config.update(
     PRIVATE_SITE=False,
@@ -127,6 +103,32 @@ default_config.update(
     MAIL_ADDRESS_TAG_CHAR=None,
 )
 default_config = ImmutableDict(default_config)
+
+
+class ServiceManager(object):
+    """Mixin that provides lifecycle (register/start/stop) support for
+    services."""
+
+    def __init__(self):
+        self.services = {}
+
+    def start_services(self):
+        for svc in self.services.values():
+            svc.start()
+
+    def stop_services(self):
+        for svc in self.services.values():
+            svc.stop()
+
+
+class PluginManager(object):
+    """Mixin that provides support for loading plugins."""
+
+    def register_plugin(self, name):
+        """Load and register a plugin given its package name."""
+        logger.info("Registering plugin: " + name)
+        module = importlib.import_module(name)
+        module.register_plugin(self)
 
 
 class AssetManagerMixin(object):
@@ -263,11 +265,10 @@ class AssetManagerMixin(object):
         """
         supported = self._assets_bundles.keys()
         if type_ not in supported:
-            raise KeyError(
-                "Invalid type: %s. Valid types: ",
-                repr(type_),
-                ', '.join(sorted(supported)),
+            msg = "Invalid type: {}. Valid types: {}".format(
+                repr(type_), ', '.join(sorted(supported)),
             )
+            raise KeyError(msg)
 
         for asset in assets:
             if not isinstance(asset, Bundle) and callable(asset):
@@ -308,7 +309,87 @@ class AssetManagerMixin(object):
         self.register_i18n_js(*bundles.JS_I18N)
 
 
-class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin):
+class ErrorManagerMixin(object):
+    # Error handling
+    def handle_user_exception(self, e):
+        # If session.transaction._parent is None, then exception has occured in
+        # after_commit(): doing a rollback() raises an error and would hide
+        # actual error.
+        session = db.session()
+        if session.is_active and session.transaction._parent is not None:
+            # Inconditionally forget all DB changes, and ensure clean session
+            # during exception handling.
+            session.rollback()
+        else:
+            self._remove_session_save_objects()
+
+        return Flask.handle_user_exception(self, e)
+
+    def handle_exception(self, e):
+        session = db.session()
+        if not session.is_active:
+            # Something happened in error handlers and session is not usable
+            # anymore.
+            self._remove_session_save_objects()
+
+        return Flask.handle_exception(self, e)
+
+    def _remove_session_save_objects(self):
+        """Used during exception handling in case we need to remove() session:
+        keep instances and merge them in the new session."""
+        if self.testing:
+            return
+        # Before destroying the session, get all instances to be attached to the
+        # new session. Without this, we get DetachedInstance errors, like when
+        # tryin to get user's attribute in the error page...
+        old_session = db.session()
+        g_objs = []
+        for key in iter(g):
+            obj = getattr(g, key)
+            if (isinstance(obj, db.Model) and
+                    sa.orm.object_session(obj) in (None, old_session)):
+                g_objs.append((key, obj, obj in old_session.dirty))
+
+        db.session.remove()
+        session = db.session()
+
+        for key, obj, load in g_objs:
+            # replace obj instance in bad session by new instance in fresh
+            # session
+            setattr(g, key, session.merge(obj, load=load))
+
+        # refresh `current_user`
+        user = getattr(_request_ctx_stack.top, 'user', None)
+        if user is not None and isinstance(user, db.Model):
+            _request_ctx_stack.top.user = session.merge(user, load=load)
+
+    def log_exception(self, exc_info):
+        """Log exception only if sentry is not installed (this avoids getting
+        error twice in sentry)."""
+        if 'sentry' not in self.extensions:
+            super(ErrorManagerMixin, self).log_exception(exc_info)
+
+    def init_sentry(self):
+        """Install Sentry handler if config defines 'SENTRY_DSN'."""
+        if self.config.get('SENTRY_DSN'):
+            try:
+                from abilian.core.sentry import Sentry
+            except ImportError:
+                logger.error(
+                    'SENTRY_DSN is defined in config but package "raven" '
+                    'is not installed.',
+                )
+                return
+
+            ext = Sentry(self, logging=True, level=logging.ERROR)
+            ext.client.tags['app_name'] = self.name
+            ext.client.tags['process_type'] = 'web'
+            server_name = str(self.config.get('SERVER_NAME'))
+            ext.client.tags['configured_server_name'] = server_name
+
+
+class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin,
+                  ErrorManagerMixin):
     """Base application class.
 
     Extend it in your own app.
@@ -413,7 +494,7 @@ class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin):
                         # durint tests this message will show up on every test,
                         # since db is always recreated
                         logging.error(exc)
-                    self.db.session.rollback()
+                    db.session.rollback()
                 else:
                     self.config.update(config)
 
@@ -698,7 +779,7 @@ class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin):
         babel.timezoneselector(abilian.i18n.timezoneselector)
 
         # Flask-Migrate
-        Migrate(self, self.db)
+        Migrate(self, db)
 
         # CSRF by default
         if self.config.get('CSRF_ENABLED'):
@@ -915,88 +996,13 @@ class Application(Flask, ServiceManager, PluginManager, AssetManagerMixin):
         loaders.reverse()
         return jinja2.ChoiceLoader(loaders)
 
-    # Error handling
-    def handle_user_exception(self, e):
-        # If session.transaction._parent is None, then exception has occured in
-        # after_commit(): doing a rollback() raises an error and would hide actual
-        # error
-        session = db.session()
-        if session.is_active and session.transaction._parent is not None:
-            # inconditionally forget all DB changes, and ensure clean session during
-            # exception handling
-            session.rollback()
-        else:
-            self._remove_session_save_objects()
-
-        return Flask.handle_user_exception(self, e)
-
-    def handle_exception(self, e):
-        session = db.session()
-        if not session.is_active:
-            # something happened in error handlers and session is not usable
-            # anymore.
-            self._remove_session_save_objects()
-
-        return Flask.handle_exception(self, e)
-
-    def _remove_session_save_objects(self):
-        """Used during exception handling in case we need to remove() session:
-        keep instances and merge them in the new session."""
-        if self.testing:
-            return
-        # Before destroying the session, get all instances to be attached to the
-        # new session. Without this, we get DetachedInstance errors, like when
-        # tryin to get user's attribute in the error page...
-        old_session = db.session()
-        g_objs = []
-        for key in iter(g):
-            obj = getattr(g, key)
-            if (isinstance(obj, db.Model) and
-                    sa.orm.object_session(obj) in (None, old_session)):
-                g_objs.append((key, obj, obj in old_session.dirty))
-
-        db.session.remove()
-        session = db.session()
-
-        for key, obj, load in g_objs:
-            # replace obj instance in bad session by new instance in fresh
-            # session
-            setattr(g, key, session.merge(obj, load=load))
-
-        # refresh `current_user`
-        user = getattr(_request_ctx_stack.top, 'user', None)
-        if user is not None and isinstance(user, db.Model):
-            _request_ctx_stack.top.user = session.merge(user, load=load)
-
-    def log_exception(self, exc_info):
-        """Log exception only if sentry is not installed (this avoids getting
-        error twice in sentry)."""
-        if 'sentry' not in self.extensions:
-            super(Application, self).log_exception(exc_info)
-
-    def init_sentry(self):
-        """Install Sentry handler if config defines 'SENTRY_DSN'."""
-        if self.config.get('SENTRY_DSN'):
-            try:
-                from abilian.core.sentry import Sentry
-            except ImportError:
-                logger.error(
-                    'SENTRY_DSN is defined in config but package "raven" is not '
-                    'installed.',
-                )
-                return
-
-            ext = Sentry(self, logging=True, level=logging.ERROR)
-            ext.client.tags['app_name'] = self.name
-            ext.client.tags['process_type'] = 'web'
-            server_name = str(self.config.get('SERVER_NAME'))
-            ext.client.tags['configured_server_name'] = server_name
-
     @property
+    @deprecated
     def db(self):
         return self.extensions['sqlalchemy'].db
 
     @property
+    @deprecated
     def redis(self):
         return self.extensions['redis'].client
 

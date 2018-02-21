@@ -17,6 +17,8 @@ from flask import has_app_context
 from flask.helpers import locked_cached_property
 from sqlalchemy.orm.session import Session
 
+from abilian.core.extensions import db
+
 
 def default_app_factory():
     from abilian.app import Application
@@ -55,8 +57,6 @@ def safe_session():
     problem. When developping with task run in eager mode, the session
     is not usable when task is called during an `after_commit` event.
     """
-    db = flask_current_app.db
-
     if not is_eager():
         return db.session()
 
@@ -89,7 +89,6 @@ class FlaskLoader(BaseLoader):
 
     def _setup_after_fork(self, app):
         binds = [None] + list(app.config.get('SQLALCHEMY_BINDS') or ())
-        db = app.db
         for bind in binds:
             engine = db.get_engine(app, bind)
             engine.dispose()
@@ -113,12 +112,14 @@ class FlaskTask(Task):
 
     def __call__(self, *args, **kwargs):
         if is_eager():
-            # this is here mainly because flask_sqlalchemy (as of 2.0) will remove
-            # session on app context teardown.
+            # this is here mainly because flask_sqlalchemy (as of 2.0) will
+            # remove session on app context teardown.
             #
-            # Unfortunatly when using eager tasks (during dev and tests, mostly),
-            # calling apply_async() during after_commit() will remove session because
-            # app_context would be pushed and popped. The TB looks like:
+            # Unfortunatly when using eager tasks (during dev and tests,
+            # mostly), calling apply_async() during after_commit() will
+            # remove session because app_context would be pushed and popped.
+            #
+            # The TB looks like:
             #
             # sqlalchemy/orm/session.py: in transaction.commit:
             #     if self.session._enable_transaction_accounting:

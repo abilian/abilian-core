@@ -162,7 +162,7 @@ class SAAdapter(SchemaAdapter):
 
     def retrieve(self, pk, _session=None, **data):
         if _session is None:
-            _session = current_app.db.session()
+            _session = db.session()
         return _session.query(self.Model).get(pk)
 
     def get_document(self, obj):

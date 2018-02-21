@@ -68,7 +68,7 @@ def require_flush(fun):
     @wraps(fun)
     def ensure_flushed(service, *args, **kwargs):
         if service.app_state.needs_db_flush:
-            session = current_app.db.session()
+            session = db.session()
             if (not session._flushing and any(
                     isinstance(m, (RoleAssignment, SecurityAudit))
                     for models in (session.new, session.dirty, session.deleted)
@@ -628,7 +628,7 @@ class SecurityService(Service):
             session = object_session(obj)
 
         if session is None:
-            session = current_app.db.session()
+            session = db.session()
 
         # root always have any permission
         if isinstance(user, User) and user.id == 0:
@@ -784,7 +784,7 @@ class SecurityService(Service):
                 obj = None
 
         if session is None:
-            session = current_app.db.session()
+            session = db.session()
 
         pa = session \
             .query(
@@ -808,7 +808,7 @@ class SecurityService(Service):
             session = object_session(obj)
 
         if session is None:
-            session = current_app.db.session()
+            session = db.session()
 
         pa = query_pa_no_flush(session, permission, role, obj)
 
@@ -828,7 +828,7 @@ class SecurityService(Service):
             session = object_session(obj)
 
         if session is None:
-            session = current_app.db.session()
+            session = db.session()
 
         pa = query_pa_no_flush(session, permission, role, obj)
 

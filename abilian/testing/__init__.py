@@ -3,6 +3,6 @@
 from __future__ import absolute_import, print_function, division, \
     unicode_literals
 
-from .base import BaseTestCase
+from .base import BaseTestCase, TestConfig
 
-__all__ = ('BaseTestCase',)
+__all__ = ('BaseTestCase', 'TestConfig')
