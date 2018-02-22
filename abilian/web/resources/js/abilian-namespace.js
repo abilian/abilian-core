@@ -1,5 +1,4 @@
 /* Abilian namespace */
-/* jshint camelcase: false */
 define("AbilianNS", ["jquery"], function($) {
   "use strict";
 

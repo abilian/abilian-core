@@ -42,7 +42,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     var length = unset.length;
-    if (unset.length != val.length) {
+    if (unset.length !== val.length) {
       return true;
     }
 
@@ -447,7 +447,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       },
       load: function(vals) {
         this.$elements.find("input").each(function() {
-          this.checked = this.value == vals[0];
+          this.checked = (this.value === vals[0]);
         });
       },
     };
@@ -560,7 +560,6 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     function getVal() {
-      /* jshint validthis: true */
       var val = this.$select.data("select2").val();
       if (!this.multiple && !val.length) {
         val = [];
@@ -625,7 +624,6 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     function getVal() {
-      /* jshint validthis: true */
       var val = this.$select.data("select2").val();
       if (!this.multiple && !val.length) {
         val = [];
@@ -634,7 +632,6 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     function saveVal() {
-      /* jshint validthis: true */
       var data = this.$select.data("select2").data();
 
       if (data) {
@@ -730,7 +727,6 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
        get value to fill the  /GET : response with the attribute
        return: list(select:id, radio:value)
        */
-      /* jshint validthis: true */
       var radioValue = this.$elements.find("input:checked").val();
       var select2Value = this.$select.select2("val");
 
@@ -803,7 +799,6 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     function getVal() {
-      /* jshint validthis: true */
       if (this.$input.get(0).checked) {
         return [this.$select.select2("val") || this.$input.val()];
       }
@@ -960,7 +955,6 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       },
 
       hasValueSet: function() {
-        /* jshint camelcase: false */
         return getValues(this).selected_filters.length > 0;
       },
     };
@@ -985,7 +979,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       sFeature: "AdvancedSearchFilters",
     });
   } else {
-    throw "Warning: AdvancedSearchFilters requires DataTables 1.7 or greater - www.datatables.net/download";
+    throw new Error("Warning: AdvancedSearchFilters requires DataTables 1.7 or greater - www.datatables.net/download");
   }
 
   /*

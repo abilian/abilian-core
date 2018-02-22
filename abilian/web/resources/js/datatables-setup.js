@@ -1,4 +1,3 @@
-/* jshint camelcase: false */
 // Tweaks for integrating datatables + bootstrap
 /* Default class modification */
 
