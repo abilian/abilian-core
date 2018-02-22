@@ -1,8 +1,9 @@
-(function(factory) {
-  "use strict";
-
-  require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], factory);
-})(function(Abilian, FileInput, $, api) {
+require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
+  Abilian,
+  FileInput,
+  $,
+  api
+) {
   "use strict";
 
   /**

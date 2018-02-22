@@ -1,8 +1,5 @@
 /* Abilian namespace */
-(function(factory) {
-  "use strict";
-  define("AbilianWidget", ["AbilianNS", "jquery"], factory);
-})(function(Abilian, $) {
+define("AbilianWidget", ["AbilianNS", "jquery"], function(Abilian, $) {
   "use strict";
 
   /**

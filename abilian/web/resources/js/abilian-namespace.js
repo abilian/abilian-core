@@ -1,7 +1,6 @@
 /* Abilian namespace */
 /* jshint camelcase: false */
-
-function setupAbilian($) {
+define("AbilianNS", ["jquery"], function($) {
   "use strict";
 
   var Abilian = (window.Abilian = window.Abilian || {});
@@ -76,6 +75,4 @@ function setupAbilian($) {
   };
 
   return Abilian;
-}
-
-define("AbilianNS", ["jquery"], setupAbilian);
+});

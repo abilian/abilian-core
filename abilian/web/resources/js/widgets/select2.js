@@ -1,7 +1,4 @@
-(function(factory) {
-  "use strict";
-  require(["AbilianWidget", "jquery"], factory);
-})(function(Abilian, $) {
+require(["AbilianWidget", "jquery"], function(Abilian, $) {
   "use strict";
 
   function tagsFormatter(tagsToReplace) {
@@ -66,7 +63,7 @@
 
       initParams.initSelection = function(element, callback) {
         if (data.values.length > 0) {
-          callback(data.values.length == 1 ? data.values[0] : data.values);
+          callback(data.values.length === 1 ? data.values[0] : data.values);
         }
       };
     }

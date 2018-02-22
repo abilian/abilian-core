@@ -1,7 +1,4 @@
-(function(factory) {
-  "use strict";
-  require(["AbilianWidget"], factory);
-})(function(Abilian) {
+require(["AbilianWidget"], function(Abilian) {
   "use strict";
 
   function initRichTextWidget(params) {

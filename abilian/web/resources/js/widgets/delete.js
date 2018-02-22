@@ -1,10 +1,7 @@
 /**
  Allow to setup a delete button for urls managed by abilian.web.views.object.ObjectDelete.
  */
-(function(factory) {
-  "use strict";
-  require(["AbilianWidget", "jquery", "bootbox"], factory);
-})(function(Abilian, $, bootbox) {
+require(["AbilianWidget", "jquery", "bootbox"], function(Abilian, $, bootbox) {
   "use strict";
 
   var defaults = {

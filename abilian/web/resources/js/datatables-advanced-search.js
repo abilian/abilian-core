@@ -1,9 +1,6 @@
 /* datatable: advanced search */
 
-(function(factory) {
-  "use strict";
-  require(["AbilianNS", "jquery", "jquery.dataTables"], factory);
-})(function(Abilian, $) {
+require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
   "use strict";
 
   function defaultDatatableConfig() {

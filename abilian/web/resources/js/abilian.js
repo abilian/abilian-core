@@ -1,8 +1,4 @@
-/* jshint camelcase: false */
-(function(factory) {
-  "use strict";
-  require(["AbilianNS", "jquery", "Hogan"], factory);
-})(function(Abilian, $, Hogan) {
+require(["AbilianNS", "jquery", "Hogan"], function(Abilian, $, Hogan) {
   "use strict";
 
   var navbar = document.querySelector("nav.navbar-fixed-top");

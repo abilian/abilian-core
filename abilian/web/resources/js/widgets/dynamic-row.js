@@ -1,7 +1,4 @@
-(function(factory) {
-  "use strict";
-  require(["AbilianWidget", "jquery"], factory);
-})(function(Abilian, $) {
+require(["AbilianWidget", "jquery"], function(Abilian, $) {
   "use strict";
   // multiple row widget
   function DynamicRowWidget(table, options) {

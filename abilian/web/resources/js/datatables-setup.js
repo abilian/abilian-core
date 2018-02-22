@@ -1,10 +1,8 @@
 /* jshint camelcase: false */
 // Tweaks for integrating datatables + bootstrap
 /* Default class modification */
-(function(factory) {
-  "use strict";
-  require(["jquery", "jquery.dataTables"], factory);
-})(function($) {
+
+require(["jquery", "jquery.dataTables"], function($) {
   "use strict";
 
   $.extend($.fn.dataTableExt.oStdClasses, {
