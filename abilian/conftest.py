@@ -26,6 +26,7 @@ class TestConfig:
     SITE_NAME = "Abilian Test"
     CSRF_ENABLED = True
     WTF_CSRF_ENABLED = True
+    BABEL_ACCEPT_LANGUAGES = ['en', 'fr']
 
 
 @fixture

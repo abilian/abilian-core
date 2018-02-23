@@ -69,7 +69,7 @@ default_config.update(
     PRIVATE_SITE=False,
     TEMPLATE_DEBUG=False,
     CSRF_ENABLED=True,
-    BABEL_ACCEPT_LANGUAGES=None,
+    BABEL_ACCEPT_LANGUAGES=['en'],
     DEFAULT_COUNTRY=None,
     PLUGINS=(),
     ADMIN_PANELS=(
@@ -132,19 +132,18 @@ class PluginManager(object):
 class AssetManagerMixin(Flask):
 
     def init_assets(self):
-        languages = self.config.get('BABEL_ACCEPT_LANGUAGES')
-        if languages is None:
-            languages = abilian.i18n.VALID_LANGUAGES_CODE
-        else:
-            languages = tuple(
-                lang for lang in languages
-                if lang in abilian.i18n.VALID_LANGUAGES_CODE
-            )
+        languages = self.config['BABEL_ACCEPT_LANGUAGES']
+        languages = tuple(
+            lang for lang in languages
+            if lang in abilian.i18n.VALID_LANGUAGES_CODE
+        )
         self.config['BABEL_ACCEPT_LANGUAGES'] = languages
+
         js_filters = (
             ('closure_js',)
             if self.config.get('PRODUCTION', False) else None
         )
+
         self._assets_bundles = {
             'css': {
                 'options':
@@ -290,7 +289,8 @@ class AssetManagerMixin(Flask):
                 try:
                     assets.resolver.search_for_source(assets, filename)
                 except IOError:
-                    logger.debug('i18n JS not found, skipped: "%s"', filename)
+                    pass
+                    # logger.debug('i18n JS not found, skipped: "%s"', filename)
                 else:
                     self.register_asset('js-i18n-' + lang, filename)
 
@@ -632,10 +632,9 @@ class Application(
         self.default_view = ViewRegistry()
         self.js_api = dict()
 
-        if config:
-            self.config.from_object(config)
+        self.configure(config)
 
-        # at this point we have loaded all external config files:
+        # At this point we have loaded all external config files:
         # SQLALCHEMY_DATABASE_URI is definitively fixed (it cannot be defined in
         # database AFAICT), and LOGGING_FILE cannot be set in DB settings.
         self.setup_logging()
@@ -730,6 +729,17 @@ class Application(
 
         if os.environ.get("FLASK_VALIDATE_HTML"):
             self.after_request(self.validate_response)
+
+    def configure(self, config):
+        if config:
+            self.config.from_object(config)
+
+        languages = self.config['BABEL_ACCEPT_LANGUAGES']
+        languages = tuple(
+            lang for lang in languages
+            if lang in abilian.i18n.VALID_LANGUAGES_CODE
+        )
+        self.config['BABEL_ACCEPT_LANGUAGES'] = languages
 
     def _setup_script_manager(self):
         manager = self.script_manager

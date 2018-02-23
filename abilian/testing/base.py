@@ -64,6 +64,7 @@ class TestConfig(object):
 
     MAIL_SENDER = 'test@testcase.app.tld'
 
+    BABEL_ACCEPT_LANGUAGES = ['en', 'fr']
     BABEL_DEFAULT_LOCALE = 'en'
 
     # It's a good idea to test with a timezone that's not your system timezone

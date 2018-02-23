@@ -143,6 +143,9 @@ def patch_babel(app):
 
 def test_datetime_field(app):
     """Test fields supports date with year < 1900."""
+
+    assert 'fr' in app.config['BABEL_ACCEPT_LANGUAGES']
+
     patch_babel(app)
 
     obj = mock.Mock()
