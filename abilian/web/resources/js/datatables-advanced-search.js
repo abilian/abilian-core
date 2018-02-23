@@ -447,7 +447,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       },
       load: function(vals) {
         this.$elements.find("input").each(function() {
-          this.checked = (this.value === vals[0]);
+          this.checked = this.value === vals[0];
         });
       },
     };
@@ -979,7 +979,9 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       sFeature: "AdvancedSearchFilters",
     });
   } else {
-    throw new Error("Warning: AdvancedSearchFilters requires DataTables 1.7 or greater - www.datatables.net/download");
+    throw new Error(
+      "Warning: AdvancedSearchFilters requires DataTables 1.7 or greater - www.datatables.net/download"
+    );
   }
 
   /*
