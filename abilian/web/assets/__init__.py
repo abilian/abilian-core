@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function
 import pkg_resources
 from flask import current_app, url_for
 from flask_assets import Bundle
+from webassets.filter import get_filter
 
 from abilian.services.security import Anonymous
 # register custom filters for webassets
@@ -91,6 +92,8 @@ TYPEAHEAD_LESS = Bundle('typeahead/typeahead.js-bootstrap.less')
 TYPEAHEAD_JS = Bundle('typeahead/typeahead.js', 'typeahead/hogan-2.0.0.js')
 
 ABILIAN_LESS = Bundle('less/abilian.less', 'less/print.less')
+
+es2015 = get_filter('babel', presets='es2015')
 
 ABILIAN_JS_NS = Bundle('js/abilian-namespace.js')
 ABILIAN_JS = Bundle(

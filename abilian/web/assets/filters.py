@@ -37,8 +37,8 @@ class ImportCSSFilter(Filter):
             # is a webasset hunk instance
             source = filepath
         # output = kwargs['output']
-        base_dir = os.path.dirname(filepath)
-        rel_dir = os.path.dirname(source)
+        base_dir = Path(filepath).parent
+        rel_dir = Path(source).parent
 
         self.logger.debug('process "%s"', filepath)
 
@@ -49,8 +49,8 @@ class ImportCSSFilter(Filter):
                 continue
 
             filename = import_match.group('filename')
-            abs_filename = os.path.abspath(os.path.join(base_dir, filename))
-            rel_filename = os.path.normpath(os.path.join(rel_dir, filename))
+            abs_filename = os.path.abspath(base_dir / filename)
+            rel_filename = os.path.normpath(rel_dir / filename)
 
             start, end = import_match.span()
             if start > 0:

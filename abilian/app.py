@@ -132,17 +132,11 @@ class PluginManager(object):
 class AssetManagerMixin(Flask):
 
     def init_assets(self):
-        languages = self.config['BABEL_ACCEPT_LANGUAGES']
-        languages = tuple(
-            lang for lang in languages
-            if lang in abilian.i18n.VALID_LANGUAGES_CODE
-        )
-        self.config['BABEL_ACCEPT_LANGUAGES'] = languages
-
         js_filters = (
             ('closure_js',)
             if self.config.get('PRODUCTION', False) else None
         )
+        # js_filters = None
 
         self._assets_bundles = {
             'css': {
@@ -167,7 +161,9 @@ class AssetManagerMixin(Flask):
                 ),
             },
         }
+
         # bundles for JS translations
+        languages = self.config['BABEL_ACCEPT_LANGUAGES']
         for lang in languages:
             code = 'js-i18n-' + lang
             filename = 'lang-' + lang + '-%(version)s.min.js'
@@ -190,7 +186,7 @@ class AssetManagerMixin(Flask):
         assets.directory = str(assets_dir)
         assets.cache = str(assets_cache_dir)
         manifest_file = assets_base_dir / 'manifest.json'
-        assets.manifest = 'json:{}'.format(str(manifest_file))
+        assets.manifest = 'json:{}'.format(manifest_file)
 
         # set up load_path for application static dir. This is required
         # since we are setting Environment.load_path for other assets
