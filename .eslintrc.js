@@ -5,7 +5,7 @@ module.exports = {
     'standard',
     "plugin:requirejs/recommended",
   ],
-  // required to lint *.vue files
+  // 'html': required to lint *.vue files
   plugins: [
     'html', 'requirejs'
   ],
