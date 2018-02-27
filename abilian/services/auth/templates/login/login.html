@@ -4,7 +4,7 @@
 
 <div class="row">
 
-  <div class="col-md-8 col-xs-12 col-md-offset-2 login-form">
+  <div class="col-md-4 col-xs-12 col-md-offset-4 login-form">
     <h2>{{ _("Login to %(site_name)s", site_name=config.SITE_NAME) }}</h2>
 
     <form action="{{ url_for('.login_post') }}" method="POST" name="login" role="form">
@@ -22,7 +22,7 @@
           <span style="display: inline-block; float:right; text-align: right;">
             <a href="{{ url_for('.forgotten_pw_form') }}">{{ _("Forgot password?") }}</a>
           </span>
-      </div>      
+      </div>
     </form>
   </div>
 

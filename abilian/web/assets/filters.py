@@ -10,6 +10,7 @@ import re
 from functools import partial
 from io import StringIO
 from os.path import isabs
+
 from pathlib import Path
 
 from webassets.filter import ExternalTool, Filter, get_filter, register_filter
@@ -88,9 +89,6 @@ class ImportCSSFilter(Filter):
                 out.write('\n')
 
 
-register_filter(ImportCSSFilter)
-
-
 class LessImportFilter(Filter):
     """This filter outputs `@import` statements for listed files.
 
@@ -112,7 +110,7 @@ class LessImportFilter(Filter):
             self.max_debug_level = False
 
     def input(self, _in, out, source_path, output_path, **kwargs):
-        if not os.path.isfile(source_path):
+        if not Path(source_path).is_file():
             # we are not processing files but webassets intermediate hunks
             out.write(_in.read())
             return
@@ -126,9 +124,6 @@ class LessImportFilter(Filter):
         # url(). So we better have all our css imported as less content.
         import_mode = 'less'  # if not rel_path.endswith('css') else 'css'
         out.write('@import ({}) "{}";'.format(import_mode, rel_path))
-
-
-register_filter(LessImportFilter)
 
 
 class Less(ExternalTool):
@@ -324,9 +319,6 @@ class Less(ExternalTool):
             json.dump(data, f)
 
 
-register_filter(Less)
-
-
 class ClosureJS(BaseClosureJS):
 
     def setup(self):
@@ -390,4 +382,11 @@ class ClosureJS(BaseClosureJS):
             json.dump(data, f)
 
 
-register_filter(ClosureJS)
+def register_filters():
+    register_filter(Less)
+    register_filter(LessImportFilter)
+    register_filter(ImportCSSFilter)
+    register_filter(ClosureJS)
+
+
+register_filters()

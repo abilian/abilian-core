@@ -973,17 +973,15 @@ class Application(
 
         self.register_blueprint(setupwizard.setup, url_prefix='/setup')
 
-    def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
+    def add_url_rule(self, rule, endpoint=None, view_func=None, roles=None, **options):
         """See :meth:`Flask.add_url_rule`.
 
         If `roles` parameter is present, it must be a
         :class:`abilian.service.security.models.Role` instance, or a list of
         Role instances.
         """
-        roles = options.pop('roles', None)
         super(Application, self).add_url_rule(
-            rule, endpoint, view_func,
-            **options
+            rule, endpoint, view_func, **options
         )
 
         if roles:
@@ -1015,10 +1013,10 @@ class Application(
     def add_static_url(self, url_path, directory, endpoint=None, roles=None):
         """Add a new url rule for static files.
 
-        :param endpoint: flask endpoint name for this url rule.
         :param url_path: subpath from application static url path. No heading
             or trailing slash.
         :param directory: directory to serve content from.
+        :param endpoint: flask endpoint name for this url rule.
 
         Example::
 
