@@ -7,7 +7,6 @@
     "npm": ">= 3.0.0"
   },
   "devDependencies": {
-    "@prettier/plugin-python": "0.0.0-development",
     "eslint": "^4.14.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-html": "^4.0.2",
