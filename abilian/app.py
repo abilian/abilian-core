@@ -973,7 +973,14 @@ class Application(
 
         self.register_blueprint(setupwizard.setup, url_prefix='/setup')
 
-    def add_url_rule(self, rule, endpoint=None, view_func=None, roles=None, **options):
+    def add_url_rule(
+        self,
+        rule,
+        endpoint=None,
+        view_func=None,
+        roles=None,
+        **options
+    ):
         """See :meth:`Flask.add_url_rule`.
 
         If `roles` parameter is present, it must be a
@@ -981,7 +988,8 @@ class Application(
         Role instances.
         """
         super(Application, self).add_url_rule(
-            rule, endpoint, view_func, **options
+            rule, endpoint, view_func,
+            **options
         )
 
         if roles:

@@ -10,7 +10,6 @@ import re
 from functools import partial
 from io import StringIO
 from os.path import isabs
-
 from pathlib import Path
 
 from webassets.filter import ExternalTool, Filter, get_filter, register_filter
