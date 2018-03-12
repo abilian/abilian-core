@@ -15,7 +15,7 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-requirejs": "^3.1.1",
     "eslint-plugin-standard": "^3.0.1",
-    "prettier": "1.11.0",
+    "prettier": "^1.11.0",
     "stylelint": "^8.1.1",
     "stylelint-config-standard": "^17.0.0"
   },
