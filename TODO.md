@@ -6,12 +6,15 @@
 - [] Ugrade flask-sqlalchemy and other SQLA releated deps
 - [] Fix SQLA warnings
 - [] Fix all tests (including skipped ones) under Python 3.6
-- [] Fix issues reported by `pylint --py3k`
+
+- [x] Fix issues reported by `pylint --py3k`
 
 ## Testing & QA
 
-- [] Install `pytest-randomly` and fix errors
-- [] Fix all JS issues detected by ESlint and enable check on CI
+- [] Finish "classless" unit testing refactor
+
+- [x] Install `pytest-randomly` and fix errors
+- [x] Fix all JS issues detected by ESlint and enable check on CI
 
 ## Other
 

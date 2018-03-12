@@ -44,6 +44,11 @@ test:
 	pytest --ff -x -p no:randomly $(PYTEST_MULTI)
 	@echo ""
 
+test-randomly:
+	@echo "--> Running Python tests in random order"
+	pytest $(PYTEST_MULTI)
+	@echo ""
+
 test-with-coverage:
 	@echo "--> Running Python tests"
 	py.test $(PYTEST_MULTI) --cov $(PKG)
