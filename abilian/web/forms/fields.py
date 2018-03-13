@@ -41,6 +41,7 @@ __all__ = [
     'ModelFieldList',
     'FileField',
     'DateField',
+    'DateTimeField',
     'Select2Field',
     'Select2MultipleField',
     'QuerySelect2Field',

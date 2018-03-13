@@ -12,6 +12,7 @@
 ## Testing & QA
 
 - [] Finish "classless" unit testing refactor
+- [] Add hypothesis tests
 
 - [x] Install `pytest-randomly` and fix errors
 - [x] Fix all JS issues detected by ESlint and enable check on CI
