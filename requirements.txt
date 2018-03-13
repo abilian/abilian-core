@@ -39,7 +39,7 @@ kombu==4.1.0              # via celery
 lxml==4.1.1
 mako==1.0.7               # via alembic
 markupsafe==1.0
-numpy==1.14.1             # via pandas
+numpy==1.14.2             # via pandas
 pandas==0.22.0
 pathlib==1.0.1
 pillow==5.0.0
@@ -57,7 +57,7 @@ six==1.11.0
 sqlalchemy-utils==0.33.0  # via wtforms-alchemy
 sqlalchemy==1.2.5
 sqlparse==0.2.4
-tqdm==4.19.6
+tqdm==4.19.7
 typing==3.6.4
 validators==0.12.1        # via wtforms-components
 vine==1.1.4               # via amqp
