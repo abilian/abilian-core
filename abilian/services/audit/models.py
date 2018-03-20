@@ -76,11 +76,11 @@ class Changes(object):
     def collection_remove(self, name, value):
         self._collection_change(name, value, add=False)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self.columns) or bool(self.collections)
 
-    # Py3k compat
-    __bool__ = __nonzero__
+    # Py2 compat
+    __nonzero__ = __bool__
 
 
 class AuditEntry(db.Model):

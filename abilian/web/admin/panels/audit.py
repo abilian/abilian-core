@@ -4,6 +4,8 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from datetime import datetime
+
+import six
 from itertools import chain
 
 import pytz
@@ -300,10 +302,11 @@ class BaseEntryPresenter(object):
         self.user = user
         self.date = local_dt(date)
 
-    def __cmp__(self, other):
-        # Python 3 compatibility. XXX: Really needed?
-        a, b = self.date, other.date
-        return (a > b) - (a < b)
+    if six.PY2:
+        def __cmp__(self, other):
+            # Python 3 compatibility. XXX: Really needed?
+            a, b = self.date, other.date
+            return (a > b) - (a < b)
 
     def __lt__(self, other):
         return self.date < other.date

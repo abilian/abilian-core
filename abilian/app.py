@@ -254,7 +254,7 @@ class AssetManagerMixin(Flask):
 
         :raises KeyError: if `type_` is not supported.
         """
-        supported = self._assets_bundles.keys()
+        supported = list(self._assets_bundles.keys())
         if type_ not in supported:
             msg = "Invalid type: {}. Valid types: {}".format(
                 repr(type_),

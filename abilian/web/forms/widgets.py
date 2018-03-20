@@ -1327,6 +1327,7 @@ class MoneyWidget(TextInput):
 
         if val > 1000:
             unit = 'k€'
+            # pylint: disable=W1633
             val = int(round(val / 1000.0))
 
         # `format_currency()` is not used since it display numbers with cents

@@ -187,6 +187,7 @@ class Pagination(object):
     def has_next(self):
         return self.page < self.pages
 
+    # pylint: disable=W1653
     @property
     def next(self):
         return self.page + 1 if self.has_next else None
