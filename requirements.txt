@@ -54,10 +54,10 @@ pyyaml==3.12
 raven==6.6.0
 redis==2.10.6
 six==1.11.0
-sqlalchemy-utils==0.33.0  # via wtforms-alchemy
+sqlalchemy-utils==0.33.1  # via wtforms-alchemy
 sqlalchemy==1.2.5
 sqlparse==0.2.4
-tqdm==4.19.7
+tqdm==4.19.8
 typing==3.6.4
 validators==0.12.1        # via wtforms-components
 vine==1.1.4               # via amqp
