@@ -138,25 +138,22 @@ class AssetManagerMixin(Flask):
 
         self._assets_bundles = {
             'css': {
-                'options':
-                dict(
-                    filters=('less', 'cssmin'),
-                    output='style-%(version)s.min.css',
-                ),
+                'options': {
+                    'filters': ('less', 'cssmin'),
+                    'output': 'style-%(version)s.min.css'
+                },
             },
             'js-top': {
-                'options':
-                dict(
-                    output='top-%(version)s.min.js',
-                    filters=js_filters,
-                ),
+                'options': {
+                    'output': 'top-%(version)s.min.js',
+                    'filters': js_filters
+                },
             },
             'js': {
-                'options':
-                dict(
-                    output='app-%(version)s.min.js',
-                    filters=js_filters,
-                ),
+                'options': {
+                    'output': 'app-%(version)s.min.js',
+                    'filters': js_filters
+                },
             },
         }
 

@@ -77,16 +77,16 @@ class JSONUserSearch(JSONView):
             User.last_name,
             User.email,
         )
-        results = [
-            dict(
-                id=obj.id,
-                text='{} {} ({})'.format(
-                    obj.first_name,
-                    obj.last_name,
-                    obj.email,
-                ),
-            ) for obj in values
-        ]
+        results = [{
+            'id':
+            obj.id,
+            'text':
+            '{} {} ({})'.format(
+                obj.first_name,
+                obj.last_name,
+                obj.email,
+            )
+        } for obj in values]
 
         result = {
             'results': results,

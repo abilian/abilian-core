@@ -65,10 +65,10 @@ def schedule_entities_reindex(entities):
     """
     entities = [(e[0], e[1], e[2], dict(e[3])) for e in entities]
     return index_update.apply_async(
-        kwargs=dict(
-            index='default',
-            items=entities,
-        ),
+        kwargs={
+            'index': 'default',
+            'items': entities
+        },
     )
 
 

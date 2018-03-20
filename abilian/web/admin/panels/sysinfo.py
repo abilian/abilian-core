@@ -28,13 +28,16 @@ class SysinfoPanel(AdminPanel):
         packages = []
 
         for dist in pkg_resources.working_set:
-            package = dict(
-                name=dist.project_name,
-                key=dist.key,
-                version=dist.version
-                if dist.has_version() else 'Unknown version',
-                vcs=None,
-            )
+            package = {
+                'name':
+                dist.project_name,
+                'key':
+                dist.key,
+                'version':
+                dist.version if dist.has_version() else 'Unknown version',
+                'vcs':
+                None,
+            }
 
             location = text_type(Path(dist.location).resolve())
             vcs_name = vcs.get_backend_name(location)

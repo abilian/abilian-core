@@ -458,12 +458,12 @@ class Module(object):
             self.view_form_class = self.edit_form_class
 
         # init class based views
-        kw = dict(
-            Model=self.managed_class,
-            pk='entity_id',
-            module=self,
-            base_template=self.base_template,
-        )
+        kw = {
+            'Model': self.managed_class,
+            'pk': 'entity_id',
+            'module': self,
+            'base_template': self.base_template,
+        }
         self._setup_view(
             "/<int:entity_id>",
             'entity_view',
@@ -857,13 +857,13 @@ class DefaultRelatedView(RelatedView):
     def render(self, entity):
         view = RelatedTableView(self.column_names, self.options)
         related_entities = getattr(entity, self.attr)
-        return dict(
-            label=self.label,
-            attr_name=self.attr,
-            rendered=view.render(related_entities, related_to=entity),
-            show_empty=self.show_empty,
-            size=len(related_entities),
-        )
+        return {
+            'label': self.label,
+            'attr_name': self.attr,
+            'rendered': view.render(related_entities, related_to=entity),
+            'show_empty': self.show_empty,
+            'size': len(related_entities),
+        }
 
 
 # TODO: rename to CRMApp ?
