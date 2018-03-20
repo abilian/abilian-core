@@ -489,13 +489,13 @@ class SecurityService(Service):
         principal = noproxy(principal)
         session = object_session(obj) if obj is not None else db.session
         manager = self._current_user_manager(session=session)
-        args = dict(
-            role=role,
-            object=obj,
-            anonymous=False,
-            user=None,
-            group=None,
-        )
+        args = {
+            'role': role,
+            'object': obj,
+            'anonymous': False,
+            'user': None,
+            'group': None
+        }
 
         if (
             principal is AnonymousRole or

@@ -95,13 +95,11 @@ class CommentEditView(BaseCommentView, ObjectEdit):
     def after_populate_obj(self):
         obj_meta = self.obj.meta.setdefault('abilian.core.models.comment', {})
         history = obj_meta.setdefault('history', [])
-        history.append(
-            dict(
-                user_id=current_user.id,
-                user=text_type(current_user),
-                date=utc_dt(datetime.utcnow()).isoformat(),
-            ),
-        )
+        history.append({
+            'user_id': current_user.id,
+            'user': text_type(current_user),
+            'date': utc_dt(datetime.utcnow()).isoformat()
+        },)
         self.obj.meta.changed()
 
 

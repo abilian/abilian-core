@@ -762,11 +762,11 @@ class Module(object):
         )
         rendered_table = table_view.render()
 
-        ctx = dict(
-            rendered_table=rendered_table,
-            module=self,
-            base_template=self.base_template,
-        )
+        ctx = {
+            'rendered_table': rendered_table,
+            'module': self,
+            'base_template': self.base_template
+        }
         return render_template("default/list_view.html", **ctx)
 
     def list_json2_query_all(self, q):

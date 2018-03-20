@@ -1097,13 +1097,13 @@ class TimeInput(Input):
             for k, v in input_params.items()
         }
 
-        ctx = dict(
-            id=field_id,
-            value=value,
-            field=field,
-            required=False,
-            timepicker_attributes=input_params,
-        )
+        ctx = {
+            'id': field_id,
+            'value': value,
+            'field': field,
+            'required': False,
+            'timepicker_attributes': input_params
+        }
         return Markup(render_template(self.template, **ctx))
 
 

@@ -4,11 +4,10 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from datetime import datetime
-
-import six
 from itertools import chain
 
 import pytz
+import six
 import sqlalchemy as sa
 import sqlalchemy.orm
 from flask import get_template_attribute, render_template, \
@@ -303,6 +302,7 @@ class BaseEntryPresenter(object):
         self.date = local_dt(date)
 
     if six.PY2:
+
         def __cmp__(self, other):
             # Python 3 compatibility. XXX: Really needed?
             a, b = self.date, other.date
