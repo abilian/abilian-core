@@ -82,8 +82,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
                 count = query.count()
             except Exception as e:
                 current_app.logger.error(
-                    "Indexing error on class {}: {}".format(name, repr(e)),
-                )
+                    "Indexing error on class {}: {}".format(name, repr(e)),)
                 continue
 
             print("*" * 79)
@@ -114,8 +113,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     indexed.add(object_key)
 
                     if batch_size is not None and (
-                            count_current % batch_size
-                    ) == 0:
+                            count_current % batch_size) == 0:
                         bar.update()
                         strategy.send(COMMIT)
 

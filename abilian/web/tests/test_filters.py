@@ -78,13 +78,12 @@ def test_linkify():
         [
         ('href', 'http://test.example.com'),
         ('rel', 'nofollow'),
-    ]
+        ]
 
 
 def test_nl2br():
     tmpl = env.from_string(
-        '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',
-    )
+        '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',)
     assert tmpl.render() == \
         'first line<br />\nsecond line<br />\n<br />\n  third, indented'
 

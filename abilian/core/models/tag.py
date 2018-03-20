@@ -36,8 +36,7 @@ def register(cls):
     """
     if not issubclass(cls, Entity):
         raise ValueError(
-            'Class must be a subclass of abilian.core.entities.Entity',
-        )
+            'Class must be a subclass of abilian.core.entities.Entity',)
 
     SupportTagging.register(cls)
     return cls
@@ -116,8 +115,7 @@ class Tag(IdMixin, Model):
         sa.CheckConstraint(sa.sql.and_(sa.sql.func.trim(ns) == ns, ns != ''),),
         # label is not empty and is not surrounded by space characters
         sa.CheckConstraint(
-            sa.sql.and_(sa.sql.func.trim(label) == label, label != ''),
-        ),
+            sa.sql.and_(sa.sql.func.trim(label) == label, label != ''),),
     )
 
     def __str__(self):

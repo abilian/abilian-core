@@ -203,19 +203,16 @@ class EntityMeta(BaseMeta):
                 elif not isinstance(default_permissions, collections.Set):
                     raise TypeError(
                         '__default_permissions__ is neither a dict or set, '
-                        'cannot create class {}'.format(classname),
-                    )
+                        'cannot create class {}'.format(classname),)
 
                 # also ensure that `roles` set is immutable, too
                 default_permissions = frozenset(
                     (permission, frozenset(roles))
-                    for permission, roles in default_permissions
-                )
+                    for permission, roles in default_permissions)
                 d['__default_permissions__'] = default_permissions
 
             d['SLUG_SEPARATOR'] = text_type(
-                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR),
-            )
+                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR),)
 
         cls = BaseMeta.__new__(mcs, classname, bases, d)
 
@@ -348,7 +345,8 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         JSONDict(),
         nullable=False,
         default=dict,
-        server_default='{}')
+        server_default='{}',
+    )
     """
     A dictionnary of simple values (JSON-serializable) to conveniently annotate
     the entity.

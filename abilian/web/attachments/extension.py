@@ -86,7 +86,7 @@ class AttachmentsManager(object):
     @property
     def macros(self):
         default_template = current_app.jinja_env.get_template(
-            _DEFAULT_TEMPLATE)
+            _DEFAULT_TEMPLATE,)
         template = current_app.jinja_env.get_template(self.macros_template)
         default = default_template.module
         m = template.module

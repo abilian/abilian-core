@@ -36,8 +36,7 @@ def register(cls):
     """
     if not issubclass(cls, Entity):
         raise ValueError(
-            'Class must be a subclass of abilian.core.entities.Entity',
-        )
+            'Class must be a subclass of abilian.core.entities.Entity',)
 
     Commentable.register(cls)
     return cls

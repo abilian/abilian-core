@@ -102,19 +102,16 @@ def test_render(app, test_request_context):
     assert BASIC.render() == Markup(
         '<a class="action action-cat_1 action-cat_1-basic" '
         'href="http://some.where">'
-        '<i class="glyphicon glyphicon-ok"></i> Basic Action</a>',
-    )
+        '<i class="glyphicon glyphicon-ok"></i> Basic Action</a>',)
 
     assert CONDITIONAL.render() == Markup(
         '<a class="action action-cat_1 action-cat_1-conditional '
         'btn btn-warning" href="http://condition.al">'
         '<i class="glyphicon glyphicon-hand-right"></i> '
-        'Conditional Action</a>',
-    )
+        'Conditional Action</a>',)
 
     assert OTHER_CAT.render() == Markup(
         '<a class="action action-cat_2-sub action-cat_2-sub-other '
         'custom-class" href="http://count?3">'
         '<img src="/static/icons/other.png" width="14" height="14" /> '
-        'Other Action</a>',
-    )
+        'Other Action</a>',)

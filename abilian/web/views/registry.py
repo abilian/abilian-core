@@ -66,8 +66,7 @@ class Registry(object):
             return url_for(
                 '{}.view'.format(object_type.rsplit('.')[-1].lower()),
                 object_id=object_id,
-                **kwargs
-            )
+                **kwargs)
         except BaseException:
             raise KeyError(object_type)
 

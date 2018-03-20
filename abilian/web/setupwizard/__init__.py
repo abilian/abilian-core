@@ -174,8 +174,7 @@ def step_db_validate():
 
     if dialect == 'sqlite' and (not database or database == ':memory:'):
         database = text_type(
-            Path(current_app.instance_path) / 'data' / 'sqlite.db',
-        )
+            Path(current_app.instance_path) / 'data' / 'sqlite.db',)
 
     db_uri += database
 
@@ -266,10 +265,8 @@ def step_redis_validate():
     try:
         r.info()
     except redis.exceptions.InvalidResponse:
-        error = (
-            "Connection error: doesn't look like it's a redis server. "
-            "Verify host and port are those of your redis server."
-        )
+        error = ("Connection error: doesn't look like it's a redis server. "
+                 "Verify host and port are those of your redis server.")
     except redis.exceptions.ResponseError as e:
         error = 'Redis server response: {}'.format(e)
     except redis.exceptions.RedisError as e:
@@ -310,10 +307,8 @@ def get_possible_hostnames():
         for a in aliases:
             names.setdefault(a, []).extend(ips)
 
-    return sorted(
-        '{} ({})'.format(name, ', '.join(sorted(set(ips))))
-        for name, ips in six.iteritems(names)
-    )
+    return sorted('{} ({})'.format(name, ', '.join(sorted(set(ips))))
+                  for name, ips in six.iteritems(names))
 
 
 def step_site_info_form():

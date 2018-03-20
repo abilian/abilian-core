@@ -132,10 +132,8 @@ class PluginManager(object):
 class AssetManagerMixin(Flask):
 
     def init_assets(self):
-        js_filters = (
-            ('closure_js',)
-            if self.config.get('PRODUCTION', False) else None
-        )
+        js_filters = (('closure_js',)
+                      if self.config.get('PRODUCTION', False) else None)
         # js_filters = None
 
         self._assets_bundles = {
@@ -320,8 +318,7 @@ class ErrorManagerMixin(Flask):
             logging_file = (Path(self.instance_path) / logging_file).resolve()
         else:
             logging_file = Path(
-                resource_filename(__name__, 'default_logging.yml'),
-            )
+                resource_filename(__name__, 'default_logging.yml'),)
 
         if logging_file.suffix == '.ini':
             # old standard 'ini' file config
@@ -337,17 +334,13 @@ class ErrorManagerMixin(Flask):
             logging.config.dictConfig(logging_cfg)
 
     def init_debug_toolbar(self):
-        if (
-            not self.testing and self.config.get('DEBUG_TB_ENABLED') and
-            'debugtoolbar' not in self.blueprints
-        ):
+        if (not self.testing and self.config.get('DEBUG_TB_ENABLED') and
+                'debugtoolbar' not in self.blueprints):
             try:
                 from flask_debugtoolbar import DebugToolbarExtension
             except ImportError:
-                logger.warning(
-                    'DEBUG_TB_ENABLED is on but flask_debugtoolbar '
-                    'is not installed.',
-                )
+                logger.warning('DEBUG_TB_ENABLED is on but flask_debugtoolbar '
+                               'is not installed.',)
             else:
                 dbt = DebugToolbarExtension()
                 default_config = dbt._default_config(self)
@@ -356,8 +349,7 @@ class ErrorManagerMixin(Flask):
                 if 'DEBUG_TB_PANELS' not in self.config:
                     # add our panels to default ones
                     self.config['DEBUG_TB_PANELS'] = list(
-                        default_config['DEBUG_TB_PANELS'],
-                    )
+                        default_config['DEBUG_TB_PANELS'],)
                 init_dbt(self)
                 for view_name in self.view_functions:
                     if view_name.startswith('debugtoolbar.'):
@@ -429,8 +421,7 @@ class ErrorManagerMixin(Flask):
             except ImportError:
                 logger.error(
                     'SENTRY_DSN is defined in config but package "raven" '
-                    'is not installed.',
-                )
+                    'is not installed.',)
                 return
 
             ext = Sentry(self, logging=True, level=logging.ERROR)
@@ -555,10 +546,8 @@ class JinjaManagerMixin(Flask):
         return jinja2.ChoiceLoader(loaders)
 
 
-class Application(
-    ServiceManager, PluginManager, AssetManagerMixin,
-    ErrorManagerMixin, JinjaManagerMixin, Flask
-):
+class Application(ServiceManager, PluginManager, AssetManagerMixin,
+                  ErrorManagerMixin, JinjaManagerMixin, Flask):
     """Base application class.
 
     Extend it in your own app.
@@ -611,10 +600,8 @@ class Application(
 
         # used by make_config to determine if we try to load config from
         # instance / environment variable /...
-        self._ABILIAN_INIT_TESTING_FLAG = (
-            getattr(config, 'TESTING', False)
-            if config else False
-        )
+        self._ABILIAN_INIT_TESTING_FLAG = (getattr(config, 'TESTING', False)
+                                           if config else False)
         Flask.__init__(self, name, *args, **kwargs)
         del self._ABILIAN_INIT_TESTING_FLAG
 
@@ -731,10 +718,8 @@ class Application(
             self.config.from_object(config)
 
         languages = self.config['BABEL_ACCEPT_LANGUAGES']
-        languages = tuple(
-            lang for lang in languages
-            if lang in abilian.i18n.VALID_LANGUAGES_CODE
-        )
+        languages = tuple(lang for lang in languages
+                          if lang in abilian.i18n.VALID_LANGUAGES_CODE)
         self.config['BABEL_ACCEPT_LANGUAGES'] = languages
 
     def _setup_script_manager(self):
@@ -794,8 +779,7 @@ class Application(
         before any url_value_preprocessor and `before_request` handlers.
         """
         g.breadcrumb.append(
-            BreadcrumbItem(icon='home', url='/' + request.script_root),
-        )
+            BreadcrumbItem(icon='home', url='/' + request.script_root),)
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary
@@ -973,24 +957,20 @@ class Application(
 
         self.register_blueprint(setupwizard.setup, url_prefix='/setup')
 
-    def add_url_rule(
-        self,
-        rule,
-        endpoint=None,
-        view_func=None,
-        roles=None,
-        **options
-    ):
+    def add_url_rule(self,
+                     rule,
+                     endpoint=None,
+                     view_func=None,
+                     roles=None,
+                     **options):
         """See :meth:`Flask.add_url_rule`.
 
         If `roles` parameter is present, it must be a
         :class:`abilian.service.security.models.Role` instance, or a list of
         Role instances.
         """
-        super(Application, self).add_url_rule(
-            rule, endpoint, view_func,
-            **options
-        )
+        super(Application, self).add_url_rule(rule, endpoint, view_func,
+                                              **options)
 
         if roles:
             self.add_access_controller(

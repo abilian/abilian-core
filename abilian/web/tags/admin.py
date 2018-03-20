@@ -68,8 +68,7 @@ def schedule_entities_reindex(entities):
         kwargs=dict(
             index='default',
             items=entities,
-        ),
-    )
+        ),)
 
 
 class NSView(View):
@@ -101,7 +100,10 @@ class NSView(View):
             tags=tags,
             errors=self.form_errors,
             merge_to=request.form.get(
-                'merge_to', default='__None__', type=int),
+                'merge_to',
+                default='__None__',
+                type=int,
+            ),
             selected_tags={t.id
                            for t in self._get_selected_tags()},
         )
@@ -310,7 +312,9 @@ class TagPanel(AdminPanel):
             tag_base,
             endpoint='tag_edit',
             view_func=TagEdit.as_view(
-                'tag_edit', view_endpoint=panel_endpoint),
+                'tag_edit',
+                view_endpoint=panel_endpoint,
+            ),
         )
 
         add_url_rule(

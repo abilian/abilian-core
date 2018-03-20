@@ -77,11 +77,8 @@ def test_items(db, session):
     query = PriorityVoc.query \
         .active() \
         .order_by(PriorityVoc.position.asc())
-    assert (
-        [
-            i.label for i in query.values(PriorityVoc.label)
-        ] == default_ordering
-    )
+    assert ([i.label for i in query.values(PriorityVoc.label)
+            ] == default_ordering)
 
     # test db-side constraint for non-empty labels
     with raises(

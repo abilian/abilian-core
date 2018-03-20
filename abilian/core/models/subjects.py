@@ -75,8 +75,7 @@ administratorship = Table(
 )
 
 _RANDOM_PASSWORD_CHARS = (
-    string.ascii_letters + string.digits + string.punctuation
-)
+    string.ascii_letters + string.digits + string.punctuation)
 
 
 def gen_random_password(length=15):
@@ -156,12 +155,10 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     __indexation_args__ = {}
     __indexation_args__.update(Indexable.__indexation_args__)
     index_to = __indexation_args__.setdefault('index_to', ())
-    __indexation_args__['index_to'] += (
-        (
-            'name',
-            ('name', 'name_prefix', 'text'),
-        ),
-    )
+    __indexation_args__['index_to'] += ((
+        'name',
+        ('name', 'name_prefix', 'text'),
+    ),)
     del index_to
 
     def has_role(self, role, context=None):

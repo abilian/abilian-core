@@ -63,8 +63,7 @@ class SettingsService(Service):
         except KeyError:
             if not type_:
                 raise ValueError(
-                    'tried to set a new key without specifiying its type',
-                )
+                    'tried to set a new key without specifiying its type',)
             s = Setting(key=key, type=type_)
 
         # Always add to session. This covers the case delete(key);set(key).

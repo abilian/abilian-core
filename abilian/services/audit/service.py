@@ -157,8 +157,7 @@ class AuditService(Service):
             if not relation:
                 raise ValueError(
                     'Invalid relation: "{}", invalid attribute is "{}"'
-                    ''.format(related_attr, attr),
-                )
+                    ''.format(related_attr, attr),)
 
             mapper = relation.mapper
             if inferred_backref is not None:
@@ -182,8 +181,7 @@ class AuditService(Service):
                     'on __auditable_entity__'.format(
                         cls=entity_class.__name__,
                         related_attr=related_attr,
-                    ),
-                )
+                    ),)
 
         meta.related = related_path
         meta.backref_attr = backref_attr
@@ -248,8 +246,7 @@ class AuditService(Service):
                             entries.append(entry)
                     except BaseException:
                         if current_app.config.get(
-                                'DEBUG',
-                        ) or current_app.config.get('TESTING'):
+                                'DEBUG',) or current_app.config.get('TESTING'):
                             raise
                         log.error(
                             'Exception during entry creation',

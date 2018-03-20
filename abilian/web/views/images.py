@@ -29,8 +29,7 @@ DEFAULT_AVATAR = Path(
     pkg_resources.resource_filename(
         'abilian.web',
         'resources/img/avatar-default.png',
-    ),
-)
+    ),)
 DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
 
 
@@ -51,8 +50,7 @@ class BaseImageView(BaseFileDownload):
             size = int(size)
         except ValueError:
             raise BadRequest(
-                'Invalid value for "s": {:d}. Not an integer.'.format(size),
-            )
+                'Invalid value for "s": {:d}. Not an integer.'.format(size),)
 
         if self.max_size is not None and size > self.max_size:
             raise BadRequest('Size too large: {:d} (max: {:d})'.format(

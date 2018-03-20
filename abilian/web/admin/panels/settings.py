@@ -20,10 +20,8 @@ from ..panel import AdminPanel
 
 class Key(object):
 
-    template = Template(
-        '<input type="text" class="form-control" '
-        'name="{{ key.id }}" value="{{ config[key.id] }}" />',
-    )
+    template = Template('<input type="text" class="form-control" '
+                        'name="{{ key.id }}" value="{{ config[key.id] }}" />',)
 
     def __init__(self, id, type_, label=None, description=None):
         self.id = id
@@ -52,10 +50,8 @@ class SessionLifeTimeKey(Key):
             'PERMANENT_SESSION_LIFETIME',
             'timedelta',
             label=_l('Session lifetime'),
-            description=_l(
-                'Session expiration time after last visit. '
-                'When session is expired user must login again.',
-            ),
+            description=_l('Session expiration time after last visit. '
+                           'When session is expired user must login again.',),
         )
 
     def value_from_request(self):

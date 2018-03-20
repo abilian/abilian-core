@@ -110,10 +110,8 @@ class SAAdapter(SchemaAdapter):
                 field_name, field_def = field_name
 
             if field_name not in schema:
-                if (
-                    field_name not in field_definitions or
-                    field_definitions[field_name] is False
-                ):
+                if (field_name not in field_definitions or
+                        field_definitions[field_name] is False):
                     field_definitions[field_name] = field_def
 
             # attrgetter offers dotted name support. Useful for attributes on

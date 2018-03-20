@@ -47,8 +47,9 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
     @property
     def column_names(self):
-        return [col.name for col in class_mapper(
-            self.__class__).mapped_table.c]
+        return [
+            col.name for col in class_mapper(self.__class__,).mapped_table.c
+        ]
 
     def to_dict(self):
         if hasattr(self, "__exportable__"):

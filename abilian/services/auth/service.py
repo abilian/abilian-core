@@ -56,16 +56,14 @@ user_menu = NavGroup(
         url_args=_user_photo_icon_args,
     ),
     condition=is_authenticated,
-    items=(
-        NavItem(
-            'user',
-            'logout',
-            title=_l('Logout'),
-            icon='log-out',
-            url=lambda context: url_for('login.logout'),
-            divider=True,
-        ),
-    ),
+    items=(NavItem(
+        'user',
+        'logout',
+        title=_l('Logout'),
+        icon='log-out',
+        url=lambda context: url_for('login.logout'),
+        divider=True,
+    ),),
 )
 
 _ACTIONS = (
@@ -215,7 +213,7 @@ class AuthService(Service):
         # the database too much.
         now = datetime.utcnow()
         if (user.last_active is None or
-                (now - user.last_active) > timedelta(minutes=1)):
+            (now - user.last_active) > timedelta(minutes=1)):
             user.last_active = now
             db.session.add(user)
             db.session.commit()

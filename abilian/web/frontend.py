@@ -50,10 +50,8 @@ class ModuleAction(Action):
 
     def __init__(self, module, group, name, *args, **kwargs):
         self.group = group
-        super(ModuleAction, self).__init__(
-            module.action_category, name, *args,
-            **kwargs
-        )
+        super(ModuleAction, self).__init__(module.action_category, name, *args,
+                                           **kwargs)
 
     def pre_condition(self, context):
         module = actions.context.get('module')
@@ -172,8 +170,7 @@ class BaseEntityView(ModuleView):
             view_template=self.module.view_template,
             view=self,
             module=self.module,
-            **self.module.view_options
-        )
+            **self.module.view_options)
 
     def check_access(self):
         return self._check_view_permission(self)
@@ -217,8 +214,8 @@ EDIT_ACTION = Action(
     button='default',
     condition=lambda ctx: ctx['view'].can_edit,
     icon=FAIcon('edit'),
-    url=lambda ctx: url_for('.entity_edit',
-                            **{ctx['view'].pk: ctx['view'].obj.id}),
+    url=
+    lambda ctx: url_for('.entity_edit', **{ctx['view'].pk: ctx['view'].obj.id}),
 )
 
 DELETE_ACTION = Action(
@@ -422,12 +419,10 @@ class Module(object):
     view_options = None
     related_views = []  # type: List[RelatedView]
     blueprint = None
-    search_criterions = (
-        search.TextSearchCriterion(
-            "name",
-            attributes=('name', 'nom'),
-        ),
-    )
+    search_criterions = (search.TextSearchCriterion(
+        "name",
+        attributes=('name', 'nom'),
+    ),)
     # used mostly to change datatable search_label
     tableview_options = {}  # type: ignore
     _urls = []  # type: List[Tuple]
@@ -471,8 +466,7 @@ class Module(object):
             'entity_view',
             self.view_cls,
             Form=self.view_form_class,
-            **kw
-        )
+            **kw)
         view_endpoint = self.endpoint + '.entity_view'
 
         self._setup_view(
@@ -481,8 +475,7 @@ class Module(object):
             self.edit_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
-            **kw
-        )
+            **kw)
 
         self._setup_view(
             "/new",
@@ -491,8 +484,7 @@ class Module(object):
             Form=self.edit_form_class,
             chain_create_allowed=self.view_new_save_and_add,
             view_endpoint=view_endpoint,
-            **kw
-        )
+            **kw)
 
         self._setup_view(
             "/<int:entity_id>/delete",
@@ -500,8 +492,7 @@ class Module(object):
             self.delete_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
-            **kw
-        )
+            **kw)
 
         self._setup_view("/json", 'list_json', ListJson, module=self)
 
@@ -516,8 +507,8 @@ class Module(object):
 
         # copy criterions instances; without that they may be shared by
         # subclasses
-        self.search_criterions = copy.deepcopy(
-            self.__class__.search_criterions)
+        self.search_criterions = copy.deepcopy(self.__class__.search_criterions,
+                                              )
 
         for sc in self.search_criterions:
             sc.model = self.managed_class
@@ -588,7 +579,10 @@ class Module(object):
 
         # Create blueprint and register rules
         self.blueprint = Blueprint(
-            self.endpoint, __name__, url_prefix=self.url)
+            self.endpoint,
+            __name__,
+            url_prefix=self.url,
+        )
 
         for url, name, methods in self._urls:
             self.blueprint.add_url_rule(
@@ -616,8 +610,7 @@ class Module(object):
 
     def _add_breadcrumb(self, endpoint, values):
         g.breadcrumb.append(
-            BreadcrumbItem(label=self.label, url=Endpoint('.list_view')),
-        )
+            BreadcrumbItem(label=self.label, url=Endpoint('.list_view')),)
 
     @property
     def base_query(self):
@@ -873,8 +866,7 @@ class CRUDApp(object):
         if name is None:
             name = self.__class__.__module__
             modules_signature = ','.join(
-                str(module.id) for module in self.modules
-            )
+                str(module.id) for module in self.modules)
             name = name + '-' + modules_signature
 
         self.name = name

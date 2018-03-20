@@ -293,14 +293,12 @@ PERMISSIONS_ATTR = '__permissions__'
 
 class PermissionAssignment(db.Model):
     __tablename__ = 'permission_assignment'
-    __table_args__ = (
-        UniqueConstraint(
-            'permission',
-            'role',
-            'object_id',
-            name='assignments_unique',
-        ),
-    )
+    __table_args__ = (UniqueConstraint(
+        'permission',
+        'role',
+        'object_id',
+        name='assignments_unique',
+    ),)
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     permission = Column(PermissionType, index=True, nullable=False)
@@ -330,10 +328,8 @@ class PermissionAssignment(db.Model):
         if not isinstance(other, PermissionAssignment):
             return False
 
-        return (
-            self.permission == other.permission and
-            self.role == other.role and self.object == other.object
-        )
+        return (self.permission == other.permission and
+                self.role == other.role and self.object == other.object)
 
     def __neq__(self, other):
         return not self.__eq__(other)
@@ -403,8 +399,7 @@ class SecurityAudit(db.Model):
             "  (user_id IS NULL AND group_id IS NOT NULL)))"
             "))".format(grant=SET_INHERIT, revoke=UNSET_INHERIT),
             name="securityaudit_ck_user_xor_group",
-        ),
-    )
+        ),)
 
     id = Column(Integer, primary_key=True)
     happened_at = Column(DateTime, default=datetime.utcnow, index=True)
@@ -415,8 +410,7 @@ class SecurityAudit(db.Model):
             SET_INHERIT,
             UNSET_INHERIT,
             name='securityaudit_enum_op',
-        ),
-    )
+        ),)
     role = Column(RoleType)
 
     manager_id = Column(Integer, ForeignKey(User.id))

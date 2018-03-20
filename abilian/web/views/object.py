@@ -51,18 +51,14 @@ class BaseObjectView(View):
     #: generic templates with a custom base
     base_template = "base.html"
 
-    def __init__(
-        self, Model=None, pk=None, base_template=None, *args,
-        **kwargs
-    ):
+    def __init__(self, Model=None, pk=None, base_template=None, *args,
+                 **kwargs):
         View.__init__(self, *args, **kwargs)
         cls = self.__class__
         self.pk = pk if pk is not None else cls.pk
         self.Model = Model if Model is not None else cls.Model
-        self.base_template = (
-            base_template if base_template is not None else
-            cls.base_template
-        )
+        self.base_template = (base_template if base_template is not None else
+                              cls.base_template)
 
     def prepare_args(self, args, kwargs):
         args, kwargs = self.init_object(args, kwargs)
@@ -131,15 +127,13 @@ class ObjectView(BaseObjectView):
     #: form instance for this view
     form = None
 
-    def __init__(
-        self,
-        Model=None,
-        pk=None,
-        Form=None,
-        template=None,
-        *args,
-        **kwargs
-    ):
+    def __init__(self,
+                 Model=None,
+                 pk=None,
+                 Form=None,
+                 template=None,
+                 *args,
+                 **kwargs):
         super(ObjectView, self).__init__(Model, pk, *args, **kwargs)
         cls = self.__class__
         self.Form = Form if Form is not None else cls.Form
@@ -223,20 +217,17 @@ class ObjectEdit(ObjectView):
 
     view_endpoint = None
 
-    def __init__(
-        self,
-        Model=None,
-        pk=None,
-        Form=None,
-        template=None,
-        view_endpoint=None,
-        message_success=None,
-        *args,
-        **kwargs
-    ):
+    def __init__(self,
+                 Model=None,
+                 pk=None,
+                 Form=None,
+                 template=None,
+                 view_endpoint=None,
+                 message_success=None,
+                 *args,
+                 **kwargs):
         ObjectView.__init__(
-            self, Model, pk, Form, template=template, *args, **kwargs
-        )
+            self, Model, pk, Form, template=template, *args, **kwargs)
         if view_endpoint is not None:
             self.view_endpoint = view_endpoint
 
@@ -294,11 +285,8 @@ class ObjectEdit(ObjectView):
                                      ''.format(action.encode('utf-8')))
                 break
         else:
-            raise ValueError(
-                'Unknown action: "{}"'.format(
-                    action.encode('utf-8'),
-                ),
-            )
+            raise ValueError('Unknown action: "{}"'.format(
+                action.encode('utf-8'),),)
 
         self.action = action
         self.button = button
@@ -603,8 +591,7 @@ class JSONBaseSearch(JSONView):
     def data(self, q, *args, **kwargs):
         if self.minimum_input_length and len(q) < self.minimum_input_length:
             msg = 'Minimum query length is {:d}'.format(
-                self.minimum_input_length,
-            )
+                self.minimum_input_length,)
             raise BadRequest(msg)
 
         results = []

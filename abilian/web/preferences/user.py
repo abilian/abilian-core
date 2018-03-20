@@ -69,8 +69,7 @@ class UserPreferencesForm(Form):
         data = field.data
         filename = data.filename
         valid = any(
-            filename.lower().endswith(ext) for ext in ('.png', '.jpg', '.jpeg')
-        )
+            filename.lower().endswith(ext) for ext in ('.png', '.jpg', '.jpeg'))
 
         if not valid:
             raise ValidationError(
@@ -126,8 +125,7 @@ class UserPreferencesPanel(PreferencePanel):
             data['photo'] = photo
 
         form = UserPreferencesForm(
-            obj=g.user, formdata=None, prefix=self.id, **data
-        )
+            obj=g.user, formdata=None, prefix=self.id, **data)
         if form['locale'].data is None:
             form['locale'].data = get_default_locale()
 
@@ -148,8 +146,7 @@ class UserPreferencesPanel(PreferencePanel):
         if form.validate():
             if request.csrf_failed:
                 current_app.extensions[
-                    'csrf-handler'
-                ].flash_csrf_failed_message()
+                    'csrf-handler'].flash_csrf_failed_message()
                 return render_template('preferences/user.html', form=form)
 
             del form.confirm_password

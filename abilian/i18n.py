@@ -91,8 +91,7 @@ _n = ngettext
 
 #: accepted languages codes
 VALID_LANGUAGES_CODE = frozenset(
-    lang for lang in locale_identifiers() if len(lang) == 2
-)
+    lang for lang in locale_identifiers() if len(lang) == 2)
 
 
 def get_default_locale():
@@ -133,11 +132,9 @@ def country_choices(first=None, default_country_first=True):
     :param first: Country code to be placed at the top
     """
     locale = _get_locale()
-    territories = [
-        (code, name)
-        for code, name in six.iteritems(locale.territories)
-        if len(code) == 2
-    ]  # skip 3-digit regions
+    territories = [(code, name)
+                   for code, name in six.iteritems(locale.territories)
+                   if len(code) == 2]  # skip 3-digit regions
 
     if first is None and default_country_first:
         first = default_country()
@@ -159,10 +156,8 @@ def supported_app_locales():
     """
     locale = _get_locale()
     codes = current_app.config['BABEL_ACCEPT_LANGUAGES']
-    return (
-        (Locale.parse(code), locale.languages.get(code, code))
-        for code in codes
-    )
+    return ((Locale.parse(code), locale.languages.get(code, code))
+            for code in codes)
 
 
 def timezones_choices():
@@ -215,8 +210,7 @@ class Babel(BabelBase):
             if not os.access(text_type(path), os.R_OK):
                 self.app.logger.warning(
                     "Babel translations: read access not allowed {}, skipping."
-                    "".format(repr(text_type(path).encode('utf-8'))),
-                )
+                    "".format(repr(text_type(path).encode('utf-8'))),)
                 continue
 
             self._translations_paths.append((text_type(path), domain))
@@ -322,8 +316,7 @@ def localeselector():
     # Otherwise, try to guess the language from the user accept header the browser
     # transmits.  By default we support en/fr. The best match wins.
     return request.accept_languages.best_match(
-        current_app.config['BABEL_ACCEPT_LANGUAGES'],
-    )
+        current_app.config['BABEL_ACCEPT_LANGUAGES'],)
 
 
 def timezoneselector():

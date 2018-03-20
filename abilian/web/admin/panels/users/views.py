@@ -63,12 +63,10 @@ class JsonUsersList(base.JSONView):
             5: [User.last_active],
         }
         columns = list(SORT_COLS.get(sort_col, []))
-        columns.extend(
-            [
-                func.lower(User.last_name),
-                func.lower(User.first_name),
-            ],
-        )
+        columns.extend([
+            func.lower(User.last_name),
+            func.lower(User.first_name),
+        ],)
 
         direction = asc if sort_dir == 'asc' else desc
         order_by = list(map(direction, columns))

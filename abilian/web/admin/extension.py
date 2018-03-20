@@ -104,8 +104,7 @@ class Admin(object):
         if self.app:
             raise ValueError(
                 'Extension already initialized for app, cannot add more'
-                ' panel',
-            )
+                ' panel',)
 
         self.panels.append(panel)
         panel.admin = self
@@ -127,8 +126,7 @@ class Admin(object):
             self._panels_endpoints['admin.' + post_endpoint] = panel
 
         panel.install_additional_rules(
-            self.get_panel_url_rule_adder(panel, rule, endpoint),
-        )
+            self.get_panel_url_rule_adder(panel, rule, endpoint),)
 
         nav = NavItem(
             'admin:panel',
@@ -151,11 +149,8 @@ class Admin(object):
         def add_url_rule(rule, endpoint=None, view_func=None, **kwargs):
             if not rule:
                 # '' is already used for panel get/post
-                raise ValueError(
-                    'Invalid additional url rule: {}'.format(
-                        repr(rule),
-                    ),
-                )
+                raise ValueError('Invalid additional url rule: {}'.format(
+                    repr(rule),),)
 
             if endpoint is None:
                 endpoint = _endpoint_from_view_func(view_func)
@@ -168,8 +163,7 @@ class Admin(object):
                 base_url + rule,
                 endpoint=endpoint,
                 view_func=view_func,
-                **kwargs
-            )
+                **kwargs)
 
         return add_url_rule
 

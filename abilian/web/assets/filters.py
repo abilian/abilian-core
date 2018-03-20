@@ -25,8 +25,7 @@ class ImportCSSFilter(Filter):
 
     logger = logging.getLogger(__name__ + '.ImportCssFilter')
     _IMPORT_RE = re.compile(
-        '''@import ("|')(?P<filename>(/?[-a-zA-Z0-9_\.]+)+\.css)("|');''',
-    )
+        '''@import ("|')(?P<filename>(/?[-a-zA-Z0-9_\.]+)+\.css)("|');''',)
 
     def input(self, _in, out, **kwargs):
         filepath = kwargs['source_path']
@@ -286,8 +285,7 @@ class Less(ExternalTool):
             return url
 
         src_path = os.path.normpath(
-            os.path.abspath(os.path.join(cur_path, url)),
-        )
+            os.path.abspath(os.path.join(cur_path, url)),)
         possible_paths = [
             p for p in self.ctx.url_mapping.keys() if src_path.startswith(p)
         ]

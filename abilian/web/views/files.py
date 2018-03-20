@@ -59,8 +59,7 @@ class BaseFileDownload(View):
                 # to maybe 1 year from now.
                 # Check the code that has generated this url!
                 raise BadRequest('File version marker is missing ({}=?)'.format(
-                    repr(self.expire_vary_arg),
-                ))
+                    repr(self.expire_vary_arg),))
 
         args, kwargs = super(BaseFileDownload, self).prepare_args(args, kwargs)
         kwargs['attach'] = request.args.get(
@@ -103,8 +102,7 @@ class BaseFileDownload(View):
             response.cache_control.public = False
             response.cache_control.private = True
             response.cache_control.max_age = int(
-                self.expire_offset.total_seconds(),
-            )
+                self.expire_offset.total_seconds(),)
             response.expires = utc_dt(datetime.utcnow() + self.expire_offset)
 
 

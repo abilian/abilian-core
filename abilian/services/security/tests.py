@@ -460,14 +460,12 @@ def test_query_entity_with_permission(session):
     security.grant_role(user, Writer)
     session.flush()
 
-    assert base_query.filter(
-        get_filter(
-            READ,
-            user=user),
-    ).all() == [obj_reader]
-    assert base_query.filter(
-        get_filter(WRITE, user=user),
-    ).all() == [obj_writer]
+    assert base_query.filter(get_filter(
+        READ,
+        user=user,
+    ),).all() == [obj_reader]
+    assert base_query.filter(get_filter(WRITE, user=user),
+                            ).all() == [obj_writer]
 
     # admin role has all permissions
     # 1: local role

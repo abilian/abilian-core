@@ -45,12 +45,18 @@ intersphinx_mapping = {
     'python': ('http://docs.python.org/2.7/', 'inventories/python27.inv'),
     'flask': ('http://flask.pocoo.org/docs/', 'inventories/flask.inv'),
     'babel': ('http://babel.pocoo.org/docs/', 'inventories/babel.inv'),
-    'flaskbabel': ('http://pythonhosted.org/Flask-Babel/',
-                   'inventories/flask_babel.inv'),
-    'sqlalchemy': ('http://docs.sqlalchemy.org/en/rel_1_0/',
-                   'inventories/sqlalchemy_1_0.inv'),
-    'webassets': ('http://webassets.readthedocs.org/en/latest',
-                  'inventories/webassets.inv'),
+    'flaskbabel': (
+        'http://pythonhosted.org/Flask-Babel/',
+        'inventories/flask_babel.inv',
+    ),
+    'sqlalchemy': (
+        'http://docs.sqlalchemy.org/en/rel_1_0/',
+        'inventories/sqlalchemy_1_0.inv',
+    ),
+    'webassets': (
+        'http://webassets.readthedocs.org/en/latest',
+        'inventories/webassets.inv',
+    ),
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -214,8 +220,12 @@ htmlhelp_basename = 'abiliandoc'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [('index', 'abilian-core.tex', u'Abilian Core Documentation',
-                    u'Stefane Fermigier', 'manual'),]
+latex_documents = [
+    (
+        'index', 'abilian-core.tex', u'Abilian Core Documentation',
+        u'Stefane Fermigier', 'manual',
+    ),
+]
 
 # From Flask doc
 latex_domain_indices = False
@@ -223,7 +233,7 @@ latex_elements = {
     'fontpkg': r'\usepackage{mathpazo}',
     'papersize': 'a4paper',
     'pointsize': '12pt',
-    'preamble': r'\usepackage{flaskstyle}'
+    'preamble': r'\usepackage{flaskstyle}',
 }
 latex_toplevel_sectioning = "part"
 latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
@@ -252,8 +262,10 @@ latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [('index', 'abilian', u'Abilian Documentation',
-              [u'Stefane Fermigier'], 1)]
+man_pages = [(
+    'index', 'abilian', u'Abilian Documentation',
+    [u'Stefane Fermigier'], 1,
+)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -264,8 +276,10 @@ man_pages = [('index', 'abilian', u'Abilian Documentation',
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'Abilian', u'Abilian Documentation', u'Stefane Fermigier',
-     'Abilian', 'One line description of project.', 'Miscellaneous'),
+    (
+        'index', 'Abilian', u'Abilian Documentation', u'Stefane Fermigier',
+        'Abilian', 'One line description of project.', 'Miscellaneous',
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.

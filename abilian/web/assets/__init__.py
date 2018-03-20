@@ -57,18 +57,15 @@ BOOTSTRAP_JS = Bundle('bootstrap/js/bootstrap.js')
 
 BOOTSTRAP_DATEPICKER_LESS = 'bootstrap-datepicker/less/datepicker.less'
 BOOTSTRAP_DATEPICKER_JS = Bundle(
-    'bootstrap-datepicker/js/bootstrap-datepicker.js',
-)
+    'bootstrap-datepicker/js/bootstrap-datepicker.js',)
 
 BOOTSTRAP_SWITCH_LESS = Bundle(
-    'bootstrap-switch/less/bootstrap3/bootstrap-switch.less',
-)
+    'bootstrap-switch/less/bootstrap3/bootstrap-switch.less',)
 BOOTSTRAP_SWITCH_JS = Bundle('bootstrap-switch/bootstrap-switch.js')
 
 BOOTSTRAP_TIMEPICKER_LESS = Bundle('bootstrap-timepicker/less/timepicker.less')
 BOOTSTRAP_TIMEPICKER_JS = Bundle(
-    'bootstrap-timepicker/js/bootstrap-timepicker.js',
-)
+    'bootstrap-timepicker/js/bootstrap-timepicker.js',)
 
 DATATABLE_LESS = Bundle(
     'datatables/css/jquery.dataTables.css',

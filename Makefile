@@ -119,8 +119,8 @@ lint-bandit:
 format: format-py format-js
 
 format-py:
-	-add-trailing-comma `find abilian -name '*.py'` demo/*.py *.py
-	-yapf --style google -r -i abilian demo *.py
+	# -add-trailing-comma `find abilian -name '*.py'` demo/*.py *.py
+	-yapf -r -i abilian demo *.py
 	# autopep8 -j3 -r --in-place -a --ignore E711 abilian demo *.py
 	isort -rc abilian demo *.py
 

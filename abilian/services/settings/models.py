@@ -78,14 +78,11 @@ class Setting(db.Model):
 
     @type.setter
     def type(self, type_):
-        if not (
-            type_ in self.transformers.encoders and
-            type_ in self.transformers.decoders
-        ):
+        if not (type_ in self.transformers.encoders and
+                type_ in self.transformers.decoders):
             raise ValueError(
                 'Invalid type "{}": no encoder and/or decoder registered'.
-                format(type_),
-            )
+                format(type_),)
         self._type = type_
 
     _value = sa.Column('value', sa.Text())

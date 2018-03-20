@@ -63,7 +63,10 @@ def send_file_from_directory(filename, directory, app=None):
         app = current_app
     cache_timeout = app.get_send_file_max_age(filename)
     return send_from_directory(
-        directory, filename, cache_timeout=cache_timeout)
+        directory,
+        filename,
+        cache_timeout=cache_timeout,
+    )
 
 
 def capture_stream_errors(logger, msg):
@@ -85,8 +88,7 @@ def capture_stream_errors(logger, msg):
             # this is for developpers convenience. The debugger middleware doesn't
             # work when using streamed responses.
             should_pdb = current_app.debug and session.get(
-                'pdb_streamed_responses',
-            )
+                'pdb_streamed_responses',)
             try:
                 generator = fun(*args, **kwargs)
                 for chunk in generator:

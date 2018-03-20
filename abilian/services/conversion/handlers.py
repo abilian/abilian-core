@@ -303,9 +303,8 @@ class UnoconvPdfHandler(Handler):
     @property
     def unoconv_version(self):
         # Hack for my Mac, FIXME later
-        if Path(
-            "/Applications/LibreOffice.app/Contents/program/python",
-        ).exists():
+        if Path("/Applications/LibreOffice.app/Contents/program/python",
+               ).exists():
             cmd = [
                 '/Applications/LibreOffice.app/Contents/program/python',
                 '/usr/local/bin/unoconv',
@@ -326,9 +325,8 @@ class UnoconvPdfHandler(Handler):
 
             args = ['-f', 'pdf', '-o', out_fn, in_fn]
             # Hack for my Mac, FIXME later
-            if Path(
-                "/Applications/LibreOffice.app/Contents/program/python",
-            ).exists():
+            if Path("/Applications/LibreOffice.app/Contents/program/python",
+                   ).exists():
                 cmd = [
                     '/Applications/LibreOffice.app/Contents/program/python',
                     '/usr/local/bin/unoconv',
@@ -367,8 +365,7 @@ class UnoconvPdfHandler(Handler):
 
                     self._process = None
                     raise ConversionError(
-                        "Conversion timeout ({})".format(timeout),
-                    )
+                        "Conversion timeout ({})".format(timeout),)
 
                 converted = open(out_fn).read()
                 return converted
@@ -474,8 +471,7 @@ class LibreOfficePdfHandler(Handler):
 
                     self._process = None
                     raise ConversionError(
-                        "Conversion timeout ({})".format(timeout),
-                    )
+                        "Conversion timeout ({})".format(timeout),)
 
                 out_fn = os.path.splitext(in_fn)[0] + ".pdf"
                 converted = open(out_fn, 'rb').read()

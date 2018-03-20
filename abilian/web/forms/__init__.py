@@ -72,15 +72,13 @@ class FormPermissions(object):
         elif isinstance(default, dict):
             if 'default' not in default:
                 raise ValueError(
-                    '`default` parameter must have a "default" key',
-                )
+                    '`default` parameter must have a "default" key',)
         elif callable(default):
             default = {'default': default}
         else:
             raise ValueError(
                 "No valid value for `default`. Use a Role, an iterable "
-                "of Roles, a callable, or a dict.",
-            )
+                "of Roles, a callable, or a dict.",)
 
         self.default = default
         self.form = dict()
