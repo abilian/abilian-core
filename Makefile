@@ -154,6 +154,7 @@ clean:
 	find . -name abilian.db -delete
 	find . -type d -empty -delete
 	rm -rf *.egg-info *.egg .coverage .eggs .cache .mypy_cache
+	rm -rf .pytest_cache .pytest
 	rm -rf docs/_build docs/cache docs/tmp
 	rm -rf $(SRC)/static/gen
 	rm -rf dist build
