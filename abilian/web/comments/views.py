@@ -100,7 +100,8 @@ class CommentEditView(BaseCommentView, ObjectEdit):
                 user_id=current_user.id,
                 user=text_type(current_user),
                 date=utc_dt(datetime.utcnow()).isoformat(),
-            ),)
+            ),
+        )
         self.obj.meta.changed()
 
 

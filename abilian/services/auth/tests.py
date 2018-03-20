@@ -26,8 +26,8 @@ def test_get_redirect_target(app, app_context):
     # test "next" from referer
     referrer = url_root + '/some/path'
     with app.test_request_context(
-            form_url(),
-            headers=[('Referer', referrer)],
+        form_url(),
+        headers=[('Referer', referrer)],
     ):
         assert get_redirect_target() == referrer
 
@@ -36,8 +36,8 @@ def test_get_redirect_target(app, app_context):
     # -> redirect(next = forgot password form) -> ...
     referrer = url_root + url_for('login.forgotten_pw')
     with app.test_request_context(
-            form_url(),
-            headers=[('Referer', referrer)],
+        form_url(),
+        headers=[('Referer', referrer)],
     ):
         assert get_redirect_target() is None
 

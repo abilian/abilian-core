@@ -76,7 +76,8 @@ class TagCriterion(BaseCriterion):
                     entity_tag_tbl.c.entity_id == self.model.id,
                     entity_tag_tbl.c.tag_id.in_(t.id for t in tags),
                 ),
-            ),)
+            ),
+        )
         return query.filter(cond)
 
     @property

@@ -145,7 +145,8 @@ class BaseTestCase(TestCase):
             tempfile.mkdtemp(
                 prefix='tmp-py-unittest-',
                 suffix='-' + cls.__name__,
-            ),)
+            ),
+        )
         cls.TEST_INSTANCE_PATH = str(tmp_dir)
         for p in (tmp_dir / 'tmp', tmp_dir / 'cache', tmp_dir / 'data'):
             p.mkdir()
@@ -201,14 +202,19 @@ class BaseTestCase(TestCase):
             username = self.db.engine.url.username or getpass.getuser()
             with self.db.engine.connect() as conn:
                 with conn.begin():
-                    conn.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(
-                        self.__pg_schema,))
+                    conn.execute(
+                        'DROP SCHEMA IF EXISTS {} CASCADE'.format(
+                            self.__pg_schema,
+                        )
+                    )
                     conn.execute('CREATE SCHEMA {}'.format(self.__pg_schema))
-                    conn.execute('SET search_path TO {}'.format(
-                        self.__pg_schema,),)
+                    conn.execute(
+                        'SET search_path TO {}'.format(self.__pg_schema,),
+                    )
                     conn.execute(
                         'ALTER ROLE {username} SET search_path TO {schema}'
-                        ''.format(username=username, schema=self.__pg_schema),)
+                        ''.format(username=username, schema=self.__pg_schema),
+                    )
                 conn.execute('COMMIT')
 
         self.app.create_db()
@@ -227,10 +233,14 @@ class BaseTestCase(TestCase):
                     with conn2.begin():
                         conn2.execute(
                             'ALTER ROLE {username} SET search_path TO public'
-                            ''.format(username=username),)
+                            ''.format(username=username),
+                        )
                         conn2.execute('SET search_path TO public')
-                        conn2.execute('DROP SCHEMA IF EXISTS {} CASCADE'.format(
-                            self.__pg_schema,))
+                        conn2.execute(
+                            'DROP SCHEMA IF EXISTS {} CASCADE'.format(
+                                self.__pg_schema,
+                            )
+                        )
                     conn2.execute('COMMIT')
                 del self.__pg_schema
             else:
@@ -273,13 +283,16 @@ class BaseTestCase(TestCase):
         """For login methods: perform checks to avoid using login methods
         whereas application will not perform auth or security checks."""
         if self.app.config.get('NO_LOGIN'):
-            raise RuntimeError('login is useless when "NO_LOGIN" is set. '
-                               'Fix testcase.',)
+            raise RuntimeError(
+                'login is useless when "NO_LOGIN" is set. '
+                'Fix testcase.',
+            )
 
         if not self.app.services['security'].running:
             raise RuntimeError(
                 'trying to use login in test but security service is '
-                'not running. Fix testcase.',)
+                'not running. Fix testcase.',
+            )
 
     def login(self, user, remember=False, force=False):
         """Perform user login for `user`, so that code needing a logged-in user
@@ -297,7 +310,8 @@ class BaseTestCase(TestCase):
         success = login_user(user, remember=remember, force=force)
         if not success:
             raise ValueError(
-                'User is not active, cannot login; or use force=True',)
+                'User is not active, cannot login; or use force=True',
+            )
 
         class LoginContext(object):
 

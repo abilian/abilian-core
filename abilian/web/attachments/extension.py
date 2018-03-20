@@ -72,9 +72,9 @@ class AttachmentsManager(object):
     macros_template = 'macros/attachment.html'
 
     def __init__(
-            self,
-            Form=AttachmentForm,
-            macros_template='macros/attachment_default.html',
+        self,
+        Form=AttachmentForm,
+        macros_template='macros/attachment_default.html',
     ):
         self.Form = Form
         self.macros_template = macros_template
@@ -86,7 +86,8 @@ class AttachmentsManager(object):
     @property
     def macros(self):
         default_template = current_app.jinja_env.get_template(
-            _DEFAULT_TEMPLATE,)
+            _DEFAULT_TEMPLATE,
+        )
         template = current_app.jinja_env.get_template(self.macros_template)
         default = default_template.module
         m = template.module

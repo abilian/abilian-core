@@ -54,7 +54,8 @@ class JSONUserSearch(JSONView):
                 sa.sql.or_(
                     lower(User.first_name).like(part + "%"),
                     lower(User.last_name).like(part + "%"),
-                ),)
+                ),
+            )
 
         filters = sa.sql.and_(*filters) if len(filters) > 1 else filters[0]
 
@@ -171,8 +172,10 @@ class AuditPanel(AdminPanel):
             audit_q = after_query(base_audit_q, AuditEntry, after)
             security_q = after_query(base_security_q, SecurityAudit, after)
         else:
-            before = (datetime.strptime(before, '%Y-%m-%dT%H:%M:%S.%f')
-                      if before else datetime.utcnow())
+            before = (
+                datetime.strptime(before, '%Y-%m-%dT%H:%M:%S.%f')
+                if before else datetime.utcnow()
+            )
             audit_q = before_query(base_audit_q, AuditEntry, before)
             security_q = before_query(base_security_q, SecurityAudit, before)
 
@@ -192,7 +195,9 @@ class AuditPanel(AdminPanel):
                     (AuditEntryPresenter(e) for e in audit_entries),
                     #
                     (SecurityEntryPresenter(e) for e in security_entries),
-                ),),)
+                ),
+            ),
+        )
 
         if after:
             all_entries = all_entries[:LIMIT]
@@ -223,7 +228,8 @@ class AuditPanel(AdminPanel):
             # that isoformat does not include TZ shift (else we should fix strptime
             # above)
             top_date = entries[0][1][0].date.astimezone(pytz.utc).replace(
-                tzinfo=None,)
+                tzinfo=None,
+            )
             lowest_date = entries[-1][1][-1].date \
                 .astimezone(pytz.utc) \
                 .replace(tzinfo=None)
@@ -281,10 +287,14 @@ class AuditPanel(AdminPanel):
 #
 class BaseEntryPresenter(object):
 
-    _USER_FMT = ('<a href="{{ url_for("social.user", user_id=user.id) }}">'
-                 '{{ user.name }}</a>')
-    _GROUP_FMT = ('<a href="{{ url_for("social.group_home", group_id=group.id)'
-                  ' }}">{{ group.name }}</a>')
+    _USER_FMT = (
+        '<a href="{{ url_for("social.user", user_id=user.id) }}">'
+        '{{ user.name }}</a>'
+    )
+    _GROUP_FMT = (
+        '<a href="{{ url_for("social.group_home", group_id=group.id)'
+        ' }}">{{ group.name }}</a>'
+    )
 
     def __init__(self, user, date):
         self.user = user
@@ -348,7 +358,8 @@ class AuditEntryPresenter(BaseEntryPresenter):
                         '<a href="{{ url }}">{{ entity.path or entity.name }}</a>',
                         url=entity_url,
                         entity=e.entity,
-                    ),)
+                    ),
+                )
 
         if e.type == 0:
             msg = _('{user} created {entity_type} {entity_id} "{entity}"')
@@ -365,7 +376,8 @@ class AuditEntryPresenter(BaseEntryPresenter):
                 entity=entity_html,
                 entity_type=e.entity_type.rsplit('.', 1)[-1],
                 entity_id=e.entity_id,
-            ),)
+            ),
+        )
         tmpl = get_template_attribute('admin/_macros.html', 'm_audit_entry')
         return tmpl(self)
 
@@ -443,6 +455,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
                 principal=principal,
                 role=e.role,
                 entity=entity,
-            ),)
+            ),
+        )
         tmpl = get_template_attribute('admin/_macros.html', 'm_security_entry')
         return tmpl(self)

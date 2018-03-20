@@ -98,8 +98,10 @@ class PreferenceService(Service):
     def register_panel(self, panel, app=None):
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
-            raise ValueError("Extension already initialized for app, "
-                             "cannot add more panel",)
+            raise ValueError(
+                "Extension already initialized for app, "
+                "cannot add more panel",
+            )
 
         state.panels.append(panel)
         panel.preferences = self

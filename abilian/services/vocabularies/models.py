@@ -90,8 +90,9 @@ class BaseVocabulary(db.Model):
     )
     position = Column(sa.Integer, nullable=False, unique=True)
 
-    __table_args__ = (sa.CheckConstraint(
-        sa.sql.func.trim(sa.sql.text('label')) != '',),)
+    __table_args__ = (
+        sa.CheckConstraint(sa.sql.func.trim(sa.sql.text('label')) != '',),
+    )
 
     @sa.ext.declarative.declared_attr
     def __mapper_args__(cls):
@@ -105,8 +106,10 @@ class BaseVocabulary(db.Model):
         return self.label
 
     def __repr__(self):
-        tpl = ('<{module}.{cls} id={id} label={label} position={position} '
-               'active={active} default={default} at 0x{addr:x}>')
+        tpl = (
+            '<{module}.{cls} id={id} label={label} position={position} '
+            'active={active} default={default} at 0x{addr:x}>'
+        )
         cls = self.__class__
         return tpl.format(
             module=cls.__module__,
@@ -134,7 +137,8 @@ def _before_insert(mapper, connection, target):
     if target.position is None:
         func = sa.sql.func
         stmt = sa.select(
-            [func.coalesce(func.max(mapper.mapped_table.c.position), -1)],)
+            [func.coalesce(func.max(mapper.mapped_table.c.position), -1)],
+        )
         target.position = connection.execute(stmt).scalar() + 1
 
 

@@ -44,7 +44,8 @@ class _TagsForm(Form):
             tags = getattr(obj, TAGS_ATTR, set())
 
         super(_TagsForm, self).process(
-            formdata=formdata, obj=None, data=data, tags=tags, **kwargs)
+            formdata=formdata, obj=None, data=data, tags=tags, **kwargs
+        )
 
 
 class TagsExtension(object):

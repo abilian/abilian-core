@@ -89,8 +89,10 @@ class AuditService(Service):
     def register_classes(self):
         state = self.app_state
         BaseModel = db.Model
-        all_models = (cls for cls in BaseModel._decl_class_registry.values()
-                      if isclass(cls) and self.is_auditable(cls))
+        all_models = (
+            cls for cls in BaseModel._decl_class_registry.values()
+            if isclass(cls) and self.is_auditable(cls)
+        )
         for cls in all_models:
             self.register_class(cls, app_state=state)
 
@@ -157,7 +159,8 @@ class AuditService(Service):
             if not relation:
                 raise ValueError(
                     'Invalid relation: "{}", invalid attribute is "{}"'
-                    ''.format(related_attr, attr),)
+                    ''.format(related_attr, attr),
+                )
 
             mapper = relation.mapper
             if inferred_backref is not None:
@@ -181,7 +184,8 @@ class AuditService(Service):
                     'on __auditable_entity__'.format(
                         cls=entity_class.__name__,
                         related_attr=related_attr,
-                    ),)
+                    ),
+                )
 
         meta.related = related_path
         meta.backref_attr = backref_attr
@@ -246,7 +250,8 @@ class AuditService(Service):
                             entries.append(entry)
                     except BaseException:
                         if current_app.config.get(
-                                'DEBUG',) or current_app.config.get('TESTING'):
+                            'DEBUG',
+                        ) or current_app.config.get('TESTING'):
                             raise
                         log.error(
                             'Exception during entry creation',
@@ -361,12 +366,12 @@ def format_large_value(value):
 
 
 def get_model_changes(
-        entity_type,
-        year=None,
-        month=None,
-        day=None,
-        hour=None,
-        since=None,
+    entity_type,
+    year=None,
+    month=None,
+    day=None,
+    hour=None,
+    since=None,
 ):
     """Get models modified at the given date with the Audit service.
 

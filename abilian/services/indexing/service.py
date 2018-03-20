@@ -261,15 +261,17 @@ class WhooshIndexService(Service):
                 for name in indexed
                 if name in app_indexed]
 
-    def search(self,
-               q,
-               index='default',
-               fields=None,
-               Models=(),
-               object_types=(),
-               prefix=True,
-               facet_by_type=None,
-               **search_args):
+    def search(
+        self,
+        q,
+        index='default',
+        fields=None,
+        Models=(),
+        object_types=(),
+        prefix=True,
+        facet_by_type=None,
+        **search_args
+    ):
         """Interface to search indexes.
 
         :param q: unparsed search string.
@@ -314,7 +316,8 @@ class WhooshIndexService(Service):
                 roles |= {indexable_role(r) for r in security.get_roles(user)}
 
             filter_q = wq.Or(
-                [wq.Term('allowed_roles_and_users', role) for role in roles],)
+                [wq.Term('allowed_roles_and_users', role) for role in roles],
+            )
             filters.append(filter_q)
 
         object_types = set(object_types)
@@ -354,10 +357,12 @@ class WhooshIndexService(Service):
             search_args['groupedby'] = 'object_type'
             search_args['collapse'] = 'object_type'
             search_args['collapse_limit'] = collapse_limit
-            search_args['limit'] = (search_args['collapse_limit'] * max(
-                len(object_types),
-                1,
-            ))
+            search_args['limit'] = (
+                search_args['collapse_limit'] * max(
+                    len(object_types),
+                    1,
+                )
+            )
 
         with index.searcher(closereader=False) as searcher:
             # 'closereader' is needed, else results cannot by used outside 'with'
@@ -380,13 +385,15 @@ class WhooshIndexService(Service):
 
     def search_for_class(self, query, cls, index='default', **search_args):
         return self.search(
-            query, Models=(fqcn(cls),), index=index, **search_args)
+            query, Models=(fqcn(cls),), index=index, **search_args
+        )
 
     def register_classes(self):
         state = self.app_state
-        classes = (cls for cls in db.Model._decl_class_registry.values()
-                   if isclass(cls) and issubclass(cls, Indexable) and
-                   cls.__indexable__)
+        classes = (
+            cls for cls in db.Model._decl_class_registry.values()
+            if isclass(cls) and issubclass(cls, Indexable) and cls.__indexable__
+        )
         for cls in classes:
             if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)
@@ -435,10 +442,12 @@ class WhooshIndexService(Service):
         created here; this could impose a penalty on the initial commit
         of a model.
         """
-        if (not self.running or
-                session.transaction.nested  # inside a sub-transaction:
-                # not yet written in DB
-                or session is not db.session()):
+        if (
+            not self.running or
+            session.transaction.nested  # inside a sub-transaction:
+            # not yet written in DB
+            or session is not db.session()
+        ):
             # note: we have not tested too far if session is enclosed in a transaction
             # at connection level. For now it's not a standard use case, it would most
             # likely happens during tests (which don't do that for now)

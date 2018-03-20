@@ -91,7 +91,8 @@ _n = ngettext
 
 #: accepted languages codes
 VALID_LANGUAGES_CODE = frozenset(
-    lang for lang in locale_identifiers() if len(lang) == 2)
+    lang for lang in locale_identifiers() if len(lang) == 2
+)
 
 
 def get_default_locale():
@@ -107,8 +108,10 @@ def _get_locale():
 
 def __gettext_territory(code):
     locale = _get_locale()
-    return (locale.territories.get(code) or
-            get_default_locale().territories.get(code))
+    return (
+        locale.territories.get(code) or
+        get_default_locale().territories.get(code)
+    )
 
 
 #: get localized territory name
@@ -189,10 +192,10 @@ class Babel(BabelBase):
         ]
 
     def add_translations(
-            self,
-            module_name,
-            translations_dir='translations',
-            domain='messages',
+        self,
+        module_name,
+        translations_dir='translations',
+        domain='messages',
     ):
         """Add translations from external module.
 
@@ -210,7 +213,8 @@ class Babel(BabelBase):
             if not os.access(text_type(path), os.R_OK):
                 self.app.logger.warning(
                     "Babel translations: read access not allowed {}, skipping."
-                    "".format(repr(text_type(path).encode('utf-8'))),)
+                    "".format(repr(text_type(path).encode('utf-8'))),
+                )
                 continue
 
             self._translations_paths.append((text_type(path), domain))
@@ -316,7 +320,8 @@ def localeselector():
     # Otherwise, try to guess the language from the user accept header the browser
     # transmits.  By default we support en/fr. The best match wins.
     return request.accept_languages.best_match(
-        current_app.config['BABEL_ACCEPT_LANGUAGES'],)
+        current_app.config['BABEL_ACCEPT_LANGUAGES'],
+    )
 
 
 def timezoneselector():

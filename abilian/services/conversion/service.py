@@ -126,7 +126,8 @@ class Converter(object):
                 self.cache[cache_key] = pdf
                 return pdf
         raise HandlerNotFound(
-            "No handler found to convert from %s to PDF" % mime_type,)
+            "No handler found to convert from %s to PDF" % mime_type,
+        )
 
     def to_text(self, digest, blob, mime_type):
         """Convert a file to plain text.
@@ -159,7 +160,8 @@ class Converter(object):
                 return text
 
         raise HandlerNotFound(
-            "No handler found to convert from %s to text" % mime_type,)
+            "No handler found to convert from %s to text" % mime_type,
+        )
 
     def has_image(self, digest, mime_type, index, size=500):
         """Tell if there is a preview image."""
@@ -210,7 +212,8 @@ class Converter(object):
                 return converted_images[index]
 
         raise HandlerNotFound(
-            "No handler found to convert from %s to image" % mime_type,)
+            "No handler found to convert from %s to image" % mime_type,
+        )
 
     def get_metadata(self, digest, content, mime_type):
         """Get a dictionary representing the metadata embedded in the given
@@ -238,7 +241,8 @@ class Converter(object):
                     output = subprocess.check_output(['pdfinfo', in_fn])
                 except OSError:
                     logger.error(
-                        "Conversion failed, probably pdfinfo is not installed",)
+                        "Conversion failed, probably pdfinfo is not installed",
+                    )
                     raise
 
             ret = {}

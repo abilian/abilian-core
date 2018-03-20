@@ -60,8 +60,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
     next(strategy)  # starts generator
 
     for cls in sorted(
-            index_service.app_state.indexed_classes,
-            key=lambda c: c.__name__,
+        index_service.app_state.indexed_classes,
+        key=lambda c: c.__name__,
     ):
         current_object_type = cls._object_type()
 
@@ -82,7 +82,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
                 count = query.count()
             except Exception as e:
                 current_app.logger.error(
-                    "Indexing error on class {}: {}".format(name, repr(e)),)
+                    "Indexing error on class {}: {}".format(name, repr(e)),
+                )
                 continue
 
             print("*" * 79)
@@ -113,7 +114,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     indexed.add(object_key)
 
                     if batch_size is not None and (
-                            count_current % batch_size) == 0:
+                        count_current % batch_size
+                    ) == 0:
                         bar.update()
                         strategy.send(COMMIT)
 

@@ -49,8 +49,10 @@ setuptools.setup(
     license='LGPL',
     author='Abilian SAS',
     author_email='contact@abilian.com',
-    description=('A framework for enterprise applications '
-                 '(CRM, ERP, collaboration...), based on Flask and SQLAlchemy'),
+    description=(
+        'A framework for enterprise applications '
+        '(CRM, ERP, collaboration...), based on Flask and SQLAlchemy'
+    ),
     long_description=LONG_DESCRIPTION,
     packages=['abilian'],
     zip_safe=False,

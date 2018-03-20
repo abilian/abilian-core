@@ -228,5 +228,6 @@ class VocabularyPanel(AdminPanel):
                         group=group or '_',
                         Model=Model.Meta.name,
                     ),
-                ),)
+                ),
+            )
             view_args['Model'] = Model

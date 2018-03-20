@@ -225,7 +225,9 @@ class BaseTableView(object):
         )
         return Markup(
             render_template(
-                template, table=table, js=Markup(js), view=self, **kwargs),)
+                template, table=table, js=Markup(js), view=self, **kwargs
+            ),
+        )
 
     def render_line(self, entity):
         line = []
@@ -255,15 +257,19 @@ class BaseTableView(object):
                 cell = format(value)
             elif column_name in (make_link_on, 'name') \
                     or col.get('linkable'):
-                cell = Markup('<a href="{}">{}</a>'.format(
-                    build_url(entity),
-                    cgi.escape(text_type(value)),
-                ),)
+                cell = Markup(
+                    '<a href="{}">{}</a>'.format(
+                        build_url(entity),
+                        cgi.escape(text_type(value)),
+                    ),
+                )
             elif isinstance(value, Entity):
-                cell = Markup('<a href="{}">{}</a>'.format(
-                    build_url(value),
-                    cgi.escape(value.name),
-                ))
+                cell = Markup(
+                    '<a href="{}">{}</a>'.format(
+                        build_url(value),
+                        cgi.escape(value.name),
+                    )
+                )
             elif isinstance(value, string_types) \
                     and (value.startswith("http://") or value.startswith("www.")):
                 cell = Markup(linkify_url(value))
@@ -305,12 +311,12 @@ class AjaxMainTableView(object):
     options = {}
 
     def __init__(
-            self,
-            columns,
-            ajax_source,
-            search_criterions=(),
-            name=None,
-            options=None,
+        self,
+        columns,
+        ajax_source,
+        search_criterions=(),
+        name=None,
+        options=None,
     ):
         self.init_columns(columns)
         self.ajax_source = ajax_source
@@ -393,15 +399,16 @@ class AjaxMainTableView(object):
             advanced_search_filters.append(d)
 
         if advanced_search_filters:
-            datatable_options[
-                'aoAdvancedSearchFilters'] = advanced_search_filters
+            datatable_options['aoAdvancedSearchFilters'
+                             ] = advanced_search_filters
 
         return Markup(
             render_template(
                 'widgets/render_ajax_table.html',
                 datatable_options=datatable_options,
                 view=self,
-            ),)
+            ),
+        )
 
     def render_line(self, entity):
         line = []
@@ -430,23 +437,31 @@ class AjaxMainTableView(object):
             if has_custom_display:
                 cell = value
             elif column_name == 'name':
-                cell = Markup('<a href="{}">{}</a>'.format(
-                    url_for(entity),
-                    cgi.escape(value),
-                ))
+                cell = Markup(
+                    '<a href="{}">{}</a>'.format(
+                        url_for(entity),
+                        cgi.escape(value),
+                    )
+                )
             elif isinstance(value, Entity):
-                cell = Markup('<a href="{}">{}</a>'.format(
-                    url_for(value),
-                    cgi.escape(value.name),
-                ))
-            elif (isinstance(value, string_types) and
-                  (value.startswith("http://") or value.startswith("www."))):
+                cell = Markup(
+                    '<a href="{}">{}</a>'.format(
+                        url_for(value),
+                        cgi.escape(value.name),
+                    )
+                )
+            elif (
+                isinstance(value, string_types) and
+                (value.startswith("http://") or value.startswith("www."))
+            ):
                 cell = Markup(linkify_url(value))
             elif col.get('linkable'):
-                cell = Markup('<a href="{}">{}</a>'.format(
-                    url_for(entity),
-                    cgi.escape(text_type(value)),
-                ),)
+                cell = Markup(
+                    '<a href="{}">{}</a>'.format(
+                        url_for(entity),
+                        cgi.escape(text_type(value)),
+                    ),
+                )
             else:
                 cell = text_type(value)
 
@@ -480,10 +495,12 @@ class SingleView(object):
                     continue
 
                 value = field.data
-                if (not isinstance(
+                if (
+                    not isinstance(
                         field,
                         FileField,
-                ) and not field.flags.render_empty):
+                    ) and not field.flags.render_empty
+                ):
                     if value in _to_skip:
                         continue
 
@@ -668,12 +685,9 @@ class TextInput(wtforms.widgets.TextInput):
     pre_icon = None
     post_icon = None
 
-    def __init__(self,
-                 input_type=None,
-                 pre_icon=None,
-                 post_icon=None,
-                 *args,
-                 **kwargs):
+    def __init__(
+        self, input_type=None, pre_icon=None, post_icon=None, *args, **kwargs
+    ):
         super(TextInput, self).__init__(input_type, *args, **kwargs)
 
         if pre_icon is not None:
@@ -705,7 +719,8 @@ class TextInput(wtforms.widgets.TextInput):
                 ''',
                 widget=self,
                 params=params,
-            ),)
+            ),
+        )
 
     @property
     def typename(self):
@@ -725,7 +740,8 @@ class TextArea(BaseTextArea):
         if resizeable not in self._resizeable_valid:
             raise ValueError(
                 'Invalid value for resizeable: {}, valid values are: {!r}'
-                ''.format(resizeable, self._resizeable_valid),)
+                ''.format(resizeable, self._resizeable_valid),
+            )
         if resizeable:
             self.resizeable = 'resizeable-' + resizeable
         else:
@@ -843,12 +859,12 @@ class ImageInput(FileInput):
     """
 
     def __init__(
-            self,
-            template='widgets/image_input.html',
-            width=120,
-            height=120,
-            resize_mode=image.CROP,
-            valid_extensions=('jpg', 'jpeg', 'png'),
+        self,
+        template='widgets/image_input.html',
+        width=120,
+        height=120,
+        resize_mode=image.CROP,
+        valid_extensions=('jpg', 'jpeg', 'png'),
     ):
         super(ImageInput, self).__init__(template=template)
         self.resize_mode = resize_mode
@@ -864,7 +880,8 @@ class ImageInput(FileInput):
                     image_url = value.url
                 else:
                     image_url = self.get_b64_thumb_url(
-                        self.get_thumb(value, self.width, self.height),)
+                        self.get_thumb(value, self.width, self.height),
+                    )
 
                 data['image_url'] = image_url
 
@@ -880,7 +897,8 @@ class ImageInput(FileInput):
                 else:
                     with value.open('rb') as in_:
                         image_url = self.get_b64_thumb_url(
-                            self.get_thumb(in_, self.width, self.height),)
+                            self.get_thumb(in_, self.width, self.height),
+                        )
 
                 data['image_url'] = image_url
 
@@ -945,10 +963,12 @@ class Chosen(Select):
         if selected:
             options['selected'] = True
         params = html_params(**options)
-        return HTMLString('<option {}>{}</option>'.format(
-            params,
-            cgi.escape(text_type(label)),
-        ),)
+        return HTMLString(
+            '<option {}>{}</option>'.format(
+                params,
+                cgi.escape(text_type(label)),
+            ),
+        )
 
 
 class TagInput(Input):
@@ -1005,7 +1025,8 @@ class DateInput(Input):
         s = '<div {}>\n'.format(html_params(**attributes))
 
         s += '  <input size="13" type="text" {} />\n'.format(
-            html_params(name=field_name, id=field_id, value=value, **kwargs),)
+            html_params(name=field_name, id=field_id, value=value, **kwargs),
+        )
         s += '  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>\n'
         s += '</div>\n'
         return Markup(s)
@@ -1022,16 +1043,16 @@ class TimeInput(Input):
     template = 'widgets/timepicker.html'
 
     def __init__(
-            self,
-            template=None,
-            widget_mode='dropdown',
-            h24_mode=True,
-            minuteStep=1,
-            showSeconds=False,
-            secondStep=1,
-            showInputs=False,
-            disableFocus=False,
-            modalBackdrop=False,
+        self,
+        template=None,
+        widget_mode='dropdown',
+        h24_mode=True,
+        minuteStep=1,
+        showSeconds=False,
+        secondStep=1,
+        showInputs=False,
+        disableFocus=False,
+        modalBackdrop=False,
     ):
         Input.__init__(self)
 
@@ -1262,10 +1283,12 @@ class EntityWidget(object):
         objs = field.object_data
         if not field.multiple:
             objs = [objs]
-        return ', '.join('<a href="{}">{}</a>'.format(
-            url_for(o),
-            cgi.escape(o.name),
-        ) for o in objs if o)
+        return ', '.join(
+            '<a href="{}">{}</a>'.format(
+                url_for(o),
+                cgi.escape(o.name),
+            ) for o in objs if o
+        )
 
 
 class HoursWidget(TextInput):
@@ -1326,7 +1349,8 @@ class EmailWidget(TextInput):
                 link = bleach.linkify(entry.data, parse_email=True)
                 if link:
                     links += ' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(
-                        link,)
+                        link,
+                    )
         else:
             link = bleach.linkify(field.object_data, parse_email=True)
             if link:
@@ -1481,7 +1505,8 @@ class TabularFieldListWidget(object):
             labels = Data(*[f.label for f in field[0] if not f.is_hidden])
 
         return Markup(
-            render_template(self.template, labels=labels, field=field),)
+            render_template(self.template, labels=labels, field=field),
+        )
 
 
 class ModelListWidget(object):
@@ -1494,7 +1519,8 @@ class ModelListWidget(object):
         value = field.object_data
         if not value:
             return render_template(
-                self.template, field=field, labels=(), rows=(), **kwargs)
+                self.template, field=field, labels=(), rows=(), **kwargs
+            )
 
         field_names = field._field_names
         labels = field._field_labels
@@ -1511,7 +1537,8 @@ class ModelListWidget(object):
             rows.append(Data(*row))
 
         rendered = render_template(
-            self.template, field=field, labels=labels, rows=rows, **kwargs)
+            self.template, field=field, labels=labels, rows=rows, **kwargs
+        )
         return rendered
 
 
@@ -1582,12 +1609,12 @@ class Select2Ajax(object):
     """
 
     def __init__(
-            self,
-            template='widgets/select2ajax.html',
-            multiple=False,
-            format_result=None,
-            format_selection=None,
-            values_builder=None,
+        self,
+        template='widgets/select2ajax.html',
+        multiple=False,
+        format_result=None,
+        format_selection=None,
+        values_builder=None,
     ):
         self.template = template
         self.multiple = multiple

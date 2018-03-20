@@ -66,7 +66,8 @@ class Registry(object):
             return url_for(
                 '{}.view'.format(object_type.rsplit('.')[-1].lower()),
                 object_id=object_id,
-                **kwargs)
+                **kwargs
+            )
         except BaseException:
             raise KeyError(object_type)
 
@@ -82,12 +83,12 @@ class default_view(object):
     """
 
     def __init__(
-            self,
-            app_or_blueprint,
-            entity,
-            id_attr='object_id',
-            endpoint=None,
-            kw_func=None,
+        self,
+        app_or_blueprint,
+        entity,
+        id_attr='object_id',
+        endpoint=None,
+        kw_func=None,
     ):
         self.app_or_blueprint = app_or_blueprint
         self.is_bp = isinstance(app_or_blueprint, Blueprint)

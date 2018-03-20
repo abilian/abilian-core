@@ -136,7 +136,8 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         self._field_names = field_names
         self._field_labels = labels
         self._field_nameTolabel = dict(
-            zip(self._field_names, self._field_labels),)
+            zip(self._field_names, self._field_labels),
+        )
 
     def __call__(self, **kwargs):
         """Refill with default min_entry, which were possibly removed by
@@ -179,14 +180,16 @@ class FileField(BaseFileField):
 
         if allow_delete is not None:
             if any(
-                    isinstance(v, DataRequired if allow_delete else Optional)
-                    for v in validators):
+                isinstance(v, DataRequired if allow_delete else Optional)
+                for v in validators
+            ):
                 raise ValueError(
                     "Field validators are conflicting with `allow_delete`,"
                     "validators={!r}, allow_delete={!r}".format(
                         validators,
                         allow_delete,
-                    ),)
+                    ),
+                )
             if not allow_delete:
                 validators.append(DataRequired())
 
@@ -211,8 +214,10 @@ class FileField(BaseFileField):
 
     def process(self, formdata, *args, **kwargs):
         delete_arg = '__{name}_delete__'.format(name=self.name)
-        self.delete_files_index = (formdata.getlist(delete_arg) if formdata and
-                                   delete_arg in formdata else [])
+        self.delete_files_index = (
+            formdata.getlist(delete_arg)
+            if formdata and delete_arg in formdata else []
+        )
 
         return super(FileField, self).process(formdata, *args, **kwargs)
 
@@ -238,7 +243,8 @@ class FileField(BaseFileField):
             if fileobj is None:
                 # FIXME: this is a validation task
                 raise ValueError(
-                    'File with handle {!r} not found'.format(handle),)
+                    'File with handle {!r} not found'.format(handle),
+                )
 
             meta = uploads.get_metadata(current_user, handle)
             filename = meta.get('filename', handle)
@@ -269,7 +275,8 @@ class FileField(BaseFileField):
         rel = getattr(mapper.relationships, name)
         if rel.uselist:
             raise ValueError(
-                "Only single target supported; else use ModelFieldList",)
+                "Only single target supported; else use ModelFieldList",
+            )
 
         if delete_value:
             setattr(obj, name, None)
@@ -474,18 +481,20 @@ class QuerySelect2Field(SelectFieldBase):
     :param allow_blank: DEPRECATED. Use optional()/required() validators instead.
     """
 
-    def __init__(self,
-                 label=None,
-                 validators=None,
-                 query_factory=None,
-                 get_pk=None,
-                 get_label=None,
-                 allow_blank=False,
-                 blank_text='',
-                 widget=None,
-                 multiple=False,
-                 collection_class=list,
-                 **kwargs):
+    def __init__(
+        self,
+        label=None,
+        validators=None,
+        query_factory=None,
+        get_pk=None,
+        get_label=None,
+        allow_blank=False,
+        blank_text='',
+        widget=None,
+        multiple=False,
+        collection_class=list,
+        **kwargs
+    ):
 
         if widget is None:
             widget = Select2(multiple=multiple)
@@ -498,11 +507,13 @@ class QuerySelect2Field(SelectFieldBase):
             validators = []
 
         if not any(isinstance(v, (Optional, DataRequired)) for v in validators):
-            logger = logging.getLogger(__name__ + '.' + self.__class__.__name__,
-                                      )
+            logger = logging.getLogger(
+                __name__ + '.' + self.__class__.__name__,
+            )
             logger.warning(
                 'Use deprecated parameter `allow_blank` for field "{}".'
-                .format(label),)
+                .format(label),
+            )
             if not allow_blank:
                 validators.append(DataRequired())
 
@@ -586,8 +597,10 @@ class QuerySelect2Field(SelectFieldBase):
                 self.data == [] if self.multiple else self.data is None,
             )
 
-        predicate = (operator.contains if
-                     (self.multiple and self.data is not None) else operator.eq)
+        predicate = (
+            operator.contains
+            if (self.multiple and self.data is not None) else operator.eq
+        )
         # remember: operator.contains(b, a) ==> a in b
         # so: obj in data ==> contains(data, obj)
         predicate = partial(predicate, self.data)
@@ -656,15 +669,17 @@ class JsonSelect2Field(SelectFieldBase):
     declaration.
     """
 
-    def __init__(self,
-                 label=None,
-                 validators=None,
-                 ajax_source=None,
-                 widget=None,
-                 blank_text='',
-                 model_class=None,
-                 multiple=False,
-                 **kwargs):
+    def __init__(
+        self,
+        label=None,
+        validators=None,
+        ajax_source=None,
+        widget=None,
+        blank_text='',
+        model_class=None,
+        multiple=False,
+        **kwargs
+    ):
 
         self.multiple = multiple
 
@@ -769,8 +784,8 @@ class LocaleSelectField(SelectField):
 
     def __init__(self, *args, **kwargs):
         kwargs['coerce'] = LocaleSelectField.coerce
-        kwargs['choices'] = (
-            locale_info for locale_info in i18n.supported_app_locales())
+        kwargs['choices'
+              ] = (locale_info for locale_info in i18n.supported_app_locales())
         super(LocaleSelectField, self).__init__(*args, **kwargs)
 
     @staticmethod
@@ -784,7 +799,8 @@ class LocaleSelectField(SelectField):
 
         raise ValueError(
             'Value cannot be converted to Locale(), or is not None, {!r}'.
-            format(value),)
+            format(value),
+        )
 
     def iter_choices(self):
         if not self.flags.required:

@@ -65,7 +65,8 @@ def test_table_view(app, test_request_context):
 def test_single_view(test_request_context):
     panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
     view = SingleView(
-        DummyForm, *panels, view=dict(can_edit=False, can_delete=False))
+        DummyForm, *panels, view=dict(can_edit=False, can_delete=False)
+    )
     model = WidgetTestModel(
         name="Renault Megane",
         price=10000,
@@ -94,8 +95,10 @@ def test_edit_view(app):
         assert "10000" in res
 
 
-EXPECTED = ('<a href="http://example.com">example.com</a>'
-            '&nbsp;<i class="fa fa-external-link"></i>')
+EXPECTED = (
+    '<a href="http://example.com">example.com</a>'
+    '&nbsp;<i class="fa fa-external-link"></i>'
+)
 
 
 def test_http():

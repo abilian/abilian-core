@@ -44,13 +44,13 @@ class FormPermissions(object):
     """Form role/permission manager."""
 
     def __init__(
-            self,
-            default=Anonymous,
-            read=None,
-            write=None,
-            fields_read=None,
-            fields_write=None,
-            existing=None,
+        self,
+        default=Anonymous,
+        read=None,
+        write=None,
+        fields_read=None,
+        fields_write=None,
+        existing=None,
     ):
         """
         :param default: default roles when not specified for field. Can be:
@@ -72,13 +72,15 @@ class FormPermissions(object):
         elif isinstance(default, dict):
             if 'default' not in default:
                 raise ValueError(
-                    '`default` parameter must have a "default" key',)
+                    '`default` parameter must have a "default" key',
+                )
         elif callable(default):
             default = {'default': default}
         else:
             raise ValueError(
                 "No valid value for `default`. Use a Role, an iterable "
-                "of Roles, a callable, or a dict.",)
+                "of Roles, a callable, or a dict.",
+            )
 
         self.default = default
         self.form = dict()
@@ -122,18 +124,20 @@ class FormPermissions(object):
                     )[permission] = allowed_roles
 
     def has_permission(
-            self,
-            permission,
-            field=None,
-            obj=None,
-            user=current_user,
+        self,
+        permission,
+        field=None,
+        obj=None,
+        user=current_user,
     ):
         if obj is not None and not isinstance(obj, Entity):
             # permission/role can be set only on entities
             return True
 
-        allowed_roles = (self.default[permission] if permission in self.default
-                         else self.default['default'])
+        allowed_roles = (
+            self.default[permission]
+            if permission in self.default else self.default['default']
+        )
         definition = None
 
         def eval_roles(fun):
@@ -264,12 +268,14 @@ class Form(BaseForm):
 
                 for field_name in list(self._fields):
                     if empty_form or not has_permission(field=field_name):
-                        logger.debug('{}(permission={!r}): field {!r}: removed'
-                                     ''.format(
-                                         self.__class__.__name__,
-                                         ctx.permission,
-                                         field_name,
-                                     ))
+                        logger.debug(
+                            '{}(permission={!r}): field {!r}: removed'
+                            ''.format(
+                                self.__class__.__name__,
+                                ctx.permission,
+                                field_name,
+                            )
+                        )
                         del self[field_name]
                         group = self._field_groups.get(field_name)
                         if group:

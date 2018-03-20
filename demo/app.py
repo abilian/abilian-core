@@ -57,7 +57,8 @@ class Application(BaseApplication):
 
     def __init__(self, name=APP_NAME, config=None, **kwargs):
         super(Application, self).__init__(
-            name, config=config, instance_relative_config=True, **kwargs)
+            name, config=config, instance_relative_config=True, **kwargs
+        )
 
     def init_extensions(self):
         super(Application, self).init_extensions()

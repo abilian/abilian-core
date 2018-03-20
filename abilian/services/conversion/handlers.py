@@ -365,7 +365,8 @@ class UnoconvPdfHandler(Handler):
 
                     self._process = None
                     raise ConversionError(
-                        "Conversion timeout ({})".format(timeout),)
+                        "Conversion timeout ({})".format(timeout),
+                    )
 
                 converted = open(out_fn).read()
                 return converted
@@ -471,7 +472,8 @@ class LibreOfficePdfHandler(Handler):
 
                     self._process = None
                     raise ConversionError(
-                        "Conversion timeout ({})".format(timeout),)
+                        "Conversion timeout ({})".format(timeout),
+                    )
 
                 out_fn = os.path.splitext(in_fn)[0] + ".pdf"
                 converted = open(out_fn, 'rb').read()

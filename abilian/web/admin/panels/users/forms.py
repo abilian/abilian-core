@@ -58,7 +58,8 @@ class BaseUserAdminForm(Form):
         _l('Roles'),
         description=_l(
             'Prefer groups to manage access rights. Directly assigning roles '
-            'to users is possible but discouraged.',),
+            'to users is possible but discouraged.',
+        ),
         choices=lambda: [(r.name, r.label) for r in Role.assignable_roles()],
     )
 

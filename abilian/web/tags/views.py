@@ -116,14 +116,18 @@ class EntityTagManage(BaseEntityTagView, ObjectEdit):
         op(self.entity, ns=ns, label=label)
 
 
-entity_bp.route('/<int:object_id>/add')(EntityTagManage.as_view(
-    'add',
-    mode='add',
-),)
-entity_bp.route('/<int:object_id>/remove')(EntityTagManage.as_view(
-    'remove',
-    mode='remove',
-),)
+entity_bp.route('/<int:object_id>/add')(
+    EntityTagManage.as_view(
+        'add',
+        mode='add',
+    ),
+)
+entity_bp.route('/<int:object_id>/remove')(
+    EntityTagManage.as_view(
+        'remove',
+        mode='remove',
+    ),
+)
 
 
 class EntityTagEdit(ObjectEdit):

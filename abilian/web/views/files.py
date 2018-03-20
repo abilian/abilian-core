@@ -24,11 +24,11 @@ class BaseFileDownload(View):
     expire_vary_arg = None
 
     def __init__(
-            self,
-            set_expire=None,
-            expire_offset=None,
-            expire_vary_arg=None,
-            as_attachment=None,
+        self,
+        set_expire=None,
+        expire_offset=None,
+        expire_vary_arg=None,
+        as_attachment=None,
     ):
         # Override class default value only if arg is specified in constructor.
         # This allows subclasses to easily override these defaults.
@@ -58,8 +58,11 @@ class BaseFileDownload(View):
                 # We must refuse to serve an image with expiry date set up
                 # to maybe 1 year from now.
                 # Check the code that has generated this url!
-                raise BadRequest('File version marker is missing ({}=?)'.format(
-                    repr(self.expire_vary_arg),))
+                raise BadRequest(
+                    'File version marker is missing ({}=?)'.format(
+                        repr(self.expire_vary_arg),
+                    )
+                )
 
         args, kwargs = super(BaseFileDownload, self).prepare_args(args, kwargs)
         kwargs['attach'] = request.args.get(
@@ -102,7 +105,8 @@ class BaseFileDownload(View):
             response.cache_control.public = False
             response.cache_control.private = True
             response.cache_control.max_age = int(
-                self.expire_offset.total_seconds(),)
+                self.expire_offset.total_seconds(),
+            )
             response.expires = utc_dt(datetime.utcnow() + self.expire_offset)
 
 

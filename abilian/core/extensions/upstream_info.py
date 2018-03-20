@@ -25,8 +25,8 @@ class UpstreamInfo(object):
         config = app.config
         config.setdefault('ABILIAN_UPSTREAM_INFO_ENABLED', False)
         for key in (
-                'ABILIAN_UPSTREAM_INFO_DISCARD',
-                'ABILIAN_UPSTREAM_INFO_INCLUDE',
+            'ABILIAN_UPSTREAM_INFO_DISCARD',
+            'ABILIAN_UPSTREAM_INFO_INCLUDE',
         ):
             val = config.get(key, ())
             if val is not None:
@@ -46,8 +46,10 @@ class UpstreamInfo(object):
         enabled = config['ABILIAN_UPSTREAM_INFO_INCLUDE']
 
         for key, val in info.items():
-            if (default_enabled and key in disabled or
-                    not default_enabled and key not in enabled):
+            if (
+                default_enabled and key in disabled or
+                not default_enabled and key not in enabled
+            ):
                 continue
 
             header = 'X-' + key

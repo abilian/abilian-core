@@ -75,7 +75,8 @@ administratorship = Table(
 )
 
 _RANDOM_PASSWORD_CHARS = (
-    string.ascii_letters + string.digits + string.punctuation)
+    string.ascii_letters + string.digits + string.punctuation
+)
 
 
 def gen_random_password(length=15):

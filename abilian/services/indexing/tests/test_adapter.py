@@ -31,7 +31,8 @@ class Indexable(IdMixin, CoreIndexable, db.Model):
         index_to=(
             ('related.name', ('name', 'text')),
             ('related.description', 'text'),
-        ),)
+        ),
+    )
 
     num = sa.Column(
         sa.Integer,
@@ -107,7 +108,8 @@ def test_build_attrs():
             signed=False,
             stored=True,
             unique=True,
-        ),)
+        ),
+    )
     adapter = SAAdapter(Indexable, schema)
     assert adapter.indexable
     assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
@@ -150,7 +152,8 @@ def test_get_document_with_schema():
             signed=False,
             stored=True,
             unique=True,
-        ),)
+        ),
+    )
     adapter = SAAdapter(Indexable, schema)
     expected = dict(id=1, num=42)
     obj = Indexable(**expected)

@@ -203,22 +203,27 @@ class EntityMeta(BaseMeta):
                 elif not isinstance(default_permissions, collections.Set):
                     raise TypeError(
                         '__default_permissions__ is neither a dict or set, '
-                        'cannot create class {}'.format(classname),)
+                        'cannot create class {}'.format(classname),
+                    )
 
                 # also ensure that `roles` set is immutable, too
                 default_permissions = frozenset(
                     (permission, frozenset(roles))
-                    for permission, roles in default_permissions)
+                    for permission, roles in default_permissions
+                )
                 d['__default_permissions__'] = default_permissions
 
             d['SLUG_SEPARATOR'] = text_type(
-                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR),)
+                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR),
+            )
 
         cls = BaseMeta.__new__(mcs, classname, bases, d)
 
         if not issubclass(cls.query_class, EntityQuery):
-            raise TypeError('query_class is not a subclass of EntityQuery: {!r}'
-                            ''.format(cls.query_class))
+            raise TypeError(
+                'query_class is not a subclass of EntityQuery: {!r}'
+                ''.format(cls.query_class)
+            )
 
         event.listen(cls, 'before_insert', auto_slug_on_insert)
         event.listen(cls, 'after_insert', auto_slug_after_insert)
@@ -323,8 +328,9 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     #: The name is a string that is shown to the user; it could be a title
     #: for document, a folder name, etc.
     name = Column('name', UnicodeText())
-    name.info = (EDITABLE | SEARCHABLE |
-                 dict(index_to=('name', 'name_prefix', 'text')))
+    name.info = (
+        EDITABLE | SEARCHABLE | dict(index_to=('name', 'name_prefix', 'text'))
+    )
 
     slug = Column('slug', UnicodeText(), info=SEARCHABLE)
     """

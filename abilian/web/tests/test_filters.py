@@ -83,13 +83,15 @@ def test_linkify():
 
 def test_nl2br():
     tmpl = env.from_string(
-        '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',)
+        '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}',
+    )
     assert tmpl.render() == \
         'first line<br />\nsecond line<br />\n<br />\n  third, indented'
 
 
 def test_paragraphs():
-    markdown_text = dedent('''\
+    markdown_text = dedent(
+        '''\
         {{ "First paragraph
         some text
         with line return
@@ -98,10 +100,12 @@ def test_paragraphs():
         ... lorem
 
         Last one - a single line" | paragraphs }}
-        ''')
+        '''
+    )
     tmpl = env.from_string(markdown_text)
 
-    expected = dedent('''\
+    expected = dedent(
+        '''\
         <p>First paragraph<br />
         some text<br />
         with line return</p>
@@ -110,7 +114,8 @@ def test_paragraphs():
         ... lorem</p>
 
         <p>Last one - a single line</p>
-        ''')
+        '''
+    )
     assert tmpl.render().strip() == expected.strip()
 
 

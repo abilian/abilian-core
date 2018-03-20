@@ -43,7 +43,8 @@ class JsonGroupsList(base.JSONView):
         if search:
             # TODO: gérer les accents
             query = query.filter(
-                func.lower(Group.name).like("%" + search + "%"),)
+                func.lower(Group.name).like("%" + search + "%"),
+            )
 
         count = query.count()
         columns = [func.lower(Group.name)]
@@ -138,7 +139,8 @@ class GroupView(GroupBase, views.ObjectView):
         kw['members'] = members
         kw['roles'] = sorted(
             r for r in security.get_roles(self.obj, no_group_roles=True)
-            if r.assignable)
+            if r.assignable
+        )
         kw['ADD_USER_BUTTON'] = ADD_USER_BUTTON
         kw['REMOVE_USER_BUTTON'] = REMOVE_USER_BUTTON
         return kw

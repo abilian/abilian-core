@@ -56,14 +56,16 @@ user_menu = NavGroup(
         url_args=_user_photo_icon_args,
     ),
     condition=is_authenticated,
-    items=(NavItem(
-        'user',
-        'logout',
-        title=_l('Logout'),
-        icon='log-out',
-        url=lambda context: url_for('login.logout'),
-        divider=True,
-    ),),
+    items=(
+        NavItem(
+            'user',
+            'logout',
+            title=_l('Logout'),
+            icon='log-out',
+            url=lambda context: url_for('login.logout'),
+            divider=True,
+        ),
+    ),
 )
 
 _ACTIONS = (
@@ -145,9 +147,12 @@ class AuthService(Service):
         g.user = g.logged_user = user
         is_anonymous = user is None or user.is_anonymous
         security = app.services.get('security')
-        g.is_manager = (user and not is_anonymous and
-                        ((security.has_role(user, 'admin') or
-                          security.has_role(user, 'manager'))))
+        g.is_manager = (
+            user and not is_anonymous and ((
+                security.has_role(user, 'admin') or
+                security.has_role(user, 'manager')
+            ))
+        )
 
     def user_logged_out(self, app, user):
         if hasattr(g, 'user'):
@@ -212,8 +217,10 @@ class AuthService(Service):
         # Update last_active every 60 seconds only so as to not stress
         # the database too much.
         now = datetime.utcnow()
-        if (user.last_active is None or
-            (now - user.last_active) > timedelta(minutes=1)):
+        if (
+            user.last_active is None or
+            (now - user.last_active) > timedelta(minutes=1)
+        ):
             user.last_active = now
             db.session.add(user)
             db.session.commit()

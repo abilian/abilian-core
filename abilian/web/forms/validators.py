@@ -131,11 +131,13 @@ class Length(Rule):
                         'Field must be between %(min)d and %(max)d characters long.',
                         min=self.min, max=self.max,
                     )
-            raise validators.ValidationError(message % dict(
-                min=self.min,
-                max=self.max,
-                length=l,
-            ))
+            raise validators.ValidationError(
+                message % dict(
+                    min=self.min,
+                    max=self.max,
+                    length=l,
+                )
+            )
 
 
 class NumberRange(validators.NumberRange, Rule):
@@ -220,8 +222,8 @@ def luhn(n):
     https://en.wikipedia.org/wiki/Luhn_algorithm
     """
     r = [int(ch) for ch in str(n)][::-1]
-    return (
-        sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
+    return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10))
+                               for d in r[1::2])) % 10 == 0
 
 
 # specific SIRET like for MONACO, i.e MONACOCONFO001

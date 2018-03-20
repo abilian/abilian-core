@@ -82,8 +82,8 @@ def test_items(db, session):
 
     # test db-side constraint for non-empty labels
     with raises(
-            sa.exc.IntegrityError,
-            message="Could insert an item with empty label",
+        sa.exc.IntegrityError,
+        message="Could insert an item with empty label",
     ):
         with session.begin_nested():
             v = PriorityVoc(label='   ', position=6)
@@ -99,8 +99,8 @@ def test_items(db, session):
 
     # test unique position constraint
     with raises(
-            sa.exc.IntegrityError,
-            message="Could insert duplicate position",
+        sa.exc.IntegrityError,
+        message="Could insert duplicate position",
     ):
         with session.begin_nested():
             v = PriorityVoc(label='New one', position=1)

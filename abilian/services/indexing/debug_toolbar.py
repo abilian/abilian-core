@@ -27,8 +27,10 @@ class IndexedTermsDebugPanel(DebugPanel):
     @property
     def has_content(self):
         obj = self.current_obj
-        return (obj is not None and hasattr(obj, 'object_type') and
-                hasattr(obj, 'id') and obj.id is not None)
+        return (
+            obj is not None and hasattr(obj, 'object_type') and
+            hasattr(obj, 'id') and obj.id is not None
+        )
 
     def nav_title(self):
         return _('Indexed Terms')
@@ -85,5 +87,6 @@ class IndexedTermsDebugPanel(DebugPanel):
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)
         template = jinja_env.get_or_select_template(
-            'debug_panels/indexing_panel.html',)
+            'debug_panels/indexing_panel.html',
+        )
         return template.render(context)

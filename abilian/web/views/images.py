@@ -29,7 +29,8 @@ DEFAULT_AVATAR = Path(
     pkg_resources.resource_filename(
         'abilian.web',
         'resources/img/avatar-default.png',
-    ),)
+    ),
+)
 DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
 
 
@@ -50,13 +51,16 @@ class BaseImageView(BaseFileDownload):
             size = int(size)
         except ValueError:
             raise BadRequest(
-                'Invalid value for "s": {:d}. Not an integer.'.format(size),)
+                'Invalid value for "s": {:d}. Not an integer.'.format(size),
+            )
 
         if self.max_size is not None and size > self.max_size:
-            raise BadRequest('Size too large: {:d} (max: {:d})'.format(
-                size,
-                self.max_size,
-            ))
+            raise BadRequest(
+                'Size too large: {:d} (max: {:d})'.format(
+                    size,
+                    self.max_size,
+                )
+            )
 
         kwargs['size'] = size
 
@@ -217,11 +221,13 @@ class UserMugshot(BaseImageView):
 
 user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
 route("/users/<int:user_id>")(user_photo)
-route('/users/default')(StaticImageView.as_view(
-    'user_default',
-    set_expire=True,
-    image=DEFAULT_AVATAR,
-))
+route('/users/default')(
+    StaticImageView.as_view(
+        'user_default',
+        set_expire=True,
+        image=DEFAULT_AVATAR,
+    )
+)
 
 
 def user_url_args(user, size):
@@ -231,8 +237,10 @@ def user_url_args(user, size):
     if not user.is_anonymous:
         endpoint = 'images.user_photo'
         kwargs['user_id'] = user.id
-        content = (user.photo
-                   if user.photo else (user.name + user.email).encode('utf-8'))
+        content = (
+            user.photo
+            if user.photo else (user.name + user.email).encode('utf-8')
+        )
         kwargs['md5'] = hashlib.md5(content).hexdigest()
 
     return endpoint, kwargs

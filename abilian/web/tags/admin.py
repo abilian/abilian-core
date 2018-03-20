@@ -68,7 +68,8 @@ def schedule_entities_reindex(entities):
         kwargs=dict(
             index='default',
             items=entities,
-        ),)
+        ),
+    )
 
 
 class NSView(View):

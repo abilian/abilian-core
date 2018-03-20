@@ -27,13 +27,15 @@ class AbilianCsrf(object):
         'Security informations are missing or expired. '
         'This may happen if you have opened the form for a long time. '
         '<br /><br />'
-        'Please try to resubmit the form.',)
+        'Please try to resubmit the form.',
+    )
 
     def init_app(self, app):
         if 'csrf' not in app.extensions:
             raise RuntimeError(
                 'Please install flask_wtf.csrf.CsrfProtect() as "csrf" in '
-                'extensions before AbilianCsrf()',)
+                'extensions before AbilianCsrf()',
+            )
         app.extensions['csrf'].error_handler(self.csrf_error_handler)
         app.extensions['csrf-handler'] = self
         request_started.connect(self.request_started, sender=app)
@@ -61,11 +63,13 @@ class AbilianCsrf(object):
             # view can handle it nicely for the user
             return None
 
-        if (hasattr(view, 'view_class') and getattr(
+        if (
+            hasattr(view, 'view_class') and getattr(
                 view.view_class,
                 'csrf_support_graceful_failure',
                 False,
-        )):
+            )
+        ):
             return None
 
         raise BadRequest(failed)

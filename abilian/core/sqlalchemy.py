@@ -79,18 +79,23 @@ def _calling_context(app_path):
     frm = sys._getframe(1)
     entered_sa_code = exited_sa_code = False
     sa_caller = '<unknown>'
-    format_name = ('{frm.f_code.co_filename}:{frm.f_lineno} '
-                   '({frm.f_code.co_name})'.format)
+    format_name = (
+        '{frm.f_code.co_filename}:{frm.f_lineno} '
+        '({frm.f_code.co_name})'.format
+    )
 
     while frm.f_back is not None:
         name = frm.f_globals.get('__name__')
-        if name and (name == app_path or name.startswith(app_path + '.') or
-                     name.startswith('abilian.')):
+        if name and (
+            name == app_path or name.startswith(app_path + '.') or
+            name.startswith('abilian.')
+        ):
             return format_name(frm=frm)
 
         if not exited_sa_code:
-            in_sa_code = name and (name == 'sqlalchemy' or
-                                   name.startswith('sqlalchemy.'))
+            in_sa_code = name and (
+                name == 'sqlalchemy' or name.startswith('sqlalchemy.')
+            )
             if not entered_sa_code:
                 entered_sa_code = in_sa_code
             elif not in_sa_code:
@@ -363,7 +368,8 @@ class Locale(sa.types.TypeDecorator):
         if not isinstance(value, babel.Locale):
             if not isinstance(value, string_types):
                 raise ValueError(
-                    "Unknown locale value: " + format(repr(value),),)
+                    "Unknown locale value: " + format(repr(value),),
+                )
             if not value.strip():
                 return None
             value = babel.Locale.parse(value)
