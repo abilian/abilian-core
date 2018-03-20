@@ -79,7 +79,8 @@ entity_tag_tbl = sa.Table(
 @total_ordering
 @python_2_unicode_compatible
 class Tag(IdMixin, Model):
-    """Tags are text labels that can be attached to :class:`entities
+    """Tags are text labels that can be attached to :class:`entities.
+
     <.Entity>`.
 
     They are namespaced, so that independent group of tags can be

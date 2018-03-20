@@ -546,9 +546,8 @@ class QuerySelect2Field(SelectFieldBase):
 
     @staticmethod
     def _get_pk_from_identity(obj):
-        """Copied / pasted, and fixed, from WTForms_sqlalchemy due to issue
-        w/ SQLAlchemy >= 1.2.
-        """
+        """Copied / pasted, and fixed, from WTForms_sqlalchemy due to issue w/
+        SQLAlchemy >= 1.2."""
         from sqlalchemy.orm.util import identity_key
 
         cls, key = identity_key(instance=obj)[0:2]

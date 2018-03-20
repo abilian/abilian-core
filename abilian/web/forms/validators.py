@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Validators
+"""Validators.
 
 TODO: most of this is currently only stubs and needs to be implemented.
 

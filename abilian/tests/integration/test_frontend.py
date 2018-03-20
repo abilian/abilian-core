@@ -1,7 +1,5 @@
 # coding=utf-8
-"""
-Test the frontend.
-"""
+"""Test the frontend."""
 from __future__ import absolute_import, print_function, unicode_literals
 
 from flask_wtf import Form

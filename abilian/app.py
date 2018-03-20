@@ -386,7 +386,9 @@ class ErrorManagerMixin(Flask):
 
     def _remove_session_save_objects(self):
         """Used during exception handling in case we need to remove() session:
-        keep instances and merge them in the new session."""
+
+        keep instances and merge them in the new session.
+        """
         if self.testing:
             return
         # Before destroying the session, get all instances to be attached to the

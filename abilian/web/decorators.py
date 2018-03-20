@@ -1,7 +1,5 @@
 # coding=utf-8
-"""Useful decorators for web views.
-
-"""
+"""Useful decorators for web views."""
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
