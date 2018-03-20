@@ -119,17 +119,19 @@ lint-bandit:
 format: format-py format-js
 
 format-py:
-	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
-		-rc $(SRC) *.py
-	-yapf --style google -r -i $(SRC) *.py
-	-add-trailing-comma `find abilian -name '*.py'` *.py
-	autopep8 -j3 -r --in-place -a --ignore E711 abilian *.py
-	isort -rc $(SRC) *.py
+	-add-trailing-comma `find abilian -name '*.py'` demo/*.py *.py
+	-yapf --style google -r -i abilian demo *.py
+	# autopep8 -j3 -r --in-place -a --ignore E711 abilian demo *.py
+	isort -rc abilian demo *.py
 
 format-js:
 	./node_modules/.bin/prettier --write \
 		--trailing-comma es5 --tab-width 2 \
 		'abilian/web/resources/js/**/*.js'
+
+futurize-py-headers:
+	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
+		-rc $(SRC) *.py
 
 #
 # Everything else
