@@ -126,7 +126,8 @@ class Tag(IdMixin, Model):
 
     def __repr__(self):
         cls = self.__class__
-        return '<{mod}.{cls} id={t.id!r} ns={t.ns!r} label={t.label!r} at 0x{addr:x}>'.format(
+        return '<{mod}.{cls} id={t.id!r} ns={t.ns!r} ' \
+               'label={t.label!r} at 0x{addr:x}>'.format(
             mod=cls.__module__,
             cls=cls.__name__,
             t=self,

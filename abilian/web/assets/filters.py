@@ -193,7 +193,8 @@ class Less(ExternalTool):
       Finally, you need to include the less compiler::
 
           if env.debug:
-              js_bundle.contents += 'http://lesscss.googlecode.com/files/less-1.3.0.min.js'
+              js_bundle.contents += \
+                 'http://lesscss.googlecode.com/files/less-1.3.0.min.js'
     """
 
     name = 'less'
