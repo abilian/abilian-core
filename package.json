@@ -1,6 +1,5 @@
 {
   "name": "abilian-core-front",
-  "version": "0.0.0",
   "private": true,
   "engines": {
     "node": ">= 4.0.0",
