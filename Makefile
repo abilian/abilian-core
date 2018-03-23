@@ -127,7 +127,7 @@ format-py:
 
 format-js:
 	./node_modules/.bin/prettier --write \
-		--trailing-comma es5 --tab-width 2 \
+		--trailing-comma es5 \
 		'abilian/web/resources/js/**/*.js'
 
 futurize-py-headers:
