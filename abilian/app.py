@@ -1052,11 +1052,13 @@ class Application(
         return self.extensions['redis'].client
 
     def create_db(self):
+        # type: () -> None
         db.create_all()
         self.create_root_user()
 
     def create_root_user(self):
         from abilian.core.models.subjects import User
+
         user = User.query.get(0)
         if user is None:
             user = User(

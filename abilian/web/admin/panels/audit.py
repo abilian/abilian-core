@@ -112,7 +112,6 @@ class AuditPanel(AdminPanel):
             view_func=JSONUserSearch.as_view('search_users'),
         )
 
-    # noinspection PyComparisonWithNone
     def get(self):
         LIMIT = 30
 

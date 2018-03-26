@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 # Quick check for tests
 def has_pdftotext():
+    # type: () -> bool
     dev_null = open('/dev/null', 'wb')
     try:
         status = subprocess.call("pdftotext", stderr=dev_null)
@@ -44,6 +45,7 @@ def has_pdftotext():
 
 
 def has_libreoffice():
+    # type: () -> bool
     dev_null = open('/dev/null', 'wb')
     try:
         status = subprocess.call(

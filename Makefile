@@ -164,7 +164,7 @@ clean:
 	rm -rf htmlcov coverage.xml
 	rm -rf docs/_build
 	rm -f junit-*.xml
-	rm -f npm-debug.log
+	rm -f npm-debug.log yarn-error.log
 
 tidy: clean
 	rm -rf .tox .dox .travis-solo

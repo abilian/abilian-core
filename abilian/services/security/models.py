@@ -31,6 +31,7 @@ __all__ = [
     'WRITE',
     'CREATE',
     'DELETE',
+    'PERMISSIONS_ATTR',
     'Role',
     'Anonymous',
     'Authenticated',

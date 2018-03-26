@@ -11,6 +11,7 @@
 *,cover
 
 sandbox
+instance
 node_modules
 env
 whoosh*

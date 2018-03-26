@@ -133,6 +133,8 @@ def country_choices(first=None, default_country_first=True):
     country name.
 
     :param first: Country code to be placed at the top
+    :param default_country_first:
+    :type default_country_first: bool
     """
     locale = _get_locale()
     territories = [(code, name)
