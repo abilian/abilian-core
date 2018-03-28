@@ -62,19 +62,19 @@ vagrant-tests:
 #
 # Various Checkers
 #
-flake8:
-	flake8 $(SRC)
+lint-ci: lint-py lint-py3k lint-less lint-rst lint-doc lint-travis
 
-lint-ci: lint-py lint-py3k lint-less lint-rst lint-doc
+lint: lint-py lint-js lint-less lint-rst lint-doc lint-travis
 
-lint: lint-py lint-js lint-rst lint-doc lint-travis
-
-lint-all: lint lint-mypy lint-js lint-less lint-bandit
+lint-all: lint lint-mypy lint-bandit
 
 lint-py:
 	@echo "--> Linting Python files /w flake8"
 	flake8 $(SRC)
 	@echo ""
+
+flake8:
+	flake8 $(SRC)
 
 lint-mypy:
 	@echo "--> Typechecking Python files w/ mypy"
@@ -116,6 +116,10 @@ lint-bandit:
 	bandit -s B101 `find abilian -name '*.py' | grep -v test`
 	@echo ""
 
+
+#
+# Formatting
+#
 format: format-py format-js
 
 format-py:
@@ -189,6 +193,6 @@ update-deps:
 	git --no-pager diff requirements.txt
 
 sync-deps:
-	pip install -r requirements.txt
+	pip-sync
 	pip install -r etc/dev-requirements.txt
 	pip install -e .

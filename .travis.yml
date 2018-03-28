@@ -16,7 +16,7 @@ services:
   - redis-server
 
 addons:
-  postgresql: "9.4"
+  postgresql: "9.6"
 
 # Install OS dependencies
 before_install:
@@ -26,6 +26,8 @@ before_install:
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less
   - export PATH=~/npm-packages/bin:$PATH
+
+  - gem install travis
 
 # Install Python dependencies
 install:
