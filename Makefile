@@ -88,7 +88,7 @@ lint-py3k:
 
 lint-travis:
 	@echo "--> Linting .travis.yml files"
-	travis lint
+	travis lint --no-interactive
 	@echo ""
 
 lint-js:
