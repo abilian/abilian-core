@@ -22,7 +22,7 @@ from sqlalchemy.exc import SAWarning
 from abilian.app import Application
 from abilian.core.models.subjects import ClearPasswordStrategy, User
 
-from .util import assert_valid
+from .validation import assert_valid
 
 __all__ = ('TestConfig', 'BaseTestCase')
 
@@ -30,8 +30,11 @@ _CLEAR_PWD = ClearPasswordStrategy()
 _DEFAULT_PWD = User.__password_strategy__
 
 
+#
+# Old stuff. Will be removed someday.
+#
 class NullBundle(Bundle):
-    """This bundle class emits no url, thus avoid any asset build.
+    """This bundle class emits no url, thus avoids any asset build.
 
     Saves a lot of time during tests.
     """
@@ -391,8 +394,6 @@ class BaseTestCase(TestCase):
             self.assert_valid(response)
 
         return response
-
-    # TODO: post(), put(), etc.
 
     def assert_valid(self, response):
         assert_valid(response)

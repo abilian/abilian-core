@@ -1,97 +1,41 @@
-from __future__ import absolute_import, print_function, unicode_literals
+# coding=utf-8
+"""Elements to build test cases for an :class:`abilian.app.Application`"""
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
-import json
-import os
-import subprocess
-from tempfile import NamedTemporaryFile
+from sqlalchemy.exc import DatabaseError
 
-import requests
-from flask import Response, current_app, request
+from abilian.services import get_service
 
-
-class ValidationError(AssertionError):
-    pass
+__all__ = ('stop_all_services', 'ensure_services_started', 'cleanup_db')
 
 
-def assert_valid(response):
-    # type: (Response) -> None
-    SKIPPED_URLS = [
-        # FIXME: later
-        'http://localhost/admin/settings',
-    ]
-    if response.direct_passthrough:
-        return
+def cleanup_db(db):
+    """Drop all the tables, in a way that doesn't raise integrity errors."""
 
-    data = response.data
-    assert isinstance(data, bytes)
-    # assert response.status_code in [200, 302, 401]
-
-    if response.status_code == 302:
-        return
-
-    if request.url in SKIPPED_URLS:
-        return
-
-    if response.mimetype == 'text/html':
-        validate_html(response)
-
-    elif response.mimetype == 'application/json':
-        validate_json(response)
-
-    else:
-        raise AssertionError("Unknown mime type: " + response.mimetype)
-
-    return
+    # Need to run this sequence twice for some reason
+    _delete_tables(db)
+    _delete_tables(db)
+    # One more time, just in case ?
+    db.drop_all()
 
 
-def validate_html(response):
-    validate_html_using_htmlhint(response)
-    validate_html_using_external_service(response)
-
-
-def validate_html_using_htmlhint(response):
-    with NamedTemporaryFile() as tmpfile:
-        tmpfile.write(response.data)
-        tmpfile.flush()
+def _delete_tables(db):
+    for table in reversed(db.metadata.sorted_tables):
         try:
-            subprocess.check_output(["htmlhint", tmpfile.name])
-        except subprocess.CalledProcessError as e:
-            print("htmllhint output:")
-            print(e.output)
-            msg = "HTML was not valid for URL: {}".format(request.url)
-            raise ValidationError(msg)
+            db.session.execute(table.delete())
+        except DatabaseError:
+            pass
 
 
-def validate_html_using_external_service(response):
-    validator_url = current_app.config.get('VALIDATOR_URL') \
-        or os.environ.get('VALIDATOR_URL')
-
-    if not validator_url:
-        return
-
-    validator_response = requests.post(
-        validator_url + '?out=json',
-        response.data,
-        headers={'Content-Type': response.mimetype},
-    )
-
-    body = validator_response.json()
-
-    for message in body['messages']:
-        if message['type'] == 'error':
-            detail = 'on line {} [{}]\n{}'.format(
-                message['lastLine'],
-                message['extract'],
-                message['message'],
-            )
-            msg = 'Got a validation error for {}:\n{}' \
-                .format(request.url, detail)
-            raise ValidationError(msg)
+def ensure_services_started(services):
+    for service_name in services:
+        service = get_service(service_name)
+        if not service.running:
+            service.start()
 
 
-def validate_json(response):
-    try:
-        json.loads(response.data)
-    except BaseException:
-        msg = "JSON was not valid for URL: {}".format(request.url)
-        raise ValidationError(msg)
+def stop_all_services(app):
+    for service in app.services.values():
+        if service.running:
+            service.stop()

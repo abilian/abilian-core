@@ -1,19 +1,24 @@
 # coding=utf-8
 """Configuration and injectable fixtures for Pytest.
 
-Supposed to replace the too-complex current UnitTest-based testing
-framework.
+Can be reused (and overriden) by adding::
 
-DI and functions over complex inheritance hierarchies FTW!
+   pytest_plugins = ['abilian.testing.fixtures']
+
+to your `conftest.py`.
+
+Supposed to replace the too-complex current UnitTest-based testing
+framework. -> DI and functions over complex inheritance hierarchies FTW!
 """
+
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from pytest import fixture
-from sqlalchemy.exc import DatabaseError
 
 from abilian.app import create_app
-from abilian.services import get_service
+from abilian.testing.util import cleanup_db, ensure_services_started, \
+    stop_all_services
 
 
 class TestConfig:
@@ -79,37 +84,3 @@ def session(db):
 def client(app, db):
     """Return a Web client, used for testing, bound to a DB session."""
     return app.test_client()
-
-
-#
-# Cleanup utilities
-#
-def cleanup_db(db):
-    """Drop all the tables, in a way that doesn't raise integrity errors."""
-
-    # Need to run this sequence twice for some reason
-    delete_tables(db)
-    delete_tables(db)
-    # One more time, just in case ?
-    db.drop_all()
-
-
-def delete_tables(db):
-    for table in reversed(db.metadata.sorted_tables):
-        try:
-            db.session.execute(table.delete())
-        except DatabaseError:
-            pass
-
-
-def stop_all_services(app):
-    for service in app.services.values():
-        if service.running:
-            service.stop()
-
-
-def ensure_services_started(services):
-    for service_name in services:
-        service = get_service(service_name)
-        if not service.running:
-            service.start()
