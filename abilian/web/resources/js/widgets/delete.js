@@ -77,9 +77,8 @@ require(["AbilianWidget", "jquery", "bootbox"], function(Abilian, $, bootbox) {
   };
 
   function setupDeleteConfirm(params) {
-    new ConfirmDialog(this, params);
+    ConfirmDialog(this, params);
   }
 
   Abilian.registerWidgetCreator("deleteConfirm", setupDeleteConfirm);
-  return setupDeleteConfirm;
 });

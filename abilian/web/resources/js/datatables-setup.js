@@ -121,9 +121,11 @@ require(["jquery", "jquery.dataTables"], function($) {
     "string-non-null-asc": function(x, y) {
       if (x === y) {
         return 0;
-      } else if (x === "") {
+      }
+      if (x === "") {
         return -1;
-      } else if (y === "") {
+      }
+      if (y === "") {
         return 1;
       }
       return $.fn.dataTableExt.oSort["string-asc"](x, y);
@@ -131,9 +133,11 @@ require(["jquery", "jquery.dataTables"], function($) {
     "string-non-null-desc": function(x, y) {
       if (x === y) {
         return 0;
-      } else if (!x) {
+      }
+      if (!x) {
         return 1;
-      } else if (!y) {
+      }
+      if (!y) {
         return -1;
       }
       return $.fn.dataTableExt.oSort["string-desc"](x, y);

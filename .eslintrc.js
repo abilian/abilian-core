@@ -24,6 +24,6 @@ module.exports = {
     // TODO: 1 occurrence that seems fishy
     'handle-callback-err': 'off',
     // TODO: 1 occurrence that seems fishy
-    'no-new': 'off',
+    // 'no-new': 'off',
   },
 };

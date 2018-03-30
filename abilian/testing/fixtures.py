@@ -59,11 +59,11 @@ def test_request_context(app):
 
 
 @fixture
-def db(app, app_context):
+def db(app_context):
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
 
-    stop_all_services(app)
+    stop_all_services(app_context.app)
     ensure_services_started(['repository', 'session_repository'])
 
     cleanup_db(db)
@@ -72,7 +72,7 @@ def db(app, app_context):
 
     db.session.remove()
     cleanup_db(db)
-    stop_all_services(app)
+    stop_all_services(app_context.app)
 
 
 @fixture

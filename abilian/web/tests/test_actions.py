@@ -46,14 +46,14 @@ def setup_actions(app):
     actions.context['show_all'] = True
 
 
-def test_installed(app, app_context):
+def test_installed(app_context):
     assert actions.installed()  # test current_app (==self.app)
-    assert actions.installed(app)
+    assert actions.installed(app_context.app)
     assert not actions.installed(Flask('dummyapp'))
 
 
-def test_actions(app, app_context):
-    setup_actions(app)
+def test_actions(app_context):
+    setup_actions(app_context.app)
 
     all_actions = actions.actions()
     assert 'cat_1' in all_actions
@@ -62,8 +62,8 @@ def test_actions(app, app_context):
     assert all_actions['cat_2:sub'] == [OTHER_CAT]
 
 
-def test_for_category(app, app_context):
-    setup_actions(app)
+def test_for_category(app_context):
+    setup_actions(app_context.app)
 
     cat_1 = actions.for_category('cat_1')
     assert cat_1 == [BASIC, CONDITIONAL]
@@ -72,15 +72,15 @@ def test_for_category(app, app_context):
     assert cat_2 == [OTHER_CAT]
 
 
-def test_conditional(app, app_context):
-    setup_actions(app)
+def test_conditional(app_context):
+    setup_actions(app_context.app)
 
     actions.context['show_all'] = False
     assert actions.for_category('cat_1') == [BASIC]
 
 
-def test_enabled(app, app_context):
-    setup_actions(app)
+def test_enabled(app_context):
+    setup_actions(app_context.app)
 
     assert CONDITIONAL.enabled
     assert actions.for_category('cat_1') == [BASIC, CONDITIONAL]
