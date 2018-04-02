@@ -1041,14 +1041,16 @@ class Application(
             endpoint=True,
         )
 
+    # @deprecated
     @property
-    @deprecated
     def db(self):
+        warnings.warn("Deprecated property 'db'")
         return self.extensions['sqlalchemy'].db
 
+    # @deprecated
     @property
-    @deprecated
     def redis(self):
+        warnings.warn("Deprecated property 'redis'")
         return self.extensions['redis'].client
 
     def create_db(self):

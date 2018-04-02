@@ -72,7 +72,7 @@ class RepositoryService(Service):
         return dest
 
     def get(self, uuid, default=None):
-        # type: (UUID, Any) -> Path
+        # type: (UUID, Optional[Path]) -> Optional[Path]
         """Return absolute :class:`Path` object for given uuid, if this uuid
         exists in repository, or `default` if it doesn't.
 
@@ -84,7 +84,7 @@ class RepositoryService(Service):
         return path
 
     def set(self, uuid, content, encoding='utf-8'):
-        # type: (UUID, Any, Text) -> None
+        # type: (UUID, Any, Optional[Text]) -> None
         """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
@@ -121,8 +121,8 @@ class RepositoryService(Service):
 
     def __getitem__(self, uuid):
         # type: (UUID) -> Any
-        value = self.get(uuid, default=_NULL_MARK)
-        if value is _NULL_MARK:
+        value = self.get(uuid, default=None)
+        if value is None:
             raise KeyError('No file can be found for this uuid', uuid)
         return value
 
@@ -468,7 +468,7 @@ class RepositoryTransaction(object):
         self._add_to(uuid, self._deleted, self._set)
 
     def set(self, uuid, content, encoding='utf-8'):
-        # type: (UUID, Any, Text) -> None
+        # type: (UUID, Any, Optional[Text]) -> None
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 
