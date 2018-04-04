@@ -36,7 +36,7 @@ class DummyContact1(Entity):
     email = Column(Text, default="")
 
 
-def test_contacts_are_indexed(app, session):
+def test_contacts_are_indexed(app, db_session):
     index_service.start()
 
     with app.test_request_context():
@@ -48,9 +48,9 @@ def test_contacts_are_indexed(app, session):
             last_name="Test User",
             email="test@example.com",
         )
-        session.add(contact)
+        db_session.add(contact)
         # commit is needed here to trigger change in index
-        session.commit()
+        db_session.commit()
 
         search_result = index_service.search('john')
         assert len(search_result) == 1

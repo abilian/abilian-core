@@ -1,6 +1,11 @@
 Changelog for Abilian Core
 ==========================
 
+0.10.8 (unreleased)
+-------------------
+
+- Refactor pytest fixtures
+
 0.10.3 (2018-02-22)
 -------------------
 

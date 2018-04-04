@@ -59,6 +59,12 @@ def test_request_context(app):
 
 
 @fixture
+def req_ctx(app):
+    with app.test_request_context() as req_ctx:
+        yield req_ctx
+
+
+@fixture
 def db(app_context):
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
@@ -81,6 +87,11 @@ def session(db):
 
 
 @fixture
-def client(app, db):
-    """Return a Web client, used for testing, bound to a DB session."""
+def db_session(db):
+    return db.session
+
+
+@fixture
+def client(app):
+    """Return a Web client, used for testing."""
     return app.test_client()

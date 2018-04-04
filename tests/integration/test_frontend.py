@@ -54,13 +54,13 @@ class SimpleCRM(CRUDApp):
     url = "/crm"
 
 
-def test_json(app, client):
+def test_json(app, client, db_session):
     SimpleCRM(app)
     response = client.get("/crm/contacts/json")
     assert response.status_code == 200
 
 
-def test_contact_list(app, client):
+def test_contact_list(app, client, db_session):
     SimpleCRM(app)
     response = client.get("/crm/contacts/")
     assert response.status_code == 200

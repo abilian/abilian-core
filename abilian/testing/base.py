@@ -387,6 +387,7 @@ class BaseTestCase(TestCase):
     def assert_302(self, response):
         assert response.status_code == 302
 
+    @deprecated
     def get(self, url, validate=True):
         """Validates HTML if asked by the config or the Unix environment."""
         response = self.client.get(url)
@@ -395,6 +396,7 @@ class BaseTestCase(TestCase):
 
         return response
 
+    @deprecated
     def assert_valid(self, response):
         assert_valid(response)
 
