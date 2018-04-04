@@ -197,7 +197,9 @@ class AuthService(Service):
             access_controllers.extend(state.bp_access_controllers[blueprint])
 
         if endpoint and endpoint in state.endpoint_access_controllers:
-            access_controllers.extend(state.endpoint_access_controllers[endpoint])
+            access_controllers.extend(
+                state.endpoint_access_controllers[endpoint]
+            )
 
         for access_controller in reversed(access_controllers):
             verdict = access_controller(user=user, roles=user_roles)
