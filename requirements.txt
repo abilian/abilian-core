@@ -42,7 +42,7 @@ markupsafe==1.0
 numpy==1.14.2             # via pandas
 pandas==0.22.0
 pathlib==1.0.1
-pillow==5.0.0
+pillow==5.1.0
 pycparser==2.18           # via cffi
 pygeoip==0.3.2
 python-dateutil==2.7.2
@@ -57,7 +57,7 @@ six==1.11.0
 sqlalchemy-utils==0.33.2  # via wtforms-alchemy
 sqlalchemy==1.2.6
 sqlparse==0.2.4
-tqdm==4.19.9
+tqdm==4.20.0
 typing==3.6.4
 validators==0.12.1        # via wtforms-components
 vine==1.1.4               # via amqp
