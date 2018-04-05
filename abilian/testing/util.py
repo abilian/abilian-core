@@ -3,11 +3,35 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from flask.testing import FlaskClient
 from sqlalchemy.exc import DatabaseError
 
+from abilian.core.models.subjects import User
 from abilian.services import get_service
 
 __all__ = ('stop_all_services', 'ensure_services_started', 'cleanup_db')
+
+
+def login(client, user):
+    # type: (FlaskClient, User) -> LoginContext
+
+    class LoginContext(object):
+        def __init__(self):
+            with client.session_transaction() as session:
+                session['user_id'] = user.id
+
+        def __enter__(self):
+            return None
+
+        def __exit__(self, type, value, traceback):
+            logout(client)
+
+    return LoginContext()
+
+
+def logout(client):
+    with client.session_transaction() as session:
+        del session['user_id']
 
 
 def cleanup_db(db):

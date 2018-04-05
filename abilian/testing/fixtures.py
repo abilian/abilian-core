@@ -132,7 +132,7 @@ def login_user(user, client):
     with client.session_transaction() as session:
         session['user_id'] = user.id
 
-    yield user
+    return user
 
 
 @fixture
@@ -140,4 +140,4 @@ def login_admin(admin_user, client):
     with client.session_transaction() as session:
         session['user_id'] = admin_user.id
 
-    yield admin_user
+    return admin_user
