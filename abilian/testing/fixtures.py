@@ -17,6 +17,7 @@ from __future__ import absolute_import, division, print_function, \
 from pytest import fixture
 
 from abilian.app import create_app
+from abilian.core.models.subjects import User
 from abilian.testing.util import cleanup_db, ensure_services_started, \
     stop_all_services
 
@@ -95,3 +96,48 @@ def db_session(db):
 def client(app):
     """Return a Web client, used for testing."""
     return app.test_client()
+
+
+@fixture
+def user(db):
+    user = User(
+        first_name="Joe",
+        last_name="Test",
+        email="test@example.com",
+        password="test",
+        can_login=True,
+    )
+    db.session.add(user)
+    db.session.flush()
+    return user
+
+
+@fixture
+def admin_user(db):
+    user = User(
+        first_name="Jim",
+        last_name="Admin",
+        email="admin@example.com",
+        password="admin",
+        can_login=True,
+    )
+    user.is_admin = True
+    db.session.add(user)
+    db.session.flush()
+    return user
+
+
+@fixture
+def login_user(user, client):
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+
+    yield user
+
+
+@fixture
+def login_admin(admin_user, client):
+    with client.session_transaction() as session:
+        session['user_id'] = admin_user.id
+
+    yield admin_user
