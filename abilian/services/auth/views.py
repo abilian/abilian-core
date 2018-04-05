@@ -263,7 +263,7 @@ def reset_password_post(token):
 def random_password():
     pw = []
     for _i in range(0, 10):
-        pw.append(random.choice(string.letters + string.digits))
+        pw.append(random.choice(string.ascii_letters + string.digits))
     return pw
 
 
