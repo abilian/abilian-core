@@ -24,7 +24,9 @@ from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
 from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
 
-__all__ = ['Entity', 'EntityQuery', 'all_entity_classes', 'db', 'ValidationError']
+__all__ = [
+    'Entity', 'EntityQuery', 'all_entity_classes', 'db', 'ValidationError'
+]
 
 
 #
