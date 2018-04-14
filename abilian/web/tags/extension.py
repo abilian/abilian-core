@@ -3,9 +3,12 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from typing import Any
+
 import six
 
-from abilian.core.models.tag import TAGS_ATTR, Tag, is_support_tagging
+from abilian.core.entities import Entity
+from abilian.core.models.tag import TAGS_ATTR, Tag, supports_tagging
 from abilian.i18n import _l
 from abilian.web import url_for
 from abilian.web.forms import Form
@@ -60,8 +63,11 @@ class TagsExtension(object):
         app.register_blueprint(tags_bp)
         app.register_blueprint(entity_bp)
 
-    def is_support_tagging(self, entity):
-        return is_support_tagging(entity)
+    def supports_tagging(self, entity):
+        return supports_tagging(entity)
+
+    # Deprecated: remove in 2019
+    is_support_tagging = supports_tagging
 
     def entity_tags(self, entity):
         return getattr(entity, TAGS_ATTR)
@@ -118,9 +124,7 @@ class TagsExtension(object):
         return query.all()
 
     def add(self, entity, tag=None, ns=None, label=None):
-        """
-        :return: tag
-        """
+        # type: (Entity, Tag, Any, Any) -> Tag
         if tag is None:
             assert None not in (ns, label)
             tag = self.get(ns, label)

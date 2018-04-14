@@ -470,7 +470,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         namespace."""
         tags = current_app.extensions['tags']
 
-        if not tags.is_support_tagging(self):
+        if not tags.supports_taggings(self):
             return ''
 
         default_ns = tags.entity_default_ns(self)
