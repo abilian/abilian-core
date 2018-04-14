@@ -66,8 +66,9 @@ sqlparse
 clamd
 
 # Content detection / transformation
-Pillow>=4.0
 python-magic
+# Pinned for now
+pillow==5.0
 
 # Reporting
 pandas>=0.17
