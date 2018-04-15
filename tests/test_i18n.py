@@ -10,18 +10,28 @@ from jinja2 import DictLoader
 from abilian import i18n
 
 
-def test_get_template_i18n(app, test_request_context):
+def test_get_template_i18n_en(app, test_request_context):
     template_path = '/myfile.txt'
     en = Locale('en')
+
     result = i18n.get_template_i18n(template_path, locale=en)
+
     assert '/myfile.en.txt' in result
     assert '/myfile.txt' in result
 
+
+def test_get_template_i18n_en_us(app, test_request_context):
+    template_path = '/myfile.txt'
     en = Locale('en_US')
+
     result = i18n.get_template_i18n(template_path, locale=en)
+
     assert '/myfile.en_US.txt' in result
     assert '/myfile.txt' in result
 
+
+def test_get_template_i18n_fr(app, test_request_context):
+    template_path = '/myfile.txt'
     with force_locale('fr'):
         result = i18n.get_template_i18n(template_path, get_locale())
         assert '/myfile.fr.txt' in result

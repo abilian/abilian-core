@@ -188,11 +188,13 @@ release:
 
 
 update-deps:
+	pip install -U 'pip<10' pip-tools setuptools wheel
 	pip-compile -U > /dev/null
 	pip-compile > /dev/null
 	git --no-pager diff requirements.txt
 
 sync-deps:
+	pip install -U 'pip<10' pip-tools setuptools wheel
 	pip-sync
 	pip install -r etc/dev-requirements.txt
 	pip install -e .
