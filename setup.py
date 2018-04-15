@@ -6,23 +6,15 @@ from __future__ import absolute_import, print_function, unicode_literals
 from distutils.command.build import build as _build
 
 import setuptools
-from pip.download import PipSession
-from pip.req import parse_requirements
+from pkg_resources import parse_requirements
 from setuptools.command.develop import develop as _develop
 from setuptools.command.sdist import sdist as _sdist
 
-session = PipSession()
-_install_requires = parse_requirements(
-    'requirements.in',
-    session=session,
-)
-install_requires = [str(ir.req) for ir in _install_requires]
+_install_requires = parse_requirements(open('requirements.in'))
+install_requires = [str(req) for req in _install_requires]
 
-_dev_requires = parse_requirements(
-    'etc/dev-requirements.txt',
-    session=session,
-)
-dev_requires = [str(ir.req) for ir in _dev_requires]
+_dev_requires = parse_requirements(open('etc/dev-requirements.txt'))
+dev_requires = [str(req) for req in _dev_requires]
 
 LONG_DESCRIPTION = open('README.rst').read()
 
