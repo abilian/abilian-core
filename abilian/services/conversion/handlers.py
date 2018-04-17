@@ -101,7 +101,7 @@ class Handler(object):
                 break
 
         for pat in self.produces_mime_types:
-            if re.match("^%s$" % pat, target_mime_type):
+            if re.match("^{}$".format(pat), target_mime_type):
                 match_target = True
                 break
 
@@ -226,7 +226,7 @@ class PdfToPpmHandler(Handler):
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(['pdftoppm', '-jpeg', in_fn, out_fn])
-                l = sorted(glob.glob("%s-*.jpg" % out_fn))
+                l = sorted(glob.glob("{}-*.jpg".format(out_fn)))
 
                 converted_images = []
                 for fn in l:
@@ -510,8 +510,8 @@ class CloudoooPdfHandler(Handler):
     }
 
     def convert(self, key):
-        in_fn = "data/%s.blob" % key
-        in_mime_type = open("data/%s.mime" % key).read()
+        in_fn = "data/{}.blob".format(key)
+        in_mime_type = open("data/{}.mime".format(key)).read()
         file_extension = mimetypes.guess_extension(in_mime_type).strip(".")
 
         data = encodestring(open(in_fn).read())
@@ -526,7 +526,7 @@ class CloudoooPdfHandler(Handler):
 
         converted = decodestring(data)
         new_key = hashlib.md5(converted).hexdigest()
-        with open("data/%s.blob" % new_key, "wb") as fd:
+        with open("data/{}.blob".format(new_key), "wb") as fd:
             fd.write(converted)
         return new_key
 

@@ -113,9 +113,10 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     strategy.send(document)
                     indexed.add(object_key)
 
-                    if batch_size is not None and (
-                        count_current % batch_size
-                    ) == 0:
+                    if (
+                        batch_size is not None and
+                        (count_current % batch_size) == 0
+                    ):
                         bar.update()
                         strategy.send(COMMIT)
 

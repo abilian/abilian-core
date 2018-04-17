@@ -1431,12 +1431,14 @@ class ListWidget(wtforms.widgets.ListWidget):
 
         kwargs.setdefault('id', field.id)
         html = [
-            '<%s %s>' % (self.html_tag, wtforms.widgets.html_params(**kwargs)),
+            '<{} {}>'.format(
+                self.html_tag, wtforms.widgets.html_params(**kwargs)
+            ),
         ]
         for subfield in field:
             html.append('<li>{}</li>'.format(subfield()))
 
-        html.append('</%s>' % self.html_tag)
+        html.append('</{}>'.format(self.html_tag))
         return wtforms.widgets.HTMLString(''.join(html))
 
     def render_view(self, field, **kwargs):
@@ -1446,8 +1448,9 @@ class ListWidget(wtforms.widgets.ListWidget):
         if not is_empty:
             data = ([
                 label for v, label, checked in field.iter_choices() if checked
-            ] if hasattr(field, 'iter_choices') and
-                    callable(field.iter_choices) else field.object_data)
+            ] if (
+                hasattr(field, 'iter_choices') and callable(field.iter_choices)
+            ) else field.object_data)
         else:
             data = []
 

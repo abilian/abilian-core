@@ -385,7 +385,7 @@ class Action(object):
                 endpoint = self.Endpoint(endpoint, **kwargs)
             else:
                 raise ValueError(
-                    'Invalid endpoint specifier: "%s"' % repr(endpoint),
+                    'Invalid endpoint specifier: "{}"'.format(repr(endpoint)),
                 )
 
         return endpoint

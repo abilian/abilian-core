@@ -126,7 +126,7 @@ class Converter(object):
                 self.cache[cache_key] = pdf
                 return pdf
         raise HandlerNotFound(
-            "No handler found to convert from %s to PDF" % mime_type,
+            "No handler found to convert from {} to PDF".format(mime_type),
         )
 
     def to_text(self, digest, blob, mime_type):
@@ -160,12 +160,12 @@ class Converter(object):
                 return text
 
         raise HandlerNotFound(
-            "No handler found to convert from %s to text" % mime_type,
+            "No handler found to convert from {} to text".format(mime_type),
         )
 
     def has_image(self, digest, mime_type, index, size=500):
         """Tell if there is a preview image."""
-        cache_key = "img:%s:%s:%s" % (index, size, digest)
+        cache_key = "img:{}:{}:{}".format(index, size, digest)
         return mime_type.startswith("image/") or cache_key in self.cache
 
     def get_image(self, digest, blob, mime_type, index, size=500):
@@ -175,7 +175,7 @@ class Converter(object):
         if mime_type.startswith("image/"):
             return ""
 
-        cache_key = "img:%s:%s:%s" % (index, size, digest)
+        cache_key = "img:{}:{}:{}".format(index, size, digest)
         return self.cache.get(cache_key)
 
     def to_image(self, digest, blob, mime_type, index, size=500):
@@ -187,7 +187,7 @@ class Converter(object):
         if mime_type.startswith("image/"):
             return ""
 
-        cache_key = "img:%s:%s:%s" % (index, size, digest)
+        cache_key = "img:{}:{}:{}".format(index, size, digest)
         converted = self.cache.get(cache_key)
         if converted:
             return converted
@@ -198,7 +198,8 @@ class Converter(object):
                 converted_images = handler.convert(blob, size=size)
                 for i in range(0, len(converted_images)):
                     converted = converted_images[i]
-                    self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
+                    cache_key = "img:{}:{}:{}".format(i, size, digest)
+                    self.cache[cache_key] = converted
                 return converted_images[index]
 
         # Use PDF as a pivot format
@@ -208,11 +209,12 @@ class Converter(object):
                 converted_images = handler.convert(pdf, size=size)
                 for i in range(0, len(converted_images)):
                     converted = converted_images[i]
-                    self.cache["img:%s:%s:%s" % (i, size, digest)] = converted
+                    cache_key = "img:{}:{}:{}".format(i, size, digest)
+                    self.cache[cache_key] = converted
                 return converted_images[index]
 
         raise HandlerNotFound(
-            "No handler found to convert from %s to image" % mime_type,
+            "No handler found to convert from {} to image".format(mime_type),
         )
 
     def get_metadata(self, digest, content, mime_type):
