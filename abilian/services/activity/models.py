@@ -10,9 +10,9 @@ TODO: Look wether other attributes from the spec need to be implemented.
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+import logging
 from datetime import datetime
 
-from flask import logging
 from six import text_type
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
