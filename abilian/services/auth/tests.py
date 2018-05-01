@@ -93,7 +93,7 @@ def test_api_post(session, client):
         content_type='application/json',
     )
     assert response.status_code == 200
-    assert json.loads(response.data) == {
+    assert response.get_json() == {
         'email': 'User@domain.tld',
         'username': 'user@domain.tld',
         'fullname': 'Unknown',
