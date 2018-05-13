@@ -28,7 +28,7 @@ flask-script==2.0.6
 flask-sqlalchemy==2.1
 flask-testing==0.7.1
 flask-wtf==0.12
-flask==1.0.1
+flask==1.0.2
 html5lib==1.0.1           # via bleach
 infinity==1.4             # via intervals
 intervals==0.8.1          # via wtforms-components
@@ -45,19 +45,19 @@ pathlib==1.0.1
 pillow==5.0
 pycparser==2.18           # via cffi
 pygeoip==0.3.2
-python-dateutil==2.7.2
+python-dateutil==2.7.3
 python-deprecated==1.1.0
 python-editor==1.0.3      # via alembic
 python-magic==0.4.15
 pytz==2018.4              # via babel, celery, pandas
 pyyaml==3.12
-raven==6.7.0
+raven==6.8.0
 redis==2.10.6
 six==1.11.0
 sqlalchemy-utils==0.33.3  # via wtforms-alchemy
 sqlalchemy==1.2.7
 sqlparse==0.2.4
-tqdm==4.23.1
+tqdm==4.23.3
 typing==3.6.4
 validators==0.12.1        # via wtforms-components
 vine==1.1.4               # via amqp
@@ -65,7 +65,7 @@ webassets==0.12.1         # via flask-assets
 webencodings==0.5.1       # via html5lib
 werkzeug==0.14.1          # via flask, flask-debugtoolbar, flask-wtf
 whoosh==2.7.4
-wtforms-alchemy==0.16.6
+wtforms-alchemy==0.16.7
 wtforms-components==0.10.3
 wtforms-sqlalchemy==0.1
 wtforms==2.1              # via flask-wtf, wtforms-alchemy, wtforms-components, wtforms-sqlalchemy
