@@ -93,7 +93,7 @@ class AuditEntry(db.Model):
     # relation (and all audit entries will have it set to null if entity is
     # deleted)
     _fk_entity_id = Column(Integer, ForeignKey(Entity.id, ondelete="SET NULL"))
-    entity = relationship(Entity, foreign_keys=[_fk_entity_id], lazy='joined')
+    entity = relationship(Entity, foreign_keys=[_fk_entity_id], lazy="joined")
 
     entity_id = Column(Integer)
     entity_type = Column(String(1000))
@@ -105,15 +105,11 @@ class AuditEntry(db.Model):
     changes_pickle = Column(LargeBinary)
 
     def __repr__(self):
-        return '<AuditEntry id={} op={} user={} {}entity=<{} id={}>>'.format(
+        return "<AuditEntry id={} op={} user={} {}entity=<{} id={}>>".format(
             repr(self.id),
-            {
-                CREATION: "CREATION",
-                DELETION: "DELETION",
-                UPDATE: "UPDATE",
-            }[self.op],
+            {CREATION: "CREATION", DELETION: "DELETION", UPDATE: "UPDATE"}[self.op],
             repr(text_type(self.user)),
-            'related ' if self.related else '',
+            "related " if self.related else "",
             self.entity_type,
             self.entity_id,
         )
@@ -162,11 +158,10 @@ class AuditEntry(db.Model):
                         # TODO: Temp fix for errors that happen during
                         # migration
                         try:
-                            val = val.decode('utf-8')
+                            val = val.decode("utf-8")
                         except BaseException:
                             current_app.logger.error(
-                                "A Unicode error happened on changes %s",
-                                repr(changes),
+                                "A Unicode error happened on changes %s", repr(changes)
                             )
                             val = "[[Somme error occurred. Working on it]]"
                     uv.append(val)

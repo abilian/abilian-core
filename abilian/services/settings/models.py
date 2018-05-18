@@ -12,7 +12,7 @@ from six import text_type
 
 from abilian.core.extensions import db
 
-__all__ = ['Setting']
+__all__ = ["Setting"]
 
 
 class TransformerRegistry(object):
@@ -52,7 +52,7 @@ class _EmptyValue(object):
     __nonzero__ = __bool__
 
     def __repr__(self):
-        return '<Empty Value>'
+        return "<Empty Value>"
 
 
 #: marker for emptyness, to distinguish from None
@@ -66,11 +66,11 @@ class Setting(db.Model):
     value must be stored as Unicode.
     """
     transformers = _transformers
-    key = sa.Column('key', sa.String(length=1000), primary_key=True)
+    key = sa.Column("key", sa.String(length=1000), primary_key=True)
 
     #: Can be a string (Unicode), int, bool, json... or even a long dotted name
     #: if that's what you need. Type must be set before setting `value`
-    _type = sa.Column('type', sa.String(length=1000), nullable=False)
+    _type = sa.Column("type", sa.String(length=1000), nullable=False)
 
     @property
     def type(self):
@@ -79,16 +79,14 @@ class Setting(db.Model):
     @type.setter
     def type(self, type_):
         if not (
-            type_ in self.transformers.encoders and
-            type_ in self.transformers.decoders
+            type_ in self.transformers.encoders and type_ in self.transformers.decoders
         ):
             raise ValueError(
-                'Invalid type "{}": no encoder and/or decoder registered'.
-                format(type_),
+                'Invalid type "{}": no encoder and/or decoder registered'.format(type_)
             )
         self._type = type_
 
-    _value = sa.Column('value', sa.Text())
+    _value = sa.Column("value", sa.Text())
 
     @property
     def value(self):
@@ -109,32 +107,32 @@ def from_int(i):
     return "{}".format(i).encode()
 
 
-register('int', from_int, int)
+register("int", from_int, int)
 
 
 def from_bool(b):
-    return 'true' if b else 'false'
+    return "true" if b else "false"
 
 
 def to_bool(s):
-    return s == 'true'
+    return s == "true"
 
 
-register('bool', from_bool, to_bool)
+register("bool", from_bool, to_bool)
 
 
 def from_unicode(s):
-    return text_type(s).encode('utf-8')
+    return text_type(s).encode("utf-8")
 
 
 def to_unicode(s):
     if isinstance(s, text_type):
         return s
-    return s.decode('utf-8')
+    return s.decode("utf-8")
 
 
-register('string', from_unicode, to_unicode)
-register('json', json.dumps, json.loads)  # FIXME: checks for dump/load?
+register("string", from_unicode, to_unicode)
+register("json", json.dumps, json.loads)  # FIXME: checks for dump/load?
 
 
 def from_timedelta(s):
@@ -145,4 +143,4 @@ def to_timedelta(s):
     return timedelta(**json.loads(s))
 
 
-register('timedelta', from_timedelta, to_timedelta)
+register("timedelta", from_timedelta, to_timedelta)

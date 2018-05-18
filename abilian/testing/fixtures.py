@@ -24,14 +24,14 @@ from abilian.testing.util import cleanup_db, ensure_services_started, \
 
 class TestConfig:
     TESTING = True
-    SERVER_NAME = 'localhost'
+    SERVER_NAME = "localhost"
     CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-    MAIL_SENDER = 'tester@example.com'
+    MAIL_SENDER = "tester@example.com"
     SITE_NAME = "Abilian Test"
     CSRF_ENABLED = True
     WTF_CSRF_ENABLED = True
-    BABEL_ACCEPT_LANGUAGES = ['en', 'fr']
+    BABEL_ACCEPT_LANGUAGES = ["en", "fr"]
 
 
 @fixture
@@ -71,7 +71,7 @@ def db(app_context):
     from abilian.core.extensions import db
 
     stop_all_services(app_context.app)
-    ensure_services_started(['repository', 'session_repository'])
+    ensure_services_started(["repository", "session_repository"])
 
     cleanup_db(db)
     db.create_all()
@@ -130,7 +130,7 @@ def admin_user(db):
 @fixture
 def login_user(user, client):
     with client.session_transaction() as session:
-        session['user_id'] = user.id
+        session["user_id"] = user.id
 
     return user
 
@@ -138,6 +138,6 @@ def login_user(user, client):
 @fixture
 def login_admin(admin_user, client):
     with client.session_transaction() as session:
-        session['user_id'] = admin_user.id
+        session["user_id"] = admin_user.id
 
     return admin_user

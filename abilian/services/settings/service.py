@@ -13,7 +13,7 @@ from .models import Setting
 
 
 class SettingsService(Service):
-    name = 'settings'
+    name = "settings"
 
     def namespace(self, name):
         # type: (unicode) -> SettingsNamespace
@@ -62,9 +62,7 @@ class SettingsService(Service):
             s = self._get_setting(key)
         except KeyError:
             if not type_:
-                raise ValueError(
-                    'tried to set a new key without specifiying its type',
-                )
+                raise ValueError("tried to set a new key without specifiying its type")
             s = Setting(key=key, type=type_)
 
         # Always add to session. This covers the case delete(key);set(key).
@@ -98,21 +96,21 @@ class SettingsNamespace(object):
 
     def ns(self, key):
         """Returns full key name for use in settings service."""
-        return ':'.join((self.name, key))
+        return ":".join((self.name, key))
 
-    def keys(self, prefix=''):
-        prefix = ':'.join((self.name, prefix))
+    def keys(self, prefix=""):
+        prefix = ":".join((self.name, prefix))
         start = len(self.name) + 1  # +1 for colon
         return [k[start:] for k in self.service.keys(prefix=prefix)]
 
-    def iteritems(self, prefix=''):
-        prefix = ':'.join((self.name, prefix))
+    def iteritems(self, prefix=""):
+        prefix = ":".join((self.name, prefix))
         start = len(self.name) + 1  # +1 for colon
         iteritems(self.service, prefix=prefix)
         for k, v in iteritems(self.service, prefix=prefix):
             yield (k[start:], v)
 
-    def as_dict(self, prefix=''):
+    def as_dict(self, prefix=""):
         return dict(self.iteritems(prefix))
 
     def get(self, key):

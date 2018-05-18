@@ -61,7 +61,7 @@ class AuditServiceState(ServiceState):
 
 
 class AuditService(Service):
-    name = 'audit'
+    name = "audit"
     AppStateClass = AuditServiceState
 
     _listening = False
@@ -78,7 +78,7 @@ class AuditService(Service):
         self.register_classes()
 
     def is_auditable(self, model_or_class):
-        if hasattr(model_or_class, '__auditable_entity__'):
+        if hasattr(model_or_class, "__auditable_entity__"):
             return True
 
         if isclass(model_or_class):
@@ -90,7 +90,8 @@ class AuditService(Service):
         state = self.app_state
         BaseModel = db.Model
         all_models = (
-            cls for cls in BaseModel._decl_class_registry.values()
+            cls
+            for cls in BaseModel._decl_class_registry.values()
             if isclass(cls) and self.is_auditable(cls)
         )
         for cls in all_models:
@@ -116,42 +117,27 @@ class AuditService(Service):
             attr = getattr(entity_class, props.key)
             info = column.info
 
-            if info.get('auditable', True):
+            if info.get("auditable", True):
                 entity_class.__auditable__.audited_attrs.add(attr)
-                event.listen(
-                    attr,
-                    "set",
-                    self.set_attribute,
-                    active_history=True,
-                )
+                event.listen(attr, "set", self.set_attribute, active_history=True)
 
         for relation in mapper.relationships:
             if relation.direction is not sa.orm.interfaces.MANYTOMANY:
                 continue
             attr = getattr(entity_class, relation.key)
             entity_class.__auditable__.collection_attrs.add(attr)
-            event.listen(
-                attr,
-                "append",
-                self.collection_append,
-                active_history=True,
-            )
-            event.listen(
-                attr,
-                "remove",
-                self.collection_remove,
-                active_history=True,
-            )
+            event.listen(attr, "append", self.collection_append, active_history=True)
+            event.listen(attr, "remove", self.collection_remove, active_history=True)
 
     def setup_auditable_entity(self, entity_class):
-        meta = AuditableMeta(entity_class.__name__, 'id')
+        meta = AuditableMeta(entity_class.__name__, "id")
         entity_class.__auditable__ = meta
 
-        if not hasattr(entity_class, '__auditable_entity__'):
+        if not hasattr(entity_class, "__auditable_entity__"):
             return
 
         related_attr, backref_attr, enduser_ids = entity_class.__auditable_entity__
-        related_path = related_attr.split('.')
+        related_path = related_attr.split(".")
         inferred_backref = []
         mapper = sa.orm.class_mapper(entity_class)
         for attr in related_path:
@@ -159,7 +145,7 @@ class AuditService(Service):
             if not relation:
                 raise ValueError(
                     'Invalid relation: "{}", invalid attribute is "{}"'
-                    ''.format(related_attr, attr),
+                    "".format(related_attr, attr)
                 )
 
             mapper = relation.mapper
@@ -176,20 +162,19 @@ class AuditService(Service):
 
         if not backref_attr:
             if inferred_backref is not None:
-                backref_attr = '.'.join(inferred_backref)
+                backref_attr = ".".join(inferred_backref)
             else:
                 raise ValueError(
-                    'Audit setup class<{cls}: Could not guess backref name'
+                    "Audit setup class<{cls}: Could not guess backref name"
                     ' of relationship "{related_attr}", please use tuple annotation '
-                    'on __auditable_entity__'.format(
-                        cls=entity_class.__name__,
-                        related_attr=related_attr,
-                    ),
+                    "on __auditable_entity__".format(
+                        cls=entity_class.__name__, related_attr=related_attr
+                    )
                 )
 
         meta.related = related_path
         meta.backref_attr = backref_attr
-        meta.enduser_ids = [attr_name.split('.') for attr_name in enduser_ids]
+        meta.enduser_ids = [attr_name.split(".") for attr_name in enduser_ids]
 
     def _get_changes_for(self, entity):
         changes = getattr(entity, "__changes__", None)
@@ -213,8 +198,8 @@ class AuditService(Service):
         # Hide content if needed (like password columns)
         # FIXME: we can only handle the simplest case: 1 attribute => 1 column
         columns = initiator.parent_token.columns
-        if len(columns) == 1 and columns[0].info.get('audit_hide_content'):
-            old_value = new_value = '******'
+        if len(columns) == 1 and columns[0].info.get("audit_hide_content"):
+            old_value = new_value = "******"
 
         old_value = format_large_value(old_value)
         new_value = format_large_value(new_value)
@@ -249,14 +234,11 @@ class AuditService(Service):
                         if entry:
                             entries.append(entry)
                     except BaseException:
-                        if current_app.config.get(
-                            'DEBUG',
-                        ) or current_app.config.get('TESTING'):
+                        if current_app.config.get("DEBUG") or current_app.config.get(
+                            "TESTING"
+                        ):
                             raise
-                        log.error(
-                            'Exception during entry creation',
-                            exc_info=True,
-                        )
+                        log.error("Exception during entry creation", exc_info=True)
 
                 session.add_all(entries)
         finally:
@@ -290,8 +272,8 @@ class AuditService(Service):
         entry.entity_id = entity.id
         entry.entity_type = entity.entity_type
 
-        entity_name = ''
-        for attr_name in ('name', 'path', '__path_before_delete'):
+        entity_name = ""
+        for attr_name in ("name", "path", "__path_before_delete"):
             if hasattr(entity, attr_name):
                 entity_name = getattr(entity, attr_name)
         entry.entity_name = entity_name
@@ -301,24 +283,19 @@ class AuditService(Service):
         if op == CREATION:
             for instrumented_attr in meta.audited_attrs:
                 value = getattr(model, instrumented_attr.key)
-                self.set_attribute(
-                    model,
-                    value,
-                    NEVER_SET,
-                    instrumented_attr.impl,
-                )
+                self.set_attribute(model, value, NEVER_SET, instrumented_attr.impl)
 
             for instrumented_attr in meta.collection_attrs:
                 for obj in getattr(model, instrumented_attr.key):
                     self.collection_append(model, obj, instrumented_attr.impl)
 
-            changes = getattr(model, '__changes__', changes)
+            changes = getattr(model, "__changes__", changes)
         elif op == UPDATE:
-            changes = getattr(model, '__changes__', changes)
+            changes = getattr(model, "__changes__", changes)
             if not changes:
                 return
 
-        if hasattr(model, '__changes__'):
+        if hasattr(model, "__changes__"):
             del model.__changes__
 
         if meta.related:
@@ -329,12 +306,9 @@ class AuditService(Service):
                     item = getattr(item, attr)
                 enduser_ids.append(text_type(item))
 
-            related_name = '{} {}'.format(
-                meta.backref_attr,
-                ' '.join(enduser_ids),
-            )
+            related_name = "{} {}".format(meta.backref_attr, " ".join(enduser_ids))
             related_changes = changes
-            log.debug('related changes: %s', repr(related_changes))
+            log.debug("related changes: %s", repr(related_changes))
             changes = Changes()
             changes.set_related_changes(related_name, related_changes)
 
@@ -342,9 +316,9 @@ class AuditService(Service):
         return entry
 
     def entries_for(self, entity, limit=None):
-        query = AuditEntry.query \
-            .filter(AuditEntry.entity == entity) \
-            .order_by(AuditEntry.happened_at.desc())
+        query = AuditEntry.query.filter(AuditEntry.entity == entity).order_by(
+            AuditEntry.happened_at.desc()
+        )
 
         if limit is not None:
             query = query.limit(limit)
@@ -366,12 +340,7 @@ def format_large_value(value):
 
 
 def get_model_changes(
-    entity_type,
-    year=None,
-    month=None,
-    day=None,
-    hour=None,
-    since=None,
+    entity_type, year=None, month=None, day=None, hour=None, since=None
 ):
     """Get models modified at the given date with the Audit service.
 
@@ -391,16 +360,17 @@ def get_model_changes(
         query = query.filter(AuditEntry.happened_at >= since)
 
     if year:
-        query = query.filter(extract('year', AuditEntry.happened_at) == year)
+        query = query.filter(extract("year", AuditEntry.happened_at) == year)
     if month:
-        query = query.filter(extract('month', AuditEntry.happened_at) == month)
+        query = query.filter(extract("month", AuditEntry.happened_at) == month)
     if day:
-        query = query.filter(extract('day', AuditEntry.happened_at) == day)
+        query = query.filter(extract("day", AuditEntry.happened_at) == day)
     if hour:
-        query = query.filter(extract('hour', AuditEntry.happened_at) == hour)
+        query = query.filter(extract("hour", AuditEntry.happened_at) == hour)
 
-    query = query.filter(AuditEntry.entity_type.like(entity_type)) \
-                 .order_by(AuditEntry.happened_at)
+    query = query.filter(AuditEntry.entity_type.like(entity_type)).order_by(
+        AuditEntry.happened_at
+    )
 
     return query
 

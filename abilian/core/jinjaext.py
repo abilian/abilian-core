@@ -13,12 +13,12 @@ from jinja2 import nodes
 from jinja2.ext import Extension as JinjaExtension
 from werkzeug.local import LocalProxy
 
-deferred_js = LocalProxy(partial(_lookup_req_object, 'deferred_js'))
+deferred_js = LocalProxy(partial(_lookup_req_object, "deferred_js"))
 
 
 class DeferredJS(object):
     """Flask extension for use with DeferredJSExtension for jinja."""
-    name = 'deferred_js'
+    name = "deferred_js"
 
     def __init__(self, app=None):
         if app is not None:
@@ -45,7 +45,7 @@ class DeferredJSExtension(JinjaExtension):
     The JS fragment can contains <script> tag so that your favorite
     editor keeps doing proper indentation, syntax highlighting...
     """
-    tags = {'deferJS', 'deferredJS'}
+    tags = {"deferJS", "deferredJS"}
 
     def parse(self, parser):
         token = next(parser.stream)
@@ -54,25 +54,21 @@ class DeferredJSExtension(JinjaExtension):
 
         # now we parse body of the block
         body = parser.parse_statements(
-            ['name:enddeferJS', 'name:enddeferredJS'],
-            drop_needle=True,
+            ["name:enddeferJS", "name:enddeferredJS"], drop_needle=True
         )
 
-        method = 'defer_nodes' if tag == 'deferJS' else 'collect_deferred'
-        return nodes.CallBlock(
-            self.call_method(method, []),
-            [],
-            [],
-            body,
-        ).set_lineno(lineno)
+        method = "defer_nodes" if tag == "deferJS" else "collect_deferred"
+        return nodes.CallBlock(self.call_method(method, []), [], [], body).set_lineno(
+            lineno
+        )
 
     def defer_nodes(self, caller):
-        body = '<div>{}</div>'.format(caller().strip())
+        body = "<div>{}</div>".format(caller().strip())
 
         # remove 'script' tag in immediate children, if any
         fragment = lxml.html.fragment_fromstring(body)
         for child in fragment:
-            if child.tag == 'script':
+            if child.tag == "script":
                 # side effect on fragment.text or previous_child.tail!
                 child.drop_tag()
 
@@ -83,14 +79,12 @@ class DeferredJSExtension(JinjaExtension):
         for child in fragment:
             body.append(lxml.html.tostring(child))
             body.append(child.tail)
-        body = ''.join(body)
+        body = "".join(body)
 
         deferred_js.append(body)
-        return ''
+        return ""
 
     def collect_deferred(self, caller):
-        result = '\n'.join(
-            '(function(){{\n{}\n}})();'.format(js) for js in deferred_js
-        )
+        result = "\n".join("(function(){{\n{}\n}})();".format(js) for js in deferred_js)
         current_app.extensions[DeferredJS.name].reset_deferred()
         return result

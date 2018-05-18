@@ -68,18 +68,16 @@ class FormPermissions(object):
         :param write: global roles required for `WRITE` permission for whole form.
         """
         if isinstance(default, Role):
-            default = {'default': (default,)}
+            default = {"default": (default,)}
         elif isinstance(default, dict):
-            if 'default' not in default:
-                raise ValueError(
-                    '`default` parameter must have a "default" key',
-                )
+            if "default" not in default:
+                raise ValueError('`default` parameter must have a "default" key')
         elif callable(default):
-            default = {'default': default}
+            default = {"default": default}
         else:
             raise ValueError(
                 "No valid value for `default`. Use a Role, an iterable "
-                "of Roles, a callable, or a dict.",
+                "of Roles, a callable, or a dict."
             )
 
         self.default = default
@@ -118,25 +116,19 @@ class FormPermissions(object):
                 for field_name, allowed_roles in fields.items():
                     if isinstance(allowed_roles, Role):
                         allowed_roles = (allowed_roles,)
-                    self.fields.setdefault(
-                        field_name,
-                        dict(),
-                    )[permission] = allowed_roles
+                    self.fields.setdefault(field_name, dict())[
+                        permission
+                    ] = allowed_roles
 
-    def has_permission(
-        self,
-        permission,
-        field=None,
-        obj=None,
-        user=current_user,
-    ):
+    def has_permission(self, permission, field=None, obj=None, user=current_user):
         if obj is not None and not isinstance(obj, Entity):
             # permission/role can be set only on entities
             return True
 
         allowed_roles = (
             self.default[permission]
-            if permission in self.default else self.default['default']
+            if permission in self.default
+            else self.default["default"]
         )
         definition = None
 
@@ -170,7 +162,7 @@ class FormPermissions(object):
         # TODO: replace w/: security = get_service('security')
         # (Doing it now breaks a test)
         # security = current_app.services['security']
-        security = get_service('security')
+        security = get_service("security")
         # security = get_service('security')
         return security.has_role(user, role=roles, object=obj)
 
@@ -192,7 +184,7 @@ class FormContext(object):
         if not has_app_context():
             return self
 
-        self.__existing = getattr(g, '__form_ctx__', None)
+        self.__existing = getattr(g, "__form_ctx__", None)
         if self.__existing:
             if self.permission is None:
                 self.permission = self.__existing.permission
@@ -208,14 +200,14 @@ class FormContext(object):
         if self.user is None:
             self.user = current_user
 
-        setattr(g, '__form_ctx__', self)
+        setattr(g, "__form_ctx__", self)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if not has_app_context():
             return
 
-        setattr(g, '__form_ctx__', self.__existing)
+        setattr(g, "__form_ctx__", self.__existing)
 
 
 class Form(BaseForm):
@@ -225,20 +217,20 @@ class Form(BaseForm):
     _permissions = None
 
     def __init__(self, *args, **kwargs):
-        permission = kwargs.pop('permission', None)
-        user = kwargs.pop('user', None)
-        obj = kwargs.get('obj')
+        permission = kwargs.pop("permission", None)
+        user = kwargs.pop("user", None)
+        obj = kwargs.get("obj")
         form_ctx = FormContext(permission=permission, user=user, obj=obj)
 
-        if kwargs.get('csrf_enabled') is None and not has_app_context():
+        if kwargs.get("csrf_enabled") is None and not has_app_context():
             # form instanciated without app context and without explicit csrf
             # parameter: disable csrf since it requires current_app.
             #
             # If there is a prefix, it's probably a subform (in a fieldform of
             # fieldformlist): csrf is not required. If there is no prefix: let error
             # happen.
-            if kwargs.get('prefix'):
-                kwargs['csrf_enabled'] = False
+            if kwargs.get("prefix"):
+                kwargs["csrf_enabled"] = False
 
         with form_ctx as ctx:
             super(Form, self).__init__(*args, **kwargs)
@@ -269,11 +261,9 @@ class Form(BaseForm):
                 for field_name in list(self._fields):
                     if empty_form or not has_permission(field=field_name):
                         logger.debug(
-                            '{}(permission={!r}): field {!r}: removed'
-                            ''.format(
-                                self.__class__.__name__,
-                                ctx.permission,
-                                field_name,
+                            "{}(permission={!r}): field {!r}: removed"
+                            "".format(
+                                self.__class__.__name__, ctx.permission, field_name
                             )
                         )
                         del self[field_name]
@@ -316,8 +306,8 @@ if not _PATCHED:
 
     def _core_field_init(self, *args, **kwargs):
         view_widget = None
-        if 'view_widget' in kwargs:
-            view_widget = kwargs.pop('view_widget')
+        if "view_widget" in kwargs:
+            view_widget = kwargs.pop("view_widget")
 
         _wtforms_Field_init(self, *args, **kwargs)
         if view_widget is None:
@@ -334,14 +324,11 @@ if not _PATCHED:
 
         Useful for tracing field errors (like in Sentry).
         """
-        return '<{}.{} at 0x{:x} name={!r}>'.format(
-            self.__class__.__module__,
-            self.__class__.__name__,
-            id(self),
-            self.name,
+        return "<{}.{} at 0x{:x} name={!r}>".format(
+            self.__class__.__module__, self.__class__.__name__, id(self), self.name
         )
 
-    patch_logger.info(Field.__module__ + '.Field.__repr__')
+    patch_logger.info(Field.__module__ + ".Field.__repr__")
     Field.__repr__ = _core_field_repr
     del _core_field_repr
 
@@ -349,8 +336,8 @@ if not _PATCHED:
     _wtforms_Field_render = Field.__call__
 
     def _core_field_render(self, **kwargs):
-        if 'widget_options' in kwargs and not kwargs['widget_options']:
-            kwargs.pop('widget_options')
+        if "widget_options" in kwargs and not kwargs["widget_options"]:
+            kwargs.pop("widget_options")
 
         return _wtforms_Field_render(self, **kwargs)
 
@@ -360,15 +347,15 @@ if not _PATCHED:
 
     def render_view(self, **kwargs):
         """Render data."""
-        if 'widget_options' in kwargs and not kwargs['widget_options']:
-            kwargs.pop('widget_options')
+        if "widget_options" in kwargs and not kwargs["widget_options"]:
+            kwargs.pop("widget_options")
 
-        if hasattr(self.view_widget, 'render_view'):
+        if hasattr(self.view_widget, "render_view"):
             return self.view_widget.render_view(self, **kwargs)
 
         return DefaultViewWidget().render_view(self, **kwargs)
 
-    patch_logger.info('Add method %s.Field.render_view' % Field.__module__)
+    patch_logger.info("Add method %s.Field.render_view" % Field.__module__)
     Field.render_view = render_view
     del render_view
 
@@ -377,7 +364,7 @@ if not _PATCHED:
         is not set on `HiddenField` :-("""
         return self.flags.hidden or isinstance(self, HiddenField)
 
-    patch_logger.info('Add method %s.Field.is_hidden' % Field.__module__)
+    patch_logger.info("Add method %s.Field.is_hidden" % Field.__module__)
     Field.is_hidden = property(is_hidden)
     del is_hidden
 

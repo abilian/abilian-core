@@ -13,15 +13,12 @@ from abilian.web.forms.validators import required
 
 
 class GroupAdminForm(Form):
-    name = StringField(_l('Name'), filters=(strip,), validators=[required()])
-    description = StringField(_l('Description'), filters=(strip,))
+    name = StringField(_l("Name"), filters=(strip,), validators=[required()])
+    description = StringField(_l("Description"), filters=(strip,))
 
-    public = BooleanField(
-        _l('Public'),
-        widget=widgets.BooleanWidget(on_off_mode=True),
-    )
+    public = BooleanField(_l("Public"), widget=widgets.BooleanWidget(on_off_mode=True))
 
     roles = fields.Select2MultipleField(
-        _l('Roles'),
+        _l("Roles"),
         choices=lambda: [(r.name, r.label) for r in Role.assignable_roles()],
     )

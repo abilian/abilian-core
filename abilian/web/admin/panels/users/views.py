@@ -30,7 +30,7 @@ class JsonUsersList(base.JSONView):
     """JSON user list for datatable."""
 
     def data(self, *args, **kw):
-        security = get_service('security')
+        security = get_service("security")
         length = int(kw.get("iDisplayLength", 0))
         start = int(kw.get("iDisplayStart", 0))
         sort_col = int(kw.get("iSortCol_0", 1))
@@ -39,12 +39,9 @@ class JsonUsersList(base.JSONView):
         search = kw.get("sSearch", "").replace("%", "").strip().lower()
 
         end = start + length
-        query = User.query \
-            .options(
-                sa.orm.subqueryload('groups'),
-                sa.orm.undefer('photo'),
-            ) \
-            .filter(User.id != 0)
+        query = User.query.options(
+            sa.orm.subqueryload("groups"), sa.orm.undefer("photo")
+        ).filter(User.id != 0)
         total_count = query.count()
 
         if search:
@@ -63,17 +60,14 @@ class JsonUsersList(base.JSONView):
             5: [User.last_active],
         }
         columns = list(SORT_COLS.get(sort_col, []))
-        columns.extend([
-            func.lower(User.last_name),
-            func.lower(User.first_name),
-        ],)
+        columns.extend([func.lower(User.last_name), func.lower(User.first_name)])
 
-        direction = asc if sort_dir == 'asc' else desc
+        direction = asc if sort_dir == "asc" else desc
         order_by = list(map(direction, columns))
 
         # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
         engine = query.session.get_bind(User.__mapper__)
-        if engine.name != 'sqlite':
+        if engine.name != "sqlite":
             order_by[0] = nullslast(order_by[0])
 
         query = query.order_by(*order_by)
@@ -89,28 +83,26 @@ class JsonUsersList(base.JSONView):
             name = escape(getattr(user, "name") or "")
             email = escape(getattr(user, "email") or "")
             roles = [
-                r for r in security.get_roles(user, no_group_roles=True)
-                if r.assignable
+                r for r in security.get_roles(user, no_group_roles=True) if r.assignable
             ]
             columns = [
                 '<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
-                '</a>'.format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
+                "</a>".format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
                 '<a href="{url}">{name}</a>'.format(url=user_url, name=name),
                 '<a href="{url}"><em>{email}</em></a>'.format(
-                    url=user_url,
-                    email=email,
+                    url=user_url, email=email
                 ),
-                '\u2713' if user.can_login else '',
+                "\u2713" if user.can_login else "",
                 render_template_string(
-                    '''{%- for g in groups %}
+                    """{%- for g in groups %}
                         <span class="badge badge-default">{{ g.name }}</span>
-                    {%- endfor %}''',
+                    {%- endfor %}""",
                     groups=sorted(user.groups),
                 ),
                 render_template_string(
-                    '''{%- for role in roles %}
+                    """{%- for role in roles %}
                        <span class="badge badge-default">{{ role }}</span>
-                    {%- endfor %}''',
+                    {%- endfor %}""",
                     roles=roles,
                 ),
             ]
@@ -118,7 +110,7 @@ class JsonUsersList(base.JSONView):
             if user.last_active:
                 last_active = format_datetime(user.last_active)
             else:
-                last_active = _('Never logged in')
+                last_active = _("Never logged in")
             columns.append(last_active)
 
             data.append(columns)
@@ -134,12 +126,12 @@ class JsonUsersList(base.JSONView):
 # User edit / create views
 class UserBase(object):
     Model = User
-    pk = 'user_id'
+    pk = "user_id"
     Form = UserAdminForm
-    base_template = 'admin/_base.html'
+    base_template = "admin/_base.html"
 
     def index_url(self):
-        return url_for('.users')
+        return url_for(".users")
 
     view_url = index_url
 
@@ -147,14 +139,14 @@ class UserBase(object):
 class UserEdit(UserBase, views.ObjectEdit):
 
     def breadcrumb(self):
-        label = render_template_string('<em>{{ u.email }}</em>', u=self.obj)
-        return BreadcrumbItem(label=label, url='', description=self.obj.name)
+        label = render_template_string("<em>{{ u.email }}</em>", u=self.obj)
+        return BreadcrumbItem(label=label, url="", description=self.obj.name)
 
     def get_form_kwargs(self):
         kw = super(UserEdit, self).get_form_kwargs()
-        security = get_service('security')
+        security = get_service("security")
         roles = security.get_roles(self.obj, no_group_roles=True)
-        kw['roles'] = [r.name for r in roles if r.assignable]
+        kw["roles"] = [r.name for r in roles if r.assignable]
         return kw
 
     def validate(self):
@@ -178,15 +170,15 @@ class UserEdit(UserBase, views.ObjectEdit):
         return super(UserEdit, self).form_valid()
 
     def after_populate_obj(self):
-        security = get_service('security')
+        security = get_service("security")
         current_roles = security.get_roles(self.obj, no_group_roles=True)
         current_roles = {r for r in current_roles if r.assignable}
         new_roles = {Role(r) for r in self.form.roles.data}
 
-        for r in (current_roles - new_roles):
+        for r in current_roles - new_roles:
             security.ungrant_role(self.obj, r)
 
-        for r in (new_roles - current_roles):
+        for r in new_roles - current_roles:
             security.grant_role(self.obj, r)
 
         return super(UserEdit, self).after_populate_obj()
@@ -199,11 +191,11 @@ class UserCreate(UserBase, views.ObjectCreate):
     def get_form_kwargs(self):
         kw = super(UserCreate, self).get_form_kwargs()
 
-        if request.method == 'GET':
+        if request.method == "GET":
             # ensure formdata is not ImmutableMultiDict (request.args)
-            data = MultiDict(kw.setdefault('formdata', {}))
-            kw['formdata'] = data
-            data['can_login'] = True
+            data = MultiDict(kw.setdefault("formdata", {}))
+            kw["formdata"] = data
+            data["can_login"] = True
 
         return kw
 

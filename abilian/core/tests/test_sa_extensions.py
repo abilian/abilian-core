@@ -41,13 +41,13 @@ def test_dict_attribute(session):
     model2 = DummyModel2.query.get(model_id)
     assert model2.dict_attr == dict(a=3, b=4)
 
-    model2.dict_attr['c'] = 5
+    model2.dict_attr["c"] = 5
     assert model2.dict_attr == dict(a=3, b=4, c=5)
 
 
 def test_uuid_attribute(session):
     # uuid from string
-    model = DummyModel2(uuid='c5ad316a-2cd0-4f78-a49b-cff216c10713')
+    model = DummyModel2(uuid="c5ad316a-2cd0-4f78-a49b-cff216c10713")
     session.add(model)
     session.commit()
     model_id = model.id
@@ -57,7 +57,7 @@ def test_uuid_attribute(session):
     assert isinstance(model2.uuid, uuid.UUID)
 
     # plain UUID object
-    u = uuid.UUID('3eb7f164-bf15-4564-a058-31bdea0196e6')
+    u = uuid.UUID("3eb7f164-bf15-4564-a058-31bdea0196e6")
     model = DummyModel2(uuid=u)
     session.add(model)
     session.commit()

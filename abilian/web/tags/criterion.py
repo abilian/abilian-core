@@ -14,14 +14,14 @@ from .extension import ENTITY_DEFAULT_NS_ATTR
 
 class TagCriterion(BaseCriterion):
     """Filter entities with selected tag(s)."""
-    form_default_value = ''
+    form_default_value = ""
 
     def __init__(self, *args, **kwargs):
         if len(args) == 0:
-            kwargs.setdefault('name', 'tags')
+            kwargs.setdefault("name", "tags")
 
         if len(args) < 2:
-            kwargs.setdefault('label', _('Tags'))
+            kwargs.setdefault("label", _("Tags"))
 
         super(TagCriterion, self).__init__(*args, **kwargs)
 
@@ -33,17 +33,10 @@ class TagCriterion(BaseCriterion):
     @property
     def valid_tags(self):
         join_clause = entity_tag_tbl.join(
-            self.model,
-            self.model.id == entity_tag_tbl.c.entity_id,
+            self.model, self.model.id == entity_tag_tbl.c.entity_id
         )
-        model_tags = sa.sql.select(
-            [entity_tag_tbl.c.tag_id],
-            from_obj=join_clause,
-        )
-        return Tag.query.filter(
-            Tag.ns == self.ns,
-            Tag.id.in_(model_tags),
-        ).all()
+        model_tags = sa.sql.select([entity_tag_tbl.c.tag_id], from_obj=join_clause)
+        return Tag.query.filter(Tag.ns == self.ns, Tag.id.in_(model_tags)).all()
 
     def get_request_values(self, request):
         tag_ids = []
@@ -76,7 +69,7 @@ class TagCriterion(BaseCriterion):
                     entity_tag_tbl.c.entity_id == self.model.id,
                     entity_tag_tbl.c.tag_id.in_(t.id for t in tags),
                 ),
-            ),
+            )
         )
         return query.filter(cond)
 

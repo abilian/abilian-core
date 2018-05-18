@@ -14,7 +14,7 @@ from abilian.core.entities import Entity
 from .base import IdMixin, Model
 
 #: backref attribute on tagged elements
-TAGS_ATTR = '__tags__'
+TAGS_ATTR = "__tags__"
 
 
 @add_metaclass(abc.ABCMeta)
@@ -34,9 +34,7 @@ def register(cls):
             ....
     """
     if not issubclass(cls, Entity):
-        raise ValueError(
-            'Class must be a subclass of abilian.core.entities.Entity',
-        )
+        raise ValueError("Class must be a subclass of abilian.core.entities.Entity")
 
     SupportTagging.register(cls)
     return cls
@@ -62,19 +60,11 @@ def supports_tagging(obj):
 is_support_tagging = supports_tagging
 
 entity_tag_tbl = sa.Table(
-    'entity_tags',
+    "entity_tags",
     Model.metadata,
-    sa.Column(
-        'tag_id',
-        sa.Integer,
-        sa.ForeignKey('tag.id', ondelete='CASCADE'),
-    ),
-    sa.Column(
-        'entity_id',
-        sa.Integer,
-        sa.ForeignKey(Entity.id, ondelete='CASCADE'),
-    ),
-    sa.UniqueConstraint('tag_id', 'entity_id'),
+    sa.Column("tag_id", sa.Integer, sa.ForeignKey("tag.id", ondelete="CASCADE")),
+    sa.Column("entity_id", sa.Integer, sa.ForeignKey(Entity.id, ondelete="CASCADE")),
+    sa.UniqueConstraint("tag_id", "entity_id"),
 )
 
 
@@ -86,14 +76,11 @@ class Tag(IdMixin, Model):
     They are namespaced, so that independent group of tags can be
     defined in the application. The default namespace is `"default"`.
     """
-    __tablename__ = 'tag'
+    __tablename__ = "tag"
 
     #: namespace
     ns = sa.Column(
-        sa.UnicodeText(),
-        nullable=False,
-        default='default',
-        server_default='default',
+        sa.UnicodeText(), nullable=False, default="default", server_default="default"
     )
 
     #: Label visible to the user
@@ -107,18 +94,14 @@ class Tag(IdMixin, Model):
         backref=sa.orm.backref(TAGS_ATTR, collection_class=set),
     )
 
-    __mapper_args__ = {
-        'order_by': label,
-    }
+    __mapper_args__ = {"order_by": label}
 
     __table_args__ = (
         sa.UniqueConstraint(ns, label),
         # namespace is not empty and is not surrounded by space characters
-        sa.CheckConstraint(sa.sql.and_(sa.sql.func.trim(ns) == ns, ns != ''),),
+        sa.CheckConstraint(sa.sql.and_(sa.sql.func.trim(ns) == ns, ns != "")),
         # label is not empty and is not surrounded by space characters
-        sa.CheckConstraint(
-            sa.sql.and_(sa.sql.func.trim(label) == label, label != ''),
-        ),
+        sa.CheckConstraint(sa.sql.and_(sa.sql.func.trim(label) == label, label != "")),
     )
 
     def __str__(self):
@@ -129,10 +112,9 @@ class Tag(IdMixin, Model):
 
     def __repr__(self):
         cls = self.__class__
-        return '<{mod}.{cls} id={t.id!r} ns={t.ns!r} ' \
-               'label={t.label!r} at 0x{addr:x}>'.format(
-            mod=cls.__module__,
-            cls=cls.__name__,
-            t=self,
-            addr=id(self),
+        return (
+            "<{mod}.{cls} id={t.id!r} ns={t.ns!r} "
+            "label={t.label!r} at 0x{addr:x}>".format(
+                mod=cls.__module__, cls=cls.__name__, t=self, addr=id(self)
+            )
         )

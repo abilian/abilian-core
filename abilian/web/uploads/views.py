@@ -14,7 +14,7 @@ from abilian.web.blueprints import Blueprint
 from abilian.web.forms import Form
 from abilian.web.views import JSONView, View
 
-bp = Blueprint('uploads', __name__, url_prefix='/upload')
+bp = Blueprint("uploads", __name__, url_prefix="/upload")
 
 
 class UploadForm(Form):
@@ -26,39 +26,33 @@ class BaseUploadsView(object):
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseUploadsView, self).prepare_args(args, kwargs)
-        self.uploads = current_app.extensions['uploads']
+        self.uploads = current_app.extensions["uploads"]
         self.user = current_user._get_current_object()
         return args, kwargs
 
 
 class NewUploadView(BaseUploadsView, JSONView):
     """Upload a new file."""
-    methods = ['POST', 'PUT']
+    methods = ["POST", "PUT"]
     decorators = (csrf.support_graceful_failure,)
 
     #: file handle to be returned
     handle = None
 
     def data(self, *args, **kwargs):
-        return {
-            'handle': self.handle,
-            'url': url_for('.handle', handle=self.handle),
-        }
+        return {"handle": self.handle, "url": url_for(".handle", handle=self.handle)}
 
     def post(self, *args, **kwargs):
         form = UploadForm()
 
         if not form.validate():
-            raise BadRequest('File is missing.')
+            raise BadRequest("File is missing.")
 
-        uploaded = form['file'].data
+        uploaded = form["file"].data
         filename = secure_filename(uploaded.filename)
         mimetype = uploaded.mimetype
         self.handle = self.uploads.add_file(
-            self.user,
-            uploaded,
-            filename=filename,
-            mimetype=mimetype,
+            self.user, uploaded, filename=filename, mimetype=mimetype
         )
         return self.get(*args, **kwargs)
 
@@ -66,12 +60,12 @@ class NewUploadView(BaseUploadsView, JSONView):
         return self.post(*args, **kwargs)
 
 
-bp.add_url_rule('/', view_func=NewUploadView.as_view('new_file'))
+bp.add_url_rule("/", view_func=NewUploadView.as_view("new_file"))
 
 
 class UploadView(BaseUploadsView, View):
     """Manage an uploaded file: download, delete."""
-    methods = ['GET', 'DELETE']
+    methods = ["GET", "DELETE"]
     decorators = (csrf.support_graceful_failure,)
 
     def get(self, handle, *args, **kwargs):
@@ -81,9 +75,9 @@ class UploadView(BaseUploadsView, View):
             raise NotFound()
 
         metadata = self.uploads.get_metadata(self.user, handle)
-        filename = metadata.get('filename', handle)
-        content_type = metadata.get('mimetype')
-        stream = file_obj.open('rb')
+        filename = metadata.get("filename", handle)
+        content_type = metadata.get("mimetype")
+        stream = file_obj.open("rb")
 
         return send_file(
             stream,
@@ -100,7 +94,7 @@ class UploadView(BaseUploadsView, View):
             raise NotFound()
 
         self.uploads.remove_file(self.user, handle)
-        return jsonify({'success': True})
+        return jsonify({"success": True})
 
 
-bp.add_url_rule('/<string:handle>', view_func=UploadView.as_view('handle'))
+bp.add_url_rule("/<string:handle>", view_func=UploadView.as_view("handle"))

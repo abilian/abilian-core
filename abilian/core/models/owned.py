@@ -16,12 +16,12 @@ from .subjects import User
 
 class OwnedMixin(object):
     __indexation_args__ = {
-        'index_to': (
-            ('creator', ('creator',)),
-            ('creator_name', (('creator_name', STORED),)),
-            ('owner', ('owner',)),
-            ('owner_name', (('owner_name', STORED),)),
-        ),
+        "index_to": (
+            ("creator", ("creator",)),
+            ("creator_name", (("creator_name", STORED),)),
+            ("owner", ("owner",)),
+            ("owner_name", (("owner_name", STORED),)),
+        )
     }
 
     def __init__(self, *args, **kwargs):
@@ -44,14 +44,14 @@ class OwnedMixin(object):
         return relationship(
             User,
             primaryjoin=primary_join,
-            lazy='joined',
+            lazy="joined",
             uselist=False,
             info=SYSTEM | SEARCHABLE,
         )
 
     @property
     def creator_name(self):
-        return text_type(self.creator) if self.creator else ''
+        return text_type(self.creator) if self.creator else ""
 
     @declared_attr
     def owner_id(cls):
@@ -63,11 +63,11 @@ class OwnedMixin(object):
         return relationship(
             User,
             primaryjoin=primary_join,
-            lazy='joined',
+            lazy="joined",
             uselist=False,
             info=EDITABLE | AUDITABLE | SEARCHABLE,
         )
 
     @property
     def owner_name(self):
-        return text_type(self.owner) if self.owner else ''
+        return text_type(self.owner) if self.owner else ""

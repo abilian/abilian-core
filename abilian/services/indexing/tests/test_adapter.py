@@ -21,22 +21,18 @@ class SANotAdaptable(object):
 
 
 class SANotIndexable(IdMixin, db.Model):
-    __tablename__ = 'sa_not_indexable'
+    __tablename__ = "sa_not_indexable"
     __indexable__ = False
 
 
 class Indexable(IdMixin, CoreIndexable, db.Model):
-    __tablename__ = 'sa_indexable'
+    __tablename__ = "sa_indexable"
     __indexation_args__ = dict(
-        index_to=(
-            ('related.name', ('name', 'text')),
-            ('related.description', 'text'),
-        ),
+        index_to=(("related.name", ("name", "text")), ("related.description", "text"))
     )
 
     num = sa.Column(
-        sa.Integer,
-        info=SEARCHABLE | dict(index_to=(('num', NUMERIC(numtype=int)),)),
+        sa.Integer, info=SEARCHABLE | dict(index_to=(("num", NUMERIC(numtype=int)),))
     )
 
 
@@ -63,81 +59,75 @@ def test_build_attrs():
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     assert adapter.indexable
     assert set(adapter.doc_attrs) == {
-        'object_key',
-        'id',
-        'name',
-        'slug',
-        'object_type',
-        'text',
-        'created_at',
-        'updated_at',
-        'name_prefix',
-        'owner',
-        'owner_name',
-        'creator_name',
-        'creator',
-        'allowed_roles_and_users',
-        'tag_ids',
-        'tag_text',
+        "object_key",
+        "id",
+        "name",
+        "slug",
+        "object_type",
+        "text",
+        "created_at",
+        "updated_at",
+        "name_prefix",
+        "owner",
+        "owner_name",
+        "creator_name",
+        "creator",
+        "allowed_roles_and_users",
+        "tag_ids",
+        "tag_text",
     }
     assert all(lambda f: callable(f) for f in six.itervalues(adapter.doc_attrs))
 
     assert set(schema.names()) == {
-        'object_key',
-        'id',
-        'object_type',
-        'name',
-        'slug',
-        'text',
-        'created_at',
-        'updated_at',
-        'name_prefix',
-        'owner',
-        'owner_name',
-        'creator_name',
-        'creator',
-        'allowed_roles_and_users',
-        'tag_ids',
-        'tag_text',
+        "object_key",
+        "id",
+        "object_type",
+        "name",
+        "slug",
+        "text",
+        "created_at",
+        "updated_at",
+        "name_prefix",
+        "owner",
+        "owner_name",
+        "creator_name",
+        "creator",
+        "allowed_roles_and_users",
+        "tag_ids",
+        "tag_text",
     }
 
     schema = Schema(
-        id=NUMERIC(
-            numtype=int,
-            bits=64,
-            signed=False,
-            stored=True,
-            unique=True,
-        ),
+        id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True)
     )
     adapter = SAAdapter(Indexable, schema)
     assert adapter.indexable
-    assert set(adapter.doc_attrs) == {'id', 'text', 'num', 'name'}
+    assert set(adapter.doc_attrs) == {"id", "text", "num", "name"}
     assert all(lambda f: callable(f) for f in six.itervalues(adapter.doc_attrs))
 
-    assert set(schema.names()) == {'id', 'text', 'num', 'name'}
-    assert isinstance(schema['text'], TEXT)
-    assert isinstance(schema['num'], NUMERIC)
+    assert set(schema.names()) == {"id", "text", "num", "name"}
+    assert isinstance(schema["text"], TEXT)
+    assert isinstance(schema["num"], NUMERIC)
 
 
 def test_get_document(app, db):
     schema = Schema()
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     expected = {
-        'id': 2,
-        'name': 'entity name',
-        'created_at': datetime(2013, 11, 28, 16, 17, 0),
-        'updated_at': datetime(2013, 11, 29, 12, 17, 58),
+        "id": 2,
+        "name": "entity name",
+        "created_at": datetime(2013, 11, 28, 16, 17, 0),
+        "updated_at": datetime(2013, 11, 29, 12, 17, 58),
     }
     obj = SubclassEntityIndexable(**expected)
-    obj.slug = 'entity-name'
+    obj.slug = "entity-name"
 
-    expected['object_type'] = 'test_adapter.SubclassEntityIndexable'
-    expected['object_key'] = 'test_adapter.SubclassEntityIndexable:2'
-    expected['text'] = 'entity name'
-    expected['slug'] = 'entity-name'
-    expected['name_prefix'] = 'entity name'
-    expected['allowed_roles_and_users'] = 'role:admin'
+    expected["object_type"] = "test_adapter.SubclassEntityIndexable"
+    expected["object_key"] = "test_adapter.SubclassEntityIndexable:2"
+    expected["text"] = "entity name"
+    expected["slug"] = "entity-name"
+    expected["name_prefix"] = "entity name"
+    expected["allowed_roles_and_users"] = "role:admin"
 
     with app.test_request_context():
         assert adapter.get_document(obj) == expected
@@ -146,26 +136,20 @@ def test_get_document(app, db):
 def test_get_document_with_schema():
     # test retrieve related attributes
     schema = Schema(
-        id=NUMERIC(
-            numtype=int,
-            bits=64,
-            signed=False,
-            stored=True,
-            unique=True,
-        ),
+        id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True)
     )
     adapter = SAAdapter(Indexable, schema)
     expected = dict(id=1, num=42)
     obj = Indexable(**expected)
-    obj.related = type(str('Related'), (object,), dict(name=None))()
-    expected['name'] = obj.related.name = 'related name'
-    obj.related.description = 'description text'
-    expected['text'] = obj.related.name + ' ' + obj.related.description
+    obj.related = type(str("Related"), (object,), dict(name=None))()
+    expected["name"] = obj.related.name = "related name"
+    obj.related.description = "description text"
+    expected["text"] = obj.related.name + " " + obj.related.description
     doc = adapter.get_document(obj)
 
-    assert set(doc) == {'id', 'name', 'num', 'text'}
-    assert doc['id'] == 1
-    assert doc['num'] == 42
-    assert doc['name'] == 'related name'
-    assert 'related name' in doc['text']
-    assert 'description text' in doc['text']
+    assert set(doc) == {"id", "name", "num", "text"}
+    assert doc["id"] == 1
+    assert doc["num"] == 42
+    assert doc["name"] == "related name"
+    assert "related name" in doc["text"]
+    assert "description text" in doc["text"]

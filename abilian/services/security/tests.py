@@ -13,15 +13,15 @@ from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
 
 
 def test_singleton():
-    admin = Role('admin')
-    other_admin = Role('admin')
+    admin = Role("admin")
+    other_admin = Role("admin")
     assert admin is other_admin
     assert id(admin) == id(other_admin)
 
 
 def test_equality():
-    admin = Role('admin')
-    assert admin == 'admin'
+    admin = Role("admin")
+    assert admin == "admin"
 
 
 def test_ordering():
@@ -58,10 +58,10 @@ def test_anonymous_user(app, session):
     # anonymous user is not an SQLAlchemy instance and must be handled
     # specifically to avoid tracebacks
     anon = app.login_manager.anonymous_user()
-    assert not security.has_role(anon, 'reader')
+    assert not security.has_role(anon, "reader")
     assert security.has_role(anon, Anonymous)
     assert security.get_roles(anon) == [Anonymous]
-    assert not security.has_permission(anon, 'read')
+    assert not security.has_permission(anon, "read")
 
 
 def test_has_role_authenticated(app, session):
@@ -79,13 +79,13 @@ def test_root_user(session):
     assert isinstance(root, User)
     assert security.has_role(root, Anonymous)
     assert security.has_role(root, Admin)
-    assert security.has_permission(root, 'manage')
+    assert security.has_permission(root, "manage")
 
     obj = DummyModel()
     session.add(obj)
     session.flush()
     assert security.has_role(root, Admin, obj)
-    assert security.has_permission(root, 'manage', obj)
+    assert security.has_permission(root, "manage", obj)
 
 
 def test_grant_basic_roles(session):
@@ -99,12 +99,12 @@ def test_grant_basic_roles(session):
     security.grant_role(user, Admin)
     assert security.has_role(user, Admin)
     assert security.get_roles(user) == [Admin]
-    assert security.get_roles(user) == ['admin']
+    assert security.get_roles(user) == ["admin"]
     assert security.get_principals(Admin) == [user]
 
     # clear roles cache for better coverage: has_permission uses
     # _fill_role_cache_batch(), get_roles uses _fill_role_cache()
-    delattr(user, '__roles_cache__')
+    delattr(user, "__roles_cache__")
     assert security.has_permission(user, "read")
     assert security.has_permission(user, "write")
     assert security.has_permission(user, "manage")
@@ -128,7 +128,7 @@ def test_grant_basic_roles_on_groups(session):
 
     security.grant_role(group, "admin")
     assert security.has_role(group, "admin")
-    assert security.get_roles(group) == ['admin']
+    assert security.get_roles(group) == ["admin"]
     assert security.get_principals(Admin) == [group]
 
     assert security.has_role(user, Admin)
@@ -157,10 +157,10 @@ def test_grant_roles_on_objects(session):
     session.add_all([user, user2, obj])
     session.flush()
 
-    security.grant_role(user, 'global_role')
+    security.grant_role(user, "global_role")
     security.grant_role(user, "reader", obj)
     assert security.has_role(user, "reader", obj)
-    assert security.get_roles(user, obj) == ['reader']
+    assert security.get_roles(user, obj) == ["reader"]
     assert security.get_principals(Reader) == []
     assert security.get_principals(Reader, object=obj) == [user]
 
@@ -169,15 +169,15 @@ def test_grant_roles_on_objects(session):
     assert not security.has_permission(user, "manage", obj)
 
     # test get_roles "global": object roles should not appear
-    assert security.get_roles(user) == ['global_role']
+    assert security.get_roles(user) == ["global_role"]
 
     # global role is valid on all object
-    assert security.has_role(user, 'global_role', obj)
+    assert security.has_role(user, "global_role", obj)
 
     security.ungrant_role(user, "reader", obj)
     assert not security.has_role(user, "reader", obj)
     assert security.get_roles(user, obj) == []
-    assert security.has_role(user, 'global_role', obj)
+    assert security.has_role(user, "global_role", obj)
 
     assert not security.has_permission(user, "read", obj)
     assert not security.has_permission(user, "write", obj)
@@ -207,7 +207,7 @@ def test_grant_roles_on_objects(session):
     # permissions through group membership
     security.grant_role(group, "manager", obj)
     assert security.has_role(group, "manager", obj)
-    assert security.get_roles(group, obj) == ['manager']
+    assert security.get_roles(group, obj) == ["manager"]
 
     # group membership: user hasn't role set, but has permissions
     assert security.get_roles(user, obj, no_group_roles=True) == []
@@ -285,13 +285,8 @@ def test_add_list_delete_permissions(session):
     }
 
     security.delete_permission(READ, Authenticated, obj)
-    assert security.get_permissions_assignments(obj) == {
-        READ: {Owner},
-        WRITE: {Owner},
-    }
-    assert security.get_permissions_assignments(obj, READ) == {
-        READ: {Owner},
-    }
+    assert security.get_permissions_assignments(obj) == {READ: {Owner}, WRITE: {Owner}}
+    assert security.get_permissions_assignments(obj, READ) == {READ: {Owner}}
 
     # do it twice: it should not crash
     security.add_permission(READ, Owner, obj)
@@ -299,11 +294,7 @@ def test_add_list_delete_permissions(session):
 
     # set/get/delete global permission
     security.add_permission(READ, Writer)
-    assert security.get_permissions_assignments() == {
-        READ: {
-            Writer,
-        },
-    }
+    assert security.get_permissions_assignments() == {READ: {Writer}}
 
 
 def test_has_permission_on_objects(session):
@@ -330,11 +321,7 @@ def test_has_permission_on_objects(session):
     assert not has_permission(user, READ, obj=obj)
     assert not has_permission(user, WRITE, obj=obj)
 
-    pa = PermissionAssignment(
-        role=Authenticated,
-        permission=READ,
-        object=obj,
-    )
+    pa = PermissionAssignment(role=Authenticated, permission=READ, object=obj)
     session.add(pa)
     session.flush()
     assert has_permission(user, READ, obj=obj)
@@ -366,8 +353,8 @@ def test_has_permission_custom_roles(session):
     session.add(user)
     session.flush()
 
-    role = Role('custom_role')
-    permission = Permission('custom permission')
+    role = Role("custom_role")
+    permission = Permission("custom permission")
     assert not security.has_permission(user, permission, roles=role)
     security.grant_role(user, role)
     assert not security.has_permission(user, permission)
@@ -377,20 +364,20 @@ def test_has_permission_custom_roles(session):
     assert security.has_permission(user, permission, roles=Anonymous)
 
     # test convert legacy permission & implicit mapping
-    security.grant_role(user, 'reader')
-    assert security.has_permission(user, 'read')
-    assert not security.has_permission(user, 'write')
-    assert not security.has_permission(user, 'manage')
+    security.grant_role(user, "reader")
+    assert security.has_permission(user, "read")
+    assert not security.has_permission(user, "write")
+    assert not security.has_permission(user, "manage")
 
-    security.grant_role(user, 'writer')
-    assert security.has_permission(user, 'read')
-    assert security.has_permission(user, 'write')
-    assert not security.has_permission(user, 'manage')
+    security.grant_role(user, "writer")
+    assert security.has_permission(user, "read")
+    assert security.has_permission(user, "write")
+    assert not security.has_permission(user, "manage")
 
-    security.grant_role(user, 'manager')
-    assert security.has_permission(user, 'read')
-    assert security.has_permission(user, 'write')
-    assert security.has_permission(user, 'manage')
+    security.grant_role(user, "manager")
+    assert security.has_permission(user, "read")
+    assert security.has_permission(user, "write")
+    assert security.has_permission(user, "manage")
 
 
 @mark.skip
@@ -399,23 +386,15 @@ def test_query_entity_with_permission(session):
     user = User(email="john@example.com", password="x")
     session.add(user)
 
-    obj_reader = DummyModel(name='reader')
-    obj_writer = DummyModel(name='writer')
-    obj_none = DummyModel(name='none')
+    obj_reader = DummyModel(name="reader")
+    obj_writer = DummyModel(name="writer")
+    obj_none = DummyModel(name="none")
     session.add_all([obj_reader, obj_writer, obj_none])
 
     assigments = [
-        PermissionAssignment(
-            role=Reader,
-            permission=READ,
-            object=obj_reader,
-        ),
+        PermissionAssignment(role=Reader, permission=READ, object=obj_reader),
         #
-        PermissionAssignment(
-            role=Writer,
-            permission=WRITE,
-            object=obj_writer,
-        ),
+        PermissionAssignment(role=Writer, permission=WRITE, object=obj_writer),
     ]
     session.add_all(assigments)
     session.flush()
@@ -432,26 +411,20 @@ def test_query_entity_with_permission(session):
     security.grant_role(user, Reader, obj=obj_reader)
     security.grant_role(user, Writer, obj=obj_writer)
     session.flush()
-    assert base_query.filter(get_filter(READ, user=user)).all() \
-        == [obj_reader]
-    assert base_query.filter(get_filter(WRITE, user=user)).all() \
-        == [obj_writer]
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
 
     # Permission granted to anonymous: objects returned
-    pa = PermissionAssignment(
-        role=Anonymous,
-        permission=WRITE,
-        object=obj_reader,
-    )
+    pa = PermissionAssignment(role=Anonymous, permission=WRITE, object=obj_reader)
     session.add(pa)
 
-    assert base_query.filter(get_filter(READ, user=user)).all() \
-        == [obj_reader]
-    assert set(base_query.filter(get_filter(WRITE, user=user)).all()) \
-        == {obj_reader, obj_writer}
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert set(base_query.filter(get_filter(WRITE, user=user)).all()) == {
+        obj_reader,
+        obj_writer,
+    }
     session.delete(pa)
-    assert base_query.filter(get_filter(WRITE, user=user)).all() \
-        == [obj_writer]
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
 
     # grant global roles
     security.ungrant_role(user, Reader, object=obj_reader)
@@ -460,12 +433,8 @@ def test_query_entity_with_permission(session):
     security.grant_role(user, Writer)
     session.flush()
 
-    assert base_query.filter(get_filter(
-        READ,
-        user=user,
-    ),).all() == [obj_reader]
-    assert base_query.filter(get_filter(WRITE, user=user),
-                            ).all() == [obj_writer]
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
 
     # admin role has all permissions
     # 1: local role
@@ -475,18 +444,25 @@ def test_query_entity_with_permission(session):
     security.grant_role(user, Admin, obj=obj_none)
     session.flush()
 
-    assert set(base_query.filter(get_filter(READ, user=user)).all()) == \
-        {obj_reader, obj_none}
-    assert set(base_query.filter(get_filter(WRITE, user=user)).all()) == \
-        {obj_reader, obj_none}
+    assert set(base_query.filter(get_filter(READ, user=user)).all()) == {
+        obj_reader,
+        obj_none,
+    }
+    assert set(base_query.filter(get_filter(WRITE, user=user)).all()) == {
+        obj_reader,
+        obj_none,
+    }
 
     # 2: global role
     security.ungrant_role(user, Admin, object=obj_reader)
     security.ungrant_role(user, Admin, object=obj_none)
     security.grant_role(user, Admin)
     session.flush()
-    assert set(base_query.filter(get_filter(READ, user=user)).all()) == \
-        {obj_reader, obj_writer, obj_none}
+    assert set(base_query.filter(get_filter(READ, user=user)).all()) == {
+        obj_reader,
+        obj_writer,
+        obj_none,
+    }
 
     # implicit role: Owner, Creator
     security.ungrant_role(user, Admin)
@@ -496,25 +472,15 @@ def test_query_entity_with_permission(session):
     obj_reader.creator = user
     obj_writer.owner = user
     assigments = [
-        PermissionAssignment(
-            role=Creator,
-            permission=READ,
-            object=obj_reader,
-        ),
+        PermissionAssignment(role=Creator, permission=READ, object=obj_reader),
         #
-        PermissionAssignment(
-            role=Owner,
-            permission=WRITE,
-            object=obj_writer,
-        ),
+        PermissionAssignment(role=Owner, permission=WRITE, object=obj_writer),
     ]
     session.add_all(assigments)
     session.flush()
 
-    assert base_query.filter(get_filter(READ, user=user)).all() \
-        == [obj_reader]
-    assert base_query.filter(get_filter(WRITE, user=user)).all() \
-        == [obj_writer]
+    assert base_query.filter(get_filter(READ, user=user)).all() == [obj_reader]
+    assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
 
 
 def test_add_delete_permissions_expunged_obj(session):
@@ -533,9 +499,7 @@ def test_add_delete_permissions_expunged_obj(session):
     security.add_permission(READ, Owner, None)
     obj = DummyModel()
     # override default permission at instance level
-    obj.__default_permissions__ = frozenset({
-        (READ, frozenset({Owner})),
-    })
+    obj.__default_permissions__ = frozenset({(READ, frozenset({Owner}))})
     # core.entities._setup_default_permissions creates
     session.add(obj)
     # permissions

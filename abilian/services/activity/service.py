@@ -12,11 +12,11 @@ from abilian.services import Service
 
 from .models import ActivityEntry
 
-__all__ = ['ActivityService']
+__all__ = ["ActivityService"]
 
 
 class ActivityService(Service):
-    name = 'activity'
+    name = "activity"
 
     def init_app(self, app):
         Service.init_app(self, app)
@@ -42,16 +42,16 @@ class ActivityService(Service):
         if sa.inspect(object).deleted:
             # object is in deleted state: flush has occurred, don't reference it or
             # we'll have an error when adding entry to session
-            kwargs['object_id'] = object.id
+            kwargs["object_id"] = object.id
         else:
-            kwargs['object'] = object
+            kwargs["object"] = object
 
         if target is not None:
-            kwargs['target_type'] = target.entity_type
+            kwargs["target_type"] = target.entity_type
             if sa.inspect(target).deleted:
-                kwargs['target_id'] = target.id
+                kwargs["target_id"] = target.id
             else:
-                kwargs['target'] = target
+                kwargs["target"] = target
 
         entry = ActivityEntry(**kwargs)
         entry.object_type = object.entity_type
@@ -59,6 +59,6 @@ class ActivityService(Service):
 
     @staticmethod
     def entries_for_actor(actor, limit=50):
-        return ActivityEntry.query \
-            .filter(ActivityEntry.actor == actor) \
-            .limit(limit).all()
+        return (
+            ActivityEntry.query.filter(ActivityEntry.actor == actor).limit(limit).all()
+        )

@@ -22,14 +22,14 @@ from abilian.web.views import BaseObjectView, ObjectCreate, ObjectDelete, \
 
 from .forms import AttachmentForm
 
-bp = Blueprint('attachments', __name__, url_prefix='/attachments')
+bp = Blueprint("attachments", __name__, url_prefix="/attachments")
 
 
 def _default_attachment_view(obj, obj_type, obj_id, **kwargs):
-    if not hasattr(obj, 'entity'):
-        return url_for('attachments.entity', object_id=obj_id)
+    if not hasattr(obj, "entity"):
+        return url_for("attachments.entity", object_id=obj_id)
     entity = obj.entity
-    return url_for(entity, _anchor='attachment-{}'.format(obj.id))
+    return url_for(entity, _anchor="attachment-{}".format(obj.id))
 
 
 @bp.record_once
@@ -37,12 +37,7 @@ def register_default_view(state):
     state.app.default_view.register(Attachment, _default_attachment_view)
 
 
-UPLOAD_BUTTON = ButtonAction(
-    'form',
-    'edit',
-    btn_class='primary',
-    title=_l('Send'),
-)
+UPLOAD_BUTTON = ButtonAction("form", "edit", btn_class="primary", title=_l("Send"))
 
 
 class BaseAttachmentView(object):
@@ -54,33 +49,27 @@ class BaseAttachmentView(object):
     entity = None  # type: Optional[Entity]
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(
-            BaseAttachmentView,
-            self,
-        ).init_object(
-            args,
-            kwargs,
-        )
-        entity_id = kwargs.pop('entity_id', None)
+        args, kwargs = super(BaseAttachmentView, self).init_object(args, kwargs)
+        entity_id = kwargs.pop("entity_id", None)
 
         if entity_id is not None:
             self.entity = Entity.query.get(entity_id)
 
         if self.entity is None:
-            raise BadRequest('No entity provided')
+            raise BadRequest("No entity provided")
 
         if not supports_attachments(self.entity):
             raise BadRequest("This entity is doesn't support attachments")
 
-        extension = current_app.extensions['attachments']
+        extension = current_app.extensions["attachments"]
         self.Form = extension.manager(self.entity).Form
-        actions.context['object'] = self.entity
+        actions.context["object"] = self.entity
         return args, kwargs
 
     def view_url(self):
         kw = {}
         if self.obj and self.obj.id:
-            kw['_anchor'] = 'attachment-{}'.format(self.obj.id)
+            kw["_anchor"] = "attachment-{}".format(self.obj.id)
         return url_for(self.entity, **kw)
 
     def index_url(self):
@@ -96,9 +85,9 @@ class AttachmentDownload(BaseAttachmentView, BaseObjectView):
     def get(self):
         blob = self.obj.blob
         metadata = blob.meta
-        filename = metadata.get('filename', self.obj.name)
-        content_type = metadata.get('mimetype')
-        stream = blob.file.open('rb')
+        filename = metadata.get("filename", self.obj.name)
+        content_type = metadata.get("mimetype")
+        stream = blob.file.open("rb")
 
         return send_file(
             stream,
@@ -111,27 +100,24 @@ class AttachmentDownload(BaseAttachmentView, BaseObjectView):
         )
 
 
-download_view = AttachmentDownload.as_view('download')
-bp.route('/<int:entity_id>/<int:object_id>/download')(download_view)
+download_view = AttachmentDownload.as_view("download")
+bp.route("/<int:entity_id>/<int:object_id>/download")(download_view)
 
 
 class AttachmentEdit(BaseAttachmentView, ObjectEdit):
-    _message_success = _l('Attachment edited')
+    _message_success = _l("Attachment edited")
 
 
-edit_view = AttachmentEdit.as_view('edit')
-bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
+edit_view = AttachmentEdit.as_view("edit")
+bp.route("/<int:entity_id>/<int:object_id>/edit")(edit_view)
 
 
 class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
 
-    _message_success = _l('Attachment added')
+    _message_success = _l("Attachment added")
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(AttachmentCreateView, self).init_object(
-            args,
-            kwargs,
-        )
+        args, kwargs = super(AttachmentCreateView, self).init_object(args, kwargs)
 
         self.obj.entity = self.entity
         session = sa.orm.object_session(self.entity)
@@ -149,16 +135,16 @@ class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
         return [UPLOAD_BUTTON]
 
 
-create_view = AttachmentCreateView.as_view('create')
-bp.route('/<int:entity_id>/create')(create_view)
+create_view = AttachmentCreateView.as_view("create")
+bp.route("/<int:entity_id>/create")(create_view)
 
 
 class AttachmentDelete(BaseAttachmentView, ObjectDelete):
     pass
 
 
-delete_view = AttachmentDelete.as_view('delete')
-bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)
+delete_view = AttachmentDelete.as_view("delete")
+bp.route("/<int:entity_id>/<int:object_id>/delete")(delete_view)
 
 
 class AttachmentEntity(BaseObjectView):
@@ -169,5 +155,5 @@ class AttachmentEntity(BaseObjectView):
         return redirect(url_for(self.obj))
 
 
-entity_view = AttachmentEntity.as_view('entity')
-bp.route('/<int:object_id>/entity')(entity_view)
+entity_view = AttachmentEntity.as_view("entity")
+bp.route("/<int:object_id>/entity")(entity_view)

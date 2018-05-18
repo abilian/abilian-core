@@ -25,11 +25,11 @@ from abilian.web.nav import BreadcrumbItem, NavItem
 from .models import UserPreference
 
 _PREF_NAV_ITEM = NavItem(
-    'user',
-    'preferences',
-    title=_l('Preferences'),
-    icon='cog',
-    url=lambda context: request.url_root + 'preferences',
+    "user",
+    "preferences",
+    title=_l("Preferences"),
+    icon="cog",
+    url=lambda context: request.url_root + "preferences",
     condition=lambda context: not current_user.is_anonymous,
 )
 
@@ -51,7 +51,7 @@ class PreferenceState(ServiceState):
 class PreferenceService(Service):
     """Flask extension for a user-level preference service, with pluggable
     panels."""
-    name = 'preferences'
+    name = "preferences"
     AppStateClass = PreferenceState
 
     def init_app(self, app, *panels):
@@ -99,38 +99,30 @@ class PreferenceService(Service):
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
             raise ValueError(
-                "Extension already initialized for app, "
-                "cannot add more panel",
+                "Extension already initialized for app, " "cannot add more panel"
             )
 
         state.panels.append(panel)
         panel.preferences = self
-        rule = "/" + getattr(panel, 'path', panel.id)
+        rule = "/" + getattr(panel, "path", panel.id)
         endpoint = panel.id
-        abs_endpoint = 'preferences.{}'.format(endpoint)
+        abs_endpoint = "preferences.{}".format(endpoint)
 
-        if hasattr(panel, 'get'):
+        if hasattr(panel, "get"):
             state.blueprint.add_url_rule(rule, endpoint, panel.get)
-        if hasattr(panel, 'post'):
+        if hasattr(panel, "post"):
             endpoint += "_post"
-            state.blueprint.add_url_rule(
-                rule,
-                endpoint,
-                panel.post,
-                methods=['POST'],
-            )
+            state.blueprint.add_url_rule(rule, endpoint, panel.post, methods=["POST"])
 
         state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(
-            label=panel.label,
-            icon=None,
-            url=Endpoint(abs_endpoint),
+            label=panel.label, icon=None, url=Endpoint(abs_endpoint)
         )
 
     def setup_blueprint(self, app):
         bp = self.app_state.blueprint = Blueprint(
             "preferences",
             __name__,
-            template_folder='templates',
+            template_folder="templates",
             url_prefix="/preferences",
         )
 
@@ -142,8 +134,7 @@ class PreferenceService(Service):
             app.extensions[self.name].blueprint_registered = True
 
         self.app_state.root_breadcrumb_item = BreadcrumbItem(
-            label=_('Preferences'),
-            url=Endpoint('preferences.index'),
+            label=_("Preferences"), url=Endpoint("preferences.index")
         )
 
         bp.url_value_preprocessor(self.build_breadcrumbs)
@@ -154,13 +145,13 @@ class PreferenceService(Service):
             for panel in self.app_state.panels:
                 if not panel.is_accessible():
                     continue
-                endpoint = 'preferences.' + panel.id
+                endpoint = "preferences." + panel.id
                 active = endpoint == request.endpoint
                 entry = {
-                    'endpoint': endpoint,
-                    'label': panel.label,
-                    'url': url_for(endpoint),
-                    'active': active,
+                    "endpoint": endpoint,
+                    "label": panel.label,
+                    "url": url_for(endpoint),
+                    "active": active,
                 }
                 menu.append(entry)
             return dict(menu=menu)
@@ -182,7 +173,7 @@ class PreferenceService(Service):
 
     def build_breadcrumbs(self, endpoint, view_args):
         state = self.app_state
-        g.nav['active'] = _PREF_NAV_ITEM.path
+        g.nav["active"] = _PREF_NAV_ITEM.path
         g.breadcrumb.append(state.root_breadcrumb_item)
         if endpoint in state.breadcrumb_items:
             g.breadcrumb.append(state.breadcrumb_items[endpoint])

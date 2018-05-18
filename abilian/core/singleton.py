@@ -10,8 +10,8 @@ from sqlalchemy.types import String, TypeDecorator
 class ValueSingletonMeta(type):
 
     def __new__(cls, name, bases, dct):
-        dct['__instances__'] = {}
-        dct.setdefault('__slots__', ())
+        dct["__instances__"] = {}
+        dct.setdefault("__slots__", ())
         new_type = type.__new__(cls, name, bases, dct)
         return new_type
 
@@ -21,10 +21,7 @@ class ValueSingletonMeta(type):
 
         if value not in cls.__instances__:
             value_instance = type.__call__(cls, value, *args, **kwargs)
-            cls.__instances__[getattr(
-                value_instance,
-                cls.attr,
-            )] = value_instance
+            cls.__instances__[getattr(value_instance, cls.attr)] = value_instance
         return cls.__instances__[value.lower()]
 
 
@@ -35,8 +32,8 @@ class UniqueName(with_metaclass(ValueSingletonMeta, object)):
     A subclass of :class:`UniqueName` defines a namespace.
     """
     # __metaclass__ = ValueSingletonMeta
-    __slots__ = ('_hash', '__name')
-    attr = 'name'
+    __slots__ = ("_hash", "__name")
+    attr = "name"
 
     def __init__(self, name):
         self.__name = text_type(name).strip().lower()
@@ -47,7 +44,7 @@ class UniqueName(with_metaclass(ValueSingletonMeta, object)):
         return self.__name
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, repr(self.name))
+        return "{}({})".format(self.__class__.__name__, repr(self.name))
 
     def __str__(self):
         return self.name
@@ -77,7 +74,7 @@ class UniqueNameType(TypeDecorator):
 
     def __init__(self, *args, **kwargs):
         assert self.Type is not None
-        kwargs.setdefault('length', self.default_max_length)
+        kwargs.setdefault("length", self.default_max_length)
         TypeDecorator.__init__(self, *args, **kwargs)
 
     def process_bind_param(self, value, dialect):

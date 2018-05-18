@@ -20,7 +20,7 @@ def main():
 
 
 def filter_filename(filename):
-    if 'abilian-core/abilian' in filename:
+    if "abilian-core/abilian" in filename:
         return filename
 
     return None
@@ -35,11 +35,11 @@ def main_annotate():
         manager.run()
     except BaseException:
         pass
-    collect_types.dump_stats(b'type_info.json')
+    collect_types.dump_stats(b"type_info.json")
 
 
 if __name__ == "__main__":
-    if 'ANNOTATE' in os.environ:
+    if "ANNOTATE" in os.environ:
         main_annotate()
     else:
         main()

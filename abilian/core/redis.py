@@ -16,18 +16,18 @@ class Extension(object):
             self.init_app(app)
 
     def init_app(self, app):
-        app.extensions['redis'] = self
+        app.extensions["redis"] = self
         self.setup_client(app)
 
     def setup_client(self, app=None, uri=None):
         if app is None:
             app = current_app
         if uri is None:
-            uri = app.config.get('REDIS_URI')
+            uri = app.config.get("REDIS_URI")
         if uri:
             self.client = redis_from_url(uri)
         elif app.configured and not app.testing:
             raise ValueError(
-                'Redis extension: REDIS_URI is not defined in '
-                'application configuration',
+                "Redis extension: REDIS_URI is not defined in "
+                "application configuration"
             )

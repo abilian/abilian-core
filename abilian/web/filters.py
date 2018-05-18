@@ -41,22 +41,22 @@ def autoescape(filter_func):
 @autoescape
 def nl2br(value):
     """Replace newlines with <br />."""
-    result = escape(value).replace('\n', Markup('<br />\n'))
+    result = escape(value).replace("\n", Markup("<br />\n"))
     return result
 
 
-_PARAGRAPH_RE = re.compile(r'(?:\r\n|\r|\n){2,}')
+_PARAGRAPH_RE = re.compile(r"(?:\r\n|\r|\n){2,}")
 
 
 @autoescape
 def paragraphs(value):
     """Blank lines delimitates paragraphs."""
-    result = '\n\n'.join((
-        '<p>{}</p>'.format(p.strip().replace(
-            '\n',
-            Markup('<br />\n'),
-        )) for p in _PARAGRAPH_RE.split(escape(value))
-    ))
+    result = "\n\n".join(
+        (
+            "<p>{}</p>".format(p.strip().replace("\n", Markup("<br />\n")))
+            for p in _PARAGRAPH_RE.split(escape(value))
+        )
+    )
     return result
 
 
@@ -95,7 +95,7 @@ def roughsize(size, above=20, mod=10):
     if size < above:
         return text_type(size)
 
-    return '{:d}+'.format(size - size % mod)
+    return "{:d}+".format(size - size % mod)
 
 
 def datetimeparse(s):
@@ -143,15 +143,15 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
 
         if dt_cal != now_cal:
             # not same day
-            remove_year = (dy == ny)
-            date_fmt = locale.date_formats['long'].pattern
-            time_fmt = locale.time_formats['short'].pattern
-            fmt = locale.datetime_formats['medium']
+            remove_year = dy == ny
+            date_fmt = locale.date_formats["long"].pattern
+            time_fmt = locale.time_formats["short"].pattern
+            fmt = locale.datetime_formats["medium"]
 
             if remove_year:
-                date_fmt = date_fmt.replace('y', '').strip()
+                date_fmt = date_fmt.replace("y", "").strip()
                 # remove leading or trailing spaces, comma, etc...
-                date_fmt = re.sub('^[^A-Za-z]*|[^A-Za-z]*$', '', date_fmt)
+                date_fmt = re.sub("^[^A-Za-z]*|[^A-Za-z]*$", "", date_fmt)
 
             fmt = fmt.format(time_fmt, date_fmt)
             return babel.format_datetime(dt, format=fmt)
@@ -161,7 +161,7 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
     return format_timedelta(
         delta,
         locale=locale,
-        granularity='minute',
+        granularity="minute",
         threshold=0.9,
         add_direction=add_direction,
     )
@@ -172,7 +172,7 @@ def date_age(dt, now=None):
     if not dt:
         return ""
 
-    formatted_date = babel.format_datetime(dt, format='yyyy-MM-dd HH:mm')
+    formatted_date = babel.format_datetime(dt, format="yyyy-MM-dd HH:mm")
     return "{} ({})".format(formatted_date, age(dt, now))
 
 
@@ -195,36 +195,35 @@ def babel2datepicker(pattern):
 
     map_fmt = {
         # days
-        'd': 'dd',
-        'dd': 'dd',
-        'EEE': 'D',
-        'EEEE': 'DD',
-        'EEEEE': 'D',  # narrow name => short name
+        "d": "dd",
+        "dd": "dd",
+        "EEE": "D",
+        "EEEE": "DD",
+        "EEEEE": "D",  # narrow name => short name
         # months
-        'M': 'mm',
-        'MM': 'mm',
-        'MMM': 'M',
-        'MMMM': 'MM',
+        "M": "mm",
+        "MM": "mm",
+        "MMM": "M",
+        "MMMM": "MM",
         # years
-        'y': 'yyyy',
-        'yy': 'yyyy',
-        'yyy': 'yyyy',
-        'yyyy': 'yyyy',
-
+        "y": "yyyy",
+        "yy": "yyyy",
+        "yyy": "yyyy",
+        "yyyy": "yyyy",
         # time picker format
         # hours
-        'h': '%I',
-        'hh': '%I',
-        'H': '%H',
-        'HH': '%H',
+        "h": "%I",
+        "hh": "%I",
+        "H": "%H",
+        "HH": "%H",
         # minutes,
-        'm': '%M',
-        'mm': '%M',
+        "m": "%M",
+        "mm": "%M",
         # seconds
-        's': '%S',
-        'ss': '%S',
+        "s": "%S",
+        "ss": "%S",
         # am/pm
-        'a': '%p',
+        "a": "%p",
     }
 
     return pattern.format % map_fmt
@@ -244,7 +243,7 @@ def abbrev(s, max_size):
         return s[0:h] + "..." + s[-h:]
 
 
-def bool2check(val, true='\u2713', false=''):
+def bool2check(val, true="\u2713", false=""):
     """Filter value as boolean and show check mark (✓) or nothing."""
     return true if val else false
 
@@ -264,7 +263,7 @@ def obj_to_url(obj):
     try:
         return url_for(obj)
     except BuildError:
-        return ''
+        return ""
 
 
 def init_filters(env):
@@ -272,19 +271,19 @@ def init_filters(env):
         # old api for init_filters: we used to pass flask application
         env = env.jinja_env
 
-    env.filters['nl2br'] = nl2br
-    env.filters['paragraphs'] = paragraphs
-    env.filters['date_age'] = date_age
-    env.filters['datetimeparse'] = datetimeparse
-    env.filters['age'] = age
-    env.filters['date'] = date
-    env.filters['babel2datepicker'] = babel2datepicker
-    env.filters['to_timestamp'] = to_timestamp
-    env.filters['url_for'] = obj_to_url
-    env.filters['abbrev'] = abbrev
-    env.filters['filesize'] = filesize
-    env.filters['roughsize'] = roughsize
-    env.filters['labelize'] = labelize
-    env.filters['linkify'] = linkify
-    env.filters['toslug'] = slugify
-    env.filters['bool2check'] = bool2check
+    env.filters["nl2br"] = nl2br
+    env.filters["paragraphs"] = paragraphs
+    env.filters["date_age"] = date_age
+    env.filters["datetimeparse"] = datetimeparse
+    env.filters["age"] = age
+    env.filters["date"] = date
+    env.filters["babel2datepicker"] = babel2datepicker
+    env.filters["to_timestamp"] = to_timestamp
+    env.filters["url_for"] = obj_to_url
+    env.filters["abbrev"] = abbrev
+    env.filters["filesize"] = filesize
+    env.filters["roughsize"] = roughsize
+    env.filters["labelize"] = labelize
+    env.filters["linkify"] = linkify
+    env.filters["toslug"] = slugify
+    env.filters["bool2check"] = bool2check

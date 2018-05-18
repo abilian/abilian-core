@@ -22,7 +22,7 @@ from abilian.web.nav import NavGroup, NavItem
 from .models import LoginSession
 from .views import login as login_views
 
-__all__ = ['AuthService', 'user_menu']
+__all__ = ["AuthService", "user_menu"]
 
 logger = logging.getLogger(__name__)
 
@@ -37,32 +37,34 @@ def is_authenticated(context):
 
 def _user_photo_endpoint():
     from abilian.web.views import images  # late import: avoid circular import
+
     return images.user_url_args(current_user, 16)[0]
 
 
 def _user_photo_icon_args(icon, url_args):
     from abilian.web.views import images  # late import avoid circular import
+
     return images.user_url_args(current_user, max(icon.width, icon.height))[1]
 
 
 user_menu = NavGroup(
-    'user',
-    'authenticated',
+    "user",
+    "authenticated",
     title=lambda c: current_user.name,
     icon=DynamicIcon(
         endpoint=_user_photo_endpoint,
-        css='avatar',
+        css="avatar",
         size=20,
         url_args=_user_photo_icon_args,
     ),
     condition=is_authenticated,
     items=(
         NavItem(
-            'user',
-            'logout',
-            title=_l('Logout'),
-            icon='log-out',
-            url=lambda context: url_for('login.logout'),
+            "user",
+            "logout",
+            title=_l("Logout"),
+            icon="log-out",
+            url=lambda context: url_for("login.logout"),
             divider=True,
         ),
     ),
@@ -70,11 +72,11 @@ user_menu = NavGroup(
 
 _ACTIONS = (
     NavItem(
-        'user',
-        'login',
-        title=_l('Login'),
-        icon='log-in',
-        url=lambda context: url_for('login.login_form'),
+        "user",
+        "login",
+        title=_l("Login"),
+        icon="log-in",
+        url=lambda context: url_for("login.login_form"),
         condition=is_anonymous,
     ),
     user_menu,
@@ -97,14 +99,14 @@ class AuthServiceState(ServiceState):
 
 
 class AuthService(Service):
-    name = 'auth'
+    name = "auth"
     AppStateClass = AuthServiceState
 
     def init_app(self, app):
         login_manager.init_app(app)
-        login_manager.login_view = 'login.login_form'
+        login_manager.login_view = "login.login_form"
         Service.init_app(self, app)
-        self.login_url_prefix = app.config.get('LOGIN_URL', '/user')
+        self.login_url_prefix = app.config.get("LOGIN_URL", "/user")
         app.before_request(self.do_access_control)
         app.before_request(self.update_user_session_data)
         user_logged_in.connect(self.user_logged_in, sender=app)
@@ -146,16 +148,17 @@ class AuthService(Service):
         # anonymous" function
         g.user = g.logged_user = user
         is_anonymous = user is None or user.is_anonymous
-        security = app.services.get('security')
+        security = app.services.get("security")
         g.is_manager = (
-            user and not is_anonymous and ((
-                security.has_role(user, 'admin') or
-                security.has_role(user, 'manager')
-            ))
+            user
+            and not is_anonymous
+            and (
+                (security.has_role(user, "admin") or security.has_role(user, "manager"))
+            )
         )
 
     def user_logged_out(self, app, user):
-        if hasattr(g, 'user'):
+        if hasattr(g, "user"):
             del g.user
             del g.logged_user
             del g.is_manager
@@ -163,7 +166,7 @@ class AuthService(Service):
     def redirect_to_login(self, next_url=True):
         kw = {}
         if next_url is not False:
-            kw['next'] = request.url if next_url is True else next_url
+            kw["next"] = request.url if next_url is True else next_url
 
         return redirect(url_for(login_manager.login_view, **kw))
 
@@ -182,10 +185,10 @@ class AuthService(Service):
         user = current_user._get_current_object()
 
         # Another special case for tests
-        if current_app.testing and getattr(user, 'is_admin', False):
+        if current_app.testing and getattr(user, "is_admin", False):
             return
 
-        security = get_service('security')
+        security = get_service("security")
         user_roles = frozenset(security.get_roles(user))
         endpoint = request.endpoint
         blueprint = request.blueprint
@@ -197,9 +200,7 @@ class AuthService(Service):
             access_controllers.extend(state.bp_access_controllers[blueprint])
 
         if endpoint and endpoint in state.endpoint_access_controllers:
-            access_controllers.extend(
-                state.endpoint_access_controllers[endpoint]
-            )
+            access_controllers.extend(state.endpoint_access_controllers[endpoint])
 
         for access_controller in reversed(access_controllers):
             verdict = access_controller(user=user, roles=user_roles)
@@ -213,7 +214,7 @@ class AuthService(Service):
                 raise Forbidden()
 
         # default policy
-        if current_app.config.get('PRIVATE_SITE') and user.is_anonymous:
+        if current_app.config.get("PRIVATE_SITE") and user.is_anonymous:
             return self.redirect_to_login()
 
     def update_user_session_data(self):
@@ -224,10 +225,7 @@ class AuthService(Service):
         # Update last_active every 60 seconds only so as to not stress
         # the database too much.
         now = datetime.utcnow()
-        if (
-            user.last_active is None or
-            (now - user.last_active) > timedelta(minutes=1)
-        ):
+        if user.last_active is None or (now - user.last_active) > timedelta(minutes=1):
             user.last_active = now
             db.session.add(user)
             db.session.commit()

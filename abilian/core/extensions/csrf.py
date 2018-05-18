@@ -24,25 +24,25 @@ class AbilianCsrf(object):
     #: displayed to user. It can be changed if you have a better one for your
     #: users.
     csrf_failed_message = _l(
-        'Security informations are missing or expired. '
-        'This may happen if you have opened the form for a long time. '
-        '<br /><br />'
-        'Please try to resubmit the form.',
+        "Security informations are missing or expired. "
+        "This may happen if you have opened the form for a long time. "
+        "<br /><br />"
+        "Please try to resubmit the form."
     )
 
     def init_app(self, app):
-        if 'csrf' not in app.extensions:
+        if "csrf" not in app.extensions:
             raise RuntimeError(
                 'Please install flask_wtf.csrf.CsrfProtect() as "csrf" in '
-                'extensions before AbilianCsrf()',
+                "extensions before AbilianCsrf()"
             )
-        app.extensions['csrf'].error_handler(self.csrf_error_handler)
-        app.extensions['csrf-handler'] = self
+        app.extensions["csrf"].error_handler(self.csrf_error_handler)
+        app.extensions["csrf-handler"] = self
         request_started.connect(self.request_started, sender=app)
         app.before_request(self.before_request)
 
     def flash_csrf_failed_message(self):
-        flash(Markup(self.csrf_failed_message), 'error')
+        flash(Markup(self.csrf_failed_message), "error")
 
     def request_started(self, app):
         request.csrf_failed = False
@@ -59,16 +59,12 @@ class AbilianCsrf(object):
 
         rule = req.url_rule
         view = current_app.view_functions[rule.endpoint]
-        if getattr(view, 'csrf_support_graceful_failure', False):
+        if getattr(view, "csrf_support_graceful_failure", False):
             # view can handle it nicely for the user
             return None
 
-        if (
-            hasattr(view, 'view_class') and getattr(
-                view.view_class,
-                'csrf_support_graceful_failure',
-                False,
-            )
+        if hasattr(view, "view_class") and getattr(
+            view.view_class, "csrf_support_graceful_failure", False
         ):
             return None
 

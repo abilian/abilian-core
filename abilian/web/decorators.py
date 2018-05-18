@@ -7,4 +7,4 @@ from __future__ import absolute_import, division, print_function, \
 # package. Direct use of this package is not recommended.
 from deprecated import deprecated
 
-__all__ = ('deprecated',)
+__all__ = ("deprecated",)

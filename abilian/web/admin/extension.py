@@ -21,7 +21,7 @@ from .panel import AdminPanel
 
 logger = logging.getLogger(__name__)
 
-_BP_PREFIX = 'admin'
+_BP_PREFIX = "admin"
 
 
 class Admin(object):
@@ -39,26 +39,23 @@ class Admin(object):
         self.setup_blueprint()
 
         def condition(context):
-            return not current_user.is_anonymous \
-                and security.has_role(current_user, AdminRole)
+            return not current_user.is_anonymous and security.has_role(
+                current_user, AdminRole
+            )
 
         self.nav_root = NavGroup(
-            'admin',
-            'root',
-            title=_l('Admin'),
-            endpoint=None,
-            condition=condition,
+            "admin", "root", title=_l("Admin"), endpoint=None, condition=condition
         )
 
         for panel in panels:
             self.register_panel(panel)
 
-        app = kwargs.pop('app', None)
+        app = kwargs.pop("app", None)
         if app is not None:
             self.init_app(app)
 
     def init_app(self, app):
-        panels = app.config.get('ADMIN_PANELS', ())
+        panels = app.config.get("ADMIN_PANELS", ())
 
         # resolve fully qualified name into an AdminPanel object
         for fqn in panels:
@@ -68,9 +65,7 @@ class Admin(object):
                 continue
             if not issubclass(panel_class, AdminPanel):
                 logger.error(
-                    '"%s" is not a %s.AdminPanel, skipping',
-                    fqn,
-                    AdminPanel.__module__,
+                    '"%s" is not a %s.AdminPanel, skipping', fqn, AdminPanel.__module__
                 )
                 continue
 
@@ -79,17 +74,16 @@ class Admin(object):
 
         if not self.panels:
 
-            @self.blueprint.route('', endpoint='no_panel')
+            @self.blueprint.route("", endpoint="no_panel")
             def no_panels_view():
                 return "No panels registered"
 
-            self.nav_root.endpoint = 'admin.no_panel'
+            self.nav_root.endpoint = "admin.no_panel"
         else:
             self.nav_root.endpoint = self.nav_root.items[0].endpoint
 
         self.root_breadcrumb_item = BreadcrumbItem(
-            label=self.nav_root.title,
-            url=self.nav_root.endpoint,
+            label=self.nav_root.title, url=self.nav_root.endpoint
         )
 
         app.register_blueprint(self.blueprint)
@@ -98,40 +92,36 @@ class Admin(object):
             actions.register(self.nav_root, *self.nav_root.items)
 
         self.app = app
-        app.extensions['admin'] = self
+        app.extensions["admin"] = self
 
     def register_panel(self, panel):
         if self.app:
             raise ValueError(
-                'Extension already initialized for app, cannot add more'
-                ' panel',
+                "Extension already initialized for app, cannot add more" " panel"
             )
 
         self.panels.append(panel)
         panel.admin = self
         rule = "/" + panel.id
         endpoint = nav_id = panel.id
-        abs_endpoint = 'admin.{}'.format(endpoint)
+        abs_endpoint = "admin.{}".format(endpoint)
 
-        if hasattr(panel, 'get'):
+        if hasattr(panel, "get"):
             self.blueprint.add_url_rule(rule, endpoint, panel.get)
             self._panels_endpoints[abs_endpoint] = panel
-        if hasattr(panel, 'post'):
+        if hasattr(panel, "post"):
             post_endpoint = endpoint + "_post"
             self.blueprint.add_url_rule(
-                rule,
-                post_endpoint,
-                panel.post,
-                methods=['POST'],
+                rule, post_endpoint, panel.post, methods=["POST"]
             )
-            self._panels_endpoints['admin.' + post_endpoint] = panel
+            self._panels_endpoints["admin." + post_endpoint] = panel
 
         panel.install_additional_rules(
-            self.get_panel_url_rule_adder(panel, rule, endpoint),
+            self.get_panel_url_rule_adder(panel, rule, endpoint)
         )
 
         nav = NavItem(
-            'admin:panel',
+            "admin:panel",
             nav_id,
             title=panel.label,
             icon=panel.icon,
@@ -140,9 +130,7 @@ class Admin(object):
         self.nav_root.append(nav)
         self.nav_paths[abs_endpoint] = nav.path
         self.breadcrumb_items[panel] = BreadcrumbItem(
-            label=panel.label,
-            icon=panel.icon,
-            url=Endpoint(abs_endpoint),
+            label=panel.label, icon=panel.icon, url=Endpoint(abs_endpoint)
         )
 
     def get_panel_url_rule_adder(self, panel, base_url, base_endpoint):
@@ -151,32 +139,24 @@ class Admin(object):
         def add_url_rule(rule, endpoint=None, view_func=None, **kwargs):
             if not rule:
                 # '' is already used for panel get/post
-                raise ValueError(
-                    'Invalid additional url rule: {}'.format(repr(rule),),
-                )
+                raise ValueError("Invalid additional url rule: {}".format(repr(rule)))
 
             if endpoint is None:
                 endpoint = _endpoint_from_view_func(view_func)
 
             if not endpoint.startswith(base_endpoint):
-                endpoint = base_endpoint + '_' + endpoint
+                endpoint = base_endpoint + "_" + endpoint
 
-            extension._panels_endpoints['admin.' + endpoint] = panel
+            extension._panels_endpoints["admin." + endpoint] = panel
             return self.blueprint.add_url_rule(
-                base_url + rule,
-                endpoint=endpoint,
-                view_func=view_func,
-                **kwargs
+                base_url + rule, endpoint=endpoint, view_func=view_func, **kwargs
             )
 
         return add_url_rule
 
     def setup_blueprint(self):
         self.blueprint = Blueprint(
-            "admin",
-            __name__,
-            template_folder='templates',
-            url_prefix='/' + _BP_PREFIX,
+            "admin", __name__, template_folder="templates", url_prefix="/" + _BP_PREFIX
         )
 
         self.blueprint.url_value_preprocessor(self.build_breadcrumbs)
@@ -195,7 +175,7 @@ class Admin(object):
 
     def build_breadcrumbs(self, endpoint, view_args):
         g.breadcrumb.append(self.root_breadcrumb_item)
-        g.nav['active'] = self.nav_paths.get(endpoint, self.nav_root.path)
+        g.nav["active"] = self.nav_paths.get(endpoint, self.nav_root.path)
         panel = self._panels_endpoints.get(endpoint)
         if panel:
             endpoint_bc = self.breadcrumb_items.get(panel)

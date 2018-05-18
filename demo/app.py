@@ -14,9 +14,9 @@ from abilian.web.util import url_for
 
 from .config import Config
 
-__all__ = ['create_app']
+__all__ = ["create_app"]
 
-APP_NAME = 'abilian_core_demo'
+APP_NAME = "abilian_core_demo"
 
 
 def create_app(config=None):
@@ -25,7 +25,7 @@ def create_app(config=None):
 
 # loader to be used by celery workers
 class CeleryLoader(CeleryBaseLoader):
-    flask_app_factory = 'demo.app.create_app'
+    flask_app_factory = "demo.app.create_app"
 
 
 class CeleryApp(BaseCelery):
@@ -43,7 +43,7 @@ def home():
     Home page. Actually there is no home page, so for this demo
     we redirect to the most appropriate place.
     """
-    return redirect(url_for('admin.settings'))
+    return redirect(url_for("admin.settings"))
 
 
 default_config = dict(BaseApplication.default_config)
@@ -65,6 +65,7 @@ class Application(BaseApplication):
 
         # Additional service
         from abilian.services.security import security
+
         security.init_app(self)
 
     def register_plugins(self):
@@ -72,4 +73,4 @@ class Application(BaseApplication):
         self.register_blueprint(main)
 
 
-Vocabulary_demo = Vocabulary(group='Test', name='Test', label='This is a test')
+Vocabulary_demo = Vocabulary(group="Test", name="Test", label="This is a test")

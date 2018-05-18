@@ -18,22 +18,21 @@ logger = logging.getLogger(__name__)
 
 try:
     import clamd
+
     cd = clamd.ClamdUnixSocket()
     CLAMD_AVAILABLE = True
 except ImportError:
     CLAMD_AVAILABLE = False
 
-CLAMD_CONF = {'StreamMaxLength': '25M', 'MaxFileSize': '25M'}
+CLAMD_CONF = {"StreamMaxLength": "25M", "MaxFileSize": "25M"}
 CLAMD_STREAMMAXLENGTH = 26214400
 CLAMD_MAXFILESIZE = 26214400
 
 if CLAMD_AVAILABLE:
-    conf_path = pathlib.Path('/etc', 'clamav', 'clamd.conf')
+    conf_path = pathlib.Path("/etc", "clamav", "clamd.conf")
     if conf_path.exists():
-        conf_lines = [l.strip() for l in conf_path.open('rt').readlines()]
-        CLAMD_CONF = dict(
-            l.split(' ', 1) for l in conf_lines if not l.startswith('#')
-        )
+        conf_lines = [l.strip() for l in conf_path.open("rt").readlines()]
+        CLAMD_CONF = dict(l.split(" ", 1) for l in conf_lines if not l.startswith("#"))
 
         def _size_to_int(size_str):
             multiplier = 0
@@ -41,10 +40,10 @@ if CLAMD_AVAILABLE:
                 return 0
 
             unit = size_str[-1].lower()
-            if unit in ('k', 'm'):
+            if unit in ("k", "m"):
                 size_str = size_str[:-1]
                 multiplier = 1024
-                if unit == 'm':
+                if unit == "m":
                     multiplier *= 1024
 
             if not size_str:
@@ -56,14 +55,14 @@ if CLAMD_AVAILABLE:
 
             return size
 
-        CLAMD_STREAMMAXLENGTH = _size_to_int(CLAMD_CONF['StreamMaxLength'])
-        CLAMD_MAXFILESIZE = _size_to_int(CLAMD_CONF['MaxFileSize'])
+        CLAMD_STREAMMAXLENGTH = _size_to_int(CLAMD_CONF["StreamMaxLength"])
+        CLAMD_MAXFILESIZE = _size_to_int(CLAMD_CONF["MaxFileSize"])
         del conf_path, conf_lines, _size_to_int
 
 
 class AntiVirusService(Service):
     """Antivirus service."""
-    name = 'antivirus'
+    name = "antivirus"
 
     def scan(self, file_or_stream):
         """
@@ -77,7 +76,7 @@ class AntiVirusService(Service):
         """
         res = self._scan(file_or_stream)
         if isinstance(file_or_stream, Blob):
-            file_or_stream.meta['antivirus'] = res
+            file_or_stream.meta["antivirus"] = res
         return res
 
     def _scan(self, file_or_stream):
@@ -92,7 +91,7 @@ class AntiVirusService(Service):
             file_or_stream = file_or_stream.encode(os.fsencode)
 
         if isinstance(file_or_stream, bytes):
-            content = io.open(file_or_stream, 'rb')
+            content = io.open(file_or_stream, "rb")
 
         if content.seekable():
             pos = content.tell()
@@ -102,11 +101,11 @@ class AntiVirusService(Service):
 
             if size > CLAMD_STREAMMAXLENGTH:
                 logger.error(
-                    'Content size exceed antivirus size limit, size=%d, limit=%d (%s)',
+                    "Content size exceed antivirus size limit, size=%d, limit=%d (%s)",
                     size,
                     CLAMD_STREAMMAXLENGTH,
-                    CLAMD_CONF['StreamMaxLength'].encode('utf-8'),
-                    extra={'stack': True},
+                    CLAMD_CONF["StreamMaxLength"].encode("utf-8"),
+                    extra={"stack": True},
                 )
                 return None
 
@@ -117,15 +116,15 @@ class AntiVirusService(Service):
         try:
             res = scan(content)
         except clamd.ClamdError as e:
-            self.logger.warning('Error during content scan: %s', repr(e))
+            self.logger.warning("Error during content scan: %s", repr(e))
             return None
 
-        if 'stream' not in res:
+        if "stream" not in res:
             # may happen if file doesn't exists
             return False
 
-        res = res['stream']
-        return res[0] == 'OK'
+        res = res["stream"]
+        return res[0] == "OK"
 
 
 service = AntiVirusService()

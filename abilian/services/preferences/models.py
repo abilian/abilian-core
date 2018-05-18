@@ -13,16 +13,15 @@ from abilian.core.sqlalchemy import JSON
 
 class UserPreference(db.Model):
     """An atom of user preference."""
-    __tablename__ = 'user_preference'
-    __table_args__ = (UniqueConstraint('user_id', 'key'),)
+    __tablename__ = "user_preference"
+    __table_args__ = (UniqueConstraint("user_id", "key"),)
 
     #: Unique id for this preference.
     id = Column(Integer, primary_key=True, autoincrement=True)
 
     #: The user who set this preference.
     user = relation(
-        User,
-        backref=backref('preferences', cascade="all, delete, delete-orphan"),
+        User, backref=backref("preferences", cascade="all, delete, delete-orphan")
     )
     user_id = Column(ForeignKey(User.id))
 

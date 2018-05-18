@@ -24,9 +24,7 @@ from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
 from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
 
-__all__ = [
-    'Entity', 'EntityQuery', 'all_entity_classes', 'db', 'ValidationError'
-]
+__all__ = ["Entity", "EntityQuery", "all_entity_classes", "db", "ValidationError"]
 
 
 #
@@ -41,8 +39,8 @@ def validation_listener(mapper, connection, target):
         target._validate()
 
 
-event.listen(mapper, 'before_insert', validation_listener)
-event.listen(mapper, 'before_update', validation_listener)
+event.listen(mapper, "before_insert", validation_listener)
+event.listen(mapper, "before_update", validation_listener)
 
 
 #
@@ -63,9 +61,9 @@ def before_delete_listener(mapper, connection, target):
         target._before_delete()
 
 
-event.listen(mapper, 'before_insert', before_insert_listener)
-event.listen(mapper, 'before_update', before_update_listener)
-event.listen(mapper, 'before_delete', before_delete_listener)
+event.listen(mapper, "before_insert", before_insert_listener)
+event.listen(mapper, "before_update", before_update_listener)
+event.listen(mapper, "before_delete", before_delete_listener)
 
 
 def auto_slug_on_insert(mapper, connection, target):
@@ -78,14 +76,12 @@ def auto_slug_on_insert(mapper, connection, target):
 def auto_slug_after_insert(mapper, connection, target):
     """Generate a slug from entity_type and id, unless slug is already set."""
     if target.slug is None:
-        target.slug = '{name}{sep}{id}'.format(
-            name=target.entity_class.lower(),
-            sep=target.SLUG_SEPARATOR,
-            id=target.id,
+        target.slug = "{name}{sep}{id}".format(
+            name=target.entity_class.lower(), sep=target.SLUG_SEPARATOR, id=target.id
         )
 
 
-@event.listens_for(Session, 'after_attach')
+@event.listens_for(Session, "after_attach")
 def setup_default_permissions(session, instance):
     """Setup default permissions on newly created entities according to.
 
@@ -105,9 +101,9 @@ def _setup_default_permissions(instance):
     """Separate method to conveniently call it from scripts for example."""
     from abilian.services import get_service
 
-    security = get_service('security')
+    security = get_service("security")
     for permission, roles in instance.__default_permissions__:
-        if permission == 'create':
+        if permission == "create":
             # use str for comparison instead of `abilian.services.security.CREATE`
             # symbol to avoid imports that quickly become circular.
             #
@@ -128,11 +124,7 @@ class _EntityInherit(object):
     def id(cls):
         return Column(
             Integer,
-            ForeignKey(
-                'entity.id',
-                use_alter=True,
-                name='fk_inherited_entity_id',
-            ),
+            ForeignKey("entity.id", use_alter=True, name="fk_inherited_entity_id"),
             primary_key=True,
             info=SYSTEM | SEARCHABLE,
         )
@@ -140,8 +132,8 @@ class _EntityInherit(object):
     @declared_attr
     def __mapper_args__(cls):
         return {
-            'polymorphic_identity': cls.entity_type,
-            'inherit_condition': cls.id == Entity.id,
+            "polymorphic_identity": cls.entity_type,
+            "inherit_condition": cls.id == Entity.id,
         }
 
 
@@ -153,18 +145,14 @@ class EntityQuery(db.Model.query_class):
     def with_permission(self, permission, user=None):
         from abilian.services import get_service
 
-        security = get_service('security')
-        if hasattr(self, '_query_entity_zero'):
+        security = get_service("security")
+        if hasattr(self, "_query_entity_zero"):
             # SQLAlchemy 1.1+
             model = self._query_entity_zero().entity_zero.entity
         else:
             # SQLAlchemy 1.0
             model = self._entity_zero().entity_zero.entity
-        expr = security.query_entity_with_permission(
-            permission,
-            user,
-            Model=model,
-        )
+        expr = security.query_entity_with_permission(permission, user, Model=model)
         return self.filter(expr)
 
 
@@ -176,36 +164,32 @@ class EntityMeta(BaseMeta):
     """
 
     def __new__(mcs, classname, bases, d):
-        if (d['__module__'] != EntityMeta.__module__ or classname != 'Entity'):
+        if d["__module__"] != EntityMeta.__module__ or classname != "Entity":
             if not any(issubclass(b, _EntityInherit) for b in bases):
                 bases = (_EntityInherit,) + bases
-                d['id'] = _EntityInherit.id
+                d["id"] = _EntityInherit.id
 
-            if d.get('entity_type') is None:
-                entity_type_base = d.get('ENTITY_TYPE_BASE')
+            if d.get("entity_type") is None:
+                entity_type_base = d.get("ENTITY_TYPE_BASE")
                 if not entity_type_base:
                     for base in bases:
-                        entity_type_base = getattr(
-                            base,
-                            'ENTITY_TYPE_BASE',
-                            None,
-                        )
+                        entity_type_base = getattr(base, "ENTITY_TYPE_BASE", None)
                         if entity_type_base:
                             break
                     else:
                         # no break happened during loop: use default type base
-                        entity_type_base = d['__module__']
+                        entity_type_base = d["__module__"]
 
-                d['entity_type'] = entity_type_base + '.' + classname
+                d["entity_type"] = entity_type_base + "." + classname
 
-            default_permissions = d.get('__default_permissions__')
+            default_permissions = d.get("__default_permissions__")
             if default_permissions is not None:
                 if isinstance(default_permissions, collections.Mapping):
                     default_permissions = default_permissions.items()
                 elif not isinstance(default_permissions, collections.Set):
                     raise TypeError(
-                        '__default_permissions__ is neither a dict or set, '
-                        'cannot create class {}'.format(classname),
+                        "__default_permissions__ is neither a dict or set, "
+                        "cannot create class {}".format(classname)
                     )
 
                 # also ensure that `roles` set is immutable, too
@@ -213,22 +197,22 @@ class EntityMeta(BaseMeta):
                     (permission, frozenset(roles))
                     for permission, roles in default_permissions
                 )
-                d['__default_permissions__'] = default_permissions
+                d["__default_permissions__"] = default_permissions
 
-            d['SLUG_SEPARATOR'] = text_type(
-                d.get('SLUG_SEPARATOR', Entity.SLUG_SEPARATOR),
+            d["SLUG_SEPARATOR"] = text_type(
+                d.get("SLUG_SEPARATOR", Entity.SLUG_SEPARATOR)
             )
 
         cls = BaseMeta.__new__(mcs, classname, bases, d)
 
         if not issubclass(cls.query_class, EntityQuery):
             raise TypeError(
-                'query_class is not a subclass of EntityQuery: {!r}'
-                ''.format(cls.query_class)
+                "query_class is not a subclass of EntityQuery: {!r}"
+                "".format(cls.query_class)
             )
 
-        event.listen(cls, 'before_insert', auto_slug_on_insert)
-        event.listen(cls, 'after_insert', auto_slug_after_insert)
+        event.listen(cls, "before_insert", auto_slug_on_insert)
+        event.listen(cls, "after_insert", auto_slug_after_insert)
         return cls
 
     def __init__(cls, classname, bases, d):
@@ -264,23 +248,14 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     __indexable__ = False
     __indexation_args__ = {}
     __indexation_args__.update(Indexable.__indexation_args__)
-    index_to = __indexation_args__.setdefault('index_to', ())
-    index_to += BaseMixin.__indexation_args__.setdefault('index_to', ())
+    index_to = __indexation_args__.setdefault("index_to", ())
+    index_to += BaseMixin.__indexation_args__.setdefault("index_to", ())
     index_to += (
-        (
-            '_indexable_roles_and_users',
-            ('allowed_roles_and_users',),
-        ),
-        (
-            '_indexable_tag_ids',
-            ('tag_ids',),
-        ),
-        (
-            '_indexable_tag_text',
-            ('tag_text', 'text'),
-        ),
+        ("_indexable_roles_and_users", ("allowed_roles_and_users",)),
+        ("_indexable_tag_ids", ("tag_ids",)),
+        ("_indexable_tag_text", ("tag_text", "text")),
     )
-    __indexation_args__['index_to'] = index_to
+    __indexation_args__["index_to"] = index_to
     del index_to
 
     __default_permissions__ = frozenset()
@@ -312,29 +287,27 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
          del dp
     """
 
-    SLUG_SEPARATOR = '-'  # \x2d \u002d HYPHEN-MINUS
+    SLUG_SEPARATOR = "-"  # \x2d \u002d HYPHEN-MINUS
 
     query_class = EntityQuery
 
     @declared_attr
     def __mapper_args__(cls):
-        if cls.__module__ == __name__ and cls.__name__ == 'Entity':
-            return {'polymorphic_on': '_entity_type'}
+        if cls.__module__ == __name__ and cls.__name__ == "Entity":
+            return {"polymorphic_on": "_entity_type"}
 
         else:
             return {
-                'polymorphic_identity': cls.entity_type,
-                'inherit_condition': cls.id == Entity.id,
+                "polymorphic_identity": cls.entity_type,
+                "inherit_condition": cls.id == Entity.id,
             }
 
     #: The name is a string that is shown to the user; it could be a title
     #: for document, a folder name, etc.
-    name = Column('name', UnicodeText())
-    name.info = (
-        EDITABLE | SEARCHABLE | dict(index_to=('name', 'name_prefix', 'text'))
-    )
+    name = Column("name", UnicodeText())
+    name.info = EDITABLE | SEARCHABLE | dict(index_to=("name", "name_prefix", "text"))
 
-    slug = Column('slug', UnicodeText(), info=SEARCHABLE)
+    slug = Column("slug", UnicodeText(), info=SEARCHABLE)
     """
     The slug attribute may be used in URLs to reference the entity, but
     uniqueness is not enforced, even within same entity type. For example
@@ -346,15 +319,10 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     friendly entity_type with concatenated with entity's id.
     """
 
-    _entity_type = Column('entity_type', String(1000), nullable=False)
+    _entity_type = Column("entity_type", String(1000), nullable=False)
     entity_type = None
 
-    meta = Column(
-        JSONDict(),
-        nullable=False,
-        default=dict,
-        server_default='{}',
-    )
+    meta = Column(JSONDict(), nullable=False, default=dict, server_default="{}")
     """
     A dictionnary of simple values (JSON-serializable) to conveniently annotate
     the entity.
@@ -401,11 +369,12 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
             session = sa.orm.object_session(self)
             if not session:
                 return None
-            query = session.query(Entity.slug) \
-                .filter(Entity._entity_type == self.object_type)
+            query = session.query(Entity.slug).filter(
+                Entity._entity_type == self.object_type
+            )
             if self.id is not None:
                 query = query.filter(Entity.id != self.id)
-            slug_re = re.compile(re.escape(slug) + r'-?(-\d+)?')
+            slug_re = re.compile(re.escape(slug) + r"-?(-\d+)?")
             results = [
                 int(m.group(1) or 0)  # 0: for the unnumbered slug
                 for m in (slug_re.match(s.slug) for s in query.all() if s.slug)
@@ -414,7 +383,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
             max_id = max(-1, -1, *results) + 1
             if max_id:
-                slug = '{}-{}'.format(slug, max_id)
+                slug = "{}-{}".format(slug, max_id)
         return slug
 
     @property
@@ -426,23 +395,17 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         from abilian.services import get_service
 
         result = []
-        security = get_service('security')
+        security = get_service("security")
 
         # roles - required to match when user has a global role
-        assignments = security.get_permissions_assignments(
-            permission=READ,
-            obj=self,
-        )
+        assignments = security.get_permissions_assignments(permission=READ, obj=self)
         allowed_roles = assignments.get(READ, set())
         allowed_roles.add(Admin)
 
         for r in allowed_roles:
             result.append(indexable_role(r))
 
-        for role, attr in (
-            (Creator, 'creator'),
-            (Owner, 'owner'),
-        ):
+        for role, attr in ((Creator, "creator"), (Owner, "owner")):
             if role in allowed_roles:
                 user = getattr(self, attr)
                 if user:
@@ -462,27 +425,27 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         for p in principals:
             result.append(indexable_role(p))
 
-        return ' '.join(result)
+        return " ".join(result)
 
     @property
     def _indexable_tags(self):
         """Index tag ids for tags defined in this Entity's default tags
         namespace."""
-        tags = current_app.extensions['tags']
+        tags = current_app.extensions["tags"]
 
         if not tags.supports_taggings(self):
-            return ''
+            return ""
 
         default_ns = tags.entity_default_ns(self)
         return [t for t in tags.entity_tags(self) if t.ns == default_ns]
 
     @property
     def _indexable_tag_ids(self):
-        return ' '.join(text_type(t.id) for t in self._indexable_tags)
+        return " ".join(text_type(t.id) for t in self._indexable_tags)
 
     @property
     def _indexable_tag_text(self):
-        return ' '.join(text_type(t.label) for t in self._indexable_tags)
+        return " ".join(text_type(t.label) for t in self._indexable_tags)
 
     def clone(self):
         """Copy an entity: copy every field, except the id and sqlalchemy
@@ -507,12 +470,12 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
 
 # TODO: make this unecessary
-@event.listens_for(Entity, 'class_instrument', propagate=True)
+@event.listens_for(Entity, "class_instrument", propagate=True)
 def register_metadata(cls):
     cls.__editable__ = set()
 
     # TODO: use SQLAlchemy 0.8 introspection
-    if hasattr(cls, '__table__'):
+    if hasattr(cls, "__table__"):
         columns = cls.__table__.columns
     else:
         columns = [v for k, v in vars(cls).items() if isinstance(v, Column)]
@@ -525,7 +488,7 @@ def register_metadata(cls):
             cls.__editable__.add(name)
 
 
-@event.listens_for(Session, 'before_flush')
+@event.listens_for(Session, "before_flush")
 def polymorphic_update_timestamp(session, flush_context, instances):
     """This listener ensures an update statement is emited for "entity" table
     to update 'updated_at'.
@@ -537,7 +500,7 @@ def polymorphic_update_timestamp(session, flush_context, instances):
         if not isinstance(obj, Entity):
             continue
         state = sa.inspect(obj)
-        history = state.attrs['updated_at'].history
+        history = state.attrs["updated_at"].history
         if not any((history.added, history.deleted)):
             obj.updated_at = datetime.utcnow()
 
@@ -550,8 +513,7 @@ def all_entity_classes():
     # with sqlalchemy 0.8 _decl_class_registry holds object that are not
     # classes
     return [
-        cls for cls in persistent_classes
-        if isclass(cls) and issubclass(cls, Entity)
+        cls for cls in persistent_classes if isclass(cls) and issubclass(cls, Entity)
     ]
 
 

@@ -13,16 +13,16 @@ from abilian.core.models.subjects import User
 from abilian.web import url_for
 from abilian.web.views import JSONModelSearch
 
-bp = Blueprint('users', __name__, url_prefix='/users')
+bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @bp.url_value_preprocessor
 def get_user(endpoint, values):
     try:
-        user_id = values.pop('user_id')
+        user_id = values.pop("user_id")
         user = User.query.get(user_id)
         if user:
-            values['user'] = user
+            values["user"] = user
         else:
             raise NotFound()
     except KeyError:
@@ -30,13 +30,13 @@ def get_user(endpoint, values):
         pass
 
 
-@bp.route('/<int:user_id>/photo')
+@bp.route("/<int:user_id>/photo")
 def photo(user):
     if not user.photo:
         raise NotFound()
 
     data = user.photo
-    self_photo = (user.id == g.user.id)
+    self_photo = user.id == g.user.id
 
     if self_photo:
         # special case: for their own photo user has an etag, so that on change,
@@ -50,14 +50,14 @@ def photo(user):
             return Response(status=304)
 
     response = make_response(data)  # type: Response
-    response.content_type = 'image/jpeg'
+    response.content_type = "image/jpeg"
 
     if not self_photo:
-        response.headers.add('Cache-Control', 'public, max-age=600')
+        response.headers.add("Cache-Control", "public, max-age=600")
     else:
         # user always checks its own mugshot is up-to-date, in order to avoid
         # seeing old one immediatly after having uploaded of a new picture.
-        response.headers.add('Cache-Control', 'private, must-revalidate')
+        response.headers.add("Cache-Control", "private, must-revalidate")
         response.set_etag(etag)
 
     return response
@@ -75,22 +75,19 @@ class UserJsonListing(JSONModelSearch):
                 or_(
                     func.lower(User.first_name).like(q + "%"),
                     func.lower(User.last_name).like(q + "%"),
-                ),
+                )
             )
         return query
 
     def order_by(self, query):
-        return query.order_by(
-            func.lower(User.last_name),
-            func.lower(User.first_name),
-        )
+        return query.order_by(func.lower(User.last_name), func.lower(User.first_name))
 
     def get_item(self, obj):
         d = super(UserJsonListing, self).get_item(obj)
-        d['email'] = obj.email
-        d['can_login'] = obj.can_login
-        d['photo'] = url_for('users.photo', user_id=obj.id)
+        d["email"] = obj.email
+        d["can_login"] = obj.can_login
+        d["photo"] = url_for("users.photo", user_id=obj.id)
         return d
 
 
-bp.route('/json/')(UserJsonListing.as_view('json_list'))
+bp.route("/json/")(UserJsonListing.as_view("json_list"))

@@ -11,16 +11,13 @@ from abilian.services.auth.models import LoginSession
 
 from ..panel import AdminPanel
 
-DATA_FILES = (
-    '/usr/share/GeoIP/GeoIP.dat',
-    '/usr/share/GeoIP/GeoIPv6.dat',
-)
+DATA_FILES = ("/usr/share/GeoIP/GeoIP.dat", "/usr/share/GeoIP/GeoIPv6.dat")
 
 
 class LoginSessionsPanel(AdminPanel):
     id = "login_sessions"
     label = "Session log"
-    icon = 'log-in'
+    icon = "log-in"
 
     def get(self):
         geoips = []
@@ -30,17 +27,14 @@ class LoginSessionsPanel(AdminPanel):
             except (pygeoip.GeoIPError, IOError):
                 pass
 
-        sessions = LoginSession.query \
-            .order_by(LoginSession.id.desc()) \
-            .limit(50) \
-            .all()
-        unknown_country = _('Country unknown')
+        sessions = LoginSession.query.order_by(LoginSession.id.desc()).limit(50).all()
+        unknown_country = _("Country unknown")
 
         def update_country(session):
             country = unknown_country
             if session.ip_address:
                 ip_address = session.ip_address
-                multiple = ip_address.split(',')
+                multiple = ip_address.split(",")
                 if multiple:
                     # only use last ip in the list, most likely the public
                     # address
@@ -62,5 +56,5 @@ class LoginSessionsPanel(AdminPanel):
             for session in sessions:
                 update_country(session)
 
-        ctx = {'sessions': sessions}
+        ctx = {"sessions": sessions}
         return render_template("admin/login_sessions.html", **ctx)

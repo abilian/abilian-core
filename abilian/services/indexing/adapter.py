@@ -16,7 +16,7 @@ from abilian.core.extensions import db
 
 from .schema import accent_folder
 
-__all__ = ['SchemaAdapter', 'SAAdapter']
+__all__ = ["SchemaAdapter", "SAAdapter"]
 
 logger = logging.getLogger(__name__)
 
@@ -90,8 +90,8 @@ class SAAdapter(SchemaAdapter):
         """
         assert issubclass(Model, db.Model)
         self.Model = Model
-        self.indexable = getattr(Model, '__indexable__', False)
-        self.index_args = getattr(Model, '__indexation_args__', {})
+        self.indexable = getattr(Model, "__indexable__", False)
+        self.index_args = getattr(Model, "__indexation_args__", {})
         self.doc_attrs = {}
         if self.indexable:
             self._build_doc_attrs(Model, schema)
@@ -111,8 +111,8 @@ class SAAdapter(SchemaAdapter):
 
             if field_name not in schema:
                 if (
-                    field_name not in field_definitions or
-                    field_definitions[field_name] is False
+                    field_name not in field_definitions
+                    or field_definitions[field_name] is False
                 ):
                     field_definitions[field_name] = field_def
 
@@ -121,7 +121,7 @@ class SAAdapter(SchemaAdapter):
             args.setdefault(field_name, {})[name] = attrgetter(name)
 
         # model level definitions
-        for name, field_names in self.index_args.get('index_to', ()):
+        for name, field_names in self.index_args.get("index_to", ()):
             if isinstance(field_names, string_types):
                 field_names = (field_names,)
             for field_name in field_names:
@@ -132,10 +132,10 @@ class SAAdapter(SchemaAdapter):
             name = col.name
             info = col.info
 
-            if not info.get('searchable'):
+            if not info.get("searchable"):
                 continue
 
-            index_to = info.get('index_to', (name,))
+            index_to = info.get("index_to", (name,))
             if isinstance(index_to, string_types):
                 index_to = (index_to,)
 
@@ -151,9 +151,7 @@ class SAAdapter(SchemaAdapter):
                 field_def = TEXT(stored=True, analyzer=accent_folder)
 
             logger.debug(
-                'Adding field to schema:\n'
-                '  Model: %s\n'
-                '  Field: "%s" %s',
+                "Adding field to schema:\n" "  Model: %s\n" '  Field: "%s" %s',
                 Model._object_type(),
                 field_name,
                 field_def,
@@ -195,7 +193,7 @@ class SAAdapter(SchemaAdapter):
                 val = cached[a]
                 if val is not None:
                     if isinstance(val, (list, tuple)):
-                        val = ' '.join(val).strip()
+                        val = " ".join(val).strip()
                     values.append(val)
 
             values = [v for v in values if v]
@@ -204,6 +202,6 @@ class SAAdapter(SchemaAdapter):
                 if len(values) == 1:
                     kwargs[field] = values[0]
                 else:
-                    kwargs[field] = ' '.join(values)
+                    kwargs[field] = " ".join(values)
 
         return kwargs

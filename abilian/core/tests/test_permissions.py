@@ -19,39 +19,36 @@ def test_default_permissions(app, db, session):
 
     assert isinstance(MyRestrictedType.__default_permissions__, frozenset)
 
-    expected = frozenset({
-        (security.READ, frozenset({security.Anonymous})),
-        #
-        (security.WRITE, frozenset({security.Owner})),
-        #
-        (security.CREATE, frozenset({security.Writer})),
-        #
-        (security.DELETE, frozenset({security.Owner})),
-    })
+    expected = frozenset(
+        {
+            (security.READ, frozenset({security.Anonymous})),
+            #
+            (security.WRITE, frozenset({security.Owner})),
+            #
+            (security.CREATE, frozenset({security.Writer})),
+            #
+            (security.DELETE, frozenset({security.Owner})),
+        }
+    )
     assert MyRestrictedType.__default_permissions__ == expected
 
     db.create_all()  # create missing 'mytype' table
 
-    obj = MyRestrictedType(name='test object')
+    obj = MyRestrictedType(name="test object")
     session.add(obj)
     PA = security.PermissionAssignment
-    query = session.query(PA.role) \
-        .filter(PA.object == obj)
+    query = session.query(PA.role).filter(PA.object == obj)
 
-    assert query.filter(PA.permission == security.READ).all() \
-        == [(security.Anonymous,)]
+    assert query.filter(PA.permission == security.READ).all() == [(security.Anonymous,)]
 
-    assert query.filter(PA.permission == security.WRITE).all() \
-        == [(security.Owner,)]
+    assert query.filter(PA.permission == security.WRITE).all() == [(security.Owner,)]
 
-    assert query.filter(PA.permission == security.DELETE).all() \
-        == [(security.Owner,)]
+    assert query.filter(PA.permission == security.DELETE).all() == [(security.Owner,)]
 
     # special case:
-    assert query.filter(PA.permission == security.CREATE).all() \
-        == []
+    assert query.filter(PA.permission == security.CREATE).all() == []
 
-    security_svc = app.services['security']
+    security_svc = app.services["security"]
     permissions = security_svc.get_permissions_assignments(obj)
     assert permissions == {
         security.READ: {security.Anonymous},

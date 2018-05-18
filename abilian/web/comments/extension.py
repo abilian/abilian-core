@@ -18,8 +18,8 @@ class CommentExtension(object):
     """
 
     def __init__(self, app):
-        app.extensions['comments'] = self
-        app.add_template_global(self, 'comments')
+        app.extensions["comments"] = self
+        app.add_template_global(self, "comments")
         app.register_blueprint(blueprint)
 
     def is_commentable(self, obj):
@@ -40,7 +40,7 @@ class CommentExtension(object):
         Used by macro m_comment_form(entity)
         """
         return {
-            'url': url_for('comments.create', entity_id=obj.id),
-            'form': CommentForm(),
-            'buttons': [COMMENT_BUTTON],
+            "url": url_for("comments.create", entity_id=obj.id),
+            "form": CommentForm(),
+            "buttons": [COMMENT_BUTTON],
         }

@@ -52,7 +52,7 @@ class Cache(object):
 
     def get(self, key):
         if key in self:
-            value = self._path(key).open('rb').read()
+            value = self._path(key).open("rb").read()
             if key.startswith("txt:"):
                 value = text_type(value, encoding="utf8")
             return value
@@ -89,7 +89,7 @@ class Converter(object):
             tmp_dir=Path(app.instance_path, TMP_DIR),
         )
 
-        app.extensions['conversion'] = self
+        app.extensions["conversion"] = self
 
         for handler in self.handlers:
             handler.init_app(app)
@@ -126,7 +126,7 @@ class Converter(object):
                 self.cache[cache_key] = pdf
                 return pdf
         raise HandlerNotFound(
-            "No handler found to convert from {} to PDF".format(mime_type),
+            "No handler found to convert from {} to PDF".format(mime_type)
         )
 
     def to_text(self, digest, blob, mime_type):
@@ -160,7 +160,7 @@ class Converter(object):
                 return text
 
         raise HandlerNotFound(
-            "No handler found to convert from {} to text".format(mime_type),
+            "No handler found to convert from {} to text".format(mime_type)
         )
 
     def has_image(self, digest, mime_type, index, size=500):
@@ -214,7 +214,7 @@ class Converter(object):
                 return converted_images[index]
 
         raise HandlerNotFound(
-            "No handler found to convert from {} to image".format(mime_type),
+            "No handler found to convert from {} to image".format(mime_type)
         )
 
     def get_metadata(self, digest, content, mime_type):
@@ -225,7 +225,7 @@ class Converter(object):
         if mime_type.startswith("image/"):
             img = Image.open(BytesIO(content))
             ret = {}
-            if not hasattr(img, '_getexif'):
+            if not hasattr(img, "_getexif"):
                 return {}
             info = img._getexif()
             if not info:
@@ -240,11 +240,9 @@ class Converter(object):
 
             with make_temp_file(content) as in_fn:
                 try:
-                    output = subprocess.check_output(['pdfinfo', in_fn])
+                    output = subprocess.check_output(["pdfinfo", in_fn])
                 except OSError:
-                    logger.error(
-                        "Conversion failed, probably pdfinfo is not installed",
-                    )
+                    logger.error("Conversion failed, probably pdfinfo is not installed")
                     raise
 
             ret = {}
@@ -252,10 +250,7 @@ class Converter(object):
                 if b":" in line:
                     key, value = line.strip().split(b":", 1)
                     key = text_type(key)
-                    ret["PDF:" + key] = text_type(
-                        value.strip(),
-                        errors="replace",
-                    )
+                    ret["PDF:" + key] = text_type(value.strip(), errors="replace")
 
             return ret
 

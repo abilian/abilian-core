@@ -10,7 +10,7 @@ from flask import Response, current_app, request
 
 SKIPPED_URLS = [
     # FIXME: later
-    'http://localhost/admin/settings',
+    "http://localhost/admin/settings"
 ]
 
 
@@ -33,10 +33,10 @@ def assert_valid(response):
     if request.url in SKIPPED_URLS:
         return
 
-    if response.mimetype == 'text/html':
+    if response.mimetype == "text/html":
         validate_html(response)
 
-    elif response.mimetype == 'application/json':
+    elif response.mimetype == "application/json":
         validate_json(response)
 
     else:
@@ -64,29 +64,27 @@ def validate_html_using_htmlhint(response):
 
 
 def validate_html_using_external_service(response):
-    validator_url = current_app.config.get('VALIDATOR_URL') \
-        or os.environ.get('VALIDATOR_URL')
+    validator_url = current_app.config.get("VALIDATOR_URL") or os.environ.get(
+        "VALIDATOR_URL"
+    )
 
     if not validator_url:
         return
 
     validator_response = requests.post(
-        validator_url + '?out=json',
+        validator_url + "?out=json",
         response.data,
-        headers={'Content-Type': response.mimetype},
+        headers={"Content-Type": response.mimetype},
     )
 
     body = validator_response.json()
 
-    for message in body['messages']:
-        if message['type'] == 'error':
-            detail = 'on line {} [{}]\n{}'.format(
-                message['lastLine'],
-                message['extract'],
-                message['message'],
+    for message in body["messages"]:
+        if message["type"] == "error":
+            detail = "on line {} [{}]\n{}".format(
+                message["lastLine"], message["extract"], message["message"]
             )
-            msg = 'Got a validation error for {}:\n{}' \
-                .format(request.url, detail)
+            msg = "Got a validation error for {}:\n{}".format(request.url, detail)
             raise ValidationError(msg)
 
 

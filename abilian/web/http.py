@@ -14,7 +14,7 @@ def nocache(view):
     @wraps(view)
     def _nocache(*args, **kwargs):
         resp = make_response(view(*args, **kwargs))
-        resp.headers['Cache-Control'] = 'no-cache'
+        resp.headers["Cache-Control"] = "no-cache"
         return resp
 
     return _nocache

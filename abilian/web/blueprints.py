@@ -25,7 +25,8 @@ def allow_access_for_roles(roles):
 
     def check_role(user, roles, **kwargs):
         from abilian.services import get_service
-        security = get_service('security')
+
+        security = get_service("security")
         return security.has_role(user, valid_roles)
 
     return check_role
@@ -54,9 +55,8 @@ class Blueprint(BaseBlueprint):
         if allowed_roles:
             self.record_once(
                 lambda s: s.app.add_access_controller(
-                    self.name,
-                    allow_access_for_roles(allowed_roles),
-                ),
+                    self.name, allow_access_for_roles(allowed_roles)
+                )
             )
 
     def allow_any(self, func):

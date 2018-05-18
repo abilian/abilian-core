@@ -14,7 +14,7 @@ from .forms import AttachmentForm
 from .views import UPLOAD_BUTTON
 from .views import bp as blueprint
 
-_MANAGER_ATTR = '__attachments_manager__'
+_MANAGER_ATTR = "__attachments_manager__"
 
 
 class AttachmentExtension(object):
@@ -24,8 +24,8 @@ class AttachmentExtension(object):
     """
 
     def __init__(self, app):
-        app.extensions['attachments'] = self
-        app.add_template_global(self, 'attachments')
+        app.extensions["attachments"] = self
+        app.add_template_global(self, "attachments")
         app.register_blueprint(blueprint)
 
     def manager(self, obj):
@@ -42,8 +42,7 @@ class AttachmentExtension(object):
 
     def for_entity(self, obj, check_support_attachments=False):
         return self.manager(obj).for_entity(
-            obj,
-            check_support_attachments=check_support_attachments,
+            obj, check_support_attachments=check_support_attachments
         )
 
     def has_attachments(self, obj):
@@ -60,7 +59,7 @@ class AttachmentExtension(object):
         return self.manager(obj).get_form_context(obj)
 
 
-_DEFAULT_TEMPLATE = 'macros/attachment_default.html'
+_DEFAULT_TEMPLATE = "macros/attachment_default.html"
 
 
 class AttachmentsManager(object):
@@ -69,12 +68,10 @@ class AttachmentsManager(object):
     can be used as class decorator
     """
     Form = AttachmentForm
-    macros_template = 'macros/attachment.html'
+    macros_template = "macros/attachment.html"
 
     def __init__(
-        self,
-        Form=AttachmentForm,
-        macros_template='macros/attachment_default.html',
+        self, Form=AttachmentForm, macros_template="macros/attachment_default.html"
     ):
         self.Form = Form
         self.macros_template = macros_template
@@ -85,19 +82,15 @@ class AttachmentsManager(object):
 
     @property
     def macros(self):
-        default_template = current_app.jinja_env.get_template(
-            _DEFAULT_TEMPLATE,
-        )
+        default_template = current_app.jinja_env.get_template(_DEFAULT_TEMPLATE)
         template = current_app.jinja_env.get_template(self.macros_template)
         default = default_template.module
         m = template.module
         return dict(
-            m_attachments=getattr(m, 'm_attachments', default.m_attachments),
-            m_attachment=getattr(m, 'm_attachment', default.m_attachment),
+            m_attachments=getattr(m, "m_attachments", default.m_attachments),
+            m_attachment=getattr(m, "m_attachment", default.m_attachment),
             m_attachment_form=getattr(
-                m,
-                'm_attachment_form',
-                default.m_attachment_form,
+                m, "m_attachment_form", default.m_attachment_form
             ),
         )
 
@@ -106,8 +99,7 @@ class AttachmentsManager(object):
 
     def for_entity(self, obj, check_support_attachments=False):
         return attachments.for_entity(
-            obj,
-            check_support_attachments=check_support_attachments,
+            obj, check_support_attachments=check_support_attachments
         )
 
     def has_attachments(self, obj):
@@ -122,9 +114,9 @@ class AttachmentsManager(object):
         Used by macro m_attachment_form(entity)
         """
         return {
-            'url': url_for('attachments.create', entity_id=obj.id),
-            'form': self.Form(),
-            'buttons': [UPLOAD_BUTTON],
+            "url": url_for("attachments.create", entity_id=obj.id),
+            "form": self.Form(),
+            "buttons": [UPLOAD_BUTTON],
         }
 
     #

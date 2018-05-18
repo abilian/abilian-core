@@ -15,11 +15,12 @@ import warnings
 
 import pytest
 
-pytest_plugins = ['abilian.testing.fixtures']
+pytest_plugins = ["abilian.testing.fixtures"]
 
 if os.environ.get("FAIL_ON_WARNINGS"):
     # Don't remove !
     import pandas
+
     warnings.simplefilter("error")
 
 if os.environ.get("COLLECT_ANNOTATIONS"):
@@ -32,15 +33,18 @@ if os.environ.get("COLLECT_ANNOTATIONS"):
         world before importing pyannotate.
         """
         from pyannotate_runtime import collect_types
+
         collect_types.init_types_collection()
 
     @pytest.fixture(autouse=True)
     def collect_types_fixture():
         from pyannotate_runtime import collect_types
+
         collect_types.resume()
         yield
         collect_types.pause()
 
     def pytest_sessionfinish(session, exitstatus):
         from pyannotate_runtime import collect_types
+
         collect_types.dump_stats("type_info.json")

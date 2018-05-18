@@ -19,20 +19,20 @@ _MARKER = object()
 
 
 class ViewBase(object):
-    title = _l('Vocabulary entry')
+    title = _l("Vocabulary entry")
     base_template = "admin/_base.html"
     Form = EditForm
     Model = None
 
     def prepare_args(self, args, kwargs):
         if self.Model is None:
-            self.Model = kwargs.get('Model')
-            if hasattr(self.Model, '__form__'):
-                self.Form = getattr(self.Model, '__form__')
+            self.Model = kwargs.get("Model")
+            if hasattr(self.Model, "__form__"):
+                self.Form = getattr(self.Model, "__form__")
         return args, kwargs
 
     def index_url(self):
-        return url_for('.vocabularies')
+        return url_for(".vocabularies")
 
 
 class Edit(ViewBase, views.ObjectEdit):
@@ -43,8 +43,8 @@ class Edit(ViewBase, views.ObjectEdit):
 
     def view_url(self):
         return url_for(
-            '.vocabularies_model',
-            group=self.Model.Meta.group or '_',
+            ".vocabularies_model",
+            group=self.Model.Meta.group or "_",
             Model=self.Model.Meta.name,
         )
 
@@ -63,38 +63,38 @@ class Delete(ViewBase, views.ObjectDelete):
 
 class VocabularyPanel(AdminPanel):
     """Vocabularies administration."""
-    id = 'vocabularies'
-    label = _l('Vocabularies')
-    icon = 'list'
+    id = "vocabularies"
+    label = _l("Vocabularies")
+    icon = "list"
 
     def voc_edit_url(self, item):
         return url_for(
-            '.' + self.id + '_edit',
-            group=item.Meta.group or '_',
+            "." + self.id + "_edit",
+            group=item.Meta.group or "_",
             Model=item.Meta.name,
             object_id=item.id,
         )
 
     def get(self):
-        svc = get_service('vocabularies')
+        svc = get_service("vocabularies")
         vocabularies = svc.grouped_vocabularies
         ctx = {
-            'service': svc,
-            'url_for_voc_edit': self.voc_edit_url,
-            'icon_checked': Glyphicon('check'),
-            'vocabularies': vocabularies,
+            "service": svc,
+            "url_for_voc_edit": self.voc_edit_url,
+            "icon_checked": Glyphicon("check"),
+            "vocabularies": vocabularies,
         }
-        return render_template('admin/vocabularies.html', **ctx)
+        return render_template("admin/vocabularies.html", **ctx)
 
     def post(self):
         data = request.form
-        group = data.get('group', '').strip()
-        Model = data.get('Model', '').strip()
-        return_to = data.get('return_to')
-        return_endpoint = '.vocabularies'
+        group = data.get("group", "").strip()
+        Model = data.get("Model", "").strip()
+        return_to = data.get("return_to")
+        return_endpoint = ".vocabularies"
         return_args = {}
 
-        if return_to not in (None, 'group', 'model'):
+        if return_to not in (None, "group", "model"):
             return_to = None
 
         def do_return():
@@ -103,42 +103,39 @@ class VocabularyPanel(AdminPanel):
         if not Model:
             return do_return()
 
-        if not group or group == '_':
+        if not group or group == "_":
             # default group
             group = None
 
-        svc = get_service('vocabularies')
+        svc = get_service("vocabularies")
         Model = svc.get_vocabulary(name=Model, group=group)
         if not Model:
             return do_return()
 
         if return_to is not None:
-            return_endpoint += '_' + return_to
+            return_endpoint += "_" + return_to
 
-        if return_to == 'group':
-            return_args['group'] = group or '_'
-        elif return_to == 'model':
-            return_args['group'] = Model.Meta.group or '_'
-            return_args['Model'] = Model.Meta.name
+        if return_to == "group":
+            return_args["group"] = group or "_"
+        elif return_to == "model":
+            return_args["group"] = Model.Meta.group or "_"
+            return_args["Model"] = Model.Meta.name
 
-        if 'up' in data:
+        if "up" in data:
             cmp_op = Model.position.__lt__
             cmp_order = Model.position.desc()
-            object_id = int(data.get('up'))
-        elif 'down' in data:
+            object_id = int(data.get("up"))
+        elif "down" in data:
             cmp_op = Model.position.__gt__
             cmp_order = Model.position.asc()
-            object_id = int(data.get('down'))
+            object_id = int(data.get("down"))
         else:
             return do_return()
 
         session = db.session()
-        query = Model.query.with_lockmode('update')
+        query = Model.query.with_lockmode("update")
         item = query.get(object_id)
-        other = query \
-            .filter(cmp_op(item.position)) \
-            .order_by(cmp_order) \
-            .first()
+        other = query.filter(cmp_op(item.position)).order_by(cmp_order).first()
 
         if other is not None:
             # switch positions
@@ -157,77 +154,72 @@ class VocabularyPanel(AdminPanel):
 
     def group_view(self, group):
         if group is None:
-            group = ''
-        svc = get_service('vocabularies')
+            group = ""
+        svc = get_service("vocabularies")
         groups = svc.grouped_vocabularies
         vocabularies = groups.get(group)
 
         ctx = {
-            'service': svc,
-            'url_for_voc_edit': self.voc_edit_url,
-            'icon_checked': Glyphicon('check'),
-            'vocabularies': {
-                group: vocabularies,
-            },
-            'edit_return_to': 'group',
+            "service": svc,
+            "url_for_voc_edit": self.voc_edit_url,
+            "icon_checked": Glyphicon("check"),
+            "vocabularies": {group: vocabularies},
+            "edit_return_to": "group",
         }
-        return render_template('admin/vocabularies.html', **ctx)
+        return render_template("admin/vocabularies.html", **ctx)
 
     def model_view(self, Model, group=None):
-        svc = get_service('vocabularies')
+        svc = get_service("vocabularies")
 
         ctx = {
-            'service': svc,
-            'url_for_voc_edit': self.voc_edit_url,
-            'icon_checked': Glyphicon('check'),
-            'vocabularies': {
-                Model.Meta.group: [Model],
-            },
-            'edit_return_to': 'model',
+            "service": svc,
+            "url_for_voc_edit": self.voc_edit_url,
+            "icon_checked": Glyphicon("check"),
+            "vocabularies": {Model.Meta.group: [Model]},
+            "edit_return_to": "model",
         }
-        return render_template('admin/vocabularies.html', **ctx)
+        return render_template("admin/vocabularies.html", **ctx)
 
     def install_additional_rules(self, add_url_rule):
-        panel_endpoint = '.' + self.id
-        group_base = '/<string:group>/'
-        add_url_rule(group_base, endpoint='group', view_func=self.group_view)
+        panel_endpoint = "." + self.id
+        group_base = "/<string:group>/"
+        add_url_rule(group_base, endpoint="group", view_func=self.group_view)
         # models
-        base = group_base + '<string:Model>/'
-        add_url_rule(base, endpoint='model', view_func=self.model_view)
+        base = group_base + "<string:Model>/"
+        add_url_rule(base, endpoint="model", view_func=self.model_view)
 
-        edit_view = Edit.as_view('edit', view_endpoint=panel_endpoint)
-        add_url_rule(base + '<int:object_id>', view_func=edit_view)
+        edit_view = Edit.as_view("edit", view_endpoint=panel_endpoint)
+        add_url_rule(base + "<int:object_id>", view_func=edit_view)
         add_url_rule(
-            base + 'new',
-            view_func=Create.as_view('new', view_endpoint=panel_endpoint),
+            base + "new", view_func=Create.as_view("new", view_endpoint=panel_endpoint)
         )
 
     def url_value_preprocess(self, endpoint, view_args):
-        model_name = view_args.pop('Model', None)
-        group = view_args.pop('group', _MARKER)
+        model_name = view_args.pop("Model", None)
+        group = view_args.pop("group", _MARKER)
 
-        if group == '_':
+        if group == "_":
             # "General" group
             group = ""
 
         if group is not _MARKER:
-            view_args['group'] = group
+            view_args["group"] = group
 
         if model_name is not None:
-            svc = get_service('vocabularies')
+            svc = get_service("vocabularies")
             Model = svc.get_vocabulary(name=model_name, group=group)
-            g.breadcrumb.append(BreadcrumbItem(
-                label=Model.Meta.group if group else _('Global'),
-                url=url_for('.vocabularies_group', group=group or '_'),
-            ))
+            g.breadcrumb.append(
+                BreadcrumbItem(
+                    label=Model.Meta.group if group else _("Global"),
+                    url=url_for(".vocabularies_group", group=group or "_"),
+                )
+            )
             g.breadcrumb.append(
                 BreadcrumbItem(
                     label=Model.Meta.label,
                     url=url_for(
-                        '.vocabularies_model',
-                        group=group or '_',
-                        Model=Model.Meta.name,
+                        ".vocabularies_model", group=group or "_", Model=Model.Meta.name
                     ),
-                ),
+                )
             )
-            view_args['Model'] = Model
+            view_args["Model"] = Model

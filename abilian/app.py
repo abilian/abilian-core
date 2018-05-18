@@ -59,7 +59,7 @@ from abilian.web.views.images import user_photo_url
 
 logger = logging.getLogger(__name__)
 db = extensions.db
-__all__ = ['create_app', 'Application', 'ServiceManager']
+__all__ = ["create_app", "Application", "ServiceManager"]
 
 # Silence those warnings for now.
 warnings.simplefilter("ignore", category=sa.exc.SAWarning)
@@ -69,35 +69,35 @@ default_config.update(
     PRIVATE_SITE=False,
     TEMPLATE_DEBUG=False,
     CSRF_ENABLED=True,
-    BABEL_ACCEPT_LANGUAGES=['en'],
+    BABEL_ACCEPT_LANGUAGES=["en"],
     DEFAULT_COUNTRY=None,
     PLUGINS=(),
     ADMIN_PANELS=(
-        'abilian.web.admin.panels.dashboard.DashboardPanel',
-        'abilian.web.admin.panels.audit.AuditPanel',
-        'abilian.web.admin.panels.login_sessions.LoginSessionsPanel',
-        'abilian.web.admin.panels.settings.SettingsPanel',
-        'abilian.web.admin.panels.users.UsersPanel',
-        'abilian.web.admin.panels.groups.GroupsPanel',
-        'abilian.web.admin.panels.sysinfo.SysinfoPanel',
-        'abilian.web.admin.panels.impersonate.ImpersonatePanel',
-        'abilian.services.vocabularies.admin.VocabularyPanel',
-        'abilian.web.tags.admin.TagPanel',
+        "abilian.web.admin.panels.dashboard.DashboardPanel",
+        "abilian.web.admin.panels.audit.AuditPanel",
+        "abilian.web.admin.panels.login_sessions.LoginSessionsPanel",
+        "abilian.web.admin.panels.settings.SettingsPanel",
+        "abilian.web.admin.panels.users.UsersPanel",
+        "abilian.web.admin.panels.groups.GroupsPanel",
+        "abilian.web.admin.panels.sysinfo.SysinfoPanel",
+        "abilian.web.admin.panels.impersonate.ImpersonatePanel",
+        "abilian.services.vocabularies.admin.VocabularyPanel",
+        "abilian.web.tags.admin.TagPanel",
     ),
     CELERYD_MAX_TASKS_PER_CHILD=1000,
-    CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
+    CELERY_ACCEPT_CONTENT=["pickle", "json", "msgpack", "yaml"],
     CELERY_TIMEZONE=LOCALTZ,
-    SENTRY_USER_ATTRS=('email', 'first_name', 'last_name'),
+    SENTRY_USER_ATTRS=("email", "first_name", "last_name"),
     SENTRY_INSTALL_CLIENT_JS=True,  # also install client JS
-    SENTRY_JS_VERSION='1.1.22',
+    SENTRY_JS_VERSION="1.1.22",
     # TODO: remove, not needed for recent sentry-js
-    SENTRY_JS_PLUGINS=('console', 'jquery', 'native', 'require'),
+    SENTRY_JS_PLUGINS=("console", "jquery", "native", "require"),
     SESSION_COOKIE_NAME=None,
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    LOGO_URL=Endpoint('abilian_static', filename='img/logo-abilian-32x32.png'),
+    LOGO_URL=Endpoint("abilian_static", filename="img/logo-abilian-32x32.png"),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
-    TRACKING_CODE_SNIPPET='',  # tracking code to insert before </body>
+    TRACKING_CODE_SNIPPET="",  # tracking code to insert before </body>
     MAIL_ADDRESS_TAG_CHAR=None,
 )
 default_config = ImmutableDict(default_config)
@@ -132,56 +132,49 @@ class PluginManager(object):
 class AssetManagerMixin(Flask):
 
     def init_assets(self):
-        js_filters = (('closure_js',)
-                      if self.config.get('PRODUCTION', False) else None)
+        js_filters = ("closure_js",) if self.config.get("PRODUCTION", False) else None
         # js_filters = None
 
         self._assets_bundles = {
-            'css': {
-                'options': {
-                    'filters': ('less', 'cssmin'),
-                    'output': 'style-%(version)s.min.css'
-                },
+            "css": {
+                "options": {
+                    "filters": ("less", "cssmin"),
+                    "output": "style-%(version)s.min.css",
+                }
             },
-            'js-top': {
-                'options': {
-                    'output': 'top-%(version)s.min.js',
-                    'filters': js_filters
-                },
+            "js-top": {
+                "options": {"output": "top-%(version)s.min.js", "filters": js_filters}
             },
-            'js': {
-                'options': {
-                    'output': 'app-%(version)s.min.js',
-                    'filters': js_filters
-                },
+            "js": {
+                "options": {"output": "app-%(version)s.min.js", "filters": js_filters}
             },
         }
 
         # bundles for JS translations
-        languages = self.config['BABEL_ACCEPT_LANGUAGES']
+        languages = self.config["BABEL_ACCEPT_LANGUAGES"]
         for lang in languages:
-            code = 'js-i18n-' + lang
-            filename = 'lang-' + lang + '-%(version)s.min.js'
+            code = "js-i18n-" + lang
+            filename = "lang-" + lang + "-%(version)s.min.js"
             self._assets_bundles[code] = {
-                'options': dict(output=filename, filters=js_filters),
+                "options": dict(output=filename, filters=js_filters)
             }
 
     def _setup_asset_extension(self):
-        assets = self.extensions['webassets'] = AssetsEnv(self)
-        assets.debug = not self.config.get('PRODUCTION', False)
-        assets.requirejs_config = {'waitSeconds': 90, 'shim': {}, 'paths': {}}
+        assets = self.extensions["webassets"] = AssetsEnv(self)
+        assets.debug = not self.config.get("PRODUCTION", False)
+        assets.requirejs_config = {"waitSeconds": 90, "shim": {}, "paths": {}}
 
-        assets_base_dir = Path(self.instance_path, 'webassets')
-        assets_dir = assets_base_dir / 'compiled'
-        assets_cache_dir = assets_base_dir / 'cache'
+        assets_base_dir = Path(self.instance_path, "webassets")
+        assets_dir = assets_base_dir / "compiled"
+        assets_cache_dir = assets_base_dir / "cache"
         for path in (assets_base_dir, assets_dir, assets_cache_dir):
             if not path.exists():
                 path.mkdir()
 
         assets.directory = str(assets_dir)
         assets.cache = str(assets_cache_dir)
-        manifest_file = assets_base_dir / 'manifest.json'
-        assets.manifest = 'json:{}'.format(manifest_file)
+        manifest_file = assets_base_dir / "manifest.json"
+        assets.manifest = "json:{}".format(manifest_file)
 
         # set up load_path for application static dir. This is required
         # since we are setting Environment.load_path for other assets
@@ -191,50 +184,48 @@ class AssetManagerMixin(Flask):
         assets.append_path(self.static_folder, self.static_url_path)
 
         # filters options
-        less_args = ['-ru']
-        assets.config['less_extra_args'] = less_args
-        assets.config['less_as_output'] = True
+        less_args = ["-ru"]
+        assets.config["less_extra_args"] = less_args
+        assets.config["less_as_output"] = True
         if assets.debug:
-            assets.config['less_source_map_file'] = 'style.map'
+            assets.config["less_source_map_file"] = "style.map"
 
         # setup static url for our assets
         from abilian.web import assets as core_bundles
+
         core_bundles.init_app(self)
 
         # static minified are here
-        assets.url = self.static_url_path + '/min'
+        assets.url = self.static_url_path + "/min"
         assets.append_path(str(assets_dir), assets.url)
         self.add_static_url(
-            'min',
-            str(assets_dir),
-            endpoint='webassets_static',
-            roles=Anonymous,
+            "min", str(assets_dir), endpoint="webassets_static", roles=Anonymous
         )
 
     def _finalize_assets_setup(self):
-        assets = self.extensions['webassets']
+        assets = self.extensions["webassets"]
         assets_dir = Path(assets.directory)
         closure_base_args = [
-            '--jscomp_warning',
-            'internetExplorerChecks',
-            '--source_map_format',
-            'V3',
-            '--create_source_map',
+            "--jscomp_warning",
+            "internetExplorerChecks",
+            "--source_map_format",
+            "V3",
+            "--create_source_map",
         ]
 
         for name, data in self._assets_bundles.items():
-            bundles = data.get('bundles', [])
-            options = data.get('options', {})
-            filters = options.get('filters') or []
-            options['filters'] = []
+            bundles = data.get("bundles", [])
+            options = data.get("options", {})
+            filters = options.get("filters") or []
+            options["filters"] = []
             for f in filters:
-                if f == 'closure_js':
-                    js_map_file = str(assets_dir / '{}.map'.format(name))
+                if f == "closure_js":
+                    js_map_file = str(assets_dir / "{}.map".format(name))
                     f = ClosureJS(extra_args=closure_base_args + [js_map_file])
-                options['filters'].append(f)
+                options["filters"].append(f)
 
-            if not options['filters']:
-                options['filters'] = None
+            if not options["filters"]:
+                options["filters"] = None
 
             if bundles:
                 assets.register(name, Bundle(*bundles, **options))
@@ -254,8 +245,7 @@ class AssetManagerMixin(Flask):
         supported = list(self._assets_bundles.keys())
         if type_ not in supported:
             msg = "Invalid type: {}. Valid types: {}".format(
-                repr(type_),
-                ', '.join(sorted(supported)),
+                repr(type_), ", ".join(sorted(supported))
             )
             raise KeyError(msg)
 
@@ -263,7 +253,7 @@ class AssetManagerMixin(Flask):
             if not isinstance(asset, Bundle) and callable(asset):
                 asset = asset()
 
-            self._assets_bundles[type_].setdefault('bundles', []).append(asset)
+            self._assets_bundles[type_].setdefault("bundles", []).append(asset)
 
     def register_i18n_js(self, *paths):
         """Register templates path translations files, like
@@ -271,8 +261,8 @@ class AssetManagerMixin(Flask):
 
         Only existing files are registered.
         """
-        languages = self.config['BABEL_ACCEPT_LANGUAGES']
-        assets = self.extensions['webassets']
+        languages = self.config["BABEL_ACCEPT_LANGUAGES"]
+        assets = self.extensions["webassets"]
 
         for path in paths:
             for lang in languages:
@@ -283,7 +273,7 @@ class AssetManagerMixin(Flask):
                     pass
                     # logger.debug('i18n JS not found, skipped: "%s"', filename)
                 else:
-                    self.register_asset('js-i18n-' + lang, filename)
+                    self.register_asset("js-i18n-" + lang, filename)
 
     def _register_base_assets(self):
         """Register assets needed by Abilian.
@@ -293,9 +283,9 @@ class AssetManagerMixin(Flask):
         """
         from abilian.web import assets as bundles
 
-        self.register_asset('css', bundles.LESS)
-        self.register_asset('js-top', bundles.TOP_JS)
-        self.register_asset('js', bundles.JS)
+        self.register_asset("css", bundles.LESS)
+        self.register_asset("js-top", bundles.TOP_JS)
+        self.register_asset("js", bundles.JS)
         self.register_i18n_js(*bundles.JS_I18N)
 
 
@@ -310,52 +300,49 @@ class ErrorManagerMixin(Flask):
         if log_level:
             self.logger.setLevel(log_level)
 
-        logging_file = self.config.get('LOGGING_CONFIG_FILE')
+        logging_file = self.config.get("LOGGING_CONFIG_FILE")
         if logging_file:
             logging_file = (Path(self.instance_path) / logging_file).resolve()
         else:
-            logging_file = Path(
-                resource_filename(__name__, 'default_logging.yml'),
-            )
+            logging_file = Path(resource_filename(__name__, "default_logging.yml"))
 
-        if logging_file.suffix == '.ini':
+        if logging_file.suffix == ".ini":
             # old standard 'ini' file config
             logging.config.fileConfig(
-                text_type(logging_file),
-                disable_existing_loggers=False,
+                text_type(logging_file), disable_existing_loggers=False
             )
-        elif logging_file.suffix == '.yml':
+        elif logging_file.suffix == ".yml":
             # yaml config file
             logging_cfg = yaml.safe_load(logging_file.open())
-            logging_cfg.setdefault('version', 1)
-            logging_cfg.setdefault('disable_existing_loggers', False)
+            logging_cfg.setdefault("version", 1)
+            logging_cfg.setdefault("disable_existing_loggers", False)
             logging.config.dictConfig(logging_cfg)
 
     def init_debug_toolbar(self):
         if (
-            not self.testing and self.config.get('DEBUG_TB_ENABLED') and
-            'debugtoolbar' not in self.blueprints
+            not self.testing
+            and self.config.get("DEBUG_TB_ENABLED")
+            and "debugtoolbar" not in self.blueprints
         ):
             try:
                 from flask_debugtoolbar import DebugToolbarExtension
             except ImportError:
                 logger.warning(
-                    'DEBUG_TB_ENABLED is on but flask_debugtoolbar '
-                    'is not installed.',
+                    "DEBUG_TB_ENABLED is on but flask_debugtoolbar " "is not installed."
                 )
             else:
                 dbt = DebugToolbarExtension()
                 default_config = dbt._default_config(self)
                 init_dbt = dbt.init_app
 
-                if 'DEBUG_TB_PANELS' not in self.config:
+                if "DEBUG_TB_PANELS" not in self.config:
                     # add our panels to default ones
-                    self.config['DEBUG_TB_PANELS'] = list(
-                        default_config['DEBUG_TB_PANELS'],
+                    self.config["DEBUG_TB_PANELS"] = list(
+                        default_config["DEBUG_TB_PANELS"]
                     )
                 init_dbt(self)
                 for view_name in self.view_functions:
-                    if view_name.startswith('debugtoolbar.'):
+                    if view_name.startswith("debugtoolbar."):
                         extensions.csrf.exempt(self.view_functions[view_name])
 
     def handle_user_exception(self, e):
@@ -395,9 +382,9 @@ class ErrorManagerMixin(Flask):
         g_objs = []
         for key in iter(g):
             obj = getattr(g, key)
-            if (
-                isinstance(obj, db.Model) and
-                sa.orm.object_session(obj) in (None, old_session)
+            if isinstance(obj, db.Model) and sa.orm.object_session(obj) in (
+                None,
+                old_session,
             ):
                 g_objs.append((key, obj, obj in old_session.dirty))
 
@@ -410,33 +397,33 @@ class ErrorManagerMixin(Flask):
             setattr(g, key, session.merge(obj, load=load))
 
         # refresh `current_user`
-        user = getattr(_request_ctx_stack.top, 'user', None)
+        user = getattr(_request_ctx_stack.top, "user", None)
         if user is not None and isinstance(user, db.Model):
             _request_ctx_stack.top.user = session.merge(user, load=load)
 
     def log_exception(self, exc_info):
         """Log exception only if sentry is not installed (this avoids getting
         error twice in sentry)."""
-        if 'sentry' not in self.extensions:
+        if "sentry" not in self.extensions:
             super(ErrorManagerMixin, self).log_exception(exc_info)
 
     def init_sentry(self):
         """Install Sentry handler if config defines 'SENTRY_DSN'."""
-        if self.config.get('SENTRY_DSN'):
+        if self.config.get("SENTRY_DSN"):
             try:
                 from abilian.core.sentry import Sentry
             except ImportError:
                 logger.error(
                     'SENTRY_DSN is defined in config but package "raven" '
-                    'is not installed.',
+                    "is not installed."
                 )
                 return
 
             ext = Sentry(self, logging=True, level=logging.ERROR)
-            ext.client.tags['app_name'] = self.name
-            ext.client.tags['process_type'] = 'web'
-            server_name = str(self.config.get('SERVER_NAME'))
-            ext.client.tags['configured_server_name'] = server_name
+            ext.client.tags["app_name"] = self.name
+            ext.client.tags["process_type"] = "web"
+            server_name = str(self.config.get("SERVER_NAME"))
+            ext.client.tags["configured_server_name"] = server_name
 
     def install_default_handlers(self):
         for http_error_code in (403, 404, 500):
@@ -449,8 +436,7 @@ class ErrorManagerMixin(Flask):
         for http_error_code 404.
         """
         logger.debug(
-            'Set Default HTTP error handler for status code %d',
-            http_error_code,
+            "Set Default HTTP error handler for status code %d", http_error_code
         )
         handler = partial(self.handle_http_error, http_error_code)
         self.errorhandler(http_error_code)(handler)
@@ -470,7 +456,7 @@ class ErrorManagerMixin(Flask):
             # have an error, too, resulting in raw 500 page :-(
             db.session.rollback()
 
-        template = 'error{:d}.html'.format(code)
+        template = "error{:d}.html".format(code)
         return render_template(template, error=error), code
 
 
@@ -502,26 +488,22 @@ class JinjaManagerMixin(Flask):
     def jinja_options(self):
         options = dict(Flask.jinja_options)
 
-        extensions = options.setdefault('extensions', [])
-        ext = 'abilian.core.jinjaext.DeferredJSExtension'
+        extensions = options.setdefault("extensions", [])
+        ext = "abilian.core.jinjaext.DeferredJSExtension"
         if ext not in extensions:
             extensions.append(ext)
 
-        if 'bytecode_cache' not in options:
-            cache_dir = Path(self.instance_path, 'cache', 'jinja')
+        if "bytecode_cache" not in options:
+            cache_dir = Path(self.instance_path, "cache", "jinja")
             if not cache_dir.exists():
                 cache_dir.mkdir(0o775, parents=True)
 
-            options['bytecode_cache'] = jinja2.FileSystemBytecodeCache(
-                str(cache_dir),
-                '%s.cache',
+            options["bytecode_cache"] = jinja2.FileSystemBytecodeCache(
+                str(cache_dir), "%s.cache"
             )
 
-        if (
-            self.config.get('DEBUG', False) and
-            self.config.get('TEMPLATE_DEBUG', False)
-        ):
-            options['undefined'] = jinja2.StrictUndefined
+        if self.config.get("DEBUG", False) and self.config.get("TEMPLATE_DEBUG", False):
+            options["undefined"] = jinja2.StrictUndefined
         return options
 
     def register_jinja_loaders(self, *loaders):
@@ -538,9 +520,9 @@ class JinjaManagerMixin(Flask):
 
         :raise: `ValueError` if a template has already been rendered
         """
-        if not hasattr(self, '_jinja_loaders'):
+        if not hasattr(self, "_jinja_loaders"):
             raise ValueError(
-                'Cannot register new jinja loaders after first template rendered',
+                "Cannot register new jinja loaders after first template rendered"
             )
 
         self._jinja_loaders.extend(loaders)
@@ -557,8 +539,12 @@ class JinjaManagerMixin(Flask):
 
 
 class Application(
-    ServiceManager, PluginManager, AssetManagerMixin, ErrorManagerMixin,
-    JinjaManagerMixin, Flask
+    ServiceManager,
+    PluginManager,
+    AssetManagerMixin,
+    ErrorManagerMixin,
+    JinjaManagerMixin,
+    Flask,
 ):
     """Base application class.
 
@@ -568,25 +554,25 @@ class Application(
 
     #: Custom apps may want to always load some plugins: list them here.
     APP_PLUGINS = (
-        'abilian.web.search',
-        'abilian.web.tags',
-        'abilian.web.comments',
-        'abilian.web.uploads',
-        'abilian.web.attachments',
+        "abilian.web.search",
+        "abilian.web.tags",
+        "abilian.web.comments",
+        "abilian.web.uploads",
+        "abilian.web.attachments",
     )
 
     #: Environment variable used to locate a config file to load last (after
     #: instance config file). Use this if you want to override some settings
     #: on a configured instance.
-    CONFIG_ENVVAR = 'ABILIAN_CONFIG'
+    CONFIG_ENVVAR = "ABILIAN_CONFIG"
 
     #: True if application has a config file and can be considered configured
     #: for site.
-    configured = ConfigAttribute('CONFIGURED')
+    configured = ConfigAttribute("CONFIGURED")
 
     #: If True all views will require by default an authenticated user, unless
     #: Anonymous role is authorized. Static assets are always public.
-    private_site = ConfigAttribute('PRIVATE_SITE')
+    private_site = ConfigAttribute("PRIVATE_SITE")
 
     #: instance of :class:`.web.views.registry.Registry`.
     default_view = None  # type: abilian.web.views.registry.Registry
@@ -596,7 +582,7 @@ class Application(
 
     #: :class:`flask_script.Manager` instance for shell commands of this app.
     #: defaults to `.commands.manager`, relative to app name.
-    script_manager = '.commands.manager'
+    script_manager = ".commands.manager"
 
     #: celery app class
     celery_app_cls = FlaskCelery
@@ -604,16 +590,16 @@ class Application(
     def __init__(self, name=None, config=None, *args, **kwargs):
         name = name or __name__
 
-        instance_path = os.environ.get('FLASK_INSTANCE_PATH')
+        instance_path = os.environ.get("FLASK_INSTANCE_PATH")
         if instance_path:
-            kwargs['instance_path'] = instance_path
+            kwargs["instance_path"] = instance_path
         else:
-            kwargs.setdefault('instance_relative_config', True)
+            kwargs.setdefault("instance_relative_config", True)
 
         # used by make_config to determine if we try to load config from
         # instance / environment variable /...
         self._ABILIAN_INIT_TESTING_FLAG = (
-            getattr(config, 'TESTING', False) if config else False
+            getattr(config, "TESTING", False) if config else False
         )
         Flask.__init__(self, name, *args, **kwargs)
         del self._ABILIAN_INIT_TESTING_FLAG
@@ -635,8 +621,8 @@ class Application(
         # database AFAICT), and LOGGING_FILE cannot be set in DB settings.
         self.setup_logging()
 
-        configured = bool(self.config.get('SQLALCHEMY_DATABASE_URI'))
-        self.config['CONFIGURED'] = configured
+        configured = bool(self.config.get("SQLALCHEMY_DATABASE_URI"))
+        self.config["CONFIGURED"] = configured
 
         if not self.testing:
             self.init_sentry()
@@ -645,7 +631,7 @@ class Application(
             # set fixed secret_key so that any unconfigured worker will use,
             # so that session can be used during setup even if
             # multiple processes are processing requests.
-            self.config['SECRET_KEY'] = 'abilian_setup_key'
+            self.config["SECRET_KEY"] = "abilian_setup_key"
 
         # time to load config bits from database: 'settings'
         # First init required stuff: db to make queries, and settings service
@@ -655,8 +641,8 @@ class Application(
         if configured:
             with self.app_context():
                 try:
-                    settings = self.services['settings']
-                    config = settings.namespace('config').as_dict()
+                    settings = self.services["settings"]
+                    config = settings.namespace("config").as_dict()
                 except sa.exc.DatabaseError as exc:
                     # We may get here if DB is not initialized and "settings"
                     # table is missing. Command "initdb" must be run to
@@ -669,10 +655,10 @@ class Application(
                 else:
                     self.config.update(config)
 
-        if not self.config.get('FAVICO_URL'):
-            self.config['FAVICO_URL'] = self.config.get('LOGO_URL')
+        if not self.config.get("FAVICO_URL"):
+            self.config["FAVICO_URL"] = self.config.get("LOGO_URL")
 
-        self.register_jinja_loaders(jinja2.PackageLoader('abilian.web'))
+        self.register_jinja_loaders(jinja2.PackageLoader("abilian.web"))
 
         self.init_assets()
         self.install_default_handlers()
@@ -681,19 +667,16 @@ class Application(
             self.init_extensions()
             self.register_plugins()
             self.add_access_controller(
-                'static',
-                allow_access_for_roles(Anonymous),
-                endpoint=True,
+                "static", allow_access_for_roles(Anonymous), endpoint=True
             )
             # debugtoolbar: this is needed to have it when not authenticated
             # on a private site. We cannot do this in init_debug_toolbar,
             # since auth service is not yet installed.
             self.add_access_controller(
-                'debugtoolbar',
-                allow_access_for_roles(Anonymous),
+                "debugtoolbar", allow_access_for_roles(Anonymous)
             )
             self.add_access_controller(
-                '_debug_toolbar.static',
+                "_debug_toolbar.static",
                 allow_access_for_roles(Anonymous),
                 endpoint=True,
             )
@@ -719,7 +702,7 @@ class Application(
         # Must come after all entity classes have been declared.
         # Inherited from ServiceManager. Will need some configuration love
         # later.
-        if not self.config.get('TESTING', False):
+        if not self.config.get("TESTING", False):
             with self.app_context():
                 self.start_services()
 
@@ -730,12 +713,11 @@ class Application(
         if config:
             self.config.from_object(config)
 
-        languages = self.config['BABEL_ACCEPT_LANGUAGES']
+        languages = self.config["BABEL_ACCEPT_LANGUAGES"]
         languages = tuple(
-            lang for lang in languages
-            if lang in abilian.i18n.VALID_LANGUAGES_CODE
+            lang for lang in languages if lang in abilian.i18n.VALID_LANGUAGES_CODE
         )
-        self.config['BABEL_ACCEPT_LANGUAGES'] = languages
+        self.config["BABEL_ACCEPT_LANGUAGES"] = languages
 
     def _setup_script_manager(self):
         manager = self.script_manager
@@ -745,7 +727,7 @@ class Application(
 
         if isinstance(manager, string_types):
             manager = str(manager)
-            if manager.startswith('.'):
+            if manager.startswith("."):
                 manager = self.import_name + manager
 
             manager_import_path = manager
@@ -753,14 +735,14 @@ class Application(
             if manager is None:
                 # fallback on abilian-core's
                 logger.warning(
-                    '\n' + ('*' * 79) + '\n'
-                    'Could not find command manager at %r, '
-                    'using a default one\n'
-                    'Some commands might not be available\n' +
-                    ('*' * 79) + '\n',
+                    "\n" + ("*" * 79) + "\n"
+                    "Could not find command manager at %r, "
+                    "using a default one\n"
+                    "Some commands might not be available\n" + ("*" * 79) + "\n",
                     manager_import_path,
                 )
                 from abilian.core.commands import setup_abilian_commands
+
                 manager = ScriptManager()
                 setup_abilian_commands(manager)
 
@@ -775,7 +757,7 @@ class Application(
         Set our celery app as current, so that task use the correct
         config. Without that tasks may use their default set app.
         """
-        self.extensions['celery'].set_current()
+        self.extensions["celery"].set_current()
 
     def _setup_nav_and_breadcrumbs(self, app=None):
         """Listener for `request_started` event.
@@ -783,7 +765,7 @@ class Application(
         If you want to customize first items of breadcrumbs, override
         :meth:`init_breadcrumbs`
         """
-        g.nav = {'active': None}  # active section
+        g.nav = {"active": None}  # active section
         g.breadcrumb = []
         self.init_breadcrumbs()
 
@@ -793,9 +775,7 @@ class Application(
         This happens during `request_started` event, which is triggered
         before any url_value_preprocessor and `before_request` handlers.
         """
-        g.breadcrumb.append(
-            BreadcrumbItem(icon='home', url='/' + request.script_root),
-        )
+        g.breadcrumb.append(BreadcrumbItem(icon="home", url="/" + request.script_root))
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary
@@ -811,13 +791,13 @@ class Application(
 
         if not path.exists():
             if create:
-                logger.info('Create instance folder: %s', path)
+                logger.info("Create instance folder: %s", path)
                 path.mkdir(0o775, parents=True)
             else:
-                err = 'Instance folder does not exists'
+                err = "Instance folder does not exists"
                 eno = errno.ENOENT
         elif not path.is_dir():
-            err = 'Instance folder is not a directory'
+            err = "Instance folder is not a directory"
             eno = errno.ENOTDIR
         elif not os.access(str(path), os.R_OK | os.W_OK | os.X_OK):
             err = 'Require "rwx" access rights, please verify permissions'
@@ -831,12 +811,12 @@ class Application(
 
     def make_config(self, instance_relative=False):
         config = Flask.make_config(self, instance_relative)
-        if not config.get('SESSION_COOKIE_NAME'):
-            config['SESSION_COOKIE_NAME'] = self.name + '-session'
+        if not config.get("SESSION_COOKIE_NAME"):
+            config["SESSION_COOKIE_NAME"] = self.name + "-session"
 
         # during testing DATA_DIR is not created by instance app,
         # but we still need this attribute to be set
-        self.DATA_DIR = Path(self.instance_path, 'data')
+        self.DATA_DIR = Path(self.instance_path, "data")
 
         if self._ABILIAN_INIT_TESTING_FLAG:
             # testing: don't load any config file!
@@ -845,7 +825,7 @@ class Application(
         if instance_relative:
             self.check_instance_folder(create=True)
 
-        cfg_path = text_type(Path(config.root_path) / 'config.py')
+        cfg_path = text_type(Path(config.root_path) / "config.py")
         logger.info('Try to load config: "%s"', cfg_path)
         try:
             config.from_pyfile(cfg_path, silent=False)
@@ -858,8 +838,8 @@ class Application(
         if self.CONFIG_ENVVAR in os.environ:
             config.from_envvar(self.CONFIG_ENVVAR, silent=False)
 
-        if 'WTF_CSRF_ENABLED' not in config:
-            config['WTF_CSRF_ENABLED'] = config.get('CSRF_ENABLED', True)
+        if "WTF_CSRF_ENABLED" not in config:
+            config["WTF_CSRF_ENABLED"] = config.get("CSRF_ENABLED", True)
 
         return config
 
@@ -872,6 +852,7 @@ class Application(
         actions.init_app(self)
 
         from abilian.core.jinjaext import DeferredJS
+
         DeferredJS(self)
 
         # auth_service installs a `before_request` handler (actually it's
@@ -891,12 +872,8 @@ class Application(
         babel.timezone_selector_func = None
 
         babel.init_app(self)
-        babel.add_translations(
-            'wtforms',
-            translations_dir='locale',
-            domain='wtforms',
-        )
-        babel.add_translations('abilian')
+        babel.add_translations("wtforms", translations_dir="locale", domain="wtforms")
+        babel.add_translations("abilian")
         babel.localeselector(abilian.i18n.localeselector)
         babel.timezoneselector(abilian.i18n.timezoneselector)
 
@@ -904,15 +881,16 @@ class Application(
         Migrate(self, db)
 
         # CSRF by default
-        if self.config.get('CSRF_ENABLED'):
+        if self.config.get("CSRF_ENABLED"):
             extensions.csrf.init_app(self)
-            self.extensions['csrf'] = extensions.csrf
+            self.extensions["csrf"] = extensions.csrf
             extensions.abilian_csrf.init_app(self)
 
         self.register_blueprint(csrf.blueprint)
 
         # images blueprint
         from .web.views.images import blueprint as images_bp
+
         self.register_blueprint(images_bp)
 
         # Abilian Core services
@@ -928,9 +906,11 @@ class Application(
         antivirus.init_app(self)
 
         from .web.preferences.user import UserPreferencesPanel
+
         preferences_service.register_panel(UserPreferencesPanel(), self)
 
         from .web.coreviews import users
+
         self.register_blueprint(users.bp)
 
         # Admin interface
@@ -938,7 +918,7 @@ class Application(
 
         # Celery async service
         # this allows all shared tasks to use this celery app
-        celery_app = self.extensions['celery'] = self.celery_app_cls()
+        celery_app = self.extensions["celery"] = self.celery_app_cls()
         # force reading celery conf now - default celery app will
         # also update our config with default settings
         celery_app.conf  # noqa
@@ -947,19 +927,19 @@ class Application(
         # dev helper
         if self.debug:
             # during dev, one can go to /http_error/403 to see rendering of 403
-            http_error_pages = Blueprint('http_error_pages', __name__)
+            http_error_pages = Blueprint("http_error_pages", __name__)
 
-            @http_error_pages.route('/<int:code>')
+            @http_error_pages.route("/<int:code>")
             def error_page(code):
                 """Helper for development to show 403, 404, 500..."""
                 abort(code)
 
-            self.register_blueprint(http_error_pages, url_prefix='/http_error')
+            self.register_blueprint(http_error_pages, url_prefix="/http_error")
 
     def register_plugins(self):
         """Load plugins listed in config variable 'PLUGINS'."""
         registered = set()
-        for plugin_fqdn in chain(self.APP_PLUGINS, self.config['PLUGINS']):
+        for plugin_fqdn in chain(self.APP_PLUGINS, self.config["PLUGINS"]):
             if plugin_fqdn not in registered:
                 self.register_plugin(plugin_fqdn)
                 registered.add(plugin_fqdn)
@@ -968,28 +948,23 @@ class Application(
         if self.configured:
             return
 
-        logger.info('Application is not configured, installing setup wizard')
+        logger.info("Application is not configured, installing setup wizard")
         from abilian.web import setupwizard
 
-        self.register_blueprint(setupwizard.setup, url_prefix='/setup')
+        self.register_blueprint(setupwizard.setup, url_prefix="/setup")
 
-    def add_url_rule(
-        self, rule, endpoint=None, view_func=None, roles=None, **options
-    ):
+    def add_url_rule(self, rule, endpoint=None, view_func=None, roles=None, **options):
         """See :meth:`Flask.add_url_rule`.
 
         If `roles` parameter is present, it must be a
         :class:`abilian.service.security.models.Role` instance, or a list of
         Role instances.
         """
-        super(Application,
-              self).add_url_rule(rule, endpoint, view_func, **options)
+        super(Application, self).add_url_rule(rule, endpoint, view_func, **options)
 
         if roles:
             self.add_access_controller(
-                endpoint,
-                allow_access_for_roles(roles),
-                endpoint=True,
+                endpoint, allow_access_for_roles(roles), endpoint=True
             )
 
     def add_access_controller(self, name, func, endpoint=False):
@@ -1006,7 +981,7 @@ class Application(
         if endpoint:
             adder = auth_state.add_endpoint_access_controller
             if not isinstance(name, string_types):
-                msg = '{} is not a valid endpoint name'.format(repr(name))
+                msg = "{} is not a valid endpoint name".format(repr(name))
                 raise ValueError(msg)
 
         adder(name, func)
@@ -1028,7 +1003,7 @@ class Application(
         With default setup it will serve content from directory
         `/path/to/myplugin/resources` from url `http://.../static/myplugin`
         """
-        url_path = self.static_url_path + '/' + url_path + '/<path:filename>'
+        url_path = self.static_url_path + "/" + url_path + "/<path:filename>"
         self.add_url_rule(
             url_path,
             endpoint=endpoint,
@@ -1036,22 +1011,20 @@ class Application(
             roles=roles,
         )
         self.add_access_controller(
-            endpoint,
-            allow_access_for_roles(Anonymous),
-            endpoint=True,
+            endpoint, allow_access_for_roles(Anonymous), endpoint=True
         )
 
     # @deprecated
     @property
     def db(self):
         warnings.warn("Deprecated property 'db'")
-        return self.extensions['sqlalchemy'].db
+        return self.extensions["sqlalchemy"].db
 
     # @deprecated
     @property
     def redis(self):
         warnings.warn("Deprecated property 'redis'")
-        return self.extensions['redis'].client
+        return self.extensions["redis"].client
 
     def create_db(self):
         # type: () -> None
@@ -1064,10 +1037,7 @@ class Application(
         user = User.query.get(0)
         if user is None:
             user = User(
-                id=0,
-                last_name='SYSTEM',
-                email='system@example.com',
-                can_login=False,
+                id=0, last_name="SYSTEM", email="system@example.com", can_login=False
             )
             db.session.add(user)
             db.session.commit()

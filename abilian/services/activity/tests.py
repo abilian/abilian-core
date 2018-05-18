@@ -25,8 +25,8 @@ def activity_service(app, db):
 
 def test(app, session, activity_service):
     service = activity_service
-    user = User(email='test@example.com')
-    message = Message1(creator=user, owner=user, name='test message')
+    user = User(email="test@example.com")
+    message = Message1(creator=user, owner=user, name="test message")
 
     with session.begin_nested():
         session.add(user)

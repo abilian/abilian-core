@@ -23,10 +23,7 @@ from abilian.web.nav import BreadcrumbItem
 logger = logging.getLogger(__name__)
 
 BOOTSTRAP_MARKUP_HIGHLIGHTER = whoosh.highlight.HtmlFormatter(
-    tagname='mark',
-    classname='',
-    termclass='term-',
-    between='[…]',
+    tagname="mark", classname="", termclass="term-", between="[…]"
 )
 
 RESULTS_FRAGMENTER = whoosh.highlight.SentenceFragmenter()
@@ -38,23 +35,20 @@ PAGE_SIZE = 20
 MAX_LIVE_RESULTS_PER_CLASS = 5
 
 search = Blueprint(
-    'search',
-    __name__,
-    url_prefix="/search",
-    template_folder='templates',
+    "search", __name__, url_prefix="/search", template_folder="templates"
 )
 route = search.route
 
 
 def friendly_fqcn(fqcn):
-    return fqcn.rsplit('.', 1)[-1]
+    return fqcn.rsplit(".", 1)[-1]
 
 
 @search.url_value_preprocessor
 def init_search(endpoint, values):
     q = request.args.get("q", "")
     try:
-        page = max(int(request.args.get('page', 1)), 1)
+        page = max(int(request.args.get("page", 1)), 1)
     except BaseException:
         page = 1
 
@@ -62,66 +56,65 @@ def init_search(endpoint, values):
         BreadcrumbItem(
             label='"{}"'.format(q),
             icon="search",
-            url=Endpoint('search.search_main', q=q),
-        ),
+            url=Endpoint("search.search_main", q=q),
+        )
     )
 
     page_kw = OrderedDict(q=q)
-    object_types = request.args.getlist('object_type')
+    object_types = request.args.getlist("object_type")
 
     if object_types:
-        page_kw['object_type'] = object_types
+        page_kw["object_type"] = object_types
         g.breadcrumb.append(
             BreadcrumbItem(
-                label=' | '.join(friendly_fqcn(name) for name in object_types),
-                url=Endpoint('search.search_main', **page_kw),
-            ),
+                label=" | ".join(friendly_fqcn(name) for name in object_types),
+                url=Endpoint("search.search_main", **page_kw),
+            )
         )
 
     if page > 1:
         g.breadcrumb.append(
             BreadcrumbItem(
                 label=text_type(page),
-                url=Endpoint('search.search_main', page=page, **page_kw),
-            ),
+                url=Endpoint("search.search_main", page=page, **page_kw),
+            )
         )
 
-    values['q'] = q
-    values['page'] = page
+    values["q"] = q
+    values["page"] = page
 
 
 @search.context_processor
 def install_hit_to_url():
-    return dict(url_for_hit=current_app.extensions['indexing'].url_for_hit)
+    return dict(url_for_hit=current_app.extensions["indexing"].url_for_hit)
 
 
 _COUNT_OBJECT_TYPE_FACET = whoosh.sorting.FieldFacet(
-    "object_type",
-    maptype=whoosh.sorting.Count,
+    "object_type", maptype=whoosh.sorting.Count
 )
 
 
-@route('')
-def search_main(q='', page=1):
-    svc = get_service('indexing')
+@route("")
+def search_main(q="", page=1):
+    svc = get_service("indexing")
     q = q.strip()
-    page = int(request.args.get('page', page))
-    search_kwargs = {'limit': page * PAGE_SIZE}
+    page = int(request.args.get("page", page))
+    search_kwargs = {"limit": page * PAGE_SIZE}
     page_url_kw = OrderedDict(q=q)
 
-    search_kwargs['groupedby'] = _COUNT_OBJECT_TYPE_FACET
+    search_kwargs["groupedby"] = _COUNT_OBJECT_TYPE_FACET
     results = svc.search(q, **search_kwargs)
 
-    filtered_by_type = sorted(request.args.getlist('object_type'))
+    filtered_by_type = sorted(request.args.getlist("object_type"))
     if filtered_by_type:
-        page_url_kw['object_type'] = filtered_by_type
+        page_url_kw["object_type"] = filtered_by_type
 
-    page_url = partial(url_for, '.search_main', **page_url_kw)
+    page_url = partial(url_for, ".search_main", **page_url_kw)
 
     # get facets groups
     by_object_type = []
     try:
-        facet_group = results.groups('object_type')
+        facet_group = results.groups("object_type")
     except KeyError:
         pass
     else:
@@ -136,10 +129,7 @@ def search_main(q='', page=1):
     if by_object_type:
         # Insert 'all' to clear all filters
         is_active = len(filtered_by_type) == 0
-        all_types = (
-            _('All'), len(results), page_url(object_type=(),),
-            is_active,
-        )
+        all_types = (_("All"), len(results), page_url(object_type=()), is_active)
         by_object_type.insert(0, all_types)
 
     if filtered_by_type:
@@ -165,35 +155,36 @@ def search_main(q='', page=1):
 
     page_min = max(page - 2, 1)
     page_max = min(page + 4, pagecount)
-    next_pages_numbered = [(index, page_url(page=index))
-                           for index in range(page_min, page_max + 1)]
+    next_pages_numbered = [
+        (index, page_url(page=index)) for index in range(page_min, page_max + 1)
+    ]
 
     ctx = {
-        'q': q,
-        'results': results,
-        'results_count': results_count,
-        'pagecount': pagecount,
-        'filtered_by_type': filtered_by_type,
-        'by_object_type': by_object_type,
-        'prev_page': prev_page,
-        'next_page': next_page,
-        'first_page': first_page,
-        'last_page': last_page,
-        'next_pages_numbered': next_pages_numbered,
-        'friendly_fqcn': friendly_fqcn,
+        "q": q,
+        "results": results,
+        "results_count": results_count,
+        "pagecount": pagecount,
+        "filtered_by_type": filtered_by_type,
+        "by_object_type": by_object_type,
+        "prev_page": prev_page,
+        "next_page": next_page,
+        "first_page": first_page,
+        "last_page": last_page,
+        "next_pages_numbered": next_pages_numbered,
+        "friendly_fqcn": friendly_fqcn,
     }
-    return render_template('search/search.html', **ctx)
+    return render_template("search/search.html", **ctx)
 
 
 class Live(views.JSONView):
     """JSON response for live search."""
 
-    def data(self, q='', page=None, *args, **kwargs):
+    def data(self, q="", page=None, *args, **kwargs):
         if not q:
-            q = ''
-        svc = get_service('indexing')
+            q = ""
+        svc = get_service("indexing")
         url_for_hit = svc.app_state.url_for_hit
-        search_kwargs = {'facet_by_type': 5}
+        search_kwargs = {"facet_by_type": 5}
         response = {}
         results = svc.search(q, **search_kwargs)
         datasets = {}
@@ -203,19 +194,19 @@ class Live(views.JSONView):
             for doc in docs:
                 # Because it happens sometimes
                 try:
-                    name = doc['name']
+                    name = doc["name"]
                 except KeyError:
                     continue
 
-                d = {'name': name}
+                d = {"name": name}
                 url = url_for_hit(doc, None)
                 if url is not None:
-                    d['url'] = url
+                    d["url"] = url
                     dataset.append(d)
             datasets[typename] = dataset
 
-        response['results'] = datasets
+        response["results"] = datasets
         return response
 
 
-route('/live')(Live.as_view('live'))
+route("/live")(Live.as_view("live"))

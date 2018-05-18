@@ -13,9 +13,9 @@ from ..panel import AdminPanel
 
 
 class SysinfoPanel(AdminPanel):
-    id = 'sysinfo'
-    label = 'System information'
-    icon = 'hdd'
+    id = "sysinfo"
+    label = "System information"
+    icon = "hdd"
 
     def get(self):
         uname = os.popen("uname -a").read()
@@ -25,14 +25,10 @@ class SysinfoPanel(AdminPanel):
 
         for dist in pkg_resources.working_set:
             package = {
-                'name':
-                dist.project_name,
-                'key':
-                dist.key,
-                'version':
-                dist.version if dist.has_version() else 'Unknown version',
-                'vcs':
-                None,
+                "name": dist.project_name,
+                "key": dist.key,
+                "version": dist.version if dist.has_version() else "Unknown version",
+                "vcs": None,
             }
 
             # FIXME: broken by pip 10
@@ -56,16 +52,14 @@ class SysinfoPanel(AdminPanel):
             #     )
 
             packages.append(package)
-            packages.sort(key=lambda d: d.get('key'))
+            packages.sort(key=lambda d: d.get("key"))
 
-        config_values = [
-            (k, repr(v)) for k, v in sorted(current_app.config.items())
-        ]
+        config_values = [(k, repr(v)) for k, v in sorted(current_app.config.items())]
 
         ctx = {
-            'python_version': python_version,
-            'packages': packages,
-            'uname': uname,
-            'config_values': config_values
+            "python_version": python_version,
+            "packages": packages,
+            "uname": uname,
+            "config_values": config_values,
         }
         return render_template("admin/sysinfo.html", **ctx)

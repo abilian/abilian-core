@@ -9,10 +9,10 @@ from flask import Blueprint, current_app, jsonify, request
 from flask_wtf import Form as FlaskForm
 from werkzeug.exceptions import Forbidden
 
-blueprint = Blueprint('csrf', __name__, url_prefix='/csrf')
+blueprint = Blueprint("csrf", __name__, url_prefix="/csrf")
 
 
-@blueprint.route('/token', endpoint='json_token')
+@blueprint.route("/token", endpoint="json_token")
 def json_token_view():
     return jsonify(token=token())
 
@@ -28,7 +28,7 @@ def field():
 
 def time_limit():
     """Return current time limit for CSRF token."""
-    return current_app.config.get('WTF_CSRF_TIME_LIMIT', 3600)
+    return current_app.config.get("WTF_CSRF_TIME_LIMIT", 3600)
 
 
 def name():
@@ -36,7 +36,7 @@ def name():
 
     Useful for passing it to JavaScript for instance.
     """
-    return 'csrf_token'
+    return "csrf_token"
 
 
 def token():
@@ -44,7 +44,7 @@ def token():
 
     Useful for passing it to JavaScript for instance.
     """
-    return field().current_token or ''
+    return field().current_token or ""
 
 
 def support_graceful_failure(view):
@@ -57,7 +57,7 @@ def support_graceful_failure(view):
 
 
 def has_failed():
-    return getattr(request, 'csrf_failed', False)
+    return getattr(request, "csrf_failed", False)
 
 
 def protect(view):
@@ -71,7 +71,7 @@ def protect(view):
     def csrf_check(*args, **kwargs):
         # an empty form is used to validate current csrf token and only that!
         if not FlaskForm().validate():
-            raise Forbidden('CSRF validation failed.')
+            raise Forbidden("CSRF validation failed.")
 
         return view(*args, **kwargs)
 

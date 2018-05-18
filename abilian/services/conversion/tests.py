@@ -21,23 +21,20 @@ encoding_sniffer = Magic(mime_encoding=True)
 def converter():
     from abilian.services.conversion import converter as c
 
-    cache_dir = tempfile.mkdtemp(suffix='unittest')
-    tmp_dir = tempfile.mkdtemp(suffix='unittest')
+    cache_dir = tempfile.mkdtemp(suffix="unittest")
+    tmp_dir = tempfile.mkdtemp(suffix="unittest")
     c.init_work_dirs(cache_dir, tmp_dir)
     yield c
 
     c.clear()
 
 
-def read_file(fn, mode='rb'):
+def read_file(fn, mode="rb"):
     return (Path(__file__).parent / "dummy_files" / fn).open(mode).read()
 
 
 # To text
-@mark.skipif(
-    not HAS_PDFTOTEXT,
-    reason="requires poppler or poppler-util",
-)
+@mark.skipif(not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_pdf_to_text(converter):
     blob = read_file("onepage.pdf")
     text = converter.to_text("", blob, "application/pdf")
@@ -85,10 +82,7 @@ def test_image_to_pdf(converter):
 
 
 # To images
-@mark.skipif(
-    not HAS_PDFTOTEXT,
-    reason="requires poppler or poppler-util",
-)
+@mark.skipif(not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_pdf_to_images(converter):
     if not os.popen("which pdftoppm").read().strip():
         warn("pdftoppm not found, skipping test")
@@ -98,10 +92,7 @@ def test_pdf_to_images(converter):
     assert "image/jpeg" == mime_sniffer.from_buffer(image)
 
 
-@mark.skipif(
-    not HAS_PDFTOTEXT,
-    reason="requires poppler or poppler-util",
-)
+@mark.skipif(not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_word_to_images(converter):
     blob = read_file("test.doc")
     image = converter.to_image("", blob, "application/msword", 0)

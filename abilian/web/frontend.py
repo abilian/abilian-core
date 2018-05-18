@@ -50,11 +50,12 @@ class ModuleAction(Action):
 
     def __init__(self, module, group, name, *args, **kwargs):
         self.group = group
-        super(ModuleAction,
-              self).__init__(module.action_category, name, *args, **kwargs)
+        super(ModuleAction, self).__init__(
+            module.action_category, name, *args, **kwargs
+        )
 
     def pre_condition(self, context):
-        module = actions.context.get('module')
+        module = actions.context.get("module")
         if not module:
             return False
 
@@ -73,27 +74,27 @@ class ModuleActionGroupItem(ModuleAction, ActionGroupItem):
     pass
 
 
-def add_to_recent_items(entity, type='ignored'):
+def add_to_recent_items(entity, type="ignored"):
     if not isinstance(entity, Entity):
         return
     object_type = entity.object_type
     url = current_app.default_view.url_for(entity)
-    if not hasattr(g, 'recent_items'):
+    if not hasattr(g, "recent_items"):
         g.recent_items = []
     g.recent_items.insert(0, dict(type=object_type, name=entity.name, url=url))
     s = set()
     l = []
     for item in g.recent_items:
-        if item['url'] in s:
+        if item["url"] in s:
             continue
-        s.add(item['url'])
+        s.add(item["url"])
         l.append(item)
     if len(l) > 5:
         del l[5:]
-    session['recent_items'] = g.recent_items = l
+    session["recent_items"] = g.recent_items = l
 
 
-def expose(url='/', methods=('GET',)):
+def expose(url="/", methods=("GET",)):
     """Use this decorator to expose views in your view classes.
 
     `url`   Relative URL for the view `methods`   Allowed HTTP methods.
@@ -101,7 +102,7 @@ def expose(url='/', methods=('GET',)):
     """
 
     def wrap(f):
-        if not hasattr(f, '_urls'):
+        if not hasattr(f, "_urls"):
             f._urls = []
         f._urls.append((url, methods))
         return f
@@ -135,7 +136,7 @@ class ModuleView(object):
 
 
 class BaseEntityView(ModuleView):
-    pk = 'entity_id'
+    pk = "entity_id"
 
     def init_object(self, args, kwargs):
         args, kwargs = super(BaseEntityView, self).init_object(args, kwargs)
@@ -151,12 +152,12 @@ class BaseEntityView(ModuleView):
     def breadcrumb(self):
         return BreadcrumbItem(
             label=self.obj.name or self.obj.id,
-            url=Endpoint('.entity_view', entity_id=self.obj.id),
+            url=Endpoint(".entity_view", entity_id=self.obj.id),
         )
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
-        actions.context['module'] = self.module
+        actions.context["module"] = self.module
         add_to_recent_items(self.obj)
         return args, kwargs
 
@@ -180,7 +181,7 @@ class BaseEntityView(ModuleView):
         """
         :param view: a :class:`ObjectView` class or instance
         """
-        security = get_service('security')
+        security = get_service("security")
         return security.has_permission(current_user, view.permission, self.obj)
 
     @property
@@ -198,7 +199,7 @@ class BaseEntityView(ModuleView):
         cls_permissions = dict(self.Model.__default_permissions__)
 
         if self.permission in cls_permissions:
-            security = get_service('security')
+            security = get_service("security")
             return security.has_permission(
                 current_user,
                 create_cls.permission,
@@ -209,34 +210,30 @@ class BaseEntityView(ModuleView):
 
 
 EDIT_ACTION = Action(
-    'module',
-    'object:view',
-    title=_l('Edit'),
-    button='default',
-    condition=lambda ctx: ctx['view'].can_edit,
-    icon=FAIcon('edit'),
-    url=
-    lambda ctx: url_for('.entity_edit', **{ctx['view'].pk: ctx['view'].obj.id}),
+    "module",
+    "object:view",
+    title=_l("Edit"),
+    button="default",
+    condition=lambda ctx: ctx["view"].can_edit,
+    icon=FAIcon("edit"),
+    url=lambda ctx: url_for(".entity_edit", **{ctx["view"].pk: ctx["view"].obj.id}),
 )
 
 DELETE_ACTION = Action(
-    'module',
-    'object:view',
-    title=_l('Delete'),
-    button='danger',
-    condition=lambda ctx: ctx['view'].can_delete,
-    icon=FAIcon('trash fa-inverse'),
-    url=lambda ctx: url_for(
-        '.entity_delete',
-        **{ctx['view'].pk: ctx['view'].obj.id}
-    ),
+    "module",
+    "object:view",
+    title=_l("Delete"),
+    button="danger",
+    condition=lambda ctx: ctx["view"].can_delete,
+    icon=FAIcon("trash fa-inverse"),
+    url=lambda ctx: url_for(".entity_delete", **{ctx["view"].pk: ctx["view"].obj.id}),
 )
-DELETE_ACTION.template = 'widgets/frontend_action_delete_confim.html'
+DELETE_ACTION.template = "widgets/frontend_action_delete_confim.html"
 
 
 class EntityView(BaseEntityView, ObjectView):
-    mode = 'view'
-    template = 'default/single_view.html'
+    mode = "view"
+    template = "default/single_view.html"
 
     @property
     def object_actions(self):
@@ -248,40 +245,38 @@ class EntityView(BaseEntityView, ObjectView):
         module = self.module
         related_views = [v.render(self.obj) for v in module.related_views]
         rendered_entity = self.single_view.render(
-            self.obj,
-            self.form,
-            related_views=related_views,
+            self.obj, self.form, related_views=related_views
         )
         audit_entries = audit_service.entries_for(self.obj)
 
         return {
-            'rendered_entity': rendered_entity,
-            'related_views': related_views,
-            'audit_entries': audit_entries,
-            'show_new_comment_form': True,
-            'show_new_attachment_form': True,
-            'module': self.module,
+            "rendered_entity": rendered_entity,
+            "related_views": related_views,
+            "audit_entries": audit_entries,
+            "show_new_comment_form": True,
+            "show_new_attachment_form": True,
+            "module": self.module,
         }
 
 
 class EntityEdit(BaseEntityView, ObjectEdit):
-    template = 'default/single_view.html'
-    mode = 'edit'
+    template = "default/single_view.html"
+    mode = "edit"
 
     @property
     def template_kwargs(self):
         rendered_entity = self.single_view.render_form(self.form)
         return {
-            'rendered_entity': rendered_entity,
-            'show_new_comment_form': False,
-            'show_new_attachment_form': False,
-            'module': self.module,
+            "rendered_entity": rendered_entity,
+            "show_new_comment_form": False,
+            "show_new_attachment_form": False,
+            "module": self.module,
         }
 
 
 class EntityCreate(BaseEntityView, ObjectCreate):
-    template = 'default/single_view.html'
-    mode = 'create'
+    template = "default/single_view.html"
+    mode = "create"
 
     prepare_args = ObjectCreate.prepare_args
     breadcrumb = ObjectCreate.breadcrumb
@@ -293,9 +288,9 @@ class EntityCreate(BaseEntityView, ObjectCreate):
     def template_kwargs(self):
         rendered_entity = self.single_view.render_form(self.form)
         return {
-            'rendered_entity': rendered_entity,
-            'for_new': True,
-            'module': self.module,
+            "rendered_entity": rendered_entity,
+            "for_new": True,
+            "module": self.module,
         }
 
 
@@ -321,7 +316,7 @@ class ListJson(ModuleView, JSONView):
         table_view = AjaxMainTableView(
             columns=self.module.list_view_columns,
             name=self.module.managed_class.__name__.lower(),
-            ajax_source=url_for('.list_json'),
+            ajax_source=url_for(".list_json"),
         )
 
         data = [table_view.render_line(e) for e in entities]
@@ -351,12 +346,12 @@ class ModuleMeta(type):
         for p in dir(cls):
             attr = getattr(cls, p)
 
-            if hasattr(attr, '_urls'):
+            if hasattr(attr, "_urls"):
                 # Collect methods
                 for url, methods in attr._urls:
                     cls._urls.append((url, p, methods))
 
-                    if url == '/':
+                    if url == "/":
                         cls._default_view = p
 
                         # Wrap views
@@ -372,7 +367,7 @@ class ModuleComponent(object):
             self.name = name
 
         if self.name is None:
-            raise ValueError('A module component must have a name')
+            raise ValueError("A module component must have a name")
 
     def init_module(self, module):
         self.module = module
@@ -400,7 +395,7 @@ class Module(object):
 
     # class based views. If not provided will be automaticaly created from
     # EntityView etc defined below
-    base_template = 'base.html'
+    base_template = "base.html"
     view_cls = EntityView
     edit_cls = EntityEdit
     create_cls = EntityCreate
@@ -421,10 +416,7 @@ class Module(object):
     related_views = []  # type: List[RelatedView]
     blueprint = None
     search_criterions = (
-        search.TextSearchCriterion(
-            "name",
-            attributes=('name', 'nom'),
-        ),
+        search.TextSearchCriterion("name", attributes=("name", "nom")),
     )
     # used mostly to change datatable search_label
     tableview_options = {}  # type: ignore
@@ -434,8 +426,8 @@ class Module(object):
         # If endpoint name is not provided, get it from the class name
         if self.endpoint is None:
             class_name = self.__class__.__name__
-            if class_name.endswith('Module'):
-                class_name = class_name[0:-len('Module')]
+            if class_name.endswith("Module"):
+                class_name = class_name[0 : -len("Module")]
             self.endpoint = class_name.lower()
 
         if self.label is None:
@@ -459,23 +451,23 @@ class Module(object):
 
         # init class based views
         kw = {
-            'Model': self.managed_class,
-            'pk': 'entity_id',
-            'module': self,
-            'base_template': self.base_template,
+            "Model": self.managed_class,
+            "pk": "entity_id",
+            "module": self,
+            "base_template": self.base_template,
         }
         self._setup_view(
             "/<int:entity_id>",
-            'entity_view',
+            "entity_view",
             self.view_cls,
             Form=self.view_form_class,
             **kw
         )
-        view_endpoint = self.endpoint + '.entity_view'
+        view_endpoint = self.endpoint + ".entity_view"
 
         self._setup_view(
             "/<int:entity_id>/edit",
-            'entity_edit',
+            "entity_edit",
             self.edit_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
@@ -484,7 +476,7 @@ class Module(object):
 
         self._setup_view(
             "/new",
-            'entity_new',
+            "entity_new",
             self.create_cls,
             Form=self.edit_form_class,
             chain_create_allowed=self.view_new_save_and_add,
@@ -494,18 +486,18 @@ class Module(object):
 
         self._setup_view(
             "/<int:entity_id>/delete",
-            'entity_delete',
+            "entity_delete",
             self.delete_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
             **kw
         )
 
-        self._setup_view("/json", 'list_json', ListJson, module=self)
+        self._setup_view("/json", "list_json", ListJson, module=self)
 
         self._setup_view(
-            '/json_search',
-            'json_search',
+            "/json_search",
+            "json_search",
             self.json_search_cls,
             Model=self.managed_class,
         )
@@ -514,9 +506,7 @@ class Module(object):
 
         # copy criterions instances; without that they may be shared by
         # subclasses
-        self.search_criterions = copy.deepcopy(
-            self.__class__.search_criterions,
-        )
+        self.search_criterions = copy.deepcopy(self.__class__.search_criterions)
 
         for sc in self.search_criterions:
             sc.model = self.managed_class
@@ -545,7 +535,7 @@ class Module(object):
 
     @property
     def action_category(self):
-        return 'module:{}'.format(self.endpoint)
+        return "module:{}".format(self.endpoint)
 
     def get_grouped_actions(self):
         items = actions.for_category(self.action_category)
@@ -559,13 +549,13 @@ class Module(object):
         ACTIONS = [
             ModuleAction(
                 self,
-                'entity',
-                'create',
-                title=_l('Create New'),
-                icon=FAIcon('plus'),
-                endpoint=Endpoint(self.endpoint + '.entity_new'),
-                button='default',
-            ),
+                "entity",
+                "create",
+                title=_l("Create New"),
+                icon=FAIcon("plus"),
+                endpoint=Endpoint(self.endpoint + ".entity_new"),
+                button="default",
+            )
         ]
         for component in self.components:
             ACTIONS.extend(component.get_actions())
@@ -580,32 +570,21 @@ class Module(object):
 
         # If url is not provided, generate it from endpoint name
         if self.url is None:
-            self.url = '%s/%s' % (self.crud_app.url, self.endpoint)
+            self.url = "%s/%s" % (self.crud_app.url, self.endpoint)
         else:
-            if not self.url.startswith('/'):
-                self.url = '%s/%s' % (self.crud_app.url, self.url)
+            if not self.url.startswith("/"):
+                self.url = "%s/%s" % (self.crud_app.url, self.url)
 
         # Create blueprint and register rules
-        self.blueprint = Blueprint(
-            self.endpoint,
-            __name__,
-            url_prefix=self.url,
-        )
+        self.blueprint = Blueprint(self.endpoint, __name__, url_prefix=self.url)
 
         for url, name, methods in self._urls:
-            self.blueprint.add_url_rule(
-                url,
-                name,
-                getattr(self, name),
-                methods=methods,
-            )
+            self.blueprint.add_url_rule(url, name, getattr(self, name), methods=methods)
 
         # run default_view decorator
-        default_view(
-            self.blueprint,
-            self.managed_class,
-            id_attr='entity_id',
-        )(self.entity_view)
+        default_view(self.blueprint, self.managed_class, id_attr="entity_id")(
+            self.entity_view
+        )
 
         # delay registration of our breadcrumbs to when registered on app; thus
         # 'parents' blueprint can register theirs befores ours
@@ -618,7 +597,7 @@ class Module(object):
 
     def _add_breadcrumb(self, endpoint, values):
         g.breadcrumb.append(
-            BreadcrumbItem(label=self.label, url=Endpoint('.list_view')),
+            BreadcrumbItem(label=self.label, url=Endpoint(".list_view"))
         )
 
     @property
@@ -683,44 +662,42 @@ class Module(object):
         sort_col = int(args.get("iSortCol_0", 1))
         sort_dir = args.get("sSortDir_0", "asc")
         sort_col_def = self.list_view_columns[sort_col]
-        sort_col_name = sort_col_def['name']
-        rel_sort_names = sort_col_def.get('sort_on', (sort_col_name,))
+        sort_col_name = sort_col_def["name"]
+        rel_sort_names = sort_col_def.get("sort_on", (sort_col_name,))
         sort_cols = []
 
         for rel_col in rel_sort_names:
             sort_col = getattr(self.managed_class, rel_col)
-            if hasattr(sort_col, 'property') and isinstance(
-                sort_col.property,
-                orm.properties.RelationshipProperty,
+            if hasattr(sort_col, "property") and isinstance(
+                sort_col.property, orm.properties.RelationshipProperty
             ):
                 # this is a related model: find attribute to filter on
                 query = query.outerjoin(sort_col_name, aliased=True)
 
                 rel_model = sort_col.property.mapper.class_
-                default_sort_name = 'name'
+                default_sort_name = "name"
                 if issubclass(rel_model, BaseVocabulary):
-                    default_sort_name = 'label'
+                    default_sort_name = "label"
 
-                rel_sort_name = sort_col_def.get('relationship_sort_on', None)
+                rel_sort_name = sort_col_def.get("relationship_sort_on", None)
                 if rel_sort_name is None:
-                    rel_sort_name = sort_col_def.get(
-                        'sort_on',
-                        default_sort_name,
-                    )
+                    rel_sort_name = sort_col_def.get("sort_on", default_sort_name)
                 sort_col = getattr(rel_model, rel_sort_name, None)
 
             # XXX: Big hack, date are sorted in reverse order by default
             if isinstance(sort_col, (Date, DateTime)):
-                sort_dir = 'asc' if sort_dir == 'desc' else 'desc'
+                sort_dir = "asc" if sort_dir == "desc" else "desc"
 
-            elif isinstance(sort_col, sa.types.String) or \
-                    hasattr(sort_col, 'property') and \
-                    isinstance(sort_col.property.columns[0].type, sa.types.String):
+            elif (
+                isinstance(sort_col, sa.types.String)
+                or hasattr(sort_col, "property")
+                and isinstance(sort_col.property.columns[0].type, sa.types.String)
+            ):
                 sort_col = func.lower(sort_col)
 
             if sort_col is not None:
                 try:
-                    direction = desc if sort_dir == 'desc' else asc
+                    direction = desc if sort_dir == "desc" else asc
                     sort_col = direction(sort_col)
                 except BaseException:
                     # FIXME
@@ -728,8 +705,8 @@ class Module(object):
 
                 # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY
                 # clauses
-                if engine.name != 'sqlite':
-                    nullsorder = nullslast if sort_dir == 'desc' else nullsfirst
+                if engine.name != "sqlite":
+                    nullsorder = nullslast if sort_dir == "desc" else nullsfirst
                     try:
                         sort_col = nullsorder(sort_col)
                     except BaseException:
@@ -752,20 +729,20 @@ class Module(object):
     #
     @expose("/")
     def list_view(self):
-        actions.context['module'] = self
+        actions.context["module"] = self
         table_view = AjaxMainTableView(
             name=self.managed_class.__name__.lower(),
             columns=self.list_view_columns,
-            ajax_source=url_for('.list_json'),
+            ajax_source=url_for(".list_json"),
             search_criterions=self.search_criterions,
             options=self.tableview_options,
         )
         rendered_table = table_view.render()
 
         ctx = {
-            'rendered_table': rendered_table,
-            'module': self,
-            'base_template': self.base_template
+            "rendered_table": rendered_table,
+            "module": self,
+            "base_template": self.base_template,
         }
         return render_template("default/list_view.html", **ctx)
 
@@ -780,13 +757,14 @@ class Module(object):
         """
         cls = self.managed_class
         query = db.session.query(cls.id, cls.name)
-        query = query \
-            .filter(cls.name.ilike("%" + q + "%")) \
-            .distinct() \
-            .order_by(cls.name) \
+        query = (
+            query.filter(cls.name.ilike("%" + q + "%"))
+            .distinct()
+            .order_by(cls.name)
             .limit(self.JSON2_SEARCH_LENGTH)
+        )
         results = query.all()
-        results = [{'id': r[0], 'text': r[1]} for r in results]
+        results = [{"id": r[0], "text": r[1]} for r in results]
         return results
 
     @expose("/json2")
@@ -804,7 +782,7 @@ class Module(object):
             raise BadRequest()
 
         results = self.list_json2_query_all(q)
-        results = {'results': results}
+        results = {"results": results}
         return jsonify(results)
 
     #
@@ -822,7 +800,7 @@ class Module(object):
         `name`
           String to prettify
         """
-        return re.sub(r'(?<=.)([A-Z])', r' \1', name)
+        return re.sub(r"(?<=.)([A-Z])", r" \1", name)
 
 
 class RelatedView(object):
@@ -837,14 +815,7 @@ class RelatedView(object):
 class DefaultRelatedView(RelatedView):
     """Default view used by Module for items directly related to entity."""
 
-    def __init__(
-        self,
-        label,
-        attr,
-        column_names,
-        options=None,
-        show_empty=False,
-    ):
+    def __init__(self, label, attr, column_names, options=None, show_empty=False):
         self.label = label
         self.attr = attr
         self.show_empty = show_empty
@@ -858,11 +829,11 @@ class DefaultRelatedView(RelatedView):
         view = RelatedTableView(self.column_names, self.options)
         related_entities = getattr(entity, self.attr)
         return {
-            'label': self.label,
-            'attr_name': self.attr,
-            'rendered': view.render(related_entities, related_to=entity),
-            'show_empty': self.show_empty,
-            'size': len(related_entities),
+            "label": self.label,
+            "attr_name": self.attr,
+            "rendered": view.render(related_entities, related_to=entity),
+            "show_empty": self.show_empty,
+            "size": len(related_entities),
         }
 
 
@@ -874,10 +845,8 @@ class CRUDApp(object):
     def __init__(self, app, modules=None, name=None):
         if name is None:
             name = self.__class__.__module__
-            modules_signature = ','.join(
-                str(module.id) for module in self.modules
-            )
-            name = name + '-' + modules_signature
+            modules_signature = ",".join(str(module.id) for module in self.modules)
+            name = name + "-" + modules_signature
 
         self.name = name
         self.app = app

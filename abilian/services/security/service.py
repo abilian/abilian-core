@@ -27,14 +27,14 @@ from abilian.services.security.models import Authenticated, Creator, \
 
 #: list of legacy supported permissions when not using :class:`Permission`
 #: instance
-PERMISSIONS = frozenset(['read', 'write', 'manage'])
+PERMISSIONS = frozenset(["read", "write", "manage"])
 
 __all__ = [
-    'security',
-    'SecurityError',
-    'SecurityService',
-    'InheritSecurity',
-    'SecurityAudit',
+    "security",
+    "SecurityError",
+    "SecurityService",
+    "InheritSecurity",
+    "SecurityAudit",
 ]
 
 #: default security matrix
@@ -69,12 +69,10 @@ def require_flush(fun):
     def ensure_flushed(service, *args, **kwargs):
         if service.app_state.needs_db_flush:
             session = db.session()
-            if (
-                not session._flushing and any(
-                    isinstance(m, (RoleAssignment, SecurityAudit))
-                    for models in (session.new, session.dirty, session.deleted)
-                    for m in models
-                )
+            if not session._flushing and any(
+                isinstance(m, (RoleAssignment, SecurityAudit))
+                for models in (session.new, session.dirty, session.deleted)
+                for m in models
             ):
                 session.flush()
             service.app_state.needs_db_flush = False
@@ -113,8 +111,9 @@ def query_pa_no_flush(session, permission, role, obj):
 
         for instance in permissions:
             if (
-                instance.permission == permission and instance.role == role and
-                instance.object == obj
+                instance.permission == permission
+                and instance.role == role
+                and instance.object == obj
             ):
                 return instance
 
@@ -124,17 +123,19 @@ def query_pa_no_flush(session, permission, role, obj):
         if obj is not None and obj.id is None:
             obj = None
 
-        return session.query(PermissionAssignment) \
+        return (
+            session.query(PermissionAssignment)
             .filter(
                 PermissionAssignment.permission == permission,
                 PermissionAssignment.role == role,
                 PermissionAssignment.object == obj,
-            ) \
+            )
             .first()
+        )
 
 
 class SecurityService(Service):
-    name = 'security'
+    name = "security"
     AppStateClass = SecurityServiceState
 
     def init_app(self, app):
@@ -174,10 +175,11 @@ class SecurityService(Service):
     @require_flush
     def entries_for(self, obj, limit=20):
         assert isinstance(obj, Entity)
-        return SecurityAudit.query \
-            .filter(SecurityAudit.object == obj) \
-            .order_by(SecurityAudit.happened_at.desc()) \
+        return (
+            SecurityAudit.query.filter(SecurityAudit.object == obj)
+            .order_by(SecurityAudit.happened_at.desc())
             .limit(limit)
+        )
 
     # inheritance
     def set_inherit_security(self, obj, inherit_security):
@@ -191,7 +193,8 @@ class SecurityService(Service):
         manager = self._current_user_manager(session=session)
         op = (
             SecurityAudit.SET_INHERIT
-            if inherit_security else SecurityAudit.UNSET_INHERIT
+            if inherit_security
+            else SecurityAudit.UNSET_INHERIT
         )
         audit = SecurityAudit(
             manager=manager,
@@ -220,7 +223,7 @@ class SecurityService(Service):
         acquired through group membership.
         """
         assert principal
-        if hasattr(principal, 'is_anonymous') and principal.is_anonymous:
+        if hasattr(principal, "is_anonymous") and principal.is_anonymous:
             return [AnonymousRole]
 
         query = db.session.query(RoleAssignment.role)
@@ -242,26 +245,20 @@ class SecurityService(Service):
         roles = {i[0] for i in query.all()}
 
         if object is not None:
-            for attr, role in (('creator', Creator), ('owner', Owner)):
+            for attr, role in (("creator", Creator), ("owner", Owner)):
                 if getattr(object, attr) == principal:
                     roles.add(role)
         return list(roles)
 
     @require_flush
     def get_principals(
-        self,
-        role,
-        anonymous=True,
-        users=True,
-        groups=True,
-        object=None,
-        as_list=True,
+        self, role, anonymous=True, users=True, groups=True, object=None, as_list=True
     ):
         """Return all users which are assigned given role."""
         if not isinstance(role, Role):
             role = Role(role)
         assert role
-        assert (users or groups)
+        assert users or groups
         query = RoleAssignment.query.filter_by(role=role)
 
         if not anonymous:
@@ -286,16 +283,17 @@ class SecurityService(Service):
 
     @require_flush
     def _all_roles(self, principal):
-        query = db.session \
-            .query(RoleAssignment.object_id, RoleAssignment.role) \
-            .outerjoin(Entity) \
+        query = (
+            db.session.query(RoleAssignment.object_id, RoleAssignment.role)
+            .outerjoin(Entity)
             .add_columns(Entity._entity_type)
+        )
 
         if isinstance(principal, User):
-            filter_cond = (RoleAssignment.user == principal)
+            filter_cond = RoleAssignment.user == principal
             if principal.groups:
                 group_ids = (g.id for g in principal.groups)
-                filter_cond |= (RoleAssignment.group_id.in_(group_ids))
+                filter_cond |= RoleAssignment.group_id.in_(group_ids)
 
             query = query.filter(filter_cond)
         else:
@@ -307,7 +305,7 @@ class SecurityService(Service):
             if object_id is None:
                 object_key = None
             else:
-                object_key = '{}:{}'.format(object_type, object_id)
+                object_key = "{}:{}".format(object_type, object_id)
             all_roles.setdefault(object_key, set()).add(role)
 
         return all_roles
@@ -365,13 +363,9 @@ class SecurityService(Service):
 
         filter_cond = []
         if users:
-            filter_cond.append(
-                RoleAssignment.user_id.in_((u.id for u in users)),
-            )
+            filter_cond.append(RoleAssignment.user_id.in_((u.id for u in users)))
         if groups:
-            filter_cond.append(
-                RoleAssignment.group_id.in_((g.id for g in groups)),
-            )
+            filter_cond.append(RoleAssignment.group_id.in_((g.id for g in groups)))
 
         query = query.filter(sql.or_(*filter_cond))
         ra_users = {}
@@ -383,8 +377,9 @@ class SecurityService(Service):
                 all_roles = ra_groups.setdefault(ra.group, {})
 
             object_key = (
-                '{}:{:d}'.format(ra.object.entity_type, ra.object_id)
-                if ra.object is not None else None
+                "{}:{:d}".format(ra.object.entity_type, ra.object_id)
+                if ra.object is not None
+                else None
             )
             all_roles.setdefault(object_key, set()).add(ra.role)
 
@@ -406,7 +401,7 @@ class SecurityService(Service):
 
         if isinstance(principal, Group):
             for u in principal.members:
-                if hasattr(u, '__roles_cache__'):
+                if hasattr(u, "__roles_cache__"):
                     del u.__roles_cache__
 
     def has_role(self, principal, role, object=None):
@@ -441,14 +436,14 @@ class SecurityService(Service):
             return True
 
         if (
-            Authenticated in valid_roles and isinstance(principal, User) and
-            not principal.is_anonymous
+            Authenticated in valid_roles
+            and isinstance(principal, User)
+            and not principal.is_anonymous
         ):
             return True
 
-        if (
-            principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)
+        if principal is AnonymousRole or (
+            hasattr(principal, "is_anonymous") and principal.is_anonymous
         ):
             # anonymous user, and anonymous role isn't in valid_roles
             return False
@@ -459,10 +454,7 @@ class SecurityService(Service):
 
         if object:
             assert isinstance(object, Entity)
-            object_key = "{}:{}".format(
-                object.object_type,
-                text_type(object.id),
-            )
+            object_key = "{}:{}".format(object.object_type, text_type(object.id))
             if Creator in role:
                 if object.creator == principal:
                     return True
@@ -475,7 +467,8 @@ class SecurityService(Service):
 
         all_roles = (
             self._fill_role_cache(principal)
-            if self.app_state.use_cache else self._all_roles(principal)
+            if self.app_state.use_cache
+            else self._all_roles(principal)
         )
         roles = set()
         roles |= all_roles.get(None, set())
@@ -490,22 +483,21 @@ class SecurityService(Service):
         session = object_session(obj) if obj is not None else db.session
         manager = self._current_user_manager(session=session)
         args = {
-            'role': role,
-            'object': obj,
-            'anonymous': False,
-            'user': None,
-            'group': None
+            "role": role,
+            "object": obj,
+            "anonymous": False,
+            "user": None,
+            "group": None,
         }
 
-        if (
-            principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)
+        if principal is AnonymousRole or (
+            hasattr(principal, "is_anonymous") and principal.is_anonymous
         ):
-            args['anonymous'] = True
+            args["anonymous"] = True
         elif isinstance(principal, User):
-            args['user'] = principal
+            args["user"] = principal
         else:
-            args['group'] = principal
+            args["group"] = principal
 
         query = session.query(RoleAssignment)
         if query.filter_by(**args).limit(1).count():
@@ -517,7 +509,9 @@ class SecurityService(Service):
         # great number of times in the same transaction, and sqlalchemy limits
         # to 100 flushes before triggering a warning
         for ra in (
-            o for models in (session.new, session.dirty) for o in models
+            o
+            for models in (session.new, session.dirty)
+            for o in models
             if isinstance(o, RoleAssignment)
         ):
             if all(getattr(ra, attr) == val for attr, val in args.items()):
@@ -529,8 +523,8 @@ class SecurityService(Service):
         if obj is not None:
             audit.object_id = obj.id
             audit.object_type = obj.entity_type
-            object_name = ''
-            for attr_name in ('name', 'path', '__path_before_delete'):
+            object_name = ""
+            for attr_name in ("name", "path", "__path_before_delete"):
                 if hasattr(obj, attr_name):
                     object_name = getattr(obj, attr_name)
             audit.object_name = object_name
@@ -549,24 +543,16 @@ class SecurityService(Service):
         session = object_session(object) if object is not None else db.session
         manager = self._current_user_manager(session=session)
 
-        args = dict(
-            role=role,
-            object=object,
-            anonymous=False,
-            user=None,
-            group=None,
-        )
+        args = dict(role=role, object=object, anonymous=False, user=None, group=None)
         query = session.query(RoleAssignment)
         query = query.filter(
-            RoleAssignment.role == role,
-            RoleAssignment.object == object,
+            RoleAssignment.role == role, RoleAssignment.object == object
         )
 
-        if (
-            principal is AnonymousRole or
-            (hasattr(principal, 'is_anonymous') and principal.is_anonymous)
+        if principal is AnonymousRole or (
+            hasattr(principal, "is_anonymous") and principal.is_anonymous
         ):
-            args['anonymous'] = True
+            args["anonymous"] = True
             query.filter(
                 RoleAssignment.anonymous == False,
                 RoleAssignment.user == None,
@@ -574,10 +560,10 @@ class SecurityService(Service):
             )
 
         elif isinstance(principal, User):
-            args['user'] = principal
+            args["user"] = principal
             query = query.filter(RoleAssignment.user == principal)
         else:
-            args['group'] = principal
+            args["group"] = principal
             query = query.filter(RoleAssignment.group == principal)
 
         ra = query.one()
@@ -593,8 +579,9 @@ class SecurityService(Service):
         if not session:
             session = db.session()
         query = session.query(RoleAssignment)
-        query = query.filter(RoleAssignment.object == obj) \
-            .options(subqueryload('user.groups'))
+        query = query.filter(RoleAssignment.object == obj).options(
+            subqueryload("user.groups")
+        )
 
         role_assignments = query.all()
 
@@ -612,14 +599,7 @@ class SecurityService(Service):
     #
     # Permission API, currently hardcoded
     #
-    def has_permission(
-        self,
-        user,
-        permission,
-        obj=None,
-        inherit=False,
-        roles=None,
-    ):
+    def has_permission(self, user, permission, obj=None, inherit=False, roles=None):
         """
         :param obj: target object to check permissions.
         :param inherit: check with permission inheritance. By default, check only
@@ -653,9 +633,7 @@ class SecurityService(Service):
             pa_filter |= PermissionAssignment.object == obj
 
         pa_filter &= PermissionAssignment.permission == permission
-        valid_roles = session \
-            .query(PermissionAssignment.role) \
-            .filter(pa_filter)
+        valid_roles = session.query(PermissionAssignment.role).filter(pa_filter)
         valid_roles = {res[0] for res in valid_roles.yield_per(1000)}
 
         # complete with defaults
@@ -689,18 +667,15 @@ class SecurityService(Service):
         principals = [user] + list(user.groups)
         self._fill_role_cache_batch(principals)
 
-        return any((
-            self.has_role(principal, valid_roles, item)
-            for principal in principals
-            for item in checked_objs
-        ))
+        return any(
+            (
+                self.has_role(principal, valid_roles, item)
+                for principal in principals
+                for item in checked_objs
+            )
+        )
 
-    def query_entity_with_permission(
-        self,
-        permission,
-        user=None,
-        Model=Entity,
-    ):
+    def query_entity_with_permission(self, permission, user=None, Model=Entity):
         """Filter a query on an :class:`Entity` or on of its subclasses.
 
         Usage::
@@ -738,49 +713,49 @@ class SecurityService(Service):
             user = current_user._get_current_object()
 
         # build role CTE
-        principal_filter = (RA.anonymous == True)
+        principal_filter = RA.anonymous == True
 
         if not user.is_anonymous:
-            principal_filter |= (RA.user == user)
+            principal_filter |= RA.user == user
 
         if user.groups:
             principal_filter |= RA.group_id.in_([g.id for g in user.groups])
 
         RA = sa.sql.select([RA], principal_filter).cte()
-        permission_exists = \
-            sa.sql.exists([1]) \
-            .where(sa.sql.and_(
+        permission_exists = sa.sql.exists([1]).where(
+            sa.sql.and_(
                 PA.permission == permission,
                 PA.object_id == id_column,
                 (RA.c.role == PA.role) | (PA.role == AnonymousRole),
                 (RA.c.object_id == PA.object_id) | (RA.c.object_id == None),
-            ))
+            )
+        )
 
         # is_admin: self-explanatory. It search for local or global admin
         # role, but PermissionAssignment is not involved, thus it can match on
         # entities that don't have *any permission assignment*, whereas previous
         # expressions cannot.
-        is_admin = \
-            sa.sql.exists([1]) \
-            .where(sa.sql.and_(
+        is_admin = sa.sql.exists([1]).where(
+            sa.sql.and_(
                 RA.c.role == Admin,
                 (RA.c.object_id == id_column) | (RA.c.object_id == None),
                 principal_filter,
-            ))
+            )
+        )
 
         filter_expr = permission_exists | is_admin
 
         if user and not user.is_anonymous:
-            is_owner_or_creator = sa.sql \
-                .exists([1]) \
-                .where(sa.sql.and_(
+            is_owner_or_creator = sa.sql.exists([1]).where(
+                sa.sql.and_(
                     PA.permission == permission,
                     PA.object_id == id_column,
                     sa.sql.or_(
                         (PA.role == Owner) & (owner == user),
                         (PA.role == Creator) & (creator == user),
                     ),
-                ))
+                )
+            )
             filter_expr |= is_owner_or_creator
 
         return filter_expr
@@ -802,12 +777,9 @@ class SecurityService(Service):
         if session is None:
             session = db.session()
 
-        pa = session \
-            .query(
-                PermissionAssignment.permission,
-                PermissionAssignment.role,
-            ) \
-            .filter(PermissionAssignment.object == obj)
+        pa = session.query(
+            PermissionAssignment.permission, PermissionAssignment.role
+        ).filter(PermissionAssignment.object == obj)
 
         if permission:
             pa = pa.filter(PermissionAssignment.permission == permission)
@@ -829,11 +801,7 @@ class SecurityService(Service):
         pa = query_pa_no_flush(session, permission, role, obj)
 
         if not pa:
-            pa = PermissionAssignment(
-                permission=permission,
-                role=role,
-                object=obj,
-            )
+            pa = PermissionAssignment(permission=permission, role=role, object=obj)
 
         # do it in any case: it could have been found in session.deleted
         session.add(pa)
@@ -854,16 +822,11 @@ class SecurityService(Service):
                 # this seems to be required with sqlalchemy > 0.9
                 session.expire(obj, [PERMISSIONS_ATTR])
 
-    def filter_with_permission(
-        self,
-        user,
-        permission,
-        obj_list,
-        inherit=False,
-    ):
+    def filter_with_permission(self, user, permission, obj_list, inherit=False):
         user = noproxy(user)
         return [
-            obj for obj in obj_list
+            obj
+            for obj in obj_list
             if self.has_permission(user, permission, obj, inherit)
         ]
 

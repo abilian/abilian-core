@@ -24,12 +24,12 @@ from abilian.web.views.object import CANCEL_BUTTON, ObjectCreate, \
 
 from .forms import CommentForm
 
-bp = Blueprint('comments', __name__, url_prefix='/comments')
+bp = Blueprint("comments", __name__, url_prefix="/comments")
 
 
 def _default_comment_view(obj, obj_type, obj_id, **kwargs):
     entity = obj.entity
-    return url_for(entity, _anchor='comment-{}'.format(obj.id))
+    return url_for(entity, _anchor="comment-{}".format(obj.id))
 
 
 @bp.record_once
@@ -37,12 +37,7 @@ def register_default_view(state):
     state.app.default_view.register(Comment, _default_comment_view)
 
 
-COMMENT_BUTTON = ButtonAction(
-    'form',
-    'edit',
-    btn_class='primary',
-    title=_l('Post'),
-)
+COMMENT_BUTTON = ButtonAction("form", "edit", btn_class="primary", title=_l("Post"))
 
 
 class BaseCommentView(object):
@@ -54,23 +49,23 @@ class BaseCommentView(object):
 
     def init_object(self, args, kwargs):
         args, kwargs = super(BaseCommentView, self).init_object(args, kwargs)
-        entity_id = kwargs.pop('entity_id', None)
+        entity_id = kwargs.pop("entity_id", None)
         if entity_id is not None:
             self.entity = Entity.query.get(entity_id)
 
         if self.entity is None:
-            raise BadRequest('No entity to comment')
+            raise BadRequest("No entity to comment")
 
         if not is_commentable(self.entity):
-            raise BadRequest('This entity is not commentable')
+            raise BadRequest("This entity is not commentable")
 
-        actions.context['object'] = self.entity
+        actions.context["object"] = self.entity
         return args, kwargs
 
     def view_url(self):
         kw = {}
         if self.obj and self.obj.id:
-            kw['_anchor'] = 'comment-{}'.format(self.obj.id)
+            kw["_anchor"] = "comment-{}".format(self.obj.id)
         return url_for(self.entity, **kw)
 
     def index_url(self):
@@ -83,7 +78,7 @@ class BaseCommentView(object):
 
 class CommentEditView(BaseCommentView, ObjectEdit):
 
-    _message_success = _l('Comment edited')
+    _message_success = _l("Comment edited")
 
     def breadcrumb(self):
         label = _('Edit comment on "{title}"').format(title=self.entity.name)
@@ -93,18 +88,20 @@ class CommentEditView(BaseCommentView, ObjectEdit):
         return [COMMENT_BUTTON, CANCEL_BUTTON]
 
     def after_populate_obj(self):
-        obj_meta = self.obj.meta.setdefault('abilian.core.models.comment', {})
-        history = obj_meta.setdefault('history', [])
-        history.append({
-            'user_id': current_user.id,
-            'user': text_type(current_user),
-            'date': utc_dt(datetime.utcnow()).isoformat()
-        },)
+        obj_meta = self.obj.meta.setdefault("abilian.core.models.comment", {})
+        history = obj_meta.setdefault("history", [])
+        history.append(
+            {
+                "user_id": current_user.id,
+                "user": text_type(current_user),
+                "date": utc_dt(datetime.utcnow()).isoformat(),
+            }
+        )
         self.obj.meta.changed()
 
 
-edit_view = CommentEditView.as_view('edit')
-bp.route('/<int:entity_id>/<int:object_id>/edit')(edit_view)
+edit_view = CommentEditView.as_view("edit")
+bp.route("/<int:entity_id>/<int:object_id>/edit")(edit_view)
 
 
 class CommentCreateView(BaseCommentView, ObjectCreate):
@@ -132,8 +129,8 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
         return [COMMENT_BUTTON, CANCEL_BUTTON]
 
 
-create_view = CommentCreateView.as_view('create')
-bp.route('/<int:entity_id>/create')(create_view)
+create_view = CommentCreateView.as_view("create")
+bp.route("/<int:entity_id>/create")(create_view)
 
 
 class CommentDeleteView(BaseCommentView, ObjectDelete):
@@ -141,5 +138,5 @@ class CommentDeleteView(BaseCommentView, ObjectDelete):
     _message_success = _l("Comment deleted")
 
 
-delete_view = CommentDeleteView.as_view('delete')
-bp.route('/<int:entity_id>/<int:object_id>/delete')(delete_view)
+delete_view = CommentDeleteView.as_view("delete")
+bp.route("/<int:entity_id>/<int:object_id>/delete")(delete_view)

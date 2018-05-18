@@ -21,18 +21,18 @@ class TagsField(Field):
       __tags__ = TagsField(ns='tags namespace')
     """
     multiple = True
-    widget = Select2(js_init='tags-select', multiple=True)
+    widget = Select2(js_init="tags-select", multiple=True)
     view_widget = ListWidget()
 
     def __init__(self, ns, *args, **kwargs):
-        kwargs.setdefault('view_widget', self.view_widget)
+        kwargs.setdefault("view_widget", self.view_widget)
         super(TagsField, self).__init__(*args, **kwargs)
         self.ns = ns.strip()
         assert self.ns
 
     def iter_choices(self):
         choices = []
-        extension = current_app.extensions['tags']
+        extension = current_app.extensions["tags"]
         ns_tags = extension.get(ns=self.ns)
 
         for tag in ns_tags:
@@ -52,8 +52,8 @@ class TagsField(Field):
         return super(TagsField, self).process_data(data)
 
     def process_formdata(self, valuelist):
-        extension = current_app.extensions['tags']
-        valuelist = set(valuelist[0].split(';'))
+        extension = current_app.extensions["tags"]
+        valuelist = set(valuelist[0].split(";"))
         data = set()
 
         for label in valuelist:
@@ -69,7 +69,7 @@ class TagsField(Field):
         self.data = data
 
     def populate_obj(self, obj, name):
-        extension = current_app.extensions['tags']
+        extension = current_app.extensions["tags"]
         # all_tags is an InstrumentedSet. add/remove will result in DB
         # operations.
         all_tags = extension.entity_tags(obj)
@@ -83,12 +83,12 @@ class TagsField(Field):
             all_tags.add(tag)
 
 
-_NS = StringField('Namespace', validators=[required()], filters=[strip])
+_NS = StringField("Namespace", validators=[required()], filters=[strip])
 
 
 class TagForm(Form):
     """Form for a single tag."""
-    label = StringField('Label', filters=[strip], validators=[required()])
+    label = StringField("Label", filters=[strip], validators=[required()])
 
 
 class TagNSForm(TagForm):

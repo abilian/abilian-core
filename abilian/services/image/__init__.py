@@ -1,8 +1,7 @@
 # coding=utf-8
 """Provides tools (currently: only functions, not a real service) for image
 processing."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import hashlib
 from io import BytesIO
@@ -11,20 +10,20 @@ from PIL import Image
 from six import binary_type
 from typing import Dict
 
-__all__ = ['resize', 'RESIZE_MODES', 'SCALE', 'FIT', 'CROP']
+__all__ = ["resize", "RESIZE_MODES", "SCALE", "FIT", "CROP"]
 
 # resize modes
 
 #: resize without retaining original proportions
-SCALE = 'scale'
+SCALE = "scale"
 
 #: resize image and retain original proportions. Image width and height will be
 #: at most specified width and height, respectively; At least width or height
 #: will be equal to specified width and height, respectively.
-FIT = 'fit'
+FIT = "fit"
 
 #: crop image and resize so that it matches specified width and height.
-CROP = 'crop'
+CROP = "crop"
 
 RESIZE_MODES = frozenset({SCALE, FIT, CROP})
 
@@ -55,9 +54,9 @@ def get_size(img):
 
 
 def get_save_format(fmt):
-    if fmt in ('GIF', 'PNG'):
-        return 'PNG'
-    return 'JPEG'
+    if fmt in ("GIF", "PNG"):
+        return "PNG"
+    return "JPEG"
 
 
 def resize(orig, width, height, mode=FIT):

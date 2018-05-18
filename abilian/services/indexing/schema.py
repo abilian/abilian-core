@@ -16,12 +16,13 @@ from abilian.services.security.models import Anonymous, Role
 
 #: A Whoosh analyzer that splits on word boundaries and folds accents and case.
 accent_folder = (
-    RegexTokenizer(r'\w+') |  # defaults doesn't split on '.'
-    LowercaseFilter() | CharsetFilter(accent_map)
+    RegexTokenizer(r"\w+")
+    | LowercaseFilter()  # defaults doesn't split on '.'
+    | CharsetFilter(accent_map)
 )
 
 #: Analyzer for edge-ngrams, from 2 to 6 characters long
-edge_ngram = accent_folder | NgramFilter(minsize=2, maxsize=6, at='start')
+edge_ngram = accent_folder | NgramFilter(minsize=2, maxsize=6, at="start")
 
 
 def EdgeNgramField():
@@ -45,11 +46,7 @@ class _DefaultSearchSchema(SchemaClass):
     tag_text = TEXT(analyzer=accent_folder)
 
     # hierarchical index of ids path ('/' is the separator)
-    parent_ids = FieldType(
-        format=Existence(),
-        analyzer=PathTokenizer(),
-        stored=True,
-    )
+    parent_ids = FieldType(format=Existence(), analyzer=PathTokenizer(), stored=True)
 
     name = TEXT(stored=True, analyzer=accent_folder)
     slug = ID(stored=True)
@@ -58,8 +55,8 @@ class _DefaultSearchSchema(SchemaClass):
 
 
 _default_dyn_fields = {
-    '*_prefix': EdgeNgramField(),
-    '*_at': DATETIME(stored=True, sortable=True),
+    "*_prefix": EdgeNgramField(),
+    "*_at": DATETIME(stored=True, sortable=True),
 }
 
 
@@ -79,16 +76,16 @@ def indexable_role(principal):
     """
     principal = noproxy(principal)
 
-    if hasattr(principal, 'is_anonymous') and principal.is_anonymous:
+    if hasattr(principal, "is_anonymous") and principal.is_anonymous:
         # transform anonymous user to anonymous role
         principal = Anonymous
 
     if isinstance(principal, Role):
-        return 'role:{}'.format(principal.name)
+        return "role:{}".format(principal.name)
     elif isinstance(principal, User):
-        fmt = 'user:{:d}'
+        fmt = "user:{:d}"
     elif isinstance(principal, Group):
-        fmt = 'group:{:d}'
+        fmt = "group:{:d}"
     else:
         raise ValueError(repr(principal))
 

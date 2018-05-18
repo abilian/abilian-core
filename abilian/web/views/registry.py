@@ -55,8 +55,8 @@ class Registry(object):
         if object_type is None:
             assert isinstance(entity, (db.Model, Hit, dict))
             getter = attrgetter if isinstance(entity, db.Model) else itemgetter
-            object_id = getter('id')(entity)
-            object_type = getter('object_type')(entity)
+            object_id = getter("id")(entity)
+            object_type = getter("object_type")(entity)
 
         url_func = self._map.get(object_type)  # type: Optional[Callable]
         if url_func is not None:
@@ -64,7 +64,7 @@ class Registry(object):
 
         try:
             return url_for(
-                '{}.view'.format(object_type.rsplit('.')[-1].lower()),
+                "{}.view".format(object_type.rsplit(".")[-1].lower()),
                 object_id=object_id,
                 **kwargs
             )
@@ -83,12 +83,7 @@ class default_view(object):
     """
 
     def __init__(
-        self,
-        app_or_blueprint,
-        entity,
-        id_attr='object_id',
-        endpoint=None,
-        kw_func=None,
+        self, app_or_blueprint, entity, id_attr="object_id", endpoint=None, kw_func=None
     ):
         self.app_or_blueprint = app_or_blueprint
         self.is_bp = isinstance(app_or_blueprint, Blueprint)
@@ -103,9 +98,9 @@ class default_view(object):
         if endpoint is None:
             endpoint = view.__name__
             if self.is_bp:
-                endpoint = '.' + endpoint
+                endpoint = "." + endpoint
 
-        if endpoint[0] == '.':
+        if endpoint[0] == ".":
             endpoint = self.app_or_blueprint.name + endpoint
 
         def default_url(obj, obj_type, obj_id, **kwargs):
@@ -124,10 +119,8 @@ class default_view(object):
             @self.app_or_blueprint.record_once
             def set_default_view(state):
                 state.app.default_view.register(self.entity, default_url)
+
         else:
-            self.app_or_blueprint.default_view.register(
-                self.entity,
-                default_url,
-            )
+            self.app_or_blueprint.default_view.register(self.entity, default_url)
 
         return view

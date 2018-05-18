@@ -23,7 +23,7 @@ def test_auto_uuid():
     assert isinstance(b.uuid, uuid.UUID)
 
     # test provided uuid is not replaced by a new one
-    u = uuid.UUID('4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
+    u = uuid.UUID("4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9")
     b = Blob(uuid=u)
     assert isinstance(b.uuid, uuid.UUID)
     assert b.uuid, u
@@ -38,34 +38,34 @@ def test_meta():
 # Integration tests
 #
 def test_md5(app, db):
-    b = Blob('test md5')
-    assert 'md5' in b.meta
-    assert b.meta['md5'] == '0e4e3b2681e8931c067a23c583c878d5'
+    b = Blob("test md5")
+    assert "md5" in b.meta
+    assert b.meta["md5"] == "0e4e3b2681e8931c067a23c583c878d5"
 
 
 def test_size(app, db):
-    b = Blob('test')
+    b = Blob("test")
     assert b.size == 4
 
 
 def test_filename(app, db):
-    content = StringIO('test')
-    content.filename = 'test.txt'
+    content = StringIO("test")
+    content.filename = "test.txt"
     b = Blob(content)
-    assert 'filename' in b.meta
-    assert b.meta['filename'] == 'test.txt'
+    assert "filename" in b.meta
+    assert b.meta["filename"] == "test.txt"
 
 
 def test_mimetype(app, db):
-    content = StringIO('test')
-    content.content_type = 'text/plain'
+    content = StringIO("test")
+    content.content_type = "text/plain"
     b = Blob(content)
-    assert 'mimetype' in b.meta
-    assert b.meta['mimetype'] == 'text/plain'
+    assert "mimetype" in b.meta
+    assert b.meta["mimetype"] == "text/plain"
 
 
 def test_nonzero(app, db):
-    b = Blob('test md5')
+    b = Blob("test md5")
     assert bool(b)
 
     # change uuid: repository will return None for blob.file
@@ -75,7 +75,7 @@ def test_nonzero(app, db):
 
 def test_query(app, db):
     session = db.session
-    content = b'content'
+    content = b"content"
     b = Blob(content)
     session.add(b)
     session.flush()
@@ -89,7 +89,7 @@ def test_query(app, db):
 
 def test_value(app, db):
     session = db.session
-    content = b'content'
+    content = b"content"
     b = Blob(content)
 
     tr = session.begin(nested=True)
@@ -97,11 +97,11 @@ def test_value(app, db):
     tr.commit()
 
     assert repository.get(b.uuid) is None
-    assert session_repository.get(b, b.uuid).open('rb').read() == content
+    assert session_repository.get(b, b.uuid).open("rb").read() == content
     assert b.value == content
 
     session.commit()
-    assert repository.get(b.uuid).open('rb').read() == content
+    assert repository.get(b.uuid).open("rb").read() == content
     assert b.value == content
 
     session.begin(nested=True)  # match session.rollback
@@ -110,22 +110,22 @@ def test_value(app, db):
         session.delete(b)
         # object marked for deletion, but instance attribute should still be
         # readable
-        fd = session_repository.get(b, b.uuid).open('rb')
+        fd = session_repository.get(b, b.uuid).open("rb")
         assert fd.read() == content
 
     # commit in transaction: session_repository has no content, 'physical'
     # repository still has content
     assert session_repository.get(b, b.uuid) is None
-    assert repository.get(b.uuid).open('rb').read() == content
+    assert repository.get(b.uuid).open("rb").read() == content
 
     # rollback: session_repository has content again
     session.rollback()
-    assert session_repository.get(b, b.uuid).open('rb').read() == content
+    assert session_repository.get(b, b.uuid).open("rb").read() == content
 
     session.delete(b)
     session.flush()
     assert session_repository.get(b, b.uuid) is None
-    assert repository.get(b.uuid).open('rb').read() == content
+    assert repository.get(b.uuid).open("rb").read() == content
 
     session.commit()
     assert repository.get(b.uuid) is None

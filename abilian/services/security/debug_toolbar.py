@@ -17,46 +17,44 @@ from .models import Anonymous
 class SecurityInfoDebugPanel(DebugPanel):
     """A panel to display current roles and permissions for "current"
     object."""
-    name = 'SecurityInfo'
+    name = "SecurityInfo"
 
     @property
     def current_obj(self):
-        return actions.context.get('object')
+        return actions.context.get("object")
 
     @property
     def has_content(self):
         obj = self.current_obj
-        return (
-            obj is not None and isinstance(obj, Entity) and obj.id is not None
-        )
+        return obj is not None and isinstance(obj, Entity) and obj.id is not None
 
     def nav_title(self):
-        return _('Security Info')
+        return _("Security Info")
 
     def nav_subtitle(self):
         """Subtitle showing until title in toolbar."""
         obj = self.current_obj
         if not obj:
-            return _('No current object')
+            return _("No current object")
 
         try:
-            return '{}(id={})'.format(obj.__class__.__name__, obj.id)
+            return "{}(id={})".format(obj.__class__.__name__, obj.id)
         except BaseException:
-            return ''
+            return ""
 
     def title(self):
         return self.nav_title()
 
     def url(self):
-        return ''
+        return ""
 
     def content(self):
         obj = self.current_obj
-        security = get_service('security')
+        security = get_service("security")
         context = self.context.copy()
 
-        context['permissions'] = security.get_permissions_assignments(obj=obj)
-        context['roles'] = roles = dict()
+        context["permissions"] = security.get_permissions_assignments(obj=obj)
+        context["roles"] = roles = dict()
 
         for principal, r in security.get_role_assignements(obj=obj):
             if r not in roles:
@@ -64,30 +62,29 @@ class SecurityInfoDebugPanel(DebugPanel):
 
             info = roles[r]
             if principal is Anonymous:
-                info['anonymous'] = True
+                info["anonymous"] = True
             elif isinstance(principal, Group):
-                info['groups'].add(principal)
+                info["groups"].add(principal)
             else:
-                info['users'].add(principal)
+                info["users"].add(principal)
 
         for r in roles:
             info = roles[r]
-            info['groups'] = [
-                '{g} (id={g.id})'.format(g=g)
-                for g in sorted(info['groups'], key=lambda g: g.name)
+            info["groups"] = [
+                "{g} (id={g.id})".format(g=g)
+                for g in sorted(info["groups"], key=lambda g: g.name)
             ]
             users = sorted(
-                info['users'],
-                key=lambda u: (u.last_name.lower(), u.first_name.lower()),
+                info["users"], key=lambda u: (u.last_name.lower(), u.first_name.lower())
             )
-            info['users'] = [
+            info["users"] = [
                 '{u} (id={u.id}, email="{u.email}")'.format(u=u) for u in users
             ]
 
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)
         template = jinja_env.get_or_select_template(
-            'debug_panels/security_info_panel.html',
+            "debug_panels/security_info_panel.html"
         )
 
         return template.render(context)

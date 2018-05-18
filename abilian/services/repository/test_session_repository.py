@@ -41,12 +41,12 @@ def test_transaction_lifetime(session):
 
 
 def test_accessors_bad_uuid_type(session):
-    uuid_str = b'4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9'
+    uuid_str = b"4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9"
 
     with raises(ValueError):
         session_repository.get(session, uuid_str)
     with raises(ValueError):
-        session_repository.set(session, uuid_str, '')
+        session_repository.set(session, uuid_str, "")
     with raises(ValueError):
         session_repository.delete(session, uuid_str)
 
@@ -61,10 +61,10 @@ def test_accessors_non_existent_entry(session):
 
 def test_accessors_set_get_delete(session):
     # set
-    content = b'my file content'
+    content = b"my file content"
     u1 = uuid.uuid4()
     session_repository.set(session, u1, content)
-    assert session_repository.get(session, u1).open('rb').read() == content
+    assert session_repository.get(session, u1).open("rb").read() == content
     assert repository.get(u1) is None
 
     # delete
@@ -72,7 +72,7 @@ def test_accessors_set_get_delete(session):
     assert session_repository.get(session, u1) is None
 
     u2 = uuid.uuid4()
-    repository.set(u2, b'existing content')
+    repository.set(u2, b"existing content")
     assert session_repository.get(session, u2) is not None
 
     session_repository.delete(session, u2)
@@ -82,11 +82,10 @@ def test_accessors_set_get_delete(session):
 
 def test_transaction(session):
     u = uuid.uuid4()
-    repository.set(u, b'first draft')
-    assert session_repository.get(session, u).open('rb').read() == \
-        b'first draft'
+    repository.set(u, b"first draft")
+    assert session_repository.get(session, u).open("rb").read() == b"first draft"
 
-    session_repository.set(session, u, b'new content')
+    session_repository.set(session, u, b"new content")
 
     # test nested (savepoint)
     # delete content but rollback transaction
@@ -95,8 +94,7 @@ def test_transaction(session):
     assert session_repository.get(session, u) is None
 
     db_tr.rollback()
-    assert session_repository.get(session, u).open('rb').read() == \
-        b'new content'
+    assert session_repository.get(session, u).open("rb").read() == b"new content"
 
     # delete and commit
     with session.begin(nested=True):
@@ -110,14 +108,13 @@ def test_transaction(session):
     assert repository.get(u) is None
 
     # delete: now test subtransactions (sqlalchemy)
-    repository.set(u, b'first draft')
+    repository.set(u, b"first draft")
     db_tr = session.begin(subtransactions=True)
     session_repository.delete(session, u)
     assert session_repository.get(session, u) is None
 
     db_tr.rollback()
-    assert session_repository.get(session, u).open('rb').read() == \
-        b'first draft'
+    assert session_repository.get(session, u).open("rb").read() == b"first draft"
 
     session.rollback()
 
@@ -132,7 +129,7 @@ def test_transaction(session):
     assert repository.get(u) is None
 
     # now test 'set'
-    session_repository.set(session, u, b'new content')
+    session_repository.set(session, u, b"new content")
     session.commit()
     assert repository.get(u) is not None
 
@@ -140,13 +137,12 @@ def test_transaction(session):
     # branch, when a subtransaction overwrite data set in parent
     # transaction
     with session.begin(nested=True):
-        session_repository.set(session, u, b'transaction 1')
+        session_repository.set(session, u, b"transaction 1")
 
         with session.begin(nested=True):
-            session_repository.set(session, u, b'transaction 2')
+            session_repository.set(session, u, b"transaction 2")
 
-        assert session_repository.get(session, u).open('rb').read() \
-            == b'transaction 2'
+        assert session_repository.get(session, u).open("rb").read() == b"transaction 2"
 
 
 def test_transaction_path(session):
@@ -162,11 +158,11 @@ def test_transaction_path(session):
         transaction = state.get_transaction(session)
         assert not transaction.path.exists()
 
-        session_repository.set(session, u, b'my file content')
+        session_repository.set(session, u, b"my file content")
         assert transaction.path.exists()
 
     assert root_transaction.path.exists()
 
-    content = session_repository.get(session, u).open('rb').read()
-    assert content == b'my file content'
+    content = session_repository.get(session, u).open("rb").read()
+    assert content == b"my file content"
     assert root_transaction.path.exists()

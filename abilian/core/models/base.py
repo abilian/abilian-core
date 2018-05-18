@@ -57,10 +57,10 @@ class Indexable(object):
     """Mixin with sensible defaults for indexable objects."""
     __indexable__ = True
     __indexation_args__ = {
-        'index_to': (
-            ('object_key', (('object_key', ID(stored=True, unique=True)),)),
-            ('object_type', (('object_type', ID(stored=True, unique=False)),)),
-        ),
+        "index_to": (
+            ("object_key", (("object_key", ID(stored=True, unique=True)),)),
+            ("object_type", (("object_type", ID(stored=True, unique=False)),)),
+        )
     }
 
     @classmethod
@@ -73,16 +73,12 @@ class Indexable(object):
 
     @property
     def object_key(self):
-        return '{}:{}'.format(self.object_type, self.id)
+        return "{}:{}".format(self.object_type, self.id)
 
 
 class TimestampedMixin(object):
     #: creation date
-    created_at = Column(
-        DateTime,
-        default=datetime.utcnow,
-        info=SYSTEM | SEARCHABLE,
-    )
+    created_at = Column(DateTime, default=datetime.utcnow, info=SYSTEM | SEARCHABLE)
     #: last modification date
     updated_at = Column(
         DateTime,

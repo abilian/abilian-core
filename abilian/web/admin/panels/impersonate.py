@@ -9,9 +9,9 @@ from abilian.web.admin.panel import AdminPanel
 
 
 class ImpersonatePanel(AdminPanel):
-    id = 'impersonate'
-    label = 'Impersonate'
-    icon = 'user'
+    id = "impersonate"
+    label = "Impersonate"
+    icon = "user"
 
     def get(self):
         user_email = request.args.get("email")

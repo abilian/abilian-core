@@ -24,41 +24,36 @@ from abilian.web.forms import Form, fields, required, widgets
 class UserPreferencesForm(Form):
 
     password = StringField(
-        _l('New Password'),
-        widget=widgets.PasswordInput(autocomplete='off'),
+        _l("New Password"), widget=widgets.PasswordInput(autocomplete="off")
     )
     confirm_password = StringField(
-        _l('Confirm new password'),
-        widget=widgets.PasswordInput(autocomplete='off'),
+        _l("Confirm new password"), widget=widgets.PasswordInput(autocomplete="off")
     )
 
     photo = fields.FileField(
-        label=_l('Photo'),
-        widget=widgets.ImageInput(width=55, height=55),
+        label=_l("Photo"), widget=widgets.ImageInput(width=55, height=55)
     )
 
     locale = fields.LocaleSelectField(
-        label=_l('Preferred Language'),
+        label=_l("Preferred Language"),
         validators=[required()],
         default=lambda: get_default_locale(),
     )
 
     timezone = fields.TimezoneField(
-        label=_l('Time zone'),
-        validators=(required(),),
-        default=babel.dates.LOCALTZ,
+        label=_l("Time zone"), validators=(required(),), default=babel.dates.LOCALTZ
     )
 
     def validate_password(self, field):
         pwd = field.data
-        confirmed = self['confirm_password'].data
+        confirmed = self["confirm_password"].data
 
         if pwd != confirmed:
             raise ValidationError(
                 _(
-                    'Passwords differ. Ensure you have typed same password '
-                    'in both "password" field and "confirm password" field.',
-                ),
+                    "Passwords differ. Ensure you have typed same password "
+                    'in both "password" field and "confirm password" field.'
+                )
             )
 
     def validate_photo(self, field):
@@ -68,21 +63,15 @@ class UserPreferencesForm(Form):
 
         data = field.data
         filename = data.filename
-        valid = any(
-            filename.lower().endswith(ext) for ext in ('.png', '.jpg', '.jpeg')
-        )
+        valid = any(filename.lower().endswith(ext) for ext in (".png", ".jpg", ".jpeg"))
 
         if not valid:
-            raise ValidationError(
-                _('Only PNG or JPG image files are accepted'),
-            )
+            raise ValidationError(_("Only PNG or JPG image files are accepted"))
 
-        img_type = imghdr.what('ignored', data.read())
+        img_type = imghdr.what("ignored", data.read())
 
-        if img_type not in ('png', 'jpeg'):
-            raise ValidationError(
-                _('Only PNG or JPG image files are accepted'),
-            )
+        if img_type not in ("png", "jpeg"):
+            raise ValidationError(_("Only PNG or JPG image files are accepted"))
 
         data.seek(0)
         try:
@@ -90,18 +79,18 @@ class UserPreferencesForm(Form):
             im = PIL.Image.open(data)
             im.load()
         except BaseException:
-            raise ValidationError(_('Could not decode image file'))
+            raise ValidationError(_("Could not decode image file"))
 
         # convert to jpeg
         # FIXME: better do this at model level?
         jpeg = BytesIO()
-        im.convert('RGB').save(jpeg, 'JPEG')
+        im.convert("RGB").save(jpeg, "JPEG")
         field.data = jpeg.getvalue()
 
 
 class UserPreferencesPanel(PreferencePanel):
-    id = 'user'
-    label = _l('About me')
+    id = "user"
+    label = _l("About me")
 
     def is_accessible(self):
         return True
@@ -116,23 +105,18 @@ class UserPreferencesPanel(PreferencePanel):
         if photo:
             # subclass str/bytes to set additional 'url' attribute
             photo = type(
-                b'Photo',
+                b"Photo",
                 (bytes,),
-                dict(
-                    object=photo,
-                    url=url_for('users.photo', user_id=g.user.id),
-                ),
+                dict(object=photo, url=url_for("users.photo", user_id=g.user.id)),
             )
-            data['photo'] = photo
+            data["photo"] = photo
 
-        form = UserPreferencesForm(
-            obj=g.user, formdata=None, prefix=self.id, **data
-        )
-        if form['locale'].data is None:
-            form['locale'].data = get_default_locale()
+        form = UserPreferencesForm(obj=g.user, formdata=None, prefix=self.id, **data)
+        if form["locale"].data is None:
+            form["locale"].data = get_default_locale()
 
-        ctx = {'form': form, 'title': self.label}
-        return render_template('preferences/user.html', **ctx)
+        ctx = {"form": form, "title": self.label}
+        return render_template("preferences/user.html", **ctx)
 
     @csrf.support_graceful_failure
     def post(self):
@@ -140,21 +124,20 @@ class UserPreferencesPanel(PreferencePanel):
         if not self.is_accessible():
             raise InternalServerError()
 
-        if request.form['_action'] == 'cancel':
-            return redirect(url_for('.user'))
+        if request.form["_action"] == "cancel":
+            return redirect(url_for(".user"))
 
         form = UserPreferencesForm(request.form, prefix=self.id)
 
         if form.validate():
             if request.csrf_failed:
-                current_app.extensions['csrf-handler'
-                                      ].flash_csrf_failed_message()
-                return render_template('preferences/user.html', form=form)
+                current_app.extensions["csrf-handler"].flash_csrf_failed_message()
+                return render_template("preferences/user.html", form=form)
 
             del form.confirm_password
             if form.password.data:
                 g.user.set_password(form.password.data)
-                flash(_('Password changed'), 'success')
+                flash(_("Password changed"), "success")
             del form.password
 
             form.populate_obj(g.user)
@@ -163,4 +146,4 @@ class UserPreferencesPanel(PreferencePanel):
             flash(_("Preferences saved."), "info")
             return redirect(url_for(".user"))
         else:
-            return render_template('preferences/user.html', form=form)
+            return render_template("preferences/user.html", form=form)

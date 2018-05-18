@@ -66,6 +66,7 @@ class Blob(Model):
     def file(self):
         """Return :class:`pathlib.Path` object used for storing value."""
         from abilian.services.repository import session_repository as repository
+
         return repository.get(self, self.uuid)
 
     @property
@@ -80,10 +81,10 @@ class Blob(Model):
         # type: () -> bytes
         """Binary value content."""
         v = self.file
-        return v.open('rb').read() if v is not None else v
+        return v.open("rb").read() if v is not None else v
 
     @value.setter
-    def value(self, value, encoding='utf-8'):
+    def value(self, value, encoding="utf-8"):
         """Store binary content to applications's repository and update
         `self.meta['md5']`.
 
@@ -91,28 +92,30 @@ class Blob(Model):
         :param:encoding: encoding to use when content is Unicode
         """
         from abilian.services.repository import session_repository as repository
+
         repository.set(self, self.uuid, value)
-        self.meta['md5'] = text_type(hashlib.md5(self.value).hexdigest())
+        self.meta["md5"] = text_type(hashlib.md5(self.value).hexdigest())
 
-        if hasattr(value, 'filename'):
-            filename = getattr(value, 'filename')
+        if hasattr(value, "filename"):
+            filename = getattr(value, "filename")
             if isinstance(filename, bytes):
-                filename = filename.decode('utf-8')
-            self.meta['filename'] = filename
+                filename = filename.decode("utf-8")
+            self.meta["filename"] = filename
 
-        if hasattr(value, 'content_type'):
-            self.meta['mimetype'] = getattr(value, 'content_type')
+        if hasattr(value, "content_type"):
+            self.meta["mimetype"] = getattr(value, "content_type")
 
     @value.deleter
     def value(self):
         """Remove value from repository."""
         from abilian.services.repository import session_repository as repository
+
         repository.delete(self, self.uuid)
 
     @property
     def md5(self):
         """Return md5 from meta, or compute it if absent."""
-        md5 = self.meta.get('md5')
+        md5 = self.meta.get("md5")
         if md5 is None:
             md5 = text_type(hashlib.md5(self.value).hexdigest())
 
@@ -126,7 +129,7 @@ class Blob(Model):
     __nonzero__ = __bool__
 
 
-@listens_for(sa.orm.Session, 'after_flush')
+@listens_for(sa.orm.Session, "after_flush")
 def _blob_propagate_delete_content(session, flush_context):
     deleted = (obj for obj in session.deleted if isinstance(obj, Blob))
     for blob in deleted:

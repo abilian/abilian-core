@@ -50,7 +50,7 @@ from .schema import DefaultSearchSchema, indexable_role
 logger = logging.getLogger(__name__)
 _TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
-_pending_indexation_attr = 'abilian_pending_indexation'
+_pending_indexation_attr = "abilian_pending_indexation"
 
 # as of whoosh 2.5.7, a method is missing on WrappingCollector. See
 # https://bitbucket.org/mchaput/whoosh/issue/394/error-when-searching-with-groupedby-and
@@ -62,6 +62,7 @@ if not _PATCHED:
         return self.child.remove(global_docnum)
 
     from abilian.core.logging import patch_logger
+
     patch_logger.info(WrappingCollector.remove)
     WrappingCollector.remove = wrapping_collector_remove
     _PATCHED = True
@@ -70,16 +71,16 @@ if not _PATCHED:
 # END PATCH
 
 
-def url_for_hit(hit, default='#'):
+def url_for_hit(hit, default="#"):
     """Helper for building URLs from results."""
     try:
-        object_type = hit['object_type']
-        object_id = int(hit['id'])
+        object_type = hit["object_type"]
+        object_id = int(hit["id"])
         return current_app.default_view.url_for(hit, object_type, object_id)
     except KeyError:
         return default
     except Exception:
-        logger.error('Error building URL for search result', exc_info=True)
+        logger.error("Error building URL for search result", exc_info=True)
         return default
 
 
@@ -115,14 +116,14 @@ class IndexServiceState(ServiceState):
     def to_update(self, value):
         top = _app_ctx_stack.top
         if top is None:
-            raise RuntimeError('working outside of application context')
+            raise RuntimeError("working outside of application context")
 
         setattr(top, _pending_indexation_attr, value)
 
 
 class WhooshIndexService(Service):
     """Index documents using whoosh."""
-    name = 'indexing'
+    name = "indexing"
     AppStateClass = IndexServiceState
 
     _listening = False
@@ -131,7 +132,7 @@ class WhooshIndexService(Service):
         Service.__init__(self, *args, **kwargs)
         self.adapters_cls = [SAAdapter]
         self.adapted = {}
-        self.schemas = {'default': DefaultSearchSchema()}
+        self.schemas = {"default": DefaultSearchSchema()}
 
     def init_app(self, app):
         Service.init_app(self, app)
@@ -157,8 +158,8 @@ class WhooshIndexService(Service):
 
     def _do_register_js_api(self, sender):
         app = sender
-        js_api = app.js_api.setdefault('search', {})
-        js_api['object_types'] = self.searchable_object_types()
+        js_api = app.js_api.setdefault("search", {})
+        js_api["object_types"] = self.searchable_object_types()
 
     def register_search_filter(self, func):
         """Register a function that returns a query used for filtering search
@@ -215,7 +216,7 @@ class WhooshIndexService(Service):
         After clear() the service is stopped. It must be started again
         to create new indexes and register classes.
         """
-        logger.info('Resetting indexes')
+        logger.info("Resetting indexes")
         state = self.app_state
 
         for _name, idx in state.indexes.items():
@@ -230,7 +231,7 @@ class WhooshIndexService(Service):
         if self.running:
             self.stop()
 
-    def index(self, name='default'):
+    def index(self, name="default"):
         return self.app_state.indexes[name]
 
     @property
@@ -239,7 +240,7 @@ class WhooshIndexService(Service):
 
         Can be configured with `SEARCH_DEFAULT_BOOSTS`
         """
-        config = current_app.config.get('SEARCH_DEFAULT_BOOSTS')
+        config = current_app.config.get("SEARCH_DEFAULT_BOOSTS")
         if not config:
             config = dict(name=1.5, name_prefix=1.3, description=1.3, text=1.0)
             return config
@@ -254,17 +255,15 @@ class WhooshIndexService(Service):
             return []
 
         with idx.reader() as r:
-            indexed = sorted(set(r.field_terms('object_type')))
+            indexed = sorted(set(r.field_terms("object_type")))
         app_indexed = self.app_state.indexed_fqcn
 
-        return [(name, friendly_fqcn(name))
-                for name in indexed
-                if name in app_indexed]
+        return [(name, friendly_fqcn(name)) for name in indexed if name in app_indexed]
 
     def search(
         self,
         q,
-        index='default',
+        index="default",
         fields=None,
         Models=(),
         object_types=(),
@@ -293,7 +292,7 @@ class WhooshIndexService(Service):
         valid_fields = {
             f
             for f in index.schema.names(check_names=fields)
-            if prefix or not f.endswith('_prefix')
+            if prefix or not f.endswith("_prefix")
         }
 
         for invalid in set(fields) - valid_fields:
@@ -302,11 +301,11 @@ class WhooshIndexService(Service):
         parser = DisMaxParser(fields, index.schema)
         query = parser.parse(q)
 
-        filters = search_args.setdefault('filter', None)
+        filters = search_args.setdefault("filter", None)
         filters = [filters] if filters is not None else []
-        del search_args['filter']
+        del search_args["filter"]
 
-        if not hasattr(g, 'is_manager') or not g.is_manager:
+        if not hasattr(g, "is_manager") or not g.is_manager:
             # security access filter
             user = current_user
             roles = {indexable_role(user)}
@@ -316,7 +315,7 @@ class WhooshIndexService(Service):
                 roles |= {indexable_role(r) for r in security.get_roles(user)}
 
             filter_q = wq.Or(
-                [wq.Term('allowed_roles_and_users', role) for role in roles],
+                [wq.Term("allowed_roles_and_users", role) for role in roles]
             )
             filters.append(filter_q)
 
@@ -335,7 +334,7 @@ class WhooshIndexService(Service):
             object_types = self.app_state.indexed_fqcn
 
         # limit object_type
-        filter_q = wq.Or([wq.Term('object_type', t) for t in object_types])
+        filter_q = wq.Or([wq.Term("object_type", t) for t in object_types])
         filters.append(filter_q)
 
         for func in self.app_state.search_filter_funcs:
@@ -354,14 +353,11 @@ class WhooshIndexService(Service):
 
             # limit number of documents to score, per object type
             collapse_limit = 5
-            search_args['groupedby'] = 'object_type'
-            search_args['collapse'] = 'object_type'
-            search_args['collapse_limit'] = collapse_limit
-            search_args['limit'] = (
-                search_args['collapse_limit'] * max(
-                    len(object_types),
-                    1,
-                )
+            search_args["groupedby"] = "object_type"
+            search_args["collapse"] = "object_type"
+            search_args["collapse_limit"] = collapse_limit
+            search_args["limit"] = search_args["collapse_limit"] * max(
+                len(object_types), 1
             )
 
         with index.searcher(closereader=False) as searcher:
@@ -376,22 +372,21 @@ class WhooshIndexService(Service):
                 }
                 sr = results
                 results = {}
-                for typename, doc_ids in sr.groups('object_type').items():
+                for typename, doc_ids in sr.groups("object_type").items():
                     results[typename] = [
                         sr[positions[oid]] for oid in doc_ids[:collapse_limit]
                     ]
 
             return results
 
-    def search_for_class(self, query, cls, index='default', **search_args):
-        return self.search(
-            query, Models=(fqcn(cls),), index=index, **search_args
-        )
+    def search_for_class(self, query, cls, index="default", **search_args):
+        return self.search(query, Models=(fqcn(cls),), index=index, **search_args)
 
     def register_classes(self):
         state = self.app_state
         classes = (
-            cls for cls in db.Model._decl_class_registry.values()
+            cls
+            for cls in db.Model._decl_class_registry.values()
             if isclass(cls) and issubclass(cls, Indexable) and cls.__indexable__
         )
         for cls in classes:
@@ -409,7 +404,7 @@ class WhooshIndexService(Service):
             return
 
         cls_fqcn = fqcn(cls)
-        self.adapted[cls_fqcn] = Adapter(cls, self.schemas['default'])
+        self.adapted[cls_fqcn] = Adapter(cls, self.schemas["default"])
         state.indexed_classes.add(cls)
         state.indexed_fqcn.add(cls_fqcn)
 
@@ -419,9 +414,9 @@ class WhooshIndexService(Service):
 
         to_update = self.app_state.to_update
         session_objs = (
-            ('new', session.new),
-            ('deleted', session.deleted),
-            ('changed', session.dirty),
+            ("new", session.new),
+            ("deleted", session.deleted),
+            ("changed", session.dirty),
         )
         for key, objs in session_objs:
             for obj in objs:
@@ -443,8 +438,8 @@ class WhooshIndexService(Service):
         of a model.
         """
         if (
-            not self.running or
-            session.transaction.nested  # inside a sub-transaction:
+            not self.running
+            or session.transaction.nested  # inside a sub-transaction:
             # not yet written in DB
             or session is not db.session()
         ):
@@ -453,13 +448,12 @@ class WhooshIndexService(Service):
             # likely happens during tests (which don't do that for now)
             return
 
-        primary_field = 'id'
+        primary_field = "id"
         state = self.app_state
         items = []
         for op, obj in state.to_update:
             model_name = fqcn(obj.__class__)
-            if model_name not in self.adapted or \
-                    not self.adapted[model_name].indexable:
+            if model_name not in self.adapted or not self.adapted[model_name].indexable:
                 # safeguard
                 continue
 
@@ -468,7 +462,7 @@ class WhooshIndexService(Service):
                 items.append((op, model_name, getattr(obj, primary_field), {}))
 
         if items:
-            index_update.apply_async(kwargs=dict(index='default', items=items))
+            index_update.apply_async(kwargs=dict(index="default", items=items))
         self.clear_update_queue()
 
     def get_document(self, obj, adapter=None):
@@ -488,9 +482,9 @@ class WhooshIndexService(Service):
             if isinstance(v, (User, Group, Role)):
                 document[k] = indexable_role(v)
 
-        if not document.get('allowed_roles_and_users'):
+        if not document.get("allowed_roles_and_users"):
             # no data for security: assume anybody can access the document
-            document['allowed_roles_and_users'] = indexable_role(Anonymous)
+            document["allowed_roles_and_users"] = indexable_role(Anonymous)
 
         for func in self.app_state.value_provider_funcs:
             res = func(document, obj)
@@ -499,7 +493,7 @@ class WhooshIndexService(Service):
 
         return document
 
-    def index_objects(self, objects, index='default'):
+    def index_objects(self, objects, index="default"):
         """Bulk index a list of objects."""
         if not objects:
             return
@@ -514,22 +508,18 @@ class WhooshIndexService(Service):
                 if document is None:
                     continue
 
-                object_key = document['object_key']
+                object_key = document["object_key"]
                 if object_key in indexed:
                     continue
 
-                writer.delete_by_term('object_key', object_key)
+                writer.delete_by_term("object_key", object_key)
                 try:
                     writer.add_document(**document)
                 except ValueError:
                     # logger is here to give us more infos in order to catch a weird bug
                     # that happens regularly on CI but is not reliably
                     # reproductible.
-                    logger.error(
-                        'writer.add_document(%r)',
-                        document,
-                        exc_info=True,
-                    )
+                    logger.error("writer.add_document(%r)", document, exc_info=True)
                     raise
                 indexed.add(object_key)
 
@@ -557,8 +547,8 @@ def index_update(index, items):
 
             # always delete. Whoosh manual says that 'update' is actually delete + add
             # operation
-            object_key = '{}:{}'.format(cls_name, pk)
-            writer.delete_by_term('object_key', object_key)
+            object_key = "{}:{}".format(cls_name, pk)
+            writer.delete_by_term("object_key", object_key)
 
             adapter = adapted.get(cls_name)
             if not adapter:
@@ -586,11 +576,7 @@ def index_update(index, items):
                     # logger is here to give us more infos in order to catch a weird bug
                     # that happens regularly on CI but is not reliably
                     # reproductible.
-                    logger.error(
-                        'writer.add_document(%r)',
-                        document,
-                        exc_info=True,
-                    )
+                    logger.error("writer.add_document(%r)", document, exc_info=True)
                     raise
                 updated.add(object_key)
     except BaseException:

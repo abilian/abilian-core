@@ -22,16 +22,13 @@ from abilian.web.util import url_for
 
 from .files import BaseFileDownload
 
-blueprint = Blueprint('images', __name__, url_prefix='/images')
+blueprint = Blueprint("images", __name__, url_prefix="/images")
 route = blueprint.route
 
 DEFAULT_AVATAR = Path(
-    pkg_resources.resource_filename(
-        'abilian.web',
-        'resources/img/avatar-default.png',
-    ),
+    pkg_resources.resource_filename("abilian.web", "resources/img/avatar-default.png")
 )
-DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open('rb').read()).hexdigest()
+DEFAULT_AVATAR_MD5 = hashlib.md5(DEFAULT_AVATAR.open("rb").read()).hexdigest()
 
 
 class BaseImageView(BaseFileDownload):
@@ -46,29 +43,26 @@ class BaseImageView(BaseFileDownload):
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseImageView, self).prepare_args(args, kwargs)
-        size = request.args.get('s', 0)
+        size = request.args.get("s", 0)
         try:
             size = int(size)
         except ValueError:
             raise BadRequest(
-                'Invalid value for "s": {:d}. Not an integer.'.format(size),
+                'Invalid value for "s": {:d}. Not an integer.'.format(size)
             )
 
         if self.max_size is not None and size > self.max_size:
             raise BadRequest(
-                'Size too large: {:d} (max: {:d})'.format(
-                    size,
-                    self.max_size,
-                )
+                "Size too large: {:d} (max: {:d})".format(size, self.max_size)
             )
 
-        kwargs['size'] = size
+        kwargs["size"] = size
 
-        resize_mode = request.args.get('m', CROP)
+        resize_mode = request.args.get("m", CROP)
         if resize_mode not in RESIZE_MODES:
             resize_mode = CROP
 
-        kwargs['mode'] = resize_mode
+        kwargs["mode"] = resize_mode
         return args, kwargs
 
     def make_response(self, image, size, mode, filename=None, *args, **kwargs):
@@ -84,11 +78,11 @@ class BaseImageView(BaseFileDownload):
             # not a known image file
             raise NotFound()
 
-        self.content_type = 'image/png' if fmt == 'PNG' else 'image/jpeg'
-        ext = '.' + text_type(fmt.lower())
+        self.content_type = "image/png" if fmt == "PNG" else "image/jpeg"
+        ext = "." + text_type(fmt.lower())
 
         if not filename:
-            filename = 'image'
+            filename = "image"
         if not filename.lower().endswith(ext):
             filename += ext
         self.filename = filename
@@ -114,7 +108,7 @@ class StaticImageView(BaseImageView):
 
     Useful for default avatars for example.
     """
-    expire_vary_arg = 'md5'
+    expire_vary_arg = "md5"
 
     def __init__(self, image, *args, **kwargs):
         """
@@ -124,11 +118,11 @@ class StaticImageView(BaseImageView):
         self.image_path = Path(image)
         if not self.image_path.exists():
             p = text_type(self.image_path)
-            raise ValueError('Invalid image path: {}'.format(repr(p)))
+            raise ValueError("Invalid image path: {}".format(repr(p)))
 
     def prepare_args(self, args, kwargs):
-        kwargs['image'] = self.image_path.open('rb')
-        kwargs['filename'] = self.image_path.name
+        kwargs["image"] = self.image_path.open("rb")
+        kwargs["filename"] = self.image_path.name
         return BaseImageView.prepare_args(self, args, kwargs)
 
 
@@ -137,8 +131,8 @@ class BlobView(BaseImageView):
 
     :attr:`set_expire` is set to `False` by default.
     """
-    expire_vary_arg = 'md5'
-    id_arg = 'object_id'
+    expire_vary_arg = "md5"
+    id_arg = "object_id"
 
     def __init__(self, id_arg=None, *args, **kwargs):
         BaseImageView.__init__(self, *args, **kwargs)
@@ -151,46 +145,43 @@ class BlobView(BaseImageView):
         try:
             blob_id = int(blob_id)
         except ValueError:
-            raise BadRequest('Invalid blob id: {}'.format(repr(blob_id)))
+            raise BadRequest("Invalid blob id: {}".format(repr(blob_id)))
 
         blob = Blob.query.get(blob_id)
         if not blob:
             raise NotFound()
 
         meta = blob.meta
-        filename = meta.get('filename', meta.get('md5', text_type(blob.uuid)))
-        kwargs['filename'] = filename
-        kwargs['image'] = blob.file.open('rb')
+        filename = meta.get("filename", meta.get("md5", text_type(blob.uuid)))
+        kwargs["filename"] = filename
+        kwargs["image"] = blob.file.open("rb")
         return args, kwargs
 
 
-blob_image = BlobView.as_view('blob_image')
+blob_image = BlobView.as_view("blob_image")
 route("/files/<int:object_id>")(blob_image)
 
 
 class UserMugshot(BaseImageView):
-    expire_vary_arg = 'md5'
+    expire_vary_arg = "md5"
 
     def prepare_args(self, args, kwargs):
         args, kwargs = super(UserMugshot, self).prepare_args(args, kwargs)
 
-        user_id = kwargs['user_id']
-        user = User.query \
-            .options(sa.orm.undefer(User.photo)) \
-            .get(user_id)
+        user_id = kwargs["user_id"]
+        user = User.query.options(sa.orm.undefer(User.photo)).get(user_id)
 
         if user is None:
             raise NotFound()
 
-        kwargs['user'] = user
-        kwargs['image'] = user.photo
+        kwargs["user"] = user
+        kwargs["image"] = user.photo
         return args, kwargs
 
     def make_response(self, user, image, size, *args, **kwargs):
         if image:
             # user has set a photo
-            return super(UserMugshot, self) \
-                .make_response(image, size, *args, **kwargs)
+            return super(UserMugshot, self).make_response(image, size, *args, **kwargs)
 
         # render svg avatar
         if user.last_name:
@@ -201,47 +192,37 @@ class UserMugshot(BaseImageView):
             letter = "?"
         letter = letter.upper()
         # generate bg color, pastel: sat=65% in hsl color space
-        id_hash = hash((user.name + user.email).encode('utf-8'))
+        id_hash = hash((user.name + user.email).encode("utf-8"))
         hue = id_hash % 10
         hue = (hue * 36) / 360.0  # 10 colors: 360 / 10
         color = colorsys.hsv_to_rgb(hue, 0.65, 1.0)
         color = [int(x * 255) for x in color]
-        color = 'rgb({0[0]}, {0[1]}, {0[2]})'.format(color)
+        color = "rgb({0[0]}, {0[1]}, {0[2]})".format(color)
         svg = render_template(
-            'default/avatar.svg',
-            color=color,
-            letter=letter,
-            size=size,
+            "default/avatar.svg", color=color, letter=letter, size=size
         )
         response = make_response(svg)
-        self.content_type = 'image/svg+xml'
-        self.filename = 'avatar-{}.svg'.format(id_hash)
+        self.content_type = "image/svg+xml"
+        self.filename = "avatar-{}.svg".format(id_hash)
         return response
 
 
-user_photo = UserMugshot.as_view('user_photo', set_expire=True, max_size=500)
+user_photo = UserMugshot.as_view("user_photo", set_expire=True, max_size=500)
 route("/users/<int:user_id>")(user_photo)
-route('/users/default')(
-    StaticImageView.as_view(
-        'user_default',
-        set_expire=True,
-        image=DEFAULT_AVATAR,
-    )
+route("/users/default")(
+    StaticImageView.as_view("user_default", set_expire=True, image=DEFAULT_AVATAR)
 )
 
 
 def user_url_args(user, size):
-    endpoint = 'images.user_default'
-    kwargs = {'s': size, 'md5': DEFAULT_AVATAR_MD5}
+    endpoint = "images.user_default"
+    kwargs = {"s": size, "md5": DEFAULT_AVATAR_MD5}
 
     if not user.is_anonymous:
-        endpoint = 'images.user_photo'
-        kwargs['user_id'] = user.id
-        content = (
-            user.photo
-            if user.photo else (user.name + user.email).encode('utf-8')
-        )
-        kwargs['md5'] = hashlib.md5(content).hexdigest()
+        endpoint = "images.user_photo"
+        kwargs["user_id"] = user.id
+        content = user.photo if user.photo else (user.name + user.email).encode("utf-8")
+        kwargs["md5"] = hashlib.md5(content).hexdigest()
 
     return endpoint, kwargs
 

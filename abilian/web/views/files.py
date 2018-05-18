@@ -43,15 +43,14 @@ class BaseFileDownload(View):
 
         if self.set_expire:
             if not self.expire_offset:
-                raise ValueError('expire_offset is not set')
+                raise ValueError("expire_offset is not set")
             if not self.expire_vary_arg:
-                raise ValueError('expire_vary_arg is not set')
+                raise ValueError("expire_vary_arg is not set")
 
     def prepare_args(self, args, kwargs):
         if self.set_expire:
             vary_arg = kwargs.get(
-                self.expire_vary_arg,
-                request.args.get(self.expire_vary_arg),
+                self.expire_vary_arg, request.args.get(self.expire_vary_arg)
             )
             if vary_arg is None:
                 # Argument for timestamp, serial etc is missing.
@@ -59,17 +58,13 @@ class BaseFileDownload(View):
                 # to maybe 1 year from now.
                 # Check the code that has generated this url!
                 raise BadRequest(
-                    'File version marker is missing ({}=?)'.format(
-                        repr(self.expire_vary_arg),
+                    "File version marker is missing ({}=?)".format(
+                        repr(self.expire_vary_arg)
                     )
                 )
 
         args, kwargs = super(BaseFileDownload, self).prepare_args(args, kwargs)
-        kwargs['attach'] = request.args.get(
-            'attach',
-            self.as_attachment,
-            type=bool,
-        )
+        kwargs["attach"] = request.args.get("attach", self.as_attachment, type=bool)
         return args, kwargs
 
     def make_response(self, *args, **kwargs):
@@ -93,9 +88,9 @@ class BaseFileDownload(View):
         if attach:
             filename = self.get_filename(*args, **kwargs)
             if not filename:
-                filename = 'file.bin'
+                filename = "file.bin"
             headers = response.headers
-            headers.add('Content-Disposition', 'attachment', filename=filename)
+            headers.add("Content-Disposition", "attachment", filename=filename)
 
         self.set_cache_headers(response)
         return response
@@ -104,9 +99,7 @@ class BaseFileDownload(View):
         if self.set_expire:
             response.cache_control.public = False
             response.cache_control.private = True
-            response.cache_control.max_age = int(
-                self.expire_offset.total_seconds(),
-            )
+            response.cache_control.max_age = int(self.expire_offset.total_seconds())
             response.expires = utc_dt(datetime.utcnow() + self.expire_offset)
 
 
@@ -119,8 +112,8 @@ class BaseBlobDownload(BaseFileDownload):
         args, kwargs = super(BaseBlobDownload, self).prepare_args(args, kwargs)
         self.blob = self.get_blob(*args, **kwargs)
         metadata = self.blob.meta
-        self.filename = metadata.get('filename', self.obj.name)
-        self.content_type = metadata.get('mimetype')
+        self.filename = metadata.get("filename", self.obj.name)
+        self.content_type = metadata.get("mimetype")
         return args, kwargs
 
     def get_filename(self, *args, **kwargs):
@@ -131,11 +124,8 @@ class BaseBlobDownload(BaseFileDownload):
 
     def make_response(self, *args, **kwargs):
         blob = self.blob
-        stream = blob.file.open('rb')
+        stream = blob.file.open("rb")
 
         return send_file(
-            stream,
-            mimetype=self.content_type,
-            cache_timeout=0,
-            add_etags=False,
+            stream, mimetype=self.content_type, cache_timeout=0, add_etags=False
         )

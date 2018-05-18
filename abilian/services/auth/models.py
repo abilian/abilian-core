@@ -41,27 +41,26 @@ class LoginSessionQuery(BaseQuery):
 
         if user_agent is not _MARK:
             if user_agent is None:
-                user_agent = request.environ.get('HTTP_USER_AGENT', '')
+                user_agent = request.environ.get("HTTP_USER_AGENT", "")
             conditions.append(LoginSession.user_agent == user_agent)
 
         if ip_address is not _MARK:
             if ip_address is None:
                 ip_addresses = request.headers.getlist("X-Forwarded-For")
-                ip_address = ip_addresses[
-                    0
-                ] if ip_addresses else request.remote_addr
+                ip_address = ip_addresses[0] if ip_addresses else request.remote_addr
             conditions.append(LoginSession.ip_address == ip_address)
 
-        session = LoginSession.query \
-            .filter(*conditions) \
-            .order_by(LoginSession.id.desc()) \
+        session = (
+            LoginSession.query.filter(*conditions)
+            .order_by(LoginSession.id.desc())
             .first()
+        )
         return session
 
 
 class LoginSession(db.Model):
 
-    __tablename__ = 'login_session'
+    __tablename__ = "login_session"
     query_class = LoginSessionQuery
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -83,15 +82,13 @@ class LoginSession(db.Model):
 
     @staticmethod
     def new():
-        user_agent = request.environ.get('HTTP_USER_AGENT', '')
+        user_agent = request.environ.get("HTTP_USER_AGENT", "")
         forwared_for = request.headers.getlist("X-Forwarded-For")
         if not forwared_for:
             ip_address = request.remote_addr
         else:
             ip_address = forwared_for[0]
         session = LoginSession(
-            user=current_user,
-            user_agent=user_agent,
-            ip_address=ip_address,
+            user=current_user, user_agent=user_agent, ip_address=ip_address
         )
         return session

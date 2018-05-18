@@ -17,7 +17,7 @@ from abilian.web.util import url_for
 
 log = logging.getLogger(__name__)
 
-__all__ = ('Action', 'ModalActionMixin', 'actions')
+__all__ = ("Action", "ModalActionMixin", "actions")
 
 
 class Status(UniqueName):
@@ -25,11 +25,11 @@ class Status(UniqueName):
 
 
 #: default action status: show in UID, usable, not marked "current"
-ENABLED = Status('enabled')
+ENABLED = Status("enabled")
 #: action is "active" or "current". For example the current navigation item.
-ACTIVE = Status('active')
+ACTIVE = Status("active")
 #: action should be shown in a disabled state
-DISABLED = Status('disabled')
+DISABLED = Status("disabled")
 
 
 def getset(f):
@@ -70,7 +70,7 @@ class NamedIconBase(Icon):
     """Renders markup for named icons set."""
     template = None
 
-    def __init__(self, name=''):
+    def __init__(self, name=""):
         self.name = name
 
     def __html__(self):
@@ -94,10 +94,10 @@ class FAIconStacked(NamedIconBase):
         '{%- endif %}">\n'
         '  <i class="fa fa-{{ name }}"></i>\n'
         '  <i class="fa fa-{{ second }}"></i>\n'
-        '</span>',
+        "</span>"
     )
 
-    def __init__(self, name, second, stack=''):
+    def __init__(self, name, second, stack=""):
         """
         @param name: first icon name, support additional css classes.
 
@@ -106,10 +106,10 @@ class FAIconStacked(NamedIconBase):
 
         @param stack: additional class on top-level element, i.e 'fa-lg'.
         """
-        if 'fa-stack-' not in name:
-            name += ' fa-stack-1x'
-        if 'fa-stack-' not in second:
-            second += ' fa-stack-1x'
+        if "fa-stack-" not in name:
+            name += " fa-stack-1x"
+        if "fa-stack-" not in second:
+            second += " fa-stack-1x"
 
         super(FAIconStacked, self).__init__(name)
         self.second = second
@@ -117,9 +117,7 @@ class FAIconStacked(NamedIconBase):
 
     def __html__(self):
         return self.template.render(
-            name=self.name,
-            second=self.second,
-            stack_class=self.stack,
+            name=self.name, second=self.second, stack_class=self.stack
         )
 
 
@@ -127,7 +125,7 @@ class DynamicIcon(Icon):
     template = Template(
         '<img {%- if css %} class="{{ css }}"{% endif %} '
         'src="{{ url }}" '
-        'width="{{ width }}" height="{{ height }}" />',
+        'width="{{ width }}" height="{{ height }}" />'
     )
 
     def __init__(
@@ -135,7 +133,7 @@ class DynamicIcon(Icon):
         endpoint=None,
         width=12,
         height=12,
-        css='',
+        css="",
         size=None,
         url_args=None,
         **fixed_url_args
@@ -181,22 +179,10 @@ class StaticIcon(DynamicIcon):
     """
 
     def __init__(
-        self,
-        filename,
-        endpoint='static',
-        width=12,
-        height=12,
-        css='',
-        size=None,
+        self, filename, endpoint="static", width=12, height=12, css="", size=None
     ):
         DynamicIcon.__init__(
-            self,
-            endpoint,
-            width,
-            height,
-            css,
-            size,
-            filename=filename,
+            self, endpoint, width, height, css, size, filename=filename
         )
 
 
@@ -222,7 +208,7 @@ class Endpoint(object):
         return text_type(url_for(self.name, **self.get_kwargs()))
 
     def __repr__(self):
-        return '{cls}({name!r}, *{args!r}, **{kwargs!r})'.format(
+        return "{cls}({name!r}, *{args!r}, **{kwargs!r})".format(
             cls=self.__class__.__name__,
             name=self.name,
             args=self.args,
@@ -239,7 +225,7 @@ class Action(object):
     description = None
     icon = None
     _url = None
-    CSS_CLASS = 'action action-{category} action-{category}-{name}'
+    CSS_CLASS = "action action-{category} action-{category}-{name}"
 
     #: A :class:`Endpoint` instance, a string for a simple endpoint, a tuple
     #: ``(endpoint_name, kwargs)``  or a callable which accept a : context dict
@@ -252,9 +238,9 @@ class Action(object):
 
     template_string = (
         '<a class="{{ action.css_class }}" href="{{ url }}">'
-        '{%- if action.icon %}{{ action.icon }} {% endif %}'
-        '{{ action.title }}'
-        '</a>'
+        "{%- if action.icon %}{{ action.icon }} {% endif %}"
+        "{{ action.title }}"
+        "</a>"
     )
 
     def __init__(
@@ -288,9 +274,9 @@ class Action(object):
         self.name = name
 
         if button is not None:
-            self.CSS_CLASS += ' btn btn-{}'.format(button)
+            self.CSS_CLASS += " btn btn-{}".format(button)
         if css is not None:
-            self.CSS_CLASS = self.CSS_CLASS + ' ' + css
+            self.CSS_CLASS = self.CSS_CLASS + " " + css
         self._build_css_class()
 
         self._title = title
@@ -329,7 +315,7 @@ class Action(object):
         return enabled
 
     def _get_and_call(self, attr):
-        attr = '_' + attr
+        attr = "_" + attr
         value = getattr(self, attr)
         if callable(value):
             value = value(actions.context)
@@ -337,7 +323,7 @@ class Action(object):
 
     @property
     def title(self):
-        return self._get_and_call('title')
+        return self._get_and_call("title")
 
     @title.setter
     def title(self, title):
@@ -345,16 +331,14 @@ class Action(object):
 
     def _build_css_class(self):
         css_cat = self.CSS_CLASS.format(
-            action=self,
-            category=self.category,
-            name=self.name,
+            action=self, category=self.category, name=self.name
         )
-        css_cat = re.sub(r'[^ _a-zA-Z0-9-]', '-', css_cat)
+        css_cat = re.sub(r"[^ _a-zA-Z0-9-]", "-", css_cat)
         self.css_class = css_cat
 
     @property
     def description(self):
-        return self._get_and_call('description')
+        return self._get_and_call("description")
 
     @description.setter
     def description(self, description):
@@ -362,7 +346,7 @@ class Action(object):
 
     @property
     def icon(self):
-        return self._get_and_call('icon')
+        return self._get_and_call("icon")
 
     @icon.setter
     def icon(self, icon):
@@ -370,7 +354,7 @@ class Action(object):
 
     @property
     def endpoint(self):
-        endpoint = self._get_and_call('endpoint')
+        endpoint = self._get_and_call("endpoint")
         if endpoint is None:
             return
 
@@ -385,7 +369,7 @@ class Action(object):
                 endpoint = self.Endpoint(endpoint, **kwargs)
             else:
                 raise ValueError(
-                    'Invalid endpoint specifier: "{}"'.format(repr(endpoint)),
+                    'Invalid endpoint specifier: "{}"'.format(repr(endpoint))
                 )
 
         return endpoint
@@ -404,9 +388,7 @@ class Action(object):
         if not self._enabled:
             return False
         try:
-            return self.pre_condition(context) and self._check_condition(
-                context,
-            )
+            return self.pre_condition(context) and self._check_condition(context)
         except BaseException:
             return False
 
@@ -444,8 +426,8 @@ class Action(object):
         params = dict(action=self)
         params.update(actions.context)
         params.update(kwargs)
-        params['csrf'] = csrf
-        params['url'] = self.url(params)
+        params["csrf"] = csrf
+        params["url"] = self.url(params)
         return params
 
     def url(self, context=None):
@@ -461,9 +443,9 @@ class Action(object):
 class ModalActionMixin(object):
     template_string = (
         '<a class="{{ action.css_class }}" href="{{ url }}" data-toggle="modal">'
-        '{%- if action.icon %}{{ action.icon}} {% endif %}'
-        '{{ action.title }}'
-        '</a>'
+        "{%- if action.icon %}{{ action.icon}} {% endif %}"
+        "{{ action.title }}"
+        "</a>"
     )
 
 
@@ -473,18 +455,18 @@ class ButtonAction(Action):
         'class="btn btn-{{ action.btn_class }} {{ action.css_class}}" '
         'name="{{ action.submit_name }}" '
         'value="{{ action.name }}">'
-        '{%- if action.icon %}{{ action.icon }} {% endif %}'
-        '{{ action.title }}</button>'
+        "{%- if action.icon %}{{ action.icon }} {% endif %}"
+        "{{ action.title }}</button>"
     )
 
-    btn_class = 'default'
+    btn_class = "default"
 
     def __init__(
         self,
         category,
         name,
         submit_name="__action",
-        btn_class='default',
+        btn_class="default",
         *args,
         **kwargs
     ):
@@ -497,10 +479,10 @@ class ActionGroup(Action):
     """A group of single actions."""
     template_string = (
         '<div class="btn-group" role="group" aria-label="{{ action.name}}">'
-        '{%- for entry in action_items %}'
-        '{{ entry.render() }}'
-        '{%- endfor %}'
-        '</div>'
+        "{%- for entry in action_items %}"
+        "{{ entry.render() }}"
+        "{%- endfor %}"
+        "</div>"
     )
 
     def __init__(self, category, name, items=(), *args, **kwargs):
@@ -509,13 +491,13 @@ class ActionGroup(Action):
 
     def get_render_args(self, **kwargs):
         params = super(ActionGroup, self).get_render_args(**kwargs)
-        params['action_items'] = [a for a in self.items if a.available(params)]
+        params["action_items"] = [a for a in self.items if a.available(params)]
         return params
 
 
 class ActionDropDown(ActionGroup):
     """Renders as a button dropdown."""
-    template_string = '''
+    template_string = """
     <div class="btn-group">
         <button type="button" class="{{ action.css_class }} dropdown-toggle"
                 data-toggle="dropdown" aria-expanded="false">
@@ -531,7 +513,7 @@ class ActionDropDown(ActionGroup):
         {%- endfor %}
         </ul>
     </div>
-    '''
+    """
 
 
 class ActionGroupItem(Action):
@@ -553,12 +535,12 @@ class ActionRegistry(object):
 
     The registry is available in jinja2 templates as `actions`.
     """
-    __EXTENSION_NAME = 'abilian:actions'
+    __EXTENSION_NAME = "abilian:actions"
 
     def init_app(self, app):
         if self.__EXTENSION_NAME in app.extensions:
             log.warning(
-                'ActionRegistry.init_app: actions already enabled on this application',
+                "ActionRegistry.init_app: actions already enabled on this application"
             )
             return
 
@@ -589,7 +571,7 @@ class ActionRegistry(object):
 
         for action in actions:
             cat = action.category
-            reg = self._state['categories'].setdefault(cat, [])
+            reg = self._state["categories"].setdefault(cat, [])
             reg.append(action)
 
     def actions(self, context=None):
@@ -605,7 +587,7 @@ class ActionRegistry(object):
         if context is None:
             context = self.context
 
-        for cat, actions in self._state['categories'].items():
+        for cat, actions in self._state["categories"].items():
             result[cat] = [a for a in actions if a.available(context)]
         return result
 
@@ -618,7 +600,7 @@ class ActionRegistry(object):
         (:attr:`context`)
         """
         assert self.installed(), "Actions not enabled on this application"
-        actions = self._state['categories'].get(category, [])
+        actions = self._state["categories"].get(category, [])
 
         if context is None:
             context = self.context

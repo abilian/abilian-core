@@ -30,58 +30,56 @@ from abilian.core.util import fqcn
 
 from .base import SEARCHABLE, SYSTEM, IdMixin, Indexable, TimestampedMixin, db
 
-__all__ = ['User', 'Group', 'Principal']
+__all__ = ["User", "Group", "Principal"]
 
 # Tables for many-to-many relationships
 following = Table(
-    'following',
+    "following",
     db.Model.metadata,
-    Column('follower_id', Integer, ForeignKey('user.id')),
-    Column('followee_id', Integer, ForeignKey('user.id')),
-    UniqueConstraint('follower_id', 'followee_id'),
+    Column("follower_id", Integer, ForeignKey("user.id")),
+    Column("followee_id", Integer, ForeignKey("user.id")),
+    UniqueConstraint("follower_id", "followee_id"),
 )
 
 membership = Table(
-    'membership',
+    "membership",
     db.Model.metadata,
     Column(
-        'user_id',
+        "user_id",
         Integer,
-        ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE'),
+        ForeignKey("user.id", onupdate="CASCADE", ondelete="CASCADE"),
     ),
     Column(
-        'group_id',
+        "group_id",
         Integer,
-        ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE'),
+        ForeignKey("group.id", onupdate="CASCADE", ondelete="CASCADE"),
     ),
-    UniqueConstraint('user_id', 'group_id'),
+    UniqueConstraint("user_id", "group_id"),
 )
 
 # Should not be needed (?)
 administratorship = Table(
-    'administratorship',
+    "administratorship",
     db.Model.metadata,
     Column(
-        'user_id',
+        "user_id",
         Integer,
-        ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE'),
+        ForeignKey("user.id", onupdate="CASCADE", ondelete="CASCADE"),
     ),
     Column(
-        'group_id',
+        "group_id",
         Integer,
-        ForeignKey('group.id', onupdate='CASCADE', ondelete='CASCADE'),
+        ForeignKey("group.id", onupdate="CASCADE", ondelete="CASCADE"),
     ),
-    UniqueConstraint('user_id', 'group_id'),
+    UniqueConstraint("user_id", "group_id"),
 )
 
-_RANDOM_PASSWORD_CHARS = (
-    string.ascii_letters + string.digits + string.punctuation
-)
+_RANDOM_PASSWORD_CHARS = string.ascii_letters + string.digits + string.punctuation
 
 
 def gen_random_password(length=15):
     rg = random.SystemRandom()
-    return ''.join(rg.choice(_RANDOM_PASSWORD_CHARS) for i in range(length))
+    return "".join(rg.choice(_RANDOM_PASSWORD_CHARS) for i in range(length))
 
 
 @add_metaclass(ABCMeta)
@@ -117,7 +115,7 @@ class ClearPasswordStrategy(PasswordStrategy):
 
     def process(self, user, password):
         if not isinstance(password, text_type):
-            password = password.decode('utf-8')
+            password = password.decode("utf-8")
         return password
 
 
@@ -126,22 +124,22 @@ class BcryptPasswordStrategy(PasswordStrategy):
 
     @property
     def name(self):
-        return 'bcrypt'
+        return "bcrypt"
 
     def authenticate(self, user, password):
         current_passwd = user.password
         # crypt work only on bytes, not str (Unicode)
         if isinstance(current_passwd, text_type):
-            current_passwd = current_passwd.encode('utf-8')
+            current_passwd = current_passwd.encode("utf-8")
         if isinstance(password, text_type):
-            password = password.encode('utf-8')
+            password = password.encode("utf-8")
 
         return bcrypt.hashpw(password, current_passwd) == current_passwd
 
     def process(self, user, password):
         if isinstance(password, text_type):
-            password = password.encode('utf-8')
-        return bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
+            password = password.encode("utf-8")
+        return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
 
 
 class UserQuery(db.Model.query_class):
@@ -155,17 +153,14 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
 
     __indexation_args__ = {}
     __indexation_args__.update(Indexable.__indexation_args__)
-    index_to = __indexation_args__.setdefault('index_to', ())
-    __indexation_args__['index_to'] += ((
-        'name',
-        ('name', 'name_prefix', 'text'),
-    ),)
+    index_to = __indexation_args__.setdefault("index_to", ())
+    __indexation_args__["index_to"] += (("name", ("name", "name_prefix", "text")),)
     del index_to
 
     def has_role(self, role, context=None):
         from abilian.services import get_service
 
-        security = get_service('security')
+        security = get_service("security")
         return security.has_role(self, role, context)
 
 
@@ -183,9 +178,9 @@ def set_entity_type(cls):
 @python_2_unicode_compatible
 @set_entity_type
 class User(Principal, UserMixin, db.Model):
-    __tablename__ = 'user'
-    __editable__ = ['first_name', 'last_name', 'email', 'password']
-    __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
+    __tablename__ = "user"
+    __editable__ = ["first_name", "last_name", "email", "password"]
+    __exportable__ = __editable__ + ["created_at", "updated_at", "id"]
 
     __password_strategy__ = BcryptPasswordStrategy()
 
@@ -199,11 +194,7 @@ class User(Principal, UserMixin, db.Model):
     # System information
     email = Column(UnicodeText, nullable=False)
     can_login = Column(Boolean, nullable=False, default=True)
-    password = Column(
-        UnicodeText,
-        default="*",
-        info={'audit_hide_content': True},
-    )
+    password = Column(UnicodeText, default="*", info={"audit_hide_content": True})
 
     photo = deferred(Column(LargeBinary))
 
@@ -211,14 +202,14 @@ class User(Principal, UserMixin, db.Model):
     locale = Column(sa_types.Locale, nullable=True, default=None)
     timezone = Column(sa_types.Timezone, nullable=True, default=None)
 
-    __table_args__ = (UniqueConstraint('email'),)
+    __table_args__ = (UniqueConstraint("email"),)
 
     followers = relationship(
         "User",
         secondary=following,
-        primaryjoin='User.id == following.c.follower_id',
-        secondaryjoin='User.id == following.c.followee_id',
-        backref='followees',
+        primaryjoin="User.id == following.c.follower_id",
+        secondaryjoin="User.id == following.c.followee_id",
+        backref="followees",
     )
 
     def __init__(self, password=None, **kwargs):
@@ -280,25 +271,24 @@ class User(Principal, UserMixin, db.Model):
     #
     @property
     def name(self):
-        name = '{first_name} {last_name}'.format(
-            first_name=self.first_name or '',
-            last_name=self.last_name or '',
+        name = "{first_name} {last_name}".format(
+            first_name=self.first_name or "", last_name=self.last_name or ""
         )
-        return name.strip() or 'Unknown'
+        return name.strip() or "Unknown"
 
     @property
     def short_name(self):
-        first_name = self.first_name or ''
-        last_name = self.last_name[0:1] + "." if self.last_name else ''
-        name = '{} {}'.format(first_name, last_name)
-        return name.strip() or 'Unknown'
+        first_name = self.first_name or ""
+        last_name = self.last_name[0:1] + "." if self.last_name else ""
+        name = "{} {}".format(first_name, last_name)
+        return name.strip() or "Unknown"
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
         cls = self.__class__
-        return '<{mod}.{cls} id={id!r} email={email!r} at 0x{addr:x}>'.format(
+        return "<{mod}.{cls} id={id!r} email={email!r} at 0x{addr:x}>".format(
             mod=cls.__module__,
             cls=cls.__name__,
             id=self.id,
@@ -314,19 +304,17 @@ def _add_user_indexes(mapper, class_):
     #
     # see: https://groups.google.com/d/msg/sqlalchemy/CgSJUlelhGs/_Nj3f201hs4J
     idx = sa.schema.Index(
-        'user_unique_lowercase_email',
-        sa.sql.func.lower(class_.email),
-        unique=True,
+        "user_unique_lowercase_email", sa.sql.func.lower(class_.email), unique=True
     )
-    idx.info['engines'] = ('postgresql',)
+    idx.info["engines"] = ("postgresql",)
 
 
 @set_entity_type
 class Group(Principal, db.Model):
     __indexable__ = False
-    __tablename__ = 'group'
-    __editable__ = ['name', 'description']
-    __exportable__ = __editable__ + ['created_at', 'updated_at', 'id']
+    __tablename__ = "group"
+    __editable__ = ["name", "description"]
+    __exportable__ = __editable__ + ["created_at", "updated_at", "id"]
 
     name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
     description = Column(UnicodeText, info=SEARCHABLE)
@@ -335,13 +323,9 @@ class Group(Principal, db.Model):
         "User",
         collection_class=set,
         secondary=membership,
-        backref=backref('groups', lazy='select', collection_class=set),
+        backref=backref("groups", lazy="select", collection_class=set),
     )
-    admins = relationship(
-        "User",
-        collection_class=set,
-        secondary=administratorship,
-    )
+    admins = relationship("User", collection_class=set, secondary=administratorship)
 
     photo = deferred(Column(LargeBinary))
 
@@ -353,8 +337,9 @@ class Group(Principal, db.Model):
 
     @members_count.expression
     def members_count(cls):
-        return sa.sql \
-            .select([sa.sql.func.count(membership.c.user_id)]) \
-            .where(membership.c.group_id == cls.id) \
-            .group_by(membership.c.group_id) \
-            .label('members_count')
+        return (
+            sa.sql.select([sa.sql.func.count(membership.c.user_id)])
+            .where(membership.c.group_id == cls.id)
+            .group_by(membership.c.group_id)
+            .label("members_count")
+        )

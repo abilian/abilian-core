@@ -11,8 +11,11 @@ from abilian.core.models.subjects import User
 from abilian.services import get_service
 
 __all__ = (
-    'stop_all_services', 'ensure_services_started', 'cleanup_db',
-    'client_login', 'login'
+    "stop_all_services",
+    "ensure_services_started",
+    "cleanup_db",
+    "client_login",
+    "login",
 )
 
 
@@ -23,11 +26,11 @@ def client_login(client, user):
 
         def __enter__(self):
             with client.session_transaction() as session:
-                session['user_id'] = user.id
+                session["user_id"] = user.id
 
         def __exit__(self, type, value, traceback):
             with client.session_transaction() as session:
-                del session['user_id']
+                del session["user_id"]
 
     return LoginContext()
 
@@ -47,7 +50,7 @@ def login(user, remember=False, force=False):
     # self._login_tests_sanity_check()
     success = login_user(user, remember=remember, force=force)
     if not success:
-        raise ValueError('User is not active, cannot login; or use force=True',)
+        raise ValueError("User is not active, cannot login; or use force=True")
 
     class LoginContext(object):
 

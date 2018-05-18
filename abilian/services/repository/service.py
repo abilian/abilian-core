@@ -24,7 +24,7 @@ _NULL_MARK = object()
 
 def _assert_uuid(uuid):
     if not isinstance(uuid, UUID):
-        raise ValueError('Not an uuid.UUID instance', uuid)
+        raise ValueError("Not an uuid.UUID instance", uuid)
 
 
 class RepositoryServiceState(ServiceState):
@@ -34,13 +34,13 @@ class RepositoryServiceState(ServiceState):
 
 class RepositoryService(Service):
     """Service for storage of binary objects referenced in database."""
-    name = 'repository'
+    name = "repository"
     AppStateClass = RepositoryServiceState
 
     def init_app(self, app):
         Service.init_app(self, app)
 
-        path = app.DATA_DIR / 'files'
+        path = app.DATA_DIR / "files"
         if not path.exists():
             path.mkdir(mode=0o775, parents=True)
 
@@ -83,7 +83,7 @@ class RepositoryService(Service):
             return default
         return path
 
-    def set(self, uuid, content, encoding='utf-8'):
+    def set(self, uuid, content, encoding="utf-8"):
         # type: (UUID, Any, Optional[Text]) -> None
         """Store binary content with uuid as key.
 
@@ -95,12 +95,12 @@ class RepositoryService(Service):
         if not dest.parent.exists():
             dest.parent.mkdir(0o775, parents=True)
 
-        if hasattr(content, 'read'):
+        if hasattr(content, "read"):
             content = content.read()
 
-        mode = 'tw'
+        mode = "tw"
         if not isinstance(content, text_type):
-            mode = 'bw'
+            mode = "bw"
             encoding = None
 
         with dest.open(mode, encoding=encoding) as f:
@@ -115,7 +115,7 @@ class RepositoryService(Service):
         """
         dest = self.abs_path(uuid)
         if not dest.exists():
-            raise KeyError('No file can be found for this uuid', uuid)
+            raise KeyError("No file can be found for this uuid", uuid)
 
         dest.unlink()
 
@@ -123,7 +123,7 @@ class RepositoryService(Service):
         # type: (UUID) -> Any
         value = self.get(uuid, default=None)
         if value is None:
-            raise KeyError('No file can be found for this uuid', uuid)
+            raise KeyError("No file can be found for this uuid", uuid)
         return value
 
     def __setitem__(self, uuid, content):
@@ -137,7 +137,7 @@ class RepositoryService(Service):
 
 repository = RepositoryService()
 
-_REPOSITORY_TRANSACTION = 'abilian_repository_transactions'
+_REPOSITORY_TRANSACTION = "abilian_repository_transactions"
 
 
 class SessionRepositoryState(ServiceState):
@@ -156,7 +156,7 @@ class SessionRepositoryState(ServiceState):
     def transactions(self, value):
         top = _app_ctx_stack.top
         if top is None:
-            raise RuntimeError('working outside of application context')
+            raise RuntimeError("working outside of application context")
 
         setattr(top, _REPOSITORY_TRANSACTION, value)
 
@@ -257,7 +257,7 @@ class SessionRepositoryService(Service):
 
     All content is stored using the main :class:`RepositoryService`.
     """
-    name = 'session_repository'
+    name = "session_repository"
     AppStateClass = SessionRepositoryState
 
     def __init__(self, *args, **kwargs):
@@ -267,7 +267,7 @@ class SessionRepositoryService(Service):
     def init_app(self, app):
         Service.init_app(self, app)
 
-        path = Path(app.instance_path, 'tmp', 'files_transactions')
+        path = Path(app.instance_path, "tmp", "files_transactions")
         if not path.exists():
             path.mkdir(0o775, parents=True)
 
@@ -327,7 +327,7 @@ class SessionRepositoryService(Service):
 
         return val
 
-    def set(self, session, uuid, content, encoding='utf-8'):
+    def set(self, session, uuid, content, encoding="utf-8"):
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         transaction.set(uuid, content, encoding)
@@ -435,7 +435,7 @@ class RepositoryTransaction(object):
 
         for uuid in self._set:
             content = self.path / str(uuid)
-            repository.set(uuid, content.open('rb'))
+            repository.set(uuid, content.open("rb"))
 
     def _commit_parent(self):
         p = self._parent
@@ -467,19 +467,19 @@ class RepositoryTransaction(object):
         # type: (UUID) -> None
         self._add_to(uuid, self._deleted, self._set)
 
-    def set(self, uuid, content, encoding='utf-8'):
+    def set(self, uuid, content, encoding="utf-8"):
         # type: (UUID, Any, Optional[Text]) -> None
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 
-        if hasattr(content, 'read'):
+        if hasattr(content, "read"):
             content = content.read()
 
         if isinstance(content, bytes):
-            mode = 'wb'
+            mode = "wb"
             encoding = None
         else:
-            mode = 'wt'
+            mode = "wt"
 
         dest = self.path / str(uuid)
         with dest.open(mode, encoding=encoding) as f:

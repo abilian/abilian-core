@@ -18,7 +18,7 @@ from .forms import TagsField
 from .views import bp as tags_bp
 from .views import entity_bp
 
-ENTITY_DEFAULT_NS_ATTR = '__tags_default_ns__'
+ENTITY_DEFAULT_NS_ATTR = "__tags_default_ns__"
 
 
 def ns(ns):
@@ -58,8 +58,8 @@ class TagsExtension(object):
     """
 
     def __init__(self, app):
-        app.extensions['tags'] = self
-        app.add_template_global(self, 'tags')
+        app.extensions["tags"] = self
+        app.add_template_global(self, "tags")
         app.register_blueprint(tags_bp)
         app.register_blueprint(entity_bp)
 
@@ -95,18 +95,18 @@ class TagsExtension(object):
         return Tag.query.filter(Tag.id.in_(ids)).all()
 
     def entity_default_ns(self, entity):
-        return getattr(entity, ENTITY_DEFAULT_NS_ATTR, 'default')
+        return getattr(entity, ENTITY_DEFAULT_NS_ATTR, "default")
 
     def entity_tags_form(self, entity, ns=None):
         """Construct a form class with a field for tags in namespace `ns`."""
         if ns is None:
             ns = self.entity_default_ns(entity)
 
-        field = TagsField(label=_l('Tags'), ns=ns)
+        field = TagsField(label=_l("Tags"), ns=ns)
         if six.PY2:
-            cls = type(b'EntityNSTagsForm', (_TagsForm,), {b'tags': field})
+            cls = type(b"EntityNSTagsForm", (_TagsForm,), {b"tags": field})
         else:
-            cls = type('EntityNSTagsForm', (_TagsForm,), {'tags': field})
+            cls = type("EntityNSTagsForm", (_TagsForm,), {"tags": field})
         return cls
 
     def get(self, ns, label=None):
@@ -152,7 +152,7 @@ class TagsExtension(object):
         Used by macro m_tags_form(entity)
         """
         return {
-            'url': url_for('entity_tags.edit', object_id=obj.id),
-            'form': self.entity_tags_form(obj)(obj=obj, ns=ns),
-            'buttons': [EDIT_BUTTON],
+            "url": url_for("entity_tags.edit", object_id=obj.id),
+            "form": self.entity_tags_form(obj)(obj=obj, ns=ns),
+            "buttons": [EDIT_BUTTON],
         }

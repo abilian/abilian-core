@@ -23,13 +23,13 @@ components_registered = signals.signal("app:components:registered")
 
 #: Trigger when JS api must be registered. At this time :func:`flask.url_for` is
 #: usable
-register_js_api = signals.signal('app:register-js-api')
+register_js_api = signals.signal("app:register-js-api")
 
 #: This signal is used by the activity streams service and its clients.
 activity = signals.signal("activity")
 
 #: This signal is sent when user object has been loaded. g.user and current_user
 #: are available.
-user_loaded = signals.signal('user_loaded')
+user_loaded = signals.signal("user_loaded")
 
-auth_failed = signals.signal('auth_failed')
+auth_failed = signals.signal("auth_failed")

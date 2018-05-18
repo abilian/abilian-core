@@ -24,7 +24,7 @@ from abilian.core.models.subjects import ClearPasswordStrategy, User
 
 from .validation import assert_valid
 
-__all__ = ('TestConfig', 'BaseTestCase')
+__all__ = ("TestConfig", "BaseTestCase")
 
 _CLEAR_PWD = ClearPasswordStrategy()
 _DEFAULT_PWD = User.__password_strategy__
@@ -49,9 +49,9 @@ class TestConfig(object):
     The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be
     set to easily test against different databases.
     """
-    SITE_NAME = 'Abilian Test'
+    SITE_NAME = "Abilian Test"
     SQLALCHEMY_DATABASE_URI = "sqlite://"
-    SERVER_NAME = 'localhost'  # needed for url_for with '_external=True'
+    SERVER_NAME = "localhost"  # needed for url_for with '_external=True'
     SQLALCHEMY_ECHO = False
     TESTING = True
     SECRET_KEY = "SECRET"
@@ -65,10 +65,10 @@ class TestConfig(object):
     CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
-    MAIL_SENDER = 'test@testcase.app.tld'
+    MAIL_SENDER = "test@testcase.app.tld"
 
-    BABEL_ACCEPT_LANGUAGES = ['en', 'fr']
-    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_ACCEPT_LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
 
     # It's a good idea to test with a timezone that's not your system timezone
     # nor UTC. It can reveal problem with date handling within app
@@ -77,10 +77,10 @@ class TestConfig(object):
     # For example this one is GMT+8 and has no DST (tests should pass any time
     # in year).
     # BABEL_DEFAULT_TIMEZONE = 'Asia/Hong_Kong'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'  # this is flask-babel default
+    BABEL_DEFAULT_TIMEZONE = "UTC"  # this is flask-babel default
 
     def __init__(self):
-        db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
+        db_uri = os.environ.get("SQLALCHEMY_DATABASE_URI")
         if db_uri:
             self.SQLALCHEMY_DATABASE_URI = db_uri
 
@@ -145,17 +145,14 @@ class BaseTestCase(TestCase):
                 cls.SERVICES = tuple(cls.SERVICES)
 
         tmp_dir = Path(
-            tempfile.mkdtemp(
-                prefix='tmp-py-unittest-',
-                suffix='-' + cls.__name__,
-            ),
+            tempfile.mkdtemp(prefix="tmp-py-unittest-", suffix="-" + cls.__name__)
         )
         cls.TEST_INSTANCE_PATH = str(tmp_dir)
-        for p in (tmp_dir / 'tmp', tmp_dir / 'cache', tmp_dir / 'data'):
+        for p in (tmp_dir / "tmp", tmp_dir / "cache", tmp_dir / "data"):
             p.mkdir()
 
         # sa_warn = 'error' if cls.SQLALCHEMY_WARNINGS_AS_ERROR else 'default'
-        sa_warn = 'default'  # FIXME
+        sa_warn = "default"  # FIXME
         warnings.simplefilter(sa_warn, SAWarning)
 
     @classmethod
@@ -163,7 +160,7 @@ class BaseTestCase(TestCase):
         if cls.TEST_INSTANCE_PATH:
             tmp_dir = Path(cls.TEST_INSTANCE_PATH)
             basename = tmp_dir.name
-            if tmp_dir.is_dir() and basename.startswith('tmp-py-unittest'):
+            if tmp_dir.is_dir() and basename.startswith("tmp-py-unittest"):
                 shutil.rmtree(cls.TEST_INSTANCE_PATH)
                 cls.TEST_INSTANCE_PATH = None
 
@@ -179,46 +176,43 @@ class BaseTestCase(TestCase):
     def create_app(self):
         config = self.get_setup_config()
         self.app = self.application_class(
-            config=config,
-            instance_path=self.TEST_INSTANCE_PATH,
+            config=config, instance_path=self.TEST_INSTANCE_PATH
         )
         return self.app
 
     def setUp(self):
-        User.__password_strategy__ = _CLEAR_PWD if self.CLEAR_PASSWORDS else _DEFAULT_PWD
+        User.__password_strategy__ = (
+            _CLEAR_PWD if self.CLEAR_PASSWORDS else _DEFAULT_PWD
+        )
 
         if not self.TESTING_BUILD_ASSETS:
             extensions = self.app.jinja_env.extensions
-            assets_ext = extensions['webassets.ext.jinja2.AssetsExtension']
+            assets_ext = extensions["webassets.ext.jinja2.AssetsExtension"]
             assets_ext.BundleClass = NullBundle
 
         # session_repository must be started before session is created,
         # as it must receive all transactions events.
         # It also requires 'repository'.
-        self.app.services['repository'].start()
-        self.app.services['session_repository'].start()
+        self.app.services["repository"].start()
+        self.app.services["session_repository"].start()
         self.session = self.db.session()
 
-        if self.db.engine.name == 'postgresql':
+        if self.db.engine.name == "postgresql":
             # ensure we are on a clean DB: let's use our own schema
-            self.__pg_schema = 'test_{}'.format(str(time()).replace('.', '_'))
+            self.__pg_schema = "test_{}".format(str(time()).replace(".", "_"))
             username = self.db.engine.url.username or getpass.getuser()
             with self.db.engine.connect() as conn:
                 with conn.begin():
                     conn.execute(
-                        'DROP SCHEMA IF EXISTS {} CASCADE'.format(
-                            self.__pg_schema,
-                        )
+                        "DROP SCHEMA IF EXISTS {} CASCADE".format(self.__pg_schema)
                     )
-                    conn.execute('CREATE SCHEMA {}'.format(self.__pg_schema))
+                    conn.execute("CREATE SCHEMA {}".format(self.__pg_schema))
+                    conn.execute("SET search_path TO {}".format(self.__pg_schema))
                     conn.execute(
-                        'SET search_path TO {}'.format(self.__pg_schema,),
+                        "ALTER ROLE {username} SET search_path TO {schema}"
+                        "".format(username=username, schema=self.__pg_schema)
                     )
-                    conn.execute(
-                        'ALTER ROLE {username} SET search_path TO {schema}'
-                        ''.format(username=username, schema=self.__pg_schema),
-                    )
-                conn.execute('COMMIT')
+                conn.execute("COMMIT")
 
         self.app.create_db()
 
@@ -230,24 +224,22 @@ class BaseTestCase(TestCase):
         self.db.session.remove()
 
         with self.db.engine.connect() as conn:
-            if self.db.engine.name == 'postgresql':
+            if self.db.engine.name == "postgresql":
                 username = self.db.engine.url.username or getpass.getuser()
                 with self.db.engine.connect() as conn2:
                     with conn2.begin():
                         conn2.execute(
-                            'ALTER ROLE {username} SET search_path TO public'
-                            ''.format(username=username),
+                            "ALTER ROLE {username} SET search_path TO public"
+                            "".format(username=username)
                         )
-                        conn2.execute('SET search_path TO public')
+                        conn2.execute("SET search_path TO public")
                         conn2.execute(
-                            'DROP SCHEMA IF EXISTS {} CASCADE'.format(
-                                self.__pg_schema,
-                            )
+                            "DROP SCHEMA IF EXISTS {} CASCADE".format(self.__pg_schema)
                         )
-                    conn2.execute('COMMIT')
+                    conn2.execute("COMMIT")
                 del self.__pg_schema
             else:
-                if self.db.engine.name == 'sqlite':
+                if self.db.engine.name == "sqlite":
                     # core.extension.sqlalchemy performs a
                     # 'PRAGMA foreign_keys=ON' on a connection listener.
                     #
@@ -258,15 +250,15 @@ class BaseTestCase(TestCase):
                 self.db.metadata.drop_all(bind=conn)
 
         self.db.engine.dispose()
-        self.app.services['session_repository'].stop()
-        self.app.services['repository'].stop()
+        self.app.services["session_repository"].stop()
+        self.app.services["repository"].stop()
 
         User.__password_strategy__ = _DEFAULT_PWD
 
         self._reset_babel_extension()
 
     def _reset_babel_extension(self):
-        babel = self.app.extensions['babel']
+        babel = self.app.extensions["babel"]
         babel.locale_selector_func = None
         babel.timezone_selector_func = None
 
@@ -285,16 +277,15 @@ class BaseTestCase(TestCase):
     def _login_tests_sanity_check(self):
         """For login methods: perform checks to avoid using login methods
         whereas application will not perform auth or security checks."""
-        if self.app.config.get('NO_LOGIN'):
+        if self.app.config.get("NO_LOGIN"):
             raise RuntimeError(
-                'login is useless when "NO_LOGIN" is set. '
-                'Fix testcase.',
+                'login is useless when "NO_LOGIN" is set. ' "Fix testcase."
             )
 
-        if not self.app.services['security'].running:
+        if not self.app.services["security"].running:
             raise RuntimeError(
-                'trying to use login in test but security service is '
-                'not running. Fix testcase.',
+                "trying to use login in test but security service is "
+                "not running. Fix testcase."
             )
 
     def login(self, user, remember=False, force=False):
@@ -312,9 +303,7 @@ class BaseTestCase(TestCase):
         self._login_tests_sanity_check()
         success = login_user(user, remember=remember, force=force)
         if not success:
-            raise ValueError(
-                'User is not active, cannot login; or use force=True',
-            )
+            raise ValueError("User is not active, cannot login; or use force=True")
 
         class LoginContext(object):
 
@@ -353,11 +342,7 @@ class BaseTestCase(TestCase):
         self._login_tests_sanity_check()
 
         r = self.client.post(
-            url_for('login.login_post'),
-            data={
-                'email': email,
-                'password': password,
-            },
+            url_for("login.login_post"), data={"email": email, "password": password}
         )
         assert r.status_code == 302
 
@@ -376,12 +361,12 @@ class BaseTestCase(TestCase):
 
     def client_logout(self):
         """Like :meth:`logout` but with a web logout."""
-        self.client.post(url_for('login.logout'))
+        self.client.post(url_for("login.logout"))
 
     @property
     def db(self):
         """Shortcut to the application db object."""
-        return self.app.extensions['sqlalchemy'].db
+        return self.app.extensions["sqlalchemy"].db
 
     @deprecated
     def assert_302(self, response):

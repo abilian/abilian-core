@@ -32,11 +32,11 @@ class View(BaseView):
         meth = getattr(self, request.method.lower(), None)
         # if the request method is HEAD and we don't have a handler for it
         # retry with GET
-        if meth is None and request.method == 'HEAD':
-            meth = getattr(self, 'get', None)
-            assert meth is not None, 'Unimplemented method %r' % request.method
+        if meth is None and request.method == "HEAD":
+            meth = getattr(self, "get", None)
+            assert meth is not None, "Unimplemented method %r" % request.method
 
-        g.view = actions.context['view'] = self
+        g.view = actions.context["view"] = self
         try:
             args, kwargs = self.prepare_args(args, kwargs)
             return meth(*args, **kwargs)
@@ -60,7 +60,7 @@ class View(BaseView):
         raise Redirect(response=redirect(url))
 
 
-_JSON_HTML = '''
+_JSON_HTML = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,7 +81,7 @@ _JSON_HTML = '''
   <script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>
-'''
+"""
 
 
 class JSONView(View):
@@ -102,9 +102,9 @@ class JSONView(View):
     def get(self, *args, **kwargs):
         data = self.data(*args, **kwargs)
         best_mime = request.accept_mimetypes.best_match(
-            ['text/html', 'application/json'],
+            ["text/html", "application/json"]
         )
-        if best_mime == 'application/json':
+        if best_mime == "application/json":
             return jsonify(data)
 
         # dev requesting from browser? serve html, let debugtoolbar show up,

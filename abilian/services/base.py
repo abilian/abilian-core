@@ -38,7 +38,7 @@ class Service(object):
 
     def __init__(self, app=None):
         if self.name is None:
-            msg = 'Service must have a name ({})'.format(fqcn(self.__class__))
+            msg = "Service must have a name ({})".format(fqcn(self.__class__))
             raise ValueError(msg)
 
         self.logger = logging.getLogger(fqcn(self.__class__))
@@ -51,12 +51,12 @@ class Service(object):
 
     def start(self, ignore_state=False):
         """Starts the service."""
-        self.logger.debug('Start service')
+        self.logger.debug("Start service")
         self._toggle_running(True, ignore_state)
 
     def stop(self, ignore_state=False):
         """Stops the service."""
-        self.logger.debug('Stop service')
+        self.logger.debug("Stop service")
         self._toggle_running(False, ignore_state)
 
     def _toggle_running(self, run_state, ignore_state=False):

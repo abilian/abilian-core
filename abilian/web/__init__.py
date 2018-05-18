@@ -5,4 +5,4 @@ from __future__ import absolute_import, division, print_function
 
 from .util import url_for
 
-__all__ = ['url_for']
+__all__ = ["url_for"]

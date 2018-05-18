@@ -38,16 +38,16 @@ from .util import babel2datetime
 from .widgets import DateInput, DateTimeInput, FileInput, Select2, Select2Ajax
 
 __all__ = [
-    'ModelFieldList',
-    'FileField',
-    'DateField',
-    'DateTimeField',
-    'Select2Field',
-    'Select2MultipleField',
-    'QuerySelect2Field',
-    'JsonSelect2Field',
-    'JsonSelect2MultipleField',
-    'FormField',
+    "ModelFieldList",
+    "FileField",
+    "DateField",
+    "DateTimeField",
+    "Select2Field",
+    "Select2MultipleField",
+    "QuerySelect2Field",
+    "JsonSelect2Field",
+    "JsonSelect2MultipleField",
+    "FormField",
 ]
 
 
@@ -58,8 +58,8 @@ class FormField(BaseFormField):
         super(FormField, self).process(*args, **kwargs)
         if isinstance(self.form, SecureForm):
             # don't create errors because of subtoken
-            self._subform_csrf = self.form['csrf_token']
-            del self.form['csrf_token']
+            self._subform_csrf = self.form["csrf_token"]
+            del self.form["csrf_token"]
 
     @property
     def data(self):
@@ -68,9 +68,9 @@ class FormField(BaseFormField):
 
         # SecureForm will try to pop 'csrf_token', but we removed it during
         # process
-        self.form._fields['csrf_token'] = self._subform_csrf
+        self.form._fields["csrf_token"] = self._subform_csrf
         data = self.form.data
-        del self.form['csrf_token']
+        del self.form["csrf_token"]
         return data
 
 
@@ -100,10 +100,7 @@ class FilterFieldListMixin(object):
             # 3) by setting raw_data optional() does not reset the errors dict
             # -> subfields errors are propagated
             self.raw_data = [True]
-        return super(FilterFieldListMixin, self).validate(
-            form,
-            extra_validators,
-        )
+        return super(FilterFieldListMixin, self).validate(form, extra_validators)
 
 
 class FieldList(FilterFieldListMixin, BaseFieldList):
@@ -120,11 +117,7 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
         # instanciation so as to have permission filtering
         field_names = []
         labels = []
-        fieldsubform = self.unbound_field.bind(
-            form=None,
-            name='dummy',
-            _meta=self.meta,
-        )
+        fieldsubform = self.unbound_field.bind(form=None, name="dummy", _meta=self.meta)
         subform = fieldsubform.form_class(csrf_enabled=False)
         for f in subform:
             if f.is_hidden:
@@ -135,9 +128,7 @@ class ModelFieldList(FilterFieldListMixin, BaseModelFieldList):
 
         self._field_names = field_names
         self._field_labels = labels
-        self._field_nameTolabel = dict(
-            zip(self._field_names, self._field_labels),
-        )
+        self._field_nameTolabel = dict(zip(self._field_names, self._field_labels))
 
     def __call__(self, **kwargs):
         """Refill with default min_entry, which were possibly removed by
@@ -163,17 +154,17 @@ class FileField(BaseFileField):
     multiple = False
     widget = FileInput()
     blob = None
-    blob_attr = 'value'
+    blob_attr = "value"
 
     def __init__(self, *args, **kwargs):
         try:
-            self.multiple = kwargs.pop('multiple')
+            self.multiple = kwargs.pop("multiple")
         except KeyError:
             self.multiple = False
 
-        self.blob_attr = kwargs.pop('blob_attr', self.__class__.blob_attr)
-        allow_delete = kwargs.pop('allow_delete', None)
-        validators = list(kwargs.get('validators', []))
+        self.blob_attr = kwargs.pop("blob_attr", self.__class__.blob_attr)
+        allow_delete = kwargs.pop("allow_delete", None)
+        validators = list(kwargs.get("validators", []))
         self.upload_handles = []
         self.delete_files_index = []
         self._has_uploads = False
@@ -186,14 +177,13 @@ class FileField(BaseFileField):
                 raise ValueError(
                     "Field validators are conflicting with `allow_delete`,"
                     "validators={!r}, allow_delete={!r}".format(
-                        validators,
-                        allow_delete,
-                    ),
+                        validators, allow_delete
+                    )
                 )
             if not allow_delete:
                 validators.append(DataRequired())
 
-        kwargs['validators'] = validators
+        kwargs["validators"] = validators
         BaseFileField.__init__(self, *args, **kwargs)
 
     @property
@@ -205,18 +195,17 @@ class FileField(BaseFileField):
         return not self.flags.required
 
     def __call__(self, **kwargs):
-        if 'multiple' not in kwargs and self.multiple:
-            kwargs['multiple'] = 'multiple'
+        if "multiple" not in kwargs and self.multiple:
+            kwargs["multiple"] = "multiple"
         return BaseFileField.__call__(self, **kwargs)
 
     def has_file(self):
         return self._has_uploads
 
     def process(self, formdata, *args, **kwargs):
-        delete_arg = '__{name}_delete__'.format(name=self.name)
+        delete_arg = "__{name}_delete__".format(name=self.name)
         self.delete_files_index = (
-            formdata.getlist(delete_arg)
-            if formdata and delete_arg in formdata else []
+            formdata.getlist(delete_arg) if formdata and delete_arg in formdata else []
         )
 
         return super(FileField, self).process(formdata, *args, **kwargs)
@@ -230,7 +219,7 @@ class FileField(BaseFileField):
         return super(FileField, self).process_data(value)
 
     def process_formdata(self, valuelist):
-        uploads = current_app.extensions['uploads']
+        uploads = current_app.extensions["uploads"]
         if self.delete_files_index:
             self.data = None
             return
@@ -242,14 +231,12 @@ class FileField(BaseFileField):
 
             if fileobj is None:
                 # FIXME: this is a validation task
-                raise ValueError(
-                    'File with handle {!r} not found'.format(handle),
-                )
+                raise ValueError("File with handle {!r} not found".format(handle))
 
             meta = uploads.get_metadata(current_user, handle)
-            filename = meta.get('filename', handle)
-            mimetype = meta.get('mimetype')
-            stream = fileobj.open('rb')
+            filename = meta.get("filename", handle)
+            mimetype = meta.get("mimetype")
+            stream = fileobj.open("rb")
             stream.filename = filename
             if mimetype:
                 stream.content_type = mimetype
@@ -260,6 +247,7 @@ class FileField(BaseFileField):
     def populate_obj(self, obj, name):
         """Store file."""
         from abilian.core.models.blob import Blob
+
         delete_value = self.allow_delete and self.delete_files_index
 
         if not self.has_file() and not delete_value:
@@ -274,9 +262,7 @@ class FileField(BaseFileField):
 
         rel = getattr(mapper.relationships, name)
         if rel.uselist:
-            raise ValueError(
-                "Only single target supported; else use ModelFieldList",
-            )
+            raise ValueError("Only single target supported; else use ModelFieldList")
 
         if delete_value:
             setattr(obj, name, None)
@@ -290,7 +276,7 @@ class FileField(BaseFileField):
             val = cls()
             setattr(obj, name, val)
 
-        data = ''
+        data = ""
         if self.has_file():
             data = self.data
             if not issubclass(cls, Blob):
@@ -308,32 +294,30 @@ class DateTimeField(Field):
         timezone; different users with different timezones will see corrected
         date/time. For storage dates are always stored using UTC.
         """
-        self.raw_data = kwargs.pop('raw_data', None)
+        self.raw_data = kwargs.pop("raw_data", None)
         super(DateTimeField, self).__init__(label, validators, **kwargs)
         self.use_naive = use_naive
 
     def _value(self):
         if self.raw_data:
-            return ' '.join(self.raw_data)
+            return " ".join(self.raw_data)
         else:
             locale = get_locale()
-            date_fmt = locale.date_formats['short'].pattern
+            date_fmt = locale.date_formats["short"].pattern
             # force numerical months and 4 digit years
-            date_fmt = date_fmt \
-                .replace('MMMM', 'MM') \
-                .replace('MMM', 'MM') \
-                .replace('yyyy', 'y') \
-                .replace('yy', 'y') \
-                .replace('y', 'yyyy')
-            time_fmt = locale.time_formats['short']
+            date_fmt = (
+                date_fmt.replace("MMMM", "MM")
+                .replace("MMM", "MM")
+                .replace("yyyy", "y")
+                .replace("yy", "y")
+                .replace("y", "yyyy")
+            )
+            time_fmt = locale.time_formats["short"]
             # Workaround bug in Babel (at least <= 2.4) under Python 3
             if not PY2:
                 time_fmt = time_fmt.pattern
-            dt_fmt = locale.datetime_formats['short'].format(
-                time_fmt,
-                date_fmt,
-            )
-            return format_datetime(self.data, dt_fmt) if self.data else ''
+            dt_fmt = locale.datetime_formats["short"].format(time_fmt, date_fmt)
+            return format_datetime(self.data, dt_fmt) if self.data else ""
 
     def process_data(self, value):
         if value is not None:
@@ -349,16 +333,16 @@ class DateTimeField(Field):
 
     def process_formdata(self, valuelist):
         if valuelist:
-            date_str = ' '.join(valuelist)
+            date_str = " ".join(valuelist)
             locale = get_locale()
-            date_fmt = locale.date_formats['short']
+            date_fmt = locale.date_formats["short"]
             date_fmt = babel2datetime(date_fmt)
-            date_fmt = date_fmt \
-                .replace('%B', '%m') \
-                .replace('%b', '%m')  # force numerical months
-            time_fmt = locale.time_formats['short']
+            date_fmt = date_fmt.replace("%B", "%m").replace(
+                "%b", "%m"
+            )  # force numerical months
+            time_fmt = locale.time_formats["short"]
             time_fmt = babel2datetime(time_fmt)
-            datetime_fmt = '{} | {}'.format(date_fmt, time_fmt)
+            datetime_fmt = "{} | {}".format(date_fmt, time_fmt)
             try:
                 self.data = datetime.datetime.strptime(date_str, datetime_fmt)
                 if not self.use_naive:
@@ -372,7 +356,7 @@ class DateTimeField(Field):
                 self.data = utc_dt(self.data)
             except ValueError:
                 self.data = None
-                raise ValueError(self.gettext('Not a valid datetime value'))
+                raise ValueError(self.gettext("Not a valid datetime value"))
 
     def populate_obj(self, obj, name):
         dt = self.data
@@ -391,35 +375,34 @@ class DateField(Field):
 
     def _value(self):
         if self.raw_data:
-            return ' '.join(self.raw_data)
+            return " ".join(self.raw_data)
         else:
-            date_fmt = get_locale().date_formats['short'].pattern
+            date_fmt = get_locale().date_formats["short"].pattern
             # force numerical months and 4 digit years
-            date_fmt = date_fmt \
-                .replace('MMMM', 'MM') \
-                .replace('MMM', 'MM') \
-                .replace('yyyy', 'y') \
-                .replace('yy', 'y') \
-                .replace('y', 'yyyy')
-            return format_date(self.data, date_fmt) if self.data else ''
+            date_fmt = (
+                date_fmt.replace("MMMM", "MM")
+                .replace("MMM", "MM")
+                .replace("yyyy", "y")
+                .replace("yy", "y")
+                .replace("y", "yyyy")
+            )
+            return format_date(self.data, date_fmt) if self.data else ""
 
     def process_formdata(self, valuelist):
         valuelist = [i for i in valuelist if i.strip()]
 
         if valuelist:
-            date_str = ' '.join(valuelist)
-            date_fmt = get_locale().date_formats['short']
+            date_str = " ".join(valuelist)
+            date_fmt = get_locale().date_formats["short"]
             date_fmt = babel2datetime(date_fmt)
-            date_fmt = date_fmt \
-                .replace('%B', '%m') \
-                .replace('%b', '%m')
+            date_fmt = date_fmt.replace("%B", "%m").replace("%b", "%m")
 
             try:
                 strptime = datetime.datetime.strptime
                 self.data = strptime(date_str, date_fmt).date()
             except (ValueError, TypeError):
                 self.data = None
-                raise ValueError(self.gettext('Not a valid datetime value'))
+                raise ValueError(self.gettext("Not a valid datetime value"))
         else:
             self.data = None
 
@@ -489,7 +472,7 @@ class QuerySelect2Field(SelectFieldBase):
         get_pk=None,
         get_label=None,
         allow_blank=False,
-        blank_text='',
+        blank_text="",
         widget=None,
         multiple=False,
         collection_class=list,
@@ -499,7 +482,7 @@ class QuerySelect2Field(SelectFieldBase):
         if widget is None:
             widget = Select2(multiple=multiple)
 
-        kwargs['widget'] = widget
+        kwargs["widget"] = widget
         self.multiple = multiple
         self.collection_class = collection_class
 
@@ -507,12 +490,9 @@ class QuerySelect2Field(SelectFieldBase):
             validators = []
 
         if not any(isinstance(v, (Optional, DataRequired)) for v in validators):
-            logger = logging.getLogger(
-                __name__ + '.' + self.__class__.__name__,
-            )
+            logger = logging.getLogger(__name__ + "." + self.__class__.__name__)
             logger.warning(
-                'Use deprecated parameter `allow_blank` for field "{}".'
-                .format(label),
+                'Use deprecated parameter `allow_blank` for field "{}".'.format(label)
             )
             if not allow_blank:
                 validators.append(DataRequired())
@@ -526,7 +506,7 @@ class QuerySelect2Field(SelectFieldBase):
         if get_pk is None:
             if not has_identity_key:
                 raise Exception(
-                    'The sqlalchemy identity_key function could not be imported.',
+                    "The sqlalchemy identity_key function could not be imported."
                 )
             self.get_pk = self._get_pk_from_identity
         else:
@@ -551,7 +531,7 @@ class QuerySelect2Field(SelectFieldBase):
         from sqlalchemy.orm.util import identity_key
 
         cls, key = identity_key(instance=obj)[0:2]
-        return ':'.join(text_type(x) for x in key)
+        return ":".join(text_type(x) for x in key)
 
     def _get_data(self):
         formdata = self._formdata
@@ -559,10 +539,8 @@ class QuerySelect2Field(SelectFieldBase):
             if not self.multiple:
                 formdata = [formdata]
             formdata = set(formdata)
-            data = [
-                obj for pk, obj in self._get_object_list() if pk in formdata
-            ]
-            if all(hasattr(x, 'name') for x in data):
+            data = [obj for pk, obj in self._get_object_list() if pk in formdata]
+            if all(hasattr(x, "name") for x in data):
                 data = sorted(data, key=lambda x: x.name)
             else:
                 data = sorted(data)
@@ -574,8 +552,7 @@ class QuerySelect2Field(SelectFieldBase):
 
     def _set_data(self, data):
         if self.multiple and not isinstance(data, self.collection_class):
-            data = self.collection_class(data,
-                                        ) if data else self.collection_class()
+            data = self.collection_class(data) if data else self.collection_class()
         self._data = data
         self._formdata = None
 
@@ -590,15 +567,12 @@ class QuerySelect2Field(SelectFieldBase):
 
     def iter_choices(self):
         if not self.flags.required:
-            yield (
-                None,
-                None,
-                self.data == [] if self.multiple else self.data is None,
-            )
+            yield (None, None, self.data == [] if self.multiple else self.data is None)
 
         predicate = (
             operator.contains
-            if (self.multiple and self.data is not None) else operator.eq
+            if (self.multiple and self.data is not None)
+            else operator.eq
         )
         # remember: operator.contains(b, a) ==> a in b
         # so: obj in data ==> contains(data, obj)
@@ -628,7 +602,7 @@ class QuerySelect2Field(SelectFieldBase):
             data = set(data)
             valid = {obj for pk, obj in self._get_object_list()}
             if data - valid:
-                raise ValidationError(self.gettext('Not a valid choice'))
+                raise ValidationError(self.gettext("Not a valid choice"))
 
 
 class JsonSelect2Field(SelectFieldBase):
@@ -674,7 +648,7 @@ class JsonSelect2Field(SelectFieldBase):
         validators=None,
         ajax_source=None,
         widget=None,
-        blank_text='',
+        blank_text="",
         model_class=None,
         multiple=False,
         **kwargs
@@ -685,7 +659,7 @@ class JsonSelect2Field(SelectFieldBase):
         if widget is None:
             widget = Select2Ajax(multiple=self.multiple)
 
-        kwargs['widget'] = widget
+        kwargs["widget"] = widget
         super(JsonSelect2Field, self).__init__(label, validators, **kwargs)
         self.ajax_source = ajax_source
         self._model_class = model_class
@@ -725,7 +699,7 @@ class JsonSelect2Field(SelectFieldBase):
             data = [
                 self.model_class.query.get(int(pk))
                 for pk in formdata
-                if pk not in ('', None)
+                if pk not in ("", None)
             ]
             if not self.multiple:
                 data = data[0] if data else None
@@ -744,7 +718,7 @@ class JsonSelect2Field(SelectFieldBase):
         else:
             self._data = None
 
-            if hasattr(self.widget, 'process_formdata'):
+            if hasattr(self.widget, "process_formdata"):
                 # might need custom deserialization, i.e  Select2 3.x with multiple +
                 # ajax
                 valuelist = self.widget.process_formdata(valuelist)
@@ -782,9 +756,10 @@ class LocaleSelectField(SelectField):
     widget = Select2()
 
     def __init__(self, *args, **kwargs):
-        kwargs['coerce'] = LocaleSelectField.coerce
-        kwargs['choices'
-              ] = (locale_info for locale_info in i18n.supported_app_locales())
+        kwargs["coerce"] = LocaleSelectField.coerce
+        kwargs["choices"] = (
+            locale_info for locale_info in i18n.supported_app_locales()
+        )
         super(LocaleSelectField, self).__init__(*args, **kwargs)
 
     @staticmethod
@@ -797,8 +772,7 @@ class LocaleSelectField(SelectField):
             return None
 
         raise ValueError(
-            'Value cannot be converted to Locale(), or is not None, {!r}'.
-            format(value),
+            "Value cannot be converted to Locale(), or is not None, {!r}".format(value)
         )
 
     def iter_choices(self):
@@ -813,8 +787,8 @@ class TimezoneField(SelectField):
     widget = Select2()
 
     def __init__(self, *args, **kwargs):
-        kwargs['coerce'] = babel.dates.get_timezone
-        kwargs['choices'] = (tz_info for tz_info in i18n.timezones_choices())
+        kwargs["coerce"] = babel.dates.get_timezone
+        kwargs["choices"] = (tz_info for tz_info in i18n.timezones_choices())
         super(TimezoneField, self).__init__(*args, **kwargs)
 
     def iter_choices(self):

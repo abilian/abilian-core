@@ -38,11 +38,11 @@ def get_vocabulary(name, group=""):
 
 
 class VocabularyService(Service):
-    name = 'vocabularies'
+    name = "vocabularies"
 
     def init_app(self, app):
         Service.init_app(self, app)
-        app.register_jinja_loaders(jinja2.PackageLoader(__name__, 'templates'))
+        app.register_jinja_loaders(jinja2.PackageLoader(__name__, "templates"))
 
     @property
     def vocabularies(self):

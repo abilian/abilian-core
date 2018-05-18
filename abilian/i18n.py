@@ -68,17 +68,17 @@ from flask_babel import LazyString, force_locale, gettext, lazy_gettext, \
 from six import string_types, text_type
 
 __all__ = [
-    'babel',
-    'gettext',
-    '_',
-    'lazy_gettext',
-    '_l',
-    'localeselector',
-    'ngettext',
-    '_n',
-    'timezoneselector',
-    'VALID_LANGUAGES_CODE',
-    'render_template_i18n',
+    "babel",
+    "gettext",
+    "_",
+    "lazy_gettext",
+    "_l",
+    "localeselector",
+    "ngettext",
+    "_n",
+    "timezoneselector",
+    "VALID_LANGUAGES_CODE",
+    "render_template_i18n",
 ]
 
 #: gettext alias
@@ -96,7 +96,7 @@ VALID_LANGUAGES_CODE = frozenset(
 
 
 def get_default_locale():
-    return current_app.extensions['babel'].default_locale
+    return current_app.extensions["babel"].default_locale
 
 
 def _get_locale():
@@ -108,10 +108,7 @@ def _get_locale():
 
 def __gettext_territory(code):
     locale = _get_locale()
-    return (
-        locale.territories.get(code) or
-        get_default_locale().territories.get(code)
-    )
+    return locale.territories.get(code) or get_default_locale().territories.get(code)
 
 
 #: get localized territory name
@@ -125,7 +122,7 @@ def lazy_country_name(code):
 
 
 def default_country():
-    return current_app.config.get('DEFAULT_COUNTRY')
+    return current_app.config.get("DEFAULT_COUNTRY")
 
 
 def country_choices(first=None, default_country_first=True):
@@ -137,16 +134,18 @@ def country_choices(first=None, default_country_first=True):
     :type default_country_first: bool
     """
     locale = _get_locale()
-    territories = [(code, name)
-                   for code, name in six.iteritems(locale.territories)
-                   if len(code) == 2]  # skip 3-digit regions
+    territories = [
+        (code, name)
+        for code, name in six.iteritems(locale.territories)
+        if len(code) == 2
+    ]  # skip 3-digit regions
 
     if first is None and default_country_first:
         first = default_country()
 
     def sortkey(item):
         if first is not None and item[0] == first:
-            return '0'
+            return "0"
         return to_lower_ascii(item[1])
 
     territories.sort(key=sortkey)
@@ -160,9 +159,8 @@ def supported_app_locales():
     locale language human name in current locale.
     """
     locale = _get_locale()
-    codes = current_app.config['BABEL_ACCEPT_LANGUAGES']
-    return ((Locale.parse(code), locale.languages.get(code, code))
-            for code in codes)
+    codes = current_app.config["BABEL_ACCEPT_LANGUAGES"]
+    return ((Locale.parse(code), locale.languages.get(code, code)) for code in codes)
 
 
 def timezones_choices():
@@ -176,7 +174,7 @@ def timezones_choices():
     for tz in sorted(pytz.common_timezones):
         tz = get_timezone(tz)
         now = tz.normalize(utcnow.astimezone(tz))
-        label = '({}) {}'.format(get_timezone_gmt(now, locale=locale), tz.zone)
+        label = "({}) {}".format(get_timezone_gmt(now, locale=locale), tz.zone)
         yield (tz, label)  # get_timezone_name(tz, locale=locale))
 
 
@@ -190,14 +188,11 @@ class Babel(BabelBase):
     def init_app(self, app):
         super(Babel, self).init_app(app)
         self._translations_paths = [
-            (os.path.join(app.root_path, 'translations'), 'messages'),
+            (os.path.join(app.root_path, "translations"), "messages")
         ]
 
     def add_translations(
-        self,
-        module_name,
-        translations_dir='translations',
-        domain='messages',
+        self, module_name, translations_dir="translations", domain="messages"
     ):
         """Add translations from external module.
 
@@ -215,7 +210,7 @@ class Babel(BabelBase):
             if not os.access(text_type(path), os.R_OK):
                 self.app.logger.warning(
                     "Babel translations: read access not allowed {}, skipping."
-                    "".format(repr(text_type(path).encode('utf-8'))),
+                    "".format(repr(text_type(path).encode("utf-8")))
                 )
                 continue
 
@@ -267,9 +262,9 @@ def _get_translations_multi_paths():
     if ctx is None:
         return None
 
-    translations = getattr(ctx, 'babel_translations', None)
+    translations = getattr(ctx, "babel_translations", None)
     if translations is None:
-        babel_ext = ctx.app.extensions['babel']
+        babel_ext = ctx.app.extensions["babel"]
         translations = None
         trs = None
 
@@ -277,19 +272,17 @@ def _get_translations_multi_paths():
         # translations from libraries can be overriden
         for (dirname, domain) in reversed(babel_ext._translations_paths):
             trs = Translations.load(
-                dirname,
-                locales=[flask_babel.get_locale()],
-                domain=domain,
+                dirname, locales=[flask_babel.get_locale()], domain=domain
             )
 
             # babel.support.Translations is a subclass of
             # babel.support.NullTranslations, so we test if object has a 'merge'
             # method
 
-            if not trs or not hasattr(trs, 'merge'):
+            if not trs or not hasattr(trs, "merge"):
                 # got None or NullTranslations instance
                 continue
-            elif translations is not None and hasattr(translations, 'merge'):
+            elif translations is not None and hasattr(translations, "merge"):
                 translations.merge(trs)
             else:
                 translations = trs
@@ -313,16 +306,16 @@ babel = Babel()
 def localeselector():
     """Default locale selector used in abilian applications."""
     # if a user is logged in, use the locale from the user settings
-    user = getattr(g, 'user', None)
+    user = getattr(g, "user", None)
     if user is not None:
-        locale = getattr(user, 'locale', None)
+        locale = getattr(user, "locale", None)
         if locale:
             return locale
 
     # Otherwise, try to guess the language from the user accept header the browser
     # transmits.  By default we support en/fr. The best match wins.
     return request.accept_languages.best_match(
-        current_app.config['BABEL_ACCEPT_LANGUAGES'],
+        current_app.config["BABEL_ACCEPT_LANGUAGES"]
     )
 
 
@@ -337,16 +330,16 @@ def get_template_i18n(template_name, locale):
         return [template_name]
 
     template_list = []
-    parts = template_name.rsplit('.', 1)
+    parts = template_name.rsplit(".", 1)
     root = parts[0]
     suffix = parts[1]
 
     if locale.territory is not None:
-        locale_string = '_'.join([locale.language, locale.territory])
-        localized_template_path = '.'.join([root, locale_string, suffix])
+        locale_string = "_".join([locale.language, locale.territory])
+        localized_template_path = ".".join([root, locale_string, suffix])
         template_list.append(localized_template_path)
 
-    localized_template_path = '.'.join([root, locale.language, suffix])
+    localized_template_path = ".".join([root, locale.language, suffix])
     template_list.append(localized_template_path)
 
     # append the default
@@ -376,8 +369,8 @@ def render_template_i18n(template_name_or_list, **context):
     locale."""
     template_list = []
     # Use locale if present in **context
-    if 'locale' in context:
-        locale = Locale.parse(context['locale'])
+    if "locale" in context:
+        locale = Locale.parse(context["locale"])
     else:
         # Use get_locale() or default_locale
         locale = flask_babel.get_locale()
@@ -393,15 +386,15 @@ def render_template_i18n(template_name_or_list, **context):
         return render_template(template_list, **context)
 
 
-_NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
+_NOT_WORD_RE = re.compile(r"[^\w\s]+", flags=re.UNICODE)
 
 
 def to_lower_ascii(value):
     value = text_type(value)
-    value = _NOT_WORD_RE.sub(' ', value)
-    value = unicodedata.normalize('NFKD', value)
-    value = value.encode('ascii', 'ignore')
-    value = value.decode('ascii')
+    value = _NOT_WORD_RE.sub(" ", value)
+    value = unicodedata.normalize("NFKD", value)
+    value = value.encode("ascii", "ignore")
+    value = value.decode("ascii")
     value = value.strip().lower()
-    value = re.sub(r'[_\s]+', ' ', value)
+    value = re.sub(r"[_\s]+", " ", value)
     return value

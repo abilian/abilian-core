@@ -64,7 +64,7 @@ def noproxy(obj):
 
 def fqcn(cls):
     """Fully Qualified Class Name."""
-    return text_type(cls.__module__ + '.' + cls.__name__)
+    return text_type(cls.__module__ + "." + cls.__name__)
 
 
 def friendly_fqcn(cls_name):
@@ -75,7 +75,7 @@ def friendly_fqcn(cls_name):
     if isinstance(cls_name, type):
         cls_name = fqcn(cls_name)
 
-    return cls_name.rsplit('.', 1)[-1]
+    return cls_name.rsplit(".", 1)[-1]
 
 
 def utcnow():
@@ -123,13 +123,13 @@ class timer(object):
 
     def __init__(self, f):
         self.__f = f
-        self.log = logging.getLogger(f.__module__ + '.' + f.__name__)
+        self.log = logging.getLogger(f.__module__ + "." + f.__name__)
 
     def __call__(self, *args, **kwargs):
         self.__start = time.time()
         result = self.__f(*args, **kwargs)
         value = time.time() - self.__start
-        self.log.info('elapsed time: {:.2f}ms'.format(value * 1000))
+        self.log.info("elapsed time: {:.2f}ms".format(value * 1000))
         return result
 
 
@@ -192,20 +192,13 @@ class Pagination(object):
     def next(self):
         return self.page + 1 if self.has_next else None
 
-    def iter_pages(
-        self,
-        left_edge=2,
-        left_current=2,
-        right_current=5,
-        right_edge=2,
-    ):
+    def iter_pages(self, left_edge=2, left_current=2, right_current=5, right_edge=2):
         last = 0
         for num in range(1, self.pages + 1):
             if (
-                num <= left_edge or (
-                    self.page - left_current - 1 < num <
-                    self.page + right_current
-                ) or num > self.pages - right_edge
+                num <= left_edge
+                or (self.page - left_current - 1 < num < self.page + right_current)
+                or num > self.pages - right_edge
             ):
                 if last + 1 != num:
                     yield None
@@ -213,7 +206,7 @@ class Pagination(object):
                 last = num
 
 
-_NOT_WORD_RE = re.compile(r'[^\w\s]+', flags=re.UNICODE)
+_NOT_WORD_RE = re.compile(r"[^\w\s]+", flags=re.UNICODE)
 
 
 def slugify(value, separator="-"):
@@ -222,12 +215,12 @@ def slugify(value, separator="-"):
         value = text_type(value)
     if not isinstance(value, text_type):
         raise ValueError("value must be a Unicode string")
-    value = _NOT_WORD_RE.sub(' ', value)
-    value = unicodedata.normalize('NFKD', value)
-    value = value.encode('ascii', 'ignore')
-    value = value.decode('ascii')
+    value = _NOT_WORD_RE.sub(" ", value)
+    value = unicodedata.normalize("NFKD", value)
+    value = value.encode("ascii", "ignore")
+    value = value.decode("ascii")
     value = value.strip().lower()
-    value = re.sub(r'[{}_\s]+'.format(separator), separator, value)
+    value = re.sub(r"[{}_\s]+".format(separator), separator, value)
     return value
 
 
@@ -246,7 +239,7 @@ class BasePresenter(object):
 
     def __setattr__(self, key, value):
         """Make presenter immutable."""
-        if key == '_model':
+        if key == "_model":
             self.__dict__[key] = value
         else:
             raise AttributeError("Can't set attribute on a presenter.")
@@ -264,7 +257,7 @@ def encode_string(string):
     # from pysecurity
 
     if isinstance(string, text_type):
-        return string.encode('utf-8')
+        return string.encode("utf-8")
     else:
         return string
 

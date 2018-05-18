@@ -13,10 +13,10 @@ def test_non_ascii_password():
     UnicodeEncodeError."""
     user = User()
 
-    user.set_password('Hé')
+    user.set_password("Hé")
 
     if not isinstance(user.password, text_type):
         # when actually retrieved from database, it should be Unicode
         user.password = text_type(user.password)
 
-    assert user.authenticate('Hé')
+    assert user.authenticate("Hé")

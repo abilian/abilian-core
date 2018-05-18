@@ -47,7 +47,7 @@ class Email(validators.Email):
 
     def __call__(self, form, field):
         if self.message is None:
-            self.message = field.gettext('Invalid email address.')
+            self.message = field.gettext("Invalid email address.")
 
         if field.data:
             super(Email, self).__call__(form, field)
@@ -60,11 +60,13 @@ class Email(validators.Email):
 class CorrectInputRequired(validators.DataRequired):
 
     def __call__(self, form, field):
-        if field.data is None \
-                or (isinstance(field.data, string_types) and not field.data.strip()) \
-                or (isinstance(field.data, (list, dict)) and not field.data):
+        if (
+            field.data is None
+            or (isinstance(field.data, string_types) and not field.data.strip())
+            or (isinstance(field.data, (list, dict)) and not field.data)
+        ):
             if self.message is None:
-                message = field.gettext('This field is required.')
+                message = field.gettext("This field is required.")
             else:
                 message = self.message
 
@@ -73,7 +75,7 @@ class CorrectInputRequired(validators.DataRequired):
 
 
 class Required(CorrectInputRequired):
-    field_flags = ('required',)
+    field_flags = ("required",)
 
     @property
     def rule(self):
@@ -99,8 +101,10 @@ class Length(Rule):
     """
 
     def __init__(self, min=-1, max=-1, message=None):
-        assert min != -1 or max != -1, 'At least one of `min` or `max` must be specified.'
-        assert max == -1 or min <= max, '`min` cannot be more than `max`.'
+        assert (
+            min != -1 or max != -1
+        ), "At least one of `min` or `max` must be specified."
+        assert max == -1 or min <= max, "`min` cannot be more than `max`."
         self.min = min
         self.max = max
         self.message = message
@@ -113,29 +117,26 @@ class Length(Rule):
             if message is None:
                 if self.max == -1:
                     message = _n(
-                        'Field must be at least %(min)d character long.',
-                        'Field must be at least %(min)d characters long.',
+                        "Field must be at least %(min)d character long.",
+                        "Field must be at least %(min)d characters long.",
                         self.min,
                         min=self.min,
                     )
                 elif self.min == -1:
                     message = _n(
-                        'Field cannot be longer than %(max)d character.',
-                        'Field cannot be longer than %(max)d characters.',
+                        "Field cannot be longer than %(max)d character.",
+                        "Field cannot be longer than %(max)d characters.",
                         self.max,
                         max=self.max,
                     )
                 else:
                     message = _(
-                        'Field must be between %(min)d and %(max)d characters long.',
-                        min=self.min, max=self.max,
+                        "Field must be between %(min)d and %(max)d characters long.",
+                        min=self.min,
+                        max=self.max,
                     )
             raise validators.ValidationError(
-                message % dict(
-                    min=self.min,
-                    max=self.max,
-                    length=l,
-                )
+                message % dict(min=self.min, max=self.max, length=l)
             )
 
 
@@ -180,7 +181,7 @@ class NoneOf(validators.NoneOf, Rule):
 
 class FlagHidden(Rule):
     """Flag the field as hidden."""
-    field_flags = ('hidden',)
+    field_flags = ("hidden",)
 
     def __call__(self, form, field):
         pass
@@ -188,21 +189,21 @@ class FlagHidden(Rule):
 
 class AntiVirus(Rule):
     """Check content for viruses."""
-    field_flags = ('antivirus',)
+    field_flags = ("antivirus",)
 
     def __call__(self, form, field):
-        svc = get_service('antivirus')
+        svc = get_service("antivirus")
         if not svc:
             return
 
         res = svc.scan(field.data)
         if res is False:
-            raise validators.ValidationError(_('Virus detected!'))
+            raise validators.ValidationError(_("Virus detected!"))
 
 
 class RenderEmpty(object):
     """Force display."""
-    field_flags = ('render_empty',)
+    field_flags = ("render_empty",)
 
     def __call__(self, form, field):
         pass
@@ -221,8 +222,7 @@ def luhn(n):
     https://en.wikipedia.org/wiki/Luhn_algorithm
     """
     r = [int(ch) for ch in str(n)][::-1]
-    return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10))
-                               for d in r[1::2])) % 10 == 0
+    return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
 
 
 # specific SIRET like for MONACO, i.e MONACOCONFO001
@@ -231,7 +231,7 @@ def luhn(n):
 # - la Martinique "462"
 # - la Guyane "496"
 # - la Réunion "372
-SIRET_CODES = ('001', "458", "462", "496", "372")
+SIRET_CODES = ("001", "458", "462", "496", "372")
 
 
 def siret_validator():
@@ -245,24 +245,25 @@ def siret_validator():
         also want to give directly a siret, for a scripting use.
         """
         if field is not None:
-            siret = (field.data or '').strip()
+            siret = (field.data or "").strip()
 
         if len(siret) != 14:
-            msg = _('SIRET must have exactly 14 characters ({count})').format(
-                count=len(siret),
+            msg = _("SIRET must have exactly 14 characters ({count})").format(
+                count=len(siret)
             )
             raise validators.ValidationError(msg)
 
-        if not all(('0' <= c <= '9') for c in siret):
+        if not all(("0" <= c <= "9") for c in siret):
             if not siret[-3:] in SIRET_CODES:
                 msg = _(
-                    'SIRET looks like special SIRET but geographical '
-                    'code seems invalid (%(code)s)', code=siret[-3:],
+                    "SIRET looks like special SIRET but geographical "
+                    "code seems invalid (%(code)s)",
+                    code=siret[-3:],
                 )
                 raise validators.ValidationError(msg)
 
         elif not luhn(siret):
-            msg = _('SIRET number is invalid (length is ok: verify numbers)')
+            msg = _("SIRET number is invalid (length is ok: verify numbers)")
             raise validators.ValidationError(msg)
 
     return _validate_siret
@@ -287,11 +288,11 @@ flaghidden = FlagHidden
 renderempty = RenderEmpty
 
 VALIDATORS = {
-    'email': email,
-    'url': url,
-    'uuid': uuid,
-    'renderempty': renderempty,
-    'siret': siret,
-    'required': required,
-    'optional': optional,
+    "email": email,
+    "url": url,
+    "uuid": uuid,
+    "renderempty": renderempty,
+    "siret": siret,
+    "required": required,
+    "optional": optional,
 }

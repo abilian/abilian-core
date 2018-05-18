@@ -19,14 +19,7 @@ from .csrf import wtf_csrf as csrf, abilian_csrf
 from .login import login_manager
 from ..sqlalchemy import SQLAlchemy
 
-__all__ = [
-    'get_extension',
-    'db',
-    'mail',
-    'login_manager',
-    'csrf',
-    'upstream_info',
-]
+__all__ = ["get_extension", "db", "mail", "login_manager", "csrf", "upstream_info"]
 
 
 # patch flask.ext.mail.Message.send to always set enveloppe_from default mail
@@ -39,10 +32,10 @@ def _message_send(self, connection):
 
     :param message: a Message instance.
     """
-    sender = current_app.config['MAIL_SENDER']
+    sender = current_app.config["MAIL_SENDER"]
     if not self.extra_headers:
         self.extra_headers = {}
-    self.extra_headers['Sender'] = sender
+    self.extra_headers["Sender"] = sender
     connection.send(self, sender)
 
 
@@ -54,8 +47,8 @@ mail = flask_mail.Mail()
 db = SQLAlchemy()
 
 
-@sa.event.listens_for(db.metadata, 'before_create')
-@sa.event.listens_for(db.metadata, 'before_drop')
+@sa.event.listens_for(db.metadata, "before_create")
+@sa.event.listens_for(db.metadata, "before_drop")
 def _filter_metadata_for_connection(target, connection, **kw):
     """Listener to control what indexes get created.
 
@@ -66,11 +59,11 @@ def _filter_metadata_for_connection(target, connection, **kw):
     """
     engine = connection.engine.name
     default_engines = (engine,)
-    tables = target if isinstance(target, sa.Table) else kw.get('tables', [])
+    tables = target if isinstance(target, sa.Table) else kw.get("tables", [])
     for table in tables:
         indexes = list(table.indexes)
         for idx in indexes:
-            if engine not in idx.info.get('engines', default_engines):
+            if engine not in idx.info.get("engines", default_engines):
                 table.indexes.remove(idx)
 
 
@@ -107,10 +100,10 @@ def _install_get_display_value(cls):
         except AttributeError:
             pass
         else:
-            if 'choices' in field.info:
+            if "choices" in field.info:
 
                 def get(v):
-                    return field.info['choices'].get(v, v)
+                    return field.info["choices"].get(v, v)
 
                 if isinstance(val, list):
                     val = [get(v) for v in val]
@@ -119,11 +112,11 @@ def _install_get_display_value(cls):
 
         return val
 
-    if not hasattr(cls, 'display_value'):
+    if not hasattr(cls, "display_value"):
         cls.display_value = display_value
 
 
-sa.event.listen(db.Model, 'class_instrument', _install_get_display_value)
+sa.event.listen(db.Model, "class_instrument", _install_get_display_value)
 
 
 #
@@ -132,6 +125,7 @@ sa.event.listen(db.Model, 'class_instrument', _install_get_display_value)
 @sa.event.listens_for(Engine, "connect")
 def _set_sqlite_pragma(dbapi_connection, connection_record):
     from sqlite3 import Connection as SQLite3Connection
+
     if isinstance(dbapi_connection, SQLite3Connection):  # pragma: no cover
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON;")

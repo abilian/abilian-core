@@ -29,7 +29,7 @@ class BaseCriterion(object):
     Subclasses can also define property.
     """
 
-    def __init__(self, name, label='', form_default_value=_UNDEFINED):
+    def __init__(self, name, label="", form_default_value=_UNDEFINED):
         self.name = name
         self.label = label
 
@@ -82,10 +82,10 @@ class BaseCriterion(object):
 class TextSearchCriterion(BaseCriterion):
     """Fulltext search on given attributes."""
 
-    def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
+    def __init__(self, name, label="", attributes=None, search_fmt="%{q}%"):
         super(TextSearchCriterion, self).__init__(name, label)
         self.attributes = dict.fromkeys(
-            attributes if attributes is not None else (name,),
+            attributes if attributes is not None else (name,)
         )
         self._attributes_prepared = False
 
@@ -101,9 +101,9 @@ class TextSearchCriterion(BaseCriterion):
             name = attr_name
             val = self.attributes[name] = {}
 
-            if '.' in attr_name:
+            if "." in attr_name:
                 # related model
-                rel_attr_name, name = attr_name.split('.', 1)
+                rel_attr_name, name = attr_name.split(".", 1)
                 model, attr = self.get_rel_attr(attr_name, self.model)
             else:
                 rel_attr_name = None
@@ -119,12 +119,7 @@ class TextSearchCriterion(BaseCriterion):
                 to_del.append(attr_name)
             else:
                 val.update(
-                    dict(
-                        attr=attr,
-                        name=name,
-                        model=model,
-                        rel_attr_name=rel_attr_name,
-                    ),
+                    dict(attr=attr, name=name, model=model, rel_attr_name=rel_attr_name)
                 )
 
         for k in to_del:
@@ -146,15 +141,15 @@ class TextSearchCriterion(BaseCriterion):
             if self.is_excluded(attr_name, request):
                 continue
 
-            attr = val['attr']
+            attr = val["attr"]
 
-            if val['model'] is not None:
+            if val["model"] is not None:
                 # related model - generate an alias, required when searched model has
                 # more than one relationship with another model
-                model = orm.aliased(val['model'])
+                model = orm.aliased(val["model"])
                 attr = getattr(model, attr.key)
 
-                join_attr = getattr(module.managed_class, val['rel_attr_name'])
+                join_attr = getattr(module.managed_class, val["rel_attr_name"])
                 query = query.outerjoin(model, join_attr)
 
                 has_joins = True
@@ -179,7 +174,7 @@ class TextSearchCriterion(BaseCriterion):
         Returns (None, None) if model is not found, or (model, None) if
         attribute is not found.
         """
-        rel_attr_name, attr_name = attr_name.split('.', 1)
+        rel_attr_name, attr_name = attr_name.split(".", 1)
         rel_attr = getattr(self.model, rel_attr_name, None)
         rel_model = None
         attr = None
@@ -202,15 +197,15 @@ class TextSearchCriterion(BaseCriterion):
 
 class TextCriterion(TextSearchCriterion):
 
-    def __init__(self, name, label='', attributes=None, search_fmt='%{q}%'):
-        super(TextCriterion, self) \
-            .__init__(name, label, attributes, search_fmt)
+    def __init__(self, name, label="", attributes=None, search_fmt="%{q}%"):
+        super(TextCriterion, self).__init__(name, label, attributes, search_fmt)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
-        my_searched_text = request.values.get(self.name, '').strip()
+        my_searched_text = request.values.get(self.name, "").strip()
         if my_searched_text:
-            return super(TextCriterion, self) \
-                .filter(query, module, request, my_searched_text.lower(), *args, **kwargs)
+            return super(TextCriterion, self).filter(
+                query, module, request, my_searched_text.lower(), *args, **kwargs
+            )
         else:
             return query
 
@@ -228,4 +223,4 @@ class TextCriterion(TextSearchCriterion):
 
     @property
     def form_unset_value(self):
-        return ''
+        return ""

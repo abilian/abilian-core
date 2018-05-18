@@ -36,13 +36,10 @@ def reindex(clear=False, progressive=False, batch_size=None):
                      index. Unused in single transaction mode. If `None` then
                      all documents of same content type are written at once.
     """
-    index_service = get_service('indexing')
+    index_service = get_service("indexing")
     adapted = index_service.adapted
-    index = index_service.app_state.indexes['default']
-    session = Session(
-        bind=db.session.get_bind(None, None),
-        autocommit=True,
-    )
+    index = index_service.app_state.indexes["default"]
+    session = Session(bind=db.session.get_bind(None, None), autocommit=True)
 
     session._model_changes = {}  # please flask-sqlalchemy <= 1.0
     indexed = set()
@@ -52,16 +49,12 @@ def reindex(clear=False, progressive=False, batch_size=None):
 
     strategy = progressive_mode if progressive else single_transaction
     strategy = strategy(
-        index,
-        clear=clear,
-        progressive=progressive,
-        batch_size=batch_size,
+        index, clear=clear, progressive=progressive, batch_size=batch_size
     )
     next(strategy)  # starts generator
 
     for cls in sorted(
-        index_service.app_state.indexed_classes,
-        key=lambda c: c.__name__,
+        index_service.app_state.indexed_classes, key=lambda c: c.__name__
     ):
         current_object_type = cls._object_type()
 
@@ -77,12 +70,12 @@ def reindex(clear=False, progressive=False, batch_size=None):
         name = cls.__name__
 
         with session.begin():
-            query = session.query(cls).options(sa.orm.lazyload('*'))
+            query = session.query(cls).options(sa.orm.lazyload("*"))
             try:
                 count = query.count()
             except Exception as e:
                 current_app.logger.error(
-                    "Indexing error on class {}: {}".format(name, repr(e)),
+                    "Indexing error on class {}: {}".format(name, repr(e))
                 )
                 continue
 
@@ -113,10 +106,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
                     strategy.send(document)
                     indexed.add(object_key)
 
-                    if (
-                        batch_size is not None and
-                        (count_current % batch_size) == 0
-                    ):
+                    if batch_size is not None and (count_current % batch_size) == 0:
                         bar.update()
                         strategy.send(COMMIT)
 
@@ -153,12 +143,12 @@ def single_transaction(index, clear, **kwargs):
                 doc = yield True
                 continue
             if isinstance(doc, string_types):
-                writer.delete_by_term('object_type', doc)
+                writer.delete_by_term("object_type", doc)
             else:
                 writer.add_document(**doc)
             doc = yield True
 
-        print("Writing Index...", end=' ')
+        print("Writing Index...", end=" ")
 
     print("Done.")
 
@@ -193,7 +183,7 @@ def progressive_mode(index, clear, batch_size, **kwargs):
             while queue:
                 doc = queue.pop()
                 if isinstance(doc, string_types):
-                    writer.delete_by_term('object_type', doc)
+                    writer.delete_by_term("object_type", doc)
                 else:
                     writer.add_document(**doc)
             writer.commit()

@@ -23,7 +23,7 @@ from . import CREATION, DELETION, UPDATE, AuditEntry, audit_service
 
 @python_2_unicode_compatible
 class IntegerCollection(db.Model):
-    __tablename__ = 'integer_collection'
+    __tablename__ = "integer_collection"
     id = Column(Integer, primary_key=True)
 
     def __str__(self):
@@ -32,7 +32,7 @@ class IntegerCollection(db.Model):
 
 class DummyAccount(Entity):
     name = Column(UnicodeText, default="", info=SEARCHABLE)
-    password = Column(Unicode, default='*', info=AUDITABLE_HIDDEN)
+    password = Column(Unicode, default="*", info=AUDITABLE_HIDDEN)
     website = Column(Text, default="")
     office_phone = Column(UnicodeText, default="")
     birthday = Column(Date)
@@ -40,28 +40,26 @@ class DummyAccount(Entity):
     @declared_attr
     def integers(cls):
         secondary_tbl = sa.Table(
-            'account_integers',
+            "account_integers",
             db.Model.metadata,
-            Column('integer_id', ForeignKey(IntegerCollection.id)),
-            Column('account_id', ForeignKey(cls.id)),
-            sa.schema.UniqueConstraint('account_id', 'integer_id'),
+            Column("integer_id", ForeignKey(IntegerCollection.id)),
+            Column("account_id", ForeignKey(cls.id)),
+            sa.schema.UniqueConstraint("account_id", "integer_id"),
         )
 
         return sa.orm.relationship(IntegerCollection, secondary=secondary_tbl)
 
 
 class AccountRelated(db.Model):
-    __tablename__ = 'account_related'
-    __auditable_entity__ = ('account', 'data', ('id',))
+    __tablename__ = "account_related"
+    __auditable_entity__ = ("account", "data", ("id",))
     id = Column(Integer, primary_key=True)
 
     account_id = Column(Integer, ForeignKey(DummyAccount.id), nullable=False)
     account = relationship(
         DummyAccount,
         backref=backref(
-            'data',
-            order_by='AccountRelated.id',
-            cascade='all, delete-orphan',
+            "data", order_by="AccountRelated.id", cascade="all, delete-orphan"
         ),
     )
 
@@ -69,21 +67,15 @@ class AccountRelated(db.Model):
 
 
 class CommentRelated(db.Model):
-    __tablename__ = 'account_related_comment'
-    __auditable_entity__ = (
-        'related.account',
-        'data.comments',
-        ('related.id', 'id'),
-    )
+    __tablename__ = "account_related_comment"
+    __auditable_entity__ = ("related.account", "data.comments", ("related.id", "id"))
     id = Column(Integer, primary_key=True)
 
     related_id = Column(Integer, ForeignKey(AccountRelated.id), nullable=False)
     related = relationship(
         AccountRelated,
         backref=backref(
-            'comments',
-            order_by='CommentRelated.id',
-            cascade='all, delete-orphan',
+            "comments", order_by="CommentRelated.id", cascade="all, delete-orphan"
         ),
     )
     text = Column(UnicodeText, default="")
@@ -118,9 +110,7 @@ def test_audit(app, session):
     assert entry.type == UPDATE
     assert entry.entity_id == account.id
     assert entry.entity == account
-    assert entry.changes.columns == {
-        'website': ('', 'http://www.john.com/'),
-    }
+    assert entry.changes.columns == {"website": ("", "http://www.john.com/")}
 
     account.birthday = datetime.date(2012, 12, 25)
     session.commit()
@@ -130,20 +120,18 @@ def test_audit(app, session):
     assert entry.type == UPDATE
     assert entry.entity_id == account.id
     assert entry.entity == account
-    assert entry.changes.columns == {
-        'birthday': (None, datetime.date(2012, 12, 25)),
-    }
+    assert entry.changes.columns == {"birthday": (None, datetime.date(2012, 12, 25))}
 
     # content hiding
-    account.password = 'new super secret password'
-    assert account.__changes__.columns == {'password': ('******', '******')}
+    account.password = "new super secret password"
+    assert account.__changes__.columns == {"password": ("******", "******")}
     session.commit()
 
     entry = AuditEntry.query.order_by(AuditEntry.happened_at).all()[3]
     assert entry.type == UPDATE
     assert entry.entity_id == account.id
     assert entry.entity == account
-    assert entry.changes.columns == {'password': ('******', '******')}
+    assert entry.changes.columns == {"password": ("******", "******")}
 
     # deletion
     session.delete(account)
@@ -180,7 +168,7 @@ def test_audit_related(app, session):
     assert len(AuditEntry.query.all()) == 1
     next(audit_idx)
 
-    data = AccountRelated(account=account, text='text 1')
+    data = AccountRelated(account=account, text="text 1")
     session.add(data)
     session.commit()
 
@@ -193,15 +181,15 @@ def test_audit_related(app, session):
 
     changes = entry.changes.columns
     assert len(changes) == 1
-    assert 'data 1' in changes
-    changes = changes['data 1']
+    assert "data 1" in changes
+    changes = changes["data 1"]
     assert changes.columns == {
-        'text': (NEVER_SET, 'text 1'),
-        'account_id': (NEVER_SET, 1),
-        'id': (NEVER_SET, 1),
+        "text": (NEVER_SET, "text 1"),
+        "account_id": (NEVER_SET, 1),
+        "id": (NEVER_SET, 1),
     }
 
-    comment = CommentRelated(related=data, text='comment')
+    comment = CommentRelated(related=data, text="comment")
     session.add(comment)
     session.commit()
     entry = next_entry()
@@ -212,15 +200,15 @@ def test_audit_related(app, session):
 
     changes = entry.changes.columns
     assert len(changes) == 1
-    assert 'data.comments 1 1' in changes
-    changes = changes['data.comments 1 1']
+    assert "data.comments 1 1" in changes
+    changes = changes["data.comments 1 1"]
     assert changes.columns == {
-        'text': (NEVER_SET, 'comment'),
-        'related_id': (NEVER_SET, 1),
-        'id': (NEVER_SET, 1),
+        "text": (NEVER_SET, "comment"),
+        "related_id": (NEVER_SET, 1),
+        "id": (NEVER_SET, 1),
     }
 
-    comment = CommentRelated(related=data, text='comment 2')
+    comment = CommentRelated(related=data, text="comment 2")
     session.add(comment)
     session.commit()
     entry = next_entry()
@@ -231,13 +219,13 @@ def test_audit_related(app, session):
 
     changes = entry.changes.columns
     assert len(changes) == 1
-    assert 'data.comments 1 2' in changes
+    assert "data.comments 1 2" in changes
 
-    changes = changes['data.comments 1 2']
+    changes = changes["data.comments 1 2"]
     assert changes.columns == {
-        'text': (NEVER_SET, 'comment 2'),
-        'related_id': (NEVER_SET, 1),
-        'id': (NEVER_SET, 2),
+        "text": (NEVER_SET, "comment 2"),
+        "related_id": (NEVER_SET, 1),
+        "id": (NEVER_SET, 2),
     }
 
     # deletion
@@ -262,11 +250,11 @@ def test_audit_collections(app, session):
     session.add(I2)
     session.flush()
 
-    account = DummyAccount(name='John')
+    account = DummyAccount(name="John")
     account.integers.append(I1)
     session.add(account)
     session.flush()
 
     entry = AuditEntry.query.one()
     changes = entry.changes
-    assert changes.collections == {'integers': (['1'], [])}
+    assert changes.collections == {"integers": (["1"], [])}

@@ -22,15 +22,16 @@ from abilian.core.extensions import db
 
 def default_app_factory():
     from abilian.app import Application
+
     return Application()
 
 
 CELERY_CONF_KEY_PREFIXES = (
-    'CELERY_',
-    'CELERYD_',
-    'BROKER_',
-    'CELERYBEAT_',
-    'CELERYMON_',
+    "CELERY_",
+    "CELERYD_",
+    "BROKER_",
+    "CELERYBEAT_",
+    "CELERYMON_",
 )
 
 
@@ -44,8 +45,9 @@ def is_eager():
     As of celery 3.1.17 it seems that when CELERY_ALWAYS_EAGER is set in
     config, request.is_eager is *False*.
     """
-    return ((current_task and current_task.request.is_eager) or
-            celery_current_app.conf.CELERY_ALWAYS_EAGER)
+    return (
+        current_task and current_task.request.is_eager
+    ) or celery_current_app.conf.CELERY_ALWAYS_EAGER
 
 
 def safe_session():
@@ -75,10 +77,11 @@ class FlaskLoader(BaseLoader):
         self.flask_app_factory = symbol_by_name(self.flask_app_factory)
         app = self.flask_app_factory()
 
-        if 'sentry' in app.extensions:
+        if "sentry" in app.extensions:
             from raven.contrib.celery import register_signal, register_logger_signal
-            client = app.extensions['sentry'].client
-            client.tags['process_type'] = 'celery task'
+
+            client = app.extensions["sentry"].client
+            client.tags["process_type"] = "celery task"
             register_signal(client)
             register_logger_signal(client)
 
@@ -86,19 +89,19 @@ class FlaskLoader(BaseLoader):
         return app
 
     def _setup_after_fork(self, app):
-        binds = [None] + list(app.config.get('SQLALCHEMY_BINDS') or ())
+        binds = [None] + list(app.config.get("SQLALCHEMY_BINDS") or ())
         for bind in binds:
             engine = db.get_engine(app, bind)
             engine.dispose()
 
     def read_configuration(self):
         app = self.flask_app
-        app.config.setdefault('CELERY_DEFAULT_EXCHANGE', app.name)
-        app.config.setdefault('CELERY_DEFAULT_QUEUE', app.name)
-        app.config.setdefault('CELERY_BROADCAST_EXCHANGE', app.name + 'ctl')
-        app.config.setdefault('CELERY_BROADCAST_QUEUE', app.name + 'ctl')
-        app.config.setdefault('CELERY_RESULT_EXCHANGE', app.name + 'results')
-        app.config.setdefault('CELERY_DEFAULT_ROUTING_KEY', app.name)
+        app.config.setdefault("CELERY_DEFAULT_EXCHANGE", app.name)
+        app.config.setdefault("CELERY_DEFAULT_QUEUE", app.name)
+        app.config.setdefault("CELERY_BROADCAST_EXCHANGE", app.name + "ctl")
+        app.config.setdefault("CELERY_BROADCAST_QUEUE", app.name + "ctl")
+        app.config.setdefault("CELERY_RESULT_EXCHANGE", app.name + "results")
+        app.config.setdefault("CELERY_DEFAULT_ROUTING_KEY", app.name)
         cfg = {k: v for k, v in app.config.items() if is_celery_setting(k)}
         self.configured = True
         return cfg
@@ -139,7 +142,7 @@ class PeriodicTask(FlaskTask, CeleryPeriodicTask):
 def periodic_task(*args, **options):
     """Deprecated decorator, please use :setting:`CELERYBEAT_SCHEDULE`."""
     # FIXME: 'task' below is not callable. Fix or remove.
-    return task(**dict({'base': PeriodicTask}, **options))
+    return task(**dict({"base": PeriodicTask}, **options))
 
 
 class FlaskCelery(Celery):

@@ -15,19 +15,19 @@ from abilian.web.action import actions
 
 
 class ActionDebugPanel(DebugPanel):
-    name = 'Actions'
+    name = "Actions"
 
     user_enable = True
     has_content = True
 
     def nav_title(self):
-        return 'Actions'
+        return "Actions"
 
     def title(self):
-        return 'Actions'
+        return "Actions"
 
     def url(self):
-        return ''
+        return ""
 
     def content(self):
         # type: () -> Text
@@ -37,34 +37,32 @@ class ActionDebugPanel(DebugPanel):
             available_actions = actions.for_category(category)
             for action in available_actions:
                 d = {
-                    'category': action.category,
-                    'title': action.title,
-                    'class': action.__class__.__name__,
+                    "category": action.category,
+                    "title": action.title,
+                    "class": action.__class__.__name__,
                 }
                 try:
-                    d['endpoint'] = text_type(action.endpoint)
+                    d["endpoint"] = text_type(action.endpoint)
                 except BaseException:
-                    d['endpoint'] = '<Exception>'
+                    d["endpoint"] = "<Exception>"
                 try:
-                    d['url'] = text_type(action.url(g.action_context))
+                    d["url"] = text_type(action.url(g.action_context))
                 except BaseException:
-                    d['url'] = '<Exception>'
+                    d["url"] = "<Exception>"
                 actions_for_template.append(d)
 
-        actions_for_template.sort(key=lambda x: (x['category'], x['title']))
+        actions_for_template.sort(key=lambda x: (x["category"], x["title"]))
 
-        ctx = {'actions': actions_for_template}
+        ctx = {"actions": actions_for_template}
 
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)
-        template = jinja_env.get_or_select_template(
-            'debug_panels/actions_panel.html',
-        )
+        template = jinja_env.get_or_select_template("debug_panels/actions_panel.html")
         return template.render(ctx)
 
 
 class SignalsDebugPanel(DebugPanel):
-    name = 'Signals'
+    name = "Signals"
 
     user_enable = True
     has_content = True
@@ -72,13 +70,13 @@ class SignalsDebugPanel(DebugPanel):
     events = []  # type: List[dict]
 
     def nav_title(self):
-        return 'Signals'
+        return "Signals"
 
     def title(self):
-        return 'Signals'
+        return "Signals"
 
     def url(self):
-        return ''
+        return ""
 
     def content(self):
         # type: () -> Text
@@ -98,35 +96,29 @@ class SignalsDebugPanel(DebugPanel):
                 ns = var
                 ns_name = var_name
                 for signal_name, signal in ns.items():
-                    receivers = [
-                        text_type(r) for r in signal.receivers.values()
-                    ]
+                    receivers = [text_type(r) for r in signal.receivers.values()]
                     d = {
-                        'module_name': module_name,
-                        'ns_name': ns_name,
-                        'signal_name': signal_name,
-                        'signal': signal,
-                        'receivers': receivers,
+                        "module_name": module_name,
+                        "ns_name": ns_name,
+                        "signal_name": signal_name,
+                        "signal": signal,
+                        "receivers": receivers,
                     }
                     signals.append(d)
 
-        signals.sort(
-            key=lambda x: (d['module_name'], d['ns_name'], d['signal_name']),
-        )
+        signals.sort(key=lambda x: (d["module_name"], d["ns_name"], d["signal_name"]))
 
-        ctx = {'signals': signals, 'events': self.events}
+        ctx = {"signals": signals, "events": self.events}
 
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)
-        template = jinja_env.get_or_select_template(
-            'debug_panels/signals_panel.html',
-        )
+        template = jinja_env.get_or_select_template("debug_panels/signals_panel.html")
         return template.render(ctx)
 
     def process_request(self, request):
         self.events = []
 
-        if getattr(Signal.send, '__wrapped', False):
+        if getattr(Signal.send, "__wrapped", False):
             return
 
         orig_send = Signal.send
@@ -134,9 +126,9 @@ class SignalsDebugPanel(DebugPanel):
 
         def wrapped_send(self, *sender, **kwargs):
             d = {
-                'signal_name': self.name,
-                'sender': text_type(sender[0]),
-                'args': kwargs,
+                "signal_name": self.name,
+                "sender": text_type(sender[0]),
+                "args": kwargs,
             }
             events.append(d)
             return orig_send(self, *sender, **kwargs)

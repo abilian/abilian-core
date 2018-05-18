@@ -40,7 +40,7 @@ from . import indexing  # noqa
 from .base import manager
 from .config import manager as config_manager
 
-__all__ = ['manager', 'setup_abilian_commands']
+__all__ = ["manager", "setup_abilian_commands"]
 
 
 def setup_abilian_commands(manager):
@@ -56,7 +56,7 @@ def setup_abilian_commands(manager):
         my_manager = Manager(app)
         setup_abilian_commands(my_manager)
     """
-    abilian_manager = globals()['manager']
+    abilian_manager = globals()["manager"]
     manager._options.extend(abilian_manager._options)
 
     for name, command in abilian_manager._commands.items():

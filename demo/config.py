@@ -5,10 +5,10 @@ from __future__ import absolute_import, print_function, unicode_literals
 class Config(object):
     # specific (for this development instance)
     # SERVER_NAME = 'localhost:5000'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///data.db'
-    REDIS_URI = 'redis://localhost/0'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///data.db"
+    REDIS_URI = "redis://localhost/0"
     ANTIVIRUS_CHECK_REQUIRED = False
-    SECRET_KEY = 'toto'
+    SECRET_KEY = "toto"
 
     # develop settings
     DEBUG = True
@@ -20,13 +20,13 @@ class Config(object):
 
     # Generic for this project
     PRODUCTION = True
-    SITE_NAME = 'Abilian Core Demo'
-    MAIL_SENDER = 'sender@example.com'
-    SESSION_COOKIE_NAME = 'abilian-core-session'
+    SITE_NAME = "Abilian Core Demo"
+    MAIL_SENDER = "sender@example.com"
+    SESSION_COOKIE_NAME = "abilian-core-session"
     # LOGGING_CONFIG_FILE = 'logging.yml'
     PRIVATE_SITE = True
     MAIL_ASCII_ATTACHMENTS = True
-    BABEL_ACCEPT_LANGUAGES = ('fr', 'en', 'es', 'tr', 'zh')
+    BABEL_ACCEPT_LANGUAGES = ("fr", "en", "es", "tr", "zh")
 
     # celery settings
     BROKER_URL = REDIS_URI

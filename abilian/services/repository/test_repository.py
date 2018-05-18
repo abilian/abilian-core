@@ -10,7 +10,7 @@ from pytest import raises
 
 from . import repository
 
-UUID_STR = '4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9'
+UUID_STR = "4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9"
 UUID = uuid.UUID(UUID_STR)
 
 
@@ -19,7 +19,7 @@ def test_rel_path(session):
         repository.rel_path(UUID_STR)
 
     p = repository.rel_path(UUID)
-    expected = Path('4f', '80', '4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9')
+    expected = Path("4f", "80", "4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9")
     assert isinstance(p, Path)
     assert p == expected
 
@@ -47,14 +47,14 @@ def test_get(session):
     p = repository.abs_path(UUID)
     if not p.parent.exists():
         p.parent.mkdir(parents=True)
-    p.open('wb').write(b'my file content')
+    p.open("wb").write(b"my file content")
 
     val = repository.get(UUID)
     assert val == p
-    assert val.open('rb').read() == b'my file content'
+    assert val.open("rb").read() == b"my file content"
 
     # non-existent
-    u = uuid.UUID('bcdc32ac-498d-4544-9e7f-fb2c75097011')
+    u = uuid.UUID("bcdc32ac-498d-4544-9e7f-fb2c75097011")
     null = object()
     assert repository.get(u) is None
     assert repository.get(u, default=null) is null
@@ -62,7 +62,7 @@ def test_get(session):
     # __getitem__
     val = repository[UUID]
     assert val == p
-    assert val.open('rb').read() == b'my file content'
+    assert val.open("rb").read() == b"my file content"
 
     # __getitem__ non-existent
     with raises(KeyError):
@@ -72,21 +72,21 @@ def test_get(session):
 def test_set(session):
     u1 = uuid.uuid4()
     p = repository.abs_path(u1)
-    repository.set(u1, b'my file content')
-    assert p.open('rb').read() == b'my file content'
+    repository.set(u1, b"my file content")
+    assert p.open("rb").read() == b"my file content"
 
 
 def test_setitem(session):
     u1 = uuid.uuid4()
     p = repository.abs_path(u1)
-    repository[u1] = b'my file content'
-    assert p.open('rb').read() == b'my file content'
+    repository[u1] = b"my file content"
+    assert p.open("rb").read() == b"my file content"
     # FIXME: test Unicode content
 
 
 def test_delete(session):
     u1 = uuid.uuid4()
-    repository.set(u1, b'my file content')
+    repository.set(u1, b"my file content")
     p = repository.abs_path(u1)
     assert p.exists()
 
@@ -96,7 +96,7 @@ def test_delete(session):
 
 def test_delitem(session):
     u1 = uuid.uuid4()
-    repository.set(u1, b'my file content')
+    repository.set(u1, b"my file content")
     p = repository.abs_path(u1)
     assert p.exists()
 

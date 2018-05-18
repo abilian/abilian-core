@@ -20,7 +20,7 @@ from ..forms.widgets import EmailWidget, MainTableView, Panel, Row, \
 
 class WidgetTestModel(Entity):
     """Mock model."""
-    __tablename__ = 'widget_test_model'
+    __tablename__ = "widget_test_model"
     id = sa.Column(sa.Integer, primary_key=True)
     price = sa.Column(sa.Integer)
     email = sa.Column(sa.Text)
@@ -35,20 +35,20 @@ class WidgetTestModel(Entity):
 
 
 class DummyForm(Form):
-    name = StringField('Nom du véhicule')
+    name = StringField("Nom du véhicule")
     price = IntegerField("Prix du véhicule")
-    email = StringField('email', view_widget=EmailWidget())
+    email = StringField("email", view_widget=EmailWidget())
 
 
 def test_table_view(app, test_request_context):
 
     @default_view(app, WidgetTestModel)
-    @app.route('/dummy_view/<object_id>')
+    @app.route("/dummy_view/<object_id>")
     def dummy_view(object_id):
         pass
 
     request_started.send(app)  # needed for deferJS tag
-    columns = ['name', 'price']
+    columns = ["name", "price"]
     view = MainTableView(columns)
 
     model1 = WidgetTestModel(id=1, name="Renault Megane", price=10000)
@@ -63,15 +63,9 @@ def test_table_view(app, test_request_context):
 
 
 def test_single_view(test_request_context):
-    panels = [Panel('main', Row('name'), Row('price'), Row('email'))]
-    view = SingleView(
-        DummyForm, *panels, view=dict(can_edit=False, can_delete=False)
-    )
-    model = WidgetTestModel(
-        name="Renault Megane",
-        price=10000,
-        email="joe@example.com",
-    )
+    panels = [Panel("main", Row("name"), Row("price"), Row("email"))]
+    view = SingleView(DummyForm, *panels, view=dict(can_edit=False, can_delete=False))
+    model = WidgetTestModel(name="Renault Megane", price=10000, email="joe@example.com")
     form = DummyForm(obj=model)
     res = view.render(model, form)
 
@@ -84,7 +78,7 @@ def test_single_view(test_request_context):
 @mark.skip
 def test_edit_view(app):
     with app.test_request_context():
-        panels = [Panel('main', Row('name'), Row('price'))]
+        panels = [Panel("main", Row("name"), Row("price"))]
         view = SingleView(DummyForm, *panels)
         model = WidgetTestModel(name="Renault Megane", price=10000)
         form = DummyForm(obj=model)

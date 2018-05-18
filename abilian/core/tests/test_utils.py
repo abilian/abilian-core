@@ -49,26 +49,26 @@ def test_pagination_4():
 
 
 def test_slugify_basic():
-    slug = slugify('a b c')
-    assert slug == 'a-b-c'
+    slug = slugify("a b c")
+    assert slug == "a-b-c"
     assert isinstance(slug, text_type)
-    assert slugify(slug) == 'a-b-c'  # idempotent
+    assert slugify(slug) == "a-b-c"  # idempotent
 
 
 def test_slugify_separator():
-    slug = slugify("a-b++ c-+", '+')
-    assert slug == 'a+b+c'
+    slug = slugify("a-b++ c-+", "+")
+    assert slug == "a+b+c"
 
 
 def test_slugify_non_ascii():
     slug = slugify("C'est l'été !")
-    assert slug == 'c-est-l-ete'
+    assert slug == "c-est-l-ete"
 
     # with a special space character
     slug = slugify("a_b\u205fc")  # U+205F: MEDIUM MATHEMATICAL SPACE
-    assert slug == 'a-b-c'
+    assert slug == "a-b-c"
 
     # with non-ascii translatable chars, like EN DASH U+2013 (–) and EM DASH
     # U+2014 (—).
     # this test fails if regexp subst is done after Unicode normalization
-    assert slugify('a\u2013b\u2014c') == 'a-b-c'
+    assert slugify("a\u2013b\u2014c") == "a-b-c"

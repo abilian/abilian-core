@@ -11,7 +11,7 @@ class AnonymousUser(AnonymousUserMixin):
     def has_role(self, role):
         from abilian.services import get_service
 
-        security = get_service('security')
+        security = get_service("security")
         return security.has_role(self, role)
 
     @property

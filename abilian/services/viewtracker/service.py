@@ -7,19 +7,16 @@ from abilian.services import Service
 
 from .models import Hit, View
 
-__all__ = ['viewtracker']
+__all__ = ["viewtracker"]
 
 
 class ViewTracker(Service):
-    name = 'viewtracker'
+    name = "viewtracker"
 
     @staticmethod
     def record_hit(entity, user):
         # Using user_id here in case user is a threadload proxy
-        views = View.query.filter(
-            View.entity == entity,
-            View.user_id == user.id,
-        )
+        views = View.query.filter(View.entity == entity, View.user_id == user.id)
         if views.count():
             view = views.first()
             hit = Hit(view=view)
@@ -71,10 +68,11 @@ class ViewTracker(Service):
             views += [view]
 
         view_ids = [view_.id for view_ in views]
-        return Hit.query \
-            .filter(Hit.view_id.in_(view_ids)) \
-            .order_by(Hit.viewed_at.asc()) \
+        return (
+            Hit.query.filter(Hit.view_id.in_(view_ids))
+            .order_by(Hit.viewed_at.asc())
             .all()
+        )
 
 
 viewtracker = ViewTracker()

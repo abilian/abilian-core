@@ -14,33 +14,33 @@ def babel2datetime(pattern):
 
     map_fmt = {
         # days
-        'd': '%d',
-        'dd': '%d',
-        'EEE': '%a',
-        'EEEE': '%A',
-        'EEEEE': '%a',  # narrow name => short name
+        "d": "%d",
+        "dd": "%d",
+        "EEE": "%a",
+        "EEEE": "%A",
+        "EEEEE": "%a",  # narrow name => short name
         # months
-        'M': '%m',
-        'MM': '%m',
-        'MMM': '%b',
-        'MMMM': '%B',
+        "M": "%m",
+        "MM": "%m",
+        "MMM": "%b",
+        "MMMM": "%B",
         # years
-        'y': '%Y',
-        'yy': '%Y',
-        'yyyy': '%Y',
+        "y": "%Y",
+        "yy": "%Y",
+        "yyyy": "%Y",
         # hours
-        'h': '%I',
-        'hh': '%I',
-        'H': '%H',
-        'HH': '%H',
+        "h": "%I",
+        "hh": "%I",
+        "H": "%H",
+        "HH": "%H",
         # minutes,
-        'm': '%M',
-        'mm': '%M',
+        "m": "%M",
+        "mm": "%M",
         # seconds
-        's': '%S',
-        'ss': '%S',
+        "s": "%S",
+        "ss": "%S",
         # am/pm
-        'a': '%p',
+        "a": "%p",
     }
 
     return pattern.format % map_fmt

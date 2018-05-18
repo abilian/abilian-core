@@ -20,30 +20,30 @@ class NavItem(Action):
     divider = False
 
     def __init__(self, category, name, divider=False, *args, **kwargs):
-        category = 'navigation:' + category
+        category = "navigation:" + category
         Action.__init__(self, category, name, *args, **kwargs)
         self.divider = divider
 
     @getset
     def status(self, value=None):
-        current = g.nav.get('active')
+        current = g.nav.get("active")
         if current is None:
             return ENABLED
 
-        if not current.startswith('navigation:'):
-            current = 'navigation:' + current
+        if not current.startswith("navigation:"):
+            current = "navigation:" + current
 
         status = ACTIVE if current == self.path else ENABLED
         return status
 
     @property
     def path(self):
-        return self.category + ':' + self.name
+        return self.category + ":" + self.name
 
 
 class NavGroup(NavItem):
     """A navigation group renders a list of items."""
-    template_string = '''
+    template_string = """
     <ul class="nav navbar-nav {{ action.css_class }}">
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
@@ -58,7 +58,7 @@ class NavGroup(NavItem):
         </ul>
       </li>
     </ul>
-    '''
+    """
 
     def __init__(self, category, name, items=(), *args, **kwargs):
         NavItem.__init__(self, category, name, *args, **kwargs)
@@ -77,17 +77,17 @@ class NavGroup(NavItem):
 
     def get_render_args(self, **kwargs):
         params = super(NavGroup, self).get_render_args(**kwargs)
-        params['action_items'] = [a for a in self.items if a.available(params)]
+        params["action_items"] = [a for a in self.items if a.available(params)]
         return params
 
     @getset
     def status(self, value=None):
-        current = g.nav.get('active')
+        current = g.nav.get("active")
         if current is None:
             return ENABLED
 
-        if not current.startswith('navigation:'):
-            current = 'navigation:' + current
+        if not current.startswith("navigation:"):
+            current = "navigation:" + current
         status = ACTIVE if current in self._paths else ENABLED
         return status
 
@@ -108,18 +108,18 @@ class BreadcrumbItem(object):
 
     template_string = (
         '{%- if url %}<a href="{{ url }}">{%- endif %}'
-        '{%- if item.icon %}{{ item.icon }} {%- endif %}'
-        '{{ item.label }}'
-        '{%- if url %}</a>{%- endif %}'
+        "{%- if item.icon %}{{ item.icon }} {%- endif %}"
+        "{{ item.label }}"
+        "{%- if url %}</a>{%- endif %}"
     )
 
-    def __init__(self, label='', url='#', icon=None, description=None):
+    def __init__(self, label="", url="#", icon=None, description=None):
         # don't test 'label or...': if label is a lazy_gettext, it will be
         # resolved. If this item is created in a url_value_preprocessor, it will
         # setup i18n before auth has loaded user, so i18n will fallback on browser
         # negociation instead of user's site preference, and load wrong catalogs for
         # the whole request.
-        assert (label is not None or icon is None)
+        assert label is not None or icon is None
         self.label = label
         if isinstance(icon, string_types):
             icon = Glyphicon(icon)

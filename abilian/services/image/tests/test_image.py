@@ -12,15 +12,15 @@ from .. import CROP, FIT, SCALE, get_save_format, get_size, resize
 @fixture
 def orig_image():
     # 725x518
-    return (Path(__file__).parent / "cat.jpg").open('rb').read()
+    return (Path(__file__).parent / "cat.jpg").open("rb").read()
 
 
 def test_get_save_format():
-    assert get_save_format('JPG') == 'JPEG'
-    assert get_save_format('JPEG') == 'JPEG'
-    assert get_save_format('PNG') == 'PNG'
-    assert get_save_format('GIF') == 'PNG'
-    assert get_save_format('unknown') == 'JPEG'
+    assert get_save_format("JPG") == "JPEG"
+    assert get_save_format("JPEG") == "JPEG"
+    assert get_save_format("PNG") == "PNG"
+    assert get_save_format("GIF") == "PNG"
+    assert get_save_format("unknown") == "JPEG"
 
 
 def test_fit(orig_image):

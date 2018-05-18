@@ -41,7 +41,7 @@ login = Blueprint(
     __name__,
     url_prefix="/user",
     allowed_roles=Anonymous,
-    template_folder='templates',
+    template_folder="templates",
 )
 route = login.route
 
@@ -57,68 +57,64 @@ def login_form():
 
 
 def do_login(form):
-    email = form.get('email', "").lower()
-    password = form.get('password')
-    next_url = form.get('next', '')
+    email = form.get("email", "").lower()
+    password = form.get("password")
+    next_url = form.get("next", "")
     res = dict(username=email, email=email, next_url=next_url)
 
     if not email or not password:
-        res['error'] = _("You must provide your email and password.")
-        res['code'] = 401
+        res["error"] = _("You must provide your email and password.")
+        res["code"] = 401
         return res
 
     try:
-        user = User.query \
-            .filter(
-                sql.func.lower(User.email) == email,
-                User.can_login == True,
-            ) \
-            .one()
+        user = User.query.filter(
+            sql.func.lower(User.email) == email, User.can_login == True
+        ).one()
     except NoResultFound:
         auth_failed.send(current_app._get_current_object(), email=email)
-        res['error'] = _(
-            "Sorry, we couldn't find an account for "
-            "email '{email}'.",
+        res["error"] = _(
+            "Sorry, we couldn't find an account for " "email '{email}'."
         ).format(email=email)
-        res['code'] = 401
+        res["code"] = 401
         return res
 
     if user and not user.authenticate(password):
         auth_failed.send(current_app._get_current_object(), email=email)
-        res['error'] = _("Sorry, wrong password.")
-        res['code'] = 401
+        res["error"] = _("Sorry, wrong password.")
+        res["code"] = 401
         return res
 
     # Login successful
     login_user(user)
-    res['user'] = user
-    res['email'] = user.email
+    res["user"] = user
+    res["email"] = user.email
     return res
 
 
 @csrf.exempt
-@route("/login", methods=['POST'])
+@route("/login", methods=["POST"])
 def login_post():
     res = do_login(request.form)
-    if 'error' in res:
-        code = res.pop('code')
-        flash(res['error'], 'error')
+    if "error" in res:
+        code = res.pop("code")
+        flash(res["error"], "error")
         return (render_template("login/login.html", **res), code)
 
     return redirect_back(url=request.url_root)
 
 
 @csrf.exempt
-@route("/api/login", methods=['POST'])
+@route("/api/login", methods=["POST"])
 def login_json():
     res = do_login(request.get_json())
     code = None
 
-    if 'error' in res:
-        code = res.pop('code')
+    if "error" in res:
+        code = res.pop("code")
     else:
-        user = res.pop('user')
-        res['fullname'] = user.name
+        user = res.pop("user")
+        res["fullname"] = user.name
 
     response = jsonify(**res)
     if code:
@@ -127,17 +123,17 @@ def login_json():
 
 
 @csrf.exempt
-@route("/logout", methods=['GET', 'POST'])
+@route("/logout", methods=["GET", "POST"])
 def logout():
     logout_user()
     return redirect(request.url_root)
 
 
 @csrf.exempt
-@route("/api/logout", methods=['POST'])
+@route("/api/logout", methods=["POST"])
 def logout_json():
     logout_user()
-    return '{}', 200, {'content-type': 'application/json'}
+    return "{}", 200, {"content-type": "application/json"}
 
 
 #
@@ -150,33 +146,30 @@ def forgotten_pw_form():
     return render_template("login/forgotten_password.html")
 
 
-@route("/forgotten_pw", methods=['POST'])
+@route("/forgotten_pw", methods=["POST"])
 @csrf.exempt
 def forgotten_pw(new_user=False):
     """Reset password for users who have already activated their accounts."""
-    email = request.form.get('email', "").lower()
+    email = request.form.get("email", "").lower()
 
-    action = request.form.get('action')
+    action = request.form.get("action")
     if action == "cancel":
         return redirect(url_for("login.login_form"))
 
     if not email:
-        flash(_("You must provide your email address."), 'error')
+        flash(_("You must provide your email address."), "error")
         return render_template("login/forgotten_password.html")
 
     try:
-        user = User.query \
-            .filter(
-                sql.func.lower(User.email) == email,
-                User.can_login == True,
-            ) \
-            .one()
+        user = User.query.filter(
+            sql.func.lower(User.email) == email, User.can_login == True
+        ).one()
     except NoResultFound:
         flash(
-            _(
-                "Sorry, we couldn't find an account for "
-                "email '{email}'.",
-            ).format(email=email), 'error',
+            _("Sorry, we couldn't find an account for " "email '{email}'.").format(
+                email=email
+            ),
+            "error",
         )
         return render_template("login/forgotten_password.html"), 401
 
@@ -186,8 +179,7 @@ def forgotten_pw(new_user=False):
 
     send_reset_password_instructions(user)
     flash(
-        _("Password reset instructions have been sent to your email address."),
-        'info',
+        _("Password reset instructions have been sent to your email address."), "info"
     )
 
     return redirect(url_for("login.login_form"))
@@ -201,15 +193,15 @@ def reset_password(token):
     elif expired:
         flash(_("Password reset expired"), "error")
     if invalid or expired:
-        return redirect(url_for('login.forgotten_pw'))
+        return redirect(url_for("login.forgotten_pw"))
 
     return render_template_i18n("login/password_reset.html")
 
 
-@route("/reset_password/<token>", methods=['POST'])
+@route("/reset_password/<token>", methods=["POST"])
 @csrf.exempt
 def reset_password_post(token):
-    action = request.form.get('action')
+    action = request.form.get("action")
     if action == "cancel":
         return redirect(request.url_root)
 
@@ -220,9 +212,9 @@ def reset_password_post(token):
     elif expired:
         flash(_("Password reset expired"), "error")
     if invalid or expired or not user:
-        return redirect(url_for('login.forgotten_pw'))
+        return redirect(url_for("login.forgotten_pw"))
 
-    password = request.form.get('password')
+    password = request.form.get("password")
 
     if not password:
         flash(_("You must provide a password."), "error")
@@ -235,10 +227,8 @@ def reset_password_post(token):
 
     if password.lower() == password:
         flash(
-            _(
-                "Your new password must contain upper case and lower case "
-                "letters",
-            ), "error",
+            _("Your new password must contain upper case and lower case " "letters"),
+            "error",
         )
         return redirect(url_for("login.reset_password_post", token=token))
 
@@ -252,7 +242,7 @@ def reset_password_post(token):
     flash(
         _(
             "Your password has been changed. "
-            "You can now login with your new password",
+            "You can now login with your new password"
         ),
         "success",
     )
@@ -270,8 +260,8 @@ def random_password():
 def get_serializer(name):
     # type: (str) -> Any
     config = current_app.config
-    secret_key = config.get('SECRET_KEY')
-    salt = config.get('SECURITY_{}_SALT'.format(name.upper()))
+    secret_key = config.get("SECRET_KEY")
+    salt = config.get("SECURITY_{}_SALT".format(name.upper()))
     return URLSafeTimedSerializer(secret_key=secret_key, salt=salt)
 
 
@@ -282,20 +272,14 @@ def send_reset_password_instructions(user):
     :param user: The user to send the instructions to
     """
     token = generate_reset_password_token(user)
-    url = url_for('login.reset_password', token=token)
+    url = url_for("login.reset_password", token=token)
     reset_link = request.url_root[:-1] + url
 
-    subject = _(
-        "Password reset instruction for {site_name}",
-    ).format(site_name=current_app.config.get('SITE_NAME'))
-    mail_template = 'password_reset_instructions'
-    send_mail(
-        subject,
-        user.email,
-        mail_template,
-        user=user,
-        reset_link=reset_link,
+    subject = _("Password reset instruction for {site_name}").format(
+        site_name=current_app.config.get("SITE_NAME")
     )
+    mail_template = "password_reset_instructions"
+    send_mail(subject, user.email, mail_template, user=user, reset_link=reset_link)
 
 
 def generate_reset_password_token(user):
@@ -319,7 +303,7 @@ def reset_password_token_status(token):
 
     :param token: The password reset token
     """
-    return get_token_status(token, 'reset', 'RESET_PASSWORD')
+    return get_token_status(token, "reset", "RESET_PASSWORD")
 
 
 def get_token_status(token, serializer_name, max_age=None):
@@ -353,14 +337,14 @@ def send_mail(subject, recipient, template, **context):
     """
 
     config = current_app.config
-    sender = config['MAIL_SENDER']
+    sender = config["MAIL_SENDER"]
     msg = Message(subject, sender=sender, recipients=[recipient])
 
-    template_name = 'login/email/{}.txt'.format(template)
+    template_name = "login/email/{}.txt".format(template)
     msg.body = render_template_i18n(template_name, **context)
     # msg.html = render_template('%s/%s.html' % ctx, **context)
 
-    mail = current_app.extensions.get('mail')
+    mail = current_app.extensions.get("mail")
     current_app.logger.debug("Sending mail...")
     mail.send(msg)
 
@@ -391,8 +375,7 @@ def log_session_end(app, user):
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.url_root, target))
-    return test_url.scheme in ('http', 'https') and \
-        ref_url.netloc == test_url.netloc
+    return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
 
 
 def check_for_redirect(target):
@@ -400,8 +383,8 @@ def check_for_redirect(target):
     url = urlparse(target)
     reqctx = _request_ctx_stack.top
     try:
-        endpoint, ignored = reqctx.url_adapter.match(url.path, 'GET')
-        if '.' in endpoint and endpoint.rsplit('.', 1)[0] == 'login':
+        endpoint, ignored = reqctx.url_adapter.match(url.path, "GET")
+        if "." in endpoint and endpoint.rsplit(".", 1)[0] == "login":
             # don't redirect to any login view after successful login
             return None
     except Exception:
@@ -412,7 +395,7 @@ def check_for_redirect(target):
 
 
 def get_redirect_target():
-    for target in (request.values.get('next'), request.referrer):
+    for target in (request.values.get("next"), request.referrer):
         if not target:
             continue
         if is_safe_url(target):
@@ -420,7 +403,7 @@ def get_redirect_target():
 
 
 def redirect_back(endpoint=None, url=None, **values):
-    target = request.form.get('next')
+    target = request.form.get("next")
     if not target or not is_safe_url(target):
         if endpoint:
             target = url_for(endpoint, **values)

@@ -48,17 +48,17 @@ class _VocabularyMeta(_BaseMeta):
     """
 
     def __new__(cls, name, bases, d):
-        meta = d.get('Meta')
-        tblprefix = 'vocabulary_'
+        meta = d.get("Meta")
+        tblprefix = "vocabulary_"
 
-        group = slugify(meta.group or '', '_')
+        group = slugify(meta.group or "", "_")
         if group:
-            tblprefix += group + '_'
+            tblprefix += group + "_"
 
-        if not hasattr(meta, 'name'):
-            vocname = name.lower().replace('vocabulary', '')
+        if not hasattr(meta, "name"):
+            vocname = name.lower().replace("vocabulary", "")
             meta.name = vocname
-        d['__tablename__'] = tblprefix + meta.name
+        d["__tablename__"] = tblprefix + meta.name
         return _BaseMeta.__new__(cls, name, bases, d)
 
 
@@ -69,34 +69,21 @@ class BaseVocabulary(db.Model):
     __abstract__ = True
     query_class = VocabularyQuery
 
-    id = Column(
-        sa.Integer(),
-        primary_key=True,
-        autoincrement=True,
-        nullable=False,
-    )
+    id = Column(sa.Integer(), primary_key=True, autoincrement=True, nullable=False)
     label = Column(sa.UnicodeText(), nullable=False, unique=True)
     active = Column(
-        sa.Boolean(),
-        nullable=False,
-        server_default=sa.sql.true(),
-        default=True,
+        sa.Boolean(), nullable=False, server_default=sa.sql.true(), default=True
     )
     default = Column(
-        sa.Boolean(),
-        nullable=False,
-        server_default=sa.sql.false(),
-        default=False,
+        sa.Boolean(), nullable=False, server_default=sa.sql.false(), default=False
     )
     position = Column(sa.Integer, nullable=False, unique=True)
 
-    __table_args__ = (
-        sa.CheckConstraint(sa.sql.func.trim(sa.sql.text('label')) != '',),
-    )
+    __table_args__ = (sa.CheckConstraint(sa.sql.func.trim(sa.sql.text("label")) != ""),)
 
     @sa.ext.declarative.declared_attr
     def __mapper_args__(cls):
-        return {'order_by': [cls.__table__.c.position.asc()]}
+        return {"order_by": [cls.__table__.c.position.asc()]}
 
     class Meta(object):
         label = None
@@ -107,8 +94,8 @@ class BaseVocabulary(db.Model):
 
     def __repr__(self):
         tpl = (
-            '<{module}.{cls} id={id} label={label} position={position} '
-            'active={active} default={default} at 0x{addr:x}>'
+            "<{module}.{cls} id={id} label={label} position={position} "
+            "active={active} default={default} at 0x{addr:x}>"
         )
         cls = self.__class__
         return tpl.format(
@@ -136,9 +123,7 @@ def _before_insert(mapper, connection, target):
     """Set item to last position if position not defined."""
     if target.position is None:
         func = sa.sql.func
-        stmt = sa.select(
-            [func.coalesce(func.max(mapper.mapped_table.c.position), -1)],
-        )
+        stmt = sa.select([func.coalesce(func.max(mapper.mapped_table.c.position), -1)])
         target.position = connection.execute(stmt).scalar() + 1
 
 
@@ -157,7 +142,7 @@ def Vocabulary(name, label=None, group=None):
     if isinstance(name, bytes):
         name = name.decode()
 
-    cls_name = 'Vocabulary' + name.capitalize()
+    cls_name = "Vocabulary" + name.capitalize()
     if six.PY2:
         cls_name = bytes(cls_name)
 

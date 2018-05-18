@@ -36,7 +36,7 @@ class BaseObjectView(View):
     Model = None
 
     #: primary key name to look for in url arguments
-    pk = 'object_id'
+    pk = "object_id"
 
     #: object instance for this view
     obj = None
@@ -51,9 +51,7 @@ class BaseObjectView(View):
     #: generic templates with a custom base
     base_template = "base.html"
 
-    def __init__(
-        self, Model=None, pk=None, base_template=None, *args, **kwargs
-    ):
+    def __init__(self, Model=None, pk=None, base_template=None, *args, **kwargs):
         View.__init__(self, *args, **kwargs)
         cls = self.__class__
         self.pk = pk if pk is not None else cls.pk
@@ -86,7 +84,7 @@ class BaseObjectView(View):
         self.object_id = kwargs.pop(self.pk, None)
         if self.object_id is not None:
             self.obj = self.Model.query.get(self.object_id)
-            actions.context['object'] = self.obj
+            actions.context["object"] = self.obj
 
         return args, kwargs
 
@@ -97,10 +95,10 @@ class BaseObjectView(View):
             assert all(isinstance(b, nav.BreadcrumbItem) for b in bc)
             g.breadcrumb.extend(bc)
 
-        kwargs = {'base_template': self.base_template}
+        kwargs = {"base_template": self.base_template}
         kwargs.update(self.template_kwargs)
         # forbid override "view"
-        kwargs['view'] = self
+        kwargs["view"] = self
         return render_template(self.template, **kwargs)
 
     @property
@@ -117,7 +115,7 @@ class ObjectView(BaseObjectView):
     """View objects."""
 
     #: html template
-    template = 'default/object_view.html'
+    template = "default/object_view.html"
 
     #: View form class. Form object used to show objects fields
     Form = None
@@ -129,9 +127,7 @@ class ObjectView(BaseObjectView):
     #: form instance for this view
     form = None
 
-    def __init__(
-        self, Model=None, pk=None, Form=None, template=None, *args, **kwargs
-    ):
+    def __init__(self, Model=None, pk=None, Form=None, template=None, *args, **kwargs):
         super(ObjectView, self).__init__(Model, pk, *args, **kwargs)
         cls = self.__class__
         self.Form = Form if Form is not None else cls.Form
@@ -148,11 +144,11 @@ class ObjectView(BaseObjectView):
     def get_form_kwargs(self):
         kw = dict(obj=self.obj)
         if issubclass(self.Form, forms.Form) and self.permission:
-            kw['permission'] = self.permission
+            kw["permission"] = self.permission
         return kw
 
     def index_url(self):
-        return url_for('.index')
+        return url_for(".index")
 
     def redirect_to_index(self):
         return redirect(self.index_url())
@@ -161,37 +157,32 @@ class ObjectView(BaseObjectView):
     def template_kwargs(self):
         """Provides :attr:`form` to templates."""
         kw = super(ObjectView, self).template_kwargs
-        kw['form'] = self.form
+        kw["form"] = self.form
         return kw
 
 
 CANCEL_BUTTON = ButtonAction(
-    'form',
-    'cancel',
-    title=_l('Cancel'),
+    "form",
+    "cancel",
+    title=_l("Cancel"),
     # .cancel: if jquery.validate is used it will properly skip validation
-    btn_class='default cancel',
+    btn_class="default cancel",
 )
 
-EDIT_BUTTON = ButtonAction(
-    'form',
-    'edit',
-    btn_class='primary',
-    title=_l('Save'),
-)
+EDIT_BUTTON = ButtonAction("form", "edit", btn_class="primary", title=_l("Save"))
 
 ADD_ANOTHER_BUTTON = ButtonAction(
-    'form',
-    'create_add_another',
-    btn_class='primary',
-    title=_l('Create and add another'),
-    condition=lambda ctx: getattr(ctx['view'], 'add_another_button', False),
+    "form",
+    "create_add_another",
+    btn_class="primary",
+    title=_l("Create and add another"),
+    condition=lambda ctx: getattr(ctx["view"], "add_another_button", False),
 )
 
 
 class ObjectEdit(ObjectView):
     """Edit object."""
-    template = 'default/object_edit.html'
+    template = "default/object_edit.html"
     decorators = (csrf.support_graceful_failure,)
     permission = WRITE
 
@@ -208,7 +199,7 @@ class ObjectEdit(ObjectView):
     button = None
 
     #: verb used to describe activity
-    activity_verb = 'update'
+    activity_verb = "update"
 
     #: UI flash message
     _message_success = _l("Entity successfully edited")
@@ -226,22 +217,20 @@ class ObjectEdit(ObjectView):
         *args,
         **kwargs
     ):
-        ObjectView.__init__(
-            self, Model, pk, Form, template=template, *args, **kwargs
-        )
+        ObjectView.__init__(self, Model, pk, Form, template=template, *args, **kwargs)
         if view_endpoint is not None:
             self.view_endpoint = view_endpoint
 
         if not self.view_endpoint:
-            self.view_endpoint = '.{}_view'.format(self.Model.__name__)
+            self.view_endpoint = ".{}_view".format(self.Model.__name__)
 
         if message_success:
             self._message_success = message_success
 
     def post(self, *args, **kwargs):
         # conservative: no action submitted -> cancel
-        action = self.data.get('__action', 'cancel')
-        if action == 'cancel':
+        action = self.data.get("__action", "cancel")
+        if action == "cancel":
             return self.cancel()
 
         return self.handle_action(action)
@@ -260,10 +249,7 @@ class ObjectEdit(ObjectView):
 
     @property
     def buttons(self):
-        return (
-            button for button in self._buttons
-            if button.available(actions.context)
-        )
+        return (button for button in self._buttons if button.available(actions.context))
 
     def view_url(self):
         kw = {self.pk: self.obj.id}
@@ -285,14 +271,11 @@ class ObjectEdit(ObjectView):
             if action == button.name:
                 if not button.available(dict(view=self)):
                     raise ValueError(
-                        'Action "{}" not available'
-                        ''.format(action.encode('utf-8'))
+                        'Action "{}" not available' "".format(action.encode("utf-8"))
                     )
                 break
         else:
-            raise ValueError(
-                'Unknown action: "{}"'.format(action.encode('utf-8'),),
-            )
+            raise ValueError('Unknown action: "{}"'.format(action.encode("utf-8")))
 
         self.action = action
         self.button = button
@@ -307,7 +290,7 @@ class ObjectEdit(ObjectView):
         else:
             if request.csrf_failed:
                 errors = self.form.errors
-                csrf_failed = errors.pop('csrf_token', False)
+                csrf_failed = errors.pop("csrf_token", False)
                 if csrf_failed and not errors:
                     # failed only because of invalid/expired csrf, no error on
                     # form
@@ -395,10 +378,7 @@ class ObjectEdit(ObjectView):
                 return rv
             session.rollback()
             logger.error(e)
-            flash(
-                _("An entity with this name already exists in the system."),
-                "error",
-            )
+            flash(_("An entity with this name already exists in the system."), "error")
             return self.get()
 
         else:
@@ -433,7 +413,7 @@ class ObjectEdit(ObjectView):
         It must return a valid :class:`Flask.Response` instance. By default it
         returns to edit form screen with an informative message.
         """
-        current_app.extensions['csrf-handler'].flash_csrf_failed_message()
+        current_app.extensions["csrf-handler"].flash_csrf_failed_message()
         return self.get()
 
     def send_activity(self):
@@ -451,26 +431,21 @@ class ObjectEdit(ObjectView):
         return None
 
 
-CREATE_BUTTON = ButtonAction(
-    'form',
-    'create',
-    btn_class='primary',
-    title=_l('Create'),
-)
+CREATE_BUTTON = ButtonAction("form", "create", btn_class="primary", title=_l("Create"))
 CHAIN_CREATE_BUTTON = ButtonAction(
-    'form',
-    'chain_create',
-    btn_class='primary',
-    title=_l('Create and add new'),
+    "form",
+    "chain_create",
+    btn_class="primary",
+    title=_l("Create and add new"),
     endpoint=lambda ctx: Endpoint(request.endpoint, **request.view_args),
-    condition=lambda ctx: getattr(ctx['view'], 'chain_create_allowed', False),
+    condition=lambda ctx: getattr(ctx["view"], "chain_create_allowed", False),
 )
 
 
 class ObjectCreate(ObjectEdit):
     """Create a new object."""
     permission = CREATE
-    activity_verb = 'post'
+    activity_verb = "post"
     _message_success = _l("Entity successfully added")
 
     #: set to `True` to show 'Save and add new' button
@@ -503,11 +478,11 @@ class ObjectCreate(ObjectEdit):
 
     def get_form_kwargs(self):
         kw = super(ObjectCreate, self).get_form_kwargs()
-        if request.method == 'GET':
+        if request.method == "GET":
             # when GET allow form prefill instead of empty/current object data
             # FIXME: filter allowed parameters on given a field flags (could be
             # 'allow_from_get'?)
-            kw['formdata'] = request.args
+            kw["formdata"] = request.args
 
         return kw
 
@@ -527,7 +502,7 @@ class ObjectCreate(ObjectEdit):
         return self.redirect_to_index()
 
 
-DELETE_BUTTON = ButtonAction('form', 'delete', title=_l('Delete'))
+DELETE_BUTTON = ButtonAction("form", "delete", title=_l("Delete"))
 
 
 class ObjectDelete(ObjectEdit):
@@ -535,9 +510,9 @@ class ObjectDelete(ObjectEdit):
 
     Supports the DELETE verb.
     """
-    methods = ['POST']
+    methods = ["POST"]
     permission = DELETE
-    activity_verb = 'delete'
+    activity_verb = "delete"
     _message_success = _l("Entity deleted")
 
     init_object = BaseObjectView.init_object
@@ -569,7 +544,7 @@ class ObjectDelete(ObjectEdit):
             )
             return self.redirect_to_view()
         else:
-            flash(self.message_success(), 'success')
+            flash(self.message_success(), "success")
             # FIXME: for DELETE verb response in case of success should be 200, 202
             # (accepted) or 204 (no content)
             return self.redirect_to_index()
@@ -580,10 +555,9 @@ class JSONBaseSearch(JSONView):
     minimum_input_length = 2
 
     def __init__(self, *args, **kwargs):
-        Model = kwargs.pop('Model', self.Model)
+        Model = kwargs.pop("Model", self.Model)
         minimum_input_length = kwargs.pop(
-            'minimum_input_length',
-            self.minimum_input_length,
+            "minimum_input_length", self.minimum_input_length
         )
         super(JSONBaseSearch, self).__init__(*args, **kwargs)
         self.Model = Model
@@ -591,14 +565,12 @@ class JSONBaseSearch(JSONView):
 
     def prepare_args(self, args, kwargs):
         args, kwargs = JSONView.prepare_args(self, args, kwargs)
-        kwargs['q'] = kwargs.get("q", '').replace("%", " ").lower()
+        kwargs["q"] = kwargs.get("q", "").replace("%", " ").lower()
         return args, kwargs
 
     def data(self, q, *args, **kwargs):
         if self.minimum_input_length and len(q) < self.minimum_input_length:
-            msg = 'Minimum query length is {:d}'.format(
-                self.minimum_input_length,
-            )
+            msg = "Minimum query length is {:d}".format(self.minimum_input_length)
             raise BadRequest(msg)
 
         results = []
@@ -636,7 +608,7 @@ class JSONModelSearch(JSONBaseSearch):
         return query.all()
 
     def options(self, query):
-        return query.options(sa.orm.noload('*'))
+        return query.options(sa.orm.noload("*"))
 
     def filter(self, query, q, **kwargs):
         if not q:
@@ -663,8 +635,8 @@ class JSONWhooshSearch(JSONBaseSearch):
     example."""
 
     def get_results(self, q, *args, **kwargs):
-        svc = get_service('indexing')
-        search_kwargs = {'limit': 50, 'Models': (self.Model,)}
+        svc = get_service("indexing")
+        search_kwargs = {"limit": 50, "Models": (self.Model,)}
         results = svc.search(q, **search_kwargs)
 
         itemkey = None
@@ -675,16 +647,17 @@ class JSONWhooshSearch(JSONBaseSearch):
             if not results.is_empty():
                 res = results[0]
                 fields = res.fields()
-                if 'nom' in fields:
-                    itemkey = 'nom'
-                elif 'name' in fields:
-                    itemkey = 'name'
+                if "nom" in fields:
+                    itemkey = "nom"
+                elif "name" in fields:
+                    itemkey = "name"
                 if itemkey:
                     results.sort(key=lambda it: it.fields().get(itemkey))
         except Exception:
             if itemkey is not None:
-                msg = "we could not sort whoosh results on fields' key {}." \
-                    .format(itemkey)
+                msg = "we could not sort whoosh results on fields' key {}.".format(
+                    itemkey
+                )
                 logger.warning(msg)
 
         return results
@@ -695,4 +668,4 @@ class JSONWhooshSearch(JSONBaseSearch):
         :param hit: Hit object from Whoosh
         :returns: a dictionnary with at least `id` and `text` values
         """
-        return dict(id=hit['id'], text=hit['name'], name=hit['name'])
+        return dict(id=hit["id"], text=hit["name"], name=hit["name"])
