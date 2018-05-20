@@ -159,7 +159,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
         roles = [
             r for r in security.get_roles(self.obj, no_group_roles=True) if r.assignable
         ]
-        kw["roles"] = [r.name for r in roles]
+        kw["roles"] = [role.name for role in roles]
         return kw
 
     def after_populate_obj(self):
