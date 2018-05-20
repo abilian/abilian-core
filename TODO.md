@@ -2,7 +2,7 @@
 
 ## Python 3 & deps upgrades
 
-- [] Upgrade Flask-WTF to 0.13 and fix metaclass error
+- [] Upgrade Flask-WTF to 0.13 and fix metaclass error + csrf_token issues
 - [] Ugrade flask-sqlalchemy and other SQLA releated deps
 - [] Fix SQLA warnings
 - [] Fix all tests (including skipped ones) under Python 3.6
