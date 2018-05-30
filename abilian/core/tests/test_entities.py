@@ -124,7 +124,6 @@ def test_meta(session):
 
 
 def test_entity_type():
-
     class MyType(Entity):
         pass
 

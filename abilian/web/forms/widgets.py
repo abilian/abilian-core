@@ -125,7 +125,6 @@ def text2html(text):
 
 
 class Column(object):
-
     def __init__(self, **kw):
         for k, w in kw.items():
             setattr(self, k, w)
@@ -274,12 +273,14 @@ class BaseTableView(object):
 
 class MainTableView(BaseTableView):
     """Table view for main objects list."""
+
     show_controls = True
     paginate = True
 
 
 class RelatedTableView(BaseTableView):
     """Table view for related objects list."""
+
     show_controls = False
     paginate = False
 
@@ -289,6 +290,7 @@ class AjaxMainTableView(object):
 
     TODO: refactor all of this (currently code is copy/pasted!).
     """
+
     show_controls = False
     paginate = True
     options = {}
@@ -635,6 +637,7 @@ class TextInput(wtforms.widgets.TextInput):
     An Icon can be a plain string, or an instance of
     :class:`abilian.web.action.Icon`.
     """
+
     pre_icon = None
     post_icon = None
 
@@ -681,6 +684,7 @@ class TextInput(wtforms.widgets.TextInput):
 class TextArea(BaseTextArea):
     """Accepts "resizeable" parameter: "vertical", "horizontal", "both",
     None."""
+
     _resizeable_valid = ("vertical", "horizontal", "both", None)
     resizeable = None
     rows = None
@@ -935,6 +939,7 @@ class DateInput(Input):
 
     https://github.com/eternicode/bootstrap-datepicker
     """
+
     input_type = "date"
 
     def __call__(self, field, **kwargs):
@@ -988,6 +993,7 @@ class TimeInput(Input):
 
     https://github.com/jdewit/bootstrap-timepicker
     """
+
     template = "widgets/timepicker.html"
 
     def __init__(
@@ -1125,7 +1131,6 @@ class DateTimeInput(object):
 
 
 class DefaultViewWidget(object):
-
     def render_view(self, field, **kwargs):
         value = field.object_data
         if isinstance(value, string_types):
@@ -1211,19 +1216,16 @@ class FloatWidget(wtforms.widgets.TextInput):
 
 
 class DateWidget(wtforms.widgets.TextInput):
-
     def render_view(self, field, **kwargs):
         return format_date(field.object_data) if field.object_data else ""
 
 
 class DateTimeWidget(DateWidget):
-
     def render_view(self, field, **kwargs):
         return format_datetime(field.object_data) if field.object_data else ""
 
 
 class EntityWidget(object):
-
     def render_view(self, field, **kwargs):
         objs = field.object_data
         if not field.multiple:
@@ -1240,6 +1242,7 @@ class HoursWidget(TextInput):
 
     Currently hardcoded to heure(s)
     """
+
     post_icon = _l("hour(s)")
     input_type = "number"
 
@@ -1259,6 +1262,7 @@ class MoneyWidget(TextInput):
 
     Currently hardcoded to € / k€.
     """
+
     post_icon = "€"
     input_type = "number"
 
@@ -1299,7 +1303,6 @@ class EmailWidget(TextInput):
 
 
 class URLWidget(object):
-
     def render_view(self, field, **kwargs):
         return linkify_url(field.object_data) if field.object_data else ""
 
@@ -1383,6 +1386,7 @@ class ListWidget(wtforms.widgets.ListWidget):
 
 class FieldListWidget(object):
     """For list of Fields (using <tr><td>)"""
+
     view_template = "widgets/fieldlist_view.html"
     template = "widgets/fieldlist.html"
 
@@ -1433,7 +1437,6 @@ class TabularFieldListWidget(object):
 
 
 class ModelListWidget(object):
-
     def __init__(self, template="widgets/horizontal_table.html"):
         self.template = template
 
@@ -1473,6 +1476,7 @@ class Select2(Select):
 
     Depends on global JS code.
     """
+
     unescape_html = False
 
     def __init__(self, unescape_html=False, js_init="select2", *args, **kwargs):

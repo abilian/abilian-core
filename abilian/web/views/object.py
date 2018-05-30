@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 class BaseObjectView(View):
     """Base class common to all database objects views."""
+
     #: form title
     title = None
 
@@ -182,6 +183,7 @@ ADD_ANOTHER_BUTTON = ButtonAction(
 
 class ObjectEdit(ObjectView):
     """Edit object."""
+
     template = "default/object_edit.html"
     decorators = (csrf.support_graceful_failure,)
     permission = WRITE
@@ -444,6 +446,7 @@ CHAIN_CREATE_BUTTON = ButtonAction(
 
 class ObjectCreate(ObjectEdit):
     """Create a new object."""
+
     permission = CREATE
     activity_verb = "post"
     _message_success = _l("Entity successfully added")
@@ -510,6 +513,7 @@ class ObjectDelete(ObjectEdit):
 
     Supports the DELETE verb.
     """
+
     methods = ["POST"]
     permission = DELETE
     activity_verb = "delete"

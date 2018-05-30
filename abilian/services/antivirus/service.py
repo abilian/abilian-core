@@ -62,6 +62,7 @@ if CLAMD_AVAILABLE:
 
 class AntiVirusService(Service):
     """Antivirus service."""
+
     name = "antivirus"
 
     def scan(self, file_or_stream):

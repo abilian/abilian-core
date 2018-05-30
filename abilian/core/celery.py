@@ -109,6 +109,7 @@ class FlaskLoader(BaseLoader):
 
 class FlaskTask(Task):
     """Base Task class for :FlaskCelery: based applications."""
+
     abstract = True
 
     def __call__(self, *args, **kwargs):

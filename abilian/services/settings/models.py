@@ -16,7 +16,6 @@ __all__ = ["Setting"]
 
 
 class TransformerRegistry(object):
-
     def __init__(self):
         self.encoders = {}  # type: Dict[text_type, Optional[Callable]]
         self.decoders = {}  # type: Dict[text_type, Optional[Callable]]
@@ -44,7 +43,6 @@ _transformers = TransformerRegistry()
 
 
 class _EmptyValue(object):
-
     def __bool__(self):
         return False
 
@@ -65,6 +63,7 @@ class Setting(db.Model):
 
     value must be stored as Unicode.
     """
+
     transformers = _transformers
     key = sa.Column("key", sa.String(length=1000), primary_key=True)
 

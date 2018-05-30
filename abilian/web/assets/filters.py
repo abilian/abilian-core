@@ -20,6 +20,7 @@ from webassets.utils import working_directory
 class ImportCSSFilter(Filter):
     """This filter searches (recursively) '@import' rules and replaces them by
     content of target file."""
+
     name = "cssimporter"
     max_debug_level = None
 
@@ -94,6 +95,7 @@ class LessImportFilter(Filter):
     This allows to generate a single less file for application, where
     abilian properties can be overridden by application.
     """
+
     name = "less_import"
     options = {"run_in_debug": "LESS_RUN_IN_DEBUG"}  # use same option as less filter
     max_debug_level = None
@@ -316,7 +318,6 @@ class Less(ExternalTool):
 
 
 class ClosureJS(BaseClosureJS):
-
     def setup(self):
         super(ClosureJS, self).setup()
         self.source_files = []

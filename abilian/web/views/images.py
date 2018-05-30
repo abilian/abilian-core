@@ -108,6 +108,7 @@ class StaticImageView(BaseImageView):
 
     Useful for default avatars for example.
     """
+
     expire_vary_arg = "md5"
 
     def __init__(self, image, *args, **kwargs):
@@ -131,6 +132,7 @@ class BlobView(BaseImageView):
 
     :attr:`set_expire` is set to `False` by default.
     """
+
     expire_vary_arg = "md5"
     id_arg = "object_id"
 

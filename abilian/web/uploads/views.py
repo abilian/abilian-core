@@ -23,7 +23,6 @@ class UploadForm(Form):
 
 
 class BaseUploadsView(object):
-
     def prepare_args(self, args, kwargs):
         args, kwargs = super(BaseUploadsView, self).prepare_args(args, kwargs)
         self.uploads = current_app.extensions["uploads"]
@@ -33,6 +32,7 @@ class BaseUploadsView(object):
 
 class NewUploadView(BaseUploadsView, JSONView):
     """Upload a new file."""
+
     methods = ["POST", "PUT"]
     decorators = (csrf.support_graceful_failure,)
 
@@ -65,6 +65,7 @@ bp.add_url_rule("/", view_func=NewUploadView.as_view("new_file"))
 
 class UploadView(BaseUploadsView, View):
     """Manage an uploaded file: download, delete."""
+
     methods = ["GET", "DELETE"]
     decorators = (csrf.support_graceful_failure,)
 

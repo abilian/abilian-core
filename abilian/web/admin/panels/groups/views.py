@@ -142,7 +142,6 @@ class GroupView(GroupBase, views.ObjectView):
 
 
 class GroupEdit(GroupBase, views.ObjectEdit):
-
     def breadcrumb(self):
         label = render_template_string("<em>{{ g }}</em>", g=self.obj.name)
         return BreadcrumbItem(label=label, url="", description=self.obj.name)

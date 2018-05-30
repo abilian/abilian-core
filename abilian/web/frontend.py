@@ -127,6 +127,7 @@ class ModuleView(object):
 
     Provide :attr:`module`.
     """
+
     #: :class:`Module` instance
     module = None  # type: Module
 
@@ -360,6 +361,7 @@ class ModuleMeta(type):
 
 class ModuleComponent(object):
     """A component that provide new functions for a :class:`Module`"""
+
     name = None  # type: str
 
     def __init__(self, name=None):

@@ -87,6 +87,7 @@ class AuditPanel(AdminPanel):
     * before: events that happened immediately before 't' (less recent than 't')
     * after: events that happened immediately after 't' (more recent than 't')
     """
+
     id = "audit"
     label = "Audit trail"
     icon = "list-alt"
@@ -295,7 +296,6 @@ class BaseEntryPresenter(object):
 
 
 class AuditEntryPresenter(BaseEntryPresenter):
-
     def __init__(self, entry):
         assert isinstance(entry, AuditEntry)
         super(AuditEntryPresenter, self).__init__(entry.user, entry.happened_at)
@@ -347,7 +347,6 @@ class AuditEntryPresenter(BaseEntryPresenter):
 
 
 class SecurityEntryPresenter(BaseEntryPresenter):
-
     def __init__(self, entry):
         assert isinstance(entry, SecurityAudit)
         super(SecurityEntryPresenter, self).__init__(entry.manager, entry.happened_at)

@@ -19,7 +19,6 @@ _BaseMeta = db.Model.__class__
 
 
 class VocabularyQuery(BaseQuery):
-
     def active(self):
         """Returns only valid vocabulary items."""
         return self.filter_by(active=True)
@@ -66,6 +65,7 @@ class _VocabularyMeta(_BaseMeta):
 @six.add_metaclass(_VocabularyMeta)
 class BaseVocabulary(db.Model):
     """Base abstract class for vocabularies."""
+
     __abstract__ = True
     query_class = VocabularyQuery
 

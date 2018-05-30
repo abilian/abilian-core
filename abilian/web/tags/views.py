@@ -21,6 +21,7 @@ bp = Blueprint("tags", __name__, url_prefix="/tags", template_folder="templates"
 
 class BaseTagView(object):
     """Mixin for tag views."""
+
     Model = Tag
     Form = TagForm
 
@@ -60,7 +61,6 @@ entity_bp = Blueprint("entity_tags", __name__, url_prefix="/tags/entity")
 
 
 class BaseEntityTagView(BaseTagView):
-
     def init_object(self, args, kwargs):
         args, kwargs = super(BaseEntityTagView, self).init_object(args, kwargs)
         entity_id = kwargs.pop("entity_id", None)
@@ -81,7 +81,6 @@ class BaseEntityTagView(BaseTagView):
 
 
 class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
-
     def get(self, *args, **kwargs):
         return JSONView.get(self, *args, **kwargs)
 

@@ -211,6 +211,7 @@ class NSView(View):
 
 class BaseTagView(object):
     """Mixin for tag views."""
+
     Model = Tag
     Form = TagForm
 
@@ -250,6 +251,7 @@ class TagEdit(BaseTagView, ObjectEdit):
 
 class TagPanel(AdminPanel):
     """Tags administration."""
+
     id = "tags"
     label = _l("Tags")
     icon = "tags"

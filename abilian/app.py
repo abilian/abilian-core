@@ -130,7 +130,6 @@ class PluginManager(object):
 
 
 class AssetManagerMixin(Flask):
-
     def init_assets(self):
         js_filters = ("closure_js",) if self.config.get("PRODUCTION", False) else None
         # js_filters = None
@@ -290,7 +289,6 @@ class AssetManagerMixin(Flask):
 
 
 class ErrorManagerMixin(Flask):
-
     def setup_logging(self):
         # Force flask to create application logger before logging
         # configuration; else, flask will overwrite our settings
@@ -461,7 +459,6 @@ class ErrorManagerMixin(Flask):
 
 
 class JinjaManagerMixin(Flask):
-
     def __init__(self):
         self._jinja_loaders = []
 
@@ -550,6 +547,7 @@ class Application(
 
     Extend it in your own app.
     """
+
     default_config = default_config
 
     #: Custom apps may want to always load some plugins: list them here.

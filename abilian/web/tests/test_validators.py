@@ -15,7 +15,6 @@ class DummyForm(Form):
 
 
 class DummyField(object):
-
     def __init__(self, data, errors=(), raw_data=None):
         self.data = data
         self.errors = list(errors)

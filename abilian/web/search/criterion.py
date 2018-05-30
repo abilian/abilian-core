@@ -196,7 +196,6 @@ class TextSearchCriterion(BaseCriterion):
 
 
 class TextCriterion(TextSearchCriterion):
-
     def __init__(self, name, label="", attributes=None, search_fmt="%{q}%"):
         super(TextCriterion, self).__init__(name, label, attributes, search_fmt)
 

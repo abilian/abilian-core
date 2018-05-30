@@ -78,7 +78,6 @@ class Cache(object):
 
 
 class Converter(object):
-
     def __init__(self):
         self.handlers = []
         self.cache = Cache()

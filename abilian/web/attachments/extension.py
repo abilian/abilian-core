@@ -67,6 +67,7 @@ class AttachmentsManager(object):
 
     can be used as class decorator
     """
+
     Form = AttachmentForm
     macros_template = "macros/attachment.html"
 

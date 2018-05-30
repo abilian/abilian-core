@@ -34,6 +34,7 @@ class RepositoryServiceState(ServiceState):
 
 class RepositoryService(Service):
     """Service for storage of binary objects referenced in database."""
+
     name = "repository"
     AppStateClass = RepositoryServiceState
 
@@ -257,6 +258,7 @@ class SessionRepositoryService(Service):
 
     All content is stored using the main :class:`RepositoryService`.
     """
+
     name = "session_repository"
     AppStateClass = SessionRepositoryState
 
@@ -368,7 +370,6 @@ session_repository = SessionRepositoryService()
 
 
 class RepositoryTransaction(object):
-
     def __init__(self, root_path, parent=None):
         self.path = root_path / str(uuid1())
         # if parent is not None and parent.cleared:

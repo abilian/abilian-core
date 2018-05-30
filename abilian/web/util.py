@@ -78,7 +78,6 @@ def capture_stream_errors(logger, msg):
         logger = logging.getLogger(logger)
 
     def decorator(fun):
-
         @stream_with_context
         def wrapper(*args, **kwargs):
             # this is for developpers convenience. The debugger middleware doesn't

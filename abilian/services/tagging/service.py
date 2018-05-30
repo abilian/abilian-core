@@ -9,6 +9,7 @@ class Taggable(object):
 
     Currently not used.
     """
+
     pass
 
 

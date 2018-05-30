@@ -12,7 +12,6 @@ class Like(object):
 
 
 class LikeService(object):
-
     def like(self, object, user=None):
         """Given or current user likes the given likeable object."""
 

@@ -76,6 +76,7 @@ class Tag(IdMixin, Model):
     They are namespaced, so that independent group of tags can be
     defined in the application. The default namespace is `"default"`.
     """
+
     __tablename__ = "tag"
 
     #: namespace

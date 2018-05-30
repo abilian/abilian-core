@@ -29,7 +29,6 @@ from .owned import OwnedMixin
 
 @python_2_unicode_compatible
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
-
     @declared_attr
     def __tablename__(cls):
         return cls.__name__.lower()

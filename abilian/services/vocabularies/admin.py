@@ -36,7 +36,6 @@ class ViewBase(object):
 
 
 class Edit(ViewBase, views.ObjectEdit):
-
     def prepare_args(self, args, kwargs):
         args, kwargs = ViewBase.prepare_args(self, args, kwargs)
         return views.ObjectEdit.prepare_args(self, args, kwargs)
@@ -50,7 +49,6 @@ class Edit(ViewBase, views.ObjectEdit):
 
 
 class Create(views.ObjectCreate, Edit):
-
     def init_object(self, args, kwargs):
         args, kwargs = super(Create, self).init_object(args, kwargs)
         self.obj.active = True  # do this because default value seems ignored?
@@ -63,6 +61,7 @@ class Delete(ViewBase, views.ObjectDelete):
 
 class VocabularyPanel(AdminPanel):
     """Vocabularies administration."""
+
     id = "vocabularies"
     label = _l("Vocabularies")
     icon = "list"

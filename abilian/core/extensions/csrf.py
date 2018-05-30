@@ -20,6 +20,7 @@ class AbilianCsrf(object):
 
     views supporting this must
     """
+
     #: for views that gracefully support csrf errors, this message can be
     #: displayed to user. It can be changed if you have a better one for your
     #: users.

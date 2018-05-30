@@ -37,7 +37,6 @@ class AdminPanel(PreferencePanel):
 
 
 class Application(BaseApplication):
-
     def init_extensions(self):
         super(Application, self).init_extensions()
         prefs = self.services["preferences"]

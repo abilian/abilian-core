@@ -68,6 +68,7 @@ class Icon(object):
 
 class NamedIconBase(Icon):
     """Renders markup for named icons set."""
+
     template = None
 
     def __init__(self, name=""):
@@ -79,16 +80,19 @@ class NamedIconBase(Icon):
 
 class Glyphicon(NamedIconBase):
     """Renders markup for bootstrap's glyphicons."""
+
     template = Template('<i class="glyphicon glyphicon-{{ name }}"></i>')
 
 
 class FAIcon(NamedIconBase):
     """Renders markup for FontAwesome icons."""
+
     template = Template('<i class="fa fa-{{ name }}"></i>')
 
 
 class FAIconStacked(NamedIconBase):
     """Stacked FA icons."""
+
     template = Template(
         '<span class="fa-stack {%- if stack_class %} {{ stack_class }}'
         '{%- endif %}">\n'
@@ -218,6 +222,7 @@ class Endpoint(object):
 
 class Action(object):
     """Action interface."""
+
     Endpoint = Endpoint
     category = None
     name = None
@@ -477,6 +482,7 @@ class ButtonAction(Action):
 
 class ActionGroup(Action):
     """A group of single actions."""
+
     template_string = (
         '<div class="btn-group" role="group" aria-label="{{ action.name}}">'
         "{%- for entry in action_items %}"
@@ -497,6 +503,7 @@ class ActionGroup(Action):
 
 class ActionDropDown(ActionGroup):
     """Renders as a button dropdown."""
+
     template_string = """
     <div class="btn-group">
         <button type="button" class="{{ action.css_class }} dropdown-toggle"
@@ -535,6 +542,7 @@ class ActionRegistry(object):
 
     The registry is available in jinja2 templates as `actions`.
     """
+
     __EXTENSION_NAME = "abilian:actions"
 
     def init_app(self, app):

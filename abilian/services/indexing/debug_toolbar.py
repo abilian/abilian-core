@@ -18,6 +18,7 @@ class IndexedTermsDebugPanel(DebugPanel):
     FIXME: this notion of "current" object should formalized in
     abilian.app.Application
     """
+
     name = "IndexedTerms"
 
     @property

@@ -17,6 +17,7 @@ class ServiceNotRegistered(Exception):
 
 class ServiceState(object):
     """Service state stored in Application.extensions."""
+
     #: reference to :class:`Service` instance
     service = None
 
@@ -30,6 +31,7 @@ class ServiceState(object):
 
 class Service(object):
     """Base class for services."""
+
     #: State class to use for this Service
     AppStateClass = ServiceState
 

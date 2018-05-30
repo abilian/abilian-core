@@ -42,6 +42,7 @@ UPLOAD_BUTTON = ButtonAction("form", "edit", btn_class="primary", title=_l("Send
 
 class BaseAttachmentView(object):
     """Mixin for attachment views."""
+
     Model = Attachment
     Form = AttachmentForm
 
@@ -81,7 +82,6 @@ class BaseAttachmentView(object):
 
 
 class AttachmentDownload(BaseAttachmentView, BaseObjectView):
-
     def get(self):
         blob = self.obj.blob
         metadata = blob.meta
@@ -149,6 +149,7 @@ bp.route("/<int:entity_id>/<int:object_id>/delete")(delete_view)
 
 class AttachmentEntity(BaseObjectView):
     """Redirects to an attachment's entity view."""
+
     Model = Attachment
 
     def get(self):

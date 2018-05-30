@@ -51,6 +51,7 @@ class PreferenceState(ServiceState):
 class PreferenceService(Service):
     """Flask extension for a user-level preference service, with pluggable
     panels."""
+
     name = "preferences"
     AppStateClass = PreferenceState
 

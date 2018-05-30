@@ -23,7 +23,6 @@ def client_login(client, user):
     # type: (FlaskClient, User) -> LoginContext
 
     class LoginContext(object):
-
         def __enter__(self):
             with client.session_transaction() as session:
                 session["user_id"] = user.id
@@ -53,7 +52,6 @@ def login(user, remember=False, force=False):
         raise ValueError("User is not active, cannot login; or use force=True")
 
     class LoginContext(object):
-
         def __enter__(self):
             return None
 

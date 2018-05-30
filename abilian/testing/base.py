@@ -49,6 +49,7 @@ class TestConfig(object):
     The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be
     set to easily test against different databases.
     """
+
     SITE_NAME = "Abilian Test"
     SQLALCHEMY_DATABASE_URI = "sqlite://"
     SERVER_NAME = "localhost"  # needed for url_for with '_external=True'
@@ -306,7 +307,6 @@ class BaseTestCase(TestCase):
             raise ValueError("User is not active, cannot login; or use force=True")
 
         class LoginContext(object):
-
             def __init__(self, testcase):
                 self.testcase = testcase
 
@@ -347,7 +347,6 @@ class BaseTestCase(TestCase):
         assert r.status_code == 302
 
         class LoginContext(object):
-
             def __init__(self, testcase):
                 self.testcase = testcase
 

@@ -268,6 +268,7 @@ class JSON(sa.types.TypeDecorator):
 
     Usage JSON() Takes same parameters as sqlalchemy.types.Text
     """
+
     impl = sa.types.Text
 
     def process_bind_param(self, value, dialect):
@@ -326,6 +327,7 @@ class UUID(sa.types.TypeDecorator):
 
     From SQLAlchemy documentation.
     """
+
     impl = sa.types.CHAR
 
     def load_dialect_impl(self, dialect):
@@ -357,6 +359,7 @@ class UUID(sa.types.TypeDecorator):
 
 class Locale(sa.types.TypeDecorator):
     """Store a :class:`babel.Locale` instance."""
+
     impl = sa.types.UnicodeText
 
     @property
@@ -388,6 +391,7 @@ class Locale(sa.types.TypeDecorator):
 
 class Timezone(sa.types.TypeDecorator):
     """Store a :class:`pytz.tzfile.DstTzInfo` instance."""
+
     impl = sa.types.UnicodeText
 
     @property

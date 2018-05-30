@@ -18,7 +18,6 @@ _MARK = object()
 
 
 class LoginSessionQuery(BaseQuery):
-
     def get_active_for(self, user, user_agent=_MARK, ip_address=_MARK):
         """Return last known session for given user.
 

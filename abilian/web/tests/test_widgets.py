@@ -20,6 +20,7 @@ from ..forms.widgets import EmailWidget, MainTableView, Panel, Row, \
 
 class WidgetTestModel(Entity):
     """Mock model."""
+
     __tablename__ = "widget_test_model"
     id = sa.Column(sa.Integer, primary_key=True)
     price = sa.Column(sa.Integer)
@@ -41,7 +42,6 @@ class DummyForm(Form):
 
 
 def test_table_view(app, test_request_context):
-
     @default_view(app, WidgetTestModel)
     @app.route("/dummy_view/<object_id>")
     def dummy_view(object_id):

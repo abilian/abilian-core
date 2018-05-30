@@ -8,7 +8,6 @@ from abilian.services import security
 
 
 def test_default_permissions(app, db, session):
-
     class MyRestrictedType(Entity):
         __default_permissions__ = {
             security.READ: {security.Anonymous},

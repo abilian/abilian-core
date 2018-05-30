@@ -12,6 +12,7 @@ from . import views
 
 class UsersPanel(AdminPanel):
     """User administration panel."""
+
     id = "users"
     label = _l("Users")
     icon = "user"

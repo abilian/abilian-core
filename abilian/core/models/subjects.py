@@ -84,7 +84,6 @@ def gen_random_password(length=15):
 
 @add_metaclass(ABCMeta)
 class PasswordStrategy(object):
-
     @property
     @abstractmethod
     def name(self):
@@ -143,7 +142,6 @@ class BcryptPasswordStrategy(PasswordStrategy):
 
 
 class UserQuery(db.Model.query_class):
-
     def get_by_email(self, email):
         return self.filter_by(email=email).one()
 

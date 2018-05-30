@@ -17,7 +17,6 @@ Model = db.Model
 
 
 class Info(dict):
-
     def __init__(self, **kw):
         for k, v in kw.items():
             self[k] = v
@@ -55,6 +54,7 @@ class IdMixin(object):
 
 class Indexable(object):
     """Mixin with sensible defaults for indexable objects."""
+
     __indexable__ = True
     __indexation_args__ = {
         "index_to": (

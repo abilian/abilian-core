@@ -71,6 +71,7 @@ def for_entity(obj, check_support_attachments=False):
 
 class Attachment(Entity):
     """An Attachment owned by an :class:`Entity`."""
+
     __auditable_entity__ = ("entity", "attachment", ("id", "name"))
 
     @sa.ext.declarative.declared_attr

@@ -38,7 +38,6 @@ if _patch_logger.level is logging.NOTSET:
 
 
 class PatchLoggerAdapter(logging.LoggerAdapter):
-
     def process(self, msg, kwargs):
         if isinstance(msg, string_types):
             return super(PatchLoggerAdapter, self).process(msg, kwargs)

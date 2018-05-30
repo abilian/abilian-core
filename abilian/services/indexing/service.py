@@ -123,6 +123,7 @@ class IndexServiceState(ServiceState):
 
 class WhooshIndexService(Service):
     """Index documents using whoosh."""
+
     name = "indexing"
     AppStateClass = IndexServiceState
 

@@ -79,7 +79,6 @@ class ModelFormField(FormField, BaseModelFormField):
 
 
 class FilterFieldListMixin(object):
-
     def validate(self, form, extra_validators=()):
         to_remove = []
         for field in self.entries:
@@ -151,6 +150,7 @@ class FileField(BaseFileField):
     :param blob_attr: attribute name to store / retrieve value on related model.
       Used if `name` is a relationship on model. Defauts to `'value'`
     """
+
     multiple = False
     widget = FileInput()
     blob = None
@@ -368,6 +368,7 @@ class DateTimeField(Field):
 
 class DateField(Field):
     """A text field which stores a `datetime.date` matching a format."""
+
     widget = DateInput()
 
     def __init__(self, label=None, validators=None, **kwargs):
@@ -409,6 +410,7 @@ class DateField(Field):
 
 class Select2Field(SelectField):
     """Allows choices to be a function instead of an iterable."""
+
     widget = Select2()
 
     @property

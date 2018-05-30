@@ -67,6 +67,7 @@ def for_entity(obj, check_commentable=False):
 
 class Comment(Entity):
     """A Comment related to an :class:`Entity`."""
+
     __default_permissions__ = {WRITE: {Owner}, DELETE: {Owner}, CREATE: {Anonymous}}
 
     @declared_attr

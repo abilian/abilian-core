@@ -14,7 +14,6 @@ class Activity(object):
 
 
 class ActivityService(object):
-
     def post(self, activity):
         """Post an activity to the service."""
 

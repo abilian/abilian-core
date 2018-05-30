@@ -180,6 +180,7 @@ def timezones_choices():
 
 class Babel(BabelBase):
     """Allow to load translations from other modules."""
+
     _translations_paths = None
 
     def __init__(self, *args, **kwargs):
@@ -349,6 +350,7 @@ def get_template_i18n(template_name, locale):
 
 class ensure_request_context(object):
     """Context manager that ensures a request context is set up."""
+
     _rq_ctx = None
 
     def __enter__(self):

@@ -17,6 +17,7 @@ from .models import Anonymous
 class SecurityInfoDebugPanel(DebugPanel):
     """A panel to display current roles and permissions for "current"
     object."""
+
     name = "SecurityInfo"
 
     @property

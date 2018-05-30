@@ -20,6 +20,7 @@ class TagsField(Field):
 
       __tags__ = TagsField(ns='tags namespace')
     """
+
     multiple = True
     widget = Select2(js_init="tags-select", multiple=True)
     view_widget = ListWidget()
@@ -88,9 +89,11 @@ _NS = StringField("Namespace", validators=[required()], filters=[strip])
 
 class TagForm(Form):
     """Form for a single tag."""
+
     label = StringField("Label", filters=[strip], validators=[required()])
 
 
 class TagNSForm(TagForm):
     """Allows to edit namespace."""
+
     ns = _NS

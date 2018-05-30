@@ -18,6 +18,7 @@ deferred_js = LocalProxy(partial(_lookup_req_object, "deferred_js"))
 
 class DeferredJS(object):
     """Flask extension for use with DeferredJSExtension for jinja."""
+
     name = "deferred_js"
 
     def __init__(self, app=None):
@@ -45,6 +46,7 @@ class DeferredJSExtension(JinjaExtension):
     The JS fragment can contains <script> tag so that your favorite
     editor keeps doing proper indentation, syntax highlighting...
     """
+
     tags = {"deferJS", "deferredJS"}
 
     def parse(self, parser):

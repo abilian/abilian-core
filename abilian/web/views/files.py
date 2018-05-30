@@ -104,7 +104,6 @@ class BaseFileDownload(View):
 
 
 class BaseBlobDownload(BaseFileDownload):
-
     def get_blob(self, *args, **kwargs):
         raise NotImplementedError()
 

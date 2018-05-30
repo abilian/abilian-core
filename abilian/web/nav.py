@@ -17,6 +17,7 @@ from .action import ACTIVE, ENABLED, Action, Glyphicon, getset
 
 class NavItem(Action):
     """A single navigation item."""
+
     divider = False
 
     def __init__(self, category, name, divider=False, *args, **kwargs):
@@ -43,6 +44,7 @@ class NavItem(Action):
 
 class NavGroup(NavItem):
     """A navigation group renders a list of items."""
+
     template_string = """
     <ul class="nav navbar-nav {{ action.css_class }}">
       <li class="dropdown">
@@ -94,6 +96,7 @@ class NavGroup(NavItem):
 
 class BreadcrumbItem(object):
     """A breadcrumb element has at least a label or an icon."""
+
     #: Label shown to user. May be an i18n string instance
     label = None
 

@@ -12,6 +12,7 @@ from . import views
 
 class GroupsPanel(AdminPanel):
     """Group administration panel."""
+
     id = "groups"
     label = _l("Groups")
     icon = "grain"

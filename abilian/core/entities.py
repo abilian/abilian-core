@@ -118,6 +118,7 @@ class _EntityInherit(object):
 
     Entity meta-class takes care of inserting it in base classes.
     """
+
     __indexable__ = True
 
     @declared_attr
@@ -141,7 +142,6 @@ BaseMeta = db.Model.__class__
 
 
 class EntityQuery(db.Model.query_class):
-
     def with_permission(self, permission, user=None):
         from abilian.services import get_service
 
@@ -244,6 +244,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
               args['order_by'] = cls.created_at # for example
               return args
     """
+
     # __metaclass__ = EntityMeta
     __indexable__ = False
     __indexation_args__ = {}

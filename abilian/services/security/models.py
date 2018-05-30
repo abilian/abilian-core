@@ -52,6 +52,7 @@ class Permission(UniqueName):
 
     Permission instances are unique by name.
     """
+
     __slots__ = ("label",)
 
     def __init__(self, name, label=None, assignable=True):
@@ -74,6 +75,7 @@ class PermissionType(UniqueNameType):
 
     Usage:: RoleType()
     """
+
     Type = Permission
 
 
@@ -86,6 +88,7 @@ class Role(UniqueName):
     Non-assignable roles are roles automatically given depending on context (ex:
     Anonymous/Authenticated).
     """
+
     __slots__ = ("label", "assignable")
 
     def __init__(self, name, label=None, assignable=True):
@@ -116,6 +119,7 @@ class RoleType(UniqueNameType):
 
     Usage:: RoleType()
     """
+
     Type = Role
 
 
@@ -359,6 +363,7 @@ del _postgres_indexes
 
 class SecurityAudit(db.Model):
     """Logs changes on security."""
+
     GRANT = "GRANT"
     REVOKE = "REVOKE"
     SET_INHERIT = "SET_INHERIT"
@@ -415,6 +420,7 @@ class SecurityAudit(db.Model):
 
 class InheritSecurity(object):
     """Mixin for objects with a parent relation and security inheritance."""
+
     inherit_security = Column(
         Boolean, default=True, nullable=False, info={"auditable": False}
     )

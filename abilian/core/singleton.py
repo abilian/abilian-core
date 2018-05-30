@@ -8,7 +8,6 @@ from sqlalchemy.types import String, TypeDecorator
 
 
 class ValueSingletonMeta(type):
-
     def __new__(cls, name, bases, dct):
         dct["__instances__"] = {}
         dct.setdefault("__slots__", ())
@@ -31,6 +30,7 @@ class UniqueName(with_metaclass(ValueSingletonMeta, object)):
 
     A subclass of :class:`UniqueName` defines a namespace.
     """
+
     # __metaclass__ = ValueSingletonMeta
     __slots__ = ("_hash", "__name")
     attr = "name"
@@ -68,6 +68,7 @@ class UniqueNameType(TypeDecorator):
     class MySingletonType(UniqueNameType):
         Type = MySingleton
     """
+
     impl = String
     Type = None
     default_max_length = 100

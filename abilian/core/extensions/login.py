@@ -7,7 +7,6 @@ from flask_login import AnonymousUserMixin, LoginManager
 
 
 class AnonymousUser(AnonymousUserMixin):
-
     def has_role(self, role):
         from abilian.services import get_service
 

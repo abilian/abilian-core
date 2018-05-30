@@ -37,14 +37,12 @@ __all__ = (
 
 
 class Rule(object):
-
     @property
     def rule(self):
         return None
 
 
 class Email(validators.Email):
-
     def __call__(self, form, field):
         if self.message is None:
             self.message = field.gettext("Invalid email address.")
@@ -58,7 +56,6 @@ class Email(validators.Email):
 
 
 class CorrectInputRequired(validators.DataRequired):
-
     def __call__(self, form, field):
         if (
             field.data is None
@@ -161,7 +158,6 @@ class MacAddress(validators.MacAddress, Rule):
 
 
 class URL(validators.URL):
-
     @property
     def rule(self):
         return {"url": True}
@@ -181,6 +177,7 @@ class NoneOf(validators.NoneOf, Rule):
 
 class FlagHidden(Rule):
     """Flag the field as hidden."""
+
     field_flags = ("hidden",)
 
     def __call__(self, form, field):
@@ -189,6 +186,7 @@ class FlagHidden(Rule):
 
 class AntiVirus(Rule):
     """Check content for viruses."""
+
     field_flags = ("antivirus",)
 
     def __call__(self, form, field):
@@ -203,6 +201,7 @@ class AntiVirus(Rule):
 
 class RenderEmpty(object):
     """Force display."""
+
     field_flags = ("render_empty",)
 
     def __call__(self, form, field):

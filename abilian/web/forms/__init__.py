@@ -29,7 +29,6 @@ logger = logging.getLogger(__name__)
 
 #  setup Form class with babel support
 class _BabelTranslation(object):
-
     def gettext(self, string):
         return _(string)
 
@@ -172,6 +171,7 @@ class FormContext(object):
     that subforms used in formfields / listformfields / etc can perform proper
     field filtering according to original permission and user passed to top
     form `__init__` method."""
+
     permission = None
     user = None
 

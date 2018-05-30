@@ -9,6 +9,7 @@ from redis import from_url as redis_from_url
 
 class Extension(object):
     """Redis extension for flask."""
+
     client = None
 
     def __init__(self, app=None):
