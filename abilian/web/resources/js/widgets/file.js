@@ -172,7 +172,7 @@ define("widget.FileInput", [
     },
 
     onFileProgress: function(evt, file, xhr, options) {
-      var progress = evt.loaded / evt.total * 100;
+      var progress = (evt.loaded / evt.total) * 100;
       this.getElementForFile(file)
         .find(".progress-bar")
         .css({ width: progress + "%" });
