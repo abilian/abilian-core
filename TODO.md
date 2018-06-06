@@ -6,6 +6,7 @@
 - [] Ugrade flask-sqlalchemy and other SQLA releated deps
 - [] Fix SQLA warnings
 - [] Fix all tests (including skipped ones) under Python 3.6
+- [] Fix issue w/ WTForms 2.2
 
 - [x] Fix issues reported by `pylint --py3k`
 
