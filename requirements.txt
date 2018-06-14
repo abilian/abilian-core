@@ -33,7 +33,7 @@ html5lib==1.0.1           # via bleach
 infinity==1.4             # via intervals
 intervals==0.8.1          # via wtforms-components
 itsdangerous==0.24        # via flask, flask-debugtoolbar
-jinja2==2.10
+jinja2==2.10              # via flask, flask-babel
 jsmin==2.2.2
 kombu==4.2.1              # via celery
 lxml==4.2.1

@@ -2,7 +2,6 @@
 six
 
 # Flask and friends
-Jinja2>=2.9
 Flask>=0.12
 Flask-Assets>=0.12
 Flask-Babel>=0.11
@@ -56,10 +55,19 @@ bcrypt
 python-deprecated
 typing
 
-# Others (TODO: document)
+# Used by DeferredJS (TODO: remove)
+lxml
+
+# Used by the logging config loader (TODO: remove)
 PyYAML
+
+# Used by the connection audit
 pygeoip
+
+# Progres bar, used by some scripts
 tqdm
+
+# Used by the Sentry extension
 raven
 
 # for debug toolbar
@@ -82,5 +90,3 @@ pandas>=0.17
 jsmin
 cssmin
 closure
-# cssselect
-lxml
