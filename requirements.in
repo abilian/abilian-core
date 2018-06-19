@@ -78,8 +78,7 @@ clamd
 
 # Content detection / transformation
 python-magic
-# Pinned for now
-pillow==5.0
+pillow
 
 # Reporting
 pandas>=0.17
