@@ -123,19 +123,16 @@ lint-bandit:
 format: format-py format-js
 
 format-py:
-	# -add-trailing-comma `find abilian -name '*.py'` demo/*.py *.py
 	docformatter -i -r abilian
-	# -yapf -r -i abilian demo *.py
-	# autopep8 -j3 -r --in-place -a --ignore E711 abilian demo *.py
-	black abilian demo *.py
-	isort -rc abilian demo *.py
+	black abilian demo tests *.py
+	isort -rc abilian demo tests *.py
 
 format-js:
 	./node_modules/.bin/prettier --write \
 		--trailing-comma es5 \
 		'abilian/web/resources/js/**/*.js'
 
-futurize-py-headers:
+futurize:
 	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
 		-rc $(SRC) *.py
 

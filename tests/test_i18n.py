@@ -11,60 +11,62 @@ from abilian import i18n
 
 
 def test_get_template_i18n_en(app, test_request_context):
-    template_path = '/myfile.txt'
-    en = Locale('en')
+    template_path = "/myfile.txt"
+    en = Locale("en")
 
     result = i18n.get_template_i18n(template_path, locale=en)
 
-    assert '/myfile.en.txt' in result
-    assert '/myfile.txt' in result
+    assert "/myfile.en.txt" in result
+    assert "/myfile.txt" in result
 
 
 def test_get_template_i18n_en_us(app, test_request_context):
-    template_path = '/myfile.txt'
-    en = Locale('en_US')
+    template_path = "/myfile.txt"
+    en = Locale("en_US")
 
     result = i18n.get_template_i18n(template_path, locale=en)
 
-    assert '/myfile.en_US.txt' in result
-    assert '/myfile.txt' in result
+    assert "/myfile.en_US.txt" in result
+    assert "/myfile.txt" in result
 
 
 def test_get_template_i18n_fr(app, test_request_context):
-    template_path = '/myfile.txt'
-    with force_locale('fr'):
+    template_path = "/myfile.txt"
+    with force_locale("fr"):
         result = i18n.get_template_i18n(template_path, get_locale())
-        assert '/myfile.fr.txt' in result
-        assert '/myfile.txt' in result
+        assert "/myfile.fr.txt" in result
+        assert "/myfile.txt" in result
 
 
 def test_render_template_i18n(app, test_request_context):
-    loader = DictLoader({
-        'tmpl.txt': 'default ({{ locale }})',
-        'tmpl.en.txt': 'en locale ({{ locale }})',
-        'tmpl.fr.txt': 'fr locale ({{ locale }})',
-    })
+    loader = DictLoader(
+        {
+            "tmpl.txt": "default ({{ locale }})",
+            "tmpl.en.txt": "en locale ({{ locale }})",
+            "tmpl.fr.txt": "fr locale ({{ locale }})",
+        }
+    )
     app_loader = app.jinja_loader
     app.jinja_loader = loader
     render = i18n.render_template_i18n
     try:
-        assert render('tmpl.txt', locale='fr') == 'fr locale (fr)'
-        assert render('tmpl.txt', locale='en') == 'en locale (en)'
-        assert render('tmpl.txt', locale='de') == 'default (de)'
+        assert render("tmpl.txt", locale="fr") == "fr locale (fr)"
+        assert render("tmpl.txt", locale="en") == "en locale (en)"
+        assert render("tmpl.txt", locale="de") == "default (de)"
     finally:
         app.jinja_loader = app_loader
 
 
 def test_default_country(app, test_request_context):
-    assert 'DEFAULT_COUNTRY' in app.config
-    assert app.config['DEFAULT_COUNTRY'] is None
+    assert "DEFAULT_COUNTRY" in app.config
+    assert app.config["DEFAULT_COUNTRY"] is None
     assert i18n.default_country() is None
-    assert i18n.country_choices()[0][0] == 'AF'
+    assert i18n.country_choices()[0][0] == "AF"
 
-    app.config['DEFAULT_COUNTRY'] = 'FR'
-    assert i18n.default_country() == 'FR'
-    assert i18n.country_choices()[0][0] == 'FR'
-    assert i18n.country_choices(default_country_first=False)[0][0] == 'AF'
+    app.config["DEFAULT_COUNTRY"] = "FR"
+    assert i18n.default_country() == "FR"
+    assert i18n.country_choices()[0][0] == "FR"
+    assert i18n.country_choices(default_country_first=False)[0][0] == "AF"
 
 
 # No idea what this test was supposed to do...

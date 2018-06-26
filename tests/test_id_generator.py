@@ -7,7 +7,7 @@ from flask import g
 
 def test_id_generator(app, app_context):
     # inside app context: id_generator installed
-    assert hasattr(g, 'id_generator')
+    assert hasattr(g, "id_generator")
 
     # test sucessives values
     assert next(g.id_generator) == 1

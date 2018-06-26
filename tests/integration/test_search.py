@@ -12,20 +12,15 @@ from abilian.services import index_service
 
 def gen_name(ctx):
     params = ctx.current_parameters
-    return '{} {}'.format(
-        params.get('first_name', ""),
-        params.get('last_name', ""),
+    return "{} {}".format(
+        params.get("first_name", ""), params.get("last_name", "")
     ).strip()
 
 
 class DummyContact1(Entity):
     name = column_property(
         Column(
-            'name',
-            UnicodeText(),
-            info=SEARCHABLE,
-            default=gen_name,
-            onupdate=gen_name,
+            "name", UnicodeText(), info=SEARCHABLE, default=gen_name, onupdate=gen_name
         ),
         Entity.name,
     )
@@ -44,21 +39,19 @@ def test_contacts_are_indexed(app, db_session):
         login_user(root_user)
 
         contact = DummyContact1(
-            first_name="John",
-            last_name="Test User",
-            email="test@example.com",
+            first_name="John", last_name="Test User", email="test@example.com"
         )
         db_session.add(contact)
         # commit is needed here to trigger change in index
         db_session.commit()
 
-        search_result = index_service.search('john')
+        search_result = index_service.search("john")
         assert len(search_result) == 1
 
         found = search_result[0]
-        assert contact.id == found['id']
-        assert contact.name == found['name']
+        assert contact.id == found["id"]
+        assert contact.name == found["name"]
 
         search_result = index_service.search("john")
         assert len(search_result) == 1
-        assert contact.id == int(search_result[0]['id'])
+        assert contact.id == int(search_result[0]["id"])
