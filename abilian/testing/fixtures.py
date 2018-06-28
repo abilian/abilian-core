@@ -24,7 +24,7 @@ from abilian.testing.util import cleanup_db, ensure_services_started, \
 
 class TestConfig:
     TESTING = True
-    SERVER_NAME = "localhost"
+    SERVER_NAME = "localhost.localdomain"
     CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
     MAIL_SENDER = "tester@example.com"

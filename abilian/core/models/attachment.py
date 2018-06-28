@@ -7,9 +7,9 @@ import abc
 
 import sqlalchemy as sa
 import sqlalchemy.event
-import sqlalchemy.ext.declarative
 from six import add_metaclass
 from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
 
 from abilian.core.entities import Entity
@@ -74,7 +74,7 @@ class Attachment(Entity):
 
     __auditable_entity__ = ("entity", "attachment", ("id", "name"))
 
-    @sa.ext.declarative.declared_attr
+    @declared_attr
     def __mapper_args__(cls):
         # we cannot use super(Attachment, cls): declared_attr happens during
         # class construction. super(cls, cls) could work; as long as `cls`

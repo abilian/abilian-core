@@ -67,7 +67,7 @@ def test_default_url_func(app, registry, test_request_context):
     assert registry.url_for(obj) == "/regentities_path/1/view"
     assert (
         registry.url_for(obj, _external=True)
-        == "http://localhost/regentities_path/1/view"
+        == "http://localhost.localdomain/regentities_path/1/view"
     )
 
 
@@ -88,4 +88,7 @@ def test_default_view_decorator(app, registry, test_request_context):
     app.register_blueprint(bp)
 
     assert registry.url_for(obj) == "/blueprint/1"
-    assert registry.url_for(obj, _external=True) == "http://localhost/blueprint/1"
+    assert (
+        registry.url_for(obj, _external=True)
+        == "http://localhost.localdomain/blueprint/1"
+    )

@@ -34,11 +34,11 @@ class OwnedMixin(object):
         except (RuntimeError, AttributeError):
             pass
 
-    @declared_attr
+    @declared_attr.cascading
     def creator_id(cls):
         return Column(ForeignKey(User.id), info=SYSTEM)
 
-    @declared_attr
+    @declared_attr.cascading
     def creator(cls):
         primary_join = "User.id == {}.creator_id".format(cls.__name__)
         return relationship(
@@ -53,11 +53,11 @@ class OwnedMixin(object):
     def creator_name(self):
         return text_type(self.creator) if self.creator else ""
 
-    @declared_attr
+    @declared_attr.cascading
     def owner_id(cls):
         return Column(ForeignKey(User.id), info=EDITABLE | AUDITABLE)
 
-    @declared_attr
+    @declared_attr.cascading
     def owner(cls):
         primary_join = "User.id == {}.owner_id".format(cls.__name__)
         return relationship(
