@@ -33,7 +33,7 @@ pathlib
 python-dateutil>=2.4.0
 
 # Databases / persistence
-SQLAlchemy>=0.9
+SQLAlchemy>=1.1
 alembic>=0.9
 
 # requirement of jinja2; > 0.21 has an important fix for string format. See
