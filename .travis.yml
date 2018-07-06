@@ -33,6 +33,7 @@ before_install:
   - mkdir "${NPM_CONFIG_PREFIX}"
   - npm install -g less
   - export PATH=~/npm-packages/bin:$PATH
+  - lessc --version
 
   - gem install travis
 
