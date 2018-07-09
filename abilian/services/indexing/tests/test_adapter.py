@@ -31,9 +31,7 @@ class Indexable(IdMixin, CoreIndexable, db.Model):
         index_to=(("related.name", ("name", "text")), ("related.description", "text"))
     )
 
-    num = sa.Column(
-        sa.Integer, info=SEARCHABLE | dict(index_to=(("num", NUMERIC(numtype=int)),))
-    )
+    num = sa.Column(sa.Integer, info=SEARCHABLE | dict(index_to=(("num", NUMERIC()),)))
 
 
 class SubclassEntityIndexable(Entity):
@@ -97,9 +95,7 @@ def test_build_attrs():
         "tag_text",
     }
 
-    schema = Schema(
-        id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True)
-    )
+    schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)
     assert adapter.indexable
     assert set(adapter.doc_attrs) == {"id", "text", "num", "name"}
@@ -135,9 +131,7 @@ def test_get_document(app, db):
 
 def test_get_document_with_schema():
     # test retrieve related attributes
-    schema = Schema(
-        id=NUMERIC(numtype=int, bits=64, signed=False, stored=True, unique=True)
-    )
+    schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)
     expected = dict(id=1, num=42)
     obj = Indexable(**expected)

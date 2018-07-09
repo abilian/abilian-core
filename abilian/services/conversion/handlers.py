@@ -234,7 +234,7 @@ class PdfToPpmHandler(Handler):
 
                 converted_images = []
                 for fn in l:
-                    converted = resize(open(fn, "rb").read(), size, size, mode=FIT)
+                    converted = resize(open(fn, "rb").read(), size, size)
                     converted_images.append(converted)
 
                 return converted_images

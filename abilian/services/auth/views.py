@@ -99,7 +99,7 @@ def login_post():
     if "error" in res:
         code = res.pop("code")
         flash(res["error"], "error")
-        return (render_template("login/login.html", **res), code)
+        return render_template("login/login.html", **res), code
 
     return redirect_back(url=request.url_root)
 

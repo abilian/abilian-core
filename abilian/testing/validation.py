@@ -8,15 +8,21 @@ from tempfile import NamedTemporaryFile
 
 import requests
 from flask import Response, current_app, request
+from hyperlink import URL
 
-SKIPPED_URLS = [
+SKIPPED_PATHS = [
     # FIXME: later
-    "http://localhost/admin/settings"
+    "/admin/settings"
 ]
 
 
 class ValidationError(AssertionError):
     pass
+
+
+def validate_response(response):
+    assert_valid(response)
+    return response
 
 
 def assert_valid(response):
@@ -31,14 +37,14 @@ def assert_valid(response):
     if response.status_code == 302:
         return
 
-    if request.url in SKIPPED_URLS:
+    if URL.from_text(request.url).path in SKIPPED_PATHS:
         return
 
     if response.mimetype == "text/html":
-        validate_html(response)
+        assert_html_valid(response)
 
     elif response.mimetype == "application/json":
-        validate_json(response)
+        assert_json_valid(response)
 
     else:
         raise AssertionError("Unknown mime type: " + response.mimetype)
@@ -46,12 +52,12 @@ def assert_valid(response):
     return
 
 
-def validate_html(response):
-    validate_html_using_htmlhint(response)
-    validate_html_using_external_service(response)
+def assert_html_valid(response):
+    assert_html_valid_using_htmlhint(response)
+    assert_html_valid_using_external_service(response)
 
 
-def validate_html_using_htmlhint(response):
+def assert_html_valid_using_htmlhint(response):
     with NamedTemporaryFile() as tmpfile:
         tmpfile.write(response.data)
         tmpfile.flush()
@@ -64,10 +70,9 @@ def validate_html_using_htmlhint(response):
             raise ValidationError(msg)
 
 
-def validate_html_using_external_service(response):
-    validator_url = current_app.config.get("VALIDATOR_URL") or os.environ.get(
-        "VALIDATOR_URL"
-    )
+def assert_html_valid_using_external_service(response):
+    config = current_app.config
+    validator_url = config.get("VALIDATOR_URL") or os.environ.get("VALIDATOR_URL")
 
     if not validator_url:
         return
@@ -89,7 +94,7 @@ def validate_html_using_external_service(response):
             raise ValidationError(msg)
 
 
-def validate_json(response):
+def assert_json_valid(response):
     try:
         json.loads(response.data)
     except BaseException:

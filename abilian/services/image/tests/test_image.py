@@ -24,12 +24,12 @@ def test_get_save_format():
 
 
 def test_fit(orig_image):
-    image = resize(orig_image, 500, 500, FIT)
+    image = resize(orig_image, 500, 500)
     x, y = get_size(image)
     assert (x, y) == (500, 357)
 
     # image already fits in desired dimension
-    image = resize(orig_image, 1000, 1000, FIT)
+    image = resize(orig_image, 1000, 1000)
     x, y = get_size(image)
     assert x == 725 and y == 518
 

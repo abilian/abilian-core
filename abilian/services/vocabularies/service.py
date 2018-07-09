@@ -42,7 +42,7 @@ class VocabularyService(Service):
 
     def init_app(self, app):
         Service.init_app(self, app)
-        app.register_jinja_loaders(jinja2.PackageLoader(__name__, "templates"))
+        app.register_jinja_loaders(jinja2.PackageLoader(__name__))
 
     @property
     def vocabularies(self):

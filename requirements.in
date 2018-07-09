@@ -54,6 +54,7 @@ bcrypt
 # low-level tools
 python-deprecated
 typing
+hyperlink
 
 # Used by DeferredJS (TODO: remove)
 lxml

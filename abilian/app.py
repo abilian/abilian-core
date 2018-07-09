@@ -704,7 +704,10 @@ class Application(
                 self.start_services()
 
         if os.environ.get("FLASK_VALIDATE_HTML"):
-            self.after_request(self.validate_response)
+            # Workaround circular import
+            from abilian.testing.validation import validate_response
+
+            self.after_request(validate_response)
 
     def configure(self, config):
         if config:
@@ -1039,13 +1042,6 @@ class Application(
             db.session.add(user)
             db.session.commit()
         return user
-
-    def validate_response(self, response):
-        # work around circular import
-        from abilian.testing.validation import assert_valid
-
-        assert_valid(response)
-        return response
 
 
 def create_app(config=None):

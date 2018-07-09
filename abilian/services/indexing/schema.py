@@ -33,7 +33,7 @@ class _DefaultSearchSchema(SchemaClass):
     """General search schema."""
 
     object_key = ID(stored=True, unique=True)
-    id = NUMERIC(numtype=int, bits=64, signed=False, stored=True)
+    id = NUMERIC(bits=64, signed=False, stored=True)
     object_type = ID(stored=True)
     creator = ID(stored=True)
     owner = ID(stored=True)

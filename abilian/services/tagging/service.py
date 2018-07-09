@@ -16,13 +16,13 @@ class Taggable(object):
 class TagService(object):
     """The tag service."""
 
-    def tag(self, object, term, user=None):
+    def tag(self, obj, term, user=None):
         """Apply a tag on a taggable object.
 
         If user is None, uses the current logged in user.
         """
 
-    def untag(self, object, term, user=None):
+    def untag(self, obj, term, user=None):
         """Remove the given tag from the given object.
 
         See tag().
@@ -31,5 +31,5 @@ class TagService(object):
     def get_objects_tagged_with(self, term):
         """Returns a list of objects tagged with a given term."""
 
-    def get_tags_applied_on(self, object):
+    def get_tags_applied_on(self, obj):
         """Returns a list of tags applied on a given document."""

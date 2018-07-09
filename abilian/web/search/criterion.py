@@ -183,7 +183,7 @@ class TextSearchCriterion(BaseCriterion):
             rel_model = rel_attr.property.mapper.class_
             attr = getattr(rel_model, attr_name, None)
 
-        return (rel_model, attr)
+        return rel_model, attr
 
     def is_excluded(self, attr_name, request):
         """To be overriden by subclasses that want to filter searched

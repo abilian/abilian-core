@@ -96,7 +96,6 @@ class AttachmentDownload(BaseAttachmentView, BaseObjectView):
             mimetype=content_type,
             cache_timeout=0,
             add_etags=False,
-            conditional=False,
         )
 
 

@@ -70,7 +70,7 @@ def resize(orig, width, height, mode=FIT):
 
     orig.seek(0)
     image = open_image(orig)
-    format = image.format
+    image_format = image.format
     x, y = image.size
 
     if (x, y) == (width, height):
@@ -91,7 +91,7 @@ def resize(orig, width, height, mode=FIT):
         assert image.size == (width, height)
 
     output = BytesIO()
-    image.save(output, get_save_format(format))
+    image.save(output, get_save_format(image_format))
     converted = output.getvalue()
     cache[cache_key] = converted
     return converted

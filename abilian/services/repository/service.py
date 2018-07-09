@@ -122,7 +122,7 @@ class RepositoryService(Service):
 
     def __getitem__(self, uuid):
         # type: (UUID) -> Any
-        value = self.get(uuid, default=None)
+        value = self.get(uuid)
         if value is None:
             raise KeyError("No file can be found for this uuid", uuid)
         return value
