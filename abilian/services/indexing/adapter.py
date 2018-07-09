@@ -8,7 +8,6 @@ from abc import ABCMeta, abstractmethod
 from operator import attrgetter
 
 import sqlalchemy as sa
-from flask import current_app
 from six import add_metaclass, string_types
 from whoosh.fields import TEXT
 

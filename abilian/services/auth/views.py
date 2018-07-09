@@ -10,7 +10,7 @@ from __future__ import absolute_import, division, print_function, \
 import random
 import string
 from datetime import datetime
-from typing import Any, List, Text
+from typing import Any
 
 from flask import current_app, flash, redirect, render_template, request, \
     url_for

@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from flask import current_app, g, redirect, render_template, request
+from flask import g, redirect, render_template, request
 
 from abilian.core.extensions import db
 from abilian.i18n import _, _l

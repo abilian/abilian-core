@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import six
 import sqlalchemy as sa
-from flask import current_app, render_template
+from flask import render_template
 from numpy import sum as numpysum
 
 from abilian.core.extensions import db

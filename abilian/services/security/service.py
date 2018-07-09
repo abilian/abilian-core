@@ -7,7 +7,7 @@ from functools import wraps
 from itertools import chain
 
 import sqlalchemy as sa
-from flask import current_app, g
+from flask import g
 from flask_login import current_user
 from six import string_types, text_type
 from sqlalchemy import sql

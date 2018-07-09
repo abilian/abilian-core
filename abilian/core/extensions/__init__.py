@@ -30,7 +30,7 @@ def _message_send(self, connection):
 
     If TESTING is True the message will not actually be sent.
 
-    :param message: a Message instance.
+    :param self: a Message instance.
     """
     sender = current_app.config["MAIL_SENDER"]
     if not self.extra_headers:

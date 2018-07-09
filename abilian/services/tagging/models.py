@@ -18,8 +18,8 @@ from __future__ import absolute_import, division, print_function, \
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode
 
-from abilian.core.entities import IdMixin
 from abilian.core.extensions import db
+from abilian.core.models import IdMixin
 
 
 class Tag(db.Model, IdMixin):

@@ -20,7 +20,6 @@ import sqlalchemy as sa
 import sqlalchemy.exc
 import yaml
 from babel.dates import LOCALTZ
-from deprecated import deprecated
 from flask import Blueprint, Flask, _request_ctx_stack, abort, \
     appcontext_pushed, current_app, g, render_template, request, \
     request_started
@@ -1043,7 +1042,7 @@ class Application(
 
     def validate_response(self, response):
         # work around circular import
-        from abilian.testing.util import assert_valid
+        from abilian.testing.validation import assert_valid
 
         assert_valid(response)
         return response
