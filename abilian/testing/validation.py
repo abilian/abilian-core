@@ -12,7 +12,7 @@ from hyperlink import URL
 
 SKIPPED_PATHS = [
     # FIXME: later
-    "/admin/settings"
+    ("admin", "settings"),
 ]
 
 
@@ -21,6 +21,7 @@ class ValidationError(AssertionError):
 
 
 def validate_response(response):
+    # type: (Response) -> Response
     assert_valid(response)
     return response
 
@@ -53,11 +54,13 @@ def assert_valid(response):
 
 
 def assert_html_valid(response):
+    # type: (Response) -> None
     assert_html_valid_using_htmlhint(response)
     assert_html_valid_using_external_service(response)
 
 
 def assert_html_valid_using_htmlhint(response):
+    # type: (Response) -> None
     with NamedTemporaryFile() as tmpfile:
         tmpfile.write(response.data)
         tmpfile.flush()
@@ -71,6 +74,7 @@ def assert_html_valid_using_htmlhint(response):
 
 
 def assert_html_valid_using_external_service(response):
+    # type: (Response) -> None
     config = current_app.config
     validator_url = config.get("VALIDATOR_URL") or os.environ.get("VALIDATOR_URL")
 
@@ -95,6 +99,7 @@ def assert_html_valid_using_external_service(response):
 
 
 def assert_json_valid(response):
+    # type: (Response) -> None
     try:
         json.loads(response.data)
     except BaseException:

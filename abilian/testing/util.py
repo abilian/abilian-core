@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from flask.testing import FlaskClient
 from flask_login import login_user, logout_user
+from hyperlink import URL
 from sqlalchemy.exc import DatabaseError
 
 from abilian.core.models.subjects import User
@@ -17,6 +18,10 @@ __all__ = (
     "client_login",
     "login",
 )
+
+
+def path_from_url(url):
+    return "/" + "/".join(URL.from_text(url).path)
 
 
 def client_login(client, user):

@@ -5,9 +5,9 @@ from __future__ import absolute_import, division, print_function, \
 
 import sqlalchemy as sa
 import sqlalchemy.exc
-from hyperlink import URL
 from pytest import mark, raises
 
+from abilian.testing.util import path_from_url
 from abilian.web import url_for
 
 from .models import BaseVocabulary, Vocabulary
@@ -137,14 +137,14 @@ def test_admin_panel_reorder(app, db, session, client, test_request_context):
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert URL.from_text(r.headers["Location"]).path == "/admin/vocabularies"
+    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies"
     assert Voc.query.order_by(Voc.position).all() == [second, first, third]
 
     data = {"up": first.id, "return_to": "group"}
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert URL.from_text(r.headers["Location"]).path == "/admin/vocabularies/_/"
+    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies/_/"
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
     data = {"up": first.id, "return_to": "model"}
@@ -152,7 +152,7 @@ def test_admin_panel_reorder(app, db, session, client, test_request_context):
     r = client.post(url, data=data)
     assert r.status_code == 302
     assert (
-        URL.from_text(r.headers["Location"]).path
+        path_from_url(r.headers["Location"])
         == "/admin/vocabularies/_/defaultstates/"
     )
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
@@ -161,12 +161,12 @@ def test_admin_panel_reorder(app, db, session, client, test_request_context):
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert URL.from_text(r.headers["Location"]).path == "/admin/vocabularies"
+    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies"
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
     data = {"up": third.id}
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert URL.from_text(r.headers["Location"]).path == "/admin/vocabularies"
+    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies"
     assert Voc.query.order_by(Voc.position).all() == [first, third, second]
