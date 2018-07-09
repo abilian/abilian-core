@@ -74,6 +74,8 @@ __all__ = [
     "RichTextWidget",
     "FileInput",
     "EntityWidget",
+    "ImageInput",
+    "TextArea",
 ]
 
 
