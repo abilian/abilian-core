@@ -29,9 +29,6 @@ class BaseTagView(object):
         super(BaseTagView, self).__init__(*args, **kwargs)
         self.extension = current_app.extensions["tags"]
 
-    def view_url(self):
-        return url_for()
-
 
 class TagEdit(BaseTagView, ObjectEdit):
     _message_success = _l("Tag edited")
