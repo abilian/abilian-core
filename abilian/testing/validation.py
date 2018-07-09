@@ -12,7 +12,7 @@ from hyperlink import URL
 
 SKIPPED_PATHS = [
     # FIXME: later
-    ("admin", "settings"),
+    ("admin", "settings")
 ]
 
 

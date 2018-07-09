@@ -17,6 +17,7 @@ __all__ = (
     "cleanup_db",
     "client_login",
     "login",
+    "path_from_url",
 )
 
 

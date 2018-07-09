@@ -137,36 +137,33 @@ def test_admin_panel_reorder(app, db, session, client, test_request_context):
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies"
+    assert path_from_url(r.location) == "/admin/vocabularies"
     assert Voc.query.order_by(Voc.position).all() == [second, first, third]
 
     data = {"up": first.id, "return_to": "group"}
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies/_/"
+    assert path_from_url(r.location) == "/admin/vocabularies/_/"
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
     data = {"up": first.id, "return_to": "model"}
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert (
-        path_from_url(r.headers["Location"])
-        == "/admin/vocabularies/_/defaultstates/"
-    )
+    assert path_from_url(r.location) == "/admin/vocabularies/_/defaultstates/"
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
     data = {"down": third.id}
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies"
+    assert path_from_url(r.location) == "/admin/vocabularies"
     assert Voc.query.order_by(Voc.position).all() == [first, second, third]
 
     data = {"up": third.id}
     data.update(base_data)
     r = client.post(url, data=data)
     assert r.status_code == 302
-    assert path_from_url(r.headers["Location"]) == "/admin/vocabularies"
+    assert path_from_url(r.location) == "/admin/vocabularies"
     assert Voc.query.order_by(Voc.position).all() == [first, third, second]
