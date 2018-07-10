@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, \
 from flask.testing import FlaskClient
 from flask_login import login_user, logout_user
 from hyperlink import URL
+from six import text_type
 from sqlalchemy.exc import DatabaseError
 
 from abilian.core.models.subjects import User
@@ -22,6 +23,7 @@ __all__ = (
 
 
 def path_from_url(url):
+    url = text_type(url)
     return "/" + "/".join(URL.from_text(url).path)
 
 
