@@ -189,8 +189,8 @@ def uniquelogins(sessions):
     daily_serie = daily_serie.apply(lambda x: len(x))
 
     # GroupBy Week/month, Thanks Panda
-    weekly_serie = daily_serie.groupby(pd.TimeGrouper(freq="W")).aggregate(numpysum)
-    monthly_serie = daily_serie.groupby(pd.TimeGrouper(freq="M")).aggregate(numpysum)
+    weekly_serie = daily_serie.groupby(pd.Grouper(freq="W")).aggregate(numpysum)
+    monthly_serie = daily_serie.groupby(pd.Grouper(freq="M")).aggregate(numpysum)
 
     for date, value in six.iteritems(weekly_serie):
         try:
