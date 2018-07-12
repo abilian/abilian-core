@@ -18,9 +18,6 @@ flask-sqlalchemy<=2.1
 # Currently broken w/ 0.13
 Flask-WTF>=0.12,<0.13
 
-# Currently broken w/ 2.2
-wtforms<2.2
-
 # Forms add-ons
 WTForms-Alchemy>=0.12
 WTForms-Components>=0.10

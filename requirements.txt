@@ -70,4 +70,4 @@ whoosh==2.7.4
 wtforms-alchemy==0.16.7
 wtforms-components==0.10.3
 wtforms-sqlalchemy==0.1
-wtforms==2.1
+wtforms==2.2.1            # via flask-wtf, wtforms-alchemy, wtforms-components, wtforms-sqlalchemy

@@ -759,9 +759,9 @@ class LocaleSelectField(SelectField):
 
     def __init__(self, *args, **kwargs):
         kwargs["coerce"] = LocaleSelectField.coerce
-        kwargs["choices"] = (
+        kwargs["choices"] = [
             locale_info for locale_info in i18n.supported_app_locales()
-        )
+        ]
         super(LocaleSelectField, self).__init__(*args, **kwargs)
 
     @staticmethod
@@ -790,7 +790,7 @@ class TimezoneField(SelectField):
 
     def __init__(self, *args, **kwargs):
         kwargs["coerce"] = babel.dates.get_timezone
-        kwargs["choices"] = (tz_info for tz_info in i18n.timezones_choices())
+        kwargs["choices"] = [tz_info for tz_info in i18n.timezones_choices()]
         super(TimezoneField, self).__init__(*args, **kwargs)
 
     def iter_choices(self):
