@@ -93,12 +93,12 @@ lint-travis:
 
 lint-js:
 	@echo "--> Linting JS files"
-	node_modules/.bin/eslint abilian/web/resources/js/
+	yarn run eslint abilian/web/resources/js/
 	@echo ""
 
 lint-less:
 	@echo "--> Linting LESS files"
-	node_modules/.bin/stylelint ./abilian/web/resources/less/*.less
+	yarn run stylelint ./abilian/web/resources/less/*.less
 	@echo ""
 
 lint-rst:
@@ -128,7 +128,7 @@ format-py:
 	isort -rc abilian demo tests *.py
 
 format-js:
-	./node_modules/.bin/prettier --write \
+	yarn run prettier --write \
 		--trailing-comma es5 \
 		'abilian/web/resources/js/**/*.js'
 
