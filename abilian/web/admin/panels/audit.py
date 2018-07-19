@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from datetime import datetime
 from itertools import chain
+from typing import Text
 
 import pytz
 import six
@@ -292,11 +293,13 @@ class BaseEntryPresenter(object):
         return db.Model._decl_class_registry.get(model_name)
 
     def render(self):
+        # type: () -> Text
         raise NotImplementedError
 
 
 class AuditEntryPresenter(BaseEntryPresenter):
     def __init__(self, entry):
+        # type: (AuditEntry) -> None
         assert isinstance(entry, AuditEntry)
         super(AuditEntryPresenter, self).__init__(entry.user, entry.happened_at)
         self.entry = entry
@@ -348,6 +351,7 @@ class AuditEntryPresenter(BaseEntryPresenter):
 
 class SecurityEntryPresenter(BaseEntryPresenter):
     def __init__(self, entry):
+        # type: (SecurityAudit) -> None
         assert isinstance(entry, SecurityAudit)
         super(SecurityEntryPresenter, self).__init__(entry.manager, entry.happened_at)
         self.entry = entry

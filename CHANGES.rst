@@ -1,6 +1,11 @@
 Changelog for Abilian Core
 ==========================
 
+0.10.19 (2018-07-19)
+--------------------
+
+- Clean up audit objects by removing null values on init
+
 0.10.15 (2018-07-05)
 --------------------
 

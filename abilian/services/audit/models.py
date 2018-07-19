@@ -18,6 +18,7 @@ from flask import current_app
 from six import binary_type, text_type
 from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.base import NEVER_SET
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import DateTime, Integer, String, UnicodeText
 
@@ -133,6 +134,18 @@ class AuditEntry(db.Model):
                 changes = Changes.from_legacy(changes)
         else:
             changes = Changes()
+
+        columns = changes.columns
+        clean_columns = {}
+        for key, value in columns.items():
+            if isinstance(value, tuple):
+                old_value, new_value = value
+                if old_value == NEVER_SET and new_value in (None, ""):
+                    continue
+
+            clean_columns[key] = value
+
+        changes.columns = clean_columns
 
         return changes
 
