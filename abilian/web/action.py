@@ -17,7 +17,7 @@ from abilian.web.util import url_for
 
 log = logging.getLogger(__name__)
 
-__all__ = ("Action", "ButtonAction", "FAIcon", "ModalActionMixin", "actions")
+__all__ = ("Action", "ButtonAction", "FAIcon", "ModalActionMixin", "Endpoint", "actions")
 
 
 class Status(UniqueName):
