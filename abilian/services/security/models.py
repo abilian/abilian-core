@@ -204,7 +204,7 @@ class RoleAssignment(db.Model):
 # The solution is to build specific UNIQUE indexes, only for postgres
 #
 # noinspection PyComparisonWithNone
-def _postgres_indexes():
+def _postgres_indexes1():
     role = RoleAssignment.role
     user_id = RoleAssignment.user_id
     group_id = RoleAssignment.group_id
@@ -278,8 +278,7 @@ def _postgres_indexes():
     return indexes
 
 
-_postgres_indexes()
-del _postgres_indexes
+_postgres_indexes1()
 
 PERMISSIONS_ATTR = "__permissions__"
 
@@ -335,7 +334,7 @@ class PermissionAssignment(db.Model):
         )
 
 
-def _postgres_indexes():
+def _postgres_indexes2():
     # we need a unique index for when object_id is NULL; when it's not the
     # uniqueconstraint will just work.
     PA = PermissionAssignment
@@ -357,8 +356,7 @@ def _postgres_indexes():
     return indexes
 
 
-_postgres_indexes()
-del _postgres_indexes
+_postgres_indexes2()
 
 
 class SecurityAudit(db.Model):

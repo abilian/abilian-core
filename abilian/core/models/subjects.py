@@ -334,7 +334,7 @@ class Group(Principal, db.Model):
         return len(self.members)
 
     @members_count.expression
-    def members_count(cls):
+    def members_count_expression(cls):
         return (
             sa.sql.select([sa.sql.func.count(membership.c.user_id)])
             .where(membership.c.group_id == cls.id)

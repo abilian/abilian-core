@@ -33,6 +33,7 @@ __all__ = (
     "flaghidden",
     "renderempty",
     "VALIDATORS",
+    "siret_validator",
 )
 
 
