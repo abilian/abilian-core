@@ -3,8 +3,9 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from six import iteritems
 from typing import Text
+
+from six import iteritems
 
 from abilian.core.extensions import db
 from abilian.services import Service

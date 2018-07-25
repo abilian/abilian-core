@@ -19,6 +19,7 @@ pytest_plugins = ["abilian.testing.fixtures"]
 
 if os.environ.get("FAIL_ON_WARNINGS"):
     # Don't remove !
+    # noinspection PyUnresolvedReferences
     import pandas
 
     warnings.simplefilter("error")

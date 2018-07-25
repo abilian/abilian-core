@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
@@ -11,14 +12,14 @@ import subprocess
 import threading
 import traceback
 from abc import ABCMeta, abstractmethod
-from base64 import decodestring, encodestring
+from base64 import decodebytes, encodebytes
 from pathlib import Path
 from typing import List
 
 from magic import Magic
 from six import add_metaclass, raise_from, text_type
 
-from abilian.services.image import FIT, resize
+from abilian.services.image import resize
 
 from .service import ConversionError
 from .util import get_tmp_dir, make_temp_file
@@ -494,7 +495,7 @@ class CloudoooPdfHandler(Handler):
         in_mime_type = open("data/{}.mime".format(key)).read()
         file_extension = mimetypes.guess_extension(in_mime_type).strip(".")
 
-        data = encodestring(open(in_fn).read())
+        data = encodebytes(open(in_fn, "rb").read())
         proxy = ServerProxy(self.SERVER_URL, allow_none=True)
 
         if in_mime_type.startswith("application/vnd.oasis.opendocument"):
@@ -504,7 +505,7 @@ class CloudoooPdfHandler(Handler):
             data = proxy.convertFile(data, file_extension, pivot_format)
             data = proxy.convertFile(data, pivot_format, "pdf")
 
-        converted = decodestring(data)
+        converted = decodebytes(data)
         new_key = hashlib.md5(converted).hexdigest()
         with open("data/{}.blob".format(new_key), "wb") as fd:
             fd.write(converted)

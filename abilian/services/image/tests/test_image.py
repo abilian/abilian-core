@@ -6,7 +6,7 @@ from pathlib import Path
 
 from pytest import fixture
 
-from .. import CROP, FIT, SCALE, get_save_format, get_size, resize
+from .. import CROP, SCALE, get_save_format, get_size, resize
 
 
 @fixture

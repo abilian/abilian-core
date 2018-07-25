@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import logging
 import socket
 from collections import OrderedDict, namedtuple
+from pathlib import Path
 
 import redis
 import six
@@ -20,7 +21,6 @@ from flask import (
     session,
     url_for,
 )
-from pathlib import Path
 from six import text_type
 
 from abilian.core.commands import config as cmd_config

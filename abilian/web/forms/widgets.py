@@ -12,7 +12,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Dict, Text, Any
+from typing import Any, Dict, Text
 
 import bleach
 import sqlalchemy as sa

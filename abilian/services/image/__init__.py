@@ -5,10 +5,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import hashlib
 from io import BytesIO
+from typing import Dict
 
 from PIL import Image
 from six import binary_type
-from typing import Dict
 
 __all__ = ["resize", "RESIZE_MODES", "SCALE", "FIT", "CROP"]
 

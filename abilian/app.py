@@ -213,7 +213,7 @@ class AssetManagerMixin(Flask):
 
         for name, data in self._assets_bundles.items():
             bundles = data.get("bundles", [])
-            options = data.get("options", {})
+            options = data.get("options", {})  # type: Dict[Text, Any]
             filters = options.get("filters") or []
             options["filters"] = []
             for f in filters:
