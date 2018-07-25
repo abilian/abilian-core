@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 from six import iteritems
+from typing import Text
 
 from abilian.core.extensions import db
 from abilian.services import Service
@@ -15,7 +16,7 @@ class SettingsService(Service):
     name = "settings"
 
     def namespace(self, name):
-        # type: (unicode) -> SettingsNamespace
+        # type: (Text) -> SettingsNamespace
         return SettingsNamespace(name, self)
 
     def keys(self, prefix=None):
