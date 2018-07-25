@@ -12,7 +12,7 @@ import subprocess
 import threading
 import traceback
 from abc import ABCMeta, abstractmethod
-from base64 import decodebytes, encodebytes
+from base64 import b64decode, b64encode
 from pathlib import Path
 from typing import List
 
@@ -495,7 +495,7 @@ class CloudoooPdfHandler(Handler):
         in_mime_type = open("data/{}.mime".format(key)).read()
         file_extension = mimetypes.guess_extension(in_mime_type).strip(".")
 
-        data = encodebytes(open(in_fn, "rb").read())
+        data = b64encode(open(in_fn, "rb").read())
         proxy = ServerProxy(self.SERVER_URL, allow_none=True)
 
         if in_mime_type.startswith("application/vnd.oasis.opendocument"):
@@ -505,7 +505,7 @@ class CloudoooPdfHandler(Handler):
             data = proxy.convertFile(data, file_extension, pivot_format)
             data = proxy.convertFile(data, pivot_format, "pdf")
 
-        converted = decodebytes(data)
+        converted = b64decode(data)
         new_key = hashlib.md5(converted).hexdigest()
         with open("data/{}.blob".format(new_key), "wb") as fd:
             fd.write(converted)
