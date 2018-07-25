@@ -10,10 +10,10 @@ from pkg_resources import parse_requirements
 from setuptools.command.develop import develop as _develop
 from setuptools.command.sdist import sdist as _sdist
 
-_install_requires = parse_requirements(open("requirements.in"))
+_install_requires = parse_requirements(open("requirements.in").read())
 install_requires = [str(req) for req in _install_requires]
 
-_dev_requires = parse_requirements(open("etc/dev-requirements.txt"))
+_dev_requires = parse_requirements(open("etc/dev-requirements.txt").read())
 dev_requires = [str(req) for req in _dev_requires]
 
 LONG_DESCRIPTION = open("README.rst").read()

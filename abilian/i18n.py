@@ -74,6 +74,7 @@ __all__ = [
     "lazy_gettext",
     "_l",
     "localeselector",
+    "get_default_locale",
     "ngettext",
     "_n",
     "timezoneselector",
