@@ -41,11 +41,11 @@ class HandlerNotFound(ConversionError):
 
 class Cache(object):
 
-    CACHE_DIR = None
+    cache_dir = None
 
     def _path(self, key):
         """File path for `key`:"""
-        return self.CACHE_DIR / "{}.blob".format(key)
+        return self.cache_dir / "{}.blob".format(key)
 
     def __contains__(self, key):
         return self._path(key).exists()
@@ -94,18 +94,18 @@ class Converter(object):
             handler.init_app(app)
 
     def init_work_dirs(self, cache_dir, tmp_dir):
-        self.TMP_DIR = Path(tmp_dir)
-        self.CACHE_DIR = Path(cache_dir)
-        self.cache.CACHE_DIR = self.CACHE_DIR
+        self.tmp_dir = Path(tmp_dir)
+        self.cache_dir = Path(cache_dir)
+        self.cache.cache_dir = self.cache_dir
 
-        if not self.TMP_DIR.exists():
-            self.TMP_DIR.mkdir()
-        if not self.CACHE_DIR.exists():
-            self.CACHE_DIR.mkdir()
+        if not self.tmp_dir.exists():
+            self.tmp_dir.mkdir()
+        if not self.cache_dir.exists():
+            self.cache_dir.mkdir()
 
     def clear(self):
         self.cache.clear()
-        for d in (self.TMP_DIR, self.CACHE_DIR):
+        for d in (self.tmp_dir, self.cache_dir):
             shutil.rmtree(bytes(d))
             d.mkdir()
 
@@ -255,6 +255,8 @@ class Converter(object):
 
     @staticmethod
     def digest(blob):
+        # FIXME for python 3
+        assert isinstance(blob, bytes)
         assert isinstance(blob, string_types)
         if isinstance(blob, str):
             digest = hashlib.md5(blob).hexdigest()

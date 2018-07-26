@@ -29,7 +29,7 @@ CACHE_DIR = "cache"
 def get_tmp_dir():
     from . import converter
 
-    return converter.TMP_DIR
+    return converter.tmp_dir
 
 
 # Utils

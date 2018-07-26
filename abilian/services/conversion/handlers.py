@@ -77,7 +77,7 @@ class Handler(object):
         pass
 
     @property
-    def TMP_DIR(self):
+    def tmp_dir(self):
         return get_tmp_dir()
 
     @property
@@ -141,25 +141,22 @@ class AbiwordTextHandler(Handler):
     produces_mime_types = ["text/plain"]
 
     def convert(self, blob, **kw):
-        tmp_dir = self.TMP_DIR
-        cur_dir = os.getcwd()
+        tmp_dir = self.tmp_dir
         with make_temp_file(blob, suffix=".doc") as in_fn, make_temp_file(
             suffix=".txt"
         ) as out_fn:
             try:
-                os.chdir(str(tmp_dir))
                 subprocess.check_call(
                     [
                         "abiword",
                         "--to",
                         os.path.basename(out_fn),
                         os.path.basename(in_fn),
-                    ]
+                    ],
+                    cwd=bytes(tmp_dir)
                 )
             except Exception as e:
                 raise_from(ConversionError("abiword failed"), e)
-            finally:
-                os.chdir(cur_dir)
 
             converted = open(out_fn).read()
             encoding = self.encoding_sniffer.from_file(out_fn)
@@ -184,24 +181,21 @@ class AbiwordPDFHandler(Handler):
     produces_mime_types = ["application/pdf"]
 
     def convert(self, blob, **kw):
-        cur_dir = os.getcwd()
         with make_temp_file(blob, suffix=".doc") as in_fn, make_temp_file(
             suffix=".pdf"
         ) as out_fn:
             try:
-                os.chdir(bytes(self.TMP_DIR))
                 subprocess.check_call(
                     [
                         "abiword",
                         "--to",
                         os.path.basename(out_fn),
                         os.path.basename(in_fn),
-                    ]
+                    ],
+                    cwd=bytes(self.tmp_dir),
                 )
             except Exception as e:
                 raise_from(ConversionError("abiword failed"), e)
-            finally:
-                os.chdir(cur_dir)
 
             converted = open(out_fn).read()
             return converted
@@ -334,7 +328,7 @@ class UnoconvPdfHandler(Handler):
             def run_uno():
                 try:
                     self._process = subprocess.Popen(
-                        cmd, close_fds=True, cwd=bytes(self.TMP_DIR)
+                        cmd, close_fds=True, cwd=bytes(self.tmp_dir)
                     )
                     self._process.communicate()
                 except Exception as e:
@@ -434,7 +428,7 @@ class LibreOfficePdfHandler(Handler):
             def run_soffice():
                 try:
                     self._process = subprocess.Popen(
-                        cmd, close_fds=True, cwd=bytes(self.TMP_DIR)
+                        cmd, close_fds=True, cwd=bytes(self.tmp_dir)
                     )
                     self._process.communicate()
                 except Exception as e:
