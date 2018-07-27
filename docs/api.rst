@@ -145,11 +145,6 @@ Module :mod:`abilian.web.comments`
 .. automodule:: abilian.web.comments
 
 
-Module :mod:`abilian.web.decorators`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: abilian.web.decorators
-
 Module :mod:`abilian.web.filters`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -18,7 +18,7 @@ from pytz import utc
 from six import text_type
 from werkzeug.routing import BuildError
 
-from abilian.web.decorators import deprecated
+from deprecated import deprecated
 
 from ..core.util import local_dt, slugify, utc_dt
 from .util import url_for
