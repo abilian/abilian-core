@@ -38,6 +38,7 @@ from werkzeug.utils import import_string
 
 import abilian.core.util
 import abilian.i18n
+from abilian.config import default_config
 from abilian.core import extensions, redis, signals
 from abilian.core.celery import FlaskCelery
 from abilian.services import activity_service, antivirus, audit_service, \
@@ -62,44 +63,6 @@ __all__ = ["create_app", "Application", "ServiceManager"]
 
 # Silence those warnings for now.
 warnings.simplefilter("ignore", category=sa.exc.SAWarning)
-
-default_config = dict(Flask.default_config)  # type: Dict[str, Any]
-default_config.update(
-    PRIVATE_SITE=False,
-    TEMPLATE_DEBUG=False,
-    CSRF_ENABLED=True,
-    BABEL_ACCEPT_LANGUAGES=["en"],
-    DEFAULT_COUNTRY=None,
-    PLUGINS=(),
-    ADMIN_PANELS=(
-        "abilian.web.admin.panels.dashboard.DashboardPanel",
-        "abilian.web.admin.panels.audit.AuditPanel",
-        "abilian.web.admin.panels.login_sessions.LoginSessionsPanel",
-        "abilian.web.admin.panels.settings.SettingsPanel",
-        "abilian.web.admin.panels.users.UsersPanel",
-        "abilian.web.admin.panels.groups.GroupsPanel",
-        "abilian.web.admin.panels.sysinfo.SysinfoPanel",
-        "abilian.web.admin.panels.impersonate.ImpersonatePanel",
-        "abilian.services.vocabularies.admin.VocabularyPanel",
-        "abilian.web.tags.admin.TagPanel",
-    ),
-    CELERYD_MAX_TASKS_PER_CHILD=1000,
-    CELERY_ACCEPT_CONTENT=["pickle", "json", "msgpack", "yaml"],
-    CELERY_TIMEZONE=LOCALTZ,
-    SENTRY_USER_ATTRS=("email", "first_name", "last_name"),
-    SENTRY_INSTALL_CLIENT_JS=True,  # also install client JS
-    SENTRY_JS_VERSION="1.1.22",
-    # TODO: remove, not needed for recent sentry-js
-    SENTRY_JS_PLUGINS=("console", "jquery", "native", "require"),
-    SESSION_COOKIE_NAME=None,
-    SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
-    SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    LOGO_URL=Endpoint("abilian_static", filename="img/logo-abilian-32x32.png"),
-    ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
-    TRACKING_CODE_SNIPPET="",  # tracking code to insert before </body>
-    MAIL_ADDRESS_TAG_CHAR=None,
-)
-default_config = ImmutableDict(default_config)
 
 
 class ServiceManager(object):
@@ -546,7 +509,6 @@ class Application(
 
     Extend it in your own app.
     """
-
     default_config = default_config
 
     #: Custom apps may want to always load some plugins: list them here.
@@ -1013,18 +975,6 @@ class Application(
         self.add_access_controller(
             endpoint, allow_access_for_roles(Anonymous), endpoint=True
         )
-
-    # @deprecated
-    @property
-    def db(self):
-        warnings.warn("Deprecated property 'db'")
-        return self.extensions["sqlalchemy"].db
-
-    # @deprecated
-    @property
-    def redis(self):
-        warnings.warn("Deprecated property 'redis'")
-        return self.extensions["redis"].client
 
     def create_db(self):
         # type: () -> None

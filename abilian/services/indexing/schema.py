@@ -11,7 +11,7 @@ from whoosh.formats import Existence
 from whoosh.support.charset import accent_map
 
 from abilian.core.models.subjects import Group, User
-from abilian.core.util import noproxy
+from abilian.core.util import unwrap
 from abilian.services.security.models import Anonymous, Role
 
 #: A Whoosh analyzer that splits on word boundaries and folds accents and case.
@@ -75,7 +75,7 @@ def indexable_role(principal):
     :param principal: It can be :data:`Anonymous`, :data:`Authenticated`,
       or an instance of :class:`User` or :class:`Group`.
     """
-    principal = noproxy(principal)
+    principal = unwrap(principal)
 
     if hasattr(principal, "is_anonymous") and principal.is_anonymous:
         # transform anonymous user to anonymous role

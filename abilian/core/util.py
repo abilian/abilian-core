@@ -20,7 +20,7 @@ from six import text_type
 from werkzeug.local import LocalProxy
 
 
-def noproxy(obj):
+def unwrap(obj):
     """Unwrap obj from werkzeug.local.LocalProxy if needed.
 
     This is required if one want to test `isinstance(obj, SomeClass)`.
@@ -28,6 +28,9 @@ def noproxy(obj):
     if isinstance(obj, LocalProxy):
         obj = obj._get_current_object()
     return obj
+
+
+noproxy = unwrap
 
 
 def fqcn(cls):

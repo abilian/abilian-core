@@ -16,7 +16,7 @@ from sqlalchemy.orm import object_session, subqueryload
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.models.subjects import Group, User
-from abilian.core.util import noproxy
+from abilian.core.util import unwrap
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import CREATE, DELETE, MANAGE, \
     PERMISSIONS_ATTR, READ, WRITE, Admin
@@ -421,7 +421,7 @@ class SecurityService(Service):
         if not principal:
             return False
 
-        principal = noproxy(principal)
+        principal = unwrap(principal)
         if not self.running:
             return True
 
@@ -479,7 +479,7 @@ class SecurityService(Service):
         """Grant `role` to `user` (either globally, if `obj` is None, or on the
         specific `obj`)."""
         assert principal
-        principal = noproxy(principal)
+        principal = unwrap(principal)
         session = object_session(obj) if obj is not None else db.session
         manager = self._current_user_manager(session=session)
         args = {
@@ -539,7 +539,7 @@ class SecurityService(Service):
         """Ungrant `role` to `user` (either globally, if `object` is None, or
         on the specific `object`)."""
         assert principal
-        principal = noproxy(principal)
+        principal = unwrap(principal)
         session = object_session(object) if object is not None else db.session
         manager = self._current_user_manager(session=session)
 
@@ -610,7 +610,7 @@ class SecurityService(Service):
         if not isinstance(permission, Permission):
             assert permission in PERMISSIONS
             permission = Permission(permission)
-        user = noproxy(user)
+        user = unwrap(user)
 
         if not self.running:
             return True
@@ -823,7 +823,7 @@ class SecurityService(Service):
                 session.expire(obj, [PERMISSIONS_ATTR])
 
     def filter_with_permission(self, user, permission, obj_list, inherit=False):
-        user = noproxy(user)
+        user = unwrap(user)
         return [
             obj
             for obj in obj_list
