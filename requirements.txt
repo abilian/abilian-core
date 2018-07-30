@@ -16,7 +16,6 @@ cffi==1.11.5              # via bcrypt
 clamd==1.0.2
 click==6.7                # via flask
 closure==20180204
-contextlib2==0.5.5        # via raven
 cssmin==0.2.0
 decorator==4.3.0          # via validators
 flask-assets==0.12
@@ -60,7 +59,7 @@ six==1.11.0
 sqlalchemy-utils==0.33.3  # via wtforms-alchemy
 sqlalchemy==1.2.10
 sqlparse==0.2.4
-tqdm==4.23.4
+tqdm==4.24.0
 typing==3.6.4
 validators==0.12.2        # via wtforms-components
 vine==1.1.4               # via amqp
