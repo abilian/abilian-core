@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals
 
 import logging
 import socket
@@ -12,15 +13,8 @@ import six
 import sqlalchemy as sa
 import sqlalchemy.dialects
 import sqlalchemy.exc
-from flask import (
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import current_app, flash, redirect, render_template, request, \
+    session, url_for
 from six import text_type
 
 from abilian.core.commands import config as cmd_config

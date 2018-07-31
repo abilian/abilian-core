@@ -4,7 +4,7 @@
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
 
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import flask_mail
 import sqlalchemy as sa
@@ -14,10 +14,12 @@ from flask import current_app
 from sqlalchemy.engine import Engine
 
 from abilian.core.logging import patch_logger
+
 from . import upstream_info
-from .csrf import wtf_csrf as csrf, abilian_csrf
-from .login import login_manager
 from ..sqlalchemy import SQLAlchemy
+from .csrf import abilian_csrf
+from .csrf import wtf_csrf as csrf
+from .login import login_manager
 
 __all__ = ["get_extension", "db", "mail", "login_manager", "csrf", "upstream_info"]
 

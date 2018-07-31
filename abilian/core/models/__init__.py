@@ -1,6 +1,6 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, division, print_function
 
 import json
 from datetime import datetime
@@ -9,21 +9,9 @@ from six import python_2_unicode_compatible
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm.util import class_mapper
 
-from .base import (
-    Model,
-    IdMixin,
-    TimestampedMixin,
-    EDITABLE,
-    NOT_EDITABLE,
-    AUDITABLE,
-    AUDITABLE_HIDDEN,
-    NOT_AUDITABLE,
-    SEARCHABLE,
-    NOT_SEARCHABLE,
-    EXPORTABLE,
-    NOT_EXPORTABLE,
-    SYSTEM,
-)
+from .base import AUDITABLE, AUDITABLE_HIDDEN, EDITABLE, EXPORTABLE, \
+    NOT_AUDITABLE, NOT_EDITABLE, NOT_EXPORTABLE, NOT_SEARCHABLE, SEARCHABLE, \
+    SYSTEM, IdMixin, Model, TimestampedMixin
 from .owned import OwnedMixin
 
 
