@@ -108,7 +108,6 @@ class NSView(View):
             return self.do_delete()
         elif action == "merge":
             return self.do_merge()
-
         else:
             flash(_("Unknown action"))
             self.get(self.ns)

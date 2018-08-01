@@ -29,11 +29,7 @@ def test_form_photo(app, db):
         form.validate()
         assert form.photo.data is not None
 
-        if hasattr(form.photo.data, "read"):
-            data = form.photo.data.read()
-        else:
-            data = form.photo.data
-
-        img_type = imghdr.what("ignored", data)
-        # FIXME: should be 'png' but is 'jpeg' on Python 2
+        img_data = form.photo.data
+        img_type = imghdr.what("ignored", img_data)
+        # ???: should be 'png' but is 'jpeg' on Python 2
         assert img_type in ("png", "jpeg")
