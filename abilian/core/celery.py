@@ -18,6 +18,7 @@ from flask.helpers import locked_cached_property
 from sqlalchemy.orm.session import Session
 
 from abilian.core.extensions import db
+from abilian.core.util import unwrap
 
 
 def default_app_factory():
@@ -72,7 +73,7 @@ class FlaskLoader(BaseLoader):
     @locked_cached_property
     def flask_app(self):
         if has_app_context():
-            return flask_current_app._get_current_object()
+            return unwrap(flask_current_app)
 
         self.flask_app_factory = symbol_by_name(self.flask_app_factory)
         app = self.flask_app_factory()

@@ -13,10 +13,10 @@ from abilian.core.models.subjects import User
 from abilian.web import url_for
 from abilian.web.views import JSONModelSearch
 
-bp = Blueprint("users", __name__, url_prefix="/users")
+blueprint = Blueprint("users", __name__, url_prefix="/users")
 
 
-@bp.url_value_preprocessor
+@blueprint.url_value_preprocessor
 def get_user(endpoint, values):
     try:
         user_id = values.pop("user_id")
@@ -30,7 +30,7 @@ def get_user(endpoint, values):
         pass
 
 
-@bp.route("/<int:user_id>/photo")
+@blueprint.route("/<int:user_id>/photo")
 def photo(user):
     if not user.photo:
         raise NotFound()
@@ -90,4 +90,4 @@ class UserJsonListing(JSONModelSearch):
         return d
 
 
-bp.route("/json/")(UserJsonListing.as_view("json_list"))
+blueprint.route("/json/")(UserJsonListing.as_view("json_list"))

@@ -153,7 +153,7 @@ class AbiwordTextHandler(Handler):
                         os.path.basename(out_fn),
                         os.path.basename(in_fn),
                     ],
-                    cwd=bytes(tmp_dir)
+                    cwd=bytes(tmp_dir),
                 )
             except Exception as e:
                 raise_from(ConversionError("abiword failed"), e)

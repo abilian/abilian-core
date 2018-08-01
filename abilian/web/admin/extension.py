@@ -11,6 +11,7 @@ from flask_login import current_user
 from werkzeug.exceptions import Forbidden
 from werkzeug.utils import import_string
 
+from abilian.core.util import unwrap
 from abilian.i18n import _l
 from abilian.services.security import Admin as AdminRole
 from abilian.services.security import security
@@ -164,7 +165,7 @@ class Admin(object):
 
         @self.blueprint.before_request
         def check_security():
-            user = current_user._get_current_object()
+            user = unwrap(current_user)
             if not security.has_role(user, "admin"):
                 raise Forbidden()
 

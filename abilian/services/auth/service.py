@@ -15,6 +15,7 @@ from werkzeug.exceptions import Forbidden
 from abilian.core.extensions import db, login_manager
 from abilian.core.models.subjects import User
 from abilian.core.signals import user_loaded
+from abilian.core.util import unwrap
 from abilian.services import Service, ServiceState
 from abilian.web.action import DynamicIcon, actions
 from abilian.web.nav import NavGroup, NavItem
@@ -134,7 +135,7 @@ class AuthService(Service):
 
             return None
 
-        app = current_app._get_current_object()
+        app = unwrap(current_app)
         app.services[AuthService.name].user_logged_in(app, user)
         user_loaded.send(app, user=user)
         return user
@@ -182,7 +183,7 @@ class AuthService(Service):
             return
 
         state = self.app_state
-        user = current_user._get_current_object()
+        user = unwrap(current_user)
 
         # Another special case for tests
         if current_app.testing and getattr(user, "is_admin", False):

@@ -83,7 +83,9 @@ class DeferredJSExtension(JinjaExtension):
         return ""
 
     def collect_deferred(self, caller):
-        result = "\n".join("(function(){{\n{}\n}})();".format(js) for js in g.deferred_js)
+        result = "\n".join(
+            "(function(){{\n{}\n}})();".format(js) for js in g.deferred_js
+        )
         flask_ext = current_app.extensions[DeferredJS.name]
         flask_ext.reset_deferred()
         return result

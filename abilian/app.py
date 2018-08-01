@@ -19,7 +19,6 @@ import jinja2
 import sqlalchemy as sa
 import sqlalchemy.exc
 import yaml
-from babel.dates import LOCALTZ
 from flask import Blueprint, Flask, _request_ctx_stack, abort, \
     appcontext_pushed, current_app, g, render_template, request, \
     request_started
@@ -33,7 +32,6 @@ from flask_script import Manager as ScriptManager
 from pkg_resources import resource_filename
 from six import string_types, text_type
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
-from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import import_string
 
 import abilian.core.util
@@ -47,7 +45,7 @@ from abilian.services import activity_service, antivirus, audit_service, \
     settings_service, vocabularies_service
 from abilian.services.security import Anonymous
 from abilian.web import csrf
-from abilian.web.action import Endpoint, actions
+from abilian.web.action import actions
 from abilian.web.admin import Admin
 from abilian.web.assets.filters import ClosureJS
 from abilian.web.blueprints import allow_access_for_roles
@@ -509,6 +507,7 @@ class Application(
 
     Extend it in your own app.
     """
+
     default_config = default_config
 
     #: Custom apps may want to always load some plugins: list them here.
@@ -873,7 +872,7 @@ class Application(
 
         from .web.coreviews import users
 
-        self.register_blueprint(users.bp)
+        self.register_blueprint(users.blueprint)
 
         # Admin interface
         Admin().init_app(self)

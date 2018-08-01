@@ -1,7 +1,6 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 import socket
@@ -13,13 +12,21 @@ import six
 import sqlalchemy as sa
 import sqlalchemy.dialects
 import sqlalchemy.exc
-from flask import current_app, flash, redirect, render_template, request, \
-    session, url_for
+from flask import (
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from six import text_type
 
 from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf, db
 from abilian.core.models.subjects import User
+from abilian.core.util import unwrap
 from abilian.services import get_service
 from abilian.services.security import Admin, Anonymous
 from abilian.web.blueprints import Blueprint
@@ -414,7 +421,7 @@ def finalize_validate():
     admin_account = session_get("admin_account")
     # create a new app that will be configured with new config,
     # to create database and admin_user
-    setup_app = current_app._get_current_object()
+    setup_app = unwrap(current_app)
     app = setup_app.__class__(
         setup_app.import_name,
         static_url_path=setup_app.static_url_path,

@@ -710,7 +710,7 @@ class SecurityService(Service):
             return sa.sql.exists([1])
 
         if user is None:
-            user = current_user._get_current_object()
+            user = unwrap(current_user)
 
         # build role CTE
         principal_filter = RA.anonymous == True

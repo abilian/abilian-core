@@ -27,7 +27,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from abilian.core.extensions import csrf, db
 from abilian.core.models.subjects import User
 from abilian.core.signals import auth_failed
-from abilian.core.util import md5
+from abilian.core.util import md5, unwrap
 from abilian.i18n import _, render_template_i18n
 from abilian.services.security import Anonymous
 from abilian.web.blueprints import Blueprint
@@ -72,7 +72,7 @@ def do_login(form):
             sql.func.lower(User.email) == email, User.can_login == True
         ).one()
     except NoResultFound:
-        auth_failed.send(current_app._get_current_object(), email=email)
+        auth_failed.send(unwrap(current_app), email=email)
         res["error"] = _(
             "Sorry, we couldn't find an account for " "email '{email}'."
         ).format(email=email)
@@ -80,7 +80,7 @@ def do_login(form):
         return res
 
     if user and not user.authenticate(password):
-        auth_failed.send(current_app._get_current_object(), email=email)
+        auth_failed.send(unwrap(current_app), email=email)
         res["error"] = _("Sorry, wrong password.")
         res["code"] = 401
         return res

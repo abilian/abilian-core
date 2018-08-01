@@ -9,6 +9,7 @@ from flask_wtf.csrf import CsrfProtect
 from markupsafe import Markup
 from werkzeug.exceptions import BadRequest
 
+from abilian.core.util import unwrap
 from abilian.i18n import _l
 
 wtf_csrf = CsrfProtect()
@@ -52,7 +53,7 @@ class AbilianCsrf(object):
         request.csrf_failed = reason
 
     def before_request(self):
-        req = request._get_current_object()
+        req = unwrap(request)
         failed = req.csrf_failed
 
         if not failed:

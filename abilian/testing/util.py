@@ -3,6 +3,8 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from typing import ContextManager
+
 from flask.testing import FlaskClient
 from flask_login import login_user, logout_user
 from hyperlink import URL
@@ -28,7 +30,7 @@ def path_from_url(url):
 
 
 def client_login(client, user):
-    # type: (FlaskClient, User) -> LoginContext
+    # type: (FlaskClient, User) -> ContextManager
 
     class LoginContext(object):
         def __enter__(self):

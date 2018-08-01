@@ -8,7 +8,6 @@ from babel.dates import LOCALTZ
 from flask import Flask
 from werkzeug.datastructures import ImmutableDict
 
-from abilian.core import redis
 from abilian.web.action import Endpoint
 
 default_config = dict(Flask.default_config)  # type: Dict[str, Any]

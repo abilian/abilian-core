@@ -25,6 +25,8 @@ from abilian.web.views.images import user_photo_url
 
 from .forms import UserAdminForm, UserCreateForm
 
+MUGSHOT_SIZE = 45
+
 
 class JsonUsersList(base.JSONView):
     """JSON user list for datatable."""
@@ -75,7 +77,6 @@ class JsonUsersList(base.JSONView):
         users = query.slice(start, end).all()
 
         data = []
-        MUGSHOT_SIZE = 45
         for user in users:
             # TODO: this should be done on the browser.
             user_url = url_for(".users_user", user_id=user.id)
