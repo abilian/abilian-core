@@ -3,17 +3,12 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
-from functools import partial
-
 import lxml.html
 from flask import current_app
-from flask.globals import _lookup_req_object, _request_ctx_stack
+from flask.globals import g
 from flask.signals import got_request_exception, request_started
 from jinja2 import nodes
 from jinja2.ext import Extension as JinjaExtension
-from werkzeug.local import LocalProxy
-
-deferred_js = LocalProxy(partial(_lookup_req_object, "deferred_js"))
 
 
 class DeferredJS(object):
@@ -36,8 +31,9 @@ class DeferredJS(object):
     def reset_request(self, sender, **extra):
         self.reset_deferred()
 
-    def reset_deferred(self):
-        _request_ctx_stack.top.deferred_js = []
+    @staticmethod
+    def reset_deferred():
+        g.deferred_js = []
 
 
 class DeferredJSExtension(JinjaExtension):
@@ -83,10 +79,11 @@ class DeferredJSExtension(JinjaExtension):
             body.append(child.tail)
         body = "".join(body)
 
-        deferred_js.append(body)
+        g.deferred_js.append(body)
         return ""
 
     def collect_deferred(self, caller):
-        result = "\n".join("(function(){{\n{}\n}})();".format(js) for js in deferred_js)
-        current_app.extensions[DeferredJS.name].reset_deferred()
+        result = "\n".join("(function(){{\n{}\n}})();".format(js) for js in g.deferred_js)
+        flask_ext = current_app.extensions[DeferredJS.name]
+        flask_ext.reset_deferred()
         return result
