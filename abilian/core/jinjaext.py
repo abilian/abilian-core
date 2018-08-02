@@ -60,7 +60,8 @@ class DeferredJSExtension(JinjaExtension):
             lineno
         )
 
-    def defer_nodes(self, caller):
+    @staticmethod
+    def defer_nodes(caller):
         body = "<div>{}</div>".format(caller().strip())
 
         # remove 'script' tag in immediate children, if any
@@ -82,7 +83,8 @@ class DeferredJSExtension(JinjaExtension):
         g.deferred_js.append(body)
         return ""
 
-    def collect_deferred(self, caller):
+    @staticmethod
+    def collect_deferred(caller):
         result = "\n".join(
             "(function(){{\n{}\n}})();".format(js) for js in g.deferred_js
         )
