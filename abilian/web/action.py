@@ -21,6 +21,7 @@ __all__ = (
     "Action",
     "ButtonAction",
     "FAIcon",
+    "DynamicIcon",
     "ModalActionMixin",
     "Endpoint",
     "actions",
@@ -631,7 +632,8 @@ class ActionRegistry(object):
     def _state(self):
         return current_app.extensions[self.__EXTENSION_NAME]
 
-    def _init_context(self, sender):
+    @staticmethod
+    def _init_context(sender):
         g.action_context = {}
 
     @property

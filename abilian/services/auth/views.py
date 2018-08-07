@@ -34,7 +34,7 @@ from abilian.web.blueprints import Blueprint
 
 from .models import LoginSession
 
-__all__ = ()
+__all__ = ("login",)
 
 login = Blueprint(
     "login",

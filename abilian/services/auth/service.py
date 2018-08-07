@@ -37,13 +37,13 @@ def is_authenticated(context):
 
 
 def _user_photo_endpoint():
-    from abilian.web.views import images  # late import: avoid circular import
+    from abilian.web.views import images  # lazy import: avoid circular import
 
     return images.user_url_args(current_user, 16)[0]
 
 
 def _user_photo_icon_args(icon, url_args):
-    from abilian.web.views import images  # late import avoid circular import
+    from abilian.web.views import images  # lazy import avoid circular import
 
     return images.user_url_args(current_user, max(icon.width, icon.height))[1]
 
@@ -106,13 +106,18 @@ class AuthService(Service):
     def init_app(self, app):
         login_manager.init_app(app)
         login_manager.login_view = "login.login_form"
+
         Service.init_app(self, app)
+
         self.login_url_prefix = app.config.get("LOGIN_URL", "/user")
+
         app.before_request(self.do_access_control)
         app.before_request(self.update_user_session_data)
         user_logged_in.connect(self.user_logged_in, sender=app)
         user_logged_out.connect(self.user_logged_out, sender=app)
+
         app.register_blueprint(login_views, url_prefix=self.login_url_prefix)
+
         with app.app_context():
             actions.register(*_ACTIONS)
 
