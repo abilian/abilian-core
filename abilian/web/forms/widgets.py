@@ -1336,16 +1336,20 @@ class RichTextWidget(object):
         "p": True,
         "u": True,
     }
+    profile = "standard"
 
-    def __init__(self, allowed_tags=None, template=None):
+    def __init__(self, allowed_tags=None, template=None, profile=None):
         if allowed_tags is not None:
             self.allowed_tags = allowed_tags
         if template is not None:
             self.template = template
+        if profile is not None:
+            self.profile = profile
 
     def __call__(self, field, **kwargs):
         value = kwargs.pop("value") if "value" in kwargs else field._value()
         kwargs.setdefault("allowed_tags", self.allowed_tags)
+        kwargs.setdefault("profile", self.profile)
         return render_template(self.template, field=field, value=value, kw=kwargs)
 
 

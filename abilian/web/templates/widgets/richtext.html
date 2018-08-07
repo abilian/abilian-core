@@ -1,6 +1,7 @@
 <textarea name="{{ field.name }}" class="js-widget hide"
     {%- if kw.rows is defined %} rows="{{ kw.rows }}"{%- endif %}
-          data-init-with="richtext"
+    data-init-with="richtext"
+    data-profile="{{ kw.profile }}"
     {%- if kw.allowed_tags is defined %} data-allowed-tags="{{ kw.allowed_tags | tojson |forceescape }}"{%- endif %}>
   {{ value | safe }}
 </textarea>
