@@ -12,7 +12,7 @@ require(["AbilianWidget"], function (Abilian) {
     var profile = this.attr("data-profile");
     console.log(profile);
 
-    if (profile == "minimal") {
+    if (profile === "minimal") {
       config.entities = false;
 
       config.skin = "moono";
