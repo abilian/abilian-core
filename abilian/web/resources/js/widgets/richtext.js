@@ -1,4 +1,4 @@
-require(["AbilianWidget"], function (Abilian) {
+require(["AbilianWidget"], function(Abilian) {
   "use strict";
 
   function initRichTextWidget(params) {
@@ -37,28 +37,28 @@ require(["AbilianWidget"], function (Abilian) {
       config.removeDialogTabs = "image:advanced;link:advanced";
 
       config.allowedContent = {
-        a: {attributes: ["!href", "title"]},
-        abbr: {attributes: ["title"]},
-        acronym: {attributes: ["title"]},
+        a: { attributes: ["!href", "title"] },
+        abbr: { attributes: ["title"] },
+        acronym: { attributes: ["title"] },
         b: {},
-        blockquote: {attributes: ["title"]},
+        blockquote: { attributes: ["title"] },
         br: {},
-        code: {attributes: ["title"]},
+        code: { attributes: ["title"] },
         em: {},
         i: {},
         li: {},
-        ol: {attributes: ["title"]},
+        ol: { attributes: ["title"] },
         strong: {},
-        ul: {attributes: ["title"]},
+        ul: { attributes: ["title"] },
         h1: {},
         h2: {},
         h3: {},
         h4: {},
         h5: {},
         h6: {},
-        p: {attributes: ["style"], styles: ["text-align"]},
+        p: { attributes: ["style"], styles: ["text-align"] },
         u: {},
-        img: {attributes: ["!src", "alt", "title"]},
+        img: { attributes: ["!src", "alt", "title"] },
       };
     }
 
