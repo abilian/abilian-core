@@ -39,7 +39,7 @@ itsdangerous==0.24        # via flask, flask-debugtoolbar
 jinja2==2.10              # via flask, flask-babel
 jsmin==2.2.2
 kombu==4.2.1              # via celery
-lxml==4.2.4
+lxml==4.2.5
 mako==1.0.7               # via alembic
 markupsafe==1.0
 numpy==1.15.1             # via pandas
@@ -57,7 +57,7 @@ pyyaml==3.13
 raven==6.9.0
 redis==2.10.6
 six==1.11.0
-sqlalchemy-utils==0.33.3  # via wtforms-alchemy
+sqlalchemy-utils==0.33.4  # via wtforms-alchemy
 sqlalchemy==1.2.11
 sqlparse==0.2.4
 tqdm==4.25.0
