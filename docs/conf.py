@@ -38,7 +38,7 @@ extensions = [
 
 # sphinx.ext.autodoc configuration
 autodoc_member_order = 'groupwise'
-autodoc_default_flags = ['members', 'undoc-members']
+autodoc_default_options = {'members': None, 'undoc-members': None}
 
 # sphinx.ext.intersphinx configuration
 intersphinx_mapping = {

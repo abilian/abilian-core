@@ -85,8 +85,8 @@ class Role(UniqueName):
     """Defines role by name. Roles instances are unique by name.
 
     :param assignable: true if this role is can be assigned through security service.
-    Non-assignable roles are roles automatically given depending on context (ex:
-    Anonymous/Authenticated).
+        Non-assignable roles are roles automatically given depending on context (ex:
+        Anonymous/Authenticated).
     """
 
     __slots__ = ("label", "assignable")

@@ -60,7 +60,7 @@ six==1.11.0
 sqlalchemy-utils==0.33.4  # via wtforms-alchemy
 sqlalchemy==1.2.11
 sqlparse==0.2.4
-tqdm==4.25.0
+tqdm==4.26.0
 typing==3.6.6
 validators==0.12.2        # via wtforms-components
 vine==1.1.4               # via amqp
