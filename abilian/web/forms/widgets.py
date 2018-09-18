@@ -12,7 +12,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, Text
+from typing import Any, Dict, Optional, Text
 
 import bleach
 import sqlalchemy as sa
@@ -641,8 +641,8 @@ class TextInput(wtforms.widgets.TextInput):
     :class:`abilian.web.action.Icon`.
     """
 
-    pre_icon = None
-    post_icon = None
+    pre_icon = None  # type: Optional[Text]
+    post_icon = None  # type: Optional[Text]
 
     def __init__(self, input_type=None, pre_icon=None, post_icon=None, *args, **kwargs):
         super(TextInput, self).__init__(input_type, *args, **kwargs)

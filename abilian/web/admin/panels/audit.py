@@ -25,10 +25,9 @@ from abilian.core.util import local_dt
 from abilian.i18n import _
 from abilian.services.audit import AuditEntry
 from abilian.services.security import SecurityAudit
+from abilian.web.admin import AdminPanel
 from abilian.web.util import url_for
 from abilian.web.views.base import JSONView
-
-from ..panel import AdminPanel
 
 
 def format_date_for_input(date):
