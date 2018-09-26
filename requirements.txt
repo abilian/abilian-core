@@ -14,7 +14,7 @@ blinker==1.4              # via flask-debugtoolbar, flask-mail
 celery==4.2.1
 cffi==1.11.5              # via bcrypt
 clamd==1.0.2
-click==6.7                # via flask
+click==7.0                # via flask
 closure==20180204
 contextlib2==0.5.5        # via raven
 cssmin==0.2.0
