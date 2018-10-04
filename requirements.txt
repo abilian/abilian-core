@@ -9,7 +9,7 @@ amqp==2.3.2               # via kombu
 babel==2.6.0              # via flask-babel
 bcrypt==3.1.4
 billiard==3.5.0.4         # via celery
-bleach==2.1.4
+bleach==3.0.0
 blinker==1.4              # via flask-debugtoolbar, flask-mail
 celery==4.2.1
 cffi==1.11.5              # via bcrypt
@@ -30,7 +30,6 @@ flask-sqlalchemy==2.1
 flask-testing==0.7.1
 flask-wtf==0.12
 flask==1.0.2
-html5lib==1.0.1           # via bleach
 hyperlink==18.0.0
 idna==2.7                 # via hyperlink
 infinity==1.4             # via intervals
@@ -65,7 +64,7 @@ typing==3.6.6
 validators==0.12.2        # via wtforms-components
 vine==1.1.4               # via amqp
 webassets==0.12.1         # via flask-assets
-webencodings==0.5.1       # via html5lib
+webencodings==0.5.1       # via bleach
 werkzeug==0.14.1          # via flask, flask-debugtoolbar, flask-wtf
 whoosh==2.7.4
 wtforms-alchemy==0.16.7
