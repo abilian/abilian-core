@@ -9,7 +9,7 @@ amqp==2.3.2               # via kombu
 babel==2.6.0              # via flask-babel
 bcrypt==3.1.4
 billiard==3.5.0.4         # via celery
-bleach==3.0.0
+bleach==3.0.1
 blinker==1.4              # via flask-debugtoolbar, flask-mail
 celery==4.2.1
 cffi==1.11.5              # via bcrypt
