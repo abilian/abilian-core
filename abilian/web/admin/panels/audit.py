@@ -33,9 +33,7 @@ from abilian.web.views.base import JSONView
 def format_date_for_input(date):
     date_fmt = get_locale().date_formats["short"].pattern
     # force numerical months
-    date_fmt = date_fmt.replace("MMMM", "MM").replace(
-        "MMM", "MM"
-    )
+    date_fmt = date_fmt.replace("MMMM", "MM").replace("MMM", "MM")
     return format_date(date, date_fmt)
 
 
