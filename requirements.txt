@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-alembic==1.0.0
+alembic==1.0.1
 amqp==2.3.2               # via kombu
 babel==2.6.0              # via flask-babel
 bcrypt==3.1.4
@@ -34,7 +34,7 @@ hyperlink==18.0.0
 idna==2.7                 # via hyperlink
 infinity==1.4             # via intervals
 intervals==0.8.1          # via wtforms-components
-itsdangerous==0.24        # via flask, flask-debugtoolbar
+itsdangerous==1.0.0       # via flask, flask-debugtoolbar
 jinja2==2.10              # via flask, flask-babel
 jsmin==2.2.2
 kombu==4.2.1              # via celery
@@ -59,7 +59,7 @@ six==1.11.0
 sqlalchemy-utils==0.33.6  # via wtforms-alchemy
 sqlalchemy==1.2.12
 sqlparse==0.2.4
-tqdm==4.26.0
+tqdm==4.27.0
 typing==3.6.6
 validators==0.12.2        # via wtforms-components
 vine==1.1.4               # via amqp
