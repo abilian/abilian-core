@@ -24,7 +24,7 @@ flask-babel==0.11.2
 flask-debugtoolbar==0.10.1
 flask-login==0.4.1
 flask-mail==0.9.1
-flask-migrate==2.2.1
+flask-migrate==2.3.0
 flask-script==2.0.6
 flask-sqlalchemy==2.1
 flask-testing==0.7.1
@@ -41,7 +41,7 @@ kombu==4.2.1              # via celery
 lxml==4.2.5
 mako==1.0.7               # via alembic
 markupsafe==1.0
-numpy==1.15.2             # via pandas
+numpy==1.15.3             # via pandas
 pandas==0.23.4
 pathlib==1.0.1
 pillow==5.3.0
@@ -51,7 +51,7 @@ python-dateutil==2.7.3
 python-deprecated==1.1.0
 python-editor==1.0.3      # via alembic
 python-magic==0.4.15
-pytz==2018.5              # via babel, celery, pandas
+pytz==2018.6              # via babel, celery, pandas
 pyyaml==3.13
 raven==6.9.0
 redis==2.10.6
@@ -59,7 +59,7 @@ six==1.11.0
 sqlalchemy-utils==0.33.6  # via wtforms-alchemy
 sqlalchemy==1.2.12
 sqlparse==0.2.4
-tqdm==4.27.0
+tqdm==4.28.1
 typing==3.6.6
 validators==0.12.2        # via wtforms-components
 vine==1.1.4               # via amqp
