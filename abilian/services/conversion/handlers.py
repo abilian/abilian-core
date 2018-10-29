@@ -120,7 +120,7 @@ class PdfToTextHandler(Handler):
             try:
                 subprocess.check_call(["pdftotext", in_fn, out_fn])
             except Exception as e:
-                raise raise_from(ConversionError("pdftotext failed"), e)
+                raise_from(ConversionError("pdftotext failed"), e)
 
             converted = open(out_fn, "rb").read()
             encoding = self.encoding_sniffer.from_file(out_fn)
