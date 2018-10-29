@@ -26,7 +26,7 @@ class ImportCSSFilter(Filter):
 
     logger = logging.getLogger(__name__ + ".ImportCssFilter")
     _IMPORT_RE = re.compile(
-        """@import ("|')(?P<filename>(/?[-a-zA-Z0-9_\.]+)+\.css)("|');"""
+        r"""@import ("|')(?P<filename>(/?[-a-zA-Z0-9_\.]+)+\.css)("|');"""
     )
 
     def input(self, _in, out, **kwargs):
