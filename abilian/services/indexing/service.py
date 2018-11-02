@@ -185,7 +185,7 @@ class WhooshIndexService(Service):
     def clear_update_queue(self, app=None):
         self.app_state.to_update = []
 
-    def start(self):
+    def start(self, **kw):
         Service.start(self)
         self.register_classes()
         self.init_indexes()

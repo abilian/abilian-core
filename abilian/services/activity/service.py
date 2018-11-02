@@ -21,11 +21,11 @@ class ActivityService(Service):
     def init_app(self, app):
         Service.init_app(self, app)
 
-    def start(self):
+    def start(self, **kw):
         Service.start(self)
         activity.connect(self.log_activity)
 
-    def stop(self):
+    def stop(self, **kw):
         Service.stop(self)
         activity.disconnect(self.log_activity)
 

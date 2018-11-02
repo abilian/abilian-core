@@ -95,7 +95,7 @@ class FlaskLoader(BaseLoader):
             engine = db.get_engine(app, bind)
             engine.dispose()
 
-    def read_configuration(self):
+    def read_configuration(self, env=None):
         app = self.flask_app
         app.config.setdefault("CELERY_DEFAULT_EXCHANGE", app.name)
         app.config.setdefault("CELERY_DEFAULT_QUEUE", app.name)

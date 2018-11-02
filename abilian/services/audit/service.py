@@ -73,11 +73,12 @@ class AuditService(Service):
             event.listen(Session, "after_flush", self.create_audit_entries)
             self._listening = True
 
-    def start(self):
+    def start(self, **kw):
         Service.start(self)
         self.register_classes()
 
-    def is_auditable(self, model_or_class):
+    @staticmethod
+    def is_auditable(model_or_class):
         if hasattr(model_or_class, "__auditable_entity__"):
             return True
 

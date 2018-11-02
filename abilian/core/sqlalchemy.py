@@ -166,8 +166,8 @@ class MutationDict(Mutable, dict):
         dict.clear(self)
         self.changed()
 
-    def update(self, other):
-        dict.update(self, other)
+    def update(self, other, **kw):
+        dict.update(self, other, **kw)
         self.changed()
 
     def setdefault(self, key, failobj=None):
