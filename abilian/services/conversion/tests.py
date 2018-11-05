@@ -76,7 +76,9 @@ def test_word_to_pdf(converter):
     assert "application/pdf" == mime_sniffer.from_buffer(pdf)
 
 
-@mark.skipif(sys.platform == 'linux2', reason="may bug due to ImagMagik settings")
+@mark.skipif(
+    sys.platform.startswith("linux"), reason="maybe bug due to ImagMagik settings"
+)
 def test_image_to_pdf(converter):
     blob = read_file("picture.jpg")
     pdf = converter.to_pdf("", blob, "image/jpeg")
