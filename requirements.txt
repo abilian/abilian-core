@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-alembic==1.0.2
+alembic==1.0.3
 amqp==2.3.2               # via kombu
 babel==2.6.0              # via flask-babel
 bcrypt==3.1.4
@@ -54,14 +54,14 @@ python-magic==0.4.15
 pytz==2018.7              # via babel, celery, pandas
 pyyaml==3.13
 raven==6.9.0
-redis==2.10.6
+redis==3.0.1
 six==1.11.0
-sqlalchemy-utils==0.33.6  # via wtforms-alchemy
-sqlalchemy==1.2.13
+sqlalchemy-utils==0.33.8  # via wtforms-alchemy
+sqlalchemy==1.2.14
 sqlparse==0.2.4
 tqdm==4.28.1
 typing==3.6.6
-validators==0.12.2        # via wtforms-components
+validators==0.12.3        # via wtforms-components
 vine==1.1.4               # via amqp
 webassets==0.12.1         # via flask-assets
 webencodings==0.5.1       # via bleach
