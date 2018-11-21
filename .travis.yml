@@ -26,13 +26,7 @@ services:
 # Install OS dependencies
 before_install:
   - pip install -U pip setuptools wheel
-
-  - export NPM_CONFIG_PREFIX=~/npm-packages
-  - mkdir "${NPM_CONFIG_PREFIX}"
-  - npm install -g less
-  - export PATH=~/npm-packages/bin:$PATH
-  - lessc --version
-
+  - yarn global add less
   - gem install travis
 
 # Install Python dependencies
