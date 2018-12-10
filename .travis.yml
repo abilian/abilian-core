@@ -10,7 +10,6 @@ cache:
   pip: true
   directories:
     - node_modules
-    - .tox
 
 addons:
   postgresql: "9.6"
@@ -20,8 +19,8 @@ env:
     - SQLALCHEMY_DATABASE_URI="sqlite://"
     - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost/abilian_core"
 
-services:
-  - redis-server
+# services:
+#   - redis-server
 
 # Install OS dependencies
 before_install:
@@ -34,7 +33,6 @@ install:
   - pip install -r requirements.txt
   - pip install -r etc/dev-requirements.txt
   - pip install psycopg2
-  - pip check
   - yarn
 
 # Create DB
