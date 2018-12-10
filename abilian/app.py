@@ -718,7 +718,9 @@ class Application(
         Set our celery app as current, so that task use the correct
         config. Without that tasks may use their default set app.
         """
-        self.extensions["celery"].set_current()
+        celery = self.extensions.get("celery")
+        if celery:
+            celery.set_current()
 
     def _setup_nav_and_breadcrumbs(self, app=None):
         """Listener for `request_started` event.
@@ -879,11 +881,12 @@ class Application(
 
         # Celery async service
         # this allows all shared tasks to use this celery app
-        celery_app = self.extensions["celery"] = self.celery_app_cls()
-        # force reading celery conf now - default celery app will
-        # also update our config with default settings
-        celery_app.conf  # noqa
-        celery_app.set_default()
+        if getattr(self, "celery_app_cls", None):
+            celery_app = self.extensions["celery"] = self.celery_app_cls()
+            # force reading celery conf now - default celery app will
+            # also update our config with default settings
+            celery_app.conf  # noqa
+            celery_app.set_default()
 
         # dev helper
         if self.debug:

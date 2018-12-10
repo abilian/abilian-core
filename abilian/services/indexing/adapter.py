@@ -45,7 +45,7 @@ class SchemaAdapter(object):
         """Returns an object instance given its identifier and optional data
         kwargs.
 
-        :returns:None if not object instance can be returned
+        :returns: None if not object instance can be returned
         """
         raise NotImplementedError
 
