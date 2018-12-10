@@ -243,7 +243,7 @@ class WhooshIndexService(Service):
         """
         config = current_app.config.get("SEARCH_DEFAULT_BOOSTS")
         if not config:
-            config = dict(name=1.5, name_prefix=1.3, description=1.3, text=1.0)
+            config = {"name": 1.5, "name_prefix": 1.3, "description": 1.3, "text": 1.0}
             return config
 
     def searchable_object_types(self):
