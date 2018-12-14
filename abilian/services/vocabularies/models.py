@@ -153,6 +153,6 @@ def Vocabulary(name, label=None, group=None):
         label = _label
         group = _group
 
-    cls = type(cls_name, (BaseVocabulary,), dict(Meta=Meta))
+    cls = type(cls_name, (BaseVocabulary,), {"Meta": Meta})
     _generated_vocabularies.append(cls)
     return cls

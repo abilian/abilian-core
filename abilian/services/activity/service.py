@@ -37,7 +37,7 @@ class ActivityService(Service):
             return
 
         session = object_session(object)
-        kwargs = dict(actor=actor, verb=verb, object_type=object.entity_type)
+        kwargs = {"actor": actor, "verb": verb, "object_type": object.entity_type}
 
         if sa.inspect(object).deleted:
             # object is in deleted state: flush has occurred, don't reference it or

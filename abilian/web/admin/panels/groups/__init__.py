@@ -35,9 +35,9 @@ class GroupsPanel(AdminPanel):
             "sDom": "lfFrtip",
             "aaSorting": [[0, "asc"]],
             "aoColumns": [
-                dict(asSorting=["asc", "desc"]),
-                dict(bSortable=False),
-                dict(bSortable=False),
+                {"asSorting": ["asc", "desc"]},
+                {"bSortable": False},
+                {"bSortable": False},
             ],
             "bFilter": True,
             "oLanguage": {

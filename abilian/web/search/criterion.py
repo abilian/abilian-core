@@ -119,7 +119,12 @@ class TextSearchCriterion(BaseCriterion):
                 to_del.append(attr_name)
             else:
                 val.update(
-                    dict(attr=attr, name=name, model=model, rel_attr_name=rel_attr_name)
+                    {
+                        "attr": attr,
+                        "name": name,
+                        "model": model,
+                        "rel_attr_name": rel_attr_name,
+                    }
                 )
 
         for k in to_del:

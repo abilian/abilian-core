@@ -108,9 +108,13 @@ class Length(Rule):
         self.message = message
 
     def __call__(self, form, field):
-        l = field.data and len(field.data) or 0
+        field_data_length = field.data and len(field.data) or 0
 
-        if l < self.min or self.max != -1 and l > self.max:
+        if (
+            field_data_length < self.min
+            or self.max != -1
+            and field_data_length > self.max
+        ):
             message = self.message
             if message is None:
                 if self.max == -1:
@@ -134,7 +138,8 @@ class Length(Rule):
                         max=self.max,
                     )
             raise validators.ValidationError(
-                message % dict(min=self.min, max=self.max, length=l)
+                message
+                % {"min": self.min, "max": self.max, "length": field_data_length}
             )
 
 

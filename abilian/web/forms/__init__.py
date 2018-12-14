@@ -81,8 +81,8 @@ class FormPermissions(object):
             )
 
         self.default = default
-        self.form = dict()
-        self.fields = dict()
+        self.form = {}
+        self.fields = {}
 
         if existing is not None:
             # copy existing formpermissions instance
@@ -93,7 +93,7 @@ class FormPermissions(object):
                     self.form[permission] = existing.form[permission]
 
             for field, mapping in existing.fields.items():
-                f_map = self.fields[field] = dict()
+                f_map = self.fields[field] = {}
                 for permission, roles in mapping.items():
                     f_map[permission] = roles
 
@@ -116,9 +116,7 @@ class FormPermissions(object):
                 for field_name, allowed_roles in fields.items():
                     if isinstance(allowed_roles, Role):
                         allowed_roles = (allowed_roles,)
-                    self.fields.setdefault(field_name, dict())[
-                        permission
-                    ] = allowed_roles
+                    self.fields.setdefault(field_name, {})[permission] = allowed_roles
 
     def has_permission(self, permission, field=None, obj=None, user=current_user):
         if obj is not None and not isinstance(obj, Entity):

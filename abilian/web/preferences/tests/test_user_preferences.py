@@ -21,7 +21,7 @@ def test_form_photo(app, db):
     with AVATAR_COLORMAP.open("rb") as f:
         handle = uploads.add_file(user, f, filename="avatar.png", mimetype="image/png")
 
-    kwargs = dict(method="POST", data={"photo": handle})
+    kwargs = {"method": "POST", "data": {"photo": handle}}
 
     with app.test_request_context(url, **kwargs):
         login_user(user)

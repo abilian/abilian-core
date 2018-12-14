@@ -31,7 +31,7 @@ def test_auto_uuid():
 
 def test_meta():
     b = Blob()
-    assert b.meta == dict()
+    assert b.meta == {}
 
 
 #

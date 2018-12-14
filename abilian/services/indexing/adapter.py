@@ -101,7 +101,7 @@ class SAAdapter(SchemaAdapter):
         args = self.doc_attrs
         # any field not in schema will be stored here. After all field have been
         # discovered we add missing ones
-        field_definitions = dict()
+        field_definitions = {}
 
         def setup_field(attr_name, field_name):
             field_def = False

@@ -135,7 +135,7 @@ register("json", json.dumps, json.loads)  # FIXME: checks for dump/load?
 
 
 def from_timedelta(s):
-    return json.dumps(dict(days=s.days, seconds=s.seconds))
+    return json.dumps({"days": s.days, "seconds": s.seconds})
 
 
 def to_timedelta(s):

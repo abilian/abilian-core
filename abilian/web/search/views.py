@@ -86,7 +86,7 @@ def init_search(endpoint, values):
 
 @search.context_processor
 def install_hit_to_url():
-    return dict(url_for_hit=current_app.extensions["indexing"].url_for_hit)
+    return {"url_for_hit": current_app.extensions["indexing"].url_for_hit}
 
 
 _COUNT_OBJECT_TYPE_FACET = whoosh.sorting.FieldFacet(

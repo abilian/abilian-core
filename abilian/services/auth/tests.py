@@ -90,7 +90,7 @@ def test_api_post(session, client):
 
 def test_forgotten_pw(app, session, client):
     mail = app.extensions["mail"]
-    kwargs = dict(email="User@domain.tld", password="azerty", can_login=True)
+    kwargs = {"email": "User@domain.tld", "password": "azerty", "can_login": True}
     user = User(**kwargs)
     session.add(user)
     session.flush()

@@ -149,7 +149,7 @@ class SessionRepositoryState(ServiceState):
         try:
             return _lookup_app_object(_REPOSITORY_TRANSACTION)
         except AttributeError:
-            reg = dict()
+            reg = {}
             setattr(_app_ctx_stack.top, _REPOSITORY_TRANSACTION, reg)
             return reg
 

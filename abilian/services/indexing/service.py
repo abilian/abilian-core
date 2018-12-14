@@ -463,7 +463,7 @@ class WhooshIndexService(Service):
                 items.append((op, model_name, getattr(obj, primary_field), {}))
 
         if items:
-            index_update.apply_async(kwargs=dict(index="default", items=items))
+            index_update.apply_async(kwargs={"index": "default", "items": items})
         self.clear_update_queue()
 
     def get_document(self, obj, adapter=None):

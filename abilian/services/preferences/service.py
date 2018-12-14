@@ -155,7 +155,7 @@ class PreferenceService(Service):
                     "active": active,
                 }
                 menu.append(entry)
-            return dict(menu=menu)
+            return {"menu": menu}
 
         @bp.route("/")
         def index():

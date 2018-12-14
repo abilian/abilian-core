@@ -57,7 +57,7 @@ class Blob(Model):
             self.uuid = uuid.uuid4()
 
         if self.meta is None:
-            self.meta = dict()
+            self.meta = {}
 
         if value is not None:
             self.value = value

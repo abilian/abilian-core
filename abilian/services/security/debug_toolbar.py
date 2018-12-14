@@ -55,11 +55,11 @@ class SecurityInfoDebugPanel(DebugPanel):
         context = self.context.copy()
 
         context["permissions"] = security.get_permissions_assignments(obj=obj)
-        context["roles"] = roles = dict()
+        context["roles"] = roles = {}
 
         for principal, r in security.get_role_assignements(obj=obj):
             if r not in roles:
-                roles[r] = dict(anonymous=False, users=set(), groups=set())
+                roles[r] = {"anonymous": False, "users": set(), "groups": set()}
 
             info = roles[r]
             if principal is Anonymous:

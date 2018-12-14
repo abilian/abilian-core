@@ -10,8 +10,8 @@ from abilian.core.util import Pagination, slugify
 
 def test_pagination_1():
     p = Pagination(1, 10, 10)
-    l = list(p.iter_pages())
-    assert l == [1]
+    pages = list(p.iter_pages())
+    assert pages == [1]
     assert not p.has_prev
     assert not p.has_next
     assert p.prev is None
@@ -20,8 +20,8 @@ def test_pagination_1():
 
 def test_pagination_2():
     p = Pagination(1, 10, 20)
-    l = list(p.iter_pages())
-    assert l == [1, 2]
+    pages = list(p.iter_pages())
+    assert pages == [1, 2]
     assert not p.has_prev
     assert p.has_next
     assert p.prev is None
@@ -30,8 +30,8 @@ def test_pagination_2():
 
 def test_pagination_3():
     p = Pagination(1, 10, 100)
-    l = list(p.iter_pages())
-    assert l == [1, 2, 3, 4, 5, None, 9, 10]
+    pages = list(p.iter_pages())
+    assert pages == [1, 2, 3, 4, 5, None, 9, 10]
     assert not p.has_prev
     assert p.has_next
     assert p.prev is None
@@ -40,8 +40,8 @@ def test_pagination_3():
 
 def test_pagination_4():
     p = Pagination(10, 10, 100)
-    l = list(p.iter_pages())
-    assert l == [1, 2, None, 8, 9, 10]
+    pages = list(p.iter_pages())
+    assert pages == [1, 2, None, 8, 9, 10]
     assert p.has_prev
     assert not p.has_next
     assert p.prev == 9

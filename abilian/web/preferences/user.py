@@ -107,7 +107,7 @@ class UserPreferencesPanel(PreferencePanel):
             photo = type(
                 b"Photo",
                 (bytes,),
-                dict(object=photo, url=url_for("users.photo", user_id=g.user.id)),
+                {"object": photo, "url": url_for("users.photo", user_id=g.user.id)},
             )
             data["photo"] = photo
 

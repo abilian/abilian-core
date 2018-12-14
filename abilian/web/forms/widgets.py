@@ -160,7 +160,7 @@ class BaseTableView(object):
         default_width = "{:2.0f}%".format(0.99 / len(columns) * 100)
         for col in columns:
             if isinstance(col, string_types):
-                col = dict(name=col, width=default_width)
+                col = {"name": col, "width": default_width}
             assert isinstance(col, dict)
             col.setdefault("width", default_width)
             col.setdefault("sorting", ("asc", "desc"))
@@ -315,7 +315,7 @@ class AjaxMainTableView(object):
         default_width = 0.99 / len(columns)
         for col in columns:
             if isinstance(col, str):
-                col = dict(name=col, width=default_width)
+                col = {"name": col, "width": default_width}
             assert isinstance(col, dict)
             if "label" not in col:
                 col["label"] = labelize(col["name"])
@@ -366,13 +366,13 @@ class AjaxMainTableView(object):
         for c in self.search_criterions:
             if not c.has_form_filter:
                 continue
-            d = dict(
-                name=c.name,
-                label=text_type(c.label),
-                type=c.form_filter_type,
-                args=c.form_filter_args,
-                unset=c.form_unset_value,
-            )
+            d = {
+                "name": c.name,
+                "label": text_type(c.label),
+                "type": c.form_filter_type,
+                "args": c.form_filter_args,
+                "unset": c.form_unset_value,
+            }
             if c.has_form_default_value:
                 d["defaultValue"] = c.form_default_value
 
@@ -1555,7 +1555,7 @@ class Select2Ajax(object):
             if callable(values_builder)
             else lambda data: [{"id": o.id, "text": o.name} for o in data if o]
         )
-        self.s2_params = dict(multiple=self.multiple)
+        self.s2_params = {"multiple": self.multiple}
 
         if format_result:
             self.s2_params["formatResult"] = format_result

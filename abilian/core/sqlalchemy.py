@@ -228,14 +228,14 @@ class MutationList(Mutable, list):
     #     self.changed()
 
     def __iadd__(self, other):
-        l = list.__iadd__(self, other)
+        result = list.__iadd__(self, other)
         self.changed()
-        return l
+        return result
 
     def __imul__(self, n):
-        l = list.__imul__(self, n)
+        result = list.__imul__(self, n)
         self.changed()
-        return l
+        return result
 
     def append(self, item):
         list.append(self, item)

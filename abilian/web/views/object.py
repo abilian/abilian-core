@@ -143,7 +143,7 @@ class ObjectView(BaseObjectView):
         return args, kwargs
 
     def get_form_kwargs(self):
-        kw = dict(obj=self.obj)
+        kw = {"obj": self.obj}
         if issubclass(self.Form, forms.Form) and self.permission:
             kw["permission"] = self.permission
         return kw
@@ -271,7 +271,7 @@ class ObjectEdit(ObjectView):
     def handle_action(self, action):
         for button in self._buttons:
             if action == button.name:
-                if not button.available(dict(view=self)):
+                if not button.available({"view": self}):
                     raise ValueError(
                         'Action "{}" not available' "".format(action.encode("utf-8"))
                     )
@@ -581,7 +581,7 @@ class JSONBaseSearch(JSONView):
         for obj in self.get_results(q, **kwargs):
             results.append(self.get_item(obj))
 
-        return dict(results=results)
+        return {"results": results}
 
     def get_results(self, q, *args, **kwargs):
         raise NotImplementedError
@@ -631,7 +631,7 @@ class JSONModelSearch(JSONBaseSearch):
         :param obj: Instance object
         :returns: a dictionnary with at least `id` and `text` values
         """
-        return dict(id=obj.id, text=self.get_label(obj), name=obj.name)
+        return {"id": obj.id, "text": self.get_label(obj), "name": obj.name}
 
 
 class JSONWhooshSearch(JSONBaseSearch):
@@ -672,4 +672,4 @@ class JSONWhooshSearch(JSONBaseSearch):
         :param hit: Hit object from Whoosh
         :returns: a dictionnary with at least `id` and `text` values
         """
-        return dict(id=hit["id"], text=hit["name"], name=hit["name"])
+        return {"id": hit["id"], "text": hit["name"], "name": hit["name"]}

@@ -81,17 +81,19 @@ def add_to_recent_items(entity, type="ignored"):
     url = current_app.default_view.url_for(entity)
     if not hasattr(g, "recent_items"):
         g.recent_items = []
-    g.recent_items.insert(0, dict(type=object_type, name=entity.name, url=url))
+    g.recent_items.insert(0, {"type": object_type, "name": entity.name, "url": url})
+
     s = set()
-    l = []
+    new_recent_items = []
     for item in g.recent_items:
-        if item["url"] in s:
+        item_url = item["url"]
+        if item_url in s:
             continue
-        s.add(item["url"])
-        l.append(item)
-    if len(l) > 5:
-        del l[5:]
-    session["recent_items"] = g.recent_items = l
+        s.add(item_url)
+        new_recent_items.append(item)
+    if len(new_recent_items) > 5:
+        del new_recent_items[5:]
+    session["recent_items"] = g.recent_items = new_recent_items
 
 
 def expose(url="/", methods=("GET",)):

@@ -115,7 +115,7 @@ class AssetManagerMixin(Flask):
             code = "js-i18n-" + lang
             filename = "lang-" + lang + "-%(version)s.min.js"
             self._assets_bundles[code] = {
-                "options": dict(output=filename, filters=js_filters)
+                "options": {"output": filename, "filters": js_filters}
             }
 
     def _setup_asset_extension(self):
@@ -570,7 +570,7 @@ class Application(
         JinjaManagerMixin.__init__(self)
 
         self.default_view = ViewRegistry()
-        self.js_api = dict()
+        self.js_api = {}
 
         self.configure(config)
 

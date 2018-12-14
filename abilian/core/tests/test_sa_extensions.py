@@ -33,16 +33,16 @@ def test_list_attribute(session):
 
 
 def test_dict_attribute(session):
-    model = DummyModel2(dict_attr=dict(a=3, b=4))
+    model = DummyModel2(dict_attr={"a": 3, "b": 4})
     session.add(model)
     session.commit()
     model_id = model.id
     session.remove()
     model2 = DummyModel2.query.get(model_id)
-    assert model2.dict_attr == dict(a=3, b=4)
+    assert model2.dict_attr == {"a": 3, "b": 4}
 
     model2.dict_attr["c"] = 5
-    assert model2.dict_attr == dict(a=3, b=4, c=5)
+    assert model2.dict_attr == {"a": 3, "b": 4, "c": 5}
 
 
 def test_uuid_attribute(session):

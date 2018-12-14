@@ -87,13 +87,13 @@ class AttachmentsManager(object):
         template = current_app.jinja_env.get_template(self.macros_template)
         default = default_template.module
         m = template.module
-        return dict(
-            m_attachments=getattr(m, "m_attachments", default.m_attachments),
-            m_attachment=getattr(m, "m_attachment", default.m_attachment),
-            m_attachment_form=getattr(
+        return {
+            "m_attachments": getattr(m, "m_attachments", default.m_attachments),
+            "m_attachment": getattr(m, "m_attachment", default.m_attachment),
+            "m_attachment_form": getattr(
                 m, "m_attachment_form", default.m_attachment_form
             ),
-        )
+        }
 
     def supports_attachments(self, obj):
         return attachments.supports_attachments(obj)

@@ -64,7 +64,7 @@ def test_table_view(app, test_request_context):
 
 def test_single_view(test_request_context):
     panels = [Panel("main", Row("name"), Row("price"), Row("email"))]
-    view = SingleView(DummyForm, *panels, view=dict(can_edit=False, can_delete=False))
+    view = SingleView(DummyForm, *panels, view={"can_edit": False, "can_delete": False})
     model = WidgetTestModel(name="Renault Megane", price=10000, email="joe@example.com")
     form = DummyForm(obj=model)
     res = view.render(model, form)

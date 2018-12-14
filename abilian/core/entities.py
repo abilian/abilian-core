@@ -313,7 +313,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     #: The name is a string that is shown to the user; it could be a title
     #: for document, a folder name, etc.
     name = Column("name", UnicodeText())
-    name.info = EDITABLE | SEARCHABLE | dict(index_to=("name", "name_prefix", "text"))
+    name.info = EDITABLE | SEARCHABLE | {"index_to": ("name", "name_prefix", "text")}
 
     slug = Column("slug", UnicodeText(), info=SEARCHABLE)
     """
@@ -362,7 +362,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
         BaseMixin.__init__(self)
 
         if self.meta is None:
-            self.meta = dict()
+            self.meta = {}
 
     @property
     def auto_slug(self):

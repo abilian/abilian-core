@@ -221,14 +221,14 @@ class PdfToPpmHandler(Handler):
 
     def convert(self, blob, size=500):
         """Size is the maximum horizontal size."""
-        l = []
+        file_list = []
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(["pdftoppm", "-jpeg", in_fn, out_fn])
-                l = sorted(glob.glob("{}-*.jpg".format(out_fn)))
+                file_list = sorted(glob.glob("{}-*.jpg".format(out_fn)))
 
                 converted_images = []
-                for fn in l:
+                for fn in file_list:
                     converted = resize(open(fn, "rb").read(), size, size)
                     converted_images.append(converted)
 
@@ -236,7 +236,7 @@ class PdfToPpmHandler(Handler):
             except Exception as e:
                 raise_from(ConversionError("pdftoppm failed"), e)
             finally:
-                for fn in l:
+                for fn in file_list:
                     try:
                         os.remove(fn)
                     except OSError:

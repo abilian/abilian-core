@@ -83,7 +83,7 @@ class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
 
     def data(self, *args, **kwargs):
         tags = sorted(self.extension.entity_tags(self.entity))
-        return dict(result=tags)
+        return {"result": tags}
 
 
 entity_bp.route("/<int:object_id>/list")(EntityTagList.as_view("list"))

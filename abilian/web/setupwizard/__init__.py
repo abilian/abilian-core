@@ -230,11 +230,11 @@ def step_redis_form():
 
 def step_redis_validate():
     form = request.form
-    data = dict(
-        host=form.get("host", "localhost").strip(),
-        port=form.get("port", "").strip() or "6379",
-        db=form.get("db", "").strip() or "1",
-    )
+    data = {
+        "host": form.get("host", "localhost").strip(),
+        "port": form.get("port", "").strip() or "6379",
+        "db": form.get("db", "").strip() or "1",
+    }
 
     for k in ("port", "db"):
         try:

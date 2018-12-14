@@ -27,11 +27,14 @@ class SANotIndexable(IdMixin, db.Model):
 
 class Indexable(IdMixin, CoreIndexable, db.Model):
     __tablename__ = "sa_indexable"
-    __indexation_args__ = dict(
-        index_to=(("related.name", ("name", "text")), ("related.description", "text"))
-    )
+    __indexation_args__ = {
+        "index_to": (
+            ("related.name", ("name", "text")),
+            ("related.description", "text"),
+        )
+    }
 
-    num = sa.Column(sa.Integer, info=SEARCHABLE | dict(index_to=(("num", NUMERIC()),)))
+    num = sa.Column(sa.Integer, info=SEARCHABLE | {"index_to": (("num", NUMERIC()),)})
 
 
 class SubclassEntityIndexable(Entity):
@@ -133,9 +136,9 @@ def test_get_document_with_schema():
     # test retrieve related attributes
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)
-    expected = dict(id=1, num=42)
+    expected = {"id": 1, "num": 42}
     obj = Indexable(**expected)
-    obj.related = type(str("Related"), (object,), dict(name=None))()
+    obj.related = type(str("Related"), (object,), {"name": None})()
     expected["name"] = obj.related.name = "related name"
     obj.related.description = "description text"
     expected["text"] = obj.related.name + " " + obj.related.description

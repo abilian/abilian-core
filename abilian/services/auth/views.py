@@ -60,7 +60,7 @@ def do_login(form):
     email = form.get("email", "").lower()
     password = form.get("password")
     next_url = form.get("next", "")
-    res = dict(username=email, email=email, next_url=next_url)
+    res = {"username": email, "email": email, "next_url": next_url}
 
     if not email or not password:
         res["error"] = _("You must provide your email and password.")

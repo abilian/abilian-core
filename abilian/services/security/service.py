@@ -38,7 +38,7 @@ __all__ = [
 ]
 
 #: default security matrix
-DEFAULT_PERMISSION_ROLE = dict()
+DEFAULT_PERMISSION_ROLE = {}
 prm = DEFAULT_PERMISSION_ROLE
 prm[MANAGE] = frozenset({Admin, Manager})
 prm[WRITE] = frozenset({Admin, Manager, Writer})
@@ -543,7 +543,13 @@ class SecurityService(Service):
         session = object_session(object) if object is not None else db.session
         manager = self._current_user_manager(session=session)
 
-        args = dict(role=role, object=object, anonymous=False, user=None, group=None)
+        args = {
+            "role": role,
+            "object": object,
+            "anonymous": False,
+            "user": None,
+            "group": None,
+        }
         query = session.query(RoleAssignment)
         query = query.filter(
             RoleAssignment.role == role, RoleAssignment.object == object

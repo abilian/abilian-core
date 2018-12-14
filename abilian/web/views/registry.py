@@ -19,7 +19,7 @@ class Registry(object):
     """
 
     def __init__(self, *args, **kwargs):
-        self._map = dict()
+        self._map = {}
 
     def register(self, entity, url_func):
         """Associate a `url_func` with entity's type.

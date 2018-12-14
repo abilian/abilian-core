@@ -157,7 +157,7 @@ class DynamicIcon(Icon):
     ):
         self.endpoint = endpoint
         self.css = css
-        self.fixed_url_args = dict()
+        self.fixed_url_args = {}
         self.fixed_url_args.update(fixed_url_args)
         self.url_args_callback = url_args
 
@@ -168,7 +168,7 @@ class DynamicIcon(Icon):
         self.height = height
 
     def get_url_args(self):
-        kw = dict()
+        kw = {}
         kw.update(self.fixed_url_args)
         return kw
 
@@ -441,7 +441,7 @@ class Action(object):
         return Markup(template.render(params))
 
     def get_render_args(self, **kwargs):
-        params = dict(action=self)
+        params = {"action": self}
         params.update(actions.context)
         params.update(kwargs)
         params["csrf"] = csrf
@@ -565,12 +565,12 @@ class ActionRegistry(object):
             )
             return
 
-        app.extensions[self.__EXTENSION_NAME] = dict(categories=dict())
+        app.extensions[self.__EXTENSION_NAME] = {"categories": {}}
         appcontext_pushed.connect(self._init_context, app)
 
         @app.context_processor
         def add_registry_to_jinja_context():
-            return dict(actions=self)
+            return {"actions": self}
 
     def installed(self, app=None):
         """Return `True` if the registry has been installed in current
