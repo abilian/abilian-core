@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 from flask import current_app, flash, request
 from flask.signals import request_started
-from flask_wtf.csrf import CsrfProtect, CSRFError
+from flask_wtf.csrf import CsrfProtect
 from markupsafe import Markup
 from werkzeug.exceptions import BadRequest
 
@@ -38,14 +38,9 @@ class AbilianCsrf(object):
                 'Please install flask_wtf.csrf.CsrfProtect() as "csrf" in '
                 "extensions before AbilianCsrf()"
             )
-
-        @app.errorhandler(CSRFError)
-        def csrf_error_handler(self, reason):
-            request.csrf_failed = reason
-
+        app.extensions["csrf"].error_handler(self.csrf_error_handler)
         app.extensions["csrf-handler"] = self
         request_started.connect(self.request_started, sender=app)
-
         app.before_request(self.before_request)
 
     def flash_csrf_failed_message(self):
@@ -53,6 +48,9 @@ class AbilianCsrf(object):
 
     def request_started(self, app):
         request.csrf_failed = False
+
+    def csrf_error_handler(self, reason):
+        request.csrf_failed = reason
 
     def before_request(self):
         req = unwrap(request)
