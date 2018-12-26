@@ -26,6 +26,7 @@ COMMIT = object()
 
 @manager.command
 def reindex(clear=False, progressive=False, batch_size=None):
+    # type: (bool, bool, int) -> None
     """Reindex all content; optionally clear index before.
 
     All is done in asingle transaction by default.
@@ -74,6 +75,7 @@ class Reindexer:
             pass
 
     def reindex_class(self, cls):
+        # type: (type) -> None
         current_object_type = cls._object_type()
 
         if not self.clear and current_object_type not in self.cleared:

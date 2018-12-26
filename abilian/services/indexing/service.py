@@ -26,6 +26,7 @@ from flask_login import current_user
 from six import text_type
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
+from typing import Set
 from whoosh.analysis import CharsetFilter, StemmingAnalyzer
 from whoosh.collectors import WrappingCollector
 from whoosh.filedb.filestore import FileStorage, RamStorage
@@ -91,18 +92,12 @@ def fqcn(cls):
 
 
 class IndexServiceState(ServiceState):
-    whoosh_base = None
-    indexes = None
-    indexed_classes = None
-    indexed_fqcn = None
-    search_filter_funcs = None
-    value_provider_funcs = None
-    url_for_hit = None
 
     def __init__(self, *args, **kwargs):
         ServiceState.__init__(self, *args, **kwargs)
+        self.whoosh_base = None
         self.indexes = {}
-        self.indexed_classes = set()
+        self.indexed_classes = set()  # type: Set[type]
         self.indexed_fqcn = set()
         self.search_filter_funcs = []
         self.value_provider_funcs = []
@@ -127,13 +122,12 @@ class WhooshIndexService(Service):
     name = "indexing"
     AppStateClass = IndexServiceState
 
-    _listening = False
-
     def __init__(self, *args, **kwargs):
         Service.__init__(self, *args, **kwargs)
         self.adapters_cls = [SAAdapter]
         self.adapted = {}
         self.schemas = {"default": DefaultSearchSchema()}
+        self._listening = False
 
     def init_app(self, app):
         Service.init_app(self, app)
@@ -224,9 +218,9 @@ class WhooshIndexService(Service):
             writer = AsyncWriter(idx)
             writer.commit(merge=True, optimize=True, mergetype=CLEAR)
 
-        state.indexes = {}
-        state.indexed_classes = set()
-        state.indexed_fqcn = set()
+        state.indexes.clear()
+        state.indexed_classes.clear()
+        state.indexed_fqcn.clear()
         self.clear_update_queue()
 
         if self.running:
