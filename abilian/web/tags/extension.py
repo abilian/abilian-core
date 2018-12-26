@@ -66,9 +66,6 @@ class TagsExtension(object):
     def supports_tagging(self, entity):
         return supports_tagging(entity)
 
-    # Deprecated: remove in 2019
-    is_support_tagging = supports_tagging
-
     def entity_tags(self, entity):
         return getattr(entity, TAGS_ATTR)
 

@@ -11,7 +11,7 @@
   {{ rendered_entity }}
 
   {% if view.mode == 'view' %}
-    {%- if tags.is_support_tagging(view.obj) %}
+    {%- if tags.supports_tagging(view.obj) %}
       <h3>{{ _('Tags') }}</h3>
       {{ m_tags_toggle_edit(view.obj) }}
     {%- endif %}

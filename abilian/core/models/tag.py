@@ -56,9 +56,6 @@ def supports_tagging(obj):
     return True
 
 
-# Deprecated. Remove in 2019.
-is_support_tagging = supports_tagging
-
 entity_tag_tbl = sa.Table(
     "entity_tags",
     Model.metadata,
