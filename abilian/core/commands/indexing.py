@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import time
 from collections import deque
+from typing import Set, Text
 
 import sqlalchemy as sa
 import whoosh
@@ -26,8 +27,8 @@ COMMIT = object()
 
 
 @manager.command
-def reindex(clear=False, progressive=False, batch_size=None):
-    # type: (bool, bool, int) -> None
+def reindex(clear=False, progressive=False, batch_size=""):
+    # type: (bool, bool, Text) -> None
     """Reindex all content; optionally clear index before.
 
     All is done in asingle transaction by default.
@@ -38,7 +39,7 @@ def reindex(clear=False, progressive=False, batch_size=None):
                      index. Unused in single transaction mode. If `None` then
                      all documents of same content type are written at once.
     """
-    reindexer = Reindexer(clear, progressive, batch_size)
+    reindexer = Reindexer(clear, progressive, int(batch_size or 0))
     reindexer.reindex_all()
 
 
@@ -53,14 +54,15 @@ class Reindexer:
         self.index = self.index_service.app_state.indexes["default"]
         self.adapted = self.index_service.adapted
         self.session = Session(bind=db.session.get_bind(None, None), autocommit=True)
-        self.indexed = set()
-        self.cleared = set()
+        self.indexed = set()  # type: Set[Text]
+        self.cleared = set()  # type: Set[Text]
 
         strategy = progressive_mode if self.progressive else single_transaction
         self.strategy = strategy(self.index, clear=self.clear)
-        next(self.strategy)  # starts generator
 
     def reindex_all(self):
+        next(self.strategy)  # starts generator
+
         indexed_classes = self.index_service.app_state.indexed_classes
         for cls in sorted(indexed_classes, key=lambda c: c.__name__):
             self.reindex_class(cls)
@@ -110,19 +112,18 @@ class Reindexer:
             print("*" * 79)
             print("{}".format(name))
 
-            count_current = 0
             with tqdm(total=count) as bar:
-                self.reindex_batch(
-                    query, current_object_type, adapter, count_current, bar
-                )
+                self.reindex_batch(query, current_object_type, adapter, bar)
 
             if not self.batch_size:
                 self.strategy.send(COMMIT)
 
         self.strategy.send(COMMIT)
 
-    def reindex_batch(self, query, current_object_type, adapter, count_current, bar):
+    def reindex_batch(self, query, current_object_type, adapter, bar):
+        count = 0
         for obj in query.yield_per(1000):
+            count += 1
             if obj.object_type != current_object_type:
                 # may happen if obj is a subclass and its parent class
                 # is also indexable
@@ -139,7 +140,7 @@ class Reindexer:
             self.strategy.send(document)
             self.indexed.add(object_key)
 
-            if self.batch_size and (count_current % self.batch_size) == 0:
+            if self.batch_size and (count % self.batch_size) == 0:
                 bar.update()
                 self.strategy.send(COMMIT)
 
