@@ -1,6 +1,12 @@
 Changelog for Abilian Core
 ==========================
 
+
+0.10.29 (2018-12-26)
+--------------------
+
+- Cleanup, small fixes related to updated dependencies.
+
 0.10.20 (2018-07-19)
 --------------------
 
