@@ -301,15 +301,13 @@ class AuditEntryPresenter(BaseEntryPresenter):
         assert isinstance(entry, AuditEntry)
         super(AuditEntryPresenter, self).__init__(entry.user, entry.happened_at)
         self.entry = entry
-
-    # def __lt__(self, other):
-    #     return self.entry < other.entry
+        self.entity_deleted = entry.entity is None
 
     def render(self):
+        # type: () -> Text
         render = render_template_string
         e = self.entry
         user = render(self._USER_FMT, user=e.user)
-        self.entity_deleted = e.entity is None
         entity_html = e.entity_name
 
         if not self.entity_deleted:
@@ -355,6 +353,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
         self.entry = entry
 
     def render(self):
+        # type: () -> Text
         render = render_template_string
         e = self.entry
 

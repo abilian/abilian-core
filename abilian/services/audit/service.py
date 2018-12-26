@@ -10,12 +10,15 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
 import logging
+from datetime import datetime
 from inspect import isclass
+from typing import Text
 
 import sqlalchemy as sa
 from flask import current_app, g
 from six import text_type
 from sqlalchemy import event, extract
+from sqlalchemy.orm import Query
 from sqlalchemy.orm.attributes import NEVER_SET
 from sqlalchemy.orm.session import Session
 
@@ -343,6 +346,7 @@ def format_large_value(value):
 def get_model_changes(
     entity_type, year=None, month=None, day=None, hour=None, since=None
 ):
+    # type: (Text, int, int, int, int, datetime) -> Query
     """Get models modified at the given date with the Audit service.
 
     :param entity_type: string like "extranet_medicen.apps.crm.models.Compte".
