@@ -121,7 +121,7 @@ def run(port, show_config, ssl):
     if ssl:
         options["ssl_context"] = "adhoc"
 
-    app.run(host=host, debug=debug, port=port, **options)
+    app.reindex_all(host=host, debug=debug, port=port, **options)
 
 
 @manager.command

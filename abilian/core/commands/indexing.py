@@ -36,123 +36,115 @@ def reindex(clear=False, progressive=False, batch_size=None):
                      index. Unused in single transaction mode. If `None` then
                      all documents of same content type are written at once.
     """
-    index_service = get_service("indexing")
-    adapted = index_service.adapted
-    index = index_service.app_state.indexes["default"]
-    session = Session(bind=db.session.get_bind(None, None), autocommit=True)
+    reindexer = Reindexer(clear, progressive, batch_size)
+    reindexer.reindex_all()
 
-    session._model_changes = {}  # please flask-sqlalchemy <= 1.0
-    indexed = set()
-    cleared = set()
-    if batch_size is not None:
-        batch_size = int(batch_size)
 
-    strategy = progressive_mode if progressive else single_transaction
-    strategy = strategy(
-        index, clear=clear, progressive=progressive, batch_size=batch_size
-    )
-    next(strategy)  # starts generator
+class Reindexer:
+    def __init__(self, clear, progressive, batch_size):
+        # type: (bool, bool, int) -> None
+        self.clear = clear
+        self.progressive = progressive
+        self.batch_size = int(batch_size or 0)
 
-    indexed_classes = index_service.app_state.indexed_classes
-    for cls in sorted(indexed_classes, key=lambda c: c.__name__):
+        self.index_service = get_service("indexing")
+        self.index = self.index_service.app_state.indexes["default"]
+        self.adapted = self.index_service.adapted
+        self.session = Session(bind=db.session.get_bind(None, None), autocommit=True)
+        self.indexed = set()
+        self.cleared = set()
+
+        strategy = progressive_mode if self.progressive else single_transaction
+        self.strategy = strategy(self.index, clear=self.clear)
+        next(self.strategy)  # starts generator
+
+    def reindex_all(self):
+        indexed_classes = self.index_service.app_state.indexed_classes
+        for cls in sorted(indexed_classes, key=lambda c: c.__name__):
+            self.reindex_class(cls)
+
+        try:
+            self.strategy.send(STOP)
+        except StopIteration:
+            pass
+
+        try:
+            self.strategy.close()
+        except StopIteration:
+            pass
+
+    def reindex_class(self, cls):
         current_object_type = cls._object_type()
 
-        if not clear and current_object_type not in cleared:
-            strategy.send(current_object_type)
-            cleared.add(current_object_type)
+        if not self.clear and current_object_type not in self.cleared:
+            self.strategy.send(current_object_type)
+            self.cleared.add(current_object_type)
 
-        adapter = adapted.get(current_object_type)
+        adapter = self.adapted.get(current_object_type)
 
         if not adapter or not adapter.indexable:
-            continue
+            return
 
         name = cls.__name__
 
-        with session.begin():
-            query = session.query(cls).options(sa.orm.lazyload("*"))
+        with self.session.begin():
+            query = self.session.query(cls).options(sa.orm.lazyload("*"))
             try:
                 count = query.count()
             except Exception as e:
                 current_app.logger.error(
                     "Indexing error on class {}: {}".format(name, repr(e))
                 )
-                continue
+                return
 
             print("*" * 79)
             print("{}".format(name))
             if count == 0:
                 print("*" * 79)
                 print("{}".format(name))
-                continue
+                return
 
             print("*" * 79)
             print("{}".format(name))
+
             count_current = 0
             with tqdm(total=count) as bar:
-                reindex_batch(
-                    query,
-                    current_object_type,
-                    strategy,
-                    adapter,
-                    indexed,
-                    index_service,
-                    batch_size,
-                    count_current,
-                    bar,
+                self.reindex_batch(
+                    query, current_object_type, adapter, count_current, bar
                 )
 
-            if batch_size is None:
-                strategy.send(COMMIT)
+            if not self.batch_size:
+                self.strategy.send(COMMIT)
 
-        strategy.send(COMMIT)
+        self.strategy.send(COMMIT)
 
-    try:
-        strategy.send(STOP)
-    except StopIteration:
-        pass
+    def reindex_batch(self, query, current_object_type, adapter, count_current, bar):
+        for obj in query.yield_per(1000):
+            if obj.object_type != current_object_type:
+                # may happen if obj is a subclass and its parent class
+                # is also indexable
+                bar.update()
+                continue
 
-    try:
-        strategy.close()
-    except StopIteration:
-        pass
+            object_key = obj.object_key
 
+            if object_key in self.indexed:
+                bar.update()
+                continue
 
-def reindex_batch(
-    query,
-    current_object_type,
-    strategy,
-    adapter,
-    indexed,
-    index_service,
-    batch_size,
-    count_current,
-    bar,
-):
-    for obj in query.yield_per(1000):
-        if obj.object_type != current_object_type:
-            # may happen if obj is a subclass and its parent class
-            # is also indexable
+            document = self.index_service.get_document(obj, adapter)
+            self.strategy.send(document)
+            self.indexed.add(object_key)
+
+            if self.batch_size and (count_current % self.batch_size) == 0:
+                bar.update()
+                self.strategy.send(COMMIT)
+
             bar.update()
-            continue
-
-        object_key = obj.object_key
-
-        if object_key in indexed:
-            bar.update()
-            continue
-        document = index_service.get_document(obj, adapter)
-        strategy.send(document)
-        indexed.add(object_key)
-
-        if batch_size is not None and (count_current % batch_size) == 0:
-            bar.update()
-            strategy.send(COMMIT)
-
-        bar.update()
 
 
 # indexing strategies
-def single_transaction(index, clear, **kwargs):
+def single_transaction(index, clear):
     with AsyncWriter(index) as writer:
         if clear:
             print("*" * 80)
@@ -176,19 +168,7 @@ def single_transaction(index, clear, **kwargs):
     print("Done.")
 
 
-def _get_writer(index):
-    writer = None
-    while writer is None:
-        try:
-            writer = index.writer()
-        except whoosh.index.LockError:
-            time.sleep(0.25)
-
-    return writer
-
-
-def progressive_mode(index, clear, batch_size, **kwargs):
-
+def progressive_mode(index, clear):
     if clear:
         writer = _get_writer(index)
         print("*" * 80)
@@ -215,3 +195,14 @@ def progressive_mode(index, clear, batch_size, **kwargs):
             queue.append(doc)
 
         doc = yield True
+
+
+def _get_writer(index):
+    writer = None
+    while writer is None:
+        try:
+            writer = index.writer()
+        except whoosh.index.LockError:
+            time.sleep(0.25)
+
+    return writer
