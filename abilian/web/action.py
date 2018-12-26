@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import logging
 import re
+from typing import Optional
 
 from flask import current_app, g
 from flask.signals import appcontext_pushed
@@ -82,7 +83,7 @@ class Icon(object):
 class NamedIconBase(Icon):
     """Renders markup for named icons set."""
 
-    template = None
+    template = None  # type: Optional[Template]
 
     def __init__(self, name=""):
         self.name = name

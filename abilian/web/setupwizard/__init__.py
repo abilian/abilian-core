@@ -22,6 +22,7 @@ from flask import (
     url_for,
 )
 from six import text_type
+from typing import Dict, Text
 
 from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf, db
@@ -41,7 +42,7 @@ setup = Blueprint(
 
 _dialects = OrderedDict((("sqlite", "SQLite (for demo)"), ("postgresql", "PostgreSQL")))
 
-_dialects_unavailable = OrderedDict()
+_dialects_unavailable = OrderedDict()  # type: Dict[Text, Text]
 
 for dialect, _label in _dialects.items():
     d = sa.dialects.registry.load(dialect)

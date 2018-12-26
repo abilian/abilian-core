@@ -20,15 +20,14 @@ try:
     import clamd
 
     cd = clamd.ClamdUnixSocket()
-    CLAMD_AVAILABLE = True
 except ImportError:
-    CLAMD_AVAILABLE = False
+    clamd = None
 
 CLAMD_CONF = {"StreamMaxLength": "25M", "MaxFileSize": "25M"}
 CLAMD_STREAMMAXLENGTH = 26214400
 CLAMD_MAXFILESIZE = 26214400
 
-if CLAMD_AVAILABLE:
+if clamd:
     conf_path = pathlib.Path("/etc", "clamav", "clamd.conf")
     if conf_path.exists():
         conf_lines = [l.strip() for l in conf_path.open("rt").readlines()]
@@ -75,15 +74,15 @@ class AntiVirusService(Service):
         If `file_or_stream` is a Blob, scan result is stored in
         Blob.meta['antivirus'].
         """
+        if not clamd:
+            return None
+
         res = self._scan(file_or_stream)
         if isinstance(file_or_stream, Blob):
             file_or_stream.meta["antivirus"] = res
         return res
 
     def _scan(self, file_or_stream):
-        if not CLAMD_AVAILABLE:
-            return None
-
         content = file_or_stream
         if isinstance(file_or_stream, Blob):
             # py3 compat: bytes == py2 str(). Pathlib uses os.fsencode()
@@ -113,7 +112,6 @@ class AntiVirusService(Service):
         # use stream scan. When using scan by filename, clamd runnnig user must have
         # access to file, which we cannot guarantee
         scan = cd.instream
-        res = None
         try:
             res = scan(content)
         except clamd.ClamdError as e:

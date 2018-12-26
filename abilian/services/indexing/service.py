@@ -16,6 +16,7 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 from inspect import isclass
 from pathlib import Path
+from typing import Set
 
 import sqlalchemy as sa
 import whoosh.query as wq
@@ -26,7 +27,6 @@ from flask_login import current_user
 from six import text_type
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
-from typing import Set
 from whoosh.filedb.filestore import FileStorage, RamStorage
 from whoosh.index import FileIndex
 from whoosh.qparser import DisMaxParser
@@ -70,7 +70,6 @@ def fqcn(cls):
 
 
 class IndexServiceState(ServiceState):
-
     def __init__(self, *args, **kwargs):
         ServiceState.__init__(self, *args, **kwargs)
         self.whoosh_base = None
