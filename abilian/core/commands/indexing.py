@@ -53,9 +53,8 @@ def reindex(clear=False, progressive=False, batch_size=None):
     )
     next(strategy)  # starts generator
 
-    for cls in sorted(
-        index_service.app_state.indexed_classes, key=lambda c: c.__name__
-    ):
+    indexed_classes = index_service.app_state.indexed_classes
+    for cls in sorted(indexed_classes, key=lambda c: c.__name__):
         current_object_type = cls._object_type()
 
         if not clear and current_object_type not in cleared:
@@ -90,27 +89,17 @@ def reindex(clear=False, progressive=False, batch_size=None):
             print("{}".format(name))
             count_current = 0
             with tqdm(total=count) as bar:
-                for obj in query.yield_per(1000):
-                    if obj.object_type != current_object_type:
-                        # may happen if obj is a subclass and its parent class
-                        # is also indexable
-                        bar.update()
-                        continue
-
-                    object_key = obj.object_key
-
-                    if object_key in indexed:
-                        bar.update()
-                        continue
-                    document = index_service.get_document(obj, adapter)
-                    strategy.send(document)
-                    indexed.add(object_key)
-
-                    if batch_size is not None and (count_current % batch_size) == 0:
-                        bar.update()
-                        strategy.send(COMMIT)
-
-                    bar.update()
+                reindex_batch(
+                    query,
+                    current_object_type,
+                    strategy,
+                    adapter,
+                    indexed,
+                    index_service,
+                    batch_size,
+                    count_current,
+                    bar,
+                )
 
             if batch_size is None:
                 strategy.send(COMMIT)
@@ -126,6 +115,40 @@ def reindex(clear=False, progressive=False, batch_size=None):
         strategy.close()
     except StopIteration:
         pass
+
+
+def reindex_batch(
+    query,
+    current_object_type,
+    strategy,
+    adapter,
+    indexed,
+    index_service,
+    batch_size,
+    count_current,
+    bar,
+):
+    for obj in query.yield_per(1000):
+        if obj.object_type != current_object_type:
+            # may happen if obj is a subclass and its parent class
+            # is also indexable
+            bar.update()
+            continue
+
+        object_key = obj.object_key
+
+        if object_key in indexed:
+            bar.update()
+            continue
+        document = index_service.get_document(obj, adapter)
+        strategy.send(document)
+        indexed.add(object_key)
+
+        if batch_size is not None and (count_current % batch_size) == 0:
+            bar.update()
+            strategy.send(COMMIT)
+
+        bar.update()
 
 
 # indexing strategies
