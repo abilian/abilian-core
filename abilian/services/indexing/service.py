@@ -27,12 +27,9 @@ from six import text_type
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 from typing import Set
-from whoosh.analysis import CharsetFilter, StemmingAnalyzer
-from whoosh.collectors import WrappingCollector
 from whoosh.filedb.filestore import FileStorage, RamStorage
 from whoosh.index import FileIndex
 from whoosh.qparser import DisMaxParser
-from whoosh.support.charset import accent_map
 from whoosh.writing import CLEAR, AsyncWriter
 
 from abilian.core import signals
@@ -49,27 +46,8 @@ from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
 
 logger = logging.getLogger(__name__)
-_TEXT_ANALYZER = StemmingAnalyzer() | CharsetFilter(accent_map)
 
 _pending_indexation_attr = "abilian_pending_indexation"
-
-# as of whoosh 2.5.7, a method is missing on WrappingCollector. See
-# https://bitbucket.org/mchaput/whoosh/issue/394/error-when-searching-with-groupedby-and
-_PATCHED = False
-
-if not _PATCHED:
-
-    def wrapping_collector_remove(self, global_docnum):
-        return self.child.remove(global_docnum)
-
-    from abilian.core.logging import patch_logger
-
-    patch_logger.info(WrappingCollector.remove)
-    WrappingCollector.remove = wrapping_collector_remove
-    _PATCHED = True
-    del patch_logger
-    del wrapping_collector_remove
-# END PATCH
 
 
 def url_for_hit(hit, default="#"):

@@ -15,6 +15,7 @@ from sqlalchemy.orm.session import Session
 from tqdm import tqdm
 from whoosh.writing import CLEAR, AsyncWriter
 
+from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.services import get_service
 
@@ -75,7 +76,7 @@ class Reindexer:
             pass
 
     def reindex_class(self, cls):
-        # type: (type) -> None
+        # type: (Entity) -> None
         current_object_type = cls._object_type()
 
         if not self.clear and current_object_type not in self.cleared:
