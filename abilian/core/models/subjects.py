@@ -217,6 +217,7 @@ class User(Principal, UserMixin, db.Model):
 
         if self.can_login and password is not None:
             self.set_password(password)
+            self._password = password
 
     def authenticate(self, password):
         if self.password and self.password != "*":

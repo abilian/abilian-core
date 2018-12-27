@@ -14,6 +14,12 @@ framework. -> DI and functions over complex inheritance hierarchies FTW!
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+from typing import Any
+
+from flask import Flask
+from flask.ctx import AppContext, RequestContext
+from flask.testing import FlaskClient
+from flask_sqlalchemy import SQLAlchemy
 from pytest import fixture
 
 from abilian.app import create_app
@@ -41,6 +47,7 @@ def config():
 
 @fixture
 def app(config):
+    # type: (Any) -> Flask
     # We currently return a fresh app for each test.
     # Using session-scoped app doesn't currently work.
     # Note: the impact on speed is minimal.
@@ -49,18 +56,21 @@ def app(config):
 
 @fixture
 def app_context(app):
+    # type: (Flask) -> AppContext
     with app.app_context() as ctx:
         yield ctx
 
 
 @fixture
 def test_request_context(app):
+    # type: (Flask) -> RequestContext
     with app.test_request_context() as ctx:
         yield ctx
 
 
 @fixture
 def req_ctx(app):
+    # type: (Flask) -> RequestContext
     with app.test_request_context() as req_ctx:
         yield req_ctx
 
@@ -94,12 +104,14 @@ def db_session(db):
 
 @fixture
 def client(app):
+    # type: (Flask) -> FlaskClient
     """Return a Web client, used for testing."""
     return app.test_client()
 
 
 @fixture
 def user(db):
+    # type: (SQLAlchemy) -> User
     user = User(
         first_name="Joe",
         last_name="Test",
@@ -114,6 +126,7 @@ def user(db):
 
 @fixture
 def admin_user(db):
+    # type: (SQLAlchemy) -> User
     user = User(
         first_name="Jim",
         last_name="Admin",
@@ -129,6 +142,7 @@ def admin_user(db):
 
 @fixture
 def login_user(user, client):
+    # type: (User, FlaskClient) -> User
     with client.session_transaction() as session:
         session["user_id"] = user.id
 
@@ -137,6 +151,7 @@ def login_user(user, client):
 
 @fixture
 def login_admin(admin_user, client):
+    # type: (User, FlaskClient) -> User
     with client.session_transaction() as session:
         session["user_id"] = admin_user.id
 

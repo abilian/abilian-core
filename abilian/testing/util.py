@@ -6,13 +6,14 @@ from __future__ import absolute_import, division, print_function, \
 from typing import ContextManager
 
 from flask.testing import FlaskClient
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
 from hyperlink import URL
 from six import text_type
 from sqlalchemy.exc import DatabaseError
 
 from abilian.core.models.subjects import User
 from abilian.services import get_service
+from abilian.web import url_for
 
 __all__ = (
     "stop_all_services",
@@ -32,14 +33,20 @@ def path_from_url(url):
 def client_login(client, user):
     # type: (FlaskClient, User) -> ContextManager
 
+    data = {"email": user.email, "password": user._password}
+    response = client.post(url_for("login.login_post"), data=data)
+    assert response.status_code == 302
+    # assert current_user.is_authenticated
+    # assert current_user.id == user.id
+
     class LoginContext(object):
         def __enter__(self):
-            with client.session_transaction() as session:
-                session["user_id"] = user.id
+            return None
 
         def __exit__(self, type, value, traceback):
-            with client.session_transaction() as session:
-                del session["user_id"]
+            response = client.post(url_for("login.logout"))
+            assert response.status_code == 302
+            # assert current_user.is_anonymous
 
     return LoginContext()
 
