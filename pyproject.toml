@@ -129,7 +129,6 @@ mccabe = "*"
 
 # Development tools
 pre-commit = "*"
-bump2version = "*"
 
 # Formatting (update version explicitely when needed)
 isort = "4.3.4"
