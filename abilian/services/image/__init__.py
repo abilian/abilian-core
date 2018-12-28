@@ -10,7 +10,7 @@ from typing import Dict
 from PIL import Image
 from six import binary_type
 
-__all__ = ["resize", "RESIZE_MODES", "SCALE", "FIT", "CROP"]
+__all__ = ["resize", "get_format", "RESIZE_MODES", "SCALE", "FIT", "CROP"]
 
 # resize modes
 

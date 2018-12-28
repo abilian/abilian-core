@@ -12,7 +12,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, Optional, Text, List
+from typing import Any, Dict, Optional, Text, Tuple
 
 import bleach
 import sqlalchemy as sa
@@ -298,7 +298,6 @@ class AjaxMainTableView(object):
     show_controls = False
     paginate = True
     options = {}  # type: Dict[Text, Any]
-    search_criterions = ()  # type: List[BaseCriterion]
 
     def __init__(
         self, columns, ajax_source, search_criterions=(), name=None, options=None

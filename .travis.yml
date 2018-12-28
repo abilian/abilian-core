@@ -1,10 +1,6 @@
 dist: xenial
 
 language: python
-python:
-  - "2.7"
-  - "3.6"
-  - "3.7"
 
 cache:
   pip: true
@@ -14,41 +10,33 @@ cache:
 addons:
   postgresql: "9.6"
 
-env:
-  matrix:
-    - SQLALCHEMY_DATABASE_URI="sqlite://"
-    - SQLALCHEMY_DATABASE_URI="postgres://postgres@localhost/abilian_core"
-
-# services:
-#   - redis-server
+matrix:
+  include:
+    - python: 2.7
+      env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
+    - python: 3.6
+      env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
+    - python: 2.7
+      env: SQLALCHEMY_URI=sqlite://
+    - python: 3.6
+      env: SQLALCHEMY_URI=sqlite://
+    - python: 3.6
+      env: TOXENV=lint
 
 # Install OS dependencies
-before_install:
-  - pip install -U pip setuptools wheel
-  - yarn global add less
-  - gem install travis
-
-# Install Python dependencies
 install:
-  - pip install -r requirements.txt
-  - pip install -r etc/dev-requirements.txt
-  - pip install psycopg2
+  - pip install -U pip setuptools wheel tox tox-travis
+  - yarn global add less
   - yarn
+  - gem install travis
 
 # Create DB
 before_script:
-  - psql -c 'create database abilian_core;' -U postgres
+  - psql -c 'create database abilian;' -U postgres
 
 # Run tests
 script:
-  - pytest --cov abilian abilian
-  - make lint-ci
-
-# Report coverage
-after_success:
-  - pip install codecov coveralls
-  - coveralls
-  - codecov
+  - tox
 
 notifications:
   slack:
