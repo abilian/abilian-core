@@ -12,11 +12,15 @@
 
 ## Testing & QA
 
-- [] Finish "classless" unit testing refactor
 - [] Add hypothesis tests
 
+- [x] Finish "classless" unit testing refactor
 - [x] Install `pytest-randomly` and fix errors
 - [x] Fix all JS issues detected by ESlint and enable check on CI
+
+## Project management & CI
+
+- [x] Switch to Poetry
 
 ## Other
 
