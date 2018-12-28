@@ -12,7 +12,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, Optional, Text
+from typing import Any, Dict, Optional, Text, List
 
 import bleach
 import sqlalchemy as sa
@@ -40,6 +40,7 @@ from abilian.services import image
 from abilian.services.image import get_format
 from abilian.web import url_for
 from abilian.web.filters import babel2datepicker, labelize
+from abilian.web.search import BaseCriterion
 
 from .util import babel2datetime
 
@@ -297,6 +298,7 @@ class AjaxMainTableView(object):
     show_controls = False
     paginate = True
     options = {}  # type: Dict[Text, Any]
+    search_criterions = ()  # type: List[BaseCriterion]
 
     def __init__(
         self, columns, ajax_source, search_criterions=(), name=None, options=None
@@ -363,18 +365,18 @@ class AjaxMainTableView(object):
             datatable_options["aaSorting"] = self.options.get("aaSorting")
 
         advanced_search_filters = []
-        for c in self.search_criterions:
-            if not c.has_form_filter:
+        for criterion in self.search_criterions:
+            if not criterion.has_form_filter:
                 continue
             d = {
-                "name": c.name,
-                "label": text_type(c.label),
-                "type": c.form_filter_type,
-                "args": c.form_filter_args,
-                "unset": c.form_unset_value,
+                "name": criterion.name,
+                "label": text_type(criterion.label),
+                "type": criterion.form_filter_type,
+                "args": criterion.form_filter_args,
+                "unset": criterion.form_unset_value,
             }
-            if c.has_form_default_value:
-                d["defaultValue"] = c.form_default_value
+            if criterion.has_form_default_value:
+                d["defaultValue"] = criterion.form_default_value
 
             advanced_search_filters.append(d)
 

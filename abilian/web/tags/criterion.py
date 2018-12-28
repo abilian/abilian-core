@@ -58,7 +58,6 @@ class TagCriterion(BaseCriterion):
         return tags
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
-
         tags = self.get_request_values(request)
         if not tags:
             return query

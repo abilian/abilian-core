@@ -129,7 +129,11 @@ class AuditEntry(db.Model):
         # such as dates. This could make schema migration more difficult,
         # though.
         if self.changes_pickle:
-            changes = pickle.loads(self.changes_pickle)
+            try:
+                changes = pickle.loads(self.changes_pickle)
+            except (UnicodeDecodeError, TypeError):
+                # FIXME: migrate to Python3
+                changes = Changes()
             if isinstance(changes, dict):
                 changes = Changes.from_legacy(changes)
         else:
