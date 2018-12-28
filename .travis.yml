@@ -23,12 +23,16 @@ matrix:
     - python: 3.6
       env: TOXENV=lint
 
-# Install OS dependencies
+# Install OS and global dependencies
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install poppler-utils
+  - yarn global add less
+  - gem install travis
+
 install:
   - pip install -U pip setuptools wheel tox tox-travis
-  - yarn global add less
   - yarn
-  - gem install travis
 
 # Create DB
 before_script:
