@@ -24,8 +24,7 @@ all: test lint
 develop:
 	@echo "--> Installing dependencies"
 	pip install -U pip-tools setuptools
-	pip install -U -e '.[dev]'
-	pip install -r etc/dev-requirements.txt
+	poetry install
 	yarn
 	@echo "--> Activating pre-commit hook"
 	pre-commit install
@@ -187,12 +186,8 @@ release:
 
 update-deps:
 	pip install -U pip pip-tools setuptools wheel
-	pip-compile -U > /dev/null
-	pip-compile > /dev/null
-	git --no-pager diff requirements.txt
+	poetry update
 
 sync-deps:
 	pip install -U pip pip-tools setuptools wheel
-	pip-sync
-	pip install -r etc/dev-requirements.txt
-	pip install -e .
+	poetry install

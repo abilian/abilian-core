@@ -151,18 +151,12 @@ project), you probably already know about:
 
 -  Python 2.7
 -  Virtualenv
--  Pip
+-  Poetry (https://poetry.eustace.io/)
 
 So, after you have created and activated a virtualenv for the project,
 just run::
 
-    pip install -r requirements.txt
-
-If you need to work on the project, first install the requirements as above,
-then type:
-
-    pip install -e '.[dev]'
-
+    poetry
 
 To use some features of the library, namely document and images
 transformation, you will need to install the additional native packages,
