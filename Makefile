@@ -61,7 +61,7 @@ vagrant-tests:
 #
 # Various Checkers
 #
-lint: lint-py lint-js lint-less lint-rst lint-doc lint-travis
+lint: lint-py lint-js lint-less lint-rst lint-doc
 
 lint-ci: lint
 
