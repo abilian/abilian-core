@@ -139,7 +139,8 @@ class ObjectView(BaseObjectView):
         :attr:`form` is initialized here. See also :meth:`View.prepare_args`.
         """
         args, kwargs = super(ObjectView, self).prepare_args(args, kwargs)
-        self.form = self.Form(**self.get_form_kwargs())
+        form_kwargs = self.get_form_kwargs()
+        self.form = self.Form(**form_kwargs)
         return args, kwargs
 
     def get_form_kwargs(self):
