@@ -12,7 +12,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, Optional, Text, Tuple
+from typing import Any, Dict, Optional, Text
 
 import bleach
 import sqlalchemy as sa
@@ -24,7 +24,6 @@ from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField
 from six import string_types, text_type
-from six.moves import filter
 from six.moves.urllib import parse
 from wtforms.widgets import HTMLString, Input
 from wtforms.widgets import PasswordInput as BasePasswordInput
@@ -40,7 +39,6 @@ from abilian.services import image
 from abilian.services.image import get_format
 from abilian.web import url_for
 from abilian.web.filters import babel2datepicker, labelize
-from abilian.web.search import BaseCriterion
 
 from .util import babel2datetime
 
@@ -210,9 +208,7 @@ class BaseTableView(object):
         for entity in entities:
             table.append(self.render_line(entity))
 
-        template = filter(
-            bool, (self.options.get("template"), "widgets/render_table.html")
-        )
+        template = self.options.get("template", "widgets/render_table.html")
         return Markup(
             render_template(template, table=table, js=Markup(js), view=self, **kwargs)
         )
@@ -487,10 +483,7 @@ class SingleView(object):
             if data:
                 panels.append((panel, data))
 
-        template = filter(
-            bool, (self.options.get("view_template"), "widgets/render_single.html")
-        )
-
+        template = self.options.get("view_template", "widgets/render_single.html")
         ctx = {
             "view": self,
             "related_views": related_views,
