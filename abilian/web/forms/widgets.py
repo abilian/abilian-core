@@ -510,9 +510,7 @@ class SingleView(object):
         else:
             rules = None
 
-        template = filter(
-            bool, (self.options.get("edit_template"), "widgets/render_for_edit.html")
-        )
+        template = self.options.get("edit_template", "widgets/render_for_edit.html")
         ctx = {
             "view": self,
             "form": form,
