@@ -1,9 +1,13 @@
 [tool.poetry]
 name = "abilian-core"
-version = "0.10.31"
+version = "0.10.33"
 description = ""
 authors = ["Abilian SAS"]
 license = "LGPL"
+readme = "README.rst"
+repository = "https://github.com/abilian/abilian-core"
+packages = [{ include = "abilian" }]
+
 
 [tool.poetry.dependencies]
 python = "~2.7 || ^3.6"
