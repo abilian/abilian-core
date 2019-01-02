@@ -11,6 +11,7 @@ TODO: In the future, we may decide to:
 from __future__ import absolute_import, division, print_function, \
     unicode_literals
 
+import logging
 import pickle
 from datetime import datetime
 
@@ -30,6 +31,8 @@ CREATION = 0
 UPDATE = 1
 DELETION = 2
 RELATED = 1 << 7
+
+logger = logging.getLogger(__name__)
 
 
 class Changes(object):
@@ -59,7 +62,7 @@ class Changes(object):
         assert isinstance(changes, Changes)
         self.columns[name] = changes
 
-    def _collection_change(self, name, value, add=True):
+    def _collection_change(self, name, value, add):
         colls = self.collections
         to_add, to_remove = colls.setdefault(name, (set(), set()))
         if not add:
@@ -129,13 +132,26 @@ class AuditEntry(db.Model):
         # such as dates. This could make schema migration more difficult,
         # though.
         if self.changes_pickle:
+            # XXX: this workaround may or may not work
             try:
-                changes = pickle.loads(self.changes_pickle)
+                changes = pickle.loads(self.changes_pickle, encoding="utf-8")
             except (UnicodeDecodeError, TypeError):
-                # FIXME: migrate to Python3
-                changes = Changes()
+                try:
+                    changes = pickle.loads(self.changes_pickle, encoding="bytes")
+                except BaseException as e:
+                    logger.warning("migration error on audit entry:", e)
+                    changes = Changes()
+
             if isinstance(changes, dict):
                 changes = Changes.from_legacy(changes)
+
+            # Fix for migration Python 2 -> Python 3
+            items = list(vars(changes).items())
+            for k, v in items:
+                if isinstance(k, bytes):
+                    setattr(changes, k.decode(), v)
+                    del changes.__dict__[k]
+
         else:
             changes = Changes()
 

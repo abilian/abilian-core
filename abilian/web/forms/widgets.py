@@ -132,12 +132,22 @@ class Column(object):
             setattr(self, k, w)
 
 
+class View(object):
+    options = {}  # type: Dict[Text, Any]
+
+    def get_templates(self, specific_template_name, default_template):
+        specific_template = self.options.get(specific_template_name)
+        if specific_template:
+            return [specific_template, default_template]
+        else:
+            return [default_template]
+
+
 # TODO: rewrite
-class BaseTableView(object):
+class BaseTableView(View):
     show_controls = False
     show_search = None
     paginate = False
-    options = {}  # type: Dict[Text, Any]
 
     def __init__(self, columns, options=None):
         if self.show_search is None:
@@ -208,9 +218,9 @@ class BaseTableView(object):
         for entity in entities:
             table.append(self.render_line(entity))
 
-        template = self.options.get("template", "widgets/render_table.html")
+        templates = self.get_templates("template", "widgets/render_table.html")
         return Markup(
-            render_template(template, table=table, js=Markup(js), view=self, **kwargs)
+            render_template(templates, table=table, js=Markup(js), view=self, **kwargs)
         )
 
     def render_line(self, entity):
@@ -285,7 +295,7 @@ class RelatedTableView(BaseTableView):
     paginate = False
 
 
-class AjaxMainTableView(object):
+class AjaxMainTableView(View):
     """Variant of the MainTableView that gets content from AJAX requests.
 
     TODO: refactor all of this (currently code is copy/pasted!).
@@ -293,7 +303,6 @@ class AjaxMainTableView(object):
 
     show_controls = False
     paginate = True
-    options = {}  # type: Dict[Text, Any]
 
     def __init__(
         self, columns, ajax_source, search_criterions=(), name=None, options=None
@@ -440,7 +449,7 @@ class AjaxMainTableView(object):
 #
 # Single object view
 #
-class SingleView(object):
+class SingleView(View):
     """View on a single object."""
 
     def __init__(self, form, *panels, **options):
@@ -483,7 +492,7 @@ class SingleView(object):
             if data:
                 panels.append((panel, data))
 
-        template = self.options.get("view_template", "widgets/render_single.html")
+        templates = self.get_templates("view_template", "widgets/render_single.html")
         ctx = {
             "view": self,
             "related_views": related_views,
@@ -491,7 +500,7 @@ class SingleView(object):
             "panels": panels,
             "form": form,
         }
-        return Markup(render_template(template, **ctx))
+        return Markup(render_template(templates, **ctx))
 
     def render_form(self, form, for_new=False, has_save_and_add_new=False):
         # Client-side rules for jQuery.validate
@@ -510,7 +519,7 @@ class SingleView(object):
         else:
             rules = None
 
-        template = self.options.get("edit_template", "widgets/render_for_edit.html")
+        templates = self.get_templates("edit_template", "widgets/render_for_edit.html")
         ctx = {
             "view": self,
             "form": form,
@@ -518,7 +527,7 @@ class SingleView(object):
             "has_save_and_add_new": has_save_and_add_new,
             "rules": rules,
         }
-        return Markup(render_template(template, **ctx))
+        return Markup(render_template(templates, **ctx))
 
     def label_for(self, field, mapper, name):
         label = field.label

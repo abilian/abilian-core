@@ -23,7 +23,7 @@ all: test lint
 #
 develop:
 	@echo "--> Installing dependencies"
-	pip install -U pip-tools setuptools
+	pip install -U pip setuptools wheel
 	poetry install
 	yarn
 	@echo "--> Activating pre-commit hook"
@@ -139,8 +139,7 @@ futurize:
 # Everything else
 #
 install:
-	pip install -U pip
-	python setup.py install
+	poetry install
 
 doc: doc-html doc-pdf
 
@@ -185,9 +184,9 @@ release:
 
 
 update-deps:
-	pip install -U pip pip-tools setuptools wheel
+	pip install -U pip setuptools wheel
 	poetry update
 
 sync-deps:
-	pip install -U pip pip-tools setuptools wheel
+	pip install -U pip setuptools wheel
 	poetry install

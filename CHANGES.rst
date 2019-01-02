@@ -1,10 +1,11 @@
 Changelog for Abilian Core
 ==========================
 
-0.10.32 (unreleased)
+0.10.32 (2019-01-02)
 --------------------
 
 - Switched dependency management to poetry
+- Py3k migration and fixes.
 
 
 0.10.29 (2018-12-26)
