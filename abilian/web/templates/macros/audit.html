@@ -6,6 +6,7 @@
     {%- for key in changes.columns|sort %}
       {% set values = changes.columns[key] %}
       <li>
+
         {%- if values.columns|default(None) != None %}
           {{ _('{key} changed:').format(key=_key_fmt(key)) }}
           {{ m_audit_field_changes(values) }}
