@@ -45,6 +45,9 @@ login = Blueprint(
 )
 route = login.route
 
+# One day in seconds
+ONE_DAY = 60 * 60 * 24
+
 
 #
 # Login / Logout
@@ -303,7 +306,7 @@ def reset_password_token_status(token):
 
     :param token: The password reset token
     """
-    return get_token_status(token, "reset", "RESET_PASSWORD")
+    return get_token_status(token, "reset", ONE_DAY)
 
 
 def get_token_status(token, serializer_name, max_age=None):
