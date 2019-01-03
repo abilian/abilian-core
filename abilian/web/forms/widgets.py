@@ -879,7 +879,7 @@ class ImageInput(FileInput):
             fmt = image.get_format(img).lower()
         except IOError:
             return ""
-        thumb = base64.b64encode(img)
+        thumb = base64.b64encode(img).decode("ascii")
         return "data:image/{format};base64,{img}".format(format=fmt, img=thumb)
 
     def render_view(self, field, **kwargs):
