@@ -28,9 +28,9 @@ class SchemaAdapter(object):
     for document.
     """
 
-    def __init__(self, Model, schema):
+    def __init__(self, model_class, schema):
         """
-        :param:Model: class of objects instances to be adapted
+        :param:model_class: class of objects instances to be adapted
         :param:schema: :class:`whoosh.fields.Schema` instance
         """
         pass
@@ -82,21 +82,21 @@ class SAAdapter(SchemaAdapter):
     def can_adapt(obj_cls):
         return issubclass(obj_cls, db.Model)
 
-    def __init__(self, Model, schema):
+    def __init__(self, model_class, schema):
         """
-        :param:Model: a sqlalchemy model class
+        :param:model_class: a sqlalchemy model class
         :param:schema: :class:`whoosh.fields.Schema` instance
         """
-        assert issubclass(Model, db.Model)
-        self.Model = Model
-        self.indexable = getattr(Model, "__indexable__", False)
-        self.index_args = getattr(Model, "__indexation_args__", {})
+        assert issubclass(model_class, db.Model)
+        self.model_class = model_class
+        self.indexable = getattr(model_class, "__indexable__", False)
+        self.index_args = getattr(model_class, "__indexation_args__", {})
         self.doc_attrs = {}
         if self.indexable:
-            self._build_doc_attrs(Model, schema)
+            self._build_doc_attrs(model_class, schema)
 
-    def _build_doc_attrs(self, Model, schema):
-        mapper = sa.inspect(Model)
+    def _build_doc_attrs(self, model_class, schema):
+        mapper = sa.inspect(model_class)
 
         args = self.doc_attrs
         # any field not in schema will be stored here. After all field have been
@@ -151,7 +151,7 @@ class SAAdapter(SchemaAdapter):
 
             logger.debug(
                 "Adding field to schema:\n" "  Model: %s\n" '  Field: "%s" %s',
-                Model._object_type(),
+                model_class._object_type(),
                 field_name,
                 field_def,
             )
@@ -160,7 +160,7 @@ class SAAdapter(SchemaAdapter):
     def retrieve(self, pk, _session=None, **data):
         if _session is None:
             _session = db.session()
-        return _session.query(self.Model).get(pk)
+        return _session.query(self.model_class).get(pk)
 
     def get_document(self, obj):
         kwargs = {}
