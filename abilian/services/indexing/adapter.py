@@ -90,10 +90,22 @@ class SAAdapter(SchemaAdapter):
         assert issubclass(model_class, db.Model)
         self.model_class = model_class
         self.indexable = getattr(model_class, "__indexable__", False)
-        self.index_args = getattr(model_class, "__indexation_args__", {})
+        self.index_to = self.get_index_to(model_class)
         self.doc_attrs = {}
         if self.indexable:
             self._build_doc_attrs(model_class, schema)
+
+    def get_index_to(self, model_class):
+        result = []
+        classes = model_class.mro()
+        from pprint import pprint
+
+        pprint(classes)
+        for cls in classes:
+            if hasattr(cls, "__index_to__"):
+                result += cls.__index_to__
+        pprint(result)
+        return tuple(result)
 
     def _build_doc_attrs(self, model_class, schema):
         mapper = sa.inspect(model_class)
@@ -120,7 +132,7 @@ class SAAdapter(SchemaAdapter):
             args.setdefault(field_name, {})[name] = attrgetter(name)
 
         # model level definitions
-        for name, field_names in self.index_args.get("index_to", ()):
+        for name, field_names in self.index_to:
             if isinstance(field_names, string_types):
                 field_names = (field_names,)
             for field_name in field_names:

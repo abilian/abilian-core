@@ -252,19 +252,12 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
               return args
     """
 
-    # __metaclass__ = EntityMeta
     __indexable__ = False
-    __indexation_args__ = {}
-    __indexation_args__.update(Indexable.__indexation_args__)
-    index_to = __indexation_args__.setdefault("index_to", ())
-    index_to += BaseMixin.__indexation_args__.setdefault("index_to", ())
-    index_to += (
+    __index_to__ = (
         ("_indexable_roles_and_users", ("allowed_roles_and_users",)),
         ("_indexable_tag_ids", ("tag_ids",)),
         ("_indexable_tag_text", ("tag_text", "text")),
     )
-    __indexation_args__["index_to"] = index_to
-    del index_to
 
     __default_permissions__ = frozenset()
     """

@@ -62,6 +62,10 @@ class Indexable(object):
             ("object_type", (("object_type", ID(stored=True, unique=False)),)),
         )
     }
+    __index_to__ = (
+        ("object_key", (("object_key", ID(stored=True, unique=True)),)),
+        ("object_type", (("object_type", ID(stored=True)),)),
+    )
 
     @classmethod
     def _object_type(cls):

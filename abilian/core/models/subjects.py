@@ -155,6 +155,8 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     __indexation_args__["index_to"] += (("name", ("name", "name_prefix", "text")),)
     del index_to
 
+    __index_to__ = (("name", ("name", "name_prefix", "text")),)
+
     def has_role(self, role, context=None):
         from abilian.services import get_service
 

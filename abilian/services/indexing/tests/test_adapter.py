@@ -27,12 +27,7 @@ class SANotIndexable(IdMixin, db.Model):
 
 class Indexable(IdMixin, CoreIndexable, db.Model):
     __tablename__ = "sa_indexable"
-    __indexation_args__ = {
-        "index_to": (
-            ("related.name", ("name", "text")),
-            ("related.description", "text"),
-        )
-    }
+    __index_to__ = (("related.name", ("name", "text")), ("related.description", "text"))
 
     num = sa.Column(sa.Integer, info=SEARCHABLE | {"index_to": (("num", NUMERIC()),)})
 
@@ -48,63 +43,85 @@ def test_can_adapt():
     assert SAAdapter.can_adapt(Entity)
 
 
-def test_build_attrs():
+def test_build_attrs_1():
     schema = Schema()
     adapter = SAAdapter(SANotIndexable, schema)
     assert not adapter.indexable
     assert adapter.doc_attrs == {}
 
+
+def test_build_attrs_2():
+    schema = Schema()
     adapter = SAAdapter(Entity, schema)
     assert adapter.indexable == False
 
+
+def test_build_attrs_3():
+    schema = Schema()
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     assert adapter.indexable
     assert set(adapter.doc_attrs) == {
-        "object_key",
+        "allowed_roles_and_users",
+        "created_at",
+        "creator",
+        "creator_name",
         "id",
         "name",
-        "slug",
-        "object_type",
-        "text",
-        "created_at",
-        "updated_at",
         "name_prefix",
+        "object_key",
+        "object_type",
         "owner",
         "owner_name",
-        "creator_name",
-        "creator",
-        "allowed_roles_and_users",
+        "slug",
         "tag_ids",
         "tag_text",
+        "text",
+        "updated_at",
     }
     assert all(lambda f: callable(f) for f in six.itervalues(adapter.doc_attrs))
 
     assert set(schema.names()) == {
-        "object_key",
-        "id",
-        "object_type",
-        "name",
-        "slug",
-        "text",
+        "allowed_roles_and_users",
         "created_at",
-        "updated_at",
+        "creator",
+        "creator_name",
+        "id",
+        "name",
         "name_prefix",
+        "object_key",
+        "object_type",
         "owner",
         "owner_name",
-        "creator_name",
-        "creator",
-        "allowed_roles_and_users",
+        "slug",
         "tag_ids",
         "tag_text",
+        "text",
+        "updated_at",
     }
 
+
+def test_build_attrs_4():
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)
     assert adapter.indexable
-    assert set(adapter.doc_attrs) == {"id", "text", "num", "name"}
+    assert set(adapter.doc_attrs) == {
+        "id",
+        "text",
+        "num",
+        "name",
+        "object_type",
+        "object_key",
+    }
     assert all(lambda f: callable(f) for f in six.itervalues(adapter.doc_attrs))
 
-    assert set(schema.names()) == {"id", "text", "num", "name"}
+    assert set(schema.names()) == {
+        "id",
+        "text",
+        "num",
+        "name",
+        "object_type",
+        "object_key",
+    }
     assert isinstance(schema["text"], TEXT)
     assert isinstance(schema["num"], NUMERIC)
 
@@ -144,7 +161,7 @@ def test_get_document_with_schema():
     expected["text"] = obj.related.name + " " + obj.related.description
     doc = adapter.get_document(obj)
 
-    assert set(doc) == {"id", "name", "num", "text"}
+    assert set(doc) == {"id", "name", "num", "text", "object_type", "object_key"}
     assert doc["id"] == 1
     assert doc["num"] == 42
     assert doc["name"] == "related name"
