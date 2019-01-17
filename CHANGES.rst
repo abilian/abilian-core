@@ -1,6 +1,12 @@
 Changelog for Abilian Core
 ==========================
 
+0.10.34 (2019-01-17)
+--------------------
+
+- Simplify indexing control DSL: __indexation_params__ -> __index_to__.
+
+
 0.10.32 (2019-01-02)
 --------------------
 
