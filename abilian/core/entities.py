@@ -432,9 +432,8 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
     def _indexable_tags(self):
         """Index tag ids for tags defined in this Entity's default tags
         namespace."""
-        tags = current_app.extensions["tags"]
-
-        if not tags.supports_taggings(self):
+        tags = current_app.extensions.get("tags")
+        if not tags or not tags.supports_taggings(self):
             return ""
 
         default_ns = tags.entity_default_ns(self)
