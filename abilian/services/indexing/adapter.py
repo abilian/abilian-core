@@ -98,13 +98,9 @@ class SAAdapter(SchemaAdapter):
     def get_index_to(self, model_class):
         result = []
         classes = model_class.mro()
-        from pprint import pprint
-
-        pprint(classes)
         for cls in classes:
             if hasattr(cls, "__index_to__"):
                 result += cls.__index_to__
-        pprint(result)
         return tuple(result)
 
     def _build_doc_attrs(self, model_class, schema):
