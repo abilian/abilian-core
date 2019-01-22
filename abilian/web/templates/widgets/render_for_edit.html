@@ -1,7 +1,7 @@
 {% from "macros/form.html" import  m_field with context %}
 
 <form action="{{ request.path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="edit-form"
-      role="form" novalidate>
+    role="form" novalidate>
   {{ form.csrf_token }}
 
   <div class="row">

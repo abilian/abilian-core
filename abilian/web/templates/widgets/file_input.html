@@ -12,9 +12,9 @@
         <span class="file-info">{{ data.filename |default('') or loop.index0 }} — {{ data.size | filesize }}</span>
         {%- if field.allow_delete %}
           <button type="button" class="btn"
-                  data-name="__{{ field.name }}_delete__"
-                  data-value="{{ loop.index0 }}"
-                  data-deleted="{{ data.delete |tojson }}">
+              data-name="__{{ field.name }}_delete__"
+              data-value="{{ loop.index0 }}"
+              data-deleted="{{ data.delete |tojson }}">
             <span class="fa fa-trash"></span>
           </button>
         {%- endif %}
@@ -24,7 +24,7 @@
     {%- for data in uploaded %}
       <div class="file-item file-item-uploaded">
         <span class="file-info">{{ data.filename }} – {{ data.size|filesize }}</span>
-        <input type="hidden" name="{{ field.name }}" value="{{ data.handle }}" />
+        <input type="hidden" name="{{ field.name }}" value="{{ data.handle }}"/>
         <a class="close" href="#">&times;</a>
       </div>
     {%- endfor %}

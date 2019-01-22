@@ -24,9 +24,9 @@
 {% macro m_comment_delete_link(comment) %}
   {%- if g.user == comment.owner or g.is_manager %}
     <a class="js-widget text-danger"
-       href="{{ url_for('comments.delete', entity_id=comment.entity.id, object_id=comment.id) }}"
-       data-init-with="deleteConfirm"
-       data-init-params="{{ {
+        href="{{ url_for('comments.delete', entity_id=comment.entity.id, object_id=comment.id) }}"
+        data-init-with="deleteConfirm"
+        data-init-params="{{ {
                           'title': _('Delete comment ?'),
                           'message': _('Do you really want to delete this comment?'),
                           'label': _("Delete"),

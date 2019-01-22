@@ -24,9 +24,9 @@
 
   <!-- Le fav and touch icons -->
   <link rel="shortcut icon" type="image/png"
-        href="{{ app.config['FAVICO_URL'] | string }}"/>
+      href="{{ app.config['FAVICO_URL'] | string }}"/>
   <link rel="apple-touch-icon" type="image/png"
-        href="{{ app.config['FAVICO_URL'] | string }}"/>
+      href="{{ app.config['FAVICO_URL'] | string }}"/>
 
   <script>
     var require = {{ app.extensions['webassets'].requirejs_config | tojson }};
@@ -66,7 +66,7 @@
   {% include "navbar.html" %}
 
   <div id="content"
-       class="container{%- if full_width %}-fluid {% endif %} clearfix">
+      class="container{%- if full_width %}-fluid {% endif %} clearfix">
 
     <!-- breadcrumbs -->
     {% if g.breadcrumb|length > 1 %}

@@ -36,18 +36,18 @@
 {% endmacro %}
 
 {% macro m_audit_entry(entry) %}
-    <div>
-      {#- FIXME: use macro for user avatar #}
-      <img src="{{ user_photo_url(entry.user, size=16) }}" style="margin-bottom: 2px;" alt=""/>
+  <div>
+    {#- FIXME: use macro for user avatar #}
+    <img src="{{ user_photo_url(entry.user, size=16) }}" style="margin-bottom: 2px;" alt=""/>
 
-      <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
-      {%- if entry.related or entry.op == 1 %}
-        made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
-        {{ m_audit_field_changes(entry.changes) }}
-      {%- elif entry.type == 0 %}
-        created this record on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
-      {%- endif %}
-    </div>
+    <a href="{{ url_for("social.user", user_id=entry.user.id) }}">{{ entry.user.name }}</a>
+    {%- if entry.related or entry.op == 1 %}
+      made changes on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
+      {{ m_audit_field_changes(entry.changes) }}
+    {%- elif entry.type == 0 %}
+      created this record on {{ entry.happened_at.strftime('%Y-%m-%d %H:%M') }}
+    {%- endif %}
+  </div>
 {% endmacro %}
 
 {% macro m_audit_log(entries) %}

@@ -1,38 +1,38 @@
 <h4>Current stored values for <strong>{{ document["object_key"] }}</strong></h4>
 
 {%- if document %}
-<table>
-  <thead>
+  <table>
+    <thead>
     <tr>
       <th>Key</th>
       <th>Value</th>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
-  {%- for key in sorted_keys %}
-    <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
-      <td>{{ key }}</td>
-      <td>{{ document[key]|printable }}</td>
-    </tr>
-  {%- endfor %}
-  </tbody>
-</table>
+    <tbody>
+    {%- for key in sorted_keys %}
+      <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+        <td>{{ key }}</td>
+        <td>{{ document[key]|printable }}</td>
+      </tr>
+    {%- endfor %}
+    </tbody>
+  </table>
 {%- endif %}
 
 {%- if current_document %}
   <h4>Indexed values from current object</h4>
 
-<table>
-  <thead>
+  <table>
+    <thead>
     <tr>
       <th>Key</th>
       <th>Value</th>
       <th>Indexed values</th>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
+    <tbody>
     {%- for key in current_keys %}
       <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
         <td>{{ key }}</td>
@@ -40,26 +40,26 @@
         <td>{{ current_indexed[key]|printable }}</td>
       </tr>
     {%- endfor %}
-  </tbody>
-</table>
+    </tbody>
+  </table>
 {%- endif %}
 
 <h4>Schema</h4>
 
 <table>
   <thead>
-    <tr>
-      <th>Field Name</th>
-      <th>Type</th>
-    </tr>
+  <tr>
+    <th>Field Name</th>
+    <th>Type</th>
+  </tr>
   </thead>
 
   <tbody>
-    {%- for name in sorted_fields %}
-      <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
-        <td>{{ name }}</td>
-        <td>{{ schema[name]|printable }}</td>
-      </tr>
-    {%- endfor %}
+  {%- for name in sorted_fields %}
+    <tr class="{{ loop.cycle('flDebugOdd', 'flDebugEven') }}">
+      <td>{{ name }}</td>
+      <td>{{ schema[name]|printable }}</td>
+    </tr>
+  {%- endfor %}
   </tbody>
 </table>

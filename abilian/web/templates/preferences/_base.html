@@ -7,10 +7,10 @@
     <div class="panel panel-default">
       <div class="panel-heading">{{ _("Preferences") }}</div>
 
-      <div class="list-group">        
+      <div class="list-group">
         {%- for entry in menu %}
           <a class="list-group-item {%- if entry.active %} active{%- endif %}"
-             href="{{ entry.url }}">
+              href="{{ entry.url }}">
             {{ entry.label }}
           </a>
         {%- endfor %}

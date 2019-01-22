@@ -7,9 +7,9 @@
 {% macro m_attachments(entity) %}
   {%- if attachments.has_attachments(entity) %}
     <ul class="attachments">
-    {%- for attachment in attachments.for_entity(entity) %}
-      <li id="attachment-{{ attachment.id }}">{{ m_attachment(attachment) }}</li>
-    {%- endfor %}
+      {%- for attachment in attachments.for_entity(entity) %}
+        <li id="attachment-{{ attachment.id }}">{{ m_attachment(attachment) }}</li>
+      {%- endfor %}
     </ul>
   {%- endif %}
 {% endmacro %}
@@ -25,33 +25,34 @@
       <i class="fa fa-file fa-big"></i>
     </div>
     <div class="media-body">
-    {%- if can_edit or can_delete %}
-      <div class="pull-right">
-        {%- if can_edit %}
-        <a class="btn btn-default"
-           title="{{ _("Edit") }}"
-           href="{{ url_for('attachments.edit', entity_id=entity.id, object_id=attachment.id) }}"><i class="fa fa-edit"></i></a>
-        {%- endif %}
-        {%- if can_delete %}
-        <a class="btn btn-danger js-widget"
-           href="{{ url_for('attachments.delete', entity_id=entity.id, object_id=attachment.id) }}"
-           data-init-with="deleteConfirm"
-           data-init-params="{{ {
+      {%- if can_edit or can_delete %}
+        <div class="pull-right">
+          {%- if can_edit %}
+            <a class="btn btn-default"
+                title="{{ _("Edit") }}"
+                href="{{ url_for('attachments.edit', entity_id=entity.id, object_id=attachment.id) }}"><i
+                class="fa fa-edit"></i></a>
+          {%- endif %}
+          {%- if can_delete %}
+            <a class="btn btn-danger js-widget"
+                href="{{ url_for('attachments.delete', entity_id=entity.id, object_id=attachment.id) }}"
+                data-init-with="deleteConfirm"
+                data-init-params="{{ {
                               'title': _('Delete attachment ?'),
                               'message': _('Do you really want to delete this attachment?'),
                               'label': _("Delete"),
                               'cancelLabel': _('Cancel'),
                               }|tojson|forceescape }}">
-          <i class="fa fa-trash fa-inverse"></i>
-        </a>
-        {%- endif %}
-      </div>
-    {%- endif %}
+              <i class="fa fa-trash fa-inverse"></i>
+            </a>
+          {%- endif %}
+        </div>
+      {%- endif %}
       <h4 class="media-heading">
         <a href="{{ url_for('attachments.download',
                             entity_id=attachment.entity.id,
                             object_id=attachment.id) }}"
-           title="{{ _('Download') }}">{{ attachment.name }}</a>
+            title="{{ _('Download') }}">{{ attachment.name }}</a>
         <small>{{ attachment.blob.size | filesize }} - {{ attachment.updated_at | age }}</small>
       </h4>
       <p>{{ attachment.description }}</p>

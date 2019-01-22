@@ -1,8 +1,8 @@
 {% from "macros/form.html" import m_field %}
 
 {% macro m_tags(entity, ns=None) %}
-    {%- set tags_form = tags.entity_tags_form(entity)(obj=entity, ns=ns) %}
-    {{ tags_form['tags'].render_view() }}
+  {%- set tags_form = tags.entity_tags_form(entity)(obj=entity, ns=ns) %}
+  {{ tags_form['tags'].render_view() }}
 {% endmacro %}
 
 {# display tags from a search result #}
