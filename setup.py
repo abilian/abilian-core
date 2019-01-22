@@ -6,7 +6,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 from distutils.command.build import build as _build
 
 import setuptools
-from pkg_resources import parse_requirements
 from setuptools.command.develop import develop as _develop
 from setuptools.command.sdist import sdist as _sdist
 
@@ -42,7 +41,7 @@ setuptools.setup(
     packages=["abilian"],
     zip_safe=False,
     platforms="any",
-    setup_requires=["babel", "setuptools-git", "setuptools_scm>=1.5.5"],
+    setup_requires=["babel"],
     include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
