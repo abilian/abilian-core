@@ -62,13 +62,8 @@ class SessionLifeTimeKey(Key):
 
         if (days + hours) == 0 and minutes < 10:
             # avoid dummy sessions durations: minimum is 10 minutes
-            flash(
-                _(
-                    "Minimum session lifetime is 10 minutes. "
-                    "Value has been adjusted."
-                ),
-                "warning",
-            )
+            msg = _("Minimum session lifetime is 10 minutes. Value has been adjusted.")
+            flash(msg, "warning")
             minutes = 10
 
         return timedelta(days=days, hours=hours, minutes=minutes)

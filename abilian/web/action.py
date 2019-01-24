@@ -23,6 +23,7 @@ __all__ = (
     "ButtonAction",
     "FAIcon",
     "DynamicIcon",
+    "StaticIcon",
     "ModalActionMixin",
     "Endpoint",
     "actions",

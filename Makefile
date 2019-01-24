@@ -127,9 +127,9 @@ format-py:
 	isort -rc abilian demo tests *.py
 
 format-js:
-	yarn run prettier --write \
-		--trailing-comma es5 \
-		'abilian/web/resources/js/**/*.js'
+	yarn run prettier --write --trailing-comma es5 \
+		'abilian/web/resources/js/**/*.js' \
+		'abilian/web/resources/less/*.less'
 
 futurize:
 	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
@@ -176,12 +176,9 @@ update-pot:
 	python setup.py extract_messages update_catalog compile_catalog
 
 release:
+	maketag
 	git push --tags
-	rm -rf /tmp/abilian-core
-	git clone . /tmp/abilian-core
-	cd /tmp/abilian-core ; python setup.py sdist
-	cd /tmp/abilian-core ; python setup.py sdist upload
-
+	poetry publish --build
 
 update-deps:
 	pip install -U pip setuptools wheel

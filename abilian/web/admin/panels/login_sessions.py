@@ -31,7 +31,6 @@ class LoginSessionsPanel(AdminPanel):
         unknown_country = _("Country unknown")
 
         def update_country(session):
-            country = unknown_country
             if session.ip_address:
                 ip_address = session.ip_address
                 multiple = ip_address.split(",")

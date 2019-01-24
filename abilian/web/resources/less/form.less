@@ -14,7 +14,7 @@
 // }
 
 label::first-letter {
-  text-transform: uppercase;
+    text-transform: uppercase;
 }
 
 /*
@@ -32,129 +32,131 @@ form [role="tabpanel"] > .form-group:nth-of-type(odd) {
 */
 
 .form-group .form-group {
-  /* fieldform */
-  margin-bottom: 5px;
-
-  > label {
-    /* reset margin bottom when primary form is form-horizontal */
+    /* fieldform */
     margin-bottom: 5px;
-  }
 
-  .help-block {
-    margin-bottom: 0;
-  }
+    > label {
+        /* reset margin bottom when primary form is form-horizontal */
+        margin-bottom: 5px;
+    }
+
+    .help-block {
+        margin-bottom: 0;
+    }
 }
 
 form [role="tablist"] .required::after,
 .form-group.required > label::after,
 label.required::after {
-  content: '\2605'; // U+2605: BLACK STAR ★
-  vertical-align: super;
-  font-size: 85%;
-  margin-left: 0.25ex;
-  color: #b00;
+    content: "\2605"; // U+2605: BLACK STAR ★
+    vertical-align: super;
+    font-size: 85%;
+    margin-left: 0.25ex;
+    color: #b00;
 }
 
 /* to disable resize on textareas */
 .not-resizeable {
-  resize: none;
+    resize: none;
 }
 
 .resizeable-vertical {
-  resize: vertical;
+    resize: vertical;
 }
 
 .form-control.editor {
-  height: auto;
+    height: auto;
 }
 
 /* tabular widget */
 table.tabular-form {
-  td, th {
-    padding: 0.1em 0.15em;
-  }
+    td,
+    th {
+        padding: 0.1em 0.15em;
+    }
 }
 
 /* display btn as inline text */
 .btn-inline {
-  display: inline;
-  margin: 0;
-  border: 0;
-  padding: 0;
-  background: inherit;
+    display: inline;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: inherit;
 }
 
 /* fileinput */
 .btn-file {
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    overflow: hidden;
 
-  input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 999px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    background: red;
-    cursor: inherit;
-    display: block;
-  }
+    input[type="file"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 999px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        background: red;
+        cursor: inherit;
+        display: block;
+    }
 }
 
 .file-input {
-  .clearfix();
+    .clearfix();
 
-  .selected-files {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-
-  .file-item {
-    .make-xs-column(12);
-    .make-md-column(6);
-    .well();
-    .well-sm();
-
-    margin-bottom: 0;
-
-    canvas, img {
-      vertical-align: middle;
+    .selected-files {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
     }
-  }
 
-  .file-item-existing button {
-    float: right;
-    font-size: 200%;
-  }
+    .file-item {
+        .make-xs-column(12);
+        .make-md-column(6);
+        .well();
+        .well-sm();
+
+        margin-bottom: 0;
+
+        canvas,
+        img {
+            vertical-align: middle;
+        }
+    }
+
+    .file-item-existing button {
+        float: right;
+        font-size: 200%;
+    }
 }
 
 .form-inline {
-  & .file-input,
-  & .selected-files {
-    display: inline-block;
-    vertical-align: middle;
-    width: auto;
-  }
-
-  & .selected-files {
-    margin: auto 0;
-
-    .file-item {
-      width: auto;
+    & .file-input,
+    & .selected-files {
+        display: inline-block;
+        vertical-align: middle;
+        width: auto;
     }
-  }
+
+    & .selected-files {
+        margin: auto 0;
+
+        .file-item {
+            width: auto;
+        }
+    }
 }
 
 /* fix alternative select2-bootstrap.css from
 https://github.com/fk/select2-bootstrap-css/ */
 .form-inline .select2-container.form-control {
-  display: inline-block;
+    display: inline-block;
 }
 
 .dynamic-row-widget.model-field-list tbody > tr > td {
-  border-top-width: 4px;
+    border-top-width: 4px;
 }

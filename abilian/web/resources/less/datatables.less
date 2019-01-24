@@ -1,62 +1,61 @@
 .dataTables_filter > label > input,
 .dataTables_length > label > select {
-  .form-control();
+    .form-control();
 
-  @media (min-width: @screen-sm-min) {
-    display: inline-block;
-    width: auto; // Prevent labels from stacking above inputs in `.form-group`
-    vertical-align: middle;
-  }
+    @media (min-width: @screen-sm-min) {
+        display: inline-block;
+        width: auto; // Prevent labels from stacking above inputs in `.form-group`
+        vertical-align: middle;
+    }
 }
 
 .dataTables_length {
-  float: right;
+    float: right;
 
-  > label {
-    font-weight: normal;
-  }
+    > label {
+        font-weight: normal;
+    }
 }
 
 .table-striped.dataTable {
-  tr {
-    &.odd {
-      > td,
-      > th {
-        background-color: @table-bg-accent;
-      }
+    tr {
+        &.odd {
+            > td,
+            > th {
+                background-color: @table-bg-accent;
+            }
 
-      > td {
-        &.sorting_1,
-        &.sorting_2,
-        &.sorting_3 {
-          background-color: @table-bg-accent;
+            > td {
+                &.sorting_1,
+                &.sorting_2,
+                &.sorting_3 {
+                    background-color: @table-bg-accent;
+                }
+            }
         }
-      }
-    }
 
-    &.even > td {
-      background-color: white;
+        &.even > td {
+            background-color: white;
 
-      &.sorting_1,
-      &.sorting_2,
-      &.sorting_3 {
-        background-color: white;
-      }
+            &.sorting_1,
+            &.sorting_2,
+            &.sorting_3 {
+                background-color: white;
+            }
+        }
     }
-  }
 }
 
 /* Advanced search filters */
 .advanced-search-filters {
-  .criterion .control-label {
+    .criterion .control-label {
+        // close button
+        > .close {
+            float: left;
+        }
 
-    // close button
-    > .close {
-      float: left;
+        > label {
+            display: inline;
+        }
     }
-
-    > label {
-      display: inline;
-    }
-  }
 }

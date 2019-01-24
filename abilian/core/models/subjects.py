@@ -30,7 +30,7 @@ from abilian.core.util import fqcn
 
 from .base import SEARCHABLE, SYSTEM, IdMixin, Indexable, TimestampedMixin, db
 
-__all__ = ["User", "Group", "Principal", "ClearPasswordStrategy"]
+__all__ = ["User", "Group", "Principal", "ClearPasswordStrategy", "gen_random_password"]
 
 # Tables for many-to-many relationships
 following = Table(
