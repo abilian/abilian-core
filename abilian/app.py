@@ -360,28 +360,35 @@ class ErrorManagerMixin(Flask):
             _request_ctx_stack.top.user = session.merge(user, load=load)
 
     def log_exception(self, exc_info):
-        """Log exception only if sentry is not installed (this avoids getting
-        error twice in sentry)."""
-        if "sentry" not in self.extensions:
+        """Log exception only if Sentry is not used (this avoids getting
+        error twice in Sentry)."""
+        dsn = self.config.get("SENTRY_DSN")
+        if not dsn:
             super(ErrorManagerMixin, self).log_exception(exc_info)
 
     def init_sentry(self):
         """Install Sentry handler if config defines 'SENTRY_DSN'."""
-        if self.config.get("SENTRY_DSN"):
-            try:
-                from abilian.core.sentry import Sentry
-            except ImportError:
-                logger.error(
-                    'SENTRY_DSN is defined in config but package "raven" '
-                    "is not installed."
-                )
-                return
+        dsn = self.config.get("SENTRY_DSN")
+        if not dsn:
+            return
 
-            ext = Sentry(self, logging=True, level=logging.ERROR)
-            ext.client.tags["app_name"] = self.name
-            ext.client.tags["process_type"] = "web"
-            server_name = str(self.config.get("SERVER_NAME"))
-            ext.client.tags["configured_server_name"] = server_name
+        try:
+            import sentry_sdk
+        except ImportError:
+            logger.error(
+                'SENTRY_DSN is defined in config but package "sentry-sdk"'
+                ' is not installed.'
+            )
+            return
+
+        from sentry_sdk.integrations.flask import FlaskIntegration
+        sentry_sdk.init(dsn=dsn, integrations=[FlaskIntegration()])
+
+        # ext = Sentry(self, logging=True, level=logging.ERROR)
+        # ext.client.tags["app_name"] = self.name
+        # ext.client.tags["process_type"] = "web"
+        # server_name = str(self.config.get("SERVER_NAME"))
+        # ext.client.tags["configured_server_name"] = server_name
 
     def install_default_handlers(self):
         for http_error_code in (403, 404, 500):

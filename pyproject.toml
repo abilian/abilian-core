@@ -81,7 +81,7 @@ pygeoip = "*"
 tqdm = "*"
 
 # Used by the Sentry extension
-raven = "*"
+sentry-sdk = { version="*", extras=["flask"] }
 
 # for debug toolbar
 sqlparse = "*"

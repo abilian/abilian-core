@@ -24,9 +24,9 @@
 
   <!-- Le fav and touch icons -->
   <link rel="shortcut icon" type="image/png"
-      href="{{ app.config['FAVICO_URL'] | string }}"/>
+      href="{{ config['FAVICO_URL'] | string }}"/>
   <link rel="apple-touch-icon" type="image/png"
-      href="{{ app.config['FAVICO_URL'] | string }}"/>
+      href="{{ config['FAVICO_URL'] | string }}"/>
 
   <script>
     var require = {{ app.extensions['webassets'].requirejs_config | tojson }};
@@ -36,21 +36,20 @@
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
   {%- endassets %}
 
-  {%- if app.config.get('SENTRY_INSTALL_CLIENT_JS', True) and app.extensions.get('sentry') %}
-    {%- set ext = app.extensions['sentry'] %}
-    <script src="{{ ext.raven_js_url }}"></script>
+  {%- set sentry_url = config.get("SENTRY_SDK_URL") %}
+  {%- if sentry_url %}
+    <script src="{{ sentry_url }}" crossorigin="anonymous"></script>
     <script>
-      if (Raven !== undefined) {
-        Raven.config({{ ext.client.get_public_dsn() |tojson }},
-            {
-              tags: {
-                app_name: {{ (app.name+'_front') | tojson }},
-                configured_server_name: {{ app.config.get('SERVER_NAME') | tojson }},
-                process_type: 'javascript'
-              }
-            })
-            .install();
-      }
+      var dsn = {{ config.SENTRY_DSN | tojson }};
+      var app_name = {{ (app.name+'_front') | tojson }};
+      var server_name = {{ config.get('SERVER_NAME', 'unknown') | tojson }};
+
+      Sentry.init({dsn: dsn});
+      Sentry.configureScope(function(scope) {
+          scope.setTag("app_name", app_name);
+          scope.setTag("server_name", server_name);
+        }
+      );
     </script>
   {%- endif %}
 
