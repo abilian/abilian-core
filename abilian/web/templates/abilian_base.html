@@ -37,10 +37,11 @@
   {%- endassets %}
 
   {%- set sentry_url = config.get("SENTRY_SDK_URL") %}
-  {%- if sentry_url %}
+  {%- set sentry_dsn = config.get("SENTRY_DSN") %}
+  {%- if sentry_url and sentry_dsn %}
     <script src="{{ sentry_url }}" crossorigin="anonymous"></script>
     <script>
-      var dsn = {{ config.SENTRY_DSN | tojson }};
+      var dsn = {{ sentry_dsn | tojson }};
       var app_name = {{ (app.name+'_front') | tojson }};
       var server_name = {{ config.get('SERVER_NAME', 'unknown') | tojson }};
 
