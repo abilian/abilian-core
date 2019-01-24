@@ -8,7 +8,7 @@
     <div class="col-sm-10">
       <div class="input-group">
         <input type="text" class="form-control" name="servername" value="{{ data['servername']|default("localhost") }}">
-        
+
         <p class="help-text">
           The website hostname, with port if not served on standard HTTP/HTTPS ports. Format is: <code>my.app.canonical.name[:port]</code>.
           The port is not the port of the application server (the python process), on
@@ -16,11 +16,11 @@
           nginx it would be nginx port.</p>
 
         <p>Detected hostnames for this server (just a hint, not all valid values can be detected):
-          <ul class="text-info">
-            {%- for host in suggested_hosts %}
-              <li>{{ host }}</li>
-            {%- endfor %}
-          </ul>
+        <ul class="text-info">
+          {%- for host in suggested_hosts %}
+            <li>{{ host }}</li>
+          {%- endfor %}
+        </ul>
         </p>
       </div>
     </div>
@@ -30,7 +30,7 @@
     <label for="sitename" class="col-sm-2 control-label">Site name</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="sitename" required
-             value="{{ data['sitename']|default("") }}">
+          value="{{ data['sitename']|default("") }}">
       <p class="help-block">
         The name that appear on login page and browser window's title.
       </p>
@@ -43,8 +43,8 @@
       <div class="input-group">
         <span class="input-group-addon">@</span>
         <input type="email" class="form-control" name="mailsender" placeholder="Sender address for site emails"
-               required
-               value="{{ data['mailsender']|default("") }}">
+            required
+            value="{{ data['mailsender']|default("") }}">
       </div>
       <p class="help-block">
         This is the sender address used by the application.
@@ -55,25 +55,25 @@
   <div class="form-group">
     <label for="server_mode" class="col-sm-2 control-label">Server mode</label>
     <div class="col-sm-10">
-        <div class="radio">
-          <label>
-            <input type="radio" name="server_mode" value="production"
-                   required
-                   {%- if not data.get('server_mode') or data['server_mode'] == "production" %} checked{%- endif %}>
-            Production
-          </label>
-          <p class="help-block">Serves minified JS & CSS; interactive debugger disabled</p>
-        </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="server_mode" value="production"
+              required
+              {%- if not data.get('server_mode') or data['server_mode'] == "production" %} checked{%- endif %}>
+          Production
+        </label>
+        <p class="help-block">Serves minified JS & CSS; interactive debugger disabled</p>
+      </div>
 
-        <div class="radio">
-          <label>
-            <input type="radio" name="server_mode" value="development"
-                   required
-                   {%- if data['server_mode'] == "development" %} checked{%- endif %}>
-            Development
-          </label>
-          <p class="help-block">Serves sources JS & CSS; interactive debugger enabled </p>
-        </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="server_mode" value="development"
+              required
+              {%- if data['server_mode'] == "development" %} checked{%- endif %}>
+          Development
+        </label>
+        <p class="help-block">Serves sources JS & CSS; interactive debugger enabled </p>
+      </div>
 
 
     </div>

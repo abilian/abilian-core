@@ -40,7 +40,8 @@
 
         <!-- prev / next buttons -->
         {%- if prev_step %}
-          <a href="{{ url_for("{}.{}".format(request.blueprint, prev_step.endpoint)) }}" class="btn btn-default">&larr; Previous</a>
+          <a href="{{ url_for("{}.{}".format(request.blueprint, prev_step.endpoint)) }}" class="btn btn-default">&larr;
+            Previous</a>
         {%- else %}
           <a href="#" class="btn btn-default disabled">&larr; Previous</a>
         {%- endif %}
@@ -50,4 +51,3 @@
   </div>
 
 {% endblock %}
-t

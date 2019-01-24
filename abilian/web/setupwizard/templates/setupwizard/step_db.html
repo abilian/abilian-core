@@ -11,8 +11,8 @@
         {%- set selected = data.get('dialect', 'sqlite') %}
         {%- for dialect, label in dialects.items() %}
           <option value="{{ dialect }}"
-            {%- if dialect == selected %}selected="selected"{%- endif %}
-            {%- if dialect in dialects_unavailable %}disabled="disabled"{%- endif %}>
+              {%- if dialect == selected %}selected="selected"{%- endif %}
+              {%- if dialect in dialects_unavailable %}disabled="disabled"{%- endif %}>
             {{ label }}
           </option>
         {%- endfor %}
@@ -33,7 +33,7 @@
     <label for="username" class="col-sm-2 control-label">Username</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="username" placeholder="Username"
-             value="{{ data['username']|default("") }}">
+          value="{{ data['username']|default("") }}">
     </div>
   </div>
 
@@ -41,8 +41,8 @@
     <label for="password" class="col-sm-2 control-label">Password</label>
     <div class="col-sm-10">
       <input type="password" class="form-control" name="password" placeholder="Password"
-             autocomplete="off" {# avoid browser dialog "remember password" when submitting #}
-             value="{{ data['password']|default("") }}">
+          autocomplete="off" {# avoid browser dialog "remember password" when submitting #}
+          value="{{ data['password']|default("") }}">
     </div>
   </div>
 
@@ -50,7 +50,7 @@
     <label for="host" class="col-sm-2 control-label">Host</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="host"
-             value="{{ data['host']|default("localhost") }}">
+          value="{{ data['host']|default("localhost") }}">
     </div>
   </div>
 
@@ -58,7 +58,7 @@
     <label for="port" class="col-sm-2 control-label">Port</label>
     <div class="col-sm-10">
       <input type="number" class="form-control" name="port" placeholder="Default port"
-             value="{{ data['port']|default("") }}">
+          value="{{ data['port']|default("") }}">
     </div>
   </div>
 
@@ -66,9 +66,9 @@
     <label for="database" class="col-sm-2 control-label">Database</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="database"
-             value="{{ data['database']|default("") }}">
+          value="{{ data['database']|default("") }}">
       <p class="help-block">
-        If sqlite is selected, default database file will be at:<br />
+        If sqlite is selected, default database file will be at:<br/>
         <i>{{ app.instance_path }}/app/sqlite.db</i>
       </p>
     </div>
