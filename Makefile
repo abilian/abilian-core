@@ -129,7 +129,9 @@ format-py:
 format-js:
 	yarn run prettier --write --trailing-comma es5 \
 		'abilian/web/resources/js/**/*.js' \
-		'abilian/web/resources/less/*.less'
+	yarn run prettier --write \
+		--trailing-comma es5 --tab-width 2 \
+		'abilian/web/resources/less/**/*.less'
 
 futurize:
 	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \

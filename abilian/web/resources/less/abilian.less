@@ -14,30 +14,30 @@
 @import "models.less";
 
 mark {
-    background-color: #fff8bb; // boostrap uses state-warning-bg, but it's too light to be seen
+  background-color: #fff8bb; // boostrap uses state-warning-bg, but it's too light to be seen
 }
 
 a mark {
-    // in normalize.less there is a rule for changing 'mark' color, but we don't want that in links
-    color: inherit;
+  // in normalize.less there is a rule for changing 'mark' color, but we don't want that in links
+  color: inherit;
 }
 
 .caret-down {
-    // this is bootstrap's standard caret. Synonym is added for markup clarity
-    // when using .carret-down/.carret-up together
-    .caret();
+  // this is bootstrap's standard caret. Synonym is added for markup clarity
+  // when using .carret-down/.carret-up together
+  .caret();
 }
 
 .caret-up {
-    .caret();
+  .caret();
 
-    border-top: 0;
-    border-bottom: @caret-width-base solid;
-    content: "";
+  border-top: 0;
+  border-bottom: @caret-width-base solid;
+  content: "";
 }
 
 // Flask debugtoolbar
 #flDebug #flDebugToolbarHandle {
-    // align handle at bottom of navigation bar
-    top: @line-height-computed + @navbar-padding-vertical * 2 !important;
+  // align handle at bottom of navigation bar
+  top: @line-height-computed + @navbar-padding-vertical * 2 !important;
 }
