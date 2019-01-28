@@ -17,7 +17,6 @@ from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.services import get_service
 
-
 STOP = object()
 COMMIT = object()
 

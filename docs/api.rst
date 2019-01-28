@@ -25,11 +25,6 @@ Module :mod:`abilian.i18n`
 Package ``abilian.core``
 ------------------------
 
-Module :mod:`abilian.core.commands`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: abilian.core.commands
-
 Module :mod:`abilian.core.entities`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
