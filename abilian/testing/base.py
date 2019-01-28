@@ -13,7 +13,6 @@ from flask import url_for
 from flask_assets import Bundle
 from flask_login import login_user, logout_user
 from flask_testing import TestCase
-from six import string_types
 from sqlalchemy.exc import SAWarning
 
 from abilian.app import Application

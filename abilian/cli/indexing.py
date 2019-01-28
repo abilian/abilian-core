@@ -4,11 +4,11 @@ import time
 from collections import deque
 from typing import Set, Text
 
+import click
 import sqlalchemy as sa
 import whoosh
 import whoosh.index
 from flask import current_app
-from six import string_types
 from sqlalchemy.orm.session import Session
 from tqdm import tqdm
 from whoosh.writing import CLEAR, AsyncWriter
@@ -17,13 +17,12 @@ from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.services import get_service
 
-from .base import manager
 
 STOP = object()
 COMMIT = object()
 
 
-@manager.command
+@click.command()
 def reindex(clear=False, progressive=False, batch_size=""):
     # type: (bool, bool, Text) -> None
     """Reindex all content; optionally clear index before.

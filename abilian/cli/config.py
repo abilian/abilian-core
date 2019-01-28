@@ -5,19 +5,15 @@ import os
 from pathlib import Path
 
 from flask import current_app
-from flask_script import Manager
+from flask.cli import AppGroup
 from jinja2 import Environment, Markup, PackageLoader
 
-from .base import log_config, logger
+# from .base import log_config, logger
 
-#: sub-manager for config commands
-manager = Manager(
-    description="Show config / create default config",
-    help="Show config / create default config",
-)
+config_commands = AppGroup("config")
 
 
-@manager.command
+@config_commands.command()
 def show(only_path=False):
     """Show the current config."""
     logger.setLevel(logging.INFO)
@@ -31,6 +27,28 @@ def show(only_path=False):
 
     if not only_path:
         log_config(current_app.config)
+
+
+@config_commands.command()
+def init(filename="config.py", logging_config="logging.yml"):
+    """Create default config files in instance folder.
+
+    * [FILENAME] (default: "config.py")
+    * [LOGGING_CONFIG] (default: logging.yml)
+
+    Defaults are tailored for development.
+    """
+    config_file = Path(current_app.instance_path) / filename
+    logging_file = Path(current_app.instance_path) / logging_config
+
+    if config_file.exists():
+        logger.info('Config file  "%s" already exists! Abort.', config_file)
+        return 1
+
+    config = DefaultConfig(logging_file=logging_config)
+    write_config(config_file, config)
+    maybe_write_logging(logging_file)
+
 
 
 class DefaultConfig:
@@ -113,24 +131,3 @@ def maybe_write_logging(logging_file):
     with Path(logging_file).open("w") as f:
         f.write(template.render())
     logger.info('Generated "%s"', logging_file)
-
-
-@manager.command
-def init(filename="config.py", logging_config="logging.yml"):
-    """Create default config files in instance folder.
-
-    * [FILENAME] (default: "config.py")
-    * [LOGGING_CONFIG] (default: logging.yml)
-
-    Defaults are tailored for development.
-    """
-    config_file = Path(current_app.instance_path) / filename
-    logging_file = Path(current_app.instance_path) / logging_config
-
-    if config_file.exists():
-        logger.info('Config file  "%s" already exists! Abort.', config_file)
-        return 1
-
-    config = DefaultConfig(logging_file=logging_config)
-    write_config(config_file, config)
-    maybe_write_logging(logging_file)

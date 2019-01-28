@@ -1,9 +1,6 @@
 # coding=utf-8
 """Base Flask application class, used by tests or to be extended in real
 applications."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import errno
 import importlib
 import logging
@@ -28,11 +25,8 @@ from flask_assets import Bundle
 from flask_assets import Environment as AssetsEnv
 from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
-from flask_script import Manager as ScriptManager
 from pkg_resources import resource_filename
-from six import string_types, text_type
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
-from werkzeug.utils import import_string
 
 import abilian.core.util
 import abilian.i18n
@@ -544,10 +538,6 @@ class Application(
     #: json serializable dict to land in Javascript under Abilian.api
     js_api = None
 
-    #: :class:`flask_script.Manager` instance for shell commands of this app.
-    #: defaults to `.commands.manager`, relative to app name.
-    script_manager = ".commands.manager"
-
     #: celery app class
     celery_app_cls = FlaskCelery
 
@@ -568,7 +558,6 @@ class Application(
         Flask.__init__(self, name, *args, **kwargs)
         del self._ABILIAN_INIT_TESTING_FLAG
 
-        self._setup_script_manager()
         appcontext_pushed.connect(self._install_id_generator)
 
         ServiceManager.__init__(self)
@@ -645,7 +634,8 @@ class Application(
                 endpoint=True,
             )
 
-        self.maybe_register_setup_wizard()
+        # TODO: maybe reenable later
+        # self.maybe_register_setup_wizard()
         self._finalize_assets_setup()
 
         # At this point all models should have been imported: time to configure
@@ -685,35 +675,6 @@ class Application(
             lang for lang in languages if lang in abilian.i18n.VALID_LANGUAGES_CODE
         )
         self.config["BABEL_ACCEPT_LANGUAGES"] = languages
-
-    def _setup_script_manager(self):
-        manager = self.script_manager
-
-        if manager is None or isinstance(manager, ScriptManager):
-            return
-
-        if isinstance(manager, str):
-            manager = str(manager)
-            if manager.startswith("."):
-                manager = self.import_name + manager
-
-            manager_import_path = manager
-            manager = import_string(manager, silent=True)
-            if manager is None:
-                # fallback on abilian-core's
-                logger.warning(
-                    "\n" + ("*" * 79) + "\n"
-                    "Could not find command manager at %r, "
-                    "using a default one\n"
-                    "Some commands might not be available\n" + ("*" * 79) + "\n",
-                    manager_import_path,
-                )
-                from abilian.core.commands import setup_abilian_commands
-
-                manager = ScriptManager()
-                setup_abilian_commands(manager)
-
-            self.script_manager = manager
 
     def _install_id_generator(self, sender, **kwargs):
         g.id_generator = count(start=1)

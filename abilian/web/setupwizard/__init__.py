@@ -21,7 +21,6 @@ from flask import (
     session,
     url_for,
 )
-from six import text_type
 from typing import Dict, Text
 
 from abilian.core.commands import config as cmd_config
