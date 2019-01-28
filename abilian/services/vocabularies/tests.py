@@ -76,21 +76,21 @@ def test_items(db, session):
     assert [i.label for i in query.values(PriorityVoc.label)] == default_ordering
 
     # test db-side constraint for non-empty labels
-    with raises(sa.exc.IntegrityError, message="Could insert an item with empty label"):
+    with raises(sa.exc.IntegrityError):
         with session.begin_nested():
             v = PriorityVoc(label="   ", position=6)
             session.add(v)
             session.flush()
 
     # test unique labels constraint
-    with raises(sa.exc.IntegrityError, message="Could insert duplicate label"):
+    with raises(sa.exc.IntegrityError):
         with session.begin_nested():
             v = PriorityVoc(label="Immediate")
             session.add(v)
             session.flush()
 
     # test unique position constraint
-    with raises(sa.exc.IntegrityError, message="Could insert duplicate position"):
+    with raises(sa.exc.IntegrityError):
         with session.begin_nested():
             v = PriorityVoc(label="New one", position=1)
             session.add(v)
