@@ -32,7 +32,7 @@ cache = {}  # type: Dict[str, bytes]
 
 
 def open_image(img):
-    if isinstance(img, binary_type):
+    if isinstance(img, bytes):
         img = BytesIO(img)
 
     pos = img.tell()
@@ -60,7 +60,7 @@ def get_save_format(fmt):
 
 
 def resize(orig, width, height, mode=FIT):
-    if isinstance(orig, binary_type):
+    if isinstance(orig, bytes):
         orig = BytesIO(orig)
 
     digest = hashlib.md5(orig.read()).digest()

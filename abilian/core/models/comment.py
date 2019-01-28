@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import abc
 
 import six
@@ -19,7 +16,7 @@ ATTRIBUTE = "__comments__"
 
 
 @six.add_metaclass(abc.ABCMeta)
-class Commentable(object):
+class Commentable:
     pass
 
 

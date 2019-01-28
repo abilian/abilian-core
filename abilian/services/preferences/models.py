@@ -1,8 +1,5 @@
 # coding=utf-8
 """Models for user preferences."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import backref, relation
 

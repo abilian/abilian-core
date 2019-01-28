@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from functools import wraps
 
@@ -15,7 +12,7 @@ class ServiceNotRegistered(Exception):
     pass
 
 
-class ServiceState(object):
+class ServiceState:
     """Service state stored in Application.extensions."""
 
     #: reference to :class:`Service` instance
@@ -29,7 +26,7 @@ class ServiceState(object):
         self.logger = logging.getLogger(fqcn(self.__class__))
 
 
-class Service(object):
+class Service:
     """Base class for services."""
 
     #: State class to use for this Service

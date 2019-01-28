@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from six import python_2_unicode_compatible, text_type, with_metaclass
 from sqlalchemy.types import String, TypeDecorator
 
@@ -24,7 +21,6 @@ class ValueSingletonMeta(type):
         return cls.__instances__[value.lower()]
 
 
-@python_2_unicode_compatible
 class UniqueName(with_metaclass(ValueSingletonMeta, object)):
     """Base class to create singletons from strings.
 
@@ -36,7 +32,7 @@ class UniqueName(with_metaclass(ValueSingletonMeta, object)):
     attr = "name"
 
     def __init__(self, name):
-        self.__name = text_type(name).strip().lower()
+        self.__name = str(name).strip().lower()
         self._hash = hash(self.__name)
 
     @property
@@ -52,7 +48,7 @@ class UniqueName(with_metaclass(ValueSingletonMeta, object)):
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self._hash == other._hash
-        return self.__name == text_type(other)
+        return self.__name == str(other)
 
     def __hash__(self):
         return self._hash

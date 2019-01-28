@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from cgi import escape
 
 import sqlalchemy as sa
@@ -89,7 +86,7 @@ class JsonUsersList(base.JSONView):
             columns = [
                 '<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
                 "</a>".format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
-                '<a href="{url}">{name}</a>'.format(url=user_url, name=name),
+                f'<a href="{user_url}">{name}</a>',
                 '<a href="{url}"><em>{email}</em></a>'.format(
                     url=user_url, email=email
                 ),
@@ -125,7 +122,7 @@ class JsonUsersList(base.JSONView):
 
 
 # User edit / create views
-class UserBase(object):
+class UserBase:
     Model = User
     pk = "user_id"
     Form = UserAdminForm
@@ -143,14 +140,14 @@ class UserEdit(UserBase, views.ObjectEdit):
         return BreadcrumbItem(label=label, url="", description=self.obj.name)
 
     def get_form_kwargs(self):
-        kw = super(UserEdit, self).get_form_kwargs()
+        kw = super().get_form_kwargs()
         security = get_service("security")
         roles = security.get_roles(self.obj, no_group_roles=True)
         kw["roles"] = [r.name for r in roles if r.assignable]
         return kw
 
     def validate(self):
-        if not super(UserEdit, self).validate():
+        if not super().validate():
             return False
 
         if current_user == self.obj:
@@ -167,7 +164,7 @@ class UserEdit(UserBase, views.ObjectEdit):
             self.obj.set_password(self.form.password.data)
         del self.form.password
 
-        return super(UserEdit, self).form_valid()
+        return super().form_valid()
 
     def after_populate_obj(self):
         security = get_service("security")
@@ -181,7 +178,7 @@ class UserEdit(UserBase, views.ObjectEdit):
         for r in new_roles - current_roles:
             security.grant_role(self.obj, r)
 
-        return super(UserEdit, self).after_populate_obj()
+        return super().after_populate_obj()
 
 
 class UserCreate(UserBase, views.ObjectCreate):
@@ -189,7 +186,7 @@ class UserCreate(UserBase, views.ObjectCreate):
     chain_create_allowed = True
 
     def get_form_kwargs(self):
-        kw = super(UserCreate, self).get_form_kwargs()
+        kw = super().get_form_kwargs()
 
         if request.method == "GET":
             # ensure formdata is not ImmutableMultiDict (request.args)
@@ -205,4 +202,4 @@ class UserCreate(UserBase, views.ObjectCreate):
 
         self.obj.set_password(self.form.password.data)
         del self.form.password
-        return super(UserCreate, self).form_valid()
+        return super().form_valid()

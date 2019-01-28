@@ -1,10 +1,8 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
 
 
-class Taggable(object):
+class Taggable:
     """Mixin trait for taggable objects.
 
     Currently not used.
@@ -13,7 +11,7 @@ class Taggable(object):
     pass
 
 
-class TagService(object):
+class TagService:
     """The tag service."""
 
     def tag(self, obj, term, user=None):

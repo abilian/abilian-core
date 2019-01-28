@@ -1,13 +1,10 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app
 from redis import from_url as redis_from_url
 
 
-class Extension(object):
+class Extension:
     """Redis extension for flask."""
 
     client = None

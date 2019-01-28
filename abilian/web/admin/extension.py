@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 
 from flask import Blueprint, g
@@ -25,7 +22,7 @@ logger = logging.getLogger(__name__)
 _BP_PREFIX = "admin"
 
 
-class Admin(object):
+class Admin:
     """Flask extension for an admin interface with pluggable admin panels.
 
     Note: this is quite different that a Django-style admin interface.
@@ -105,7 +102,7 @@ class Admin(object):
         panel.admin = self
         rule = "/" + panel.id
         endpoint = nav_id = panel.id
-        abs_endpoint = "admin.{}".format(endpoint)
+        abs_endpoint = f"admin.{endpoint}"
 
         if hasattr(panel, "get"):
             self.blueprint.add_url_rule(rule, endpoint, panel.get)

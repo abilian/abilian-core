@@ -1,9 +1,6 @@
 # coding=utf-8
 """Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level)."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import collections
 import re
 from datetime import datetime
@@ -120,7 +117,7 @@ def _setup_default_permissions(instance):
             security.add_permission(permission, role, obj=instance)
 
 
-class _EntityInherit(object):
+class _EntityInherit:
     """Mixin for Entity subclasses.
 
     Entity meta-class takes care of inserting it in base classes.
@@ -206,9 +203,7 @@ class EntityMeta(BaseMeta):
                 )
                 d["__default_permissions__"] = default_permissions
 
-            d["SLUG_SEPARATOR"] = text_type(
-                d.get("SLUG_SEPARATOR", Entity.SLUG_SEPARATOR)
-            )
+            d["SLUG_SEPARATOR"] = str(d.get("SLUG_SEPARATOR", Entity.SLUG_SEPARATOR))
 
         cls = BaseMeta.__new__(mcs, classname, bases, d)
 
@@ -333,7 +328,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
     @property
     def object_type(self):
-        return text_type(self.entity_type)
+        return str(self.entity_type)
 
     @classmethod
     def _object_type(cls):
@@ -384,7 +379,7 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
             max_id = max(-1, -1, *results) + 1
             if max_id:
-                slug = "{}-{}".format(slug, max_id)
+                slug = f"{slug}-{max_id}"
         return slug
 
     @property
@@ -441,11 +436,11 @@ class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
 
     @property
     def _indexable_tag_ids(self):
-        return " ".join(text_type(t.id) for t in self._indexable_tags)
+        return " ".join(str(t.id) for t in self._indexable_tags)
 
     @property
     def _indexable_tag_text(self):
-        return " ".join(text_type(t.label) for t in self._indexable_tags)
+        return " ".join(str(t.label) for t in self._indexable_tags)
 
     def clone(self):
         """Copy an entity: copy every field, except the id and sqlalchemy

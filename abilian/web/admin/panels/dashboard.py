@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -192,7 +189,7 @@ def uniquelogins(sessions):
     weekly_serie = daily_serie.groupby(pd.Grouper(freq="W")).aggregate(numpysum)
     monthly_serie = daily_serie.groupby(pd.Grouper(freq="M")).aggregate(numpysum)
 
-    for date, value in six.iteritems(weekly_serie):
+    for date, value in weekly_serie.items():
         try:
             value = int(value)
         except ValueError:
@@ -200,7 +197,7 @@ def uniquelogins(sessions):
         date_epoch = unix_time_millis(date)
         weekly.append({"x": date_epoch, "y": value})
 
-    for date, value in six.iteritems(monthly_serie):
+    for date, value in monthly_serie.items():
         try:
             value = int(value)
         except ValueError:

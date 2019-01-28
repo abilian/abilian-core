@@ -1,7 +1,5 @@
 # coding=utf-8
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 from pytest import fixture, raises
 from wtforms import Form, StringField
 from wtforms.validators import ValidationError
@@ -14,7 +12,7 @@ class DummyForm(Form):
     siret = StringField("Siret")
 
 
-class DummyField(object):
+class DummyField:
     def __init__(self, data, errors=(), raw_data=None):
         self.data = data
         self.errors = list(errors)

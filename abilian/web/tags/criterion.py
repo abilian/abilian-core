@@ -1,7 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, print_function, unicode_literals
-
 import sqlalchemy as sa
 from six import text_type
 
@@ -24,7 +22,7 @@ class TagCriterion(BaseCriterion):
         if len(args) < 2:
             kwargs.setdefault("label", _("Tags"))
 
-        super(TagCriterion, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @BaseCriterion.model.setter
     def model(self, model):
@@ -84,4 +82,4 @@ class TagCriterion(BaseCriterion):
     @property
     def form_filter_args(self):
         # expected value: [list of selectable items, is multiple?]
-        return [[(text_type(t.id), t.label) for t in self.valid_tags], True]
+        return [[(str(t.id), t.label) for t in self.valid_tags], True]

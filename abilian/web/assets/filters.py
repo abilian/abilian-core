@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import json
 import logging
 import os
@@ -103,7 +100,7 @@ class LessImportFilter(Filter):
     logger = logging.getLogger(__name__ + ".LessImportFilter")
 
     def setup(self):
-        super(LessImportFilter, self).setup()
+        super().setup()
         if self.run_in_debug is False:
             # Disable running in debug mode for this instance.
             self.max_debug_level = False
@@ -122,7 +119,7 @@ class LessImportFilter(Filter):
         # after pure css one). If we use "inline" the lessc will not rewrite
         # url(). So we better have all our css imported as less content.
         import_mode = "less"  # if not rel_path.endswith('css') else 'css'
-        out.write('@import ({}) "{}";'.format(import_mode, rel_path))
+        out.write(f'@import ({import_mode}) "{rel_path}";')
 
 
 class Less(ExternalTool):
@@ -212,7 +209,7 @@ class Less(ExternalTool):
     logger = logging.getLogger(__name__ + ".LessFilter")
 
     def setup(self):
-        super(Less, self).setup()
+        super().setup()
         if self.run_in_debug is False:
             # Disable running in debug mode for this instance.
             self.max_debug_level = False
@@ -319,7 +316,7 @@ class Less(ExternalTool):
 
 class ClosureJS(BaseClosureJS):
     def setup(self):
-        super(ClosureJS, self).setup()
+        super().setup()
         self.source_files = []
 
     def input(self, _in, out, source_path, output_path, **kwargs):
@@ -333,7 +330,7 @@ class ClosureJS(BaseClosureJS):
             self.extra_args.append("--js")
             self.extra_args.append(source_file)
 
-        super(ClosureJS, self).output(_in, out, **kw)
+        super().output(_in, out, **kw)
         try:
             smap_idx = self.extra_args.index("--create_source_map")
             smap_path = Path(self.extra_args[smap_idx + 1])

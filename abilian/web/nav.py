@@ -5,9 +5,6 @@ Abilian define theses categories:   `section`:     Used for navigation
 elements relevant to site section   `user`:     User for element that
 should appear in user menu
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import g
 from jinja2 import Markup, Template
 from six import string_types, text_type
@@ -78,7 +75,7 @@ class NavGroup(NavItem):
         self._paths.add(item.path)
 
     def get_render_args(self, **kwargs):
-        params = super(NavGroup, self).get_render_args(**kwargs)
+        params = super().get_render_args(**kwargs)
         params["action_items"] = [a for a in self.items if a.available(params)]
         return params
 
@@ -94,7 +91,7 @@ class NavGroup(NavItem):
         return status
 
 
-class BreadcrumbItem(object):
+class BreadcrumbItem:
     """A breadcrumb element has at least a label or an icon."""
 
     #: Label shown to user. May be an i18n string instance
@@ -124,7 +121,7 @@ class BreadcrumbItem(object):
         # the whole request.
         assert label is not None or icon is None
         self.label = label
-        if isinstance(icon, string_types):
+        if isinstance(icon, str):
             icon = Glyphicon(icon)
 
         self.icon = icon
@@ -134,7 +131,7 @@ class BreadcrumbItem(object):
 
     @property
     def url(self):
-        return text_type(self._url)
+        return str(self._url)
 
     def render(self):
         return Markup(self.__template.render(item=self, url=self.url))

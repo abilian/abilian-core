@@ -77,7 +77,7 @@ def step_progress():
         if current_step is not None:
             next_step = step
             break
-        endpoint = "{}.{}".format(setup.name, step.endpoint)
+        endpoint = f"{setup.name}.{step.endpoint}"
         if endpoint == request.endpoint:
             current_step = step
         else:
@@ -152,7 +152,7 @@ def step_db_validate():
     database = form.get("database", "").strip()
 
     # build db_uri
-    db_uri = "{}://".format(dialect)
+    db_uri = f"{dialect}://"
 
     if dialect != "sqlite":
         if username:
@@ -172,7 +172,7 @@ def step_db_validate():
     db_uri += "/"
 
     if dialect == "sqlite" and (not database or database == ":memory:"):
-        database = text_type(Path(current_app.instance_path) / "data" / "sqlite.db")
+        database = str(Path(current_app.instance_path) / "data" / "sqlite.db")
 
     db_uri += database
 
@@ -210,7 +210,7 @@ def step_db_validate():
 
     step_validated("db")
     next_step = request.setup_step_progress["next_step"]
-    endpoint = "{}.{}".format(setup.name, next_step.endpoint)
+    endpoint = f"{setup.name}.{next_step.endpoint}"
     return redirect(url_for(endpoint))
 
 
@@ -261,9 +261,9 @@ def step_redis_validate():
             "Verify host and port are those of your redis server."
         )
     except redis.exceptions.ResponseError as e:
-        error = "Redis server response: {}".format(e)
+        error = f"Redis server response: {e}"
     except redis.exceptions.RedisError as e:
-        error = "Unknown redis error ({})".format(e)
+        error = f"Unknown redis error ({e})"
 
     if error:
         flash(error, "error")
@@ -271,7 +271,7 @@ def step_redis_validate():
 
     step_validated("redis")
     next_step = request.setup_step_progress["next_step"]
-    endpoint = "{}.{}".format(setup.name, next_step.endpoint)
+    endpoint = f"{setup.name}.{next_step.endpoint}"
     return redirect(url_for(endpoint))
 
 
@@ -302,7 +302,7 @@ def get_possible_hostnames():
 
     return sorted(
         "{} ({})".format(name, ", ".join(sorted(set(ips))))
-        for name, ips in six.iteritems(names)
+        for name, ips in names.items()
     )
 
 
@@ -330,7 +330,7 @@ def step_site_info_validate():
     session_set("site_info", data)
     step_validated("site_info")
     next_step = request.setup_step_progress["next_step"]
-    endpoint = "{}.{}".format(setup.name, next_step.endpoint)
+    endpoint = f"{setup.name}.{next_step.endpoint}"
     return redirect(url_for(endpoint))
 
 
@@ -370,7 +370,7 @@ def step_admin_account_validate():
 
     step_validated("admin_account")
     next_step = request.setup_step_progress["next_step"]
-    endpoint = "{}.{}".format(setup.name, next_step.endpoint)
+    endpoint = f"{setup.name}.{next_step.endpoint}"
     return redirect(url_for(endpoint))
 
 

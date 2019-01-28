@@ -7,9 +7,6 @@ See: http://stackoverflow.com/questions/1443960/
 
 TODO: Look wether other attributes from the spec need to be implemented.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from datetime import datetime
 
@@ -66,8 +63,8 @@ class ActivityEntry(db.Model):
         return tpl.format(
             self.__class__.__module__,
             self.id,
-            repr(text_type(self.actor)),
+            repr(str(self.actor)),
             repr(self.verb),
-            repr(text_type(self.object)),
-            repr(text_type(self.target)),
+            repr(str(self.object)),
+            repr(str(self.target)),
         )

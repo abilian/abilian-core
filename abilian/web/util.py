@@ -4,9 +4,6 @@
 See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for
 more ideas of stuff to implement.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app
 from flask import url_for as flask_url_for
 from flask.helpers import send_from_directory
@@ -20,7 +17,7 @@ def url_for(obj, **kw):
     Behaves like the original function when the first argument is a
     string. When it's an object, it
     """
-    if isinstance(obj, string_types):
+    if isinstance(obj, str):
         return flask_url_for(obj, **kw)
 
     try:

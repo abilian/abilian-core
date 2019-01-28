@@ -1,8 +1,5 @@
 # coding=utf-8
 """Class based views."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 
 import sqlalchemy as sa
@@ -129,7 +126,7 @@ class ObjectView(BaseObjectView):
     form = None
 
     def __init__(self, Model=None, pk=None, Form=None, template=None, *args, **kwargs):
-        super(ObjectView, self).__init__(Model, pk, *args, **kwargs)
+        super().__init__(Model, pk, *args, **kwargs)
         cls = self.__class__
         self.Form = Form if Form is not None else cls.Form
         self.template = template if template is not None else cls.template
@@ -138,7 +135,7 @@ class ObjectView(BaseObjectView):
         """
         :attr:`form` is initialized here. See also :meth:`View.prepare_args`.
         """
-        args, kwargs = super(ObjectView, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
         form_kwargs = self.get_form_kwargs()
         self.form = self.Form(**form_kwargs)
         return args, kwargs
@@ -158,7 +155,7 @@ class ObjectView(BaseObjectView):
     @property
     def template_kwargs(self):
         """Provides :attr:`form` to templates."""
-        kw = super(ObjectView, self).template_kwargs
+        kw = super().template_kwargs
         kw["form"] = self.form
         return kw
 
@@ -218,14 +215,14 @@ class ObjectEdit(ObjectView):
         view_endpoint=None,
         message_success=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         ObjectView.__init__(self, Model, pk, Form, template=template, *args, **kwargs)
         if view_endpoint is not None:
             self.view_endpoint = view_endpoint
 
         if not self.view_endpoint:
-            self.view_endpoint = ".{}_view".format(self.Model.__name__)
+            self.view_endpoint = f".{self.Model.__name__}_view"
 
         if message_success:
             self._message_success = message_success
@@ -242,7 +239,7 @@ class ObjectEdit(ObjectView):
         return self.post()
 
     def prepare_args(self, args, kwargs):
-        args, kwargs = super(ObjectEdit, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
         self._buttons = self.get_form_buttons(*args, **kwargs)
         self.data = request.form
         return args, kwargs
@@ -266,7 +263,7 @@ class ObjectEdit(ObjectView):
         return redirect(self.view_url())
 
     def message_success(self):
-        return text_type(self._message_success)
+        return str(self._message_success)
 
     # actions
     def handle_action(self, action):
@@ -466,7 +463,7 @@ class ObjectCreate(ObjectEdit):
         # in session (to prevent accidental insert of an incomplete object)
         session = db.session()
         with session.no_autoflush:
-            args, kwargs = super(ObjectCreate, self).prepare_args(args, kwargs)
+            args, kwargs = super().prepare_args(args, kwargs)
 
         try:
             session.expunge(self.obj)
@@ -481,7 +478,7 @@ class ObjectCreate(ObjectEdit):
         return args, kwargs
 
     def get_form_kwargs(self):
-        kw = super(ObjectCreate, self).get_form_kwargs()
+        kw = super().get_form_kwargs()
         if request.method == "GET":
             # when GET allow form prefill instead of empty/current object data
             # FIXME: filter allowed parameters on given a field flags (could be
@@ -564,7 +561,7 @@ class JSONBaseSearch(JSONView):
         minimum_input_length = kwargs.pop(
             "minimum_input_length", self.minimum_input_length
         )
-        super(JSONBaseSearch, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.Model = Model
         self.minimum_input_length = minimum_input_length
 
@@ -575,7 +572,7 @@ class JSONBaseSearch(JSONView):
 
     def data(self, q, *args, **kwargs):
         if self.minimum_input_length and len(q) < self.minimum_input_length:
-            msg = "Minimum query length is {:d}".format(self.minimum_input_length)
+            msg = f"Minimum query length is {self.minimum_input_length:d}"
             raise BadRequest(msg)
 
         results = []

@@ -6,9 +6,6 @@ See ICOM-ics-v1.0 "Subject Branch".
 TODO: I'm not a big fan of the "subject" name. Could be replaced by something
 else, like "people" or "principal" ?
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import random
 import string
 from abc import ABCMeta, abstractmethod
@@ -83,7 +80,7 @@ def gen_random_password(length=15):
 
 
 @add_metaclass(ABCMeta)
-class PasswordStrategy(object):
+class PasswordStrategy:
     @property
     @abstractmethod
     def name(self):
@@ -113,7 +110,7 @@ class ClearPasswordStrategy(PasswordStrategy):
         return user.password == password
 
     def process(self, user, password):
-        if not isinstance(password, text_type):
+        if not isinstance(password, str):
             password = password.decode("utf-8")
         return password
 
@@ -128,15 +125,15 @@ class BcryptPasswordStrategy(PasswordStrategy):
     def authenticate(self, user, password):
         current_passwd = user.password
         # crypt work only on bytes, not str (Unicode)
-        if isinstance(current_passwd, text_type):
+        if isinstance(current_passwd, str):
             current_passwd = current_passwd.encode("utf-8")
-        if isinstance(password, text_type):
+        if isinstance(password, str):
             password = password.encode("utf-8")
 
         return bcrypt.hashpw(password, current_passwd) == current_passwd
 
     def process(self, user, password):
-        if isinstance(password, text_type):
+        if isinstance(password, str):
             password = password.encode("utf-8")
         return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
 
@@ -169,7 +166,6 @@ def set_entity_type(cls):
     return cls
 
 
-@python_2_unicode_compatible
 @set_entity_type
 class User(Principal, UserMixin, db.Model):
     __tablename__ = "user"
@@ -275,7 +271,7 @@ class User(Principal, UserMixin, db.Model):
     def short_name(self):
         first_name = self.first_name or ""
         last_name = self.last_name[0:1] + "." if self.last_name else ""
-        name = "{} {}".format(first_name, last_name)
+        name = f"{first_name} {last_name}"
         return name.strip() or "Unknown"
 
     def __str__(self):

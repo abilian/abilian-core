@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask_login import current_user, login_user
 from pytest import fixture
 
@@ -38,7 +35,7 @@ class AdminPanel(PreferencePanel):
 
 class Application(BaseApplication):
     def init_extensions(self):
-        super(Application, self).init_extensions()
+        super().init_extensions()
         prefs = self.services["preferences"]
         prefs.app_state.panels = []
         prefs.register_panel(VisiblePanel(), self)

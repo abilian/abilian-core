@@ -1,8 +1,5 @@
 # coding=utf-8
 """Security service, manages roles and permissions."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from functools import wraps
 from itertools import chain
 
@@ -305,7 +302,7 @@ class SecurityService(Service):
             if object_id is None:
                 object_key = None
             else:
-                object_key = "{}:{}".format(object_type, object_id)
+                object_key = f"{object_type}:{object_id}"
             all_roles.setdefault(object_key, set()).add(role)
 
         return all_roles
@@ -377,7 +374,7 @@ class SecurityService(Service):
                 all_roles = ra_groups.setdefault(ra.group, {})
 
             object_key = (
-                "{}:{:d}".format(ra.object.entity_type, ra.object_id)
+                f"{ra.object.entity_type}:{ra.object_id:d}"
                 if ra.object is not None
                 else None
             )
@@ -425,7 +422,7 @@ class SecurityService(Service):
         if not self.running:
             return True
 
-        if isinstance(role, (Role, string_types)):
+        if isinstance(role, (Role, (str,))):
             role = (role,)
 
         # admin & manager always have role
@@ -454,7 +451,7 @@ class SecurityService(Service):
 
         if object:
             assert isinstance(object, Entity)
-            object_key = "{}:{}".format(object.object_type, text_type(object.id))
+            object_key = "{}:{}".format(object.object_type, str(object.id))
             if Creator in role:
                 if object.creator == principal:
                     return True
@@ -649,7 +646,7 @@ class SecurityService(Service):
         # FIXME: obj.__class__ could define default permisssion matrix too
 
         if roles is not None:
-            if isinstance(roles, (Role,) + string_types):
+            if isinstance(roles, (Role,) + (str,)):
                 roles = (roles,)
 
             for r in roles:

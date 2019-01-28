@@ -27,7 +27,6 @@ from .base import (
 from .owned import OwnedMixin
 
 
-@python_2_unicode_compatible
 class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     @declared_attr
     def __tablename__(cls):
@@ -63,7 +62,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
 
     def _icon(self, size=12):
         class_name = self.__class__.__name__.lower()
-        return "/static/icons/{}-{}.png".format(class_name, size)
+        return f"/static/icons/{class_name}-{size}.png"
 
     # FIXME: we can do better than that
     @property

@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime, timedelta
 
 from pytest import raises
@@ -30,7 +27,7 @@ def test_commentable_interface():
 
 
 def test_cannot_register_non_entities():
-    class Dummy(object):
+    class Dummy:
         pass
 
     with raises(ValueError):

@@ -9,9 +9,6 @@ Assumes poppler-utils and LibreOffice are installed.
 
 TODO: rename Converter into ConversionService ?
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import hashlib
 import logging
 import shutil
@@ -39,13 +36,13 @@ class HandlerNotFound(ConversionError):
     pass
 
 
-class Cache(object):
+class Cache:
 
     cache_dir = None
 
     def _path(self, key):
         """File path for `key`:"""
-        return self.cache_dir / "{}.blob".format(key)
+        return self.cache_dir / f"{key}.blob"
 
     def __contains__(self, key):
         return self._path(key).exists()
@@ -54,7 +51,7 @@ class Cache(object):
         if key in self:
             value = self._path(key).open("rb").read()
             if key.startswith("txt:"):
-                value = text_type(value, encoding="utf8")
+                value = str(value, encoding="utf8")
             return value
         else:
             return None
@@ -77,7 +74,7 @@ class Cache(object):
         pass
 
 
-class Converter(object):
+class Converter:
     def __init__(self):
         self.handlers = []
         self.cache = Cache()
@@ -124,9 +121,7 @@ class Converter(object):
                 pdf = handler.convert(blob)
                 self.cache[cache_key] = pdf
                 return pdf
-        raise HandlerNotFound(
-            "No handler found to convert from {} to PDF".format(mime_type)
-        )
+        raise HandlerNotFound(f"No handler found to convert from {mime_type} to PDF")
 
     def to_text(self, digest, blob, mime_type):
         """Convert a file to plain text.
@@ -158,13 +153,11 @@ class Converter(object):
                 self.cache[cache_key] = text
                 return text
 
-        raise HandlerNotFound(
-            "No handler found to convert from {} to text".format(mime_type)
-        )
+        raise HandlerNotFound(f"No handler found to convert from {mime_type} to text")
 
     def has_image(self, digest, mime_type, index, size=500):
         """Tell if there is a preview image."""
-        cache_key = "img:{}:{}:{}".format(index, size, digest)
+        cache_key = f"img:{index}:{size}:{digest}"
         return mime_type.startswith("image/") or cache_key in self.cache
 
     def get_image(self, digest, blob, mime_type, index, size=500):
@@ -174,7 +167,7 @@ class Converter(object):
         if mime_type.startswith("image/"):
             return ""
 
-        cache_key = "img:{}:{}:{}".format(index, size, digest)
+        cache_key = f"img:{index}:{size}:{digest}"
         return self.cache.get(cache_key)
 
     def to_image(self, digest, blob, mime_type, index, size=500):
@@ -186,7 +179,7 @@ class Converter(object):
         if mime_type.startswith("image/"):
             return ""
 
-        cache_key = "img:{}:{}:{}".format(index, size, digest)
+        cache_key = f"img:{index}:{size}:{digest}"
         converted = self.cache.get(cache_key)
         if converted:
             return converted
@@ -197,7 +190,7 @@ class Converter(object):
                 converted_images = handler.convert(blob, size=size)
                 for i in range(0, len(converted_images)):
                     converted = converted_images[i]
-                    cache_key = "img:{}:{}:{}".format(i, size, digest)
+                    cache_key = f"img:{i}:{size}:{digest}"
                     self.cache[cache_key] = converted
                 return converted_images[index]
 
@@ -208,13 +201,11 @@ class Converter(object):
                 converted_images = handler.convert(pdf, size=size)
                 for i in range(0, len(converted_images)):
                     converted = converted_images[i]
-                    cache_key = "img:{}:{}:{}".format(i, size, digest)
+                    cache_key = f"img:{i}:{size}:{digest}"
                     self.cache[cache_key] = converted
                 return converted_images[index]
 
-        raise HandlerNotFound(
-            "No handler found to convert from {} to image".format(mime_type)
-        )
+        raise HandlerNotFound(f"No handler found to convert from {mime_type} to image")
 
     def get_metadata(self, digest, content, mime_type):
         """Get a dictionary representing the metadata embedded in the given
@@ -248,8 +239,8 @@ class Converter(object):
             for line in output.split(b"\n"):
                 if b":" in line:
                     key, value = line.strip().split(b":", 1)
-                    key = text_type(key)
-                    ret["PDF:" + key] = text_type(value.strip(), errors="replace")
+                    key = str(key)
+                    ret["PDF:" + key] = str(value.strip(), errors="replace")
 
             return ret
 
@@ -257,7 +248,7 @@ class Converter(object):
     def digest(blob):
         # FIXME for python 3
         assert isinstance(blob, bytes)
-        assert isinstance(blob, string_types)
+        assert isinstance(blob, str)
         if isinstance(blob, str):
             digest = hashlib.md5(blob).hexdigest()
         else:

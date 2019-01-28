@@ -3,15 +3,13 @@
 
 Every entity (and even comments) should be likeable.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
 
 
-class Like(object):
+class Like:
     pass
 
 
-class LikeService(object):
+class LikeService:
     def like(self, object, user=None):
         """Given or current user likes the given likeable object."""
 

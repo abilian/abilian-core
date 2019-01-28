@@ -1,7 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import abc
 from functools import total_ordering
 
@@ -18,7 +15,7 @@ TAGS_ATTR = "__tags__"
 
 
 @add_metaclass(abc.ABCMeta)
-class SupportTagging(object):
+class SupportTagging:
     pass
 
 
@@ -66,7 +63,6 @@ entity_tag_tbl = sa.Table(
 
 
 @total_ordering
-@python_2_unicode_compatible
 class Tag(IdMixin, Model):
     """Tags are text labels that can be attached to :class:`entities.Entity`.
 
@@ -106,7 +102,7 @@ class Tag(IdMixin, Model):
         return self.label
 
     def __lt__(self, other):
-        return text_type(self).lower().__lt__(text_type(other).lower())
+        return str(self).lower().__lt__(str(other).lower())
 
     def __repr__(self):
         cls = self.__class__

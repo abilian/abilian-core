@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from abilian.core.models import comment as comments
 from abilian.web import url_for
 
@@ -11,7 +8,7 @@ from .views import COMMENT_BUTTON
 from .views import bp as blueprint
 
 
-class CommentExtension(object):
+class CommentExtension:
     """API for comments, installed as an application extension.
 
     It is also available in templates as `comments`.

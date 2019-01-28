@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app
 from werkzeug.exceptions import BadRequest
 
@@ -19,14 +16,14 @@ from .forms import TagForm
 bp = Blueprint("tags", __name__, url_prefix="/tags", template_folder="templates")
 
 
-class BaseTagView(object):
+class BaseTagView:
     """Mixin for tag views."""
 
     Model = Tag
     Form = TagForm
 
     def __init__(self, *args, **kwargs):
-        super(BaseTagView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.extension = current_app.extensions["tags"]
 
 
@@ -59,7 +56,7 @@ entity_bp = Blueprint("entity_tags", __name__, url_prefix="/tags/entity")
 
 class BaseEntityTagView(BaseTagView):
     def init_object(self, args, kwargs):
-        args, kwargs = super(BaseEntityTagView, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
         entity_id = kwargs.pop("entity_id", None)
 
         if entity_id is not None:
@@ -117,7 +114,7 @@ class EntityTagEdit(ObjectEdit):
     Model = Entity
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(EntityTagEdit, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
         extension = current_app.extensions["tags"]
         self.Form = extension.entity_tags_form(self.obj)
         return args, kwargs

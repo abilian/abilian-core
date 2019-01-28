@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app
 from wtforms.fields import StringField
 
@@ -27,7 +24,7 @@ class TagsField(Field):
 
     def __init__(self, ns, *args, **kwargs):
         kwargs.setdefault("view_widget", self.view_widget)
-        super(TagsField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.ns = ns.strip()
         assert self.ns
 
@@ -50,7 +47,7 @@ class TagsField(Field):
 
     def process_data(self, data):
         data = {t for t in data if t.ns == self.ns}
-        return super(TagsField, self).process_data(data)
+        return super().process_data(data)
 
     def process_formdata(self, valuelist):
         extension = current_app.extensions["tags"]

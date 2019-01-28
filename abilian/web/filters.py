@@ -1,8 +1,5 @@
 # coding: utf-8
 """Add a few specific filters to Jinja2."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import datetime
 import re
 from calendar import timegm
@@ -92,7 +89,7 @@ def filesize(d):
 def roughsize(size, above=20, mod=10):
     """6 -> '6' 15 -> '15' 134 -> '130+'."""
     if size < above:
-        return text_type(size)
+        return str(size)
 
     return "{:d}+".format(size - size % mod)
 

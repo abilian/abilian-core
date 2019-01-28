@@ -1,7 +1,5 @@
 # coding=utf-8
 """Test the index service."""
-from __future__ import absolute_import, print_function, unicode_literals
-
 from flask_login import login_user
 from sqlalchemy import Column, Text, UnicodeText
 from sqlalchemy.orm import column_property

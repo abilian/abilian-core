@@ -4,9 +4,6 @@
 This should eventually allow implementing very custom CRM-style
 application.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import copy
 import logging
 import re
@@ -50,9 +47,7 @@ class ModuleAction(Action):
 
     def __init__(self, module, group, name, *args, **kwargs):
         self.group = group
-        super(ModuleAction, self).__init__(
-            module.action_category, name, *args, **kwargs
-        )
+        super().__init__(module.action_category, name, *args, **kwargs)
 
     def pre_condition(self, context):
         module = actions.context.get("module")
@@ -124,7 +119,7 @@ def make_single_view(form, **options):
     return SingleView(form, *panels, **options)
 
 
-class ModuleView(object):
+class ModuleView:
     """Mixin for module base views.
 
     Provide :attr:`module`.
@@ -135,14 +130,14 @@ class ModuleView(object):
 
     def __init__(self, module, *args, **kwargs):
         self.module = module
-        super(ModuleView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class BaseEntityView(ModuleView):
     pk = "entity_id"
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(BaseEntityView, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
 
         # security check
         if self.obj and not self.check_access():
@@ -159,7 +154,7 @@ class BaseEntityView(ModuleView):
         )
 
     def prepare_args(self, args, kwargs):
-        args, kwargs = super(BaseEntityView, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
         actions.context["module"] = self.module
         add_to_recent_items(self.obj)
         return args, kwargs
@@ -174,7 +169,7 @@ class BaseEntityView(ModuleView):
             view_template=self.module.view_template,
             view=self,
             module=self.module,
-            **self.module.view_options
+            **self.module.view_options,
         )
 
     def check_access(self):
@@ -361,7 +356,7 @@ class ModuleMeta(type):
                         # setattr(cls, p, _wrap_view(attr))
 
 
-class ModuleComponent(object):
+class ModuleComponent:
     """A component that provide new functions for a :class:`Module`"""
 
     name = None  # type: str
@@ -386,7 +381,7 @@ class ModuleComponent(object):
 
 
 @add_metaclass(ModuleMeta)
-class Module(object):
+class Module:
 
     id = None  # type: str
     endpoint = None  # type: str
@@ -465,7 +460,7 @@ class Module(object):
             "entity_view",
             self.view_cls,
             Form=self.view_form_class,
-            **kw
+            **kw,
         )
         view_endpoint = self.endpoint + ".entity_view"
 
@@ -475,7 +470,7 @@ class Module(object):
             self.edit_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
-            **kw
+            **kw,
         )
 
         self._setup_view(
@@ -485,7 +480,7 @@ class Module(object):
             Form=self.edit_form_class,
             chain_create_allowed=self.view_new_save_and_add,
             view_endpoint=view_endpoint,
-            **kw
+            **kw,
         )
 
         self._setup_view(
@@ -494,7 +489,7 @@ class Module(object):
             self.delete_cls,
             Form=self.edit_form_class,
             view_endpoint=view_endpoint,
-            **kw
+            **kw,
         )
 
         self._setup_view("/json", "list_json", ListJson, module=self)
@@ -539,7 +534,7 @@ class Module(object):
 
     @property
     def action_category(self):
-        return "module:{}".format(self.endpoint)
+        return f"module:{self.endpoint}"
 
     def get_grouped_actions(self):
         items = actions.for_category(self.action_category)
@@ -574,10 +569,10 @@ class Module(object):
 
         # If url is not provided, generate it from endpoint name
         if self.url is None:
-            self.url = "{}/{}".format(self.crud_app.url, self.endpoint)
+            self.url = f"{self.crud_app.url}/{self.endpoint}"
         else:
             if not self.url.startswith("/"):
-                self.url = "{}/{}".format(self.crud_app.url, self.url)
+                self.url = f"{self.crud_app.url}/{self.url}"
 
         # Create blueprint and register rules
         self.blueprint = Blueprint(self.endpoint, __name__, url_prefix=self.url)
@@ -807,7 +802,7 @@ class Module(object):
         return re.sub(r"(?<=.)([A-Z])", r" \1", name)
 
 
-class RelatedView(object):
+class RelatedView:
     """A base class for related views."""
 
     def render(self, entity):
@@ -842,7 +837,7 @@ class DefaultRelatedView(RelatedView):
 
 
 # TODO: rename to CRMApp ?
-class CRUDApp(object):
+class CRUDApp:
 
     modules = ()
 

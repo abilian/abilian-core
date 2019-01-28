@@ -10,9 +10,6 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :copyright: (c) 2012 by Karl Gyllstrom
 :license: BSD (see LICENSE.txt)
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from inspect import isclass
 from pathlib import Path
@@ -118,7 +115,7 @@ class WhooshIndexService(Service):
         if not whoosh_base.is_dir():
             whoosh_base.mkdir(parents=True)
 
-        state.whoosh_base = text_type(whoosh_base.resolve())
+        state.whoosh_base = str(whoosh_base.resolve())
 
         if not self._listening:
             event.listen(Session, "after_flush", self.after_flush)
@@ -173,7 +170,7 @@ class WhooshIndexService(Service):
                 index_path = (Path(state.whoosh_base) / name).absolute()
                 if not index_path.exists():
                     index_path.mkdir(parents=True)
-                storage = FileStorage(text_type(index_path))
+                storage = FileStorage(str(index_path))
 
             if storage.index_exists(name):
                 index = FileIndex(storage, schema, name)
@@ -241,7 +238,7 @@ class WhooshIndexService(Service):
         object_types=(),
         prefix=True,
         facet_by_type=None,
-        **search_args
+        **search_args,
     ):
         """Interface to search indexes.
 
@@ -519,7 +516,7 @@ def index_update(index, items):
 
             # always delete. Whoosh manual says that 'update' is actually delete + add
             # operation
-            object_key = "{}:{}".format(cls_name, pk)
+            object_key = f"{cls_name}:{pk}"
             writer.delete_by_term("object_key", object_key)
 
             adapter = adapted.get(cls_name)

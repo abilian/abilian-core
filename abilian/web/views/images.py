@@ -1,8 +1,5 @@
 # coding=utf-8
 """Blueprint for views of dynamic images."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import colorsys
 import hashlib
 from pathlib import Path
@@ -35,26 +32,22 @@ class BaseImageView(BaseFileDownload):
     max_size = None
 
     def __init__(self, max_size=None, *args, **kwargs):
-        super(BaseImageView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Override class default value only if arg is specified in constructor.
         # This allows subclasses to easily override theses defaults.
         if max_size is not None:
             self.max_size = max_size
 
     def prepare_args(self, args, kwargs):
-        args, kwargs = super(BaseImageView, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
         size = request.args.get("s", 0)
         try:
             size = int(size)
         except ValueError:
-            raise BadRequest(
-                'Invalid value for "s": {:d}. Not an integer.'.format(size)
-            )
+            raise BadRequest(f'Invalid value for "s": {size:d}. Not an integer.')
 
         if self.max_size is not None and size > self.max_size:
-            raise BadRequest(
-                "Size too large: {:d} (max: {:d})".format(size, self.max_size)
-            )
+            raise BadRequest(f"Size too large: {size:d} (max: {self.max_size:d})")
 
         kwargs["size"] = size
 
@@ -79,7 +72,7 @@ class BaseImageView(BaseFileDownload):
             raise NotFound()
 
         self.content_type = "image/png" if fmt == "PNG" else "image/jpeg"
-        ext = "." + text_type(fmt.lower())
+        ext = "." + str(fmt.lower())
 
         if not filename:
             filename = "image"
@@ -118,7 +111,7 @@ class StaticImageView(BaseImageView):
         BaseImageView.__init__(self, *args, **kwargs)
         self.image_path = Path(image)
         if not self.image_path.exists():
-            p = text_type(self.image_path)
+            p = str(self.image_path)
             raise ValueError("Invalid image path: {}".format(repr(p)))
 
     def prepare_args(self, args, kwargs):
@@ -154,7 +147,7 @@ class BlobView(BaseImageView):
             raise NotFound()
 
         meta = blob.meta
-        filename = meta.get("filename", meta.get("md5", text_type(blob.uuid)))
+        filename = meta.get("filename", meta.get("md5", str(blob.uuid)))
         kwargs["filename"] = filename
         kwargs["image"] = blob.file.open("rb")
         return args, kwargs
@@ -168,7 +161,7 @@ class UserMugshot(BaseImageView):
     expire_vary_arg = "md5"
 
     def prepare_args(self, args, kwargs):
-        args, kwargs = super(UserMugshot, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
 
         user_id = kwargs["user_id"]
         user = User.query.options(sa.orm.undefer(User.photo)).get(user_id)
@@ -183,7 +176,7 @@ class UserMugshot(BaseImageView):
     def make_response(self, user, image, size, *args, **kwargs):
         if image:
             # user has set a photo
-            return super(UserMugshot, self).make_response(image, size, *args, **kwargs)
+            return super().make_response(image, size, *args, **kwargs)
 
         # render svg avatar
         if user.last_name:
@@ -199,13 +192,13 @@ class UserMugshot(BaseImageView):
         hue = (hue * 36) / 360.0  # 10 colors: 360 / 10
         color = colorsys.hsv_to_rgb(hue, 0.65, 1.0)
         color = [int(x * 255) for x in color]
-        color = "rgb({0[0]}, {0[1]}, {0[2]})".format(color)
+        color = f"rgb({color[0]}, {color[1]}, {color[2]})"
         svg = render_template(
             "default/avatar.svg", color=color, letter=letter, size=size
         )
         response = make_response(svg)
         self.content_type = "image/svg+xml"
-        self.filename = "avatar-{}.svg".format(id_hash)
+        self.filename = f"avatar-{id_hash}.svg"
         return response
 
 

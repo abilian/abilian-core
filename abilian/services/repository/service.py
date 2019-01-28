@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import shutil
 import weakref
 from pathlib import Path
@@ -100,7 +97,7 @@ class RepositoryService(Service):
             content = content.read()
 
         mode = "tw"
-        if not isinstance(content, text_type):
+        if not isinstance(content, str):
             mode = "bw"
             encoding = None
 
@@ -369,7 +366,7 @@ class SessionRepositoryService(Service):
 session_repository = SessionRepositoryService()
 
 
-class RepositoryTransaction(object):
+class RepositoryTransaction:
     def __init__(self, root_path, parent=None):
         self.path = root_path / str(uuid1())
         # if parent is not None and parent.cleared:

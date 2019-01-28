@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import sqlalchemy as sa
 from flask import Blueprint
 from pytest import fixture, raises
@@ -19,7 +16,7 @@ class RegEntity(Entity):
     name = sa.Column(sa.Unicode, default="")
 
 
-class NonEntity(object):
+class NonEntity:
     pass
 
 
@@ -51,7 +48,7 @@ def test_custom_url_func(app, registry):
     assert registry.url_for(obj) == name
 
     def url_from_type_and_id(obj, obj_type, obj_id):
-        return "{}:{}".format(obj_type, obj_id)
+        return f"{obj_type}:{obj_id}"
 
     registry.register(obj, url_from_type_and_id)
     assert registry.url_for(obj) == "test_registry.RegEntity:1"

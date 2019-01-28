@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from typing import Optional
 
 import sqlalchemy as sa
@@ -29,7 +26,7 @@ def _default_attachment_view(obj, obj_type, obj_id, **kwargs):
     if not hasattr(obj, "entity"):
         return url_for("attachments.entity", object_id=obj_id)
     entity = obj.entity
-    return url_for(entity, _anchor="attachment-{}".format(obj.id))
+    return url_for(entity, _anchor=f"attachment-{obj.id}")
 
 
 @bp.record_once
@@ -40,7 +37,7 @@ def register_default_view(state):
 UPLOAD_BUTTON = ButtonAction("form", "edit", btn_class="primary", title=_l("Send"))
 
 
-class BaseAttachmentView(object):
+class BaseAttachmentView:
     """Mixin for attachment views."""
 
     Model = Attachment
@@ -50,7 +47,7 @@ class BaseAttachmentView(object):
     entity = None  # type: Optional[Entity]
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(BaseAttachmentView, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
         entity_id = kwargs.pop("entity_id", None)
 
         if entity_id is not None:
@@ -70,7 +67,7 @@ class BaseAttachmentView(object):
     def view_url(self):
         kw = {}
         if self.obj and self.obj.id:
-            kw["_anchor"] = "attachment-{}".format(self.obj.id)
+            kw["_anchor"] = f"attachment-{self.obj.id}"
         return url_for(self.entity, **kw)
 
     def index_url(self):
@@ -116,7 +113,7 @@ class AttachmentCreateView(BaseAttachmentView, ObjectCreate):
     _message_success = _l("Attachment added")
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(AttachmentCreateView, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
 
         self.obj.entity = self.entity
         session = sa.orm.object_session(self.entity)

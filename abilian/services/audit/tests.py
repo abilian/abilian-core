@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import datetime
 from itertools import count
 
@@ -21,13 +18,12 @@ from abilian.core.models.base import AUDITABLE_HIDDEN, SEARCHABLE
 from . import CREATION, DELETION, UPDATE, AuditEntry, audit_service
 
 
-@python_2_unicode_compatible
 class IntegerCollection(db.Model):
     __tablename__ = "integer_collection"
     id = Column(Integer, primary_key=True)
 
     def __str__(self):
-        return text_type(self.id)
+        return str(self.id)
 
 
 class DummyAccount(Entity):

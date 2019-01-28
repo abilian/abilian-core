@@ -1,7 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 import runpy
 from pprint import pformat
@@ -72,7 +69,7 @@ def _log_config(config):
         indent = len(k) + 3
         width = 80 - indent
         v = pformat(v, width=width).replace("\n", "\n" + " " * indent)
-        lines.append("{}{}: {}".format(prefix, k, v))
+        lines.append(f"{prefix}{k}: {v}")
     logger.info("\n".join(lines))
 
 
@@ -127,7 +124,7 @@ def run(port, show_config, ssl):
 @manager.command
 def initdb():
     """Create application DB."""
-    print("Creating DB using engine: {}".format(db))
+    print(f"Creating DB using engine: {db}")
     current_app.create_db()
 
 
@@ -135,7 +132,7 @@ def initdb():
 def dropdb():
     """Drop the application DB."""
     confirm = input("Are you sure you want to drop the database? (Y/N) ")
-    print("Dropping DB using engine: {}".format(db))
+    print(f"Dropping DB using engine: {db}")
     if confirm.lower() == "y":
         # with current_app.app_context():
         db.drop_all()
@@ -151,7 +148,7 @@ def routes():
         output.append((rule.endpoint, methods, path))
 
     for endpoint, methods, path in sorted(output):
-        print("{:40s} {:25s} {}".format(endpoint, methods, path))
+        print(f"{endpoint:40s} {methods:25s} {path}")
 
 
 # user commands
@@ -181,9 +178,9 @@ firstname_opt = manager.option(
 @firstname_opt
 def createuser(email, password, role=None, name=None, first_name=None):
     """Create new user."""
-    email = text_type(email)
+    email = str(email)
     if User.query.filter(User.email == email).count() > 0:
-        print("A user with email '{}' already exists, aborting.".format(email))
+        print(f"A user with email '{email}' already exists, aborting.")
         return
 
     if password is None:
@@ -204,7 +201,7 @@ def createuser(email, password, role=None, name=None, first_name=None):
         security.grant_role(user, role)
 
     db.session.commit()
-    print("User {} added".format(email))
+    print(f"User {email} added")
 
 
 @email_opt
@@ -229,7 +226,7 @@ def passwd(email, password=None):
 
     user.set_password(password)
     db.session.commit()
-    print("Password updated for user {}".format(email))
+    print(f"Password updated for user {email}")
 
 
 @manager.command

@@ -7,9 +7,6 @@ Notes:
 - For application settings use
   :class:`abilian.services.settings.SettingsService`.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import Blueprint, g, redirect, request, url_for
 from flask_login import current_user
 from werkzeug.exceptions import InternalServerError
@@ -107,7 +104,7 @@ class PreferenceService(Service):
         panel.preferences = self
         rule = "/" + getattr(panel, "path", panel.id)
         endpoint = panel.id
-        abs_endpoint = "preferences.{}".format(endpoint)
+        abs_endpoint = f"preferences.{endpoint}"
 
         if hasattr(panel, "get"):
             state.blueprint.add_url_rule(rule, endpoint, panel.get)

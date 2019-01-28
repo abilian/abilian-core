@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime
 
 from pytest import fixture
@@ -87,7 +84,7 @@ def test_auto_slug(session):
     contact2 = DummyContact()
     session.add(contact2)
     session.flush()
-    expected = "dummycontact-{}".format(contact2.id)
+    expected = f"dummycontact-{contact2.id}"
     assert contact2.slug == expected
 
     # test numbering if slug already exists:
@@ -144,7 +141,7 @@ def test_entity_type():
     assert OtherBase._object_type() == "some.module.OtherBase"
 
     # test when ENTITY_TYPE_BASE is in ancestors
-    class Base(object):
+    class Base:
         ENTITY_TYPE_BASE = "from.ancestor"
 
     class InheritedBase(Base, Entity):

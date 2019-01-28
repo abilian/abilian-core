@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app
 from flask_login import current_user
 
@@ -17,7 +14,7 @@ from .views import bp as blueprint
 _MANAGER_ATTR = "__attachments_manager__"
 
 
-class AttachmentExtension(object):
+class AttachmentExtension:
     """API for comments, installed as an application extension.
 
     It is also available in templates as `attachments`.
@@ -62,7 +59,7 @@ class AttachmentExtension(object):
 _DEFAULT_TEMPLATE = "macros/attachment_default.html"
 
 
-class AttachmentsManager(object):
+class AttachmentsManager:
     """Allow customization of attachments form, display macros, etc.
 
     can be used as class decorator

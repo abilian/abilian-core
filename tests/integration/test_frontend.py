@@ -1,7 +1,5 @@
 # coding=utf-8
 """Test the frontend."""
-from __future__ import absolute_import, print_function, unicode_literals
-
 from flask_wtf import Form
 from sqlalchemy import Column, String, UnicodeText
 
@@ -9,7 +7,7 @@ from abilian.core.entities import Entity
 from abilian.web.frontend import CRUDApp, Module
 
 
-class EmailAddress(object):
+class EmailAddress:
     pass
 
 

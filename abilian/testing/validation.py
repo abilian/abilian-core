@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, print_function, unicode_literals
-
 import json
 import os
 import subprocess
@@ -69,7 +67,7 @@ def assert_html_valid_using_htmlhint(response):
         except subprocess.CalledProcessError as e:
             print("htmllhint output:")
             print(e.output)
-            msg = "HTML was not valid for URL: {}".format(request.url)
+            msg = f"HTML was not valid for URL: {request.url}"
             raise ValidationError(msg)
 
 
@@ -94,7 +92,7 @@ def assert_html_valid_using_external_service(response):
             detail = "on line {} [{}]\n{}".format(
                 message["lastLine"], message["extract"], message["message"]
             )
-            msg = "Got a validation error for {}:\n{}".format(request.url, detail)
+            msg = f"Got a validation error for {request.url}:\n{detail}"
             raise ValidationError(msg)
 
 
@@ -103,5 +101,5 @@ def assert_json_valid(response):
     try:
         json.loads(response.data)
     except BaseException:
-        msg = "JSON was not valid for URL: {}".format(request.url)
+        msg = f"JSON was not valid for URL: {request.url}"
         raise ValidationError(msg)

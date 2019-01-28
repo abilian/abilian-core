@@ -1,8 +1,5 @@
 # coding=utf-8
 """Elements to build test cases for an :class:`abilian.app.Application`"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import getpass
 import os
 import shutil
@@ -43,7 +40,7 @@ class NullBundle(Bundle):
         return []
 
 
-class TestConfig(object):
+class TestConfig:
     """Base class config settings for test cases.
 
     The environment variable :envvar:`SQLALCHEMY_DATABASE_URI` can be
@@ -135,12 +132,12 @@ class BaseTestCase(TestCase):
 
     @deprecated
     def __init__(self, *args, **kwargs):
-        super(BaseTestCase, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def setUpClass(cls):
         if not isinstance(cls.SERVICES, tuple):
-            if isinstance(cls.SERVICES, string_types):
+            if isinstance(cls.SERVICES, str):
                 cls.SERVICES = (cls.SERVICES,)
             else:
                 cls.SERVICES = tuple(cls.SERVICES)
@@ -204,11 +201,9 @@ class BaseTestCase(TestCase):
             username = self.db.engine.url.username or getpass.getuser()
             with self.db.engine.connect() as conn:
                 with conn.begin():
-                    conn.execute(
-                        "DROP SCHEMA IF EXISTS {} CASCADE".format(self.__pg_schema)
-                    )
-                    conn.execute("CREATE SCHEMA {}".format(self.__pg_schema))
-                    conn.execute("SET search_path TO {}".format(self.__pg_schema))
+                    conn.execute(f"DROP SCHEMA IF EXISTS {self.__pg_schema} CASCADE")
+                    conn.execute(f"CREATE SCHEMA {self.__pg_schema}")
+                    conn.execute(f"SET search_path TO {self.__pg_schema}")
                     conn.execute(
                         "ALTER ROLE {username} SET search_path TO {schema}"
                         "".format(username=username, schema=self.__pg_schema)
@@ -235,7 +230,7 @@ class BaseTestCase(TestCase):
                         )
                         conn2.execute("SET search_path TO public")
                         conn2.execute(
-                            "DROP SCHEMA IF EXISTS {} CASCADE".format(self.__pg_schema)
+                            f"DROP SCHEMA IF EXISTS {self.__pg_schema} CASCADE"
                         )
                     conn2.execute("COMMIT")
                 del self.__pg_schema
@@ -306,7 +301,7 @@ class BaseTestCase(TestCase):
         if not success:
             raise ValueError("User is not active, cannot login; or use force=True")
 
-        class LoginContext(object):
+        class LoginContext:
             def __init__(self, testcase):
                 self.testcase = testcase
 
@@ -346,7 +341,7 @@ class BaseTestCase(TestCase):
         )
         assert r.status_code == 302
 
-        class LoginContext(object):
+        class LoginContext:
             def __init__(self, testcase):
                 self.testcase = testcase
 

@@ -63,7 +63,7 @@ __all__ = ["create_app", "Application", "ServiceManager"]
 warnings.simplefilter("ignore", category=sa.exc.SAWarning)
 
 
-class ServiceManager(object):
+class ServiceManager:
     """Mixin that provides lifecycle (register/start/stop) support for
     services."""
 
@@ -79,7 +79,7 @@ class ServiceManager(object):
             svc.stop()
 
 
-class PluginManager(object):
+class PluginManager:
     """Mixin that provides support for loading plugins."""
 
     def register_plugin(self, name):
@@ -133,7 +133,7 @@ class AssetManagerMixin(Flask):
         assets.directory = str(assets_dir)
         assets.cache = str(assets_cache_dir)
         manifest_file = assets_base_dir / "manifest.json"
-        assets.manifest = "json:{}".format(manifest_file)
+        assets.manifest = f"json:{manifest_file}"
 
         # set up load_path for application static dir. This is required
         # since we are setting Environment.load_path for other assets
@@ -179,7 +179,7 @@ class AssetManagerMixin(Flask):
             options["filters"] = []
             for f in filters:
                 if f == "closure_js":
-                    js_map_file = str(assets_dir / "{}.map".format(name))
+                    js_map_file = str(assets_dir / f"{name}.map")
                     f = ClosureJS(extra_args=closure_base_args + [js_map_file])
                 options["filters"].append(f)
 
@@ -266,9 +266,7 @@ class ErrorManagerMixin(Flask):
 
         if logging_file.suffix == ".ini":
             # old standard 'ini' file config
-            logging.config.fileConfig(
-                text_type(logging_file), disable_existing_loggers=False
-            )
+            logging.config.fileConfig(str(logging_file), disable_existing_loggers=False)
         elif logging_file.suffix == ".yml":
             # yaml config file
             logging_cfg = yaml.safe_load(logging_file.open())
@@ -360,11 +358,11 @@ class ErrorManagerMixin(Flask):
             _request_ctx_stack.top.user = session.merge(user, load=load)
 
     def log_exception(self, exc_info):
-        """Log exception only if Sentry is not used (this avoids getting
-        error twice in Sentry)."""
+        """Log exception only if Sentry is not used (this avoids getting error
+        twice in Sentry)."""
         dsn = self.config.get("SENTRY_DSN")
         if not dsn:
-            super(ErrorManagerMixin, self).log_exception(exc_info)
+            super().log_exception(exc_info)
 
     def init_sentry(self):
         """Install Sentry handler if config defines 'SENTRY_DSN'."""
@@ -377,11 +375,12 @@ class ErrorManagerMixin(Flask):
         except ImportError:
             logger.error(
                 'SENTRY_DSN is defined in config but package "sentry-sdk"'
-                ' is not installed.'
+                " is not installed."
             )
             return
 
         from sentry_sdk.integrations.flask import FlaskIntegration
+
         sentry_sdk.init(dsn=dsn, integrations=[FlaskIntegration()])
 
         # ext = Sentry(self, logging=True, level=logging.ERROR)
@@ -421,7 +420,7 @@ class ErrorManagerMixin(Flask):
             # have an error, too, resulting in raw 500 page :-(
             db.session.rollback()
 
-        template = "error{:d}.html".format(code)
+        template = f"error{code:d}.html"
         return render_template(template, error=error), code
 
 
@@ -693,7 +692,7 @@ class Application(
         if manager is None or isinstance(manager, ScriptManager):
             return
 
-        if isinstance(manager, string_types):
+        if isinstance(manager, str):
             manager = str(manager)
             if manager.startswith("."):
                 manager = self.import_name + manager
@@ -795,7 +794,7 @@ class Application(
         if instance_relative:
             self.check_instance_folder(create=True)
 
-        cfg_path = text_type(Path(config.root_path) / "config.py")
+        cfg_path = str(Path(config.root_path) / "config.py")
         logger.info('Try to load config: "%s"', cfg_path)
         try:
             config.from_pyfile(cfg_path, silent=False)
@@ -931,7 +930,7 @@ class Application(
         :class:`abilian.service.security.models.Role` instance, or a list of
         Role instances.
         """
-        super(Application, self).add_url_rule(rule, endpoint, view_func, **options)
+        super().add_url_rule(rule, endpoint, view_func, **options)
 
         if roles:
             self.add_access_controller(
@@ -951,7 +950,7 @@ class Application(
 
         if endpoint:
             adder = auth_state.add_endpoint_access_controller
-            if not isinstance(name, string_types):
+            if not isinstance(name, str):
                 msg = "{} is not a valid endpoint name".format(repr(name))
                 raise ValueError(msg)
 

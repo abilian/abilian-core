@@ -1,7 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import inspect
 from operator import attrgetter, itemgetter
 from typing import Callable, Optional
@@ -12,7 +9,7 @@ from whoosh.searching import Hit
 from abilian.core.extensions import db
 
 
-class Registry(object):
+class Registry:
     """Registry for default (canonical) views for entities.
 
     There is one registry per application instance.
@@ -72,7 +69,7 @@ class Registry(object):
             raise KeyError(object_type)
 
 
-class default_view(object):
+class default_view:
     r"""Decorator to register a view as default view for given entity class.
 
     :param id_attr: url parameter name for object id.

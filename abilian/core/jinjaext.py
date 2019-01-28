@@ -1,8 +1,5 @@
 # coding=utf-8
 """Jinja2 extensions."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import lxml.html
 from flask import current_app
 from flask.globals import g
@@ -11,7 +8,7 @@ from jinja2 import nodes
 from jinja2.ext import Extension as JinjaExtension
 
 
-class DeferredJS(object):
+class DeferredJS:
     """Flask extension for use with DeferredJSExtension for jinja."""
 
     name = "deferred_js"
@@ -85,9 +82,7 @@ class DeferredJSExtension(JinjaExtension):
 
     @staticmethod
     def collect_deferred(caller):
-        result = "\n".join(
-            "(function(){{\n{}\n}})();".format(js) for js in g.deferred_js
-        )
+        result = "\n".join(f"(function(){{\n{js}\n}})();" for js in g.deferred_js)
         flask_ext = current_app.extensions[DeferredJS.name]
         flask_ext.reset_deferred()
         return result

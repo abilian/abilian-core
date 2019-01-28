@@ -4,9 +4,6 @@
 Notes:
 - Uses code copy/pasted (and modified) from Flask-Security
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import random
 import string
 from datetime import datetime
@@ -343,7 +340,7 @@ def send_mail(subject, recipient, template, **context):
     sender = config["MAIL_SENDER"]
     msg = Message(subject, sender=sender, recipients=[recipient])
 
-    template_name = "login/email/{}.txt".format(template)
+    template_name = f"login/email/{template}.txt"
     msg.body = render_template_i18n(template_name, **context)
     # msg.html = render_template('%s/%s.html' % ctx, **context)
 

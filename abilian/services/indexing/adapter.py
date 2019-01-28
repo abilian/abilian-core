@@ -1,8 +1,5 @@
 # coding=utf-8
 """Objects to schema adapters."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from abc import ABCMeta, abstractmethod
 from operator import attrgetter
@@ -21,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 @add_metaclass(ABCMeta)
-class SchemaAdapter(object):
+class SchemaAdapter:
     """Abstract base class for objects to schema adapter.
 
     The purpose of adapters is that given an object they return kwargs
@@ -113,7 +110,7 @@ class SAAdapter(SchemaAdapter):
 
         def setup_field(attr_name, field_name):
             field_def = False
-            if not isinstance(field_name, string_types):
+            if not isinstance(field_name, str):
                 field_name, field_def = field_name
 
             if field_name not in schema:
@@ -129,7 +126,7 @@ class SAAdapter(SchemaAdapter):
 
         # model level definitions
         for name, field_names in self.index_to:
-            if isinstance(field_names, string_types):
+            if isinstance(field_names, str):
                 field_names = (field_names,)
             for field_name in field_names:
                 setup_field(name, field_name)
@@ -143,7 +140,7 @@ class SAAdapter(SchemaAdapter):
                 continue
 
             index_to = info.get("index_to", (name,))
-            if isinstance(index_to, string_types):
+            if isinstance(index_to, str):
                 index_to = (index_to,)
 
             for field_name in index_to:

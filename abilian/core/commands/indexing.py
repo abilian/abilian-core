@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import time
 from collections import deque
 from typing import Set, Text
@@ -103,14 +100,14 @@ class Reindexer:
                 return
 
             print("*" * 79)
-            print("{}".format(name))
+            print(f"{name}")
             if count == 0:
                 print("*" * 79)
-                print("{}".format(name))
+                print(f"{name}")
                 return
 
             print("*" * 79)
-            print("{}".format(name))
+            print(f"{name}")
 
             with tqdm(total=count) as bar:
                 self.reindex_batch(query, current_object_type, adapter, bar)
@@ -161,7 +158,7 @@ def single_transaction(index, clear):
             if doc is COMMIT:
                 doc = yield True
                 continue
-            if isinstance(doc, string_types):
+            if isinstance(doc, str):
                 writer.delete_by_term("object_type", doc)
             else:
                 writer.add_document(**doc)
@@ -189,7 +186,7 @@ def progressive_mode(index, clear):
             writer = _get_writer(index)
             while queue:
                 doc = queue.pop()
-                if isinstance(doc, string_types):
+                if isinstance(doc, str):
                     writer.delete_by_term("object_type", doc)
                 else:
                     writer.add_document(**doc)

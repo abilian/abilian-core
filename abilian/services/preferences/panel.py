@@ -1,9 +1,7 @@
 # coding=utf-8
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
 
 
-class PreferencePanel(object):
+class PreferencePanel:
     """Base class for preference panels.
 
     Currently, this class does nothing. I may be useful in the future

@@ -1,8 +1,5 @@
 # coding=utf-8
 
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import sqlalchemy as sa
 from flask.signals import request_started
 from pytest import mark

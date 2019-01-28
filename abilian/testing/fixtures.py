@@ -11,9 +11,6 @@ Supposed to replace the too-complex current UnitTest-based testing
 framework. -> DI and functions over complex inheritance hierarchies FTW!
 """
 
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from typing import Any
 
 from flask import Flask

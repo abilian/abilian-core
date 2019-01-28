@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app
 from flask_debugtoolbar.panels import DebugPanel
 
@@ -45,7 +42,7 @@ class IndexedTermsDebugPanel(DebugPanel):
             return _("No current object")
 
         try:
-            return "{}(id={})".format(obj.__class__.__name__, obj.id)
+            return f"{obj.__class__.__name__}(id={obj.id})"
         except BaseException:
             return ""
 

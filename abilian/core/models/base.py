@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime
 
 from sqlalchemy.schema import Column
@@ -48,11 +45,11 @@ NOT_EXPORTABLE = Info(exportable=False)
 SYSTEM = Info(editable=False, auditable=False)
 
 
-class IdMixin(object):
+class IdMixin:
     id = Column(Integer, primary_key=True, info=SYSTEM | SEARCHABLE)
 
 
-class Indexable(object):
+class Indexable:
     """Mixin with sensible defaults for indexable objects."""
 
     __indexable__ = True
@@ -71,10 +68,10 @@ class Indexable(object):
 
     @property
     def object_key(self):
-        return "{}:{}".format(self.object_type, self.id)
+        return f"{self.object_type}:{self.id}"
 
 
-class TimestampedMixin(object):
+class TimestampedMixin:
     #: creation date
     created_at = Column(DateTime, default=datetime.utcnow, info=SYSTEM | SEARCHABLE)
     #: last modification date

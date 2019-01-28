@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from whoosh.analysis import CharsetFilter, LowercaseFilter, NgramFilter, \
     PathTokenizer, RegexTokenizer
 from whoosh.fields import DATETIME, ID, KEYWORD, NUMERIC, TEXT, FieldType, \
@@ -82,7 +79,7 @@ def indexable_role(principal):
         principal = Anonymous
 
     if isinstance(principal, Role):
-        return "role:{}".format(principal.name)
+        return f"role:{principal.name}"
     elif isinstance(principal, User):
         fmt = "user:{:d}"
     elif isinstance(principal, Group):

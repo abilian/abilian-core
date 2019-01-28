@@ -10,9 +10,6 @@ Cf. http://flask.pocoo.org/docs/signals/ for detailed documentation.
 The main signal is currently :obj:`activity`.
 """
 
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from blinker.base import Namespace
 
 signals = Namespace()

@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import timedelta
 
 from flask import current_app, flash, redirect, render_template, request, \
@@ -18,7 +15,7 @@ from abilian.web import csrf
 from ..panel import AdminPanel
 
 
-class Key(object):
+class Key:
 
     template = Template(
         '<input type="text" class="form-control" '

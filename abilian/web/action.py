@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 import re
 from typing import Optional
@@ -70,8 +67,7 @@ def getset(f):
     return property(f, f)
 
 
-@python_2_unicode_compatible
-class Icon(object):
+class Icon:
     """Base abstract class for icons."""
 
     def __html__(self):
@@ -130,7 +126,7 @@ class FAIconStacked(NamedIconBase):
         if "fa-stack-" not in second:
             second += " fa-stack-1x"
 
-        super(FAIconStacked, self).__init__(name)
+        super().__init__(name)
         self.second = second
         self.stack = stack
 
@@ -155,7 +151,7 @@ class DynamicIcon(Icon):
         css="",
         size=None,
         url_args=None,
-        **fixed_url_args
+        **fixed_url_args,
     ):
         self.endpoint = endpoint
         self.css = css
@@ -205,8 +201,7 @@ class StaticIcon(DynamicIcon):
         )
 
 
-@python_2_unicode_compatible
-class Endpoint(object):
+class Endpoint:
 
     # FIXME: *args doesn't seem to be relevant.
     def __init__(self, name, *args, **kwargs):
@@ -224,7 +219,7 @@ class Endpoint(object):
         return self.kwargs.copy()
 
     def __str__(self):
-        return text_type(url_for(self.name, **self.get_kwargs()))
+        return str(url_for(self.name, **self.get_kwargs()))
 
     def __repr__(self):
         return "{cls}({name!r}, *{args!r}, **{kwargs!r})".format(
@@ -235,7 +230,7 @@ class Endpoint(object):
         )
 
 
-class Action(object):
+class Action:
     """Action interface."""
 
     Endpoint = Endpoint
@@ -294,14 +289,14 @@ class Action(object):
         self.name = name
 
         if button is not None:
-            self.CSS_CLASS += " btn btn-{}".format(button)
+            self.CSS_CLASS += f" btn btn-{button}"
         if css is not None:
             self.CSS_CLASS = self.CSS_CLASS + " " + css
         self._build_css_class()
 
         self._title = title
         self._description = description
-        if isinstance(icon, string_types):
+        if isinstance(icon, str):
             icon = Glyphicon(icon)
         self._icon = icon
         self._url = url
@@ -379,12 +374,12 @@ class Action(object):
             return
 
         if not isinstance(endpoint, Endpoint):
-            if isinstance(endpoint, string_types):
+            if isinstance(endpoint, str):
                 endpoint = self.Endpoint(endpoint)
             elif isinstance(endpoint, (tuple, list)):
                 assert len(endpoint) == 2
                 endpoint, kwargs = endpoint
-                assert isinstance(endpoint, string_types)
+                assert isinstance(endpoint, str)
                 assert isinstance(kwargs, dict)
                 endpoint = self.Endpoint(endpoint, **kwargs)
             else:
@@ -456,11 +451,11 @@ class Action(object):
 
         endpoint = self.endpoint
         if endpoint:
-            return text_type(endpoint)
+            return str(endpoint)
         return self._url
 
 
-class ModalActionMixin(object):
+class ModalActionMixin:
     template_string = (
         '<a class="{{ action.css_class }}" href="{{ url }}" data-toggle="modal">'
         "{%- if action.icon %}{{ action.icon}} {% endif %}"
@@ -488,7 +483,7 @@ class ButtonAction(Action):
         submit_name="__action",
         btn_class="default",
         *args,
-        **kwargs
+        **kwargs,
     ):
         Action.__init__(self, category, name, *args, **kwargs)
         self.submit_name = submit_name
@@ -507,11 +502,11 @@ class ActionGroup(Action):
     )
 
     def __init__(self, category, name, items=(), *args, **kwargs):
-        super(ActionGroup, self).__init__(category, name, *args, **kwargs)
+        super().__init__(category, name, *args, **kwargs)
         self.items = list(items)
 
     def get_render_args(self, **kwargs):
-        params = super(ActionGroup, self).get_render_args(**kwargs)
+        params = super().get_render_args(**kwargs)
         params["action_items"] = [a for a in self.items if a.available(params)]
         return params
 
@@ -543,11 +538,11 @@ class ActionGroupItem(Action):
     divider = False
 
     def __init__(self, category, name, divider=False, *args, **kwargs):
-        super(ActionGroupItem, self).__init__(category, name, *args, **kwargs)
+        super().__init__(category, name, *args, **kwargs)
         self.divider = divider
 
 
-class ActionRegistry(object):
+class ActionRegistry:
     """The Action registry.
 
     This is a Flask extension which registers :class:`.Action` sets. Actions are

@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from datetime import datetime, timedelta
 
@@ -88,7 +85,7 @@ class AuthServiceState(ServiceState):
     """State class for :class:`AuthService`"""
 
     def __init__(self, *args, **kwargs):
-        super(AuthServiceState, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.bp_access_controllers = {None: []}
         self.endpoint_access_controllers = {}
 

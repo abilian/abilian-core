@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 #  setup Form class with babel support
-class _BabelTranslation(object):
+class _BabelTranslation:
     def gettext(self, string):
         return _(string)
 
@@ -40,7 +40,7 @@ class _BabelTranslation(object):
 BabelTranslation = _BabelTranslation()
 
 
-class FormPermissions(object):
+class FormPermissions:
     """Form role/permission manager."""
 
     def __init__(
@@ -152,7 +152,7 @@ class FormPermissions(object):
             if callable(r):
                 r = eval_roles(r)
 
-            if isinstance(r, (Role,) + string_types):
+            if isinstance(r, (Role,) + (str,)):
                 roles.append(r)
             else:
                 roles.extend(r)
@@ -165,7 +165,7 @@ class FormPermissions(object):
         return security.has_role(user, role=roles, object=obj)
 
 
-class FormContext(object):
+class FormContext:
     """Allows :class:`forms <Form>` to set a context during instanciation, so
     that subforms used in formfields / listformfields / etc can perform proper
     field filtering according to original permission and user passed to top
@@ -232,7 +232,7 @@ class Form(BaseForm):
                 kwargs["csrf_enabled"] = False
 
         with form_ctx as ctx:
-            super(Form, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
             self._field_groups = {}  # map field -> group
 
             if not isinstance(self.__class__._groups, OrderedDict):

@@ -1,7 +1,5 @@
 # coding=utf-8
 """Admin panel for tags."""
-from __future__ import absolute_import, print_function, unicode_literals
-
 import logging
 from typing import List
 
@@ -68,7 +66,7 @@ class NSView(View):
     """View a Namespace."""
 
     def __init__(self, view_endpoint, *args, **kwargs):
-        super(NSView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__selected_tags = None
         self.view_endpoint = view_endpoint
 
@@ -208,19 +206,19 @@ class NSView(View):
         return self.redirect_to_view()
 
 
-class BaseTagView(object):
+class BaseTagView:
     """Mixin for tag views."""
 
     Model = Tag
     Form = TagForm
 
     def __init__(self, *args, **kwargs):
-        super(BaseTagView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.extension = current_app.extensions["tags"]
 
     def prepare_args(self, args, kwargs):
         self.ns = kwargs.pop("ns")
-        return super(BaseTagView, self).prepare_args(args, kwargs)
+        return super().prepare_args(args, kwargs)
 
     def view_url(self):
         return url_for(".tags_ns", ns=self.ns)

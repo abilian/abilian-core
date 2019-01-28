@@ -3,9 +3,6 @@
 
 References to files stored in a on-disk repository
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import hashlib
 import uuid
 from typing import Optional
@@ -52,7 +49,7 @@ class Blob(Model):
     meta = Column(JSONDict(), nullable=False, default=dict)
 
     def __init__(self, value=None, *args, **kwargs):
-        super(Blob, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.uuid is None:
             self.uuid = uuid.uuid4()
 
@@ -94,7 +91,7 @@ class Blob(Model):
         from abilian.services.repository import session_repository as repository
 
         repository.set(self, self.uuid, value)
-        self.meta["md5"] = text_type(hashlib.md5(self.value).hexdigest())
+        self.meta["md5"] = str(hashlib.md5(self.value).hexdigest())
 
         if hasattr(value, "filename"):
             filename = getattr(value, "filename")
@@ -117,7 +114,7 @@ class Blob(Model):
         """Return md5 from meta, or compute it if absent."""
         md5 = self.meta.get("md5")
         if md5 is None:
-            md5 = text_type(hashlib.md5(self.value).hexdigest())
+            md5 = str(hashlib.md5(self.value).hexdigest())
 
         return md5
 

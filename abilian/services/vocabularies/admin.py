@@ -1,8 +1,5 @@
 # coding=utf-8
 """Admin panel for vocabularies."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import g, redirect, render_template, request
 
 from abilian.core.extensions import db
@@ -18,7 +15,7 @@ from .forms import EditForm
 _MARKER = object()
 
 
-class ViewBase(object):
+class ViewBase:
     title = _l("Vocabulary entry")
     base_template = "admin/_base.html"
     Form = EditForm
@@ -50,7 +47,7 @@ class Edit(ViewBase, views.ObjectEdit):
 
 class Create(views.ObjectCreate, Edit):
     def init_object(self, args, kwargs):
-        args, kwargs = super(Create, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
         self.obj.active = True  # do this because default value seems ignored?
         return args, kwargs
 

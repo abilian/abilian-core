@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import json
 import logging
 import time
@@ -42,7 +39,7 @@ def is_valid_handle(handle):
     return True
 
 
-class FileUploadsExtension(object):
+class FileUploadsExtension:
     """API for Out-Of-Band file uploads.
 
     Allow to manage files in forms: file is uploaded to an upload url, a handle is
@@ -84,7 +81,7 @@ class FileUploadsExtension(object):
         if isinstance(user, AnonymousUserMixin):
             user_id = "anonymous"
         else:
-            user_id = text_type(user.id)
+            user_id = str(user.id)
         return self.UPLOAD_DIR / user_id
 
     def add_file(self, user, file_obj, **metadata):
@@ -104,7 +101,7 @@ class FileUploadsExtension(object):
                 out.write(chunk)
 
         if metadata:
-            meta_file = user_dir / "{}.metadata".format(handle)
+            meta_file = user_dir / f"{handle}.metadata"
             with meta_file.open("wb") as out:
                 metadata_json = json.dumps(metadata, skipkeys=True)
                 if PY3:
@@ -138,7 +135,7 @@ class FileUploadsExtension(object):
         if content is None:
             return None
 
-        metafile = content.parent / "{}.metadata".format(handle)
+        metafile = content.parent / f"{handle}.metadata"
         if not metafile.exists():
             return None
 

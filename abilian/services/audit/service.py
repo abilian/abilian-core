@@ -6,9 +6,6 @@ TODO: In the future, we may decide to:
 - Make Models that have the __auditable__ property (set to True) auditable.
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from datetime import datetime
 from inspect import isclass
@@ -31,7 +28,7 @@ from .models import CREATION, DELETION, RELATED, UPDATE, AuditEntry, Changes
 log = logging.getLogger(__name__)
 
 
-class AuditableMeta(object):
+class AuditableMeta:
     name = None
     id_attr = None
     related = None
@@ -308,7 +305,7 @@ class AuditService(Service):
                 item = model
                 for attr in path:
                     item = getattr(item, attr)
-                enduser_ids.append(text_type(item))
+                enduser_ids.append(str(item))
 
             related_name = "{} {}".format(meta.backref_attr, " ".join(enduser_ids))
             related_changes = changes

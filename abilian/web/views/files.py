@@ -1,7 +1,5 @@
 # coding=utf-8
 """Base classes for file download."""
-from __future__ import absolute_import, print_function, unicode_literals
-
 from datetime import datetime, timedelta
 
 from flask import Response, request, send_file
@@ -63,7 +61,7 @@ class BaseFileDownload(View):
                     )
                 )
 
-        args, kwargs = super(BaseFileDownload, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
         kwargs["attach"] = request.args.get("attach", self.as_attachment, type=bool)
         return args, kwargs
 
@@ -108,7 +106,7 @@ class BaseBlobDownload(BaseFileDownload):
         raise NotImplementedError()
 
     def prepare_args(self, args, kwargs):
-        args, kwargs = super(BaseBlobDownload, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
         self.blob = self.get_blob(*args, **kwargs)
         metadata = self.blob.meta
         self.filename = metadata.get("filename", self.obj.name)

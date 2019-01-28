@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import six
 import sqlalchemy as sa
 import sqlalchemy.event
@@ -61,7 +58,6 @@ class _VocabularyMeta(_BaseMeta):
         return _BaseMeta.__new__(cls, name, bases, d)
 
 
-@six.python_2_unicode_compatible
 @six.add_metaclass(_VocabularyMeta)
 class BaseVocabulary(db.Model):
     """Base abstract class for vocabularies."""
@@ -85,7 +81,7 @@ class BaseVocabulary(db.Model):
     def __mapper_args__(cls):
         return {"order_by": [cls.__table__.c.position.asc()]}
 
-    class Meta(object):
+    class Meta:
         label = None
         group = None
 
@@ -148,7 +144,7 @@ def Vocabulary(name, label=None, group=None):
 
     _name, _label, _group = name.lower(), label, group
 
-    class Meta(object):
+    class Meta:
         name = _name
         label = _label
         group = _group

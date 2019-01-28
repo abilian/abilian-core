@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import g
 from six import text_type
 from sqlalchemy.ext.declarative import declared_attr
@@ -14,7 +11,7 @@ from .base import AUDITABLE, EDITABLE, SEARCHABLE, SYSTEM
 from .subjects import User
 
 
-class OwnedMixin(object):
+class OwnedMixin:
     __index_to__ = (
         ("creator", ("creator",)),
         ("creator_name", (("creator_name", STORED),)),
@@ -38,7 +35,7 @@ class OwnedMixin(object):
 
     @declared_attr
     def creator(cls):
-        primary_join = "User.id == {}.creator_id".format(cls.__name__)
+        primary_join = f"User.id == {cls.__name__}.creator_id"
         return relationship(
             User,
             primaryjoin=primary_join,
@@ -49,7 +46,7 @@ class OwnedMixin(object):
 
     @property
     def creator_name(self):
-        return text_type(self.creator) if self.creator else ""
+        return str(self.creator) if self.creator else ""
 
     @declared_attr
     def owner_id(cls):
@@ -57,7 +54,7 @@ class OwnedMixin(object):
 
     @declared_attr
     def owner(cls):
-        primary_join = "User.id == {}.owner_id".format(cls.__name__)
+        primary_join = f"User.id == {cls.__name__}.owner_id"
         return relationship(
             User,
             primaryjoin=primary_join,
@@ -68,4 +65,4 @@ class OwnedMixin(object):
 
     @property
     def owner_name(self):
-        return text_type(self.owner) if self.owner else ""
+        return str(self.owner) if self.owner else ""

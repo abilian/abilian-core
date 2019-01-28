@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 import os
 from pathlib import Path
@@ -26,8 +23,8 @@ def show(only_path=False):
     logger.setLevel(logging.INFO)
     infos = [
         "\n",
-        'Instance path: "{}"'.format(current_app.instance_path),
-        'CONFIG_ENVVAR: "{}"'.format(current_app.CONFIG_ENVVAR),
+        f'Instance path: "{current_app.instance_path}"',
+        f'CONFIG_ENVVAR: "{current_app.CONFIG_ENVVAR}"',
     ]
 
     logger.info("\n  ".join(infos))
@@ -36,7 +33,7 @@ def show(only_path=False):
         log_config(current_app.config)
 
 
-class DefaultConfig(object):
+class DefaultConfig:
     SQLALCHEMY_DATABASE_URI = ""
 
     PRODUCTION = False
@@ -67,7 +64,7 @@ class DefaultConfig(object):
     UNOCONV_LOCATION = "/usr/bin/unoconv"
 
     def __init__(self, logging_file=None):
-        self.SESSION_COOKIE_NAME = "{}-session".format(current_app.name)
+        self.SESSION_COOKIE_NAME = f"{current_app.name}-session"
         self.SECRET_KEY = os.urandom(24)
 
         db_dir = Path(current_app.instance_path) / "data"
@@ -81,7 +78,7 @@ class DefaultConfig(object):
             self.LOGGING_CONFIG_FILE = str(logging_file)
 
 
-class ReprProxy(object):
+class ReprProxy:
     """Proxy an object and apply repr() + Mark safe when accesing an attribute.
 
     Used in jinja templates.

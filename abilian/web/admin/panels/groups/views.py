@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from cgi import escape
 
 import sqlalchemy as sa
@@ -64,8 +61,8 @@ class JsonGroupsList(base.JSONView):
             roles = [r for r in security.get_roles(group) if r.assignable]
 
             columns = [
-                '<a href="{url}">{name}</a>'.format(url=group_url, name=name),
-                text_type(members_count or 0),
+                f'<a href="{group_url}">{name}</a>',
+                str(members_count or 0),
                 render_template_string(
                     """{%- for role in roles %}
                         <span class="badge badge-default">{{ role }}</span>
@@ -86,7 +83,7 @@ class JsonGroupsList(base.JSONView):
 
 
 # Group edit / create views
-class GroupBase(object):
+class GroupBase:
     Model = Group
     Form = GroupAdminForm
     pk = "group_id"
@@ -129,7 +126,7 @@ class GroupView(GroupBase, views.ObjectView):
     @property
     def template_kwargs(self):
         security = get_service("security")
-        kw = super(GroupView, self).template_kwargs
+        kw = super().template_kwargs
         members = list(self.obj.members)
         members.sort(key=lambda u: (u.last_name, u.first_name))
         kw["members"] = members
@@ -147,13 +144,13 @@ class GroupEdit(GroupBase, views.ObjectEdit):
         return BreadcrumbItem(label=label, url="", description=self.obj.name)
 
     def get_form_buttons(self, *args, **kwargs):
-        buttons = super(GroupEdit, self).get_form_buttons()
+        buttons = super().get_form_buttons()
         buttons.append(ADD_USER_BUTTON)
         buttons.append(REMOVE_USER_BUTTON)
         return buttons
 
     def get_form_kwargs(self):
-        kw = super(GroupEdit, self).get_form_kwargs()
+        kw = super().get_form_kwargs()
         security = get_service("security")
         roles = [
             r for r in security.get_roles(self.obj, no_group_roles=True) if r.assignable
@@ -173,7 +170,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
         for r in new_roles - current_roles:
             security.grant_role(self.obj, r)
 
-        return super(GroupEdit, self).after_populate_obj()
+        return super().after_populate_obj()
 
     def add_user(self, *args, **kwargs):
         user_id = int(request.form.get("user"))

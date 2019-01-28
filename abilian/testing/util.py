@@ -1,8 +1,5 @@
 # coding=utf-8
 """Elements to build test cases for an :class:`abilian.app.Application`"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from typing import ContextManager
 
 from flask.testing import FlaskClient
@@ -26,7 +23,7 @@ __all__ = (
 
 
 def path_from_url(url):
-    url = text_type(url)
+    url = str(url)
     return "/" + "/".join(URL.from_text(url).path)
 
 
@@ -39,7 +36,7 @@ def client_login(client, user):
     # assert current_user.is_authenticated
     # assert current_user.id == user.id
 
-    class LoginContext(object):
+    class LoginContext:
         def __enter__(self):
             return None
 
@@ -68,7 +65,7 @@ def login(user, remember=False, force=False):
     if not success:
         raise ValueError("User is not active, cannot login; or use force=True")
 
-    class LoginContext(object):
+    class LoginContext:
         def __enter__(self):
             return None
 

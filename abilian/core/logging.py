@@ -13,9 +13,6 @@ your entry point before anything has been imported:
  logging.getLogger('PATCH').setLevel(logging.INFO)
 
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 
 from six import string_types
@@ -39,17 +36,17 @@ if _patch_logger.level is logging.NOTSET:
 
 class PatchLoggerAdapter(logging.LoggerAdapter):
     def process(self, msg, kwargs):
-        if isinstance(msg, string_types):
-            return super(PatchLoggerAdapter, self).process(msg, kwargs)
+        if isinstance(msg, str):
+            return super().process(msg, kwargs)
 
         func = msg
         location = func.__module__
         if hasattr(func, "im_class"):
             cls = func.__self__.__class__
             func = func.__func__
-            location = "{}.{}".format(cls.__module__, cls.__name__)
+            location = f"{cls.__module__}.{cls.__name__}"
 
-        return "{}.{}".format(location, func.__name__), kwargs
+        return f"{location}.{func.__name__}", kwargs
 
 
 #: logger for monkey patchs. use like this:

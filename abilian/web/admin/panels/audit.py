@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime
 from itertools import chain
 from typing import Text
@@ -67,10 +64,7 @@ class JSONUserSearch(JSONView):
 
         values = query.values(User.id, User.first_name, User.last_name, User.email)
         results = [
-            {
-                "id": obj.id,
-                "text": "{} {} ({})".format(obj.first_name, obj.last_name, obj.email),
-            }
+            {"id": obj.id, "text": f"{obj.first_name} {obj.last_name} ({obj.email})"}
             for obj in values
         ]
 
@@ -257,7 +251,7 @@ class AuditPanel(AdminPanel):
 #
 #  Presenters for audit entries listing
 #
-class BaseEntryPresenter(object):
+class BaseEntryPresenter:
 
     _USER_FMT = (
         '<a href="{{ url_for("social.user", user_id=user.id) }}">' "{{ user.name }}</a>"
@@ -299,7 +293,7 @@ class AuditEntryPresenter(BaseEntryPresenter):
     def __init__(self, entry):
         # type: (AuditEntry) -> None
         assert isinstance(entry, AuditEntry)
-        super(AuditEntryPresenter, self).__init__(entry.user, entry.happened_at)
+        super().__init__(entry.user, entry.happened_at)
         self.entry = entry
         self.entity_deleted = entry.entity is None
 
@@ -331,7 +325,7 @@ class AuditEntryPresenter(BaseEntryPresenter):
         elif e.op == 2:
             msg = _('{user} has deleted {entity_type}: {entity_id} "{entity}"')
         else:
-            raise Exception("Bad entry type: {}".format(e.type))
+            raise Exception(f"Bad entry type: {e.type}")
 
         self.msg = Markup(
             msg.format(
@@ -349,7 +343,7 @@ class SecurityEntryPresenter(BaseEntryPresenter):
     def __init__(self, entry):
         # type: (SecurityAudit) -> None
         assert isinstance(entry, SecurityAudit)
-        super(SecurityEntryPresenter, self).__init__(entry.manager, entry.happened_at)
+        super().__init__(entry.manager, entry.happened_at)
         self.entry = entry
 
     def render(self):
@@ -402,14 +396,14 @@ class SecurityEntryPresenter(BaseEntryPresenter):
                     "{principal} on {entity}"
                 )
             else:
-                raise Exception("Invalid entity op: {}".format(e.op))
+                raise Exception(f"Invalid entity op: {e.op}")
         else:
             if e.op == e.GRANT:
                 msg = _('{manager} has given role "{role}" to {principal}')
             elif e.op == e.REVOKE:
                 msg = _('{manager} has revoked role "{role}" from {principal}')
             else:
-                raise Exception("Invalid entity op: {}".format(e.op))
+                raise Exception(f"Invalid entity op: {e.op}")
 
         self.msg = Markup(
             msg.format(manager=manager, principal=principal, role=e.role, entity=entity)

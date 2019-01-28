@@ -13,9 +13,6 @@ different than what we are used to in content management:
 For example, if the actor specifies that a particular user appears in a photo.
 The object is the user and the target is the photo."
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode
 
 from abilian.core.extensions import db

@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app, jsonify, send_file
 from flask_login import current_user
 from flask_wtf.file import FileField, file_required
@@ -23,9 +20,9 @@ class UploadForm(Form):
     file = FileField(validators=(file_required(),))
 
 
-class BaseUploadsView(object):
+class BaseUploadsView:
     def prepare_args(self, args, kwargs):
-        args, kwargs = super(BaseUploadsView, self).prepare_args(args, kwargs)
+        args, kwargs = super().prepare_args(args, kwargs)
         self.uploads = current_app.extensions["uploads"]
         self.user = unwrap(current_user)
         return args, kwargs

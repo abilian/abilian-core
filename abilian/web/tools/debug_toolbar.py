@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import sys
 from typing import List, Text
 
@@ -42,11 +39,11 @@ class ActionDebugPanel(DebugPanel):
                     "class": action.__class__.__name__,
                 }
                 try:
-                    d["endpoint"] = text_type(action.endpoint)
+                    d["endpoint"] = str(action.endpoint)
                 except BaseException:
                     d["endpoint"] = "<Exception>"
                 try:
-                    d["url"] = text_type(action.url(g.action_context))
+                    d["url"] = str(action.url(g.action_context))
                 except BaseException:
                     d["url"] = "<Exception>"
                 actions_for_template.append(d)
@@ -96,7 +93,7 @@ class SignalsDebugPanel(DebugPanel):
                 ns = var
                 ns_name = var_name
                 for signal_name, signal in ns.items():
-                    receivers = [text_type(r) for r in signal.receivers.values()]
+                    receivers = [str(r) for r in signal.receivers.values()]
                     d = {
                         "module_name": module_name,
                         "ns_name": ns_name,
@@ -125,11 +122,7 @@ class SignalsDebugPanel(DebugPanel):
         events = self.events
 
         def wrapped_send(self, *sender, **kwargs):
-            d = {
-                "signal_name": self.name,
-                "sender": text_type(sender[0]),
-                "args": kwargs,
-            }
+            d = {"signal_name": self.name, "sender": str(sender[0]), "args": kwargs}
             events.append(d)
             return orig_send(self, *sender, **kwargs)
 

@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import current_app, flash, request
 from flask.signals import request_started
 from flask_wtf.csrf import CsrfProtect
@@ -15,7 +12,7 @@ from abilian.i18n import _l
 wtf_csrf = CsrfProtect()
 
 
-class AbilianCsrf(object):
+class AbilianCsrf:
     """CSRF error handler, that allows supporting views to gracefully report
     error instead of a plain 400 error.
 

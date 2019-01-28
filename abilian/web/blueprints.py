@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import Blueprint as BaseBlueprint
 from six import string_types
 
@@ -44,7 +41,7 @@ class Blueprint(BaseBlueprint):
         BaseBlueprint.__init__(self, name, import_name, **kwargs)
 
         if allowed_roles is not None:
-            if isinstance(allowed_roles, string_types):
+            if isinstance(allowed_roles, str):
                 allowed_roles = Role(allowed_roles)
 
             if isinstance(allowed_roles, Role):

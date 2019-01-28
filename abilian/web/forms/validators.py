@@ -6,9 +6,6 @@ TODO: most of this is currently only stubs and needs to be implemented.
 NOTE: the `rule` property is supposed to be useful for generating client-side
 validation code.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from wtforms import validators
 from wtforms.compat import string_types
 
@@ -37,7 +34,7 @@ __all__ = (
 )
 
 
-class Rule(object):
+class Rule:
     @property
     def rule(self):
         return None
@@ -49,7 +46,7 @@ class Email(validators.Email):
             self.message = field.gettext("Invalid email address.")
 
         if field.data:
-            super(Email, self).__call__(form, field)
+            super().__call__(form, field)
 
     @property
     def rule(self):
@@ -205,7 +202,7 @@ class AntiVirus(Rule):
             raise validators.ValidationError(_("Virus detected!"))
 
 
-class RenderEmpty(object):
+class RenderEmpty:
     """Force display."""
 
     field_flags = ("render_empty",)

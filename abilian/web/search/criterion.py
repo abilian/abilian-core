@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from typing import Text, Union
 
@@ -13,14 +10,14 @@ from sqlalchemy.sql.expression import or_
 logger = logging.getLogger(__name__)
 
 
-class UNDEFINED(object):
+class UNDEFINED:
     pass
 
 
 _UNDEFINED = UNDEFINED()
 
 
-class BaseCriterion(object):
+class BaseCriterion:
     form_default_value = _UNDEFINED  # type: Union[UNDEFINED, Text]
     """
     Values to set by default when adding a filter. The provided value(s) must be
@@ -76,20 +73,20 @@ class BaseCriterion(object):
         return self.form_default_value is not _UNDEFINED
 
     def __repr__(self):
-        return "<{} name={}>".format(self.__class__.__name__, self.name)
+        return f"<{self.__class__.__name__} name={self.name}>"
 
 
 class TextSearchCriterion(BaseCriterion):
     """Fulltext search on given attributes."""
 
     def __init__(self, name, label="", attributes=None, search_fmt="%{q}%"):
-        super(TextSearchCriterion, self).__init__(name, label)
+        super().__init__(name, label)
         self.attributes = dict.fromkeys(
             attributes if attributes is not None else (name,)
         )
         self._attributes_prepared = False
 
-        if isinstance(search_fmt, string_types):
+        if isinstance(search_fmt, str):
             search_fmt = [search_fmt]
 
         self.search_fmt = search_fmt
@@ -202,12 +199,12 @@ class TextSearchCriterion(BaseCriterion):
 
 class TextCriterion(TextSearchCriterion):
     def __init__(self, name, label="", attributes=None, search_fmt="%{q}%"):
-        super(TextCriterion, self).__init__(name, label, attributes, search_fmt)
+        super().__init__(name, label, attributes, search_fmt)
 
     def filter(self, query, module, request, searched_text, *args, **kwargs):
         my_searched_text = request.values.get(self.name, "").strip()
         if my_searched_text:
-            return super(TextCriterion, self).filter(
+            return super().filter(
                 query, module, request, my_searched_text.lower(), *args, **kwargs
             )
         else:

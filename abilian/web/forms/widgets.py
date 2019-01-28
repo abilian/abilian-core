@@ -3,9 +3,6 @@
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import base64
 import cgi
 import logging
@@ -86,7 +83,7 @@ def linkify_url(value):
 
     rjs = r"[\s]*(&#x.{1,7})?".join(list("javascript:"))
     rvb = r"[\s]*(&#x.{1,7})?".join(list("vbscript:"))
-    re_scripts = re.compile("({})|({})".format(rjs, rvb), re.IGNORECASE)
+    re_scripts = re.compile(f"({rjs})|({rvb})", re.IGNORECASE)
 
     value = re_scripts.sub("", value)
 
@@ -122,17 +119,17 @@ def text2html(text):
 
     lines = text.split("\n")
     lines = [line for line in lines if line]
-    paragraphs = ["<p>{}</p>".format(line) for line in lines]
+    paragraphs = [f"<p>{line}</p>" for line in lines]
     return Markup(bleach.clean("\n".join(paragraphs), tags=["p"]))
 
 
-class Column(object):
+class Column:
     def __init__(self, **kw):
         for k, w in kw.items():
             setattr(self, k, w)
 
 
-class View(object):
+class View:
     options = {}  # type: Dict[Text, Any]
 
     def get_templates(self, specific_template_name, default_template):
@@ -168,7 +165,7 @@ class BaseTableView(View):
         self.columns = []
         default_width = "{:2.0f}%".format(0.99 / len(columns) * 100)
         for col in columns:
-            if isinstance(col, string_types):
+            if isinstance(col, str):
                 col = {"name": col, "width": default_width}
             assert isinstance(col, dict)
             col.setdefault("width", default_width)
@@ -252,7 +249,7 @@ class BaseTableView(View):
             elif column_name in (make_link_on, "name") or col.get("linkable"):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(
-                        build_url(entity), cgi.escape(text_type(value))
+                        build_url(entity), cgi.escape(str(value))
                     )
                 )
             elif isinstance(value, Entity):
@@ -261,7 +258,7 @@ class BaseTableView(View):
                         build_url(value), cgi.escape(value.name)
                     )
                 )
-            elif isinstance(value, string_types) and (
+            elif isinstance(value, str) and (
                 value.startswith("http://") or value.startswith("www.")
             ):
                 cell = Markup(linkify_url(value))
@@ -270,11 +267,11 @@ class BaseTableView(View):
             elif isinstance(value, list):
                 cell = "; ".join(value)
             else:
-                if not isinstance(value, (Markup,) + string_types):
+                if not isinstance(value, (Markup,) + (str,)):
                     if value is None:
                         value = ""
                     else:
-                        value = text_type(value)
+                        value = str(value)
                 cell = value
 
             line.append(cell)
@@ -374,7 +371,7 @@ class AjaxMainTableView(View):
                 continue
             d = {
                 "name": criterion.name,
-                "label": text_type(criterion.label),
+                "label": str(criterion.label),
                 "type": criterion.form_filter_type,
                 "args": criterion.form_filter_args,
                 "unset": criterion.form_unset_value,
@@ -429,18 +426,18 @@ class AjaxMainTableView(View):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(url_for(value), cgi.escape(value.name))
                 )
-            elif isinstance(value, string_types) and (
+            elif isinstance(value, str) and (
                 value.startswith("http://") or value.startswith("www.")
             ):
                 cell = Markup(linkify_url(value))
             elif col.get("linkable"):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(
-                        url_for(entity), cgi.escape(text_type(value))
+                        url_for(entity), cgi.escape(str(value))
                     )
                 )
             else:
-                cell = text_type(value)
+                cell = str(value)
 
             line.append(cell)
         return line
@@ -551,7 +548,7 @@ class SingleView(View):
 #
 # Used to describe single entity views.
 #
-class Panel(object):
+class Panel:
     """`Panel` and `Row` classes help implement a trivial internal DSL for
     specifying multi-column layouts in forms or object views.
 
@@ -573,7 +570,7 @@ class Panel(object):
         return len(self.rows)
 
 
-class Row(object):
+class Row:
     """`Panel` and `Row` classes help implement a trivial internal DSL for
     specifying multi-column layouts in forms or object views.
 
@@ -594,7 +591,7 @@ class Row(object):
         return len(self.cols)
 
 
-class ModelWidget(object):
+class ModelWidget:
     edit_template = "widgets/model_widget_edit.html"
     view_template = "widgets/model_widget_view.html"
 
@@ -646,7 +643,7 @@ class TextInput(wtforms.widgets.TextInput):
     post_icon = None  # type: Optional[Text]
 
     def __init__(self, input_type=None, pre_icon=None, post_icon=None, *args, **kwargs):
-        super(TextInput, self).__init__(input_type, *args, **kwargs)
+        super().__init__(input_type, *args, **kwargs)
 
         if pre_icon is not None:
             self.pre_icon = pre_icon
@@ -655,7 +652,7 @@ class TextInput(wtforms.widgets.TextInput):
 
     def __call__(self, field, *args, **kwargs):
         if not any((self.pre_icon, self.post_icon)):
-            return super(TextInput, self).__call__(field, *args, **kwargs)
+            return super().__call__(field, *args, **kwargs)
 
         kwargs.setdefault("type", self.input_type)
         if "value" not in kwargs:
@@ -717,10 +714,10 @@ class TextArea(BaseTextArea):
         if self.rows and "rows" not in kwargs:
             kwargs["rows"] = self.rows
 
-        return super(TextArea, self).__call__(*args, **kwargs)
+        return super().__call__(*args, **kwargs)
 
 
-class FileInput(object):
+class FileInput:
     """Renders a file input.
 
     Inspired from http://www.abeautifulsite.net/blog/2013/08/whipping-
@@ -827,13 +824,13 @@ class ImageInput(FileInput):
         resize_mode=image.CROP,
         valid_extensions=("jpg", "jpeg", "png"),
     ):
-        super(ImageInput, self).__init__(template=template)
+        super().__init__(template=template)
         self.resize_mode = resize_mode
         self.valid_extensions = valid_extensions
         self.width, self.height = width, height
 
     def build_exisiting_files_list(self, field):
-        existing = super(ImageInput, self).build_exisiting_files_list(field)
+        existing = super().build_exisiting_files_list(field)
         for data in existing:
             value = data["file"]
             if value:
@@ -849,7 +846,7 @@ class ImageInput(FileInput):
         return existing
 
     def build_uploads_list(self, field):
-        uploaded = super(ImageInput, self).build_uploads_list(field)
+        uploaded = super().build_uploads_list(field)
         for data in uploaded:
             value = data["file"]
             if value:
@@ -880,7 +877,7 @@ class ImageInput(FileInput):
         except IOError:
             return ""
         thumb = base64.b64encode(img).decode("ascii")
-        return "data:image/{format};base64,{img}".format(format=fmt, img=thumb)
+        return f"data:image/{fmt};base64,{thumb}"
 
     def render_view(self, field, **kwargs):
         data = field.data
@@ -908,7 +905,7 @@ class Chosen(Select):
     def __call__(self, field, **kwargs):
         kwargs.setdefault("id", field.id)
         params = html_params(name=field.name, **kwargs)
-        html = ['<select {} class="chzn-select">'.format(params)]
+        html = [f'<select {params} class="chzn-select">']
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
         html.append("</select>")
@@ -921,7 +918,7 @@ class Chosen(Select):
             options["selected"] = True
         params = html_params(**options)
         return HTMLString(
-            "<option {}>{}</option>".format(params, cgi.escape(text_type(label)))
+            "<option {}>{}</option>".format(params, cgi.escape(str(label)))
         )
 
 
@@ -935,7 +932,7 @@ class TagInput(Input):
             kwargs["value"] = field._value()
 
         params = self.html_params(name=field.name, **kwargs)
-        return HTMLString("<input {}>".format(params))
+        return HTMLString(f"<input {params}>")
 
 
 class DateInput(Input):
@@ -1062,7 +1059,7 @@ class TimeInput(Input):
         return Markup(render_template(self.template, **ctx))
 
 
-class DateTimeInput(object):
+class DateTimeInput:
     """if corresponding field.raw_data exist it is used to initialize default
     date & time (raw_data example: ["10/10/16 | 09:00"])"""
 
@@ -1134,14 +1131,14 @@ class DateTimeInput(object):
         )
 
 
-class DefaultViewWidget(object):
+class DefaultViewWidget:
     def render_view(self, field, **kwargs):
         value = field.object_data
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             return text2html(value)
         else:
             # [], None and other must be rendered using empty string
-            return text_type(value or "")
+            return str(value or "")
 
 
 class BooleanWidget(wtforms.widgets.CheckboxInput):
@@ -1176,13 +1173,13 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
         if self.on_off_mode:
             self.on_off_options["data-toggle"] = "on-off"
 
-        super(BooleanWidget, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __call__(self, field, **kwargs):
         if self.on_off_mode:
             kwargs.update(self.on_off_options)
 
-        return super(BooleanWidget, self).__call__(field, **kwargs)
+        return super().__call__(field, **kwargs)
 
     def render_view(self, field, **kwargs):
         return "\u2713" if field.object_data else ""  # Text_type "Check mark"
@@ -1209,7 +1206,7 @@ class FloatWidget(wtforms.widgets.TextInput):
     def __init__(self, precision=None):
         self.precision = precision
         if precision is not None:
-            self._fmt = ".{:d}f".format(precision)
+            self._fmt = f".{precision:d}f"
 
     def render_view(self, field, **kwargs):
         data = field.object_data
@@ -1229,7 +1226,7 @@ class DateTimeWidget(DateWidget):
         return format_datetime(field.object_data) if field.object_data else ""
 
 
-class EntityWidget(object):
+class EntityWidget:
     def render_view(self, field, **kwargs):
         objs = field.object_data
         if not field.multiple:
@@ -1258,7 +1255,7 @@ class HoursWidget(TextInput):
             return ""
 
         # \u00A0: non-breakable whitespace
-        return "{value}\u00A0{unit}".format(value=val, unit=unit)
+        return f"{val}\u00A0{unit}"
 
 
 class MoneyWidget(TextInput):
@@ -1298,20 +1295,20 @@ class EmailWidget(TextInput):
             for entry in field.entries:
                 link = bleach.linkify(entry.data, parse_email=True)
                 if link:
-                    links += ' {}&nbsp;<i class="fa fa-envelope"></i><br>'.format(link)
+                    links += f' {link}&nbsp;<i class="fa fa-envelope"></i><br>'
         else:
             link = bleach.linkify(field.object_data, parse_email=True)
             if link:
-                links = '{}&nbsp;<i class="fa fa-envelope"></i>'.format(link)
+                links = f'{link}&nbsp;<i class="fa fa-envelope"></i>'
         return links
 
 
-class URLWidget(object):
+class URLWidget:
     def render_view(self, field, **kwargs):
         return linkify_url(field.object_data) if field.object_data else ""
 
 
-class RichTextWidget(object):
+class RichTextWidget:
     template = "widgets/richtext.html"
     allowed_tags = {
         "a": {"href": True, "title": True},
@@ -1363,14 +1360,14 @@ class ListWidget(wtforms.widgets.ListWidget):
 
     def __call__(self, field, **kwargs):
         if self.show_label:
-            return super(ListWidget, self).__call__(field, **kwargs)
+            return super().__call__(field, **kwargs)
 
         kwargs.setdefault("id", field.id)
         html = ["<{} {}>".format(self.html_tag, wtforms.widgets.html_params(**kwargs))]
         for subfield in field:
             html.append("<li>{}</li>".format(subfield()))
 
-        html.append("</{}>".format(self.html_tag))
+        html.append(f"</{self.html_tag}>")
         return wtforms.widgets.HTMLString("".join(html))
 
     def render_view(self, field, **kwargs):
@@ -1392,7 +1389,7 @@ class ListWidget(wtforms.widgets.ListWidget):
         return Markup(render_template_string(tpl, data=data))
 
 
-class FieldListWidget(object):
+class FieldListWidget:
     """For list of Fields (using <tr><td>)"""
 
     view_template = "widgets/fieldlist_view.html"
@@ -1416,7 +1413,7 @@ class FieldListWidget(object):
         return Markup(render_template(self.view_template, field=field))
 
 
-class TabularFieldListWidget(object):
+class TabularFieldListWidget:
     """For list of formfields.
 
     2 templates are available:
@@ -1444,7 +1441,7 @@ class TabularFieldListWidget(object):
         return Markup(render_template(self.template, labels=labels, field=field))
 
 
-class ModelListWidget(object):
+class ModelListWidget:
     def __init__(self, template="widgets/horizontal_table.html"):
         self.template = template
 
@@ -1488,7 +1485,7 @@ class Select2(Select):
     unescape_html = False
 
     def __init__(self, unescape_html=False, js_init="select2", *args, **kwargs):
-        super(Select2, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.js_init = js_init
 
         if unescape_html:
@@ -1512,9 +1509,7 @@ class Select2(Select):
         return Select.__call__(self, field, *args, **kwargs)
 
     def render_view(self, field, **kwargs):
-        labels = [
-            text_type(label) for v, label, checked in field.iter_choices() if checked
-        ]
+        labels = [str(label) for v, label, checked in field.iter_choices() if checked]
         return "; ".join(labels)
 
     @classmethod
@@ -1524,7 +1519,7 @@ class Select2(Select):
         return Select.render_option(value, label, selected, **kwargs)
 
 
-class Select2Ajax(object):
+class Select2Ajax:
     """Ad-hoc select widget based on Select2.
 
     The code below is probably very fragile, since it depends on the internal
@@ -1588,9 +1583,9 @@ class Select2Ajax(object):
         s2_params.update(self.s2_params)
 
         if field.ajax_source:
-            s2_params["ajax"] = {"url": text_type(field.ajax_source)}
+            s2_params["ajax"] = {"url": str(field.ajax_source)}
 
-        s2_params["placeholder"] = text_type(field.label.text)
+        s2_params["placeholder"] = str(field.label.text)
 
         if not field.flags.required:
             s2_params["allowClear"] = True
@@ -1600,7 +1595,7 @@ class Select2Ajax(object):
             data = [data]
 
         values = self.values_builder(data)
-        input_value = ",".join(text_type(o.id) for o in data if o)
+        input_value = ",".join(str(o.id) for o in data if o)
         data_node_id = None
 
         json_data = {}

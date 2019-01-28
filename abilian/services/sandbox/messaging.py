@@ -1,14 +1,12 @@
 # coding=utf-8
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
 
 
-class PrivateMessage(object):
+class PrivateMessage:
     # TODO
     pass
 
 
-class PrivateMessageService(object):
+class PrivateMessageService:
     def messages(self, user=None, page=0, per_page=50, filter=None):
         """Return the list of messages received by the given user (or current
         user if user=None)."""
@@ -17,6 +15,6 @@ class PrivateMessageService(object):
         """Send a message to the destination user."""
 
 
-class MessageService(object):
+class MessageService:
     # TODO
     pass

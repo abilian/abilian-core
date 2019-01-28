@@ -1,7 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import glob
 import hashlib
 import logging
@@ -64,7 +61,7 @@ HAS_LIBREOFFICE = has_libreoffice()
 
 
 @add_metaclass(ABCMeta)
-class Handler(object):
+class Handler:
     """Abstract base class for handlers."""
 
     accepts_mime_types = []  # type: List[str]
@@ -95,12 +92,12 @@ class Handler(object):
         match_target = False
 
         for pat in self.accepts_mime_types:
-            if re.match("^{}$".format(pat), source_mime_type):
+            if re.match(f"^{pat}$", source_mime_type):
                 match_source = True
                 break
 
         for pat in self.produces_mime_types:
-            if re.match("^{}$".format(pat), target_mime_type):
+            if re.match(f"^{pat}$", target_mime_type):
                 match_target = True
                 break
 
@@ -120,7 +117,7 @@ class PdfToTextHandler(Handler):
             try:
                 subprocess.check_call(["pdftotext", in_fn, out_fn])
             except Exception as e:
-                raise_from(ConversionError("pdftotext failed"), e)
+                raise ConversionError("pdftotext failed") from e
 
             converted = open(out_fn, "rb").read()
             encoding = self.encoding_sniffer.from_file(out_fn)
@@ -128,10 +125,10 @@ class PdfToTextHandler(Handler):
         if encoding in ("binary", None):
             encoding = "ascii"
         try:
-            converted_unicode = text_type(converted, encoding, errors="ignore")
+            converted_unicode = str(converted, encoding, errors="ignore")
         except BaseException:
             traceback.print_exc()
-            converted_unicode = text_type(converted, errors="ignore")
+            converted_unicode = str(converted, errors="ignore")
 
         return converted_unicode
 
@@ -156,7 +153,7 @@ class AbiwordTextHandler(Handler):
                     cwd=bytes(tmp_dir),
                 )
             except Exception as e:
-                raise_from(ConversionError("abiword failed"), e)
+                raise ConversionError("abiword failed") from e
 
             converted = open(out_fn).read()
             encoding = self.encoding_sniffer.from_file(out_fn)
@@ -164,10 +161,10 @@ class AbiwordTextHandler(Handler):
         if encoding in ("binary", None):
             encoding = "ascii"
         try:
-            converted_unicode = text_type(converted, encoding, errors="ignore")
+            converted_unicode = str(converted, encoding, errors="ignore")
         except BaseException:
             traceback.print_exc()
-            converted_unicode = text_type(converted, errors="ignore")
+            converted_unicode = str(converted, errors="ignore")
 
         return converted_unicode
 
@@ -195,7 +192,7 @@ class AbiwordPDFHandler(Handler):
                     cwd=bytes(self.tmp_dir),
                 )
             except Exception as e:
-                raise_from(ConversionError("abiword failed"), e)
+                raise ConversionError("abiword failed") from e
 
             converted = open(out_fn).read()
             return converted
@@ -212,7 +209,7 @@ class ImageMagickHandler(Handler):
                 converted = open(out_fn, "rb").read()
                 return converted
             except Exception as e:
-                raise_from(ConversionError("convert failed"), e)
+                raise ConversionError("convert failed") from e
 
 
 class PdfToPpmHandler(Handler):
@@ -225,7 +222,7 @@ class PdfToPpmHandler(Handler):
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(["pdftoppm", "-jpeg", in_fn, out_fn])
-                file_list = sorted(glob.glob("{}-*.jpg".format(out_fn)))
+                file_list = sorted(glob.glob(f"{out_fn}-*.jpg"))
 
                 converted_images = []
                 for fn in file_list:
@@ -234,7 +231,7 @@ class PdfToPpmHandler(Handler):
 
                 return converted_images
             except Exception as e:
-                raise_from(ConversionError("pdftoppm failed"), e)
+                raise ConversionError("pdftoppm failed") from e
             finally:
                 for fn in file_list:
                     try:
@@ -333,7 +330,7 @@ class UnoconvPdfHandler(Handler):
                     self._process.communicate()
                 except Exception as e:
                     logger.error("run_uno error: %s", bytes(e), exc_info=True)
-                    raise_from(ConversionError("unoconv failed"), e)
+                    raise ConversionError("unoconv failed") from e
 
             run_thread = threading.Thread(target=run_uno)
             run_thread.start()
@@ -350,7 +347,7 @@ class UnoconvPdfHandler(Handler):
                             logger.warning("Failed to kill process %s", self._process)
 
                     self._process = None
-                    raise ConversionError("Conversion timeout ({})".format(timeout))
+                    raise ConversionError(f"Conversion timeout ({timeout})")
 
                 converted = open(out_fn).read()
                 return converted
@@ -402,7 +399,7 @@ class LibreOfficePdfHandler(Handler):
         if soffice:
             execute_ok = os.access(soffice, os.X_OK)
             if not execute_ok:
-                self.log.warning('Not allowed to execute "{}"'.format(soffice))
+                self.log.warning(f'Not allowed to execute "{soffice}"')
 
         else:
             self.log.error("Can't find LibreOffice executable")
@@ -433,7 +430,7 @@ class LibreOfficePdfHandler(Handler):
                     self._process.communicate()
                 except Exception as e:
                     logger.error("soffice error: %s", bytes(e), exc_info=True)
-                    raise_from(ConversionError("soffice conversion failed"), e)
+                    raise ConversionError("soffice conversion failed") from e
 
             run_thread = threading.Thread(target=run_soffice)
             run_thread.start()
@@ -450,7 +447,7 @@ class LibreOfficePdfHandler(Handler):
                             logger.warning("Failed to kill process %s", self._process)
 
                     self._process = None
-                    raise ConversionError("Conversion timeout ({})".format(timeout))
+                    raise ConversionError(f"Conversion timeout ({timeout})")
 
                 out_fn = os.path.splitext(in_fn)[0] + ".pdf"
                 converted = open(out_fn, "rb").read()
@@ -485,8 +482,8 @@ class CloudoooPdfHandler(Handler):
     }
 
     def convert(self, key):
-        in_fn = "data/{}.blob".format(key)
-        in_mime_type = open("data/{}.mime".format(key)).read()
+        in_fn = f"data/{key}.blob"
+        in_mime_type = open(f"data/{key}.mime").read()
         file_extension = mimetypes.guess_extension(in_mime_type).strip(".")
 
         data = b64encode(open(in_fn, "rb").read())
@@ -501,7 +498,7 @@ class CloudoooPdfHandler(Handler):
 
         converted = b64decode(data)
         new_key = hashlib.md5(converted).hexdigest()
-        with open("data/{}.blob".format(new_key), "wb") as fd:
+        with open(f"data/{new_key}.blob", "wb") as fd:
             fd.write(converted)
         return new_key
 
@@ -516,7 +513,7 @@ class WvwareTextHandler(Handler):
             try:
                 subprocess.check_call(["wvText", in_fn, out_fn])
             except Exception as e:
-                raise_from(ConversionError("wxText failed"), e)
+                raise ConversionError("wxText failed") from e
 
             converted = open(out_fn).read()
 
@@ -524,9 +521,9 @@ class WvwareTextHandler(Handler):
             if encoding in ("binary", None):
                 encoding = "ascii"
             try:
-                converted_unicode = text_type(converted, encoding, errors="ignore")
+                converted_unicode = str(converted, encoding, errors="ignore")
             except BaseException:
                 traceback.print_exc()
-                converted_unicode = text_type(converted, errors="ignore")
+                converted_unicode = str(converted, errors="ignore")
 
             return converted_unicode

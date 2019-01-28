@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime
 from typing import Optional
 
@@ -29,7 +26,7 @@ bp = Blueprint("comments", __name__, url_prefix="/comments")
 
 def _default_comment_view(obj, obj_type, obj_id, **kwargs):
     entity = obj.entity
-    return url_for(entity, _anchor="comment-{}".format(obj.id))
+    return url_for(entity, _anchor=f"comment-{obj.id}")
 
 
 @bp.record_once
@@ -40,7 +37,7 @@ def register_default_view(state):
 COMMENT_BUTTON = ButtonAction("form", "edit", btn_class="primary", title=_l("Post"))
 
 
-class BaseCommentView(object):
+class BaseCommentView:
     Model = Comment
     Form = CommentForm
 
@@ -48,7 +45,7 @@ class BaseCommentView(object):
     entity = None  # type: Optional[Entity]
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(BaseCommentView, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
         entity_id = kwargs.pop("entity_id", None)
         if entity_id is not None:
             self.entity = Entity.query.get(entity_id)
@@ -65,7 +62,7 @@ class BaseCommentView(object):
     def view_url(self):
         kw = {}
         if self.obj and self.obj.id:
-            kw["_anchor"] = "comment-{}".format(self.obj.id)
+            kw["_anchor"] = f"comment-{self.obj.id}"
         return url_for(self.entity, **kw)
 
     def index_url(self):
@@ -93,7 +90,7 @@ class CommentEditView(BaseCommentView, ObjectEdit):
         history.append(
             {
                 "user_id": current_user.id,
-                "user": text_type(current_user),
+                "user": str(current_user),
                 "date": utc_dt(datetime.utcnow()).isoformat(),
             }
         )
@@ -110,10 +107,10 @@ class CommentCreateView(BaseCommentView, ObjectCreate):
     _message_success = _l("Comment added")
 
     def __init__(self, *args, **kwargs):
-        super(CommentCreateView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def init_object(self, args, kwargs):
-        args, kwargs = super(CommentCreateView, self).init_object(args, kwargs)
+        args, kwargs = super().init_object(args, kwargs)
         self.obj.entity = self.entity
         session = sa.orm.object_session(self.entity)
 

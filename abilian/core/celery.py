@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from multiprocessing.util import register_after_fork
 
 from celery import Celery
@@ -130,10 +127,10 @@ class FlaskTask(Task):
             #                 '_enable_transaction_accounting'
             #
             # FIXME: also test has_app_context()?
-            return super(FlaskTask, self).__call__(*args, **kwargs)
+            return super().__call__(*args, **kwargs)
 
         with self.app.loader.flask_app.app_context():
-            return super(FlaskTask, self).__call__(*args, **kwargs)
+            return super().__call__(*args, **kwargs)
 
 
 class PeriodicTask(FlaskTask, CeleryPeriodicTask):

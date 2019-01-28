@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime
 
 import six
@@ -16,7 +13,7 @@ from abilian.core.models.base import Indexable as CoreIndexable
 from abilian.services.indexing.adapter import SAAdapter
 
 
-class SANotAdaptable(object):
+class SANotAdaptable:
     pass
 
 
@@ -78,7 +75,7 @@ def test_build_attrs_3():
         "text",
         "updated_at",
     }
-    assert all(lambda f: callable(f) for f in six.itervalues(adapter.doc_attrs))
+    assert all(lambda f: callable(f) for f in adapter.doc_attrs.values())
 
     assert set(schema.names()) == {
         "allowed_roles_and_users",
@@ -112,7 +109,7 @@ def test_build_attrs_4():
         "object_type",
         "object_key",
     }
-    assert all(lambda f: callable(f) for f in six.itervalues(adapter.doc_attrs))
+    assert all(lambda f: callable(f) for f in adapter.doc_attrs.values())
 
     assert set(schema.names()) == {
         "id",

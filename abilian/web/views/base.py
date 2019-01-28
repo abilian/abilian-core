@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import g, json, jsonify, redirect, render_template_string, request
 from flask.views import MethodView as BaseView
 from six import PY2
@@ -26,7 +23,7 @@ class View(BaseView):
     def as_view(cls, name, *class_args, **class_kwargs):
         if PY2:
             name = bytes(name)
-        return super(View, cls).as_view(name, *class_args, **class_kwargs)
+        return super().as_view(name, *class_args, **class_kwargs)
 
     def dispatch_request(self, *args, **kwargs):
         meth = getattr(self, request.method.lower(), None)

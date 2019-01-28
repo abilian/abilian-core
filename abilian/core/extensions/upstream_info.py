@@ -1,15 +1,12 @@
 # coding=utf-8
 """Extension for sending informations to upstream server."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from flask import _request_ctx_stack
 from flask.signals import request_finished, request_started
 
 from abilian.core.signals import user_loaded
 
 
-class UpstreamInfo(object):
+class UpstreamInfo:
     """Extension for sending informations to upstream server."""
 
     def __init__(self, app=None):

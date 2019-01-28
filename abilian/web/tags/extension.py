@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from typing import Any
 
 import six
@@ -46,12 +43,10 @@ class _TagsForm(Form):
         if obj is not None:
             tags = getattr(obj, TAGS_ATTR, set())
 
-        super(_TagsForm, self).process(
-            formdata=formdata, obj=None, data=data, tags=tags, **kwargs
-        )
+        super().process(formdata=formdata, obj=None, data=data, tags=tags, **kwargs)
 
 
-class TagsExtension(object):
+class TagsExtension:
     """API for tags, installed as an application extension.
 
     It is also available in templates as `tags`.

@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import hashlib
 
 from flask import Blueprint, Response, g, make_response, request
@@ -83,7 +80,7 @@ class UserJsonListing(JSONModelSearch):
         return query.order_by(func.lower(User.last_name), func.lower(User.first_name))
 
     def get_item(self, obj):
-        d = super(UserJsonListing, self).get_item(obj)
+        d = super().get_item(obj)
         d["email"] = obj.email
         d["can_login"] = obj.can_login
         d["photo"] = url_for("users.photo", user_id=obj.id)

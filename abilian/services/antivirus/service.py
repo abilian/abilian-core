@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import io
 import logging
 import os
@@ -87,7 +84,7 @@ class AntiVirusService(Service):
         if isinstance(file_or_stream, Blob):
             # py3 compat: bytes == py2 str(). Pathlib uses os.fsencode()
             file_or_stream = bytes(file_or_stream.file)
-        elif isinstance(file_or_stream, six.text_type):
+        elif isinstance(file_or_stream, str):
             file_or_stream = file_or_stream.encode(os.fsencode)
 
         if isinstance(file_or_stream, bytes):

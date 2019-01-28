@@ -1,8 +1,5 @@
 # coding=utf-8
 """Various tools that don't belong some place specific."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import functools
 import hashlib
 import logging
@@ -36,7 +33,7 @@ noproxy = unwrap
 
 def fqcn(cls):
     """Fully Qualified Class Name."""
-    return text_type(cls.__module__ + "." + cls.__name__)
+    return str(cls.__module__ + "." + cls.__name__)
 
 
 def friendly_fqcn(cls_name):
@@ -90,7 +87,7 @@ def get_params(names):
     return params
 
 
-class timer(object):
+class timer:
     """Decorator that mesures the time it takes to run a function."""
 
     def __init__(self, f):
@@ -106,7 +103,7 @@ class timer(object):
 
 
 # From http://wiki.python.org/moin/PythonDecoratorLibrary#Memoize
-class memoized(object):
+class memoized:
     """Decorator that caches a function's return value each time it is called.
 
     If called later with the same arguments, the cached value is
@@ -136,7 +133,7 @@ class memoized(object):
 
 
 # From http://flask.pocoo.org/snippets/44/
-class Pagination(object):
+class Pagination:
     def __init__(self, page, per_page, total_count):
         self.page = page
         self.per_page = per_page
@@ -183,19 +180,19 @@ _NOT_WORD_RE = re.compile(r"[^\w\s]+", flags=re.UNICODE)
 def slugify(value, separator="-"):
     """Slugify an Unicode string, to make it URL friendly."""
     if six.PY2:
-        value = text_type(value)
-    if not isinstance(value, text_type):
+        value = str(value)
+    if not isinstance(value, str):
         raise ValueError("value must be a Unicode string")
     value = _NOT_WORD_RE.sub(" ", value)
     value = unicodedata.normalize("NFKD", value)
     value = value.encode("ascii", "ignore")
     value = value.decode("ascii")
     value = value.strip().lower()
-    value = re.sub(r"[{}_\s]+".format(separator), separator, value)
+    value = re.sub(fr"[{separator}_\s]+", separator, value)
     return value
 
 
-class BasePresenter(object):
+class BasePresenter:
     """A presenter wraps a model an adds specific (often, web-centric)
     accessors.
 
@@ -227,7 +224,7 @@ def encode_string(string):
     """
     # from pysecurity
 
-    if isinstance(string, text_type):
+    if isinstance(string, str):
         return string.encode("utf-8")
     else:
         return string

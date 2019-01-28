@@ -8,9 +8,6 @@ TODO: In the future, we may decide to:
 - Make Models that have the __auditable__ property (set to True) auditable.
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 import pickle
 from datetime import datetime
@@ -35,7 +32,7 @@ RELATED = 1 << 7
 logger = logging.getLogger(__name__)
 
 
-class Changes(object):
+class Changes:
     """Trace object modifications."""
 
     def __init__(self):
@@ -113,7 +110,7 @@ class AuditEntry(db.Model):
         return "<AuditEntry id={} op={} user={} {}entity=<{} id={}>>".format(
             repr(self.id),
             {CREATION: "CREATION", DELETION: "DELETION", UPDATE: "UPDATE"}[self.op],
-            repr(text_type(self.user)),
+            repr(str(self.user)),
             "related " if self.related else "",
             self.entity_type,
             self.entity_id,
@@ -195,14 +192,14 @@ class AuditEntry(db.Model):
             changes = Changes.from_legacy(changes)
 
         for k, v in changes.columns.items():
-            k = text_type(k)
+            k = str(k)
             uv = []
             if isinstance(v, Changes):
                 # field k is a related model with its own changes
                 uv = self._format_changes(v)
             else:
                 for val in v:
-                    if isinstance(val, binary_type):
+                    if isinstance(val, bytes):
                         # TODO: Temp fix for errors that happen during
                         # migration
                         try:
@@ -217,8 +214,8 @@ class AuditEntry(db.Model):
             uchanges.columns[k] = uv
 
         for attr_name, (appended, removed) in changes.collections.items():
-            appended = sorted(text_type(i) for i in appended)
-            removed = sorted(text_type(i) for i in removed)
+            appended = sorted(str(i) for i in appended)
+            removed = sorted(str(i) for i in removed)
             uchanges.collections[attr_name] = (appended, removed)
 
         return uchanges

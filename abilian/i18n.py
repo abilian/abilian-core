@@ -137,9 +137,7 @@ def country_choices(first=None, default_country_first=True):
     """
     locale = _get_locale()
     territories = [
-        (code, name)
-        for code, name in six.iteritems(locale.territories)
-        if len(code) == 2
+        (code, name) for code, name in locale.territories.items() if len(code) == 2
     ]  # skip 3-digit regions
 
     if first is None and default_country_first:
@@ -189,7 +187,7 @@ class Babel(BabelBase):
         BabelBase.__init__(self, *args, **kwargs)
 
     def init_app(self, app):
-        super(Babel, self).init_app(app)
+        super().init_app(app)
         self._translations_paths = [
             (os.path.join(app.root_path, "translations"), "messages")
         ]
@@ -210,14 +208,14 @@ class Babel(BabelBase):
             if not (path.exists() and path.is_dir()):
                 continue
 
-            if not os.access(text_type(path), os.R_OK):
+            if not os.access(str(path), os.R_OK):
                 self.app.logger.warning(
                     "Babel translations: read access not allowed {}, skipping."
-                    "".format(repr(text_type(path).encode("utf-8")))
+                    "".format(repr(str(path).encode("utf-8")))
                 )
                 continue
 
-            self._translations_paths.append((text_type(path), domain))
+            self._translations_paths.append((str(path), domain))
 
 
 class Translations(BaseTranslations):
@@ -350,7 +348,7 @@ def get_template_i18n(template_name, locale):
     return template_list
 
 
-class ensure_request_context(object):
+class ensure_request_context:
     """Context manager that ensures a request context is set up."""
 
     _rq_ctx = None
@@ -379,7 +377,7 @@ def render_template_i18n(template_name_or_list, **context):
         # Use get_locale() or default_locale
         locale = flask_babel.get_locale()
 
-    if isinstance(template_name_or_list, string_types):
+    if isinstance(template_name_or_list, str):
         template_list = get_template_i18n(template_name_or_list, locale)
     else:
         # Search for locale for each member of the list, do not bypass
@@ -394,7 +392,7 @@ _NOT_WORD_RE = re.compile(r"[^\w\s]+", flags=re.UNICODE)
 
 
 def to_lower_ascii(value):
-    value = text_type(value)
+    value = str(value)
     value = _NOT_WORD_RE.sub(" ", value)
     value = unicodedata.normalize("NFKD", value)
     value = value.encode("ascii", "ignore")

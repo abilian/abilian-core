@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import logging
 from collections import OrderedDict
 from functools import partial
@@ -54,9 +51,7 @@ def init_search(endpoint, values):
 
     g.breadcrumb.append(
         BreadcrumbItem(
-            label='"{}"'.format(q),
-            icon="search",
-            url=Endpoint("search.search_main", q=q),
+            label=f'"{q}"', icon="search", url=Endpoint("search.search_main", q=q)
         )
     )
 
@@ -75,7 +70,7 @@ def init_search(endpoint, values):
     if page > 1:
         g.breadcrumb.append(
             BreadcrumbItem(
-                label=text_type(page),
+                label=str(page),
                 url=Endpoint("search.search_main", page=page, **page_kw),
             )
         )

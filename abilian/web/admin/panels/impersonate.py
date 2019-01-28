@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, print_function, unicode_literals
-
 from flask import redirect, request, url_for
 from flask_login import login_user
 

@@ -1,8 +1,5 @@
 # coding=utf-8
 """Additional data types for sqlalchemy."""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import json
 import logging
 import sys
@@ -371,17 +368,17 @@ class Locale(sa.types.TypeDecorator):
             return None
 
         if not isinstance(value, babel.Locale):
-            if not isinstance(value, string_types):
+            if not isinstance(value, str):
                 raise ValueError("Unknown locale value: " + format(repr(value)))
             if not value.strip():
                 return None
             value = babel.Locale.parse(value)
 
-        code = text_type(value.language)
+        code = str(value.language)
         if value.territory:
-            code += "_" + text_type(value.territory)
+            code += "_" + str(value.territory)
         elif value.script:
-            code += "_" + text_type(value.territory)
+            code += "_" + str(value.territory)
 
         return code
 
@@ -403,7 +400,7 @@ class Timezone(sa.types.TypeDecorator):
             return None
 
         if not isinstance(value, pytz.tzfile.DstTzInfo):
-            if not isinstance(value, string_types):
+            if not isinstance(value, str):
                 raise ValueError("Unknown timezone value: " + repr(value))
             if not value.strip():
                 return None

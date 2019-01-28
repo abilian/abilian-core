@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import uuid
 from io import StringIO
 
@@ -81,7 +78,7 @@ def test_query(app, db):
     session.flush()
 
     assert Blob.query.by_uuid(b.uuid) is b
-    assert Blob.query.by_uuid(text_type(b.uuid)) is b
+    assert Blob.query.by_uuid(str(b.uuid)) is b
 
     u = uuid.uuid4()
     assert Blob.query.by_uuid(u) is None

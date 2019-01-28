@@ -1,8 +1,5 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 from datetime import datetime
 from functools import total_ordering
 
@@ -46,7 +43,6 @@ __all__ = [
 
 
 @total_ordering
-@python_2_unicode_compatible
 class Permission(UniqueName):
     """Defines permission by name.
 
@@ -58,16 +54,16 @@ class Permission(UniqueName):
     def __init__(self, name, label=None, assignable=True):
         UniqueName.__init__(self, name)
         if label is None:
-            label = "permission_" + text_type(name)
-        if isinstance(label, text_type):
+            label = "permission_" + str(name)
+        if isinstance(label, str):
             label = _l(label)
         self.label = label
 
     def __str__(self):
-        return text_type(self.name)
+        return str(self.name)
 
     def __lt__(self, other):
-        return text_type(self.label).__lt__(text_type(other.label))
+        return str(self.label).__lt__(str(other.label))
 
 
 class PermissionType(UniqueNameType):
@@ -80,7 +76,6 @@ class PermissionType(UniqueNameType):
 
 
 @total_ordering
-@python_2_unicode_compatible
 class Role(UniqueName):
     """Defines role by name. Roles instances are unique by name.
 
@@ -94,20 +89,20 @@ class Role(UniqueName):
     def __init__(self, name, label=None, assignable=True):
         UniqueName.__init__(self, name)
         if label is None:
-            label = "role_" + text_type(name)
-        if isinstance(label, text_type):
+            label = "role_" + str(name)
+        if isinstance(label, str):
             label = _l(label)
         self.label = label
         self.assignable = assignable
 
     def __str__(self):
-        return text_type(self.name)
+        return str(self.name)
 
     def __repr__(self):
-        return "{}({}, {})".format(self.__class__.__name__, self.name, self.label)
+        return f"{self.__class__.__name__}({self.name}, {self.label})"
 
     def __lt__(self, other):
-        return text_type(self.label).__lt__(text_type(other.label))
+        return str(self.label).__lt__(str(other.label))
 
     @classmethod
     def assignable_roles(cls):
@@ -416,7 +411,7 @@ class SecurityAudit(db.Model):
     object_name = Column(UnicodeText)
 
 
-class InheritSecurity(object):
+class InheritSecurity:
     """Mixin for objects with a parent relation and security inheritance."""
 
     inherit_security = Column(
