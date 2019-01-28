@@ -4,12 +4,13 @@
 NOTE: code is currently quite messy. Needs to be refactored.
 """
 import base64
-import cgi
+import html
 import logging
 import re
 from collections import namedtuple
 from datetime import datetime
 from typing import Any, Dict, Optional, Text
+from urllib import parse
 
 import bleach
 import sqlalchemy as sa
@@ -20,8 +21,6 @@ from flask import Markup, current_app, g, json, render_template, \
 from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField
-from six import string_types, text_type
-from six.moves.urllib import parse
 from wtforms.widgets import HTMLString, Input
 from wtforms.widgets import PasswordInput as BasePasswordInput
 from wtforms.widgets import Select
@@ -45,6 +44,7 @@ __all__ = [
     "linkify_url",
     "text2html",
     "Column",
+    # Views
     "BaseTableView",
     "MainTableView",
     "RelatedTableView",
@@ -52,27 +52,29 @@ __all__ = [
     "SingleView",
     "Panel",
     "Row",
-    "Chosen",
-    "TagInput",
-    "DateInput",
-    "DefaultViewWidget",
+    # Widgets
     "BooleanWidget",
-    "FloatWidget",
+    "Chosen",
+    "DateInput",
+    "DateTimeInput",
     "DateTimeWidget",
     "DateWidget",
-    "MoneyWidget",
+    "DefaultViewWidget",
     "EmailWidget",
-    "URLWidget",
+    "EntityWidget",
+    "FileInput",
+    "FloatWidget",
+    "ImageInput",
     "ListWidget",
-    "TabularFieldListWidget",
     "ModelListWidget",
+    "MoneyWidget",
+    "RichTextWidget",
     "Select2",
     "Select2Ajax",
-    "RichTextWidget",
-    "FileInput",
-    "EntityWidget",
-    "ImageInput",
+    "TabularFieldListWidget",
+    "TagInput",
     "TextArea",
+    "URLWidget",
 ]
 
 
@@ -249,13 +251,13 @@ class BaseTableView(View):
             elif column_name in (make_link_on, "name") or col.get("linkable"):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(
-                        build_url(entity), cgi.escape(str(value))
+                        build_url(entity), html.escape(str(value))
                     )
                 )
             elif isinstance(value, Entity):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(
-                        build_url(value), cgi.escape(value.name)
+                        build_url(value), html.escape(value.name)
                     )
                 )
             elif isinstance(value, str) and (
@@ -420,11 +422,11 @@ class AjaxMainTableView(View):
                 cell = value
             elif column_name == "name":
                 cell = Markup(
-                    '<a href="{}">{}</a>'.format(url_for(entity), cgi.escape(value))
+                    '<a href="{}">{}</a>'.format(url_for(entity), html.escape(value))
                 )
             elif isinstance(value, Entity):
                 cell = Markup(
-                    '<a href="{}">{}</a>'.format(url_for(value), cgi.escape(value.name))
+                    '<a href="{}">{}</a>'.format(url_for(value), html.escape(value.name))
                 )
             elif isinstance(value, str) and (
                 value.startswith("http://") or value.startswith("www.")
@@ -433,7 +435,7 @@ class AjaxMainTableView(View):
             elif col.get("linkable"):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(
-                        url_for(entity), cgi.escape(str(value))
+                        url_for(entity), html.escape(str(value))
                     )
                 )
             else:
@@ -918,7 +920,7 @@ class Chosen(Select):
             options["selected"] = True
         params = html_params(**options)
         return HTMLString(
-            "<option {}>{}</option>".format(params, cgi.escape(str(label)))
+            "<option {}>{}</option>".format(params, html.escape(str(label)))
         )
 
 
@@ -1232,7 +1234,7 @@ class EntityWidget:
         if not field.multiple:
             objs = [objs]
         return ", ".join(
-            '<a href="{}">{}</a>'.format(url_for(o), cgi.escape(o.name))
+            '<a href="{}">{}</a>'.format(url_for(o), html.escape(o.name))
             for o in objs
             if o
         )

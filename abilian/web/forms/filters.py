@@ -1,6 +1,5 @@
 # coding=utf-8
 """Field filters for WTForm."""
-from six import string_types
 
 __all__ = ["strip", "uppercase", "lowercase"]
 
