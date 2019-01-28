@@ -64,7 +64,6 @@ bcrypt = "*"
 
 # low-level tools
 python-deprecated = "*"
-typing = { version = "*", python = "~2.7" }
 hyperlink = "*"
 
 # Used by DeferredJS (TODO: remove)
@@ -110,9 +109,6 @@ pytest-randomly = "*"
 pytest-repeat = "*"
 pytest-cov = "*"
 
-# Backport of Python 3 mocking library
-mock = ">=1.0.1"
-
 # Static code analysis: flake* and friends
 flake8 = "*"
 flake8-comprehensions = "*"
@@ -120,8 +116,8 @@ flake8-mutable = "*"
 flake8-pytest = "*"
 flake8-super-call = "*"
 flake8-tidy-imports = "*"
-flake8-mypy = { version = "*", python = "^3.6" }
-flake8-bugbear = { version = "*", python = "^3.6" }
+flake8-mypy = "*"
+flake8-bugbear = "*"
 mastool = "*"
 mccabe = "*"
 
