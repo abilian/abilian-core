@@ -68,18 +68,19 @@ from flask_babel import LazyString, force_locale, gettext, lazy_gettext, \
 from six import string_types, text_type
 
 __all__ = [
-    "babel",
-    "gettext",
     "_",
-    "lazy_gettext",
     "_l",
-    "localeselector",
-    "get_default_locale",
-    "ngettext",
     "_n",
+    "babel",
+    "get_default_locale",
+    "gettext",
+    "lazy_country_name",
+    "lazy_gettext",
+    "localeselector",
+    "ngettext",
+    "render_template_i18n",
     "timezoneselector",
     "VALID_LANGUAGES_CODE",
-    "render_template_i18n",
 ]
 
 #: gettext alias
