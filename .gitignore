@@ -9,6 +9,7 @@
 .coveralls.yml
 .ropeproject
 .mypy_cache
+.venv
 *,cover
 
 sandbox
