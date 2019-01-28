@@ -9,7 +9,6 @@ from typing import Optional
 
 import sqlalchemy as sa
 from flask_sqlalchemy import BaseQuery
-from six import text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.schema import Column

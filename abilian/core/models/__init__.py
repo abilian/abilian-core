@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, print_function
 import json
 from datetime import datetime
 
-from six import python_2_unicode_compatible
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm.util import class_mapper
 

@@ -9,10 +9,8 @@ import string
 from datetime import datetime
 from typing import Any
 
-from flask import current_app, flash, redirect, render_template, request, \
-    url_for
-from flask.globals import _request_ctx_stack
-from flask.json import jsonify
+from flask import _request_ctx_stack, current_app, flash, jsonify, redirect, \
+    render_template, request, url_for
 from flask_login import login_user, logout_user, user_logged_in, \
     user_logged_out
 from flask_mail import Message

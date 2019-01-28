@@ -1,7 +1,5 @@
 # coding=utf-8
 
-from six import text_type
-
 from abilian.core.util import Pagination, slugify
 
 

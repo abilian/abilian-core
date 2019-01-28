@@ -13,7 +13,6 @@ import pytz
 import six
 from babel.dates import LOCALTZ
 from flask import request
-from six import text_type
 from werkzeug.local import LocalProxy
 
 

@@ -13,7 +13,7 @@ import pickle
 from datetime import datetime
 
 from flask import current_app
-from six import PY2, PY3, binary_type, text_type
+from six import PY2, PY3
 from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.base import NEVER_SET

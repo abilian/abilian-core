@@ -21,7 +21,6 @@ from celery import shared_task
 from flask import _app_ctx_stack, appcontext_pushed, current_app, g
 from flask.globals import _lookup_app_object
 from flask_login import current_user
-from six import text_type
 from sqlalchemy import event
 from sqlalchemy.orm.session import Session
 from whoosh.filedb.filestore import FileStorage, RamStorage

@@ -1,7 +1,6 @@
 # coding=utf-8
 """"""
 from flask import g
-from six import text_type
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey

@@ -13,7 +13,6 @@ from typing import Text
 
 import sqlalchemy as sa
 from flask import current_app, g
-from six import text_type
 from sqlalchemy import event, extract
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.attributes import NEVER_SET

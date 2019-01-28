@@ -1,9 +1,9 @@
 # coding=utf-8
 import datetime
 from textwrap import dedent
+from unittest import mock
 
 import html5lib
-import mock
 from flask import Flask
 from flask_babel import Babel
 from jinja2 import Environment

@@ -10,7 +10,6 @@ TODO: Look wether other attributes from the spec need to be implemented.
 import logging
 from datetime import datetime
 
-from six import text_type
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import DateTime, Integer, String, Text

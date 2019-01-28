@@ -65,7 +65,6 @@ from flask import _request_ctx_stack, current_app, g, render_template, request
 from flask_babel import Babel as BabelBase
 from flask_babel import LazyString, force_locale, gettext, lazy_gettext, \
     ngettext
-from six import string_types, text_type
 
 __all__ = [
     "_",

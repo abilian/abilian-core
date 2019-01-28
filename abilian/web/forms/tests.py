@@ -1,8 +1,8 @@
 # coding=utf-8
 """"""
 import datetime
+from unittest import mock
 
-import mock
 import pytz
 from wtforms.form import Form
 

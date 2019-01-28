@@ -10,7 +10,6 @@ import sqlalchemy as sa
 import sqlalchemy.event
 from flask import _app_ctx_stack
 from flask.globals import _lookup_app_object
-from six import text_type
 from sqlalchemy.orm.session import Session
 
 from abilian.core.extensions import db

@@ -15,7 +15,6 @@ import sqlalchemy.exc
 import sqlalchemy.orm
 import sqlalchemy.pool
 from flask_sqlalchemy import SQLAlchemy as SAExtension
-from six import string_types, text_type
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.mutable import Mutable
 

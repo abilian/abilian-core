@@ -1,6 +1,6 @@
 # coding=utf-8
 """"""
-from six import python_2_unicode_compatible, text_type, with_metaclass
+from six import with_metaclass
 from sqlalchemy.types import String, TypeDecorator
 
 

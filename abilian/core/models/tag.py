@@ -4,7 +4,7 @@ from functools import total_ordering
 
 import sqlalchemy as sa
 import sqlalchemy.orm
-from six import add_metaclass, python_2_unicode_compatible, text_type
+from six import add_metaclass
 
 from abilian.core.entities import Entity
 

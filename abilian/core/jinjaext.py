@@ -1,8 +1,7 @@
 # coding=utf-8
 """Jinja2 extensions."""
 import lxml.html
-from flask import current_app
-from flask.globals import g
+from flask import current_app, g
 from flask.signals import got_request_exception, request_started
 from jinja2 import nodes
 from jinja2.ext import Extension as JinjaExtension

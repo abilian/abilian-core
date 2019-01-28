@@ -18,7 +18,6 @@ from pathlib import Path
 
 from PIL import Image
 from PIL.ExifTags import TAGS
-from six import string_types, text_type
 
 from abilian.services.conversion.util import make_temp_file
 

@@ -15,8 +15,6 @@ your entry point before anything has been imported:
 """
 import logging
 
-from six import string_types
-
 __all__ = ["patch_logger"]
 
 logging.basicConfig()

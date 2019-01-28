@@ -6,7 +6,6 @@ from itertools import chain
 import sqlalchemy as sa
 from flask import g
 from flask_login import current_user
-from six import string_types, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import object_session, subqueryload
 
