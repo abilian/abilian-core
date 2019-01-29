@@ -9,7 +9,6 @@ from uuid import UUID, uuid1
 from celery import shared_task
 from flask import current_app
 from flask_login import AnonymousUserMixin
-from six import PY3, text_type
 
 from abilian.core import signals
 from abilian.web import url_for
@@ -103,9 +102,7 @@ class FileUploadsExtension:
         if metadata:
             meta_file = user_dir / f"{handle}.metadata"
             with meta_file.open("wb") as out:
-                metadata_json = json.dumps(metadata, skipkeys=True)
-                if PY3:
-                    metadata_json = metadata_json.encode("ascii")
+                metadata_json = json.dumps(metadata, skipkeys=True).encode("ascii")
                 out.write(metadata_json)
 
         return handle

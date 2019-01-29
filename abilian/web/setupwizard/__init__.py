@@ -8,7 +8,6 @@ from collections import OrderedDict, namedtuple
 from pathlib import Path
 
 import redis
-import six
 import sqlalchemy as sa
 import sqlalchemy.dialects
 import sqlalchemy.exc

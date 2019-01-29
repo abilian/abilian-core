@@ -6,7 +6,6 @@ from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm
 from flask_login import current_user
-from six import text_type
 from werkzeug.exceptions import BadRequest
 
 from abilian.core.entities import Entity

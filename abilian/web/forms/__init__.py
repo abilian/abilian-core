@@ -9,7 +9,6 @@ from functools import partial
 from flask import g, has_app_context
 from flask_login import current_user
 from flask_wtf import Form as BaseForm
-from six import string_types
 from wtforms.fields import Field, HiddenField
 from wtforms_alchemy import model_form_factory
 

@@ -7,7 +7,6 @@ should appear in user menu
 """
 from flask import g
 from jinja2 import Markup, Template
-from six import string_types, text_type
 
 from .action import ACTIVE, ENABLED, Action, Glyphicon, getset
 

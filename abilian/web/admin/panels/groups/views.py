@@ -1,11 +1,10 @@
 # coding=utf-8
 """"""
-from cgi import escape
+import html
 
 import sqlalchemy as sa
 import sqlalchemy.orm
 from flask import render_template_string, request
-from six import text_type
 from sqlalchemy.sql.expression import asc, desc, func, nullslast
 
 from abilian.core.models.subjects import Group, User
@@ -57,7 +56,7 @@ class JsonGroupsList(base.JSONView):
         for group, members_count in groups:
             # TODO: this should be done on the browser.
             group_url = url_for(".groups_group", group_id=group.id)
-            name = escape(getattr(group, "name") or "")
+            name = html.escape(getattr(group, "name") or "")
             roles = [r for r in security.get_roles(group) if r.assignable]
 
             columns = [

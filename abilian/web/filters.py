@@ -13,7 +13,6 @@ from deprecated import deprecated
 from flask import Flask
 from jinja2 import Markup, escape, evalcontextfilter
 from pytz import utc
-from six import text_type
 from werkzeug.routing import BuildError
 
 from ..core.util import local_dt, slugify, utc_dt

@@ -1,6 +1,6 @@
 # coding=utf-8
 """"""
-from cgi import escape
+import html
 
 import sqlalchemy as sa
 import sqlalchemy.orm
@@ -78,8 +78,8 @@ class JsonUsersList(base.JSONView):
             # TODO: this should be done on the browser.
             user_url = url_for(".users_user", user_id=user.id)
             mugshot = user_photo_url(user, size=MUGSHOT_SIZE)
-            name = escape(getattr(user, "name") or "")
-            email = escape(getattr(user, "email") or "")
+            name = html.escape(getattr(user, "name") or "")
+            email = html.escape(getattr(user, "email") or "")
             roles = [
                 r for r in security.get_roles(user, no_group_roles=True) if r.assignable
             ]

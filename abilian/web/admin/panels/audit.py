@@ -5,7 +5,6 @@ from itertools import chain
 from typing import Text
 
 import pytz
-import six
 import sqlalchemy as sa
 import sqlalchemy.orm
 from flask import get_template_attribute, render_template, \
@@ -265,13 +264,6 @@ class BaseEntryPresenter:
         self.user = user
         self.date = local_dt(date)
 
-    if six.PY2:
-
-        def __cmp__(self, other):
-            # Python 3 compatibility. XXX: Really needed?
-            a, b = self.date, other.date
-            return (a > b) - (a < b)
-
     def __lt__(self, other):
         return self.date < other.date
 
@@ -284,8 +276,7 @@ class BaseEntryPresenter:
     def model(model_name):
         return db.Model._decl_class_registry.get(model_name)
 
-    def render(self):
-        # type: () -> Text
+    def render(self) -> str:
         raise NotImplementedError
 
 

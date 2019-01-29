@@ -426,7 +426,9 @@ class AjaxMainTableView(View):
                 )
             elif isinstance(value, Entity):
                 cell = Markup(
-                    '<a href="{}">{}</a>'.format(url_for(value), html.escape(value.name))
+                    '<a href="{}">{}</a>'.format(
+                        url_for(value), html.escape(value.name)
+                    )
                 )
             elif isinstance(value, str) and (
                 value.startswith("http://") or value.startswith("www.")

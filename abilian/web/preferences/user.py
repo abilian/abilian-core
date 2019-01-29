@@ -7,7 +7,6 @@ import babel.dates
 import PIL.Image
 from flask import current_app, flash, g, redirect, render_template, request, \
     url_for
-from six import PY2
 from werkzeug.exceptions import InternalServerError
 from wtforms.fields import StringField
 from wtforms.validators import ValidationError
@@ -104,7 +103,7 @@ class UserPreferencesPanel(PreferencePanel):
             # subclass str/bytes to set additional 'url' attribute
 
             photo = type(
-                b"Photo" if PY2 else "Photo",
+                "Photo",
                 (bytes,),
                 {"object": photo, "url": url_for("users.photo", user_id=g.user.id)},
             )

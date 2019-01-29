@@ -1,7 +1,6 @@
 # coding=utf-8
 """"""
 from flask import Blueprint as BaseBlueprint
-from six import string_types
 
 from abilian.services.security import Anonymous, Role
 

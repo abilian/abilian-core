@@ -2,8 +2,6 @@
 """"""
 from typing import Any
 
-import six
-
 from abilian.core.entities import Entity
 from abilian.core.models.tag import TAGS_ATTR, Tag, supports_tagging
 from abilian.i18n import _l
@@ -95,10 +93,7 @@ class TagsExtension:
             ns = self.entity_default_ns(entity)
 
         field = TagsField(label=_l("Tags"), ns=ns)
-        if six.PY2:
-            cls = type(b"EntityNSTagsForm", (_TagsForm,), {b"tags": field})
-        else:
-            cls = type("EntityNSTagsForm", (_TagsForm,), {"tags": field})
+        cls = type("EntityNSTagsForm", (_TagsForm,), {"tags": field})
         return cls
 
     def get(self, ns, label=None):

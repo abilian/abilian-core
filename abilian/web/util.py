@@ -7,7 +7,6 @@ more ideas of stuff to implement.
 from flask import current_app
 from flask import url_for as flask_url_for
 from flask.helpers import send_from_directory
-from six import string_types
 from werkzeug.routing import BuildError
 
 

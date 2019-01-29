@@ -7,7 +7,6 @@ import sqlalchemy.exc
 import sqlalchemy.orm
 from flask import current_app, flash, g, redirect, render_template, request, \
     url_for
-from six import text_type
 from werkzeug.exceptions import BadRequest, NotFound
 
 from abilian.core.entities import ValidationError

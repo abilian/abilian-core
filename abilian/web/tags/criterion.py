@@ -1,7 +1,6 @@
 # coding=utf-8
 """"""
 import sqlalchemy as sa
-from six import text_type
 
 from abilian.core.models.tag import Tag, entity_tag_tbl
 from abilian.i18n import _

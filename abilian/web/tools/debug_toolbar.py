@@ -6,7 +6,6 @@ from typing import List, Text
 from blinker import Namespace, Signal
 from flask import current_app, g
 from flask_debugtoolbar.panels import DebugPanel
-from six import text_type
 
 from abilian.web.action import actions
 

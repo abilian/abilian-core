@@ -3,7 +3,6 @@
 import logging
 from typing import Text, Union
 
-from six import string_types
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
 

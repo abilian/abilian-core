@@ -3,7 +3,6 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-import six
 import sqlalchemy as sa
 from flask import render_template
 from numpy import sum as numpysum
