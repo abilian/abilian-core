@@ -18,6 +18,7 @@ from flask.ctx import AppContext, RequestContext
 from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
 from pytest import fixture
+from sqlalchemy.orm import Session
 
 from abilian.app import create_app
 from abilian.core.models.subjects import User
@@ -43,8 +44,7 @@ def config():
 
 
 @fixture
-def app(config):
-    # type: (Any) -> Flask
+def app(config: Any) -> Flask:
     # We currently return a fresh app for each test.
     # Using session-scoped app doesn't currently work.
     # Note: the impact on speed is minimal.
@@ -52,28 +52,25 @@ def app(config):
 
 
 @fixture
-def app_context(app):
-    # type: (Flask) -> AppContext
+def app_context(app: Flask) -> AppContext:
     with app.app_context() as ctx:
         yield ctx
 
 
 @fixture
-def test_request_context(app):
-    # type: (Flask) -> RequestContext
+def test_request_context(app: Flask) -> RequestContext:
     with app.test_request_context() as ctx:
         yield ctx
 
 
 @fixture
-def req_ctx(app):
-    # type: (Flask) -> RequestContext
+def req_ctx(app: Flask) -> RequestContext:
     with app.test_request_context() as req_ctx:
         yield req_ctx
 
 
 @fixture
-def db(app_context):
+def db(app_context: AppContext) -> SQLAlchemy:
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
 
@@ -95,20 +92,18 @@ def session(db):
 
 
 @fixture
-def db_session(db):
+def db_session(db: SQLAlchemy) -> Session:
     return db.session
 
 
 @fixture
-def client(app):
-    # type: (Flask) -> FlaskClient
+def client(app: Flask) -> FlaskClient:
     """Return a Web client, used for testing."""
     return app.test_client()
 
 
 @fixture
-def user(db):
-    # type: (SQLAlchemy) -> User
+def user(db: SQLAlchemy) -> User:
     user = User(
         first_name="Joe",
         last_name="Test",
@@ -122,8 +117,7 @@ def user(db):
 
 
 @fixture
-def admin_user(db):
-    # type: (SQLAlchemy) -> User
+def admin_user(db: SQLAlchemy) -> User:
     user = User(
         first_name="Jim",
         last_name="Admin",
@@ -138,8 +132,7 @@ def admin_user(db):
 
 
 @fixture
-def login_user(user, client):
-    # type: (User, FlaskClient) -> User
+def login_user(user: User, client: FlaskClient) -> User:
     with client.session_transaction() as session:
         session["user_id"] = user.id
 
@@ -147,8 +140,7 @@ def login_user(user, client):
 
 
 @fixture
-def login_admin(admin_user, client):
-    # type: (User, FlaskClient) -> User
+def login_admin(admin_user: User, client: FlaskClient) -> User:
     with client.session_transaction() as session:
         session["user_id"] = admin_user.id
 
