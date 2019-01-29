@@ -1,9 +1,11 @@
-{%- set locale = get_locale() %}{%- set full_width = full_width|default(False) %}<!DOCTYPE html>
+{%- set locale = get_locale() -%}
+<!DOCTYPE html>
 <html lang="{{ locale.language }}">
 <head>
   <meta charset="utf-8">
-  <title>{% block page_title %}
-    {{ config.SITE_NAME }}{% endblock page_title %}</title>
+  <title>
+    {%- block page_title %}{{ config.SITE_NAME }}{% endblock page_title -%}
+  </title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="description" content="">
@@ -46,11 +48,10 @@
       var server_name = {{ config.get('SERVER_NAME', 'unknown') | tojson }};
 
       Sentry.init({dsn: dsn});
-      Sentry.configureScope(function(scope) {
-          scope.setTag("app_name", app_name);
-          scope.setTag("server_name", server_name);
-        }
-      );
+      Sentry.configureScope(function (scope) {
+        scope.setTag("app_name", app_name);
+        scope.setTag("server_name", server_name);
+      });
     </script>
   {%- endif %}
 
@@ -65,8 +66,7 @@
   <!-- navbar -->
   {% include "navbar.html" %}
 
-  <div id="content"
-      class="container{%- if full_width %}-fluid {% endif %} clearfix">
+  <div id="content" class="container clearfix">
 
     <!-- breadcrumbs -->
     {% if g.breadcrumb|length > 1 %}
@@ -93,10 +93,14 @@
 
     <div class="row">
       <div class="col-xs-12">
-        {% block main %}
-          {% block content %}
-          {% endblock content %}
-        {%- endblock main %}
+        <div class="main-block">
+          {% block main %}
+            <div class="content-block">
+              {% block content %}
+              {% endblock content %}
+            </div>
+          {%- endblock main %}
+        </div>
       </div>
     </div>
   </div>

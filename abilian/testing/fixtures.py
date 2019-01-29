@@ -7,8 +7,8 @@ Can be reused (and overriden) by adding::
 
 to your `conftest.py`.
 
-Supposed to replace the too-complex current UnitTest-based testing
-framework. -> DI and functions over complex inheritance hierarchies FTW!
+Replaced the too-complex UnitTest-based testing framework.
+-> DI and functions over complex inheritance hierarchies FTW!
 """
 
 from typing import Any

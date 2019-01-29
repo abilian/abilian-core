@@ -10,12 +10,11 @@ import dateutil.parser
 import flask_babel as babel
 from babel.dates import DateTimePattern, format_timedelta, parse_pattern
 from deprecated import deprecated
-from flask import Flask
-from jinja2 import Markup, escape, evalcontextfilter
+from jinja2 import Markup, escape, evalcontextfilter, Environment
 from pytz import utc
 from werkzeug.routing import BuildError
 
-from ..core.util import local_dt, slugify, utc_dt
+from abilian.core.util import local_dt, slugify, utc_dt
 from .util import url_for
 
 
@@ -261,11 +260,7 @@ def obj_to_url(obj):
         return ""
 
 
-def init_filters(env):
-    if isinstance(env, Flask):
-        # old api for init_filters: we used to pass flask application
-        env = env.jinja_env
-
+def init_filters(env: Environment):
     env.filters["nl2br"] = nl2br
     env.filters["paragraphs"] = paragraphs
     env.filters["date_age"] = date_age
