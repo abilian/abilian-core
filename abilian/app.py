@@ -736,17 +736,18 @@ class Application(
         if err:
             raise OSError(eno, err, str(path))
 
-        if not self.DATA_DIR.exists():
-            self.DATA_DIR.mkdir(0o775, parents=True)
+    @property
+    def data_dir(self):
+        path = Path(self.instance_path, "data")
+        if not path.exists():
+            path.mkdir(0o775, parents=True)
+
+        return path
 
     def make_config(self, instance_relative=False):
         config = Flask.make_config(self, instance_relative)
         if not config.get("SESSION_COOKIE_NAME"):
             config["SESSION_COOKIE_NAME"] = self.name + "-session"
-
-        # during testing DATA_DIR is not created by instance app,
-        # but we still need this attribute to be set
-        self.DATA_DIR = Path(self.instance_path, "data")
 
         if self._ABILIAN_INIT_TESTING_FLAG:
             # testing: don't load any config file!

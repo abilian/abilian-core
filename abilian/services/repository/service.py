@@ -37,7 +37,7 @@ class RepositoryService(Service):
     def init_app(self, app):
         Service.init_app(self, app)
 
-        path = app.DATA_DIR / "files"
+        path = app.data_dir / "files"
         if not path.exists():
             path.mkdir(mode=0o775, parents=True)
 

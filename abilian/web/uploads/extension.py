@@ -65,7 +65,7 @@ class FileUploadsExtension:
         if CLEANUP_SCHEDULE_ID not in CELERYBEAT_SCHEDULE:
             CELERYBEAT_SCHEDULE[CLEANUP_SCHEDULE_ID] = DEFAULT_CLEANUP_SCHEDULE
 
-        path = self.UPLOAD_DIR = app.DATA_DIR / "uploads"
+        path = self.UPLOAD_DIR = app.data_dir / "uploads"
         if not path.exists():
             path.mkdir(mode=0o775, parents=True)
 
