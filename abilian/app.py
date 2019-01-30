@@ -537,7 +537,7 @@ class Application(
     #: celery app class
     celery_app_cls = FlaskCelery
 
-    def __init__(self, name=None, config=None, *args, **kwargs):
+    def __init__(self, name=None, *args, **kwargs):
         name = name or __name__
 
         # instance_path = os.environ.get("FLASK_INSTANCE_PATH")
@@ -557,6 +557,7 @@ class Application(
         self.default_view = ViewRegistry()
         self.js_api = {}
 
+    def setup(self, config):
         self.configure(config)
 
         # At this point we have loaded all external config files:

@@ -25,7 +25,7 @@ def test_vocabulary_factory(session):
     assert Voc.__tablename__ == "vocabulary_voc"
     assert Voc.Meta.name == "voc"
     assert Voc.Meta.label == "Voc"
-    assert Voc.Meta.group is ""
+    assert Voc.Meta.group == ""
     assert issubclass(Voc, BaseVocabulary)
 
 
