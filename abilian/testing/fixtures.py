@@ -28,13 +28,16 @@ from abilian.testing.util import cleanup_db, ensure_services_started, \
 
 class TestConfig:
     TESTING = True
+    SECRET_KEY = "SECRET"
     SERVER_NAME = "localhost.localdomain"
     CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
     MAIL_SENDER = "tester@example.com"
     SITE_NAME = "Abilian Test"
-    CSRF_ENABLED = True
-    WTF_CSRF_ENABLED = True
+    # CSRF_ENABLED = True
+    # WTF_CSRF_ENABLED = True
+    CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = False
     BABEL_ACCEPT_LANGUAGES = ["en", "fr"]
 
 

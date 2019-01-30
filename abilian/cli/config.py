@@ -5,18 +5,12 @@ import os
 from pathlib import Path
 from pprint import pformat
 
-import sqlalchemy as sa
-import sqlalchemy.exc
 from flask import current_app
 from flask.cli import AppGroup
 from jinja2 import Environment, Markup, PackageLoader
 
-from abilian.services import get_service
-
 logging.basicConfig()
 logger = logging.getLogger("")
-
-# from .base import log_config, logger
 
 config_commands = AppGroup("config")
 
@@ -61,20 +55,8 @@ def init(filename="config.py", logging_config="logging.yml"):
 def _log_config(config):
     lines = ["Application configuration:"]
 
-    if config.get("CONFIGURED"):
-        settings = get_service("settings")
-        try:
-            db_settings = set(settings.namespace("config").keys())
-        except sa.exc.ProgrammingError:
-            # there is config.py, db uri, but maybe "initdb" has yet to be run
-            db_settings = {}
-    else:
-        db_settings = {}
-
     for k, v in sorted(config.items()):
         prefix = "    "
-        if k in db_settings:
-            prefix = "  * "
         indent = len(k) + 3
         width = 80 - indent
         v = pformat(v, width=width).replace("\n", "\n" + " " * indent)

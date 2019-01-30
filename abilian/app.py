@@ -441,7 +441,7 @@ class JinjaManagerMixin(Flask):
         init_filters(env)
         return env
 
-    @property
+    @locked_cached_property
     def jinja_options(self):
         options = dict(Flask.jinja_options)
 
@@ -524,10 +524,6 @@ class Application(
     #: on a configured instance.
     CONFIG_ENVVAR = "ABILIAN_CONFIG"
 
-    #: True if application has a config file and can be considered configured
-    #: for site.
-    configured = ConfigAttribute("CONFIGURED")
-
     #: If True all views will require by default an authenticated user, unless
     #: Anonymous role is authorized. Static assets are always public.
     private_site = ConfigAttribute("PRIVATE_SITE")
@@ -544,19 +540,13 @@ class Application(
     def __init__(self, name=None, config=None, *args, **kwargs):
         name = name or __name__
 
-        instance_path = os.environ.get("FLASK_INSTANCE_PATH")
-        if instance_path:
-            kwargs["instance_path"] = instance_path
-        else:
-            kwargs.setdefault("instance_relative_config", True)
+        # instance_path = os.environ.get("FLASK_INSTANCE_PATH")
+        # if instance_path:
+        #     kwargs["instance_path"] = instance_path
+        # else:
+        #     kwargs.setdefault("instance_relative_config", True)
 
-        # used by make_config to determine if we try to load config from
-        # instance / environment variable /...
-        self._ABILIAN_INIT_TESTING_FLAG = (
-            getattr(config, "TESTING", False) if config else False
-        )
         Flask.__init__(self, name, *args, **kwargs)
-        del self._ABILIAN_INIT_TESTING_FLAG
 
         appcontext_pushed.connect(self._install_id_generator)
 
@@ -574,39 +564,13 @@ class Application(
         # database AFAICT), and LOGGING_FILE cannot be set in DB settings.
         self.setup_logging()
 
-        configured = bool(self.config.get("SQLALCHEMY_DATABASE_URI"))
-        self.config["CONFIGURED"] = configured
-
         if not self.testing:
             self.init_sentry()
-
-        if not configured:
-            # set fixed secret_key so that any unconfigured worker will use,
-            # so that session can be used during setup even if
-            # multiple processes are processing requests.
-            self.config["SECRET_KEY"] = "abilian_setup_key"
 
         # time to load config bits from database: 'settings'
         # First init required stuff: db to make queries, and settings service
         extensions.db.init_app(self)
         settings_service.init_app(self)
-
-        if configured:
-            with self.app_context():
-                try:
-                    settings = self.services["settings"]
-                    config = settings.namespace("config").as_dict()
-                except sa.exc.DatabaseError as exc:
-                    # We may get here if DB is not initialized and "settings"
-                    # table is missing. Command "initdb" must be run to
-                    # initialize db, but first we must pass app init.
-                    if not self.testing:
-                        # durint tests this message will show up on every test,
-                        # since db is always recreated
-                        logging.error(exc)
-                    db.session.rollback()
-                else:
-                    self.config.update(config)
 
         if not self.config.get("FAVICO_URL"):
             self.config["FAVICO_URL"] = self.config.get("LOGO_URL")
@@ -656,7 +620,7 @@ class Application(
         # Must come after all entity classes have been declared.
         # Inherited from ServiceManager. Will need some configuration love
         # later.
-        if not self.config.get("TESTING", False):
+        if not self.testing:
             with self.app_context():
                 self.start_services()
 
@@ -670,11 +634,19 @@ class Application(
         if config:
             self.config.from_object(config)
 
+        # Setup babel config
         languages = self.config["BABEL_ACCEPT_LANGUAGES"]
         languages = tuple(
             lang for lang in languages if lang in abilian.i18n.VALID_LANGUAGES_CODE
         )
         self.config["BABEL_ACCEPT_LANGUAGES"] = languages
+
+        # This needs to be done dynamically
+        if not self.config.get("SESSION_COOKIE_NAME"):
+            self.config["SESSION_COOKIE_NAME"] = self.name + "-session"
+
+        if "WTF_CSRF_ENABLED" not in self.config:
+            self.config["WTF_CSRF_ENABLED"] = self.config.get("CSRF_ENABLED", True)
 
     def _install_id_generator(self, sender, **kwargs):
         g.id_generator = count(start=1)
@@ -736,7 +708,7 @@ class Application(
         if err:
             raise OSError(eno, err, str(path))
 
-    @property
+    @locked_cached_property
     def data_dir(self):
         path = Path(self.instance_path, "data")
         if not path.exists():
@@ -744,35 +716,28 @@ class Application(
 
         return path
 
-    def make_config(self, instance_relative=False):
-        config = Flask.make_config(self, instance_relative)
-        if not config.get("SESSION_COOKIE_NAME"):
-            config["SESSION_COOKIE_NAME"] = self.name + "-session"
-
-        if self._ABILIAN_INIT_TESTING_FLAG:
-            # testing: don't load any config file!
-            return config
-
-        if instance_relative:
-            self.check_instance_folder(create=True)
-
-        cfg_path = str(Path(config.root_path) / "config.py")
-        logger.info('Try to load config: "%s"', cfg_path)
-        try:
-            config.from_pyfile(cfg_path, silent=False)
-        except IOError:
-            return config
-
-        # If the env var specifies a configuration file, it must exist
-        # (and execute with no exceptions) - we don't want the application
-        # to run with an unprecised or insecure configuration.
-        if self.CONFIG_ENVVAR in os.environ:
-            config.from_envvar(self.CONFIG_ENVVAR, silent=False)
-
-        if "WTF_CSRF_ENABLED" not in config:
-            config["WTF_CSRF_ENABLED"] = config.get("CSRF_ENABLED", True)
-
-        return config
+    # def make_config(self, instance_relative=False):
+    #     config = Flask.make_config(self, instance_relative)
+    #     return config
+    #
+    #     # from pprint import pprint
+    #     # pprint(config)
+    #     # assert False
+    #     # if self._ABILIAN_INIT_TESTING_FLAG:
+    #     #     # testing: don't load any config file!
+    #     #     return config
+    #
+    #     if instance_relative:
+    #         self.check_instance_folder(create=True)
+    #
+    #     cfg_path = str(Path(config.root_path) / "config.py")
+    #     logger.info('Try to load config: "%s"', cfg_path)
+    #     try:
+    #         config.from_pyfile(cfg_path, silent=False)
+    #     except IOError:
+    #         return config
+    #
+    #     return config
 
     def init_extensions(self):
         """Initialize flask extensions, helpers and services."""
@@ -875,15 +840,6 @@ class Application(
             if plugin_fqdn not in registered:
                 self.register_plugin(plugin_fqdn)
                 registered.add(plugin_fqdn)
-
-    def maybe_register_setup_wizard(self):
-        if self.configured:
-            return
-
-        logger.info("Application is not configured, installing setup wizard")
-        from abilian.web import setupwizard
-
-        self.register_blueprint(setupwizard.setup, url_prefix="/setup")
 
     def add_url_rule(self, rule, endpoint=None, view_func=None, roles=None, **options):
         """See :meth:`Flask.add_url_rule`.

@@ -1,7 +1,6 @@
 # coding=utf-8
 """"""
-from flask import current_app
-from redis import from_url as redis_from_url
+import redis
 
 
 class Extension:
@@ -15,16 +14,10 @@ class Extension:
 
     def init_app(self, app):
         app.extensions["redis"] = self
-        self.setup_client(app)
-
-    def setup_client(self, app=None, uri=None):
-        if app is None:
-            app = current_app
-        if uri is None:
-            uri = app.config.get("REDIS_URI")
+        uri = app.config.get("REDIS_URI")
         if uri:
-            self.client = redis_from_url(uri)
-        elif app.configured and not app.testing:
+            self.client = redis.from_url(uri)
+        elif not app.testing:
             raise ValueError(
                 "Redis extension: REDIS_URI is not defined in "
                 "application configuration"

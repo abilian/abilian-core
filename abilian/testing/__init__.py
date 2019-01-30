@@ -1,1 +1,1 @@
-from .config import TestConfig
+from .fixtures import TestConfig

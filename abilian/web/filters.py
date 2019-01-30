@@ -10,11 +10,12 @@ import dateutil.parser
 import flask_babel as babel
 from babel.dates import DateTimePattern, format_timedelta, parse_pattern
 from deprecated import deprecated
-from jinja2 import Markup, escape, evalcontextfilter, Environment
+from jinja2 import Environment, Markup, escape, evalcontextfilter
 from pytz import utc
 from werkzeug.routing import BuildError
 
 from abilian.core.util import local_dt, slugify, utc_dt
+
 from .util import url_for
 
 
