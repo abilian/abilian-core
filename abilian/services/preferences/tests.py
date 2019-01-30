@@ -44,7 +44,9 @@ class Application(BaseApplication):
 
 @fixture
 def app(config):
-    return Application(config=config)
+    app = Application()
+    app.setup(config)
+    return app
 
 
 def test_preferences(app, session):

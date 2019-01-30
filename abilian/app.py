@@ -921,5 +921,7 @@ class Application(
         return user
 
 
-def create_app(config=None):
-    return Application(config=config)
+def create_app(config=None, app_class=Application, **kw):
+    app = app_class(**kw)
+    app.setup(config=config)
+    return app

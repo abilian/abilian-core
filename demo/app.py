@@ -20,7 +20,9 @@ APP_NAME = "abilian_core_demo"
 
 
 def create_app(config=None):
-    return Application(config=config)
+    app = Application()
+    app.setup(config)
+    return app
 
 
 # loader to be used by celery workers
