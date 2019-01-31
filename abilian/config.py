@@ -30,23 +30,18 @@ default_config.update(
         "abilian.services.vocabularies.admin.VocabularyPanel",
         "abilian.web.tags.admin.TagPanel",
     ),
-
     CELERYD_MAX_TASKS_PER_CHILD=1000,
     CELERY_ACCEPT_CONTENT=["pickle", "json", "msgpack", "yaml"],
     CELERY_TIMEZONE=LOCALTZ,
-
     SENTRY_SDK_URL="https://browser.sentry-cdn.com/4.5.3/bundle.min.js",
     # SENTRY_USER_ATTRS=("email", "first_name", "last_name"),
     # SENTRY_INSTALL_CLIENT_JS=True,  # also install client JS
     # SENTRY_JS_VERSION="3.26.4",
     # TODO: remove, not needed for recent sentry-js
     # SENTRY_JS_PLUGINS=("console", "jquery", "native", "require"),
-
     SESSION_COOKIE_NAME=None,
-
     SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-
     LOGO_URL=Endpoint("abilian_static", filename="img/logo-abilian-32x32.png"),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET="",  # tracking code to insert before </body>

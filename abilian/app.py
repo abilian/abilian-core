@@ -360,8 +360,8 @@ class ErrorManagerMixin(Flask):
             _request_ctx_stack.top.user = session.merge(user, load=load)
 
     def log_exception(self, exc_info):
-        """Log exception only if Sentry is not used (this avoids getting
-        error twice in Sentry)."""
+        """Log exception only if Sentry is not used (this avoids getting error
+        twice in Sentry)."""
         dsn = self.config.get("SENTRY_DSN")
         if not dsn:
             super(ErrorManagerMixin, self).log_exception(exc_info)
@@ -377,11 +377,12 @@ class ErrorManagerMixin(Flask):
         except ImportError:
             logger.error(
                 'SENTRY_DSN is defined in config but package "sentry-sdk"'
-                ' is not installed.'
+                " is not installed."
             )
             return
 
         from sentry_sdk.integrations.flask import FlaskIntegration
+
         sentry_sdk.init(dsn=dsn, integrations=[FlaskIntegration()])
 
         # ext = Sentry(self, logging=True, level=logging.ERROR)
