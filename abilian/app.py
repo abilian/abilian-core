@@ -114,7 +114,7 @@ class AssetManagerMixin(Flask):
 
     def _setup_asset_extension(self):
         assets = self.extensions["webassets"] = AssetsEnv(self)
-        assets.debug = not self.config.get("PRODUCTION", False)
+        assets.debug = self.debug
         assets.requirejs_config = {"waitSeconds": 90, "shim": {}, "paths": {}}
 
         assets_base_dir = Path(self.instance_path, "webassets")
@@ -445,10 +445,10 @@ class JinjaManagerMixin(Flask):
     def jinja_options(self):
         options = dict(Flask.jinja_options)
 
-        extensions = options.setdefault("extensions", [])
+        jinja_exts = options.setdefault("extensions", [])
         ext = "abilian.core.jinjaext.DeferredJSExtension"
-        if ext not in extensions:
-            extensions.append(ext)
+        if ext not in jinja_exts:
+            jinja_exts.append(ext)
 
         if "bytecode_cache" not in options:
             cache_dir = Path(self.instance_path, "cache", "jinja")
@@ -459,7 +459,7 @@ class JinjaManagerMixin(Flask):
                 str(cache_dir), "%s.cache"
             )
 
-        if self.config.get("DEBUG", False) and self.config.get("TEMPLATE_DEBUG", False):
+        if self.debug and self.config.get("TEMPLATE_DEBUG", False):
             options["undefined"] = jinja2.StrictUndefined
         return options
 
