@@ -1,3 +1,23 @@
+import click
+
+from abilian.app.extensions import db
+
+
+@click.command()
+def boot():
+    db.create_all()
+
+
+@click.command()
+def dropdb():
+    """Drop the application DB."""
+    confirm = input("Are you sure you want to drop the database? (Y/N) ")
+    print(f"Dropping DB using engine: {db}")
+    if confirm.lower() == "y":
+        # with current_app.app_context():
+        db.drop_all()
+
+
 # # coding=utf-8
 # import logging
 # import runpy
