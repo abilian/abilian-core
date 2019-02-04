@@ -1,7 +1,5 @@
 # coding=utf-8
 """Extensions to WTForms fields, widgets and validators."""
-from __future__ import absolute_import, division, print_function
-
 import logging
 from collections import OrderedDict
 from functools import partial

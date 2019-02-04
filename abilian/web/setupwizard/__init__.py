@@ -1,11 +1,10 @@
 # coding=utf-8
 """"""
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import logging
 import socket
 from collections import OrderedDict, namedtuple
 from pathlib import Path
+from typing import Dict, Text
 
 import redis
 import sqlalchemy as sa
@@ -20,7 +19,6 @@ from flask import (
     session,
     url_for,
 )
-from typing import Dict, Text
 
 from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf, db

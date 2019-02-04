@@ -4,8 +4,6 @@
 They are implemented as Flask extensions (see:
 http://flask.pocoo.org/docs/extensiondev/ )
 """
-from __future__ import absolute_import, division, print_function
-
 from flask import current_app
 
 # This one first

@@ -4,8 +4,6 @@
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
 
-from __future__ import absolute_import, division, print_function
-
 import flask_mail
 import sqlalchemy as sa
 import sqlalchemy.event
