@@ -163,7 +163,6 @@ def step_db_validate():
         # SA will interpret username:password as host:port
         if host:
             db_uri += "@" + host
-            port = port
             if port:
                 db_uri += ":" + port
 

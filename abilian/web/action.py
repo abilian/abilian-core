@@ -305,7 +305,7 @@ class Action:
         self._status = Status(status) if status is not None else ENABLED
         self._endpoint = endpoint
         if not callable(endpoint) and not isinstance(endpoint, Endpoint):
-            # property getter will make it and Endpoint instance
+            # property getter will make it an Endpoint instance
             self.endpoint = self.endpoint
         self.condition = condition
 

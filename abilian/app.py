@@ -856,8 +856,7 @@ class Application(
                 endpoint, allow_access_for_roles(roles), endpoint=True
             )
 
-    def add_access_controller(self, name, func, endpoint=False):
-        # type: (Text, Callable, bool) -> None
+    def add_access_controller(self, name: str, func: Callable, endpoint: bool = False):
         """Add an access controller.
 
         If `name` is None it is added at application level, else if is
@@ -903,8 +902,7 @@ class Application(
             endpoint, allow_access_for_roles(Anonymous), endpoint=True
         )
 
-    def create_db(self):
-        # type: () -> None
+    def create_db(self) -> None:
         db.create_all()
         self.create_root_user()
 

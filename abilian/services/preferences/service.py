@@ -165,9 +165,9 @@ class PreferenceService(Service):
             for panel in self.app_state.panels:
                 if panel.is_accessible():
                     return redirect(url_for("preferences." + panel.id))
-            else:
-                # Should not happen.
-                raise InternalServerError()
+
+            # Should not happen.
+            raise InternalServerError()
 
     def build_breadcrumbs(self, endpoint, view_args):
         state = self.app_state
