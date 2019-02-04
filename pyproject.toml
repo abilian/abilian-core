@@ -7,6 +7,8 @@ license = "LGPL"
 readme = "README.rst"
 repository = "https://github.com/abilian/abilian-core"
 packages = [{ include = "abilian" }]
+include = ["abilian/**/*"]
+exclude = ["**/.DS_Store"]
 
 
 [tool.poetry.dependencies]
