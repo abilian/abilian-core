@@ -1,6 +1,6 @@
 import click
 
-from abilian.app.extensions import db
+from abilian.core.extensions import db
 
 
 @click.command()
