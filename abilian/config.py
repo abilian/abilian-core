@@ -12,11 +12,23 @@ from abilian.web.action import Endpoint
 
 default_config = dict(Flask.default_config)  # type: Dict[str, Any]
 default_config.update(
-    PRIVATE_SITE=False,
+    # Generic Flask
     TEMPLATE_DEBUG=False,
     CSRF_ENABLED=True,
+    # Babel
     BABEL_ACCEPT_LANGUAGES=["en"],
     DEFAULT_COUNTRY=None,
+    # Celery
+    CELERYD_MAX_TASKS_PER_CHILD=1000,
+    CELERY_ACCEPT_CONTENT=["pickle", "json", "msgpack", "yaml"],
+    CELERY_TIMEZONE=LOCALTZ,
+    # Sentry
+    SENTRY_SDK_URL="https://browser.sentry-cdn.com/4.5.3/bundle.min.js",
+    # SQLAlchemy
+    SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    # Abilian-specific
+    PRIVATE_SITE=False,
     PLUGINS=(),
     ADMIN_PANELS=(
         "abilian.web.admin.panels.dashboard.DashboardPanel",
@@ -30,13 +42,6 @@ default_config.update(
         "abilian.services.vocabularies.admin.VocabularyPanel",
         "abilian.web.tags.admin.TagPanel",
     ),
-    CELERYD_MAX_TASKS_PER_CHILD=1000,
-    CELERY_ACCEPT_CONTENT=["pickle", "json", "msgpack", "yaml"],
-    CELERY_TIMEZONE=LOCALTZ,
-    SENTRY_SDK_URL="https://browser.sentry-cdn.com/4.5.3/bundle.min.js",
-    SQLALCHEMY_POOL_RECYCLE=1800,  # 30min. default value in flask_sa is None
-    SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    # Abilian-specific
     LOGO_URL=Endpoint("abilian_static", filename="img/logo-abilian-32x32.png"),
     ABILIAN_UPSTREAM_INFO_ENABLED=False,  # upstream info extension
     TRACKING_CODE_SNIPPET="",  # tracking code to insert before </body>
