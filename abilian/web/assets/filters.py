@@ -381,6 +381,3 @@ def register_filters():
     register_filter(LessImportFilter)
     register_filter(ImportCSSFilter)
     register_filter(ClosureJS)
-
-
-register_filters()

@@ -9,11 +9,12 @@ from webassets.filter import get_filter
 
 from abilian.services.security import Anonymous
 
-# register custom filters for webassets
-from . import filters  # noqa
+from .filters import register_filters
 
 
 def init_app(app):
+    register_filters()
+
     assets = app.extensions["webassets"]
     assets.append_path(RESOURCES_DIR, "/static/abilian")
     app.add_static_url(
