@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  abilian-core\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-01-28 22:19+0100\n"
+"POT-Creation-Date: 2019-02-04 13:12+0100\n"
 "PO-Revision-Date: 2017-12-11 07:38-0500\n"
 "Last-Translator: sf <sf@fermigier.com>\n"
 "Language: nl_NL\n"
@@ -32,55 +32,55 @@ msgstr "Uitloggen"
 msgid "Login"
 msgstr "Aanmelden"
 
-#: abilian/services/auth/views.py:66
+#: abilian/services/auth/views.py:64
 msgid "You must provide your email and password."
 msgstr "U moet uw e-mailadres en wachtwoord opgeven."
 
-#: abilian/services/auth/views.py:76 abilian/services/auth/views.py:169
+#: abilian/services/auth/views.py:74 abilian/services/auth/views.py:167
 msgid "Sorry, we couldn't find an account for email '{email}'."
 msgstr "Sorry, we konden geen account voor e-mail vinden '{email}'."
 
-#: abilian/services/auth/views.py:84
+#: abilian/services/auth/views.py:82
 msgid "Sorry, wrong password."
 msgstr "Sorry, verkeerd wachtwoord."
 
-#: abilian/services/auth/views.py:160
+#: abilian/services/auth/views.py:158
 msgid "You must provide your email address."
 msgstr "U moet uw e-mailadres opgeven."
 
-#: abilian/services/auth/views.py:182
+#: abilian/services/auth/views.py:180
 msgid "Password reset instructions have been sent to your email address."
 msgstr "Wachtwoord reset instructies zijn verstuurd naar uw e-mailadres."
 
-#: abilian/services/auth/views.py:192 abilian/services/auth/views.py:211
+#: abilian/services/auth/views.py:190 abilian/services/auth/views.py:209
 msgid "Invalid reset password token."
 msgstr "Ongeldige reset wachtwoord token."
 
-#: abilian/services/auth/views.py:194 abilian/services/auth/views.py:213
+#: abilian/services/auth/views.py:192 abilian/services/auth/views.py:211
 msgid "Password reset expired"
 msgstr "Wachtwoordreset verlopen"
 
-#: abilian/services/auth/views.py:220
+#: abilian/services/auth/views.py:218
 msgid "You must provide a password."
 msgstr "U moet een wachtwoord opgeven."
 
-#: abilian/services/auth/views.py:225
+#: abilian/services/auth/views.py:223
 msgid "Your new password must be at least 8 characters long"
 msgstr "Uw nieuwe wachtwoord moet minimaal 8 karakters zijn"
 
-#: abilian/services/auth/views.py:230
+#: abilian/services/auth/views.py:228
 msgid "Your new password must contain upper case and lower case letters"
 msgstr "Uw nieuwe wachtwoord moet hoofdletters en kleine letters bevatten"
 
-#: abilian/services/auth/views.py:236
+#: abilian/services/auth/views.py:234
 msgid "Your new password must contain at least one digit"
 msgstr "Uw nieuwe wachtwoord moet minimaal één cijfer bevatten"
 
-#: abilian/services/auth/views.py:243
+#: abilian/services/auth/views.py:241
 msgid "Your password has been changed. You can now login with your new password"
 msgstr "Uw wachtwoord is gewijzigd. U kunt nu inloggen met uw nieuwe wachtwoord"
 
-#: abilian/services/auth/views.py:278
+#: abilian/services/auth/views.py:276
 msgid "Password reset instruction for {site_name}"
 msgstr "Wachtwoord reset instructie voor {site_name}"
 
@@ -126,7 +126,7 @@ msgstr "Wachtwoord wijzigen"
 #: abilian/web/templates/macros/comment.html:33
 #: abilian/web/templates/preferences/user.html:20
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:8
-#: abilian/web/views/object.py:166
+#: abilian/web/views/object.py:165
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -219,7 +219,7 @@ msgstr "Bewerken"
 #: abilian/web/templates/macros/comment.html:32
 #: abilian/web/templates/macros/comment.html:36
 #: abilian/web/templates/widgets/frontend_action_delete_confim.html:7
-#: abilian/web/views/object.py:506
+#: abilian/web/views/object.py:505
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -231,65 +231,65 @@ msgstr "Nieuwe maken"
 msgid "Admin"
 msgstr "Admin"
 
-#: abilian/web/admin/panels/audit.py:322
+#: abilian/web/admin/panels/audit.py:313
 msgid "{user} created {entity_type} {entity_id} \"{entity}\""
 msgstr "{user} gemaakt {entity_type} {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:324
+#: abilian/web/admin/panels/audit.py:315
 msgid "{user} made changes on {entity_type} {entity_id} \"{entity}\""
 msgstr ""
 "{user} wijzigingen aangebracht op de {entity_type} {entity_id} "
 "\"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:326
+#: abilian/web/admin/panels/audit.py:317
 msgid "{user} has deleted {entity_type}: {entity_id} \"{entity}\""
 msgstr "{user} werd verwijderd en {entity_type}: {entity_id} \"{entity}\""
 
-#: abilian/web/admin/panels/audit.py:386
+#: abilian/web/admin/panels/audit.py:377
 msgid "{manager} has activated inheritance on {entity}"
 msgstr "{manager} heeft geactiveerd erfenis op {entity}"
 
-#: abilian/web/admin/panels/audit.py:388
+#: abilian/web/admin/panels/audit.py:379
 msgid "{manager} has deactivated inheritance on {entity}"
 msgstr "{manager} heeft gedeactiveerd erfenis op {entity}"
 
-#: abilian/web/admin/panels/audit.py:390
+#: abilian/web/admin/panels/audit.py:381
 msgid "{manager} has given role \"{role}\" to {principal} on {entity}"
 msgstr "{manager} heeft gegeven rol \"{role}\" te {principal} op {entity}"
 
-#: abilian/web/admin/panels/audit.py:394
+#: abilian/web/admin/panels/audit.py:385
 msgid "{manager} has revoked role \"{role}\" from {principal} on {entity}"
 msgstr "{manager} heeft ingetrokken rol \"{role}\" van {principal} op {entity}"
 
-#: abilian/web/admin/panels/audit.py:402
+#: abilian/web/admin/panels/audit.py:393
 msgid "{manager} has given role \"{role}\" to {principal}"
 msgstr "{manager} heeft rol \"{role}\" gegeven aan {principal}"
 
-#: abilian/web/admin/panels/audit.py:404
+#: abilian/web/admin/panels/audit.py:395
 msgid "{manager} has revoked role \"{role}\" from {principal}"
 msgstr "{manager} heeft ingetrokken rol \"{role}\" van {principal}"
 
-#: abilian/web/admin/panels/dashboard.py:23
+#: abilian/web/admin/panels/dashboard.py:22
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: abilian/web/admin/panels/dashboard.py:40
+#: abilian/web/admin/panels/dashboard.py:39
 msgid "Daily"
 msgstr "Dagelijks"
 
-#: abilian/web/admin/panels/dashboard.py:42
+#: abilian/web/admin/panels/dashboard.py:41
 msgid "Weekly"
 msgstr "Wekelijks"
 
-#: abilian/web/admin/panels/dashboard.py:48
+#: abilian/web/admin/panels/dashboard.py:47
 msgid "Monthly"
 msgstr "Maandelijks"
 
-#: abilian/web/admin/panels/dashboard.py:55
+#: abilian/web/admin/panels/dashboard.py:54
 msgid "New"
 msgstr "Nieuw"
 
-#: abilian/web/admin/panels/dashboard.py:56
+#: abilian/web/admin/panels/dashboard.py:55
 msgid "Total"
 msgstr "Totaal"
 
@@ -339,37 +339,37 @@ msgstr "Groepen"
 
 #: abilian/web/admin/panels/groups/__init__.py:44
 #: abilian/web/admin/panels/users/__init__.py:42
-#: abilian/web/forms/widgets.py:194 abilian/web/forms/widgets.py:346
+#: abilian/web/forms/widgets.py:196 abilian/web/forms/widgets.py:348
 msgid "Filter records:"
 msgstr "Records filteren:"
 
 #: abilian/web/admin/panels/groups/__init__.py:45
 #: abilian/web/admin/panels/users/__init__.py:43
-#: abilian/web/forms/widgets.py:347
+#: abilian/web/forms/widgets.py:349
 msgid "Previous"
 msgstr "Vorige"
 
 #: abilian/web/admin/panels/groups/__init__.py:46
 #: abilian/web/admin/panels/users/__init__.py:44
-#: abilian/web/forms/widgets.py:347
+#: abilian/web/forms/widgets.py:349
 msgid "Next"
 msgstr "Volgende"
 
 #: abilian/web/admin/panels/groups/__init__.py:47
 #: abilian/web/admin/panels/users/__init__.py:45
-#: abilian/web/forms/widgets.py:349 abilian/web/forms/widgets.py:350
+#: abilian/web/forms/widgets.py:351 abilian/web/forms/widgets.py:352
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Weergegeven: van _START_ tot _END_ van _TOTAL_ posten"
 
 #: abilian/web/admin/panels/groups/__init__.py:48
 #: abilian/web/admin/panels/users/__init__.py:46
-#: abilian/web/forms/widgets.py:351
+#: abilian/web/forms/widgets.py:353
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(gefilterd uit _MAX_ totale inzendingen)"
 
 #: abilian/web/admin/panels/groups/__init__.py:49
 #: abilian/web/admin/panels/users/__init__.py:47
-#: abilian/web/forms/widgets.py:352
+#: abilian/web/forms/widgets.py:354
 msgid "Add a filter"
 msgstr "Filter toevoegen"
 
@@ -396,7 +396,7 @@ msgstr "Openbaar"
 msgid "Roles"
 msgstr "Rollen"
 
-#: abilian/web/admin/panels/groups/views.py:105
+#: abilian/web/admin/panels/groups/views.py:104
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -450,7 +450,7 @@ msgstr ""
 "toewijzen van rollen aan gebruikers is mogelijk maar wordt afgeraden."
 
 #: abilian/web/admin/panels/users/forms.py:63
-#: abilian/web/preferences/user.py:25
+#: abilian/web/preferences/user.py:24
 msgid "New Password"
 msgstr "Nieuw wachtwoord"
 
@@ -459,12 +459,12 @@ msgid "If empty the current password will not be changed."
 msgstr "Indien leeg zal de huidige wachtwoord niet worden gewijzigd."
 
 #: abilian/web/admin/panels/users/forms.py:72
-#: abilian/web/preferences/user.py:28
+#: abilian/web/preferences/user.py:27
 msgid "Confirm new password"
 msgstr "Bevestig het nieuwe wachtwoord"
 
 #: abilian/web/admin/panels/users/forms.py:81
-#: abilian/web/preferences/user.py:51
+#: abilian/web/preferences/user.py:50
 msgid ""
 "Passwords differ. Ensure you have typed same password in both "
 "\"password\" field and \"confirm password\" field."
@@ -543,7 +543,7 @@ msgstr "Nieuwe Groep..."
 
 #: abilian/web/admin/templates/admin/settings.html:20
 #: abilian/web/templates/preferences/user.html:17
-#: abilian/web/views/object.py:171
+#: abilian/web/views/object.py:170
 msgid "Save"
 msgstr "Opslaan"
 
@@ -595,27 +595,27 @@ msgstr "Nieuwe bijlage op \"{title}\""
 msgid "Comment"
 msgstr "Commentaar"
 
-#: abilian/web/comments/views.py:37
+#: abilian/web/comments/views.py:36
 msgid "Post"
 msgstr "Verzenden"
 
-#: abilian/web/comments/views.py:78
+#: abilian/web/comments/views.py:77
 msgid "Comment edited"
 msgstr "Comentaar bewerkt"
 
-#: abilian/web/comments/views.py:81
+#: abilian/web/comments/views.py:80
 msgid "Edit comment on \"{title}\""
 msgstr "Bewerken van commentaar op \"{title}\""
 
-#: abilian/web/comments/views.py:107
+#: abilian/web/comments/views.py:106
 msgid "Comment added"
 msgstr "Commentaar toegevoegd"
 
-#: abilian/web/comments/views.py:123
+#: abilian/web/comments/views.py:122
 msgid "New comment on \"{title}\""
 msgstr "Nieuwe commentaar op \"{title}\""
 
-#: abilian/web/comments/views.py:136
+#: abilian/web/comments/views.py:135
 msgid "Comment deleted"
 msgstr "Commentaar verwijderd"
 
@@ -675,59 +675,59 @@ msgstr ""
 msgid "SIRET number is invalid (length is ok: verify numbers)"
 msgstr "SIRET-nummer is ongeldig (lengte is ok: nummers verifiëren)"
 
-#: abilian/web/forms/widgets.py:348
+#: abilian/web/forms/widgets.py:350
 msgid "Entries per page: _MENU_"
 msgstr "Items per pagina: _MENU_"
 
-#: abilian/web/forms/widgets.py:353 abilian/web/forms/widgets.py:354
+#: abilian/web/forms/widgets.py:355 abilian/web/forms/widgets.py:356
 msgid "No matching records found"
 msgstr "Geen overeenkomende gegevens gevonden"
 
-#: abilian/web/forms/widgets.py:736
+#: abilian/web/forms/widgets.py:740
 msgid "Add file"
 msgstr "Bestand toevoegen"
 
-#: abilian/web/forms/widgets.py:736
+#: abilian/web/forms/widgets.py:740
 msgid "Select file"
 msgstr "Bestand selecteren"
 
-#: abilian/web/forms/widgets.py:1247
+#: abilian/web/forms/widgets.py:1251
 msgid "hour(s)"
 msgstr "uren(n)"
 
-#: abilian/web/preferences/user.py:32
+#: abilian/web/preferences/user.py:31
 msgid "Photo"
 msgstr "Foto"
 
-#: abilian/web/preferences/user.py:36
+#: abilian/web/preferences/user.py:35
 msgid "Preferred Language"
 msgstr "Voorkeurstaal"
 
-#: abilian/web/preferences/user.py:42
+#: abilian/web/preferences/user.py:41
 msgid "Time zone"
 msgstr "Tijdzone"
 
-#: abilian/web/preferences/user.py:67 abilian/web/preferences/user.py:72
+#: abilian/web/preferences/user.py:66 abilian/web/preferences/user.py:71
 msgid "Only PNG or JPG image files are accepted"
 msgstr "Alleen PNG of JPG beeldbestanden worden geaccepteerd"
 
-#: abilian/web/preferences/user.py:80
+#: abilian/web/preferences/user.py:79
 msgid "Could not decode image file"
 msgstr "Kan afbeeldingsbestand niet decoderen"
 
-#: abilian/web/preferences/user.py:91
+#: abilian/web/preferences/user.py:90
 msgid "About me"
 msgstr "Over mij"
 
-#: abilian/web/preferences/user.py:139
+#: abilian/web/preferences/user.py:138
 msgid "Password changed"
 msgstr "Wachtwoord gewijzigd"
 
-#: abilian/web/preferences/user.py:145
+#: abilian/web/preferences/user.py:144
 msgid "Preferences saved."
 msgstr "Voorkeuren opgeslagen."
 
-#: abilian/web/search/views.py:127
+#: abilian/web/search/views.py:126
 msgid "All"
 msgstr "Alle"
 
@@ -763,7 +763,7 @@ msgstr "Laatste wijziging: %(date)s"
 msgid "Unknown action"
 msgstr "Onbekende actie"
 
-#: abilian/web/tags/admin.py:132 abilian/web/views/object.py:303
+#: abilian/web/tags/admin.py:132 abilian/web/views/object.py:302
 msgid "Please fix the error(s) below"
 msgstr "Controleer de onderstaande fout(en)"
 
@@ -802,8 +802,8 @@ msgstr "Geen tag geselecteerd voor samenvoegen"
 msgid "Tag edited"
 msgstr "Tag bewerkt"
 
-#: abilian/web/tags/admin.py:253 abilian/web/tags/criterion.py:23
-#: abilian/web/tags/extension.py:97
+#: abilian/web/tags/admin.py:253 abilian/web/tags/criterion.py:22
+#: abilian/web/tags/extension.py:95
 #: abilian/web/templates/default/single_view.html:15
 msgid "Tags"
 msgstr "Tags"
@@ -866,7 +866,7 @@ msgstr ""
 "Vink aan om de definitieve verwijdering van geselecteerde tags te "
 "bevestigen"
 
-#: abilian/web/templates/abilian_base.html:63
+#: abilian/web/templates/abilian_base.html:64
 msgid "Skip to content"
 msgstr "Ga naar de inhoud"
 
@@ -994,35 +994,35 @@ msgstr "Gemaakt op:"
 msgid "Updated at:"
 msgstr "Bijgewerkt op:"
 
-#: abilian/web/views/object.py:177
+#: abilian/web/views/object.py:176
 msgid "Create and add another"
 msgstr "Maken en nog een toevoegen"
 
-#: abilian/web/views/object.py:205
+#: abilian/web/views/object.py:204
 msgid "Entity successfully edited"
 msgstr "Entiteit met succes bewerkt"
 
-#: abilian/web/views/object.py:381
+#: abilian/web/views/object.py:380
 msgid "An entity with this name already exists in the system."
 msgstr "Een entiteit met deze naam bestaat al in het systeem."
 
-#: abilian/web/views/object.py:434
+#: abilian/web/views/object.py:433
 msgid "Create"
 msgstr "Maken"
 
-#: abilian/web/views/object.py:439
+#: abilian/web/views/object.py:438
 msgid "Create and add new"
 msgstr "Maken en nieuwe toevoegen"
 
-#: abilian/web/views/object.py:450
+#: abilian/web/views/object.py:449
 msgid "Entity successfully added"
 msgstr "Entiteit succesvol toegevoegd"
 
-#: abilian/web/views/object.py:518
+#: abilian/web/views/object.py:517
 msgid "Entity deleted"
 msgstr "Entiteit verwijderd"
 
-#: abilian/web/views/object.py:544
+#: abilian/web/views/object.py:543
 msgid "This entity is referenced by another object and cannot be deleted."
 msgstr ""
 "Naar deze entiteit wordt verwezen door een ander object en kan niet "
