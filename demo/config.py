@@ -1,12 +1,7 @@
-# coding=utf-8
-from __future__ import absolute_import, print_function, unicode_literals
-
-
 class Config(object):
     # specific (for this development instance)
     # SERVER_NAME = 'localhost:5000'
     SQLALCHEMY_DATABASE_URI = "sqlite:///data.db"
-    REDIS_URI = "redis://localhost/0"
     ANTIVIRUS_CHECK_REQUIRED = False
     SECRET_KEY = "toto"
 
@@ -29,6 +24,7 @@ class Config(object):
     BABEL_ACCEPT_LANGUAGES = ("fr", "en", "es", "tr", "zh")
 
     # celery settings
+    REDIS_URI = "redis://localhost/0"
     BROKER_URL = REDIS_URI
     CELERY_RESULT_BACKEND = REDIS_URI
     CELERY_STORE_ERRORS_EVEN_IF_IGNORED = True

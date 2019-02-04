@@ -1,10 +1,7 @@
 # coding=utf-8
 """
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from flask import Blueprint, redirect
-from werkzeug.datastructures import ImmutableDict
 
 from abilian.app import Application as BaseApplication
 from abilian.core.celery import FlaskCelery as BaseCelery
@@ -19,9 +16,14 @@ __all__ = ["create_app"]
 APP_NAME = "abilian_core_demo"
 
 
-def create_app(config=None):
-    app = Application()
+def create_app(config=None, **kw):
+    app = Application(__name__, **kw)
+    # Default config for this app
+    app.config.from_object(Config)
+
     app.setup(config)
+
+    app.register_blueprint(main)
     return app
 
 
@@ -48,31 +50,25 @@ def home():
     return redirect(url_for("admin.settings"))
 
 
-default_config = dict(BaseApplication.default_config)
-default_config.update(dict(vars(Config)))
-default_config = ImmutableDict(default_config)
-
-
 class Application(BaseApplication):
-    default_config = default_config
     celery_app_cls = CeleryApp
 
-    def __init__(self, name=APP_NAME, config=None, **kwargs):
-        super(Application, self).__init__(
-            name, config=config, instance_relative_config=True, **kwargs
-        )
-
-    def init_extensions(self):
-        super(Application, self).init_extensions()
-
-        # Additional service
-        from abilian.services.security import security
-
-        security.init_app(self)
-
-    def register_plugins(self):
-        super(Application, self).register_plugins()
-        self.register_blueprint(main)
+    # def __init__(self, name=APP_NAME, config=None, **kwargs):
+    #     super(Application, self).__init__(
+    #         name, config=config, instance_relative_config=True, **kwargs
+    #     )
+    #
+    # def init_extensions(self):
+    #     super(Application, self).init_extensions()
+    #
+    #     # Additional service
+    #     from abilian.services.security import security
+    #
+    #     security.init_app(self)
+    #
+    # def register_plugins(self):
+    #     super(Application, self).register_plugins()
+    #     self.register_blueprint(main)
 
 
 Vocabulary_demo = Vocabulary(group="Test", name="Test", label="This is a test")
