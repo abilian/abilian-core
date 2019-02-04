@@ -159,7 +159,7 @@ clean:
 	find . -name abilian.db -delete
 	find . -type d -empty -delete
 	rm -rf *.egg-info *.egg .coverage .eggs .cache .mypy_cache .pyre
-	rm -rf .pytest_cache .pytest
+	rm -rf .pytest_cache .pytest .DS_Store
 	rm -rf docs/_build docs/cache docs/tmp
 	rm -rf $(SRC)/static/gen
 	rm -rf dist build
