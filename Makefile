@@ -162,7 +162,7 @@ clean:
 	rm -rf .pytest_cache .pytest .DS_Store
 	rm -rf docs/_build docs/cache docs/tmp
 	rm -rf $(SRC)/static/gen
-	rm -rf dist build
+	rm -rf dist build pip-wheel-metadata
 	rm -rf htmlcov coverage.xml
 	rm -rf docs/_build
 	rm -f junit-*.xml
