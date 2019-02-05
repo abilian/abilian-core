@@ -11,21 +11,31 @@ from abilian.web.action import Endpoint
 class DefaultConfig:
     # Generic Flask
     TEMPLATE_DEBUG = False
-    # Security
+
+    # Security (see
+    # https://blog.miguelgrinberg.com/post/cookie-security-for-flask-applications)
     CSRF_ENABLED = True
     SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_HTTPONLY = True
+
     # Babel
     BABEL_ACCEPT_LANGUAGES = ["en"]
     DEFAULT_COUNTRY = None
+
     # Celery
     CELERYD_MAX_TASKS_PER_CHILD = 1000
     CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
     CELERY_TIMEZONE = LOCALTZ
+
     # Sentry
     SENTRY_SDK_URL = "https://browser.sentry-cdn.com/4.5.3/bundle.min.js"
+
     # SQLAlchemy
     SQLALCHEMY_POOL_RECYCLE = 1800  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
     # Abilian-specific
     PRIVATE_SITE = False
     PLUGINS = ()
