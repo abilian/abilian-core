@@ -10,7 +10,6 @@ from datetime import datetime
 from math import ceil
 
 import pytz
-import six
 from babel.dates import LOCALTZ
 from flask import request
 from werkzeug.local import LocalProxy
@@ -178,8 +177,6 @@ _NOT_WORD_RE = re.compile(r"[^\w\s]+", flags=re.UNICODE)
 
 def slugify(value, separator="-"):
     """Slugify an Unicode string, to make it URL friendly."""
-    if six.PY2:
-        value = str(value)
     if not isinstance(value, str):
         raise ValueError("value must be a Unicode string")
     value = _NOT_WORD_RE.sub(" ", value)
