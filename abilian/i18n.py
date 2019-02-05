@@ -43,9 +43,6 @@ And just type:
 
     $ python setup.py extract_messages
 """
-from __future__ import absolute_import, division, print_function, \
-    unicode_literals
-
 import importlib
 import os
 import re
@@ -56,7 +53,6 @@ from pathlib import Path
 
 import flask_babel
 import pytz
-import six
 from babel import Locale
 from babel.dates import LOCALTZ, get_timezone, get_timezone_gmt
 from babel.localedata import locale_identifiers
