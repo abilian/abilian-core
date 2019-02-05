@@ -28,6 +28,7 @@ from abilian.testing.util import cleanup_db, ensure_services_started, \
 
 class TestConfig:
     TESTING = True
+    DEBUG = True
     SECRET_KEY = "SECRET"
     SERVER_NAME = "localhost.localdomain"
     CELERY_ALWAYS_EAGER = True  # run tasks locally, no async
