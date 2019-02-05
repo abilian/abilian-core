@@ -2,7 +2,7 @@
 """"""
 import time
 from collections import deque
-from typing import Set, Text
+from typing import Set
 
 import click
 import sqlalchemy as sa
@@ -23,7 +23,7 @@ COMMIT = object()
 
 @click.command()
 def reindex(clear=False, progressive=False, batch_size=""):
-    # type: (bool, bool, Text) -> None
+    # type: (bool, bool, str) -> None
     """Reindex all content; optionally clear index before.
 
     All is done in asingle transaction by default.
@@ -49,8 +49,8 @@ class Reindexer:
         self.index = self.index_service.app_state.indexes["default"]
         self.adapted = self.index_service.adapted
         self.session = Session(bind=db.session.get_bind(None, None), autocommit=True)
-        self.indexed = set()  # type: Set[Text]
-        self.cleared = set()  # type: Set[Text]
+        self.indexed = set()  # type: Set[str]
+        self.cleared = set()  # type: Set[str]
 
         strategy = progressive_mode if self.progressive else single_transaction
         self.strategy = strategy(self.index, clear=self.clear)
