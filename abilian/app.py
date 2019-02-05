@@ -38,6 +38,7 @@ from abilian.web.admin import Admin
 from abilian.web.assets import AssetManagerMixin
 from abilian.web.blueprints import allow_access_for_roles
 from abilian.web.errors import ErrorManagerMixin
+from abilian.web.hooks import init_hooks
 from abilian.web.jinja import JinjaManagerMixin
 from abilian.web.nav import BreadcrumbItem
 from abilian.web.util import send_file_from_directory
@@ -70,11 +71,28 @@ class ServiceManager:
 class PluginManager:
     """Mixin that provides support for loading plugins."""
 
+    #: Custom apps may want to always load some plugins: list them here.
+    APP_PLUGINS = (
+        "abilian.web.search",
+        "abilian.web.tags",
+        "abilian.web.comments",
+        "abilian.web.uploads",
+        "abilian.web.attachments",
+    )
+
     def register_plugin(self, name):
         """Load and register a plugin given its package name."""
         logger.info("Registering plugin: " + name)
         module = importlib.import_module(name)
         module.register_plugin(self)
+
+    def register_plugins(self):
+        """Load plugins listed in config variable 'PLUGINS'."""
+        registered = set()
+        for plugin_fqdn in chain(self.APP_PLUGINS, self.config["PLUGINS"]):
+            if plugin_fqdn not in registered:
+                self.register_plugin(plugin_fqdn)
+                registered.add(plugin_fqdn)
 
 
 class Application(
@@ -91,15 +109,6 @@ class Application(
     """
 
     default_config = default_config
-
-    #: Custom apps may want to always load some plugins: list them here.
-    APP_PLUGINS = (
-        "abilian.web.search",
-        "abilian.web.tags",
-        "abilian.web.comments",
-        "abilian.web.uploads",
-        "abilian.web.attachments",
-    )
 
     #: Environment variable used to locate a config file to load last (after
     #: instance config file). Use this if you want to override some settings
@@ -130,7 +139,7 @@ class Application(
 
         Flask.__init__(self, name, *args, **kwargs)
 
-        appcontext_pushed.connect(self._install_id_generator)
+        appcontext_pushed.connect(self.install_id_generator)
 
         ServiceManager.__init__(self)
         PluginManager.__init__(self)
@@ -154,9 +163,6 @@ class Application(
         # First init required stuff: db to make queries, and settings service
         extensions.db.init_app(self)
         settings_service.init_app(self)
-
-        if not self.config.get("FAVICO_URL"):
-            self.config["FAVICO_URL"] = self.config.get("LOGO_URL")
 
         self.register_jinja_loaders(jinja2.PackageLoader("abilian.web"))
 
@@ -194,10 +200,9 @@ class Application(
         sa.orm.configure_mappers()
 
         signals.components_registered.send(self)
-        self.before_first_request(self._set_current_celery_app)
-        self.before_first_request(lambda: signals.register_js_api.send(self))
 
-        request_started.connect(self._setup_nav_and_breadcrumbs)
+        request_started.connect(self.setup_nav_and_breadcrumbs)
+        init_hooks(self)
 
         # Initialize Abilian core services.
         # Must come after all entity classes have been declared.
@@ -214,6 +219,28 @@ class Application(
             self.after_request(validate_response)
 
         setup(self)
+
+    def setup_nav_and_breadcrumbs(self, app=None):
+        """Listener for `request_started` event.
+
+        If you want to customize first items of breadcrumbs, override
+        :meth:`init_breadcrumbs`
+        """
+        g.nav = {"active": None}  # active section
+        g.breadcrumb = []
+        self.init_breadcrumbs()
+
+    def init_breadcrumbs(self):
+        """Insert the first element in breadcrumbs.
+
+        This happens during `request_started` event, which is triggered
+        before any url_value_preprocessor and `before_request` handlers.
+        """
+        g.breadcrumb.append(BreadcrumbItem(icon="home", url="/" + request.script_root))
+
+    # TODO: remove
+    def install_id_generator(self, sender, **kwargs):
+        g.id_generator = count(start=1)
 
     def configure(self, config):
         if config:
@@ -233,36 +260,8 @@ class Application(
         if "WTF_CSRF_ENABLED" not in self.config:
             self.config["WTF_CSRF_ENABLED"] = self.config.get("CSRF_ENABLED", True)
 
-    def _install_id_generator(self, sender, **kwargs):
-        g.id_generator = count(start=1)
-
-    def _set_current_celery_app(self):
-        """Listener for `before_first_request`.
-
-        Set our celery app as current, so that task use the correct
-        config. Without that tasks may use their default set app.
-        """
-        celery = self.extensions.get("celery")
-        if celery:
-            celery.set_current()
-
-    def _setup_nav_and_breadcrumbs(self, app=None):
-        """Listener for `request_started` event.
-
-        If you want to customize first items of breadcrumbs, override
-        :meth:`init_breadcrumbs`
-        """
-        g.nav = {"active": None}  # active section
-        g.breadcrumb = []
-        self.init_breadcrumbs()
-
-    def init_breadcrumbs(self):
-        """Insert the first element in breadcrumbs.
-
-        This happens during `request_started` event, which is triggered
-        before any url_value_preprocessor and `before_request` handlers.
-        """
-        g.breadcrumb.append(BreadcrumbItem(icon="home", url="/" + request.script_root))
+        if not self.config.get("FAVICO_URL"):
+            self.config["FAVICO_URL"] = self.config.get("LOGO_URL")
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary
@@ -301,29 +300,6 @@ class Application(
 
         return path
 
-    # def make_config(self, instance_relative=False):
-    #     config = Flask.make_config(self, instance_relative)
-    #     return config
-    #
-    #     # from pprint import pprint
-    #     # pprint(config)
-    #     # assert False
-    #     # if self._ABILIAN_INIT_TESTING_FLAG:
-    #     #     # testing: don't load any config file!
-    #     #     return config
-    #
-    #     if instance_relative:
-    #         self.check_instance_folder(create=True)
-    #
-    #     cfg_path = str(Path(config.root_path) / "config.py")
-    #     logger.info('Try to load config: "%s"', cfg_path)
-    #     try:
-    #         config.from_pyfile(cfg_path, silent=False)
-    #     except IOError:
-    #         return config
-    #
-    #     return config
-
     def init_extensions(self):
         """Initialize flask extensions, helpers and services."""
         extensions.redis.init_app(self)
@@ -339,8 +315,8 @@ class Application(
         auth_service.init_app(self)
 
         # webassets
-        self._setup_asset_extension()
-        self._register_base_assets()
+        self.setup_asset_extension()
+        self.register_base_assets()
 
         # Babel (for i18n)
         babel = abilian.i18n.babel
@@ -413,14 +389,6 @@ class Application(
                 abort(code)
 
             self.register_blueprint(http_error_pages, url_prefix="/http_error")
-
-    def register_plugins(self):
-        """Load plugins listed in config variable 'PLUGINS'."""
-        registered = set()
-        for plugin_fqdn in chain(self.APP_PLUGINS, self.config["PLUGINS"]):
-            if plugin_fqdn not in registered:
-                self.register_plugin(plugin_fqdn)
-                registered.add(plugin_fqdn)
 
     def add_url_rule(self, rule, endpoint=None, view_func=None, roles=None, **options):
         """See :meth:`Flask.add_url_rule`.

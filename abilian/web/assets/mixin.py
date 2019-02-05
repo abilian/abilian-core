@@ -38,7 +38,7 @@ class AssetManagerMixin(Flask):
                 "options": {"output": filename, "filters": js_filters}
             }
 
-    def _setup_asset_extension(self):
+    def setup_asset_extension(self):
         assets = self.extensions["webassets"] = AssetsEnv(self)
         assets.debug = self.debug
         assets.requirejs_config = {"waitSeconds": 90, "shim": {}, "paths": {}}
@@ -154,7 +154,7 @@ class AssetManagerMixin(Flask):
                 else:
                     self.register_asset("js-i18n-" + lang, filename)
 
-    def _register_base_assets(self):
+    def register_base_assets(self):
         """Register assets needed by Abilian.
 
         This is done in a separate method in order to allow applications
