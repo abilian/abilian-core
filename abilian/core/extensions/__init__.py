@@ -11,6 +11,7 @@ import sqlalchemy.orm
 from flask import current_app
 from sqlalchemy.engine import Engine
 
+from abilian.core.extensions.jinjaext import DeferredJS
 from abilian.core.logging import patch_logger
 
 from . import upstream_info
@@ -18,6 +19,7 @@ from ..sqlalchemy import SQLAlchemy
 from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf
 from .login import login_manager
+from .redis import Redis
 
 __all__ = ["get_extension", "db", "mail", "login_manager", "csrf", "upstream_info"]
 
@@ -45,6 +47,10 @@ flask_mail.Message.send = _message_send
 mail = flask_mail.Mail()
 
 db = SQLAlchemy()
+
+redis = Redis()
+
+deferred_js = DeferredJS()
 
 
 @sa.event.listens_for(db.metadata, "before_create")

@@ -8,6 +8,7 @@ from webassets.filter import get_filter
 from abilian.services.security import Anonymous
 
 from .filters import register_filters
+from .mixin import AssetManagerMixin
 
 
 def init_app(app):

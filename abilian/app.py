@@ -3,35 +3,29 @@
 applications."""
 import errno
 import importlib
-import logging
 import logging.config
 import os
 import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
-from typing import Any, Callable, Dict, Text
+from typing import Callable
 
 import jinja2
 import sqlalchemy as sa
 import sqlalchemy.exc
-import yaml
-from flask import Blueprint, Flask, _request_ctx_stack, abort, \
-    appcontext_pushed, current_app, g, render_template, request, \
+from flask import Blueprint, Flask, abort, appcontext_pushed, g, request, \
     request_started
 from flask.config import ConfigAttribute
 from flask.helpers import locked_cached_property
-from flask_assets import Bundle
-from flask_assets import Environment as AssetsEnv
-from flask_babel import get_locale as babel_get_locale
 from flask_migrate import Migrate
-from pkg_resources import resource_filename
-from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
+from flask_talisman import DEFAULT_CSP_POLICY, Talisman
+from sqlalchemy.orm.attributes import NEVER_SET
 
 import abilian.core.util
 import abilian.i18n
 from abilian.config import default_config
-from abilian.core import extensions, redis, signals
+from abilian.core import extensions, signals
 from abilian.core.celery import FlaskCelery
 from abilian.services import activity_service, antivirus, audit_service, \
     auth_service, conversion_service, index_service, preferences_service, \
@@ -41,13 +35,13 @@ from abilian.services.security import Anonymous
 from abilian.web import csrf
 from abilian.web.action import actions
 from abilian.web.admin import Admin
-from abilian.web.assets.filters import ClosureJS
+from abilian.web.assets import AssetManagerMixin
 from abilian.web.blueprints import allow_access_for_roles
-from abilian.web.filters import init_filters
+from abilian.web.errors import ErrorManagerMixin
+from abilian.web.jinja import JinjaManagerMixin
 from abilian.web.nav import BreadcrumbItem
-from abilian.web.util import send_file_from_directory, url_for
+from abilian.web.util import send_file_from_directory
 from abilian.web.views import Registry as ViewRegistry
-from abilian.web.views.images import user_photo_url
 
 logger = logging.getLogger(__name__)
 db = extensions.db
@@ -81,418 +75,6 @@ class PluginManager:
         logger.info("Registering plugin: " + name)
         module = importlib.import_module(name)
         module.register_plugin(self)
-
-
-class AssetManagerMixin(Flask):
-    def init_assets(self):
-        js_filters = ("closure_js",) if self.config.get("PRODUCTION", False) else None
-        # js_filters = None
-
-        self._assets_bundles = {
-            "css": {
-                "options": {
-                    "filters": ("less", "cssmin"),
-                    "output": "style-%(version)s.min.css",
-                }
-            },
-            "js-top": {
-                "options": {"output": "top-%(version)s.min.js", "filters": js_filters}
-            },
-            "js": {
-                "options": {"output": "app-%(version)s.min.js", "filters": js_filters}
-            },
-        }
-
-        # bundles for JS translations
-        languages = self.config["BABEL_ACCEPT_LANGUAGES"]
-        for lang in languages:
-            code = "js-i18n-" + lang
-            filename = "lang-" + lang + "-%(version)s.min.js"
-            self._assets_bundles[code] = {
-                "options": {"output": filename, "filters": js_filters}
-            }
-
-    def _setup_asset_extension(self):
-        assets = self.extensions["webassets"] = AssetsEnv(self)
-        assets.debug = self.debug
-        assets.requirejs_config = {"waitSeconds": 90, "shim": {}, "paths": {}}
-
-        assets_base_dir = Path(self.instance_path, "webassets")
-        assets_dir = assets_base_dir / "compiled"
-        assets_cache_dir = assets_base_dir / "cache"
-        for path in (assets_base_dir, assets_dir, assets_cache_dir):
-            if not path.exists():
-                path.mkdir()
-
-        assets.directory = str(assets_dir)
-        assets.cache = str(assets_cache_dir)
-        manifest_file = assets_base_dir / "manifest.json"
-        assets.manifest = f"json:{manifest_file}"
-
-        # set up load_path for application static dir. This is required
-        # since we are setting Environment.load_path for other assets
-        # (like core_bundle below),
-        # in this case Flask-Assets uses webasssets resolvers instead of
-        # Flask's one
-        assets.append_path(self.static_folder, self.static_url_path)
-
-        # filters options
-        less_args = ["-ru"]
-        assets.config["less_extra_args"] = less_args
-        assets.config["less_as_output"] = True
-        if assets.debug:
-            assets.config["less_source_map_file"] = "style.map"
-
-        # setup static url for our assets
-        from abilian.web import assets as core_bundles
-
-        core_bundles.init_app(self)
-
-        # static minified are here
-        assets.url = self.static_url_path + "/min"
-        assets.append_path(str(assets_dir), assets.url)
-        self.add_static_url(
-            "min", str(assets_dir), endpoint="webassets_static", roles=Anonymous
-        )
-
-    def _finalize_assets_setup(self):
-        assets = self.extensions["webassets"]
-        assets_dir = Path(assets.directory)
-        closure_base_args = [
-            "--jscomp_warning",
-            "internetExplorerChecks",
-            "--source_map_format",
-            "V3",
-            "--create_source_map",
-        ]
-
-        for name, data in self._assets_bundles.items():
-            bundles = data.get("bundles", [])
-            options = data.get("options", {})  # type: Dict[Text, Any]
-            filters = options.get("filters") or []
-            options["filters"] = []
-            for f in filters:
-                if f == "closure_js":
-                    js_map_file = str(assets_dir / f"{name}.map")
-                    f = ClosureJS(extra_args=closure_base_args + [js_map_file])
-                options["filters"].append(f)
-
-            if not options["filters"]:
-                options["filters"] = None
-
-            if bundles:
-                assets.register(name, Bundle(*bundles, **options))
-
-    def register_asset(self, type_, *assets):
-        """Register webassets bundle to be served on all pages.
-
-        :param type_: `"css"`, `"js-top"` or `"js""`.
-
-        :param assets:
-            a path to file, a :ref:`webassets.Bundle <webassets:bundles>`
-            instance or a callable that returns a
-            :ref:`webassets.Bundle <webassets:bundles>` instance.
-
-        :raises KeyError: if `type_` is not supported.
-        """
-        supported = list(self._assets_bundles.keys())
-        if type_ not in supported:
-            msg = "Invalid type: {}. Valid types: {}".format(
-                repr(type_), ", ".join(sorted(supported))
-            )
-            raise KeyError(msg)
-
-        for asset in assets:
-            if not isinstance(asset, Bundle) and callable(asset):
-                asset = asset()
-
-            self._assets_bundles[type_].setdefault("bundles", []).append(asset)
-
-    def register_i18n_js(self, *paths):
-        """Register templates path translations files, like
-        `select2/select2_locale_{lang}.js`.
-
-        Only existing files are registered.
-        """
-        languages = self.config["BABEL_ACCEPT_LANGUAGES"]
-        assets = self.extensions["webassets"]
-
-        for path in paths:
-            for lang in languages:
-                filename = path.format(lang=lang)
-                try:
-                    assets.resolver.search_for_source(assets, filename)
-                except IOError:
-                    pass
-                    # logger.debug('i18n JS not found, skipped: "%s"', filename)
-                else:
-                    self.register_asset("js-i18n-" + lang, filename)
-
-    def _register_base_assets(self):
-        """Register assets needed by Abilian.
-
-        This is done in a separate method in order to allow applications
-        to redefine it at will.
-        """
-        from abilian.web import assets as bundles
-
-        self.register_asset("css", bundles.LESS)
-        self.register_asset("js-top", bundles.TOP_JS)
-        self.register_asset("js", bundles.JS)
-        self.register_i18n_js(*bundles.JS_I18N)
-
-
-class ErrorManagerMixin(Flask):
-    def setup_logging(self):
-        # Force flask to create application logger before logging
-        # configuration; else, flask will overwrite our settings
-        self.logger  # noqa
-
-        log_level = self.config.get("LOG_LEVEL")
-        if log_level:
-            self.logger.setLevel(log_level)
-
-        logging_file = self.config.get("LOGGING_CONFIG_FILE")
-        if logging_file:
-            logging_file = (Path(self.instance_path) / logging_file).resolve()
-        else:
-            logging_file = Path(resource_filename(__name__, "default_logging.yml"))
-
-        if logging_file.suffix == ".ini":
-            # old standard 'ini' file config
-            logging.config.fileConfig(str(logging_file), disable_existing_loggers=False)
-        elif logging_file.suffix == ".yml":
-            # yaml config file
-            logging_cfg = yaml.safe_load(logging_file.open())
-            logging_cfg.setdefault("version", 1)
-            logging_cfg.setdefault("disable_existing_loggers", False)
-            logging.config.dictConfig(logging_cfg)
-
-    def init_debug_toolbar(self):
-        if (
-            not self.testing
-            and self.config.get("DEBUG_TB_ENABLED")
-            and "debugtoolbar" not in self.blueprints
-        ):
-            try:
-                from flask_debugtoolbar import DebugToolbarExtension
-            except ImportError:
-                logger.warning(
-                    "DEBUG_TB_ENABLED is on but flask_debugtoolbar " "is not installed."
-                )
-            else:
-                dbt = DebugToolbarExtension()
-                default_config = dbt._default_config(self)
-                init_dbt = dbt.init_app
-
-                if "DEBUG_TB_PANELS" not in self.config:
-                    # add our panels to default ones
-                    self.config["DEBUG_TB_PANELS"] = list(
-                        default_config["DEBUG_TB_PANELS"]
-                    )
-                init_dbt(self)
-                for view_name in self.view_functions:
-                    if view_name.startswith("debugtoolbar."):
-                        extensions.csrf.exempt(self.view_functions[view_name])
-
-    def handle_user_exception(self, e):
-        # If session.transaction._parent is None, then exception has occured in
-        # after_commit(): doing a rollback() raises an error and would hide
-        # actual error.
-        session = db.session()
-        if session.is_active and session.transaction._parent is not None:
-            # Inconditionally forget all DB changes, and ensure clean session
-            # during exception handling.
-            session.rollback()
-        else:
-            self._remove_session_save_objects()
-
-        return Flask.handle_user_exception(self, e)
-
-    def handle_exception(self, e):
-        session = db.session()
-        if not session.is_active:
-            # Something happened in error handlers and session is not usable
-            # anymore.
-            self._remove_session_save_objects()
-
-        return Flask.handle_exception(self, e)
-
-    def _remove_session_save_objects(self):
-        """Used during exception handling in case we need to remove() session:
-
-        keep instances and merge them in the new session.
-        """
-        if self.testing:
-            return
-        # Before destroying the session, get all instances to be attached to the
-        # new session. Without this, we get DetachedInstance errors, like when
-        # tryin to get user's attribute in the error page...
-        old_session = db.session()
-        g_objs = []
-        for key in iter(g):
-            obj = getattr(g, key)
-            if isinstance(obj, db.Model) and sa.orm.object_session(obj) in (
-                None,
-                old_session,
-            ):
-                g_objs.append((key, obj, obj in old_session.dirty))
-
-        db.session.remove()
-        session = db.session()
-
-        for key, obj, load in g_objs:
-            # replace obj instance in bad session by new instance in fresh
-            # session
-            setattr(g, key, session.merge(obj, load=load))
-
-        # refresh `current_user`
-        user = getattr(_request_ctx_stack.top, "user", None)
-        if user is not None and isinstance(user, db.Model):
-            _request_ctx_stack.top.user = session.merge(user, load=load)
-
-    def log_exception(self, exc_info):
-        """Log exception only if Sentry is not used (this avoids getting error
-        twice in Sentry)."""
-        dsn = self.config.get("SENTRY_DSN")
-        if not dsn:
-            super().log_exception(exc_info)
-
-    def init_sentry(self):
-        """Install Sentry handler if config defines 'SENTRY_DSN'."""
-        dsn = self.config.get("SENTRY_DSN")
-        if not dsn:
-            return
-
-        try:
-            import sentry_sdk
-        except ImportError:
-            logger.error(
-                'SENTRY_DSN is defined in config but package "sentry-sdk"'
-                " is not installed."
-            )
-            return
-
-        from sentry_sdk.integrations.flask import FlaskIntegration
-
-        sentry_sdk.init(dsn=dsn, integrations=[FlaskIntegration()])
-
-        # ext = Sentry(self, logging=True, level=logging.ERROR)
-        # ext.client.tags["app_name"] = self.name
-        # ext.client.tags["process_type"] = "web"
-        # server_name = str(self.config.get("SERVER_NAME"))
-        # ext.client.tags["configured_server_name"] = server_name
-
-    def install_default_handlers(self):
-        for http_error_code in (403, 404, 500):
-            self.install_default_handler(http_error_code)
-
-    def install_default_handler(self, http_error_code):
-        """Install a default error handler for `http_error_code`.
-
-        The default error handler renders a template named error404.html
-        for http_error_code 404.
-        """
-        logger.debug(
-            "Set Default HTTP error handler for status code %d", http_error_code
-        )
-        handler = partial(self.handle_http_error, http_error_code)
-        self.errorhandler(http_error_code)(handler)
-
-    def handle_http_error(self, code, error):
-        """Helper that renders `error{code}.html`.
-
-        Convenient way to use it::
-
-           from functools import partial
-           handler = partial(app.handle_http_error, code)
-           app.errorhandler(code)(handler)
-        """
-        # 5xx code: error on server side
-        if (code // 100) == 5:
-            # ensure rollback if needed, else error page may
-            # have an error, too, resulting in raw 500 page :-(
-            db.session.rollback()
-
-        template = f"error{code:d}.html"
-        return render_template(template, error=error), code
-
-
-class JinjaManagerMixin(Flask):
-    def __init__(self):
-        self._jinja_loaders = []
-
-    #
-    # Templating and context injection setup
-    #
-    def create_jinja_environment(self):
-        env = Flask.create_jinja_environment(self)
-        env.globals.update(
-            app=current_app,
-            csrf=csrf,
-            get_locale=babel_get_locale,
-            local_dt=abilian.core.util.local_dt,
-            _n=abilian.i18n._n,
-            url_for=url_for,
-            user_photo_url=user_photo_url,
-            NO_VALUE=NO_VALUE,
-            NEVER_SET=NEVER_SET,
-        )
-        init_filters(env)
-        return env
-
-    @locked_cached_property
-    def jinja_options(self):
-        options = dict(Flask.jinja_options)
-
-        jinja_exts = options.setdefault("extensions", [])
-        ext = "abilian.core.jinjaext.DeferredJSExtension"
-        if ext not in jinja_exts:
-            jinja_exts.append(ext)
-
-        if "bytecode_cache" not in options:
-            cache_dir = Path(self.instance_path, "cache", "jinja")
-            if not cache_dir.exists():
-                cache_dir.mkdir(0o775, parents=True)
-
-            options["bytecode_cache"] = jinja2.FileSystemBytecodeCache(
-                str(cache_dir), "%s.cache"
-            )
-
-        if self.debug and self.config.get("TEMPLATE_DEBUG", False):
-            options["undefined"] = jinja2.StrictUndefined
-        return options
-
-    def register_jinja_loaders(self, *loaders):
-        """Register one or many `jinja2.Loader` instances for templates lookup.
-
-        During application initialization plugins can register a loader so that
-        their templates are available to jinja2 renderer.
-
-        Order of registration matters: last registered is first looked up (after
-        standard Flask lookup in app template folder). This allows a plugin to
-        override templates provided by others, or by base application. The
-        application can override any template from any plugins from its template
-        folder (See `Flask.Application.template_folder`).
-
-        :raise: `ValueError` if a template has already been rendered
-        """
-        if not hasattr(self, "_jinja_loaders"):
-            raise ValueError(
-                "Cannot register new jinja loaders after first template rendered"
-            )
-
-        self._jinja_loaders.extend(loaders)
-
-    @locked_cached_property
-    def jinja_loader(self):
-        """Search templates in custom app templates dir (default Flask
-        behaviour), fallback on abilian templates."""
-        loaders = self._jinja_loaders
-        del self._jinja_loaders
-        loaders.append(Flask.jinja_loader.func(self))
-        loaders.reverse()
-        return jinja2.ChoiceLoader(loaders)
 
 
 class Application(
@@ -631,6 +213,8 @@ class Application(
 
             self.after_request(validate_response)
 
+        setup(self)
+
     def configure(self, config):
         if config:
             self.config.from_object(config)
@@ -742,15 +326,11 @@ class Application(
 
     def init_extensions(self):
         """Initialize flask extensions, helpers and services."""
-        self.init_debug_toolbar()
-        redis.Extension(self)
+        extensions.redis.init_app(self)
         extensions.mail.init_app(self)
+        extensions.deferred_js.init_app(self)
         extensions.upstream_info.extension.init_app(self)
         actions.init_app(self)
-
-        from abilian.core.jinjaext import DeferredJS
-
-        DeferredJS(self)
 
         # auth_service installs a `before_request` handler (actually it's
         # flask-login). We want to authenticate user ASAP, so that sentry and
@@ -919,7 +499,48 @@ class Application(
         return user
 
 
+def setup(app: Flask):
+    config = app.config
+
+    # CSP
+    csp = config.get("CONTENT_SECURITY_POLICY", DEFAULT_CSP_POLICY)
+    Talisman(app, content_security_policy=csp)
+
+    # Debug Toolbar
+    init_debug_toolbar(app)
+
+
+def init_debug_toolbar(app):
+    if (
+        not app.testing
+        and app.config.get("DEBUG_TB_ENABLED")
+        and "debugtoolbar" not in app.blueprints
+    ):
+        try:
+            from flask_debugtoolbar import DebugToolbarExtension
+        except ImportError:
+            logger.warning(
+                "DEBUG_TB_ENABLED is on but flask_debugtoolbar " "is not installed."
+            )
+        else:
+            dbt = DebugToolbarExtension()
+            default_config = dbt._default_config(app)
+            init_dbt = dbt.init_app
+
+            if "DEBUG_TB_PANELS" not in app.config:
+                # add our panels to default ones
+                app.config["DEBUG_TB_PANELS"] = list(default_config["DEBUG_TB_PANELS"])
+            init_dbt(app)
+            for view_name in app.view_functions:
+                if view_name.startswith("debugtoolbar."):
+                    extensions.csrf.exempt(app.view_functions[view_name])
+
+
 def create_app(config=None, app_class=Application, **kw):
     app = app_class(**kw)
     app.setup(config=config)
+
+    # This is currently called from app.setup()
+    # setup(app)
+
     return app
