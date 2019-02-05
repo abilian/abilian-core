@@ -2,6 +2,8 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
   "use strict";
   // multiple row widget
   function DynamicRowWidget(table, options) {
+    console.log(this);
+
     var self = this;
     self.table = table;
     self.prefix = table.data("prefix");
