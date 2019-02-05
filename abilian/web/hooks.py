@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 
 from abilian.core import signals
@@ -23,3 +25,9 @@ def init_hooks(app: Flask):
     #     g.id_generator = count(start=1)
     #
     # appcontext_pushed.connect(install_id_generator)
+
+    if os.environ.get("FLASK_VALIDATE_HTML"):
+        # Workaround circular import
+        from abilian.testing.validation import validate_response
+
+        app.after_request(validate_response)

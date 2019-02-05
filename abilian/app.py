@@ -139,8 +139,6 @@ class Application(
 
         Flask.__init__(self, name, *args, **kwargs)
 
-        appcontext_pushed.connect(self.install_id_generator)
-
         ServiceManager.__init__(self)
         PluginManager.__init__(self)
         JinjaManagerMixin.__init__(self)
@@ -155,6 +153,8 @@ class Application(
         # SQLALCHEMY_DATABASE_URI is definitively fixed (it cannot be defined in
         # database AFAICT), and LOGGING_FILE cannot be set in DB settings.
         self.setup_logging()
+
+        appcontext_pushed.connect(self.install_id_generator)
 
         if not self.testing:
             self.init_sentry()
@@ -189,6 +189,7 @@ class Application(
 
         # TODO: maybe reenable later
         # self.maybe_register_setup_wizard()
+
         self._finalize_assets_setup()
 
         # At this point all models should have been imported: time to configure
@@ -211,12 +212,6 @@ class Application(
         if not self.testing:
             with self.app_context():
                 self.start_services()
-
-        if os.environ.get("FLASK_VALIDATE_HTML"):
-            # Workaround circular import
-            from abilian.testing.validation import validate_response
-
-            self.after_request(validate_response)
 
         setup(self)
 
