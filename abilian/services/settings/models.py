@@ -11,7 +11,7 @@ from abilian.core.extensions import db
 __all__ = ["Setting"]
 
 
-class TransformerRegistry(object):
+class TransformerRegistry:
     def __init__(self):
         self.encoders = {}  # type: Dict[str, Optional[Callable]]
         self.decoders = {}  # type: Dict[str, Optional[Callable]]
@@ -38,7 +38,7 @@ class TransformerRegistry(object):
 _transformers = TransformerRegistry()
 
 
-class _EmptyValue(object):
+class _EmptyValue:
     def __bool__(self):
         return False
 
@@ -77,7 +77,7 @@ class Setting(db.Model):
             type_ in self.transformers.encoders and type_ in self.transformers.decoders
         ):
             raise ValueError(
-                'Invalid type "{}": no encoder and/or decoder registered'.format(type_)
+                f'Invalid type "{type_}": no encoder and/or decoder registered'
             )
         self._type = type_
 
@@ -99,7 +99,7 @@ register = _transformers.register
 
 
 def from_int(i):
-    return "{}".format(i).encode()
+    return f"{i}".encode()
 
 
 register("int", from_int, int)
