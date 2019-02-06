@@ -13,6 +13,7 @@ from sqlalchemy.orm.attributes import NEVER_SET
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.core.models.base import AUDITABLE_HIDDEN, SEARCHABLE
+from abilian.core.models.subjects import create_root_user
 
 from . import CREATION, DELETION, UPDATE, AuditEntry, audit_service
 
@@ -77,7 +78,7 @@ class CommentRelated(db.Model):
 
 
 def test_audit(app, session):
-    app.create_root_user()
+    create_root_user()
     audit_service.start()
     assert len(AuditEntry.query.all()) == 0
 
@@ -147,7 +148,7 @@ def test_audit(app, session):
 
 
 def test_audit_related(app, session):
-    app.create_root_user()
+    create_root_user()
     audit_service.start()
 
     #  helper
@@ -236,7 +237,7 @@ def test_audit_related(app, session):
 
 
 def test_audit_collections(app, session):
-    app.create_root_user()
+    create_root_user()
     audit_service.start()
 
     I1 = IntegerCollection(id=1)

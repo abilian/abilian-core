@@ -5,6 +5,7 @@ from sqlalchemy import Column, Text, UnicodeText
 from sqlalchemy.orm import column_property
 
 from abilian.core.entities import SEARCHABLE, Entity
+from abilian.core.models.subjects import create_root_user
 from abilian.services import index_service
 
 
@@ -33,7 +34,7 @@ def test_contacts_are_indexed(app, db_session):
     index_service.start()
 
     with app.test_request_context():
-        root_user = app.create_root_user()
+        root_user = create_root_user()
         login_user(root_user)
 
         contact = DummyContact1(

@@ -334,3 +334,14 @@ class Group(Principal, db.Model):
             .group_by(membership.c.group_id)
             .label("members_count")
         )
+
+
+def create_root_user():
+    user = User.query.get(0)
+    if user is None:
+        user = User(
+            id=0, last_name="SYSTEM", email="system@example.com", can_login=False
+        )
+        db.session.add(user)
+        db.session.commit()
+    return user

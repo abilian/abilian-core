@@ -445,29 +445,14 @@ class Application(
             endpoint, allow_access_for_roles(Anonymous), endpoint=True
         )
 
-    def create_db(self) -> None:
-        db.create_all()
-        self.create_root_user()
-
-    def create_root_user(self):
-        from abilian.core.models.subjects import User
-
-        user = User.query.get(0)
-        if user is None:
-            user = User(
-                id=0, last_name="SYSTEM", email="system@example.com", can_login=False
-            )
-            db.session.add(user)
-            db.session.commit()
-        return user
-
 
 def setup(app: Flask):
     config = app.config
 
     # CSP
-    csp = config.get("CONTENT_SECURITY_POLICY", DEFAULT_CSP_POLICY)
-    Talisman(app, content_security_policy=csp)
+    if not app.debug:
+        csp = config.get("CONTENT_SECURITY_POLICY", DEFAULT_CSP_POLICY)
+        Talisman(app, content_security_policy=csp)
 
     # Debug Toolbar
     init_debug_toolbar(app)
@@ -483,7 +468,7 @@ def init_debug_toolbar(app):
             from flask_debugtoolbar import DebugToolbarExtension
         except ImportError:
             logger.warning(
-                "DEBUG_TB_ENABLED is on but flask_debugtoolbar " "is not installed."
+                "DEBUG_TB_ENABLED is on but flask_debugtoolbar is not installed."
             )
         else:
             dbt = DebugToolbarExtension()

@@ -2,7 +2,7 @@
 from pytest import fixture, mark
 
 from abilian.core.entities import Entity
-from abilian.core.models.subjects import Group, User
+from abilian.core.models.subjects import Group, User, create_root_user
 
 from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
     InheritSecurity, Owner, Permission, PermissionAssignment, Reader, Role, \
@@ -35,7 +35,7 @@ def test_enumerate_assignables(db):
 @fixture
 def session(app, db):
     security.start()
-    app.create_root_user()
+    create_root_user()
 
     yield db.session
 
