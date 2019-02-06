@@ -9,16 +9,19 @@ from abilian.web.action import Endpoint
 
 
 class DefaultConfig:
+    # Seriously: this need to be changed in production
+    SECRET_KEY = "CHANGEME"
+
     # Need to be explicitly defined in production configs
     PRODUCTION = False
 
     # Security (see
     # https://blog.miguelgrinberg.com/post/cookie-security-for-flask-applications)
-    CSRF_ENABLED = True
-    # SESSION_COOKIE_SECURE = True
-    # REMEMBER_COOKIE_SECURE = True
-    # SESSION_COOKIE_HTTPONLY = True
-    # REMEMBER_COOKIE_HTTPONLY = True
+    WTF_CSRF_ENABLED = True
+    SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_HTTPONLY = True
 
     # Babel
     BABEL_ACCEPT_LANGUAGES = ["en"]

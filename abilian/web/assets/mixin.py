@@ -11,8 +11,10 @@ from abilian.web.assets.filters import ClosureJS
 
 class AssetManagerMixin(Flask):
     def init_assets(self):
-        js_filters = ("closure_js",) if self.config.get("PRODUCTION", False) else None
-        # js_filters = None
+        if self.debug:
+            js_filters = None
+        else:
+            js_filters = ("closure_js",)
 
         self._assets_bundles = {
             "css": {

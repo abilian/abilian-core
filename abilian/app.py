@@ -5,6 +5,7 @@ import errno
 import importlib
 import logging.config
 import os
+import sys
 import warnings
 from functools import partial
 from itertools import chain, count
@@ -252,11 +253,12 @@ class Application(
         if not self.config.get("SESSION_COOKIE_NAME"):
             self.config["SESSION_COOKIE_NAME"] = self.name + "-session"
 
-        if "WTF_CSRF_ENABLED" not in self.config:
-            self.config["WTF_CSRF_ENABLED"] = self.config.get("CSRF_ENABLED", True)
-
         if not self.config.get("FAVICO_URL"):
             self.config["FAVICO_URL"] = self.config.get("LOGO_URL")
+
+        if not self.debug and self.config["SECRET_KEY"] == "CHANGEME":
+            logger.error("You must change the default secret config ('SECRET_KEY')")
+            sys.exit()
 
     def check_instance_folder(self, create=False):
         """Verify instance folder exists, is a directory, and has necessary
@@ -329,7 +331,7 @@ class Application(
         Migrate(self, db)
 
         # CSRF by default
-        if self.config.get("CSRF_ENABLED"):
+        if self.config.get("WTF_CSRF_ENABLED"):
             extensions.csrf.init_app(self)
             self.extensions["csrf"] = extensions.csrf
             extensions.abilian_csrf.init_app(self)

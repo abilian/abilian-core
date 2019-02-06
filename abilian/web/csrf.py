@@ -18,7 +18,7 @@ def field():
     """Return an instance of `wtforms.ext.csrf.fields.CSRFTokenField`, suitable
     for rendering.
 
-    Renders an empty string if `config.CSRF_ENABLED` is not set.
+    Renders an empty string if `config.WTF_CSRF_ENABLED` is not set.
     """
     return FlaskForm().csrf_token
 
@@ -59,7 +59,7 @@ def has_failed():
 
 def protect(view):
     """Protects a view agains CSRF attacks by checking `csrf_token` value in
-    submitted values. Do nothing if `config.CSRF_ENABLED` is not set.
+    submitted values. Do nothing if `config.WTF_CSRF_ENABLED` is not set.
 
     Raises `werkzeug.exceptions.Forbidden` if validation fails.
     """

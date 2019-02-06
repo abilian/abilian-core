@@ -35,9 +35,7 @@ class TestConfig:
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
     MAIL_SENDER = "tester@example.com"
     SITE_NAME = "Abilian Test"
-    # CSRF_ENABLED = True
     # WTF_CSRF_ENABLED = True
-    CSRF_ENABLED = False
     WTF_CSRF_ENABLED = False
     BABEL_ACCEPT_LANGUAGES = ["en", "fr"]
 
