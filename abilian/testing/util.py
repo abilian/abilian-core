@@ -3,9 +3,8 @@
 from typing import ContextManager
 
 from flask.testing import FlaskClient
-from flask_login import current_user, login_user, logout_user
+from flask_login import login_user, logout_user
 from hyperlink import URL
-from six import text_type
 from sqlalchemy.exc import DatabaseError
 
 from abilian.core.models.subjects import User

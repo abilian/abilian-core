@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import List
 
 from magic import Magic
-from six import add_metaclass, raise_from, text_type
+from six import add_metaclass
 
 from abilian.services.image import resize
 

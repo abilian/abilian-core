@@ -8,7 +8,7 @@ from inspect import isclass
 
 import sqlalchemy as sa
 from flask import current_app
-from six import text_type, with_metaclass
+from six import with_metaclass
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import Session, mapper
@@ -512,6 +512,7 @@ def all_entity_classes():
     ]
 
 
-def register_all_entity_classes():
-    for cls in all_entity_classes():
-        register_metadata(cls)
+# Not used: TODO remove
+# def register_all_entity_classes():
+#     for cls in all_entity_classes():
+#         register_metadata(cls)

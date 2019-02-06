@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 from operator import attrgetter
 
 import sqlalchemy as sa
-from six import add_metaclass, string_types
+from six import add_metaclass
 from whoosh.fields import TEXT
 
 from abilian.core.extensions import db

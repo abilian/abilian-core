@@ -13,7 +13,6 @@ import pickle
 from datetime import datetime
 
 from flask import current_app
-from six import PY2, PY3
 from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.base import NEVER_SET
@@ -128,40 +127,36 @@ class AuditEntry(db.Model):
         # Using Pickle here instead of JSON because we need to pickle values
         # such as dates. This could make schema migration more difficult,
         # though.
+        #
+        # Convoluted and buggy code below to manage the PY2 -> PY3 transition
         if self.changes_pickle:
-            if PY2:
-                changes = pickle.loads(self.changes_pickle)
-
-            else:
-                # XXX: this workaround may or may not work
+            # XXX: this workaround may or may not work
+            try:
+                changes = pickle.loads(self.changes_pickle, encoding="utf-8")
+            except (UnicodeDecodeError, TypeError):
                 try:
-                    changes = pickle.loads(self.changes_pickle, encoding="utf-8")
-                except (UnicodeDecodeError, TypeError):
-                    try:
-                        changes = pickle.loads(self.changes_pickle, encoding="bytes")
-                    except BaseException:
-                        logger.warning("migration error on audit entry:", exc_info=True)
-                        changes = Changes()
+                    changes = pickle.loads(self.changes_pickle, encoding="bytes")
+                except BaseException:
+                    logger.warning("migration error on audit entry:", exc_info=True)
+                    changes = Changes()
 
             if isinstance(changes, dict):
                 changes = Changes.from_legacy(changes)
 
-            if PY3:
+            def fix_migration(changes):
+                # Fix for migration Python 2 -> Python 3
+                items = list(vars(changes).items())
+                for k, v in items:
+                    if isinstance(k, bytes):
+                        setattr(changes, k.decode(), v)
+                        del changes.__dict__[k]
 
-                def fix_migration(changes):
-                    # Fix for migration Python 2 -> Python 3
-                    items = list(vars(changes).items())
-                    for k, v in items:
-                        if isinstance(k, bytes):
-                            setattr(changes, k.decode(), v)
-                            del changes.__dict__[k]
+                for k in changes.columns:
+                    v = changes.columns[k]
+                    if isinstance(v, Changes):
+                        fix_migration(v)
 
-                    for k in changes.columns:
-                        v = changes.columns[k]
-                        if isinstance(v, Changes):
-                            fix_migration(v)
-
-                fix_migration(changes)
+            fix_migration(changes)
 
         else:
             changes = Changes()

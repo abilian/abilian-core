@@ -3,7 +3,6 @@
 from datetime import datetime
 from functools import total_ordering
 
-from six import python_2_unicode_compatible, text_type
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import CheckConstraint, Column, ForeignKey, Index, \
