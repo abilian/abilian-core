@@ -397,7 +397,7 @@ Flask = "*"
 Jinja2 = ">=2.5"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "A toolbar overlay for debugging Flask applications."
 name = "flask-debugtoolbar"
 optional = false
@@ -1258,7 +1258,7 @@ python-versions = ">=2.7"
 version = "0.3.3"
 
 [metadata]
-content-hash = "134558d3b5c6f3548efc862983d2a6ae278bd659d0ed2453c71fbadf9fb4e604"
+content-hash = "7eae7ddbcbe77d7fd8670bc75d5d6d82be5419bf062365ff6652b682ae3e922c"
 python-versions = "^3.6"
 
 [metadata.hashes]
