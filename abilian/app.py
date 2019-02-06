@@ -459,29 +459,26 @@ def setup(app: Flask):
 
 
 def init_debug_toolbar(app):
-    if (
-        not app.testing
-        and app.config.get("DEBUG_TB_ENABLED")
-        and "debugtoolbar" not in app.blueprints
-    ):
-        try:
-            from flask_debugtoolbar import DebugToolbarExtension
-        except ImportError:
-            logger.warning(
-                "DEBUG_TB_ENABLED is on but flask_debugtoolbar is not installed."
-            )
-        else:
-            dbt = DebugToolbarExtension()
-            default_config = dbt._default_config(app)
-            init_dbt = dbt.init_app
+    if not app.debug or app.testing:
+        return
 
-            if "DEBUG_TB_PANELS" not in app.config:
-                # add our panels to default ones
-                app.config["DEBUG_TB_PANELS"] = list(default_config["DEBUG_TB_PANELS"])
-            init_dbt(app)
-            for view_name in app.view_functions:
-                if view_name.startswith("debugtoolbar."):
-                    extensions.csrf.exempt(app.view_functions[view_name])
+    try:
+        from flask_debugtoolbar import DebugToolbarExtension
+    except ImportError:
+        logger.warning("Running in debug mode but flask_debugtoolbar is not installed.")
+        return
+
+    dbt = DebugToolbarExtension()
+    default_config = dbt._default_config(app)
+    init_dbt = dbt.init_app
+
+    if "DEBUG_TB_PANELS" not in app.config:
+        # add our panels to default ones
+        app.config["DEBUG_TB_PANELS"] = list(default_config["DEBUG_TB_PANELS"])
+    init_dbt(app)
+    for view_name in app.view_functions:
+        if view_name.startswith("debugtoolbar."):
+            extensions.csrf.exempt(app.view_functions[view_name])
 
 
 def create_app(config=None, app_class=Application, **kw):

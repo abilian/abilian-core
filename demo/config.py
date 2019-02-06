@@ -14,11 +14,9 @@ class Config(object):
     DEBUG_TB_PROFILER_ENABLED = False
 
     # Generic for this project
-    PRODUCTION = True
     SITE_NAME = "Abilian Core Demo"
     MAIL_SENDER = "sender@example.com"
     SESSION_COOKIE_NAME = "abilian-core-session"
-    # LOGGING_CONFIG_FILE = 'logging.yml'
     PRIVATE_SITE = True
     MAIL_ASCII_ATTACHMENTS = True
     BABEL_ACCEPT_LANGUAGES = ("fr", "en", "es", "tr", "zh")

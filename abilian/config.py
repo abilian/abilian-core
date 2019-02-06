@@ -9,8 +9,8 @@ from abilian.web.action import Endpoint
 
 
 class DefaultConfig:
-    # Generic Flask
-    TEMPLATE_DEBUG = False
+    # Need to be explicitly defined in production configs
+    PRODUCTION = False
 
     # Security (see
     # https://blog.miguelgrinberg.com/post/cookie-security-for-flask-applications)
@@ -36,6 +36,9 @@ class DefaultConfig:
     SQLALCHEMY_POOL_RECYCLE = 1800  # 30min. default value in flask_sa is None
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # Debug settings (override default)
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
+
     # Abilian-specific
     PRIVATE_SITE = False
     PLUGINS = ()
@@ -53,7 +56,7 @@ class DefaultConfig:
     )
     LOGO_URL = Endpoint("abilian_static", filename="img/logo-abilian-32x32.png")
     ABILIAN_UPSTREAM_INFO_ENABLED = False  # upstream info extension
-    TRACKING_CODE_SNIPPET = ""  # tracking code to insert before </body>
+    TRACKING_CODE = ""  # tracking code for web analytics to insert before </body>
     MAIL_ADDRESS_TAG_CHAR = None
 
 
