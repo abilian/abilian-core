@@ -310,9 +310,6 @@ class DateTimeField(Field):
                 .replace("y", "yyyy")
             )
             time_fmt = locale.time_formats["short"]
-            # Workaround bug in Babel (at least <= 2.4) under Python 3
-            if not PY2:
-                time_fmt = time_fmt.pattern
             dt_fmt = locale.datetime_formats["short"].format(time_fmt, date_fmt)
             return format_datetime(self.data, dt_fmt) if self.data else ""
 
