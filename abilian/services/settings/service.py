@@ -2,6 +2,8 @@
 """"""
 from typing import Text
 
+from six import iteritems
+
 from abilian.core.extensions import db
 from abilian.services import Service
 
@@ -76,7 +78,7 @@ class SettingsService(Service):
             db.session.delete(s)
 
 
-class SettingsNamespace:
+class SettingsNamespace(object):
     """Allow to query :class:`SettingsService` service within a namespace.
 
     Basically it prefixes keys with namespace name and a colon.
@@ -102,9 +104,8 @@ class SettingsNamespace:
     def iteritems(self, prefix=""):
         prefix = ":".join((self.name, prefix))
         start = len(self.name) + 1  # +1 for colon
-        # Don't remove (for some reason)
-        self.service.items()
-        for k, v in self.service.items():
+        iteritems(self.service, prefix=prefix)
+        for k, v in iteritems(self.service, prefix=prefix):
             yield (k[start:], v)
 
     def as_dict(self, prefix=""):
