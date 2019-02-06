@@ -19,7 +19,6 @@ def show(only_path=False):
     infos = [
         "\n",
         f'Instance path: "{current_app.instance_path}"',
-        f'CONFIG_ENVVAR: "{current_app.CONFIG_ENVVAR}"',
     ]
 
     logger.info("\n  ".join(infos))

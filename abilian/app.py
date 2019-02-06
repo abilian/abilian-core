@@ -111,11 +111,6 @@ class Application(
 
     default_config = default_config
 
-    #: Environment variable used to locate a config file to load last (after
-    #: instance config file). Use this if you want to override some settings
-    #: on a configured instance.
-    CONFIG_ENVVAR = "ABILIAN_CONFIG"
-
     #: If True all views will require by default an authenticated user, unless
     #: Anonymous role is authorized. Static assets are always public.
     private_site = ConfigAttribute("PRIVATE_SITE")
@@ -131,12 +126,6 @@ class Application(
 
     def __init__(self, name=None, *args, **kwargs):
         name = name or __name__
-
-        # instance_path = os.environ.get("FLASK_INSTANCE_PATH")
-        # if instance_path:
-        #     kwargs["instance_path"] = instance_path
-        # else:
-        #     kwargs.setdefault("instance_relative_config", True)
 
         Flask.__init__(self, name, *args, **kwargs)
 
@@ -166,7 +155,6 @@ class Application(
         settings_service.init_app(self)
 
         self.register_jinja_loaders(jinja2.PackageLoader("abilian.web"))
-
         self.init_assets()
         self.install_default_handlers()
 
