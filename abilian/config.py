@@ -15,10 +15,10 @@ class DefaultConfig:
     # Security (see
     # https://blog.miguelgrinberg.com/post/cookie-security-for-flask-applications)
     CSRF_ENABLED = True
-    SESSION_COOKIE_SECURE = True
-    REMEMBER_COOKIE_SECURE = True
-    SESSION_COOKIE_HTTPONLY = True
-    REMEMBER_COOKIE_HTTPONLY = True
+    # SESSION_COOKIE_SECURE = True
+    # REMEMBER_COOKIE_SECURE = True
+    # SESSION_COOKIE_HTTPONLY = True
+    # REMEMBER_COOKIE_HTTPONLY = True
 
     # Babel
     BABEL_ACCEPT_LANGUAGES = ["en"]
