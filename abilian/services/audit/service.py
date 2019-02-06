@@ -234,9 +234,7 @@ class AuditService(Service):
                         if entry:
                             entries.append(entry)
                     except BaseException:
-                        if current_app.config.get("DEBUG") or current_app.config.get(
-                            "TESTING"
-                        ):
+                        if current_app.debug or current_app.testing:
                             raise
                         log.error("Exception during entry creation", exc_info=True)
 
