@@ -64,4 +64,4 @@
     return Abilian;
 }));
 
-require(['Abilian', 'domReady!'], function(Abilian){ Abilian.init(); });
+require(['Abilian', 'domReady!'], function(Abilian, doc){ Abilian.init(); });
