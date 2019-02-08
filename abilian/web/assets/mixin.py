@@ -42,7 +42,8 @@ class AssetManagerMixin(Flask):
 
     def setup_asset_extension(self):
         assets = self.extensions["webassets"] = AssetsEnv(self)
-        assets.debug = self.debug
+        if self.debug:
+            assets.debug = True
         assets.requirejs_config = {"waitSeconds": 90, "shim": {}, "paths": {}}
 
         assets_base_dir = Path(self.instance_path, "webassets")
