@@ -23,8 +23,11 @@ COMMIT = object()
 
 
 @click.command()
+@click.option('--batch-size', default=0)
+@click.option('--progressive/--no-progressive')
+@click.option('--clear/--no-clear')
 @with_appcontext
-def reindex(clear=False, progressive=False, batch_size=""):
+def reindex(clear=False, progressive=False, batch_size=0):
     # type: (bool, bool, str) -> None
     """Reindex all content; optionally clear index before.
 
@@ -36,7 +39,7 @@ def reindex(clear=False, progressive=False, batch_size=""):
                      index. Unused in single transaction mode. If `None` then
                      all documents of same content type are written at once.
     """
-    reindexer = Reindexer(clear, progressive, int(batch_size or 0))
+    reindexer = Reindexer(clear, progressive, batch_size)
     reindexer.reindex_all()
 
 
