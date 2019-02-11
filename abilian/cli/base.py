@@ -1,4 +1,7 @@
+import runpy
+
 import click
+from flask.cli import with_appcontext
 
 from abilian.core.extensions import db
 
@@ -16,6 +19,14 @@ def dropdb():
     if confirm.lower() == "y":
         # with current_app.app_context():
         db.drop_all()
+
+
+@click.command()
+@click.argument("path", type=click.Path(exists=True))
+@with_appcontext
+def script(path):
+    """Run given script in the app context."""
+    runpy.run_path(path, run_name="__main__")
 
 
 # # coding=utf-8
@@ -249,13 +260,6 @@ def dropdb():
 #     user.set_password(password)
 #     db.session.commit()
 #     print(f"Password updated for user {email}")
-#
-#
-# @click.command
-# @with_appcontext
-# def script(path):
-#     """Run given script in the app context."""
-#     runpy.run_path(path, run_name="__main__")
 #
 #
 # #
