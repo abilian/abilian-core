@@ -27,8 +27,7 @@ COMMIT = object()
 @click.option('--progressive/--no-progressive')
 @click.option('--clear/--no-clear')
 @with_appcontext
-def reindex(clear=False, progressive=False, batch_size=0):
-    # type: (bool, bool, str) -> None
+def reindex(clear: bool, progressive: bool, batch_size: int):
     """Reindex all content; optionally clear index before.
 
     All is done in asingle transaction by default.
