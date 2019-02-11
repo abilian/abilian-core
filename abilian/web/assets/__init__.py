@@ -89,11 +89,11 @@ ABILIAN_JS = Bundle(
     "js/widgets/base.js",
     "js/widgets/select2.js",
     "js/widgets/richtext.js",
-    "js/widgets/delete.js",
     "js/widgets/file.js",
     "js/widgets/image.js",
     "js/widgets/tags.js",
     "js/widgets/dynamic-row.js",
+    "js/widgets/delete.js",
 )
 
 LESS = Bundle(
