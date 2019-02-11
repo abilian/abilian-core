@@ -11,7 +11,7 @@ Replaced the too-complex UnitTest-based testing framework.
 -> DI and functions over complex inheritance hierarchies FTW!
 """
 
-from typing import Any
+from typing import Any, Generator, Iterator
 
 from flask import Flask
 from flask.ctx import AppContext, RequestContext
@@ -54,21 +54,21 @@ def app(config: Any) -> Flask:
 
 
 @fixture
-def app_context(app: Flask) -> AppContext:
+def app_context(app: Flask) -> Iterator[AppContext]:
     with app.app_context() as ctx:
         yield ctx
 
 
 @fixture
-def test_request_context(app: Flask) -> RequestContext:
+def test_request_context(app: Flask) -> Iterator[RequestContext]:
     with app.test_request_context() as ctx:
         yield ctx
 
 
 @fixture
-def req_ctx(app: Flask) -> RequestContext:
-    with app.test_request_context() as req_ctx:
-        yield req_ctx
+def req_ctx(app: Flask) -> Iterator[RequestContext]:
+    with app.test_request_context() as _req_ctx:
+        yield _req_ctx
 
 
 @fixture

@@ -16,10 +16,7 @@ config_commands = AppGroup("config")
 def show(only_path=False):
     """Show the current config."""
     logger.setLevel(logging.INFO)
-    infos = [
-        "\n",
-        f'Instance path: "{current_app.instance_path}"',
-    ]
+    infos = ["\n", f'Instance path: "{current_app.instance_path}"']
 
     logger.info("\n  ".join(infos))
 

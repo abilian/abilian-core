@@ -14,7 +14,8 @@ from flask import _request_ctx_stack, current_app, flash, jsonify, redirect, \
 from flask_login import login_user, logout_user, user_logged_in, \
     user_logged_out
 from flask_mail import Message
-from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+from itsdangerous import BadSignature, Serializer, SignatureExpired, \
+    URLSafeTimedSerializer
 from six.moves.urllib.parse import urljoin, urlparse
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
@@ -256,7 +257,7 @@ def random_password():
 
 
 def get_serializer(name):
-    # type: (str) -> Any
+    # type: (str) -> Serializer
     config = current_app.config
     secret_key = config.get("SECRET_KEY")
     salt = config.get("SECURITY_{}_SALT".format(name.upper()))
