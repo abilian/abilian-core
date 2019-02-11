@@ -9,6 +9,7 @@ import sqlalchemy as sa
 import whoosh
 import whoosh.index
 from flask import current_app
+from flask.cli import with_appcontext
 from sqlalchemy.orm.session import Session
 from tqdm import tqdm
 from whoosh.writing import CLEAR, AsyncWriter
@@ -22,6 +23,7 @@ COMMIT = object()
 
 
 @click.command()
+@with_appcontext
 def reindex(clear=False, progressive=False, batch_size=""):
     # type: (bool, bool, str) -> None
     """Reindex all content; optionally clear index before.
