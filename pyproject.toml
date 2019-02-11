@@ -122,6 +122,7 @@ flake8-mypy = "*"
 flake8-bugbear = "*"
 mastool = "*"
 mccabe = "*"
+mypy-mypyc = "==0.660"
 
 # Later
 # flake8-pep3101
