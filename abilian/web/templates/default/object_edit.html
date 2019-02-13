@@ -8,7 +8,7 @@
   {%- endblock %}
 
   {%- call m_box_content(view.title) %}
-    {{ m_form(form, action=request.path, id="edit-form") }}
+    {{ m_form(form, action=request.path, id="edit-form", horizontal=True) }}
   {%- endcall %}
 
   {%- block after_form %}
