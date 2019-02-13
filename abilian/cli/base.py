@@ -4,10 +4,12 @@ import click
 from flask.cli import with_appcontext
 
 from abilian.core.extensions import db
+from abilian.core.models.subjects import User
+from abilian.services import get_service
 
 
 @click.command()
-def boot():
+def initdb():
     db.create_all()
 
 
@@ -29,6 +31,50 @@ def script(path):
     runpy.run_path(path, run_name="__main__")
 
 
+@click.command()
+@click.argument("email")
+@click.argument("password")
+@click.option("--role")
+@click.option("--name")
+@click.option("--first_name")
+@with_appcontext
+def createuser(email, password, role=None, name=None, first_name=None):
+    """Create new user."""
+
+    if User.query.filter(User.email == email).count() > 0:
+        print(f"A user with email '{email}' already exists, aborting.")
+        return
+
+    # if password is None:
+    #     password = prompt_pass("Password")
+
+    user = User(
+        email=email,
+        password=password,
+        last_name=name,
+        first_name=first_name,
+        can_login=True,
+    )
+    db.session.add(user)
+
+    if role in ("admin",):
+        # FIXME: add other valid roles
+        security = get_service("security")
+        security.grant_role(user, role)
+
+    db.session.commit()
+    print(f"User {email} added")
+
+
+# def createadmin(email, password, name=None, first_name=None):
+#     """Create new administrator.
+#
+#     Same as `createuser --role='admin'`.
+#     """
+#     createuser(email, password, role="admin", name=name, first_name=first_name)
+
+
+#
 # # coding=utf-8
 # import logging
 # import runpy
@@ -155,23 +201,6 @@ def script(path):
 #
 #
 # @manager.command
-# def initdb():
-#     """Create application DB."""
-#     print(f"Creating DB using engine: {db}")
-#     current_app.create_db()
-#
-#
-# @manager.command
-# def dropdb():
-#     """Drop the application DB."""
-#     confirm = input("Are you sure you want to drop the database? (Y/N) ")
-#     print(f"Dropping DB using engine: {db}")
-#     if confirm.lower() == "y":
-#         # with current_app.app_context():
-#         db.drop_all()
-#
-#
-# @manager.command
 # def routes():
 #     """Show all the routes registered in Flask."""
 #     output = []
@@ -182,71 +211,6 @@ def script(path):
 #
 #     for endpoint, methods, path in sorted(output):
 #         print(f"{endpoint:40s} {methods:25s} {path}")
-#
-#
-# # user commands
-# email_opt = manager.option("email", help="user's email")
-# password_opt = manager.option(
-#     "-p",
-#     "--password",
-#     dest="password",
-#     default=None,
-#     help="If absent, a prompt will ask for password",
-# )
-# role_opt = manager.option(
-#     "-r", "--role", dest="role", choices=[r.name for r in Role.assignable_roles()]
-# )
-# name_opt = manager.option(
-#     "-n", "--name", dest="name", default=None, help='Last name (e.g "Smith")'
-# )
-# firstname_opt = manager.option(
-#     "-f", "--firstname", dest="first_name", default=None, help='Fist name (e.g. "John")'
-# )
-#
-#
-# @email_opt
-# @password_opt
-# @role_opt
-# @name_opt
-# @firstname_opt
-# def createuser(email, password, role=None, name=None, first_name=None):
-#     """Create new user."""
-#     email = str(email)
-#     if User.query.filter(User.email == email).count() > 0:
-#         print(f"A user with email '{email}' already exists, aborting.")
-#         return
-#
-#     if password is None:
-#         password = prompt_pass("Password")
-#
-#     user = User(
-#         email=email,
-#         password=password,
-#         last_name=name,
-#         first_name=first_name,
-#         can_login=True,
-#     )
-#     db.session.add(user)
-#
-#     if role in ("admin",):
-#         # FIXME: add other valid roles
-#         security = get_service("security")
-#         security.grant_role(user, role)
-#
-#     db.session.commit()
-#     print(f"User {email} added")
-#
-#
-# @email_opt
-# @password_opt
-# @name_opt
-# @firstname_opt
-# def createadmin(email, password, name=None, first_name=None):
-#     """Create new administrator.
-#
-#     Same as `createuser --role='admin'`.
-#     """
-#     createuser(email, password, role="admin", name=name, first_name=first_name)
 #
 #
 # @email_opt
@@ -261,16 +225,3 @@ def script(path):
 #     db.session.commit()
 #     print(f"Password updated for user {email}")
 #
-#
-# #
-# # Register commands and shell-level CLI
-# #
-# def register_commands(app):
-#     for obj in globals().values():
-#         if isinstance(obj, (click.core.Command, AppGroup)):
-#             app.cli.add_command(obj)
-#
-#
-# # @click.group(cls=FlaskGroup, create_app=create_app)
-# # def cli():
-# #     """Management script."""
