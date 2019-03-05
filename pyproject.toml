@@ -55,8 +55,7 @@ Whoosh = "^2.5"
 
 # Task queue
 celery = "~4"
-# There is currently a bug w/ redis 3
-redis = "~2.10.1"
+redis = "~3"
 
 # Security
 bleach = ">=2"
