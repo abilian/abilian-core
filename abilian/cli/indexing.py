@@ -23,9 +23,9 @@ COMMIT = object()
 
 
 @click.command()
-@click.option('--batch-size', default=0)
-@click.option('--progressive/--no-progressive')
-@click.option('--clear/--no-clear')
+@click.option("--batch-size", default=0)
+@click.option("--progressive/--no-progressive")
+@click.option("--clear/--no-clear")
 @with_appcontext
 def reindex(clear: bool, progressive: bool, batch_size: int):
     """Reindex all content; optionally clear index before.
