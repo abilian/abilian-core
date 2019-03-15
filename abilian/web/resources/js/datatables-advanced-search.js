@@ -544,8 +544,12 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
         var opt = options[i];
         if (opt[0]) {
           s2_options.push({ id: opt[0], text: opt[1] });
-        } else {
+        } else if (opt.label) {
           s2_options.push({ id: opt.id, text: opt.label });
+        } else if (opt.text) {
+          s2_options.push({ id: opt.id, text: opt.text });
+        } else {
+          // Do nothing.
         }
       }
 
