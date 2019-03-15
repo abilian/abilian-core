@@ -135,13 +135,9 @@ _generated_vocabularies = []
 
 
 def Vocabulary(name, label=None, group=None):
-    if isinstance(name, bytes):
-        name = name.decode()
+    assert isinstance(name, str)
 
     cls_name = "Vocabulary" + name.capitalize()
-    if six.PY2:
-        cls_name = bytes(cls_name)
-
     _name, _label, _group = name.lower(), label, group
 
     class Meta:
