@@ -120,7 +120,10 @@ class PdfToTextHandler(Handler):
                 raise ConversionError("pdftotext failed") from e
 
             converted = open(out_fn, "rb").read()
-            encoding = self.encoding_sniffer.from_file(out_fn)
+            try:
+                encoding = self.encoding_sniffer.from_file(out_fn)
+            except BaseException:
+                encoding = None
 
         if encoding in ("binary", None):
             encoding = "ascii"
@@ -155,14 +158,17 @@ class AbiwordTextHandler(Handler):
             except Exception as e:
                 raise ConversionError("abiword failed") from e
 
-            converted = open(out_fn).read()
-            encoding = self.encoding_sniffer.from_file(out_fn)
+            converted = open(out_fn, "rb").read()
+            try:
+                encoding = self.encoding_sniffer.from_file(out_fn)
+            except Exception:
+                encoding = None
 
         if encoding in ("binary", None):
             encoding = "ascii"
         try:
             converted_unicode = str(converted, encoding, errors="ignore")
-        except BaseException:
+        except Exception:
             traceback.print_exc()
             converted_unicode = str(converted, errors="ignore")
 
@@ -515,11 +521,12 @@ class WvwareTextHandler(Handler):
             except Exception as e:
                 raise ConversionError("wxText failed") from e
 
-            converted = open(out_fn).read()
+            converted = open(out_fn, "rb").read()
 
             encoding = self.encoding_sniffer.from_file(out_fn)
             if encoding in ("binary", None):
                 encoding = "ascii"
+
             try:
                 converted_unicode = str(converted, encoding, errors="ignore")
             except BaseException:
