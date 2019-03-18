@@ -154,7 +154,7 @@ class SecurityService(Service):
 
         try:
             user = g.user
-        except BaseException:
+        except Exception:
             return session.query(User).get(0)
 
         if sa.orm.object_session(user) is not session:

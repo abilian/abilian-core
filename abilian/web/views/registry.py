@@ -65,7 +65,7 @@ class Registry:
                 object_id=object_id,
                 **kwargs
             )
-        except BaseException:
+        except Exception:
             raise KeyError(object_type)
 
 

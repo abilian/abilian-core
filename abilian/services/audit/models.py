@@ -136,7 +136,7 @@ class AuditEntry(db.Model):
             except (UnicodeDecodeError, TypeError):
                 try:
                     changes = pickle.loads(self.changes_pickle, encoding="bytes")
-                except BaseException:
+                except Exception:
                     logger.warning("migration error on audit entry:", exc_info=True)
                     changes = Changes()
 

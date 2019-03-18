@@ -100,6 +100,6 @@ def assert_json_valid(response):
     # type: (Response) -> None
     try:
         json.loads(response.data)
-    except BaseException:
+    except Exception:
         msg = f"JSON was not valid for URL: {request.url}"
         raise ValidationError(msg)

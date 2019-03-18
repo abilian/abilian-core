@@ -39,11 +39,11 @@ class ActionDebugPanel(DebugPanel):
                 }
                 try:
                     d["endpoint"] = str(action.endpoint)
-                except BaseException:
+                except Exception:
                     d["endpoint"] = "<Exception>"
                 try:
                     d["url"] = str(action.url(g.action_context))
-                except BaseException:
+                except Exception:
                     d["url"] = "<Exception>"
                 actions_for_template.append(d)
 

@@ -34,7 +34,7 @@ def ping_connection(dbapi_connection, connection_record, connection_proxy):
     cursor = dbapi_connection.cursor()
     try:
         cursor.execute("SELECT 1")
-    except BaseException:
+    except Exception:
         # optional - dispose the whole pool
         # instead of invalidating one at a time
         # connection_proxy._pool.dispose()

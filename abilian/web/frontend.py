@@ -698,7 +698,7 @@ class Module:
                 try:
                     direction = desc if sort_dir == "desc" else asc
                     sort_col = direction(sort_col)
-                except BaseException:
+                except Exception:
                     # FIXME
                     pass
 
@@ -708,7 +708,7 @@ class Module:
                     nullsorder = nullslast if sort_dir == "desc" else nullsfirst
                     try:
                         sort_col = nullsorder(sort_col)
-                    except BaseException:
+                    except Exception:
                         # FIXME
                         pass
 
@@ -717,7 +717,7 @@ class Module:
         if sort_cols:
             try:
                 query = query.order_by(*sort_cols)
-            except BaseException:
+            except Exception:
                 # FIXME
                 pass
         query.reset_joinpoint()

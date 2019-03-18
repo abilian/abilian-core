@@ -406,7 +406,7 @@ class Action:
             return False
         try:
             return self.pre_condition(context) and self._check_condition(context)
-        except BaseException:
+        except Exception:
             return False
 
     def pre_condition(self, context):

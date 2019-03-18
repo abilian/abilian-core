@@ -75,7 +75,7 @@ class UserPreferencesForm(Form):
             # check this is actually an image file
             im = PIL.Image.open(data)
             im.load()
-        except BaseException:
+        except Exception:
             raise ValidationError(_("Could not decode image file"))
 
         # convert to jpeg

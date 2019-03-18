@@ -36,7 +36,7 @@ def has_pdftotext():
     try:
         status = subprocess.call("pdftotext", stderr=dev_null)
         return status == 0
-    except BaseException:
+    except Exception:
         return False
     finally:
         dev_null.close()
@@ -50,7 +50,7 @@ def has_libreoffice():
             ["soffice", "--help"], stdout=dev_null, stderr=dev_null
         )
         return status == 0
-    except BaseException:
+    except Exception:
         return False
     finally:
         dev_null.close()
@@ -122,14 +122,14 @@ class PdfToTextHandler(Handler):
             converted = open(out_fn, "rb").read()
             try:
                 encoding = self.encoding_sniffer.from_file(out_fn)
-            except BaseException:
+            except Exception:
                 encoding = None
 
         if encoding in ("binary", None):
             encoding = "ascii"
         try:
             converted_unicode = str(converted, encoding, errors="ignore")
-        except BaseException:
+        except Exception:
             traceback.print_exc()
             converted_unicode = str(converted, errors="ignore")
 
@@ -529,7 +529,7 @@ class WvwareTextHandler(Handler):
 
             try:
                 converted_unicode = str(converted, encoding, errors="ignore")
-            except BaseException:
+            except Exception:
                 traceback.print_exc()
                 converted_unicode = str(converted, errors="ignore")
 

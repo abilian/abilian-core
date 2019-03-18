@@ -233,7 +233,7 @@ class AuditService(Service):
                         entry = self.log(session, model, op)
                         if entry:
                             entries.append(entry)
-                    except BaseException:
+                    except Exception:
                         if current_app.debug or current_app.testing:
                             raise
                         log.error("Exception during entry creation", exc_info=True)
@@ -249,7 +249,7 @@ class AuditService(Service):
         entity = model
         try:
             user_id = g.user.id
-        except BaseException:
+        except Exception:
             user_id = 0
 
         meta = model.__auditable__

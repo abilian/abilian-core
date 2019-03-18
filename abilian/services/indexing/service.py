@@ -547,7 +547,7 @@ def index_update(index, items):
                     logger.error("writer.add_document(%r)", document, exc_info=True)
                     raise
                 updated.add(object_key)
-    except BaseException:
+    except Exception:
         writer.cancel()
         raise
 
