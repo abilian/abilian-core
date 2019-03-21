@@ -778,10 +778,18 @@ class FileInput:
 
         for idx, data in enumerate(object_data):
             if data is not None:
+                if hasattr(data, "content_length"):
+                    size = data.content_length
+                else:
+                    try:
+                        size = len(bytes(data))
+                    except Exception:
+                        # FIXME: when does it happen ?
+                        size = 0
                 existing.append(
                     {
                         "file": data,
-                        "size": len(bytes(data)),
+                        "size": size,
                         "delete": idx in field.delete_files_index,
                     }
                 )
