@@ -4,14 +4,15 @@
 They are implemented as Flask extensions (see:
 http://flask.pocoo.org/docs/extensiondev/ )
 """
+# This one first
+from .base import Service, ServiceState
+
 from flask import current_app
 
 from .activity import ActivityService
 from .antivirus import service as antivirus
 from .audit import audit_service
 from .auth import AuthService
-# This one first
-from .base import Service, ServiceState
 from .conversion import conversion_service, converter
 from .indexing import service as index_service
 from .preferences import preferences as preferences_service
