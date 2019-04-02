@@ -132,9 +132,9 @@ mypy-mypyc = "==0.660"
 pre-commit = "*"
 
 # Formatting (update version explicitely when needed)
-isort = "4.3.4"
+isort = "*"
 docformatter = "1.0"
-# black = { version = "*", python = "^3.6" }
+black = { version = "*", allows-prereleases = true }
 
 # To build docs
 # (Doesn't work w/ sphinx 1.4.5)
