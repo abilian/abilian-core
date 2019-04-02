@@ -196,14 +196,14 @@ class FormContext:
         if self.user is None:
             self.user = current_user
 
-        setattr(g, "__form_ctx__", self)
+        g.__form_ctx__ = self
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if not has_app_context():
             return
 
-        setattr(g, "__form_ctx__", self.__existing)
+        g.__form_ctx__ = self.__existing
 
 
 class Form(BaseForm):

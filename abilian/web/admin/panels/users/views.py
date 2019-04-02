@@ -78,8 +78,8 @@ class JsonUsersList(base.JSONView):
             # TODO: this should be done on the browser.
             user_url = url_for(".users_user", user_id=user.id)
             mugshot = user_photo_url(user, size=MUGSHOT_SIZE)
-            name = html.escape(getattr(user, "name") or "")
-            email = html.escape(getattr(user, "email") or "")
+            name = html.escape(user.name or "")
+            email = html.escape(user.email or "")
             roles = [
                 r for r in security.get_roles(user, no_group_roles=True) if r.assignable
             ]

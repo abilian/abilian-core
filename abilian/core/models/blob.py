@@ -93,13 +93,13 @@ class Blob(Model):
         self.meta["md5"] = str(hashlib.md5(self.value).hexdigest())
 
         if hasattr(value, "filename"):
-            filename = getattr(value, "filename")
+            filename = value.filename
             if isinstance(filename, bytes):
                 filename = filename.decode("utf-8")
             self.meta["filename"] = filename
 
         if hasattr(value, "content_type"):
-            self.meta["mimetype"] = getattr(value, "content_type")
+            self.meta["mimetype"] = value.content_type
 
     @value.deleter
     def value(self):

@@ -774,7 +774,7 @@ class FileInput:
 
         if not field.multiple:
             object_data = [object_data]
-            blob = getattr(field, "blob")
+            blob = field.blob
 
         for idx, data in enumerate(object_data):
             if data is not None:
