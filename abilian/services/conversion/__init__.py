@@ -10,12 +10,8 @@ Assumes poppler-utils and LibreOffice are installed.
 TODO: rename Converter into ConversionService ?
 """
 
-from abilian.services.conversion.handlers import (
-    ImageMagickHandler,
-    LibreOfficePdfHandler,
-    PdfToPpmHandler,
-    PdfToTextHandler,
-)
+from abilian.services.conversion.handlers import ImageMagickHandler, \
+    LibreOfficePdfHandler, PdfToPpmHandler, PdfToTextHandler
 
 from .service import ConversionError, Converter, HandlerNotFound
 

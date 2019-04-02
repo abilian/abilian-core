@@ -10,15 +10,8 @@ import redis
 import sqlalchemy as sa
 import sqlalchemy.dialects
 import sqlalchemy.exc
-from flask import (
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import current_app, flash, redirect, render_template, request, \
+    session, url_for
 
 from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf, db

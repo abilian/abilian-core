@@ -14,8 +14,8 @@ from sqlalchemy.engine import Engine
 from abilian.core.extensions.jinjaext import DeferredJS
 from abilian.core.logging import patch_logger
 
-from . import upstream_info
 from ..sqlalchemy import SQLAlchemy
+from . import upstream_info
 from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf
 from .login import login_manager
