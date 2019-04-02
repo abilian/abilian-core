@@ -124,7 +124,7 @@ format: format-py format-js
 format-py:
 	docformatter -i -r abilian
 	black abilian demo tests *.py
-	isort -rc abilian demo tests *.py
+	isort -rc -sg "**/__init__.py" abilian demo tests *.py
 
 format-js:
 	yarn run prettier --write --trailing-comma es5 \

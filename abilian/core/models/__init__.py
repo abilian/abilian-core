@@ -6,9 +6,21 @@ from datetime import datetime
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm.util import class_mapper
 
-from .base import AUDITABLE, AUDITABLE_HIDDEN, EDITABLE, EXPORTABLE, \
-    NOT_AUDITABLE, NOT_EDITABLE, NOT_EXPORTABLE, NOT_SEARCHABLE, SEARCHABLE, \
-    SYSTEM, IdMixin, Model, TimestampedMixin
+from .base import (
+    AUDITABLE,
+    AUDITABLE_HIDDEN,
+    EDITABLE,
+    EXPORTABLE,
+    NOT_AUDITABLE,
+    NOT_EDITABLE,
+    NOT_EXPORTABLE,
+    NOT_SEARCHABLE,
+    SEARCHABLE,
+    SYSTEM,
+    IdMixin,
+    Model,
+    TimestampedMixin,
+)
 from .owned import OwnedMixin
 
 
