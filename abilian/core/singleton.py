@@ -20,7 +20,7 @@ class ValueSingletonMeta(type):
         return cls.__instances__[value.lower()]
 
 
-class UniqueName(object, metaclass=ValueSingletonMeta):
+class UniqueName(metaclass=ValueSingletonMeta):
     """Base class to create singletons from strings.
 
     A subclass of :class:`UniqueName` defines a namespace.
