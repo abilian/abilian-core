@@ -72,8 +72,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Abilian'
-copyright = u'2012-2015, Abilian SAS'
+project = 'Abilian'
+copyright = '2012-2015, Abilian SAS'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -222,8 +222,8 @@ htmlhelp_basename = 'abiliandoc'
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     (
-        'index', 'abilian-core.tex', u'Abilian Core Documentation',
-        u'Stefane Fermigier', 'manual',
+        'index', 'abilian-core.tex', 'Abilian Core Documentation',
+        'Stefane Fermigier', 'manual',
     ),
 ]
 
@@ -263,8 +263,8 @@ latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [(
-    'index', 'abilian', u'Abilian Documentation',
-    [u'Stefane Fermigier'], 1,
+    'index', 'abilian', 'Abilian Documentation',
+    ['Stefane Fermigier'], 1,
 )]
 
 # If true, show URL addresses after external links.
@@ -277,7 +277,7 @@ man_pages = [(
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        'index', 'Abilian', u'Abilian Documentation', u'Stefane Fermigier',
+        'index', 'Abilian', 'Abilian Documentation', 'Stefane Fermigier',
         'Abilian', 'One line description of project.', 'Miscellaneous',
     ),
 ]
@@ -294,10 +294,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Abilian'
-epub_author = u'Stefane Fermigier'
-epub_publisher = u'Stefane Fermigier'
-epub_copyright = u'2012, Stefane Fermigier'
+epub_title = 'Abilian'
+epub_author = 'Stefane Fermigier'
+epub_publisher = 'Stefane Fermigier'
+epub_copyright = '2012, Stefane Fermigier'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

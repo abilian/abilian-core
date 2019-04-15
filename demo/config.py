@@ -1,4 +1,4 @@
-class Config(object):
+class Config:
     # specific (for this development instance)
     # SERVER_NAME = 'localhost:5000'
     SQLALCHEMY_DATABASE_URI = "sqlite:///data.db"
