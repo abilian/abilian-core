@@ -1,6 +1,20 @@
 Changelog for Abilian Core
 ==========================
 
+0.11.0 (2019-04-15)
+--------------------
+
+- Drop Python 2 support.
+- Rewrite code to be Python 3 only.
+- Various fixes.
+
+
+0.10.34 (2019-01-17)
+--------------------
+
+- Simplify indexing control DSL: __indexation_params__ -> __index_to__.
+
+
 0.10.34 (2019-01-17)
 --------------------
 
