@@ -359,9 +359,9 @@ class SecurityService(Service):
 
         filter_cond = []
         if users:
-            filter_cond.append(RoleAssignment.user_id.in_((u.id for u in users)))
+            filter_cond.append(RoleAssignment.user_id.in_(u.id for u in users))
         if groups:
-            filter_cond.append(RoleAssignment.group_id.in_((g.id for g in groups)))
+            filter_cond.append(RoleAssignment.group_id.in_(g.id for g in groups))
 
         query = query.filter(sql.or_(*filter_cond))
         ra_users = {}
@@ -670,11 +670,9 @@ class SecurityService(Service):
         self._fill_role_cache_batch(principals)
 
         return any(
-            (
-                self.has_role(principal, valid_roles, item)
-                for principal in principals
-                for item in checked_objs
-            )
+            self.has_role(principal, valid_roles, item)
+            for principal in principals
+            for item in checked_objs
         )
 
     def query_entity_with_permission(self, permission, user=None, Model=Entity):

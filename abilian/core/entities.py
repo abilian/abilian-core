@@ -8,7 +8,6 @@ from inspect import isclass
 
 import sqlalchemy as sa
 from flask import current_app
-from six import with_metaclass
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import Session, mapper
@@ -222,7 +221,7 @@ class EntityMeta(BaseMeta):
         BaseMeta.__init__(cls, classname, bases, d)
 
 
-class Entity(with_metaclass(EntityMeta, Indexable, BaseMixin, db.Model)):
+class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
     """Base class for Abilian entities.
 
     From Sqlalchemy POV, Entities use `Joined-Table inheritance

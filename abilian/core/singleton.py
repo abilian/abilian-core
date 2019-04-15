@@ -1,6 +1,5 @@
 # coding=utf-8
 """"""
-from six import with_metaclass
 from sqlalchemy.types import String, TypeDecorator
 
 
@@ -21,7 +20,7 @@ class ValueSingletonMeta(type):
         return cls.__instances__[value.lower()]
 
 
-class UniqueName(with_metaclass(ValueSingletonMeta, object)):
+class UniqueName(object, metaclass=ValueSingletonMeta):
     """Base class to create singletons from strings.
 
     A subclass of :class:`UniqueName` defines a namespace.
