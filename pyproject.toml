@@ -62,7 +62,7 @@ bleach = ">=2"
 bcrypt = "*"
 
 # low-level tools
-python-deprecated = "*"
+deprecated = "*"
 hyperlink = "*"
 
 # Used by DeferredJS (TODO: remove)
