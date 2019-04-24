@@ -152,6 +152,6 @@ html5lib = "*"
 restructuredtext_lint = "*"
 
 
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+# [build-system]
+# requires = ["poetry>=0.12"]
+# build-backend = "poetry.masonry.api"
