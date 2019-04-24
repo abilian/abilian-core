@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "abilian-core"
-version = "0.11.0-dev"
+version = "0.11.1"
 description = "A framework for enterprise applications (CRM, ERP, collaboration...), based on Flask and SQLAlchemy"
 authors = ["Abilian SAS"]
 license = "LGPL"
@@ -121,7 +121,6 @@ flake8-mypy = "*"
 flake8-bugbear = "*"
 mastool = "*"
 mccabe = "*"
-mypy-mypyc = "==0.660"
 
 # Later
 # flake8-pep3101
