@@ -33,7 +33,7 @@ class Service:
     AppStateClass = ServiceState
 
     #: service name in Application.extensions / Application.services
-    name = None
+    name = ""
 
     def __init__(self, app=None):
         if self.name is None:
