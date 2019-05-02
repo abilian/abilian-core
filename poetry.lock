@@ -347,19 +347,6 @@ flake8 = "*"
 
 [[package]]
 category = "dev"
-description = "A plugin for flake8 integrating mypy."
-name = "flake8-mypy"
-optional = false
-python-versions = "*"
-version = "17.8.0"
-
-[package.dependencies]
-attrs = "*"
-flake8 = ">=3.0.0"
-mypy = "*"
-
-[[package]]
-category = "dev"
 description = "pytest assert checker plugin for flake8"
 name = "flake8-pytest"
 optional = false
@@ -1334,7 +1321,7 @@ python-versions = ">=2.7"
 version = "0.4.0"
 
 [metadata]
-content-hash = "be5598ff6d43e2ff7e7c85347d7c4dc051a6b6aac5e7abe68efa8979852c79c7"
+content-hash = "cef44836a061a00e49c921b176bebe419fd79c9f18c1eccf4f62a00c60ccf5db"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -1373,7 +1360,6 @@ flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a
 flake8-bugbear = ["5070774b668be92c4312e5ca82748ddf4ecaa7a24ff062662681bb745c7896eb", "fef9c9826d14ec23187ae1edeb3c6513c4e46bf0e70d86bac38f7d9aabae113d"]
 flake8-comprehensions = ["35f826956e87f230415cde9c3b8b454e785736cf5ff0be551c441b41b937f699", "f0b61d983d608790abf3664830d68efd3412265c2d10f6a4ba1a353274dbeb64"]
 flake8-mutable = ["38fd9dadcbcda6550a916197bc40ed76908119dabb37fbcca30873666c31d2d5", "ee9b77111b867d845177bbc289d87d541445ffcc6029a0c5c65865b42b18c6a6"]
-flake8-mypy = ["47120db63aff631ee1f84bac6fe8e64731dc66da3efc1c51f85e15ade4a3ba18", "cff009f4250e8391bf48990093cff85802778c345c8449d6498b62efefeebcbc"]
 flake8-pytest = ["61686128a79e1513db575b2bcac351081d5a293811ddce2d5dfc25e8c762d33e", "b4d6703f7d7b646af1e2660809e795886dd349df11843613dbe6515efa82c0f3"]
 flake8-super-call = ["0486ebfb24e3bf104b1c1d7f823a51ebcefb3a26108b25cb3129a9e8a57ef145", "61cfcd0c8ad78e1cf1f4d1225cb7513666ab9c5a9900a238b2c4abee8ad9a7de"]
 flake8-tidy-imports = ["1c476aabc6e8db26dc75278464a3a392dba0ea80562777c5f13fd5cdf2646154", "b3f5b96affd0f57cacb6621ed28286ce67edaca807757b51227043ebf7b136a1"]

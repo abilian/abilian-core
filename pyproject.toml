@@ -112,15 +112,17 @@ pytest-cov = "*"
 
 # Static code analysis: flake* and friends
 flake8 = "*"
+flake8-bugbear = "*"
 flake8-comprehensions = "*"
 flake8-mutable = "*"
 flake8-pytest = "*"
 flake8-super-call = "*"
 flake8-tidy-imports = "*"
-flake8-mypy = "*"
-flake8-bugbear = "*"
+# flake8-mypy = "*"
 mastool = "*"
 mccabe = "*"
+
+mypy = "*"
 
 # Later
 # flake8-pep3101
