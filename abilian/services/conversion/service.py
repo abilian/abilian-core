@@ -9,7 +9,6 @@ Assumes poppler-utils and LibreOffice are installed.
 
 TODO: rename Converter into ConversionService ?
 """
-import hashlib
 import logging
 import shutil
 import subprocess
@@ -73,7 +72,7 @@ class Converter:
 
     # TODO: refactor, pass a "File" or "Document" or "Blob" object
     def to_pdf(self, digest, blob, mime_type):
-        cache_key = "pdf:" + digest
+        cache_key = ("pdf", digest)
         pdf = self.cache.get(cache_key)
         if pdf:
             return pdf
@@ -94,7 +93,7 @@ class Converter:
         if mime_type.startswith("image/"):
             return ""
 
-        cache_key = "txt:" + digest
+        cache_key = ("txt", digest)
 
         text = self.cache.get(cache_key)
         if text:
@@ -119,7 +118,7 @@ class Converter:
 
     def has_image(self, digest, mime_type, index, size=500):
         """Tell if there is a preview image."""
-        cache_key = f"img:{index}:{size}:{digest}"
+        cache_key = (f"img:{index}:{size}", digest)
         return mime_type.startswith("image/") or cache_key in self.cache
 
     def get_image(self, digest, blob, mime_type, index, size=500):
@@ -129,7 +128,7 @@ class Converter:
         if mime_type.startswith("image/"):
             return ""
 
-        cache_key = f"img:{index}:{size}:{digest}"
+        cache_key = (f"img:{index}:{size}", digest)
         return self.cache.get(cache_key)
 
     def to_image(self, digest, blob, mime_type, index, size=500):
@@ -141,7 +140,7 @@ class Converter:
         if mime_type.startswith("image/"):
             return ""
 
-        cache_key = f"img:{index}:{size}:{digest}"
+        cache_key = (f"img:{index}:{size}", digest)
         converted = self.cache.get(cache_key)
         if converted:
             return converted
@@ -152,7 +151,7 @@ class Converter:
                 converted_images = handler.convert(blob, size=size)
                 for i in range(0, len(converted_images)):
                     converted = converted_images[i]
-                    cache_key = f"img:{i}:{size}:{digest}"
+                    cache_key = (f"img:{i}:{size}", digest)
                     self.cache[cache_key] = converted
                 return converted_images[index]
 
@@ -163,7 +162,7 @@ class Converter:
                 converted_images = handler.convert(pdf, size=size)
                 for i in range(0, len(converted_images)):
                     converted = converted_images[i]
-                    cache_key = f"img:{i}:{size}:{digest}"
+                    cache_key = (f"img:{i}:{size}", digest)
                     self.cache[cache_key] = converted
                 return converted_images[index]
 
@@ -186,6 +185,7 @@ class Converter:
                 decoded = TAGS.get(tag, tag)
                 ret["EXIF:" + str(decoded)] = value
             return ret
+
         else:
             if mime_type != "application/pdf":
                 content = self.to_pdf(digest, content, mime_type)
@@ -205,14 +205,3 @@ class Converter:
                     ret["PDF:" + key] = str(value.strip(), errors="replace")
 
             return ret
-
-    # @staticmethod
-    # def digest(blob):
-    #     # FIXME for python 3
-    #     assert isinstance(blob, bytes)
-    #     assert isinstance(blob, str)
-    #     if isinstance(blob, str):
-    #         digest = hashlib.md5(blob).hexdigest()
-    #     else:
-    #         digest = hashlib.md5(blob.encode("utf8")).hexdigest()
-    #     return digest

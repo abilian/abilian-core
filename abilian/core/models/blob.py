@@ -5,10 +5,8 @@ References to files stored in a on-disk repository
 """
 import hashlib
 import uuid
-from typing import Optional
 
 import sqlalchemy as sa
-from flask_sqlalchemy import BaseQuery
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.schema import Column
@@ -62,7 +60,7 @@ class Blob(Model):
         return v.open("rb").read() if v is not None else v
 
     @value.setter
-    def value(self, value, encoding="utf-8"):
+    def value(self, value: bytes):
         """Store binary content to applications's repository and update
         `self.meta['md5']`.
 
@@ -91,7 +89,7 @@ class Blob(Model):
         repository.delete(self, self.uuid)
 
     @property
-    def md5(self):
+    def md5(self) -> str:
         """Return md5 from meta, or compute it if absent."""
         md5 = self.meta.get("md5")
         if md5 is None:

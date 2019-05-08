@@ -2,7 +2,6 @@
 
 import logging
 import os
-import subprocess
 from contextlib import contextmanager
 from tempfile import mkstemp
 
@@ -12,9 +11,6 @@ except ImportError:
     ServerProxy = None
 
 logger = logging.getLogger(__name__)
-
-# For some reason, twill includes a broken version of subprocess.
-assert "twill" not in subprocess.__file__
 
 # Hack for Mac OS + homebrew
 os.environ["PATH"] += ":/usr/local/bin"
