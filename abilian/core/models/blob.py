@@ -18,21 +18,6 @@ from abilian.core.models.base import Model
 from abilian.core.sqlalchemy import UUID, JSONDict
 
 
-class BlobQuery(BaseQuery):
-    """Query class for :class:`Blob` objects."""
-
-    def by_uuid(self, uuid):
-        # type: (str) -> Optional[Blob]
-        """Like `.get()` but by uuid.
-
-        :param uuid: a `string` or an `uuid`.
-        """
-        try:
-            return self.filter_by(uuid=uuid).one()
-        except NoResultFound:
-            return None
-
-
 class Blob(Model):
     """Model for storing large file content.
 
@@ -41,7 +26,6 @@ class Blob(Model):
     """
 
     __tablename__ = "blob"
-    query_class = BlobQuery
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
     uuid = Column(UUID(), unique=True, nullable=False, default=uuid.uuid4)
