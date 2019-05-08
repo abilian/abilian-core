@@ -5,8 +5,6 @@ import logging
 import os
 import pathlib
 
-import six
-
 from abilian.core.models.blob import Blob
 
 from ..base import Service

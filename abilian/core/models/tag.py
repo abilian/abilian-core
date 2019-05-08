@@ -4,7 +4,6 @@ from functools import total_ordering
 
 import sqlalchemy as sa
 import sqlalchemy.orm
-from six import add_metaclass
 
 from abilian.core.entities import Entity
 
@@ -14,8 +13,7 @@ from .base import IdMixin, Model
 TAGS_ATTR = "__tags__"
 
 
-@add_metaclass(abc.ABCMeta)
-class SupportTagging:
+class SupportTagging(metaclass=abc.ABCMeta):
     pass
 
 

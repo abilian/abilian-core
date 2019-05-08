@@ -2,7 +2,6 @@
 """"""
 import abc
 
-import six
 from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, \
     UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
@@ -15,8 +14,7 @@ from abilian.services.security import CREATE, DELETE, WRITE, Anonymous, Owner
 ATTRIBUTE = "__comments__"
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Commentable:
+class Commentable(metaclass=abc.ABCMeta):
     pass
 
 

@@ -1,6 +1,5 @@
 # coding=utf-8
 """"""
-import six
 import sqlalchemy as sa
 import sqlalchemy.event
 import sqlalchemy.ext
@@ -58,8 +57,7 @@ class _VocabularyMeta(_BaseMeta):
         return _BaseMeta.__new__(cls, name, bases, d)
 
 
-@six.add_metaclass(_VocabularyMeta)
-class BaseVocabulary(db.Model):
+class BaseVocabulary(db.Model, metaclass=_VocabularyMeta):
     """Base abstract class for vocabularies."""
 
     __abstract__ = True

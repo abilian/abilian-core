@@ -14,7 +14,6 @@ import sqlalchemy as sa
 from flask import Blueprint, current_app, g, jsonify, redirect, \
     render_template, request, session, url_for
 from flask_login import current_user
-from six import add_metaclass
 from sqlalchemy import Date, DateTime, func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from werkzeug.exceptions import BadRequest
@@ -380,9 +379,7 @@ class ModuleComponent:
         return []
 
 
-@add_metaclass(ModuleMeta)
-class Module:
-
+class Module(metaclass=ModuleMeta):
     id = None  # type: str
     endpoint = None  # type: str
     label = None  # type: str

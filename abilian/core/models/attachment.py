@@ -4,7 +4,6 @@ import abc
 
 import sqlalchemy as sa
 import sqlalchemy.event
-from six import add_metaclass
 from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
@@ -17,8 +16,7 @@ from .blob import Blob
 ATTRIBUTE = "__attachments__"
 
 
-@add_metaclass(abc.ABCMeta)
-class SupportAttachment:
+class SupportAttachment(metaclass=abc.ABCMeta):
     pass
 
 

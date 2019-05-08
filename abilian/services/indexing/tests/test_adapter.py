@@ -2,7 +2,6 @@
 """"""
 from datetime import datetime
 
-import six
 import sqlalchemy as sa
 from whoosh.fields import NUMERIC, TEXT, Schema
 
