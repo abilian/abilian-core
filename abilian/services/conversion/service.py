@@ -19,7 +19,8 @@ from pathlib import Path
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-from abilian.services.conversion.util import make_temp_file
+from .cache import Cache
+from .util import make_temp_file
 
 logger = logging.getLogger(__name__)
 
@@ -33,44 +34,6 @@ class ConversionError(Exception):
 
 class HandlerNotFound(ConversionError):
     pass
-
-
-class Cache:
-
-    cache_dir = None
-
-    def _path(self, key):
-        """File path for `key`:"""
-        return self.cache_dir / f"{key}.blob"
-
-    def __contains__(self, key):
-        return self._path(key).exists()
-
-    def get(self, key):
-        if key in self:
-            value = self._path(key).open("rb").read()
-            if key.startswith("txt:"):
-                value = str(value, encoding="utf8")
-            return value
-        else:
-            return None
-
-    __getitem__ = get
-
-    def set(self, key, value):
-        # if not os.path.exists(self.CACHE_DIR):
-        #   os.mkdir(CACHE_DIR)
-        fd = self._path(key).open("wb")
-        if key.startswith("txt:"):
-            fd.write(value.encode("utf8"))
-        else:
-            fd.write(value)
-        fd.close()
-
-    __setitem__ = set
-
-    def clear(self):
-        pass
 
 
 class Converter:
@@ -89,9 +52,9 @@ class Converter:
         for handler in self.handlers:
             handler.init_app(app)
 
-    def init_work_dirs(self, cache_dir, tmp_dir):
-        self.tmp_dir = Path(tmp_dir)
-        self.cache_dir = Path(cache_dir)
+    def init_work_dirs(self, cache_dir: Path, tmp_dir: Path):
+        self.tmp_dir = tmp_dir
+        self.cache_dir = cache_dir
         self.cache.cache_dir = self.cache_dir
 
         if not self.tmp_dir.exists():
@@ -243,13 +206,13 @@ class Converter:
 
             return ret
 
-    @staticmethod
-    def digest(blob):
-        # FIXME for python 3
-        assert isinstance(blob, bytes)
-        assert isinstance(blob, str)
-        if isinstance(blob, str):
-            digest = hashlib.md5(blob).hexdigest()
-        else:
-            digest = hashlib.md5(blob.encode("utf8")).hexdigest()
-        return digest
+    # @staticmethod
+    # def digest(blob):
+    #     # FIXME for python 3
+    #     assert isinstance(blob, bytes)
+    #     assert isinstance(blob, str)
+    #     if isinstance(blob, str):
+    #         digest = hashlib.md5(blob).hexdigest()
+    #     else:
+    #         digest = hashlib.md5(blob.encode("utf8")).hexdigest()
+    #     return digest

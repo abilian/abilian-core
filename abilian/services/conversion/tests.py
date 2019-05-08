@@ -19,8 +19,8 @@ encoding_sniffer = Magic(mime_encoding=True)
 def converter():
     from abilian.services.conversion import converter as c
 
-    cache_dir = tempfile.mkdtemp(suffix="unittest")
-    tmp_dir = tempfile.mkdtemp(suffix="unittest")
+    cache_dir = Path(tempfile.mkdtemp(suffix="unittest"))
+    tmp_dir = Path(tempfile.mkdtemp(suffix="unittest"))
     c.init_work_dirs(cache_dir, tmp_dir)
     yield c
 

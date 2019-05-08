@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import List
 
 from magic import Magic
-from six import add_metaclass
 
 from abilian.services.image import resize
 
@@ -30,27 +29,23 @@ logger = logging.getLogger(__name__)
 
 
 # Quick check for tests
-def has_pdftotext():
-    # type: () -> bool
+def has_pdftotext() -> bool:
     dev_null = open("/dev/null", "wb")
     try:
-        status = subprocess.call("pdftotext", stderr=dev_null)
-        return status == 0
-    except Exception:
+        subprocess.call("pdftotext", stderr=dev_null)
+        return True
+    except FileNotFoundError:
         return False
     finally:
         dev_null.close()
 
 
-def has_libreoffice():
-    # type: () -> bool
+def has_libreoffice() -> bool:
     dev_null = open("/dev/null", "wb")
     try:
-        status = subprocess.call(
-            ["soffice", "--help"], stdout=dev_null, stderr=dev_null
-        )
-        return status == 0
-    except Exception:
+        subprocess.call(["soffice", "--help"], stdout=dev_null, stderr=dev_null)
+        return True
+    except FileNotFoundError:
         return False
     finally:
         dev_null.close()
@@ -60,8 +55,7 @@ HAS_PDFTOTEXT = has_pdftotext()
 HAS_LIBREOFFICE = has_libreoffice()
 
 
-@add_metaclass(ABCMeta)
-class Handler:
+class Handler(metaclass=ABCMeta):
     """Abstract base class for handlers."""
 
     accepts_mime_types = []  # type: List[str]
@@ -435,7 +429,7 @@ class LibreOfficePdfHandler(Handler):
                     )
                     self._process.communicate()
                 except Exception as e:
-                    logger.error("soffice error: %s", bytes(e), exc_info=True)
+                    logger.error("soffice error: %s", e, exc_info=True)
                     raise ConversionError("soffice conversion failed") from e
 
             run_thread = threading.Thread(target=run_soffice)
