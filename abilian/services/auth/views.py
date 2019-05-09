@@ -16,7 +16,7 @@ from flask_login import login_user, logout_user, user_logged_in, \
 from flask_mail import Message
 from itsdangerous import BadSignature, Serializer, SignatureExpired, \
     URLSafeTimedSerializer
-from six.moves.urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
 
