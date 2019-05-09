@@ -19,10 +19,11 @@ class Cache:
 
     def get(self, key: CacheKey):
         if key in self:
+            path = self._path(key)
             if key[0] == "txt":
-                return self._path(key).read_text("utf8")
+                return path.read_text("utf8")
             else:
-                return self._path(key).read_bytes()
+                return path.read_bytes()
         else:
             return None
 
