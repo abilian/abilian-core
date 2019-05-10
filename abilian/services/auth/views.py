@@ -8,6 +8,7 @@ import random
 import string
 from datetime import datetime
 from typing import Any
+from urllib.parse import urljoin, urlparse
 
 from flask import _request_ctx_stack, current_app, flash, jsonify, redirect, \
     render_template, request, url_for
@@ -16,7 +17,6 @@ from flask_login import login_user, logout_user, user_logged_in, \
 from flask_mail import Message
 from itsdangerous import BadSignature, Serializer, SignatureExpired, \
     URLSafeTimedSerializer
-from urllib.parse import urljoin, urlparse
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
 

@@ -5,11 +5,6 @@ import os
 from contextlib import contextmanager
 from tempfile import mkstemp
 
-try:
-    from six.moves.xmlrpc_client import ServerProxy
-except ImportError:
-    ServerProxy = None
-
 logger = logging.getLogger(__name__)
 
 # Hack for Mac OS + homebrew

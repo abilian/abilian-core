@@ -12,6 +12,7 @@ from abc import ABCMeta, abstractmethod
 from base64 import b64decode, b64encode
 from pathlib import Path
 from typing import List
+from xmlrpc.client import ServerProxy
 
 from magic import Magic
 
@@ -19,11 +20,6 @@ from abilian.services.image import resize
 
 from .service import ConversionError
 from .util import get_tmp_dir, make_temp_file
-
-try:
-    from six.moves.xmlrpc_client import ServerProxy
-except ImportError:
-    ServerProxy = None
 
 logger = logging.getLogger(__name__)
 
