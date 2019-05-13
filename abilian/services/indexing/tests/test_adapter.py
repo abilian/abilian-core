@@ -151,7 +151,7 @@ def test_get_document_with_schema():
     adapter = SAAdapter(Indexable, schema)
     expected = {"id": 1, "num": 42}
     obj = Indexable(**expected)
-    obj.related = type(str("Related"), (object,), {"name": None})()
+    obj.related = type("Related", (object,), {"name": None})()
     expected["name"] = obj.related.name = "related name"
     obj.related.description = "description text"
     expected["text"] = obj.related.name + " " + obj.related.description
