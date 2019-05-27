@@ -31,6 +31,8 @@ jobs:
           lessc --version
         displayName: install less
       - script: |
+          sudo chown -R $USER:$GROUP ~/.npm
+          sudo chown -R $USER:$GROUP ~/.config
           yarn install
         displayName: install node deps
       - script: tox
