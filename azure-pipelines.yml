@@ -10,12 +10,12 @@ jobs:
   - job: 'Test'
     pool:
       vmImage: 'ubuntu-latest'
+
     strategy:
       matrix:
         py36-sqlite:
           TOXENV: py36
           python.version: '3.6'
-          # env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
 
     steps:
       - task: UsePythonVersion@0
@@ -25,7 +25,9 @@ jobs:
 
       - script: python -m pip install --upgrade tox codecov
         displayName: install tox
-      - script: yarn global add less
+      - script: |
+          yarn global add less
+          lessc --version
         displayName: install less
       - script: yarn
         displayName: install node deps
