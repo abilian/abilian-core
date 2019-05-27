@@ -26,7 +26,8 @@ jobs:
       - script: python -m pip install --upgrade tox codecov
         displayName: install tox
       - script: |
-          yarn global add less
+          # yarn global add less
+          npm install -g less
           lessc --version
         displayName: install less
       - script: yarn
