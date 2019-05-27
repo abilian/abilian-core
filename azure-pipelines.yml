@@ -6,9 +6,6 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 jobs:
   - job: 'Test'
     pool:
@@ -19,4 +16,3 @@ jobs:
           TOXENV: py36
           python.version: '3.6'
           # env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
- 
