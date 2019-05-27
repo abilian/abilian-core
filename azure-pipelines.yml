@@ -31,8 +31,7 @@ jobs:
           lessc --version
         displayName: install less
       - script: |
-          npm install yarn
-          npm run yarn
+          yarn install
         displayName: install node deps
       - script: tox
         displayName: run tox
