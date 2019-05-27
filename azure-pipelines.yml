@@ -16,3 +16,18 @@ jobs:
           TOXENV: py36
           python.version: '3.6'
           # env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
+
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '$(python.version)'
+          architecture: 'x64'
+
+      - script: python -m pip install --upgrade tox codecov
+        displayName: install tox
+      - script: yarn global add less
+        displayName: install less
+      - script: yarn
+        displayName: install node deps
+      - script: tox
+        displayName: run tox
