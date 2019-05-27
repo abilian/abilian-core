@@ -16,6 +16,12 @@ jobs:
         py36-sqlite:
           TOXENV: py36
           python.version: '3.6'
+        py37-sqlite:
+          TOXENV: py37
+          python.version: '3.7'
+        lint:
+          TOXENV: lint
+          python.version: '3.6'
 
     steps:
       - task: UsePythonVersion@0
