@@ -30,7 +30,9 @@ jobs:
           sudo npm install -g less
           lessc --version
         displayName: install less
-      - script: yarn
+      - script: |
+          npm install yarn
+          npm run yarn
         displayName: install node deps
       - script: tox
         displayName: run tox
