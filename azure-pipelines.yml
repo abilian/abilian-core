@@ -27,7 +27,7 @@ jobs:
         displayName: install tox
       - script: |
           # yarn global add less
-          npm install -g less
+          sudo npm install -g less
           lessc --version
         displayName: install less
       - script: yarn
