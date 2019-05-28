@@ -132,9 +132,9 @@ mypy = "*"
 # Development tools
 pre-commit = "*"
 
-# Formatting (update version explicitely when needed)
+# Formatting
 isort = "*"
-docformatter = "1.0"
+docformatter = "*"
 black = { version = "*", allows-prereleases = true }
 
 # To build docs

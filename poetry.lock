@@ -265,7 +265,7 @@ description = "Formats docstrings to follow PEP 257."
 name = "docformatter"
 optional = false
 python-versions = "*"
-version = "1.0"
+version = "1.1"
 
 [package.dependencies]
 untokenize = "*"
@@ -1333,7 +1333,7 @@ python-versions = ">=2.7"
 version = "0.5.1"
 
 [metadata]
-content-hash = "cef44836a061a00e49c921b176bebe419fd79c9f18c1eccf4f62a00c60ccf5db"
+content-hash = "7ecdb3928c14e10237733c68bf8eb3ed12a5fc87941e8316c4b3fa2bf7953564"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -1364,7 +1364,7 @@ coverage = ["0c5fe441b9cfdab64719f24e9684502a59432df7570521563d7b1aff27ac755f", 
 cssmin = ["e012f0cc8401efcf2620332339011564738ae32be8c84b2e43ce8beaec1067b6"]
 decorator = ["86156361c50488b84a3f148056ea716ca587df2f0de1d34750d35c21312725de", "f069f3a01830ca754ba5258fde2278454a0b5b79e0d7f5c13b3b97e57d4acff6"]
 deprecated = ["2f293eb0eee34b1fcf3da530fe8fc4b0d71d43ddc2dc78e2ffb444b6c0868557", "749f6cdcfbdc3f79258f8154bad43fced95adc632c337675d0385959895894bc"]
-docformatter = ["036eba7c12669dc67c0ccaa3c40e2add3cc729af6a5fa4a2a54517bc09e10237"]
+docformatter = ["fa08a099aad4bb662cd7c989ecbfddd3aee5ec585e68c0759cb90a3bc31cb562"]
 docutils = ["02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6", "51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274", "7a4bd47eaf6596e1295ecb11361139febe29b084a87bf005bf899f9a42edc3c6"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 execnet = ["027ee5d961afa01e97b90d6ccc34b4ed976702bc58e7f092b3c513ea288cb6d2", "752a3786f17416d491f833a29217dda3ea4a471fc5269c492eebcee8cc4772d3"]
