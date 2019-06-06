@@ -3,7 +3,7 @@
 from abilian.core.models.subjects import User
 
 
-def test_non_ascii_password():
+def test_non_ascii_password() -> None:
     """Ensure we can store and test non-ascii password without any
     UnicodeEncodeError."""
     user = User()

@@ -28,7 +28,7 @@ class DeferredJS:
         self.reset_deferred()
 
     @staticmethod
-    def reset_deferred():
+    def reset_deferred() -> None:
         g.deferred_js = []
 
 

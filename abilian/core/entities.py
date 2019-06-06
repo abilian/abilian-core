@@ -19,6 +19,7 @@ from .models import BaseMixin
 from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
 from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
+from typing import Any, Set, FrozenSet
 
 __all__ = [
     "Entity",
@@ -315,7 +316,7 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
     """
 
     _entity_type = Column("entity_type", String(1000), nullable=False)
-    entity_type = None
+    entity_type = ""
 
     meta = Column(JSONDict(), nullable=False, default=dict, server_default="{}")
     """
@@ -326,23 +327,23 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
     """
 
     @property
-    def object_type(self):
+    def object_type(self) -> str:
         return str(self.entity_type)
 
     @classmethod
-    def _object_type(cls):
+    def _object_type(cls) -> str:
         # overriden from Indexable
         return cls.entity_type
 
     @property
-    def entity_class(self):
+    def entity_class(self) -> str:
         return self.entity_type and friendly_fqcn(self.entity_type)
 
     # Default magic metadata, should not be necessary
     # TODO: remove
-    __editable__ = frozenset()
-    __searchable__ = frozenset()
-    __auditable__ = frozenset()
+    __editable__: FrozenSet = frozenset()
+    __searchable__: FrozenSet = frozenset()
+    __auditable__: FrozenSet = frozenset()
 
     def __init__(self, *args, **kwargs):
         db.Model.__init__(self, *args, **kwargs)
@@ -352,7 +353,7 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
             self.meta = {}
 
     @property
-    def auto_slug(self):
+    def auto_slug(self) -> str:
         """This property is used to auto-generate a slug from the name
         attribute.
 
@@ -363,7 +364,7 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
             slug = slugify(slug, separator=self.SLUG_SEPARATOR)
             session = sa.orm.object_session(self)
             if not session:
-                return None
+                return ""
             query = session.query(Entity.slug).filter(
                 Entity._entity_type == self.object_type
             )
@@ -382,7 +383,7 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
         return slug
 
     @property
-    def _indexable_roles_and_users(self):
+    def _indexable_roles_and_users(self) -> str:
         """Return a string made for indexing roles having :any:`READ`
         permission on this object."""
         from abilian.services.indexing import indexable_role
@@ -465,7 +466,7 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
 
 # TODO: make this unecessary
 @event.listens_for(Entity, "class_instrument", propagate=True)
-def register_metadata(cls):
+def register_metadata(cls: type) -> None:
     cls.__editable__ = set()
 
     # TODO: use SQLAlchemy 0.8 introspection

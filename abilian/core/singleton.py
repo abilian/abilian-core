@@ -30,18 +30,18 @@ class UniqueName(metaclass=ValueSingletonMeta):
     __slots__ = ("_hash", "__name")
     attr = "name"
 
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.__name = str(name).strip().lower()
         self._hash = hash(self.__name)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__name
 
     def __repr__(self):
         return "{}({})".format(self.__class__.__name__, repr(self.name))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     def __eq__(self, other):
@@ -49,7 +49,7 @@ class UniqueName(metaclass=ValueSingletonMeta):
             return self._hash == other._hash
         return self.__name == str(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return self._hash
 
 

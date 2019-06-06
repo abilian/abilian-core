@@ -12,7 +12,7 @@ from ..blob import Blob
 #
 # Unit tests
 #
-def test_auto_uuid():
+def test_auto_uuid() -> None:
     blob = Blob()
     assert blob.uuid is not None
     assert isinstance(blob.uuid, uuid.UUID)
@@ -24,7 +24,7 @@ def test_auto_uuid():
     assert blob.uuid, u
 
 
-def test_meta():
+def test_meta() -> None:
     blob = Blob()
     assert blob.meta == {}
 

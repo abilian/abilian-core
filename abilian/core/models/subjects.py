@@ -209,13 +209,13 @@ class User(Principal, UserMixin, db.Model):
             self.set_password(password)
             self._password = password
 
-    def authenticate(self, password):
+    def authenticate(self, password: str) -> bool:
         if self.password and self.password != "*":
             return self.__password_strategy__.authenticate(self, password)
         else:
             return False
 
-    def set_password(self, password):
+    def set_password(self, password: str) -> None:
         """Encrypts and sets password."""
         self.password = self.__password_strategy__.process(self, password)
 
@@ -259,7 +259,7 @@ class User(Principal, UserMixin, db.Model):
     # Other properties
     #
     @property
-    def name(self):
+    def name(self) -> str:
         name = "{first_name} {last_name}".format(
             first_name=self.first_name or "", last_name=self.last_name or ""
         )
@@ -272,7 +272,7 @@ class User(Principal, UserMixin, db.Model):
         name = f"{first_name} {last_name}"
         return name.strip() or "Unknown"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     def __repr__(self):

@@ -27,7 +27,7 @@ def session():
     return session
 
 
-def test():
+def test() -> None:
     contact = DummyContact(first_name="John")
     assert contact.creator is None
     assert contact.owner is None
@@ -120,7 +120,7 @@ def test_meta(session):
     assert e.meta["number"] == 42
 
 
-def test_entity_type():
+def test_entity_type() -> None:
     class MyType(Entity):
         pass
 
@@ -151,7 +151,7 @@ def test_entity_type():
     assert InheritedBase._object_type() == "from.ancestor.InheritedBase"
 
 
-def test_info():
+def test_info() -> None:
     info = SEARCHABLE
     assert info["searchable"]
 

@@ -8,6 +8,7 @@ from whoosh.fields import STORED
 
 from .base import AUDITABLE, EDITABLE, SEARCHABLE, SYSTEM
 from .subjects import User
+from typing import Any, List, Dict
 
 
 class OwnedMixin:
@@ -18,7 +19,7 @@ class OwnedMixin:
         ("owner_name", (("owner_name", STORED),)),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: List, **kwargs: Dict[str, Any]) -> None:
         try:
             user = g.user
             if not self.creator and not g.user.is_anonymous:
@@ -44,7 +45,7 @@ class OwnedMixin:
         )
 
     @property
-    def creator_name(self):
+    def creator_name(self) -> str:
         return str(self.creator) if self.creator else ""
 
     @declared_attr
@@ -63,5 +64,5 @@ class OwnedMixin:
         )
 
     @property
-    def owner_name(self):
+    def owner_name(self) -> str:
         return str(self.owner) if self.owner else ""

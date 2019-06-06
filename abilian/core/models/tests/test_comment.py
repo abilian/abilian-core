@@ -14,7 +14,7 @@ class CommentableContent(Entity):
     pass
 
 
-def test_commentable_interface():
+def test_commentable_interface() -> None:
     assert is_commentable(CommentableContent)
 
     instance = CommentableContent(name="test instance")
@@ -26,7 +26,7 @@ def test_commentable_interface():
     assert not is_commentable(object())
 
 
-def test_cannot_register_non_entities():
+def test_cannot_register_non_entities() -> None:
     class Dummy:
         pass
 

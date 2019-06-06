@@ -82,7 +82,7 @@ class Blob(Model):
             self.meta["mimetype"] = value.content_type
 
     @value.deleter
-    def value(self):
+    def value(self) -> None:
         """Remove value from repository."""
         from abilian.services.repository import session_repository as repository
 
@@ -97,7 +97,7 @@ class Blob(Model):
 
         return md5
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """A blob is considered falsy if it has no file."""
         return self.file is not None and self.file.exists()
 

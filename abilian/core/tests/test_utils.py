@@ -3,7 +3,7 @@
 from abilian.core.util import Pagination, slugify
 
 
-def test_pagination_1():
+def test_pagination_1() -> None:
     p = Pagination(1, 10, 10)
     pages = list(p.iter_pages())
     assert pages == [1]
@@ -13,7 +13,7 @@ def test_pagination_1():
     assert p.next is None
 
 
-def test_pagination_2():
+def test_pagination_2() -> None:
     p = Pagination(1, 10, 20)
     pages = list(p.iter_pages())
     assert pages == [1, 2]
@@ -23,7 +23,7 @@ def test_pagination_2():
     assert p.next == 2
 
 
-def test_pagination_3():
+def test_pagination_3() -> None:
     p = Pagination(1, 10, 100)
     pages = list(p.iter_pages())
     assert pages == [1, 2, 3, 4, 5, None, 9, 10]
@@ -33,7 +33,7 @@ def test_pagination_3():
     assert p.next == 2
 
 
-def test_pagination_4():
+def test_pagination_4() -> None:
     p = Pagination(10, 10, 100)
     pages = list(p.iter_pages())
     assert pages == [1, 2, None, 8, 9, 10]
@@ -43,19 +43,19 @@ def test_pagination_4():
     assert p.next is None
 
 
-def test_slugify_basic():
+def test_slugify_basic() -> None:
     slug = slugify("a b c")
     assert slug == "a-b-c"
     assert isinstance(slug, str)
     assert slugify(slug) == "a-b-c"  # idempotent
 
 
-def test_slugify_separator():
+def test_slugify_separator() -> None:
     slug = slugify("a-b++ c-+", "+")
     assert slug == "a+b+c"
 
 
-def test_slugify_non_ascii():
+def test_slugify_non_ascii() -> None:
     slug = slugify("C'est l'été !")
     assert slug == "c-est-l-ete"
 

@@ -16,6 +16,8 @@ from sqlalchemy.orm.session import Session
 
 from abilian.core.extensions import db
 from abilian.core.util import unwrap
+from typing import Any, Dict, List
+from typing import Optional
 
 
 def default_app_factory():
@@ -33,11 +35,11 @@ CELERY_CONF_KEY_PREFIXES = (
 )
 
 
-def is_celery_setting(key):
+def is_celery_setting(key: str) -> bool:
     return any(key.startswith(prefix) for prefix in CELERY_CONF_KEY_PREFIXES)
 
 
-def is_eager():
+def is_eager() -> bool:
     """True when tasks are run eagerly.
 
     As of celery 3.1.17 it seems that when CELERY_ALWAYS_EAGER is set in
@@ -110,7 +112,7 @@ class FlaskTask(Task):
 
     abstract = True
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: List, **kwargs: Dict[str, Any]) -> Optional[Any]:
         if is_eager():
             # this is here mainly because flask_sqlalchemy (as of 2.0) will
             # remove session on app context teardown.
