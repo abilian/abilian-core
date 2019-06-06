@@ -109,6 +109,7 @@ pytest-xdist = "*"
 pytest-randomly = "*"
 pytest-repeat = "*"
 pytest-cov = "*"
+typeguard = "*"
 
 # Static code analysis: flake* and friends
 flake8 = "*"

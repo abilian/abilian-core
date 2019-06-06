@@ -5,13 +5,20 @@ framework.
 
 DI and functions over complex inheritance hierarchies FTW!
 """
-
+import logging
 import os
 import warnings
 
 import pytest
+from typeguard import TypeChecker
 
 pytest_plugins = ["abilian.testing.fixtures"]
+
+if os.environ.get("TYPECHECK"):
+    checker = TypeChecker("abilian")
+    logging.captureWarnings(True)
+    if not checker.active:
+        checker.start()
 
 if os.environ.get("FAIL_ON_WARNINGS"):
     # Don't remove !
@@ -21,7 +28,6 @@ if os.environ.get("FAIL_ON_WARNINGS"):
     warnings.simplefilter("error")
 
 if os.environ.get("COLLECT_ANNOTATIONS"):
-    import pyannotate_runtime
 
     def pytest_collection_finish(session):
         """Handle the pytest collection finish hook: configure pyannotate.
