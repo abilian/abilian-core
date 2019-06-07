@@ -4,6 +4,8 @@
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
 
+from typing import Any
+
 import flask_mail
 import sqlalchemy as sa
 import sqlalchemy.event
@@ -13,14 +15,12 @@ from sqlalchemy.engine import Engine
 
 from abilian.core.extensions.jinjaext import DeferredJS
 from abilian.core.logging import patch_logger
-
-from ..sqlalchemy import SQLAlchemy
 from . import upstream_info
 from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf
 from .login import login_manager
 from .redis import Redis
-from typing import Any
+from ..sqlalchemy import SQLAlchemy
 
 __all__ = ["get_extension", "db", "mail", "login_manager", "csrf", "upstream_info"]
 

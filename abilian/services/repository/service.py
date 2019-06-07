@@ -3,7 +3,7 @@
 import shutil
 import weakref
 from pathlib import Path
-from typing import Any, Optional, Text
+from typing import Any, Optional
 from uuid import UUID, uuid1
 
 import sqlalchemy as sa

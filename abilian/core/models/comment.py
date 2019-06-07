@@ -3,7 +3,6 @@
 import abc
 from typing import Any
 
-from mypy_extensions import NoReturn
 from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, \
     UnicodeText
 from sqlalchemy.ext.declarative import declared_attr

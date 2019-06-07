@@ -9,7 +9,7 @@ TODO: In the future, we may decide to:
 import logging
 from datetime import datetime
 from inspect import isclass
-from typing import Any, Text
+from typing import Text
 
 import sqlalchemy as sa
 from flask import current_app, g

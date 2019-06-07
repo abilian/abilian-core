@@ -9,7 +9,6 @@ from abilian.web import url_for, views
 from abilian.web.action import Glyphicon
 from abilian.web.admin import AdminPanel
 from abilian.web.nav import BreadcrumbItem
-
 from .forms import EditForm
 
 _MARKER = object()

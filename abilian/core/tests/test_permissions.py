@@ -3,7 +3,6 @@
 from flask import Flask
 from sqlalchemy.orm.scoping import scoped_session
 
-from abilian.app import Application
 from abilian.core.entities import Entity
 from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.services import security

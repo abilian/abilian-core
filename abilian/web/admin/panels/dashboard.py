@@ -12,7 +12,6 @@ from abilian.core.models.subjects import User
 from abilian.i18n import _, _l
 from abilian.services.audit import CREATION, AuditEntry
 from abilian.services.auth.models import LoginSession
-
 from ..panel import AdminPanel
 
 

@@ -3,6 +3,7 @@
 import logging
 from collections import OrderedDict
 from functools import partial
+from typing import Any
 
 from flask import g, has_app_context
 from flask_login import current_user
@@ -16,12 +17,10 @@ from abilian.i18n import _, _n
 from abilian.services import get_service
 from abilian.services.security import CREATE, READ, WRITE, Anonymous, Role
 from abilian.web.forms.widgets import DefaultViewWidget
-
 from .fields import *  # noqa
 from .filters import *  # noqa
 from .validators import *  # noqa
 from .widgets import *  # noqa
-from typing import Any
 
 logger = logging.getLogger(__name__)
 

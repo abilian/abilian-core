@@ -19,7 +19,6 @@ from abilian.web.util import url_for
 from abilian.web.views import base
 from abilian.web.views import object as views
 from abilian.web.views.images import user_photo_url
-
 from .forms import UserAdminForm, UserCreateForm
 
 MUGSHOT_SIZE = 45

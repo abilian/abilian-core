@@ -28,10 +28,10 @@ import abilian.i18n
 from abilian.config import default_config
 from abilian.core import extensions, signals
 from abilian.core.celery import FlaskCelery
-from abilian.services import activity_service, antivirus, audit_service, \
-    auth_service, conversion_service, index_service, preferences_service, \
-    repository_service, security_service, session_repository_service, \
-    settings_service, vocabularies_service, Service
+from abilian.services import Service, activity_service, antivirus, \
+    audit_service, auth_service, conversion_service, index_service, \
+    preferences_service, repository_service, security_service, \
+    session_repository_service, settings_service, vocabularies_service
 from abilian.services.security import Anonymous
 from abilian.web import csrf
 from abilian.web.action import actions

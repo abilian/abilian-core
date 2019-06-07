@@ -5,7 +5,7 @@ import collections
 import re
 from datetime import datetime
 from inspect import isclass
-from typing import Any, FrozenSet, Set
+from typing import FrozenSet
 
 import sqlalchemy as sa
 from flask import current_app

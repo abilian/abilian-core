@@ -7,8 +7,8 @@ from whoosh.fields import NUMERIC, TEXT, Schema
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
-from abilian.core.models.base import SEARCHABLE, IdMixin
 from abilian.core.models.base import Indexable as CoreIndexable
+from abilian.core.models.base import SEARCHABLE, IdMixin
 from abilian.services.indexing.adapter import SAAdapter
 
 

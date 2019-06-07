@@ -6,7 +6,6 @@ from pytest import mark, raises
 
 from abilian.testing.util import path_from_url
 from abilian.web import url_for
-
 from .models import BaseVocabulary, Vocabulary
 from .service import vocabularies
 

@@ -18,7 +18,6 @@ from abilian.services.auth.service import user_menu
 from abilian.services.base import Service, ServiceState
 from abilian.web.action import Endpoint
 from abilian.web.nav import BreadcrumbItem, NavItem
-
 from .models import UserPreference
 
 _PREF_NAV_ITEM = NavItem(

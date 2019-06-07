@@ -17,7 +17,6 @@ from xmlrpc.client import ServerProxy
 from magic import Magic
 
 from abilian.services.image import resize
-
 from .service import ConversionError
 from .util import get_tmp_dir, make_temp_file
 

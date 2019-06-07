@@ -5,7 +5,6 @@ from inspect import isclass
 import jinja2
 
 from abilian.services.base import Service
-
 from .models import BaseVocabulary
 
 

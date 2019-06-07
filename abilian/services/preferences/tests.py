@@ -6,7 +6,6 @@ from pytest import fixture
 from abilian.app import Application as BaseApplication
 from abilian.core.models.subjects import User
 from abilian.services import get_service
-
 from .models import UserPreference
 from .panel import PreferencePanel
 from .service import PreferenceService
