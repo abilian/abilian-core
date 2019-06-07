@@ -2,7 +2,7 @@
 """"""
 import logging
 import re
-from typing import Any, Optional
+from typing import Any
 
 from flask import current_app, g
 from flask.signals import appcontext_pushed

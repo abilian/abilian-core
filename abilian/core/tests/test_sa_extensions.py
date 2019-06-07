@@ -2,6 +2,7 @@
 import uuid
 
 from sqlalchemy import Column
+from sqlalchemy.orm.scoping import scoped_session
 
 from abilian.core.entities import Entity
 from abilian.core.sqlalchemy import UUID, JSONDict, JSONList
@@ -13,7 +14,7 @@ class DummyModel2(Entity):
     uuid = Column(UUID())
 
 
-def test_list_attribute(session):
+def test_list_attribute(session: scoped_session) -> None:
     model = DummyModel2(list_attr=[1, 2, 3])
     session.add(model)
     session.commit()
@@ -29,7 +30,7 @@ def test_list_attribute(session):
     assert model2.list_attr == [2, 3, 4]
 
 
-def test_dict_attribute(session):
+def test_dict_attribute(session: scoped_session) -> None:
     model = DummyModel2(dict_attr={"a": 3, "b": 4})
     session.add(model)
     session.commit()
@@ -42,7 +43,7 @@ def test_dict_attribute(session):
     assert model2.dict_attr == {"a": 3, "b": 4, "c": 5}
 
 
-def test_uuid_attribute(session):
+def test_uuid_attribute(session: scoped_session) -> None:
     # uuid from string
     model = DummyModel2(uuid="c5ad316a-2cd0-4f78-a49b-cff216c10713")
     session.add(model)

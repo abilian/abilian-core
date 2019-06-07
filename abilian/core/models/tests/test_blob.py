@@ -3,6 +3,9 @@
 import uuid
 from io import StringIO
 
+from flask import Flask
+
+from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.services import repository_service as repository
 from abilian.services import session_repository_service as session_repository
 
@@ -32,18 +35,18 @@ def test_meta() -> None:
 #
 # Integration tests
 #
-def test_md5(app, db):
+def test_md5(app: Flask, db: SQLAlchemy) -> None:
     blob = Blob("test md5")
     assert "md5" in blob.meta
     assert blob.meta["md5"] == "0e4e3b2681e8931c067a23c583c878d5"
 
 
-def test_size(app, db):
+def test_size(app: Flask, db: SQLAlchemy) -> None:
     blob = Blob("test")
     assert blob.size == 4
 
 
-def test_filename(app, db):
+def test_filename(app: Flask, db: SQLAlchemy) -> None:
     content = StringIO("test")
     content.filename = "test.txt"
     blob = Blob(content)
@@ -51,7 +54,7 @@ def test_filename(app, db):
     assert blob.meta["filename"] == "test.txt"
 
 
-def test_mimetype(app, db):
+def test_mimetype(app: Flask, db: SQLAlchemy) -> None:
     content = StringIO("test")
     content.content_type = "text/plain"
     blob = Blob(content)
@@ -59,7 +62,7 @@ def test_mimetype(app, db):
     assert blob.meta["mimetype"] == "text/plain"
 
 
-def test_nonzero(app, db):
+def test_nonzero(app: Flask, db: SQLAlchemy) -> None:
     blob = Blob("test md5")
     assert bool(blob)
 
@@ -82,7 +85,7 @@ def test_nonzero(app, db):
 #     assert Blob.query.by_uuid(u) is None
 
 
-def test_value(app, db):
+def test_value(app: Flask, db: SQLAlchemy) -> None:
     session = db.session
     content = b"content"
     blob = Blob(content)

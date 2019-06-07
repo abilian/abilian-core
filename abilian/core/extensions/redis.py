@@ -1,5 +1,6 @@
 """Simple redis extension."""
 import redis
+from flask import Flask
 
 
 class Redis:
@@ -11,7 +12,7 @@ class Redis:
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         uri = app.config.get("REDIS_URI")
         if app.testing:
             return

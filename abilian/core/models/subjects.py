@@ -14,9 +14,11 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin
+from flask_sqlalchemy import _BoundDeclarativeMeta
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
+from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
 from sqlalchemy.types import Boolean, DateTime, Integer, LargeBinary, \
     UnicodeText
@@ -120,7 +122,7 @@ class BcryptPasswordStrategy(PasswordStrategy):
     def name(self):
         return "bcrypt"
 
-    def authenticate(self, user, password):
+    def authenticate(self, user: "User", password: str) -> bool:
         current_passwd = user.password
         # crypt work only on bytes, not str (Unicode)
         if isinstance(current_passwd, str):
@@ -130,7 +132,7 @@ class BcryptPasswordStrategy(PasswordStrategy):
 
         return bcrypt.hashpw(password, current_passwd) == current_passwd
 
-    def process(self, user, password):
+    def process(self, user: "User", password: str) -> str:
         if isinstance(password, str):
             password = password.encode("utf-8")
         return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
@@ -287,7 +289,7 @@ class User(Principal, UserMixin, db.Model):
 
 
 @listens_for(User, "mapper_configured", propagate=True)
-def _add_user_indexes(mapper, class_):
+def _add_user_indexes(mapper: Mapper, class_: _BoundDeclarativeMeta) -> None:
     # this is a functional index (indexes on a function result), we cannot define
     # it in __table_args__.
     #
@@ -334,7 +336,7 @@ class Group(Principal, db.Model):
         )
 
 
-def create_root_user():
+def create_root_user() -> User:
     user = User.query.get(0)
     if user is None:
         user = User(

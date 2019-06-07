@@ -5,6 +5,7 @@ from datetime import datetime
 from pytest import fixture
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import Session
 
 from abilian.core.entities import Entity
 from abilian.core.models.base import AUDITABLE, NOT_SEARCHABLE, SEARCHABLE, \
@@ -15,7 +16,7 @@ from .dummy import DummyContact
 
 
 @fixture
-def session():
+def session() -> Session:
     engine = create_engine("sqlite:///:memory:", echo=False)
     session_class = sessionmaker(bind=engine)
     session = session_class()
@@ -37,7 +38,7 @@ def test() -> None:
     contact.creator = user
 
 
-def test_auto_slug_property(session):
+def test_auto_slug_property(session: Session) -> None:
     obj = DummyContact(name="a b c")
     session.add(obj)
     session.flush()
@@ -61,7 +62,7 @@ def test_auto_slug_property(session):
     assert "\u002d" in slug
 
 
-def test_updated_at(session):
+def test_updated_at(session: Session) -> None:
     contact = DummyContact()
     session.add(contact)
     session.commit()
@@ -74,7 +75,7 @@ def test_updated_at(session):
     assert contact.updated_at > updated
 
 
-def test_auto_slug(session):
+def test_auto_slug(session: Session) -> None:
     contact1 = DummyContact(name="Pacôme Hégésippe Adélard Ladislas")
     session.add(contact1)
     session.flush()
@@ -94,7 +95,7 @@ def test_auto_slug(session):
     assert contact3.slug == "pacome-hegesippe-adelard-ladislas-1"
 
 
-def test_polymorphic_update_timestamp(session):
+def test_polymorphic_update_timestamp(session: Session) -> None:
     contact = DummyContact(name="Pacôme Hégésippe Adélard Ladislas")
     session.add(contact)
     session.flush()
@@ -106,7 +107,7 @@ def test_polymorphic_update_timestamp(session):
     assert contact.updated_at > updated_at
 
 
-def test_meta(session):
+def test_meta(session: Session) -> None:
     e = DummyContact(name="test")
     e.meta["key"] = "value"
     e.meta["number"] = 42

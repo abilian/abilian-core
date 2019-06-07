@@ -1,7 +1,9 @@
 # coding=utf-8
 """"""
 import abc
+from typing import Any
 
+from mypy_extensions import NoReturn
 from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, \
     UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
@@ -18,7 +20,7 @@ class Commentable(metaclass=abc.ABCMeta):
     pass
 
 
-def register(cls):
+def register(cls: Any) -> NoReturn:
     """Register an :class:`Entity` as a commentable class.
 
     Can be used as a class decorator:
@@ -36,7 +38,7 @@ def register(cls):
     return cls
 
 
-def is_commentable(obj_or_class):
+def is_commentable(obj_or_class: Any) -> bool:
     """
     :param obj_or_class: a class or instance
     """

@@ -19,11 +19,11 @@ class Info(dict):
         for k, v in kw.items():
             self[k] = v
 
-    def copy(self):
+    def copy(self) -> "Info":
         # dict.copy would return an instance of dict
         return self.__class__(**self)
 
-    def __add__(self, other):
+    def __add__(self, other: "Info") -> "Info":
         d = self.copy()
         d.update(other)
         return d

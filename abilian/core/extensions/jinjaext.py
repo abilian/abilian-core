@@ -1,10 +1,13 @@
 # coding=utf-8
 """Jinja2 extensions."""
+from typing import Any
+
 import lxml.html
-from flask import current_app, g
+from flask import Flask, current_app, g
 from flask.signals import got_request_exception, request_started
 from jinja2 import nodes
 from jinja2.ext import Extension as JinjaExtension
+from jinja2.runtime import Macro
 
 
 class DeferredJS:
@@ -16,7 +19,7 @@ class DeferredJS:
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         if self.name in app.extensions:
             return
 
@@ -24,7 +27,7 @@ class DeferredJS:
         request_started.connect(self.reset_request, app)
         got_request_exception.connect(self.reset_request, app)
 
-    def reset_request(self, sender, **extra):
+    def reset_request(self, sender: Flask, **extra: Any) -> None:
         self.reset_deferred()
 
     @staticmethod
@@ -57,7 +60,7 @@ class DeferredJSExtension(JinjaExtension):
         )
 
     @staticmethod
-    def defer_nodes(caller):
+    def defer_nodes(caller: Macro) -> str:
         body = "<div>{}</div>".format(caller().strip())
 
         # remove 'script' tag in immediate children, if any
@@ -80,7 +83,7 @@ class DeferredJSExtension(JinjaExtension):
         return ""
 
     @staticmethod
-    def collect_deferred(caller):
+    def collect_deferred(caller: Macro) -> str:
         result = "\n".join(f"(function(){{\n{js}\n}})();" for js in g.deferred_js)
         flask_ext = current_app.extensions[DeferredJS.name]
         flask_ext.reset_deferred()

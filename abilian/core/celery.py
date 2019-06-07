@@ -10,6 +10,7 @@ from celery.app.task import Task
 from celery.loaders.base import BaseLoader
 from celery.task import PeriodicTask as CeleryPeriodicTask
 from celery.utils.imports import symbol_by_name
+from flask import Flask
 from flask import current_app as flask_current_app
 from flask import has_app_context
 from flask.helpers import locked_cached_property
@@ -49,7 +50,7 @@ def is_eager() -> bool:
     ) or celery_current_app.conf.CELERY_ALWAYS_EAGER
 
 
-def safe_session():
+def safe_session() -> Session:
     """Return a sqlalchemy session that can be safely used in a task.
 
     During standard async task processing, there is generally no
@@ -69,7 +70,7 @@ class FlaskLoader(BaseLoader):
     app_context = None
 
     @locked_cached_property
-    def flask_app(self):
+    def flask_app(self) -> Flask:
         if has_app_context():
             return unwrap(flask_current_app)
 
@@ -93,7 +94,7 @@ class FlaskLoader(BaseLoader):
             engine = db.get_engine(app, bind)
             engine.dispose()
 
-    def read_configuration(self, env=None):
+    def read_configuration(self, env: str = "") -> Dict[str, Any]:
         app = self.flask_app
         app.config.setdefault("CELERY_DEFAULT_EXCHANGE", app.name)
         app.config.setdefault("CELERY_DEFAULT_QUEUE", app.name)

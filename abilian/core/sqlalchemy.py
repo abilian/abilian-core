@@ -4,7 +4,9 @@ import json
 import logging
 import sys
 import uuid
-from typing import Any
+from sqlite3 import Connection
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID
 
 import babel
 import babel.dates
@@ -15,9 +17,14 @@ import sqlalchemy.dialects
 import sqlalchemy.exc
 import sqlalchemy.orm
 import sqlalchemy.pool
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy as SAExtension
+from sqlalchemy.dialects.sqlite.pysqlite import SQLiteDialect_pysqlite
+from sqlalchemy.engine.url import URL
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.pool.base import _ConnectionFairy, _ConnectionRecord
+from sqlalchemy.sql.sqltypes import CHAR
 
 from .logging import patch_logger
 
@@ -25,7 +32,11 @@ logger = logging.getLogger(__name__)
 
 
 @listens_for(sa.pool.Pool, "checkout")
-def ping_connection(dbapi_connection, connection_record, connection_proxy):
+def ping_connection(
+    dbapi_connection: Connection,
+    connection_record: _ConnectionRecord,
+    connection_proxy: _ConnectionFairy,
+) -> None:
     """Ensure connections are valid.
 
     From: `http://docs.sqlalchemy.org/en/rel_0_8/core/pooling.html`
@@ -52,7 +63,9 @@ class SQLAlchemy(SAExtension):
     Add our custom driver hacks.
     """
 
-    def apply_driver_hacks(self, app, info, options):
+    def apply_driver_hacks(
+        self, app: Flask, info: URL, options: Dict[str, int]
+    ) -> None:
         SAExtension.apply_driver_hacks(self, app, info, options)
 
         if info.drivername == "sqlite":
@@ -129,7 +142,7 @@ class MutationDict(Mutable, dict):
     """Provides a dictionary type with mutability support."""
 
     @classmethod
-    def coerce(cls, key, value):
+    def coerce(cls, key: str, value: Dict) -> "MutationDict":
         """Convert plain dictionaries to MutationDict."""
         if not isinstance(value, MutationDict):
             if isinstance(value, dict):
@@ -142,14 +155,14 @@ class MutationDict(Mutable, dict):
 
     #  pickling support. see:
     #  http://docs.sqlalchemy.org/en/rel_0_8/orm/extensions/mutable.html#supporting-pickling
-    def __getstate__(self):
+    def __getstate__(self) -> Dict:
         return dict(self)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: Dict) -> None:
         self.update(state)
 
     # dict methods
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Union[int, str]) -> None:
         """Detect dictionary set events and emit change events."""
         dict.__setitem__(self, key, value)
         self.changed()
@@ -163,7 +176,7 @@ class MutationDict(Mutable, dict):
         dict.clear(self)
         self.changed()
 
-    def update(self, other, **kw):
+    def update(self, other: Dict, **kw: Any) -> None:
         dict.update(self, other, **kw)
         self.changed()
 
@@ -185,7 +198,7 @@ class MutationList(Mutable, list):
     """Provides a list type with mutability support."""
 
     @classmethod
-    def coerce(cls, key, value):
+    def coerce(cls, key: str, value: List) -> "MutationList":
         """Convert list to MutationList."""
         if not isinstance(value, MutationList):
             if isinstance(value, list):
@@ -268,12 +281,16 @@ class JSON(sa.types.TypeDecorator):
 
     impl = sa.types.Text
 
-    def process_bind_param(self, value, dialect):
+    def process_bind_param(
+        self, value: Any, dialect: SQLiteDialect_pysqlite
+    ) -> Optional[str]:
         if value is not None:
             value = json.dumps(value)
         return value
 
-    def process_result_value(self, value, dialect):
+    def process_result_value(
+        self, value: Optional[str], dialect: SQLiteDialect_pysqlite
+    ) -> Union[Dict[str, Any], List[int], None]:
         if value is not None:
             value = json.loads(value)
         return value
@@ -327,13 +344,15 @@ class UUID(sa.types.TypeDecorator):
 
     impl = sa.types.CHAR
 
-    def load_dialect_impl(self, dialect):
+    def load_dialect_impl(self, dialect: SQLiteDialect_pysqlite) -> CHAR:
         if dialect.name == "postgresql":
             return dialect.type_descriptor(sa.dialects.postgresql.UUID())
         else:
             return dialect.type_descriptor(sa.types.CHAR(32))
 
-    def process_bind_param(self, value, dialect):
+    def process_bind_param(
+        self, value: Union[None, str, UUID], dialect: SQLiteDialect_pysqlite
+    ) -> Optional[str]:
         if value is None:
             return value
         elif dialect.name == "postgresql":
@@ -344,7 +363,9 @@ class UUID(sa.types.TypeDecorator):
             # hexstring
             return value.hex
 
-    def process_result_value(self, value, dialect):
+    def process_result_value(
+        self, value: Optional[str], dialect: SQLiteDialect_pysqlite
+    ) -> Optional[UUID]:
         return value if value is None else uuid.UUID(value)
 
     def compare_against_backend(self, dialect, conn_type):
@@ -363,7 +384,9 @@ class Locale(sa.types.TypeDecorator):
     def python_type(self):
         return babel.Locale
 
-    def process_bind_param(self, value, dialect):
+    def process_bind_param(
+        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+    ) -> Optional[Any]:
         if value is None:
             return None
 
@@ -382,7 +405,9 @@ class Locale(sa.types.TypeDecorator):
 
         return code
 
-    def process_result_value(self, value, dialect):
+    def process_result_value(
+        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+    ) -> Optional[Any]:
         return None if value is None else babel.Locale.parse(value)
 
 
@@ -395,7 +420,9 @@ class Timezone(sa.types.TypeDecorator):
     def python_type(self):
         return pytz.tzfile.DstTzInfo
 
-    def process_bind_param(self, value, dialect):
+    def process_bind_param(
+        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+    ) -> Optional[Any]:
         if value is None:
             return None
 
@@ -408,7 +435,9 @@ class Timezone(sa.types.TypeDecorator):
 
         return value.zone
 
-    def process_result_value(self, value, dialect):
+    def process_result_value(
+        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+    ) -> Optional[Any]:
         return None if value is None else babel.dates.get_timezone(value)
 
 

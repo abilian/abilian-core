@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
 import abc
+from typing import Any, Dict
 
 import sqlalchemy as sa
 import sqlalchemy.event
@@ -70,7 +71,7 @@ class Attachment(Entity):
     __auditable_entity__ = ("entity", "attachment", ("id", "name"))
 
     @declared_attr
-    def __mapper_args__(cls):
+    def __mapper_args__(cls) -> Dict[str, Any]:
         # we cannot use super(Attachment, cls): declared_attr happens during
         # class construction. super(cls, cls) could work; as long as `cls`
         # is not a subclass of `Attachment`: it would enter into

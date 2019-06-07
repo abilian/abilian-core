@@ -2,9 +2,12 @@
 """"""
 from datetime import datetime, timedelta
 
+from flask import Flask
 from pytest import raises
 
+from abilian.app import Application
 from abilian.core.entities import Entity
+from abilian.core.sqlalchemy import SQLAlchemy
 
 from ..comment import Comment, is_commentable, register
 
@@ -34,7 +37,7 @@ def test_cannot_register_non_entities() -> None:
         register(Dummy)
 
 
-def test_default_ordering(app, db):
+def test_default_ordering(app: Flask, db: SQLAlchemy) -> None:
     commentable = CommentableContent(name="commentable objet")
     db.session.add(commentable)
 

@@ -1,5 +1,7 @@
 # coding=utf-8
 """"""
+from typing import Set
+
 from flask_login import AnonymousUserMixin, LoginManager
 
 
@@ -11,7 +13,7 @@ class AnonymousUser(AnonymousUserMixin):
         return security.has_role(self, role)
 
     @property
-    def groups(self):
+    def groups(self) -> Set:
         return set()
 
 

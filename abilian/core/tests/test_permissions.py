@@ -1,10 +1,17 @@
 # coding=utf-8
 """"""
+from flask import Flask
+from sqlalchemy.orm.scoping import scoped_session
+
+from abilian.app import Application
 from abilian.core.entities import Entity
+from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.services import security
 
 
-def test_default_permissions(app, db, session):
+def test_default_permissions(
+    app: Flask, db: SQLAlchemy, session: scoped_session
+) -> None:
     class MyRestrictedType(Entity):
         __default_permissions__ = {
             security.READ: {security.Anonymous},
