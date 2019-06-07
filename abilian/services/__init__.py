@@ -4,10 +4,10 @@
 They are implemented as Flask extensions (see:
 http://flask.pocoo.org/docs/extensiondev/ )
 """
+from flask import current_app
+
 # This one first
 from .base import Service, ServiceState
-
-from flask import current_app
 
 from .activity import ActivityService
 from .antivirus import service as antivirus
@@ -27,5 +27,5 @@ activity_service = ActivityService()
 settings_service = SettingsService()
 
 
-def get_service(service):
+def get_service(service: str) -> Service:
     return current_app.services[service]
