@@ -2,7 +2,7 @@
 """"""
 import logging
 import re
-from typing import Optional
+from typing import Any, Optional
 
 from flask import current_app, g
 from flask.signals import appcontext_pushed
@@ -75,19 +75,19 @@ class Icon:
     def __html__(self):
         raise NotImplementedError
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__html__()
 
 
 class NamedIconBase(Icon):
     """Renders markup for named icons set."""
 
-    template = None  # type: Optional[Template]
+    template: Template
 
-    def __init__(self, name=""):
+    def __init__(self, name: str = "") -> None:
         self.name = name
 
-    def __html__(self):
+    def __html__(self) -> str:
         return self.template.render(name=self.name)
 
 
@@ -172,7 +172,7 @@ class DynamicIcon(Icon):
         kw.update(self.fixed_url_args)
         return kw
 
-    def __html__(self):
+    def __html__(self) -> str:
         endpoint = self.endpoint
         if callable(endpoint):
             endpoint = endpoint()
@@ -206,7 +206,7 @@ class StaticIcon(DynamicIcon):
 class Endpoint:
 
     # FIXME: *args doesn't seem to be relevant.
-    def __init__(self, name, *args, **kwargs):
+    def __init__(self, name: str, *args: Any, **kwargs: Any) -> None:
         self.name = name
         self.args = args
         self.kwargs = kwargs
@@ -220,10 +220,10 @@ class Endpoint:
         """
         return self.kwargs.copy()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(url_for(self.name, **self.get_kwargs()))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{cls}({name!r}, *{args!r}, **{kwargs!r})".format(
             cls=self.__class__.__name__,
             name=self.name,
@@ -236,11 +236,12 @@ class Action:
     """Action interface."""
 
     Endpoint = Endpoint
-    category = None
-    name = None
-    title = None
-    description = None
-    icon = None
+    category: str
+    name: str
+
+    # title = None
+    # description = None
+    # icon = None
     _url = None
     CSS_CLASS = "action action-{category} action-{category}-{name}"
 
@@ -264,8 +265,8 @@ class Action:
         self,
         category,
         name,
-        title=None,
-        description=None,
+        title="",
+        description="",
         icon=None,
         url=None,
         endpoint=None,
@@ -346,7 +347,7 @@ class Action:
     def title(self, title):
         self._title = title
 
-    def _build_css_class(self):
+    def _build_css_class(self) -> None:
         css_cat = self.CSS_CLASS.format(
             action=self, category=self.category, name=self.name
         )
@@ -480,13 +481,13 @@ class ButtonAction(Action):
 
     def __init__(
         self,
-        category,
-        name,
-        submit_name="__action",
-        btn_class="default",
-        *args,
-        **kwargs,
-    ):
+        category: str,
+        name: str,
+        submit_name: str = "__action",
+        btn_class: str = "default",
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         Action.__init__(self, category, name, *args, **kwargs)
         self.submit_name = submit_name
         self.btn_class = btn_class

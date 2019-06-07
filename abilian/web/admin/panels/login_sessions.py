@@ -16,7 +16,7 @@ class LoginSessionsPanel(AdminPanel):
     label = "Session log"
     icon = "log-in"
 
-    def get(self):
+    def get(self) -> str:
         geoips = []
         for filename in DATA_FILES:
             try:

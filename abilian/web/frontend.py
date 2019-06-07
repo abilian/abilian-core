@@ -530,7 +530,7 @@ class Module(metaclass=ModuleMeta):
         self.related_views = related_views
 
     @property
-    def action_category(self):
+    def action_category(self) -> str:
         return f"module:{self.endpoint}"
 
     def get_grouped_actions(self):
@@ -541,7 +541,7 @@ class Module(metaclass=ModuleMeta):
 
         return groups
 
-    def register_actions(self):
+    def register_actions(self) -> None:
         ACTIONS = [
             ModuleAction(
                 self,

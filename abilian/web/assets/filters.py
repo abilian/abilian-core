@@ -376,7 +376,7 @@ class ClosureJS(BaseClosureJS):
             json.dump(data, f)
 
 
-def register_filters():
+def register_filters() -> None:
     register_filter(Less)
     register_filter(LessImportFilter)
     register_filter(ImportCSSFilter)

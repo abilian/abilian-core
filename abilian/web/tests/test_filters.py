@@ -16,11 +16,11 @@ env = Environment()
 filters.init_filters(env)
 
 
-def en_locale():
+def en_locale() -> str:
     return "en"
 
 
-def user_tz():
+def user_tz() -> str:
     # This one is GMT+8 and has no DST (tests should pass any time in year)
     return "Asia/Hong_Kong"
 
@@ -28,12 +28,12 @@ def user_tz():
 USER_TZ = timezone(user_tz())
 
 
-def test_labelize():
+def test_labelize() -> None:
     labelize = filters.labelize
     assert labelize("test_case") == "Test Case"
 
 
-def test_filesize():
+def test_filesize() -> None:
     filesize = filters.filesize
     assert str(filesize("100")) == "100&nbsp;B"
     assert str(filesize(100)) == "100&nbsp;B"
@@ -46,7 +46,7 @@ def test_filesize():
     assert str(filesize(100000000000)) == "100&nbsp;GB"
 
 
-def test_roughsize():
+def test_roughsize() -> None:
     roughsize = filters.roughsize
     assert "6" == roughsize(6)
     assert "15" == roughsize(15)
@@ -55,7 +55,7 @@ def test_roughsize():
     assert "55+" == roughsize(57, mod=5)
 
 
-def test_abbrev():
+def test_abbrev() -> None:
     abbrev = filters.abbrev
     assert "test" == abbrev("test", 20)
     assert "Longer test...e truncated" == abbrev(
@@ -63,7 +63,7 @@ def test_abbrev():
     )
 
 
-def test_linkify():
+def test_linkify() -> None:
     tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
     rendered = tmpl.render()
     el = html5lib.parseFragment(rendered)
@@ -78,7 +78,7 @@ def test_linkify():
     ]
 
 
-def test_nl2br():
+def test_nl2br() -> None:
     tmpl = env.from_string(
         '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}'
     )
@@ -88,7 +88,7 @@ def test_nl2br():
     )
 
 
-def test_paragraphs():
+def test_paragraphs() -> None:
     markdown_text = dedent(
         """\
         {{ "First paragraph

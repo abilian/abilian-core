@@ -78,7 +78,7 @@ __all__ = [
 ]
 
 
-def linkify_url(value):
+def linkify_url(value: str) -> str:
     """Tranform an URL pulled from the database to a safe HTML fragment."""
 
     value = value.strip()
@@ -582,7 +582,7 @@ class Row:
     designs eventually.
     """
 
-    def __init__(self, *cols):
+    def __init__(self, *cols: str) -> None:
         self.cols = cols
 
     def __iter__(self):
@@ -694,7 +694,9 @@ class TextArea(BaseTextArea):
     resizeable = None
     rows = None
 
-    def __init__(self, resizeable=None, rows=None, *args, **kwargs):
+    def __init__(
+        self, resizeable: str = None, rows: int = None, *args: Any, **kwargs: Any
+    ) -> None:
         BaseTextArea.__init__(self, *args, **kwargs)
 
         if resizeable not in self._resizeable_valid:
@@ -1173,7 +1175,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
         )
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.on_off_mode = kwargs.pop("on_off_mode", False)
         self.on_off_options = {}
         on_off_options = kwargs.pop("on_off_options", {})
@@ -1200,7 +1202,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 class PasswordInput(BasePasswordInput):
     """Supports setting 'autocomplete' at instanciation time."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.autocomplete = kwargs.pop("autocomplete", None)
         BasePasswordInput.__init__(self, *args, **kwargs)
 
@@ -1366,7 +1368,9 @@ class RichTextWidget:
 class ListWidget(wtforms.widgets.ListWidget):
     """display field label is optionnal."""
 
-    def __init__(self, html_tag="ul", prefix_label=True, show_label=True):
+    def __init__(
+        self, html_tag: str = "ul", prefix_label: bool = True, show_label: bool = True
+    ) -> None:
         wtforms.widgets.ListWidget.__init__(self, html_tag, prefix_label)
         self.show_label = show_label
 
@@ -1496,7 +1500,13 @@ class Select2(Select):
 
     unescape_html = False
 
-    def __init__(self, unescape_html=False, js_init="select2", *args, **kwargs):
+    def __init__(
+        self,
+        unescape_html: bool = False,
+        js_init: str = "select2",
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.js_init = js_init
 

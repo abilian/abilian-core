@@ -12,7 +12,7 @@ from abilian.services.security import READ, WRITE, Anonymous, Owner, Role
 from . import FormPermissions, fields, filters
 
 
-def user_tz():
+def user_tz() -> str:
     # This one is GMT+8 and has no DST (tests should pass any time in year)
     return "Asia/Hong_Kong"
 
@@ -21,21 +21,21 @@ USER_TZ = pytz.timezone(user_tz())
 
 
 # test filters
-def test_strip():
+def test_strip() -> None:
     assert filters.strip(None) == ""
     assert filters.strip(4) == 4
     assert filters.strip(" a string ") == "a string"
     assert filters.strip(" voilà ") == "voilà"
 
 
-def test_uppercase():
+def test_uppercase() -> None:
     assert filters.uppercase(None) is None
     assert filters.uppercase(4) == 4
     assert filters.uppercase(" a string ") == " A STRING "
     assert filters.uppercase(" Voilà ") == " VOILÀ "
 
 
-def test_lowercase():
+def test_lowercase() -> None:
     assert filters.lowercase(None) is None
     assert filters.lowercase(4) == 4
     assert filters.lowercase(" A STRING ") == " a string "
@@ -43,7 +43,7 @@ def test_lowercase():
 
 
 # FormPermissions
-def test_form_permissions_controller():
+def test_form_permissions_controller() -> None:
     security_mock = mock.Mock()
     has_role = security_mock.has_role = mock.Mock()
     has_role.return_value = True

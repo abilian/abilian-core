@@ -11,7 +11,7 @@ from abilian.web.assets.filters import ClosureJS
 
 
 class AssetManagerMixin(Flask):
-    def init_assets(self):
+    def init_assets(self) -> None:
         if self.debug:
             js_filters = None
         else:
@@ -45,7 +45,7 @@ class AssetManagerMixin(Flask):
                 "options": {"output": filename, "filters": js_filters}
             }
 
-    def setup_asset_extension(self):
+    def setup_asset_extension(self) -> None:
         assets = self.extensions["webassets"] = AssetsEnv(self)
         if self.debug:
             assets.debug = True
@@ -89,7 +89,7 @@ class AssetManagerMixin(Flask):
             "min", str(assets_dir), endpoint="webassets_static", roles=Anonymous
         )
 
-    def _finalize_assets_setup(self):
+    def _finalize_assets_setup(self) -> None:
         assets = self.extensions["webassets"]
         assets_dir = Path(assets.directory)
         closure_base_args = [
@@ -142,7 +142,7 @@ class AssetManagerMixin(Flask):
 
             self._assets_bundles[type_].setdefault("bundles", []).append(asset)
 
-    def register_i18n_js(self, *paths):
+    def register_i18n_js(self, *paths: str) -> None:
         """Register templates path translations files, like
         `select2/select2_locale_{lang}.js`.
 
@@ -162,7 +162,7 @@ class AssetManagerMixin(Flask):
                 else:
                     self.register_asset("js-i18n-" + lang, filename)
 
-    def register_base_assets(self):
+    def register_base_assets(self) -> None:
         """Register assets needed by Abilian.
 
         This is done in a separate method in order to allow applications

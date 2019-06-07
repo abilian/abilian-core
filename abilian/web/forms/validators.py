@@ -215,7 +215,7 @@ class SIRET(RenderEmpty):
     pass
 
 
-def luhn(n):
+def luhn(n: str) -> bool:
     """Validate that a string made of numeric characters verify Luhn test. Used
     by siret validator.
 

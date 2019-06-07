@@ -15,7 +15,7 @@ from abilian.web.views.images import user_photo_url
 
 
 class JinjaManagerMixin(Flask):
-    def __init__(self):
+    def __init__(self) -> None:
         self._jinja_loaders = []
 
     #

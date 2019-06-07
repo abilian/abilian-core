@@ -3,12 +3,12 @@
 from abilian.web.action import FAIcon, Glyphicon, StaticIcon
 
 
-def test_glyphicons():
+def test_glyphicons() -> None:
     icon = Glyphicon("ok")
     assert icon.__html__() == '<i class="glyphicon glyphicon-ok"></i>'
 
 
-def test_faicons():
+def test_faicons() -> None:
     icon = FAIcon("check")
     assert icon.__html__() == '<i class="fa fa-check"></i>'
 

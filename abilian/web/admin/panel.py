@@ -1,5 +1,9 @@
 # coding=utf-8
 """"""
+import typing
+
+if typing.TYPE_CHECKING:
+    from .extension import Admin
 
 
 class AdminPanel:
@@ -11,9 +15,10 @@ class AdminPanel:
     will be removed.
     """
 
-    id = ""
-    label = ""
-    icon = ""
+    id: str = ""
+    label: str = ""
+    icon: str = ""
+    admin: "Admin"
 
     def url_value_preprocess(self, endpoint, view_args):
         """Panel can preprocess values for their views.

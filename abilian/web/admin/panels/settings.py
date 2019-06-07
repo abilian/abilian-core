@@ -28,7 +28,7 @@ class Key:
         self.label = label
         self.description = description
 
-    def __html__(self):
+    def __html__(self) -> str:
         return render_template(self.template, key=self, config=current_app.config)
 
     def value_from_request(self):
@@ -39,7 +39,7 @@ class SessionLifeTimeKey(Key):
 
     template = "admin/settings_session_lifetime.html"
 
-    def __init__(self):
+    def __init__(self) -> None:
         Key.__init__(
             self,
             "PERMANENT_SESSION_LIFETIME",
@@ -65,7 +65,7 @@ class SessionLifeTimeKey(Key):
 
         return timedelta(days=days, hours=hours, minutes=minutes)
 
-    def _get_current(self, field):
+    def _get_current(self, field: str) -> int:
         td = current_app.config.get(self.id)
         if td:
             if field == "days":
@@ -77,15 +77,15 @@ class SessionLifeTimeKey(Key):
         return 0
 
     @property
-    def days(self):
+    def days(self) -> int:
         return self._get_current("days")
 
     @property
-    def hours(self):
+    def hours(self) -> int:
         return self._get_current("hours")
 
     @property
-    def minutes(self):
+    def minutes(self) -> int:
         return self._get_current("minutes")
 
 
@@ -110,7 +110,7 @@ class SettingsPanel(AdminPanel):
     def settings(self):
         return get_service("settings").namespace("config")
 
-    def get(self):
+    def get(self) -> str:
         return render_template("admin/settings.html", keys=self._keys)
 
     @csrf.protect

@@ -44,7 +44,7 @@ _PARAGRAPH_RE = re.compile(r"(?:\r\n|\r|\n){2,}")
 
 
 @autoescape
-def paragraphs(value):
+def paragraphs(value: str) -> str:
     """Blank lines delimitates paragraphs."""
     result = "\n\n".join(
         "<p>{}</p>".format(p.strip().replace("\n", Markup("<br />\n")))
@@ -53,7 +53,7 @@ def paragraphs(value):
     return result
 
 
-def labelize(s):
+def labelize(s: str) -> str:
     return " ".join([w.capitalize() for w in s.split("_")])
 
 
@@ -83,7 +83,7 @@ def filesize(d):
     return Markup(s)
 
 
-def roughsize(size, above=20, mod=10):
+def roughsize(size: int, above: int = 20, mod: int = 10) -> str:
     """6 -> '6' 15 -> '15' 134 -> '130+'."""
     if size < above:
         return str(size)
@@ -228,7 +228,7 @@ def to_timestamp(dt):
     return timegm(utc_datetime.timetuple()) + utc_datetime.microsecond / 1e6
 
 
-def abbrev(s, max_size):
+def abbrev(s: str, max_size: int) -> str:
     if len(s) <= max_size:
         return s
     else:

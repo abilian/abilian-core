@@ -192,7 +192,7 @@ class TextSearchCriterion(BaseCriterion):
         return False
 
     @property
-    def has_form_filter(self):
+    def has_form_filter(self) -> bool:
         return False
 
 

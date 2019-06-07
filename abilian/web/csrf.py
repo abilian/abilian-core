@@ -28,7 +28,7 @@ def time_limit():
     return current_app.config.get("WTF_CSRF_TIME_LIMIT", 3600)
 
 
-def name():
+def name() -> str:
     """Field name expected to have CSRF token.
 
     Useful for passing it to JavaScript for instance.
@@ -36,7 +36,7 @@ def name():
     return "csrf_token"
 
 
-def token():
+def token() -> str:
     """Value of current csrf token.
 
     Useful for passing it to JavaScript for instance.

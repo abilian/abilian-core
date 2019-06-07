@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
 import logging
+from typing import Any, Dict, List
 
 from flask import Blueprint, g
 from flask.helpers import _endpoint_from_view_func
@@ -28,12 +29,12 @@ class Admin:
     Note: this is quite different that a Django-style admin interface.
     """
 
-    def __init__(self, *panels, **kwargs):
+    def __init__(self, *panels: Any, **kwargs: Any) -> None:
         self.app = None
-        self.panels = []
-        self._panels_endpoints = {}
-        self.nav_paths = {}
-        self.breadcrumb_items = {}
+        self.panels: List[AdminPanel] = []
+        self._panels_endpoints: Dict[str, AdminPanel] = {}
+        self.nav_paths: Dict[str, str] = {}
+        self.breadcrumb_items: Dict[AdminPanel, BreadcrumbItem] = {}
         self.setup_blueprint()
 
         def condition(context):
@@ -152,7 +153,7 @@ class Admin:
 
         return add_url_rule
 
-    def setup_blueprint(self):
+    def setup_blueprint(self) -> None:
         self.blueprint = Blueprint(
             "admin", __name__, template_folder="templates", url_prefix="/" + _BP_PREFIX
         )
@@ -161,7 +162,7 @@ class Admin:
         self.blueprint.url_value_preprocessor(self.panel_preprocess_value)
 
         @self.blueprint.before_request
-        def check_security():
+        def check_security() -> None:
             user = unwrap(current_user)
             if not security.has_role(user, "admin"):
                 raise Forbidden()

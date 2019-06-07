@@ -4,6 +4,7 @@ import datetime
 import logging
 import operator
 from functools import partial
+from typing import Any
 
 import babel
 import babel.dates
@@ -152,7 +153,7 @@ class FileField(BaseFileField):
     blob = None
     blob_attr = "value"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         try:
             self.multiple = kwargs.pop("multiple")
         except KeyError:
@@ -294,7 +295,7 @@ class DateTimeField(Field):
         super().__init__(label, validators, **kwargs)
         self.use_naive = use_naive
 
-    def _value(self):
+    def _value(self) -> str:
         if self.raw_data:
             return " ".join(self.raw_data)
         else:
@@ -367,7 +368,7 @@ class DateField(Field):
     def __init__(self, label=None, validators=None, **kwargs):
         super().__init__(label, validators, **kwargs)
 
-    def _value(self):
+    def _value(self) -> str:
         if self.raw_data:
             return " ".join(self.raw_data)
         else:
@@ -751,7 +752,7 @@ class JsonSelect2MultipleField(JsonSelect2Field):
 class LocaleSelectField(SelectField):
     widget = Select2()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         kwargs["coerce"] = LocaleSelectField.coerce
         kwargs["choices"] = [
             locale_info for locale_info in i18n.supported_app_locales()
@@ -782,7 +783,7 @@ class LocaleSelectField(SelectField):
 class TimezoneField(SelectField):
     widget = Select2()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         kwargs["coerce"] = babel.dates.get_timezone
         kwargs["choices"] = [tz_info for tz_info in i18n.timezones_choices()]
         super().__init__(*args, **kwargs)

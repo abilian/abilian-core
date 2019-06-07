@@ -23,7 +23,7 @@ def init_app(app):
     app.before_first_request(requirejs_config)
 
 
-def requirejs_config():
+def requirejs_config() -> None:
     assets = current_app.extensions["webassets"]
     config = assets.requirejs_config
 

@@ -92,33 +92,33 @@ EXPECTED = (
 )
 
 
-def test_http():
+def test_http() -> None:
     value = "http://example.com"
     result = linkify_url(value)
     assert result == EXPECTED
 
 
-def test_no_http():
+def test_no_http() -> None:
     value = "example.com"
     result = linkify_url(value)
     assert result == EXPECTED
 
 
-def test1():
+def test1() -> None:
     result = text2html("a")
     assert result == "a"
 
 
-def test2():
+def test2() -> None:
     result = text2html("a\nb")
     assert str(result) == "<p>a</p>\n<p>b</p>"
 
 
-def test3():
+def test3() -> None:
     result = text2html("a\n\nb")
     assert str(result) == "<p>a</p>\n<p>b</p>"
 
 
-def test4():
+def test4() -> None:
     result = text2html("a\n<a>toto</a>")
     assert str(result) == "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>"

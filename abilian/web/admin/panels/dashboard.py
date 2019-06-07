@@ -22,7 +22,7 @@ class DashboardPanel(AdminPanel):
     label = _l("Dashboard")
     icon = "eye-open"
 
-    def get(self):
+    def get(self) -> str:
         login_entries = LoginSession.query.order_by(LoginSession.started_at.asc()).all()
         # .options(sa.orm.joinedload(LoginSession.user))
         daily, weekly, monthly = uniquelogins(login_entries)

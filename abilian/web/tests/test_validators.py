@@ -69,7 +69,7 @@ def test_siret_validator_too_short(validator):
         validator(form, field)
 
 
-def test_siret_ok():
+def test_siret_ok() -> None:
     siret = siret_validator()
     form = DummyForm()
     assert siret(form, DummyField("78913349300013")) is None

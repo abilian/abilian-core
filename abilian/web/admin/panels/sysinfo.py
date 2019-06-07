@@ -14,7 +14,7 @@ class SysinfoPanel(AdminPanel):
     label = "System information"
     icon = "hdd"
 
-    def get(self):
+    def get(self) -> str:
         uname = os.popen("uname -a").read()
         python_version = sys.version.strip()
 

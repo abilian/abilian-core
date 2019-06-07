@@ -29,7 +29,7 @@ CLEANUP_SCHEDULE_ID = __name__ + ".periodic_clean_upload_directory"
 DEFAULT_CLEANUP_SCHEDULE = {"task": CLEANUP_SCHEDULE_ID, "schedule": timedelta(hours=1)}
 
 
-def is_valid_handle(handle):
+def is_valid_handle(handle: str) -> bool:
     try:
         UUID(handle)
     except ValueError:

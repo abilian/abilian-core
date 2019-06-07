@@ -7,7 +7,7 @@ from abilian.core import signals
 
 def init_hooks(app: Flask):
     @app.before_first_request
-    def set_current_celery_app():
+    def set_current_celery_app() -> None:
         """Listener for `before_first_request`.
 
         Set our celery app as current, so that task use the correct
@@ -18,7 +18,7 @@ def init_hooks(app: Flask):
             celery.set_current()
 
     @app.before_first_request
-    def register_signals():
+    def register_signals() -> None:
         signals.register_js_api.send(app)
 
     # def install_id_generator(sender, **kwargs):

@@ -19,7 +19,7 @@ db = extensions.db
 
 
 class ErrorManagerMixin(Flask):
-    def setup_logging(self):
+    def setup_logging(self) -> None:
         # Force flask to create application logger before logging
         # configuration; else, flask will overwrite our settings
         self.logger  # noqa
@@ -134,11 +134,11 @@ class ErrorManagerMixin(Flask):
         # server_name = str(self.config.get("SERVER_NAME"))
         # ext.client.tags["configured_server_name"] = server_name
 
-    def install_default_handlers(self):
+    def install_default_handlers(self) -> None:
         for http_error_code in (403, 404, 500):
             self.install_default_handler(http_error_code)
 
-    def install_default_handler(self, http_error_code):
+    def install_default_handler(self, http_error_code: int) -> None:
         """Install a default error handler for `http_error_code`.
 
         The default error handler renders a template named error404.html

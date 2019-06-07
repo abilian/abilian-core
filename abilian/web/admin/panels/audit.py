@@ -87,7 +87,7 @@ class AuditPanel(AdminPanel):
     def install_additional_rules(self, add_url_rule):
         add_url_rule("/search_users", view_func=JSONUserSearch.as_view("search_users"))
 
-    def get(self):
+    def get(self) -> str:
         LIMIT = 30
 
         base_audit_q = AuditEntry.query

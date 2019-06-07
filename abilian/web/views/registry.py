@@ -1,7 +1,7 @@
 # coding=utf-8
 import inspect
 from operator import attrgetter, itemgetter
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from flask import Blueprint, url_for
 from whoosh.searching import Hit
@@ -15,8 +15,8 @@ class Registry:
     There is one registry per application instance.
     """
 
-    def __init__(self, *args, **kwargs):
-        self._map = {}
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self._map: Dict[str, Callable] = {}
 
     def register(self, entity, url_func):
         """Associate a `url_func` with entity's type.
@@ -55,7 +55,7 @@ class Registry:
             object_id = getter("id")(entity)
             object_type = getter("object_type")(entity)
 
-        url_func = self._map.get(object_type)  # type: Optional[Callable]
+        url_func: Optional[Callable] = self._map.get(object_type)
         if url_func is not None:
             return url_func(entity, object_type, object_id, **kwargs)
 

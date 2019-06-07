@@ -21,13 +21,14 @@ from .fields import *  # noqa
 from .filters import *  # noqa
 from .validators import *  # noqa
 from .widgets import *  # noqa
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
 #  setup Form class with babel support
 class _BabelTranslation:
-    def gettext(self, string):
+    def gettext(self, string: str) -> str:
         return _(string)
 
     def ngettext(self, singular, plural, n):
@@ -355,7 +356,7 @@ if not _PATCHED:
     Field.render_view = render_view
     del render_view
 
-    def is_hidden(self):
+    def is_hidden(self: Any) -> bool:
         """WTForms is not consistent with hidden fields, since `flags.hidden`
         is not set on `HiddenField` :-("""
         return self.flags.hidden or isinstance(self, HiddenField)

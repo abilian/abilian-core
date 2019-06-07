@@ -5,6 +5,8 @@ Abilian define theses categories:   `section`:     Used for navigation
 elements relevant to site section   `user`:     User for element that
 should appear in user menu
 """
+from typing import Any
+
 from flask import g
 from jinja2 import Markup, Template
 
@@ -16,9 +18,11 @@ class NavItem(Action):
 
     divider = False
 
-    def __init__(self, category, name, divider=False, *args, **kwargs):
+    def __init__(
+        self, category: str, name: str, divider: bool = False, *args: Any, **kwargs: Any
+    ) -> None:
         category = "navigation:" + category
-        Action.__init__(self, category, name, *args, **kwargs)
+        super().__init__(category, name, *args, **kwargs)
         self.divider = divider
 
     @getset
@@ -34,7 +38,7 @@ class NavItem(Action):
         return status
 
     @property
-    def path(self):
+    def path(self) -> str:
         return self.category + ":" + self.name
 
 
@@ -129,7 +133,7 @@ class BreadcrumbItem:
         self.__template = Template(self.template_string)
 
     @property
-    def url(self):
+    def url(self) -> str:
         return str(self._url)
 
     def render(self):

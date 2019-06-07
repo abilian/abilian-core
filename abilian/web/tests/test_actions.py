@@ -81,7 +81,7 @@ def test_enabled(app_context):
     assert actions.for_category("cat_1") == [BASIC]
 
 
-def test_action_url_from_context():
+def test_action_url_from_context() -> None:
     url = OTHER_CAT.url({"for": "having", "2 keys": "in context"})
     assert url == "http://count?2"
     assert OTHER_CAT.url({}) == "http://count?0"
