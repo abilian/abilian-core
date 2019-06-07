@@ -188,8 +188,11 @@ class Babel(BabelBase):
         ]
 
     def add_translations(
-        self, module_name, translations_dir="translations", domain="messages"
-    ):
+        self,
+        module_name: str,
+        translations_dir: str = "translations",
+        domain: str = "messages",
+    ) -> None:
         """Add translations from external module.
 
         For example::
@@ -348,7 +351,7 @@ class ensure_request_context:
 
     _rq_ctx = None
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         if _request_ctx_stack.top is None:
             ctx = self._rq_ctx = current_app.test_request_context()
             ctx.__enter__()
@@ -386,7 +389,7 @@ def render_template_i18n(template_name_or_list, **context):
 _NOT_WORD_RE = re.compile(r"[^\w\s]+", flags=re.UNICODE)
 
 
-def to_lower_ascii(value):
+def to_lower_ascii(value: str) -> str:
     value = str(value)
     value = _NOT_WORD_RE.sub(" ", value)
     value = unicodedata.normalize("NFKD", value)

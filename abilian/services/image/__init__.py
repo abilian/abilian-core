@@ -50,13 +50,13 @@ def get_size(img):
     return image.size
 
 
-def get_save_format(fmt):
+def get_save_format(fmt: str) -> str:
     if fmt in ("GIF", "PNG"):
         return "PNG"
     return "JPEG"
 
 
-def resize(orig, width, height, mode=FIT):
+def resize(orig: bytes, width: int, height: int, mode: str = FIT) -> bytes:
     if isinstance(orig, bytes):
         orig = BytesIO(orig)
 

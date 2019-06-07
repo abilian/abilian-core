@@ -57,7 +57,7 @@ class ServiceManager:
     """Mixin that provides lifecycle (register/start/stop) support for
     services."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.services = {}
 
     def start_services(self):
@@ -81,13 +81,13 @@ class PluginManager:
         "abilian.web.attachments",
     )
 
-    def register_plugin(self, name):
+    def register_plugin(self, name: str) -> None:
         """Load and register a plugin given its package name."""
         logger.info("Registering plugin: " + name)
         module = importlib.import_module(name)
         module.register_plugin(self)
 
-    def register_plugins(self):
+    def register_plugins(self) -> None:
         """Load plugins listed in config variable 'PLUGINS'."""
         registered = set()
         for plugin_fqdn in chain(self.APP_PLUGINS, self.config["PLUGINS"]):
@@ -214,7 +214,7 @@ class Application(
         g.breadcrumb = []
         self.init_breadcrumbs()
 
-    def init_breadcrumbs(self):
+    def init_breadcrumbs(self) -> None:
         """Insert the first element in breadcrumbs.
 
         This happens during `request_started` event, which is triggered
@@ -285,7 +285,7 @@ class Application(
 
         return path
 
-    def init_extensions(self):
+    def init_extensions(self) -> None:
         """Initialize flask extensions, helpers and services."""
         extensions.redis.init_app(self)
         extensions.mail.init_app(self)
