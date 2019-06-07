@@ -69,7 +69,7 @@ class Blob(Model):
         """Store binary content to applications's repository and update
         `self.meta['md5']`.
 
-        :param:content: string, bytes, or any object with a `read()` method
+        :param:content: bytes, or any object with a `read()` method
         :param:encoding: encoding to use when content is Unicode
         """
         from abilian.services.repository import session_repository as repository

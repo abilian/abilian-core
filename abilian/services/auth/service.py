@@ -220,6 +220,8 @@ class AuthService(Service):
         if current_app.config.get("PRIVATE_SITE") and user.is_anonymous:
             return self.redirect_to_login()
 
+        return None
+
     def update_user_session_data(self) -> None:
         user = current_user
         if current_user.is_anonymous:

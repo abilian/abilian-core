@@ -3,7 +3,7 @@
 processing."""
 import hashlib
 from io import BytesIO
-from typing import Dict
+from typing import Dict, Any
 
 from PIL import Image
 
@@ -25,7 +25,7 @@ CROP = "crop"
 RESIZE_MODES = frozenset({SCALE, FIT, CROP})
 
 # TODO: cache to file
-cache = {}  # type: Dict[str, bytes]
+cache = {}  # type: Dict[Any, bytes]
 
 
 def open_image(img):
@@ -56,7 +56,7 @@ def get_save_format(fmt: str) -> str:
     return "JPEG"
 
 
-def resize(orig: bytes, width: int, height: int, mode: str = FIT) -> bytes:
+def resize(orig: Any, width: int, height: int, mode: str = FIT) -> bytes:
     if isinstance(orig, bytes):
         orig = BytesIO(orig)
 

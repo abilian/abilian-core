@@ -68,8 +68,7 @@ class RepositoryService(Service):
         assert top in dest.parents
         return dest
 
-    def get(self, uuid, default=None):
-        # type: (UUID, Optional[Path]) -> Optional[Path]
+    def get(self, uuid: UUID, default: Optional[Path] = None) -> Optional[Path]:
         """Return absolute :class:`Path` object for given uuid, if this uuid
         exists in repository, or `default` if it doesn't.
 
@@ -80,8 +79,7 @@ class RepositoryService(Service):
             return default
         return path
 
-    def set(self, uuid, content, encoding="utf-8"):
-        # type: (UUID, Any, Optional[Text]) -> None
+    def set(self, uuid: UUID, content: Any, encoding: str = "utf-8") -> None:
         """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
@@ -103,8 +101,7 @@ class RepositoryService(Service):
         with dest.open(mode, encoding=encoding) as f:
             f.write(content)
 
-    def delete(self, uuid):
-        # type: (UUID) -> None
+    def delete(self, uuid: UUID) -> None:
         """Delete file with given uuid.
 
         :param:uuid: :class:`UUID` instance
@@ -116,19 +113,16 @@ class RepositoryService(Service):
 
         dest.unlink()
 
-    def __getitem__(self, uuid):
-        # type: (UUID) -> Any
+    def __getitem__(self, uuid: UUID) -> Path:
         value = self.get(uuid)
         if value is None:
             raise KeyError("No file can be found for this uuid", uuid)
         return value
 
-    def __setitem__(self, uuid, content):
-        # type: (UUID, Any) -> None
+    def __setitem__(self, uuid: Path, content: Any) -> None:
         self.set(uuid, content)
 
-    def __delitem__(self, uuid):
-        # type: (UUID) -> None
+    def __delitem__(self, uuid: UUID) -> None:
         self.delete(uuid)
 
 
@@ -460,12 +454,11 @@ class RepositoryTransaction:
             pass
         dest.add(uuid)
 
-    def delete(self, uuid):
-        # type: (UUID) -> None
+    def delete(self, uuid: UUID) -> None:
         self._add_to(uuid, self._deleted, self._set)
 
     def set(self, uuid, content, encoding="utf-8"):
-        # type: (UUID, Any, Optional[Text]) -> None
+        # type: (UUID, Any, str) -> None
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 
@@ -482,10 +475,9 @@ class RepositoryTransaction:
         with dest.open(mode, encoding=encoding) as f:
             f.write(content)
 
-    def get(self, uuid):
-        # type: (UUID) -> Any
+    def get(self, uuid: UUID) -> Any:
         if uuid in self._deleted:
-            raise KeyError
+            raise KeyError(uuid)
 
         if uuid in self._set:
             path = self.path / str(uuid)

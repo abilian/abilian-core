@@ -70,16 +70,16 @@ class DeferredJSExtension(JinjaExtension):
                 # side effect on fragment.text or previous_child.tail!
                 child.drop_tag()
 
-        body = []
+        body_list = []
         if fragment.text:
-            body.append(fragment.text)
+            body_list.append(fragment.text)
 
         for child in fragment:
-            body.append(lxml.html.tostring(child))
-            body.append(child.tail)
-        body = "".join(body)
+            body_list.append(lxml.html.tostring(child))
+            body_list.append(child.tail)
+        body_str = "".join(body_list)
 
-        g.deferred_js.append(body)
+        g.deferred_js.append(body_str)
         return ""
 
     @staticmethod
