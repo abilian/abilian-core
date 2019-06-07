@@ -1,5 +1,7 @@
 # coding=utf-8
 """"""
+from typing import Any, Dict, List
+
 from flask import g
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
@@ -8,7 +10,6 @@ from whoosh.fields import STORED
 
 from .base import AUDITABLE, EDITABLE, SEARCHABLE, SYSTEM
 from .subjects import User
-from typing import Any, List, Dict
 
 
 class OwnedMixin:

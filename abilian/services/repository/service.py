@@ -275,7 +275,7 @@ class SessionRepositoryService(Service):
         if not self.__listening:
             self.start_listening()
 
-    def start_listening(self):
+    def start_listening(self) -> None:
         self.__listening = True
         listen = sa.event.listen
         listen(Session, "after_transaction_create", self.create_transaction)
@@ -377,14 +377,14 @@ class RepositoryTransaction:
         self.__cleared = False
 
     @property
-    def cleared(self):
+    def cleared(self) -> bool:
         return self.__cleared
 
-    def __del__(self):
+    def __del__(self) -> None:
         if not self.cleared:
             self._clear()
 
-    def _clear(self):
+    def _clear(self) -> None:
         if self.__cleared:
             return
 
@@ -421,7 +421,7 @@ class RepositoryTransaction:
             self._commit_repository()
         self._clear()
 
-    def _commit_repository(self):
+    def _commit_repository(self) -> None:
         assert self._parent is None
 
         for uuid in self._deleted:
@@ -434,7 +434,7 @@ class RepositoryTransaction:
             content = self.path / str(uuid)
             repository.set(uuid, content.open("rb"))
 
-    def _commit_parent(self):
+    def _commit_parent(self) -> None:
         p = self._parent
         p._deleted |= self._deleted
         p._deleted -= self._set

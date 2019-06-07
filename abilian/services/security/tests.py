@@ -9,19 +9,19 @@ from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
     RoleAssignment, SecurityAudit, Writer, security
 
 
-def test_singleton():
+def test_singleton() -> None:
     admin = Role("admin")
     other_admin = Role("admin")
     assert admin is other_admin
     assert id(admin) == id(other_admin)
 
 
-def test_equality():
+def test_equality() -> None:
     admin = Role("admin")
     assert admin == "admin"
 
 
-def test_ordering():
+def test_ordering() -> None:
     roles = sorted([Authenticated, Admin, Anonymous])
     assert roles == [Admin, Anonymous, Authenticated]
 

@@ -15,7 +15,7 @@ from .service import PreferenceService
 class VisiblePanel(PreferencePanel):
     id = label = "visible"
 
-    def is_accessible(self):
+    def is_accessible(self) -> bool:
         return True
 
     def get(self):
@@ -25,7 +25,7 @@ class VisiblePanel(PreferencePanel):
 class AdminPanel(PreferencePanel):
     id = label = "admin"
 
-    def is_accessible(self):
+    def is_accessible(self) -> bool:
         security = get_service("security")
         return security.has_role(current_user, "admin")
 
@@ -34,7 +34,7 @@ class AdminPanel(PreferencePanel):
 
 
 class Application(BaseApplication):
-    def init_extensions(self):
+    def init_extensions(self) -> None:
         super().init_extensions()
         prefs = self.services["preferences"]
         prefs.app_state.panels = []

@@ -14,7 +14,7 @@ def test_get_redirect_target(app, app_context):
     form_url = partial(url_for, "login.login_form")
 
     with app.test_request_context(form_url()):
-        assert get_redirect_target() is None
+        assert get_redirect_target() == ""
         url_root = request.url_root[:-1]
 
     with app.test_request_context(form_url(next="/")):
@@ -30,11 +30,11 @@ def test_get_redirect_target(app, app_context):
     # -> redirect(next = forgot password form) -> ...
     referrer = url_root + url_for("login.forgotten_pw")
     with app.test_request_context(form_url(), headers=[("Referer", referrer)]):
-        assert get_redirect_target() is None
+        assert get_redirect_target() == ""
 
     # test open redirect is forbidden
     with app.test_request_context(form_url(next="http://google.com/test")):
-        assert get_redirect_target() is None
+        assert get_redirect_target() == ""
 
     # open redirect through malicious construct and browser not checking
     # Location

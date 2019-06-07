@@ -5,6 +5,7 @@ import collections
 import re
 from datetime import datetime
 from inspect import isclass
+from typing import Any, FrozenSet, Set
 
 import sqlalchemy as sa
 from flask import current_app
@@ -19,7 +20,6 @@ from .models import BaseMixin
 from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
 from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
-from typing import Any, Set, FrozenSet
 
 __all__ = [
     "Entity",

@@ -140,12 +140,12 @@ class SecurityService(Service):
         state = app.extensions[self.name]
         state.use_cache = True
 
-    def _needs_flush(self):
+    def _needs_flush(self) -> None:
         """Mark next security queries needs DB flush to have up to date
         information."""
         self.app_state.needs_db_flush = True
 
-    def clear(self):
+    def clear(self) -> None:
         pass
 
     def _current_user_manager(self, session=None):

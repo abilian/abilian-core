@@ -2,12 +2,14 @@
 """"""
 import logging
 from datetime import datetime, timedelta
+from typing import Any, Callable, List, Optional
 
-from flask import current_app, g, redirect, request, url_for
+from flask import Flask, current_app, g, redirect, request, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_user, user_logged_in, \
     user_logged_out
 from werkzeug.exceptions import Forbidden
+from werkzeug.wrappers import Response
 
 from abilian.core.extensions import db, login_manager
 from abilian.core.models.subjects import User
@@ -33,7 +35,7 @@ def is_authenticated(context):
     return not is_anonymous(context)
 
 
-def _user_photo_endpoint():
+def _user_photo_endpoint() -> str:
     from abilian.web.views import images  # lazy import: avoid circular import
 
     return images.user_url_args(current_user, 16)[0]
@@ -100,7 +102,7 @@ class AuthService(Service):
     name = "auth"
     AppStateClass = AuthServiceState
 
-    def init_app(self, app):
+    def init_app(self, app: Flask):
         login_manager.init_app(app)
         login_manager.login_view = "login.login_form"
 
@@ -164,14 +166,14 @@ class AuthService(Service):
             del g.logged_user
             del g.is_manager
 
-    def redirect_to_login(self, next_url=True):
+    def redirect_to_login(self, next_url=True) -> Response:
         kw = {}
         if next_url is not False:
             kw["next"] = request.url if next_url is True else next_url
 
         return redirect(url_for(login_manager.login_view, **kw))
 
-    def do_access_control(self):
+    def do_access_control(self) -> Optional[Any]:
         """`before_request` handler to check if user should be redirected to
         login page."""
         from abilian.services import get_service
@@ -180,21 +182,21 @@ class AuthService(Service):
             # Special case for tests
             user = User.query.get(0)
             login_user(user, force=True)
-            return
+            return None
 
         state = self.app_state
         user = unwrap(current_user)
 
         # Another special case for tests
         if current_app.testing and getattr(user, "is_admin", False):
-            return
+            return None
 
         security = get_service("security")
         user_roles = frozenset(security.get_roles(user))
         endpoint = request.endpoint
         blueprint = request.blueprint
 
-        access_controllers = []
+        access_controllers: List[Callable] = []
         access_controllers.extend(state.bp_access_controllers.get(None, []))
 
         if blueprint and blueprint in state.bp_access_controllers:
@@ -208,7 +210,7 @@ class AuthService(Service):
             if verdict is None:
                 continue
             elif verdict is True:
-                return
+                return None
             else:
                 if user.is_anonymous:
                     return self.redirect_to_login()
@@ -218,7 +220,7 @@ class AuthService(Service):
         if current_app.config.get("PRIVATE_SITE") and user.is_anonymous:
             return self.redirect_to_login()
 
-    def update_user_session_data(self):
+    def update_user_session_data(self) -> None:
         user = current_user
         if current_user.is_anonymous:
             return

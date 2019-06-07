@@ -39,5 +39,5 @@ class Cache:
 
     __setitem__ = set
 
-    def clear(self):
+    def clear(self) -> None:
         pass

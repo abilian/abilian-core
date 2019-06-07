@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 class Changes:
     """Trace object modifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.columns = {}
         self.collections = {}
 
@@ -76,7 +76,7 @@ class Changes:
     def collection_remove(self, name, value):
         self._collection_change(name, value, add=False)
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(self.columns) or bool(self.collections)
 
     # Py2 compat
@@ -116,11 +116,11 @@ class AuditEntry(db.Model):
         )
 
     @property
-    def op(self):
+    def op(self) -> int:
         return self.type & ~RELATED
 
     @property
-    def related(self):
+    def related(self) -> int:
         return self.type & RELATED
 
     def get_changes(self):

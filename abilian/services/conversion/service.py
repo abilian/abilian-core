@@ -61,7 +61,7 @@ class Converter:
         if not self.cache_dir.exists():
             self.cache_dir.mkdir()
 
-    def clear(self):
+    def clear(self) -> None:
         self.cache.clear()
         for d in (self.tmp_dir, self.cache_dir):
             shutil.rmtree(bytes(d))
@@ -71,7 +71,7 @@ class Converter:
         self.handlers.append(handler)
 
     # TODO: refactor, pass a "File" or "Document" or "Blob" object
-    def to_pdf(self, digest, blob, mime_type):
+    def to_pdf(self, digest: str, blob: bytes, mime_type: str) -> bytes:
         cache_key = ("pdf", digest)
         pdf = self.cache.get(cache_key)
         if pdf:
@@ -84,7 +84,7 @@ class Converter:
                 return pdf
         raise HandlerNotFound(f"No handler found to convert from {mime_type} to PDF")
 
-    def to_text(self, digest, blob, mime_type):
+    def to_text(self, digest: str, blob: bytes, mime_type: str) -> str:
         """Convert a file to plain text.
 
         Useful for full-text indexing. Returns a Unicode string.
@@ -131,14 +131,16 @@ class Converter:
         cache_key = (f"img:{index}:{size}", digest)
         return self.cache.get(cache_key)
 
-    def to_image(self, digest, blob, mime_type, index, size=500):
+    def to_image(
+        self, digest: str, blob: bytes, mime_type: str, index: int, size: int = 500
+    ) -> bytes:
         """Convert a file to a list of images.
 
         Returns image at the given index.
         """
         # Special case, for now (XXX).
         if mime_type.startswith("image/"):
-            return ""
+            return b""
 
         cache_key = (f"img:{index}:{size}", digest)
         converted = self.cache.get(cache_key)

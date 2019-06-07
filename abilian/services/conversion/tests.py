@@ -27,7 +27,7 @@ def converter():
     c.clear()
 
 
-def read_file(fn, mode="rb"):
+def read_file(fn: str, mode: str = "rb") -> bytes:
     return (Path(__file__).parent / "dummy_files" / fn).open(mode).read()
 
 

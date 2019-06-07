@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
 from multiprocessing.util import register_after_fork
+from typing import Any, Dict, List, Optional
 
 from celery import Celery
 from celery import current_app as celery_current_app
@@ -16,8 +17,6 @@ from sqlalchemy.orm.session import Session
 
 from abilian.core.extensions import db
 from abilian.core.util import unwrap
-from typing import Any, Dict, List
-from typing import Optional
 
 
 def default_app_factory():

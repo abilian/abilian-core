@@ -5,7 +5,7 @@ from pytest import raises
 from .models import EmptyValue, Setting
 
 
-def test_type_set():
+def test_type_set() -> None:
     s = Setting()
     # registered base type: no failure
     s.type = "int"
@@ -17,7 +17,7 @@ def test_type_set():
         s.type = "dummy type name"
 
 
-def test_int():
+def test_int() -> None:
     s = Setting(key="key", type="int")
     s.value = 42
     assert s._value in ("42", b"42")
@@ -26,7 +26,7 @@ def test_int():
     assert s.value == 24
 
 
-def test_bool():
+def test_bool() -> None:
     s = Setting(key="key", type="bool")
     s.value = True
     assert s._value == "true"
@@ -41,7 +41,7 @@ def test_bool():
     assert s.value is False
 
 
-def test_string():
+def test_string() -> None:
     s = Setting(key="key", type="string")
     s.value = "ascii"
     assert s._value == b"ascii"
@@ -53,7 +53,7 @@ def test_string():
     assert s.value == "décode"
 
 
-def test_json():
+def test_json() -> None:
     s = Setting(key="key", type="json")
     s.value = [1, 2, "été", {1: "1", 2: "2"}]
     assert s._value == '[1, 2, "\\u00e9t\\u00e9", {"1": "1", "2": "2"}]'
@@ -62,7 +62,7 @@ def test_json():
     assert s._value == "null"
 
 
-def test_empty_value():
+def test_empty_value() -> None:
     s = Setting(key="key", type="json")
     s._value = None
     assert s.value == EmptyValue

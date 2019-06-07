@@ -19,6 +19,7 @@ from itsdangerous import BadSignature, Serializer, SignatureExpired, \
     URLSafeTimedSerializer
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
+from werkzeug.wrappers import Response
 
 from abilian.core.extensions import csrf, db
 from abilian.core.models.subjects import User
@@ -256,16 +257,14 @@ def random_password():
     return pw
 
 
-def get_serializer(name):
-    # type: (str) -> Serializer
+def get_serializer(name: str) -> Serializer:
     config = current_app.config
     secret_key: bytes = config.get("SECRET_KEY")
     salt = config.get("SECURITY_{}_SALT".format(name.upper()))
     return URLSafeTimedSerializer(secret_key=secret_key, salt=salt)
 
 
-def send_reset_password_instructions(user):
-    # type: (User) -> None
+def send_reset_password_instructions(user: User) -> None:
     """Send the reset password instructions email for the specified user.
 
     :param user: The user to send the instructions to
@@ -281,8 +280,7 @@ def send_reset_password_instructions(user):
     send_mail(subject, user.email, mail_template, user=user, reset_link=reset_link)
 
 
-def generate_reset_password_token(user):
-    # type: (User) -> Any
+def generate_reset_password_token(user: User) -> Any:
     """Generate a unique reset password token for the specified user.
 
     :param user: The user to work with
@@ -291,8 +289,7 @@ def generate_reset_password_token(user):
     return get_serializer("reset").dumps(data)
 
 
-def reset_password_token_status(token):
-    # type: (str) -> Any
+def reset_password_token_status(token: str) -> Any:
     """Return the expired status, invalid status, and user of a password reset
     token.
 
@@ -326,7 +323,7 @@ def get_token_status(token, serializer_name, max_age=None):
     return expired, invalid, user
 
 
-def send_mail(subject, recipient, template, **context):
+def send_mail(subject: str, recipient: str, template: str, **context: Any) -> None:
     """Send an email using the Flask-Mail extension.
 
     :param subject: Email subject
@@ -371,13 +368,13 @@ def log_session_end(app, user):
 
 # login redirect utilities
 #  from http://flask.pocoo.org/snippets/62/
-def is_safe_url(target):
+def is_safe_url(target: str) -> bool:
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.url_root, target))
     return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
 
 
-def check_for_redirect(target):
+def check_for_redirect(target: str) -> str:
     target = urljoin(request.url_root, target)
     url = urlparse(target)
     reqctx = _request_ctx_stack.top
@@ -385,7 +382,7 @@ def check_for_redirect(target):
         endpoint, ignored = reqctx.url_adapter.match(url.path, "GET")
         if "." in endpoint and endpoint.rsplit(".", 1)[0] == "login":
             # don't redirect to any login view after successful login
-            return None
+            return ""
     except Exception:
         # exceptions may happen if route is not found for example
         pass
@@ -393,15 +390,16 @@ def check_for_redirect(target):
     return target
 
 
-def get_redirect_target():
+def get_redirect_target() -> str:
     for target in (request.values.get("next"), request.referrer):
         if not target:
             continue
         if is_safe_url(target):
             return check_for_redirect(target)
+    return ""
 
 
-def redirect_back(endpoint=None, url=None, **values):
+def redirect_back(endpoint=None, url=None, **values) -> Response:
     target = request.form.get("next")
     if not target or not is_safe_url(target):
         if endpoint:

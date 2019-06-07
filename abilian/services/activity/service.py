@@ -18,12 +18,12 @@ class ActivityService(Service):
     def init_app(self, app):
         Service.init_app(self, app)
 
-    def start(self, **kw):
-        Service.start(self)
+    def start(self, ignore_state: bool = False) -> None:
+        super().start(ignore_state)
         activity.connect(self.log_activity)
 
-    def stop(self, **kw):
-        Service.stop(self)
+    def stop(self, ignore_state: bool = False) -> None:
+        super().stop(ignore_state)
         activity.disconnect(self.log_activity)
 
     def log_activity(self, sender, actor, verb, object, target=None):

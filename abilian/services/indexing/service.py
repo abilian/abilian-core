@@ -13,7 +13,7 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 import logging
 from inspect import isclass
 from pathlib import Path
-from typing import Set
+from typing import Any, Set
 
 import sqlalchemy as sa
 import whoosh.query as wq
@@ -59,7 +59,7 @@ def url_for_hit(hit, default="#"):
         return default
 
 
-def fqcn(cls):
+def fqcn(cls: Any) -> str:
     if issubclass(cls, Entity):
         return cls.entity_type
     return base_fqcn(cls)
@@ -152,13 +152,13 @@ class WhooshIndexService(Service):
     def clear_update_queue(self, app=None):
         self.app_state.to_update = []
 
-    def start(self, **kw):
-        Service.start(self)
+    def start(self, ignore_state: bool = False) -> None:
+        super().start(ignore_state)
         self.register_classes()
         self.init_indexes()
         self.clear_update_queue()
 
-    def init_indexes(self):
+    def init_indexes(self) -> None:
         """Create indexes for schemas."""
         state = self.app_state
 
@@ -178,7 +178,7 @@ class WhooshIndexService(Service):
 
             state.indexes[name] = index
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all content from indexes, and unregister all classes.
 
         After clear() the service is stopped. It must be started again
@@ -350,7 +350,7 @@ class WhooshIndexService(Service):
     def search_for_class(self, query, cls, index="default", **search_args):
         return self.search(query, Models=(fqcn(cls),), index=index, **search_args)
 
-    def register_classes(self):
+    def register_classes(self) -> None:
         state = self.app_state
         classes = (
             cls

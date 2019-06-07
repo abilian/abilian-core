@@ -68,11 +68,11 @@ class Setting(db.Model):
     _type = sa.Column("type", sa.String(length=1000), nullable=False)
 
     @property
-    def type(self):
+    def type(self) -> str:
         return self._type
 
     @type.setter
-    def type(self, type_):
+    def type(self, type_: str) -> None:
         if not (
             type_ in self.transformers.encoders and type_ in self.transformers.decoders
         ):
@@ -98,29 +98,29 @@ class Setting(db.Model):
 register = _transformers.register
 
 
-def from_int(i):
+def from_int(i: int) -> bytes:
     return f"{i}".encode()
 
 
 register("int", from_int, int)
 
 
-def from_bool(b):
+def from_bool(b: bool) -> str:
     return "true" if b else "false"
 
 
-def to_bool(s):
+def to_bool(s: str) -> bool:
     return s == "true"
 
 
 register("bool", from_bool, to_bool)
 
 
-def from_unicode(s):
+def from_unicode(s: str) -> bytes:
     return str(s).encode("utf-8")
 
 
-def to_unicode(s):
+def to_unicode(s: bytes) -> str:
     if isinstance(s, str):
         return s
     return s.decode("utf-8")

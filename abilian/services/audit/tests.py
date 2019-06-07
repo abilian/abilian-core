@@ -22,7 +22,7 @@ class IntegerCollection(db.Model):
     __tablename__ = "integer_collection"
     id = Column(Integer, primary_key=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.id)
 
 

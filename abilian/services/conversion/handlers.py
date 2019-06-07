@@ -11,7 +11,7 @@ import traceback
 from abc import ABCMeta, abstractmethod
 from base64 import b64decode, b64encode
 from pathlib import Path
-from typing import List
+from typing import Any, List
 from xmlrpc.client import ServerProxy
 
 from magic import Magic
@@ -75,7 +75,7 @@ class Handler(metaclass=ABCMeta):
     def encoding_sniffer(self):
         return Magic(mime_encoding=True)
 
-    def accept(self, source_mime_type, target_mime_type):
+    def accept(self, source_mime_type: str, target_mime_type: str) -> bool:
         """Generic matcher based on patterns."""
 
         match_source = False
@@ -94,7 +94,7 @@ class Handler(metaclass=ABCMeta):
         return match_source and match_target
 
     @abstractmethod
-    def convert(self, key, **kw):
+    def convert(self, blob: bytes, **kw):
         pass
 
 
@@ -102,7 +102,7 @@ class PdfToTextHandler(Handler):
     accepts_mime_types = ["application/pdf", "application/x-pdf"]
     produces_mime_types = ["text/plain"]
 
-    def convert(self, blob, **kw):
+    def convert(self, blob: bytes, **kw: Any) -> str:
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(["pdftotext", in_fn, out_fn])
@@ -130,7 +130,7 @@ class AbiwordTextHandler(Handler):
     accepts_mime_types = ["application/msword"]
     produces_mime_types = ["text/plain"]
 
-    def convert(self, blob, **kw):
+    def convert(self, blob: bytes, **kw):
         tmp_dir = self.tmp_dir
         with make_temp_file(blob, suffix=".doc") as in_fn, make_temp_file(
             suffix=".txt"
@@ -173,7 +173,7 @@ class AbiwordPDFHandler(Handler):
     ]
     produces_mime_types = ["application/pdf"]
 
-    def convert(self, blob, **kw):
+    def convert(self, blob: bytes, **kw):
         with make_temp_file(blob, suffix=".doc") as in_fn, make_temp_file(
             suffix=".pdf"
         ) as out_fn:
@@ -198,7 +198,7 @@ class ImageMagickHandler(Handler):
     accepts_mime_types = ["image/.*"]
     produces_mime_types = ["application/pdf"]
 
-    def convert(self, blob, **kw):
+    def convert(self, blob: bytes, **kw) -> bytes:
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(["convert", in_fn, "pdf:" + out_fn])
@@ -418,7 +418,7 @@ class LibreOfficePdfHandler(Handler):
             #         '/usr/local/bin/unoconv', '-f', 'pdf', '-o', out_fn, in_fn
             #     ]
 
-            def run_soffice():
+            def run_soffice() -> None:
                 try:
                     self._process = subprocess.Popen(
                         cmd, close_fds=True, cwd=bytes(self.tmp_dir)

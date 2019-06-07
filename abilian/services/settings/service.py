@@ -1,6 +1,6 @@
 # coding=utf-8
 """"""
-from typing import Text
+from typing import Any, Optional, Text
 
 from abilian.core.extensions import db
 from abilian.services import Service
@@ -48,7 +48,7 @@ class SettingsService(Service):
 
         return s
 
-    def get(self, key):
+    def get(self, key: str) -> int:
         """Returns value of a previously stored key."""
         s = self._get_setting(key)
         return s.value
@@ -66,7 +66,7 @@ class SettingsService(Service):
         db.session.add(s)
         s.value = value
 
-    def delete(self, key, silent=True):
+    def delete(self, key: str, silent: bool = True) -> None:
         try:
             s = self._get_setting(key)
         except KeyError:
@@ -90,7 +90,7 @@ class SettingsNamespace:
         """A namespace within this namespace."""
         return SettingsNamespace(self.ns(name), self.service)
 
-    def ns(self, key):
+    def ns(self, key: str) -> str:
         """Returns full key name for use in settings service."""
         return ":".join((self.name, key))
 
@@ -108,12 +108,12 @@ class SettingsNamespace:
     def as_dict(self, prefix=""):
         return dict(self.iteritems(prefix))
 
-    def get(self, key):
+    def get(self, key: str) -> int:
         """Proxy to :meth:`SettingsService.get`"""
         return self.service.get(self.ns(key))
 
     def set(self, key, *args, **kwargs):
         return self.service.set(self.ns(key), *args, **kwargs)
 
-    def delete(self, key, silent=True):
+    def delete(self, key: str, silent: bool = True) -> Optional[Any]:
         return self.service.delete(self.ns(key), silent=silent)

@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy.schema import Column
 from sqlalchemy.types import DateTime, Integer
@@ -8,7 +9,6 @@ from whoosh.fields import ID
 
 from ..extensions import db
 from ..util import fqcn
-from typing import Any
 
 #: Base Model class.
 Model = db.Model

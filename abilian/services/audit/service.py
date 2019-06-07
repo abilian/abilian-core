@@ -9,7 +9,7 @@ TODO: In the future, we may decide to:
 import logging
 from datetime import datetime
 from inspect import isclass
-from typing import Text
+from typing import Any, Text
 
 import sqlalchemy as sa
 from flask import current_app, g
@@ -36,7 +36,9 @@ class AuditableMeta:
     collection_attrs = None
     enduser_ids = None
 
-    def __init__(self, name=None, id_attr=None, related=False):
+    def __init__(
+        self, name: str = None, id_attr: str = None, related: bool = False
+    ) -> None:
         self.name = name
         self.id_attr = id_attr
         self.related = related
@@ -72,8 +74,8 @@ class AuditService(Service):
             event.listen(Session, "after_flush", self.create_audit_entries)
             self._listening = True
 
-    def start(self, **kw):
-        Service.start(self)
+    def start(self, ignore_state: bool = False) -> None:
+        super().start(ignore_state)
         self.register_classes()
 
     @staticmethod
@@ -86,7 +88,7 @@ class AuditService(Service):
         else:
             return isinstance(model_or_class, Entity)
 
-    def register_classes(self):
+    def register_classes(self) -> None:
         state = self.app_state
         BaseModel = db.Model
         all_models = (

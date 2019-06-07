@@ -48,17 +48,17 @@ class Service:
         app.extensions[self.name] = self.AppStateClass(self)
         app.services[self.name] = self
 
-    def start(self, ignore_state=False):
+    def start(self, ignore_state: bool = False) -> None:
         """Starts the service."""
         self.logger.debug("Start service")
         self._toggle_running(True, ignore_state)
 
-    def stop(self, ignore_state=False):
+    def stop(self, ignore_state: bool = False) -> None:
         """Stops the service."""
         self.logger.debug("Stop service")
         self._toggle_running(False, ignore_state)
 
-    def _toggle_running(self, run_state, ignore_state=False):
+    def _toggle_running(self, run_state: bool, ignore_state: bool = False) -> None:
         state = self.app_state
         run_state = bool(run_state)
         if not ignore_state:
@@ -77,7 +77,7 @@ class Service:
             raise ServiceNotRegistered(self.name)
 
     @property
-    def running(self):
+    def running(self) -> bool:
         """
         :returns: `False` if working outside application context, if service is
             not registered on current application, or if service is halted

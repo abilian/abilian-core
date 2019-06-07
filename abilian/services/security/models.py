@@ -58,7 +58,7 @@ class Permission(UniqueName):
             label = _l(label)
         self.label = label
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
     def __lt__(self, other):
@@ -94,7 +94,7 @@ class Role(UniqueName):
         self.label = label
         self.assignable = assignable
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
     def __repr__(self):
@@ -301,7 +301,7 @@ class PermissionAssignment(db.Model):
         ),
     )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.permission, self.role, self.object))
 
     def __eq__(self, other):

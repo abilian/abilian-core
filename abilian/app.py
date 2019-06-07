@@ -397,15 +397,15 @@ class Application(
         considered as an endpoint.
         """
         auth_state = self.extensions[auth_service.name]
-        adder = auth_state.add_bp_access_controller
 
         if endpoint:
-            adder = auth_state.add_endpoint_access_controller
             if not isinstance(name, str):
                 msg = "{} is not a valid endpoint name".format(repr(name))
                 raise ValueError(msg)
 
-        adder(name, func)
+            auth_state.add_endpoint_access_controller(name, func)
+        else:
+            auth_state.add_bp_access_controller(name, func)
 
     def add_static_url(self, url_path, directory, endpoint=None, roles=None):
         """Add a new url rule for static files.
