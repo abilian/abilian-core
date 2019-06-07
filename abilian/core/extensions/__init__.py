@@ -20,6 +20,7 @@ from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf
 from .login import login_manager
 from .redis import Redis
+from typing import Any
 
 __all__ = ["get_extension", "db", "mail", "login_manager", "csrf", "upstream_info"]
 
@@ -76,13 +77,13 @@ def _filter_metadata_for_connection(target, connection, **kw):
 #
 # CSRF
 #
-def get_extension(name):
+def get_extension(name: str):
     """Get the named extension from the current app, returning None if not
     found."""
     return current_app.extensions.get(name)
 
 
-def _install_get_display_value(cls):
+def _install_get_display_value(cls: Any) -> None:
 
     _MARK = object()
 

@@ -4,6 +4,7 @@ import json
 import logging
 import sys
 import uuid
+from typing import Any
 
 import babel
 import babel.dates
@@ -71,7 +72,7 @@ class SQLAlchemy(SAExtension):
 # Original code works only when current app code is involved. If using 3rd party
 # app the query is logged but source is marked "unknown". Our patch is a "best
 # guess".
-def _calling_context(app_path):
+def _calling_context(app_path: str) -> str:
     frm = sys._getframe(1)
     entered_sa_code = exited_sa_code = False
     sa_caller = "<unknown>"
@@ -93,7 +94,7 @@ def _calling_context(app_path):
                 name == "sqlalchemy" or name.startswith("sqlalchemy.")
             )
             if not entered_sa_code:
-                entered_sa_code = in_sa_code
+                entered_sa_code = bool(in_sa_code)
             elif not in_sa_code:
                 # exited from sa stack: retain name
                 sa_caller = format_name(frm=frm)
@@ -207,7 +208,7 @@ class MutationList(Mutable, list):
         list.__setitem__(self, idx, value)
         self.changed()
 
-    def __delitem__(self, idx):
+    def __delitem__(self, idx: Any) -> None:
         list.__delitem__(self, idx)
         self.changed()
 
@@ -233,7 +234,7 @@ class MutationList(Mutable, list):
         self.changed()
         return result
 
-    def append(self, item):
+    def append(self, item: Any) -> None:
         list.append(self, item)
         self.changed()
 

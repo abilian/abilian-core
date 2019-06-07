@@ -2,6 +2,7 @@
 """Security service, manages roles and permissions."""
 from functools import wraps
 from itertools import chain
+from typing import Dict, FrozenSet
 
 import sqlalchemy as sa
 from flask import g
@@ -34,7 +35,7 @@ __all__ = [
 ]
 
 #: default security matrix
-DEFAULT_PERMISSION_ROLE = {}
+DEFAULT_PERMISSION_ROLE: Dict[Permission, FrozenSet[Role]] = {}
 prm = DEFAULT_PERMISSION_ROLE
 prm[MANAGE] = frozenset({Admin, Manager})
 prm[WRITE] = frozenset({Admin, Manager, Writer})

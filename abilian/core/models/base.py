@@ -8,13 +8,14 @@ from whoosh.fields import ID
 
 from ..extensions import db
 from ..util import fqcn
+from typing import Any
 
 #: Base Model class.
 Model = db.Model
 
 
 class Info(dict):
-    def __init__(self, **kw):
+    def __init__(self, **kw: Any) -> None:
         for k, v in kw.items():
             self[k] = v
 
@@ -59,15 +60,15 @@ class Indexable:
     )
 
     @classmethod
-    def _object_type(cls):
+    def _object_type(cls) -> str:
         return fqcn(cls)
 
     @property
-    def object_type(self):
+    def object_type(self) -> str:
         return self._object_type()
 
     @property
-    def object_key(self):
+    def object_key(self) -> str:
         return f"{self.object_type}:{self.id}"
 
 
