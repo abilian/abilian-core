@@ -10,7 +10,7 @@ import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Dict
 
 import jinja2
 import sqlalchemy as sa
@@ -31,7 +31,7 @@ from abilian.core.celery import FlaskCelery
 from abilian.services import activity_service, antivirus, audit_service, \
     auth_service, conversion_service, index_service, preferences_service, \
     repository_service, security_service, session_repository_service, \
-    settings_service, vocabularies_service
+    settings_service, vocabularies_service, Service
 from abilian.services.security import Anonymous
 from abilian.web import csrf
 from abilian.web.action import actions
@@ -58,7 +58,7 @@ class ServiceManager:
     services."""
 
     def __init__(self) -> None:
-        self.services = {}
+        self.services: Dict[str, Service] = {}
 
     def start_services(self):
         for svc in self.services.values():

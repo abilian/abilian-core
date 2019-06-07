@@ -20,7 +20,7 @@ class Commentable(metaclass=abc.ABCMeta):
     pass
 
 
-def register(cls: Any) -> NoReturn:
+def register(cls: type) -> type:
     """Register an :class:`Entity` as a commentable class.
 
     Can be used as a class decorator:
