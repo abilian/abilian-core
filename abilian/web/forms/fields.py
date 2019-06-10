@@ -1,8 +1,8 @@
 # coding=utf-8
 """"""
-import datetime
 import logging
 import operator
+from datetime import datetime
 from functools import partial
 from typing import Any, List, Union
 
@@ -344,7 +344,7 @@ class DateTimeField(Field):
             time_fmt = babel2datetime(time_fmt)
             datetime_fmt = f"{date_fmt} | {time_fmt}"
             try:
-                self.data = datetime.datetime.strptime(date_str, datetime_fmt)
+                self.data = datetime.strptime(date_str, datetime_fmt)
                 if not self.use_naive:
                     tz = get_timezone()
                     if self.data.tzinfo:
@@ -367,7 +367,7 @@ class DateTimeField(Field):
 
 
 class DateField(Field):
-    """A text field which stores a `datetime.date` matching a format."""
+    """A text field which stores a `date` matching a format."""
 
     widget = DateInput()
 
@@ -401,7 +401,7 @@ class DateField(Field):
             date_fmt = date_fmt.replace("%B", "%m").replace("%b", "%m")
 
             try:
-                strptime = datetime.datetime.strptime
+                strptime = datetime.strptime
                 self.data = strptime(date_str, date_fmt).date()
             except (ValueError, TypeError):
                 self.data = None

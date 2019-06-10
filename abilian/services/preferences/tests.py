@@ -2,7 +2,7 @@
 """"""
 from flask_login import current_user, login_user
 from pytest import fixture
-from sqlalchemy.orm.scoping import scoped_session
+from sqlalchemy.orm import Session
 
 from abilian.app import Application as BaseApplication
 from abilian.core.models.subjects import User
@@ -51,7 +51,7 @@ def app(config: type) -> Application:
     return app
 
 
-def test_preferences(app: Application, session: scoped_session) -> None:
+def test_preferences(app: Application, session: Session) -> None:
     user = User(email="test@example.com")
     assert UserPreference.query.all() == []
 
@@ -75,7 +75,7 @@ def test_preferences(app: Application, session: scoped_session) -> None:
 
 
 def test_preferences_with_various_types(
-    app: Application, session: scoped_session
+    app: Application, session: Session
 ) -> None:
     user = User(email="test@example.com")
     preference_service = PreferenceService()

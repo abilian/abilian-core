@@ -444,7 +444,7 @@ class WhooshIndexService(Service):
             adapter = self.adapted.get(class_name)
 
         if adapter is None or not adapter.indexable:
-            return None
+            return {}
 
         document = adapter.get_document(obj)
 
@@ -478,7 +478,7 @@ class WhooshIndexService(Service):
         with index.writer() as writer:
             for obj in objects:
                 document = self.get_document(obj)
-                if document is None:
+                if not document:
                     continue
 
                 object_key = document["object_key"]

@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin
-from flask_sqlalchemy import _BoundDeclarativeMeta
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
@@ -175,6 +175,7 @@ class User(Principal, UserMixin, db.Model):
     __password_strategy__ = BcryptPasswordStrategy()
 
     query_class = UserQuery
+    query: BaseQuery
 
     # Basic information
     first_name = Column(UnicodeText, info=SEARCHABLE)
@@ -289,7 +290,7 @@ class User(Principal, UserMixin, db.Model):
 
 
 @listens_for(User, "mapper_configured", propagate=True)
-def _add_user_indexes(mapper: Mapper, class_: _BoundDeclarativeMeta) -> None:
+def _add_user_indexes(mapper: Mapper, class_: type) -> None:
     # this is a functional index (indexes on a function result), we cannot define
     # it in __table_args__.
     #

@@ -149,7 +149,7 @@ def forgotten_pw_form() -> str:
 
 @route("/forgotten_pw", methods=["POST"])
 @csrf.exempt
-def forgotten_pw(new_user: bool = False) -> Union[str, Response]:
+def forgotten_pw(new_user: bool = False) -> Union[str, Response, Tuple[str, int]]:
     """Reset password for users who have already activated their accounts."""
     email = request.form.get("email", "").lower()
 

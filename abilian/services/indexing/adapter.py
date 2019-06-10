@@ -95,28 +95,7 @@ class SAAdapter(SchemaAdapter):
         if self.indexable:
             self._build_doc_attrs(model_class, schema)
 
-    def get_index_to(
-        self, model_class: Model
-    ) -> Union[
-        Tuple[
-            Tuple[str, Tuple[str, str, str]],
-            Tuple[str, Tuple[str, str, str]],
-            Tuple[str, Tuple[Tuple[str, ID]]],
-            Tuple[str, Tuple[Tuple[str, ID]]],
-        ],
-        Tuple[
-            Tuple[str, Tuple[str]],
-            Tuple[str, Tuple[str]],
-            Tuple[str, Tuple[str, str]],
-            Tuple[str, Tuple[str]],
-            Tuple[str, Tuple[str]],
-            Tuple[str, Tuple[str, str]],
-            Tuple[str, Tuple[Tuple[str, ID]]],
-            Tuple[str, Tuple[Tuple[str, ID]]],
-            Tuple[str, Tuple[str]],
-            Tuple[str, Tuple[Tuple[str, type]]],
-        ],
-    ]:
+    def get_index_to(self, model_class: Model) -> Tuple:
         result = []
         classes = model_class.mro()
         for cls in classes:
@@ -128,8 +107,8 @@ class SAAdapter(SchemaAdapter):
         mapper = sa.inspect(model_class)
 
         args = self.doc_attrs
-        # any field not in schema will be stored here. After all field have been
-        # discovered we add missing ones
+        # Any field not in schema will be stored here.
+        # After all field have been discovered, we add the missing ones.
         field_definitions = {}
 
         def setup_field(
@@ -195,17 +174,17 @@ class SAAdapter(SchemaAdapter):
         return _session.query(self.model_class).get(pk)
 
     def get_document(self, obj: Entity) -> Dict[str, Any]:
-        kwargs = {}
+        result = {}
         if not self.indexable:
-            return kwargs
+            return result
 
-        # cache because the same attribute may be needed by many fields, i.e
-        # "title" on "title" field and "full_text" field for example
+        # Cache because the same attribute may be needed by many fields, i.e
+        # "title" on "title" field and "full_text" field for example.
         cached = {}
-        # negative cache. Might be used especially with dotted names
+        # Negative cache. Might be used especially with dotted names.
         missed = set()
 
-        for field, attrs in self.doc_attrs.items():
+        for field_name, attrs in self.doc_attrs.items():
             values = []
 
             for a, getter in attrs.items():
@@ -231,8 +210,8 @@ class SAAdapter(SchemaAdapter):
 
             if values:
                 if len(values) == 1:
-                    kwargs[field] = values[0]
+                    result[field_name] = values[0]
                 else:
-                    kwargs[field] = " ".join(values)
+                    result[field_name] = " ".join(values)
 
-        return kwargs
+        return result

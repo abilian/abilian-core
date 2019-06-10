@@ -1,5 +1,6 @@
 # coding=utf-8
 """Models for user preferences."""
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import backref, relation
 
@@ -28,3 +29,5 @@ class UserPreference(db.Model):
 
     #: The value
     value = Column(JSON, nullable=False)
+
+    query: BaseQuery

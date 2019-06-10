@@ -13,6 +13,7 @@ import pickle
 from datetime import datetime
 
 from flask import current_app
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy import LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.base import NEVER_SET
@@ -104,6 +105,8 @@ class AuditEntry(db.Model):
     user = relationship(User, foreign_keys=user_id)
 
     changes_pickle = Column(LargeBinary)
+
+    query: BaseQuery
 
     def __repr__(self):
         return "<AuditEntry id={} op={} user={} {}entity=<{} id={}>>".format(

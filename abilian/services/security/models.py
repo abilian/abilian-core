@@ -2,9 +2,10 @@
 """"""
 from datetime import datetime
 from functools import total_ordering
-from typing import Any, Optional, Union
+from typing import Union
 
 from flask_babel import LazyString
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import CheckConstraint, Column, ForeignKey, Index, \
@@ -14,6 +15,7 @@ from sqlalchemy.types import Boolean, DateTime, Enum, Integer, String, \
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
+from abilian.core.models import Model
 from abilian.core.models.subjects import Group, User
 from abilian.core.singleton import UniqueName, UniqueNameType
 from abilian.i18n import _l
@@ -154,7 +156,7 @@ CREATE = Permission("create")
 DELETE = Permission("delete")
 
 
-class RoleAssignment(db.Model):
+class RoleAssignment(Model):
     __tablename__ = "roleassignment"
     __table_args__ = (
         #
@@ -420,6 +422,8 @@ class SecurityAudit(db.Model):
     object_id = Column(Integer)
     object_type = Column(String(1000))
     object_name = Column(UnicodeText)
+
+    query: BaseQuery
 
 
 class InheritSecurity:

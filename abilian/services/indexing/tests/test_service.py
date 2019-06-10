@@ -4,7 +4,7 @@ from typing import Iterator, Union
 
 import sqlalchemy as sa
 from pytest import fixture
-from sqlalchemy.orm.scoping import scoped_session
+from sqlalchemy.orm import Session
 
 from abilian.app import Application
 from abilian.core.entities import Entity
@@ -33,7 +33,7 @@ def test_app_state(app: Application, svc: WhooshIndexService) -> None:
 
 
 def test_index_only_after_final_commit(
-    app: Application, session: scoped_session, svc: WhooshIndexService
+    app: Application, session: Session, svc: WhooshIndexService
 ) -> None:
     contact = IndexedContact(name="John Doe")
 

@@ -3,6 +3,7 @@
 from datetime import datetime
 from typing import Any
 
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy.schema import Column
 from sqlalchemy.types import DateTime, Integer
 from whoosh.fields import ID
@@ -10,8 +11,11 @@ from whoosh.fields import ID
 from abilian.core.extensions import db
 from abilian.core.util import fqcn
 
+
 #: Base Model class.
-Model = db.Model
+class Model(db.Model):
+    __abstract__ = True
+    query: BaseQuery
 
 
 class Info(dict):

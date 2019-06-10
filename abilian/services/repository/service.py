@@ -13,7 +13,6 @@ from _io import StringIO
 from flask import _app_ctx_stack
 from flask.globals import _lookup_app_object
 from sqlalchemy.engine.base import Connection
-from sqlalchemy.orm.scoping import scoped_session
 from sqlalchemy.orm.session import Session, SessionTransaction
 from sqlalchemy.orm.unitofwork import UOWTransaction
 
@@ -317,11 +316,12 @@ class SessionRepositoryService(Service):
     # repository interface
     def get(
         self,
-        session: Union[Blob, Session],
+        session: Union[Session, Blob],
         uuid: Union[bytes, UUID],
         default: Optional[object] = None,
     ) -> Union[None, object, Path]:
-        #
+        # assert isinstance(session, Session)
+        # assert isinstance(uuid, UUID)
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         try:
@@ -336,7 +336,7 @@ class SessionRepositoryService(Service):
 
     def set(
         self,
-        session: Union[Blob, scoped_session],
+        session: Union[Session, Blob],
         uuid: Union[bytes, UUID],
         content: Union[StringIO, bytes, str],
         encoding: str = "utf-8",
@@ -346,7 +346,7 @@ class SessionRepositoryService(Service):
         transaction.set(uuid, content, encoding)
 
     def delete(
-        self, session: Union[Blob, scoped_session], uuid: Union[bytes, UUID]
+        self, session: Union[Session, Blob], uuid: Union[bytes, UUID]
     ) -> None:
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)

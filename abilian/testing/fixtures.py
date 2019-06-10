@@ -18,7 +18,6 @@ from flask.ctx import AppContext, RequestContext
 from flask.testing import FlaskClient
 from pytest import fixture
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.scoping import scoped_session
 
 from abilian.app import create_app
 from abilian.core.models.subjects import User
@@ -73,7 +72,7 @@ def req_ctx(app: Flask) -> Iterator[RequestContext]:
 
 
 @fixture
-def db(app_context: AppContext) -> SQLAlchemy:
+def db(app_context: AppContext) -> Iterator[SQLAlchemy]:
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
 
@@ -90,7 +89,7 @@ def db(app_context: AppContext) -> SQLAlchemy:
 
 
 @fixture
-def session(db: SQLAlchemy) -> scoped_session:
+def session(db: SQLAlchemy) -> Session:
     return db.session
 
 

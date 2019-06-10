@@ -60,6 +60,7 @@ class LoginSession(db.Model):
 
     __tablename__ = "login_session"
     query_class = LoginSessionQuery
+    query: LoginSessionQuery
 
     id = Column(Integer, primary_key=True, autoincrement=True)
 

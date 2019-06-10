@@ -340,7 +340,7 @@ class SecurityService(Service):
     def _set_role_cache(
         self,
         principal: Principal,
-        cache: Union[Dict[Optional[str], Set[Role]], Dict[str, Set[Role]]],
+        cache: Dict[Optional[str], Set[Role]],
     ) -> None:
         principal.__roles_cache__ = cache
 
@@ -353,7 +353,7 @@ class SecurityService(Service):
         Return role_cache of `principal`
         """
         if not self.app_state.use_cache:
-            return None
+            return {}
 
         if not self._has_role_cache(principal) or overwrite:
             self._set_role_cache(principal, self._all_roles(principal))
@@ -393,8 +393,8 @@ class SecurityService(Service):
             filter_cond.append(RoleAssignment.group_id.in_(g.id for g in groups))
 
         query = query.filter(sql.or_(*filter_cond))
-        ra_users = {}
-        ra_groups = {}
+        ra_users: Dict[User, Dict[str, Set[Role]]] = {}
+        ra_groups: Dict[Group, Dict[str, Set[Role]]] = {}
         for ra in query.all():
             if ra.user:
                 all_roles = ra_users.setdefault(ra.user, {})

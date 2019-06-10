@@ -6,7 +6,7 @@ from functools import partial
 from flask import request, url_for
 from flask.ctx import AppContext
 from flask.testing import FlaskClient
-from sqlalchemy.orm.scoping import scoped_session
+from sqlalchemy.orm import Session
 
 from abilian.app import Application
 from abilian.core.models.subjects import User
@@ -46,7 +46,7 @@ def test_get_redirect_target(app: Application, app_context: AppContext) -> None:
         assert get_redirect_target() == url_root + "///google.com"
 
 
-def test_login_post(session: scoped_session, client: FlaskClient) -> None:
+def test_login_post(session: Session, client: FlaskClient) -> None:
     kwargs = {"email": "User@domain.tld", "password": "azerty", "can_login": True}
     user = User(**kwargs)
     session.add(user)
@@ -68,7 +68,7 @@ def test_login_post(session: scoped_session, client: FlaskClient) -> None:
     assert response.status_code == 401
 
 
-def test_api_post(session: scoped_session, client: FlaskClient) -> None:
+def test_api_post(session: Session, client: FlaskClient) -> None:
     kwargs = {"email": "User@domain.tld", "password": "azerty", "can_login": True}
     user = User(**kwargs)
     session.add(user)
@@ -90,7 +90,7 @@ def test_api_post(session: scoped_session, client: FlaskClient) -> None:
 
 
 def test_forgotten_pw(
-    app: Application, session: scoped_session, client: FlaskClient
+    app: Application, session: Session, client: FlaskClient
 ) -> None:
     mail = app.extensions["mail"]
     kwargs = {"email": "User@domain.tld", "password": "azerty", "can_login": True}
