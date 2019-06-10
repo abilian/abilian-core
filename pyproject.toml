@@ -119,7 +119,7 @@ flake8-mutable = "*"
 flake8-pytest = "*"
 flake8-super-call = "*"
 flake8-tidy-imports = "*"
-# flake8-mypy = "*"
+flake8-mypy = "*"
 mastool = "*"
 mccabe = "*"
 
