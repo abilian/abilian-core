@@ -8,11 +8,53 @@ from abilian.services import Service
 from .models import Setting
 
 
+class SettingsNamespace:
+    """Allow to query :class:`SettingsService` service within a namespace.
+
+    Basically it prefixes keys with namespace name and a colon.
+    """
+
+    def __init__(self, name, service):
+        self.name = name
+        self.service = service
+
+    def namespace(self, name):
+        """A namespace within this namespace."""
+        return SettingsNamespace(self.ns(name), self.service)
+
+    def ns(self, key: str) -> str:
+        """Returns full key name for use in settings service."""
+        return ":".join((self.name, key))
+
+    def keys(self, prefix=""):
+        prefix = ":".join((self.name, prefix))
+        start = len(self.name) + 1  # +1 for colon
+        return [k[start:] for k in self.service.keys(prefix=prefix)]
+
+    def iteritems(self, prefix=""):
+        prefix = ":".join((self.name, prefix))
+        start = len(self.name) + 1  # +1 for colon
+        for k, v in self.service.iteritems(prefix=prefix):
+            yield (k[start:], v)
+
+    def as_dict(self, prefix=""):
+        return dict(self.iteritems(prefix))
+
+    def get(self, key: str) -> int:
+        """Proxy to :meth:`SettingsService.get`"""
+        return self.service.get(self.ns(key))
+
+    def set(self, key, *args, **kwargs):
+        return self.service.set(self.ns(key), *args, **kwargs)
+
+    def delete(self, key: str, silent: bool = True) -> Optional[Any]:
+        return self.service.delete(self.ns(key), silent=silent)
+
+
 class SettingsService(Service):
     name = "settings"
 
-    def namespace(self, name):
-        # type: (Text) -> SettingsNamespace
+    def namespace(self, name: str) -> SettingsNamespace:
         return SettingsNamespace(name, self)
 
     def keys(self, prefix=None):
@@ -74,46 +116,3 @@ class SettingsService(Service):
                 raise
         else:
             db.session.delete(s)
-
-
-class SettingsNamespace:
-    """Allow to query :class:`SettingsService` service within a namespace.
-
-    Basically it prefixes keys with namespace name and a colon.
-    """
-
-    def __init__(self, name, service):
-        self.name = name
-        self.service = service
-
-    def namespace(self, name):
-        """A namespace within this namespace."""
-        return SettingsNamespace(self.ns(name), self.service)
-
-    def ns(self, key: str) -> str:
-        """Returns full key name for use in settings service."""
-        return ":".join((self.name, key))
-
-    def keys(self, prefix=""):
-        prefix = ":".join((self.name, prefix))
-        start = len(self.name) + 1  # +1 for colon
-        return [k[start:] for k in self.service.keys(prefix=prefix)]
-
-    def iteritems(self, prefix=""):
-        prefix = ":".join((self.name, prefix))
-        start = len(self.name) + 1  # +1 for colon
-        for k, v in self.service.iteritems(prefix=prefix):
-            yield (k[start:], v)
-
-    def as_dict(self, prefix=""):
-        return dict(self.iteritems(prefix))
-
-    def get(self, key: str) -> int:
-        """Proxy to :meth:`SettingsService.get`"""
-        return self.service.get(self.ns(key))
-
-    def set(self, key, *args, **kwargs):
-        return self.service.set(self.ns(key), *args, **kwargs)
-
-    def delete(self, key: str, silent: bool = True) -> Optional[Any]:
-        return self.service.delete(self.ns(key), silent=silent)

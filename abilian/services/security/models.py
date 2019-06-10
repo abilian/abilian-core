@@ -2,8 +2,9 @@
 """"""
 from datetime import datetime
 from functools import total_ordering
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
+from flask_babel import LazyString
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import CheckConstraint, Column, ForeignKey, Index, \
@@ -52,7 +53,10 @@ class Permission(UniqueName):
     __slots__ = ("label",)
 
     def __init__(
-        self, name: str, label: Optional[Any] = None, assignable: bool = True
+        self,
+        name: str,
+        label: Union[None, str, LazyString] = None,
+        assignable: bool = True,
     ) -> None:
         super().__init__(name)
         if label is None:
@@ -89,7 +93,10 @@ class Role(UniqueName):
     __slots__ = ("label", "assignable")
 
     def __init__(
-        self, name: str, label: Optional[Any] = None, assignable: bool = True
+        self,
+        name: str,
+        label: Union[None, str, LazyString] = None,
+        assignable: bool = True,
     ) -> None:
         super().__init__(name)
         if label is None:

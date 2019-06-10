@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
 from datetime import datetime
+from typing import Any, Dict
 
 import sqlalchemy as sa
 from whoosh.fields import NUMERIC, TEXT, Schema
@@ -149,7 +150,7 @@ def test_get_document_with_schema() -> None:
     # test retrieve related attributes
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)
-    expected = {"id": 1, "num": 42}
+    expected: Dict[str, Any] = {"id": 1, "num": 42}
     obj = Indexable(**expected)
     obj.related = type("Related", (object,), {"name": None})()
     expected["name"] = obj.related.name = "related name"

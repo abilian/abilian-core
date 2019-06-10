@@ -11,8 +11,7 @@ from jinja2 import Template
 from abilian.core.extensions import db
 from abilian.services import get_service
 from abilian.web import csrf
-
-from ..panel import AdminPanel
+from abilian.web.admin import AdminPanel
 
 
 class Key:

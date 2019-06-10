@@ -3,7 +3,7 @@
 import logging
 import typing
 from datetime import datetime, timedelta
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from flask import Flask, current_app, g, redirect, request, url_for
 from flask_babel import lazy_gettext as _l
@@ -17,6 +17,7 @@ from abilian.core.models.subjects import User
 from abilian.core.signals import user_loaded
 from abilian.core.util import unwrap
 from abilian.services import Service, ServiceState
+from abilian.services.security.service import SecurityService
 from abilian.web.action import DynamicIcon, actions
 from abilian.web.nav import NavGroup, NavItem
 
@@ -110,7 +111,7 @@ class AuthService(Service):
         login_manager.init_app(app)
         login_manager.login_view = "login.login_form"
 
-        Service.init_app(self, app)
+        super().init_app(app)
 
         self.login_url_prefix = app.config.get("LOGIN_URL", "/user")
 
@@ -177,7 +178,7 @@ class AuthService(Service):
 
         return redirect(url_for(login_manager.login_view, **kw))
 
-    def do_access_control(self) -> Optional[Any]:
+    def do_access_control(self) -> Union[None, Response]:
         """`before_request` handler to check if user should be redirected to
         login page."""
         from abilian.services import get_service
@@ -195,7 +196,7 @@ class AuthService(Service):
         if current_app.testing and getattr(user, "is_admin", False):
             return None
 
-        security = get_service("security")
+        security: SecurityService = get_service("security")
         user_roles = frozenset(security.get_roles(user))
         endpoint = request.endpoint
         blueprint = request.blueprint

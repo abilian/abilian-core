@@ -76,7 +76,7 @@ class BaseFileDownload(View):
     def get_content_type(self, *args, **kwargs):
         raise NotImplementedError()
 
-    def get(self, attach, *args, **kwargs):
+    def get(self, attach: bool, *args, **kwargs):
         """
         :param attach: if True, return file as an attachment.
         """

@@ -61,8 +61,8 @@ class AuditServiceState(ServiceState):
 
     def __init__(self, *args: "AuditService", **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.all_model_classes = set()
-        self.model_class_names = {}
+        self.all_model_classes: typing.Set[type] = set()
+        self.model_class_names: typing.Dict[str, type] = {}
 
 
 class AuditService(Service):

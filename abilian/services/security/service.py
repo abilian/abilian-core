@@ -270,7 +270,7 @@ class SecurityService(Service):
         groups: bool = True,
         object: Optional[Model] = None,
         as_list: bool = True,
-    ) -> Union[List[Group], List[User]]:
+    ) -> Collection[Principal]:
         """Return all users which are assigned given role."""
         if not isinstance(role, Role):
             role = Role(role)
@@ -299,9 +299,7 @@ class SecurityService(Service):
         return list(principals)
 
     @require_flush
-    def _all_roles(
-        self, principal: Union[Group, User]
-    ) -> Union[Dict[Optional[str], Set[Role]], Dict[str, Set[Role]]]:
+    def _all_roles(self, principal: Principal) -> Dict[Optional[str], Set[Role]]:
         query = (
             db.session.query(RoleAssignment.object_id, RoleAssignment.role)
             .outerjoin(Entity)
@@ -329,27 +327,25 @@ class SecurityService(Service):
 
         return all_roles
 
-    def _role_cache(
-        self, principal: Union[Group, User]
-    ) -> Dict[Optional[str], Set[Role]]:
+    def _role_cache(self, principal: Principal) -> Dict[Optional[str], Set[Role]]:
         if not self._has_role_cache(principal):
             # FIXME: should call _fill_role_cache?
             principal.__roles_cache__ = {}
 
         return principal.__roles_cache__
 
-    def _has_role_cache(self, principal: Union[Group, User]) -> bool:
+    def _has_role_cache(self, principal: Principal) -> bool:
         return hasattr(principal, "__roles_cache__")
 
     def _set_role_cache(
         self,
-        principal: Union[Group, User],
+        principal: Principal,
         cache: Union[Dict[Optional[str], Set[Role]], Dict[str, Set[Role]]],
     ) -> None:
         principal.__roles_cache__ = cache
 
     def _fill_role_cache(
-        self, principal: Union[Group, User], overwrite: bool = False
+        self, principal: Principal, overwrite: bool = False
     ) -> Dict[Optional[str], Set[Role]]:
         """Fill role cache for `principal` (User or Group), in order to avoid
         too many queries when checking role access with 'has_role'.
@@ -365,9 +361,7 @@ class SecurityService(Service):
 
     @require_flush
     def _fill_role_cache_batch(
-        self,
-        principals: Union[List[Union[Group, User]], List[AnonymousUser], List[User]],
-        overwrite: bool = False,
+        self, principals: Collection[Principal], overwrite: bool = False
     ) -> None:
         """Fill role cache for `principals` (Users and/or Groups), in order to
         avoid too many queries when checking role access with 'has_role'."""
@@ -426,7 +420,7 @@ class SecurityService(Service):
 
             self._set_role_cache(user, all_roles)
 
-    def _clear_role_cache(self, principal: Union[Group, User]) -> None:
+    def _clear_role_cache(self, principal: Principal) -> None:
         if hasattr(principal, "__roles_cache__"):
             del principal.__roles_cache__
 
@@ -512,10 +506,7 @@ class SecurityService(Service):
         return len(valid_roles & roles) > 0
 
     def grant_role(
-        self,
-        principal: Union[Group, User],
-        role: Union[Role, str],
-        obj: Optional[Model] = None,
+        self, principal: Principal, role: Union[Role, str], obj: Optional[Model] = None
     ) -> None:
         """Grant `role` to `user` (either globally, if `obj` is None, or on the
         specific `obj`)."""
@@ -578,7 +569,7 @@ class SecurityService(Service):
 
     def ungrant_role(
         self,
-        principal: Union[Group, User],
+        principal: Principal,
         role: Union[Role, str],
         object: Optional[Model] = None,
     ) -> None:
@@ -653,11 +644,11 @@ class SecurityService(Service):
     #
     def has_permission(
         self,
-        user: Union[AnonymousUser, User],
+        user: User,
         permission: Union[Permission, str],
         obj: Optional[Model] = None,
         inherit: bool = False,
-        roles: Optional[Role] = None,
+        roles: Union[None, Role, str, List[Union[Role, str]]] = None,
     ) -> bool:
         """
         :param obj: target object to check permissions.
@@ -702,7 +693,7 @@ class SecurityService(Service):
         # FIXME: obj.__class__ could define default permisssion matrix too
 
         if roles is not None:
-            if isinstance(roles, (Role,) + (str,)):
+            if isinstance(roles, (Role, str)):
                 roles = (roles,)
 
             for r in roles:

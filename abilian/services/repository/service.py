@@ -55,8 +55,7 @@ class RepositoryService(Service):
             self.app_state.path = path.resolve()
 
     # data management: paths and accessors
-    def rel_path(self, uuid):
-        # type: (UUID) -> Path
+    def rel_path(self, uuid: UUID) -> Path:
         """Contruct relative path from repository top directory to the file
         named after this uuid.
 
@@ -66,8 +65,7 @@ class RepositoryService(Service):
         filename = str(uuid)
         return Path(filename[0:2], filename[2:4], filename)
 
-    def abs_path(self, uuid):
-        # type: (UUID) -> Path
+    def abs_path(self, uuid: UUID) -> Path:
         """Return absolute :class:`Path` object for given uuid.
 
         :param:uuid: :class:`UUID` instance
@@ -129,7 +127,7 @@ class RepositoryService(Service):
             raise KeyError("No file can be found for this uuid", uuid)
         return value
 
-    def __setitem__(self, uuid: Path, content: Any) -> None:
+    def __setitem__(self, uuid: UUID, content: Any) -> None:
         self.set(uuid, content)
 
     def __delitem__(self, uuid: UUID) -> None:
@@ -463,6 +461,7 @@ class RepositoryTransaction:
 
     def _commit_parent(self) -> None:
         p = self._parent
+        assert p
         p._deleted |= self._deleted
         p._deleted -= self._set
 

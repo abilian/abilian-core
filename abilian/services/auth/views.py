@@ -7,7 +7,7 @@ Notes:
 import random
 import string
 from datetime import datetime
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 from urllib.parse import urljoin, urlparse
 
 from flask import Flask, _request_ctx_stack, current_app, flash, jsonify, \
@@ -15,7 +15,7 @@ from flask import Flask, _request_ctx_stack, current_app, flash, jsonify, \
 from flask_login import login_user, logout_user, user_logged_in, \
     user_logged_out
 from flask_mail import Message
-from itsdangerous import BadSignature, Serializer, SignatureExpired, \
+from itsdangerous import BadSignature, SignatureExpired, TimedSerializer, \
     URLSafeTimedSerializer
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
@@ -143,13 +143,13 @@ def logout_json() -> Tuple[str, int, Dict[str, str]]:
 # few modifications.
 #
 @route("/forgotten_pw")
-def forgotten_pw_form():
+def forgotten_pw_form() -> str:
     return render_template("login/forgotten_password.html")
 
 
 @route("/forgotten_pw", methods=["POST"])
 @csrf.exempt
-def forgotten_pw(new_user: bool = False) -> Response:
+def forgotten_pw(new_user: bool = False) -> Union[str, Response]:
     """Reset password for users who have already activated their accounts."""
     email = request.form.get("email", "").lower()
 
@@ -187,7 +187,7 @@ def forgotten_pw(new_user: bool = False) -> Response:
 
 
 @route("/reset_password/<token>")
-def reset_password(token):
+def reset_password(token: str) -> Union[str, Response]:
     expired, invalid, user = reset_password_token_status(token)
     if invalid:
         flash(_("Invalid reset password token."), "error")
@@ -201,7 +201,7 @@ def reset_password(token):
 
 @route("/reset_password/<token>", methods=["POST"])
 @csrf.exempt
-def reset_password_post(token):
+def reset_password_post(token: str) -> Response:
     action = request.form.get("action")
     if action == "cancel":
         return redirect(request.url_root)
@@ -258,7 +258,7 @@ def random_password():
     return pw
 
 
-def get_serializer(name: str) -> Serializer:
+def get_serializer(name: str) -> TimedSerializer:
     config = current_app.config
     secret_key: bytes = config.get("SECRET_KEY")
     salt = config.get("SECURITY_{}_SALT".format(name.upper()))
@@ -281,7 +281,7 @@ def send_reset_password_instructions(user: User) -> None:
     send_mail(subject, user.email, mail_template, user=user, reset_link=reset_link)
 
 
-def generate_reset_password_token(user: User) -> Any:
+def generate_reset_password_token(user: User) -> str:
     """Generate a unique reset password token for the specified user.
 
     :param user: The user to work with
@@ -303,7 +303,9 @@ def reset_password_token_status(token: str) -> Any:
     return get_token_status(token, "reset", ONE_DAY)
 
 
-def get_token_status(token, serializer_name, max_age=None):
+def get_token_status(
+    token, serializer_name, max_age=None
+) -> Tuple[bool, bool, Optional[User]]:
     serializer = get_serializer(serializer_name)
     # max_age = get_max_age(max_age)
     user, data = None, None

@@ -2,7 +2,6 @@
 """"""
 import logging
 import re
-import typing
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from flask import current_app, g
@@ -15,9 +14,6 @@ from markupsafe import Markup
 from abilian.core.singleton import UniqueName
 from abilian.web import csrf
 from abilian.web.util import url_for
-
-if typing.TYPE_CHECKING:
-    from abilian.web.nav import NavGroup, NavItem
 
 log = logging.getLogger(__name__)
 
@@ -274,9 +270,9 @@ class Action:
         name: str,
         title: Union[LazyString, str] = "",
         description: str = "",
-        icon: Optional[str] = None,
-        url: Optional[Any] = None,
-        endpoint: Optional[str] = None,
+        icon: Union[str, Icon, None] = None,
+        url: Union[str, Callable] = "",
+        endpoint: Any = None,
         condition: Optional[Callable] = None,
         status: Optional[Any] = None,
         template: Optional[Any] = None,
@@ -339,7 +335,7 @@ class Action:
             self._enabled = enabled = value
         return enabled
 
-    def _get_and_call(self, attr: str) -> Union[None, LazyString, str]:
+    def _get_and_call(self, attr: str) -> Any:
         attr = "_" + attr
         value = getattr(self, attr)
         if callable(value):
@@ -351,7 +347,7 @@ class Action:
         return self._get_and_call("title")
 
     @title.setter
-    def title(self, title):
+    def title(self, title: Union[LazyString, str]):
         self._title = title
 
     def _build_css_class(self) -> None:
@@ -362,15 +358,15 @@ class Action:
         self.css_class = css_cat
 
     @property
-    def description(self):
+    def description(self) -> Union[LazyString, str]:
         return self._get_and_call("description")
 
     @description.setter
-    def description(self, description):
+    def description(self, description: Union[LazyString, str]):
         self._description = description
 
     @property
-    def icon(self) -> Union[DynamicIcon, Glyphicon, StaticIcon]:
+    def icon(self) -> Icon:
         return self._get_and_call("icon")
 
     @icon.setter
@@ -455,13 +451,13 @@ class Action:
         params["url"] = self.url(params)
         return params
 
-    def url(self, context: Dict[str, Any] = None) -> Optional[str]:
+    def url(self, context: Dict[str, Any] = None) -> str:
         if callable(self._url):
             return self._url(context)
 
-        endpoint = self.endpoint
-        if endpoint:
-            return str(endpoint)
+        if self.endpoint:
+            return str(self.endpoint)
+
         return self._url
 
 

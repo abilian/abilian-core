@@ -4,6 +4,7 @@ import json
 import logging
 import time
 from datetime import timedelta
+from typing import Any, Dict
 from uuid import UUID, uuid1
 
 from celery import shared_task
@@ -56,7 +57,7 @@ class FileUploadsExtension:
         app.register_blueprint(blueprint)
         signals.register_js_api.connect(self._do_register_js_api)
 
-        self.config = {}
+        self.config: Dict[str, Any] = {}
         self.config.update(DEFAULT_CONFIG)
         self.config.update(app.config.get("FILE_UPLOADS", {}))
         app.config["FILE_UPLOADS"] = self.config

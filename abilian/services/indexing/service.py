@@ -101,7 +101,7 @@ class WhooshIndexService(Service):
     AppStateClass = IndexServiceState
 
     def __init__(self, *args, **kwargs):
-        Service.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.adapters_cls = [SAAdapter]
         self.adapted = {}
         self.schemas = {"default": DefaultSearchSchema()}

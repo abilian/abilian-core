@@ -281,15 +281,13 @@ class BaseEntryPresenter:
 
 
 class AuditEntryPresenter(BaseEntryPresenter):
-    def __init__(self, entry):
-        # type: (AuditEntry) -> None
+    def __init__(self, entry: AuditEntry) -> None:
         assert isinstance(entry, AuditEntry)
         super().__init__(entry.user, entry.happened_at)
         self.entry = entry
         self.entity_deleted = entry.entity is None
 
-    def render(self):
-        # type: () -> Text
+    def render(self) -> str:
         render = render_template_string
         e = self.entry
         user = render(self._USER_FMT, user=e.user)
@@ -331,14 +329,12 @@ class AuditEntryPresenter(BaseEntryPresenter):
 
 
 class SecurityEntryPresenter(BaseEntryPresenter):
-    def __init__(self, entry):
-        # type: (SecurityAudit) -> None
+    def __init__(self, entry: SecurityAudit) -> None:
         assert isinstance(entry, SecurityAudit)
         super().__init__(entry.manager, entry.happened_at)
         self.entry = entry
 
-    def render(self):
-        # type: () -> Text
+    def render(self) -> str:
         render = render_template_string
         e = self.entry
 

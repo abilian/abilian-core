@@ -6,7 +6,7 @@ from flask import g, json, jsonify, redirect, render_template_string, request
 from flask.views import MethodView as BaseView
 from werkzeug.exceptions import HTTPException
 
-from ..action import actions
+from abilian.web.action import actions
 
 
 class Redirect(HTTPException):

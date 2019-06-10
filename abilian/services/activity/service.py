@@ -20,9 +20,6 @@ __all__ = ["ActivityService"]
 class ActivityService(Service):
     name = "activity"
 
-    def init_app(self, app: "Application") -> None:
-        super().init_app(app)
-
     def start(self, ignore_state: bool = False) -> None:
         super().start(ignore_state)
         activity.connect(self.log_activity)

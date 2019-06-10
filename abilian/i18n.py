@@ -125,7 +125,7 @@ def default_country() -> Optional[str]:
 
 
 def country_choices(
-    first: Optional[Any] = None, default_country_first: bool = True
+    first: str = "", default_country_first: bool = True
 ) -> List[Tuple[str, str]]:
     """Return a list of (code, countries), alphabetically sorted on localized
     country name.
@@ -139,7 +139,7 @@ def country_choices(
         (code, name) for code, name in locale.territories.items() if len(code) == 2
     ]  # skip 3-digit regions
 
-    if first is None and default_country_first:
+    if first == "" and default_country_first:
         first = default_country()
 
     def sortkey(item: Tuple[str, str]) -> str:
