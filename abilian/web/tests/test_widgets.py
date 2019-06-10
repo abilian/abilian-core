@@ -13,10 +13,9 @@ from wtforms import Form, IntegerField, StringField
 # noinspection PyUnresolvedReferences
 import abilian.web.forms  # noqa
 from abilian.core.entities import Entity
-from abilian.web.views import default_view
-
-from ..forms.widgets import EmailWidget, MainTableView, Panel, Row, \
+from abilian.web.forms.widgets import EmailWidget, MainTableView, Panel, Row, \
     SingleView, linkify_url, text2html
+from abilian.web.views import default_view
 
 
 class WidgetTestModel(Entity):

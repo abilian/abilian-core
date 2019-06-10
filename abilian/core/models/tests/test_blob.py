@@ -5,11 +5,10 @@ from io import StringIO
 
 from flask import Flask
 
+from abilian.core.models.blob import Blob
 from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.services import repository_service as repository
 from abilian.services import session_repository_service as session_repository
-
-from ..blob import Blob
 
 
 #

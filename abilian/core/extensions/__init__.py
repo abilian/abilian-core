@@ -13,17 +13,17 @@ import sqlalchemy.event
 import sqlalchemy.orm
 from flask import current_app
 from sqlalchemy.engine import Engine, Connection
+from sqlalchemy.sql.schema import MetaData
 
 from abilian.core.extensions.jinjaext import DeferredJS
 from abilian.core.logging import patch_logger
+from abilian.core.sqlalchemy import SQLAlchemy
+
 from . import upstream_info
 from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf
 from .login import login_manager
 from .redis import Redis
-from ..sqlalchemy import SQLAlchemy
-from sqlalchemy.sql.schema import MetaData
-from sqlalchemy.pool.base import _ConnectionRecord
 
 __all__ = ["get_extension", "db", "mail", "login_manager", "csrf", "upstream_info"]
 

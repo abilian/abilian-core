@@ -6,9 +6,8 @@ from flask import Flask
 from pytest import raises
 
 from abilian.core.entities import Entity
+from abilian.core.models.comment import Comment, is_commentable, register
 from abilian.core.sqlalchemy import SQLAlchemy
-
-from ..comment import Comment, is_commentable, register
 
 
 @register

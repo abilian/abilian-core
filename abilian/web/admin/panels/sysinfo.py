@@ -6,7 +6,7 @@ import sys
 import pkg_resources
 from flask import current_app, render_template
 
-from ..panel import AdminPanel
+from abilian.web.admin import AdminPanel
 
 
 class SysinfoPanel(AdminPanel):

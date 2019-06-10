@@ -7,8 +7,8 @@ from sqlalchemy.schema import Column
 from sqlalchemy.types import DateTime, Integer
 from whoosh.fields import ID
 
-from ..extensions import db
-from ..util import fqcn
+from abilian.core.extensions import db
+from abilian.core.util import fqcn
 
 #: Base Model class.
 Model = db.Model

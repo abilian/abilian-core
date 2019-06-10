@@ -35,7 +35,7 @@ def _assert_uuid(uuid: Union[bytes, str, UUID]) -> None:
 
 class RepositoryServiceState(ServiceState):
     #: :class:`Path` path to application repository
-    path = None  # type: Path
+    path: Optional[Path] = None
 
 
 class RepositoryService(Service):
