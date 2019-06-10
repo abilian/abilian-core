@@ -1,6 +1,10 @@
 # coding=utf-8
 
+from typing import Union
+
 import sqlalchemy as sa
+from flask import Flask
+from flask.ctx import RequestContext
 from flask.signals import request_started
 from pytest import mark
 from wtforms import Form, IntegerField, StringField
@@ -27,7 +31,7 @@ class WidgetTestModel(Entity):
         Entity.__init__(self, *args, **kw)
         self._display_value_called = False
 
-    def display_value(self, attr):
+    def display_value(self, attr: str) -> Union[int, str]:
         self._display_value_called = True
         return getattr(self, attr)
 
@@ -38,7 +42,7 @@ class DummyForm(Form):
     email = StringField("email", view_widget=EmailWidget())
 
 
-def test_table_view(app, test_request_context):
+def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
     @default_view(app, WidgetTestModel)
     @app.route("/dummy_view/<object_id>")
     def dummy_view(object_id):
@@ -59,7 +63,7 @@ def test_table_view(app, test_request_context):
     assert "10000" in res
 
 
-def test_single_view(test_request_context):
+def test_single_view(test_request_context: RequestContext) -> None:
     panels = [Panel("main", Row("name"), Row("price"), Row("email"))]
     view = SingleView(DummyForm, *panels, view={"can_edit": False, "can_delete": False})
     model = WidgetTestModel(name="Renault Megane", price=10000, email="joe@example.com")

@@ -1,24 +1,34 @@
 # coding=utf-8
 """"""
 import shutil
+import typing
 import weakref
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Set, Union
 from uuid import UUID, uuid1
 
 import sqlalchemy as sa
 import sqlalchemy.event
+from _io import StringIO
 from flask import _app_ctx_stack
 from flask.globals import _lookup_app_object
-from sqlalchemy.orm.session import Session
+from sqlalchemy.engine.base import Connection
+from sqlalchemy.orm.scoping import scoped_session
+from sqlalchemy.orm.session import Session, SessionTransaction
+from sqlalchemy.orm.unitofwork import UOWTransaction
 
 from abilian.core.extensions import db
+from abilian.core.models import Model
+from abilian.core.models.blob import Blob
 from abilian.services import Service, ServiceState
+
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
 
 _NULL_MARK = object()
 
 
-def _assert_uuid(uuid):
+def _assert_uuid(uuid: Union[bytes, str, UUID]) -> None:
     if not isinstance(uuid, UUID):
         raise ValueError("Not an uuid.UUID instance", uuid)
 
@@ -34,8 +44,8 @@ class RepositoryService(Service):
     name = "repository"
     AppStateClass = RepositoryServiceState
 
-    def init_app(self, app):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application") -> None:
+        super().init_app(app)
 
         path = app.data_dir / "files"
         if not path.exists():
@@ -135,7 +145,7 @@ class SessionRepositoryState(ServiceState):
     path = None  # type: Path
 
     @property
-    def transactions(self):
+    def transactions(self) -> Dict[int, Any]:
         try:
             return _lookup_app_object(_REPOSITORY_TRANSACTION)
         except AttributeError:
@@ -152,8 +162,7 @@ class SessionRepositoryState(ServiceState):
         setattr(top, _REPOSITORY_TRANSACTION, value)
 
     # transaction <-> db session accessors
-    def get_transaction(self, session):
-        # type: (Session) -> Optional[RepositoryTransaction]
+    def get_transaction(self, session: Session) -> Optional["RepositoryTransaction"]:
         if isinstance(session, sa.orm.scoped_session):
             session = session()
 
@@ -167,8 +176,9 @@ class SessionRepositoryState(ServiceState):
             transaction = None
         return transaction
 
-    def set_transaction(self, session, transaction):
-        # type: (Session, RepositoryTransaction) -> None
+    def set_transaction(
+        self, session: Session, transaction: "RepositoryTransaction"
+    ) -> None:
         """
         :param:session: :class:`sqlalchemy.orm.session.Session` instance
         :param:transaction: :class:`RepositoryTransaction` instance
@@ -179,8 +189,9 @@ class SessionRepositoryState(ServiceState):
         s_id = id(session)
         self.transactions[s_id] = (weakref.ref(session), transaction)
 
-    def create_transaction(self, session, transaction):
-        # type: (Session, RepositoryTransaction) -> None
+    def create_transaction(
+        self, session: Session, transaction: "RepositoryTransaction"
+    ) -> None:
         if not self.running:
             return
 
@@ -189,8 +200,9 @@ class SessionRepositoryState(ServiceState):
         transaction = RepositoryTransaction(root_path, parent)
         self.set_transaction(session, transaction)
 
-    def end_transaction(self, session, transaction):
-        # type: (Session, RepositoryTransaction) -> None
+    def end_transaction(
+        self, session: Session, transaction: "RepositoryTransaction"
+    ) -> None:
         if not self.running:
             return
 
@@ -202,7 +214,7 @@ class SessionRepositoryState(ServiceState):
                 tr.commit(session)
             self.set_transaction(session, tr._parent)
 
-    def begin(self, session):
+    def begin(self, session: Session) -> Optional[Any]:
         if not self.running:
             return
 
@@ -213,8 +225,7 @@ class SessionRepositoryState(ServiceState):
 
         return tr.begin(session)
 
-    def commit(self, session):
-        # type: (Session) -> None
+    def commit(self, session: Session) -> None:
         if not self.running:
             return
 
@@ -224,14 +235,14 @@ class SessionRepositoryState(ServiceState):
 
         tr.commit(session)
 
-    def flush(self, session, flush_context):
+    def flush(self, session: Session, flush_context: UOWTransaction) -> None:
         # when sqlalchemy is flushing it is done in a sub-transaction,
         # not the root one. So when calling our 'commit' from here
         # we are not in our root transaction, so changes will not be
         # written to repository.
         self.commit(session)
 
-    def rollback(self, session):
+    def rollback(self, session: Session) -> None:
         if not self.running:
             return
 
@@ -254,10 +265,10 @@ class SessionRepositoryService(Service):
 
     def __init__(self, *args, **kwargs):
         self.__listening = False
-        Service.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-    def init_app(self, app):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application") -> None:
+        super().init_app(app)
 
         path = Path(app.instance_path, "tmp", "files_transactions")
         if not path.exists():
@@ -280,7 +291,7 @@ class SessionRepositoryService(Service):
         listen(Session, "after_rollback", self.rollback)
         # appcontext_tearing_down.connect(self.clear_transaction, app)
 
-    def _session_for(self, model_or_session):
+    def _session_for(self, model_or_session: Union[Model, Session]) -> Session:
         """Return session instance for object parameter.
 
         If parameter is a session instance, it is return as is.
@@ -306,7 +317,13 @@ class SessionRepositoryService(Service):
         return session
 
     # repository interface
-    def get(self, session, uuid, default=None):
+    def get(
+        self,
+        session: Union[Blob, Session],
+        uuid: Union[bytes, UUID],
+        default: Optional[object] = None,
+    ) -> Union[None, object, Path]:
+        #
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         try:
@@ -319,12 +336,20 @@ class SessionRepositoryService(Service):
 
         return val
 
-    def set(self, session, uuid, content, encoding="utf-8"):
+    def set(
+        self,
+        session: Union[Blob, scoped_session],
+        uuid: Union[bytes, UUID],
+        content: Union[StringIO, bytes, str],
+        encoding: str = "utf-8",
+    ) -> None:
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         transaction.set(uuid, content, encoding)
 
-    def delete(self, session, uuid):
+    def delete(
+        self, session: Union[Blob, scoped_session], uuid: Union[bytes, UUID]
+    ) -> None:
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         if self.get(session, uuid) is not None:
@@ -332,27 +357,33 @@ class SessionRepositoryService(Service):
 
     # session event handlers
     @Service.if_running
-    def create_transaction(self, session, transaction):
+    def create_transaction(
+        self, session: Session, transaction: SessionTransaction
+    ) -> Optional[Any]:
         return self.app_state.create_transaction(session, transaction)
 
     @Service.if_running
-    def end_transaction(self, session, transaction):
+    def end_transaction(
+        self, session: Session, transaction: SessionTransaction
+    ) -> Optional[Any]:
         return self.app_state.end_transaction(session, transaction)
 
     @Service.if_running
-    def begin(self, session, transaction, connection):
+    def begin(
+        self, session: Session, transaction: SessionTransaction, connection: Connection
+    ) -> Optional[Any]:
         return self.app_state.begin(session)
 
     @Service.if_running
-    def commit(self, session):
+    def commit(self, session: Session) -> None:
         return self.app_state.commit(session)
 
     @Service.if_running
-    def flush(self, session, flush_context):
+    def flush(self, session: Session, flush_context: UOWTransaction) -> None:
         return self.app_state.flush(session, flush_context)
 
     @Service.if_running
-    def rollback(self, session):
+    def rollback(self, session: Session) -> None:
         return self.app_state.rollback(session)
 
 
@@ -360,7 +391,9 @@ session_repository = SessionRepositoryService()
 
 
 class RepositoryTransaction:
-    def __init__(self, root_path, parent=None):
+    def __init__(
+        self, root_path: Path, parent: Optional["RepositoryTransaction"] = None
+    ) -> None:
         self.path = root_path / str(uuid1())
         # if parent is not None and parent.cleared:
         #   parent = None
@@ -391,14 +424,14 @@ class RepositoryTransaction:
         del self._set
         self.__cleared = True
 
-    def begin(self, session=None):
+    def begin(self, session: Optional[Session] = None) -> None:
         if not self.path.exists():
             self.path.mkdir(0o700)
 
-    def rollback(self, session=None):
+    def rollback(self, session: Optional[Session] = None) -> None:
         self._clear()
 
-    def commit(self, session=None):
+    def commit(self, session: Optional[Session] = None) -> None:
         """Merge modified objects into parent transaction.
 
         Once commited a transaction object is not usable anymore
@@ -444,7 +477,9 @@ class RepositoryTransaction:
             # content_path.replace is not available with python < 3.3.
             content_path.rename(p.path / str(uuid))
 
-    def _add_to(self, uuid, dest, other):
+    def _add_to(
+        self, uuid: Union[bytes, UUID], dest: Set[UUID], other: Set[UUID]
+    ) -> None:
         """Add `item` to `dest` set, ensuring `item` is not present in `other`
         set."""
         _assert_uuid(uuid)
@@ -457,8 +492,7 @@ class RepositoryTransaction:
     def delete(self, uuid: UUID) -> None:
         self._add_to(uuid, self._deleted, self._set)
 
-    def set(self, uuid, content, encoding="utf-8"):
-        # type: (UUID, Any, str) -> None
+    def set(self, uuid: UUID, content: Any, encoding: str = "utf-8") -> None:
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 

@@ -1,10 +1,12 @@
 # coding=utf-8
 
 from functools import wraps
+from typing import Callable
 
 from flask import Blueprint, current_app, jsonify, request
 from flask_wtf import Form as FlaskForm
 from werkzeug.exceptions import Forbidden
+from wtforms.ext.csrf.fields import CSRFTokenField
 
 blueprint = Blueprint("csrf", __name__, url_prefix="/csrf")
 
@@ -14,7 +16,7 @@ def json_token_view():
     return jsonify(token=token())
 
 
-def field():
+def field() -> CSRFTokenField:
     """Return an instance of `wtforms.ext.csrf.fields.CSRFTokenField`, suitable
     for rendering.
 
@@ -44,7 +46,7 @@ def token() -> str:
     return field().current_token or ""
 
 
-def support_graceful_failure(view):
+def support_graceful_failure(view: Callable) -> Callable:
     """Decorator to indicate that the view will handle itself the csrf failure.
 
     View can be a view function or a class based view
@@ -57,7 +59,7 @@ def has_failed():
     return getattr(request, "csrf_failed", False)
 
 
-def protect(view):
+def protect(view: Callable) -> Callable:
     """Protects a view agains CSRF attacks by checking `csrf_token` value in
     submitted values. Do nothing if `config.WTF_CSRF_ENABLED` is not set.
 

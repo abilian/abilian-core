@@ -1,12 +1,18 @@
 # coding=utf-8
 import inspect
+import typing
 from operator import attrgetter, itemgetter
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Union
 
 from flask import Blueprint, url_for
+from flask.blueprints import BlueprintSetupState
 from whoosh.searching import Hit
 
+from abilian.core.entities import Entity
 from abilian.core.extensions import db
+
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
 
 
 class Registry:
@@ -18,7 +24,7 @@ class Registry:
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self._map: Dict[str, Callable] = {}
 
-    def register(self, entity, url_func):
+    def register(self, entity: Entity, url_func: Callable) -> None:
         """Associate a `url_func` with entity's type.
 
         :param:entity: an :class:`abilian.core.extensions.db.Model` class or
@@ -32,7 +38,13 @@ class Registry:
         assert issubclass(entity, db.Model)
         self._map[entity.entity_type] = url_func
 
-    def url_for(self, entity=None, object_type=None, object_id=None, **kwargs):
+    def url_for(
+        self,
+        entity: Entity = None,
+        object_type: Optional[Any] = None,
+        object_id: Optional[Any] = None,
+        **kwargs: Any
+    ) -> str:
         """Return canonical view URL for given entity instance.
 
         If no view has been registered the registry will try to find an
@@ -80,8 +92,13 @@ class default_view:
     """
 
     def __init__(
-        self, app_or_blueprint, entity, id_attr="object_id", endpoint=None, kw_func=None
-    ):
+        self,
+        app_or_blueprint: Union["Application", Blueprint],
+        entity: Entity,
+        id_attr: str = "object_id",
+        endpoint: Optional[Any] = None,
+        kw_func: Optional[Any] = None,
+    ) -> None:
         self.app_or_blueprint = app_or_blueprint
         self.is_bp = isinstance(app_or_blueprint, Blueprint)
         self.entity = entity
@@ -89,7 +106,7 @@ class default_view:
         self.endpoint = endpoint
         self.kw_func = kw_func
 
-    def __call__(self, view):
+    def __call__(self, view: Callable) -> Callable:
         endpoint = self.endpoint
 
         if endpoint is None:
@@ -100,7 +117,7 @@ class default_view:
         if endpoint[0] == ".":
             endpoint = self.app_or_blueprint.name + endpoint
 
-        def default_url(obj, obj_type, obj_id, **kwargs):
+        def default_url(obj: Entity, obj_type: str, obj_id: int, **kwargs: Any) -> str:
             kw = {}
             kw.update(kwargs)
             if self.id_attr is not None:
@@ -114,7 +131,7 @@ class default_view:
         if self.is_bp:
 
             @self.app_or_blueprint.record_once
-            def set_default_view(state):
+            def set_default_view(state: BlueprintSetupState) -> None:
                 state.app.default_view.register(self.entity, default_url)
 
         else:

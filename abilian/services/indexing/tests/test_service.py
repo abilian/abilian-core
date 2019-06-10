@@ -1,9 +1,14 @@
 # coding=utf-8
 """"""
+from typing import Iterator, Union
+
 import sqlalchemy as sa
 from pytest import fixture
+from sqlalchemy.orm.scoping import scoped_session
 
+from abilian.app import Application
 from abilian.core.entities import Entity
+from abilian.services.indexing.service import WhooshIndexService
 
 
 class IndexedContact(Entity):
@@ -13,21 +18,23 @@ class IndexedContact(Entity):
 
 
 @fixture
-def svc(app):
+def svc(app: Application) -> Iterator[Union[Iterator, Iterator[WhooshIndexService]]]:
     svc = app.services["indexing"]
     with app.app_context():
         svc.start()
         yield svc
 
 
-def test_app_state(app, svc):
+def test_app_state(app: Application, svc: WhooshIndexService) -> None:
     state = svc.app_state
     assert IndexedContact in state.indexed_classes
     assert IndexedContact.entity_type in svc.adapted
     assert IndexedContact.entity_type in state.indexed_fqcn
 
 
-def test_index_only_after_final_commit(app, session, svc):
+def test_index_only_after_final_commit(
+    app: Application, session: scoped_session, svc: WhooshIndexService
+) -> None:
     contact = IndexedContact(name="John Doe")
 
     state = svc.app_state
@@ -49,7 +56,7 @@ def test_index_only_after_final_commit(app, session, svc):
     assert state.to_update == []
 
 
-def test_clear(app, svc):
+def test_clear(app: Application, svc: WhooshIndexService) -> None:
     # just check no exception happens
     svc.clear()
 

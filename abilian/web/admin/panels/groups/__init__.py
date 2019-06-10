@@ -6,6 +6,7 @@ from abilian.i18n import _, _l
 from abilian.web.admin.panel import AdminPanel
 from abilian.web.util import url_for
 from . import views
+from typing import Callable
 
 
 class GroupsPanel(AdminPanel):
@@ -15,7 +16,7 @@ class GroupsPanel(AdminPanel):
     label = _l("Groups")
     icon = "grain"
 
-    def install_additional_rules(self, add_url_rule):
+    def install_additional_rules(self, add_url_rule: Callable) -> None:
         add_url_rule("/groups", view_func=views.JsonGroupsList.as_view("json_list"))
         add_url_rule("/new", view_func=views.GroupCreate.as_view("new"))
         add_url_rule("/<int:group_id>/", view_func=views.GroupView.as_view("group"))

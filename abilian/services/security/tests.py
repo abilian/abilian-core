@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
-from pytest import fixture, mark
+from typing import Iterator
 
+from pytest import fixture, mark
+from sqlalchemy.orm import Session
+
+from abilian.app import Application
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import Group, User, create_root_user
+from abilian.core.sqlalchemy import SQLAlchemy
 
 from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
     InheritSecurity, Owner, Permission, PermissionAssignment, Reader, Role, \
@@ -33,7 +38,7 @@ def test_enumerate_assignables(db):
 
 
 @fixture
-def session(app, db):
+def session(app: Application, db: SQLAlchemy) -> Iterator[Session]:
     security.start()
     create_root_user()
 
@@ -51,7 +56,7 @@ class FolderishModel(Entity, InheritSecurity):
     pass
 
 
-def test_anonymous_user(app, session):
+def test_anonymous_user(app: Application, session: Session) -> None:
     # anonymous user is not an SQLAlchemy instance and must be handled
     # specifically to avoid tracebacks
     anon = app.login_manager.anonymous_user()
@@ -61,7 +66,7 @@ def test_anonymous_user(app, session):
     assert not security.has_permission(anon, "read")
 
 
-def test_has_role_authenticated(app, session):
+def test_has_role_authenticated(app: Application, session: Session) -> None:
     anon = app.login_manager.anonymous_user()
     user = User(email="john@example.com", password="x")
     session.add(user)
@@ -70,7 +75,7 @@ def test_has_role_authenticated(app, session):
     assert security.has_role(user, Authenticated)
 
 
-def test_root_user(session):
+def test_root_user(session: Session) -> None:
     # Root user always has any role, any permission.
     root = User.query.get(0)
     assert isinstance(root, User)
@@ -85,7 +90,7 @@ def test_root_user(session):
     assert security.has_permission(root, "manage", obj)
 
 
-def test_grant_basic_roles(session):
+def test_grant_basic_roles(session: Session) -> None:
     user = User(email="john@example.com", password="x")
     session.add(user)
     session.flush()
@@ -116,7 +121,7 @@ def test_grant_basic_roles(session):
     assert not security.has_permission(user, "manage")
 
 
-def test_grant_basic_roles_on_groups(session):
+def test_grant_basic_roles_on_groups(session: Session) -> None:
     user = User(email="john@example.com", password="x")
     group = Group(name="Test Group")
     user.groups.add(group)
@@ -145,7 +150,7 @@ def test_grant_basic_roles_on_groups(session):
     assert not security.has_permission(user, "manage")
 
 
-def test_grant_roles_on_objects(session):
+def test_grant_roles_on_objects(session: Session) -> None:
     user = User(email="john@example.com", password="x")
     user2 = User(email="papa@example.com", password="p")
     group = Group(name="Test Group")
@@ -229,7 +234,7 @@ def test_grant_roles_on_objects(session):
     assert not security.has_permission(user, READ, new_obj)
 
 
-def test_grant_roles_unique(session):
+def test_grant_roles_unique(session: Session) -> None:
     user = User(email="john@example.com", password="x")
     obj = DummyModel()
     session.add_all([user, obj])
@@ -250,7 +255,7 @@ def test_grant_roles_unique(session):
     assert RoleAssignment.query.count() == 2
 
 
-def test_inherit(session):
+def test_inherit(session: Session) -> None:
     folder = FolderishModel()
     session.add(folder)
     session.flush()
@@ -267,7 +272,7 @@ def test_inherit(session):
     assert SecurityAudit.query.count() == 2
 
 
-def test_add_list_delete_permissions(session):
+def test_add_list_delete_permissions(session: Session) -> None:
     obj = DummyModel()
     assert security.get_permissions_assignments(obj) == {}
     session.add(obj)
@@ -294,7 +299,7 @@ def test_add_list_delete_permissions(session):
     assert security.get_permissions_assignments() == {READ: {Writer}}
 
 
-def test_has_permission_on_objects(session):
+def test_has_permission_on_objects(session: Session) -> None:
     has_permission = security.has_permission
     user = User(email="john@example.com", password="x")
     group = Group(name="Test Group")
@@ -345,7 +350,7 @@ def test_has_permission_on_objects(session):
     assert security.has_role(user, Reader, object=obj) is False
 
 
-def test_has_permission_custom_roles(session):
+def test_has_permission_custom_roles(session: Session) -> None:
     user = User(email="john@example.com", password="x")
     session.add(user)
     session.flush()
@@ -480,7 +485,7 @@ def test_query_entity_with_permission(session):
     assert base_query.filter(get_filter(WRITE, user=user)).all() == [obj_writer]
 
 
-def test_add_delete_permissions_expunged_obj(session):
+def test_add_delete_permissions_expunged_obj(session: Session) -> None:
     # weird case. In CreateObject based views, usually Entity is
     # instanciated and might be added to session if it has a relationship
     # with an existing object.

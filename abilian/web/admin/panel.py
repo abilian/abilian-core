@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
 import typing
+from typing import Callable
 
 if typing.TYPE_CHECKING:
     from .extension import Admin
@@ -30,7 +31,7 @@ class AdminPanel:
         """
         pass
 
-    def install_additional_rules(self, add_url_rule):
+    def install_additional_rules(self, add_url_rule: Callable) -> None:
         """This method can be redefined in subclasses to install custom url
         rules.
 

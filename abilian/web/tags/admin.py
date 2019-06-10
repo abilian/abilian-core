@@ -1,7 +1,7 @@
 # coding=utf-8
 """Admin panel for tags."""
 import logging
-from typing import List
+from typing import Callable, List
 
 import sqlalchemy as sa
 import sqlalchemy.orm
@@ -277,7 +277,7 @@ class TagPanel(AdminPanel):
 
         return render_template("admin/tags.html", namespaces=namespaces)
 
-    def install_additional_rules(self, add_url_rule):
+    def install_additional_rules(self, add_url_rule: Callable) -> None:
         panel_endpoint = "." + self.id
         ns_base = "/<string:ns>/"
         add_url_rule(

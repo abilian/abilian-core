@@ -4,13 +4,15 @@
 See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for
 more ideas of stuff to implement.
 """
+from typing import Any, Union
+
 from flask import current_app
 from flask import url_for as flask_url_for
 from flask.helpers import send_from_directory
 from werkzeug.routing import BuildError
 
 
-def url_for(obj, **kw):
+def url_for(obj: Any, **kw: Any) -> str:
     """Polymorphic variant of Flask's `url_for` function.
 
     Behaves like the original function when the first argument is a

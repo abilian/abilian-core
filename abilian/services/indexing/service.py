@@ -11,20 +11,22 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :license: BSD (see LICENSE.txt)
 """
 import logging
+import typing
 from inspect import isclass
 from pathlib import Path
-from typing import Any, Set
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import sqlalchemy as sa
 import whoosh.query as wq
 from celery import shared_task
-from flask import _app_ctx_stack, appcontext_pushed, current_app, g
+from flask import Flask, _app_ctx_stack, appcontext_pushed, current_app, g
 from flask.globals import _lookup_app_object
 from flask_login import current_user
 from sqlalchemy import event
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session
+from sqlalchemy.orm.unitofwork import UOWTransaction
 from whoosh.filedb.filestore import FileStorage, RamStorage
-from whoosh.index import FileIndex
+from whoosh.index import FileIndex, Index
 from whoosh.qparser import DisMaxParser
 from whoosh.writing import CLEAR, AsyncWriter
 
@@ -40,6 +42,9 @@ from abilian.services.security import Anonymous, Authenticated, Role, security
 
 from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
+
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
 
 logger = logging.getLogger(__name__)
 
@@ -66,22 +71,22 @@ def fqcn(cls: Any) -> str:
 
 
 class IndexServiceState(ServiceState):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: "WhooshIndexService", **kwargs: Any) -> None:
         ServiceState.__init__(self, *args, **kwargs)
         self.whoosh_base = None
-        self.indexes = {}
-        self.indexed_classes = set()  # type: Set[type]
-        self.indexed_fqcn = set()
+        self.indexes: Dict[str, Index] = {}
+        self.indexed_classes: Set[type] = set()
+        self.indexed_fqcn: Set[str] = set()
         self.search_filter_funcs = []
         self.value_provider_funcs = []
         self.url_for_hit = url_for_hit
 
     @property
-    def to_update(self):
+    def to_update(self) -> List[Tuple[str, Entity]]:
         return _lookup_app_object(_pending_indexation_attr)
 
     @to_update.setter
-    def to_update(self, value):
+    def to_update(self, value: List) -> None:
         top = _app_ctx_stack.top
         if top is None:
             raise RuntimeError("working outside of application context")
@@ -102,8 +107,8 @@ class WhooshIndexService(Service):
         self.schemas = {"default": DefaultSearchSchema()}
         self._listening = False
 
-    def init_app(self, app):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application") -> None:
+        super().init_app(app)
         state = app.extensions[self.name]
 
         whoosh_base = Path(app.config.get("WHOOSH_BASE", "whoosh"))
@@ -124,7 +129,7 @@ class WhooshIndexService(Service):
         appcontext_pushed.connect(self.clear_update_queue, app)
         signals.register_js_api.connect(self._do_register_js_api)
 
-    def _do_register_js_api(self, sender):
+    def _do_register_js_api(self, sender: "Application") -> None:
         app = sender
         js_api = app.js_api.setdefault("search", {})
         js_api["object_types"] = self.searchable_object_types()
@@ -149,7 +154,7 @@ class WhooshIndexService(Service):
         """
         self.app_state.value_provider_funcs.append(func)
 
-    def clear_update_queue(self, app=None):
+    def clear_update_queue(self, app: Optional[Flask] = None) -> None:
         self.app_state.to_update = []
 
     def start(self, ignore_state: bool = False) -> None:
@@ -199,7 +204,7 @@ class WhooshIndexService(Service):
         if self.running:
             self.stop()
 
-    def index(self, name="default"):
+    def index(self, name: str = "default") -> Index:
         return self.app_state.indexes[name]
 
     @property
@@ -213,7 +218,7 @@ class WhooshIndexService(Service):
             config = {"name": 1.5, "name_prefix": 1.3, "description": 1.3, "text": 1.0}
             return config
 
-    def searchable_object_types(self):
+    def searchable_object_types(self) -> List:
         """List of (object_types, friendly name) present in the index."""
         try:
             idx = self.index()
@@ -361,7 +366,7 @@ class WhooshIndexService(Service):
             if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)
 
-    def register_class(self, cls, app_state=None):
+    def register_class(self, cls: type, app_state: IndexServiceState = None) -> None:
         """Register a model class."""
         state = app_state if app_state is not None else self.app_state
 
@@ -376,7 +381,7 @@ class WhooshIndexService(Service):
         state.indexed_classes.add(cls)
         state.indexed_fqcn.add(cls_fqcn)
 
-    def after_flush(self, session, flush_context):
+    def after_flush(self, session: Session, flush_context: UOWTransaction) -> None:
         if not self.running or session is not db.session():
             return
 
@@ -396,7 +401,7 @@ class WhooshIndexService(Service):
 
                 to_update.append((key, obj))
 
-    def after_commit(self, session):
+    def after_commit(self, session: Session) -> None:
         """Any db updates go through here.
 
         We check if any of these models have ``__searchable__`` fields,
@@ -433,7 +438,7 @@ class WhooshIndexService(Service):
             index_update.apply_async(kwargs={"index": "default", "items": items})
         self.clear_update_queue()
 
-    def get_document(self, obj, adapter=None):
+    def get_document(self, obj: Entity, adapter: SAAdapter = None) -> Dict[str, Any]:
         if adapter is None:
             class_name = fqcn(obj.__class__)
             adapter = self.adapted.get(class_name)
@@ -496,7 +501,7 @@ service = WhooshIndexService()
 
 
 @shared_task
-def index_update(index, items):
+def index_update(index: str, items: List[List[Union[Dict, int, str]]]) -> None:
     """
     :param:index: index name
     :param:items: list of (operation, full class name, primary key, data) tuples.
@@ -572,5 +577,5 @@ class TestingStorage(RamStorage):
     tests are ran in parallel, including different abilian-based packages.
     """
 
-    def temp_storage(self, name=None):
+    def temp_storage(self, name: str = None) -> "TestingStorage":
         return TestingStorage()

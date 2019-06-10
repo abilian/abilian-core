@@ -1,11 +1,16 @@
 # coding=utf-8
 """Vocabularies service."""
+import typing
 from inspect import isclass
 
 import jinja2
 
 from abilian.services.base import Service
+
 from .models import BaseVocabulary
+
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
 
 
 def _vocabularies():
@@ -36,8 +41,8 @@ def get_vocabulary(name, group=""):
 class VocabularyService(Service):
     name = "vocabularies"
 
-    def init_app(self, app):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application") -> None:
+        super().init_app(app)
         app.register_jinja_loaders(jinja2.PackageLoader(__name__))
 
     @property

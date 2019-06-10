@@ -8,6 +8,7 @@ import time
 import unicodedata
 from datetime import datetime
 from math import ceil
+from typing import Any, Union
 
 import pytz
 from babel.dates import LOCALTZ
@@ -15,7 +16,7 @@ from flask import request
 from werkzeug.local import LocalProxy
 
 
-def unwrap(obj):
+def unwrap(obj: Any):
     """Unwrap obj from werkzeug.local.LocalProxy if needed.
 
     This is required if one want to test `isinstance(obj, SomeClass)`.
@@ -29,28 +30,30 @@ def unwrap(obj):
 noproxy = unwrap
 
 
-def fqcn(cls):
+def fqcn(cls: type) -> str:
     """Fully Qualified Class Name."""
     return str(cls.__module__ + "." + cls.__name__)
 
 
-def friendly_fqcn(cls_name):
+def friendly_fqcn(cls_or_cls_name: Union[type, str]) -> str:
     """Friendly name of fully qualified class name.
 
-    :param cls_name: a string or a class
+    :param cls_or_cls_name: a string or a class
     """
-    if isinstance(cls_name, type):
-        cls_name = fqcn(cls_name)
+    if isinstance(cls_or_cls_name, type):
+        cls_name = fqcn(cls_or_cls_name)
+    else:
+        cls_name = cls_or_cls_name
 
     return cls_name.rsplit(".", 1)[-1]
 
 
-def utcnow():
+def utcnow() -> datetime:
     """Return a new aware datetime with current date and time, in UTC TZ."""
     return datetime.now(pytz.utc)
 
 
-def local_dt(dt):
+def local_dt(dt: datetime) -> datetime:
     """Return an aware datetime in system timezone, from a naive or aware
     datetime.
 
@@ -61,7 +64,7 @@ def local_dt(dt):
     return LOCALTZ.normalize(dt.astimezone(LOCALTZ))
 
 
-def utc_dt(dt):
+def utc_dt(dt: datetime) -> datetime:
     """Set UTC timezone on a datetime object.
 
     A naive datetime is assumed to be in UTC TZ.

@@ -1,9 +1,9 @@
 # coding=utf-8
 """"""
 import logging
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Optional, Union
 
-from flask import Blueprint, g
+from flask import Blueprint, Flask, g
 from flask.helpers import _endpoint_from_view_func
 from flask_login import current_user
 from werkzeug.exceptions import Forbidden
@@ -37,7 +37,7 @@ class Admin:
         self.breadcrumb_items: Dict[AdminPanel, BreadcrumbItem] = {}
         self.setup_blueprint()
 
-        def condition(context):
+        def condition(context: Dict[str, bool]) -> bool:
             return not current_user.is_anonymous and security.has_role(
                 current_user, AdminRole
             )
@@ -53,7 +53,7 @@ class Admin:
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         panels = app.config.get("ADMIN_PANELS", ())
 
         # resolve fully qualified name into an AdminPanel object
@@ -93,7 +93,7 @@ class Admin:
         self.app = app
         app.extensions["admin"] = self
 
-    def register_panel(self, panel):
+    def register_panel(self, panel: Any) -> None:
         if self.app:
             raise ValueError(
                 "Extension already initialized for app, cannot add more" " panel"
@@ -132,10 +132,17 @@ class Admin:
             label=panel.label, icon=panel.icon, url=Endpoint(abs_endpoint)
         )
 
-    def get_panel_url_rule_adder(self, panel, base_url, base_endpoint):
+    def get_panel_url_rule_adder(
+        self, panel: Any, base_url: str, base_endpoint: str
+    ) -> Callable:
         extension = self
 
-        def add_url_rule(rule, endpoint=None, view_func=None, **kwargs):
+        def add_url_rule(
+            rule: str,
+            endpoint: Optional[Any] = None,
+            view_func: Optional[Callable] = None,
+            **kwargs: Any,
+        ) -> None:
             if not rule:
                 # '' is already used for panel get/post
                 raise ValueError("Invalid additional url rule: {}".format(repr(rule)))
@@ -147,7 +154,7 @@ class Admin:
                 endpoint = base_endpoint + "_" + endpoint
 
             extension._panels_endpoints["admin." + endpoint] = panel
-            return self.blueprint.add_url_rule(
+            self.blueprint.add_url_rule(
                 base_url + rule, endpoint=endpoint, view_func=view_func, **kwargs
             )
 

@@ -4,6 +4,7 @@ import uuid
 from pathlib import Path
 
 from pytest import raises
+from sqlalchemy.orm.scoping import scoped_session
 
 from . import repository
 
@@ -11,7 +12,7 @@ UUID_STR = "4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9"
 UUID = uuid.UUID(UUID_STR)
 
 
-def test_rel_path(session):
+def test_rel_path(session: scoped_session) -> None:
     with raises(ValueError):
         repository.rel_path(UUID_STR)
 
@@ -21,7 +22,7 @@ def test_rel_path(session):
     assert p == expected
 
 
-def test_abs_path(session):
+def test_abs_path(session: scoped_session) -> None:
     with raises(ValueError):
         repository.abs_path(UUID_STR)
 
@@ -34,7 +35,7 @@ def test_abs_path(session):
     # self.assertEquals(p, expected)
 
 
-def test_get(session):
+def test_get(session: scoped_session) -> None:
     with raises(ValueError):
         repository.get(UUID_STR)
 
@@ -66,14 +67,14 @@ def test_get(session):
         assert repository[u]
 
 
-def test_set(session):
+def test_set(session: scoped_session) -> None:
     u1 = uuid.uuid4()
     p = repository.abs_path(u1)
     repository.set(u1, b"my file content")
     assert p.open("rb").read() == b"my file content"
 
 
-def test_setitem(session):
+def test_setitem(session: scoped_session) -> None:
     u1 = uuid.uuid4()
     p = repository.abs_path(u1)
     repository[u1] = b"my file content"
@@ -81,7 +82,7 @@ def test_setitem(session):
     # FIXME: test Unicode content
 
 
-def test_delete(session):
+def test_delete(session: scoped_session) -> None:
     u1 = uuid.uuid4()
     repository.set(u1, b"my file content")
     p = repository.abs_path(u1)
@@ -91,7 +92,7 @@ def test_delete(session):
     assert not p.exists()
 
 
-def test_delitem(session):
+def test_delitem(session: scoped_session) -> None:
     u1 = uuid.uuid4()
     repository.set(u1, b"my file content")
     p = repository.abs_path(u1)
@@ -101,7 +102,7 @@ def test_delitem(session):
     assert not p.exists()
 
 
-def test_delete_non_existent(session):
+def test_delete_non_existent(session: scoped_session) -> None:
     # non-existent
     u1 = uuid.uuid4()
     with raises(KeyError):

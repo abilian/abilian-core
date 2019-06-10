@@ -16,12 +16,13 @@ from typing import Any, Iterator
 from flask import Flask
 from flask.ctx import AppContext, RequestContext
 from flask.testing import FlaskClient
-from flask_sqlalchemy import SQLAlchemy
 from pytest import fixture
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.scoping import scoped_session
 
 from abilian.app import create_app
 from abilian.core.models.subjects import User
+from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.testing.util import cleanup_db, ensure_services_started, \
     stop_all_services
 
@@ -41,7 +42,7 @@ class TestConfig:
 
 
 @fixture
-def config():
+def config() -> type:
     return TestConfig
 
 
@@ -89,7 +90,7 @@ def db(app_context: AppContext) -> SQLAlchemy:
 
 
 @fixture
-def session(db):
+def session(db: SQLAlchemy) -> scoped_session:
     return db.session
 
 

@@ -3,12 +3,13 @@
 import uuid
 
 from pytest import raises
+from sqlalchemy.orm.scoping import scoped_session
 
 from . import repository, session_repository
 from .service import RepositoryTransaction
 
 
-def test_transaction_lifetime(session):
+def test_transaction_lifetime(session: scoped_session) -> None:
     state = session_repository.app_state
     root_transaction = state.get_transaction(session)
     assert isinstance(root_transaction, RepositoryTransaction)
@@ -37,7 +38,7 @@ def test_transaction_lifetime(session):
     # assert transaction is root_transaction
 
 
-def test_accessors_bad_uuid_type(session):
+def test_accessors_bad_uuid_type(session: scoped_session) -> None:
     uuid_str = b"4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9"
 
     with raises(ValueError):
@@ -48,7 +49,7 @@ def test_accessors_bad_uuid_type(session):
         session_repository.delete(session, uuid_str)
 
 
-def test_accessors_non_existent_entry(session):
+def test_accessors_non_existent_entry(session: scoped_session) -> None:
     # non-existent
     u = uuid.uuid4()
     null = object()
@@ -56,7 +57,7 @@ def test_accessors_non_existent_entry(session):
     assert session_repository.get(session, u, default=null) is null
 
 
-def test_accessors_set_get_delete(session):
+def test_accessors_set_get_delete(session: scoped_session) -> None:
     # set
     content = b"my file content"
     u1 = uuid.uuid4()
@@ -77,7 +78,7 @@ def test_accessors_set_get_delete(session):
     assert repository.get(u2) is not None
 
 
-def test_transaction(session):
+def test_transaction(session: scoped_session) -> None:
     u = uuid.uuid4()
     repository.set(u, b"first draft")
     assert session_repository.get(session, u).open("rb").read() == b"first draft"
@@ -142,7 +143,7 @@ def test_transaction(session):
         assert session_repository.get(session, u).open("rb").read() == b"transaction 2"
 
 
-def test_transaction_path(session):
+def test_transaction_path(session: scoped_session) -> None:
     """Test RepositoryTransaction create storage only when needed."""
     u = uuid.uuid4()
 

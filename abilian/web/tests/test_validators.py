@@ -1,5 +1,7 @@
 # coding=utf-8
 
+from typing import Any, Callable, Iterator, Optional, Tuple, Union
+
 from pytest import fixture, raises
 from wtforms import Form, StringField
 from wtforms.validators import ValidationError
@@ -13,39 +15,42 @@ class DummyForm(Form):
 
 
 class DummyField:
-    def __init__(self, data, errors=(), raw_data=None):
+    def __init__(
+        self, data: str, errors: Tuple[()] = (), raw_data: Optional[Any] = None
+    ) -> None:
         self.data = data
         self.errors = list(errors)
         self.raw_data = raw_data
 
 
-def error_message(validator, form, field):
+def error_message(validator: Callable, form: DummyForm, field: DummyField) -> str:
     try:
         validator(form, field)
+        return ""
     except ValidationError as e:
         return e.args[0]
 
 
 @fixture()
-def validator():
+def validator() -> Iterator[Union[Iterator, Iterator[Callable]]]:
     yield siret_validator()
 
 
-def test_siret_validator_valid_1(validator):
+def test_siret_validator_valid_1(validator: Callable) -> None:
     # valid
     form = DummyForm(siret="54207855500514", name="foo")
     field = form.siret
     assert validator(form, field) is None
 
 
-def test_siret_validator_valid_2(validator):
+def test_siret_validator_valid_2(validator: Callable) -> None:
     # valid
     form = DummyForm(siret="54207855500514", name="foo")
     field = form.siret
     assert validator(form, field) is None
 
 
-def test_siret_validator_invalid_luhn(validator):
+def test_siret_validator_invalid_luhn(validator: Callable) -> None:
     # invalid Luhn (changed the first digit)
     form = DummyForm(siret="64207855500514", name="foo")
     field = form.siret
@@ -53,7 +58,7 @@ def test_siret_validator_invalid_luhn(validator):
         validator(form, field)
 
 
-def test_siret_validator_invalid_2(validator):
+def test_siret_validator_invalid_2(validator: Callable) -> None:
     # invalid
     form = DummyForm(siret="WRONG542078555", name="foo")
     field = form.siret
@@ -61,7 +66,7 @@ def test_siret_validator_invalid_2(validator):
         validator(form, field)
 
 
-def test_siret_validator_too_short(validator):
+def test_siret_validator_too_short(validator: Callable) -> None:
     # too short
     form = DummyForm(siret="54207", name="foo")
     field = form.siret
@@ -83,7 +88,7 @@ def test_siret_ok() -> None:
     assert siret(form, DummyField("MONACOCONFO372")) is None
 
 
-def test_siret_ko_special_siret(validator):
+def test_siret_ko_special_siret(validator: Callable) -> None:
     form = DummyForm()
 
     field = DummyField("MONACOCONFO999")
@@ -95,7 +100,7 @@ def test_siret_ko_special_siret(validator):
     )
 
 
-def test_siret_ko_invalid_length(validator):
+def test_siret_ko_invalid_length(validator: Callable) -> None:
     # invalid length
     form = DummyForm()
     field = DummyField("42342435")
@@ -107,7 +112,7 @@ def test_siret_ko_invalid_length(validator):
     )
 
 
-def test_siret_ko_invalid_luhn(validator):
+def test_siret_ko_invalid_luhn(validator: Callable) -> None:
     # invalid checksum
     form = DummyForm()
     field = DummyField("78913349300011")

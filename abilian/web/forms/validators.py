@@ -6,8 +6,11 @@ TODO: most of this is currently only stubs and needs to be implemented.
 NOTE: the `rule` property is supposed to be useful for generating client-side
 validation code.
 """
-from wtforms import validators
+from typing import Callable, Union
+
+from wtforms import Field, Form, validators
 from wtforms.compat import string_types
+from wtforms.fields.core import StringField
 
 from abilian.i18n import _, _n
 from abilian.services import get_service
@@ -236,11 +239,11 @@ def luhn(n: str) -> bool:
 SIRET_CODES = ("001", "458", "462", "496", "372")
 
 
-def siret_validator():
+def siret_validator() -> Callable:
     """Validate a SIRET: check its length (14), its final code, and pass it
     through the Luhn algorithm."""
 
-    def _validate_siret(form, field, siret=""):
+    def _validate_siret(form: Form, field: Field, siret: str = "") -> None:
         """SIRET validator.
 
         A WTForm validator wants a form and a field as parameters. We

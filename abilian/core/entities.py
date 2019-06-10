@@ -3,15 +3,18 @@
 (unlike SQLAlchemy models which are considered lower-level)."""
 import collections
 import re
+import typing
 from datetime import datetime
 from inspect import isclass
-from typing import FrozenSet
+from typing import Any, Dict, FrozenSet, List
 
 import sqlalchemy as sa
 from flask import current_app
 from sqlalchemy import event
+from sqlalchemy.engine.base import Connection
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import Session, mapper
+from sqlalchemy.orm import Mapper, Session, mapper
+from sqlalchemy.orm.unitofwork import UOWTransaction
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String, UnicodeText
 
@@ -20,6 +23,9 @@ from .models import BaseMixin
 from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
 from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
+
+if typing.TYPE_CHECKING:
+    from abilian.core.models.tag import Tag
 
 __all__ = [
     "Entity",
@@ -38,7 +44,7 @@ class ValidationError(Exception):
     pass
 
 
-def validation_listener(mapper, connection, target):
+def validation_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
     if hasattr(target, "_validate"):
         target._validate()
 
@@ -50,17 +56,17 @@ event.listen(mapper, "before_update", validation_listener)
 #
 # CRUD events. TODO: connect to signals instead?
 #
-def before_insert_listener(mapper, connection, target):
+def before_insert_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
     if hasattr(target, "_before_insert"):
         target._before_insert()
 
 
-def before_update_listener(mapper, connection, target):
+def before_update_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
     if hasattr(target, "_before_update"):
         target._before_update()
 
 
-def before_delete_listener(mapper, connection, target):
+def before_delete_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
     if hasattr(target, "_before_delete"):
         target._before_delete()
 
@@ -70,14 +76,14 @@ event.listen(mapper, "before_update", before_update_listener)
 event.listen(mapper, "before_delete", before_delete_listener)
 
 
-def auto_slug_on_insert(mapper, connection, target):
+def auto_slug_on_insert(mapper: Mapper, connection: Connection, target: Any) -> None:
     """Generate a slug from :prop:`Entity.auto_slug` for new entities, unless
     slug is already set."""
     if target.slug is None and target.name:
         target.slug = target.auto_slug
 
 
-def auto_slug_after_insert(mapper, connection, target):
+def auto_slug_after_insert(mapper: Mapper, connection: Connection, target: Any) -> None:
     """Generate a slug from entity_type and id, unless slug is already set."""
     if target.slug is None:
         target.slug = "{name}{sep}{id}".format(
@@ -86,7 +92,7 @@ def auto_slug_after_insert(mapper, connection, target):
 
 
 @event.listens_for(Session, "after_attach")
-def setup_default_permissions(session, instance):
+def setup_default_permissions(session: Session, instance: Any) -> None:
     """Setup default permissions on newly created entities according to.
 
     :attr:`Entity.__default_permissions__`.
@@ -101,7 +107,7 @@ def setup_default_permissions(session, instance):
     _setup_default_permissions(instance)
 
 
-def _setup_default_permissions(instance):
+def _setup_default_permissions(instance: Any) -> None:
     """Separate method to conveniently call it from scripts for example."""
     from abilian.services import get_service
 
@@ -126,7 +132,7 @@ class _EntityInherit:
     __indexable__ = True
 
     @declared_attr
-    def id(cls):
+    def id(cls) -> Column:
         return Column(
             Integer,
             ForeignKey("entity.id", use_alter=True, name="fk_inherited_entity_id"),
@@ -288,7 +294,7 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
     query_class = EntityQuery
 
     @declared_attr
-    def __mapper_args__(cls):
+    def __mapper_args__(cls) -> Dict[str, Any]:
         if cls.__module__ == __name__ and cls.__name__ == "Entity":
             return {"polymorphic_on": "_entity_type"}
 
@@ -424,22 +430,22 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
         return " ".join(result)
 
     @property
-    def _indexable_tags(self):
+    def _indexable_tags(self) -> List["Tag"]:
         """Index tag ids for tags defined in this Entity's default tags
         namespace."""
         tags = current_app.extensions.get("tags")
         if not tags or not tags.supports_taggings(self):
-            return ""
+            return []
 
         default_ns = tags.entity_default_ns(self)
         return [t for t in tags.entity_tags(self) if t.ns == default_ns]
 
     @property
-    def _indexable_tag_ids(self):
+    def _indexable_tag_ids(self) -> str:
         return " ".join(str(t.id) for t in self._indexable_tags)
 
     @property
-    def _indexable_tag_text(self):
+    def _indexable_tag_text(self) -> str:
         return " ".join(str(t.label) for t in self._indexable_tags)
 
     def clone(self):
@@ -484,7 +490,9 @@ def register_metadata(cls: type) -> None:
 
 
 @event.listens_for(Session, "before_flush")
-def polymorphic_update_timestamp(session, flush_context, instances):
+def polymorphic_update_timestamp(
+    session: Session, flush_context: UOWTransaction, instances: Any
+) -> None:
     """This listener ensures an update statement is emited for "entity" table
     to update 'updated_at'.
 

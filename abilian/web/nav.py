@@ -5,12 +5,17 @@ Abilian define theses categories:   `section`:     Used for navigation
 elements relevant to site section   `user`:     User for element that
 should appear in user menu
 """
-from typing import Any
+import typing
+from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import g
+from flask_babel.speaklater import LazyString
 from jinja2 import Markup, Template
 
 from .action import ACTIVE, ENABLED, Action, Glyphicon, getset
+
+if typing.TYPE_CHECKING:
+    from abilian.web.action import Status
 
 
 class NavItem(Action):
@@ -26,7 +31,7 @@ class NavItem(Action):
         self.divider = divider
 
     @getset
-    def status(self, value=None):
+    def status(self, value: Optional[Any] = None) -> "Status":
         current = g.nav.get("active")
         if current is None:
             return ENABLED
@@ -62,14 +67,16 @@ class NavGroup(NavItem):
     </ul>
     """
 
-    def __init__(self, category, name, items=(), *args, **kwargs):
+    def __init__(
+        self, category: str, name: str, items: Tuple[()] = (), *args: Any, **kwargs: Any
+    ) -> None:
         NavItem.__init__(self, category, name, *args, **kwargs)
         self.items = list(items)
         self._paths = {self.path}
         for i in self.items:
             self._paths.add(i.path)
 
-    def append(self, item):
+    def append(self, item: NavItem) -> None:
         self.items.append(item)
         self._paths.add(item.path)
 
@@ -77,13 +84,13 @@ class NavGroup(NavItem):
         self.items.insert(pos, item)
         self._paths.add(item.path)
 
-    def get_render_args(self, **kwargs):
+    def get_render_args(self, **kwargs: Any) -> Dict[str, Any]:
         params = super().get_render_args(**kwargs)
         params["action_items"] = [a for a in self.items if a.available(params)]
         return params
 
     @getset
-    def status(self, value=None):
+    def status(self, value: Optional[Any] = None) -> "Status":
         current = g.nav.get("active")
         if current is None:
             return ENABLED
@@ -116,7 +123,13 @@ class BreadcrumbItem:
         "{%- if url %}</a>{%- endif %}"
     )
 
-    def __init__(self, label="", url="#", icon=None, description=None):
+    def __init__(
+        self,
+        label: Union[LazyString, str] = "",
+        url="#",
+        icon: Optional[str] = None,
+        description: Optional[Any] = None,
+    ) -> None:
         # don't test 'label or...': if label is a lazy_gettext, it will be
         # resolved. If this item is created in a url_value_preprocessor, it will
         # setup i18n before auth has loaded user, so i18n will fallback on browser

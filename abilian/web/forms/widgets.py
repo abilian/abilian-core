@@ -9,7 +9,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, Optional, Text
+from typing import Any, Dict, List, Optional, Text, Tuple, Union
 from urllib import parse
 
 import bleach
@@ -21,6 +21,9 @@ from flask import Markup, current_app, g, json, render_template, \
 from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField
+from sqlalchemy.orm.mapper import Mapper
+from wtforms.fields.core import IntegerField, Label, StringField
+from wtforms.form import Form
 from wtforms.widgets import HTMLString, Input
 from wtforms.widgets import PasswordInput as BasePasswordInput
 from wtforms.widgets import Select
@@ -112,7 +115,7 @@ def linkify_url(value: str) -> str:
     )
 
 
-def text2html(text):
+def text2html(text: str) -> Union[Markup, str]:
     text = text.strip()
     if re.search("<(p|br)>", text.lower()):
         return text
@@ -134,7 +137,9 @@ class Column:
 class View:
     options = {}  # type: Dict[Text, Any]
 
-    def get_templates(self, specific_template_name, default_template):
+    def get_templates(
+        self, specific_template_name: str, default_template: str
+    ) -> List[str]:
         specific_template = self.options.get(specific_template_name)
         if specific_template:
             return [specific_template, default_template]
@@ -148,7 +153,7 @@ class BaseTableView(View):
     show_search = None
     paginate = False
 
-    def __init__(self, columns, options=None):
+    def __init__(self, columns: List[str], options: Optional[Any] = None) -> None:
         if self.show_search is None:
             self.show_search = self.show_controls
 
@@ -162,7 +167,7 @@ class BaseTableView(View):
             self.show_search = self.options.get("show_search", self.show_controls)
             self.paginate = self.options.get("paginate", self.paginate)
 
-    def init_columns(self, columns):
+    def init_columns(self, columns: List[str]) -> None:
         # TODO
         self.columns = []
         default_width = "{:2.0f}%".format(0.99 / len(columns) * 100)
@@ -176,7 +181,7 @@ class BaseTableView(View):
                 col["label"] = labelize(col["name"])
             self.columns.append(col)
 
-    def render(self, entities, **kwargs):
+    def render(self, entities: List[Entity], **kwargs: Any) -> Markup:
         aoColumns = []
         aaSorting = []
         offset = 0
@@ -222,7 +227,7 @@ class BaseTableView(View):
             render_template(templates, table=table, js=Markup(js), view=self, **kwargs)
         )
 
-    def render_line(self, entity):
+    def render_line(self, entity: Entity) -> List[Union[Markup, str]]:
         line = []
         make_link_on = self.options.get("make_link_on")
 
@@ -453,12 +458,12 @@ class AjaxMainTableView(View):
 class SingleView(View):
     """View on a single object."""
 
-    def __init__(self, form, *panels, **options):
+    def __init__(self, form: Form, *panels: "Panel", **options: Any) -> None:
         self.form = form
         self.panels = panels
         self.options = options
 
-    def render(self, item, form, related_views=()):
+    def render(self, item: Entity, form: Form, related_views: Tuple[()] = ()) -> Markup:
         mapper = sa.orm.class_mapper(item.__class__)
         panels = []
         _to_skip = (None, False, 0, 0.0, "", "-")
@@ -530,7 +535,9 @@ class SingleView(View):
         }
         return Markup(render_template(templates, **ctx))
 
-    def label_for(self, field, mapper, name):
+    def label_for(
+        self, field: Union[IntegerField, StringField], mapper: Mapper, name: str
+    ) -> Label:
         label = field.label
         if label is None:
             try:
@@ -560,7 +567,7 @@ class Panel:
     designs eventually.
     """
 
-    def __init__(self, label=None, *rows):
+    def __init__(self, label: str = None, *rows: "Row") -> None:
         self.label = label
         self.rows = rows
 
@@ -646,7 +653,14 @@ class TextInput(wtforms.widgets.TextInput):
     pre_icon = None  # type: Optional[Text]
     post_icon = None  # type: Optional[Text]
 
-    def __init__(self, input_type=None, pre_icon=None, post_icon=None, *args, **kwargs):
+    def __init__(
+        self,
+        input_type: Optional[Any] = None,
+        pre_icon: Optional[Any] = None,
+        post_icon: Optional[Any] = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(input_type, *args, **kwargs)
 
         if pre_icon is not None:
@@ -1146,7 +1160,9 @@ class DateTimeInput:
 
 
 class DefaultViewWidget:
-    def render_view(self, field, **kwargs):
+    def render_view(
+        self, field: Union[IntegerField, StringField], **kwargs: Any
+    ) -> str:
         value = field.object_data
         if isinstance(value, str):
             return text2html(value)
@@ -1303,7 +1319,7 @@ class MoneyWidget(TextInput):
 class EmailWidget(TextInput):
     pre_icon = "@"
 
-    def render_view(self, field, **kwargs):
+    def render_view(self, field: StringField, **kwargs: Any) -> str:
         links = ""
         if isinstance(field, wtforms.fields.FieldList):
             for entry in field.entries:

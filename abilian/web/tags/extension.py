@@ -2,6 +2,8 @@
 """"""
 from typing import Any
 
+from flask import Flask
+
 from abilian.core.entities import Entity
 from abilian.core.models.tag import TAGS_ATTR, Tag, supports_tagging
 from abilian.i18n import _l
@@ -50,7 +52,7 @@ class TagsExtension:
     It is also available in templates as `tags`.
     """
 
-    def __init__(self, app):
+    def __init__(self, app: Flask) -> None:
         app.extensions["tags"] = self
         app.add_template_global(self, "tags")
         app.register_blueprint(tags_bp)

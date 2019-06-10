@@ -117,7 +117,7 @@ class AssetManagerMixin(Flask):
             if bundles:
                 assets.register(name, Bundle(*bundles, **options))
 
-    def register_asset(self, type_, *assets):
+    def register_asset(self, type_: str, *assets: Any) -> None:
         """Register webassets bundle to be served on all pages.
 
         :param type_: `"css"`, `"js-top"` or `"js""`.

@@ -3,7 +3,7 @@
 import logging
 from collections import OrderedDict
 from functools import partial
-from typing import Any
+from typing import Any, List, Dict, Optional, Union
 
 from flask import g, has_app_context
 from flask_login import current_user
@@ -13,10 +13,13 @@ from wtforms_alchemy import model_form_factory
 
 from abilian.core.entities import Entity
 from abilian.core.logging import patch_logger
+from abilian.core.models.subjects import User
 from abilian.i18n import _, _n
 from abilian.services import get_service
-from abilian.services.security import CREATE, READ, WRITE, Anonymous, Role
+from abilian.services.security import CREATE, READ, WRITE, Anonymous, Role, Permission
+from abilian.services.security.service import SecurityService
 from abilian.web.forms.widgets import DefaultViewWidget
+
 from .fields import *  # noqa
 from .filters import *  # noqa
 from .validators import *  # noqa
@@ -42,13 +45,13 @@ class FormPermissions:
 
     def __init__(
         self,
-        default=Anonymous,
-        read=None,
-        write=None,
-        fields_read=None,
-        fields_write=None,
-        existing=None,
-    ):
+        default: Role = Anonymous,
+        read: Optional[Role] = None,
+        write: Optional[Any] = None,
+        fields_read: Optional[Dict[str, Role]] = None,
+        fields_write: Optional[Any] = None,
+        existing: Optional[Any] = None,
+    ) -> None:
         """
         :param default: default roles when not specified for field. Can be:
 
@@ -115,7 +118,13 @@ class FormPermissions:
                         allowed_roles = (allowed_roles,)
                     self.fields.setdefault(field_name, {})[permission] = allowed_roles
 
-    def has_permission(self, permission, field=None, obj=None, user=current_user):
+    def has_permission(
+        self,
+        permission: Permission,
+        field: Optional[str] = None,
+        obj: Union[None, Entity, object] = None,
+        user: User = current_user,
+    ) -> bool:
         if obj is not None and not isinstance(obj, Entity):
             # permission/role can be set only on entities
             return True
@@ -127,7 +136,7 @@ class FormPermissions:
         )
         definition = None
 
-        def eval_roles(fun):
+        def eval_roles(fun: Any) -> List[Role]:
             return fun(permission=permission, field=field, obj=obj)
 
         if field is None:
@@ -157,7 +166,7 @@ class FormPermissions:
         # TODO: replace w/: security = get_service('security')
         # (Doing it now breaks a test)
         # security = current_app.services['security']
-        security = get_service("security")
+        security: SecurityService = get_service("security")
         # security = get_service('security')
         return security.has_role(user, role=roles, object=obj)
 
@@ -300,7 +309,7 @@ if not _PATCHED:
 
     _wtforms_Field_init = Field.__init__
 
-    def _core_field_init(self, *args, **kwargs):
+    def _core_field_init(self: Any, *args: Any, **kwargs: Any) -> None:
         view_widget = None
         if "view_widget" in kwargs:
             view_widget = kwargs.pop("view_widget")

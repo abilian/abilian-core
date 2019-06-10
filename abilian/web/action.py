@@ -2,15 +2,22 @@
 """"""
 import logging
 import re
-from typing import Any
+import typing
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from flask import current_app, g
+from flask.app import Flask
 from flask.signals import appcontext_pushed
-from jinja2 import Markup, Template
+from flask_babel.speaklater import LazyString
+from jinja2 import Template
+from markupsafe import Markup
 
 from abilian.core.singleton import UniqueName
 from abilian.web import csrf
 from abilian.web.util import url_for
+
+if typing.TYPE_CHECKING:
+    from abilian.web.nav import NavGroup, NavItem
 
 log = logging.getLogger(__name__)
 
@@ -167,7 +174,7 @@ class DynamicIcon(Icon):
         self.width = width
         self.height = height
 
-    def get_url_args(self):
+    def get_url_args(self) -> Dict[str, str]:
         kw = {}
         kw.update(self.fixed_url_args)
         return kw
@@ -211,7 +218,7 @@ class Endpoint:
         self.args = args
         self.kwargs = kwargs
 
-    def get_kwargs(self):
+    def get_kwargs(self) -> Dict[str, str]:
         """Hook for subclasses.
 
         The key and values in the returned dictionnary can be safely
@@ -263,20 +270,20 @@ class Action:
 
     def __init__(
         self,
-        category,
-        name,
-        title="",
-        description="",
-        icon=None,
-        url=None,
-        endpoint=None,
-        condition=None,
-        status=None,
-        template=None,
-        template_string=None,
-        button=None,
-        css=None,
-    ):
+        category: str,
+        name: str,
+        title: Union[LazyString, str] = "",
+        description: str = "",
+        icon: Optional[str] = None,
+        url: Optional[Any] = None,
+        endpoint: Optional[str] = None,
+        condition: Optional[Callable] = None,
+        status: Optional[Any] = None,
+        template: Optional[Any] = None,
+        template_string: Optional[Any] = None,
+        button: Optional[Any] = None,
+        css: Optional[Any] = None,
+    ) -> None:
         """
         :param button: if not `None`, a valid `btn` class (i.e `default`,
         `primary`...)
@@ -325,14 +332,14 @@ class Action:
 
     #: Boolean. Disabled actions are unconditionnaly skipped.
     @getset
-    def enabled(self, value=None):
+    def enabled(self, value: Optional[bool] = None) -> bool:
         enabled = self._enabled
         if value is not None:
             assert isinstance(value, bool)
             self._enabled = enabled = value
         return enabled
 
-    def _get_and_call(self, attr):
+    def _get_and_call(self, attr: str) -> Union[None, LazyString, str]:
         attr = "_" + attr
         value = getattr(self, attr)
         if callable(value):
@@ -340,7 +347,7 @@ class Action:
         return value
 
     @property
-    def title(self):
+    def title(self) -> Union[LazyString, str]:
         return self._get_and_call("title")
 
     @title.setter
@@ -363,7 +370,7 @@ class Action:
         self._description = description
 
     @property
-    def icon(self):
+    def icon(self) -> Union[DynamicIcon, Glyphicon, StaticIcon]:
         return self._get_and_call("icon")
 
     @icon.setter
@@ -371,7 +378,7 @@ class Action:
         self._icon = icon
 
     @property
-    def endpoint(self):
+    def endpoint(self) -> Optional[Endpoint]:
         endpoint = self._get_and_call("endpoint")
         if endpoint is None:
             return
@@ -393,10 +400,10 @@ class Action:
         return endpoint
 
     @endpoint.setter
-    def endpoint(self, endpoint):
+    def endpoint(self, endpoint: Optional[Endpoint]) -> None:
         self._endpoint = endpoint
 
-    def available(self, context):
+    def available(self, context: Dict[str, Any]) -> bool:
         """Determine if this actions is available in this `context`.
 
         :param context: a dict whose content is left to application needs; if
@@ -410,7 +417,7 @@ class Action:
         except Exception:
             return False
 
-    def pre_condition(self, context):
+    def pre_condition(self, context: Dict[str, Any]) -> bool:
         """Called by :meth:`.available` before checking condition.
 
         Subclasses may override it to ease creating actions with
@@ -419,7 +426,7 @@ class Action:
         """
         return True
 
-    def _check_condition(self, context):
+    def _check_condition(self, context: Dict[str, Any]) -> bool:
         if self.condition is None:
             return True
 
@@ -428,7 +435,7 @@ class Action:
         else:
             return bool(self.condition)
 
-    def render(self, **kwargs):
+    def render(self, **kwargs: Any) -> Markup:
         if not self.template:
             self.template = Template(self.template_string)
 
@@ -440,7 +447,7 @@ class Action:
         params = self.get_render_args(**kwargs)
         return Markup(template.render(params))
 
-    def get_render_args(self, **kwargs):
+    def get_render_args(self, **kwargs: Any) -> Dict[str, Any]:
         params = {"action": self}
         params.update(actions.context)
         params.update(kwargs)
@@ -448,7 +455,7 @@ class Action:
         params["url"] = self.url(params)
         return params
 
-    def url(self, context=None):
+    def url(self, context: Dict[str, Any] = None) -> Optional[str]:
         if callable(self._url):
             return self._url(context)
 
@@ -558,7 +565,7 @@ class ActionRegistry:
 
     __EXTENSION_NAME = "abilian:actions"
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         if self.__EXTENSION_NAME in app.extensions:
             log.warning(
                 "ActionRegistry.init_app: actions already enabled on this application"
@@ -569,17 +576,17 @@ class ActionRegistry:
         appcontext_pushed.connect(self._init_context, app)
 
         @app.context_processor
-        def add_registry_to_jinja_context():
+        def add_registry_to_jinja_context() -> Dict[str, ActionRegistry]:
             return {"actions": self}
 
-    def installed(self, app=None):
+    def installed(self, app: Optional[Flask] = None) -> bool:
         """Return `True` if the registry has been installed in current
         applications."""
         if app is None:
             app = current_app
         return self.__EXTENSION_NAME in app.extensions
 
-    def register(self, *actions):
+    def register(self, *actions: Any) -> None:
         """Register `actions` in the current application. All `actions` must be
         an instance of :class:`.Action` or one of its subclasses.
 
@@ -595,7 +602,7 @@ class ActionRegistry:
             reg = self._state["categories"].setdefault(cat, [])
             reg.append(action)
 
-    def actions(self, context=None):
+    def actions(self, context: Optional[Any] = None) -> Dict[str, Any]:
         """Return a mapping of category => actions list.
 
         Actions are filtered according to :meth:`.Action.available`.
@@ -612,7 +619,7 @@ class ActionRegistry:
             result[cat] = [a for a in actions if a.available(context)]
         return result
 
-    def for_category(self, category, context=None):
+    def for_category(self, category: str, context: Any = None) -> List[Action]:
         """Returns actions list for this category in current application.
 
         Actions are filtered according to :meth:`.Action.available`.
@@ -629,15 +636,15 @@ class ActionRegistry:
         return [a for a in actions if a.available(context)]
 
     @property
-    def _state(self):
+    def _state(self) -> Any:
         return current_app.extensions[self.__EXTENSION_NAME]
 
     @staticmethod
-    def _init_context(sender):
+    def _init_context(sender: Flask) -> None:
         g.action_context = {}
 
     @property
-    def context(self):
+    def context(self) -> Dict[str, bool]:
         """Return action context (dict type).
 
         Applications can modify it to suit their needs.

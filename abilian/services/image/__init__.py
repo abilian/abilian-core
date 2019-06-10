@@ -3,7 +3,7 @@
 processing."""
 import hashlib
 from io import BytesIO
-from typing import Dict, Any
+from typing import Dict, Any, Tuple, Union
 
 from PIL import Image
 
@@ -28,7 +28,7 @@ RESIZE_MODES = frozenset({SCALE, FIT, CROP})
 cache = {}  # type: Dict[Any, bytes]
 
 
-def open_image(img):
+def open_image(img: Union[BytesIO, bytes]) -> Image.Image:
     if isinstance(img, bytes):
         img = BytesIO(img)
 
@@ -45,7 +45,7 @@ def get_format(img):
     return image.format
 
 
-def get_size(img):
+def get_size(img: bytes) -> Tuple[int, int]:
     image = open_image(img)
     return image.size
 
@@ -94,7 +94,7 @@ def resize(orig: Any, width: int, height: int, mode: str = FIT) -> bytes:
     return converted
 
 
-def _crop_and_resize(image, width, height=0):
+def _crop_and_resize(image: Image.Image, width: int, height: int = 0) -> Image.Image:
     if not height:
         height = width
 

@@ -3,11 +3,16 @@
 import logging
 from abc import ABCMeta, abstractmethod
 from operator import attrgetter
+from typing import Any, Dict, Tuple, Union
 
 import sqlalchemy as sa
-from whoosh.fields import TEXT
+from sqlalchemy.orm.session import Session
+from sqlalchemy.sql.elements import quoted_name
+from whoosh.fields import ID, TEXT, Schema
 
+from abilian.core.entities import Entity
 from abilian.core.extensions import db
+from abilian.core.models import Model
 
 from .schema import accent_folder
 
@@ -74,10 +79,10 @@ class SAAdapter(SchemaAdapter):
     """
 
     @staticmethod
-    def can_adapt(obj_cls):
+    def can_adapt(obj_cls: Any) -> bool:
         return issubclass(obj_cls, db.Model)
 
-    def __init__(self, model_class, schema):
+    def __init__(self, model_class: Model, schema: Schema) -> None:
         """
         :param:model_class: a sqlalchemy model class
         :param:schema: :class:`whoosh.fields.Schema` instance
@@ -90,7 +95,28 @@ class SAAdapter(SchemaAdapter):
         if self.indexable:
             self._build_doc_attrs(model_class, schema)
 
-    def get_index_to(self, model_class):
+    def get_index_to(
+        self, model_class: Model
+    ) -> Union[
+        Tuple[
+            Tuple[str, Tuple[str, str, str]],
+            Tuple[str, Tuple[str, str, str]],
+            Tuple[str, Tuple[Tuple[str, ID]]],
+            Tuple[str, Tuple[Tuple[str, ID]]],
+        ],
+        Tuple[
+            Tuple[str, Tuple[str]],
+            Tuple[str, Tuple[str]],
+            Tuple[str, Tuple[str, str]],
+            Tuple[str, Tuple[str]],
+            Tuple[str, Tuple[str]],
+            Tuple[str, Tuple[str, str]],
+            Tuple[str, Tuple[Tuple[str, ID]]],
+            Tuple[str, Tuple[Tuple[str, ID]]],
+            Tuple[str, Tuple[str]],
+            Tuple[str, Tuple[Tuple[str, type]]],
+        ],
+    ]:
         result = []
         classes = model_class.mro()
         for cls in classes:
@@ -98,7 +124,7 @@ class SAAdapter(SchemaAdapter):
                 result += cls.__index_to__
         return tuple(result)
 
-    def _build_doc_attrs(self, model_class, schema):
+    def _build_doc_attrs(self, model_class: Model, schema: Schema) -> None:
         mapper = sa.inspect(model_class)
 
         args = self.doc_attrs
@@ -106,7 +132,10 @@ class SAAdapter(SchemaAdapter):
         # discovered we add missing ones
         field_definitions = {}
 
-        def setup_field(attr_name, field_name):
+        def setup_field(
+            attr_name: Union[quoted_name, str],
+            field_name: Union[Tuple[str, Union[type, ID]], quoted_name, str],
+        ) -> None:
             field_def = False
             if not isinstance(field_name, str):
                 field_name, field_def = field_name
@@ -160,12 +189,12 @@ class SAAdapter(SchemaAdapter):
             )
             schema.add(field_name, field_def)
 
-    def retrieve(self, pk, _session=None, **data):
+    def retrieve(self, pk: int, _session: Session = None, **data: Any) -> Entity:
         if _session is None:
             _session = db.session()
         return _session.query(self.model_class).get(pk)
 
-    def get_document(self, obj):
+    def get_document(self, obj: Entity) -> Dict[str, Any]:
         kwargs = {}
         if not self.indexable:
             return kwargs

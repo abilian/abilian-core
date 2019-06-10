@@ -5,11 +5,10 @@ References to files stored in a on-disk repository
 """
 import hashlib
 import uuid
-from pathlib import PosixPath
-from typing import Optional, Union
+from pathlib import Path
+from typing import Optional
 
 import sqlalchemy as sa
-from flask_sqlalchemy import SignallingSession
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
@@ -46,7 +45,7 @@ class Blob(Model):
             self.value = value
 
     @property
-    def file(self) -> Optional[PosixPath]:
+    def file(self) -> Optional[Path]:
         """Return :class:`pathlib.Path` object used for storing value."""
         from abilian.services.repository import session_repository as repository
 
@@ -112,7 +111,7 @@ class Blob(Model):
 
 @listens_for(sa.orm.Session, "after_flush")
 def _blob_propagate_delete_content(
-    session: Union[SignallingSession, Session], flush_context: UOWTransaction
+    session: Session, flush_context: UOWTransaction
 ) -> None:
     deleted = (obj for obj in session.deleted if isinstance(obj, Blob))
     for blob in deleted:

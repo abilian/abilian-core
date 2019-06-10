@@ -5,6 +5,7 @@ from flask import render_template
 
 from abilian.i18n import _
 from abilian.services.auth.models import LoginSession
+
 from ..panel import AdminPanel
 
 DATA_FILES = ("/usr/share/GeoIP/GeoIP.dat", "/usr/share/GeoIP/GeoIPv6.dat")

@@ -3,7 +3,7 @@
 from babel.dates import DateTimePattern, parse_pattern
 
 
-def babel2datetime(pattern):
+def babel2datetime(pattern: DateTimePattern) -> str:
     """Convert date format from babel (http://babel.pocoo.org/docs/dates/#date-
     fields)) to a format understood by datetime.strptime."""
     if not isinstance(pattern, DateTimePattern):

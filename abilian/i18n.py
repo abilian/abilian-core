@@ -47,9 +47,10 @@ import importlib
 import os
 import re
 import unicodedata
-from datetime import datetime
+from datetime import datetime, tzinfo
 from gettext import GNUTranslations
 from pathlib import Path
+from typing import Any, List, Optional, Tuple, Union
 
 import flask_babel
 import pytz
@@ -57,7 +58,8 @@ from babel import Locale
 from babel.dates import LOCALTZ, get_timezone, get_timezone_gmt
 from babel.localedata import locale_identifiers
 from babel.support import Translations as BaseTranslations
-from flask import _request_ctx_stack, current_app, g, render_template, request
+from flask import Flask, _request_ctx_stack, current_app, g, render_template, \
+    request
 from flask_babel import Babel as BabelBase
 from flask_babel import LazyString, force_locale, gettext, lazy_gettext, \
     ngettext
@@ -96,7 +98,7 @@ def get_default_locale():
     return current_app.extensions["babel"].default_locale
 
 
-def _get_locale():
+def _get_locale() -> Locale:
     locale = flask_babel.get_locale()
     if locale is None:
         locale = get_default_locale()
@@ -118,11 +120,13 @@ def lazy_country_name(code):
     return LazyString(__gettext_territory, code)
 
 
-def default_country():
+def default_country() -> Optional[str]:
     return current_app.config.get("DEFAULT_COUNTRY")
 
 
-def country_choices(first=None, default_country_first=True):
+def country_choices(
+    first: Optional[Any] = None, default_country_first: bool = True
+) -> List[Tuple[str, str]]:
     """Return a list of (code, countries), alphabetically sorted on localized
     country name.
 
@@ -138,7 +142,7 @@ def country_choices(first=None, default_country_first=True):
     if first is None and default_country_first:
         first = default_country()
 
-    def sortkey(item):
+    def sortkey(item: Tuple[str, str]) -> str:
         if first is not None and item[0] == first:
             return "0"
         return to_lower_ascii(item[1])
@@ -179,9 +183,9 @@ class Babel(BabelBase):
     _translations_paths = None
 
     def __init__(self, *args, **kwargs):
-        BabelBase.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         super().init_app(app)
         self._translations_paths = [
             (os.path.join(app.root_path, "translations"), "messages")
@@ -223,7 +227,7 @@ class Translations(BaseTranslations):
     translations, when used with :func:`_get_translations_multi_paths`.
     """
 
-    def merge(self, translations):
+    def merge(self, translations: "Translations") -> "Translations":
         if isinstance(translations, GNUTranslations):
 
             for msgkey, msgstr in translations._catalog.items():
@@ -250,7 +254,7 @@ class Translations(BaseTranslations):
         return self
 
 
-def _get_translations_multi_paths():
+def _get_translations_multi_paths() -> Optional[Translations]:
     """Return the correct gettext translations that should be used for this
     request.
 
@@ -302,7 +306,7 @@ flask_babel.get_translations = _get_translations_multi_paths
 babel = Babel()
 
 
-def localeselector():
+def localeselector() -> Optional[str]:
     """Default locale selector used in abilian applications."""
     # if a user is logged in, use the locale from the user settings
     user = getattr(g, "user", None)
@@ -318,12 +322,12 @@ def localeselector():
     )
 
 
-def timezoneselector():
+def timezoneselector() -> tzinfo:
     """Default timezone selector used in abilian applications."""
     return LOCALTZ
 
 
-def get_template_i18n(template_name, locale):
+def get_template_i18n(template_name: str, locale: Locale) -> List[str]:
     """Build template list with preceding locale if found."""
     if locale is None:
         return [template_name]
@@ -356,7 +360,7 @@ class ensure_request_context:
             ctx = self._rq_ctx = current_app.test_request_context()
             ctx.__enter__()
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         ctx = self._rq_ctx
         self._rq_ctx = None
 
@@ -364,7 +368,7 @@ class ensure_request_context:
             ctx.__exit__(*args)
 
 
-def render_template_i18n(template_name_or_list, **context):
+def render_template_i18n(template_name_or_list: str, **context: Any) -> str:
     """Try to build an ordered list of template to satisfy the current
     locale."""
     template_list = []

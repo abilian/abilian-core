@@ -1,8 +1,10 @@
 # coding=utf-8
 
 from flask import Flask
+from flask.ctx import AppContext, RequestContext
 from jinja2 import Markup
 
+from abilian.app import Application
 from abilian.web.action import Action, Glyphicon, StaticIcon, actions
 
 BASIC = Action("cat_1", "basic", "Basic Action", url="http://some.where", icon="ok")
@@ -28,7 +30,7 @@ OTHER_CAT = Action(
 ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 
 
-def setup_actions(app):
+def setup_actions(app: Application) -> None:
     actions.init_app(app)
     for a in ALL_ACTIONS:
         a.enabled = True
@@ -37,13 +39,13 @@ def setup_actions(app):
     actions.context["show_all"] = True
 
 
-def test_installed(app_context):
+def test_installed(app_context: AppContext) -> None:
     assert actions.installed()  # test current_app (==self.app)
     assert actions.installed(app_context.app)
     assert not actions.installed(Flask("dummyapp"))
 
 
-def test_actions(app_context):
+def test_actions(app_context: AppContext) -> None:
     setup_actions(app_context.app)
 
     all_actions = actions.actions()
@@ -53,7 +55,7 @@ def test_actions(app_context):
     assert all_actions["cat_2:sub"] == [OTHER_CAT]
 
 
-def test_for_category(app_context):
+def test_for_category(app_context: AppContext) -> None:
     setup_actions(app_context.app)
 
     cat_1 = actions.for_category("cat_1")
@@ -63,14 +65,14 @@ def test_for_category(app_context):
     assert cat_2 == [OTHER_CAT]
 
 
-def test_conditional(app_context):
+def test_conditional(app_context: AppContext) -> None:
     setup_actions(app_context.app)
 
     actions.context["show_all"] = False
     assert actions.for_category("cat_1") == [BASIC]
 
 
-def test_enabled(app_context):
+def test_enabled(app_context: AppContext) -> None:
     setup_actions(app_context.app)
 
     assert CONDITIONAL.enabled
@@ -87,7 +89,7 @@ def test_action_url_from_context() -> None:
     assert OTHER_CAT.url({}) == "http://count?0"
 
 
-def test_render(app, test_request_context):
+def test_render(app: Application, test_request_context: RequestContext) -> None:
     setup_actions(app)
 
     assert BASIC.render() == Markup(

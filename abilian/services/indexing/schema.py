@@ -65,7 +65,7 @@ def DefaultSearchSchema(*args, **kwargs):
     return schema
 
 
-def indexable_role(principal):
+def indexable_role(principal: Role) -> str:
     """Return a string suitable for query against `allowed_roles_and_users`
     field.
 

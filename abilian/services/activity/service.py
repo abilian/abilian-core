@@ -1,5 +1,7 @@
 # coding=utf-8
 """"""
+import typing
+
 import sqlalchemy as sa
 from sqlalchemy.orm import object_session
 
@@ -9,14 +11,17 @@ from abilian.services import Service
 
 from .models import ActivityEntry
 
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
+
 __all__ = ["ActivityService"]
 
 
 class ActivityService(Service):
     name = "activity"
 
-    def init_app(self, app):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application") -> None:
+        super().init_app(app)
 
     def start(self, ignore_state: bool = False) -> None:
         super().start(ignore_state)

@@ -7,22 +7,26 @@ TODO: In the future, we may decide to:
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
 import logging
+import typing
 from datetime import datetime
 from inspect import isclass
-from typing import Text
+from typing import Any, Text
 
 import sqlalchemy as sa
 from flask import current_app, g
 from sqlalchemy import event, extract
-from sqlalchemy.orm import Query
+from sqlalchemy.orm import Query, Session
 from sqlalchemy.orm.attributes import NEVER_SET
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.unitofwork import UOWTransaction
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 from abilian.services import Service, ServiceState
 
 from .models import CREATION, DELETION, RELATED, UPDATE, AuditEntry, Changes
+
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
 
 log = logging.getLogger(__name__)
 
@@ -55,8 +59,8 @@ class AuditServiceState(ServiceState):
     # of audit entries
     creating_entries = False
 
-    def __init__(self, *args, **kwargs):
-        ServiceState.__init__(self, *args, **kwargs)
+    def __init__(self, *args: "AuditService", **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
         self.all_model_classes = set()
         self.model_class_names = {}
 
@@ -67,8 +71,8 @@ class AuditService(Service):
 
     _listening = False
 
-    def init_app(self, app):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application") -> None:
+        super().init_app(app)
 
         if not self._listening:
             event.listen(Session, "after_flush", self.create_audit_entries)
@@ -215,7 +219,9 @@ class AuditService(Service):
         changes = self._get_changes_for(entity)
         changes.collection_remove(initiator.key, value)
 
-    def create_audit_entries(self, session, flush_context):
+    def create_audit_entries(
+        self, session: Session, flush_context: UOWTransaction
+    ) -> None:
         if not self.running or self.app_state.creating_entries:
             return
 

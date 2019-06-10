@@ -2,10 +2,14 @@
 """"""
 import logging
 from functools import wraps
+from typing import TYPE_CHECKING, Any, Optional
 
 from flask import current_app
 
 from abilian.core.util import fqcn
+
+if TYPE_CHECKING:
+    from abilian.app import Application
 
 
 class ServiceNotRegistered(Exception):
@@ -20,7 +24,7 @@ class ServiceState:
 
     running = False
 
-    def __init__(self, service, running=False):
+    def __init__(self, service: Any, running: bool = False) -> None:
         self.service = service
         self.running = running
         self.logger = logging.getLogger(fqcn(self.__class__))
@@ -35,7 +39,7 @@ class Service:
     #: service name in Application.extensions / Application.services
     name = ""
 
-    def __init__(self, app=None):
+    def __init__(self, app: Optional[Any] = None) -> None:
         if self.name is None:
             msg = "Service must have a name ({})".format(fqcn(self.__class__))
             raise ValueError(msg)
@@ -44,7 +48,7 @@ class Service:
         if app:
             self.init_app(app)
 
-    def init_app(self, app):
+    def init_app(self, app: "Application") -> None:
         app.extensions[self.name] = self.AppStateClass(self)
         app.services[self.name] = self
 
@@ -66,7 +70,7 @@ class Service:
         state.running = run_state
 
     @property
-    def app_state(self):
+    def app_state(self) -> Any:
         """Current service state in current application.
 
         :raise:RuntimeError if working outside application context.
@@ -96,7 +100,7 @@ class Service:
         running state."""
 
         @wraps(meth)
-        def check_running(self, *args, **kwargs):
+        def check_running(self: Any, *args: Any, **kwargs: Any) -> Optional[Any]:
             if not self.running:
                 return
             return meth(self, *args, **kwargs)

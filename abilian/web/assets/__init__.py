@@ -1,6 +1,7 @@
 # coding=utf-8
 """"""
 import pkg_resources
+import typing
 from flask import current_app, url_for
 from flask_assets import Bundle
 from webassets.filter import get_filter
@@ -9,8 +10,11 @@ from abilian.services.security import Anonymous
 from .filters import register_filters
 from .mixin import AssetManagerMixin
 
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
 
-def init_app(app):
+
+def init_app(app: "Application") -> None:
     register_filters()
 
     assets = app.extensions["webassets"]

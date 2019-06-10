@@ -7,11 +7,11 @@ Notes:
 import random
 import string
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, Tuple, Union
 from urllib.parse import urljoin, urlparse
 
-from flask import _request_ctx_stack, current_app, flash, jsonify, redirect, \
-    render_template, request, url_for
+from flask import Flask, _request_ctx_stack, current_app, flash, jsonify, \
+    redirect, render_template, request, url_for
 from flask_login import login_user, logout_user, user_logged_in, \
     user_logged_out
 from flask_mail import Message
@@ -19,6 +19,7 @@ from itsdangerous import BadSignature, Serializer, SignatureExpired, \
     URLSafeTimedSerializer
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
+from werkzeug.datastructures import ImmutableMultiDict
 from werkzeug.wrappers import Response
 
 from abilian.core.extensions import csrf, db
@@ -56,7 +57,7 @@ def login_form():
     return render_template("login/login.html", next_url=next_url)
 
 
-def do_login(form):
+def do_login(form: Union[Dict[str, Any], ImmutableMultiDict]) -> Dict[str, Any]:
     email = form.get("email", "").lower()
     password = form.get("password")
     next_url = form.get("next", "")
@@ -94,7 +95,7 @@ def do_login(form):
 
 @csrf.exempt
 @route("/login", methods=["POST"])
-def login_post():
+def login_post() -> Union[Tuple[str, int], Response]:
     res = do_login(request.form)
     if "error" in res:
         code = res.pop("code")
@@ -106,7 +107,7 @@ def login_post():
 
 @csrf.exempt
 @route("/api/login", methods=["POST"])
-def login_json():
+def login_json() -> Response:
     res = do_login(request.get_json())
     code = None
 
@@ -131,7 +132,7 @@ def logout():
 
 @csrf.exempt
 @route("/api/logout", methods=["POST"])
-def logout_json():
+def logout_json() -> Tuple[str, int, Dict[str, str]]:
     logout_user()
     return "{}", 200, {"content-type": "application/json"}
 
@@ -148,7 +149,7 @@ def forgotten_pw_form():
 
 @route("/forgotten_pw", methods=["POST"])
 @csrf.exempt
-def forgotten_pw(new_user=False):
+def forgotten_pw(new_user: bool = False) -> Response:
     """Reset password for users who have already activated their accounts."""
     email = request.form.get("email", "").lower()
 
@@ -349,14 +350,14 @@ def send_mail(subject: str, recipient: str, template: str, **context: Any) -> No
 # Logging
 #
 @user_logged_in.connect
-def log_session_start(app, user):
+def log_session_start(app: Flask, user: User) -> None:
     session = LoginSession.new()
     db.session.add(session)
     db.session.commit()
 
 
 @user_logged_out.connect
-def log_session_end(app, user):
+def log_session_end(app: Flask, user: User) -> None:
     if user.is_anonymous:
         return
 

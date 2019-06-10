@@ -1,10 +1,12 @@
 # coding=utf-8
 """"""
+from flask import Flask
+
 from .criterion import TagCriterion
 from .extension import TagsExtension
 
 __all__ = ["TagsExtension", "TagCriterion"]
 
 
-def register_plugin(app):
-    TagsExtension(app=app)
+def register_plugin(app: Flask) -> None:
+    TagsExtension(app)

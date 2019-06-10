@@ -1,5 +1,7 @@
 # coding=utf-8
 """Admin panel for vocabularies."""
+from typing import Callable
+
 from flask import g, redirect, render_template, request
 
 from abilian.core.extensions import db
@@ -9,6 +11,7 @@ from abilian.web import url_for, views
 from abilian.web.action import Glyphicon
 from abilian.web.admin import AdminPanel
 from abilian.web.nav import BreadcrumbItem
+
 from .forms import EditForm
 
 _MARKER = object()
@@ -175,7 +178,7 @@ class VocabularyPanel(AdminPanel):
         }
         return render_template("admin/vocabularies.html", **ctx)
 
-    def install_additional_rules(self, add_url_rule):
+    def install_additional_rules(self, add_url_rule: Callable) -> None:
         panel_endpoint = "." + self.id
         group_base = "/<string:group>/"
         add_url_rule(group_base, endpoint="group", view_func=self.group_view)

@@ -1,8 +1,9 @@
 # coding=utf-8
 """"""
 import logging
+import typing
 from datetime import datetime, timedelta
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from flask import Flask, current_app, g, redirect, request, url_for
 from flask_babel import lazy_gettext as _l
@@ -22,16 +23,19 @@ from abilian.web.nav import NavGroup, NavItem
 from .models import LoginSession
 from .views import login as login_views
 
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
+
 __all__ = ["AuthService", "user_menu"]
 
 logger = logging.getLogger(__name__)
 
 
-def is_anonymous(context):
+def is_anonymous(context: Dict[str, bool]) -> bool:
     return current_user.is_anonymous
 
 
-def is_authenticated(context):
+def is_authenticated(context: Dict[str, bool]) -> bool:
     return not is_anonymous(context)
 
 
@@ -41,7 +45,7 @@ def _user_photo_endpoint() -> str:
     return images.user_url_args(current_user, 16)[0]
 
 
-def _user_photo_icon_args(icon, url_args):
+def _user_photo_icon_args(icon: DynamicIcon, url_args: Dict) -> Dict[str, Any]:
     from abilian.web.views import images  # lazy import avoid circular import
 
     return images.user_url_args(current_user, max(icon.width, icon.height))[1]
@@ -86,15 +90,15 @@ _ACTIONS = (
 class AuthServiceState(ServiceState):
     """State class for :class:`AuthService`"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: "AuthService", **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.bp_access_controllers = {None: []}
         self.endpoint_access_controllers = {}
 
-    def add_bp_access_controller(self, blueprint, func):
+    def add_bp_access_controller(self, blueprint: str, func: Callable) -> None:
         self.bp_access_controllers.setdefault(blueprint, []).append(func)
 
-    def add_endpoint_access_controller(self, endpoint, func):
+    def add_endpoint_access_controller(self, endpoint: str, func: Callable) -> None:
         self.endpoint_access_controllers.setdefault(endpoint, []).append(func)
 
 
@@ -121,7 +125,7 @@ class AuthService(Service):
             actions.register(*_ACTIONS)
 
     @login_manager.user_loader
-    def load_user(user_id):
+    def load_user(user_id: str) -> Optional[User]:
         try:
             user = User.query.get(user_id)
 
@@ -144,7 +148,7 @@ class AuthService(Service):
         user_loaded.send(app, user=user)
         return user
 
-    def user_logged_in(self, app, user):
+    def user_logged_in(self, app: "Application", user: User) -> None:
         # `g.user` is used as `current_user`, but `current_user` is actually looking
         # for `request.user` whereas `g` is on app local stack.
         #
@@ -160,7 +164,7 @@ class AuthService(Service):
             and (security.has_role(user, "admin") or security.has_role(user, "manager"))
         )
 
-    def user_logged_out(self, app, user):
+    def user_logged_out(self, app: "Application", user: User) -> None:
         if hasattr(g, "user"):
             del g.user
             del g.logged_user
@@ -238,7 +242,7 @@ class AuthService(Service):
         refresh_login_session(user)
 
 
-def refresh_login_session(user):
+def refresh_login_session(user: User) -> None:
     now = datetime.utcnow()
     session = LoginSession.query.get_active_for(user)
     if not session:

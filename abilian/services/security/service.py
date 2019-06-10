@@ -1,18 +1,21 @@
 # coding=utf-8
 """Security service, manages roles and permissions."""
+import typing
 from functools import wraps
 from itertools import chain
-from typing import Dict, FrozenSet
+from typing import Any, Collection, Dict, FrozenSet, List, Optional, Set, Union
 
 import sqlalchemy as sa
 from flask import g
 from flask_login import current_user
 from sqlalchemy import sql
-from sqlalchemy.orm import object_session, subqueryload
+from sqlalchemy.orm import Session, object_session, subqueryload
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
-from abilian.core.models.subjects import Group, User
+from abilian.core.extensions.login import AnonymousUser
+from abilian.core.models import Model
+from abilian.core.models.subjects import Group, Principal, User
 from abilian.core.util import unwrap
 from abilian.services import Service, ServiceState
 from abilian.services.security.models import CREATE, DELETE, MANAGE, \
@@ -21,6 +24,10 @@ from abilian.services.security.models import Anonymous as AnonymousRole
 from abilian.services.security.models import Authenticated, Creator, \
     InheritSecurity, Manager, Owner, Permission, PermissionAssignment, \
     Reader, Role, RoleAssignment, SecurityAudit, Writer
+
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
+
 
 #: list of legacy supported permissions when not using :class:`Permission`
 #: instance
@@ -63,7 +70,7 @@ def require_flush(fun):
     """
 
     @wraps(fun)
-    def ensure_flushed(service, *args, **kwargs):
+    def ensure_flushed(service: "SecurityService", *args: Any, **kwargs: Any) -> Any:
         if service.app_state.needs_db_flush:
             session = db.session()
             if not session._flushing and any(
@@ -79,7 +86,9 @@ def require_flush(fun):
     return ensure_flushed
 
 
-def query_pa_no_flush(session, permission, role, obj):
+def query_pa_no_flush(
+    session: Session, permission: Permission, role: Role, obj: Optional[Model]
+):
     """Query for a :class:`PermissionAssignment` using `session` without any
     `flush()`.
 
@@ -135,8 +144,8 @@ class SecurityService(Service):
     name = "security"
     AppStateClass = SecurityServiceState
 
-    def init_app(self, app):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application") -> None:
+        super().init_app(app)
         state = app.extensions[self.name]
         state.use_cache = True
 
@@ -148,7 +157,7 @@ class SecurityService(Service):
     def clear(self) -> None:
         pass
 
-    def _current_user_manager(self, session=None):
+    def _current_user_manager(self, session: Session = None) -> User:
         """Return the current user, or SYSTEM user."""
         if session is None:
             session = db.session()
@@ -179,7 +188,7 @@ class SecurityService(Service):
         )
 
     # inheritance
-    def set_inherit_security(self, obj, inherit_security):
+    def set_inherit_security(self, obj, inherit_security: bool) -> None:
         assert isinstance(obj, InheritSecurity)
         assert isinstance(obj, Entity)
 
@@ -208,7 +217,12 @@ class SecurityService(Service):
     # Roles-related API.
     #
     @require_flush
-    def get_roles(self, principal, object=None, no_group_roles=False):
+    def get_roles(
+        self,
+        principal: Union[AnonymousUser, Group, User],
+        object: Optional[Model] = None,
+        no_group_roles: bool = False,
+    ) -> List[Role]:
         """Get all the roles attached to given `principal`, on a given
         `object`.
 
@@ -249,8 +263,14 @@ class SecurityService(Service):
 
     @require_flush
     def get_principals(
-        self, role, anonymous=True, users=True, groups=True, object=None, as_list=True
-    ):
+        self,
+        role: Role,
+        anonymous: bool = True,
+        users: bool = True,
+        groups: bool = True,
+        object: Optional[Model] = None,
+        as_list: bool = True,
+    ) -> Union[List[Group], List[User]]:
         """Return all users which are assigned given role."""
         if not isinstance(role, Role):
             role = Role(role)
@@ -279,7 +299,9 @@ class SecurityService(Service):
         return list(principals)
 
     @require_flush
-    def _all_roles(self, principal):
+    def _all_roles(
+        self, principal: Union[Group, User]
+    ) -> Union[Dict[Optional[str], Set[Role]], Dict[str, Set[Role]]]:
         query = (
             db.session.query(RoleAssignment.object_id, RoleAssignment.role)
             .outerjoin(Entity)
@@ -307,20 +329,28 @@ class SecurityService(Service):
 
         return all_roles
 
-    def _role_cache(self, principal):
+    def _role_cache(
+        self, principal: Union[Group, User]
+    ) -> Dict[Optional[str], Set[Role]]:
         if not self._has_role_cache(principal):
             # FIXME: should call _fill_role_cache?
             principal.__roles_cache__ = {}
 
         return principal.__roles_cache__
 
-    def _has_role_cache(self, principal):
+    def _has_role_cache(self, principal: Union[Group, User]) -> bool:
         return hasattr(principal, "__roles_cache__")
 
-    def _set_role_cache(self, principal, cache):
+    def _set_role_cache(
+        self,
+        principal: Union[Group, User],
+        cache: Union[Dict[Optional[str], Set[Role]], Dict[str, Set[Role]]],
+    ) -> None:
         principal.__roles_cache__ = cache
 
-    def _fill_role_cache(self, principal, overwrite=False):
+    def _fill_role_cache(
+        self, principal: Union[Group, User], overwrite: bool = False
+    ) -> Dict[Optional[str], Set[Role]]:
         """Fill role cache for `principal` (User or Group), in order to avoid
         too many queries when checking role access with 'has_role'.
 
@@ -334,7 +364,11 @@ class SecurityService(Service):
         return self._role_cache(principal)
 
     @require_flush
-    def _fill_role_cache_batch(self, principals, overwrite=False):
+    def _fill_role_cache_batch(
+        self,
+        principals: Union[List[Union[Group, User]], List[AnonymousUser], List[User]],
+        overwrite: bool = False,
+    ) -> None:
         """Fill role cache for `principals` (Users and/or Groups), in order to
         avoid too many queries when checking role access with 'has_role'."""
         if not self.app_state.use_cache:
@@ -392,7 +426,7 @@ class SecurityService(Service):
 
             self._set_role_cache(user, all_roles)
 
-    def _clear_role_cache(self, principal):
+    def _clear_role_cache(self, principal: Union[Group, User]) -> None:
         if hasattr(principal, "__roles_cache__"):
             del principal.__roles_cache__
 
@@ -401,7 +435,12 @@ class SecurityService(Service):
                 if hasattr(u, "__roles_cache__"):
                     del u.__roles_cache__
 
-    def has_role(self, principal, role, object=None):
+    def has_role(
+        self,
+        principal: Principal,
+        role: Union[Collection[Role], Role, str],
+        object: Optional[Model] = None,
+    ) -> bool:
         """True if `principal` has `role` (either globally, if `object` is
         None, or on the specific `object`).
 
@@ -472,7 +511,12 @@ class SecurityService(Service):
         roles |= all_roles.get(object_key, set())
         return len(valid_roles & roles) > 0
 
-    def grant_role(self, principal, role, obj=None):
+    def grant_role(
+        self,
+        principal: Union[Group, User],
+        role: Union[Role, str],
+        obj: Optional[Model] = None,
+    ) -> None:
         """Grant `role` to `user` (either globally, if `obj` is None, or on the
         specific `obj`)."""
         assert principal
@@ -532,7 +576,12 @@ class SecurityService(Service):
         if hasattr(principal, "__roles_cache__"):
             del principal.__roles_cache__
 
-    def ungrant_role(self, principal, role, object=None):
+    def ungrant_role(
+        self,
+        principal: Union[Group, User],
+        role: Union[Role, str],
+        object: Optional[Model] = None,
+    ) -> None:
         """Ungrant `role` to `user` (either globally, if `object` is None, or
         on the specific `object`)."""
         assert principal
@@ -577,7 +626,7 @@ class SecurityService(Service):
         self._clear_role_cache(principal)
 
     @require_flush
-    def get_role_assignements(self, obj):
+    def get_role_assignements(self, obj) -> List:
         session = object_session(obj) if obj is not None else db.session
         if not session:
             session = db.session()
@@ -602,7 +651,14 @@ class SecurityService(Service):
     #
     # Permission API, currently hardcoded
     #
-    def has_permission(self, user, permission, obj=None, inherit=False, roles=None):
+    def has_permission(
+        self,
+        user: Union[AnonymousUser, User],
+        permission: Union[Permission, str],
+        obj: Optional[Model] = None,
+        inherit: bool = False,
+        roles: Optional[Role] = None,
+    ) -> bool:
         """
         :param obj: target object to check permissions.
         :param inherit: check with permission inheritance. By default, check only
@@ -761,7 +817,9 @@ class SecurityService(Service):
 
         return filter_expr
 
-    def get_permissions_assignments(self, obj=None, permission=None):
+    def get_permissions_assignments(
+        self, obj: Optional[Model] = None, permission: Optional[Permission] = None
+    ) -> Dict[Permission, Set[Role]]:
         """
         :param permission: return only roles having this permission
 
@@ -791,7 +849,9 @@ class SecurityService(Service):
 
         return results
 
-    def add_permission(self, permission, role, obj=None):
+    def add_permission(
+        self, permission: Permission, role: Role, obj: Optional[Model] = None
+    ) -> None:
         session = None
         if obj is not None:
             session = object_session(obj)
@@ -807,7 +867,9 @@ class SecurityService(Service):
         # do it in any case: it could have been found in session.deleted
         session.add(pa)
 
-    def delete_permission(self, permission, role, obj=None):
+    def delete_permission(
+        self, permission: Permission, role: Role, obj: Model = None
+    ) -> None:
         session = None
         if obj is not None:
             session = object_session(obj)

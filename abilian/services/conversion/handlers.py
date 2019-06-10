@@ -14,9 +14,11 @@ from pathlib import Path
 from typing import Any, List
 from xmlrpc.client import ServerProxy
 
+from flask import Flask
 from magic import Magic
 
 from abilian.services.image import resize
+
 from .service import ConversionError
 from .util import get_tmp_dir, make_temp_file
 
@@ -59,11 +61,11 @@ class Handler(metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
         self.log = logger.getChild(self.__class__.__name__)
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         pass
 
     @property
-    def tmp_dir(self):
+    def tmp_dir(self) -> Path:
         return get_tmp_dir()
 
     @property
@@ -71,7 +73,7 @@ class Handler(metaclass=ABCMeta):
         return Magic(mime=True)
 
     @property
-    def encoding_sniffer(self):
+    def encoding_sniffer(self) -> Magic:
         return Magic(mime_encoding=True)
 
     def accept(self, source_mime_type: str, target_mime_type: str) -> bool:
@@ -211,7 +213,7 @@ class PdfToPpmHandler(Handler):
     accepts_mime_types = ["application/pdf", "application/x-pdf"]
     produces_mime_types = ["image/jpeg"]
 
-    def convert(self, blob, size=500):
+    def convert(self, blob: bytes, size: int = 500) -> List[bytes]:
         """Size is the maximum horizontal size."""
         file_list = []
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
@@ -373,7 +375,7 @@ class LibreOfficePdfHandler(Handler):
     _process = None
     soffice = "soffice"
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         soffice = app.config.get("SOFFICE_LOCATION")
         found = False
         execute_ok = False
@@ -402,7 +404,7 @@ class LibreOfficePdfHandler(Handler):
 
         self.soffice = soffice
 
-    def convert(self, blob, **kw):
+    def convert(self, blob: bytes, **kw: Any) -> bytes:
         """Convert using soffice converter."""
         timeout = self.run_timeout
         with make_temp_file(blob) as in_fn:

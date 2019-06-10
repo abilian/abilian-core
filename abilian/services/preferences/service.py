@@ -7,18 +7,27 @@ Notes:
 - For application settings use
   :class:`abilian.services.settings.SettingsService`.
 """
-from flask import Blueprint, g, redirect, request, url_for
+import typing
+from typing import Any, Dict, List, Union
+
+from flask import Blueprint, Flask, g, redirect, request, url_for
 from flask_login import current_user
 from werkzeug.exceptions import InternalServerError
 
 from abilian.core import signals
 from abilian.core.extensions import db
+from abilian.core.models.subjects import User
 from abilian.i18n import _, _l
 from abilian.services.auth.service import user_menu
 from abilian.services.base import Service, ServiceState
 from abilian.web.action import Endpoint
+from abilian.web.admin import AdminPanel
 from abilian.web.nav import BreadcrumbItem, NavItem
+
 from .models import UserPreference
+
+if typing.TYPE_CHECKING:
+    from abilian.app import Application
 
 _PREF_NAV_ITEM = NavItem(
     "user",
@@ -37,7 +46,7 @@ class PreferenceState(ServiceState):
     blueprint = None
     blueprint_registered = False
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: "PreferenceService", **kwargs: Any) -> None:
         ServiceState.__init__(self, *args, **kwargs)
         self.panels = []
         self.nav_paths = {}
@@ -51,15 +60,17 @@ class PreferenceService(Service):
     name = "preferences"
     AppStateClass = PreferenceState
 
-    def init_app(self, app, *panels):
-        Service.init_app(self, app)
+    def init_app(self, app: "Application", *panels: Any) -> None:
+        super().init_app(app)
 
         with app.app_context():
             self.setup_blueprint(app)
             for panel in panels:
                 self.register_panel(panel)
 
-    def get_preferences(self, user=None):
+    def get_preferences(
+        self, user: User = None
+    ) -> Union[Dict[str, int], Dict[str, str]]:
         """Return a string->value dictionnary representing the given user
         preferences.
 
@@ -69,7 +80,7 @@ class PreferenceService(Service):
             user = current_user
         return {pref.key: pref.value for pref in user.preferences}
 
-    def set_preferences(self, user=None, **kwargs):
+    def set_preferences(self, user: User = None, **kwargs: Any) -> None:
         """Set preferences from keyword arguments."""
         if user is None:
             user = current_user
@@ -82,7 +93,7 @@ class PreferenceService(Service):
                 d[k] = UserPreference(user=user, key=k, value=v)
                 db.session.add(d[k])
 
-    def clear_preferences(self, user=None):
+    def clear_preferences(self, user: User = None) -> None:
         """Clear the user preferences."""
         if user is None:
             user = current_user
@@ -92,7 +103,7 @@ class PreferenceService(Service):
         #  http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html#deleting-from-collections
         user.preferences = []
 
-    def register_panel(self, panel, app=None):
+    def register_panel(self, panel: AdminPanel, app: Flask = None) -> None:
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
             raise ValueError(
@@ -115,7 +126,7 @@ class PreferenceService(Service):
             label=panel.label, icon=None, url=Endpoint(abs_endpoint)
         )
 
-    def setup_blueprint(self, app):
+    def setup_blueprint(self, app: Flask) -> None:
         bp = self.app_state.blueprint = Blueprint(
             "preferences",
             __name__,
@@ -126,7 +137,7 @@ class PreferenceService(Service):
         # we need to delay blueprint registration to allow adding more panels during
         # initialization
         @signals.components_registered.connect_via(app)
-        def register_bp(app):
+        def register_bp(app: Flask) -> None:
             app.register_blueprint(bp)
             app.extensions[self.name].blueprint_registered = True
 
@@ -137,7 +148,7 @@ class PreferenceService(Service):
         bp.url_value_preprocessor(self.build_breadcrumbs)
 
         @bp.context_processor
-        def inject_menu():
+        def inject_menu() -> Dict[str, List[Dict[str, Any]]]:
             menu = []
             for panel in self.app_state.panels:
                 if not panel.is_accessible():

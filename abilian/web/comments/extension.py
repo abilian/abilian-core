@@ -1,5 +1,9 @@
 # coding=utf-8
 """"""
+from typing import Union
+
+from flask import Flask
+
 from abilian.core.models import comment as comments
 from abilian.web import url_for
 
@@ -14,7 +18,7 @@ class CommentExtension:
     It is also available in templates as `comments`.
     """
 
-    def __init__(self, app):
+    def __init__(self, app: Flask) -> None:
         app.extensions["comments"] = self
         app.add_template_global(self, "comments")
         app.register_blueprint(blueprint)

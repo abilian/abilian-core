@@ -2,6 +2,7 @@
 """"""
 from datetime import datetime
 from functools import total_ordering
+from typing import Any, Optional
 
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
@@ -50,8 +51,10 @@ class Permission(UniqueName):
 
     __slots__ = ("label",)
 
-    def __init__(self, name, label=None, assignable=True):
-        UniqueName.__init__(self, name)
+    def __init__(
+        self, name: str, label: Optional[Any] = None, assignable: bool = True
+    ) -> None:
+        super().__init__(name)
         if label is None:
             label = "permission_" + str(name)
         if isinstance(label, str):
@@ -85,8 +88,10 @@ class Role(UniqueName):
 
     __slots__ = ("label", "assignable")
 
-    def __init__(self, name, label=None, assignable=True):
-        UniqueName.__init__(self, name)
+    def __init__(
+        self, name: str, label: Optional[Any] = None, assignable: bool = True
+    ) -> None:
+        super().__init__(name)
         if label is None:
             label = "role_" + str(name)
         if isinstance(label, str):
@@ -100,7 +105,7 @@ class Role(UniqueName):
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name}, {self.label})"
 
-    def __lt__(self, other):
+    def __lt__(self, other: "Role") -> bool:
         return str(self.label).__lt__(str(other.label))
 
     @classmethod

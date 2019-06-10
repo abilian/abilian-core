@@ -10,7 +10,7 @@ import warnings
 from functools import partial
 from itertools import chain, count
 from pathlib import Path
-from typing import Callable, Dict
+from typing import Any, Callable, Collection, Dict, Optional, Union
 
 import jinja2
 import sqlalchemy as sa
@@ -33,6 +33,7 @@ from abilian.services import Service, activity_service, antivirus, \
     preferences_service, repository_service, security_service, \
     session_repository_service, settings_service, vocabularies_service
 from abilian.services.security import Anonymous
+from abilian.services.security.models import Role
 from abilian.web import csrf
 from abilian.web.action import actions
 from abilian.web.admin import Admin
@@ -124,7 +125,7 @@ class Application(
     #: celery app class
     celery_app_cls = FlaskCelery
 
-    def __init__(self, name=None, *args, **kwargs):
+    def __init__(self, name: Optional[Any] = None, *args: Any, **kwargs: Any) -> None:
         name = name or __name__
 
         Flask.__init__(self, name, *args, **kwargs)
@@ -136,7 +137,7 @@ class Application(
         self.default_view = ViewRegistry()
         self.js_api = {}
 
-    def setup(self, config):
+    def setup(self, config: type) -> None:
         self.configure(config)
 
         # At this point we have loaded all external config files:
@@ -204,7 +205,7 @@ class Application(
 
         setup(self)
 
-    def setup_nav_and_breadcrumbs(self, app=None):
+    def setup_nav_and_breadcrumbs(self, app: Flask = None) -> None:
         """Listener for `request_started` event.
 
         If you want to customize first items of breadcrumbs, override
@@ -223,10 +224,10 @@ class Application(
         g.breadcrumb.append(BreadcrumbItem(icon="home", url="/" + request.script_root))
 
     # TODO: remove
-    def install_id_generator(self, sender, **kwargs):
+    def install_id_generator(self, sender: Flask, **kwargs: Any) -> None:
         g.id_generator = count(start=1)
 
-    def configure(self, config):
+    def configure(self, config: type) -> None:
         if config:
             self.config.from_object(config)
 
@@ -278,7 +279,7 @@ class Application(
             raise OSError(eno, err, str(path))
 
     @locked_cached_property
-    def data_dir(self):
+    def data_dir(self) -> Path:
         path = Path(self.instance_path, "data")
         if not path.exists():
             path.mkdir(0o775, parents=True)
@@ -375,7 +376,14 @@ class Application(
 
             self.register_blueprint(http_error_pages, url_prefix="/http_error")
 
-    def add_url_rule(self, rule, endpoint=None, view_func=None, roles=None, **options):
+    def add_url_rule(
+        self,
+        rule: str,
+        endpoint: Optional[str] = None,
+        view_func: Optional[Callable] = None,
+        roles: Collection[Role] = None,
+        **options: Any
+    ) -> None:
         """See :meth:`Flask.add_url_rule`.
 
         If `roles` parameter is present, it must be a
@@ -407,7 +415,9 @@ class Application(
         else:
             auth_state.add_bp_access_controller(name, func)
 
-    def add_static_url(self, url_path, directory, endpoint=None, roles=None):
+    def add_static_url(
+        self, url_path: str, directory: str, endpoint: str = None, roles: Role = None
+    ) -> None:
         """Add a new url rule for static files.
 
         :param url_path: subpath from application static url path. No heading
@@ -448,7 +458,7 @@ def setup(app: Flask):
     init_debug_toolbar(app)
 
 
-def init_debug_toolbar(app):
+def init_debug_toolbar(app: Union[Application, Application]) -> None:
     if not app.debug or app.testing:
         return
 
@@ -471,7 +481,9 @@ def init_debug_toolbar(app):
             extensions.csrf.exempt(app.view_functions[view_name])
 
 
-def create_app(config=None, app_class=Application, **kw):
+def create_app(
+    config: type = None, app_class: type = Application, **kw: Any
+) -> Application:
     app = app_class(**kw)
     app.setup(config=config)
 

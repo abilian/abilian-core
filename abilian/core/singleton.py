@@ -1,5 +1,8 @@
 # coding=utf-8
 """"""
+from typing import Any, Optional
+
+from sqlalchemy.engine.interfaces import Dialect
 from sqlalchemy.types import String, TypeDecorator
 
 
@@ -44,7 +47,7 @@ class UniqueName(metaclass=ValueSingletonMeta):
     def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, self.__class__):
             return self._hash == other._hash
         return self.__name == str(other)
@@ -73,12 +76,12 @@ class UniqueNameType(TypeDecorator):
         kwargs.setdefault("length", self.default_max_length)
         TypeDecorator.__init__(self, *args, **kwargs)
 
-    def process_bind_param(self, value, dialect):
+    def process_bind_param(self, value: Any, dialect: Dialect) -> Optional[str]:
         if value is not None:
             value = str(value)
         return value
 
-    def process_result_value(self, value, dialect):
+    def process_result_value(self, value: str, dialect: Dialect) -> Any:
         if value is not None:
             value = self.Type(value)
         return value

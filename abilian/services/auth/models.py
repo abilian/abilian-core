@@ -15,7 +15,9 @@ _MARK = object()
 
 
 class LoginSessionQuery(BaseQuery):
-    def get_active_for(self, user, user_agent=_MARK, ip_address=_MARK):
+    def get_active_for(
+        self, user: User, user_agent: object = _MARK, ip_address: object = _MARK
+    ) -> "LoginSession":
         """Return last known session for given user.
 
         :param user: user session
@@ -77,7 +79,7 @@ class LoginSession(db.Model):
     user_agent = Column(String(512), default="", nullable=False)
 
     @staticmethod
-    def new():
+    def new() -> "LoginSession":
         user_agent = request.environ.get("HTTP_USER_AGENT", "")
         forwared_for = request.headers.getlist("X-Forwarded-For")
         if not forwared_for:

@@ -4,7 +4,7 @@ import datetime
 import logging
 import operator
 from functools import partial
-from typing import Any
+from typing import Any, List, Union
 
 import babel
 import babel.dates
@@ -285,7 +285,13 @@ class FileField(BaseFileField):
 class DateTimeField(Field):
     widget = DateTimeInput()
 
-    def __init__(self, label=None, validators=None, use_naive=True, **kwargs):
+    def __init__(
+        self,
+        label: Union[str, None] = None,
+        validators: Any = None,
+        use_naive: bool = True,
+        **kwargs: Any,
+    ) -> None:
         """
         :param use_naive: if `False`, dates are considered entered using user's
         timezone; different users with different timezones will see corrected
@@ -313,7 +319,7 @@ class DateTimeField(Field):
             dt_fmt = locale.datetime_formats["short"].format(time_fmt, date_fmt)
             return format_datetime(self.data, dt_fmt) if self.data else ""
 
-    def process_data(self, value):
+    def process_data(self, value: datetime) -> None:
         if value is not None:
             if not value.tzinfo:
                 if self.use_naive:
@@ -325,7 +331,7 @@ class DateTimeField(Field):
 
         super().process_data(value)
 
-    def process_formdata(self, valuelist):
+    def process_formdata(self, valuelist: List[str]) -> None:
         if valuelist:
             date_str = " ".join(valuelist)
             locale = get_locale()
@@ -352,7 +358,7 @@ class DateTimeField(Field):
                 self.data = None
                 raise ValueError(self.gettext("Not a valid datetime value"))
 
-    def populate_obj(self, obj, name):
+    def populate_obj(self, obj: Any, name: str) -> None:
         dt = self.data
         if dt and self.use_naive:
             dt = dt.replace(tzinfo=None)
@@ -365,7 +371,9 @@ class DateField(Field):
 
     widget = DateInput()
 
-    def __init__(self, label=None, validators=None, **kwargs):
+    def __init__(
+        self, label: Union[str, None] = None, validators: Any = None, **kwargs: Any
+    ) -> None:
         super().__init__(label, validators, **kwargs)
 
     def _value(self) -> str:
@@ -383,7 +391,7 @@ class DateField(Field):
             )
             return format_date(self.data, date_fmt) if self.data else ""
 
-    def process_formdata(self, valuelist):
+    def process_formdata(self, valuelist: List[str]) -> None:
         valuelist = [i for i in valuelist if i.strip()]
 
         if valuelist:

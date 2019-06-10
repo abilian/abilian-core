@@ -1,16 +1,19 @@
 # coding: utf-8
 """Add a few specific filters to Jinja2."""
-import datetime
 import re
 from calendar import timegm
+from datetime import date, datetime
 from functools import wraps
+from typing import Any, Optional, Union
 
 import bleach
 import dateutil.parser
 import flask_babel as babel
 from babel.dates import DateTimePattern, format_timedelta, parse_pattern
 from deprecated import deprecated
-from jinja2 import Environment, Markup, escape, evalcontextfilter
+from jinja2 import Environment, escape, evalcontextfilter
+from jinja2.nodes import EvalContext
+from markupsafe import Markup
 from pytz import utc
 from werkzeug.routing import BuildError
 
@@ -24,7 +27,9 @@ def autoescape(filter_func):
 
     @evalcontextfilter
     @wraps(filter_func)
-    def _autoescape(eval_ctx, *args, **kwargs):
+    def _autoescape(
+        eval_ctx: EvalContext, *args: str, **kwargs: Any
+    ) -> Union[Markup, str]:
         result = filter_func(*args, **kwargs)
         if eval_ctx.autoescape:
             result = Markup(result)
@@ -34,7 +39,7 @@ def autoescape(filter_func):
 
 
 @autoescape
-def nl2br(value):
+def nl2br(value: str) -> Markup:
     """Replace newlines with <br />."""
     result = escape(value).replace("\n", Markup("<br />\n"))
     return result
@@ -57,7 +62,7 @@ def labelize(s: str) -> str:
     return " ".join([w.capitalize() for w in s.split("_")])
 
 
-def filesize(d):
+def filesize(d: Union[int, str]) -> Markup:
     if not isinstance(d, int):
         d = int(d)
 
@@ -91,7 +96,7 @@ def roughsize(size: int, above: int = 20, mod: int = 10) -> str:
     return "{:d}+".format(size - size % mod)
 
 
-def datetimeparse(s):
+def datetimeparse(s) -> Optional[datetime]:
     """Parse a string date time to a datetime object.
 
     Suitable for dates serialized with .isoformat()
@@ -106,11 +111,16 @@ def datetimeparse(s):
     return utc_dt(dt)
 
 
-def age(dt, now=None, add_direction=True, date_threshold=None):
+def age(
+    dt: Optional[datetime],
+    now: Optional[datetime] = None,
+    add_direction: bool = True,
+    date_threshold: Optional[Any] = None,
+) -> str:
     """
-    :param dt: :class:`datetime<datetime.datetime>` instance to format
+    :param dt: :class:`datetime<datetime>` instance to format
 
-    :param now: :class:`datetime<datetime.datetime>` instance to compare to `dt`
+    :param now: :class:`datetime<datetime>` instance to compare to `dt`
 
     :param add_direction: if `True`, will add "in" or "ago" (example for `en`
        locale) to time difference `dt - now`, i.e "in 9 min." or " 9min. ago"
@@ -123,7 +133,7 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
         return ""
 
     if not now:
-        now = datetime.datetime.utcnow()
+        now = datetime.utcnow()
 
     locale = babel.get_locale()
     dt = utc_dt(dt)
@@ -160,7 +170,7 @@ def age(dt, now=None, add_direction=True, date_threshold=None):
     )
 
 
-def date_age(dt, now=None):
+def date_age(dt: Optional[datetime], now: Optional[datetime] = None) -> str:
     # Fail silently for now XXX
     if not dt:
         return ""
@@ -170,17 +180,17 @@ def date_age(dt, now=None):
 
 
 @deprecated
-def date(value, format="EE, d MMMM y"):
+def date_fmt(value, format="EE, d MMMM y"):
     """
     @deprecated: use flask_babel's dateformat filter instead.
     """
-    if isinstance(value, datetime.date):
+    if isinstance(value, date):
         return babel.format_date(value, format)
     else:
         return babel.format_date(local_dt(value), format)
 
 
-def babel2datepicker(pattern):
+def babel2datepicker(pattern: DateTimePattern) -> str:
     """Convert date format from babel (http://babel.pocoo.org/docs/dates/#date-
     fields)) to a format understood by bootstrap-datepicker."""
     if not isinstance(pattern, DateTimePattern):
@@ -242,7 +252,7 @@ def bool2check(val, true="\u2713", false=""):
 
 
 @autoescape
-def linkify(s):
+def linkify(s: str) -> Markup:
     return Markup(bleach.linkify(s))
 
 
@@ -265,7 +275,7 @@ def init_filters(env: Environment):
     env.filters["date_age"] = date_age
     env.filters["datetimeparse"] = datetimeparse
     env.filters["age"] = age
-    env.filters["date"] = date
+    env.filters["date"] = date_fmt
     env.filters["babel2datepicker"] = babel2datepicker
     env.filters["to_timestamp"] = to_timestamp
     env.filters["url_for"] = obj_to_url

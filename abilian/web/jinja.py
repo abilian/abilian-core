@@ -1,9 +1,12 @@
 from pathlib import Path
+from typing import Any, Dict
 
 import jinja2
 from flask import Flask, current_app
 from flask.helpers import locked_cached_property
+from flask.templating import Environment
 from flask_babel import get_locale as babel_get_locale
+from jinja2.loaders import ChoiceLoader, PackageLoader
 from sqlalchemy.orm.attributes import NEVER_SET, NO_VALUE
 
 import abilian.core.util
@@ -21,7 +24,7 @@ class JinjaManagerMixin(Flask):
     #
     # Templating and context injection setup
     #
-    def create_jinja_environment(self):
+    def create_jinja_environment(self) -> Environment:
         env = Flask.create_jinja_environment(self)
         env.globals.update(
             app=current_app,
@@ -38,7 +41,7 @@ class JinjaManagerMixin(Flask):
         return env
 
     @locked_cached_property
-    def jinja_options(self):
+    def jinja_options(self) -> Dict[str, Any]:
         options = dict(Flask.jinja_options)
 
         jinja_exts = options.setdefault("extensions", [])
@@ -59,7 +62,7 @@ class JinjaManagerMixin(Flask):
             options["undefined"] = jinja2.StrictUndefined
         return options
 
-    def register_jinja_loaders(self, *loaders):
+    def register_jinja_loaders(self, *loaders: PackageLoader) -> None:
         """Register one or many `jinja2.Loader` instances for templates lookup.
 
         During application initialization plugins can register a loader so that
@@ -81,7 +84,7 @@ class JinjaManagerMixin(Flask):
         self._jinja_loaders.extend(loaders)
 
     @locked_cached_property
-    def jinja_loader(self):
+    def jinja_loader(self) -> ChoiceLoader:
         """Search templates in custom app templates dir (default Flask
         behaviour), fallback on abilian templates."""
         loaders = self._jinja_loaders

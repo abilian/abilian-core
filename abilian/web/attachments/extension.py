@@ -1,6 +1,8 @@
 # coding=utf-8
 """"""
-from flask import current_app
+from typing import Union
+
+from flask import Flask, current_app
 from flask_login import current_user
 
 from abilian.core.models import attachment as attachments
@@ -20,7 +22,7 @@ class AttachmentExtension:
     It is also available in templates as `attachments`.
     """
 
-    def __init__(self, app):
+    def __init__(self, app: Flask) -> None:
         app.extensions["attachments"] = self
         app.add_template_global(self, "attachments")
         app.register_blueprint(blueprint)

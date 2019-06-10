@@ -2,7 +2,7 @@
 """"""
 from datetime import datetime
 from itertools import chain
-from typing import Text
+from typing import Callable, Text
 
 import pytz
 import sqlalchemy as sa
@@ -84,7 +84,7 @@ class AuditPanel(AdminPanel):
     label = "Audit trail"
     icon = "list-alt"
 
-    def install_additional_rules(self, add_url_rule):
+    def install_additional_rules(self, add_url_rule: Callable) -> None:
         add_url_rule("/search_users", view_func=JSONUserSearch.as_view("search_users"))
 
     def get(self) -> str:

@@ -6,6 +6,7 @@ from unittest import mock
 import pytz
 from wtforms.form import Form
 
+from abilian.app import Application
 from abilian.core.entities import Entity
 from abilian.services.security import READ, WRITE, Anonymous, Owner, Role
 
@@ -127,12 +128,12 @@ def test_form_permissions_controller() -> None:
         assert has_role.call_args[-1]["role"] == [Owner, MarkRole]
 
 
-def patch_babel(app):
+def patch_babel(app: Application) -> None:
     app.extensions["babel"].timezone_selector_func = None
     app.extensions["babel"].timezoneselector(user_tz)
 
 
-def test_datetime_field(app):
+def test_datetime_field(app: Application) -> None:
     """Test fields supports date with year < 1900."""
 
     assert "fr" in app.config["BABEL_ACCEPT_LANGUAGES"]
@@ -168,7 +169,7 @@ def test_datetime_field(app):
         assert field.data == expected_datetime
 
 
-def test_datetime_field_naive(app):
+def test_datetime_field_naive(app: Application) -> None:
     """Test fields supports date with year < 1900."""
     patch_babel(app)
 
@@ -192,7 +193,7 @@ def test_datetime_field_naive(app):
         assert obj.dt == datetime.datetime(1789, 6, 17, 10, 42)
 
 
-def test_datetime_field_force_4digit_year(app):
+def test_datetime_field_force_4digit_year(app: Application) -> None:
     # use 'en': short date pattern is 'M/d/yy'
     patch_babel(app)
 
@@ -203,7 +204,7 @@ def test_datetime_field_force_4digit_year(app):
         assert field._value() == "1/23/2011, 6:42 PM"
 
 
-def test_date_field(app):
+def test_date_field(app: Application) -> None:
     """Test fields supports date with year < 1900."""
     patch_babel(app)
 
@@ -215,7 +216,7 @@ def test_date_field(app):
         assert field._value() == "17/06/1789"
 
 
-def test_datefield_force_4digit_year(app):
+def test_datefield_force_4digit_year(app: Application) -> None:
     patch_babel(app)
 
     # use 'en': short date pattern is 'M/d/yy'

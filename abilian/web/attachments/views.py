@@ -5,6 +5,7 @@ from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm
 from flask import current_app, send_file
+from flask.blueprints import BlueprintSetupState
 from werkzeug.exceptions import BadRequest
 from werkzeug.utils import redirect
 
@@ -30,7 +31,7 @@ def _default_attachment_view(obj, obj_type, obj_id, **kwargs):
 
 
 @bp.record_once
-def register_default_view(state):
+def register_default_view(state: BlueprintSetupState) -> None:
     state.app.default_view.register(Attachment, _default_attachment_view)
 
 

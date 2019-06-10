@@ -1,6 +1,6 @@
 # coding=utf-8
 """"""
-from typing import Any
+from typing import Any, Callable
 
 from flask import g, json, jsonify, redirect, render_template_string, request
 from flask.views import MethodView as BaseView
@@ -21,7 +21,7 @@ class View(BaseView):
     """
 
     @classmethod
-    def as_view(cls, name, *class_args, **class_kwargs):
+    def as_view(cls, name: str, *class_args: Any, **class_kwargs: Any) -> Callable:
         return super().as_view(name, *class_args, **class_kwargs)
 
     def dispatch_request(self, *args: Any, **kwargs: Any) -> str:

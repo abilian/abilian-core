@@ -1,13 +1,15 @@
 # coding=utf-8
 """Elements to build test cases for an :class:`abilian.app.Application`"""
-from typing import ContextManager
+from typing import ContextManager, List, Union
 
 from flask.testing import FlaskClient
 from flask_login import login_user, logout_user
 from hyperlink import URL
 from sqlalchemy.exc import DatabaseError
 
+from abilian.app import Application
 from abilian.core.models.subjects import User
+from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.services import get_service
 from abilian.web import url_for
 
@@ -74,7 +76,7 @@ def login(user, remember=False, force=False):
     return LoginContext()
 
 
-def cleanup_db(db):
+def cleanup_db(db: SQLAlchemy) -> None:
     """Drop all the tables, in a way that doesn't raise integrity errors."""
 
     # Need to run this sequence twice for some reason
@@ -84,7 +86,7 @@ def cleanup_db(db):
     db.drop_all()
 
 
-def _delete_tables(db):
+def _delete_tables(db: SQLAlchemy) -> None:
     for table in reversed(db.metadata.sorted_tables):
         try:
             db.session.execute(table.delete())
@@ -92,14 +94,14 @@ def _delete_tables(db):
             pass
 
 
-def ensure_services_started(services):
+def ensure_services_started(services: List[str]) -> None:
     for service_name in services:
         service = get_service(service_name)
         if not service.running:
             service.start()
 
 
-def stop_all_services(app):
+def stop_all_services(app: Application) -> None:
     for service in app.services.values():
         if service.running:
             service.stop()

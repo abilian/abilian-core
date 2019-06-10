@@ -5,6 +5,7 @@ from typing import Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm
+from flask.blueprints import BlueprintSetupState
 from flask_login import current_user
 from werkzeug.exceptions import BadRequest
 
@@ -29,7 +30,7 @@ def _default_comment_view(obj, obj_type, obj_id, **kwargs):
 
 
 @bp.record_once
-def register_default_view(state):
+def register_default_view(state: BlueprintSetupState) -> None:
     state.app.default_view.register(Comment, _default_comment_view)
 
 

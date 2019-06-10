@@ -3,6 +3,7 @@
 import colorsys
 import hashlib
 from pathlib import Path
+from typing import Any, Dict, Tuple
 
 import pkg_resources
 import sqlalchemy as sa
@@ -208,7 +209,7 @@ route("/users/default")(
 )
 
 
-def user_url_args(user, size):
+def user_url_args(user: User, size: int) -> Tuple[str, Dict[str, Any]]:
     endpoint = "images.user_default"
     kwargs = {"s": size, "md5": DEFAULT_AVATAR_MD5}
 

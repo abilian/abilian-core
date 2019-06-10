@@ -15,6 +15,7 @@ import subprocess
 from io import BytesIO
 from pathlib import Path
 
+from flask import Flask
 from PIL import Image
 from PIL.ExifTags import TAGS
 
@@ -40,7 +41,7 @@ class Converter:
         self.handlers = []
         self.cache = Cache()
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         self.init_work_dirs(
             cache_dir=Path(app.instance_path, CACHE_DIR),
             tmp_dir=Path(app.instance_path, TMP_DIR),

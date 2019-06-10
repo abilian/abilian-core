@@ -19,11 +19,10 @@ import sqlalchemy.orm
 import sqlalchemy.pool
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy as SAExtension
-from sqlalchemy.dialects.sqlite.pysqlite import SQLiteDialect_pysqlite
+from sqlalchemy.engine.interfaces import Dialect
 from sqlalchemy.engine.url import URL
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.mutable import Mutable
-from sqlalchemy.pool.base import _ConnectionFairy, _ConnectionRecord
 from sqlalchemy.sql.sqltypes import CHAR
 
 from .logging import patch_logger
@@ -33,9 +32,7 @@ logger = logging.getLogger(__name__)
 
 @listens_for(sa.pool.Pool, "checkout")
 def ping_connection(
-    dbapi_connection: Connection,
-    connection_record: _ConnectionRecord,
-    connection_proxy: _ConnectionFairy,
+    dbapi_connection: Connection, connection_record, connection_proxy
 ) -> None:
     """Ensure connections are valid.
 
@@ -281,15 +278,13 @@ class JSON(sa.types.TypeDecorator):
 
     impl = sa.types.Text
 
-    def process_bind_param(
-        self, value: Any, dialect: SQLiteDialect_pysqlite
-    ) -> Optional[str]:
+    def process_bind_param(self, value: Any, dialect: Dialect) -> Optional[str]:
         if value is not None:
             value = json.dumps(value)
         return value
 
     def process_result_value(
-        self, value: Optional[str], dialect: SQLiteDialect_pysqlite
+        self, value: Optional[str], dialect: Dialect
     ) -> Union[Dict[str, Any], List[int], None]:
         if value is not None:
             value = json.loads(value)
@@ -344,14 +339,14 @@ class UUID(sa.types.TypeDecorator):
 
     impl = sa.types.CHAR
 
-    def load_dialect_impl(self, dialect: SQLiteDialect_pysqlite) -> CHAR:
+    def load_dialect_impl(self, dialect: Dialect) -> CHAR:
         if dialect.name == "postgresql":
             return dialect.type_descriptor(sa.dialects.postgresql.UUID())
         else:
             return dialect.type_descriptor(sa.types.CHAR(32))
 
     def process_bind_param(
-        self, value: Union[None, str, UUID], dialect: SQLiteDialect_pysqlite
+        self, value: Union[None, str, UUID], dialect: Dialect
     ) -> Optional[str]:
         if value is None:
             return value
@@ -364,7 +359,7 @@ class UUID(sa.types.TypeDecorator):
             return value.hex
 
     def process_result_value(
-        self, value: Optional[str], dialect: SQLiteDialect_pysqlite
+        self, value: Optional[str], dialect: Dialect
     ) -> Optional[UUID]:
         return value if value is None else uuid.UUID(value)
 
@@ -385,7 +380,7 @@ class Locale(sa.types.TypeDecorator):
         return babel.Locale
 
     def process_bind_param(
-        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+        self, value: Optional[Any], dialect: Dialect
     ) -> Optional[Any]:
         if value is None:
             return None
@@ -406,7 +401,7 @@ class Locale(sa.types.TypeDecorator):
         return code
 
     def process_result_value(
-        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+        self, value: Optional[Any], dialect: Dialect
     ) -> Optional[Any]:
         return None if value is None else babel.Locale.parse(value)
 
@@ -421,7 +416,7 @@ class Timezone(sa.types.TypeDecorator):
         return pytz.tzfile.DstTzInfo
 
     def process_bind_param(
-        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+        self, value: Optional[Any], dialect: Dialect
     ) -> Optional[Any]:
         if value is None:
             return None
@@ -436,7 +431,7 @@ class Timezone(sa.types.TypeDecorator):
         return value.zone
 
     def process_result_value(
-        self, value: Optional[Any], dialect: SQLiteDialect_pysqlite
+        self, value: Optional[Any], dialect: Dialect
     ) -> Optional[Any]:
         return None if value is None else babel.dates.get_timezone(value)
 
