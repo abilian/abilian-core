@@ -156,6 +156,7 @@ class BaseTableView(View):
         if self.show_search is None:
             self.show_search = self.show_controls
 
+        self.columns: List[Dict[str, Any]] = []
         self.init_columns(columns)
         self.name = "{}-{:d}".format(
             self.__class__.__name__.lower(), next(g.id_generator)
@@ -168,14 +169,12 @@ class BaseTableView(View):
 
     def init_columns(self, columns: List[str]) -> None:
         # TODO
-        self.columns = []
         default_width = "{:2.0f}%".format(0.99 / len(columns) * 100)
         for col in columns:
             if isinstance(col, str):
                 col = {"name": col, "width": default_width}
             assert isinstance(col, dict)
             col.setdefault("width", default_width)
-            # pyre-fixme[6]: Expected `str` for 2nd param but got `Tuple[str, str]`.
             col.setdefault("sorting", ("asc", "desc"))
             if "label" not in col:
                 col["label"] = labelize(col["name"])
@@ -255,20 +254,13 @@ class BaseTableView(View):
             if format:
                 cell = format(value)
             elif column_name in (make_link_on, "name") or col.get("linkable"):
-                cell = Markup(
-                    '<a href="{}">{}</a>'.format(
-                        build_url(entity), html.escape(str(value))
-                    )
-                )
+                url = build_url(entity)
+                text = html.escape(str(value))
+                cell = Markup(f'<a href="{url}">{text}</a>')
             elif isinstance(value, Entity):
-                cell = Markup(
-                    '<a href="{}">{}</a>'.format(
-                        # pyre-fixme[6]: Expected `AnyStr` for 1st param but got
-                        #  `Column`.
-                        build_url(value),
-                        html.escape(value.name),
-                    )
-                )
+                url = build_url(entity)
+                text = html.escape(value.name)
+                cell = Markup(f'<a href="{url}">{text}</a>')
             elif isinstance(value, str) and (
                 value.startswith("http://") or value.startswith("www.")
             ):
