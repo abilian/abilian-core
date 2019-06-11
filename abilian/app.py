@@ -382,7 +382,7 @@ class Application(
         self,
         rule: str,
         endpoint: str,
-        view_func: Optional[Callable] = None,
+        view_func: Callable,
         roles: Collection[Role] = (),
         **options: Any
     ) -> None:

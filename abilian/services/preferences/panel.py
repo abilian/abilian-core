@@ -14,3 +14,9 @@ class PreferencePanel:
 
     def is_accessible(self):
         return True
+
+    def get(self):
+        raise NotImplementedError
+
+    def post(self):
+        raise NotImplementedError
