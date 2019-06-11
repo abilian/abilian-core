@@ -16,6 +16,7 @@ from flask_login import current_user
 from sqlalchemy import Date, DateTime, func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from werkzeug.exceptions import BadRequest
+from wtforms import Form
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -111,7 +112,7 @@ def labelize(s):
     return " ".join([w.capitalize() for w in s.split("_")])
 
 
-def make_single_view(form, **options):
+def make_single_view(form: Form, **options) -> SingleView:
     panels = []
     for gr in form._groups.items():
         panel = Panel(gr[0], *[Row(x) for x in gr[1]])
@@ -135,6 +136,8 @@ class ModuleView:
 
 class BaseEntityView(ModuleView):
     pk = "entity_id"
+
+    form: Form
 
     def init_object(self, args, kwargs):
         args, kwargs = super().init_object(args, kwargs)
@@ -163,7 +166,7 @@ class BaseEntityView(ModuleView):
         return redirect(self.module.url)
 
     @property
-    def single_view(self):
+    def single_view(self) -> SingleView:
         return make_single_view(
             self.form,
             view_template=self.module.view_template,
@@ -243,7 +246,7 @@ class EntityView(BaseEntityView, ObjectView):
         module = self.module
         related_views = [v.render(self.obj) for v in module.related_views]
         rendered_entity = self.single_view.render(
-            self.obj, self.form, related_views=related_views
+            self.obj, related_views=related_views
         )
         audit_entries = audit_service.entries_for(self.obj)
 
@@ -263,7 +266,7 @@ class EntityEdit(BaseEntityView, ObjectEdit):
 
     @property
     def template_kwargs(self):
-        rendered_entity = self.single_view.render_form(self.form)
+        rendered_entity = self.single_view.render_form()
         return {
             "rendered_entity": rendered_entity,
             "show_new_comment_form": False,
@@ -284,7 +287,7 @@ class EntityCreate(BaseEntityView, ObjectCreate):
 
     @property
     def template_kwargs(self):
-        rendered_entity = self.single_view.render_form(self.form)
+        rendered_entity = self.single_view.render_form()
         return {
             "rendered_entity": rendered_entity,
             "for_new": True,
