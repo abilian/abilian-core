@@ -3,6 +3,7 @@
 import abc
 from typing import Any
 
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, \
     UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
@@ -94,6 +95,8 @@ class Comment(Entity):
 
     #: comment's main content
     body = Column(UnicodeText(), CheckConstraint("trim(body) != ''"), nullable=False)
+
+    query: BaseQuery
 
     @property
     def history(self):

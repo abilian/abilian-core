@@ -138,7 +138,7 @@ class BcryptPasswordStrategy(PasswordStrategy):
         return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
 
 
-class UserQuery(db.Model.query_class):
+class UserQuery(BaseQuery):
     def get_by_email(self, email):
         return self.filter_by(email=email).one()
 
@@ -175,7 +175,7 @@ class User(Principal, UserMixin, db.Model):
     __password_strategy__ = BcryptPasswordStrategy()
 
     query_class = UserQuery
-    query: BaseQuery
+    query: UserQuery
 
     # Basic information
     first_name = Column(UnicodeText, info=SEARCHABLE)
