@@ -172,7 +172,7 @@ class SAAdapter(SchemaAdapter):
             _session = db.session()
         return _session.query(self.model_class).get(pk)
 
-    def get_document(self, obj: Entity) -> Dict[str, Any]:
+    def get_document(self, obj: Model) -> Dict[str, Any]:
         result: Dict[str, Any] = {}
         if not self.indexable:
             return result

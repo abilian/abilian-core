@@ -99,7 +99,7 @@ def test_form_permissions_controller() -> None:
         # field roles
         has_role.reset_mock()
         fp = FormPermissions(
-            default=MarkRole, read=Anonymous, fields_read={"test": Owner}
+            default=MarkRole, read=Anonymous, fields_read={"test": {Owner}}
         )
         fp.has_permission(READ)
         assert has_role.call_args[-1]["role"] == [Anonymous]

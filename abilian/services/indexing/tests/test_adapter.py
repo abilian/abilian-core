@@ -6,8 +6,7 @@ import sqlalchemy as sa
 from whoosh.fields import NUMERIC, TEXT, Schema
 
 from abilian.core.entities import Entity
-from abilian.core.extensions import db
-from abilian.core.models.base import SEARCHABLE, IdMixin
+from abilian.core.models.base import SEARCHABLE, IdMixin, Model
 from abilian.core.models.base import Indexable as CoreIndexable
 from abilian.services.indexing.adapter import SAAdapter
 
@@ -16,12 +15,12 @@ class SANotAdaptable:
     pass
 
 
-class SANotIndexable(IdMixin, db.Model):
+class SANotIndexable(IdMixin, Model):
     __tablename__ = "sa_not_indexable"
     __indexable__ = False
 
 
-class Indexable(IdMixin, CoreIndexable, db.Model):
+class Indexable(IdMixin, CoreIndexable, Model):
     __tablename__ = "sa_indexable"
     __index_to__ = (("related.name", ("name", "text")), ("related.description", "text"))
 
@@ -41,7 +40,6 @@ def test_can_adapt() -> None:
 
 def test_build_attrs_1() -> None:
     schema = Schema()
-    # pyre-fixme[6]: Expected `Model` for 1st param but got `Type[SANotIndexable]`.
     adapter = SAAdapter(SANotIndexable, schema)
     assert not adapter.indexable
     assert adapter.doc_attrs == {}
@@ -49,15 +47,12 @@ def test_build_attrs_1() -> None:
 
 def test_build_attrs_2() -> None:
     schema = Schema()
-    # pyre-fixme[6]: Expected `Model` for 1st param but got `Type[Entity]`.
     adapter = SAAdapter(Entity, schema)
     assert adapter.indexable == False
 
 
 def test_build_attrs_3() -> None:
     schema = Schema()
-    # pyre-fixme[6]: Expected `Model` for 1st param but got
-    #  `Type[SubclassEntityIndexable]`.
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     assert adapter.indexable
     assert set(adapter.doc_attrs) == {
@@ -102,7 +97,6 @@ def test_build_attrs_3() -> None:
 
 def test_build_attrs_4() -> None:
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
-    # pyre-fixme[6]: Expected `Model` for 1st param but got `Type[Indexable]`.
     adapter = SAAdapter(Indexable, schema)
     assert adapter.indexable
     assert set(adapter.doc_attrs) == {
@@ -153,16 +147,13 @@ def test_get_document(app, db):
 def test_get_document_with_schema() -> None:
     # test retrieve related attributes
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
-    # pyre-fixme[6]: Expected `Model` for 1st param but got `Type[Indexable]`.
     adapter = SAAdapter(Indexable, schema)
     expected: Dict[str, Any] = {"id": 1, "num": 42}
     obj = Indexable(**expected)
     obj.related = type("Related", (object,), {"name": None})()
     expected["name"] = obj.related.name = "related name"
     obj.related.description = "description text"
-    # pyre-fixme[16]: `Indexable` has no attribute `related`.
     expected["text"] = obj.related.name + " " + obj.related.description
-    # pyre-fixme[6]: Expected `Entity` for 1st param but got `Indexable`.
     doc = adapter.get_document(obj)
 
     assert set(doc) == {"id", "name", "num", "text", "object_type", "object_key"}

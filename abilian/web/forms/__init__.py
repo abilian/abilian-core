@@ -122,8 +122,6 @@ class FormPermissions:
     def has_permission(
         self,
         permission: Permission,
-        # pyre-fixme[9]: field has type `Optional[]`; used as `None`.
-        # pyre-fixme[24]: Non-generic type `Optional` cannot take parameters.
         field: Optional[str] = None,
         obj: Union[None, Entity, object] = None,
         user: User = current_user,
