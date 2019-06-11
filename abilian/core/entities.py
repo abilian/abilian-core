@@ -19,7 +19,7 @@ from sqlalchemy.types import Integer, String, UnicodeText
 
 from .extensions import db
 from .models import BaseMixin
-from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
+from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable, Model
 from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
 
@@ -227,7 +227,7 @@ class EntityMeta(BaseMeta):
         BaseMeta.__init__(cls, classname, bases, d)
 
 
-class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
+class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
     """Base class for Abilian entities.
 
     From Sqlalchemy POV, Entities use `Joined-Table inheritance

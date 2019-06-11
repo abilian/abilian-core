@@ -114,7 +114,7 @@ class WhooshIndexService(Service):
         whoosh_base = Path(app.config.get("WHOOSH_BASE", "whoosh"))
 
         if not whoosh_base.is_absolute():
-            whoosh_base = app.instance_path / whoosh_base
+            whoosh_base = Path(app.instance_path) / whoosh_base
 
         if not whoosh_base.is_dir():
             whoosh_base.mkdir(parents=True)
