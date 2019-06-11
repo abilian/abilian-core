@@ -159,6 +159,8 @@ class BaseTableView(View):
             self.show_search = self.show_controls
 
         self.columns: List[Dict[str, Any]] = []
+        # pyre-fixme[6]: Expected `List[Union[Dict[str, Any], str]]` for 1st param
+        #  but got `List[Dict[str, Any]]`.
         self.init_columns(columns)
         self.name = "{}-{:d}".format(
             self.__class__.__name__.lower(), next(g.id_generator)
@@ -254,15 +256,18 @@ class BaseTableView(View):
                 # pyre-fixme[16]: `Entity` has no attribute `display_value`.
                 value = value.display_value(attr[0])
 
+            # pyre-fixme[16]: `str` has no attribute `get`.
             format = col.get("format")
             if format:
                 cell = format(value)
+            # pyre-fixme[16]: `str` has no attribute `get`.
             elif column_name in (make_link_on, "name") or col.get("linkable"):
                 url = build_url(entity)
                 text = html.escape(str(value))
                 cell = Markup(f'<a href="{url}">{text}</a>')
             elif isinstance(value, Entity):
                 url = build_url(entity)
+                # pyre-fixme[6]: Expected `AnyStr` for 1st param but got `Column`.
                 text = html.escape(value.name)
                 cell = Markup(f'<a href="{url}">{text}</a>')
             elif isinstance(value, str) and (

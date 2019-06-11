@@ -49,6 +49,7 @@ def is_eager() -> bool:
         # pyre-fixme[16]: Module `celery` has no attribute `current_task`.
         # pyre-fixme[16]: Module `celery` has no attribute `current_task`.
         current_task
+        # pyre-fixme[16]: Module `celery` has no attribute `current_task`.
         and current_task.request.is_eager
         # pyre-fixme[16]: Module `celery` has no attribute `current_app`.
     ) or celery_current_app.conf.CELERY_ALWAYS_EAGER

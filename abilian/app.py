@@ -85,8 +85,7 @@ class PluginManager:
         """Load and register a plugin given its package name."""
         logger.info("Registering plugin: " + name)
         module = importlib.import_module(name)
-        # pyre-fixme[16]: `ModuleType` has no attribute `register_plugin`.
-        module.register_plugin(self)
+        module.register_plugin(self)  # type: ignore
 
     def register_plugins(self) -> None:
         """Load plugins listed in config variable 'PLUGINS'."""
@@ -206,8 +205,7 @@ class Application(
 
         setup(self)
 
-    # pyre-fixme[9]: app has type `Flask`; used as `None`.
-    def setup_nav_and_breadcrumbs(self, app: Flask = None) -> None:
+    def setup_nav_and_breadcrumbs(self, app: Flask) -> None:
         """Listener for `request_started` event.
 
         If you want to customize first items of breadcrumbs, override
@@ -348,8 +346,6 @@ class Application(
 
         from .web.preferences.user import UserPreferencesPanel
 
-        # pyre-fixme[6]: Expected `AdminPanel` for 1st param but got
-        #  `UserPreferencesPanel`.
         preferences_service.register_panel(UserPreferencesPanel(), self)
 
         from .web.coreviews import users
@@ -382,11 +378,10 @@ class Application(
 
             self.register_blueprint(http_error_pages, url_prefix="/http_error")
 
-    # pyre-fixme[14]: `add_url_rule` overrides method defined in `Flask` inconsistently.
-    def add_url_rule(
+    def add_url_rule_with_role(
         self,
         rule: str,
-        endpoint: Optional[str] = None,
+        endpoint: str,
         view_func: Optional[Callable] = None,
         roles: Collection[Role] = (),
         **options: Any
@@ -397,12 +392,10 @@ class Application(
         :class:`abilian.service.security.models.Role` instance, or a list of
         Role instances.
         """
-        # pyre-fixme[16]: `ServiceManager` has no attribute `add_url_rule`.
-        super().add_url_rule(rule, endpoint, view_func, **options)
+        self.add_url_rule(rule, endpoint, view_func, **options)
 
         if roles:
             self.add_access_controller(
-                # pyre-fixme[6]: Expected `str` for 1st param but got `Optional[str]`.
                 endpoint,
                 allow_access_for_roles(roles),
                 endpoint=True,
@@ -446,7 +439,7 @@ class Application(
         `/path/to/myplugin/resources` from url `http://.../static/myplugin`
         """
         url_path = self.static_url_path + "/" + url_path + "/<path:filename>"
-        self.add_url_rule(
+        self.add_url_rule_with_role(
             url_path,
             endpoint=endpoint,
             view_func=partial(send_file_from_directory, directory=directory),

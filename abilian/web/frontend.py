@@ -114,6 +114,7 @@ def labelize(s):
 
 def make_single_view(form: Form, **options) -> SingleView:
     panels = []
+    # pyre-fixme[16]: `Form` has no attribute `_groups`.
     for gr in form._groups.items():
         panel = Panel(gr[0], *[Row(x) for x in gr[1]])
         panels.append(panel)
@@ -172,6 +173,7 @@ class BaseEntityView(ModuleView):
             view_template=self.module.view_template,
             view=self,
             module=self.module,
+            # pyre-fixme[32]: Keyword argument must be a mapping with string keys.
             **self.module.view_options,
         )
 

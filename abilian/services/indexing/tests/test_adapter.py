@@ -153,6 +153,7 @@ def test_get_document_with_schema() -> None:
     obj.related = type("Related", (object,), {"name": None})()
     expected["name"] = obj.related.name = "related name"
     obj.related.description = "description text"
+    # pyre-fixme[16]: `Indexable` has no attribute `related`.
     expected["text"] = obj.related.name + " " + obj.related.description
     doc = adapter.get_document(obj)
 

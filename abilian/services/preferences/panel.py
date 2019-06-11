@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class PreferencePanel:
     """Base class for preference panels.
 
@@ -6,6 +9,8 @@ class PreferencePanel:
     registration), or to add some common functionnalities. Otherwise, it
     will be removed.
     """
+    id: str
+    label: Any
 
     def is_accessible(self):
         return True

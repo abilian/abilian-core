@@ -47,7 +47,11 @@ class FormPermissions:
         default: Role = Anonymous,
         read: Union[None, Role, Collection[Role]] = None,
         write: Union[None, Role, Collection[Role]] = None,
+        # pyre-fixme[9]: fields_read has type `Optional[]`; used as `None`.
+        # pyre-fixme[24]: Non-generic type `Optional` cannot take parameters.
         fields_read: Optional[Dict[str, Collection[Role]]] = None,
+        # pyre-fixme[9]: fields_write has type `Optional[]`; used as `None`.
+        # pyre-fixme[24]: Non-generic type `Optional` cannot take parameters.
         fields_write: Optional[Dict[str, Collection[Role]]] = None,
         existing: Optional[Any] = None,
     ) -> None:
@@ -122,8 +126,11 @@ class FormPermissions:
     def has_permission(
         self,
         permission: Permission,
+        # pyre-fixme[9]: field has type `Optional[]`; used as `None`.
+        # pyre-fixme[24]: Non-generic type `Optional` cannot take parameters.
         field: Optional[str] = None,
         obj: Union[None, Entity, object] = None,
+        # pyre-fixme[9]: user has type `User`; used as `LocalProxy`.
         user: User = current_user,
     ) -> bool:
         if obj is not None and not isinstance(obj, Entity):

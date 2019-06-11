@@ -18,6 +18,7 @@ from abilian.core.models.subjects import User
 from abilian.i18n import _, _l
 from abilian.services.auth.service import user_menu
 from abilian.services.base import Service, ServiceState
+from abilian.services.preferences.panel import PreferencePanel
 from abilian.web.action import Endpoint
 from abilian.web.admin import AdminPanel
 from abilian.web.nav import BreadcrumbItem, NavItem
@@ -105,8 +106,7 @@ class PreferenceService(Service):
         #  http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html#deleting-from-collections
         user.preferences = []
 
-    # pyre-fixme[9]: app has type `Flask`; used as `None`.
-    def register_panel(self, panel: AdminPanel, app: Flask = None) -> None:
+    def register_panel(self, panel: PreferencePanel, app: Optional[Flask] = None) -> None:
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
             raise ValueError(
@@ -120,11 +120,9 @@ class PreferenceService(Service):
         abs_endpoint = f"preferences.{endpoint}"
 
         if hasattr(panel, "get"):
-            # pyre-fixme[16]: `AdminPanel` has no attribute `get`.
             state.blueprint.add_url_rule(rule, endpoint, panel.get)
         if hasattr(panel, "post"):
             endpoint += "_post"
-            # pyre-fixme[16]: `AdminPanel` has no attribute `post`.
             state.blueprint.add_url_rule(rule, endpoint, panel.post, methods=["POST"])
 
         state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(

@@ -99,6 +99,8 @@ def test_form_permissions_controller() -> None:
         # field roles
         has_role.reset_mock()
         fp = FormPermissions(
+            # pyre-fixme[6]: Expected `Optional[]` for 3rd param but got `Dict[str,
+            #  Set[Role]]`.
             default=MarkRole, read=Anonymous, fields_read={"test": {Owner}}
         )
         fp.has_permission(READ)
