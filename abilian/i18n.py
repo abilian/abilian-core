@@ -180,7 +180,7 @@ def timezones_choices():
 class Babel(BabelBase):
     """Allow to load translations from other modules."""
 
-    _translations_paths = None
+    _translations_paths: List[Tuple[str, str]]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -397,8 +397,8 @@ def to_lower_ascii(value: str) -> str:
     value = str(value)
     value = _NOT_WORD_RE.sub(" ", value)
     value = unicodedata.normalize("NFKD", value)
-    value = value.encode("ascii", "ignore")
-    value = value.decode("ascii")
+    value_b = value.encode("ascii", "ignore")
+    value = value_b.decode("ascii")
     value = value.strip().lower()
     value = re.sub(r"[_\s]+", " ", value)
     return value

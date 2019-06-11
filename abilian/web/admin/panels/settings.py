@@ -39,8 +39,7 @@ class SessionLifeTimeKey(Key):
     template = "admin/settings_session_lifetime.html"
 
     def __init__(self) -> None:
-        Key.__init__(
-            self,
+        super().__init__(
             "PERMANENT_SESSION_LIFETIME",
             "timedelta",
             label=_l("Session lifetime"),

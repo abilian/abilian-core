@@ -181,7 +181,7 @@ class FileField(BaseFileField):
                 validators.append(DataRequired())
 
         kwargs["validators"] = validators
-        BaseFileField.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def allow_delete(self):

@@ -711,7 +711,7 @@ class TextArea(BaseTextArea):
     def __init__(
         self, resizeable: str = None, rows: int = None, *args: Any, **kwargs: Any
     ) -> None:
-        BaseTextArea.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         if resizeable not in self._resizeable_valid:
             raise ValueError(
@@ -1037,7 +1037,7 @@ class TimeInput(Input):
         disableFocus=False,
         modalBackdrop=False,
     ):
-        Input.__init__(self)
+        super().__init__()
 
         if template is not None:
             self.template = template
@@ -1220,11 +1220,11 @@ class PasswordInput(BasePasswordInput):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.autocomplete = kwargs.pop("autocomplete", None)
-        BasePasswordInput.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault("autocomplete", self.autocomplete)
-        return BasePasswordInput.__call__(self, field, **kwargs)
+        return super().__call__(field, **kwargs)
 
     def render_view(self, field, **kwargs):
         return "*****"
@@ -1387,7 +1387,7 @@ class ListWidget(wtforms.widgets.ListWidget):
     def __init__(
         self, html_tag: str = "ul", prefix_label: bool = True, show_label: bool = True
     ) -> None:
-        wtforms.widgets.ListWidget.__init__(self, html_tag, prefix_label)
+        super().__init__(html_tag, prefix_label)
         self.show_label = show_label
 
     def __call__(self, field, **kwargs):

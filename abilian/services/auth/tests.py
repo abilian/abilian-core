@@ -89,9 +89,7 @@ def test_api_post(session: Session, client: FlaskClient) -> None:
     assert response.status_code == 200
 
 
-def test_forgotten_pw(
-    app: Application, session: Session, client: FlaskClient
-) -> None:
+def test_forgotten_pw(app: Application, session: Session, client: FlaskClient) -> None:
     mail = app.extensions["mail"]
     kwargs = {"email": "User@domain.tld", "password": "azerty", "can_login": True}
     user = User(**kwargs)

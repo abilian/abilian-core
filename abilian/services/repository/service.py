@@ -4,12 +4,11 @@ import shutil
 import typing
 import weakref
 from pathlib import Path
-from typing import Any, Dict, Optional, Set, Union
+from typing import IO, Any, Dict, Optional, Set, Union
 from uuid import UUID, uuid1
 
 import sqlalchemy as sa
 import sqlalchemy.event
-from _io import StringIO
 from flask import _app_ctx_stack
 from flask.globals import _lookup_app_object
 from sqlalchemy.engine.base import Connection
@@ -27,7 +26,7 @@ if typing.TYPE_CHECKING:
 _NULL_MARK = object()
 
 
-def _assert_uuid(uuid: Union[bytes, str, UUID]) -> None:
+def _assert_uuid(uuid: Any) -> None:
     if not isinstance(uuid, UUID):
         raise ValueError("Not an uuid.UUID instance", uuid)
 
@@ -213,12 +212,12 @@ class SessionRepositoryState(ServiceState):
 
     def begin(self, session: Session) -> Optional[Any]:
         if not self.running:
-            return
+            return None
 
         tr = self.get_transaction(session)
         if tr is None:
             # FIXME: return or create a new one?
-            return
+            return None
 
         return tr.begin(session)
 
@@ -315,10 +314,7 @@ class SessionRepositoryService(Service):
 
     # repository interface
     def get(
-        self,
-        session: Union[Session, Blob],
-        uuid: Union[bytes, UUID],
-        default: Optional[object] = None,
+        self, session: Union[Session, Blob], uuid: UUID, default: Any = None
     ) -> Union[None, object, Path]:
         # assert isinstance(session, Session)
         # assert isinstance(uuid, UUID)
@@ -337,17 +333,15 @@ class SessionRepositoryService(Service):
     def set(
         self,
         session: Union[Session, Blob],
-        uuid: Union[bytes, UUID],
-        content: Union[StringIO, bytes, str],
+        uuid: UUID,
+        content: Union[IO, bytes, str],
         encoding: str = "utf-8",
     ) -> None:
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         transaction.set(uuid, content, encoding)
 
-    def delete(
-        self, session: Union[Session, Blob], uuid: Union[bytes, UUID]
-    ) -> None:
+    def delete(self, session: Union[Session, Blob], uuid: UUID) -> None:
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         if self.get(session, uuid) is not None:
@@ -476,9 +470,7 @@ class RepositoryTransaction:
             # content_path.replace is not available with python < 3.3.
             content_path.rename(p.path / str(uuid))
 
-    def _add_to(
-        self, uuid: Union[bytes, UUID], dest: Set[UUID], other: Set[UUID]
-    ) -> None:
+    def _add_to(self, uuid: UUID, dest: Set[UUID], other: Set[UUID]) -> None:
         """Add `item` to `dest` set, ensuring `item` is not present in `other`
         set."""
         _assert_uuid(uuid)
@@ -491,7 +483,9 @@ class RepositoryTransaction:
     def delete(self, uuid: UUID) -> None:
         self._add_to(uuid, self._deleted, self._set)
 
-    def set(self, uuid: UUID, content: Any, encoding: str = "utf-8") -> None:
+    def set(
+        self, uuid: UUID, content: Union[IO, bytes, str], encoding: str = "utf-8"
+    ) -> None:
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 

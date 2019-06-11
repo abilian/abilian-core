@@ -1,8 +1,7 @@
 # coding=utf-8
 import inspect
-import typing
 from operator import attrgetter, itemgetter
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union, TYPE_CHECKING, Type
 
 from flask import Blueprint, url_for
 from flask.blueprints import BlueprintSetupState
@@ -11,7 +10,7 @@ from whoosh.searching import Hit
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from abilian.app import Application
 
 
@@ -24,7 +23,7 @@ class Registry:
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self._map: Dict[str, Callable] = {}
 
-    def register(self, entity: Entity, url_func: Callable) -> None:
+    def register(self, entity: Union[Entity, Type[Entity]], url_func: Callable) -> None:
         """Associate a `url_func` with entity's type.
 
         :param:entity: an :class:`abilian.core.extensions.db.Model` class or

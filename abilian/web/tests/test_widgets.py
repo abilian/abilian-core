@@ -27,7 +27,7 @@ class WidgetTestModel(Entity):
     email = sa.Column(sa.Text)
 
     def __init__(self, *args, **kw):
-        Entity.__init__(self, *args, **kw)
+        super().__init__(*args, **kw)
         self._display_value_called = False
 
     def display_value(self, attr: str) -> Union[int, str]:

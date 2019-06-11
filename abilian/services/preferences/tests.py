@@ -74,9 +74,7 @@ def test_preferences(app: Application, session: Session) -> None:
     assert UserPreference.query.all() == []
 
 
-def test_preferences_with_various_types(
-    app: Application, session: Session
-) -> None:
+def test_preferences_with_various_types(app: Application, session: Session) -> None:
     user = User(email="test@example.com")
     preference_service = PreferenceService()
 

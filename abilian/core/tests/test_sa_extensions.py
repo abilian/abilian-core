@@ -2,7 +2,7 @@
 import uuid
 
 from sqlalchemy import Column
-from sqlalchemy.orm import Session, Query
+from sqlalchemy.orm import Query, Session
 
 from abilian.core.entities import Entity
 from abilian.core.sqlalchemy import UUID, JSONDict, JSONList

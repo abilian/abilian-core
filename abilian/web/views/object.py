@@ -49,7 +49,7 @@ class BaseObjectView(View):
     base_template = "base.html"
 
     def __init__(self, Model=None, pk=None, base_template=None, *args, **kwargs):
-        View.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         cls = self.__class__
         self.pk = pk if pk is not None else cls.pk
         self.Model = Model if Model is not None else cls.Model
@@ -216,7 +216,7 @@ class ObjectEdit(ObjectView):
         *args,
         **kwargs,
     ):
-        ObjectView.__init__(self, Model, pk, Form, template=template, *args, **kwargs)
+        super().__init__(Model, pk, Form, template=template, *args, **kwargs)
         if view_endpoint is not None:
             self.view_endpoint = view_endpoint
 
@@ -455,7 +455,7 @@ class ObjectCreate(ObjectEdit):
         if chain_create_allowed is not None:
             self.chain_create_allowed = bool(chain_create_allowed)
 
-        ObjectEdit.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def prepare_args(self, args, kwargs):
         # we must ensure that no flush() occurs and that obj is not registered

@@ -108,7 +108,7 @@ class StaticImageView(BaseImageView):
         """
         :param image: path to image file
         """
-        BaseImageView.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.image_path = Path(image)
         if not self.image_path.exists():
             p = str(self.image_path)
@@ -130,7 +130,7 @@ class BlobView(BaseImageView):
     id_arg = "object_id"
 
     def __init__(self, id_arg=None, *args, **kwargs):
-        BaseImageView.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         if id_arg is not None:
             self.id_arg = id_arg
 
