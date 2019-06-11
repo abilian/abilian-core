@@ -169,11 +169,10 @@ class BaseTableView(View):
             self.show_search = self.options.get("show_search", self.show_controls)
             self.paginate = self.options.get("paginate", self.paginate)
 
-    def init_columns(self, columns: List[Dict[str, Any]]) -> None:
+    def init_columns(self, columns: List[Union[str, Dict[str, Any]]]) -> None:
         # TODO
         default_width = "{:2.0f}%".format(0.99 / len(columns) * 100)
         for col in columns:
-            assert isinstance(col, dict)
             if isinstance(col, str):
                 column = {"name": col, "width": default_width}
             else:
@@ -328,25 +327,26 @@ class AjaxMainTableView(View):
         if options is not None:
             self.options = options
 
-    def init_columns(self, columns):
+    def init_columns(self, columns: List[Union[str, Dict[str, Any]]]):
         # TODO: compute the correct width for each column.
         default_width = 0.99 / len(columns)
         for col in columns:
-            assert isinstance(col, dict)
             if isinstance(col, str):
-                col = {"name": col, "width": default_width}
-            assert isinstance(col, dict)
-            if "label" not in col:
-                col["label"] = labelize(col["name"])
-
-            col.setdefault("sorting", ["asc", "desc"])
-
-            if not col["sorting"]:
-                col.setdefault("sortable", False)
+                column = {"name": col, "width": default_width}
             else:
-                col.setdefault("sortable", True)
+                column = col
+            assert isinstance(column, dict)
+            if "label" not in column:
+                column["label"] = labelize(column["name"])
 
-            self.columns.append(col)
+            column.setdefault("sorting", ["asc", "desc"])
+
+            if not column["sorting"]:
+                column.setdefault("sortable", False)
+            else:
+                column.setdefault("sortable", True)
+
+            self.columns.append(column)
 
     def render(self):
         aoColumns = [{"asSorting": []}] if self.show_controls else []

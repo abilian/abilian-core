@@ -6,7 +6,6 @@ from typing import Any, Dict, Optional, Tuple, Type, Union
 
 import sqlalchemy as sa
 from sqlalchemy.orm.session import Session
-from sqlalchemy.sql.elements import quoted_name
 from whoosh.fields import ID, TEXT, Schema
 
 from abilian.core.entities import Entity
@@ -77,10 +76,6 @@ class SAAdapter(SchemaAdapter):
     * define new fields on schema
     """
 
-    @staticmethod
-    def can_adapt(obj_cls: Any) -> bool:
-        return issubclass(obj_cls, db.Model)
-
     def __init__(self, model_class: Type[Model], schema: Schema) -> None:
         """
         :param:model_class: a sqlalchemy model class
@@ -93,6 +88,10 @@ class SAAdapter(SchemaAdapter):
         self.doc_attrs = {}
         if self.indexable:
             self._build_doc_attrs(model_class, schema)
+
+    @staticmethod
+    def can_adapt(obj_cls: Any) -> bool:
+        return issubclass(obj_cls, db.Model)
 
     def get_index_to(self, model_class: Type[Model]) -> Tuple:
         result = []
@@ -115,8 +114,6 @@ class SAAdapter(SchemaAdapter):
         ) -> None:
             field_def = False
             if not isinstance(field_name, str):
-                # pyre-fixme[23]: Unable to unpack `Union[quoted_name, Tuple[str,
-                #  Union[Type[Any], ID]]]` into 2 values.
                 field_name, field_def = field_name
 
             if field_name not in schema:
@@ -128,8 +125,7 @@ class SAAdapter(SchemaAdapter):
 
             # attrgetter offers dotted name support. Useful for attributes on
             # related objects.
-            # pyre-fixme[18]: Global name `name` is undefined.
-            args.setdefault(field_name, {})[name] = attrgetter(name)
+            args.setdefault(field_name, {})[attr_name] = attrgetter(attr_name)
 
         # model level definitions
         for name, field_names in self.index_to:
