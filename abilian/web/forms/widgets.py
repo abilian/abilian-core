@@ -21,7 +21,7 @@ from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField
 from sqlalchemy.orm.mapper import Mapper
-from wtforms.fields.core import IntegerField, Label, StringField
+from wtforms.fields import Field, IntegerField, Label, StringField
 from wtforms.form import Form
 from wtforms.widgets import HTMLString, Input
 from wtforms.widgets import PasswordInput as BasePasswordInput
@@ -134,7 +134,7 @@ class Column:
 
 
 class View:
-    options = {}  # type: Dict[Text, Any]
+    options: Dict[str, Any] = {}
 
     def get_templates(
         self, specific_template_name: str, default_template: str
@@ -152,7 +152,9 @@ class BaseTableView(View):
     show_search = None
     paginate = False
 
-    def __init__(self, columns: List[str], options: Optional[Any] = None) -> None:
+    def __init__(
+        self, columns: List[Dict[str, Any]], options: Optional[Any] = None
+    ) -> None:
         if self.show_search is None:
             self.show_search = self.show_controls
 
@@ -167,18 +169,21 @@ class BaseTableView(View):
             self.show_search = self.options.get("show_search", self.show_controls)
             self.paginate = self.options.get("paginate", self.paginate)
 
-    def init_columns(self, columns: List[str]) -> None:
+    def init_columns(self, columns: List[Dict[str, Any]]) -> None:
         # TODO
         default_width = "{:2.0f}%".format(0.99 / len(columns) * 100)
         for col in columns:
-            if isinstance(col, str):
-                col = {"name": col, "width": default_width}
             assert isinstance(col, dict)
-            col.setdefault("width", default_width)
-            col.setdefault("sorting", ("asc", "desc"))
-            if "label" not in col:
-                col["label"] = labelize(col["name"])
-            self.columns.append(col)
+            if isinstance(col, str):
+                column = {"name": col, "width": default_width}
+            else:
+                column = col
+            assert isinstance(column, dict)
+            column.setdefault("width", default_width)
+            column.setdefault("sorting", ("asc", "desc"))
+            if "label" not in column:
+                column["label"] = labelize(column["name"])
+            self.columns.append(column)
 
     def render(self, entities: List[Entity], **kwargs: Any) -> Markup:
         aoColumns = []
@@ -307,8 +312,14 @@ class AjaxMainTableView(View):
     paginate = True
 
     def __init__(
-        self, columns, ajax_source, search_criterions=(), name=None, options=None
+        self,
+        columns: List[Dict[str, Any]],
+        ajax_source,
+        search_criterions=(),
+        name=None,
+        options=None,
     ):
+        self.columns = []
         self.init_columns(columns)
         self.ajax_source = ajax_source
         self.search_criterions = search_criterions
@@ -319,9 +330,9 @@ class AjaxMainTableView(View):
 
     def init_columns(self, columns):
         # TODO: compute the correct width for each column.
-        self.columns = []
         default_width = 0.99 / len(columns)
         for col in columns:
+            assert isinstance(col, dict)
             if isinstance(col, str):
                 col = {"name": col, "width": default_width}
             assert isinstance(col, dict)
@@ -461,7 +472,7 @@ class SingleView(View):
         self.panels = panels
         self.options = options
 
-    def render(self, item: Entity, form: Form, related_views: Tuple[()] = ()) -> Markup:
+    def render(self, item: Entity, related_views: Tuple[()] = ()) -> Markup:
         mapper = sa.orm.class_mapper(item.__class__)
         panels = []
         _to_skip = (None, False, 0, 0.0, "", "-")
@@ -472,7 +483,7 @@ class SingleView(View):
 
             for name in field_name_iter:
                 # pyre-fixme[16]: `Form` has no attribute `_fields`.
-                field = form._fields[name]
+                field = self.form._fields[name]
                 if field.is_hidden:
                     continue
 
@@ -503,15 +514,15 @@ class SingleView(View):
             "related_views": related_views,
             "entity": item,
             "panels": panels,
-            "form": form,
+            "form": self.form,
         }
         return Markup(render_template(templates, **ctx))
 
-    def render_form(self, form, for_new=False, has_save_and_add_new=False):
+    def render_form(self, for_new=False, has_save_and_add_new=False):
         # Client-side rules for jQuery.validate
         # See: http://docs.jquery.com/Plugins/Validation/Methods#Validator
         rules = {}
-        for field in form:
+        for field in self.form:
             rules_for_field = {}
             for validator in field.validators:
                 rule_for_validator = getattr(validator, "rule", None)
@@ -527,16 +538,14 @@ class SingleView(View):
         templates = self.get_templates("edit_template", "widgets/render_for_edit.html")
         ctx = {
             "view": self,
-            "form": form,
+            "form": self.form,
             "for_new": for_new,
             "has_save_and_add_new": has_save_and_add_new,
             "rules": rules,
         }
         return Markup(render_template(templates, **ctx))
 
-    def label_for(
-        self, field: Union[IntegerField, StringField], mapper: Mapper, name: str
-    ) -> Label:
+    def label_for(self, field: Field, mapper: Mapper, name: str) -> Label:
         label = field.label
         if label is None:
             try:
@@ -567,8 +576,7 @@ class Panel:
     designs eventually.
     """
 
-    # pyre-fixme[9]: label has type `str`; used as `None`.
-    def __init__(self, label: str = None, *rows: "Row") -> None:
+    def __init__(self, label: str, *rows: "Row") -> None:
         self.label = label
         self.rows = rows
 

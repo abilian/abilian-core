@@ -376,7 +376,7 @@ class ensure_request_context:
 def render_template_i18n(template_name_or_list: str, **context: Any) -> str:
     """Try to build an ordered list of template to satisfy the current
     locale."""
-    template_list = []
+    template_list: List[str] = []
     # Use locale if present in **context
     if "locale" in context:
         locale = Locale.parse(context["locale"])

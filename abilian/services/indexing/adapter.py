@@ -2,7 +2,7 @@
 import logging
 from abc import ABCMeta, abstractmethod
 from operator import attrgetter
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Type, Union
 
 import sqlalchemy as sa
 from sqlalchemy.orm.session import Session
@@ -81,12 +81,11 @@ class SAAdapter(SchemaAdapter):
     def can_adapt(obj_cls: Any) -> bool:
         return issubclass(obj_cls, db.Model)
 
-    def __init__(self, model_class: Model, schema: Schema) -> None:
+    def __init__(self, model_class: Type[Model], schema: Schema) -> None:
         """
         :param:model_class: a sqlalchemy model class
         :param:schema: :class:`whoosh.fields.Schema` instance
         """
-        # pyre-fixme[6]: Expected `Type[Any]` for 1st param but got `Model`.
         assert issubclass(model_class, db.Model)
         self.model_class = model_class
         self.indexable = getattr(model_class, "__indexable__", False)
@@ -95,16 +94,15 @@ class SAAdapter(SchemaAdapter):
         if self.indexable:
             self._build_doc_attrs(model_class, schema)
 
-    def get_index_to(self, model_class: Model) -> Tuple:
+    def get_index_to(self, model_class: Type[Model]) -> Tuple:
         result = []
-        # pyre-fixme[16]: `Model` has no attribute `mro`.
         classes = model_class.mro()
         for cls in classes:
             if hasattr(cls, "__index_to__"):
                 result += cls.__index_to__
         return tuple(result)
 
-    def _build_doc_attrs(self, model_class: Model, schema: Schema) -> None:
+    def _build_doc_attrs(self, model_class: Type[Model], schema: Schema) -> None:
         mapper = sa.inspect(model_class)
 
         args = self.doc_attrs
@@ -113,8 +111,7 @@ class SAAdapter(SchemaAdapter):
         field_definitions = {}
 
         def setup_field(
-            attr_name: Union[quoted_name, str],
-            field_name: Union[Tuple[str, Union[type, ID]], quoted_name, str],
+            attr_name: str, field_name: Union[Tuple[str, Union[type, ID]], str]
         ) -> None:
             field_def = False
             if not isinstance(field_name, str):
@@ -172,14 +169,15 @@ class SAAdapter(SchemaAdapter):
             )
             schema.add(field_name, field_def)
 
-    # pyre-fixme[9]: _session has type `Session`; used as `None`.
-    def retrieve(self, pk: int, _session: Session = None, **data: Any) -> Entity:
+    def retrieve(
+        self, pk: int, _session: Optional[Session] = None, **data: Any
+    ) -> Entity:
         if _session is None:
             _session = db.session()
         return _session.query(self.model_class).get(pk)
 
     def get_document(self, obj: Entity) -> Dict[str, Any]:
-        result = {}
+        result: Dict[str, Any] = {}
         if not self.indexable:
             return result
 

@@ -427,11 +427,7 @@ class Application(
             auth_state.add_bp_access_controller(name, func)
 
     def add_static_url(
-        self,
-        url_path: str,
-        directory: str,
-        endpoint: Optional[str] = None,
-        roles: Collection[Role] = (),
+        self, url_path: str, directory: str, endpoint: str, roles: Collection[Role] = ()
     ) -> None:
         """Add a new url rule for static files.
 

@@ -138,7 +138,7 @@ _REPOSITORY_TRANSACTION = "abilian_repository_transactions"
 
 
 class SessionRepositoryState(ServiceState):
-    path: Optional[Path] = None
+    path: Path
 
     @property
     def transactions(self) -> Dict[int, Any]:

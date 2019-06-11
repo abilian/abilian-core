@@ -888,11 +888,7 @@ class SecurityService(Service):
         session.add(pa)
 
     def delete_permission(
-        # pyre-fixme[9]: obj has type `Model`; used as `None`.
-        self,
-        permission: Permission,
-        role: Role,
-        obj: Model = None,
+        self, permission: Permission, role: Role, obj: Optional[Model] = None
     ) -> None:
         session = None
         if obj is not None:
@@ -909,7 +905,13 @@ class SecurityService(Service):
                 # this seems to be required with sqlalchemy > 0.9
                 session.expire(obj, [PERMISSIONS_ATTR])
 
-    def filter_with_permission(self, user, permission, obj_list, inherit=False):
+    def filter_with_permission(
+        self,
+        user: User,
+        permission: Union[Permission, str],
+        obj_list: List[Model],
+        inherit=False,
+    ):
         user = unwrap(user)
         return [
             obj

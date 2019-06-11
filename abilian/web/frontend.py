@@ -7,7 +7,7 @@ import copy
 import logging
 import re
 from collections import OrderedDict
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import sqlalchemy as sa
 from flask import Blueprint, current_app, g, jsonify, redirect, \
@@ -386,7 +386,7 @@ class Module(metaclass=ModuleMeta):
     label = None  # type: str
     managed_class = None  # type: type
     list_view = None
-    list_view_columns = []  # type: List
+    list_view_columns: List[Dict[str, Any]] = []
     single_view = None
     components = ()  # type: Tuple
 

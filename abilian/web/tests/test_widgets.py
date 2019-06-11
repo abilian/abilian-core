@@ -46,7 +46,7 @@ def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
         pass
 
     request_started.send(app)  # needed for deferJS tag
-    columns = ["name", "price"]
+    columns = [{"name": "name"}, {"name": "price"}]
     view = MainTableView(columns)
 
     model1 = WidgetTestModel(id=1, name="Renault Megane", price=10000)
@@ -63,12 +63,11 @@ def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
 
 
 def test_single_view(test_request_context: RequestContext) -> None:
-    panels = [Panel("main", Row("name"), Row("price"), Row("email"))]
-    # pyre-fixme[6]: Expected `Form` for 1st param but got `Type[DummyForm]`.
-    view = SingleView(DummyForm, *panels, view={"can_edit": False, "can_delete": False})
     model = WidgetTestModel(name="Renault Megane", price=10000, email="joe@example.com")
+    panels = [Panel("main", Row("name"), Row("price"), Row("email"))]
     form = DummyForm(obj=model)
-    res = view.render(model, form)
+    view = SingleView(form, *panels, view={"can_edit": False, "can_delete": False})
+    res = view.render(model)
 
     assert "Renault Megane" in res
     assert "10000" in res
@@ -79,11 +78,11 @@ def test_single_view(test_request_context: RequestContext) -> None:
 @mark.skip
 def test_edit_view(app):
     with app.test_request_context():
-        panels = [Panel("main", Row("name"), Row("price"))]
-        view = SingleView(DummyForm, *panels)
         model = WidgetTestModel(name="Renault Megane", price=10000)
+        panels = [Panel("main", Row("name"), Row("price"))]
         form = DummyForm(obj=model)
-        res = view.render_form(form)
+        view = SingleView(form, *panels)
+        res = view.render_form()
 
         assert model._display_value_called
         assert "Renault Megane" in res
