@@ -6,7 +6,6 @@ import sys
 import uuid
 from sqlite3 import Connection
 from typing import Any, Dict, List, Optional, Union
-from uuid import UUID
 
 import babel
 import babel.dates
@@ -328,6 +327,7 @@ def JSONList(*args, **kwargs):
     return MutationList.as_mutable(type_(*args, **kwargs))
 
 
+# TODO: replace byt UUIDType from sqlalchemy_util
 class UUID(sa.types.TypeDecorator):
     """Platform-independent UUID type.
 
@@ -346,7 +346,7 @@ class UUID(sa.types.TypeDecorator):
             return dialect.type_descriptor(sa.types.CHAR(32))
 
     def process_bind_param(
-        self, value: Union[None, str, UUID], dialect: Dialect
+        self, value: Union[None, str, uuid.UUID], dialect: Dialect
     ) -> Optional[str]:
         if value is None:
             return value
@@ -360,7 +360,7 @@ class UUID(sa.types.TypeDecorator):
 
     def process_result_value(
         self, value: Optional[str], dialect: Dialect
-    ) -> Optional[UUID]:
+    ) -> Optional[uuid.UUID]:
         return value if value is None else uuid.UUID(value)
 
     def compare_against_backend(self, dialect, conn_type):

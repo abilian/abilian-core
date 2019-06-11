@@ -3,10 +3,9 @@
 (unlike SQLAlchemy models which are considered lower-level)."""
 import collections
 import re
-import typing
 from datetime import datetime
 from inspect import isclass
-from typing import Any, Dict, FrozenSet, List
+from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Type
 
 import sqlalchemy as sa
 from flask import current_app
@@ -24,7 +23,7 @@ from .models.base import EDITABLE, SEARCHABLE, SYSTEM, Indexable
 from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from abilian.core.models.tag import Tag
 
 __all__ = [
@@ -472,7 +471,7 @@ class Entity(Indexable, BaseMixin, db.Model, metaclass=EntityMeta):
 
 # TODO: make this unecessary
 @event.listens_for(Entity, "class_instrument", propagate=True)
-def register_metadata(cls: type) -> None:
+def register_metadata(cls: Type[Entity]) -> None:
     cls.__editable__ = set()
 
     # TODO: use SQLAlchemy 0.8 introspection

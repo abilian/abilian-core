@@ -259,7 +259,7 @@ def random_password():
 
 
 def get_serializer(name: str) -> TimedSerializer:
-    config = current_app.config
+    config: Dict[str, Any] = current_app.config
     secret_key: bytes = config.get("SECRET_KEY")
     salt = config.get("SECURITY_{}_SALT".format(name.upper()))
     return URLSafeTimedSerializer(secret_key=secret_key, salt=salt)

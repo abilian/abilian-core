@@ -1,7 +1,7 @@
 # coding=utf-8
 import inspect
 from operator import attrgetter, itemgetter
-from typing import Any, Callable, Dict, Optional, Union, TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, Union
 
 from flask import Blueprint, url_for
 from flask.blueprints import BlueprintSetupState
@@ -39,9 +39,9 @@ class Registry:
 
     def url_for(
         self,
-        entity: Entity = None,
-        object_type: Optional[Any] = None,
-        object_id: Optional[Any] = None,
+        entity: Union[db.Model, Hit, Dict, None] = None,
+        object_type: Optional[str] = None,
+        object_id: Optional[int] = None,
         **kwargs: Any
     ) -> str:
         """Return canonical view URL for given entity instance.
@@ -60,8 +60,8 @@ class Registry:
 
         :raise KeyError: if no view can be found for the given entity.
         """
+        assert isinstance(entity, (db.Model, Hit, dict))
         if object_type is None:
-            assert isinstance(entity, (db.Model, Hit, dict))
             getter = attrgetter if isinstance(entity, db.Model) else itemgetter
             object_id = getter("id")(entity)
             object_type = getter("object_type")(entity)

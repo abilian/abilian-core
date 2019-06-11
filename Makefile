@@ -69,11 +69,8 @@ lint-all: lint lint-mypy lint-bandit
 
 lint-py:
 	@echo "--> Linting Python files /w flake8"
-	flake8 $(SRC)
+	-flake8 $(SRC)
 	@echo ""
-
-flake8:
-	flake8 $(SRC)
 
 lint-mypy:
 	@echo "--> Typechecking Python files w/ mypy"

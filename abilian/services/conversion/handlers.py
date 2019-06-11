@@ -215,7 +215,7 @@ class PdfToPpmHandler(Handler):
 
     def convert(self, blob: bytes, size: int = 500) -> List[bytes]:
         """Size is the maximum horizontal size."""
-        file_list = []
+        file_list: List[str] = []
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(["pdftoppm", "-jpeg", in_fn, out_fn])

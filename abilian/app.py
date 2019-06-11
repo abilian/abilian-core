@@ -117,10 +117,10 @@ class Application(
     private_site = ConfigAttribute("PRIVATE_SITE")
 
     #: instance of :class:`.web.views.registry.Registry`.
-    default_view = None  # type: abilian.web.views.registry.Registry
+    default_view: ViewRegistry
 
     #: json serializable dict to land in Javascript under Abilian.api
-    js_api = None
+    js_api: Dict[str, str]
 
     #: celery app class
     celery_app_cls = FlaskCelery
@@ -137,7 +137,7 @@ class Application(
         self.default_view = ViewRegistry()
         self.js_api = {}
 
-    def setup(self, config: type) -> None:
+    def setup(self, config: Optional[type]) -> None:
         self.configure(config)
 
         # At this point we have loaded all external config files:
@@ -227,7 +227,7 @@ class Application(
     def install_id_generator(self, sender: Flask, **kwargs: Any) -> None:
         g.id_generator = count(start=1)
 
-    def configure(self, config: type) -> None:
+    def configure(self, config: Optional[type]) -> None:
         if config:
             self.config.from_object(config)
 
@@ -381,7 +381,7 @@ class Application(
         rule: str,
         endpoint: Optional[str] = None,
         view_func: Optional[Callable] = None,
-        roles: Collection[Role] = None,
+        roles: Collection[Role] = (),
         **options: Any
     ) -> None:
         """See :meth:`Flask.add_url_rule`.
@@ -482,7 +482,7 @@ def init_debug_toolbar(app: Union[Application, Application]) -> None:
 
 
 def create_app(
-    config: type = None, app_class: type = Application, **kw: Any
+    config: Optional[type] = None, app_class: type = Application, **kw: Any
 ) -> Application:
     app = app_class(**kw)
     app.setup(config=config)

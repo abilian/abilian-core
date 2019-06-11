@@ -20,11 +20,11 @@ class ServiceState:
     """Service state stored in Application.extensions."""
 
     #: reference to :class:`Service` instance
-    service = None
+    service: "Service"
 
     running = False
 
-    def __init__(self, service: Any, running: bool = False) -> None:
+    def __init__(self, service: "Service", running: bool = False) -> None:
         self.service = service
         self.running = running
         self.logger = logging.getLogger(fqcn(self.__class__))

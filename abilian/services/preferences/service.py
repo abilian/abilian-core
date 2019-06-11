@@ -7,8 +7,7 @@ Notes:
 - For application settings use
   :class:`abilian.services.settings.SettingsService`.
 """
-import typing
-from typing import Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from flask import Blueprint, Flask, g, redirect, request, url_for
 from flask_login import current_user
@@ -26,7 +25,7 @@ from abilian.web.nav import BreadcrumbItem, NavItem
 
 from .models import UserPreference
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from abilian.app import Application
 
 _PREF_NAV_ITEM = NavItem(
@@ -46,8 +45,8 @@ class PreferenceState(ServiceState):
     blueprint = None
     blueprint_registered = False
 
-    def __init__(self, *args: "PreferenceService", **kwargs: Any) -> None:
-        ServiceState.__init__(self, *args, **kwargs)
+    def __init__(self, service: "PreferenceService", *args: Any, **kwargs: Any) -> None:
+        super().__init__(service, *args, **kwargs)
         self.panels = []
         self.nav_paths = {}
         self.breadcrumb_items = {}
@@ -68,9 +67,7 @@ class PreferenceService(Service):
             for panel in panels:
                 self.register_panel(panel)
 
-    def get_preferences(
-        self, user: User = None
-    ) -> Union[Dict[str, int], Dict[str, str]]:
+    def get_preferences(self, user: Optional[User] = None) -> Dict[str, Any]:
         """Return a string->value dictionnary representing the given user
         preferences.
 
