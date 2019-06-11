@@ -1,4 +1,3 @@
-# coding=utf-8
 """Vocabularies service."""
 import typing
 from inspect import isclass

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Test the frontend."""
 from flask_wtf import Form
 from sqlalchemy import Column, String, UnicodeText

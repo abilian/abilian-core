@@ -1,4 +1,3 @@
-# coding=utf-8
 """Draft API for a like service.
 
 Every entity (and even comments) should be likeable.

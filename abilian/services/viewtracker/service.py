@@ -1,4 +1,3 @@
-# coding=utf-8
 from abilian.core.extensions import db
 from abilian.services import Service
 

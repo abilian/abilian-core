@@ -1,4 +1,3 @@
-# coding=utf-8
 """A few utility functions.
 
 See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for

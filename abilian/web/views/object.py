@@ -1,4 +1,3 @@
-# coding=utf-8
 """Class based views."""
 import logging
 
@@ -436,6 +435,7 @@ CHAIN_CREATE_BUTTON = ButtonAction(
     "chain_create",
     btn_class="primary",
     title=_l("Create and add new"),
+    # pyre-fixme[6]: Expected `str` for 1st param but got `Optional[str]`.
     endpoint=lambda ctx: Endpoint(request.endpoint, **request.view_args),
     condition=lambda ctx: getattr(ctx["view"], "chain_create_allowed", False),
 )

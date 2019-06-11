@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import sqlalchemy as sa
 from flask import Blueprint
@@ -45,6 +44,7 @@ def test_custom_url_func(app: Application, registry: Registry) -> None:
     obj = RegEntity(id=1, name=name)
 
     def custom_url(obj: RegEntity, obj_type: str, obj_id: int) -> str:
+        # pyre-fixme[7]: Expected `str` but got `Column`.
         return obj.name
 
     registry.register(obj, custom_url)

@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import json
 from datetime import timedelta
@@ -69,6 +68,7 @@ class Setting(db.Model):
 
     @property
     def type(self) -> str:
+        # pyre-fixme[7]: Expected `str` but got `Column`.
         return self._type
 
     @type.setter
@@ -79,6 +79,7 @@ class Setting(db.Model):
             raise ValueError(
                 f'Invalid type "{type_}": no encoder and/or decoder registered'
             )
+        # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
         self._type = type_
 
     _value = sa.Column("value", sa.Text())

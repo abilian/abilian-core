@@ -1,4 +1,3 @@
-# coding=utf-8
 from flask import redirect, request, url_for
 from flask_login import login_user
 

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Reusable widgets to be included in views.
 
 NOTE: code is currently quite messy. Needs to be refactored.
@@ -176,6 +175,7 @@ class BaseTableView(View):
                 col = {"name": col, "width": default_width}
             assert isinstance(col, dict)
             col.setdefault("width", default_width)
+            # pyre-fixme[6]: Expected `str` for 2nd param but got `Tuple[str, str]`.
             col.setdefault("sorting", ("asc", "desc"))
             if "label" not in col:
                 col["label"] = labelize(col["name"])
@@ -248,6 +248,7 @@ class BaseTableView(View):
                 except AttributeError:
                     value = ""
             else:
+                # pyre-fixme[16]: `Entity` has no attribute `display_value`.
                 value = value.display_value(attr[0])
 
             format = col.get("format")
@@ -262,7 +263,10 @@ class BaseTableView(View):
             elif isinstance(value, Entity):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(
-                        build_url(value), html.escape(value.name)
+                        # pyre-fixme[6]: Expected `AnyStr` for 1st param but got
+                        #  `Column`.
+                        build_url(value),
+                        html.escape(value.name),
                     )
                 )
             elif isinstance(value, str) and (
@@ -274,6 +278,8 @@ class BaseTableView(View):
             elif isinstance(value, list):
                 cell = "; ".join(value)
             else:
+                # pyre-fixme[6]: Expected `Tuple[Type[Markup], ...]` for 1st param
+                #  but got `Tuple[Type[str]]`.
                 if not isinstance(value, (Markup,) + (str,)):
                     if value is None:
                         value = ""
@@ -473,6 +479,7 @@ class SingleView(View):
             field_name_iter = (fn for row in panel.rows for fn in row)
 
             for name in field_name_iter:
+                # pyre-fixme[16]: `Form` has no attribute `_fields`.
                 field = form._fields[name]
                 if field.is_hidden:
                     continue
@@ -541,6 +548,7 @@ class SingleView(View):
         label = field.label
         if label is None:
             try:
+                # pyre-fixme[16]: `Optional` has no attribute `__getitem__`.
                 info = mapper.c[name].info
                 label = info["label"]
             except (AttributeError, KeyError):
@@ -567,6 +575,7 @@ class Panel:
     designs eventually.
     """
 
+    # pyre-fixme[9]: label has type `str`; used as `None`.
     def __init__(self, label: str = None, *rows: "Row") -> None:
         self.label = label
         self.rows = rows
@@ -709,7 +718,11 @@ class TextArea(BaseTextArea):
     rows = None
 
     def __init__(
-        self, resizeable: str = None, rows: int = None, *args: Any, **kwargs: Any
+        self,
+        resizeable: Optional[str] = None,
+        rows: Optional[int] = None,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
 
@@ -1163,6 +1176,7 @@ class DefaultViewWidget:
     def render_view(
         self, field: Union[IntegerField, StringField], **kwargs: Any
     ) -> str:
+        # pyre-fixme[16]: `IntegerField` has no attribute `object_data`.
         value = field.object_data
         if isinstance(value, str):
             return text2html(value)
@@ -1322,11 +1336,13 @@ class EmailWidget(TextInput):
     def render_view(self, field: StringField, **kwargs: Any) -> str:
         links = ""
         if isinstance(field, wtforms.fields.FieldList):
+            # pyre-fixme[16]: `FieldList` has no attribute `entries`.
             for entry in field.entries:
                 link = bleach.linkify(entry.data, parse_email=True)
                 if link:
                     links += f' {link}&nbsp;<i class="fa fa-envelope"></i><br>'
         else:
+            # pyre-fixme[16]: `StringField` has no attribute `object_data`.
             link = bleach.linkify(field.object_data, parse_email=True)
             if link:
                 links = f'{link}&nbsp;<i class="fa fa-envelope"></i>'

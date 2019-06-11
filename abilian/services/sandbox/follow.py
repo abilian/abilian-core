@@ -1,4 +1,3 @@
-# coding=utf-8
 """Social graph API.
 
 May or may not be needed, since the followers / followees notions are

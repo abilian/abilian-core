@@ -1,4 +1,3 @@
-# coding=utf-8
 """Navigation elements.
 
 Abilian define theses categories:   `section`:     Used for navigation

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Objects to schema adapters."""
 import logging
 from abc import ABCMeta, abstractmethod
@@ -87,6 +86,7 @@ class SAAdapter(SchemaAdapter):
         :param:model_class: a sqlalchemy model class
         :param:schema: :class:`whoosh.fields.Schema` instance
         """
+        # pyre-fixme[6]: Expected `Type[Any]` for 1st param but got `Model`.
         assert issubclass(model_class, db.Model)
         self.model_class = model_class
         self.indexable = getattr(model_class, "__indexable__", False)
@@ -97,6 +97,7 @@ class SAAdapter(SchemaAdapter):
 
     def get_index_to(self, model_class: Model) -> Tuple:
         result = []
+        # pyre-fixme[16]: `Model` has no attribute `mro`.
         classes = model_class.mro()
         for cls in classes:
             if hasattr(cls, "__index_to__"):
@@ -117,6 +118,8 @@ class SAAdapter(SchemaAdapter):
         ) -> None:
             field_def = False
             if not isinstance(field_name, str):
+                # pyre-fixme[23]: Unable to unpack `Union[quoted_name, Tuple[str,
+                #  Union[Type[Any], ID]]]` into 2 values.
                 field_name, field_def = field_name
 
             if field_name not in schema:
@@ -128,6 +131,7 @@ class SAAdapter(SchemaAdapter):
 
             # attrgetter offers dotted name support. Useful for attributes on
             # related objects.
+            # pyre-fixme[18]: Global name `name` is undefined.
             args.setdefault(field_name, {})[name] = attrgetter(name)
 
         # model level definitions
@@ -168,6 +172,7 @@ class SAAdapter(SchemaAdapter):
             )
             schema.add(field_name, field_def)
 
+    # pyre-fixme[9]: _session has type `Session`; used as `None`.
     def retrieve(self, pk: int, _session: Session = None, **data: Any) -> Entity:
         if _session is None:
             _session = db.session()

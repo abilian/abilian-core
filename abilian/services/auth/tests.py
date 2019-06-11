@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import json
 from functools import partial
@@ -21,6 +20,7 @@ def test_get_redirect_target(app: Application, app_context: AppContext) -> None:
         assert get_redirect_target() == ""
         url_root = request.url_root[:-1]
 
+    # pyre-fixme[28]: Unexpected keyword argument `next`.
     with app.test_request_context(form_url(next="/")):
         assert get_redirect_target() == url_root + "/"
 
@@ -37,11 +37,13 @@ def test_get_redirect_target(app: Application, app_context: AppContext) -> None:
         assert get_redirect_target() == ""
 
     # test open redirect is forbidden
+    # pyre-fixme[28]: Unexpected keyword argument `next`.
     with app.test_request_context(form_url(next="http://google.com/test")):
         assert get_redirect_target() == ""
 
     # open redirect through malicious construct and browser not checking
     # Location
+    # pyre-fixme[28]: Unexpected keyword argument `next`.
     with app.test_request_context(form_url(next="/////google.com")):
         assert get_redirect_target() == url_root + "///google.com"
 
@@ -62,6 +64,7 @@ def test_login_post(session: Session, client: FlaskClient) -> None:
     assert response.status_code == 401
 
     # login disabled
+    # pyre-fixme[8]: Attribute has type `Column`; used as `bool`.
     user.can_login = False
     session.flush()
     response = client.post("/user/login", data=kwargs)

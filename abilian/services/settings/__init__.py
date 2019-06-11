@@ -1,4 +1,3 @@
-# coding=utf-8
 """Application settings service."""
 from .models import register
 from .service import SettingsService

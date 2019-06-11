@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from .extension import FileUploadsExtension
 from abilian.app import Application

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Test the index service."""
 from flask_login import login_user
 from sqlalchemy import Column, Text, UnicodeText

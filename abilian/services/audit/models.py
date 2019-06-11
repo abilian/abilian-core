@@ -1,4 +1,3 @@
-# coding=utf-8
 """Audit Service: logs modifications to audited objects.
 
 Only subclasses of Entity are auditable, at this point.

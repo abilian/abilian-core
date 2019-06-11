@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from whoosh.analysis import CharsetFilter, LowercaseFilter, NgramFilter, \
     PathTokenizer, RegexTokenizer

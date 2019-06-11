@@ -1,4 +1,3 @@
-# coding=utf-8
 """All signals used by Abilian Core.
 
 Signals are the main tools used for decoupling applications components by

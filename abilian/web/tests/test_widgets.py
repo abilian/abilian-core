@@ -1,5 +1,3 @@
-# coding=utf-8
-
 from typing import Union
 
 import sqlalchemy as sa
@@ -54,6 +52,8 @@ def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
     model1 = WidgetTestModel(id=1, name="Renault Megane", price=10000)
     model2 = WidgetTestModel(id=2, name="Peugeot 308", price=12000)
     models = [model1, model2]
+    # pyre-fixme[6]: Expected `List[Entity]` for 1st param but got
+    #  `List[WidgetTestModel]`.
     res = view.render(models)
 
     assert model1._display_value_called
@@ -64,6 +64,7 @@ def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
 
 def test_single_view(test_request_context: RequestContext) -> None:
     panels = [Panel("main", Row("name"), Row("price"), Row("email"))]
+    # pyre-fixme[6]: Expected `Form` for 1st param but got `Type[DummyForm]`.
     view = SingleView(DummyForm, *panels, view={"can_edit": False, "can_delete": False})
     model = WidgetTestModel(name="Renault Megane", price=10000, email="joe@example.com")
     form = DummyForm(obj=model)

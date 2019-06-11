@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from pytest import raises
 
@@ -34,9 +33,11 @@ def test_bool() -> None:
     s.value = False
     assert s._value == "false"
 
+    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
     s._value = "true"
     assert s.value is True
 
+    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
     s._value = "false"
     assert s.value is False
 
@@ -49,6 +50,7 @@ def test_string() -> None:
     s.value = "bel été"
     assert s._value == b"bel \xc3\xa9t\xc3\xa9"
 
+    # pyre-fixme[8]: Attribute has type `Column`; used as `bytes`.
     s._value = b"d\xc3\xa9code"
     assert s.value == "décode"
 
@@ -64,6 +66,7 @@ def test_json() -> None:
 
 def test_empty_value() -> None:
     s = Setting(key="key", type="json")
+    # pyre-fixme[8]: Attribute has type `Column`; used as `None`.
     s._value = None
     assert s.value == EmptyValue
 

@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 Special loggers
 ---------------
@@ -33,6 +32,8 @@ if _patch_logger.level is logging.NOTSET:
 
 
 class PatchLoggerAdapter(logging.LoggerAdapter):
+    # pyre-fixme[15]: `process` overrides method defined in `LoggerAdapter`
+    #  inconsistently.
     def process(self, msg, kwargs):
         if isinstance(msg, str):
             return super().process(msg, kwargs)

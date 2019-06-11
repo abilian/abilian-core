@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import pkg_resources
 import typing
@@ -18,6 +17,7 @@ def init_app(app: "Application") -> None:
     register_filters()
 
     assets = app.extensions["webassets"]
+    # pyre-fixme[18]: Global name `RESOURCES_DIR` is undefined.
     assets.append_path(RESOURCES_DIR, "/static/abilian")
     app.add_static_url(
         "abilian", RESOURCES_DIR, endpoint="abilian_static", roles=Anonymous

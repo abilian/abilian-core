@@ -1,4 +1,3 @@
-# coding=utf-8
 """Login-related views (login / logout / password reminder / ...).
 
 Notes:
@@ -365,6 +364,7 @@ def log_session_end(app: Flask, user: User) -> None:
 
     session = LoginSession.query.get_active_for(user)
     if session:
+        # pyre-fixme[8]: Attribute has type `Column`; used as `datetime`.
         session.ended_at = datetime.utcnow()
         db.session.commit()
 
@@ -380,6 +380,7 @@ def is_safe_url(target: str) -> bool:
 def check_for_redirect(target: str) -> str:
     target = urljoin(request.url_root, target)
     url = urlparse(target)
+    # pyre-fixme[16]: Module `flask` has no attribute `_request_ctx_stack`.
     reqctx = _request_ctx_stack.top
     try:
         endpoint, ignored = reqctx.url_adapter.match(url.path, "GET")

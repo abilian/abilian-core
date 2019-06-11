@@ -1,4 +1,3 @@
-# coding=utf-8
 """Modules that provide services.
 
 They are implemented as Flask extensions (see:

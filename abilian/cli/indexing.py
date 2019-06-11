@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import time
 from collections import deque
@@ -51,6 +50,7 @@ class Reindexer:
 
         self.index_service = get_service("indexing")
         self.index = self.index_service.app_state.indexes["default"]
+        # pyre-fixme[16]: `Service` has no attribute `adapted`.
         self.adapted = self.index_service.adapted
         self.session = Session(bind=db.session.get_bind(None, None), autocommit=True)
         self.indexed = set()  # type: Set[str]
@@ -89,6 +89,7 @@ class Reindexer:
         if not adapter or not adapter.indexable:
             return
 
+        # pyre-fixme[16]: `Entity` has no attribute `__name__`.
         name = cls.__name__
 
         with self.session.begin():

@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 This extensions makes intersphinx work with flask.ext extensions.
 

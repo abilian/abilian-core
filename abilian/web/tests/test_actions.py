@@ -1,5 +1,3 @@
-# coding=utf-8
-
 from flask import Flask
 from flask.ctx import AppContext, RequestContext
 from jinja2 import Markup
@@ -33,6 +31,8 @@ ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 def setup_actions(app: Application) -> None:
     actions.init_app(app)
     for a in ALL_ACTIONS:
+        # pyre-fixme[8]: Attribute has type `Callable[[Optional[bool]], bool]`; used
+        #  as `bool`.
         a.enabled = True
     actions.register(*ALL_ACTIONS)
     actions._init_context(app)
@@ -78,6 +78,8 @@ def test_enabled(app_context: AppContext) -> None:
     assert CONDITIONAL.enabled
     assert actions.for_category("cat_1") == [BASIC, CONDITIONAL]
 
+    # pyre-fixme[8]: Attribute has type `Callable[[Optional[bool]], bool]`; used as
+    #  `bool`.
     CONDITIONAL.enabled = False
     assert not CONDITIONAL.enabled
     assert actions.for_category("cat_1") == [BASIC]

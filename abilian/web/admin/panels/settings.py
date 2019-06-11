@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from datetime import timedelta
 
@@ -36,6 +35,7 @@ class Key:
 
 class SessionLifeTimeKey(Key):
 
+    # pyre-fixme[15]: `template` overrides attribute defined in `Key` inconsistently.
     template = "admin/settings_session_lifetime.html"
 
     def __init__(self) -> None:

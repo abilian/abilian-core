@@ -1,4 +1,3 @@
-# coding=utf-8
 import inspect
 from operator import attrgetter, itemgetter
 from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, Union
@@ -34,11 +33,14 @@ class Registry:
         """
         if not inspect.isclass(entity):
             entity = entity.__class__
+        # pyre-fixme[6]: Expected `Type[Any]` for 1st param but got
+        #  `Union[Type[Entity], Entity]`.
         assert issubclass(entity, db.Model)
         self._map[entity.entity_type] = url_func
 
     def url_for(
         self,
+        # pyre-fixme[11]: Type `Model` is not defined.
         entity: Union[db.Model, Hit, Dict, None] = None,
         object_type: Optional[str] = None,
         object_id: Optional[int] = None,
@@ -134,6 +136,7 @@ class default_view:
                 state.app.default_view.register(self.entity, default_url)
 
         else:
+            # pyre-fixme[16]: `Blueprint` has no attribute `default_view`.
             self.app_or_blueprint.default_view.register(self.entity, default_url)
 
         return view

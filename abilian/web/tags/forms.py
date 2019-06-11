@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from flask import current_app
 from wtforms.fields import StringField

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Admin panel for tags."""
 import logging
 from typing import Callable, List
@@ -23,6 +22,8 @@ from .forms import TagForm
 
 logger = logging.getLogger(__name__)
 
+# pyre-fixme[16]: `count` has no attribute `label`.
+# pyre-fixme[16]: `property` has no attribute `entity_id`.
 _OBJ_COUNT = func.count(entity_tag_tbl.c.entity_id).label("obj_count")
 
 
@@ -119,7 +120,9 @@ class NSView(View):
                 self.__selected_tags = []
             else:
                 self.__selected_tags = Tag.query.filter(
-                    Tag.ns == self.ns, Tag.id.in_(tag_ids)
+                    # pyre-fixme[16]: `NSView` has no attribute `ns`.
+                    Tag.ns == self.ns,
+                    Tag.id.in_(tag_ids),
                 ).all()
 
         return self.__selected_tags

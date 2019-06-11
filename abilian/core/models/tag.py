@@ -1,4 +1,3 @@
-# coding=utf-8
 import abc
 from functools import total_ordering
 
@@ -53,6 +52,7 @@ def supports_tagging(obj):
 
 entity_tag_tbl = sa.Table(
     "entity_tags",
+    # pyre-fixme[16]: `Model` has no attribute `metadata`.
     Model.metadata,
     sa.Column("tag_id", sa.Integer, sa.ForeignKey("tag.id", ondelete="CASCADE")),
     sa.Column("entity_id", sa.Integer, sa.ForeignKey(Entity.id, ondelete="CASCADE")),

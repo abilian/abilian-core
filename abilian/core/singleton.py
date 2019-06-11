@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from typing import Any, Optional
 
@@ -83,5 +82,6 @@ class UniqueNameType(TypeDecorator):
 
     def process_result_value(self, value: str, dialect: Dialect) -> Any:
         if value is not None:
+            # pyre-fixme[29]: `None` is not a function.
             value = self.Type(value)
         return value

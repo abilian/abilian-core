@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from babel import Locale
 from flask_babel import force_locale, get_locale

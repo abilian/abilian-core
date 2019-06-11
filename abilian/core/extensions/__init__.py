@@ -1,4 +1,3 @@
-# coding=utf-8
 """Create all standard extensions."""
 
 # Note: Because of issues with circular dependencies, Abilian-specific
@@ -52,6 +51,7 @@ mail = flask_mail.Mail()
 
 db = SQLAlchemy()
 
+# pyre-fixme[16]: `Redis` has no attribute `Redis`.
 redis = Redis()
 
 deferred_js = DeferredJS()

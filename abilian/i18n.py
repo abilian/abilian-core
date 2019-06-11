@@ -1,4 +1,3 @@
-# coding=utf-8
 """I18n.
 
 To mark strings for translation::
@@ -140,6 +139,7 @@ def country_choices(
     ]  # skip 3-digit regions
 
     if first == "" and default_country_first:
+        # pyre-fixme[9]: first has type `str`; used as `Optional[str]`.
         first = default_country()
 
     def sortkey(item: Tuple[str, str]) -> str:
@@ -188,6 +188,8 @@ class Babel(BabelBase):
     def init_app(self, app: Flask) -> None:
         super().init_app(app)
         self._translations_paths = [
+            # pyre-fixme[6]: Expected `Union[_PathLike[str], str]` for 1st param but
+            #  got `Optional[str]`.
             (os.path.join(app.root_path, "translations"), "messages")
         ]
 
@@ -206,6 +208,7 @@ class Babel(BabelBase):
         Will add translations files from `abilian.core` module.
         """
         module = importlib.import_module(module_name)
+        # pyre-fixme[16]: `ModuleType` has no attribute `__path__`.
         for path in (Path(p, translations_dir) for p in module.__path__):
             if not (path.exists() and path.is_dir()):
                 continue
@@ -261,6 +264,7 @@ def _get_translations_multi_paths() -> Optional[Translations]:
     This will never fail and return a dummy translation object if used
     outside of the request or if a translation cannot be found.
     """
+    # pyre-fixme[16]: Module `flask` has no attribute `_request_ctx_stack`.
     ctx = _request_ctx_stack.top
     if ctx is None:
         return None
@@ -356,6 +360,7 @@ class ensure_request_context:
     _rq_ctx = None
 
     def __enter__(self) -> None:
+        # pyre-fixme[16]: Module `flask` has no attribute `_request_ctx_stack`.
         if _request_ctx_stack.top is None:
             ctx = self._rq_ctx = current_app.test_request_context()
             ctx.__enter__()

@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from babel.dates import DateTimePattern, parse_pattern
 

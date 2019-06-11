@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from wtforms.fields import TextAreaField
 

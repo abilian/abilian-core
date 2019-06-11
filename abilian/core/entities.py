@@ -1,4 +1,3 @@
-# coding=utf-8
 """Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level)."""
 import collections
@@ -119,6 +118,7 @@ def _setup_default_permissions(instance: Any) -> None:
             # FIXME: put roles and permissions in a separate, isolated module.
             continue
         for role in roles:
+            # pyre-fixme[16]: `Service` has no attribute `add_permission`.
             security.add_permission(permission, role, obj=instance)
 
 
@@ -294,6 +294,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 
     @declared_attr
     def __mapper_args__(cls) -> Dict[str, Any]:
+        # pyre-fixme[16]: `Entity` has no attribute `__name__`.
         if cls.__module__ == __name__ and cls.__name__ == "Entity":
             return {"polymorphic_on": "_entity_type"}
 
@@ -399,6 +400,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
         security = get_service("security")
 
         # roles - required to match when user has a global role
+        # pyre-fixme[16]: `Service` has no attribute `get_permissions_assignments`.
         assignments = security.get_permissions_assignments(permission=READ, obj=self)
         allowed_roles = assignments.get(READ, set())
         allowed_roles.add(Admin)
@@ -414,6 +416,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 
         # users and groups
         principals = set()
+        # pyre-fixme[16]: `Service` has no attribute `get_role_assignements`.
         for user, role in security.get_role_assignements(self):
             if role in allowed_roles:
                 principals.add(user)
@@ -472,10 +475,12 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 # TODO: make this unecessary
 @event.listens_for(Entity, "class_instrument", propagate=True)
 def register_metadata(cls: Type[Entity]) -> None:
+    # pyre-fixme[8]: Attribute has type `FrozenSet`; used as `Set[_T]`.
     cls.__editable__ = set()
 
     # TODO: use SQLAlchemy 0.8 introspection
     if hasattr(cls, "__table__"):
+        # pyre-fixme[16]: `Entity` has no attribute `__table__`.
         columns = cls.__table__.columns
     else:
         columns = [v for k, v in vars(cls).items() if isinstance(v, Column)]
@@ -485,6 +490,7 @@ def register_metadata(cls: Type[Entity]) -> None:
         info = column.info
 
         if info.get("editable", True):
+            # pyre-fixme[16]: `FrozenSet` has no attribute `add`.
             cls.__editable__.add(name)
 
 
@@ -504,6 +510,7 @@ def polymorphic_update_timestamp(
         state = sa.inspect(obj)
         history = state.attrs["updated_at"].history
         if not any((history.added, history.deleted)):
+            # pyre-fixme[8]: Attribute has type `Column`; used as `datetime`.
             obj.updated_at = datetime.utcnow()
 
 

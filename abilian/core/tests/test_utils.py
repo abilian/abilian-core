@@ -1,5 +1,3 @@
-# coding=utf-8
-
 from abilian.core.util import Pagination, slugify
 
 

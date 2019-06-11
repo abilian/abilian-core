@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from flask import current_app, jsonify, send_file
 from flask_login import current_user

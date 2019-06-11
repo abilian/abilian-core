@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import pygeoip
 from flask import render_template

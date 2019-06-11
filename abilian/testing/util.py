@@ -1,4 +1,3 @@
-# coding=utf-8
 """Elements to build test cases for an :class:`abilian.app.Application`"""
 from typing import ContextManager, List, Union
 
@@ -46,6 +45,7 @@ def client_login(client, user):
             assert response.status_code == 302
             # assert current_user.is_anonymous
 
+    # pyre-fixme[7]: Expected `ContextManager[Any]` but got `LoginContext`.
     return LoginContext()
 
 

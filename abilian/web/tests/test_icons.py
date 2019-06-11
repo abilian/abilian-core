@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from abilian.web.action import FAIcon, Glyphicon, StaticIcon
 

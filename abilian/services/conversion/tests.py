@@ -1,4 +1,3 @@
-# coding=utf-8
 import sys
 import tempfile
 from pathlib import Path
@@ -24,6 +23,8 @@ def converter() -> Iterator[Union[Iterator, Iterator[Converter]]]:
     cache_dir = Path(tempfile.mkdtemp(suffix="unittest"))
     tmp_dir = Path(tempfile.mkdtemp(suffix="unittest"))
     c.init_work_dirs(cache_dir, tmp_dir)
+    # pyre-fixme[7]: Expected `Iterator[Union[Iterator[Any], Iterator[Converter]]]`
+    #  but got `Generator[Converter, None, None]`.
     yield c
 
     c.clear()
@@ -87,6 +88,7 @@ def test_image_to_pdf(converter: Converter) -> None:
 # To images
 @mark.skipif(not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_pdf_to_images(converter: Converter) -> None:
+    # pyre-fixme[16]: Module `magic` has no attribute `os`.
     if not os.popen("which pdftoppm").read().strip():
         warn("pdftoppm not found, skipping test")
         return

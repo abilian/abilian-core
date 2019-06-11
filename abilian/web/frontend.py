@@ -1,4 +1,3 @@
-# coding=utf-8
 """Front-end for a CRM app.
 
 This should eventually allow implementing very custom CRM-style
@@ -48,6 +47,8 @@ class ModuleAction(Action):
         self.group = group
         super().__init__(module.action_category, name, *args, **kwargs)
 
+    # pyre-fixme[15]: `pre_condition` overrides method defined in `Action`
+    #  inconsistently.
     def pre_condition(self, context):
         module = actions.context.get("module")
         if not module:

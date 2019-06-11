@@ -1,4 +1,3 @@
-# coding=utf-8
 """Validators.
 
 TODO: most of this is currently only stubs and needs to be implemented.
@@ -250,6 +249,7 @@ def siret_validator() -> Callable:
         also want to give directly a siret, for a scripting use.
         """
         if field is not None:
+            # pyre-fixme[16]: `Field` has no attribute `data`.
             siret = (field.data or "").strip()
 
         if len(siret) != 14:

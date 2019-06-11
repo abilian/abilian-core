@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from datetime import datetime
 from itertools import chain
@@ -189,6 +188,7 @@ class AuditPanel(AdminPanel):
                 current_day = e_date.date()
                 day_entries = []
                 entries.append((e_date.date(), day_entries))
+            # pyre-fixme[16]: Optional type has no attribute `append`.
             day_entries.append(e)
 
         top_date = ""

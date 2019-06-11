@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from typing import Any
 
@@ -112,6 +111,7 @@ class TagsExtension:
 
         return query.all()
 
+    # pyre-fixme[9]: tag has type `Tag`; used as `None`.
     def add(self, entity, tag=None, ns=None, label=None):
         # type: (Entity, Tag, Any, Any) -> Tag
         if tag is None:

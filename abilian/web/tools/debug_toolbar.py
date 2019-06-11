@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import sys
 from typing import List, Text
@@ -102,6 +101,7 @@ class SignalsDebugPanel(DebugPanel):
                     }
                     signals.append(d)
 
+        # pyre-fixme[18]: Global name `d` is undefined.
         signals.sort(key=lambda x: (d["module_name"], d["ns_name"], d["signal_name"]))
 
         ctx = {"signals": signals, "events": self.events}

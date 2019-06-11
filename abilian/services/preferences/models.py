@@ -1,4 +1,3 @@
-# coding=utf-8
 """Models for user preferences."""
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint

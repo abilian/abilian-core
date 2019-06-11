@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import json
 import logging
@@ -75,7 +74,9 @@ class FileUploadsExtension:
 
     def _do_register_js_api(self, sender: Application) -> None:
         app = sender
+        # pyre-fixme[6]: Expected `str` for 2nd param but got `Dict[_KT, _VT]`.
         js_api = app.js_api.setdefault("upload", {})
+        # pyre-fixme[16]: `str` has no attribute `__setitem__`.
         js_api["newFileUrl"] = url_for("uploads.new_file")
 
     def user_dir(self, user):

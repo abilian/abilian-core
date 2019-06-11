@@ -1,4 +1,3 @@
-# coding=utf-8
 """Activity Service.
 
 See: http://activitystrea.ms/specs/json/1.0/

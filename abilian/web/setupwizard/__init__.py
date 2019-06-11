@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import logging
 import socket
@@ -10,6 +9,8 @@ import redis
 import sqlalchemy as sa
 import sqlalchemy.dialects
 import sqlalchemy.exc
+
+# pyre-fixme[21]: Could not find `commands`.
 from abilian.core.commands import config as cmd_config
 from flask import (
     current_app,

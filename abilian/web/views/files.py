@@ -1,4 +1,3 @@
-# coding=utf-8
 """Base classes for file download."""
 from datetime import datetime, timedelta
 

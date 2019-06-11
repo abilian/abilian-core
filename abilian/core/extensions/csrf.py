@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from flask import current_app, flash, request
 from flask.signals import request_started

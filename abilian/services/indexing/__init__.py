@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from .schema import indexable_role
 from .service import service

@@ -1,11 +1,10 @@
-# coding=utf-8
 """Indexing service for Abilian.
 
 Adds Whoosh indexing capabilities to SQLAlchemy models.
 
 Based on Flask-whooshalchemy by Karl Gyllstrom.
 
-:copyright: (c) 2013-2014 by Abilian SAS
+:copyright: (c) 2013-2019 by Abilian SAS
 :copyright: (c) 2012 by Stefane Fermigier
 :copyright: (c) 2012 by Karl Gyllstrom
 :license: BSD (see LICENSE.txt)
@@ -71,8 +70,10 @@ def fqcn(cls: Any) -> str:
 
 
 class IndexServiceState(ServiceState):
-    def __init__(self, *args: "WhooshIndexService", **kwargs: Any) -> None:
-        ServiceState.__init__(self, *args, **kwargs)
+    def __init__(
+        self, service: "WhooshIndexService", *args: Any, **kwargs: Any
+    ) -> None:
+        super().__init__(service, *args, **kwargs)
         self.whoosh_base = None
         self.indexes: Dict[str, Index] = {}
         self.indexed_classes: Set[type] = set()
@@ -83,10 +84,12 @@ class IndexServiceState(ServiceState):
 
     @property
     def to_update(self) -> List[Tuple[str, Entity]]:
+        # pyre-fixme[16]: Module `globals` has no attribute `_lookup_app_object`.
         return _lookup_app_object(_pending_indexation_attr)
 
     @to_update.setter
     def to_update(self, value: List) -> None:
+        # pyre-fixme[16]: Module `flask` has no attribute `_app_ctx_stack`.
         top = _app_ctx_stack.top
         if top is None:
             raise RuntimeError("working outside of application context")
@@ -131,7 +134,9 @@ class WhooshIndexService(Service):
 
     def _do_register_js_api(self, sender: "Application") -> None:
         app = sender
+        # pyre-fixme[6]: Expected `str` for 2nd param but got `Dict[_KT, _VT]`.
         js_api = app.js_api.setdefault("search", {})
+        # pyre-fixme[16]: `str` has no attribute `__setitem__`.
         js_api["object_types"] = self.searchable_object_types()
 
     def register_search_filter(self, func):
@@ -366,6 +371,7 @@ class WhooshIndexService(Service):
             if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)
 
+    # pyre-fixme[9]: app_state has type `IndexServiceState`; used as `None`.
     def register_class(self, cls: type, app_state: IndexServiceState = None) -> None:
         """Register a model class."""
         state = app_state if app_state is not None else self.app_state
@@ -377,6 +383,7 @@ class WhooshIndexService(Service):
             return
 
         cls_fqcn = fqcn(cls)
+        # pyre-fixme[18]: Global name `Adapter` is undefined.
         self.adapted[cls_fqcn] = Adapter(cls, self.schemas["default"])
         state.indexed_classes.add(cls)
         state.indexed_fqcn.add(cls_fqcn)
@@ -412,6 +419,7 @@ class WhooshIndexService(Service):
         """
         if (
             not self.running
+            # pyre-fixme[16]: `Optional` has no attribute `nested`.
             or session.transaction.nested  # inside a sub-transaction:
             # not yet written in DB
             or session is not db.session()
@@ -438,6 +446,7 @@ class WhooshIndexService(Service):
             index_update.apply_async(kwargs={"index": "default", "items": items})
         self.clear_update_queue()
 
+    # pyre-fixme[9]: adapter has type `SAAdapter`; used as `None`.
     def get_document(self, obj: Entity, adapter: SAAdapter = None) -> Dict[str, Any]:
         if adapter is None:
             class_name = fqcn(obj.__class__)
@@ -453,6 +462,8 @@ class WhooshIndexService(Service):
                 del document[k]
                 continue
             if isinstance(v, (User, Group, Role)):
+                # pyre-fixme[6]: Expected `Role` for 1st param but got `Union[Group,
+                #  User, Role]`.
                 document[k] = indexable_role(v)
 
         if not document.get("allowed_roles_and_users"):
@@ -500,6 +511,7 @@ class WhooshIndexService(Service):
 service = WhooshIndexService()
 
 
+# pyre-fixme[16]: Module `celery` has no attribute `shared_task`.
 @shared_task
 def index_update(index: str, items: List[List[Union[Dict, int, str]]]) -> None:
     """
@@ -577,5 +589,6 @@ class TestingStorage(RamStorage):
     tests are ran in parallel, including different abilian-based packages.
     """
 
+    # pyre-fixme[9]: name has type `str`; used as `None`.
     def temp_storage(self, name: str = None) -> "TestingStorage":
         return TestingStorage()

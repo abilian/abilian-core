@@ -1,4 +1,3 @@
-# coding=utf-8
 import glob
 import hashlib
 import logging
@@ -12,6 +11,7 @@ from abc import ABCMeta, abstractmethod
 from base64 import b64decode, b64encode
 from pathlib import Path
 from typing import Any, List
+# pyre-fixme[21]: Could not find `xmlrpc`.
 from xmlrpc.client import ServerProxy
 
 from flask import Flask
@@ -106,10 +106,15 @@ class PdfToTextHandler(Handler):
     def convert(self, blob: bytes, **kw: Any) -> str:
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
+                # pyre-fixme[6]: Expected `Union[Sequence[Union[_PathLike[Any],
+                #  bytes, str]], bytes, str]` for 1st param but got
+                #  `List[Union[Iterator[Any], str]]`.
                 subprocess.check_call(["pdftotext", in_fn, out_fn])
             except Exception as e:
                 raise ConversionError("pdftotext failed") from e
 
+            # pyre-fixme[6]: Expected `Union[_PathLike[Any], bytes, int, str]` for
+            #  1st param but got `Iterator[Any]`.
             converted = open(out_fn, "rb").read()
             try:
                 encoding = self.encoding_sniffer.from_file(out_fn)
@@ -202,7 +207,13 @@ class ImageMagickHandler(Handler):
     def convert(self, blob: bytes, **kw) -> bytes:
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
+                # pyre-fixme[6]: Expected `Union[Sequence[Union[_PathLike[Any],
+                #  bytes, str]], bytes, str]` for 1st param but got
+                #  `List[Union[Iterator[Any], str]]`.
+                # pyre-fixme[6]: Expected `str` for 1st param but got `Iterator[Any]`.
                 subprocess.check_call(["convert", in_fn, "pdf:" + out_fn])
+                # pyre-fixme[6]: Expected `Union[_PathLike[Any], bytes, int, str]`
+                #  for 1st param but got `Iterator[Any]`.
                 converted = open(out_fn, "rb").read()
                 return converted
             except Exception as e:
@@ -213,11 +224,15 @@ class PdfToPpmHandler(Handler):
     accepts_mime_types = ["application/pdf", "application/x-pdf"]
     produces_mime_types = ["image/jpeg"]
 
+    # pyre-fixme[14]: `convert` overrides method defined in `Handler` inconsistently.
     def convert(self, blob: bytes, size: int = 500) -> List[bytes]:
         """Size is the maximum horizontal size."""
         file_list: List[str] = []
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
+                # pyre-fixme[6]: Expected `Union[Sequence[Union[_PathLike[Any],
+                #  bytes, str]], bytes, str]` for 1st param but got
+                #  `List[Union[Iterator[Any], str]]`.
                 subprocess.check_call(["pdftoppm", "-jpeg", in_fn, out_fn])
                 file_list = sorted(glob.glob(f"{out_fn}-*.jpg"))
 
@@ -261,6 +276,7 @@ class UnoconvPdfHandler(Handler):
     _process = None
     unoconv = "unoconv"
 
+    # pyre-fixme[15]: `init_app` overrides method defined in `Handler` inconsistently.
     def init_app(self, app):
         unoconv = app.config.get("UNOCONV_LOCATION")
         found = False
@@ -422,7 +438,13 @@ class LibreOfficePdfHandler(Handler):
             def run_soffice() -> None:
                 try:
                     self._process = subprocess.Popen(
-                        cmd, close_fds=True, cwd=bytes(self.tmp_dir)
+                        # pyre-fixme[6]: Expected
+                        #  `Union[Sequence[Union[_PathLike[Any], bytes, str]], bytes,
+                        #  str]` for 1st param but got `List[Union[Iterator[Any],
+                        #  str]]`.
+                        cmd,
+                        close_fds=True,
+                        cwd=bytes(self.tmp_dir),
                     )
                     self._process.communicate()
                 except Exception as e:
@@ -436,9 +458,12 @@ class LibreOfficePdfHandler(Handler):
             try:
                 if run_thread.is_alive():
                     # timeout reached
+                    # pyre-fixme[16]: Optional type has no attribute `terminate`.
                     self._process.terminate()
+                    # pyre-fixme[16]: Optional type has no attribute `poll`.
                     if self._process.poll() is not None:
                         try:
+                            # pyre-fixme[16]: Optional type has no attribute `kill`.
                             self._process.kill()
                         except OSError:
                             logger.warning("Failed to kill process %s", self._process)
@@ -446,6 +471,8 @@ class LibreOfficePdfHandler(Handler):
                     self._process = None
                     raise ConversionError(f"Conversion timeout ({timeout})")
 
+                # pyre-fixme[6]: Expected `_PathLike[AnyStr]` for 1st param but got
+                #  `Iterator[Any]`.
                 out_fn = os.path.splitext(in_fn)[0] + ".pdf"
                 converted = open(out_fn, "rb").read()
                 return converted

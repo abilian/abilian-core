@@ -1,4 +1,3 @@
-# coding=utf-8
 """audit Service: logs modifications to audited objects.
 
 TODO: In the future, we may decide to:
@@ -7,16 +6,15 @@ TODO: In the future, we may decide to:
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
 import logging
-import typing
 from datetime import datetime
 from inspect import isclass
-from typing import Any, Text
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set
 
 import sqlalchemy as sa
 from flask import current_app, g
 from sqlalchemy import event, extract
 from sqlalchemy.orm import Query, Session
-from sqlalchemy.orm.attributes import NEVER_SET
+from sqlalchemy.orm.attributes import NEVER_SET, InstrumentedAttribute
 from sqlalchemy.orm.unitofwork import UOWTransaction
 
 from abilian.core.entities import Entity
@@ -25,29 +23,30 @@ from abilian.services import Service, ServiceState
 
 from .models import CREATION, DELETION, RELATED, UPDATE, AuditEntry, Changes
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from abilian.app import Application
 
 log = logging.getLogger(__name__)
 
 
 class AuditableMeta:
-    name = None
-    id_attr = None
-    related = None
-    backref_attr = None
-    audited_attrs = None
-    collection_attrs = None
-    enduser_ids = None
+    backref_attr: Optional[str] = None
+    audited_attrs: Set[InstrumentedAttribute]
+    collection_attrs: Set[InstrumentedAttribute]
+    enduser_ids: List[str]
 
     def __init__(
-        self, name: str = None, id_attr: str = None, related: bool = False
+        self,
+        name: Optional[str] = None,
+        id_attr: Optional[str] = None,
+        related: bool = False,
     ) -> None:
         self.name = name
         self.id_attr = id_attr
         self.related = related
         self.audited_attrs = set()
         self.collection_attrs = set()
+        self.enduser_ids = []
 
 
 class AuditServiceState(ServiceState):
@@ -59,10 +58,10 @@ class AuditServiceState(ServiceState):
     # of audit entries
     creating_entries = False
 
-    def __init__(self, *args: "AuditService", **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
-        self.all_model_classes: typing.Set[type] = set()
-        self.model_class_names: typing.Dict[str, type] = {}
+    def __init__(self, service: "AuditService", *args: Any, **kwargs: Any) -> None:
+        super().__init__(service, *args, **kwargs)
+        self.all_model_classes: Set[type] = set()
+        self.model_class_names: Dict[str, type] = {}
 
 
 class AuditService(Service):
@@ -346,9 +345,13 @@ def format_large_value(value):
 
 
 def get_model_changes(
-    entity_type, year=None, month=None, day=None, hour=None, since=None
-):
-    # type: (Text, int, int, int, int, datetime) -> Query
+    entity_type: str,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
+    day: Optional[int] = None,
+    hour: Optional[int] = None,
+    since: Optional[datetime] = None,
+) -> Query:
     """Get models modified at the given date with the Audit service.
 
     :param entity_type: string like "extranet_medicen.apps.crm.models.Compte".

@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import abc
 from typing import Any
@@ -48,6 +47,7 @@ def is_commentable(obj_or_class: Any) -> bool:
     if not isinstance(obj_or_class, Commentable):
         return False
 
+    # pyre-fixme[16]: `Commentable` has no attribute `id`.
     if obj_or_class.id is None:
         return False
 

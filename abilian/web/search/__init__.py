@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from abilian.core.signals import register_js_api
 from abilian.web import url_for
@@ -11,8 +10,10 @@ __all__ = ["BaseCriterion", "TextSearchCriterion"]
 
 def _do_register_js_api(sender: Application) -> None:
     app = sender
+    # pyre-fixme[6]: Expected `str` for 2nd param but got `Dict[_KT, _VT]`.
     js_api = app.js_api.setdefault("search", {})
     # hack to avoid url_for escape '%'
+    # pyre-fixme[16]: `str` has no attribute `__setitem__`.
     js_api["live"] = url_for("search.live", q="") + "%QUERY"
 
 

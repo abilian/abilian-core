@@ -1,4 +1,3 @@
-# coding=utf-8
 """Another try at an activity service.
 
 See: ActivityStreams, OpenSocial

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Extension for sending informations to upstream server."""
 import typing
 from typing import Any
@@ -38,6 +37,7 @@ class UpstreamInfo:
         _request_ctx_stack.top.upstream_info = {"Username": "Anonymous"}
 
     def request_finished(self, app: Flask, response: Response) -> None:
+        # pyre-fixme[16]: Module `flask` has no attribute `_request_ctx_stack`.
         info = _request_ctx_stack.top.upstream_info
         config = app.config
         default_enabled = bool(config["ABILIAN_UPSTREAM_INFO_ENABLED"])
@@ -57,6 +57,7 @@ class UpstreamInfo:
             response.headers[header] = val
 
     def user_loaded(self, app: Flask, user: "User", *args: Any, **kwargs: Any) -> None:
+        # pyre-fixme[16]: Module `flask` has no attribute `_request_ctx_stack`.
         _request_ctx_stack.top.upstream_info["Username"] = user.email
 
 

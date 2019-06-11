@@ -1,4 +1,3 @@
-# coding=utf-8
 """Base Flask application class, used by tests or to be extended in real
 applications."""
 import errno
@@ -86,11 +85,13 @@ class PluginManager:
         """Load and register a plugin given its package name."""
         logger.info("Registering plugin: " + name)
         module = importlib.import_module(name)
+        # pyre-fixme[16]: `ModuleType` has no attribute `register_plugin`.
         module.register_plugin(self)
 
     def register_plugins(self) -> None:
         """Load plugins listed in config variable 'PLUGINS'."""
         registered = set()
+        # pyre-fixme[16]: `PluginManager` has no attribute `config`.
         for plugin_fqdn in chain(self.APP_PLUGINS, self.config["PLUGINS"]):
             if plugin_fqdn not in registered:
                 self.register_plugin(plugin_fqdn)
@@ -205,6 +206,7 @@ class Application(
 
         setup(self)
 
+    # pyre-fixme[9]: app has type `Flask`; used as `None`.
     def setup_nav_and_breadcrumbs(self, app: Flask = None) -> None:
         """Listener for `request_started` event.
 
@@ -346,6 +348,8 @@ class Application(
 
         from .web.preferences.user import UserPreferencesPanel
 
+        # pyre-fixme[6]: Expected `AdminPanel` for 1st param but got
+        #  `UserPreferencesPanel`.
         preferences_service.register_panel(UserPreferencesPanel(), self)
 
         from .web.coreviews import users
@@ -361,7 +365,9 @@ class Application(
             celery_app = self.extensions["celery"] = self.celery_app_cls()
             # force reading celery conf now - default celery app will
             # also update our config with default settings
+            # pyre-fixme[16]: `FlaskCelery` has no attribute `conf`.
             celery_app.conf  # noqa
+            # pyre-fixme[16]: `FlaskCelery` has no attribute `set_default`.
             celery_app.set_default()
 
         # dev helper
@@ -376,6 +382,7 @@ class Application(
 
             self.register_blueprint(http_error_pages, url_prefix="/http_error")
 
+    # pyre-fixme[14]: `add_url_rule` overrides method defined in `Flask` inconsistently.
     def add_url_rule(
         self,
         rule: str,
@@ -390,11 +397,15 @@ class Application(
         :class:`abilian.service.security.models.Role` instance, or a list of
         Role instances.
         """
+        # pyre-fixme[16]: `ServiceManager` has no attribute `add_url_rule`.
         super().add_url_rule(rule, endpoint, view_func, **options)
 
         if roles:
             self.add_access_controller(
-                endpoint, allow_access_for_roles(roles), endpoint=True
+                # pyre-fixme[6]: Expected `str` for 1st param but got `Optional[str]`.
+                endpoint,
+                allow_access_for_roles(roles),
+                endpoint=True,
             )
 
     def add_access_controller(self, name: str, func: Callable, endpoint: bool = False):
@@ -416,7 +427,11 @@ class Application(
             auth_state.add_bp_access_controller(name, func)
 
     def add_static_url(
-        self, url_path: str, directory: str, endpoint: str = None, roles: Role = None
+        self,
+        url_path: str,
+        directory: str,
+        endpoint: Optional[str] = None,
+        roles: Collection[Role] = (),
     ) -> None:
         """Add a new url rule for static files.
 

@@ -1,4 +1,3 @@
-# coding=utf-8
 """User preference service.
 
 Notes:
@@ -75,13 +74,17 @@ class PreferenceService(Service):
         """
         if user is None:
             user = current_user
+        # pyre-fixme[16]: `User` has no attribute `preferences`.
         return {pref.key: pref.value for pref in user.preferences}
 
+    # pyre-fixme[9]: user has type `User`; used as `None`.
     def set_preferences(self, user: User = None, **kwargs: Any) -> None:
         """Set preferences from keyword arguments."""
         if user is None:
+            # pyre-fixme[9]: user has type `User`; used as `LocalProxy`.
             user = current_user
 
+        # pyre-fixme[16]: `User` has no attribute `preferences`.
         d = {pref.key: pref for pref in user.preferences}
         for k, v in kwargs.items():
             if k in d:
@@ -90,9 +93,11 @@ class PreferenceService(Service):
                 d[k] = UserPreference(user=user, key=k, value=v)
                 db.session.add(d[k])
 
+    # pyre-fixme[9]: user has type `User`; used as `None`.
     def clear_preferences(self, user: User = None) -> None:
         """Clear the user preferences."""
         if user is None:
+            # pyre-fixme[9]: user has type `User`; used as `LocalProxy`.
             user = current_user
 
         #  don't delete UserPreference 1 by 1 with session.delete, else
@@ -100,6 +105,7 @@ class PreferenceService(Service):
         #  http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html#deleting-from-collections
         user.preferences = []
 
+    # pyre-fixme[9]: app has type `Flask`; used as `None`.
     def register_panel(self, panel: AdminPanel, app: Flask = None) -> None:
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
@@ -114,9 +120,11 @@ class PreferenceService(Service):
         abs_endpoint = f"preferences.{endpoint}"
 
         if hasattr(panel, "get"):
+            # pyre-fixme[16]: `AdminPanel` has no attribute `get`.
             state.blueprint.add_url_rule(rule, endpoint, panel.get)
         if hasattr(panel, "post"):
             endpoint += "_post"
+            # pyre-fixme[16]: `AdminPanel` has no attribute `post`.
             state.blueprint.add_url_rule(rule, endpoint, panel.post, methods=["POST"])
 
         state.breadcrumb_items[abs_endpoint] = BreadcrumbItem(

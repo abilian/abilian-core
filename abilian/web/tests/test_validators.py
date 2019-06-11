@@ -1,5 +1,3 @@
-# coding=utf-8
-
 from typing import Any, Callable, Iterator, Optional, Tuple, Union
 
 from pytest import fixture, raises

@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import io
 import logging
@@ -22,6 +21,7 @@ CLAMD_CONF = {"StreamMaxLength": "25M", "MaxFileSize": "25M"}
 CLAMD_STREAMMAXLENGTH = 26214400
 CLAMD_MAXFILESIZE = 26214400
 
+# pyre-fixme[18]: Global name `clamd` is undefined.
 if clamd:
     conf_path = pathlib.Path("/etc", "clamav", "clamd.conf")
     if conf_path.exists():

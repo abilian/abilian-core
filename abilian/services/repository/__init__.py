@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from .service import repository, session_repository
 

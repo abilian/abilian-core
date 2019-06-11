@@ -1,4 +1,3 @@
-# coding=utf-8
 import uuid
 
 from sqlalchemy import Column
@@ -21,6 +20,7 @@ def test_list_attribute(session: Session) -> None:
     session.add(model)
     session.commit()
     model_id = model.id
+    # pyre-fixme[16]: `Session` has no attribute `remove`.
     session.remove()
     model2 = DummyModel2.query.get(model_id)
     assert model2.list_attr == [1, 2, 3]
@@ -37,6 +37,7 @@ def test_dict_attribute(session: Session) -> None:
     session.add(model)
     session.commit()
     model_id = model.id
+    # pyre-fixme[16]: `Session` has no attribute `remove`.
     session.remove()
     model2 = DummyModel2.query.get(model_id)
     assert model2.dict_attr == {"a": 3, "b": 4}
@@ -51,6 +52,7 @@ def test_uuid_attribute(session: Session) -> None:
     session.add(model)
     session.commit()
     model_id = model.id
+    # pyre-fixme[16]: `Session` has no attribute `remove`.
     session.remove()
     model2 = DummyModel2.query.get(model_id)
 
@@ -62,6 +64,7 @@ def test_uuid_attribute(session: Session) -> None:
     session.add(model)
     session.commit()
     model_id = model.id
+    # pyre-fixme[16]: `Session` has no attribute `remove`.
     session.remove()
     model2 = DummyModel2.query.get(model_id)
 

@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import logging
 import re
@@ -85,6 +84,7 @@ class Icon:
 class NamedIconBase(Icon):
     """Renders markup for named icons set."""
 
+    # pyre-fixme[13]: Attribute `template` is never initialized.
     template: Template
 
     def __init__(self, name: str = "") -> None:
@@ -339,6 +339,7 @@ class Action:
         attr = "_" + attr
         value = getattr(self, attr)
         if callable(value):
+            # pyre-fixme[18]: Global name `actions` is undefined.
             value = value(actions.context)
         return value
 
@@ -427,6 +428,7 @@ class Action:
             return True
 
         if callable(self.condition):
+            # pyre-fixme[29]: `None` is not a function.
             return self.condition(context)
         else:
             return bool(self.condition)
@@ -448,16 +450,20 @@ class Action:
         params.update(actions.context)
         params.update(kwargs)
         params["csrf"] = csrf
+        # pyre-fixme[6]: Expected `Action` for 2nd param but got `str`.
         params["url"] = self.url(params)
         return params
 
+    # pyre-fixme[9]: context has type `Dict[str, Any]`; used as `None`.
     def url(self, context: Dict[str, Any] = None) -> str:
         if callable(self._url):
+            # pyre-fixme[29]: `None` is not a function.
             return self._url(context)
 
         if self.endpoint:
             return str(self.endpoint)
 
+        # pyre-fixme[7]: Expected `str` but got `None`.
         return self._url
 
 
@@ -511,6 +517,8 @@ class ActionGroup(Action):
         super().__init__(category, name, *args, **kwargs)
         self.items = list(items)
 
+    # pyre-fixme[15]: `get_render_args` overrides method defined in `Action`
+    #  inconsistently.
     def get_render_args(self, **kwargs):
         params = super().get_render_args(**kwargs)
         params["action_items"] = [a for a in self.items if a.available(params)]

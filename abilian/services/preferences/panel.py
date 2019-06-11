@@ -1,6 +1,3 @@
-# coding=utf-8
-
-
 class PreferencePanel:
     """Base class for preference panels.
 

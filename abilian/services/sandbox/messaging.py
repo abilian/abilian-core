@@ -1,6 +1,3 @@
-# coding=utf-8
-
-
 class PrivateMessage:
     # TODO
     pass

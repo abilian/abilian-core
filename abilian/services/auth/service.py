@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import logging
 import typing
@@ -43,12 +42,14 @@ def is_authenticated(context: Dict[str, bool]) -> bool:
 def _user_photo_endpoint() -> str:
     from abilian.web.views import images  # lazy import: avoid circular import
 
+    # pyre-fixme[6]: Expected `User` for 1st param but got `LocalProxy`.
     return images.user_url_args(current_user, 16)[0]
 
 
 def _user_photo_icon_args(icon: DynamicIcon, url_args: Dict) -> Dict[str, Any]:
     from abilian.web.views import images  # lazy import avoid circular import
 
+    # pyre-fixme[6]: Expected `User` for 1st param but got `LocalProxy`.
     return images.user_url_args(current_user, max(icon.width, icon.height))[1]
 
 
@@ -63,6 +64,7 @@ user_menu = NavGroup(
         url_args=_user_photo_icon_args,
     ),
     condition=is_authenticated,
+    # pyre-fixme[6]: Expected `Tuple[]` for 6th param but got `Tuple[NavItem]`.
     items=(
         NavItem(
             "user",
@@ -91,10 +93,10 @@ _ACTIONS = (
 class AuthServiceState(ServiceState):
     """State class for :class:`AuthService`"""
 
-    def __init__(self, *args: "AuthService", **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
-        self.bp_access_controllers = {None: []}
-        self.endpoint_access_controllers = {}
+    def __init__(self, service: "AuthService", *args: Any, **kwargs: Any) -> None:
+        super().__init__(service, *args, **kwargs)
+        self.bp_access_controllers: Dict[Optional[str], List[Callable]] = {None: []}
+        self.endpoint_access_controllers: Dict[str, List[Callable]] = {}
 
     def add_bp_access_controller(self, blueprint: str, func: Callable) -> None:
         self.bp_access_controllers.setdefault(blueprint, []).append(func)
@@ -107,6 +109,7 @@ class AuthService(Service):
     name = "auth"
     AppStateClass = AuthServiceState
 
+    # pyre-fixme[15]: `init_app` overrides method defined in `Service` inconsistently.
     def init_app(self, app: Flask):
         login_manager.init_app(app)
         login_manager.login_view = "login.login_form"
@@ -126,6 +129,7 @@ class AuthService(Service):
             actions.register(*_ACTIONS)
 
     @login_manager.user_loader
+    # pyre-fixme[36]: Non-static method must specify `self` parameter.
     def load_user(user_id: str) -> Optional[User]:
         try:
             user = User.query.get(user_id)
@@ -162,6 +166,8 @@ class AuthService(Service):
         g.is_manager = (
             user
             and not is_anonymous
+            # pyre-fixme[16]: `Optional` has no attribute `has_role`.
+            # pyre-fixme[16]: `Optional` has no attribute `has_role`.
             and (security.has_role(user, "admin") or security.has_role(user, "manager"))
         )
 
@@ -196,6 +202,7 @@ class AuthService(Service):
         if current_app.testing and getattr(user, "is_admin", False):
             return None
 
+        # pyre-fixme[9]: security has type `SecurityService`; used as `Service`.
         security: SecurityService = get_service("security")
         user_roles = frozenset(security.get_roles(user))
         endpoint = request.endpoint
@@ -240,6 +247,7 @@ class AuthService(Service):
             db.session.add(user)
             db.session.commit()
 
+        # pyre-fixme[6]: Expected `User` for 1st param but got `LocalProxy`.
         refresh_login_session(user)
 
 
@@ -257,5 +265,6 @@ def refresh_login_session(user: User) -> None:
         db.session.add(session)
         db.session.commit()
     elif from_now > timedelta(minutes=1):
+        # pyre-fixme[8]: Attribute has type `Column`; used as `datetime`.
         session.last_active_at = now
         db.session.commit()

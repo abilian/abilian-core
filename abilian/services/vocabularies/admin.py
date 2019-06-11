@@ -1,4 +1,3 @@
-# coding=utf-8
 """Admin panel for vocabularies."""
 from typing import Callable
 

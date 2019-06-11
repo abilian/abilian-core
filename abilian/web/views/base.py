@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from typing import Any, Callable
 
@@ -32,11 +31,13 @@ class View(BaseView):
             meth = getattr(self, "get", None)
             assert meth is not None, "Unimplemented method %r" % request.method
 
+        # pyre-fixme[6]: Expected `bool` for 2nd param but got `View`.
         g.view = actions.context["view"] = self
         try:
             args, kwargs = self.prepare_args(args, kwargs)
             return meth(*args, **kwargs)
         except Redirect as exc:
+            # pyre-fixme[7]: Expected `str` but got `Optional[Response]`.
             return exc.response
 
     def prepare_args(self, args, kwargs):

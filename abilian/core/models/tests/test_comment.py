@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from datetime import datetime, timedelta
 
@@ -21,6 +20,7 @@ def test_commentable_interface() -> None:
     instance = CommentableContent(name="test instance")
     assert not is_commentable(instance)  # not in DB: no id
 
+    # pyre-fixme[8]: Attribute has type `Column`; used as `int`.
     instance.id = 42
     assert is_commentable(instance)
     assert not is_commentable(object)
@@ -41,9 +41,11 @@ def test_default_ordering(app: Flask, db: SQLAlchemy) -> None:
 
     now = datetime.now()
     c1 = Comment(entity=commentable, body="comment #1")
+    # pyre-fixme[8]: Attribute has type `Column`; used as `datetime`.
     c1.created_at = now - timedelta(10)
     db.session.flush()
     c2 = Comment(entity=commentable, body="comment #2")
+    # pyre-fixme[8]: Attribute has type `Column`; used as `datetime`.
     c2.created_at = now - timedelta(5)
     db.session.flush()
 

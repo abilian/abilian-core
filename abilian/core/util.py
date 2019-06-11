@@ -1,4 +1,3 @@
-# coding=utf-8
 """Various tools that don't belong some place specific."""
 import functools
 import hashlib

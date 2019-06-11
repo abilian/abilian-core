@@ -1,4 +1,3 @@
-# coding=utf-8
 """Jinja2 extensions."""
 from typing import Any
 

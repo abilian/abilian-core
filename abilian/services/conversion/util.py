@@ -1,5 +1,3 @@
-# coding=utf-8
-
 import logging
 import os
 from contextlib import contextmanager
@@ -19,6 +17,7 @@ CACHE_DIR = "cache"
 def get_tmp_dir() -> Path:
     from . import converter
 
+    # pyre-fixme[16]: `Converter` has no attribute `tmp_dir`.
     return converter.tmp_dir
 
 
@@ -41,6 +40,8 @@ def make_temp_file(
     else:
         os.close(fd)
 
+    # pyre-fixme[7]: Expected `Iterator[Union[Iterator[Any], Iterator[str]]]` but
+    #  got `Generator[str, None, None]`.
     yield filename
     try:
         os.remove(filename)

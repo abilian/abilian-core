@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from flask_login import current_user, login_user
 from pytest import fixture
@@ -29,6 +28,7 @@ class AdminPanel(PreferencePanel):
 
     def is_accessible(self) -> bool:
         security = get_service("security")
+        # pyre-fixme[16]: `Service` has no attribute `has_role`.
         return security.has_role(current_user, "admin")
 
     def get(self):
@@ -40,7 +40,9 @@ class Application(BaseApplication):
         super().init_extensions()
         prefs = self.services["preferences"]
         prefs.app_state.panels = []
+        # pyre-fixme[16]: `Service` has no attribute `register_panel`.
         prefs.register_panel(VisiblePanel(), self)
+        # pyre-fixme[16]: `Service` has no attribute `register_panel`.
         prefs.register_panel(AdminPanel(), self)
 
 
@@ -103,9 +105,12 @@ def test_visible_panels(app: Application, db: SQLAlchemy) -> None:
                 break
 
         expected = ["preferences.visible"]
+        # pyre-fixme[18]: Global name `ctx` is undefined.
         assert [p["endpoint"] for p in ctx["menu"]] == expected
 
+        # pyre-fixme[16]: `Service` has no attribute `grant_role`.
         security.grant_role(user, "admin")
+        # pyre-fixme[18]: Global name `cp` is undefined.
         ctx = cp()
         expected = ["preferences.visible", "preferences.admin"]
         assert [p["endpoint"] for p in ctx["menu"]] == expected

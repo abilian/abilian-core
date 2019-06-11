@@ -1,4 +1,3 @@
-# coding=utf-8
 """Extensions to WTForms fields, widgets and validators."""
 import logging
 from collections import OrderedDict
@@ -46,8 +45,12 @@ class FormPermissions:
     def __init__(
         self,
         default: Role = Anonymous,
+        # pyre-fixme[9]: read has type `Optional[]`; used as `None`.
+        # pyre-fixme[24]: Non-generic type `Optional` cannot take parameters.
         read: Optional[Role] = None,
         write: Optional[Any] = None,
+        # pyre-fixme[9]: fields_read has type `Optional[]`; used as `None`.
+        # pyre-fixme[24]: Non-generic type `Optional` cannot take parameters.
         fields_read: Optional[Dict[str, Role]] = None,
         fields_write: Optional[Any] = None,
         existing: Optional[Any] = None,
@@ -80,6 +83,7 @@ class FormPermissions:
                 "of Roles, a callable, or a dict."
             )
 
+        # pyre-fixme[8]: Attribute has type `Role`; used as `Dict[str, Tuple[Role]]`.
         self.default = default
         self.form = {}
         self.fields = {}
@@ -113,6 +117,7 @@ class FormPermissions:
         # WRITE permisssion
         for fields, permission in fields_defs:
             if fields:
+                # pyre-fixme[16]: `Optional` has no attribute `items`.
                 for field_name, allowed_roles in fields.items():
                     if isinstance(allowed_roles, Role):
                         allowed_roles = (allowed_roles,)
@@ -121,8 +126,11 @@ class FormPermissions:
     def has_permission(
         self,
         permission: Permission,
+        # pyre-fixme[9]: field has type `Optional[]`; used as `None`.
+        # pyre-fixme[24]: Non-generic type `Optional` cannot take parameters.
         field: Optional[str] = None,
         obj: Union[None, Entity, object] = None,
+        # pyre-fixme[9]: user has type `User`; used as `LocalProxy`.
         user: User = current_user,
     ) -> bool:
         if obj is not None and not isinstance(obj, Entity):
@@ -130,8 +138,11 @@ class FormPermissions:
             return True
 
         allowed_roles = (
+            # pyre-fixme[16]: `Role` has no attribute `__getitem__`.
             self.default[permission]
+            # pyre-fixme[16]: `Role` has no attribute `__getitem__`.
             if permission in self.default
+            # pyre-fixme[16]: `Role` has no attribute `__getitem__`.
             else self.default["default"]
         )
         definition = None
@@ -158,16 +169,14 @@ class FormPermissions:
             if callable(r):
                 r = eval_roles(r)
 
+            # pyre-fixme[6]: Expected `Tuple[Type[Role], ...]` for 1st param but got
+            #  `Tuple[Type[str]]`.
             if isinstance(r, (Role,) + (str,)):
                 roles.append(r)
             else:
                 roles.extend(r)
 
-        # TODO: replace w/: security = get_service('security')
-        # (Doing it now breaks a test)
-        # security = current_app.services['security']
         security: SecurityService = get_service("security")
-        # security = get_service('security')
         return security.has_role(user, role=roles, object=obj)
 
 

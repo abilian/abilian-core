@@ -1,4 +1,3 @@
-# coding=utf-8
 """Field filters for WTForm."""
 from typing import Union
 

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Security service, manages roles and permissions."""
 import typing
 from functools import wraps
@@ -157,6 +156,7 @@ class SecurityService(Service):
     def clear(self) -> None:
         pass
 
+    # pyre-fixme[9]: session has type `Session`; used as `None`.
     def _current_user_manager(self, session: Session = None) -> User:
         """Return the current user, or SYSTEM user."""
         if session is None:
@@ -234,6 +234,7 @@ class SecurityService(Service):
         acquired through group membership.
         """
         assert principal
+        # pyre-fixme[16]: `Group` has no attribute `is_anonymous`.
         if hasattr(principal, "is_anonymous") and principal.is_anonymous:
             return [AnonymousRole]
 
@@ -243,6 +244,7 @@ class SecurityService(Service):
         else:
             filter_principal = RoleAssignment.user == principal
             if not no_group_roles:
+                # pyre-fixme[16]: `User` has no attribute `groups`.
                 groups = [g.id for g in principal.groups]
                 if groups:
                     filter_principal |= RoleAssignment.group_id.in_(groups)
@@ -289,6 +291,8 @@ class SecurityService(Service):
         principals = {(ra.user or ra.group) for ra in query.all()}
 
         if object is not None and role in (Creator, Owner):
+            # pyre-fixme[16]: `Model` has no attribute `creator`.
+            # pyre-fixme[16]: `Model` has no attribute `owner`.
             p = object.creator if role == Creator else object.owner
             if p:
                 principals.add(p)
@@ -308,7 +312,9 @@ class SecurityService(Service):
 
         if isinstance(principal, User):
             filter_cond = RoleAssignment.user == principal
+            # pyre-fixme[16]: `User` has no attribute `groups`.
             if principal.groups:
+                # pyre-fixme[16]: `User` has no attribute `groups`.
                 group_ids = (g.id for g in principal.groups)
                 filter_cond |= RoleAssignment.group_id.in_(group_ids)
 
@@ -332,6 +338,7 @@ class SecurityService(Service):
             # FIXME: should call _fill_role_cache?
             principal.__roles_cache__ = {}
 
+        # pyre-fixme[16]: `Principal` has no attribute `__roles_cache__`.
         return principal.__roles_cache__
 
     def _has_role_cache(self, principal: Principal) -> bool:
@@ -369,6 +376,7 @@ class SecurityService(Service):
         query = db.session.query(RoleAssignment)
         users = {u for u in principals if isinstance(u, User)}
         groups = {g for g in principals if isinstance(g, Group)}
+        # pyre-fixme[16]: `User` has no attribute `groups`.
         groups |= {g for u in users for g in u.groups}
 
         if not overwrite:
@@ -404,22 +412,31 @@ class SecurityService(Service):
                 if ra.object is not None
                 else None
             )
+            # pyre-fixme[6]: Expected `str` for 1st param but got `Optional[str]`.
             all_roles.setdefault(object_key, set()).add(ra.role)
 
         for group, all_roles in ra_groups.items():
+            # pyre-fixme[6]: Expected `Dict[Optional[str], Set[Role]]` for 2nd param
+            #  but got `Dict[str, Set[Role]]`.
             self._set_role_cache(group, all_roles)
 
         for user, all_roles in ra_users.items():
+            # pyre-fixme[16]: `User` has no attribute `groups`.
             for gr in user.groups:
                 group_roles = self._fill_role_cache(gr)
                 for object_key, roles in group_roles.items():
+                    # pyre-fixme[6]: Expected `str` for 1st param but got
+                    #  `Optional[str]`.
                     obj_roles = all_roles.setdefault(object_key, set())
                     obj_roles |= roles
 
+            # pyre-fixme[6]: Expected `Dict[Optional[str], Set[Role]]` for 2nd param
+            #  but got `Dict[str, Set[Role]]`.
             self._set_role_cache(user, all_roles)
 
     def _clear_role_cache(self, principal: Principal) -> None:
         if hasattr(principal, "__roles_cache__"):
+            # pyre-fixme[16]: `Principal` has no attribute `__roles_cache__`.
             del principal.__roles_cache__
 
         if isinstance(principal, Group):
@@ -457,6 +474,8 @@ class SecurityService(Service):
             role = (role,)
 
         # admin & manager always have role
+        # pyre-fixme[6]: Expected `Tuple[Role, ...]` for 1st param but got
+        #  `Tuple[Union[Role, str], ...]`.
         valid_roles = frozenset((Admin, Manager) + tuple(role))
 
         if AnonymousRole in valid_roles:
@@ -525,6 +544,8 @@ class SecurityService(Service):
         ):
             args["anonymous"] = True
         elif isinstance(principal, User):
+            # pyre-fixme[6]: Expected `Optional[Union[Role, Model, bool, str]]` for
+            #  2nd param but got `User`.
             args["user"] = principal
         else:
             args["group"] = principal
@@ -551,7 +572,9 @@ class SecurityService(Service):
         session.add(ra)
         audit = SecurityAudit(manager=manager, op=SecurityAudit.GRANT, **args)
         if obj is not None:
+            # pyre-fixme[16]: `Model` has no attribute `id`.
             audit.object_id = obj.id
+            # pyre-fixme[16]: `Model` has no attribute `entity_type`.
             audit.object_type = obj.entity_type
             object_name = ""
             for attr_name in ("name", "path", "__path_before_delete"):
@@ -601,6 +624,8 @@ class SecurityService(Service):
             )
 
         elif isinstance(principal, User):
+            # pyre-fixme[6]: Expected `Optional[Union[Role, Model, bool, str]]` for
+            #  2nd param but got `User`.
             args["user"] = principal
             query = query.filter(RoleAssignment.user == principal)
         else:
@@ -677,6 +702,7 @@ class SecurityService(Service):
         # valid roles
         # 1: from database
         pa_filter = PermissionAssignment.object == None
+        # pyre-fixme[16]: `Model` has no attribute `id`.
         if obj is not None and obj.id is not None:
             pa_filter |= PermissionAssignment.object == obj
 
@@ -695,6 +721,8 @@ class SecurityService(Service):
                 roles = (roles,)
 
             for r in roles:
+                # pyre-fixme[6]: Expected `str` for 1st param but got `Union[Role,
+                #  str]`.
                 valid_roles.add(Role(r))
 
         # FIXME: query permission_role: global and on object
@@ -708,7 +736,10 @@ class SecurityService(Service):
         # first test global roles, then object local roles
         checked_objs = [None, obj]
         if inherit and obj is not None:
+            # pyre-fixme[16]: `Model` has no attribute `inherit_security`.
+            # pyre-fixme[16]: `Model` has no attribute `parent`.
             while obj.inherit_security and obj.parent is not None:
+                # pyre-fixme[16]: `Model` has no attribute `parent`.
                 obj = obj.parent
                 checked_objs.append(obj)
 
@@ -857,7 +888,11 @@ class SecurityService(Service):
         session.add(pa)
 
     def delete_permission(
-        self, permission: Permission, role: Role, obj: Model = None
+        # pyre-fixme[9]: obj has type `Model`; used as `None`.
+        self,
+        permission: Permission,
+        role: Role,
+        obj: Model = None,
     ) -> None:
         session = None
         if obj is not None:

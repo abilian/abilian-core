@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 from typing import Set
 
@@ -13,6 +12,7 @@ class AnonymousUser(AnonymousUserMixin):
         return security.has_role(self, role)
 
     @property
+    # pyre-fixme[31]: Expression `Set` is not a valid type.
     def groups(self) -> Set:
         return set()
 

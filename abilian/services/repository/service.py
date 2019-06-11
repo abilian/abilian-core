@@ -1,4 +1,3 @@
-# coding=utf-8
 """"""
 import shutil
 import typing
@@ -102,6 +101,7 @@ class RepositoryService(Service):
         mode = "tw"
         if not isinstance(content, str):
             mode = "bw"
+            # pyre-fixme[9]: encoding has type `str`; used as `None`.
             encoding = None
 
         with dest.open(mode, encoding=encoding) as f:
@@ -138,14 +138,16 @@ _REPOSITORY_TRANSACTION = "abilian_repository_transactions"
 
 
 class SessionRepositoryState(ServiceState):
-    path = None  # type: Path
+    path: Optional[Path] = None
 
     @property
     def transactions(self) -> Dict[int, Any]:
         try:
+            # pyre-fixme[16]: Module `globals` has no attribute `_lookup_app_object`.
             return _lookup_app_object(_REPOSITORY_TRANSACTION)
         except AttributeError:
             reg = {}
+            # pyre-fixme[16]: Module `flask` has no attribute `_app_ctx_stack`.
             setattr(_app_ctx_stack.top, _REPOSITORY_TRANSACTION, reg)
             return reg
 
@@ -208,6 +210,8 @@ class SessionRepositoryState(ServiceState):
                 # root and nested transactions emit "commit", but
                 # subtransactions don't
                 tr.commit(session)
+            # pyre-fixme[6]: Expected `RepositoryTransaction` for 2nd param but got
+            #  `Optional[RepositoryTransaction]`.
             self.set_transaction(session, tr._parent)
 
     def begin(self, session: Session) -> Optional[Any]:
@@ -490,10 +494,12 @@ class RepositoryTransaction:
         self._add_to(uuid, self._set, self._deleted)
 
         if hasattr(content, "read"):
+            # pyre-fixme[16]: `bytes` has no attribute `read`.
             content = content.read()
 
         if isinstance(content, bytes):
             mode = "wb"
+            # pyre-fixme[9]: encoding has type `str`; used as `None`.
             encoding = None
         else:
             mode = "wt"

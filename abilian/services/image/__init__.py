@@ -1,4 +1,3 @@
-# coding=utf-8
 """Provides tools (currently: only functions, not a real service) for image
 processing."""
 import hashlib
@@ -88,6 +87,7 @@ def resize(orig: Any, width: int, height: int, mode: str = FIT) -> bytes:
         assert image.size == (width, height)
 
     output = BytesIO()
+    # pyre-fixme[6]: Expected `str` for 1st param but got `None`.
     image.save(output, get_save_format(image_format))
     converted = output.getvalue()
     cache[cache_key] = converted
