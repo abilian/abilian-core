@@ -24,7 +24,15 @@ from .csrf import wtf_csrf as csrf
 from .login import login_manager
 from .redis import Redis
 
-__all__ = ["get_extension", "db", "mail", "login_manager", "csrf", "upstream_info"]
+__all__ = (
+    "get_extension",
+    "redis",
+    "db",
+    "mail",
+    "login_manager",
+    "csrf",
+    "upstream_info",
+)
 
 
 # patch flask.ext.mail.Message.send to always set enveloppe_from default mail
@@ -51,7 +59,6 @@ mail = flask_mail.Mail()
 
 db = SQLAlchemy()
 
-# pyre-fixme[16]: `Redis` has no attribute `Redis`.
 redis = Redis()
 
 deferred_js = DeferredJS()

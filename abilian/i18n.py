@@ -119,8 +119,8 @@ def lazy_country_name(code):
     return LazyString(__gettext_territory, code)
 
 
-def default_country() -> Optional[str]:
-    return current_app.config.get("DEFAULT_COUNTRY")
+def default_country() -> str:
+    return current_app.config.get("DEFAULT_COUNTRY", "")
 
 
 def country_choices(
@@ -139,7 +139,6 @@ def country_choices(
     ]  # skip 3-digit regions
 
     if first == "" and default_country_first:
-        # pyre-fixme[9]: first has type `str`; used as `Optional[str]`.
         first = default_country()
 
     def sortkey(item: Tuple[str, str]) -> str:
@@ -187,9 +186,8 @@ class Babel(BabelBase):
 
     def init_app(self, app: Flask) -> None:
         super().init_app(app)
+        assert app.root_path
         self._translations_paths = [
-            # pyre-fixme[6]: Expected `Union[_PathLike[str], str]` for 1st param but
-            #  got `Optional[str]`.
             (os.path.join(app.root_path, "translations"), "messages")
         ]
 

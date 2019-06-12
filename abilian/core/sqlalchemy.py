@@ -59,23 +59,19 @@ class SQLAlchemy(SAExtension):
     """
 
     def apply_driver_hacks(
-        self, app: Flask, info: URL, options: Dict[str, int]
+        self, app: Flask, info: URL, options: Dict[str, Any]
     ) -> None:
         SAExtension.apply_driver_hacks(self, app, info, options)
 
         if info.drivername == "sqlite":
-            # pyre-fixme[6]: Expected `int` for 2nd param but got `Dict[_KT, _VT]`.
             connect_args = options.setdefault("connect_args", {})
 
-            # pyre-fixme[16]: `int` has no attribute `__getitem__`.
             if "isolation_level" not in connect_args:
                 # required to support savepoints/rollback without error. It disables
                 # implicit BEGIN/COMMIT statements made by pysqlite (a COMMIT kills all
                 # savepoints made).
-                # pyre-fixme[16]: `int` has no attribute `__setitem__`.
                 connect_args["isolation_level"] = None
         elif info.drivername.startswith("postgres"):
-            # pyre-fixme[6]: Expected `int` for 2nd param but got `str`.
             options.setdefault("client_encoding", "utf8")
 
 

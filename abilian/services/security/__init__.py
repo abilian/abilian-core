@@ -20,4 +20,4 @@ from .models import (
     SecurityAudit,
     Writer,
 )
-from .service import security
+from .service import security, SecurityService

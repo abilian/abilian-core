@@ -1,7 +1,10 @@
 """"""
-from typing import Set
+from typing import TYPE_CHECKING, Set
 
 from flask_login import AnonymousUserMixin, LoginManager
+
+if TYPE_CHECKING:
+    from abilian.core.models.subjects import Group
 
 
 class AnonymousUser(AnonymousUserMixin):
@@ -12,8 +15,7 @@ class AnonymousUser(AnonymousUserMixin):
         return security.has_role(self, role)
 
     @property
-    # pyre-fixme[31]: Expression `Set` is not a valid type.
-    def groups(self) -> Set:
+    def groups(self) -> Set["Group"]:
         return set()
 
 

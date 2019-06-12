@@ -78,7 +78,6 @@ def test_form_permissions_controller() -> None:
         assert has_role.call_args[-1]["role"] == [MarkRole]
 
         has_role.reset_mock()
-        # pyre-fixme[6]: Expected `Optional[]` for 2nd param but got `str`.
         fp.has_permission(READ, field="test")
         assert has_role.call_args[-1]["role"] == [MarkRole]
 
@@ -88,7 +87,6 @@ def test_form_permissions_controller() -> None:
         assert has_role.call_args[-1]["role"] == [Anonymous]
 
         has_role.reset_mock()
-        # pyre-fixme[6]: Expected `Optional[]` for 2nd param but got `str`.
         fp.has_permission(READ, field="test")
         assert has_role.call_args[-1]["role"] == [MarkRole]
 
@@ -99,22 +97,16 @@ def test_form_permissions_controller() -> None:
         # field roles
         has_role.reset_mock()
         fp = FormPermissions(
-            # pyre-fixme[6]: Expected `Optional[]` for 3rd param but got `Dict[str,
-            #  Set[Role]]`.
-            default=MarkRole,
-            read=Anonymous,
-            fields_read={"test": {Owner}},
+            default=MarkRole, read=Anonymous, fields_read={"test": {Owner}}
         )
         fp.has_permission(READ)
         assert has_role.call_args[-1]["role"] == [Anonymous]
 
         has_role.reset_mock()
-        # pyre-fixme[6]: Expected `Optional[]` for 2nd param but got `str`.
         fp.has_permission(READ, field="test")
         assert has_role.call_args[-1]["role"] == [Owner]
 
         has_role.reset_mock()
-        # pyre-fixme[6]: Expected `Optional[]` for 2nd param but got `str`.
         fp.has_permission(READ, field="test")
         assert has_role.call_args[-1]["role"] == [Owner]
 
