@@ -6,8 +6,9 @@ import sqlalchemy as sa
 from whoosh.fields import NUMERIC, TEXT, Schema
 
 from abilian.core.entities import Entity
-from abilian.core.models.base import SEARCHABLE, IdMixin, Model
+from abilian.core.models.base import SEARCHABLE, IdMixin
 from abilian.core.models.base import Indexable as CoreIndexable
+from abilian.core.models.base import Model
 from abilian.services.indexing.adapter import SAAdapter
 
 

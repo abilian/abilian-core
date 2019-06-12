@@ -396,9 +396,7 @@ class Application(
 
         if roles:
             self.add_access_controller(
-                endpoint,
-                allow_access_for_roles(roles),
-                endpoint=True,
+                endpoint, allow_access_for_roles(roles), endpoint=True
             )
 
     def add_access_controller(self, name: str, func: Callable, endpoint: bool = False):

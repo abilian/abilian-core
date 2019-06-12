@@ -247,9 +247,7 @@ class EntityView(BaseEntityView, ObjectView):
     def template_kwargs(self):
         module = self.module
         related_views = [v.render(self.obj) for v in module.related_views]
-        rendered_entity = self.single_view.render(
-            self.obj, related_views=related_views
-        )
+        rendered_entity = self.single_view.render(self.obj, related_views=related_views)
         audit_entries = audit_service.entries_for(self.obj)
 
         return {

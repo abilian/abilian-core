@@ -9,6 +9,7 @@ class PreferencePanel:
     registration), or to add some common functionnalities. Otherwise, it
     will be removed.
     """
+
     id: str
     label: Any
 

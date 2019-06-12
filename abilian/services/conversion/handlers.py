@@ -273,8 +273,8 @@ class UnoconvPdfHandler(Handler):
     ]
     produces_mime_types = ["application/pdf"]
     run_timeout = 60
-    _process = None
     unoconv = "unoconv"
+    _process: subprocess.Popen
 
     # pyre-fixme[15]: `init_app` overrides method defined in `Handler` inconsistently.
     def init_app(self, app):
@@ -359,13 +359,12 @@ class UnoconvPdfHandler(Handler):
                         except OSError:
                             logger.warning("Failed to kill process %s", self._process)
 
-                    self._process = None
                     raise ConversionError(f"Conversion timeout ({timeout})")
 
                 converted = open(out_fn).read()
                 return converted
             finally:
-                self._process = None
+                del self._process
 
 
 class LibreOfficePdfHandler(Handler):
@@ -388,8 +387,8 @@ class LibreOfficePdfHandler(Handler):
     ]
     produces_mime_types = ["application/pdf"]
     run_timeout = 60
-    _process = None
     soffice = "soffice"
+    _process: subprocess.Popen
 
     def init_app(self, app: Flask) -> None:
         soffice = app.config.get("SOFFICE_LOCATION")
@@ -458,17 +457,13 @@ class LibreOfficePdfHandler(Handler):
             try:
                 if run_thread.is_alive():
                     # timeout reached
-                    # pyre-fixme[16]: Optional type has no attribute `terminate`.
                     self._process.terminate()
-                    # pyre-fixme[16]: Optional type has no attribute `poll`.
                     if self._process.poll() is not None:
                         try:
-                            # pyre-fixme[16]: Optional type has no attribute `kill`.
                             self._process.kill()
                         except OSError:
                             logger.warning("Failed to kill process %s", self._process)
 
-                    self._process = None
                     raise ConversionError(f"Conversion timeout ({timeout})")
 
                 # pyre-fixme[6]: Expected `_PathLike[AnyStr]` for 1st param but got
@@ -477,7 +472,7 @@ class LibreOfficePdfHandler(Handler):
                 converted = open(out_fn, "rb").read()
                 return converted
             finally:
-                self._process = None
+                del self._process
 
 
 class CloudoooPdfHandler(Handler):

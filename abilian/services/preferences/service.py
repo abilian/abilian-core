@@ -106,7 +106,9 @@ class PreferenceService(Service):
         #  http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html#deleting-from-collections
         user.preferences = []
 
-    def register_panel(self, panel: PreferencePanel, app: Optional[Flask] = None) -> None:
+    def register_panel(
+        self, panel: PreferencePanel, app: Optional[Flask] = None
+    ) -> None:
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
             raise ValueError(
