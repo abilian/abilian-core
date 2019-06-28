@@ -145,6 +145,7 @@ Sphinx = ">=1.5.5"
 # Standard theme for readthedocs.com
 sphinx-rtd-theme = "*"
 
+gitchangelog = "^3.0"
 # Used by functional tests
 requests = "*"
 

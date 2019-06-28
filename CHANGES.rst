@@ -1,6 +1,33 @@
 Changelog for Abilian Core
 ==========================
 
+v0.11.2 (2019-06-28)
+--------------------
+
+- Add flake8-mypy. [Stefane Fermigier]
+- Add type annotations. [Stefane Fermigier]
+- Better variable naming. [Stefane Fermigier]
+- Class BlobQuery is not needed. [Stefane Fermigier]
+- Cleanup imports. [Stefane Fermigier]
+- Couple of typing fixes. [Stefane Fermigier]
+- Fix incomplete refactoring. [Stefane Fermigier]
+- Format + typing. [Stefane Fermigier]
+- Make more robust. [Stefane Fermigier]
+- Py3k. [Stefane Fermigier]
+- Refactor caching. [Stefane Fermigier]
+- Refactor conversion service. [Stefane Fermigier]
+- Refactor: extract variable. [Stefane Fermigier]
+- Set up CI with Azure Pipelines. [Stefane Fermigier]
+- Skip test when soffice not available. [Stefane Fermigier]
+- Typing. [Stefane Fermigier]
+
+
+v0.11.1 (2019-05-02)
+--------------------
+- A couple of typing fixes. [Stefane Fermigier]
+- Dont run flake8-mypy for now. [Stefane Fermigier]
+
+
 0.11.0 (2019-04-15)
 --------------------
 
