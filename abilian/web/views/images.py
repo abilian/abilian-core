@@ -66,7 +66,7 @@ class BaseImageView(BaseFileDownload):
         """
         try:
             fmt = get_format(image)
-        except IOError:
+        except OSError:
             # not a known image file
             raise NotFound()
 

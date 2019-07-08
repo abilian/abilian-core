@@ -39,7 +39,7 @@ def open_image(img: Union[BytesIO, bytes]) -> Image.Image:
 
 def get_format(img):
     if not img:
-        raise IOError()
+        raise OSError()
     image = open_image(img)
     return image.format
 

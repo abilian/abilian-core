@@ -162,7 +162,7 @@ class AssetManagerMixin(Flask):
                 filename = path.format(lang=lang)
                 try:
                     assets.resolver.search_for_source(assets, filename)
-                except IOError:
+                except OSError:
                     pass
                     # logger.debug('i18n JS not found, skipped: "%s"', filename)
                 else:

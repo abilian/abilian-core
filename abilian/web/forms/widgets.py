@@ -911,7 +911,7 @@ class ImageInput(FileInput):
     def get_thumb(self, data, width, height):
         try:
             get_format(data)
-        except IOError:
+        except OSError:
             return ""
         return image.resize(data, width, height, mode=self.resize_mode)
 
@@ -920,7 +920,7 @@ class ImageInput(FileInput):
             return ""
         try:
             fmt = image.get_format(img).lower()
-        except IOError:
+        except OSError:
             return ""
         thumb = base64.b64encode(img).decode("ascii")
         return f"data:image/{fmt};base64,{thumb}"
@@ -931,7 +931,7 @@ class ImageInput(FileInput):
             return ""
         try:
             get_format(data)
-        except IOError:
+        except OSError:
             return ""
 
         width = kwargs.get("width", self.width)
