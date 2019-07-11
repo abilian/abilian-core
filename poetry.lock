@@ -303,7 +303,7 @@ description = "the modular source code checker: pep8, pyflakes and co"
 name = "flake8"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.7.7"
+version = "3.7.8"
 
 [package.dependencies]
 entrypoints = ">=0.3.0,<0.4.0"
@@ -397,7 +397,7 @@ description = "A simple framework for building complex web applications."
 name = "flask"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "1.1.0"
+version = "1.1.1"
 
 [package.dependencies]
 Jinja2 = ">=2.10.1"
@@ -1038,7 +1038,7 @@ description = "Python client for Sentry (https://getsentry.com)"
 name = "sentry-sdk"
 optional = false
 python-versions = "*"
-version = "0.10.0"
+version = "0.10.1"
 
 [package.dependencies]
 blinker = ">=1.1"
@@ -1393,7 +1393,7 @@ docformatter = ["fa08a099aad4bb662cd7c989ecbfddd3aee5ec585e68c0759cb90a3bc31cb56
 docutils = ["02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6", "51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274", "7a4bd47eaf6596e1295ecb11361139febe29b084a87bf005bf899f9a42edc3c6"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 execnet = ["027ee5d961afa01e97b90d6ccc34b4ed976702bc58e7f092b3c513ea288cb6d2", "752a3786f17416d491f833a29217dda3ea4a471fc5269c492eebcee8cc4772d3"]
-flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a796a115208f5c03b18f332f7c11729812c8c3ded6c46319c59b53efd3819da8"]
+flake8 = ["19241c1cbc971b9962473e4438a2ca19749a7dd002dd1a946eaba171b4114548", "8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696"]
 flake8-bugbear = ["5070774b668be92c4312e5ca82748ddf4ecaa7a24ff062662681bb745c7896eb", "fef9c9826d14ec23187ae1edeb3c6513c4e46bf0e70d86bac38f7d9aabae113d"]
 flake8-comprehensions = ["35f826956e87f230415cde9c3b8b454e785736cf5ff0be551c441b41b937f699", "f0b61d983d608790abf3664830d68efd3412265c2d10f6a4ba1a353274dbeb64"]
 flake8-mutable = ["38fd9dadcbcda6550a916197bc40ed76908119dabb37fbcca30873666c31d2d5", "ee9b77111b867d845177bbc289d87d541445ffcc6029a0c5c65865b42b18c6a6"]
@@ -1401,7 +1401,7 @@ flake8-mypy = ["47120db63aff631ee1f84bac6fe8e64731dc66da3efc1c51f85e15ade4a3ba18
 flake8-pytest = ["61686128a79e1513db575b2bcac351081d5a293811ddce2d5dfc25e8c762d33e", "b4d6703f7d7b646af1e2660809e795886dd349df11843613dbe6515efa82c0f3"]
 flake8-super-call = ["0486ebfb24e3bf104b1c1d7f823a51ebcefb3a26108b25cb3129a9e8a57ef145", "61cfcd0c8ad78e1cf1f4d1225cb7513666ab9c5a9900a238b2c4abee8ad9a7de"]
 flake8-tidy-imports = ["1c476aabc6e8db26dc75278464a3a392dba0ea80562777c5f13fd5cdf2646154", "b3f5b96affd0f57cacb6621ed28286ce67edaca807757b51227043ebf7b136a1"]
-flask = ["a31adc27de06034c657a8dc091cc5fcb0227f2474798409bff0e9674de31a026", "b5ae63812021cb04174fcff05d560a98387a44d9cccd4652a2bfa131ba4e4c9b"]
+flask = ["13f9f196f330c7c2c5d7a5cf91af894110ca0215ac051b5844701f2bfd934d52", "45eb5a6fd193d6cf7e0cf5d8a5b31f83d5faae0293695626f539a823e93b13f6"]
 flask-assets = ["6031527b89fb3509d1581d932affa5a79dd348cfffb58d0aef99a43461d47847"]
 flask-babel = ["316ad183e42003f3922957fa643d0a1e8e34a0f0301a88c3a8f605bc37ba5c86"]
 flask-debugtoolbar = ["3d9657bc0c3633ace429e3ff451742bb59d1b7a7b95c9eb23a65ac9be2812959", "ec810083123aae0632eb32ba11e1cb4cdace81e7ce6c5009dd06c5204afbce52"]
@@ -1463,7 +1463,7 @@ pyyaml = ["57acc1d8533cbe51f6662a55434f0dbecfa2b9eaf115bede8f6fd00115a0c0d3", "5
 redis = ["6946b5dca72e86103edc8033019cc3814c031232d339d5f4533b02ea85685175", "8ca418d2ddca1b1a850afa1680a7d2fd1f3322739271de4b704e0d4668449273"]
 requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", "9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"]
 restructuredtext-lint = ["97b3da356d5b3a8514d8f1f9098febd8b41463bed6a1d9f126cf0a048b6fd908"]
-sentry-sdk = ["14cfbc61e44f7acb18c91b27a0912249c7bf941ecd7e248646e81492464faee0", "ff50be281cebb77525f0a7ad43aabaf04ee61131ba09885be2544acf959e0451"]
+sentry-sdk = ["1db9c4653e71d39ff3557c0981d5fb5f43a43e3a830fcf5e21a37c97f7bce6bb", "7e24f3ec1f4c909306d1b97373fe5caa942f54009acdcfa4d1ee6671f626bbe9"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 snowballstemmer = ["9f3b9ffe0809d174f7047e121431acf99c89a7040f0ca84f94ba53a498e6d0c9"]
 sphinx = ["22538e1bbe62b407cf5a8aabe1bb15848aa66bb79559f42f5202bbce6b757a69", "f9a79e746b87921cabc3baa375199c6076d1270cee53915dbd24fdbeaaacc427"]
