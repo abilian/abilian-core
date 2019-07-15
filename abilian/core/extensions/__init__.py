@@ -59,6 +59,7 @@ mail = flask_mail.Mail()
 
 db = SQLAlchemy()
 
+# pyre-fixme[16]: `Redis` has no attribute `Redis`.
 redis = Redis()
 
 deferred_js = DeferredJS()

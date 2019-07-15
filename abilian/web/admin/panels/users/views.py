@@ -65,6 +65,7 @@ class JsonUsersList(base.JSONView):
         order_by = list(map(direction, columns))
 
         # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
+        # pyre-fixme[16]: `User` has no attribute `__mapper__`.
         engine = query.session.get_bind(User.__mapper__)
         if engine.name != "sqlite":
             order_by[0] = nullslast(order_by[0])
@@ -81,6 +82,7 @@ class JsonUsersList(base.JSONView):
             name = html.escape(user.name or "")
             email = html.escape(user.email or "")
             roles = [
+                # pyre-fixme[16]: `Service` has no attribute `get_roles`.
                 r for r in security.get_roles(user, no_group_roles=True) if r.assignable
             ]
             columns = [

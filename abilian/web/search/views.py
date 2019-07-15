@@ -172,6 +172,7 @@ def search_main(q="", page=1):
 class Live(views.JSONView):
     """JSON response for live search."""
 
+    # pyre-fixme[15]: `data` overrides method defined in `JSONView` inconsistently.
     def data(self, q="", page=None, *args, **kwargs):
         if not q:
             q = ""

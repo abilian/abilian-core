@@ -137,5 +137,6 @@ class FormPermissions:
             else:
                 roles.extend(r)
 
+        # pyre-fixme[9]: security has type `SecurityService`; used as `Service`.
         security: SecurityService = get_service("security")
         return security.has_role(user, role=roles, object=obj)

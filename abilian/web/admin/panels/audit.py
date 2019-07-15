@@ -56,6 +56,7 @@ class JSONUserSearch(JSONView):
 
         if "@" in q:
             # FIXME: where does this 'part' variable come from ?
+            # pyre-fixme[18]: Global name `part` is undefined.
             filters = sa.sql.or_(lower(User.email).like("%" + part + "%"), filters)
 
         query = query.filter(filters).order_by(User.last_name, User.first_name)

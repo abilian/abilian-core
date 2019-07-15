@@ -1,4 +1,5 @@
 """"""
+# pyre-fixme[21]: Could not find `util`.
 from multiprocessing.util import register_after_fork
 from typing import Any, Dict, List, Optional
 
@@ -90,6 +91,7 @@ class FlaskLoader(BaseLoader):
             register_signal(client)
             register_logger_signal(client)
 
+        # pyre-fixme[16]: Module `multiprocessing` has no attribute `util`.
         register_after_fork(app, self._setup_after_fork)
         return app
 

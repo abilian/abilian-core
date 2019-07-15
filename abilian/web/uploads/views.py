@@ -89,9 +89,11 @@ class UploadView(BaseUploadsView, View):
         )
 
     def delete(self, handle, *args, **kwargs) -> Dict:
+        # pyre-fixme[16]: `UploadView` has no attribute `uploads`.
         if self.uploads.get_file(self.user, handle) is None:
             raise NotFound()
 
+        # pyre-fixme[16]: `UploadView` has no attribute `uploads`.
         self.uploads.remove_file(self.user, handle)
         return {"success": True}
 
