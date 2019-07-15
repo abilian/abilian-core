@@ -1,4 +1,6 @@
 """"""
+from typing import cast
+
 from flask_login import current_user, login_user
 from pytest import fixture
 from sqlalchemy.orm import Session
@@ -7,6 +9,7 @@ from abilian.app import Application as BaseApplication
 from abilian.core.models.subjects import User
 from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.services import get_service
+from abilian.services.security import SecurityService
 
 from .models import UserPreference
 from .panel import PreferencePanel
@@ -27,8 +30,7 @@ class AdminPanel(PreferencePanel):
     id = label = "admin"
 
     def is_accessible(self) -> bool:
-        security = get_service("security")
-        # pyre-fixme[16]: `Service` has no attribute `has_role`.
+        security = cast(SecurityService, get_service("security"))
         return security.has_role(current_user, "admin")
 
     def get(self):
@@ -38,11 +40,9 @@ class AdminPanel(PreferencePanel):
 class Application(BaseApplication):
     def init_extensions(self) -> None:
         super().init_extensions()
-        prefs = self.services["preferences"]
+        prefs = cast(PreferenceService, self.services["preferences"])
         prefs.app_state.panels = []
-        # pyre-fixme[16]: `Service` has no attribute `register_panel`.
         prefs.register_panel(VisiblePanel(), self)
-        # pyre-fixme[16]: `Service` has no attribute `register_panel`.
         prefs.register_panel(AdminPanel(), self)
 
 
@@ -93,7 +93,7 @@ def test_preferences_with_various_types(app: Application, session: Session) -> N
 
 def test_visible_panels(app: Application, db: SQLAlchemy) -> None:
     user = User(email="test@example.com")
-    security = app.services["security"]
+    security = cast(SecurityService, app.services["security"])
 
     with app.test_request_context():
         security.start()
@@ -108,7 +108,6 @@ def test_visible_panels(app: Application, db: SQLAlchemy) -> None:
         # pyre-fixme[18]: Global name `ctx` is undefined.
         assert [p["endpoint"] for p in ctx["menu"]] == expected
 
-        # pyre-fixme[16]: `Service` has no attribute `grant_role`.
         security.grant_role(user, "admin")
         # pyre-fixme[18]: Global name `cp` is undefined.
         ctx = cp()

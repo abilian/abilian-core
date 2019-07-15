@@ -72,6 +72,8 @@ class ServiceManager:
 class PluginManager:
     """Mixin that provides support for loading plugins."""
 
+    config: Dict[str, Any]
+
     #: Custom apps may want to always load some plugins: list them here.
     APP_PLUGINS = (
         "abilian.web.search",

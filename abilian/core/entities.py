@@ -4,7 +4,7 @@ import collections
 import re
 from datetime import datetime
 from inspect import isclass
-from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Type
+from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Type, cast
 
 import sqlalchemy as sa
 from flask import current_app
@@ -24,6 +24,7 @@ from .util import friendly_fqcn, memoized, slugify
 
 if TYPE_CHECKING:
     from abilian.core.models.tag import Tag
+    from abilian.services.security import SecurityService
 
 __all__ = [
     "Entity",
@@ -109,7 +110,7 @@ def _setup_default_permissions(instance: Any) -> None:
     """Separate method to conveniently call it from scripts for example."""
     from abilian.services import get_service
 
-    security = get_service("security")
+    security = cast("SecurityService", get_service("security"))
     for permission, roles in instance.__default_permissions__:
         if permission == "create":
             # use str for comparison instead of `abilian.services.security.CREATE`
@@ -118,7 +119,6 @@ def _setup_default_permissions(instance: Any) -> None:
             # FIXME: put roles and permissions in a separate, isolated module.
             continue
         for role in roles:
-            # pyre-fixme[16]: `Service` has no attribute `add_permission`.
             security.add_permission(permission, role, obj=instance)
 
 
@@ -397,10 +397,9 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
         from abilian.services import get_service
 
         result = []
-        security = get_service("security")
+        security = cast("SecurityService", get_service("security"))
 
         # roles - required to match when user has a global role
-        # pyre-fixme[16]: `Service` has no attribute `get_permissions_assignments`.
         assignments = security.get_permissions_assignments(permission=READ, obj=self)
         allowed_roles = assignments.get(READ, set())
         allowed_roles.add(Admin)
@@ -416,7 +415,6 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 
         # users and groups
         principals = set()
-        # pyre-fixme[16]: `Service` has no attribute `get_role_assignements`.
         for user, role in security.get_role_assignements(self):
             if role in allowed_roles:
                 principals.add(user)

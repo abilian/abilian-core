@@ -11,9 +11,9 @@ from ..base import Service
 logger = logging.getLogger(__name__)
 
 try:
-    import clamd
+    from clamd import ClamdUnixSocket
 
-    cd = clamd.ClamdUnixSocket()
+    clamd = ClamdUnixSocket()
 except ImportError:
     clamd = None
 
@@ -21,7 +21,6 @@ CLAMD_CONF = {"StreamMaxLength": "25M", "MaxFileSize": "25M"}
 CLAMD_STREAMMAXLENGTH = 26214400
 CLAMD_MAXFILESIZE = 26214400
 
-# pyre-fixme[18]: Global name `clamd` is undefined.
 if clamd:
     conf_path = pathlib.Path("/etc", "clamav", "clamd.conf")
     if conf_path.exists():
@@ -106,7 +105,7 @@ class AntiVirusService(Service):
 
         # use stream scan. When using scan by filename, clamd runnnig user must have
         # access to file, which we cannot guarantee
-        scan = cd.instream
+        scan = clamd.instream
         try:
             res = scan(content)
         except clamd.ClamdError as e:

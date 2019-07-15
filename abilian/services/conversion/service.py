@@ -36,6 +36,9 @@ class HandlerNotFound(ConversionError):
 
 
 class Converter:
+    tmp_dir: Path
+    cache_dir: Path
+
     def __init__(self):
         self.handlers = []
         self.cache = Cache()
@@ -63,8 +66,6 @@ class Converter:
 
     def clear(self) -> None:
         self.cache.clear()
-        # pyre-fixme[16]: `Converter` has no attribute `tmp_dir`.
-        # pyre-fixme[16]: `Converter` has no attribute `cache_dir`.
         for d in (self.tmp_dir, self.cache_dir):
             shutil.rmtree(bytes(d))
             d.mkdir()

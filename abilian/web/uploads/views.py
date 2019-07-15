@@ -1,4 +1,5 @@
 """"""
+import typing
 from typing import Dict
 
 from flask import current_app, send_file
@@ -12,8 +13,11 @@ from abilian.core.util import unwrap
 from abilian.web import csrf, url_for
 from abilian.web.blueprints import Blueprint
 from abilian.web.forms import Form
-from abilian.web.uploads import FileUploadsExtension
 from abilian.web.views import JSONView, View
+
+if typing.TYPE_CHECKING:
+    from abilian.web.uploads import FileUploadsExtension
+
 
 bp = Blueprint("uploads", __name__, url_prefix="/upload")
 
@@ -24,7 +28,7 @@ class UploadForm(Form):
 
 
 class BaseUploadsView:
-    uploads: FileUploadsExtension
+    uploads: "FileUploadsExtension"
     user: User
 
     def prepare_args(self, args, kwargs):

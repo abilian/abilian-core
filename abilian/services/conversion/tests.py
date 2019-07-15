@@ -1,10 +1,11 @@
+import os
 import sys
 import tempfile
 from pathlib import Path
 from typing import Iterator, Union
 from warnings import warn
 
-from magic import Magic, os
+from magic import Magic
 from pytest import fixture, mark
 
 from abilian.services.conversion.handlers import HAS_LIBREOFFICE, HAS_PDFTOTEXT
@@ -88,7 +89,6 @@ def test_image_to_pdf(converter: Converter) -> None:
 # To images
 @mark.skipif(not HAS_PDFTOTEXT, reason="requires poppler or poppler-util")
 def test_pdf_to_images(converter: Converter) -> None:
-    # pyre-fixme[16]: Module `magic` has no attribute `os`.
     if not os.popen("which pdftoppm").read().strip():
         warn("pdftoppm not found, skipping test")
         return

@@ -17,7 +17,6 @@ CACHE_DIR = "cache"
 def get_tmp_dir() -> Path:
     from . import converter
 
-    # pyre-fixme[16]: `Converter` has no attribute `tmp_dir`.
     return converter.tmp_dir
 
 
