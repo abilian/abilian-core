@@ -172,7 +172,7 @@ def timezones_choices():
     for tz in sorted(pytz.common_timezones):
         tz = get_timezone(tz)
         now = tz.normalize(utcnow.astimezone(tz))
-        label = "({}) {}".format(get_timezone_gmt(now, locale=locale), tz.zone)
+        label = f"({get_timezone_gmt(now, locale=locale)}) {tz.zone}"
         yield (tz, label)  # get_timezone_name(tz, locale=locale))
 
 

@@ -40,7 +40,7 @@ class Service:
 
     def __init__(self, app: Optional[Any] = None) -> None:
         if self.name is None:
-            msg = "Service must have a name ({})".format(fqcn(self.__class__))
+            msg = f"Service must have a name ({fqcn(self.__class__)})"
             raise ValueError(msg)
 
         self.logger = logging.getLogger(fqcn(self.__class__))

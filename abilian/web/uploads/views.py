@@ -1,5 +1,7 @@
 """"""
-from flask import current_app, jsonify, send_file
+from typing import Dict
+
+from flask import current_app, send_file
 from flask_login import current_user
 from flask_wtf.file import FileField, file_required
 from werkzeug.exceptions import BadRequest, NotFound
@@ -36,7 +38,7 @@ class NewUploadView(BaseUploadsView, JSONView):
     #: file handle to be returned
     handle = None
 
-    def data(self, *args, **kwargs):
+    def data(self, *args, **kwargs) -> Dict:
         return {"handle": self.handle, "url": url_for(".handle", handle=self.handle)}
 
     def post(self, *args, **kwargs):
@@ -86,12 +88,12 @@ class UploadView(BaseUploadsView, View):
             add_etags=False,
         )
 
-    def delete(self, handle, *args, **kwargs):
+    def delete(self, handle, *args, **kwargs) -> Dict:
         if self.uploads.get_file(self.user, handle) is None:
             raise NotFound()
 
         self.uploads.remove_file(self.user, handle)
-        return jsonify({"success": True})
+        return {"success": True}
 
 
 bp.add_url_rule("/<string:handle>", view_func=UploadView.as_view("handle"))

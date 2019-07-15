@@ -230,14 +230,14 @@ class Less(ExternalTool):
         # Set working directory to the source file so that includes are found
         args = [self.less or "lessc"]
         if self.line_numbers:
-            args.append("--line-numbers=%s" % self.line_numbers)
+            args.append(f"--line-numbers={self.line_numbers}")
 
         if self.paths:
             paths = [
                 path if isabs(path) else self.ctx.resolver.resolve_source(path)
                 for path in self.pathsep
             ]
-            args.append("--include-path={}".format(os.pathsep.join(paths)))
+            args.append(f"--include-path={os.pathsep.join(paths)}")
 
         #
         # Commented out since this doesn't work with the current lessc compiler.
@@ -340,7 +340,7 @@ class ClosureJS(BaseClosureJS):
             return
 
         name = smap_path.name
-        out.write("//# sourceMappingURL={}".format(str(name)))
+        out.write(f"//# sourceMappingURL={str(name)}")
         self.fix_source_map_urls(str(smap_path))
 
     def fix_url(self, cur_path, src_path):

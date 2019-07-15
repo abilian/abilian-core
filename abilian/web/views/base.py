@@ -1,5 +1,5 @@
 """"""
-from typing import Any, Callable
+from typing import Any, Callable, Dict
 
 from flask import g, json, jsonify, redirect, render_template_string, request
 from flask.views import MethodView as BaseView
@@ -29,7 +29,7 @@ class View(BaseView):
         # retry with GET
         if meth is None and request.method == "HEAD":
             meth = getattr(self, "get", None)
-            assert meth is not None, "Unimplemented method %r" % request.method
+            assert meth is not None, f"Unimplemented method {request.method!r}"
 
         # pyre-fixme[6]: Expected `bool` for 2nd param but got `View`.
         g.view = actions.context["view"] = self
@@ -92,7 +92,7 @@ class JSONView(View):
         kwargs.update({k: v for k, v in request.args.items()})
         return args, kwargs
 
-    def data(self, *args, **kwargs):
+    def data(self, *args, **kwargs) -> Dict:
         """This method should return data to be serialized using JSON."""
         raise NotImplementedError
 

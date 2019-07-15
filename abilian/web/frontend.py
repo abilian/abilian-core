@@ -10,7 +10,7 @@ from collections import OrderedDict
 from typing import Any, Dict, List, Tuple
 
 import sqlalchemy as sa
-from flask import Blueprint, current_app, g, jsonify, redirect, \
+from flask import Blueprint, current_app, g, redirect, \
     render_template, request, session, url_for
 from flask_login import current_user
 from sqlalchemy import Date, DateTime, func, orm
@@ -302,7 +302,7 @@ class EntityDelete(BaseEntityView, ObjectDelete):
 class ListJson(ModuleView, JSONView):
     """JSON endpoint, for AJAX-backed table views."""
 
-    def data(self, *args, **kwargs):
+    def data(self, *args, **kwargs) -> Dict:
         echo = int(kwargs.get("sEcho", 0))
         length = int(kwargs.get("iDisplayLength", 10))
         start = int(kwargs.get("iDisplayStart", 0))
@@ -321,13 +321,12 @@ class ListJson(ModuleView, JSONView):
         )
 
         data = [table_view.render_line(e) for e in entities]
-        result = {
+        return {
             "sEcho": echo,
             "iTotalRecords": total_count,
             "iTotalDisplayRecords": count,
             "aaData": data,
         }
-        return result
 
 
 class ModuleMeta(type):
@@ -782,8 +781,7 @@ class Module(metaclass=ModuleMeta):
             raise BadRequest()
 
         results = self.list_json2_query_all(q)
-        results = {"results": results}
-        return jsonify(results)
+        return {"results": results}
 
     #
     # Utils

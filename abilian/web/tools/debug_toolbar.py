@@ -1,6 +1,6 @@
 """"""
 import sys
-from typing import List, Text
+from typing import List
 
 from blinker import Namespace, Signal
 from flask import current_app, g
@@ -24,8 +24,7 @@ class ActionDebugPanel(DebugPanel):
     def url(self):
         return ""
 
-    def content(self):
-        # type: () -> Text
+    def content(self) -> str:
         actions_for_template = []
 
         for category in actions.actions().keys():
@@ -73,8 +72,7 @@ class SignalsDebugPanel(DebugPanel):
     def url(self):
         return ""
 
-    def content(self):
-        # type: () -> Text
+    def content(self) -> str:
         module_names = sorted(sys.modules.keys())
 
         signals = []

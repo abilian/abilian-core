@@ -1,7 +1,7 @@
 """"""
 from datetime import datetime
 from itertools import chain
-from typing import Callable, Text
+from typing import Callable, Dict
 
 import pytz
 import sqlalchemy as sa
@@ -35,7 +35,7 @@ def format_date_for_input(date):
 class JSONUserSearch(JSONView):
     """Search users by fullname."""
 
-    def data(self, q, *args, **kwargs):
+    def data(self, q, *args, **kwargs) -> Dict:
         q = q.replace("%", " ").strip().lower()
 
         if not q or len(q) < 2:
@@ -66,8 +66,7 @@ class JSONUserSearch(JSONView):
             for obj in values
         ]
 
-        result = {"results": results}
-        return result
+        return {"results": results}
 
 
 class AuditPanel(AdminPanel):

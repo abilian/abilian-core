@@ -111,7 +111,7 @@ class StaticImageView(BaseImageView):
         self.image_path = Path(image)
         if not self.image_path.exists():
             p = str(self.image_path)
-            raise ValueError("Invalid image path: {}".format(repr(p)))
+            raise ValueError(f"Invalid image path: {repr(p)}")
 
     def prepare_args(self, args, kwargs):
         kwargs["image"] = self.image_path.open("rb")
@@ -139,7 +139,7 @@ class BlobView(BaseImageView):
         try:
             blob_id = int(blob_id)
         except ValueError:
-            raise BadRequest("Invalid blob id: {}".format(repr(blob_id)))
+            raise BadRequest(f"Invalid blob id: {repr(blob_id)}")
 
         blob = Blob.query.get(blob_id)
         if not blob:

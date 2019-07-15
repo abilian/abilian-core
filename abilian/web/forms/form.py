@@ -220,7 +220,7 @@ if not _PATCHED:
 
         return DefaultViewWidget().render_view(self, **kwargs)
 
-    patch_logger.info("Add method %s.Field.render_view" % Field.__module__)
+    patch_logger.info(f"Add method {Field.__module__}.Field.render_view")
     Field.render_view = render_view
     del render_view
 
@@ -229,7 +229,7 @@ if not _PATCHED:
         is not set on `HiddenField` :-("""
         return self.flags.hidden or isinstance(self, HiddenField)
 
-    patch_logger.info("Add method %s.Field.is_hidden" % Field.__module__)
+    patch_logger.info(f"Add method {Field.__module__}.Field.is_hidden")
     Field.is_hidden = property(is_hidden)
     del is_hidden
 

@@ -67,7 +67,7 @@ def filesize(d: Union[int, str]) -> Markup:
         d = int(d)
 
     if d < 1000:
-        s = "%d&nbsp;B" % d
+        s = f"{d:d}&nbsp;B"
 
     elif d < int(1e4):
         s = "%.1f&nbsp;kB" % (d / 1e3)
@@ -93,7 +93,7 @@ def roughsize(size: int, above: int = 20, mod: int = 10) -> str:
     if size < above:
         return str(size)
 
-    return "{:d}+".format(size - size % mod)
+    return f"{(size - size % mod):d}+"
 
 
 def datetimeparse(s) -> Optional[datetime]:
@@ -176,7 +176,7 @@ def date_age(dt: Optional[datetime], now: Optional[datetime] = None) -> str:
         return ""
 
     formatted_date = babel.format_datetime(dt, format="yyyy-MM-dd HH:mm")
-    return "{} ({})".format(formatted_date, age(dt, now))
+    return f"{formatted_date} ({age(dt, now)})"
 
 
 @deprecated

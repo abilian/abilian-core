@@ -1,5 +1,6 @@
 """Class based views."""
 import logging
+from typing import Dict
 
 import sqlalchemy as sa
 import sqlalchemy.exc
@@ -569,7 +570,7 @@ class JSONBaseSearch(JSONView):
         kwargs["q"] = kwargs.get("q", "").replace("%", " ").lower()
         return args, kwargs
 
-    def data(self, q, *args, **kwargs):
+    def data(self, q, *args, **kwargs) -> Dict:
         if self.minimum_input_length and len(q) < self.minimum_input_length:
             msg = f"Minimum query length is {self.minimum_input_length:d}"
             raise BadRequest(msg)

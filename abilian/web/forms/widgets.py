@@ -173,7 +173,7 @@ class BaseTableView(View):
 
     def init_columns(self, columns: List[Union[str, Dict[str, Any]]]) -> None:
         # TODO
-        default_width = "{:2.0f}%".format(0.99 / len(columns) * 100)
+        default_width = f"{(0.99 / len(columns) * 100):2.0f}%"
         for col in columns:
             if isinstance(col, str):
                 column = {"name": col, "width": default_width}
@@ -441,7 +441,7 @@ class AjaxMainTableView(View):
                 cell = value
             elif column_name == "name":
                 cell = Markup(
-                    '<a href="{}">{}</a>'.format(url_for(entity), html.escape(value))
+                    f'<a href="{url_for(entity)}">{html.escape(value)}</a>'
                 )
             elif isinstance(value, Entity):
                 cell = Markup(
@@ -770,7 +770,7 @@ class FileInput:
         kwargs["name"] = field.name
         kwargs["type"] = "file"
         kwargs["disabled"] = "disabled"  # JS widget will activate it
-        input_elem = "<input {}>".format(html_params(**kwargs))
+        input_elem = f"<input {html_params(**kwargs)}>"
         button_label = _("Add file") if "multiple" in kwargs else _("Select file")
 
         existing = self.build_exisiting_files_list(field)
@@ -964,7 +964,7 @@ class Chosen(Select):
             options["selected"] = True
         params = html_params(**options)
         return HTMLString(
-            "<option {}>{}</option>".format(params, html.escape(str(label)))
+            f"<option {params}>{html.escape(str(label))}</option>"
         )
 
 
@@ -1022,7 +1022,7 @@ class DateInput(Input):
             "data-date-autoclose": "true",
         }
 
-        s = "<div {}>\n".format(html_params(**attributes))
+        s = f"<div {html_params(**attributes)}>\n"
 
         s += '  <input size="13" type="text" {} />\n'.format(
             html_params(name=field_name, id=field_id, value=value, **kwargs)
@@ -1281,7 +1281,7 @@ class EntityWidget:
         if not field.multiple:
             objs = [objs]
         return ", ".join(
-            '<a href="{}">{}</a>'.format(url_for(o), html.escape(o.name))
+            f'<a href="{url_for(o)}">{html.escape(o.name)}</a>'
             for o in objs
             if o
         )
@@ -1332,7 +1332,7 @@ class MoneyWidget(TextInput):
         # units, which we don't want
         #
         # \u00A0: non-breakable whitespace
-        return "{value}\u00A0{unit}".format(value=format_number(val), unit=unit)
+        return f"{format_number(val)} {unit}"
 
 
 class EmailWidget(TextInput):
@@ -1416,9 +1416,9 @@ class ListWidget(wtforms.widgets.ListWidget):
             return super().__call__(field, **kwargs)
 
         kwargs.setdefault("id", field.id)
-        html = ["<{} {}>".format(self.html_tag, wtforms.widgets.html_params(**kwargs))]
+        html = [f"<{self.html_tag} {wtforms.widgets.html_params(**kwargs)}>"]
         for subfield in field:
-            html.append("<li>{}</li>".format(subfield()))
+            html.append(f"<li>{subfield()}</li>")
 
         html.append(f"</{self.html_tag}>")
         return wtforms.widgets.HTMLString("".join(html))

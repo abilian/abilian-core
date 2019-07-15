@@ -60,7 +60,7 @@ class DeferredJSExtension(JinjaExtension):
 
     @staticmethod
     def defer_nodes(caller: Macro) -> str:
-        body = "<div>{}</div>".format(caller().strip())
+        body = f"<div>{caller().strip()}</div>"
 
         # remove 'script' tag in immediate children, if any
         fragment = lxml.html.fragment_fromstring(body)

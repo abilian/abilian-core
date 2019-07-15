@@ -1,5 +1,6 @@
 """"""
 import html
+from typing import Dict
 
 import sqlalchemy as sa
 import sqlalchemy.orm
@@ -27,7 +28,7 @@ MUGSHOT_SIZE = 45
 class JsonUsersList(base.JSONView):
     """JSON user list for datatable."""
 
-    def data(self, *args, **kw):
+    def data(self, *args, **kw) -> Dict:
         security = get_service("security")
         length = int(kw.get("iDisplayLength", 0))
         start = int(kw.get("iDisplayStart", 0))

@@ -98,7 +98,7 @@ class Reindexer:
                 count = query.count()
             except Exception as e:
                 current_app.logger.error(
-                    "Indexing error on class {}: {}".format(name, repr(e))
+                    f"Indexing error on class {name}: {repr(e)}"
                 )
                 return
 

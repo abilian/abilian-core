@@ -147,7 +147,7 @@ class Admin:
         ) -> None:
             if not rule:
                 # '' is already used for panel get/post
-                raise ValueError("Invalid additional url rule: {}".format(repr(rule)))
+                raise ValueError(f"Invalid additional url rule: {repr(rule)}")
 
             if endpoint is None:
                 # pyre-fixme[16]: Module `helpers` has no attribute

@@ -178,7 +178,6 @@ class Live(views.JSONView):
         svc = get_service("indexing")
         url_for_hit = svc.app_state.url_for_hit
         search_kwargs = {"facet_by_type": 5}
-        response = {}
         results = svc.search(q, **search_kwargs)
         datasets = {}
 
@@ -198,8 +197,7 @@ class Live(views.JSONView):
                     dataset.append(d)
             datasets[typename] = dataset
 
-        response["results"] = datasets
-        return response
+        return {"results": datasets}
 
 
 route("/live")(Live.as_view("live"))

@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import Callable
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, request
 from flask_wtf import Form as FlaskForm
 from werkzeug.exceptions import Forbidden
 from wtforms.ext.csrf.fields import CSRFTokenField
@@ -11,7 +11,7 @@ blueprint = Blueprint("csrf", __name__, url_prefix="/csrf")
 
 @blueprint.route("/token", endpoint="json_token")
 def json_token_view():
-    return jsonify(token=token())
+    return {'token': token()}
 
 
 def field() -> CSRFTokenField:

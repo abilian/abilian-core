@@ -1,4 +1,6 @@
 """"""
+from typing import Dict
+
 from flask import current_app
 from werkzeug.exceptions import BadRequest
 
@@ -77,7 +79,7 @@ class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
     def get(self, *args, **kwargs):
         return JSONView.get(self, *args, **kwargs)
 
-    def data(self, *args, **kwargs):
+    def data(self, *args, **kwargs) -> Dict:
         tags = sorted(self.extension.entity_tags(self.entity))
         return {"result": tags}
 

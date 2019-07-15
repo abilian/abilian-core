@@ -98,7 +98,7 @@ class timer:
         self.__start = time.time()
         result = self.__f(*args, **kwargs)
         value = time.time() - self.__start
-        self.log.info("elapsed time: {:.2f}ms".format(value * 1000))
+        self.log.info(f"elapsed time: {(value * 1000):.2f}ms")
         return result
 
 
