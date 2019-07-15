@@ -7,10 +7,12 @@ from flask_wtf.file import FileField, file_required
 from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.utils import secure_filename
 
+from abilian.core.models.subjects import User
 from abilian.core.util import unwrap
 from abilian.web import csrf, url_for
 from abilian.web.blueprints import Blueprint
 from abilian.web.forms import Form
+from abilian.web.uploads import FileUploadsExtension
 from abilian.web.views import JSONView, View
 
 bp = Blueprint("uploads", __name__, url_prefix="/upload")
@@ -22,6 +24,9 @@ class UploadForm(Form):
 
 
 class BaseUploadsView:
+    uploads: FileUploadsExtension
+    user: User
+
     def prepare_args(self, args, kwargs):
         args, kwargs = super().prepare_args(args, kwargs)
         self.uploads = current_app.extensions["uploads"]
@@ -89,11 +94,8 @@ class UploadView(BaseUploadsView, View):
         )
 
     def delete(self, handle, *args, **kwargs) -> Dict:
-        # pyre-fixme[16]: `UploadView` has no attribute `uploads`.
         if self.uploads.get_file(self.user, handle) is None:
             raise NotFound()
-
-        # pyre-fixme[16]: `UploadView` has no attribute `uploads`.
         self.uploads.remove_file(self.user, handle)
         return {"success": True}
 
