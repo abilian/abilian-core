@@ -522,9 +522,3 @@ def all_entity_classes():
     return [
         cls for cls in persistent_classes if isclass(cls) and issubclass(cls, Entity)
     ]
-
-
-# Not used: TODO remove
-# def register_all_entity_classes():
-#     for cls in all_entity_classes():
-#         register_metadata(cls)

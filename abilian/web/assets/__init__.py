@@ -1,11 +1,13 @@
 """"""
-import pkg_resources
 import typing
+
+import pkg_resources
 from flask import current_app, url_for
 from flask_assets import Bundle
 from webassets.filter import get_filter
 
 from abilian.services.security import Anonymous
+
 from .filters import register_filters
 from .mixin import AssetManagerMixin
 

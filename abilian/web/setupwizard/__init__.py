@@ -9,9 +9,6 @@ import redis
 import sqlalchemy as sa
 import sqlalchemy.dialects
 import sqlalchemy.exc
-
-# pyre-fixme[21]: Could not find `commands`.
-from abilian.core.commands import config as cmd_config
 from flask import (
     current_app,
     flash,
@@ -22,6 +19,7 @@ from flask import (
     url_for,
 )
 
+from abilian.core.commands import config as cmd_config
 from abilian.core.extensions import csrf, db
 from abilian.core.models.subjects import User
 from abilian.core.util import unwrap

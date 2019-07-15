@@ -3,15 +3,15 @@
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
 
-from typing import Any
 import sqlite3
+from typing import Any
 
 import flask_mail
 import sqlalchemy as sa
 import sqlalchemy.event
 import sqlalchemy.orm
 from flask import current_app
-from sqlalchemy.engine import Engine, Connection
+from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.sql.schema import MetaData
 
 from abilian.core.extensions.jinjaext import DeferredJS

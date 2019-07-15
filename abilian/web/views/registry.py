@@ -40,7 +40,6 @@ class Registry:
 
     def url_for(
         self,
-        # pyre-fixme[11]: Type `Model` is not defined.
         entity: Union[db.Model, Hit, Dict, None] = None,
         object_type: Optional[str] = None,
         object_id: Optional[int] = None,
