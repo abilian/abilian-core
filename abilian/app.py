@@ -384,7 +384,7 @@ class Application(
         endpoint: str,
         view_func: Callable,
         roles: Collection[Role] = (),
-        **options: Any
+        **options: Any,
     ) -> None:
         """See :meth:`Flask.add_url_rule`.
 

@@ -10,8 +10,8 @@ from collections import OrderedDict
 from typing import Any, Dict, List, Tuple
 
 import sqlalchemy as sa
-from flask import Blueprint, current_app, g, redirect, \
-    render_template, request, session, url_for
+from flask import Blueprint, current_app, g, redirect, render_template, \
+    request, session, url_for
 from flask_login import current_user
 from sqlalchemy import Date, DateTime, func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast

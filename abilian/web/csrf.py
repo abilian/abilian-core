@@ -11,7 +11,7 @@ blueprint = Blueprint("csrf", __name__, url_prefix="/csrf")
 
 @blueprint.route("/token", endpoint="json_token")
 def json_token_view():
-    return {'token': token()}
+    return {"token": token()}
 
 
 def field() -> CSRFTokenField:

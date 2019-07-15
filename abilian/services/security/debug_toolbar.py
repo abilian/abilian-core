@@ -75,9 +75,7 @@ class SecurityInfoDebugPanel(DebugPanel):
             users = sorted(
                 info["users"], key=lambda u: (u.last_name.lower(), u.first_name.lower())
             )
-            info["users"] = [
-                f'{u} (id={{u.id}}, email="{{u.email}}")' for u in users
-            ]
+            info["users"] = [f'{u} (id={{u.id}}, email="{{u.email}}")' for u in users]
 
         jinja_env = current_app.jinja_env
         jinja_env.filters.update(self.jinja_env.filters)

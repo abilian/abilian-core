@@ -97,9 +97,7 @@ class Reindexer:
             try:
                 count = query.count()
             except Exception as e:
-                current_app.logger.error(
-                    f"Indexing error on class {name}: {repr(e)}"
-                )
+                current_app.logger.error(f"Indexing error on class {name}: {repr(e)}")
                 return
 
             print("*" * 79)

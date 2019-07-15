@@ -83,7 +83,9 @@ class JsonUsersList(base.JSONView):
             email = html.escape(user.email or "")
             roles = [
                 # pyre-fixme[16]: `Service` has no attribute `get_roles`.
-                r for r in security.get_roles(user, no_group_roles=True) if r.assignable
+                r
+                for r in security.get_roles(user, no_group_roles=True)
+                if r.assignable
             ]
             columns = [
                 '<a href="{url}"><img src="{src}" width="{size}" height="{size}">'

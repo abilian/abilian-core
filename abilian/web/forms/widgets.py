@@ -440,9 +440,7 @@ class AjaxMainTableView(View):
             if has_custom_display:
                 cell = value
             elif column_name == "name":
-                cell = Markup(
-                    f'<a href="{url_for(entity)}">{html.escape(value)}</a>'
-                )
+                cell = Markup(f'<a href="{url_for(entity)}">{html.escape(value)}</a>')
             elif isinstance(value, Entity):
                 cell = Markup(
                     '<a href="{}">{}</a>'.format(
@@ -963,9 +961,7 @@ class Chosen(Select):
         if selected:
             options["selected"] = True
         params = html_params(**options)
-        return HTMLString(
-            f"<option {params}>{html.escape(str(label))}</option>"
-        )
+        return HTMLString(f"<option {params}>{html.escape(str(label))}</option>")
 
 
 class TagInput(Input):
@@ -1281,9 +1277,7 @@ class EntityWidget:
         if not field.multiple:
             objs = [objs]
         return ", ".join(
-            f'<a href="{url_for(o)}">{html.escape(o.name)}</a>'
-            for o in objs
-            if o
+            f'<a href="{url_for(o)}">{html.escape(o.name)}</a>' for o in objs if o
         )
 
 
