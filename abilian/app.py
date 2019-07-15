@@ -16,7 +16,7 @@ import sqlalchemy as sa
 import sqlalchemy.exc
 from flask import Blueprint, Flask, abort, appcontext_pushed, g, request, \
     request_started
-from flask.config import ConfigAttribute
+from flask.config import Config, ConfigAttribute
 from flask.helpers import locked_cached_property
 from flask_migrate import Migrate
 from flask_talisman import DEFAULT_CSP_POLICY, Talisman
@@ -72,7 +72,7 @@ class ServiceManager:
 class PluginManager:
     """Mixin that provides support for loading plugins."""
 
-    config: Dict[str, Any]
+    config: Config
 
     #: Custom apps may want to always load some plugins: list them here.
     APP_PLUGINS = (
@@ -92,7 +92,6 @@ class PluginManager:
     def register_plugins(self) -> None:
         """Load plugins listed in config variable 'PLUGINS'."""
         registered = set()
-        # pyre-fixme[16]: `PluginManager` has no attribute `config`.
         for plugin_fqdn in chain(self.APP_PLUGINS, self.config["PLUGINS"]):
             if plugin_fqdn not in registered:
                 self.register_plugin(plugin_fqdn)

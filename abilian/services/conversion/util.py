@@ -27,21 +27,21 @@ def make_temp_file(
     prefix: str = "tmp",
     suffix: str = "",
     tmp_dir: Optional[Path] = None,
-) -> Iterator[Union[Iterator, Iterator[str]]]:
+) -> Iterator[Union[str, bytes]]:
+
     if tmp_dir is None:
         tmp_dir = get_tmp_dir()
 
     fd, filename = mkstemp(dir=str(tmp_dir), prefix=prefix, suffix=suffix)
     if blob is not None:
-        fd = os.fdopen(fd, "wb")
-        fd.write(blob)
-        fd.close()
+        io = os.fdopen(fd, "wb")
+        io.write(blob)
+        io.close()
     else:
         os.close(fd)
 
-    # pyre-fixme[7]: Expected `Iterator[Union[Iterator[Any], Iterator[str]]]` but
-    #  got `Generator[str, None, None]`.
     yield filename
+
     try:
         os.remove(filename)
     except OSError:

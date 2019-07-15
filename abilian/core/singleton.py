@@ -67,7 +67,7 @@ class UniqueNameType(TypeDecorator):
     """
 
     impl = String
-    Type = None
+    Type: type
     default_max_length = 100
 
     def __init__(self, *args, **kwargs):
@@ -80,8 +80,7 @@ class UniqueNameType(TypeDecorator):
             value = str(value)
         return value
 
-    def process_result_value(self, value: str, dialect: Dialect) -> Any:
+    def process_result_value(self, value: Optional[str], dialect: Dialect) -> Any:
         if value is not None:
-            # pyre-fixme[29]: `None` is not a function.
             value = self.Type(value)
         return value
