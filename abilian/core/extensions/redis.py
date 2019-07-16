@@ -8,7 +8,7 @@ class Redis:
 
     client = None
 
-    def __init__(self, app=None):
+    def __init__(self, app: Flask = None) -> None:
         if app is not None:
             self.init_app(app)
 

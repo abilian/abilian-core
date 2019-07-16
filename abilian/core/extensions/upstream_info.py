@@ -15,7 +15,7 @@ if typing.TYPE_CHECKING:
 class UpstreamInfo:
     """Extension for sending informations to upstream server."""
 
-    def __init__(self, app=None):
+    def __init__(self, app: Flask = None) -> None:
         if app is not None:
             self.init_app(app)
 

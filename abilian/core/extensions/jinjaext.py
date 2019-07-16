@@ -6,6 +6,8 @@ from flask import Flask, current_app, g
 from flask.signals import got_request_exception, request_started
 from jinja2 import nodes
 from jinja2.ext import Extension as JinjaExtension
+from jinja2.nodes import CallBlock
+from jinja2.parser import Parser
 from jinja2.runtime import Macro
 
 
@@ -14,7 +16,7 @@ class DeferredJS:
 
     name = "deferred_js"
 
-    def __init__(self, app=None):
+    def __init__(self, app: None = None) -> None:
         if app is not None:
             self.init_app(app)
 
@@ -43,7 +45,7 @@ class DeferredJSExtension(JinjaExtension):
 
     tags = {"deferJS", "deferredJS"}
 
-    def parse(self, parser):
+    def parse(self, parser: Parser) -> CallBlock:
         token = next(parser.stream)
         tag = token.value
         lineno = token.lineno

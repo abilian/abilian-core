@@ -1,18 +1,22 @@
-""""""
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Tuple, Type
 
 from sqlalchemy.engine.interfaces import Dialect
 from sqlalchemy.types import String, TypeDecorator
 
 
 class ValueSingletonMeta(type):
-    def __new__(cls, name, bases, dct):
+    def __new__(
+        cls: Type["ValueSingletonMeta"],
+        name: str,
+        bases: Tuple[Type],
+        dct: Dict[str, Any],
+    ) -> Type:
         dct["__instances__"] = {}
         dct.setdefault("__slots__", ())
         new_type = type.__new__(cls, name, bases, dct)
         return new_type
 
-    def __call__(cls, value, *args, **kwargs):
+    def __call__(cls, value: Any, *args, **kwargs) -> Any:
         if isinstance(value, cls):
             return value
 
@@ -70,7 +74,7 @@ class UniqueNameType(TypeDecorator):
     Type: type
     default_max_length = 100
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         assert self.Type is not None
         kwargs.setdefault("length", self.default_max_length)
         TypeDecorator.__init__(self, *args, **kwargs)
