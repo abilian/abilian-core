@@ -9,6 +9,7 @@ import random
 import string
 from abc import ABCMeta, abstractmethod
 from datetime import datetime, timedelta
+from typing import Type, Union
 
 import bcrypt
 import sqlalchemy as sa
@@ -27,7 +28,7 @@ from abilian.core.util import fqcn
 
 from .base import SEARCHABLE, SYSTEM, IdMixin, Indexable, TimestampedMixin, db
 
-__all__ = ["User", "Group", "Principal", "ClearPasswordStrategy", "gen_random_password"]
+__all__ = ("User", "Group", "Principal", "ClearPasswordStrategy", "gen_random_password")
 
 # Tables for many-to-many relationships
 following = Table(
@@ -154,7 +155,9 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
         return security.has_role(self, role, context)
 
 
-def set_entity_type(cls):
+def set_entity_type(
+    cls: Union[Type["User"], Type["Group"]]
+) -> Union[Type["User"], Type["Group"]]:
     """Decorator used to set the class' entity_type after the class has been
     declared.
 

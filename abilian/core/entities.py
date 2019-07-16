@@ -4,7 +4,8 @@ import collections
 import re
 from datetime import datetime
 from inspect import isclass
-from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Type, cast
+from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Optional, \
+    Tuple, Type, Union, cast
 
 import sqlalchemy as sa
 from flask import current_app
@@ -25,6 +26,7 @@ from .util import friendly_fqcn, memoized, slugify
 if TYPE_CHECKING:
     from abilian.core.models.tag import Tag
     from abilian.services.security import SecurityService
+    from abilian.services.security.models import InheritSecurity, Permission
 
 __all__ = [
     "Entity",
@@ -151,7 +153,9 @@ BaseMeta = db.Model.__class__
 
 
 class EntityQuery(db.Model.query_class):
-    def with_permission(self, permission, user=None):
+    def with_permission(
+        self, permission: "Permission", user: Optional["User"] = None
+    ) -> "EntityQuery":
         from abilian.services import get_service
 
         security = get_service("security")
@@ -172,7 +176,12 @@ class EntityMeta(BaseMeta):
     `_EntityInherit` provides `id` attibute and `__mapper_args__`
     """
 
-    def __new__(mcs, classname, bases, d):
+    def __new__(
+        mcs: Type["EntityMeta"],
+        classname: str,
+        bases: Tuple[Type, ...],
+        d: Dict[str, Any],
+    ) -> Any:
         if d["__module__"] != EntityMeta.__module__ or classname != "Entity":
             if not any(issubclass(b, _EntityInherit) for b in bases):
                 bases = (_EntityInherit,) + bases
@@ -222,7 +231,9 @@ class EntityMeta(BaseMeta):
         event.listen(cls, "after_insert", auto_slug_after_insert)
         return cls
 
-    def __init__(cls, classname, bases, d):
+    def __init__(
+        cls, classname: str, bases: Tuple[Type, ...], d: Dict[str, Any]
+    ) -> None:
         bases = cls.__bases__
         BaseMeta.__init__(cls, classname, bases, d)
 

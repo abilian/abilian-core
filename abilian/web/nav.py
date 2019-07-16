@@ -11,6 +11,8 @@ from flask import g
 from flask_babel.speaklater import LazyString
 from jinja2 import Markup, Template
 
+from abilian.web.action import Endpoint
+
 from .action import ACTIVE, ENABLED, Action, Glyphicon, getset
 
 if typing.TYPE_CHECKING:
@@ -79,7 +81,7 @@ class NavGroup(NavItem):
         self.items.append(item)
         self._paths.add(item.path)
 
-    def insert(self, pos, item):
+    def insert(self, pos: int, item: NavItem) -> None:
         self.items.insert(pos, item)
         self._paths.add(item.path)
 
@@ -125,7 +127,7 @@ class BreadcrumbItem:
     def __init__(
         self,
         label: Union[LazyString, str] = "",
-        url="#",
+        url: Union[str, Endpoint] = "#",
         icon: Optional[str] = None,
         description: Optional[Any] = None,
     ) -> None:
@@ -148,5 +150,5 @@ class BreadcrumbItem:
     def url(self) -> str:
         return str(self._url)
 
-    def render(self):
+    def render(self) -> Markup:
         return Markup(self.__template.render(item=self, url=self.url))

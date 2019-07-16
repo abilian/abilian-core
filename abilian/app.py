@@ -400,7 +400,9 @@ class Application(
                 endpoint, allow_access_for_roles(roles), endpoint=True
             )
 
-    def add_access_controller(self, name: str, func: Callable, endpoint: bool = False):
+    def add_access_controller(
+        self, name: str, func: Callable, endpoint: bool = False
+    ) -> None:
         """Add an access controller.
 
         If `name` is None it is added at application level, else if is
@@ -449,7 +451,7 @@ class Application(
         )
 
 
-def setup(app: Flask):
+def setup(app: Flask) -> None:
     config = app.config
 
     # CSP
