@@ -24,8 +24,6 @@ from .jinjaext import DeferredJS
 from .login import login_manager
 from .redis import Redis
 
-from sqlalchemy.pool.base import _ConnectionRecord
-
 
 __all__ = (
     "get_extension",
@@ -146,9 +144,7 @@ sa.event.listen(db.Model, "class_instrument", _install_get_display_value)
 # Make Sqlite a bit more well-behaved.
 #
 @sa.event.listens_for(Engine, "connect")
-def _set_sqlite_pragma(
-    dbapi_connection: Any, connection_record: _ConnectionRecord
-) -> None:
+def _set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
     if isinstance(dbapi_connection, sqlite3.Connection):  # pragma: no cover
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON;")

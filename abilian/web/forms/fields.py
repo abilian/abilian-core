@@ -9,11 +9,13 @@ import babel
 import babel.dates
 import sqlalchemy as sa
 import sqlalchemy.exc
+from babel.core import Locale
 from flask import current_app
 from flask.helpers import locked_cached_property
 from flask_babel import format_date, format_datetime, get_locale, get_timezone
 from flask_login import current_user
 from flask_wtf.file import FileField as BaseFileField
+from werkzeug.datastructures import ImmutableMultiDict
 from wtforms import Field
 from wtforms import FieldList as BaseFieldList
 from wtforms import FormField as BaseFormField
@@ -200,7 +202,7 @@ class FileField(BaseFileField):
     def has_file(self):
         return self._has_uploads
 
-    def process(self, formdata, *args, **kwargs):
+    def process(self, formdata: ImmutableMultiDict, *args, **kwargs) -> None:
         delete_arg = f"__{self.name}_delete__"
         self.delete_files_index = (
             formdata.getlist(delete_arg) if formdata and delete_arg in formdata else []
@@ -208,7 +210,7 @@ class FileField(BaseFileField):
 
         return super().process(formdata, *args, **kwargs)
 
-    def process_data(self, value):
+    def process_data(self, value: None) -> None:
         if isinstance(value, db.Model):
             self.blob = value
             value = getattr(value, self.blob_attr)
@@ -216,7 +218,7 @@ class FileField(BaseFileField):
         self.object_data = value
         return super().process_data(value)
 
-    def process_formdata(self, valuelist):
+    def process_formdata(self, valuelist: List[str]) -> None:
         uploads = current_app.extensions["uploads"]
         if self.delete_files_index:
             self.data = None
@@ -781,7 +783,7 @@ class LocaleSelectField(SelectField):
         super().__init__(*args, **kwargs)
 
     @staticmethod
-    def coerce(value):
+    def coerce(value: Locale) -> Locale:
         if isinstance(value, babel.Locale):
             return value
         elif isinstance(value, str):

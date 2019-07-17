@@ -48,7 +48,7 @@ ACTIVE = Status("active")
 DISABLED = Status("disabled")
 
 
-def getset(f):
+def getset(f: Callable) -> property:
     """Shortcut for a custom getter/ standard setter.
 
     Usage::
@@ -150,14 +150,14 @@ class DynamicIcon(Icon):
 
     def __init__(
         self,
-        endpoint=None,
-        width=12,
-        height=12,
-        css="",
-        size=None,
-        url_args=None,
+        endpoint: Optional[Union[str, Callable]] = None,
+        width: int = 12,
+        height: int = 12,
+        css: str = "",
+        size: Optional[int] = None,
+        url_args: Optional[Callable] = None,
         **fixed_url_args,
-    ):
+    ) -> None:
         self.endpoint = endpoint
         self.css = css
         self.fixed_url_args = {}
@@ -199,8 +199,14 @@ class StaticIcon(DynamicIcon):
     """
 
     def __init__(
-        self, filename, endpoint="static", width=12, height=12, css="", size=None
-    ):
+        self,
+        filename: str,
+        endpoint: str = "static",
+        width: int = 12,
+        height: int = 12,
+        css: str = "",
+        size: Optional[int] = None,
+    ) -> None:
         DynamicIcon.__init__(
             self, endpoint, width, height, css, size, filename=filename
         )

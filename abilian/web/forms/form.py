@@ -2,7 +2,7 @@
 import logging
 from collections import OrderedDict
 from functools import partial
-from typing import Any
+from typing import Any, Optional
 
 from flask import g, has_app_context
 from flask_login import current_user
@@ -12,7 +12,9 @@ from wtforms_alchemy import model_form_factory
 
 from abilian.core.entities import Entity
 from abilian.core.logging import patch_logger
+from abilian.core.models.subjects import User
 from abilian.i18n import _, _n
+from abilian.services.security import Permission
 
 from .widgets import DefaultViewWidget
 
@@ -37,15 +39,21 @@ class FormContext:
     field filtering according to original permission and user passed to top
     form `__init__` method."""
 
-    permission = None
-    user = None
+    permission: Optional[Permission]
+    user: Optional[User]
+    obj: Any
 
-    def __init__(self, permission=None, user=None, obj=None):
+    def __init__(
+        self,
+        permission: Optional[Permission] = None,
+        user: Optional[User] = None,
+        obj: Any = None,
+    ) -> None:
         self.permission = permission
         self.user = user
         self.obj = obj
 
-    def __enter__(self):
+    def __enter__(self) -> "FormContext":
         if not has_app_context():
             return self
 
@@ -68,7 +76,7 @@ class FormContext:
         g.__form_ctx__ = self
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: None, exc_val: None, exc_tb: None) -> None:
         if not has_app_context():
             return
 
@@ -81,7 +89,7 @@ class Form(BaseForm):
     #: :class:`FormPermissions` instance
     _permissions = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         permission = kwargs.pop("permission", None)
         user = kwargs.pop("user", None)
         obj = kwargs.get("obj")
@@ -136,7 +144,7 @@ class Form(BaseForm):
                         if group:
                             self._groups[group].remove(field_name)
 
-    def _get_translations(self):
+    def _get_translations(self) -> _BabelTranslation:
         return BabelTranslation
 
     def _fields_for_group(self, group):
