@@ -1,16 +1,16 @@
-""""""
-import typing
+from typing import TYPE_CHECKING, Any, List, Optional
 
 import sqlalchemy as sa
 from sqlalchemy.orm import object_session
 
 from abilian.core.entities import Entity
+from abilian.core.models.subjects import User
 from abilian.core.signals import activity
 from abilian.services import Service
 
 from .models import ActivityEntry
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from abilian.app import Application
 
 __all__ = ["ActivityService"]
@@ -27,7 +27,14 @@ class ActivityService(Service):
         super().stop(ignore_state)
         activity.disconnect(self.log_activity)
 
-    def log_activity(self, sender, actor, verb, object, target=None):
+    def log_activity(
+        self,
+        sender: None,
+        actor: User,
+        verb: str,
+        object: Any,
+        target: Optional[Entity] = None,
+    ) -> None:
         assert self.running
         if not isinstance(object, Entity):
             # generic forms may send signals inconditionnaly. For now we have activity
@@ -56,7 +63,7 @@ class ActivityService(Service):
         session.add(entry)
 
     @staticmethod
-    def entries_for_actor(actor, limit=50):
+    def entries_for_actor(actor: User, limit: int = 50) -> List[ActivityEntry]:
         return (
             ActivityEntry.query.filter(ActivityEntry.actor == actor).limit(limit).all()
         )

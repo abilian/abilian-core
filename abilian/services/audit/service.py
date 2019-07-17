@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set
 
 import sqlalchemy as sa
 from flask import current_app, g
+from flask_sqlalchemy import Model
 from sqlalchemy import event, extract
 from sqlalchemy.orm import Query, Session
 from sqlalchemy.orm.attributes import NEVER_SET, InstrumentedAttribute
@@ -82,7 +83,7 @@ class AuditService(Service):
         self.register_classes()
 
     @staticmethod
-    def is_auditable(model_or_class):
+    def is_auditable(model_or_class: Any) -> bool:
         if hasattr(model_or_class, "__auditable_entity__"):
             return True
 
@@ -102,7 +103,9 @@ class AuditService(Service):
         for cls in all_models:
             self.register_class(cls, app_state=state)
 
-    def register_class(self, entity_class, app_state=None):
+    def register_class(
+        self, entity_class: Any, app_state: Optional[AuditServiceState] = None
+    ) -> None:
         if not hasattr(entity_class, "__table__"):
             return
 
@@ -134,7 +137,7 @@ class AuditService(Service):
             event.listen(attr, "append", self.collection_append, active_history=True)
             event.listen(attr, "remove", self.collection_remove, active_history=True)
 
-    def setup_auditable_entity(self, entity_class):
+    def setup_auditable_entity(self, entity_class: Any) -> None:
         meta = AuditableMeta(entity_class.__name__, "id")
         entity_class.__auditable__ = meta
 
@@ -181,13 +184,16 @@ class AuditService(Service):
         meta.backref_attr = backref_attr
         meta.enduser_ids = [attr_name.split(".") for attr_name in enduser_ids]
 
-    def _get_changes_for(self, entity):
+    def _get_changes_for(self, entity: Model) -> Changes:
         changes = getattr(entity, "__changes__", None)
         if not changes:
             changes = entity.__changes__ = Changes()
         return changes
 
-    def set_attribute(self, entity, new_value, old_value, initiator):
+    def set_attribute(
+        self, entity: Model, new_value: Any, old_value: Any, initiator: Any
+    ) -> None:
+
         attr_name = initiator.key
         if old_value == new_value:
             return
@@ -210,11 +216,11 @@ class AuditService(Service):
         new_value = format_large_value(new_value)
         changes.set_column_changes(attr_name, old_value, new_value)
 
-    def collection_append(self, entity, value, initiator):
+    def collection_append(self, entity: Entity, value: Any, initiator: Any) -> None:
         changes = self._get_changes_for(entity)
         changes.collection_append(initiator.key, value)
 
-    def collection_remove(self, entity, value, initiator):
+    def collection_remove(self, entity: Entity, value: Any, initiator: Any):
         changes = self._get_changes_for(entity)
         changes.collection_remove(initiator.key, value)
 
@@ -249,9 +255,9 @@ class AuditService(Service):
         finally:
             self.app_state.creating_entries = False
 
-    def log(self, session, model, op_type):
+    def log(self, session: Session, model: Any, op_type: int) -> Optional[AuditEntry]:
         if not self.is_auditable(model):
-            return
+            return None
 
         entity = model
         try:
@@ -266,7 +272,7 @@ class AuditService(Service):
             for attr in meta.related:
                 entity = getattr(entity, attr)
                 if entity is None:
-                    return
+                    return None
 
         entry = AuditEntry(type=op_type, user_id=user_id)
         if op_type != DELETION:
@@ -298,7 +304,7 @@ class AuditService(Service):
         elif op == UPDATE:
             changes = getattr(model, "__changes__", changes)
             if not changes:
-                return
+                return None
 
         if hasattr(model, "__changes__"):
             del model.__changes__
@@ -334,7 +340,7 @@ class AuditService(Service):
 audit_service = AuditService()
 
 
-def format_large_value(value):
+def format_large_value(value: Any) -> Any:
     try:
         if len(value) > 1000:
             return "<<large value>>"

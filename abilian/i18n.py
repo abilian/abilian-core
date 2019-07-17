@@ -49,7 +49,7 @@ import unicodedata
 from datetime import datetime, tzinfo
 from gettext import GNUTranslations
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Iterator, List, Optional, Tuple
 
 import flask_babel
 import pytz
@@ -93,7 +93,7 @@ VALID_LANGUAGES_CODE = frozenset(
 )
 
 
-def get_default_locale():
+def get_default_locale() -> Locale:
     return current_app.extensions["babel"].default_locale
 
 
@@ -150,7 +150,7 @@ def country_choices(
     return territories
 
 
-def supported_app_locales():
+def supported_app_locales() -> Iterator[Tuple[Locale, str]]:
     """Language codes and labels supported by current application.
 
     :return: an iterable of `(:class:`babel.Locale`, label)`, label being the
@@ -180,9 +180,6 @@ class Babel(BabelBase):
     """Allow to load translations from other modules."""
 
     _translations_paths: List[Tuple[str, str]]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def init_app(self, app: Flask) -> None:
         super().init_app(app)

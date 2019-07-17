@@ -11,20 +11,21 @@ import sqlalchemy as sa
 import sqlalchemy.event
 import sqlalchemy.orm
 from flask import current_app
-from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.engine import Engine, Connection
 from sqlalchemy.sql.schema import MetaData
 
-from abilian.core.extensions.jinjaext import DeferredJS
 from abilian.core.logging import patch_logger
 from abilian.core.sqlalchemy import SQLAlchemy
 
 from . import upstream_info
 from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf
+from .jinjaext import DeferredJS
 from .login import login_manager
 from .redis import Redis
 
 from sqlalchemy.pool.base import _ConnectionRecord
+
 
 __all__ = (
     "get_extension",
@@ -145,7 +146,9 @@ sa.event.listen(db.Model, "class_instrument", _install_get_display_value)
 # Make Sqlite a bit more well-behaved.
 #
 @sa.event.listens_for(Engine, "connect")
-def _set_sqlite_pragma(dbapi_connection, connection_record: _ConnectionRecord) -> None:
+def _set_sqlite_pragma(
+    dbapi_connection: Any, connection_record: _ConnectionRecord
+) -> None:
     if isinstance(dbapi_connection, sqlite3.Connection):  # pragma: no cover
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON;")

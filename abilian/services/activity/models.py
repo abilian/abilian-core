@@ -8,6 +8,7 @@ TODO: Look wether other attributes from the spec need to be implemented.
 """
 import logging
 from datetime import datetime
+from typing import Callable
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Column, ForeignKey
@@ -21,7 +22,7 @@ __all__ = ["ActivityEntry"]
 logger = logging.getLogger(__name__)
 
 
-def _default_from(column):
+def _default_from(column: str) -> Callable:
     """Helper for default and onupdates parameters in a Column definitions.
 
     Returns a `context-sensitive default function
