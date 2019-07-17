@@ -1,14 +1,15 @@
 """Security service, manages roles and permissions."""
-import typing
 from functools import wraps
 from itertools import chain
-from typing import Any, Collection, Dict, FrozenSet, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Any, Callable, Collection, Dict, FrozenSet, \
+    List, Optional, Set, Type, Union
 
 import sqlalchemy as sa
 from flask import g
 from flask_login import current_user
 from sqlalchemy import sql
 from sqlalchemy.orm import Session, object_session, subqueryload
+from sqlalchemy.sql.selectable import Exists
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
@@ -21,10 +22,11 @@ from abilian.services.security.models import CREATE, DELETE, MANAGE, \
     PERMISSIONS_ATTR, READ, WRITE, Admin
 from abilian.services.security.models import Anonymous as AnonymousRole
 from abilian.services.security.models import Authenticated, Creator, \
-    InheritSecurity, Manager, Owner, Permission, PermissionAssignment, \
-    Reader, Role, RoleAssignment, SecurityAudit, Writer
+    FolderishModel, InheritSecurity, Manager, Owner, Permission, \
+    PermissionAssignment, Reader, Role, RoleAssignment, SecurityAudit, \
+    Writer
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from abilian.app import Application
 
 
@@ -61,7 +63,7 @@ class SecurityServiceState(ServiceState):
     needs_db_flush = False
 
 
-def require_flush(fun):
+def require_flush(fun: Callable) -> Callable:
     """Decorator for methods that need to query security.
 
     It ensures all security related operations are flushed to DB, but
@@ -188,7 +190,7 @@ class SecurityService(Service):
         )
 
     # inheritance
-    def set_inherit_security(self, obj, inherit_security: bool) -> None:
+    def set_inherit_security(self, obj: FolderishModel, inherit_security: bool) -> None:
         assert isinstance(obj, InheritSecurity)
         assert isinstance(obj, Entity)
 
@@ -596,6 +598,7 @@ class SecurityService(Service):
     ) -> None:
         """Ungrant `role` to `user` (either globally, if `object` is None, or
         on the specific `object`)."""
+
         assert principal
         principal = unwrap(principal)
         session = object_session(object) if object is not None else db.session
@@ -624,8 +627,6 @@ class SecurityService(Service):
             )
 
         elif isinstance(principal, User):
-            # pyre-fixme[6]: Expected `Optional[Union[Role, Model, bool, str]]` for
-            #  2nd param but got `User`.
             args["user"] = principal
             query = query.filter(RoleAssignment.user == principal)
         else:
@@ -640,7 +641,7 @@ class SecurityService(Service):
         self._clear_role_cache(principal)
 
     @require_flush
-    def get_role_assignements(self, obj) -> List:
+    def get_role_assignements(self, obj: Model) -> List:
         session = object_session(obj) if obj is not None else db.session
         if not session:
             session = db.session()
@@ -752,7 +753,9 @@ class SecurityService(Service):
             for item in checked_objs
         )
 
-    def query_entity_with_permission(self, permission, user=None, Model=Entity):
+    def query_entity_with_permission(
+        self, permission: Permission, user: None = None, Model: Type[Model] = Entity
+    ) -> Exists:
         """Filter a query on an :class:`Entity` or on of its subclasses.
 
         Usage::

@@ -24,7 +24,7 @@ CROP = "crop"
 RESIZE_MODES = frozenset({SCALE, FIT, CROP})
 
 # TODO: cache to file
-cache = {}  # type: Dict[Any, bytes]
+cache: Dict[Any, bytes] = {}
 
 
 def open_image(img: Union[BytesIO, bytes]) -> Image.Image:

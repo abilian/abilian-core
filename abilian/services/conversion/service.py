@@ -13,12 +13,15 @@ import shutil
 import subprocess
 from io import BytesIO
 from pathlib import Path
+from typing import List
 
 from flask import Flask
 from PIL import Image
 from PIL.ExifTags import TAGS
 
 from .cache import Cache
+from .exceptions import HandlerNotFound
+from .handlers import Handler
 from .util import make_temp_file
 
 logger = logging.getLogger(__name__)
@@ -27,19 +30,12 @@ TMP_DIR = "tmp"
 CACHE_DIR = "cache"
 
 
-class ConversionError(Exception):
-    pass
-
-
-class HandlerNotFound(ConversionError):
-    pass
-
-
 class Converter:
     tmp_dir: Path
     cache_dir: Path
+    handlers: List[Handler]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.handlers = []
         self.cache = Cache()
 
@@ -54,7 +50,7 @@ class Converter:
         for handler in self.handlers:
             handler.init_app(app)
 
-    def init_work_dirs(self, cache_dir: Path, tmp_dir: Path):
+    def init_work_dirs(self, cache_dir: Path, tmp_dir: Path) -> None:
         self.tmp_dir = tmp_dir
         self.cache_dir = cache_dir
         self.cache.cache_dir = self.cache_dir
@@ -70,7 +66,7 @@ class Converter:
             shutil.rmtree(bytes(d))
             d.mkdir()
 
-    def register_handler(self, handler):
+    def register_handler(self, handler: Handler) -> None:
         self.handlers.append(handler)
 
     # TODO: refactor, pass a "File" or "Document" or "Blob" object

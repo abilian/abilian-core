@@ -103,7 +103,7 @@ class WhooshIndexService(Service):
     name = "indexing"
     AppStateClass = IndexServiceState
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.adapters_cls = [SAAdapter]
         self.adapted = {}
@@ -213,7 +213,7 @@ class WhooshIndexService(Service):
         return self.app_state.indexes[name]
 
     @property
-    def default_search_fields(self):
+    def default_search_fields(self) -> Dict[str, float]:
         """Return default field names and boosts to be used for searching.
 
         Can be configured with `SEARCH_DEFAULT_BOOSTS`
@@ -240,13 +240,13 @@ class WhooshIndexService(Service):
 
     def search(
         self,
-        q,
-        index="default",
-        fields=None,
-        Models=(),
-        object_types=(),
-        prefix=True,
-        facet_by_type=None,
+        q: str,
+        index: str = "default",
+        fields: None = None,
+        Models: Tuple = (),
+        object_types: Tuple = (),
+        prefix: bool = True,
+        facet_by_type: None = None,
         **search_args,
     ):
         """Interface to search indexes.

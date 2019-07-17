@@ -18,7 +18,7 @@ from magic import Magic
 
 from abilian.services.image import resize
 
-from .service import ConversionError
+from .exceptions import ConversionError
 from .util import get_tmp_dir, make_temp_file
 
 logger = logging.getLogger(__name__)
@@ -54,10 +54,10 @@ HAS_LIBREOFFICE = has_libreoffice()
 class Handler(metaclass=ABCMeta):
     """Abstract base class for handlers."""
 
-    accepts_mime_types = []  # type: List[str]
-    produces_mime_types = []  # type: List[str]
+    accepts_mime_types: List[str] = []
+    produces_mime_types: List[str] = []
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.log = logger.getChild(self.__class__.__name__)
 
     def init_app(self, app: Flask) -> None:

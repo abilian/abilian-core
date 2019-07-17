@@ -16,7 +16,8 @@ from abilian.services.conversion.handlers import (
     PdfToTextHandler,
 )
 
-from .service import ConversionError, Converter, HandlerNotFound
+from .service import Converter, HandlerNotFound
+from .exceptions import ConversionError
 
 # Singleton, yuck!
 converter = Converter()

@@ -8,6 +8,7 @@ from abilian.app import Application
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import Group, User, create_root_user
 from abilian.core.sqlalchemy import SQLAlchemy
+from abilian.services.security.models import FolderishModel
 
 from . import READ, WRITE, Admin, Anonymous, Authenticated, Creator, \
     InheritSecurity, Owner, Permission, PermissionAssignment, Reader, Role, \
@@ -49,10 +50,6 @@ def session(app: Application, db: SQLAlchemy) -> Iterator[Session]:
 
 
 class DummyModel(Entity):
-    pass
-
-
-class FolderishModel(Entity, InheritSecurity):
     pass
 
 

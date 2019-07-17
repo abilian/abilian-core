@@ -263,7 +263,7 @@ class SessionRepositoryService(Service):
     name = "session_repository"
     AppStateClass = SessionRepositoryState
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.__listening = False
         super().__init__(*args, **kwargs)
 

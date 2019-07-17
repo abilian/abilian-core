@@ -110,7 +110,7 @@ class AuthService(Service):
     AppStateClass = AuthServiceState
 
     # pyre-fixme[15]: `init_app` overrides method defined in `Service` inconsistently.
-    def init_app(self, app: Flask):
+    def init_app(self, app: Flask) -> None:
         login_manager.init_app(app)
         login_manager.login_view = "login.login_form"
 

@@ -1,10 +1,12 @@
 """"""
+from typing import Any, Dict, Tuple, Type
+
 import sqlalchemy as sa
 import sqlalchemy.event
 import sqlalchemy.ext
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
-from flask_sqlalchemy import BaseQuery
+from flask_sqlalchemy import BaseQuery, Model
 from sqlalchemy import Column
 
 from abilian.core.extensions import db
@@ -14,7 +16,7 @@ _BaseMeta = db.Model.__class__
 
 
 class VocabularyQuery(BaseQuery):
-    def active(self):
+    def active(self) -> "VocabularyQuery":
         """Returns only valid vocabulary items."""
         return self.filter_by(active=True)
 
@@ -26,7 +28,7 @@ class VocabularyQuery(BaseQuery):
         except sa.orm.exc.NoResultFound:
             return None
 
-    def by_position(self, position):
+    def by_position(self, position: int) -> None:
         """Like `.get()`, but by position number."""
         # don't use .first(), so that MultipleResultsFound can be raised
         try:
@@ -41,7 +43,12 @@ class _VocabularyMeta(_BaseMeta):
     Enforces `__tablename__`.
     """
 
-    def __new__(cls, name, bases, d):
+    def __new__(
+        cls: Type["_VocabularyMeta"],
+        name: str,
+        bases: Tuple[Type[Model], ...],
+        d: Dict[str, Any],
+    ) -> Type["BaseVocabulary"]:
         meta = d.get("Meta")
         tblprefix = "vocabulary_"
 

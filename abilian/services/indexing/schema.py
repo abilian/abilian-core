@@ -1,8 +1,9 @@
 """"""
 from whoosh.analysis import CharsetFilter, LowercaseFilter, NgramFilter, \
     PathTokenizer, RegexTokenizer
+#: A Whoosh analyzer that splits on word boundaries and folds accents and case.
 from whoosh.fields import DATETIME, ID, KEYWORD, NUMERIC, TEXT, FieldType, \
-    SchemaClass
+    Schema, SchemaClass
 from whoosh.formats import Existence
 from whoosh.support.charset import accent_map
 
@@ -10,7 +11,6 @@ from abilian.core.models.subjects import Group, User
 from abilian.core.util import unwrap
 from abilian.services.security.models import Anonymous, Role
 
-#: A Whoosh analyzer that splits on word boundaries and folds accents and case.
 accent_folder = (
     RegexTokenizer(r"\w+")
     | LowercaseFilter()  # defaults doesn't split on '.'
@@ -21,7 +21,7 @@ accent_folder = (
 edge_ngram = accent_folder | NgramFilter(minsize=2, maxsize=6, at="start")
 
 
-def EdgeNgramField():
+def EdgeNgramField() -> TEXT:
     return TEXT(analyzer=edge_ngram)
 
 
@@ -57,7 +57,7 @@ _default_dyn_fields = {
 }
 
 
-def DefaultSearchSchema(*args, **kwargs):
+def DefaultSearchSchema(*args, **kwargs) -> Schema:
     schema = _DefaultSearchSchema()
     for name, field in _default_dyn_fields.items():
         schema.add(name, field, glob=True)

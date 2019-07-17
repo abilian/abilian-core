@@ -1,7 +1,7 @@
 """"""
 import logging
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Callable, Optional
 
 from flask import current_app
 
@@ -94,7 +94,7 @@ class Service:
             return False
 
     @staticmethod
-    def if_running(meth):
+    def if_running(meth: Callable) -> Callable:
         """Decorator for service methods that must be ran only if service is in
         running state."""
 
