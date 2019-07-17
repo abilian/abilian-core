@@ -15,8 +15,7 @@ import bleach
 import sqlalchemy as sa
 import sqlalchemy.orm
 import wtforms
-from flask import current_app, g, json, render_template, \
-    render_template_string
+from flask import current_app, g, json, render_template, render_template_string
 from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField

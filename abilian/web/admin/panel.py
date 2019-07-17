@@ -1,5 +1,5 @@
 """"""
-from typing import Any, Callable, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, Dict
 
 if TYPE_CHECKING:
     from .extension import Admin

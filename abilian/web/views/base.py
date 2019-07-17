@@ -1,5 +1,5 @@
 """"""
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Tuple
 
 from flask import g, json, jsonify, redirect, render_template_string, request
 from flask.views import MethodView as BaseView
@@ -88,7 +88,9 @@ class JSONView(View):
     requested from browser.
     """
 
-    def prepare_args(self, args, kwargs):
+    def prepare_args(
+        self, args: Tuple, kwargs: Dict[Any, Any]
+    ) -> Tuple[Tuple, Dict[Any, Any]]:
         kwargs.update({k: v for k, v in request.args.items()})
         return args, kwargs
 
