@@ -1,7 +1,10 @@
 """"""
+from typing import Any
+
+import pytest
 from pytest import raises
 
-from .models import EmptyValue, Setting
+from .models import Setting, empty_value
 
 
 def test_type_set() -> None:
@@ -16,59 +19,30 @@ def test_type_set() -> None:
         s.type = "dummy type name"
 
 
-def test_int() -> None:
-    s = Setting(key="key", type="int")
-    s.value = 42
-    assert s._value in ("42", b"42")
-
-    s._value = "24"
-    assert s.value == 24
+OBJ = [1, 2, "été", {"1": "1", "2": "2"}]
 
 
-def test_bool() -> None:
-    s = Setting(key="key", type="bool")
-    s.value = True
-    assert s._value == "true"
-
-    s.value = False
-    assert s._value == "false"
-
-    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
-    s._value = "true"
-    assert s.value is True
-
-    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
-    s._value = "false"
-    assert s.value is False
-
-
-def test_string() -> None:
-    s = Setting(key="key", type="string")
-    s.value = "ascii"
-    assert s._value == b"ascii"
-
-    s.value = "bel été"
-    assert s._value == b"bel \xc3\xa9t\xc3\xa9"
-
-    # pyre-fixme[8]: Attribute has type `Column`; used as `bytes`.
-    s._value = b"d\xc3\xa9code"
-    assert s.value == "décode"
-
-
-def test_json() -> None:
-    s = Setting(key="key", type="json")
-    s.value = [1, 2, "été", {1: "1", 2: "2"}]
-    assert s._value == '[1, 2, "\\u00e9t\\u00e9", {"1": "1", "2": "2"}]'
-
-    s.value = None
-    assert s._value == "null"
+@pytest.mark.parametrize(
+    "type_,value",
+    [
+        ("int", 42),
+        ("bool", True),
+        ("bool", False),
+        ("string", "test"),
+        ("string", "bel été"),
+        ("json", None),
+        ("json", OBJ),
+    ],
+)
+def test_set_get(type_: str, value: Any) -> None:
+    s = Setting(key="key", type=type_)
+    s.value = value
+    assert s.value == value
 
 
 def test_empty_value() -> None:
     s = Setting(key="key", type="json")
-    # pyre-fixme[8]: Attribute has type `Column`; used as `None`.
-    s._value = None
-    assert s.value == EmptyValue
+    assert s.value == empty_value
 
 
 def test_service_facade(app, session):

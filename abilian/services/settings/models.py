@@ -1,31 +1,35 @@
 """"""
 import json
 from datetime import timedelta
-from typing import Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 import sqlalchemy as sa
 
 from abilian.core.extensions import db
 
-__all__ = ["Setting"]
+__all__ = ["Setting", "empty_value"]
 
 
 class TransformerRegistry:
-    def __init__(self):
-        self.encoders = {}  # type: Dict[str, Optional[Callable]]
-        self.decoders = {}  # type: Dict[str, Optional[Callable]]
+    def __init__(self) -> None:
+        self.encoders: Dict[str, Optional[Callable]] = {}
+        self.decoders: Dict[str, Optional[Callable]] = {}
 
-    def encode(self, type_, value):
-        # bytes is str for python2
+    def encode(self, type_: str, value: Any) -> bytes:
         return self.encoders.get(type_, bytes)(value)
 
-    def decode(self, type_, value):
+    def decode(self, type_: str, value: bytes) -> Any:
         decoder = self.decoders.get(type_)
         if decoder is not None:
             value = decoder(value)
         return value
 
-    def register(self, type_, encoder=None, decoder=None):
+    def register(
+        self,
+        type_: str,
+        encoder: Optional[Callable] = None,
+        decoder: Optional[Callable] = None,
+    ) -> None:
         assert type_
         assert any((encoder, decoder))
         if encoder:
@@ -41,15 +45,12 @@ class _EmptyValue:
     def __bool__(self):
         return False
 
-    # Py2 compat
-    __nonzero__ = __bool__
-
     def __repr__(self):
         return "<Empty Value>"
 
 
-#: marker for emptyness, to distinguish from None
-EmptyValue = _EmptyValue()
+#: marker for emptiness, to distinguish from None
+empty_value = _EmptyValue()
 
 
 class Setting(db.Model):
@@ -66,9 +67,10 @@ class Setting(db.Model):
     #: if that's what you need. Type must be set before setting `value`
     _type = sa.Column("type", sa.String(length=1000), nullable=False)
 
+    _value = sa.Column("value", sa.Text())
+
     @property
     def type(self) -> str:
-        # pyre-fixme[7]: Expected `str` but got `Column`.
         return self._type
 
     @type.setter
@@ -79,21 +81,21 @@ class Setting(db.Model):
             raise ValueError(
                 f'Invalid type "{type_}": no encoder and/or decoder registered'
             )
-        # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
         self._type = type_
-
-    _value = sa.Column("value", sa.Text())
 
     @property
     def value(self):
         if self._value is None:
-            return EmptyValue
+            return empty_value
+
+        assert isinstance(self._value, bytes)
         return self.transformers.decode(self.type, self._value)
 
     @value.setter
     def value(self, value):
         assert self.type
         self._value = self.transformers.encode(self.type, value)
+        assert isinstance(self._value, bytes)
 
 
 register = _transformers.register
@@ -106,19 +108,19 @@ def from_int(i: int) -> bytes:
 register("int", from_int, int)
 
 
-def from_bool(b: bool) -> str:
-    return "true" if b else "false"
+def from_bool(b: bool) -> bytes:
+    return b"true" if b else b"false"
 
 
-def to_bool(s: str) -> bool:
-    return s == "true"
+def to_bool(s: bytes) -> bool:
+    return s == b"true"
 
 
 register("bool", from_bool, to_bool)
 
 
 def from_unicode(s: str) -> bytes:
-    return str(s).encode("utf-8")
+    return str(s).encode()
 
 
 def to_unicode(s: bytes) -> str:
@@ -128,14 +130,24 @@ def to_unicode(s: bytes) -> str:
 
 
 register("string", from_unicode, to_unicode)
-register("json", json.dumps, json.loads)  # FIXME: checks for dump/load?
 
 
-def from_timedelta(s):
+def from_obj(o: Any) -> bytes:
+    return json.dumps(o).encode("ascii")
+
+
+def to_obj(s: bytes) -> Any:
+    return json.loads(s)
+
+
+register("json", from_obj, to_obj)
+
+
+def from_timedelta(s: timedelta):
     return json.dumps({"days": s.days, "seconds": s.seconds})
 
 
-def to_timedelta(s):
+def to_timedelta(s: bytes):
     return timedelta(**json.loads(s))
 
 
