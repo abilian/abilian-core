@@ -1,8 +1,7 @@
 """"""
-import typing
-from typing import Callable
+from typing import Any, Callable, Dict, TYPE_CHECKING
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from .extension import Admin
 
 
@@ -20,7 +19,7 @@ class AdminPanel:
     icon: str = ""
     admin: "Admin"
 
-    def url_value_preprocess(self, endpoint, view_args):
+    def url_value_preprocess(self, endpoint: str, view_args: Dict[Any, Any]) -> None:
         """Panel can preprocess values for their views.
 
         This method is called only if the endpoint is for `get()`, `post()`, or

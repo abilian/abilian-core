@@ -178,12 +178,12 @@ class Admin:
             if not security.has_role(user, "admin"):
                 raise Forbidden()
 
-    def panel_preprocess_value(self, endpoint, view_args):
+    def panel_preprocess_value(self, endpoint: str, view_args: Dict[Any, Any]) -> None:
         panel = self._panels_endpoints.get(endpoint)
         if panel is not None:
             panel.url_value_preprocess(endpoint, view_args)
 
-    def build_breadcrumbs(self, endpoint, view_args):
+    def build_breadcrumbs(self, endpoint: str, view_args: Dict[Any, Any]) -> None:
         g.breadcrumb.append(self.root_breadcrumb_item)
         g.nav["active"] = self.nav_paths.get(endpoint, self.nav_root.path)
         panel = self._panels_endpoints.get(endpoint)

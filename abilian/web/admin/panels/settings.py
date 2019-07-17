@@ -1,10 +1,12 @@
 """"""
 from datetime import timedelta
+from typing import Optional
 
 from flask import current_app, flash, redirect, render_template, request, \
     url_for
 from flask_babel import gettext as _
 from flask_babel import lazy_gettext as _l
+from flask_babel.speaklater import LazyString
 from jinja2 import Template
 
 from abilian.core.extensions import db
@@ -20,7 +22,13 @@ class Key:
         'name="{{ key.id }}" value="{{ config[key.id] }}" />'
     )
 
-    def __init__(self, id, type_, label=None, description=None):
+    def __init__(
+        self,
+        id: str,
+        type_: str,
+        label: Optional[LazyString] = None,
+        description: Optional[LazyString] = None,
+    ) -> None:
         self.id = id
         self.type = type_
         self.label = label

@@ -3,15 +3,17 @@ import json
 import logging
 import time
 from datetime import timedelta
-from typing import Any, Dict
+from io import BufferedReader
+from pathlib import PosixPath
+from typing import Any, Dict, Optional
 from uuid import UUID, uuid1
 
 from celery import shared_task
 from flask import current_app
-from flask_login import AnonymousUserMixin
 
 from abilian.app import Application
 from abilian.core import signals
+from abilian.core.models.subjects import User
 from abilian.web import url_for
 
 from .views import bp as blueprint
@@ -79,14 +81,14 @@ class FileUploadsExtension:
         # pyre-fixme[16]: `str` has no attribute `__setitem__`.
         js_api["newFileUrl"] = url_for("uploads.new_file")
 
-    def user_dir(self, user):
-        if isinstance(user, AnonymousUserMixin):
+    def user_dir(self, user: User) -> PosixPath:
+        if user.is_anonymous:
             user_id = "anonymous"
         else:
             user_id = str(user.id)
         return self.UPLOAD_DIR / user_id
 
-    def add_file(self, user, file_obj, **metadata):
+    def add_file(self, user: User, file_obj: BufferedReader, **metadata) -> str:
         """Add a new file.
 
         :returns: file handle
@@ -110,7 +112,7 @@ class FileUploadsExtension:
 
         return handle
 
-    def get_file(self, user, handle):
+    def get_file(self, user: User, handle: str) -> Optional[PosixPath]:
         """Retrieve a file for a user.
 
         :returns: a :class:`pathlib.Path` instance to this file,
@@ -130,7 +132,7 @@ class FileUploadsExtension:
 
         return file_path
 
-    def get_metadata_file(self, user, handle):
+    def get_metadata_file(self, user: User, handle: str) -> Optional[PosixPath]:
         content = self.get_file(user, handle)
         if content is None:
             return None
@@ -141,7 +143,7 @@ class FileUploadsExtension:
 
         return metafile
 
-    def get_metadata(self, user, handle):
+    def get_metadata(self, user: User, handle: str) -> Dict[str, str]:
         metafile = self.get_metadata_file(user, handle)
         if metafile is None:
             return {}

@@ -5,7 +5,7 @@ from flask import Flask
 from abilian.core import signals
 
 
-def init_hooks(app: Flask):
+def init_hooks(app: Flask) -> None:
     @app.before_first_request
     def set_current_celery_app() -> None:
         """Listener for `before_first_request`.

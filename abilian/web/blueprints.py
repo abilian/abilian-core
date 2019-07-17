@@ -1,5 +1,5 @@
 """"""
-from typing import Any, Callable, Collection, Optional, Tuple, Union
+from typing import Any, Callable, Collection, Union, cast
 
 from flask import Blueprint as BaseBlueprint
 
@@ -26,7 +26,7 @@ def allow_access_for_roles(roles: Union[Collection[Role], Role]) -> Callable:
     def check_role(user: User, roles: Collection[Role], **kwargs):
         from abilian.services import get_service
 
-        security: SecurityService = get_service("security")
+        security: SecurityService = cast(SecurityService, get_service("security"))
         return security.has_role(user, valid_roles)
 
     return check_role

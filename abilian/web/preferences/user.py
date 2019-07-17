@@ -15,6 +15,7 @@ from abilian.i18n import _, _l, get_default_locale
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web import csrf
 from abilian.web.forms import Form, fields, required, widgets
+from abilian.web.forms.fields import FileField
 
 
 class UserPreferencesForm(Form):
@@ -40,7 +41,7 @@ class UserPreferencesForm(Form):
         label=_l("Time zone"), validators=(required(),), default=babel.dates.LOCALTZ
     )
 
-    def validate_password(self, field):
+    def validate_password(self, field: StringField) -> None:
         pwd = field.data
         confirmed = self["confirm_password"].data
 
@@ -52,7 +53,7 @@ class UserPreferencesForm(Form):
                 )
             )
 
-    def validate_photo(self, field):
+    def validate_photo(self, field: FileField) -> None:
         data = request.form.get(field.name)
         if not data:
             return

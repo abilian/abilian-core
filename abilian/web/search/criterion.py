@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import Text, Union
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Type
 
+from flask import Request
 from sqlalchemy import func, orm
 from sqlalchemy.sql.expression import or_
+
+from abilian.core.entities import EntityQuery
+from abilian.core.models import Model
+
+if TYPE_CHECKING:
+    from abilian.web.frontend import Module
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +24,7 @@ _UNDEFINED = UNDEFINED()
 
 
 class BaseCriterion:
-    form_default_value = _UNDEFINED  # type: Union[UNDEFINED, Text]
+    form_default_value: Any = _UNDEFINED
     """
     Values to set by default when adding a filter. The provided value(s) must be
     the ones used in html, not in python.
@@ -25,7 +32,9 @@ class BaseCriterion:
     Subclasses can also define property.
     """
 
-    def __init__(self, name, label="", form_default_value=_UNDEFINED):
+    def __init__(
+        self, name: str, label: str = "", form_default_value: Any = _UNDEFINED
+    ) -> None:
         self.name = name
         self.label = label
 
@@ -40,7 +49,7 @@ class BaseCriterion:
             raise ValueError("Model not set")
         return self._model
 
-    def _set_model(self, model):
+    def _set_model(self, model: Type[Model]) -> None:
         if self._model is not None:
             raise ValueError("Model already set")
 
@@ -78,7 +87,13 @@ class BaseCriterion:
 class TextSearchCriterion(BaseCriterion):
     """Fulltext search on given attributes."""
 
-    def __init__(self, name, label="", attributes=None, search_fmt="%{q}%"):
+    def __init__(
+        self,
+        name: str,
+        label: str = "",
+        attributes: Optional[Tuple[str, str]] = None,
+        search_fmt: str = "%{q}%",
+    ) -> None:
         super().__init__(name, label)
         self.attributes = dict.fromkeys(
             attributes if attributes is not None else (name,)
@@ -128,7 +143,16 @@ class TextSearchCriterion(BaseCriterion):
 
         self._attributes_prepared = True
 
-    def filter(self, query, module, request, searched_text, *args, **kwargs):
+    def filter(
+        self,
+        query: EntityQuery,
+        module: "Module",
+        request: Request,
+        searched_text: str,
+        *args,
+        **kwargs,
+    ) -> EntityQuery:
+
         if not searched_text:
             return query
 
@@ -186,7 +210,7 @@ class TextSearchCriterion(BaseCriterion):
 
         return rel_model, attr
 
-    def is_excluded(self, attr_name, request):
+    def is_excluded(self, attr_name: str, request: Request):
         """To be overriden by subclasses that want to filter searched
         attributes."""
         return False

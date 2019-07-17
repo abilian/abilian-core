@@ -5,11 +5,9 @@ TODO: most of this is currently only stubs and needs to be implemented.
 NOTE: the `rule` property is supposed to be useful for generating client-side
 validation code.
 """
-from typing import Callable, Union
+from typing import Callable
 
 from wtforms import Field, Form, validators
-from wtforms.compat import string_types
-from wtforms.fields.core import StringField
 
 from abilian.i18n import _, _n
 from abilian.services import get_service
@@ -56,10 +54,10 @@ class Email(validators.Email):
 
 
 class CorrectInputRequired(validators.DataRequired):
-    def __call__(self, form, field):
+    def __call__(self, form: Form, field: Field) -> None:
         if (
             field.data is None
-            or (isinstance(field.data, string_types) and not field.data.strip())
+            or (isinstance(field.data, str) and not field.data.strip())
             or (isinstance(field.data, (list, dict)) and not field.data)
         ):
             if self.message is None:

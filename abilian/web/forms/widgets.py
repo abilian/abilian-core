@@ -15,11 +15,12 @@ import bleach
 import sqlalchemy as sa
 import sqlalchemy.orm
 import wtforms
-from flask import Markup, current_app, g, json, render_template, \
+from flask import current_app, g, json, render_template, \
     render_template_string
 from flask_babel import format_date, format_datetime, format_number, get_locale
 from flask_login import current_user
 from flask_wtf.file import FileField
+from markupsafe import Markup
 from sqlalchemy.orm.mapper import Mapper
 from wtforms.fields import Field, IntegerField, Label, StringField
 from wtforms.form import Form
@@ -318,11 +319,11 @@ class AjaxMainTableView(View):
     def __init__(
         self,
         columns: List[Dict[str, Any]],
-        ajax_source,
-        search_criterions=(),
-        name=None,
-        options=None,
-    ):
+        ajax_source: str,
+        search_criterions: Tuple = (),
+        name: Optional[str] = None,
+        options: None = None,
+    ) -> None:
         self.columns = []
         self.init_columns(columns)
         self.ajax_source = ajax_source
@@ -332,7 +333,7 @@ class AjaxMainTableView(View):
         if options is not None:
             self.options = options
 
-    def init_columns(self, columns: List[Union[str, Dict[str, Any]]]):
+    def init_columns(self, columns: List[Union[str, Dict[str, Any]]]) -> None:
         # TODO: compute the correct width for each column.
         default_width = 0.99 / len(columns)
         for col in columns:
@@ -353,7 +354,7 @@ class AjaxMainTableView(View):
 
             self.columns.append(column)
 
-    def render(self):
+    def render(self) -> Markup:
         aoColumns = [{"asSorting": []}] if self.show_controls else []
         aoColumns += [
             {"asSorting": col["sorting"], "bSortable": col["sortable"]}
@@ -662,8 +663,8 @@ class TextInput(wtforms.widgets.TextInput):
     :class:`abilian.web.action.Icon`.
     """
 
-    pre_icon = None  # type: Optional[Text]
-    post_icon = None  # type: Optional[Text]
+    pre_icon: Optional[Text] = None
+    post_icon: Optional[Text] = None
 
     def __init__(
         self,
@@ -760,7 +761,7 @@ class FileInput:
     file-inputs-into-shape-with-bootstrap-3/
     """
 
-    def __init__(self, template="widgets/file_input.html"):
+    def __init__(self, template: str = "widgets/file_input.html") -> None:
         self.template = template
 
     def __call__(self, field, **kwargs):
@@ -862,12 +863,12 @@ class ImageInput(FileInput):
 
     def __init__(
         self,
-        template="widgets/image_input.html",
-        width=120,
-        height=120,
-        resize_mode=image.CROP,
-        valid_extensions=("jpg", "jpeg", "png"),
-    ):
+        template: str = "widgets/image_input.html",
+        width: int = 120,
+        height: int = 120,
+        resize_mode: str = image.CROP,
+        valid_extensions: Tuple[str, str, str] = ("jpg", "jpeg", "png"),
+    ) -> None:
         super().__init__(template=template)
         self.resize_mode = resize_mode
         self.valid_extensions = valid_extensions
@@ -1041,16 +1042,16 @@ class TimeInput(Input):
 
     def __init__(
         self,
-        template=None,
-        widget_mode="dropdown",
-        h24_mode=True,
-        minuteStep=1,
-        showSeconds=False,
-        secondStep=1,
-        showInputs=False,
-        disableFocus=False,
-        modalBackdrop=False,
-    ):
+        template: None = None,
+        widget_mode: str = "dropdown",
+        h24_mode: bool = True,
+        minuteStep: int = 1,
+        showSeconds: bool = False,
+        secondStep: int = 1,
+        showInputs: bool = False,
+        disableFocus: bool = False,
+        modalBackdrop: bool = False,
+    ) -> None:
         super().__init__()
 
         if template is not None:
@@ -1105,7 +1106,7 @@ class DateTimeInput:
     """if corresponding field.raw_data exist it is used to initialize default
     date & time (raw_data example: ["10/10/16 | 09:00"])"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.date = DateInput()
         self.time = TimeInput()
 

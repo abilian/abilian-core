@@ -20,7 +20,6 @@ from abilian.services.auth.service import user_menu
 from abilian.services.base import Service, ServiceState
 from abilian.services.preferences.panel import PreferencePanel
 from abilian.web.action import Endpoint
-from abilian.web.admin import AdminPanel
 from abilian.web.nav import BreadcrumbItem, NavItem
 
 from .models import UserPreference

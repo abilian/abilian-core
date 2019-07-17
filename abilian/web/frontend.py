@@ -7,18 +7,20 @@ import copy
 import logging
 import re
 from collections import OrderedDict
-from typing import Any, Dict, List, Tuple
+from typing import Any, Callable, Collection, Dict, List, Optional, Tuple
 
 import sqlalchemy as sa
-from flask import Blueprint, current_app, g, redirect, render_template, \
+from flask import Request, current_app, g, redirect, render_template, \
     request, session, url_for
+from flask.blueprints import Blueprint, BlueprintSetupState
 from flask_login import current_user
 from sqlalchemy import Date, DateTime, func, orm
 from sqlalchemy.sql.expression import asc, desc, nullsfirst, nullslast
 from werkzeug.exceptions import BadRequest
 from wtforms import Form
 
-from abilian.core.entities import Entity
+from abilian.app import Application
+from abilian.core.entities import Entity, EntityQuery
 from abilian.core.extensions import db
 from abilian.i18n import _l
 from abilian.services import audit_service, get_service
@@ -44,13 +46,13 @@ class ModuleAction(Action):
     `'module:{module.endpoint}'`
     """
 
-    def __init__(self, module, group, name, *args, **kwargs):
+    def __init__(
+        self, module: "Module", group: str, name: str, *args, **kwargs
+    ) -> None:
         self.group = group
         super().__init__(module.action_category, name, *args, **kwargs)
 
-    # pyre-fixme[15]: `pre_condition` overrides method defined in `Action`
-    #  inconsistently.
-    def pre_condition(self, context):
+    def pre_condition(self, context: Dict[str, "Module"]) -> bool:
         module = actions.context.get("module")
         if not module:
             return False
@@ -92,7 +94,7 @@ def add_to_recent_items(entity, type="ignored"):
     session["recent_items"] = g.recent_items = new_recent_items
 
 
-def expose(url="/", methods=("GET",)):
+def expose(url: str = "/", methods: Tuple[str] = ("GET",)) -> Callable:
     """Use this decorator to expose views in your view classes.
 
     `url`   Relative URL for the view `methods`   Allowed HTTP methods.
@@ -108,7 +110,7 @@ def expose(url="/", methods=("GET",)):
     return wrap
 
 
-def labelize(s):
+def labelize(s: str) -> str:
     return " ".join([w.capitalize() for w in s.split("_")])
 
 
@@ -128,9 +130,9 @@ class ModuleView:
     """
 
     #: :class:`Module` instance
-    module = None  # type: Module
+    module: "Module"
 
-    def __init__(self, module, *args, **kwargs):
+    def __init__(self, module: "Module", *args, **kwargs) -> None:
         self.module = module
         super().__init__(*args, **kwargs)
 
@@ -336,7 +338,7 @@ class ModuleMeta(type):
     the class) to avoid calculating them for each view class instance.
     """
 
-    def __init__(cls, classname, bases, fields):
+    def __init__(cls, classname: str, bases: Tuple, fields: Dict[str, Any]) -> None:
         type.__init__(cls, classname, bases, fields)
 
         # Gather exposed views
@@ -361,7 +363,7 @@ class ModuleMeta(type):
 class ModuleComponent:
     """A component that provide new functions for a :class:`Module`"""
 
-    name = None  # type: str
+    name: str = None
 
     def __init__(self, name=None):
         if name is not None:
@@ -383,14 +385,14 @@ class ModuleComponent:
 
 
 class Module(metaclass=ModuleMeta):
-    id = None  # type: str
-    endpoint = None  # type: str
-    label = None  # type: str
-    managed_class = None  # type: type
+    id: str = None
+    endpoint: str = None
+    label: str = None
+    managed_class: type = None
     list_view = None
     list_view_columns: List[Dict[str, Any]] = []
     single_view = None
-    components = ()  # type: Tuple
+    components: Tuple = ()
 
     # class based views. If not provided will be automaticaly created from
     # EntityView etc defined below
@@ -412,16 +414,16 @@ class Module(metaclass=ModuleMeta):
     static_folder = None
     view_template = None
     view_options = None
-    related_views = []  # type: List[RelatedView]
+    related_views: List["RelatedView"] = []
     blueprint = None
     search_criterions = (
         search.TextSearchCriterion("name", attributes=("name", "nom")),
     )
     # used mostly to change datatable search_label
     tableview_options = {}  # type: ignore
-    _urls = []  # type: List[Tuple]
+    _urls: List[Tuple] = []
 
-    def __init__(self):
+    def __init__(self) -> None:
         # If endpoint name is not provided, get it from the class name
         if self.endpoint is None:
             class_name = self.__class__.__name__
@@ -518,13 +520,13 @@ class Module(metaclass=ModuleMeta):
     def get_component(self, name):
         return self.__components.get(name)
 
-    def _setup_view(self, url, attr, cls, *args, **kwargs):
+    def _setup_view(self, url: str, attr: str, cls: Any, *args, **kwargs) -> None:
         """Register class based views."""
         view = cls.as_view(attr, *args, **kwargs)
         setattr(self, attr, view)
         self._urls.append((url, attr, view.methods))
 
-    def init_related_views(self):
+    def init_related_views(self) -> None:
         related_views = []
         for view in self.related_views:
             if not isinstance(view, RelatedView):
@@ -536,7 +538,7 @@ class Module(metaclass=ModuleMeta):
     def action_category(self) -> str:
         return f"module:{self.endpoint}"
 
-    def get_grouped_actions(self):
+    def get_grouped_actions(self) -> OrderedDict:
         items = actions.for_category(self.action_category)
         groups = OrderedDict()
         for action in items:
@@ -561,7 +563,7 @@ class Module(metaclass=ModuleMeta):
 
         actions.register(*ACTIONS)
 
-    def create_blueprint(self, crud_app):
+    def create_blueprint(self, crud_app: "CRUDApp") -> Blueprint:
         """Create a Flask blueprint for this module."""
         # Store admin instance
         self.crud_app = crud_app
@@ -591,16 +593,16 @@ class Module(metaclass=ModuleMeta):
 
         return self.blueprint
 
-    def _setup_breadcrumb_preprocessors(self, state):
+    def _setup_breadcrumb_preprocessors(self, state: BlueprintSetupState) -> None:
         self.blueprint.url_value_preprocessor(self._add_breadcrumb)
 
-    def _add_breadcrumb(self, endpoint, values):
+    def _add_breadcrumb(self, endpoint: str, values: Dict[Any, Any]) -> None:
         g.breadcrumb.append(
             BreadcrumbItem(label=self.label, url=Endpoint(".list_view"))
         )
 
     @property
-    def base_query(self):
+    def base_query(self) -> EntityQuery:
         """Return a query instance for :attr:`managed_class`."""
         return self.managed_class.query
 
@@ -611,7 +613,7 @@ class Module(metaclass=ModuleMeta):
         return self.base_query.with_permission(READ)
 
     @property
-    def listing_query(self):
+    def listing_query(self) -> EntityQuery:
         """Like `read_query`, but can be made lightweight with only columns and
         joins of interest.
 
@@ -620,7 +622,7 @@ class Module(metaclass=ModuleMeta):
         """
         return self.base_query.with_permission(READ)
 
-    def query(self, request):
+    def query(self, request: Request):
         """Return filtered query based on request args."""
         args = request.args
         search = args.get("sSearch", "").replace("%", "").lower()
@@ -631,7 +633,7 @@ class Module(metaclass=ModuleMeta):
 
         return query
 
-    def list_query(self, request):
+    def list_query(self, request: Request) -> EntityQuery:
         """Return a filtered query based on request args, for listings.
 
         Like `query`, but subclasses can modify it to remove costly
@@ -647,7 +649,9 @@ class Module(metaclass=ModuleMeta):
 
         return query
 
-    def ordered_query(self, request, query=None):
+    def ordered_query(
+        self, request: Request, query: Optional[EntityQuery] = None
+    ) -> EntityQuery:
         """Order query according to request args.
 
         If query is None, the query is generated according to request
@@ -727,7 +731,7 @@ class Module(metaclass=ModuleMeta):
     # Exposed views
     #
     @expose("/")
-    def list_view(self):
+    def list_view(self) -> str:
         actions.context["module"] = self
         table_view = AjaxMainTableView(
             name=self.managed_class.__name__.lower(),
@@ -790,7 +794,7 @@ class Module(metaclass=ModuleMeta):
         return request.path.startswith(self.url)
 
     @staticmethod
-    def _prettify_name(name):
+    def _prettify_name(name: str) -> str:
         """Prettify class name by splitting name by capital characters.
 
         So, 'MySuperClass' will look like 'My Super Class'
@@ -838,9 +842,11 @@ class DefaultRelatedView(RelatedView):
 # TODO: rename to CRMApp ?
 class CRUDApp:
 
-    modules = ()
+    modules: Collection[Module]
 
-    def __init__(self, app, modules=None, name=None):
+    def __init__(
+        self, app: Application, modules: None = None, name: None = None
+    ) -> None:
         if name is None:
             name = self.__class__.__module__
             modules_signature = ",".join(str(module.id) for module in self.modules)
@@ -863,9 +869,9 @@ class CRUDApp:
 
         return None
 
-    def add_module(self, module):
+    def add_module(self, module: Module) -> None:
         self.app.register_blueprint(self.create_blueprint(module))
         module.register_actions()
 
-    def create_blueprint(self, module):
+    def create_blueprint(self, module: Module) -> Blueprint:
         return module.create_blueprint(self)

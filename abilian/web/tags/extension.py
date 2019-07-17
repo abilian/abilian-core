@@ -112,8 +112,9 @@ class TagsExtension:
         return query.all()
 
     # pyre-fixme[9]: tag has type `Tag`; used as `None`.
-    def add(self, entity, tag=None, ns=None, label=None):
-        # type: (Entity, Tag, Any, Any) -> Tag
+    def add(
+        self, entity: Entity, tag: Tag = None, ns: Any = None, label: Any = None
+    ) -> Tag:
         if tag is None:
             assert None not in (ns, label)
             tag = self.get(ns, label)
