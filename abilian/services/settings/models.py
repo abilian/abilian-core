@@ -15,10 +15,10 @@ class TransformerRegistry:
         self.encoders: Dict[str, Optional[Callable]] = {}
         self.decoders: Dict[str, Optional[Callable]] = {}
 
-    def encode(self, type_: str, value: Any) -> bytes:
-        return self.encoders.get(type_, bytes)(value)
+    def encode(self, type_: str, value: Any) -> str:
+        return self.encoders.get(type_, str)(value)
 
-    def decode(self, type_: str, value: bytes) -> Any:
+    def decode(self, type_: str, value: str) -> Any:
         decoder = self.decoders.get(type_)
         if decoder is not None:
             value = decoder(value)
@@ -88,66 +88,64 @@ class Setting(db.Model):
         if self._value is None:
             return empty_value
 
-        assert isinstance(self._value, bytes)
+        assert isinstance(self._value, str)
         return self.transformers.decode(self.type, self._value)
 
     @value.setter
     def value(self, value):
         assert self.type
         self._value = self.transformers.encode(self.type, value)
-        assert isinstance(self._value, bytes)
+        assert isinstance(self._value, str)
 
 
 register = _transformers.register
 
 
-def from_int(i: int) -> bytes:
-    return f"{i}".encode()
+def from_int(i: int) -> str:
+    return f"{i}"
 
 
 register("int", from_int, int)
 
 
-def from_bool(b: bool) -> bytes:
-    return b"true" if b else b"false"
+def from_bool(b: bool) -> str:
+    return "true" if b else "false"
 
 
-def to_bool(s: bytes) -> bool:
-    return s == b"true"
+def to_bool(s: str) -> bool:
+    return s == "true"
 
 
 register("bool", from_bool, to_bool)
 
 
-def from_unicode(s: str) -> bytes:
-    return str(s).encode()
+def from_unicode(s: str) -> str:
+    return s
 
 
-def to_unicode(s: bytes) -> str:
-    if isinstance(s, str):
-        return s
-    return s.decode("utf-8")
+def to_unicode(s: str) -> str:
+    return s
 
 
 register("string", from_unicode, to_unicode)
 
 
-def from_obj(o: Any) -> bytes:
-    return json.dumps(o).encode("ascii")
+def from_obj(o: Any) -> str:
+    return json.dumps(o)
 
 
-def to_obj(s: bytes) -> Any:
+def to_obj(s: str) -> Any:
     return json.loads(s)
 
 
 register("json", from_obj, to_obj)
 
 
-def from_timedelta(s: timedelta):
+def from_timedelta(s: timedelta) -> str:
     return json.dumps({"days": s.days, "seconds": s.seconds})
 
 
-def to_timedelta(s: bytes):
+def to_timedelta(s: str):
     return timedelta(**json.loads(s))
 
 
