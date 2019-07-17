@@ -25,7 +25,8 @@ from .util import friendly_fqcn, memoized, slugify
 
 if TYPE_CHECKING:
     from abilian.core.models.tag import Tag
-    from abilian.services.security.models import Permission
+    from abilian.core.models.subjects import User
+    from abilian.services.security import SecurityService, Permission
 
 __all__ = [
     "Entity",

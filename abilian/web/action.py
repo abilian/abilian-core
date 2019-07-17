@@ -245,23 +245,12 @@ class Action:
     """Action interface."""
 
     Endpoint = Endpoint
-    category: str
-    name: str
 
     # title = None
     # description = None
     # icon = None
     _url = None
     CSS_CLASS = "action action-{category} action-{category}-{name}"
-
-    #: A :class:`Endpoint` instance, a string for a simple endpoint, a tuple
-    #: ``(endpoint_name, kwargs)``  or a callable which accept a : context dict
-    #: and returns one of those a valid values.
-    endpoint = None
-
-    #: A boolean (or something that can be converted to boolean), or a callable
-    #: which accepts a context dict as parameter. See :meth:`available`.
-    condition = None
 
     template_string = (
         '<a class="{{ action.css_class }}" href="{{ url }}">'
@@ -278,7 +267,7 @@ class Action:
         description: str = "",
         icon: Union[str, Icon, None] = None,
         url: Union[str, Callable] = "",
-        endpoint: Any = None,
+        endpoint: Optional[Endpoint] = None,
         condition: Optional[Callable] = None,
         status: Optional[Any] = None,
         template: Optional[Any] = None,
@@ -287,6 +276,14 @@ class Action:
         css: Optional[Any] = None,
     ) -> None:
         """
+        :param endpoint: A :class:`Endpoint` instance, a string for a simple
+        endpoint, a tuple ``(endpoint_name, kwargs)`` or a callable which
+        accepts a : context dict and returns one of those a valid values.
+
+        :param condition: A boolean (or something that can be converted
+        to boolean), or a callable which accepts a context dict as parameter.
+        See :meth:`available`.
+
         :param button: if not `None`, a valid `btn` class (i.e `default`,
         `primary`...)
 
@@ -384,7 +381,7 @@ class Action:
     def endpoint(self) -> Optional[Endpoint]:
         endpoint = self._get_and_call("endpoint")
         if endpoint is None:
-            return
+            return None
 
         if not isinstance(endpoint, Endpoint):
             if isinstance(endpoint, str):
