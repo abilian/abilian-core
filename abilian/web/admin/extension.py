@@ -1,6 +1,6 @@
 """"""
 import logging
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional
 
 from flask import Blueprint, Flask, g
 from flask.helpers import _endpoint_from_view_func

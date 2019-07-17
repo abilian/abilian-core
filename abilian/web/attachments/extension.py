@@ -1,5 +1,4 @@
 """"""
-from typing import Union
 
 from flask import Flask, current_app
 from flask_login import current_user

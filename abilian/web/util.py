@@ -3,7 +3,7 @@
 See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for
 more ideas of stuff to implement.
 """
-from typing import Any, Union
+from typing import Any
 
 from flask import current_app
 from flask import url_for as flask_url_for

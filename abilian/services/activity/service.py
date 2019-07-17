@@ -11,7 +11,7 @@ from abilian.services import Service
 from .models import ActivityEntry
 
 if TYPE_CHECKING:
-    from abilian.app import Application
+    pass
 
 __all__ = ["ActivityService"]
 

@@ -1,7 +1,6 @@
 import datetime
 from textwrap import dedent
 from typing import Iterator
-from unittest import mock
 
 import html5lib
 from flask import Flask

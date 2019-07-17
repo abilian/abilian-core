@@ -1,5 +1,5 @@
 """Elements to build test cases for an :class:`abilian.app.Application`"""
-from typing import ContextManager, List, Union
+from typing import ContextManager, List
 
 from flask.testing import FlaskClient
 from flask_login import login_user, logout_user

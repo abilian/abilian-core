@@ -5,7 +5,7 @@ import re
 from datetime import datetime
 from inspect import isclass
 from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Optional, \
-    Tuple, Type, Union, cast
+    Tuple, Type, cast
 
 import sqlalchemy as sa
 from flask import current_app
@@ -25,8 +25,7 @@ from .util import friendly_fqcn, memoized, slugify
 
 if TYPE_CHECKING:
     from abilian.core.models.tag import Tag
-    from abilian.services.security import SecurityService
-    from abilian.services.security.models import InheritSecurity, Permission
+    from abilian.services.security.models import Permission
 
 __all__ = [
     "Entity",

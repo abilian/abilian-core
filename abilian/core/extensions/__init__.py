@@ -16,14 +16,12 @@ from sqlalchemy.sql.schema import MetaData
 
 from abilian.core.logging import patch_logger
 from abilian.core.sqlalchemy import SQLAlchemy
-
 from . import upstream_info
 from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf
 from .jinjaext import DeferredJS
 from .login import login_manager
 from .redis import Redis
-
 
 __all__ = (
     "get_extension",
