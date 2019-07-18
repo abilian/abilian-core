@@ -19,7 +19,7 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
 from sqlalchemy.orm.mapper import Mapper
-from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
+from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Boolean, DateTime, Integer, LargeBinary, \
     UnicodeText
 
@@ -38,7 +38,7 @@ __all__ = (
 )
 
 # Tables for many-to-many relationships
-following = Table(
+following = db.Table(
     "following",
     db.Model.metadata,
     Column("follower_id", Integer, ForeignKey("user.id")),
@@ -46,7 +46,7 @@ following = Table(
     UniqueConstraint("follower_id", "followee_id"),
 )
 
-membership = Table(
+membership = db.Table(
     "membership",
     db.Model.metadata,
     Column(
@@ -63,7 +63,7 @@ membership = Table(
 )
 
 # Should not be needed (?)
-administratorship = Table(
+administratorship = db.Table(
     "administratorship",
     db.Model.metadata,
     Column(

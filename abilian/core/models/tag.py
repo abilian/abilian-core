@@ -5,6 +5,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm
 
 from abilian.core.entities import Entity
+from abilian.core.extensions import db
 
 from .base import IdMixin, Model
 
@@ -50,9 +51,8 @@ def supports_tagging(obj):
     return True
 
 
-entity_tag_tbl = sa.Table(
+entity_tag_tbl = db.Table(
     "entity_tags",
-    # pyre-fixme[16]: `Model` has no attribute `metadata`.
     Model.metadata,
     sa.Column("tag_id", sa.Integer, sa.ForeignKey("tag.id", ondelete="CASCADE")),
     sa.Column("entity_id", sa.Integer, sa.ForeignKey(Entity.id, ondelete="CASCADE")),
