@@ -10,10 +10,10 @@ Based on Flask-whooshalchemy by Karl Gyllstrom.
 :license: BSD (see LICENSE.txt)
 """
 import logging
-import typing
 from inspect import isclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, \
+    Type, Union
 
 import sqlalchemy as sa
 import whoosh.query as wq
@@ -33,6 +33,7 @@ from abilian.core import signals
 from abilian.core.celery import safe_session
 from abilian.core.entities import Entity, Indexable
 from abilian.core.extensions import db
+from abilian.core.models import Model
 from abilian.core.models.subjects import Group, User
 from abilian.core.util import fqcn as base_fqcn
 from abilian.core.util import friendly_fqcn
@@ -42,7 +43,7 @@ from abilian.services.security import Anonymous, Authenticated, Role, security
 from .adapter import SAAdapter
 from .schema import DefaultSearchSchema, indexable_role
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from abilian.app import Application
 
 logger = logging.getLogger(__name__)
@@ -84,12 +85,10 @@ class IndexServiceState(ServiceState):
 
     @property
     def to_update(self) -> List[Tuple[str, Entity]]:
-        # pyre-fixme[16]: Module `globals` has no attribute `_lookup_app_object`.
         return _lookup_app_object(_pending_indexation_attr)
 
     @to_update.setter
     def to_update(self, value: List) -> None:
-        # pyre-fixme[16]: Module `flask` has no attribute `_app_ctx_stack`.
         top = _app_ctx_stack.top
         if top is None:
             raise RuntimeError("working outside of application context")
@@ -134,9 +133,7 @@ class WhooshIndexService(Service):
 
     def _do_register_js_api(self, sender: "Application") -> None:
         app = sender
-        # pyre-fixme[6]: Expected `str` for 2nd param but got `Dict[_KT, _VT]`.
         js_api = app.js_api.setdefault("search", {})
-        # pyre-fixme[16]: `str` has no attribute `__setitem__`.
         js_api["object_types"] = self.searchable_object_types()
 
     def register_search_filter(self, func):
@@ -242,9 +239,9 @@ class WhooshIndexService(Service):
         self,
         q: str,
         index: str = "default",
-        fields: None = None,
-        Models: Tuple = (),
-        object_types: Tuple = (),
+        fields: Optional[Dict[str, float]] = None,
+        Models: Tuple[Type[Model]] = (),
+        object_types: Tuple[str] = (),
         prefix: bool = True,
         facet_by_type: None = None,
         **search_args,

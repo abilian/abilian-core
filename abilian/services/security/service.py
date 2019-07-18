@@ -754,7 +754,10 @@ class SecurityService(Service):
         )
 
     def query_entity_with_permission(
-        self, permission: Permission, user: None = None, Model: Type[Model] = Entity
+        self,
+        permission: Permission,
+        user: Optional[User] = None,
+        Model: Type[Model] = Entity,
     ) -> Exists:
         """Filter a query on an :class:`Entity` or on of its subclasses.
 
@@ -866,7 +869,7 @@ class SecurityService(Service):
         if permission:
             pa = pa.filter(PermissionAssignment.permission == permission)
 
-        results = {}
+        results: Dict[permission, Set[Role]] = {}
         for permission, role in pa.yield_per(1000):
             results.setdefault(permission, set()).add(role)
 

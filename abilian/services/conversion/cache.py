@@ -17,7 +17,7 @@ class Cache:
     def __contains__(self, key: CacheKey) -> bool:
         return self._path(key).exists()
 
-    def get(self, key: CacheKey) -> None:
+    def get(self, key: CacheKey) -> Union[str, bytes, None]:
         if key in self:
             path = self._path(key)
             if key[0] == "txt":
