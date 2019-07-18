@@ -378,7 +378,6 @@ class ModuleComponent:
 
     def init(self, *args, **kwargs):
         """Implements this in components."""
-        pass
 
     def get_actions(self):
         return []

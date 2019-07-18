@@ -31,7 +31,6 @@ class SchemaAdapter(metaclass=ABCMeta):
         :param:model_class: class of objects instances to be adapted
         :param:schema: :class:`whoosh.fields.Schema` instance
         """
-        pass
 
     @staticmethod
     def can_adapt(obj_cls):

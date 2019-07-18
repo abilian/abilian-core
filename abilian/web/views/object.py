@@ -317,12 +317,10 @@ class ObjectEdit(ObjectView):
             del form.image
             store_image(image)
         """
-        pass
 
     def after_populate_obj(self):
         """Called after `self.obj` values have been updated, and `self.obj`
         attached to an ORM session."""
-        pass
 
     def handle_commit_exception(self, exc):
         """Hook point to handle exception that may happen during commit.

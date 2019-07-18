@@ -27,7 +27,6 @@ class AdminPanel:
 
         This is also the right place to add items to the breadcrumbs.
         """
-        pass
 
     def install_additional_rules(self, add_url_rule: Callable) -> None:
         """This method can be redefined in subclasses to install custom url
@@ -39,4 +38,3 @@ class AdminPanel:
         :param add_url_rule: function to use to add url rules, same interface as
             :meth:`flask.blueprint.Blueprint.add_url_rule`.
         """
-        pass

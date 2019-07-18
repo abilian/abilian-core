@@ -7,8 +7,6 @@ class Taggable:
     Currently not used.
     """
 
-    pass
-
 
 class TagService:
     """The tag service."""
