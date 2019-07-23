@@ -26,10 +26,9 @@ class Registry:
         """Associate a `url_func` with entity's type.
 
         :param:entity: an :class:`abilian.core.extensions.db.Model` class or
-        instance.
-
+            instance.
         :param:url_func: any callable that accepts an entity instance and
-        return an url for it.
+            return an url for it.
         """
         if not inspect.isclass(entity):
             entity = entity.__class__

@@ -46,10 +46,6 @@ This includes:
 
 You can check the build status:
 
-- `Our own Jenkins server <http://jenkins.abilian.com/job/Abilian-Core/>`_
-
-- `On drone.io <https://drone.io/github.com/abilian/abilian-core/latest>`_
-
 - `On Travis CI <https://travis-ci.org/abilian/abilian-core>`_
 
 You can also check the coverage reports:
@@ -73,4 +69,3 @@ Here's what you should do to make a new release on PyPI:
    versionning.
 
 4. Run `python setup.py sdist upload`.
-

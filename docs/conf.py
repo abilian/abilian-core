@@ -17,8 +17,8 @@ import sys
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, os.path.abspath(".."))
 
 # -- General configuration -----------------------------------------------------
 
@@ -28,59 +28,50 @@ sys.path.insert(0, os.path.abspath('..'))
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'exts.intersphinx_flask_ext',  # custom extension to convert 'flask_' to flask.ext.
-    'sphinx.ext.autodoc',
-    'sphinx.ext.coverage',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.autosummary',
+    "exts.intersphinx_flask_ext",  # custom extension to convert 'flask_' to flask.ext.
+    "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.autosummary",
 ]
 
 # sphinx.ext.autodoc configuration
-autodoc_member_order = 'groupwise'
-autodoc_default_options = {'members': None, 'undoc-members': None}
+autodoc_member_order = "groupwise"
+autodoc_default_options = {"members": None, "undoc-members": None}
 
 # sphinx.ext.intersphinx configuration
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/2.7/', 'inventories/python27.inv'),
-    'flask': ('http://flask.pocoo.org/docs/', 'inventories/flask.inv'),
-    'babel': ('http://babel.pocoo.org/docs/', 'inventories/babel.inv'),
-    'flaskbabel': (
-        'http://pythonhosted.org/Flask-Babel/',
-        'inventories/flask_babel.inv',
-    ),
-    'sqlalchemy': (
-        'http://docs.sqlalchemy.org/en/rel_1_0/',
-        'inventories/sqlalchemy_1_0.inv',
-    ),
-    'webassets': (
-        'http://webassets.readthedocs.org/en/latest',
-        'inventories/webassets.inv',
-    ),
+    "python": ("https://docs.python.org/3.6/", None),
+    "flask": ("https://flask.palletsprojects.com/", None),
+    "babel": ("https://babel.pocoo.org/docs/", "inventories/babel.inv"),
+    "flaskbabel": ("https://pythonhosted.org/Flask-Babel/", None),
+    "sqlalchemy": ("https://docs.sqlalchemy.org/en/13/", None),
+    "webassets": ("https://webassets.readthedocs.org/en/latest", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'Abilian'
-copyright = '2012-2015, Abilian SAS'
+project = "Abilian"
+copyright = "2012-2015, Abilian SAS"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '0.1'
+version = "0.1"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -92,11 +83,11 @@ release = version
 # non-false value, then it is used:
 # today = ''
 # Else, today_fmt is used as the format for a strftime call.
-today_fmt = '%Y-%m-%d'
+today_fmt = "%Y-%m-%d"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ["_build"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 # default_role = None
@@ -113,7 +104,7 @@ add_module_names = False
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -126,10 +117,11 @@ pygments_style = 'sphinx'
 # html_theme = 'default'
 
 # Use the RTD theme both locally and on RTD.
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
+
+    html_theme = "sphinx_rtd_theme"
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -203,7 +195,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'abiliandoc'
+htmlhelp_basename = "abiliandoc"
 
 # -- Options for LaTeX output --------------------------------------------------
 
@@ -222,21 +214,24 @@ htmlhelp_basename = 'abiliandoc'
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     (
-        'index', 'abilian-core.tex', 'Abilian Core Documentation',
-        'Stefane Fermigier', 'manual',
-    ),
+        "index",
+        "abilian-core.tex",
+        "Abilian Core Documentation",
+        "Stefane Fermigier",
+        "manual",
+    )
 ]
 
 # From Flask doc
 latex_domain_indices = False
 latex_elements = {
-    'fontpkg': r'\usepackage{mathpazo}',
-    'papersize': 'a4paper',
-    'pointsize': '12pt',
-    'preamble': r'\usepackage{flaskstyle}',
+    "fontpkg": r"\usepackage{mathpazo}",
+    "papersize": "a4paper",
+    "pointsize": "12pt",
+    "preamble": r"\usepackage{flaskstyle}",
 }
 latex_toplevel_sectioning = "part"
-latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
+latex_additional_files = ["flaskstyle.sty", "logo.pdf"]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -262,10 +257,7 @@ latex_additional_files = ['flaskstyle.sty', 'logo.pdf']
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(
-    'index', 'abilian', 'Abilian Documentation',
-    ['Stefane Fermigier'], 1,
-)]
+man_pages = [("index", "abilian", "Abilian Documentation", ["Stefane Fermigier"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -277,9 +269,14 @@ man_pages = [(
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        'index', 'Abilian', 'Abilian Documentation', 'Stefane Fermigier',
-        'Abilian', 'One line description of project.', 'Miscellaneous',
-    ),
+        "index",
+        "Abilian",
+        "Abilian Documentation",
+        "Stefane Fermigier",
+        "Abilian",
+        "One line description of project.",
+        "Miscellaneous",
+    )
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -294,10 +291,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = 'Abilian'
-epub_author = 'Stefane Fermigier'
-epub_publisher = 'Stefane Fermigier'
-epub_copyright = '2012, Stefane Fermigier'
+epub_title = "Abilian"
+epub_author = "Stefane Fermigier"
+epub_publisher = "Stefane Fermigier"
+epub_copyright = "2012, Stefane Fermigier"
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
