@@ -182,6 +182,7 @@ release:
 update-deps:
 	pip install -U pip setuptools wheel
 	poetry update
+	poetry run pip freeze > etc/requirements.txt
 
 sync-deps:
 	pip install -U pip setuptools wheel

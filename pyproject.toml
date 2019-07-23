@@ -133,6 +133,9 @@ mypy = "*"
 # Development tools
 pre-commit = "*"
 
+# Issue w/ dependency
+# dephell = "*"
+
 # Formatting
 isort = "*"
 docformatter = "*"
@@ -145,7 +148,9 @@ Sphinx = ">=1.5.5"
 # Standard theme for readthedocs.com
 sphinx-rtd-theme = "*"
 
+# Used to generate changelogs
 gitchangelog = "^3.0"
+
 # Used by functional tests
 requests = "*"
 
