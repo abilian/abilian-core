@@ -88,9 +88,7 @@ class JsonUsersList(base.JSONView):
                 '<a href="{url}"><img src="{src}" width="{size}" height="{size}">'
                 "</a>".format(url=user_url, src=mugshot, size=MUGSHOT_SIZE),
                 f'<a href="{user_url}">{name}</a>',
-                '<a href="{url}"><em>{email}</em></a>'.format(
-                    url=user_url, email=email
-                ),
+                f'<a href="{user_url}"><em>{email}</em></a>',
                 "\u2713" if user.can_login else "",
                 render_template_string(
                     """{%- for g in groups %}

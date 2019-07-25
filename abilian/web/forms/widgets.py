@@ -443,9 +443,7 @@ class AjaxMainTableView(View):
                 cell = Markup(f'<a href="{url_for(entity)}">{html.escape(value)}</a>')
             elif isinstance(value, Entity):
                 cell = Markup(
-                    '<a href="{}">{}</a>'.format(
-                        url_for(value), html.escape(value.name)
-                    )
+                    f'<a href="{url_for(value)}">{html.escape(value.name)}</a>'
                 )
             elif isinstance(value, str) and (
                 value.startswith("http://") or value.startswith("www.")

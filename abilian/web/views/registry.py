@@ -42,7 +42,7 @@ class Registry:
         entity: Union[db.Model, Hit, Dict, None] = None,
         object_type: Optional[str] = None,
         object_id: Optional[int] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """Return canonical view URL for given entity instance.
 
@@ -71,11 +71,9 @@ class Registry:
             return url_func(entity, object_type, object_id, **kwargs)
 
         try:
-            return url_for(
-                "{}.view".format(object_type.rsplit(".")[-1].lower()),
-                object_id=object_id,
-                **kwargs
-            )
+            blueprint_name = object_type.rsplit(".")[-1].lower()
+            endpoint = f"{blueprint_name}.view"
+            return url_for(endpoint, object_id=object_id, **kwargs)
         except Exception:
             raise KeyError(object_type)
 
