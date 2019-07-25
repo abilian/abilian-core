@@ -160,6 +160,9 @@ html5lib = "*"
 # Check README
 restructuredtext_lint = "*"
 
+# Temp (workaround poetry issue)
+docutils = "=0.15"
+
 
 # [build-system]
 # requires = ["poetry>=0.12"]
