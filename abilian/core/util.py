@@ -215,22 +215,23 @@ class BasePresenter:
         return [cls(model) for model in models]
 
 
-def encode_string(string):
+def encode_string(string_or_bytes: Union[str, bytes]) -> bytes:
     """Encode a string to bytes, if it isn't already.
 
-    :param string: The string to encode
+    :param string_or_bytes: The string to encode.
+        Does nothing if it's already bytes.
     """
     # from pysecurity
 
-    if isinstance(string, str):
-        return string.encode("utf-8")
+    if isinstance(string_or_bytes, str):
+        return string_or_bytes.encode()
     else:
-        return string
+        return string_or_bytes
 
 
-def md5(data):
+def md5(data: Union[str, bytes, None]):
     """md5 function, as in flask-security."""
     # flask-security is not needed anywhere else and as of 1.7.5 has
     # strong dependency requirements that prevent us from upgrading a
     # few packages (flask-login 0.4).
-    return hashlib.md5(encode_string(data)).hexdigest()
+    return hashlib.md5(encode_string(data or "")).hexdigest()

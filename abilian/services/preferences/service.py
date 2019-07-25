@@ -40,15 +40,16 @@ user_menu.insert(0, _PREF_NAV_ITEM)
 
 
 class PreferenceState(ServiceState):
-    panels = None
-    blueprint = None
-    blueprint_registered = False
+    panels: List["PreferencePanel"]
+    blueprint: Blueprint
+    blueprint_registered: bool
 
     def __init__(self, service: "PreferenceService", *args: Any, **kwargs: Any) -> None:
         super().__init__(service, *args, **kwargs)
         self.panels = []
         self.nav_paths = {}
         self.breadcrumb_items = {}
+        self.blueprint_registered = False
 
 
 class PreferenceService(Service):
