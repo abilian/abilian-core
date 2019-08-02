@@ -80,7 +80,6 @@ class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
         return JSONView.get(self, *args, **kwargs)
 
     def data(self, *args, **kwargs) -> Dict:
-        # pyre-fixme[16]: `EntityTagList` has no attribute `entity`.
         tags = sorted(self.extension.entity_tags(self.entity))
         return {"result": tags}
 

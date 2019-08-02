@@ -214,7 +214,6 @@ def user_url_args(user: User, size: int) -> Tuple[str, Dict[str, Any]]:
 
     if not user.is_anonymous:
         endpoint = "images.user_photo"
-        # pyre-fixme[6]: Expected `Union[int, str]` for 2nd param but got `Column`.
         kwargs["user_id"] = user.id
         content = user.photo if user.photo else (user.name + user.email).encode("utf-8")
         kwargs["md5"] = hashlib.md5(content).hexdigest()

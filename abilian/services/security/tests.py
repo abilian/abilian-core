@@ -121,7 +121,6 @@ def test_grant_basic_roles(session: Session) -> None:
 def test_grant_basic_roles_on_groups(session: Session) -> None:
     user = User(email="john@example.com", password="x")
     group = Group(name="Test Group")
-    # pyre-fixme[16]: `User` has no attribute `groups`.
     user.groups.add(group)
     session.add(user)
     session.flush()
@@ -152,7 +151,6 @@ def test_grant_roles_on_objects(session: Session) -> None:
     user = User(email="john@example.com", password="x")
     user2 = User(email="papa@example.com", password="p")
     group = Group(name="Test Group")
-    # pyre-fixme[16]: `User` has no attribute `groups`.
     user.groups.add(group)
     obj = DummyModel()
     session.add_all([user, user2, obj])
@@ -302,7 +300,6 @@ def test_has_permission_on_objects(session: Session) -> None:
     has_permission = security.has_permission
     user = User(email="john@example.com", password="x")
     group = Group(name="Test Group")
-    # pyre-fixme[16]: `User` has no attribute `groups`.
     user.groups.add(group)
     obj = DummyModel(creator=user, owner=user)
     session.add_all([user, obj])

@@ -368,7 +368,6 @@ class WhooshIndexService(Service):
             if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)
 
-    # pyre-fixme[9]: app_state has type `IndexServiceState`; used as `None`.
     def register_class(self, cls: type, app_state: IndexServiceState = None) -> None:
         """Register a model class."""
         state = app_state if app_state is not None else self.app_state
@@ -380,7 +379,6 @@ class WhooshIndexService(Service):
             return
 
         cls_fqcn = fqcn(cls)
-        # pyre-fixme[18]: Global name `Adapter` is undefined.
         self.adapted[cls_fqcn] = Adapter(cls, self.schemas["default"])
         state.indexed_classes.add(cls)
         state.indexed_fqcn.add(cls_fqcn)
@@ -416,7 +414,6 @@ class WhooshIndexService(Service):
         """
         if (
             not self.running
-            # pyre-fixme[16]: `Optional` has no attribute `nested`.
             or session.transaction.nested  # inside a sub-transaction:
             # not yet written in DB
             or session is not db.session()
@@ -443,7 +440,6 @@ class WhooshIndexService(Service):
             index_update.apply_async(kwargs={"index": "default", "items": items})
         self.clear_update_queue()
 
-    # pyre-fixme[9]: adapter has type `SAAdapter`; used as `None`.
     def get_document(self, obj: Entity, adapter: SAAdapter = None) -> Dict[str, Any]:
         if adapter is None:
             class_name = fqcn(obj.__class__)
@@ -459,8 +455,6 @@ class WhooshIndexService(Service):
                 del document[k]
                 continue
             if isinstance(v, (User, Group, Role)):
-                # pyre-fixme[6]: Expected `Role` for 1st param but got `Union[Group,
-                #  User, Role]`.
                 document[k] = indexable_role(v)
 
         if not document.get("allowed_roles_and_users"):
@@ -508,7 +502,6 @@ class WhooshIndexService(Service):
 service = WhooshIndexService()
 
 
-# pyre-fixme[16]: Module `celery` has no attribute `shared_task`.
 @shared_task
 def index_update(index: str, items: List[List[Union[Dict, int, str]]]) -> None:
     """
@@ -586,6 +579,5 @@ class TestingStorage(RamStorage):
     tests are ran in parallel, including different abilian-based packages.
     """
 
-    # pyre-fixme[9]: name has type `str`; used as `None`.
     def temp_storage(self, name: str = None) -> "TestingStorage":
         return TestingStorage()

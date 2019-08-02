@@ -305,7 +305,6 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 
     @declared_attr
     def __mapper_args__(cls) -> Dict[str, Any]:
-        # pyre-fixme[16]: `Entity` has no attribute `__name__`.
         if cls.__module__ == __name__ and cls.__name__ == "Entity":
             return {"polymorphic_on": "_entity_type"}
 
@@ -484,12 +483,10 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 # TODO: make this unecessary
 @event.listens_for(Entity, "class_instrument", propagate=True)
 def register_metadata(cls: Type[Entity]) -> None:
-    # pyre-fixme[8]: Attribute has type `FrozenSet`; used as `Set[_T]`.
     cls.__editable__ = set()
 
     # TODO: use SQLAlchemy 0.8 introspection
     if hasattr(cls, "__table__"):
-        # pyre-fixme[16]: `Entity` has no attribute `__table__`.
         columns = cls.__table__.columns
     else:
         columns = [v for k, v in vars(cls).items() if isinstance(v, Column)]
@@ -499,7 +496,6 @@ def register_metadata(cls: Type[Entity]) -> None:
         info = column.info
 
         if info.get("editable", True):
-            # pyre-fixme[16]: `FrozenSet` has no attribute `add`.
             cls.__editable__.add(name)
 
 
@@ -519,7 +515,6 @@ def polymorphic_update_timestamp(
         state = sa.inspect(obj)
         history = state.attrs["updated_at"].history
         if not any((history.added, history.deleted)):
-            # pyre-fixme[8]: Attribute has type `Column`; used as `datetime`.
             obj.updated_at = datetime.utcnow()
 
 

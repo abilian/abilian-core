@@ -1,5 +1,4 @@
 """"""
-# pyre-fixme[21]: Could not find `util`.
 from multiprocessing.util import register_after_fork
 from typing import Any, Dict, List, Optional
 
@@ -46,12 +45,7 @@ def is_eager() -> bool:
     config, request.is_eager is *False*.
     """
     return (
-        # pyre-fixme[16]: Module `celery` has no attribute `current_task`.
-        # pyre-fixme[16]: Module `celery` has no attribute `current_task`.
-        current_task
-        # pyre-fixme[16]: Module `celery` has no attribute `current_task`.
-        and current_task.request.is_eager
-        # pyre-fixme[16]: Module `celery` has no attribute `current_app`.
+        current_task and current_task.request.is_eager
     ) or celery_current_app.conf.CELERY_ALWAYS_EAGER
 
 
@@ -83,7 +77,6 @@ class FlaskLoader(BaseLoader):
         app = self.flask_app_factory()
 
         if "sentry" in app.extensions:
-            # pyre-fixme[21]: Could not find `raven`.
             from raven.contrib.celery import register_signal, register_logger_signal
 
             client = app.extensions["sentry"].client
@@ -91,7 +84,6 @@ class FlaskLoader(BaseLoader):
             register_signal(client)
             register_logger_signal(client)
 
-        # pyre-fixme[16]: Module `multiprocessing` has no attribute `util`.
         register_after_fork(app, self._setup_after_fork)
         return app
 
@@ -138,7 +130,6 @@ class FlaskTask(Task):
             # FIXME: also test has_app_context()?
             return super().__call__(*args, **kwargs)
 
-        # pyre-fixme[16]: `class_property` has no attribute `loader`.
         with self.app.loader.flask_app.app_context():
             return super().__call__(*args, **kwargs)
 

@@ -105,11 +105,9 @@ def test_visible_panels(app: Application, db: SQLAlchemy) -> None:
                 break
 
         expected = ["preferences.visible"]
-        # pyre-fixme[18]: Global name `ctx` is undefined.
         assert [p["endpoint"] for p in ctx["menu"]] == expected
 
         security.grant_role(user, "admin")
-        # pyre-fixme[18]: Global name `cp` is undefined.
         ctx = cp()
         expected = ["preferences.visible", "preferences.admin"]
         assert [p["endpoint"] for p in ctx["menu"]] == expected

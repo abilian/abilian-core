@@ -143,7 +143,6 @@ def test_datetime_field(app: Application) -> None:
 
     headers = {"Accept-Language": "fr-FR,fr;q=0.8"}
     with app.test_request_context(headers=headers):
-        # pyre-fixme[16]: `DateTimeField` has no attribute `bind`.
         field = fields.DateTimeField(use_naive=False).bind(Form(), "dt")
         field.process_formdata(["17/06/1789 | 10:42"])
         # 1789: applied offset for HongKong is equal to LMT+7:37:00,
@@ -180,7 +179,6 @@ def test_datetime_field_naive(app: Application) -> None:
         # NAIVE mode: dates without timezone. Those are the problematic ones
         # when year < 1900: strptime will raise an Exception use naive dates; by
         # default
-        # pyre-fixme[16]: `DateTimeField` has no attribute `bind`.
         field = fields.DateTimeField().bind(Form(), "dt")
         field.process_formdata(["17/06/1789 | 10:42"])
 
@@ -200,7 +198,6 @@ def test_datetime_field_force_4digit_year(app: Application) -> None:
 
     headers = {"Accept-Language": "en"}
     with app.test_request_context(headers=headers):
-        # pyre-fixme[16]: `DateTimeField` has no attribute `bind`.
         field = fields.DateTimeField().bind(Form(), "dt")
         field.data = datetime.datetime(2011, 1, 23, 10, 42, tzinfo=pytz.utc)
         assert field._value() == "1/23/2011, 6:42 PM"
@@ -212,7 +209,6 @@ def test_date_field(app: Application) -> None:
 
     headers = {"Accept-Language": "fr-FR,fr;q=0.8"}
     with app.test_request_context(headers=headers):
-        # pyre-fixme[16]: `DateField` has no attribute `bind`.
         field = fields.DateField().bind(Form(), "dt")
         field.process_formdata(["17/06/1789"])
         assert field.data == datetime.date(1789, 6, 17)
@@ -225,7 +221,6 @@ def test_datefield_force_4digit_year(app: Application) -> None:
     # use 'en': short date pattern is 'M/d/yy'
     headers = {"Accept-Language": "en"}
     with app.test_request_context(headers=headers):
-        # pyre-fixme[16]: `DateField` has no attribute `bind`.
         field = fields.DateField().bind(Form(), "dt")
         field.data = datetime.date(2011, 1, 23)
         assert field._value() == "1/23/2011"

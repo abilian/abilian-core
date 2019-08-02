@@ -52,8 +52,6 @@ class Permission(UniqueName):
     Permission instances are unique by name.
     """
 
-    # pyre-fixme[15]: `__slots__` overrides attribute defined in `UniqueName`
-    #  inconsistently.
     __slots__ = ("label",)
 
     def __init__(

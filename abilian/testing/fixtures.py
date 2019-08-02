@@ -134,7 +134,6 @@ def admin_user(db: SQLAlchemy) -> User:
 
 @fixture
 def login_user(user: User, client: FlaskClient) -> User:
-    # pyre-fixme[16]: Optional type has no attribute `__enter__`.
     with client.session_transaction() as session:
         session["user_id"] = user.id
 
@@ -143,7 +142,6 @@ def login_user(user: User, client: FlaskClient) -> User:
 
 @fixture
 def login_admin(admin_user: User, client: FlaskClient) -> User:
-    # pyre-fixme[16]: Optional type has no attribute `__enter__`.
     with client.session_transaction() as session:
         session["user_id"] = admin_user.id
 

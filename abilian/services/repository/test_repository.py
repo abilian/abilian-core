@@ -13,7 +13,6 @@ UUID = uuid.UUID(UUID_STR)
 
 def test_rel_path(session: Session) -> None:
     with raises(ValueError):
-        # pyre-fixme[6]: Expected `UUID` for 1st param but got `str`.
         repository.rel_path(UUID_STR)
 
     p = repository.rel_path(UUID)
@@ -24,7 +23,6 @@ def test_rel_path(session: Session) -> None:
 
 def test_abs_path(session: Session) -> None:
     with raises(ValueError):
-        # pyre-fixme[6]: Expected `UUID` for 1st param but got `str`.
         repository.abs_path(UUID_STR)
 
     p = repository.abs_path(UUID)
@@ -38,11 +36,9 @@ def test_abs_path(session: Session) -> None:
 
 def test_get(session: Session) -> None:
     with raises(ValueError):
-        # pyre-fixme[6]: Expected `UUID` for 1st param but got `str`.
         repository.get(UUID_STR)
 
     with raises(ValueError):
-        # pyre-fixme[6]: Expected `UUID` for 1st param but got `str`.
         assert repository[UUID_STR]
 
     p = repository.abs_path(UUID)
@@ -52,14 +48,12 @@ def test_get(session: Session) -> None:
 
     val = repository.get(UUID)
     assert val == p
-    # pyre-fixme[16]: Optional type has no attribute `open`.
     assert val.open("rb").read() == b"my file content"
 
     # non-existent
     u = uuid.UUID("bcdc32ac-498d-4544-9e7f-fb2c75097011")
     null = object()
     assert repository.get(u) is None
-    # pyre-fixme[6]: Expected `Optional[Path]` for 2nd param but got `object`.
     assert repository.get(u, default=null) is null
 
     # __getitem__

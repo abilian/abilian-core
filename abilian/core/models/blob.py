@@ -48,9 +48,6 @@ class Blob(Model):
         """Return :class:`pathlib.Path` object used for storing value."""
         from abilian.services.repository import session_repository as repository
 
-        # pyre-fixme[7]: Expected `Optional[Path]` but got `Optional[Union[Path,
-        #  object]]`.
-        # pyre-fixme[6]: Expected `UUID` for 2nd param but got `Column`.
         return repository.get(self, self.uuid)
 
     @property
@@ -63,7 +60,6 @@ class Blob(Model):
     def value(self) -> bytes:
         """Binary value content."""
         v = self.file
-        # pyre-fixme[7]: Expected `bytes` but got `Optional[AnyStr]`.
         return v.open("rb").read() if v is not None else v
 
     @value.setter
@@ -93,7 +89,6 @@ class Blob(Model):
         """Remove value from repository."""
         from abilian.services.repository import session_repository as repository
 
-        # pyre-fixme[6]: Expected `UUID` for 2nd param but got `Column`.
         repository.delete(self, self.uuid)
 
     @property

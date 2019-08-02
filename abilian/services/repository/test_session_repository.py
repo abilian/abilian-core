@@ -41,13 +41,10 @@ def test_accessors_bad_uuid_type(session: Session) -> None:
     uuid_str = b"4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9"
 
     with raises(ValueError):
-        # pyre-fixme[6]: Expected `UUID` for 2nd param but got `bytes`.
         session_repository.get(session, uuid_str)
     with raises(ValueError):
-        # pyre-fixme[6]: Expected `UUID` for 2nd param but got `bytes`.
         session_repository.set(session, uuid_str, "")
     with raises(ValueError):
-        # pyre-fixme[6]: Expected `UUID` for 2nd param but got `bytes`.
         session_repository.delete(session, uuid_str)
 
 
@@ -64,7 +61,6 @@ def test_accessors_set_get_delete(session: Session) -> None:
     content = b"my file content"
     u1 = uuid.uuid4()
     session_repository.set(session, u1, content)
-    # pyre-fixme[16]: Optional type has no attribute `open`.
     assert session_repository.get(session, u1).open("rb").read() == content
     assert repository.get(u1) is None
 
@@ -84,7 +80,6 @@ def test_accessors_set_get_delete(session: Session) -> None:
 def test_transaction(session: Session) -> None:
     u = uuid.uuid4()
     repository.set(u, b"first draft")
-    # pyre-fixme[16]: Optional type has no attribute `open`.
     assert session_repository.get(session, u).open("rb").read() == b"first draft"
 
     session_repository.set(session, u, b"new content")
@@ -96,7 +91,6 @@ def test_transaction(session: Session) -> None:
     assert session_repository.get(session, u) is None
 
     db_tr.rollback()
-    # pyre-fixme[16]: Optional type has no attribute `open`.
     assert session_repository.get(session, u).open("rb").read() == b"new content"
 
     # delete and commit
@@ -117,7 +111,6 @@ def test_transaction(session: Session) -> None:
     assert session_repository.get(session, u) is None
 
     db_tr.rollback()
-    # pyre-fixme[16]: Optional type has no attribute `open`.
     assert session_repository.get(session, u).open("rb").read() == b"first draft"
 
     session.rollback()
@@ -146,7 +139,6 @@ def test_transaction(session: Session) -> None:
         with session.begin(nested=True):
             session_repository.set(session, u, b"transaction 2")
 
-        # pyre-fixme[16]: Optional type has no attribute `open`.
         assert session_repository.get(session, u).open("rb").read() == b"transaction 2"
 
 
@@ -168,7 +160,6 @@ def test_transaction_path(session: Session) -> None:
 
     assert root_transaction.path.exists()
 
-    # pyre-fixme[16]: Optional type has no attribute `open`.
     content = session_repository.get(session, u).open("rb").read()
     assert content == b"my file content"
     assert root_transaction.path.exists()

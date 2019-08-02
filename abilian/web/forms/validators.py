@@ -247,7 +247,6 @@ def siret_validator() -> Callable:
         also want to give directly a siret, for a scripting use.
         """
         if field is not None:
-            # pyre-fixme[16]: `Field` has no attribute `data`.
             siret = (field.data or "").strip()
 
         if len(siret) != 14:

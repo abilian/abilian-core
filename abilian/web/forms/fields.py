@@ -150,8 +150,6 @@ class FileField(BaseFileField):
     """
 
     multiple = False
-    # pyre-fixme[15]: `widget` overrides attribute defined in `FileField`
-    #  inconsistently.
     widget = FileInput()
     blob = None
     blob_attr = "value"
@@ -286,7 +284,6 @@ class FileField(BaseFileField):
 
 
 class DateTimeField(Field):
-    # pyre-fixme[15]: `widget` overrides attribute defined in `Field` inconsistently.
     widget = DateTimeInput()
 
     def __init__(
@@ -321,8 +318,6 @@ class DateTimeField(Field):
             )
             time_fmt = locale.time_formats["short"]
             dt_fmt = locale.datetime_formats["short"].format(time_fmt, date_fmt)
-            # pyre-fixme[16]: `DateTimeField` has no attribute `data`.
-            # pyre-fixme[16]: `DateTimeField` has no attribute `data`.
             return format_datetime(self.data, dt_fmt) if self.data else ""
 
     def process_data(self, value: datetime) -> None:
@@ -353,23 +348,18 @@ class DateTimeField(Field):
                 self.data = datetime.strptime(date_str, datetime_fmt)
                 if not self.use_naive:
                     tz = get_timezone()
-                    # pyre-fixme[16]: `DateTimeField` has no attribute `data`.
                     if self.data.tzinfo:
-                        # pyre-fixme[16]: `DateTimeField` has no attribute `data`.
                         self.data = self.data.astimezone(tz)
                     else:
-                        # pyre-fixme[16]: `DateTimeField` has no attribute `data`.
                         self.data = tz.localize(self.data)
 
                 # convert to UTC
-                # pyre-fixme[16]: `DateTimeField` has no attribute `data`.
                 self.data = utc_dt(self.data)
             except ValueError:
                 self.data = None
                 raise ValueError(self.gettext("Not a valid datetime value"))
 
     def populate_obj(self, obj: Any, name: str) -> None:
-        # pyre-fixme[16]: `DateTimeField` has no attribute `data`.
         dt = self.data
         if dt and self.use_naive:
             dt = dt.replace(tzinfo=None)
@@ -380,7 +370,6 @@ class DateTimeField(Field):
 class DateField(Field):
     """A text field which stores a `date` matching a format."""
 
-    # pyre-fixme[15]: `widget` overrides attribute defined in `Field` inconsistently.
     widget = DateInput()
 
     def __init__(
@@ -390,7 +379,6 @@ class DateField(Field):
 
     def _value(self) -> str:
         if self.raw_data:
-            # pyre-fixme[6]: Expected `Iterable[str]` for 1st param but got `None`.
             return " ".join(self.raw_data)
         else:
             date_fmt = get_locale().date_formats["short"].pattern
@@ -402,8 +390,6 @@ class DateField(Field):
                 .replace("yy", "y")
                 .replace("y", "yyyy")
             )
-            # pyre-fixme[16]: `DateField` has no attribute `data`.
-            # pyre-fixme[16]: `DateField` has no attribute `data`.
             return format_date(self.data, date_fmt) if self.data else ""
 
     def process_formdata(self, valuelist: List[str]) -> None:

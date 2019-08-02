@@ -229,7 +229,6 @@ class User(Principal, UserMixin, db.Model):
 
     def set_password(self, password: str) -> None:
         """Encrypts and sets password."""
-        # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
         self.password = self.__password_strategy__.process(self, password)
 
     def follow(self, followee):

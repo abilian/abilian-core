@@ -23,7 +23,6 @@ class SysinfoPanel(AdminPanel):
             package = {
                 "name": dist.project_name,
                 "key": dist.key,
-                # pyre-fixme[16]: `Distribution` has no attribute `has_version`.
                 "version": dist.version if dist.has_version() else "Unknown version",
                 "vcs": None,
             }

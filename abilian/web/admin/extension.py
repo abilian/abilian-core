@@ -38,10 +38,7 @@ class Admin:
 
         def condition(context: Dict[str, bool]) -> bool:
             return not current_user.is_anonymous and security.has_role(
-                # pyre-fixme[6]: Expected `Principal` for 1st param but got
-                #  `LocalProxy`.
-                current_user,
-                AdminRole,
+                current_user, AdminRole
             )
 
         self.nav_root = NavGroup(
@@ -150,8 +147,6 @@ class Admin:
                 raise ValueError(f"Invalid additional url rule: {repr(rule)}")
 
             if endpoint is None:
-                # pyre-fixme[16]: Module `helpers` has no attribute
-                #  `_endpoint_from_view_func`.
                 endpoint = _endpoint_from_view_func(view_func)
 
             if not endpoint.startswith(base_endpoint):

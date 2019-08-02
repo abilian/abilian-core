@@ -48,7 +48,6 @@ class AssetManagerMixin(Flask):
     def setup_asset_extension(self) -> None:
         assets = self.extensions["webassets"] = AssetsEnv(self)
         if self.debug:
-            # pyre-fixme[8]: Attribute has type `property`; used as `bool`.
             assets.debug = True
         assets.requirejs_config = {"waitSeconds": 90, "shim": {}, "paths": {}}
 
@@ -59,12 +58,9 @@ class AssetManagerMixin(Flask):
             if not path.exists():
                 path.mkdir()
 
-        # pyre-fixme[8]: Attribute has type `property`; used as `str`.
         assets.directory = str(assets_dir)
-        # pyre-fixme[8]: Attribute has type `property`; used as `str`.
         assets.cache = str(assets_cache_dir)
         manifest_file = assets_base_dir / "manifest.json"
-        # pyre-fixme[8]: Attribute has type `property`; used as `str`.
         assets.manifest = f"json:{manifest_file}"
 
         # set up load_path for application static dir. This is required
@@ -84,8 +80,6 @@ class AssetManagerMixin(Flask):
         # setup static url for our assets
         from abilian.web import assets as core_bundles
 
-        # pyre-fixme[6]: Expected `Application` for 1st param but got
-        #  `AssetManagerMixin`.
         core_bundles.init_app(self)
 
         # static minified are here

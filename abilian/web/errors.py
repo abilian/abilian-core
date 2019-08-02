@@ -101,8 +101,6 @@ class ErrorManagerMixin(Flask):
         if user is not None and isinstance(user, db.Model):
             _request_ctx_stack.top.user = session.merge(user, load=load)
 
-    # pyre-fixme[15]: `log_exception` overrides method defined in `Flask`
-    #  inconsistently.
     def log_exception(self, exc_info):
         """Log exception only if Sentry is not used (this avoids getting error
         twice in Sentry)."""

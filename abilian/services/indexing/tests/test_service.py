@@ -21,8 +21,6 @@ def svc(app: Application) -> Iterator[Union[Iterator, Iterator[WhooshIndexServic
     svc = app.services["indexing"]
     with app.app_context():
         svc.start()
-        # pyre-fixme[7]: Expected `Iterator[Union[Iterator[Any],
-        #  Iterator[WhooshIndexService]]]` but got `Generator[Service, None, None]`.
         yield svc
 
 

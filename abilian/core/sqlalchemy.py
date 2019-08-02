@@ -167,7 +167,6 @@ class MutationDict(Mutable, dict):
         dict.__delitem__(self, key)
         self.changed()
 
-    # pyre-fixme[15]: `clear` overrides method defined in `dict` inconsistently.
     def clear(self):
         dict.clear(self)
         self.changed()
@@ -185,7 +184,6 @@ class MutationDict(Mutable, dict):
         self.changed()
         return dict.pop(self, key, *args)
 
-    # pyre-fixme[15]: `popitem` overrides method defined in `dict` inconsistently.
     def popitem(self):
         self.changed()
         return dict.popitem(self)
@@ -222,7 +220,6 @@ class MutationList(Mutable, list):
         list.__delitem__(self, idx)
         self.changed()
 
-    # pyre-fixme[15]: `insert` overrides method defined in `list` inconsistently.
     def insert(self, idx, value):
         list.insert(self, idx, value)
         self.changed()
@@ -245,7 +242,6 @@ class MutationList(Mutable, list):
         self.changed()
         return result
 
-    # pyre-fixme[14]: `append` overrides method defined in `list` inconsistently.
     def append(self, item: Any) -> None:
         list.append(self, item)
         self.changed()
@@ -255,22 +251,18 @@ class MutationList(Mutable, list):
         self.changed()
         return item
 
-    # pyre-fixme[15]: `remove` overrides method defined in `list` inconsistently.
     def remove(self, item):
         list.remove(self, item)
         self.changed()
 
-    # pyre-fixme[15]: `reverse` overrides method defined in `list` inconsistently.
     def reverse(self):
         list.reverse(self)
         self.changed()
 
-    # pyre-fixme[15]: `sort` overrides method defined in `list` inconsistently.
     def sort(self, *args, **kwargs):
         list.sort(self, *args, **kwargs)
         self.changed()
 
-    # pyre-fixme[15]: `extend` overrides method defined in `list` inconsistently.
     def extend(self, other):
         list.extend(self, other)
         self.changed()
@@ -304,8 +296,6 @@ class JSONUniqueListType(JSON):
     def python_type(self):
         return MutationList
 
-    # pyre-fixme[15]: `process_bind_param` overrides method defined in `JSON`
-    #  inconsistently.
     def process_bind_param(self, value, dialect):
         # value may be a simple string used in a LIKE clause for instance, so we
         # must ensure we uniquify/sort only for list-like values
@@ -349,7 +339,6 @@ class UUID(sa.types.TypeDecorator):
     impl = sa.types.CHAR
 
     def load_dialect_impl(self, dialect: Dialect) -> CHAR:
-        # pyre-fixme[16]: `Dialect` has no attribute `name`.
         if dialect.name == "postgresql":
             return dialect.type_descriptor(sa.dialects.postgresql.UUID())
         else:
@@ -360,7 +349,6 @@ class UUID(sa.types.TypeDecorator):
     ) -> Optional[str]:
         if value is None:
             return value
-        # pyre-fixme[16]: `Dialect` has no attribute `name`.
         elif dialect.name == "postgresql":
             return str(value)
         else:

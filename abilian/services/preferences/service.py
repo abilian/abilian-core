@@ -75,17 +75,13 @@ class PreferenceService(Service):
         """
         if user is None:
             user = current_user
-        # pyre-fixme[16]: `User` has no attribute `preferences`.
         return {pref.key: pref.value for pref in user.preferences}
 
-    # pyre-fixme[9]: user has type `User`; used as `None`.
     def set_preferences(self, user: User = None, **kwargs: Any) -> None:
         """Set preferences from keyword arguments."""
         if user is None:
-            # pyre-fixme[9]: user has type `User`; used as `LocalProxy`.
             user = current_user
 
-        # pyre-fixme[16]: `User` has no attribute `preferences`.
         d = {pref.key: pref for pref in user.preferences}
         for k, v in kwargs.items():
             if k in d:
@@ -94,11 +90,9 @@ class PreferenceService(Service):
                 d[k] = UserPreference(user=user, key=k, value=v)
                 db.session.add(d[k])
 
-    # pyre-fixme[9]: user has type `User`; used as `None`.
     def clear_preferences(self, user: User = None) -> None:
         """Clear the user preferences."""
         if user is None:
-            # pyre-fixme[9]: user has type `User`; used as `LocalProxy`.
             user = current_user
 
         #  don't delete UserPreference 1 by 1 with session.delete, else

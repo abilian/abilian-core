@@ -24,8 +24,6 @@ def converter() -> Iterator[Union[Iterator, Iterator[Converter]]]:
     cache_dir = Path(tempfile.mkdtemp(suffix="unittest"))
     tmp_dir = Path(tempfile.mkdtemp(suffix="unittest"))
     c.init_work_dirs(cache_dir, tmp_dir)
-    # pyre-fixme[7]: Expected `Iterator[Union[Iterator[Any], Iterator[Converter]]]`
-    #  but got `Generator[Converter, None, None]`.
     yield c
 
     c.clear()

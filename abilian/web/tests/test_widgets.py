@@ -52,8 +52,6 @@ def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
     model1 = WidgetTestModel(id=1, name="Renault Megane", price=10000)
     model2 = WidgetTestModel(id=2, name="Peugeot 308", price=12000)
     models = [model1, model2]
-    # pyre-fixme[6]: Expected `List[Entity]` for 1st param but got
-    #  `List[WidgetTestModel]`.
     res = view.render(models)
 
     assert model1._display_value_called

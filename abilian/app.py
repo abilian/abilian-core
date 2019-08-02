@@ -362,9 +362,7 @@ class Application(
             celery_app = self.extensions["celery"] = self.celery_app_cls()
             # force reading celery conf now - default celery app will
             # also update our config with default settings
-            # pyre-fixme[16]: `FlaskCelery` has no attribute `conf`.
             celery_app.conf  # noqa
-            # pyre-fixme[16]: `FlaskCelery` has no attribute `set_default`.
             celery_app.set_default()
 
         # dev helper

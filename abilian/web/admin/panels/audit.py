@@ -56,7 +56,6 @@ class JSONUserSearch(JSONView):
 
         if "@" in q:
             # FIXME: where does this 'part' variable come from ?
-            # pyre-fixme[18]: Global name `part` is undefined.
             filters = sa.sql.or_(lower(User.email).like("%" + part + "%"), filters)
 
         query = query.filter(filters).order_by(User.last_name, User.first_name)
@@ -188,7 +187,6 @@ class AuditPanel(AdminPanel):
                 current_day = e_date.date()
                 day_entries = []
                 entries.append((e_date.date(), day_entries))
-            # pyre-fixme[16]: Optional type has no attribute `append`.
             day_entries.append(e)
 
         top_date = ""

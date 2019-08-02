@@ -23,7 +23,6 @@ def session() -> Session:
     # flask-sqlalchemy as listeners looking for this
     session._model_changes = {}
 
-    # pyre-fixme[16]: `DummyContact` has no attribute `metadata`.
     DummyContact.metadata.create_all(engine)
     return session
 
@@ -44,12 +43,10 @@ def test_auto_slug_property(session: Session) -> None:
     session.flush()
     assert obj.auto_slug == "a-b-c"
 
-    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
     obj.name = "C'est l'été !"
     assert obj.auto_slug == "c-est-l-ete"
 
     # with a special space character
-    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
     obj.name = "a_b\u205fc"  # U+205F: MEDIUM MATHEMATICAL SPACE
     assert obj.auto_slug == "a-b-c"
 
@@ -57,7 +54,6 @@ def test_auto_slug_property(session: Session) -> None:
     # U+2014 (—). Standard separator is \u002d (\x2d) "-" HYPHEN-MINUS.
     # this test may fails depending on how  Unicode normalization + char
     # substitution is done (order matters).
-    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
     obj.name = "a\u2013b\u2014c"  # u'a–b—c'
     slug = obj.auto_slug
     assert slug == "a-b-c"
@@ -72,7 +68,6 @@ def test_updated_at(session: Session) -> None:
     assert isinstance(contact.updated_at, datetime)
 
     updated = contact.updated_at
-    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
     contact.first_name = "John"
     session.commit()
     assert isinstance(contact.updated_at, datetime)
@@ -106,7 +101,6 @@ def test_polymorphic_update_timestamp(session: Session) -> None:
 
     updated_at = contact.updated_at
     assert updated_at
-    # pyre-fixme[8]: Attribute has type `Column`; used as `str`.
     contact.email = "p@example.com"
     session.flush()
     assert contact.updated_at > updated_at

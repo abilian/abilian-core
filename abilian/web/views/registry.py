@@ -32,8 +32,6 @@ class Registry:
         """
         if not inspect.isclass(entity):
             entity = entity.__class__
-        # pyre-fixme[6]: Expected `Type[Any]` for 1st param but got
-        #  `Union[Type[Entity], Entity]`.
         assert issubclass(entity, db.Model)
         self._map[entity.entity_type] = url_func
 
@@ -132,7 +130,6 @@ class default_view:
                 state.app.default_view.register(self.entity, default_url)
 
         else:
-            # pyre-fixme[16]: `Blueprint` has no attribute `default_view`.
             self.app_or_blueprint.default_view.register(self.entity, default_url)
 
         return view

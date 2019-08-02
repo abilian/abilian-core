@@ -32,7 +32,6 @@ class JsonGroupsList(base.JSONView):
         search = kw.get("sSearch", "").replace("%", "").strip().lower()
 
         end = start + length
-        # pyre-fixme[16]: `Group` has no attribute `query`.
         query = Group.query.options(sa.orm.noload("*"))
         total_count = query.count()
 
@@ -46,7 +45,6 @@ class JsonGroupsList(base.JSONView):
         order_by = list(map(direction, columns))
 
         # sqlite does not support 'NULLS FIRST|LAST' in ORDER BY clauses
-        # pyre-fixme[16]: `Group` has no attribute `__mapper__`.
         engine = query.session.get_bind(Group.__mapper__)
         if engine.name != "sqlite":
             order_by[0] = nullslast(order_by[0])
@@ -59,7 +57,6 @@ class JsonGroupsList(base.JSONView):
             # TODO: this should be done on the browser.
             group_url = url_for(".groups_group", group_id=group.id)
             name = html.escape(group.name or "")
-            # pyre-fixme[16]: `Service` has no attribute `get_roles`.
             roles = [r for r in security.get_roles(group) if r.assignable]
 
             columns = [

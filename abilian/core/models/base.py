@@ -24,7 +24,6 @@ class Info(dict):
 
     def copy(self) -> "Info":
         # dict.copy would return an instance of dict
-        # pyre-fixme[32]: Keyword argument must be a mapping with string keys.
         return self.__class__(**self)
 
     def __add__(self, other: "Info") -> "Info":
@@ -73,7 +72,6 @@ class Indexable:
 
     @property
     def object_key(self) -> str:
-        # pyre-fixme[16]: `Indexable` has no attribute `id`.
         return f"{self.object_type}:{self.id}"
 
 

@@ -65,7 +65,6 @@ def test_nonzero(app: Flask, db: SQLAlchemy) -> None:
     assert bool(blob)
 
     # change uuid: repository will return None for blob.file
-    # pyre-fixme[8]: Attribute has type `Column`; used as `UUID`.
     blob.uuid = uuid.uuid4()
     assert not bool(blob)
 
@@ -93,16 +92,11 @@ def test_value(app: Flask, db: SQLAlchemy) -> None:
     session.add(blob)
     tr.commit()
 
-    # pyre-fixme[6]: Expected `UUID` for 1st param but got `Column`.
     assert repository.get(blob.uuid) is None
-    # pyre-fixme[16]: Optional type has no attribute `open`.
-    # pyre-fixme[6]: Expected `UUID` for 2nd param but got `Column`.
     assert session_repository.get(blob, blob.uuid).open("rb").read() == content
     assert blob.value == content
 
     session.commit()
-    # pyre-fixme[16]: Optional type has no attribute `open`.
-    # pyre-fixme[6]: Expected `UUID` for 1st param but got `Column`.
     assert repository.get(blob.uuid).open("rb").read() == content
     assert blob.value == content
 
@@ -112,33 +106,22 @@ def test_value(app: Flask, db: SQLAlchemy) -> None:
         session.delete(blob)
         # object marked for deletion, but instance attribute should still be
         # readable
-        # pyre-fixme[16]: Optional type has no attribute `open`.
-        # pyre-fixme[6]: Expected `UUID` for 2nd param but got `Column`.
         fd = session_repository.get(blob, blob.uuid).open("rb")
         assert fd.read() == content
 
     # commit in transaction: session_repository has no content, 'physical'
     # repository still has content
-    # pyre-fixme[6]: Expected `UUID` for 2nd param but got `Column`.
     assert session_repository.get(blob, blob.uuid) is None
-    # pyre-fixme[16]: Optional type has no attribute `open`.
-    # pyre-fixme[6]: Expected `UUID` for 1st param but got `Column`.
     assert repository.get(blob.uuid).open("rb").read() == content
 
     # rollback: session_repository has content again
     session.rollback()
-    # pyre-fixme[16]: Optional type has no attribute `open`.
-    # pyre-fixme[6]: Expected `UUID` for 2nd param but got `Column`.
     assert session_repository.get(blob, blob.uuid).open("rb").read() == content
 
     session.delete(blob)
     session.flush()
-    # pyre-fixme[6]: Expected `UUID` for 2nd param but got `Column`.
     assert session_repository.get(blob, blob.uuid) is None
-    # pyre-fixme[16]: Optional type has no attribute `open`.
-    # pyre-fixme[6]: Expected `UUID` for 1st param but got `Column`.
     assert repository.get(blob.uuid).open("rb").read() == content
 
     session.commit()
-    # pyre-fixme[6]: Expected `UUID` for 1st param but got `Column`.
     assert repository.get(blob.uuid) is None
