@@ -63,7 +63,7 @@ Jinja2==2.10.1
 jsmin==2.2.2
 kombu==4.6.3
 lxml==4.4.0
-Mako==1.0.14
+Mako==1.1.0
 MarkupSafe==1.1.1
 mastool==0.1.3
 mccabe==0.6.1
@@ -94,8 +94,8 @@ pytest-xdist==1.29.0
 python-dateutil==2.8.0
 python-editor==1.0.4
 python-magic==0.4.15
-pytz==2019.1
-PyYAML==5.1.1
+pytz==2019.2
+PyYAML==5.1.2
 redis==3.3.4
 requests==2.22.0
 restructuredtext-lint==1.3.0
