@@ -288,7 +288,7 @@ def get_possible_hostnames():
     for name in (hostname, fqdn):
         try:
             name, aliases, ips = socket.gethostbyname_ex(name)
-        except socket.error:
+        except OSError:
             continue
         names.setdefault(name, []).extend(ips)
         for a in aliases:

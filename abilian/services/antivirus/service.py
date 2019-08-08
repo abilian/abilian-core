@@ -85,7 +85,7 @@ class AntiVirusService(Service):
             file_or_stream = file_or_stream.encode(os.fsencode)
 
         if isinstance(file_or_stream, bytes):
-            content = io.open(file_or_stream, "rb")
+            content = open(file_or_stream, "rb")
 
         if content.seekable():
             pos = content.tell()
