@@ -1,4 +1,3 @@
-# coding: utf-8
 """Add a few specific filters to Jinja2."""
 import re
 from calendar import timegm

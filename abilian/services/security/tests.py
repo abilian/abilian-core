@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from typing import Iterator
 
 from pytest import fixture, mark

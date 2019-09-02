@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """View decorators for controlling some aspect of HTTP, mainly: Cache
 headers."""
 from functools import wraps
