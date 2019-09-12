@@ -1,4 +1,3 @@
-
 from abilian.core.models.subjects import User
 
 

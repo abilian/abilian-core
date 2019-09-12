@@ -272,9 +272,7 @@ class User(Principal, UserMixin, db.Model):
     #
     @property
     def name(self) -> str:
-        name = "{first_name} {last_name}".format(
-            first_name=self.first_name or "", last_name=self.last_name or ""
-        )
+        name = f"{(self.first_name or '')} {(self.last_name or '')}"
         return name.strip() or "Unknown"
 
     @property

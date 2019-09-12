@@ -8,7 +8,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Text, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Text, Tuple, Union
 from urllib import parse
 
 import bleach
@@ -152,13 +152,15 @@ class BaseTableView(View):
     show_search = None
     paginate = False
 
+    columns: List[Dict[str, Any]]
+
     def __init__(
         self, columns: List[Dict[str, Any]], options: Optional[Any] = None
     ) -> None:
         if self.show_search is None:
             self.show_search = self.show_controls
 
-        self.columns: List[Dict[str, Any]] = []
+        self.columns = []
         self.init_columns(columns)
         self.name = "{}-{:d}".format(
             self.__class__.__name__.lower(), next(g.id_generator)
@@ -169,7 +171,7 @@ class BaseTableView(View):
             self.show_search = self.options.get("show_search", self.show_controls)
             self.paginate = self.options.get("paginate", self.paginate)
 
-    def init_columns(self, columns: List[Union[str, Dict[str, Any]]]) -> None:
+    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]) -> None:
         # TODO
         default_width = f"{(0.99 / len(columns) * 100):2.0f}%"
         for col in columns:
@@ -306,6 +308,8 @@ class AjaxMainTableView(View):
 
     show_controls = False
     paginate = True
+    columns: List[Dict[str, Any]]
+    options: Dict[str, Any]
 
     def __init__(
         self,
@@ -313,7 +317,7 @@ class AjaxMainTableView(View):
         ajax_source: str,
         search_criterions: Tuple = (),
         name: Optional[str] = None,
-        options: None = None,
+        options: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.columns = []
         self.init_columns(columns)
@@ -321,10 +325,9 @@ class AjaxMainTableView(View):
         self.search_criterions = search_criterions
         self.name = name if name is not None else id(self)
         self.save_state = name is not None
-        if options is not None:
-            self.options = options
+        self.options = options or {}
 
-    def init_columns(self, columns: List[Union[str, Dict[str, Any]]]) -> None:
+    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]) -> None:
         # TODO: compute the correct width for each column.
         default_width = 0.99 / len(columns)
         for col in columns:
@@ -1192,6 +1195,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
             "wrapper-class",
         )
     )
+    on_off_options: Dict[str, Any]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.on_off_mode = kwargs.pop("on_off_mode", False)

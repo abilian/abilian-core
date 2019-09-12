@@ -295,8 +295,7 @@ def get_possible_hostnames():
             names.setdefault(a, []).extend(ips)
 
     return sorted(
-        "{} ({})".format(name, ", ".join(sorted(set(ips))))
-        for name, ips in names.items()
+        f"{name} ({', '.join(sorted(set(ips)))})" for name, ips in names.items()
     )
 
 

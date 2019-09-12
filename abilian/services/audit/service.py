@@ -317,7 +317,7 @@ class AuditService(Service):
                     item = getattr(item, attr)
                 enduser_ids.append(str(item))
 
-            related_name = "{} {}".format(meta.backref_attr, " ".join(enduser_ids))
+            related_name = f"{meta.backref_attr} {' '.join(enduser_ids)}"
             related_changes = changes
             log.debug("related changes: %s", repr(related_changes))
             changes = Changes()
