@@ -275,8 +275,8 @@ category = "dev"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
 optional = false
-python-versions = "*"
-version = "0.15"
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+version = "0.15.2"
 
 [[package]]
 category = "dev"
@@ -1389,7 +1389,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "096dba4eaa6679b0a04d4c1b833ff90c429fdb132e3e7764a01285ce9aec14f4"
+content-hash = "bddd6777dbd657de7aec01007ebb7a48ac4343d508fb9061b973d2e45a349c0e"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -1421,7 +1421,7 @@ cssmin = ["e012f0cc8401efcf2620332339011564738ae32be8c84b2e43ce8beaec1067b6"]
 decorator = ["86156361c50488b84a3f148056ea716ca587df2f0de1d34750d35c21312725de", "f069f3a01830ca754ba5258fde2278454a0b5b79e0d7f5c13b3b97e57d4acff6"]
 deprecated = ["a515c4cf75061552e0284d123c3066fbbe398952c87333a92b8fc3dd8e4f9cc1", "b07b414c8aac88f60c1d837d21def7e83ba711052e03b3cbaff27972567a8f8d"]
 docformatter = ["c68c8db0952d7ec6423581915fde3f23d4be5eccc11eb28a3415b5cd0a1e4f73"]
-docutils = ["54a349c622ff31c91cbec43b0b512f113b5b24daf00e2ea530bb1bd9aac14849", "ba4584f9107571ced0d2c7f56a5499c696215ba90797849c92d395979da68521", "d2ddba74835cb090a1b627d3de4e7835c628d07ee461f7b4480f51af2fe4d448"]
+docutils = ["6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0", "9e4d7ecfc600058e07ba661411a2b7de2fd0fafa17d1a7f7361cd47b1175c827", "a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 execnet = ["cacb9df31c9680ec5f95553976c4da484d407e85e41c83cb812aa014f0eddc50", "d4efd397930c46415f62f8a31388d6be4f27a91d7550eb79bc64a756e0056547"]
 flake8 = ["19241c1cbc971b9962473e4438a2ca19749a7dd002dd1a946eaba171b4114548", "8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696"]

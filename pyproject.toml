@@ -161,7 +161,7 @@ html5lib = "*"
 restructuredtext_lint = "*"
 
 # Temp (workaround poetry issue)
-docutils = "=0.15"
+docutils = "=0.15.2"
 
 
 # [build-system]
