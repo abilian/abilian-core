@@ -505,16 +505,15 @@ six = ">=1.9.0"
 
 [[package]]
 category = "main"
-description = "Simple integration of Flask and WTForms"
+description = "Simple integration of Flask and WTForms."
 name = "flask-wtf"
 optional = false
 python-versions = "*"
-version = "0.12"
+version = "0.14.2"
 
 [package.dependencies]
 Flask = "*"
 WTForms = "*"
-Werkzeug = "*"
 
 [[package]]
 category = "dev"
@@ -1389,7 +1388,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "096dba4eaa6679b0a04d4c1b833ff90c429fdb132e3e7764a01285ce9aec14f4"
+content-hash = "daab58fbf28637628217acb366e7490a26f00686d3846173b7a93c7285f5fda6"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -1441,7 +1440,7 @@ flask-mail = ["22e5eb9a940bf407bcf30410ecc3708f3c56cc44b29c34e1726fe85006935f41"
 flask-migrate = ["6fb038be63d4c60727d5dfa5f581a6189af5b4e2925bc378697b4f0a40cfb4e1", "a96ff1875a49a40bd3e8ac04fce73fdb0870b9211e6168608cbafa4eb839d502"]
 flask-sqlalchemy = ["c5244de44cc85d2267115624d83faef3f9e8f088756788694f305a5d5ad137c5"]
 flask-talisman = ["468131464a249274ed226efc21b372518f442487e58918ccab8357eaa638fd1f", "eaa754f4b771dfbe473843391d69643b79e3a38c865790011ac5e4179c68e3ec"]
-flask-wtf = ["99c5d75663d6bfcbf4dd0d71ffcb7313f64ae90e6f89e09ad99080107033e8b6", "bd99316c97ed1d1cb90b8f0c242c86420a891a6a2058f20717e424bf5b0bb80e"]
+flask-wtf = ["5d14d55cfd35f613d99ee7cba0fc3fbbe63ba02f544d349158c14ca15561cc36", "d9a9e366b32dcbb98ef17228e76be15702cd2600675668bca23f63a7947fd5ac"]
 gitchangelog = ["3d8d6a730450fbd5b0a9bc58d0dd3e269c967d7eb4fece0c5cff4372a3f77421", "45f8b8e64cece0d9bb03a35ecd8ee62c1c7157f8dac0ef3cb68381bfcc1bde29"]
 html5lib = ["20b159aa3badc9d5ee8f5c647e5efd02ed2a66ab8d354930bd9ff139fc1dc0a3", "66cb0dcfdbbc4f9c3ba1a63fdb511ffdbd4f513b2b6d81b80cd26ce6b3fb3736"]
 hyperlink = ["4288e34705da077fada1111a24a0aa08bb1e76699c9ce49876af722441845654", "ab4a308feb039b04f855a020a6eda3b18ca5a68e6d8f8c899cbe9e653721d04f"]
