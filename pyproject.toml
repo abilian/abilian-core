@@ -26,7 +26,7 @@ Flask-Login = ">=0.4"
 Flask-Talisman = ">=0.6"
 
 # flask-sqlachemy 2.2 breaks our apps.
-flask-sqlalchemy = "<=2.1"
+flask-sqlalchemy = "<2.5"
 
 # Currently broken w/ 0.13
 Flask-WTF = ">=0.12,<0.13"
