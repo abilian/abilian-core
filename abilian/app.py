@@ -57,8 +57,10 @@ class ServiceManager:
     """Mixin that provides lifecycle (register/start/stop) support for
     services."""
 
+    services: Dict[str, Service]
+
     def __init__(self) -> None:
-        self.services: Dict[str, Service] = {}
+        self.services = {}
 
     def start_services(self):
         for svc in self.services.values():

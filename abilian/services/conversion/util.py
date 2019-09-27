@@ -27,7 +27,7 @@ def make_temp_file(
     prefix: str = "tmp",
     suffix: str = "",
     tmp_dir: Optional[Path] = None,
-) -> Iterator[Union[str, bytes]]:
+) -> Iterator[str]:
 
     if tmp_dir is None:
         tmp_dir = get_tmp_dir()

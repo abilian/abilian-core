@@ -72,7 +72,7 @@ class Converter:
     # TODO: refactor, pass a "File" or "Document" or "Blob" object
     def to_pdf(self, digest: str, blob: bytes, mime_type: str) -> bytes:
         cache_key = ("pdf", digest)
-        pdf = self.cache.get(cache_key)
+        pdf = self.cache.get_bytes(cache_key)
         if pdf:
             return pdf
 
@@ -94,7 +94,7 @@ class Converter:
 
         cache_key = ("txt", digest)
 
-        text = self.cache.get(cache_key)
+        text = self.cache.get_text(cache_key)
         if text:
             return text
 
@@ -142,7 +142,7 @@ class Converter:
             return b""
 
         cache_key = (f"img:{index}:{size}", digest)
-        converted = self.cache.get(cache_key)
+        converted = self.cache.get_bytes(cache_key)
         if converted:
             return converted
 
