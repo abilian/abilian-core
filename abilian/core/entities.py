@@ -87,9 +87,7 @@ def auto_slug_on_insert(mapper: Mapper, connection: Connection, target: Any) -> 
 def auto_slug_after_insert(mapper: Mapper, connection: Connection, target: Any) -> None:
     """Generate a slug from entity_type and id, unless slug is already set."""
     if target.slug is None:
-        target.slug = "{name}{sep}{id}".format(
-            name=target.entity_class.lower(), sep=target.SLUG_SEPARATOR, id=target.id
-        )
+        target.slug = f"{target.entity_class.lower()}{target.SLUG_SEPARATOR}{target.id}"
 
 
 @event.listens_for(Session, "after_attach")
@@ -223,8 +221,7 @@ class EntityMeta(BaseMeta):
 
         if not issubclass(cls.query_class, EntityQuery):
             raise TypeError(
-                "query_class is not a subclass of EntityQuery: {!r}"
-                "".format(cls.query_class)
+                f"query_class is not a subclass of EntityQuery: {cls.query_class!r}"
             )
 
         event.listen(cls, "before_insert", auto_slug_on_insert)

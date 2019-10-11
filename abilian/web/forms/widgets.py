@@ -109,9 +109,7 @@ def linkify_url(value: str) -> str:
     if value.count("/") == 1 and value.endswith("/"):
         value = value[0:-1]
 
-    return '<a href="{}">{}</a>&nbsp;<i class="fa fa-external-link"></i>'.format(
-        url, value
-    )
+    return f'<a href="{url}">{value}</a>&nbsp;<i class="fa fa-external-link"></i>'
 
 
 def text2html(text: str) -> Union[Markup, str]:
@@ -162,9 +160,7 @@ class BaseTableView(View):
 
         self.columns = []
         self.init_columns(columns)
-        self.name = "{}-{:d}".format(
-            self.__class__.__name__.lower(), next(g.id_generator)
-        )
+        self.name = f"{self.__class__.__name__.lower()}-{next(g.id_generator):d}"
         if options is not None:
             self.options = options
             self.show_controls = self.options.get("show_controls", self.show_controls)
@@ -446,9 +442,7 @@ class AjaxMainTableView(View):
                 cell = Markup(linkify_url(value))
             elif col.get("linkable"):
                 cell = Markup(
-                    '<a href="{}">{}</a>'.format(
-                        url_for(entity), html.escape(str(value))
-                    )
+                    f'<a href="{url_for(entity)}">{html.escape(str(value))}</a>'
                 )
             else:
                 cell = str(value)

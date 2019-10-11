@@ -654,9 +654,7 @@ class JSONWhooshSearch(JSONBaseSearch):
                     results.sort(key=lambda it: it.fields().get(itemkey))
         except Exception:
             if itemkey is not None:
-                msg = "we could not sort whoosh results on fields' key {}.".format(
-                    itemkey
-                )
+                msg = f"we could not sort whoosh results on fields' key {itemkey}."
                 logger.warning(msg)
 
         return results

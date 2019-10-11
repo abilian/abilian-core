@@ -55,9 +55,7 @@ class BaseFileDownload(View):
                 # to maybe 1 year from now.
                 # Check the code that has generated this url!
                 raise BadRequest(
-                    "File version marker is missing ({}=?)".format(
-                        repr(self.expire_vary_arg)
-                    )
+                    f"File version marker is missing ({repr(self.expire_vary_arg)}=?)"
                 )
 
         args, kwargs = super().prepare_args(args, kwargs)
