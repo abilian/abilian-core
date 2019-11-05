@@ -83,7 +83,7 @@ pycparser==2.19
 pyflakes==2.1.1
 pygeoip==0.3.2
 Pygments==2.4.2
-pyparsing==2.4.2
+pyparsing==2.4.3
 pytest==5.2.2
 pytest-cov==2.8.1
 pytest-forked==1.1.3
