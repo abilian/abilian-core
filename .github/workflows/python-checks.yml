@@ -1,4 +1,4 @@
-name: Python package
+name: Check back-end
 
 on: [push]
 
@@ -22,9 +22,13 @@ jobs:
         python -m pip install --upgrade pip tox poetry
         poetry install
         yarn
-    - name: Lint with flake8
+    - name: Lint with flake8, mypy, eslint, etc.
       run: |
-        make lint-ci
+        poetry run flake8 abilian
+        poetry run mypy abilian
+        poetry run rst-lint *.rst
+        poetry run sphinx-build -W -b dummy docs/ docs/_build/
+        poetry run bandit -s B101 `find abilian -name '*.py' | grep -v test`
     - name: Test with pytest
       run: |
         pytest

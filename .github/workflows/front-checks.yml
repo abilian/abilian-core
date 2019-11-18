@@ -1,0 +1,20 @@
+name: Check dront-end
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        yarn
+    - name: Lint front-end
+      run: |
+        yarn run eslint abilian/web/resources/js/
+        yarn run stylelint ./abilian/web/resources/less/*.less
