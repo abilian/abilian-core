@@ -158,13 +158,11 @@ class AuditPanel(AdminPanel):
         )
         # audit_entries = []
         all_entries = sorted(
-            list(
-                chain(
-                    #
-                    (AuditEntryPresenter(e) for e in audit_entries),
-                    #
-                    (SecurityEntryPresenter(e) for e in security_entries),
-                )
+            chain(
+                #
+                (AuditEntryPresenter(e) for e in audit_entries),
+                #
+                (SecurityEntryPresenter(e) for e in security_entries),
             )
         )
 
