@@ -139,7 +139,7 @@ pre-commit = "*"
 # Formatting
 isort = "*"
 docformatter = "*"
-black = { version = "*", allows-prereleases = true }
+black = { version = "*", allow-prereleases = true }
 
 # To build docs
 # (Doesn't work w/ sphinx 1.4.5)
