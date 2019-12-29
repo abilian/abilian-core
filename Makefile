@@ -24,7 +24,7 @@ all: test lint
 develop:
 	@echo "--> Installing dependencies"
 	pip install -U pip setuptools wheel
-	poetry install --develop .
+	poetry install
 	yarn
 	@echo "--> Activating pre-commit hook"
 	pre-commit install
