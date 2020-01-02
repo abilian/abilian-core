@@ -1,31 +1,84 @@
 Changelog for Abilian Core
 ==========================
 
+
+v0.11.6 (2019-12-29)
+--------------------
+
+Fix
+~~~
+- New flake8 warnings.
+
+Other
+~~~~~
+- Ci: Github actions.
+- Ci: travis / py38.
+- Refactor: f-strings.
+
+
+v0.11.5 (2019-10-07)
+--------------------
+- Deps
+
+
+v0.11.4 (2019-09-12)
+--------------------
+- Typing + format.
+- Py3k.
+- Travis for 3.8 (not working)
+
+
+v0.11.3 (2019-08-07)
+--------------------
+
+Fix
+~~~
+- Search wasn't really configurable.
+
+Other
+~~~~~
+- Annotate w/ type warnings.
+- Cleanup imports.
+- Fix bug on debug toolbar for signals.
+- Fix doc (sphinx) issues.
+- Fix for readthedocs.
+- Fix settings.
+- Fix tests.
+- Fix typing (pyre) issues.
+- Format.
+- Py3k-ize settings. May break things.
+- Py3k: using pyupgrade.
+- Remove "pyre-fixme" comments.
+- Small refactor (f-strings).
+- Type hints.
+- Typing issues fixed.
+
+
 v0.11.2 (2019-06-28)
 --------------------
 
-- Add flake8-mypy. [Stefane Fermigier]
-- Add type annotations. [Stefane Fermigier]
-- Better variable naming. [Stefane Fermigier]
-- Class BlobQuery is not needed. [Stefane Fermigier]
-- Cleanup imports. [Stefane Fermigier]
-- Couple of typing fixes. [Stefane Fermigier]
-- Fix incomplete refactoring. [Stefane Fermigier]
-- Format + typing. [Stefane Fermigier]
-- Make more robust. [Stefane Fermigier]
-- Py3k. [Stefane Fermigier]
-- Refactor caching. [Stefane Fermigier]
-- Refactor conversion service. [Stefane Fermigier]
-- Refactor: extract variable. [Stefane Fermigier]
-- Set up CI with Azure Pipelines. [Stefane Fermigier]
-- Skip test when soffice not available. [Stefane Fermigier]
-- Typing. [Stefane Fermigier]
+- Add flake8-mypy.
+- Add type annotations.
+- Better variable naming.
+- Class BlobQuery is not needed.
+- Cleanup imports.
+- Couple of typing fixes.
+- Fix incomplete refactoring.
+- Format + typing.
+- Make more robust.
+- Py3k.
+- Refactor caching.
+- Refactor conversion service.
+- Refactor: extract variable.
+- Set up CI with Azure Pipelines.
+- Skip test when soffice not available.
+- Typing.
 
 
 v0.11.1 (2019-05-02)
 --------------------
-- A couple of typing fixes. [Stefane Fermigier]
-- Dont run flake8-mypy for now. [Stefane Fermigier]
+- A couple of typing fixes.
+- Dont run flake8-mypy for now.
 
 
 0.11.0 (2019-04-15)
