@@ -1,4 +1,4 @@
-name: Check back-end
+name: Check back-end (Python)
 
 on: [push]
 

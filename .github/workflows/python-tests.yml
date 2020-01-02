@@ -1,16 +1,14 @@
-name: Check back-end
+name: Run tests on back-end (Python)
 
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.6, 3.7, 3.8]
-
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -22,6 +20,7 @@ jobs:
         python -m pip install --upgrade pip poetry
         poetry install
         yarn
+        sudo npm install -g less
     - name: Test with pytest
       run: |
         poetry run pytest
