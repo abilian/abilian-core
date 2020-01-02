@@ -166,7 +166,7 @@ clean:
 	rm -f npm-debug.log yarn-error.log
 
 tidy: clean
-	rm -rf .tox .dox .travis-solo
+	rm -rf .tox .nox .dox .travis-solo
 	rm -rf node_modules
 	rm -rf instance
 
