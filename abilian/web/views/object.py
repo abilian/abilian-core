@@ -269,12 +269,10 @@ class ObjectEdit(ObjectView):
         for button in self._buttons:
             if action == button.name:
                 if not button.available({"view": self}):
-                    raise ValueError(
-                        'Action "{}" not available' "".format(action.encode("utf-8"))
-                    )
+                    raise ValueError(f'Action "{action.encode("utf-8")}" not available')
                 break
         else:
-            raise ValueError('Unknown action: "{}"'.format(action.encode("utf-8")))
+            raise ValueError(f'Unknown action: "{action.encode("utf-8")}"')
 
         self.action = action
         self.button = button
