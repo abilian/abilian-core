@@ -13,9 +13,6 @@ include = ["abilian/*", "abilian/**/*"]
 [tool.poetry.dependencies]
 python = "^3.6"
 
-# python 2/3 compat
-six = "*"
-
 # Flask and friends
 Flask = "^1.0"
 Flask-Assets = ">=0.12"
@@ -24,6 +21,9 @@ Flask-Mail = ">=0.9.1"
 Flask-Migrate = ">=2.0"
 Flask-Login = ">=0.4"
 Flask-Talisman = ">=0.6"
+
+# Pin werkzeug for now
+werkzeug = "<1"
 
 # flask-sqlachemy 2.2 breaks our apps.
 flask-sqlalchemy = "<=2.1"
