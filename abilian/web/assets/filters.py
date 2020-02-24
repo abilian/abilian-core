@@ -54,7 +54,7 @@ class ImportCSSFilter(Filter):
                 out.write(line[:start])
                 out.write("\n")
 
-            with open(abs_filename, "r") as included:
+            with open(abs_filename) as included:
                 # rewrite url() statements
                 buf = StringIO()
                 url_rewriter = get_filter("cssrewrite")
@@ -297,7 +297,7 @@ class Less(ExternalTool):
         return self.ctx.url_mapping[path] + src_path[len(path) :]
 
     def fix_source_map_urls(self, filename):
-        with open(filename, "r") as f:
+        with open(filename) as f:
             data = json.load(f)
 
         for idx, path in enumerate(data["sources"]):
@@ -361,7 +361,7 @@ class ClosureJS(BaseClosureJS):
         return self.ctx.url_mapping[path] + src_path[len(path) :]
 
     def fix_source_map_urls(self, filename):
-        with open(filename, "r") as f:
+        with open(filename) as f:
             data = json.load(f)
 
         for idx, path in enumerate(data["sources"]):
