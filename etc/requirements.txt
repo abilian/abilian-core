@@ -16,7 +16,7 @@ cffi==1.14.0
 cfgv==3.0.0
 chardet==3.0.4
 clamd==1.0.2
-Click==7.0
+click==7.1.1
 closure==20191111
 coverage==5.0.3
 cssmin==0.2.0
@@ -67,7 +67,7 @@ MarkupSafe==1.1.1
 mastool==0.1.3
 mccabe==0.6.1
 more-itertools==8.2.0
-mypy==0.761
+mypy==0.770
 mypy-extensions==0.4.3
 nodeenv==1.3.5
 numpy==1.18.1
@@ -85,7 +85,7 @@ pyflakes==2.1.1
 pygeoip==0.3.2
 Pygments==2.6.1
 pyparsing==2.4.6
-pytest==5.3.5
+pytest==5.4.0
 pytest-cov==2.8.1
 pytest-forked==1.1.3
 pytest-randomly==3.2.1
@@ -111,7 +111,7 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
-SQLAlchemy==1.3.13
+SQLAlchemy==1.3.15
 SQLAlchemy-Utils==0.36.1
 sqlparse==0.3.1
 toml==0.10.0
@@ -123,7 +123,7 @@ untokenize==0.1.1
 urllib3==1.25.8
 validators==0.14.2
 vine==1.3.0
-virtualenv==20.0.9
+virtualenv==20.0.10
 wcwidth==0.1.8
 webassets==0.12.1
 webencodings==0.5.1
