@@ -36,7 +36,6 @@ webassets = "< 2"
 
 # Forms add-ons
 WTForms-Alchemy = ">=0.12"
-WTForms-Components = ">=0.10"
 wtforms-sqlalchemy = "*"
 
 # pathlib is included in python 3.4, and very useful
