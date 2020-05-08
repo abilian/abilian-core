@@ -104,7 +104,8 @@ lint-rst:
 
 lint-doc:
 	@echo "--> Linting doc"
-	sphinx-build -W -b dummy docs/ docs/_build/
+	#sphinx-build -W -b dummy docs/ docs/_build/
+	sphinx-build -b dummy docs/ docs/_build/
 	@echo ""
 
 lint-bandit:

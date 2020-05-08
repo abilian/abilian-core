@@ -101,6 +101,7 @@ pandas = ">=0.17"
 jsmin = "*"
 cssmin = "*"
 closure = "*"
+devtools = "^0.5.1"
 
 [tool.poetry.dev-dependencies]
 Flask-DebugToolbar = ">=0.10"
@@ -112,6 +113,8 @@ pytest-randomly = "*"
 pytest-repeat = "*"
 pytest-cov = "*"
 typeguard = "*"
+nox = "^2019.11.9"
+tox = "*"
 
 # Static code analysis: flake* and friends
 flake8 = "*"
