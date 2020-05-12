@@ -21,7 +21,7 @@ def lint(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def pytest(session):
-    print("SQLALCHEMY_DATABASE_URI=", session.env["SQLALCHEMY_DATABASE_URI"])
+    print("SQLALCHEMY_DATABASE_URI=", session.env.get("SQLALCHEMY_DATABASE_URI"))
 
     session.install("psycopg2-binary")
 
