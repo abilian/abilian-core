@@ -1,14 +1,10 @@
 name: Check front-end
-
 on: [push]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
-
     steps:
     - uses: actions/checkout@v1
     - name: Install dependencies

@@ -1,13 +1,19 @@
+from random import randint
+import time
+
 import nox
 
 PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
 PACKAGE = "abilian"
+DB_DRIVERS = ["postgres", "postgres+pg8000"]
+
+nox.options.reuse_existing_virtualenvs = True
+nox.options.sessions = ('pytest', 'lint')
 
 
 @nox.session(python="python3.6")
 def lint(session):
-    # session.env["LC_ALL"] = "en_US.UTF-8"
-    session.install("poetry", "psycopg2-binary")
+    session.install("psycopg2-binary")
     session.run("poetry", "install", "-q")
     session.run("yarn", external=True)
     session.run("make", "lint-ci")
@@ -15,17 +21,39 @@ def lint(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def pytest(session):
-    # session.env["LC_ALL"] = "en_US.UTF-8"
-    session.install("psycopg2-binary")
+    print("SQLALCHEMY_DATABASE_URI=", session.env["SQLALCHEMY_DATABASE_URI"])
 
-    cmd = "echo ; echo SQLALCHEMY_DATABASE_URI = $SQLALCHEMY_DATABASE_URI ; echo"
-    session.run("sh", "-c", cmd, external=True)
+    session.install("psycopg2-binary")
 
     session.run("poetry", "install", "-q", external=True)
     session.run("yarn", external=True)
 
     session.run("pip", "check")
     session.run("pytest", "-q")
+
+
+@nox.session(python=PYTHON_VERSIONS)
+@nox.parametrize("db_driver", DB_DRIVERS)
+def dbtests(session, db_driver):
+    session.install("psycopg2-binary", "pg8000")
+
+    db_name = f"bench{randint(0, 10000000)}"
+    uri = f"{db_driver}:///{db_name}"
+    print("SQLALCHEMY_DATABASE_URI=", uri)
+    session.env["SQLALCHEMY_DATABASE_URI"] = uri
+
+    session.run("createdb", db_name, external=True)
+
+    session.run("poetry", "install", "-q", external=True)
+    session.run("yarn", external=True)
+
+    session.run("pip", "check")
+
+    t0 = time.time()
+    session.run("time", "pytest", "-q", external=True)
+    print("Elapsed time:", time.time() - t0)
+
+    session.run("dropdb", db_name, external=True)
 
 
 # TODO later

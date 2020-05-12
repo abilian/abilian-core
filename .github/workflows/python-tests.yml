@@ -1,7 +1,5 @@
 name: Run tests on back-end (Python)
-
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
