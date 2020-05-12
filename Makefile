@@ -125,15 +125,13 @@ format-py:
 	isort -rc -sg "**/__init__.py" abilian demo tests *.py
 
 format-js:
-	yarn run prettier --write --trailing-comma es5 \
-		'abilian/web/resources/js/**/*.js' \
-	yarn run prettier --write \
-		--trailing-comma es5 --tab-width 2 \
-		'abilian/web/resources/less/**/*.less'
+	npx prettier --write --trailing-comma es5 \
+		'abilian/web/resources/js/**/*.js'
 
-futurize:
-	isort -a  "from __future__ import absolute_import, print_function, unicode_literals" \
-		-rc $(SRC) *.py
+#	yarn run prettier --write \
+#		--trailing-comma es5 --tab-width 2 \
+#		'abilian/web/resources/less/**/*.less'
+
 
 #
 # Everything else

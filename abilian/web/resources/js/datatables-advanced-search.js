@@ -1,6 +1,6 @@
 /* datatable: advanced search */
 
-require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
+require(["AbilianNS", "jquery", "jquery.dataTables"], function (Abilian, $) {
   "use strict";
 
   function defaultDatatableConfig() {
@@ -93,7 +93,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
    * @constructor
    * @param {object} oDTSettings Settings for the target DataTable.
    */
-  var AdvancedSearchFilters = function(oDTSettings) {
+  var AdvancedSearchFilters = function (oDTSettings) {
     var self = this;
     self.$Container = null;
 
@@ -182,11 +182,9 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       containerCssClass: "col-xs-4 col-md-3",
       placeholder: sAddAdvancedFilter,
     });
-    filterSelect.on("change", function() {
+    filterSelect.on("change", function () {
       self.addFilter(this.value);
-      $(this)
-        .data("select2")
-        .clear();
+      $(this).data("select2").clear();
     });
     self.$Container.append(filterSelectContainer, filtersContainer);
 
@@ -217,10 +215,10 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
         oDTSettings.oLoadedState
       );
     }
-    self.$Container.on("redraw.DT", function() {
+    self.$Container.on("redraw.DT", function () {
       oDTSettings.oInstance.fnDraw();
     });
-    self.$Container.on("change.DT", "input, select", function() {
+    self.$Container.on("change.DT", "input, select", function () {
       oDTSettings.oInstance.fnDraw();
     });
   };
@@ -236,7 +234,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
    * @method
    * @return {Node} The container node.
    */
-  AdvancedSearchFilters.prototype.getContainer = function() {
+  AdvancedSearchFilters.prototype.getContainer = function () {
     return this.$Container && this.$Container.get(0);
   };
 
@@ -245,7 +243,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
    *
    * @method
    */
-  AdvancedSearchFilters.prototype.addFilter = function(filterName) {
+  AdvancedSearchFilters.prototype.addFilter = function (filterName) {
     var instance = this.oFilters[filterName];
     if (instance === undefined) {
       return;
@@ -274,7 +272,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
   /**
    * Clear a filter
    */
-  AdvancedSearchFilters.prototype.unsetFilter = function(filterName) {
+  AdvancedSearchFilters.prototype.unsetFilter = function (filterName) {
     var instance = this.oFilters[filterName];
     if (instance === undefined) {
       return;
@@ -292,7 +290,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
    *
    * @method
    */
-  AdvancedSearchFilters.prototype.removeFilter = function(filterName) {
+  AdvancedSearchFilters.prototype.removeFilter = function (filterName) {
     var instance = this.oFilters[filterName];
     if (instance === undefined) {
       return;
@@ -313,7 +311,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
   /**
    * Callback to fill server params before ajax request
    */
-  AdvancedSearchFilters.serverParamsCallBack = function(event, aoData) {
+  AdvancedSearchFilters.serverParamsCallBack = function (event, aoData) {
     var self = event.data.instance;
 
     function pushFilterValue(filterName) {
@@ -323,23 +321,21 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       if (!(vals instanceof Array)) {
         vals = [vals];
       }
-      $(vals).each(function() {
+      $(vals).each(function () {
         aoData.push({ name: f.name, value: this });
       });
     }
 
-    Object.keys(self.oActiveFilters)
-      .sort()
-      .forEach(pushFilterValue);
+    Object.keys(self.oActiveFilters).sort().forEach(pushFilterValue);
   };
 
   /**
    * Callback to save filters state
    */
-  AdvancedSearchFilters.stateSaveParams = function(event, oSettings, oData) {
+  AdvancedSearchFilters.stateSaveParams = function (event, oSettings, oData) {
     var self = event.data.instance;
     oData.oAdvancedSearchFilters = {};
-    Object.keys(self.oActiveFilters).forEach(function(filterName, idx) {
+    Object.keys(self.oActiveFilters).forEach(function (filterName, idx) {
       var filter = self.oFilters[filterName];
       if (filter.save === undefined) {
         return;
@@ -352,11 +348,11 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
   /**
    * Callback to restore filters state
    */
-  AdvancedSearchFilters.stateLoaded = function(event, oSettings, oData) {
+  AdvancedSearchFilters.stateLoaded = function (event, oSettings, oData) {
     var self = event.data.instance;
     var params = oData.oAdvancedSearchFilters || {};
 
-    self.aFilters.forEach(function(filter, idx) {
+    self.aFilters.forEach(function (filter, idx) {
       if (filter.load === undefined || this[filter.name] === undefined) {
         return;
       }
@@ -372,7 +368,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
   };
 
   /* setup standard filters */
-  AdvancedSearchFilters.oFilters.text = (function() {
+  AdvancedSearchFilters.oFilters.text = (function () {
     function TextFilter(name, label) {
       this.name = name;
       this.label = label;
@@ -380,23 +376,23 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     TextFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$input;
       },
-      val: function() {
+      val: function () {
         return [this.$input.val()];
       },
-      save: function() {
+      save: function () {
         return [this.$input.val()];
       },
-      load: function(vals) {
+      load: function (vals) {
         this.$input.val(vals[0]);
       },
     };
     return TextFilter;
   })();
 
-  AdvancedSearchFilters.oFilters.radio = (function() {
+  AdvancedSearchFilters.oFilters.radio = (function () {
     function RadioFilter(name, label) {
       var checked = false;
       var arg_len = arguments.length;
@@ -428,25 +424,22 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       }
 
       if (!checked) {
-        this.$elements
-          .children("input")
-          .first()
-          .prop("checked", true);
+        this.$elements.children("input").first().prop("checked", true);
       }
     }
 
     RadioFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$elements;
       },
-      val: function() {
+      val: function () {
         return [this.$elements.find("input:checked").val()];
       },
-      save: function() {
+      save: function () {
         return [this.$elements.find("input:checked").val()];
       },
-      load: function(vals) {
-        this.$elements.find("input").each(function() {
+      load: function (vals) {
+        this.$elements.find("input").each(function () {
           this.checked = this.value === vals[0];
         });
       },
@@ -454,7 +447,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     return RadioFilter;
   })();
 
-  AdvancedSearchFilters.oFilters.checkbox = (function() {
+  AdvancedSearchFilters.oFilters.checkbox = (function () {
     function CheckboxFilter(name, label) {
       var checked = false;
       var arg_len = arguments.length;
@@ -486,34 +479,31 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
       }
 
       if (!checked) {
-        this.$elements
-          .children("input")
-          .first()
-          .prop("checked", true);
+        this.$elements.children("input").first().prop("checked", true);
       }
     }
 
     function getVal(container) {
       return container
         .find("input:checked")
-        .map(function() {
+        .map(function () {
           return $(this).val();
         })
         .get();
     }
 
     CheckboxFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$elements;
       },
-      val: function() {
+      val: function () {
         return getVal(this.$elements);
       },
-      save: function() {
+      save: function () {
         return getVal(this.$elements);
       },
-      load: function(vals) {
-        this.$elements.find("input").each(function() {
+      load: function (vals) {
+        this.$elements.find("input").each(function () {
           this.checked = vals.indexOf(this.value) !== -1;
         });
       },
@@ -521,7 +511,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     return CheckboxFilter;
   })();
 
-  AdvancedSearchFilters.oFilters.select = (function() {
+  AdvancedSearchFilters.oFilters.select = (function () {
     function SelectFilter(name, label, options, multiple) {
       this.name = name;
       this.label = label;
@@ -576,19 +566,19 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     SelectFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$elements;
       },
       val: getVal,
       save: getVal,
-      load: function(vals) {
+      load: function (vals) {
         this.$select.data("select2").val(vals);
       },
     };
     return SelectFilter;
   })();
 
-  AdvancedSearchFilters.oFilters.selectAjax = (function() {
+  AdvancedSearchFilters.oFilters.selectAjax = (function () {
     function SelectAjaxFilter(name, label, ajax_source, multiple) {
       this.name = name;
       this.label = label;
@@ -621,10 +611,10 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
           url: ajax_source,
           dataType: "json",
           quietMillis: 200,
-          data: function(term, page) {
+          data: function (term, page) {
             return { q: term };
           },
-          results: function(data, page) {
+          results: function (data, page) {
             return { results: data.results, more: false };
           },
         },
@@ -654,19 +644,19 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     SelectAjaxFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$elements;
       },
       val: getVal,
       save: saveVal,
-      load: function(vals) {
+      load: function (vals) {
         this.$select.data("select2").data(vals);
       },
     };
     return SelectAjaxFilter;
   })();
 
-  AdvancedSearchFilters.oFilters["select-radio"] = (function() {
+  AdvancedSearchFilters.oFilters["select-radio"] = (function () {
     function SelectRadioFilter(name, label, s2_args /*, radio_args, ... */) {
       /*
        a select box followed by 3 radios (boolean all/True/False)
@@ -745,19 +735,16 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     SelectRadioFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$elements;
       },
       val: getVal,
       save: getVal,
-      load: function(vals) {
+      load: function (vals) {
         if (vals.length === 0) {
           return;
         }
-        this.$elements
-          .find("label input")
-          .first()
-          .prop("checked", true);
+        this.$elements.find("label input").first().prop("checked", true);
         this.$select.select2("val", vals[0]);
       },
     };
@@ -765,7 +752,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     return SelectRadioFilter;
   })();
 
-  AdvancedSearchFilters.oFilters["checkbox-select"] = (function() {
+  AdvancedSearchFilters.oFilters["checkbox-select"] = (function () {
     function CheckboxSelectFilter(name, label, args) {
       var self = this;
       this.name = name;
@@ -801,7 +788,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
         containerCss: { "margin-left": "0.5em" },
       });
 
-      this.$input.on("change", function() {
+      this.$input.on("change", function () {
         self.$select.select2("enable", this.checked);
       });
     }
@@ -814,12 +801,12 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     CheckboxSelectFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$elements;
       },
       val: getVal,
       save: getVal,
-      load: function(vals) {
+      load: function (vals) {
         if (vals.length === 0) {
           return;
         }
@@ -830,7 +817,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     return CheckboxSelectFilter;
   })();
 
-  AdvancedSearchFilters.oFilters.optional_criterions = (function() {
+  AdvancedSearchFilters.oFilters.optional_criterions = (function () {
     /* legacy filter. Current filtering system makes this one obsolete */
     function OptionalCriterionFilter(name, label) {
       this.name = name;
@@ -855,7 +842,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
         options[args.value] = $option.get(0);
       }
 
-      $select.on("change", function(e) {
+      $select.on("change", function (e) {
         e.preventDefault();
         if (this.selectedIndex === 0) {
           /* this is empty option */
@@ -864,7 +851,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
 
         $(this)
           .children("option:selected")
-          .each(function() {
+          .each(function () {
             self.installOption(this);
           });
         this.selectedIndex = 0;
@@ -895,11 +882,11 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     }
 
     OptionalCriterionFilter.prototype = {
-      getElements: function() {
+      getElements: function () {
         return this.$elements;
       },
 
-      installOption: function(option) {
+      installOption: function (option) {
         var $option = $(option);
         var args = $option.data();
         var $container = $("<div />");
@@ -943,15 +930,15 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
         this.$elements.append($container);
       },
 
-      val: function() {
+      val: function () {
         return [JSON.stringify(getValues(this))];
       },
 
-      save: function() {
+      save: function () {
         return [getValues(this)];
       },
 
-      load: function(vals) {
+      load: function (vals) {
         vals = vals[0];
         for (var filterName in vals.values) {
           if (this.options === null || !this.options[filterName]) {
@@ -962,7 +949,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
         }
       },
 
-      hasValueSet: function() {
+      hasValueSet: function () {
         return getValues(this).selected_filters.length > 0;
       },
     };
@@ -979,7 +966,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
     $.fn.dataTableExt.fnVersionCheck("1.7.0")
   ) {
     $.fn.dataTableExt.aoFeatures.push({
-      fnInit: function(oDTSettings) {
+      fnInit: function (oDTSettings) {
         var asf = new AdvancedSearchFilters(oDTSettings);
         return asf.getContainer();
       },
@@ -996,7 +983,7 @@ require(["AbilianNS", "jquery", "jquery.dataTables"], function(Abilian, $) {
    * setup useable href arguments according to current table filters criterions.
    * Used for CRM/Excel export
    */
-  var dataTableSetExportArgs = function(e) {
+  var dataTableSetExportArgs = function (e) {
     var tbl = $(e.target).dataTable();
     var settings = tbl.fnSettings();
     var params = tbl._fnAjaxParameters(settings);

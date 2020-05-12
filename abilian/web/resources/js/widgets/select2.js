@@ -1,4 +1,4 @@
-require(["AbilianWidget", "jquery"], function(Abilian, $) {
+require(["AbilianWidget", "jquery"], function (Abilian, $) {
   "use strict";
 
   function tagsFormatter(tagsToReplace) {
@@ -46,10 +46,10 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
   var DEFAULT_AJAX_PARAMS = {
     dataType: "json",
     quietMillis: 100,
-    data: function(term, page) {
+    data: function (term, page) {
       return { q: term };
     },
-    results: function(data, page) {
+    results: function (data, page) {
       return { results: data.results, more: false };
     },
   };
@@ -61,7 +61,7 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
     if (params.dataNodeId !== undefined) {
       data = JSON.parse($("#" + params.dataNodeId).html());
 
-      initParams.initSelection = function(element, callback) {
+      initParams.initSelection = function (element, callback) {
         if (data.values.length > 0) {
           callback(data.values.length === 1 ? data.values[0] : data.values);
         }
@@ -81,7 +81,7 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
     }
 
     if (params.formatResult) {
-      initParams.formatResult = function() {
+      initParams.formatResult = function () {
         var f = params.formatResult.split(".");
         var formatter = window;
 
@@ -94,7 +94,7 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
     }
 
     if (params.formatSelection) {
-      initParams.formatSelection = function() {
+      initParams.formatSelection = function () {
         var f = params.formatSelection.split(".");
         var formatter = window;
 

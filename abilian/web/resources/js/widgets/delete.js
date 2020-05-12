@@ -1,7 +1,7 @@
 /**
  Allow to setup a delete button for urls managed by abilian.web.views.object.ObjectDelete.
  */
-require(["AbilianWidget", "jquery", "bootbox"], function(Abilian, $, bootbox) {
+require(["AbilianWidget", "jquery", "bootbox"], function (Abilian, $, bootbox) {
   "use strict";
 
   var defaults = {
@@ -18,13 +18,13 @@ require(["AbilianWidget", "jquery", "bootbox"], function(Abilian, $, bootbox) {
     this.elt = elt;
     this.options = $.extend({}, defaults, options);
     this.url = elt.attr("href");
-    elt.on("click", function(e) {
+    elt.on("click", function (e) {
       e.preventDefault();
       self.openModal();
     });
   }
 
-  ConfirmDialog.prototype.openModal = function() {
+  ConfirmDialog.prototype.openModal = function () {
     var self = this;
     var title =
       '<strong class="text-danger">' +
@@ -40,7 +40,7 @@ require(["AbilianWidget", "jquery", "bootbox"], function(Abilian, $, bootbox) {
         confirm: {
           label: this.options.label,
           className: "btn-danger", // or btn-primary, or btn-danger, or nothing at all
-          callback: function() {
+          callback: function () {
             self.onConfirm();
           },
         },
@@ -53,7 +53,7 @@ require(["AbilianWidget", "jquery", "bootbox"], function(Abilian, $, bootbox) {
     });
   };
 
-  ConfirmDialog.prototype.onConfirm = function() {
+  ConfirmDialog.prototype.onConfirm = function () {
     // Hack to provoke a POST instead of a GET.
     var form = document.createElement("form");
     form.setAttribute("method", "POST");

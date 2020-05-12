@@ -1,4 +1,4 @@
-require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
+require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function (
   Abilian,
   FileInput,
   $,
@@ -33,12 +33,12 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
 
   ImageInput.prototype = Object.create(FileInput.prototype);
 
-  ImageInput.prototype.createFileNode = function(file) {
+  ImageInput.prototype.createFileNode = function (file) {
     var self = this;
     var el = FileInput.prototype.createFileNode.call(self, file);
     var image = api.Image(file);
 
-    api.getInfo(file, function(err, infos) {
+    api.getInfo(file, function (err, infos) {
       if (err) {
         return;
       }
@@ -47,7 +47,7 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
       var preview;
 
       preview = resize_fun.call(self, image, infos);
-      preview.get(function(err /** String */, img /** HTMLElement */) {
+      preview.get(function (err /** String */, img /** HTMLElement */) {
         el.prepend(img);
       });
     });
@@ -55,11 +55,11 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
   };
 
   /* resize mode functions */
-  ImageInput.prototype.resize_scale = function(image, infos) {
+  ImageInput.prototype.resize_scale = function (image, infos) {
     return image.resize(this.width, this.height, "max");
   };
 
-  ImageInput.prototype.resize_fit = function(image, infos) {
+  ImageInput.prototype.resize_fit = function (image, infos) {
     var w_ratio = infos.width / this.width;
     var h_ratio = infos.height / this.height;
     var width;
@@ -77,7 +77,7 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
     return image.resize(width, height, "preview");
   };
 
-  ImageInput.prototype.resize_crop = function(image, infos) {
+  ImageInput.prototype.resize_crop = function (image, infos) {
     return image.resize(this.width, this.height, "preview");
   };
 
@@ -91,9 +91,9 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
 
   Abilian.registerWidgetCreator("imageInput", createImageInput);
 
-  $.fn.imageInput = function(options) {
+  $.fn.imageInput = function (options) {
     var opts = $.extend({}, defaults, options);
-    return this.each(function() {
+    return this.each(function () {
       var node = $(this);
       var widget = node.data("image-input");
       if (widget === undefined) {

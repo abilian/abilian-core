@@ -1,4 +1,4 @@
-require(["AbilianWidget"], function(Abilian) {
+require(["AbilianWidget"], function (Abilian) {
   "use strict";
 
   function initRichTextWidget(params) {
