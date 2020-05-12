@@ -7,6 +7,9 @@ About
 .. image:: https://coveralls.io/repos/abilian/abilian-core/badge.png?branch=master
    :target: https://coveralls.io/r/abilian/abilian-core?branch=master
 
+.. image:: https://static.pepy.tech/badge/abilian-core
+   :target: https://pepy.tech/project/abilian-core
+
 
 Abilian Core is an enterprise application development platform based on the `Flask micro-framework <http://flask.pocoo.org/>`_, the `SQLAlchemy ORM <http://www.sqlalchemy.org/>`_, good intentions and best practices (for some value of "best").
 
