@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 
 language: python
 
@@ -22,6 +22,8 @@ matrix:
       env: SQLALCHEMY_URI=sqlite://
     - python: 3.8
       env: SQLALCHEMY_URI=sqlite://
+    - python: 3.8
+      env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
 
 # Install OS and global dependencies
 before_install:

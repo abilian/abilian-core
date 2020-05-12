@@ -2,6 +2,7 @@ from random import randint
 import time
 
 import nox
+from nox.sessions import Session
 
 PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
 PACKAGE = "abilian"
@@ -34,7 +35,7 @@ def pytest(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize("db_driver", DB_DRIVERS)
-def dbtests(session, db_driver):
+def dbtests(session: Session, db_driver):
     session.install("psycopg2-binary", "pg8000")
 
     db_name = f"bench{randint(0, 10000000)}"
@@ -50,8 +51,11 @@ def dbtests(session, db_driver):
     session.run("pip", "check")
 
     t0 = time.time()
-    session.run("time", "pytest", "-q", external=True)
-    print("Elapsed time:", time.time() - t0)
+    session.run("pytest", "-q")
+    t1 = time.time()
+
+    with open("benchmark-result.txt", "a") as fd:
+        fd.write(f"{session.python} {db_driver} -> Elapsed time: {t1 - t0}\n")
 
     session.run("dropdb", db_name, external=True)
 
