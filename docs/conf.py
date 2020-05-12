@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Abilian documentation build configuration file, created by
 # sphinx-quickstart on Fri Jun  8 11:00:48 2012.

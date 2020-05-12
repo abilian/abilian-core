@@ -4,7 +4,6 @@ This extensions makes intersphinx work with flask.ext extensions.
 For example when actual module name is `flask_babel', documented
 extension name is `flask.ext.babel`
 """
-from __future__ import absolute_import
 
 
 def missing_reference(app, env, node, contnode):
