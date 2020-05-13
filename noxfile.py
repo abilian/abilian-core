@@ -1,5 +1,5 @@
-from random import randint
 import time
+from random import randint
 
 import nox
 from nox.sessions import Session
@@ -9,7 +9,7 @@ PACKAGE = "abilian"
 DB_DRIVERS = ["postgres", "postgres+pg8000"]
 
 nox.options.reuse_existing_virtualenvs = True
-nox.options.sessions = ('pytest', 'lint')
+nox.options.sessions = ("pytest", "lint")
 
 
 @nox.session(python="python3.6")

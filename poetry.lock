@@ -446,19 +446,6 @@ flake8 = "*"
 
 [[package]]
 category = "dev"
-description = "A plugin for flake8 integrating mypy."
-name = "flake8-mypy"
-optional = false
-python-versions = "*"
-version = "17.8.0"
-
-[package.dependencies]
-attrs = "*"
-flake8 = ">=3.0.0"
-mypy = "*"
-
-[[package]]
-category = "dev"
 description = "pytest assert checker plugin for flake8"
 name = "flake8-pytest"
 optional = false
@@ -1791,7 +1778,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "66f8fa0ac3193d0ede3692bbfddb15a056e3d7fec9db89ea94c4c91c9e8e7847"
+content-hash = "bccde3733b1309db4966e7f60994c23e28930dffdeff0cf8ee3544ddbecbe7e9"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -2012,10 +1999,6 @@ flake8-comprehensions = [
 flake8-mutable = [
     {file = "flake8-mutable-1.2.0.tar.gz", hash = "sha256:ee9b77111b867d845177bbc289d87d541445ffcc6029a0c5c65865b42b18c6a6"},
     {file = "flake8_mutable-1.2.0-py2-none-any.whl", hash = "sha256:38fd9dadcbcda6550a916197bc40ed76908119dabb37fbcca30873666c31d2d5"},
-]
-flake8-mypy = [
-    {file = "flake8-mypy-17.8.0.tar.gz", hash = "sha256:47120db63aff631ee1f84bac6fe8e64731dc66da3efc1c51f85e15ade4a3ba18"},
-    {file = "flake8_mypy-17.8.0-py35.py36-none-any.whl", hash = "sha256:cff009f4250e8391bf48990093cff85802778c345c8449d6498b62efefeebcbc"},
 ]
 flake8-pytest = [
     {file = "flake8-pytest-1.3.tar.gz", hash = "sha256:b4d6703f7d7b646af1e2660809e795886dd349df11843613dbe6515efa82c0f3"},
