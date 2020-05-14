@@ -20,19 +20,16 @@ class LoginSessionQuery(BaseQuery):
         """Return last known session for given user.
 
         :param user: user session
-        :type user: `abilian.core.models.subjects.User`
 
         :param user_agent: *exact* user agent string to lookup, or `None` to have
         user_agent extracted from request object. If not provided at all, no
         filtering on user_agent.
-        :type user_agent: string or None, or absent
 
         :param ip_address: client IP, or `None` to have ip_address extracted from
         request object (requires header 'X-Forwarded-For'). If not provided at
         all, no filtering on ip_address.
-        :type ip_address: string or None, or absent
 
-        :rtype: `LoginSession` or `None` if no session is found.
+        :returns: `LoginSession` or `None` if no session is found.
         """
         conditions = [LoginSession.user == user]
 

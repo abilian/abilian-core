@@ -42,6 +42,8 @@ class SchemaAdapter(metaclass=ABCMeta):
         """Returns an object instance given its identifier and optional data
         kwargs.
 
+        :param pk: the primary key to retrieve the object
+
         :returns: None if not object instance can be returned
         """
         raise NotImplementedError
