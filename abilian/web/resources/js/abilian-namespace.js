@@ -1,5 +1,5 @@
 /* Abilian namespace */
-define("AbilianNS", ["jquery"], function ($) {
+define("AbilianNS", ["jquery"], function($) {
   "use strict";
 
   var Abilian = (window.Abilian = window.Abilian || {});
@@ -51,7 +51,7 @@ define("AbilianNS", ["jquery"], function ($) {
    * Shortcut to register a function that must execute when application is
    * initialized. This is the preferred way to register init handlers.
    */
-  Abilian.fn.onAppInit = function (callback) {
+  Abilian.fn.onAppInit = function(callback) {
     if (!initialized) {
       $(window).on(Abilian.events.appInit, callback);
     } else {
@@ -67,7 +67,7 @@ define("AbilianNS", ["jquery"], function ($) {
     anonymous: true,
   };
 
-  Abilian.init = function () {
+  Abilian.init = function() {
     initialized = true;
     $(window).trigger(Abilian.events.appInit);
     $(window).trigger(Abilian.events.appAfterInit);

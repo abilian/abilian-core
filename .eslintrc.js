@@ -10,9 +10,9 @@ module.exports = {
   },
   // add your custom rules here
   rules: {
+    "comma-dangle": "off",
     quotes: ["error", "double", { avoidEscape: true }],
     semi: ["error", "always"],
-    "comma-dangle": ["error", "always-multiline"],
     "space-before-function-paren": ["error", "never"],
     camelcase: "off",
     curly: "error",

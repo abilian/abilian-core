@@ -1,5 +1,5 @@
 /* Abilian namespace */
-define("AbilianWidget", ["AbilianNS", "jquery"], function (Abilian, $) {
+define("AbilianWidget", ["AbilianNS", "jquery"], function(Abilian, $) {
   "use strict";
 
   /**
@@ -12,18 +12,18 @@ define("AbilianWidget", ["AbilianNS", "jquery"], function (Abilian, $) {
    * @param createFun: function(*params). Within function 'this' is set as
    * the item to widgetize wrapped with jQuery.
    */
-  Abilian.registerWidgetCreator = function (name, createFun) {
+  Abilian.registerWidgetCreator = function(name, createFun) {
     widgetsCreators[name] = createFun;
   };
 
-  Abilian.getWidgetCreator = function (name) {
+  Abilian.getWidgetCreator = function(name) {
     return widgetsCreators[name];
   };
 
   /*
    * Initialiaze a single element.
    */
-  Abilian.initJsWidget = function () {
+  Abilian.initJsWidget = function() {
     var $this = $(this);
     var creatorName = $this.data("init-with");
     var params = $this.data("init-params");

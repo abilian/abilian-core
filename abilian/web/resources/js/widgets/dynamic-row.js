@@ -1,4 +1,4 @@
-require(["AbilianWidget", "jquery"], function (Abilian, $) {
+require(["AbilianWidget", "jquery"], function(Abilian, $) {
   "use strict";
   // multiple row widget
   function DynamicRowWidget(table, options) {
@@ -18,7 +18,7 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
       '<th><span class="glyphicon glyphicon-plus"></span></th>'
     );
     self.addButton.css({ width: "1em" });
-    self.addButton.click(function (e) {
+    self.addButton.click(function(e) {
       self.addRow();
       e.preventDefault();
     });
@@ -26,8 +26,10 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
     self.minusButton = $(
       '<td><span class="glyphicon glyphicon-remove"></span></td>'
     );
-    self.minusButton.click(function (e) {
-      $(this).closest("tr").remove();
+    self.minusButton.click(function(e) {
+      $(this)
+        .closest("tr")
+        .remove();
       e.preventDefault();
     });
     if (self.options.indexOf("top") > -1) {
@@ -35,7 +37,7 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
     }
     if (self.options.indexOf("bottom") > -1) {
       var bottom_addButton = self.addButton.clone();
-      bottom_addButton.click(function (e) {
+      bottom_addButton.click(function(e) {
         self.addRow();
         e.preventDefault();
       });
@@ -59,11 +61,11 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
   }
 
   DynamicRowWidget.prototype = {
-    addRow: function () {
+    addRow: function() {
       var self = this;
       var newRow = self.templateRow.clone(true, true);
 
-      newRow.find("input").each(function () {
+      newRow.find("input").each(function() {
         var item = $(this);
         var shortName = item.data("shortName");
         var name = self.prefix + "-" + self.currentIndex;
@@ -73,7 +75,7 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
         item.attr("name", name);
         item.attr("id", name);
       });
-      newRow.find("select").each(function () {
+      newRow.find("select").each(function() {
         var item = $(this);
         var idSplitted = item.attr("id").split("-");
 
@@ -88,7 +90,10 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
       });
       self.tbody.append(newRow);
 
-      newRow.find(".js-widget").data("cloned", true).each(Abilian.initJsWidget);
+      newRow
+        .find(".js-widget")
+        .data("cloned", true)
+        .each(Abilian.initJsWidget);
 
       self.currentIndex += 1;
     },
@@ -101,10 +106,10 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
 
   Abilian.registerWidgetCreator("dynamicRowWidget", dynamicRowWidget);
 
-  $.fn.dynamicRowWidget = function (options) {
+  $.fn.dynamicRowWidget = function(options) {
     var defaults = {};
     var opts = $.extend(defaults, options);
-    return this.each(function () {
+    return this.each(function() {
       dynamicRowWidget.bind(this)(opts);
     });
   };
