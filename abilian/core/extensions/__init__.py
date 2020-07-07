@@ -2,7 +2,6 @@
 
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
-
 import sqlite3
 from typing import Any
 
@@ -11,11 +10,12 @@ import sqlalchemy as sa
 import sqlalchemy.event
 import sqlalchemy.orm
 from flask import current_app
-from sqlalchemy.engine import Engine, Connection
+from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.sql.schema import MetaData
 
 from abilian.core.logging import patch_logger
 from abilian.core.sqlalchemy import SQLAlchemy
+
 from . import upstream_info
 from .csrf import abilian_csrf
 from .csrf import wtf_csrf as csrf

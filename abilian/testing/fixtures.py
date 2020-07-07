@@ -9,7 +9,6 @@ to your `conftest.py`.
 Replaced the too-complex UnitTest-based testing framework.
 -> DI and functions over complex inheritance hierarchies FTW!
 """
-
 from typing import Any, Iterator
 
 from flask import Flask

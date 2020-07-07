@@ -16,7 +16,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, \
     Type, Union
 
 import sqlalchemy as sa
-import whoosh.query as wq
 from celery import shared_task
 from flask import Flask, _app_ctx_stack, appcontext_pushed, current_app, g
 from flask.globals import _lookup_app_object
@@ -24,6 +23,7 @@ from flask_login import current_user
 from sqlalchemy import event
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.unitofwork import UOWTransaction
+from whoosh import query as wq
 from whoosh.filedb.filestore import FileStorage, RamStorage
 from whoosh.index import FileIndex, Index
 from whoosh.qparser import DisMaxParser

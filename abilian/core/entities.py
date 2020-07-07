@@ -24,9 +24,9 @@ from .sqlalchemy import JSONDict
 from .util import friendly_fqcn, memoized, slugify
 
 if TYPE_CHECKING:
-    from abilian.core.models.tag import Tag
     from abilian.core.models.subjects import User
-    from abilian.services.security import SecurityService, Permission
+    from abilian.core.models.tag import Tag
+    from abilian.services.security import Permission, SecurityService
 
 __all__ = [
     "Entity",
@@ -399,9 +399,10 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
     def _indexable_roles_and_users(self) -> str:
         """Return a string made for indexing roles having :any:`READ`
         permission on this object."""
-        from abilian.services.indexing import indexable_role
-        from abilian.services.security import READ, Admin, Anonymous, Creator, Owner
         from abilian.services import get_service
+        from abilian.services.indexing import indexable_role
+        from abilian.services.security import READ, Admin, Anonymous, \
+            Creator, Owner
 
         result = []
         security = cast("SecurityService", get_service("security"))

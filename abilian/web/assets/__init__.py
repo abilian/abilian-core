@@ -7,6 +7,7 @@ from flask_assets import Bundle
 from webassets.filter import get_filter
 
 from abilian.services.security import Anonymous
+
 from .filters import register_filters
 from .mixin import AssetManagerMixin
 

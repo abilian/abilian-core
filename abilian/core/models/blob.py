@@ -46,7 +46,8 @@ class Blob(Model):
     @property
     def file(self) -> Optional[Path]:
         """Return :class:`pathlib.Path` object used for storing value."""
-        from abilian.services.repository import session_repository as repository
+        from abilian.services.repository import \
+            session_repository as repository
 
         return repository.get(self, self.uuid)
 
@@ -70,7 +71,8 @@ class Blob(Model):
         :param:content: bytes, or any object with a `read()` method
         :param:encoding: encoding to use when content is Unicode
         """
-        from abilian.services.repository import session_repository as repository
+        from abilian.services.repository import \
+            session_repository as repository
 
         repository.set(self, self.uuid, value)
         self.meta["md5"] = str(hashlib.md5(self.value).hexdigest())
@@ -87,7 +89,8 @@ class Blob(Model):
     @value.deleter
     def value(self) -> None:
         """Remove value from repository."""
-        from abilian.services.repository import session_repository as repository
+        from abilian.services.repository import \
+            session_repository as repository
 
         repository.delete(self, self.uuid)
 

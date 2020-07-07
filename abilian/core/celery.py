@@ -77,7 +77,8 @@ class FlaskLoader(BaseLoader):
         app = self.flask_app_factory()
 
         if "sentry" in app.extensions:
-            from raven.contrib.celery import register_signal, register_logger_signal
+            from raven.contrib.celery import register_logger_signal, \
+                register_signal
 
             client = app.extensions["sentry"].client
             client.tags["process_type"] = "celery task"

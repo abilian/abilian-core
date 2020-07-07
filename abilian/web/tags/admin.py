@@ -4,8 +4,8 @@ from typing import Callable, List
 
 import sqlalchemy as sa
 import sqlalchemy.orm
-import sqlalchemy.sql.functions as func
 from flask import current_app, flash, redirect, render_template, request
+from sqlalchemy.sql import functions as func
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db
