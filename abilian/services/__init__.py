@@ -5,8 +5,11 @@ http://flask.pocoo.org/docs/extensiondev/ )
 """
 from flask import current_app
 
-# This one first
+# This one must be imported first
 from .base import Service, ServiceState
+
+# Don't remove (used to force import order)
+assert Service, ServiceState
 
 from .activity import ActivityService
 from .antivirus import service as antivirus
