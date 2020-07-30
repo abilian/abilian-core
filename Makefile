@@ -122,7 +122,7 @@ format: format-py format-js
 format-py:
 	docformatter -i -r abilian
 	black abilian demo tests *.py
-	isort -rc -sg "**/__init__.py" abilian demo tests *.py
+	isort abilian demo tests *.py
 
 format-js:
 	npx prettier --write --trailing-comma es5 \
