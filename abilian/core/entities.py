@@ -1,5 +1,7 @@
-"""Base class for entities, objects that are managed by the Abilian framwework
-(unlike SQLAlchemy models which are considered lower-level)."""
+"""
+Base class for entities, objects that are managed by the Abilian framwework
+(unlike SQLAlchemy models which are considered lower-level).
+"""
 import collections
 import re
 from datetime import datetime
@@ -26,16 +28,16 @@ from .util import friendly_fqcn, memoized, slugify
 if TYPE_CHECKING:
     from abilian.core.models.subjects import User
     from abilian.core.models.tag import Tag
-    from abilian.services.security import Permission, SecurityService
+    from abilian.services.security import Permission
 
-__all__ = [
+__all__ = (
     "Entity",
     "EntityQuery",
     "Indexable",
     "all_entity_classes",
     "db",
     "ValidationError",
-]
+)
 
 
 #
@@ -109,8 +111,9 @@ def setup_default_permissions(session: Session, instance: Any) -> None:
 def _setup_default_permissions(instance: Any) -> None:
     """Separate method to conveniently call it from scripts for example."""
     from abilian.services import get_service
+    from abilian.services.security import SecurityService
 
-    security = cast("SecurityService", get_service("security"))
+    security = cast(SecurityService, get_service("security"))
     for permission, roles in instance.__default_permissions__:
         if permission == "create":
             # use str for comparison instead of `abilian.services.security.CREATE`
@@ -403,9 +406,10 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
         from abilian.services.indexing import indexable_role
         from abilian.services.security import READ, Admin, Anonymous, \
             Creator, Owner
+        from abilian.services.security import SecurityService
 
         result = []
-        security = cast("SecurityService", get_service("security"))
+        security = cast(SecurityService, get_service("security"))
 
         # roles - required to match when user has a global role
         assignments = security.get_permissions_assignments(permission=READ, obj=self)

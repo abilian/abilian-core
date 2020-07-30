@@ -3,7 +3,7 @@ import os
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import mkstemp
-from typing import Iterator, Optional, Union
+from typing import Iterator, Optional
 
 logger = logging.getLogger(__name__)
 
