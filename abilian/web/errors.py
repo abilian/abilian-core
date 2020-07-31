@@ -123,15 +123,10 @@ class ErrorManagerMixin(Flask):
             )
             return
 
+        from sentry_sdk.integrations.celery import CeleryIntegration
         from sentry_sdk.integrations.flask import FlaskIntegration
 
-        sentry_sdk.init(dsn=dsn, integrations=[FlaskIntegration()])
-
-        # ext = Sentry(self, logging=True, level=logging.ERROR)
-        # ext.client.tags["app_name"] = self.name
-        # ext.client.tags["process_type"] = "web"
-        # server_name = str(self.config.get("SERVER_NAME"))
-        # ext.client.tags["configured_server_name"] = server_name
+        sentry_sdk.init(dsn=dsn, integrations=[FlaskIntegration(), CeleryIntegration()])
 
     def install_default_handlers(self) -> None:
         for http_error_code in (403, 404, 500):

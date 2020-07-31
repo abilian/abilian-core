@@ -42,8 +42,7 @@ def reindex(clear: bool, progressive: bool, batch_size: int):
 
 
 class Reindexer:
-    def __init__(self, clear, progressive, batch_size):
-        # type: (bool, bool, int) -> None
+    def __init__(self, clear: bool, progressive: bool, batch_size: int) -> None:
         self.clear = clear
         self.progressive = progressive
         self.batch_size = int(batch_size or 0)
@@ -52,8 +51,8 @@ class Reindexer:
         self.index = self.index_service.app_state.indexes["default"]
         self.adapted = self.index_service.adapted
         self.session = Session(bind=db.session.get_bind(None, None), autocommit=True)
-        self.indexed = set()  # type: Set[str]
-        self.cleared = set()  # type: Set[str]
+        self.indexed: Set[str] = set()
+        self.cleared: Set[str] = set()
 
         strategy = progressive_mode if self.progressive else single_transaction
         self.strategy = strategy(self.index, clear=self.clear)
@@ -75,8 +74,7 @@ class Reindexer:
         except StopIteration:
             pass
 
-    def reindex_class(self, cls):
-        # type: (Entity) -> None
+    def reindex_class(self, cls: Entity) -> None:
         current_object_type = cls._object_type()
 
         if not self.clear and current_object_type not in self.cleared:
