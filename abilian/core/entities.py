@@ -1,7 +1,5 @@
-"""
-Base class for entities, objects that are managed by the Abilian framwework
-(unlike SQLAlchemy models which are considered lower-level).
-"""
+"""Base class for entities, objects that are managed by the Abilian framwework
+(unlike SQLAlchemy models which are considered lower-level)."""
 import collections
 import re
 from datetime import datetime
@@ -405,8 +403,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
         from abilian.services import get_service
         from abilian.services.indexing import indexable_role
         from abilian.services.security import READ, Admin, Anonymous, \
-            Creator, Owner
-        from abilian.services.security import SecurityService
+            Creator, Owner, SecurityService
 
         result = []
         security = cast(SecurityService, get_service("security"))
