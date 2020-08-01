@@ -193,11 +193,11 @@ class AntiVirus(Rule):
     field_flags = ("antivirus",)
 
     def __call__(self, form, field):
-        svc = get_service("antivirus")
-        if not svc:
+        service = get_service("antivirus")
+        if not service:
             return
 
-        res = svc.scan(field.data)
+        res = service.scan(field.data)
         if res is False:
             raise validators.ValidationError(_("Virus detected!"))
 

@@ -655,19 +655,17 @@ class TextInput(wtforms.widgets.TextInput):
         input_type: Optional[Any] = None,
         pre_icon: Optional[Any] = None,
         post_icon: Optional[Any] = None,
-        *args: Any,
-        **kwargs: Any,
     ) -> None:
-        super().__init__(input_type, *args, **kwargs)
+        super().__init__(input_type)
 
         if pre_icon is not None:
             self.pre_icon = pre_icon
         if post_icon is not None:
             self.post_icon = post_icon
 
-    def __call__(self, field, *args, **kwargs):
+    def __call__(self, field, **kwargs):
         if not any((self.pre_icon, self.post_icon)):
-            return super().__call__(field, *args, **kwargs)
+            return super().__call__(field, **kwargs)
 
         kwargs.setdefault("type", self.input_type)
         if "value" not in kwargs:
@@ -938,7 +936,7 @@ class Chosen(Select):
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(val, label, selected))
         html.append("</select>")
-        return HTMLString("".join(html))
+        return Markup("".join(html))
 
     @classmethod
     def render_option(cls, value, label, selected, **kwargs):
@@ -946,7 +944,7 @@ class Chosen(Select):
         if selected:
             options["selected"] = True
         params = html_params(**options)
-        return HTMLString(f"<option {params}>{html.escape(str(label))}</option>")
+        return Markup(f"<option {params}>{html.escape(str(label))}</option>")
 
 
 class TagInput(Input):
@@ -959,7 +957,7 @@ class TagInput(Input):
             kwargs["value"] = field._value()
 
         params = self.html_params(name=field.name, **kwargs)
-        return HTMLString(f"<input {params}>")
+        return Markup(f"<input {params}>")
 
 
 class DateInput(Input):
@@ -1103,9 +1101,8 @@ class DateTimeInput:
         locale = get_locale()
         date_fmt = locale.date_formats["short"].pattern
         date_fmt = babel2datetime(date_fmt)
-        date_fmt = date_fmt.replace("%B", "%m").replace(
-            "%b", "%m"
-        )  # force numerical months
+        # force numerical months
+        date_fmt = date_fmt.replace("%B", "%m").replace("%b", "%m")
         time_fmt = "%H:%M"
 
         value = kwargs.pop("value", None)
@@ -1398,7 +1395,7 @@ class ListWidget(wtforms.widgets.ListWidget):
             html.append(f"<li>{subfield()}</li>")
 
         html.append(f"</{self.html_tag}>")
-        return wtforms.widgets.HTMLString("".join(html))
+        return Markup("".join(html))
 
     def render_view(self, field, **kwargs):
         data = field.data
@@ -1527,7 +1524,7 @@ class Select2(Select):
         if unescape_html:
             self.unescape_html = True
 
-    def __call__(self, field, *args, **kwargs):
+    def __call__(self, field, **kwargs):
         # 'placeholder' option presence is required for 'allowClear'
         params = {"placeholder": ""}
         if self.unescape_html:
@@ -1542,7 +1539,7 @@ class Select2(Select):
 
         kwargs.setdefault("data-init-with", self.js_init)
         kwargs["data-init-params"] = json.dumps(params)
-        return Select.__call__(self, field, *args, **kwargs)
+        return Select.__call__(self, field, **kwargs)
 
     def render_view(self, field, **kwargs):
         labels = [str(label) for v, label, checked in field.iter_choices() if checked]
@@ -1551,7 +1548,7 @@ class Select2(Select):
     @classmethod
     def render_option(cls, value, label, selected, **kwargs):
         if value is None:
-            return HTMLString("<option></option>")
+            return Markup("<option></option>")
         return Select.render_option(value, label, selected, **kwargs)
 
 
