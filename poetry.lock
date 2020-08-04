@@ -648,11 +648,12 @@ category = "main"
 description = "A featureful, immutable, and correct URL for Python."
 name = "hyperlink"
 optional = false
-python-versions = "*"
-version = "19.0.0"
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "20.0.0"
 
 [package.dependencies]
 idna = ">=2.5"
+typing = "*"
 
 [[package]]
 category = "dev"
@@ -1542,7 +1543,7 @@ description = "Fast, Extensible Progress Meter"
 name = "tqdm"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*"
-version = "4.48.1"
+version = "4.48.2"
 
 [package.extras]
 dev = ["py-make (>=0.1.0)", "twine", "argopt", "pydoc-markdown"]
@@ -1566,6 +1567,14 @@ version = "2.9.1"
 [package.extras]
 doc = ["sphinx-rtd-theme", "sphinx-autodoc-typehints (>=1.2.0)"]
 test = ["pytest", "typing-extensions"]
+
+[[package]]
+category = "main"
+description = "Type Hints for Python"
+name = "typing"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "3.7.4.3"
 
 [[package]]
 category = "dev"
@@ -1602,7 +1611,7 @@ description = "Python Data Validation for Humans™."
 name = "validators"
 optional = false
 python-versions = ">=3.4"
-version = "0.17.0"
+version = "0.17.1"
 
 [package.dependencies]
 decorator = ">=3.4.0"
@@ -2063,8 +2072,8 @@ html5lib = [
     {file = "html5lib-1.1.tar.gz", hash = "sha256:b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f"},
 ]
 hyperlink = [
-    {file = "hyperlink-19.0.0-py2.py3-none-any.whl", hash = "sha256:ab4a308feb039b04f855a020a6eda3b18ca5a68e6d8f8c899cbe9e653721d04f"},
-    {file = "hyperlink-19.0.0.tar.gz", hash = "sha256:4288e34705da077fada1111a24a0aa08bb1e76699c9ce49876af722441845654"},
+    {file = "hyperlink-20.0.0-py2.py3-none-any.whl", hash = "sha256:96507639aba70787b3eef83a63b3159cbd4e7991807ae8ed2536f9c853d5763e"},
+    {file = "hyperlink-20.0.0.tar.gz", hash = "sha256:1383c4c9f25ad812261bf156591e8a46a1a252a4fe5b0cb659fdd0cec66c67ff"},
 ]
 identify = [
     {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
@@ -2529,8 +2538,8 @@ tox = [
     {file = "tox-3.18.1.tar.gz", hash = "sha256:5c82e40046a91dbc80b6bd08321b13b4380d8ce3bcb5b62616cb17aaddefbb3a"},
 ]
 tqdm = [
-    {file = "tqdm-4.48.1-py2.py3-none-any.whl", hash = "sha256:44b896c38f70f91826a3f83a3195b23c0460322bfc729566ec8e4e89bb5ad713"},
-    {file = "tqdm-4.48.1.tar.gz", hash = "sha256:7b7dd59cd9f03b89365ba67eb8515f5d2803fd1eb707abdbb914691a3123d9df"},
+    {file = "tqdm-4.48.2-py2.py3-none-any.whl", hash = "sha256:1a336d2b829be50e46b84668691e0a2719f26c97c62846298dd5ae2937e4d5cf"},
+    {file = "tqdm-4.48.2.tar.gz", hash = "sha256:564d632ea2b9cb52979f7956e093e831c28d441c11751682f84c86fc46e4fd21"},
 ]
 typed-ast = [
     {file = "typed_ast-1.4.1-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:73d785a950fc82dd2a25897d525d003f6378d1cb23ab305578394694202a58c3"},
@@ -2559,6 +2568,10 @@ typeguard = [
     {file = "typeguard-2.9.1-py3-none-any.whl", hash = "sha256:e258567e62d28f9a51d4f7c71f491154e9ef0889286ad2f37e3e22e4f668b21b"},
     {file = "typeguard-2.9.1.tar.gz", hash = "sha256:529ef3d88189cc457f4340388028412f71be8091c2c943465146d4170fb67288"},
 ]
+typing = [
+    {file = "typing-3.7.4.3-py2-none-any.whl", hash = "sha256:283d868f5071ab9ad873e5e52268d611e851c870a2ba354193026f2dfb29d8b5"},
+    {file = "typing-3.7.4.3.tar.gz", hash = "sha256:1187fb9c82fd670d10aa07bbb6cfcfe4bdda42d6fab8d5134f04e8c4d0b71cc9"},
+]
 typing-extensions = [
     {file = "typing_extensions-3.7.4.2-py2-none-any.whl", hash = "sha256:f8d2bd89d25bc39dabe7d23df520442fa1d8969b82544370e03d88b5a591c392"},
     {file = "typing_extensions-3.7.4.2-py3-none-any.whl", hash = "sha256:6e95524d8a547a91e08f404ae485bbb71962de46967e1b71a0cb89af24e761c5"},
@@ -2572,7 +2585,8 @@ urllib3 = [
     {file = "urllib3-1.25.10.tar.gz", hash = "sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a"},
 ]
 validators = [
-    {file = "validators-0.17.0.tar.gz", hash = "sha256:1f2dfc158f8399cb7916fd0665133ad462c094870301ba77b86cc5f383431abb"},
+    {file = "validators-0.17.1-py3-none-any.whl", hash = "sha256:898b6b8197fbc320daf25d3b32fa928fd25e225c33790cb58ed54b48aebe1858"},
+    {file = "validators-0.17.1.tar.gz", hash = "sha256:401cb441dd61bb1a03b10c8a3a884642409e22a2a19e03bbfc4891e0ddbc7268"},
 ]
 vine = [
     {file = "vine-1.3.0-py2.py3-none-any.whl", hash = "sha256:ea4947cc56d1fd6f2095c8d543ee25dad966f78692528e68b4fada11ba3f98af"},

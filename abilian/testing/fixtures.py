@@ -134,7 +134,7 @@ def admin_user(db: SQLAlchemy) -> User:
 @fixture
 def login_user(user: User, client: FlaskClient) -> User:
     with client.session_transaction() as session:
-        session["user_id"] = user.id
+        session["_user_id"] = user.id
 
     return user
 
@@ -142,6 +142,6 @@ def login_user(user: User, client: FlaskClient) -> User:
 @fixture
 def login_admin(admin_user: User, client: FlaskClient) -> User:
     with client.session_transaction() as session:
-        session["user_id"] = admin_user.id
+        session["_user_id"] = admin_user.id
 
     return admin_user
