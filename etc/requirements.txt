@@ -1,5 +1,3 @@
-# Editable install with no version control (abilian-core==0.11.6)
--e /Users/fermigier/envs/abilian-core/lib/python3.7/site-packages
 alabaster==0.7.12
 alembic==1.4.2
 amqp==2.6.1
@@ -55,7 +53,7 @@ Flask-WTF==0.12
 gitchangelog==3.0.4
 honcho==1.0.1
 html5lib==1.1
-hyperlink==20.0.0
+hyperlink==20.0.1
 identify==1.4.25
 idna==2.10
 imagesize==1.2.0
@@ -64,7 +62,7 @@ incremental==17.5.0
 infinity==1.5
 iniconfig==1.0.1
 intervals==0.9.0
-isort==5.2.2
+isort==5.4.0
 itsdangerous==1.1.0
 jdcal==1.4.1
 Jinja2==2.11.2
@@ -101,6 +99,7 @@ Pygments==2.6.1
 pyparsing==2.4.7
 pytest==6.0.1
 pytest-cov==2.10.0
+pytest-flask==1.0.0
 pytest-forked==1.3.0
 pytest-randomly==3.4.1
 pytest-repeat==0.8.0
@@ -117,7 +116,7 @@ restructuredtext-lint==1.3.1
 sentry-sdk==0.16.3
 six==1.15.0
 snowballstemmer==2.0.0
-Sphinx==3.1.2
+Sphinx==3.2.0
 sphinx-rtd-theme==0.5.0
 sphinxcontrib-applehelp==1.0.2
 sphinxcontrib-devhelp==1.0.2
@@ -131,18 +130,17 @@ sqlparse==0.3.1
 toml==0.10.1
 toolz==0.10.0
 towncrier==19.2.0
-tox==3.18.1
+tox==3.19.0
 tqdm==4.48.2
 typed-ast==1.4.1
 typeguard==2.9.1
-typing==3.7.4.3
 typing-extensions==3.7.4.2
 untokenize==0.1.1
 urllib3==1.25.10
 validate-email==1.3
 validators==0.17.1
 vine==1.3.0
-virtualenv==20.0.29
+virtualenv==20.0.30
 webassets==0.12.1
 webencodings==0.5.1
 Werkzeug==0.16.1

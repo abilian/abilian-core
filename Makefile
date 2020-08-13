@@ -53,6 +53,11 @@ test-with-coverage:
 	py.test $(PYTEST_MULTI) --cov $(PKG)
 	@echo ""
 
+test-with-typeguard:
+	@echo "--> Running Python tests with typeguard"
+	pytest --typeguard-packages=abilian
+	@echo ""
+
 vagrant-tests:
 	vagrant up
 	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
@@ -181,7 +186,7 @@ release:
 update-deps:
 	pip install -U pip setuptools wheel
 	poetry update
-	poetry run pip freeze > etc/requirements.txt
+	poetry run pip freeze | grep -v abilian-core > etc/requirements.txt
 	yarn upgrade -s --no-progress
 
 sync-deps:

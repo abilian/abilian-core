@@ -108,6 +108,7 @@ Flask-DebugToolbar = ">=0.10"
 
 # For running tests (pytest and friends)
 pytest = ">=2.4.0"
+pytest-flask = "^1"
 pytest-xdist = "*"
 pytest-randomly = "*"
 pytest-repeat = "*"

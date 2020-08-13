@@ -63,10 +63,10 @@ def test_request_context(app: Flask) -> Iterator[RequestContext]:
         yield ctx
 
 
-@fixture
-def req_ctx(app: Flask) -> Iterator[RequestContext]:
-    with app.test_request_context() as _req_ctx:
-        yield _req_ctx
+# @fixture
+# def req_ctx(app: Flask) -> Iterator[RequestContext]:
+#     with app.test_request_context() as _req_ctx:
+#         yield _req_ctx
 
 
 @fixture
@@ -96,10 +96,10 @@ def db_session(db: SQLAlchemy) -> Session:
     return db.session
 
 
-@fixture
-def client(app: Flask) -> FlaskClient:
-    """Return a Web client, used for testing."""
-    return app.test_client()
+# @fixture
+# def client(app: Flask) -> FlaskClient:
+#     """Return a Web client, used for testing."""
+#     return app.test_client()
 
 
 @fixture
