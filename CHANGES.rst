@@ -1,6 +1,79 @@
 Changelog for Abilian Core
 ==========================
 
+v0.11.10 (2020-08-04)
+---------------------
+- Fix tests.
+- Cleanup API.
+- Use sentry sdk instead of raven.
+- Cleanup.
+
+
+v0.11.7 (2020-07-30)
+--------------------
+- Format.
+- Docstrings.
+- Fix/silent lint errors.
+- Cosmit py3k.
+- Format.
+- Marketing.
+- Modernize code.
+- Prettify front-end.
+- Use proper booleans.
+- Ci: add nox tests.
+- Ci: fix noxfile.
+- Ci: refact tox config.
+- Ci: use bionic for travis.
+
+
+v0.11.6 (2019-12-29)
+--------------------
+
+Fix
+~~~
+- New flake8 warnings.
+
+Other
+~~~~~
+- Ci: Github actions.
+- Ci: travis / py38.
+- Refactor: f-strings.
+
+
+v0.11.4 (2019-09-12)
+--------------------
+- Typing + format.
+- Py3k.
+- Travis for 3.8 (not working)
+
+
+v0.11.3 (2019-08-07)
+--------------------
+
+Fix
+~~~
+- Search wasn't really configurable.
+- Fix bug on debug toolbar for signals.
+
+Other
+~~~~~
+- Remove "pyre-fixme" comments.
+- Small refactor (f-strings).
+- Typing issues fixed.
+- Fix for readthedocs.
+- Fix doc (sphinx) issues.
+- Fix tests.
+- Type hints.
+- Typing fixes.
+- Fix settings.
+- Cleanup imports.
+- Py3k-ize settings. May break things.
+- Fix typing (pyre) issues.
+- Format.
+- Annotate w/ type warnings.
+- Refactor: use f-strings.
+- Py3k: using pyupgrade.
+
 
 v0.11.6 (2019-12-29)
 --------------------
