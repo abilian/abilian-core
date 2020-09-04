@@ -1,10 +1,10 @@
 About
 =====
 
-.. image:: https://api.travis-ci.org/abilian/abilian-core.png
+.. image:: https://api.travis-ci.org/abilian/abilian-core.svg
    :target: https://travis-ci.org/abilian/abilian-core
 
-.. image:: https://coveralls.io/repos/abilian/abilian-core/badge.png?branch=master
+.. image:: https://coveralls.io/repos/abilian/abilian-core/badge.svg?branch=master
    :target: https://coveralls.io/r/abilian/abilian-core?branch=master
 
 .. image:: https://static.pepy.tech/badge/abilian-core
