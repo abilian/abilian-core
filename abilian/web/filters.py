@@ -69,20 +69,20 @@ def filesize(d: Union[int, str]) -> Markup:
         s = f"{d:d}&nbsp;B"
 
     elif d < int(1e4):
-        s = "%.1f&nbsp;kB" % (d / 1e3)
+        s = f"{d / 1000.0:.1f}&nbsp;kB"
     elif d < int(1e6):
-        s = "%.0f&nbsp;kB" % (d / 1e3)
+        s = f"{d / 1000.0:.0f}&nbsp;kB"
 
     elif d < int(1e7):
-        s = "%.1f&nbsp;MB" % (d / 1e6)
+        s = f"{d / 1000000.0:.1f}&nbsp;MB"
     elif d < int(1e9):
-        s = "%.0f&nbsp;MB" % (d / 1e6)
+        s = f"{d / 1000000.0:.0f}&nbsp;MB"
 
     elif d < int(1e10):
-        s = "%.1f&nbsp;GB" % (d / 1e9)
+        s = f"{d / 1000000000.0:.1f}&nbsp;GB"
 
     else:
-        s = "%.0f&nbsp;GB" % (d / 1e9)
+        s = f"{d / 1000000000.0:.0f}&nbsp;GB"
 
     return Markup(s)
 
