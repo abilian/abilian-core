@@ -186,7 +186,9 @@ release:
 update-deps:
 	pip install -U pip setuptools wheel
 	poetry update
-	poetry run pip freeze | grep -v abilian-core > etc/requirements.txt
+	poetry export -o etc/requirements.txt
+	# poetry run pip freeze | grep -v abilian-core > etc/requirements.txt
+	# dephell deps convert --from=pyproject.toml --to=etc/requirements
 	dephell deps convert --from=pyproject.toml --to=setup.py
 	black setup.py
 	yarn upgrade -s --no-progress
