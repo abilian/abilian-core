@@ -346,7 +346,6 @@ setup(
     extras_require={
         "dev": [
             "black",
-            "dephell",
             "docformatter",
             "docutils",
             "flake8",
