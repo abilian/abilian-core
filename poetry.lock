@@ -564,11 +564,11 @@ dev = ["tox", "bumpversion (<1)", "sphinx (<2)", "PyTest (<5)", "PyTest-Cov (<2.
 
 [[package]]
 name = "devtools"
-version = "0.5.1"
-description = "Dev tools for python"
+version = "0.6"
+description = "Python's missing debug print command and other development tools."
 category = "main"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 
 [package.extras]
 pygments = ["Pygments (>=2.2.0)"]
@@ -594,11 +594,11 @@ untokenize = "*"
 
 [[package]]
 name = "docutils"
-version = "0.15"
+version = "0.16"
 description = "Docutils -- Python Documentation Utilities"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "execnet"
@@ -1167,7 +1167,7 @@ python-versions = "*"
 
 [[package]]
 name = "nox"
-version = "2019.11.9"
+version = "2020.8.22"
 description = "Flexible test automation."
 category = "dev"
 optional = false
@@ -1176,6 +1176,7 @@ python-versions = ">=3.5"
 [package.dependencies]
 argcomplete = ">=1.9.4,<2.0"
 colorlog = ">=2.6.1,<5.0.0"
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 py = ">=1.4.0,<2.0.0"
 virtualenv = ">=14.0.0"
 
@@ -2091,7 +2092,7 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "45899f7f44708f86006973059316dba985e9cd6562eef23829face67a99724bc"
+content-hash = "5ef6752f71ccebba0d0a569b108a45101520f67adff7cc49d4039c3d9ebf03aa"
 
 [metadata.files]
 aiohttp = [
@@ -2355,8 +2356,8 @@ deprecated = [
     {file = "Deprecated-1.2.10.tar.gz", hash = "sha256:525ba66fb5f90b07169fdd48b6373c18f1ee12728ca277ca44567a367d9d7f74"},
 ]
 devtools = [
-    {file = "devtools-0.5.1-py35.py36-none-any.whl", hash = "sha256:7a1f7db6ade0a71840ca4014d75dd72390aed2ef04e39e2b2445af7b3a3f4679"},
-    {file = "devtools-0.5.1.tar.gz", hash = "sha256:51ca8d2e15b8a862875a4837db2bafbc6cda409c069e960aec3f4bbd91fe9c08"},
+    {file = "devtools-0.6-py3-none-any.whl", hash = "sha256:bba4886df5adbcedafa2ec0e5fb2c255a82ce94ec822a12aa16f1f104e9eed36"},
+    {file = "devtools-0.6.tar.gz", hash = "sha256:3f2d4eb2de2a8501c41330524414b495d7bbf3066384b3cec5fa784a0d07099b"},
 ]
 distlib = [
     {file = "distlib-0.3.1-py2.py3-none-any.whl", hash = "sha256:8c09de2c67b3e7deef7184574fc060ab8a793e7adbb183d942c389c8b13c52fb"},
@@ -2366,9 +2367,8 @@ docformatter = [
     {file = "docformatter-1.3.1.tar.gz", hash = "sha256:d8db663665becccac75737b2635a06076f2c832bf861322a7bfc512f0a9fa7e3"},
 ]
 docutils = [
-    {file = "docutils-0.15-py3-none-any.whl", hash = "sha256:d2ddba74835cb090a1b627d3de4e7835c628d07ee461f7b4480f51af2fe4d448"},
-    {file = "docutils-0.15.post1-py2-none-any.whl", hash = "sha256:ba4584f9107571ced0d2c7f56a5499c696215ba90797849c92d395979da68521"},
-    {file = "docutils-0.15.tar.gz", hash = "sha256:54a349c622ff31c91cbec43b0b512f113b5b24daf00e2ea530bb1bd9aac14849"},
+    {file = "docutils-0.16-py2.py3-none-any.whl", hash = "sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af"},
+    {file = "docutils-0.16.tar.gz", hash = "sha256:c2de3a60e9e7d07be26b7f2b00ca0309c207e06c100f9cc2a94931fc75a478fc"},
 ]
 execnet = [
     {file = "execnet-1.7.1-py2.py3-none-any.whl", hash = "sha256:d4efd397930c46415f62f8a31388d6be4f27a91d7550eb79bc64a756e0056547"},
@@ -2637,8 +2637,8 @@ nodeenv = [
     {file = "nodeenv-1.5.0.tar.gz", hash = "sha256:ab45090ae383b716c4ef89e690c41ff8c2b257b85b309f01f3654df3d084bd7c"},
 ]
 nox = [
-    {file = "nox-2019.11.9-py2.py3-none-any.whl", hash = "sha256:0f4b489fdd0eb5665f8c5ee89e5aeb648beae6ccbb363b2492a6786f26e70d85"},
-    {file = "nox-2019.11.9.tar.gz", hash = "sha256:22d0f45ad2bd2d75fa4a243d8d8b84359dbf43134ec5cbff4de9f243b6d528b8"},
+    {file = "nox-2020.8.22-py3-none-any.whl", hash = "sha256:55f8cab16bcfaaea08b141c83bf2b7c779e943518d0de6cd9c38cd8da95d11ea"},
+    {file = "nox-2020.8.22.tar.gz", hash = "sha256:efa5adcf1134012f96bcd0a496ccebd4c9e9da53a831888a2a779462440eebcf"},
 ]
 numpy = [
     {file = "numpy-1.19.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:b594f76771bc7fc8a044c5ba303427ee67c17a09b36e1fa32bde82f5c419d17a"},
