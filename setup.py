@@ -23,9 +23,9 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name="abilian-core",
-    version="0.11.12",
+    version="0.11.13",
     description="A framework for enterprise applications (CRM, ERP, collaboration...), based on Flask and SQLAlchemy",
-    python_requires="==3.*,>=3.6.0",
+    python_requires=">=3.6.1",
     project_urls={"repository": "https://github.com/abilian/abilian-core"},
     author="Abilian SAS",
     license="LGPL",

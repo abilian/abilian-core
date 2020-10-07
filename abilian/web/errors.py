@@ -125,8 +125,18 @@ class ErrorManagerMixin(Flask):
 
         from sentry_sdk.integrations.celery import CeleryIntegration
         from sentry_sdk.integrations.flask import FlaskIntegration
+        from sentry_sdk.integrations.redis import RedisIntegration
+        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-        sentry_sdk.init(dsn=dsn, integrations=[FlaskIntegration(), CeleryIntegration()])
+        sentry_sdk.init(
+            dsn=dsn,
+            integrations=[
+                FlaskIntegration(),
+                CeleryIntegration(),
+                SqlalchemyIntegration(),
+                RedisIntegration(),
+            ],
+        )
 
     def install_default_handlers(self) -> None:
         for http_error_code in (403, 404, 500):
