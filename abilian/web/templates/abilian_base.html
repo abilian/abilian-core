@@ -47,11 +47,13 @@
       var app_name = {{ (app.name+'_front') | tojson }};
       var server_name = {{ config.get('SERVER_NAME', 'unknown') | tojson }};
 
-      Sentry.init({dsn: dsn});
-      Sentry.configureScope(function (scope) {
-        scope.setTag("app_name", app_name);
-        scope.setTag("server_name", server_name);
-      });
+      if (typeof Sentry != "undefined") {
+        Sentry.init({dsn: dsn});
+        Sentry.configureScope(function (scope) {
+          scope.setTag("app_name", app_name);
+          scope.setTag("server_name", server_name);
+        });
+      }
     </script>
   {%- endif %}
 
