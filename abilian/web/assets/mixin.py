@@ -1,13 +1,16 @@
+import logging
 import os
 from pathlib import Path
 from typing import Any, Dict, Text
 
-from flask import Flask, current_app
+from flask import Flask
 from flask_assets import Bundle
 from flask_assets import Environment as AssetsEnv
 
 from abilian.services.security import Anonymous
 from abilian.web.assets.filters import ClosureJS
+
+logger = logging.getLogger(__name__)
 
 
 class AssetManagerMixin(Flask):
@@ -18,7 +21,7 @@ class AssetManagerMixin(Flask):
             if os.system("java -version 2> /dev/null") == 0:
                 js_filters = ("closure_js",)
             else:
-                current_app.logger.warn("Java is not installed. Can't use Closure")
+                logger.warning("Java is not installed. Can't use Closure")
                 js_filters = None
 
         self._assets_bundles = {
