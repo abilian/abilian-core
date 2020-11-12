@@ -153,4 +153,3 @@ We are also specially grateful to:
 -  The creators of Django, Pylons, TurboGears, Pyramid and Zope, for
    even more inspiration.
 -  The whole Python community.
-

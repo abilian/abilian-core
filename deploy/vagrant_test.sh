@@ -5,4 +5,3 @@ set -e
 
 cp -r /vagrant $HOME/src
 tox
-

@@ -14,4 +14,3 @@ npm install -g less
 
 mkvirtualenv core
 pip install -U pip tox setuptools
-
