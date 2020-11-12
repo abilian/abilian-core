@@ -371,6 +371,7 @@ setup(
             "pytest-xdist",
             "requests",
             "restructuredtext-lint",
+            "safety==1.*,>=1.9.0",
             "sphinx>=1.5.5",
             "sphinx-rtd-theme",
             "tox",
