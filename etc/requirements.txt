@@ -85,9 +85,6 @@ deprecated==1.2.10; (python_version >= "2.7" and python_full_version < "3.0.0") 
 devtools==0.6.1; python_version >= "3.6" \
     --hash=sha256:7334183972a8d04e81d08b7f62126abca9b6f4de51d825c5fdcb9c88f252601a \
     --hash=sha256:a054307594d35d28fae8df7629967363e851ae0ac7b2152640a8a401c39d42d7
-flask==1.1.2; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0") \
-    --hash=sha256:8a4fdd8936eba2512e9c85df320a37e694c93945b33ef33c89946a340a238557 \
-    --hash=sha256:4efa1ae2d7c9865af48986de8aeb8504bf32c7f3d6fdc9353d34b21f4b127060
 flask-assets==0.12 \
     --hash=sha256:6031527b89fb3509d1581d932affa5a79dd348cfffb58d0aef99a43461d47847
 flask-babel==1.0.0 \
@@ -109,6 +106,9 @@ flask-talisman==0.7.0 \
 flask-wtf==0.12 \
     --hash=sha256:bd99316c97ed1d1cb90b8f0c242c86420a891a6a2058f20717e424bf5b0bb80e \
     --hash=sha256:99c5d75663d6bfcbf4dd0d71ffcb7313f64ae90e6f89e09ad99080107033e8b6
+flask==1.1.2; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0") \
+    --hash=sha256:8a4fdd8936eba2512e9c85df320a37e694c93945b33ef33c89946a340a238557 \
+    --hash=sha256:4efa1ae2d7c9865af48986de8aeb8504bf32c7f3d6fdc9353d34b21f4b127060
 hyperlink==20.0.1; (python_version >= "2.6" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0") \
     --hash=sha256:c528d405766f15a2c536230de7e160b65a08e20264d8891b3eb03307b0df3c63 \
     --hash=sha256:47fcc7cd339c6cb2444463ec3277bdcfe142c8b1daf2160bdd52248deec815af
@@ -346,6 +346,8 @@ sentry-sdk==0.19.2 \
 six==1.15.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6" \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259
+sqlalchemy-utils==0.36.8 \
+    --hash=sha256:fb66e9956e41340011b70b80f898fde6064ec1817af77199ee21ace71d7d6ab0
 sqlalchemy==1.3.20; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0") \
     --hash=sha256:bad73f9888d30f9e1d57ac8829f8a12091bdee4949b91db279569774a866a18e \
     --hash=sha256:e32e3455db14602b6117f0f422f46bc297a3853ae2c322ecd1e2c4c04daf6ed5 \
@@ -385,8 +387,6 @@ sqlalchemy==1.3.20; (python_version >= "2.7" and python_full_version < "3.0.0") 
     --hash=sha256:0cca1844ba870e81c03633a99aa3dc62256fb96323431a5dec7d4e503c26372d \
     --hash=sha256:d05cef4a164b44ffda58200efcb22355350979e000828479971ebca49b82ddb1 \
     --hash=sha256:d2f25c7f410338d31666d7ddedfa67570900e248b940d186b48461bd4e5569a1
-sqlalchemy-utils==0.36.8 \
-    --hash=sha256:fb66e9956e41340011b70b80f898fde6064ec1817af77199ee21ace71d7d6ab0
 sqlparse==0.4.1; python_version >= "3.5" \
     --hash=sha256:017cde379adbd6a1f15a61873f43e8274179378e95ef3fede90b5aa64d304ed0 \
     --hash=sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8
@@ -416,9 +416,6 @@ whoosh==2.7.4 \
     --hash=sha256:e0857375f63e9041e03fedd5b7541f97cf78917ac1b6b06c1fcc9b45375dda69
 wrapt==1.12.1; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" \
     --hash=sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7
-wtforms==2.3.3; python_version >= "3.6" \
-    --hash=sha256:7b504fc724d0d1d4d5d5c114e778ec88c37ea53144683e084215eed5155ada4c \
-    --hash=sha256:81195de0ac94fbc8368abbaf9197b88c4f3ffd6c2719b5bf5fc9da744f3d829c
 wtforms-alchemy==0.17.0 \
     --hash=sha256:b689314354d7405616402fa2c86f90f027e28ae067e09b5477aac815639053b9
 wtforms-components==0.10.4 \
@@ -426,6 +423,9 @@ wtforms-components==0.10.4 \
 wtforms-sqlalchemy==0.2; python_version >= "3.6" \
     --hash=sha256:2ef019cb9bf1e544911b3e08aff963b67fb9409db9d2029eb71c73d1af1f8f16 \
     --hash=sha256:5160250c04782e26a7485a3913b8d52c2548b609ee3117f3e32aee2c20c919ba
+wtforms==2.3.3; python_version >= "3.6" \
+    --hash=sha256:7b504fc724d0d1d4d5d5c114e778ec88c37ea53144683e084215eed5155ada4c \
+    --hash=sha256:81195de0ac94fbc8368abbaf9197b88c4f3ffd6c2719b5bf5fc9da744f3d829c
 zipp==3.4.0; python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "3.8" or python_full_version >= "3.5.0" and python_version < "3.8" and python_version >= "3.6" \
     --hash=sha256:102c24ef8f171fd729d46599845e95c7ab894a4cf45f5de11a44cc7444fb1108 \
     --hash=sha256:ed5eee1974372595f9e416cc7bbeeb12335201d8081ca8a0743c954d4446e5cb

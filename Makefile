@@ -74,7 +74,7 @@ lint-all: lint lint-mypy lint-bandit
 
 lint-py:
 	@echo "--> Linting Python files /w flake8"
-	-flake8 $(SRC)
+	flake8 $(SRC)
 	@echo ""
 
 lint-mypy:
