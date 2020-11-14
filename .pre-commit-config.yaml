@@ -38,3 +38,8 @@ repos:
     rev: 3.8.4
     hooks:
     -   id: flake8
+
+-   repo: https://github.com/Lucas-C/pre-commit-hooks-go
+    rev: v1.0.1
+    hooks:
+    -   id: checkmake

@@ -1,4 +1,4 @@
-.PHONY: develop test lint clean doc
+.PHONY: all develop test lint clean doc format
 
 # The source directory
 SRC=abilian
@@ -21,16 +21,21 @@ all: test lint
 #
 # Setup
 #
-develop:
+develop: install-deps activate-pre-commit configure-git
+
+install-deps:
 	@echo "--> Installing dependencies"
 	pip install -U pip setuptools wheel
 	poetry install
 	yarn
+
+activate-pre-commit:
 	@echo "--> Activating pre-commit hook"
 	pre-commit install
+
+configure-git:
 	@echo "--> Configuring git"
 	git config branch.autosetuprebase always
-	@echo ""
 
 
 #
@@ -154,20 +159,11 @@ doc-pdf:
 	make -C docs/_build/latex all-pdf
 
 clean:
-	find . -name "*.pyc" -delete
-	find . -name __pycache__ -delete
-	find . -name .hypothesis -delete
-	find . -name abilian.db -delete
 	find . -type d -empty -delete
-	rm -rf *.egg-info *.egg .coverage .eggs .cache .mypy_cache .pyre
-	rm -rf .pytest_cache .pytest .DS_Store
-	rm -rf docs/_build docs/cache docs/tmp
-	rm -rf $(SRC)/static/gen
-	rm -rf dist build pip-wheel-metadata
-	rm -rf htmlcov coverage.xml
-	rm -rf docs/_build
-	rm -f junit-*.xml
-	rm -f npm-debug.log yarn-error.log
+	rm -rf **/__pycache__ *.egg-info *.egg .coverage .eggs .cache .mypy_cache .pyre \
+		.pytest_cache .pytest .DS_Store  docs/_build docs/cache docs/tmp \
+		dist build pip-wheel-metadata junit-*.xml htmlcov coverage.xml \
+		npm-debug.log yarn-error.log
 
 tidy: clean
 	rm -rf .tox .nox .dox .travis-solo
