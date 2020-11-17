@@ -5,7 +5,13 @@ language: python
 cache:
   pip: true
   directories:
+    - .tox
     - node_modules
+
+python:
+  - 3.8
+  - 3.7
+  - 3.6
 
 addons:
   postgresql: "9.6"
@@ -15,13 +21,7 @@ matrix:
     - python: 3.6
       env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
     - python: 3.6
-      env: SQLALCHEMY_URI=sqlite://
-    - python: 3.6
       env: TOXENV=lint
-    - python: 3.7
-      env: SQLALCHEMY_URI=sqlite://
-    - python: 3.8
-      env: SQLALCHEMY_URI=sqlite://
     - python: 3.8
       env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
 
