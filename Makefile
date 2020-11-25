@@ -175,10 +175,10 @@ update-pot:
 	# _n => ngettext, _l => lazy_gettext
 	python setup.py extract_messages update_catalog compile_catalog
 
-release:
-	maketag
+publish: clean
 	git push --tags
-	poetry publish --build
+	poetry build
+	twine upload dist/*
 
 update-deps:
 	pip install -U pip setuptools wheel
