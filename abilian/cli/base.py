@@ -9,11 +9,13 @@ from abilian.services import get_service
 
 
 @click.command()
+@with_appcontext
 def initdb():
     db.create_all()
 
 
 @click.command()
+@with_appcontext
 def dropdb():
     """Drop the application DB."""
     confirm = input("Are you sure you want to drop the database? (Y/N) ")
