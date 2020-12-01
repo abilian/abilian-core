@@ -71,7 +71,7 @@ class BaseImageView(BaseFileDownload):
             raise NotFound()
 
         self.content_type = "image/png" if fmt == "PNG" else "image/jpeg"
-        ext = "." + str(fmt.lower())
+        ext = f".{str(fmt.lower())}"
 
         if not filename:
             filename = "image"

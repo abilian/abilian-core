@@ -54,7 +54,7 @@ class _VocabularyMeta(_BaseMeta):
 
         group = slugify(meta.group or "", "_")
         if group:
-            tblprefix += group + "_"
+            tblprefix += f"{group}_"
 
         if not hasattr(meta, "name"):
             vocname = name.lower().replace("vocabulary", "")
@@ -141,7 +141,7 @@ _generated_vocabularies = []
 def Vocabulary(name, label=None, group=None):
     assert isinstance(name, str)
 
-    cls_name = "Vocabulary" + name.capitalize()
+    cls_name = f"Vocabulary{name.capitalize()}"
     _name, _label, _group = name.lower(), label, group
 
     class Meta:

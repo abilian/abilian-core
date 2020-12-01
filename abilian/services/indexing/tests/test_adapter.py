@@ -154,7 +154,7 @@ def test_get_document_with_schema() -> None:
     obj.related = type("Related", (object,), {"name": None})()
     expected["name"] = obj.related.name = "related name"
     obj.related.description = "description text"
-    expected["text"] = obj.related.name + " " + obj.related.description
+    expected["text"] = f"{obj.related.name} {obj.related.description}"
     doc = adapter.get_document(obj)
 
     assert set(doc) == {"id", "name", "num", "text", "object_type", "object_key"}

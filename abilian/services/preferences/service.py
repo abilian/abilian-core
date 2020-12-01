@@ -32,7 +32,7 @@ _PREF_NAV_ITEM = NavItem(
     "preferences",
     title=_l("Preferences"),
     icon="cog",
-    url=lambda context: request.url_root + "preferences",
+    url=lambda context: f"{request.url_root}preferences",
     condition=lambda context: not current_user.is_anonymous,
 )
 
@@ -111,7 +111,7 @@ class PreferenceService(Service):
 
         state.panels.append(panel)
         panel.preferences = self
-        rule = "/" + getattr(panel, "path", panel.id)
+        rule = f"/{getattr(panel, 'path', panel.id)}"
         endpoint = panel.id
         abs_endpoint = f"preferences.{endpoint}"
 
@@ -152,7 +152,7 @@ class PreferenceService(Service):
             for panel in self.app_state.panels:
                 if not panel.is_accessible():
                     continue
-                endpoint = "preferences." + panel.id
+                endpoint = f"preferences.{panel.id}"
                 active = endpoint == request.endpoint
                 entry = {
                     "endpoint": endpoint,
@@ -173,7 +173,7 @@ class PreferenceService(Service):
 
             for panel in self.app_state.panels:
                 if panel.is_accessible():
-                    return redirect(url_for("preferences." + panel.id))
+                    return redirect(url_for(f"preferences.{panel.id}"))
 
             # Should not happen.
             raise InternalServerError()

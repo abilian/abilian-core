@@ -89,9 +89,9 @@ class FlaskLoader(BaseLoader):
         app = self.flask_app
         app.config.setdefault("CELERY_DEFAULT_EXCHANGE", app.name)
         app.config.setdefault("CELERY_DEFAULT_QUEUE", app.name)
-        app.config.setdefault("CELERY_BROADCAST_EXCHANGE", app.name + "ctl")
-        app.config.setdefault("CELERY_BROADCAST_QUEUE", app.name + "ctl")
-        app.config.setdefault("CELERY_RESULT_EXCHANGE", app.name + "results")
+        app.config.setdefault("CELERY_BROADCAST_EXCHANGE", f"{app.name}ctl")
+        app.config.setdefault("CELERY_BROADCAST_QUEUE", f"{app.name}ctl")
+        app.config.setdefault("CELERY_RESULT_EXCHANGE", f"{app.name}results")
         app.config.setdefault("CELERY_DEFAULT_ROUTING_KEY", app.name)
         cfg = {k: v for k, v in app.config.items() if is_celery_setting(k)}
         self.configured = True

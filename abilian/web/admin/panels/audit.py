@@ -47,8 +47,8 @@ class JSONUserSearch(JSONView):
         for part in q.split(" "):
             filters.append(
                 sa.sql.or_(
-                    lower(User.first_name).like(part + "%"),
-                    lower(User.last_name).like(part + "%"),
+                    lower(User.first_name).like(f"{part}%"),
+                    lower(User.last_name).like(f"{part}%"),
                 )
             )
 
@@ -56,7 +56,7 @@ class JSONUserSearch(JSONView):
 
         if "@" in q:
             # FIXME: where does this 'part' variable come from ?
-            filters = sa.sql.or_(lower(User.email).like("%" + part + "%"), filters)
+            filters = sa.sql.or_(lower(User.email).like(f"%{part}%"), filters)
 
         query = query.filter(filters).order_by(User.last_name, User.first_name)
 

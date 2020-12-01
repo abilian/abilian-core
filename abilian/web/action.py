@@ -299,7 +299,7 @@ class Action:
         if button is not None:
             self.CSS_CLASS += f" btn btn-{button}"
         if css is not None:
-            self.CSS_CLASS = self.CSS_CLASS + " " + css
+            self.CSS_CLASS = f"{self.CSS_CLASS} {css}"
         self._build_css_class()
 
         self._title = title
@@ -338,7 +338,7 @@ class Action:
         return enabled
 
     def _get_and_call(self, attr: str) -> Any:
-        attr = "_" + attr
+        attr = f"_{attr}"
         value = getattr(self, attr)
         if callable(value):
             value = value(actions.context)

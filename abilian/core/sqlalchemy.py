@@ -92,7 +92,7 @@ def _calling_context(app_path: str) -> str:
         name = frm.f_globals.get("__name__")
         if name and (
             name == app_path
-            or name.startswith(app_path + ".")
+            or name.startswith(f"{app_path}.")
             or name.startswith("abilian.")
         ):
             return format_name(frm=frm)
@@ -386,16 +386,16 @@ class Locale(sa.types.TypeDecorator):
 
         if not isinstance(value, babel.Locale):
             if not isinstance(value, str):
-                raise ValueError("Unknown locale value: " + format(repr(value)))
+                raise ValueError(f"Unknown locale value: {format(repr(value))}")
             if not value.strip():
                 return None
             value = babel.Locale.parse(value)
 
         code = str(value.language)
         if value.territory:
-            code += "_" + str(value.territory)
+            code += f"_{str(value.territory)}"
         elif value.script:
-            code += "_" + str(value.territory)
+            code += f"_{str(value.territory)}"
 
         return code
 
@@ -422,7 +422,7 @@ class Timezone(sa.types.TypeDecorator):
 
         if not isinstance(value, pytz.tzfile.DstTzInfo):
             if not isinstance(value, str):
-                raise ValueError("Unknown timezone value: " + repr(value))
+                raise ValueError(f"Unknown timezone value: {repr(value)}")
             if not value.strip():
                 return None
             value = babel.dates.get_timezone(value)

@@ -47,9 +47,9 @@ class JsonUsersList(base.JSONView):
         if search:
             # TODO: gérer les accents
             filter = or_(
-                func.lower(User.first_name).like("%" + search + "%"),
-                func.lower(User.last_name).like("%" + search + "%"),
-                func.lower(User.email).like("%" + search + "%"),
+                func.lower(User.first_name).like(f"%{search}%"),
+                func.lower(User.last_name).like(f"%{search}%"),
+                func.lower(User.email).like(f"%{search}%"),
             )
             query = query.filter(filter)
 

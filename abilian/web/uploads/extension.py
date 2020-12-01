@@ -28,7 +28,7 @@ DEFAULT_CONFIG = {
     "DELETE_STALLED_AFTER": 60 * 60 * 24,  # delete files remaining after 1 day
 }
 
-CLEANUP_SCHEDULE_ID = __name__ + ".periodic_clean_upload_directory"
+CLEANUP_SCHEDULE_ID = f"{__name__}.periodic_clean_upload_directory"
 DEFAULT_CLEANUP_SCHEDULE = {"task": CLEANUP_SCHEDULE_ID, "schedule": timedelta(hours=1)}
 
 

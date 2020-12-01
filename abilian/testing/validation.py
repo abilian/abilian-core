@@ -77,7 +77,7 @@ def assert_html_valid_using_external_service(response):
         return
 
     validator_response = requests.post(
-        validator_url + "?out=json",
+        f"{validator_url}?out=json",
         response.data,
         headers={"Content-Type": response.mimetype},
     )

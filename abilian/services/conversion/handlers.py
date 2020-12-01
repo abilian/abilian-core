@@ -201,7 +201,7 @@ class ImageMagickHandler(Handler):
     def convert(self, blob: bytes, **kw) -> bytes:
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
-                subprocess.check_call(["convert", in_fn, "pdf:" + out_fn])
+                subprocess.check_call(["convert", in_fn, f"pdf:{out_fn}"])
                 converted = open(out_fn, "rb").read()
                 return converted
             except Exception as e:
@@ -443,7 +443,7 @@ class LibreOfficePdfHandler(Handler):
 
                     raise ConversionError(f"Conversion timeout ({timeout})")
 
-                out_fn = os.path.splitext(in_fn)[0] + ".pdf"
+                out_fn = f"{os.path.splitext(in_fn)[0]}.pdf"
                 converted = open(out_fn, "rb").read()
                 return converted
             finally:

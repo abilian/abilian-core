@@ -58,9 +58,9 @@ class SessionLifeTimeKey(Key):
 
     def value_from_request(self):
         form = request.form
-        days = max(0, int(form.get(self.id + ":days") or 0))
-        hours = min(23, max(0, int(form.get(self.id + ":hours") or 0)))
-        minutes = min(59, max(0, int(form.get(self.id + ":minutes") or 0)))
+        days = max(0, int(form.get(f"{self.id}:days") or 0))
+        hours = min(23, max(0, int(form.get(f"{self.id}:hours") or 0)))
+        minutes = min(59, max(0, int(form.get(f"{self.id}:minutes") or 0)))
 
         if (days + hours) == 0 and minutes < 10:
             # avoid dummy sessions durations: minimum is 10 minutes

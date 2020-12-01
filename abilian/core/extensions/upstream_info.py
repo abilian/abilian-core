@@ -52,7 +52,7 @@ class UpstreamInfo:
             ):
                 continue
 
-            header = "X-" + key
+            header = f"X-{key}"
             response.headers[header] = val
 
     def user_loaded(self, app: Flask, user: "User", *args: Any, **kwargs: Any) -> None:

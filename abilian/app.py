@@ -87,7 +87,7 @@ class PluginManager:
 
     def register_plugin(self, name: str) -> None:
         """Load and register a plugin given its package name."""
-        logger.info("Registering plugin: " + name)
+        logger.info(f"Registering plugin: {name}")
         module = importlib.import_module(name)
         module.register_plugin(self)  # type: ignore
 
@@ -224,7 +224,7 @@ class Application(
         This happens during `request_started` event, which is triggered
         before any url_value_preprocessor and `before_request` handlers.
         """
-        g.breadcrumb.append(BreadcrumbItem(icon="home", url="/" + request.script_root))
+        g.breadcrumb.append(BreadcrumbItem(icon="home", url=f"/{request.script_root}"))
 
     # TODO: remove
     def install_id_generator(self, sender: Flask, **kwargs: Any) -> None:
@@ -243,7 +243,7 @@ class Application(
 
         # This needs to be done dynamically
         if not self.config.get("SESSION_COOKIE_NAME"):
-            self.config["SESSION_COOKIE_NAME"] = self.name + "-session"
+            self.config["SESSION_COOKIE_NAME"] = f"{self.name}-session"
 
         if not self.config.get("FAVICO_URL"):
             self.config["FAVICO_URL"] = self.config.get("LOGO_URL")
@@ -439,7 +439,7 @@ class Application(
         With default setup it will serve content from directory
         `/path/to/myplugin/resources` from url `http://.../static/myplugin`
         """
-        url_path = self.static_url_path + "/" + url_path + "/<path:filename>"
+        url_path = f"{self.static_url_path}/{url_path}/<path:filename>"
         self.add_url_rule_with_role(
             url_path,
             endpoint=endpoint,

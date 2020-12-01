@@ -21,10 +21,10 @@ def test_get_redirect_target(app: Application, app_context: AppContext) -> None:
         url_root = request.url_root[:-1]
 
     with app.test_request_context(form_url(next="/")):
-        assert get_redirect_target() == url_root + "/"
+        assert get_redirect_target() == f"{url_root}/"
 
     # test "next" from referer
-    referrer = url_root + "/some/path"
+    referrer = f"{url_root}/some/path"
     with app.test_request_context(form_url(), headers=[("Referer", referrer)]):
         assert get_redirect_target() == referrer
 
@@ -42,7 +42,7 @@ def test_get_redirect_target(app: Application, app_context: AppContext) -> None:
     # open redirect through malicious construct and browser not checking
     # Location
     with app.test_request_context(form_url(next="/////google.com")):
-        assert get_redirect_target() == url_root + "///google.com"
+        assert get_redirect_target() == f"{url_root}///google.com"
 
 
 def test_login_post(session: Session, client: FlaskClient) -> None:

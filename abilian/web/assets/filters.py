@@ -20,7 +20,7 @@ class ImportCSSFilter(Filter):
     name = "cssimporter"
     max_debug_level = None
 
-    logger = logging.getLogger(__name__ + ".ImportCssFilter")
+    logger = logging.getLogger(f"{__name__}.ImportCssFilter")
     _IMPORT_RE = re.compile(
         r"""@import ("|')(?P<filename>(/?[-a-zA-Z0-9_\.]+)+\.css)("|');"""
     )
@@ -96,7 +96,7 @@ class LessImportFilter(Filter):
     options = {"run_in_debug": "LESS_RUN_IN_DEBUG"}  # use same option as less filter
     max_debug_level = None
 
-    logger = logging.getLogger(__name__ + ".LessImportFilter")
+    logger = logging.getLogger(f"{__name__}.LessImportFilter")
 
     def setup(self):
         super().setup()
@@ -205,7 +205,7 @@ class Less(ExternalTool):
     }
     max_debug_level = None
 
-    logger = logging.getLogger(__name__ + ".LessFilter")
+    logger = logging.getLogger(f"{__name__}.LessFilter")
 
     def setup(self):
         super().setup()

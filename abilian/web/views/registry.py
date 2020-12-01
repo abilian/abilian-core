@@ -107,7 +107,7 @@ class default_view:
         if endpoint is None:
             endpoint = view.__name__
             if self.is_bp:
-                endpoint = "." + endpoint
+                endpoint = f".{endpoint}"
 
         if endpoint[0] == ".":
             endpoint = self.app_or_blueprint.name + endpoint

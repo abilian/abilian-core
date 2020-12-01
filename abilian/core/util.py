@@ -31,7 +31,7 @@ noproxy = unwrap
 
 def fqcn(cls: type) -> str:
     """Fully Qualified Class Name."""
-    return str(cls.__module__ + "." + cls.__name__)
+    return str(f"{cls.__module__}.{cls.__name__}")
 
 
 def friendly_fqcn(cls_or_cls_name: Union[type, str]) -> str:
@@ -92,7 +92,7 @@ class timer:
 
     def __init__(self, f):
         self.__f = f
-        self.log = logging.getLogger(f.__module__ + "." + f.__name__)
+        self.log = logging.getLogger(f"{f.__module__}.{f.__name__}")
 
     def __call__(self, *args, **kwargs):
         self.__start = time.time()

@@ -69,8 +69,8 @@ class UserJsonListing(JSONModelSearch):
         if q:
             query = query.filter(
                 or_(
-                    func.lower(User.first_name).like(q + "%"),
-                    func.lower(User.last_name).like(q + "%"),
+                    func.lower(User.first_name).like(f"{q}%"),
+                    func.lower(User.last_name).like(f"{q}%"),
                 )
             )
         return query

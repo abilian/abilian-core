@@ -610,7 +610,7 @@ class JSONModelSearch(JSONBaseSearch):
     def filter(self, query, q, **kwargs):
         if not q:
             return query
-        return query.filter(sa.func.lower(self.Model.name).like(q + "%"))
+        return query.filter(sa.func.lower(self.Model.name).like(f"{q}%"))
 
     def order_by(self, query):
         return query.order_by(self.Model.name)

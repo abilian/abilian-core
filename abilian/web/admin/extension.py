@@ -100,7 +100,7 @@ class Admin:
 
         self.panels.append(panel)
         panel.admin = self
-        rule = "/" + panel.id
+        rule = f"/{panel.id}"
         endpoint = nav_id = panel.id
         abs_endpoint = f"admin.{endpoint}"
 
@@ -108,11 +108,11 @@ class Admin:
             self.blueprint.add_url_rule(rule, endpoint, panel.get)
             self._panels_endpoints[abs_endpoint] = panel
         if hasattr(panel, "post"):
-            post_endpoint = endpoint + "_post"
+            post_endpoint = f"{endpoint}_post"
             self.blueprint.add_url_rule(
                 rule, post_endpoint, panel.post, methods=["POST"]
             )
-            self._panels_endpoints["admin." + post_endpoint] = panel
+            self._panels_endpoints[f"admin.{post_endpoint}"] = panel
 
         panel.install_additional_rules(
             self.get_panel_url_rule_adder(panel, rule, endpoint)
@@ -150,9 +150,9 @@ class Admin:
                 endpoint = _endpoint_from_view_func(view_func)
 
             if not endpoint.startswith(base_endpoint):
-                endpoint = base_endpoint + "_" + endpoint
+                endpoint = f"{base_endpoint}_{endpoint}"
 
-            extension._panels_endpoints["admin." + endpoint] = panel
+            extension._panels_endpoints[f"admin.{endpoint}"] = panel
             self.blueprint.add_url_rule(
                 base_url + rule, endpoint=endpoint, view_func=view_func, **kwargs
             )
@@ -161,7 +161,7 @@ class Admin:
 
     def setup_blueprint(self) -> None:
         self.blueprint = Blueprint(
-            "admin", __name__, template_folder="templates", url_prefix="/" + _BP_PREFIX
+            "admin", __name__, template_folder="templates", url_prefix=f"/{_BP_PREFIX}"
         )
 
         self.blueprint.url_value_preprocessor(self.build_breadcrumbs)

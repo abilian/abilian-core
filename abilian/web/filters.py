@@ -242,7 +242,7 @@ def abbrev(s: str, max_size: int) -> str:
         return s
     else:
         h = max_size // 2 - 1
-        return s[0:h] + "..." + s[-h:]
+        return f"{s[0:h]}...{s[-h:]}"
 
 
 def bool2check(val, true="\u2713", false=""):

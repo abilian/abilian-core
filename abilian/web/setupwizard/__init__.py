@@ -147,14 +147,14 @@ def step_db_validate():
             db_uri += username
             # check password only if we have a username
             if password:
-                db_uri += ":" + password
+                db_uri += f":{password}"
 
         # FIXME: it is an error to have a username and no host,
         # SA will interpret username:password as host:port
         if host:
-            db_uri += "@" + host
+            db_uri += f"@{host}"
             if port:
-                db_uri += ":" + port
+                db_uri += f":{port}"
 
     db_uri += "/"
 

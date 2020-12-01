@@ -197,7 +197,7 @@ class EntityMeta(BaseMeta):
                         # no break happened during loop: use default type base
                         entity_type_base = d["__module__"]
 
-                d["entity_type"] = entity_type_base + "." + classname
+                d["entity_type"] = f"{entity_type_base}.{classname}"
 
             default_permissions = d.get("__default_permissions__")
             if default_permissions is not None:
@@ -384,7 +384,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
             )
             if self.id is not None:
                 query = query.filter(Entity.id != self.id)
-            slug_re = re.compile(re.escape(slug) + r"-?(-\d+)?")
+            slug_re = re.compile(f"{re.escape(slug)}-?(-\\d+)?")
             results = [
                 int(m.group(1) or 0)  # 0: for the unnumbered slug
                 for m in (slug_re.match(s.slug) for s in query.all() if s.slug)

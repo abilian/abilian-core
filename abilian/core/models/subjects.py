@@ -278,7 +278,7 @@ class User(Principal, UserMixin, db.Model):
     @property
     def short_name(self):
         first_name = self.first_name or ""
-        last_name = self.last_name[0:1] + "." if self.last_name else ""
+        last_name = f"{self.last_name[0:1]}." if self.last_name else ""
         name = f"{first_name} {last_name}"
         return name.strip() or "Unknown"
 

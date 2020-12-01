@@ -184,7 +184,7 @@ class Converter:
                 return {}
             for tag, value in info.items():
                 decoded = TAGS.get(tag, tag)
-                ret["EXIF:" + str(decoded)] = value
+                ret[f"EXIF:{str(decoded)}"] = value
             return ret
 
         else:
@@ -203,6 +203,6 @@ class Converter:
                 if b":" in line:
                     key, value = line.strip().split(b":", 1)
                     key = str(key)
-                    ret["PDF:" + key] = str(value.strip(), errors="replace")
+                    ret[f"PDF:{key}"] = str(value.strip(), errors="replace")
 
             return ret

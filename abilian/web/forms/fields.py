@@ -495,7 +495,7 @@ class QuerySelect2Field(SelectFieldBase):
             validators = []
 
         if not any(isinstance(v, (Optional, DataRequired)) for v in validators):
-            logger = logging.getLogger(__name__ + "." + self.__class__.__name__)
+            logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
             logger.warning(
                 f'Use deprecated parameter `allow_blank` for field "{label}".'
             )

@@ -27,7 +27,7 @@ class NavItem(Action):
     def __init__(
         self, category: str, name: str, divider: bool = False, *args: Any, **kwargs: Any
     ) -> None:
-        category = "navigation:" + category
+        category = f"navigation:{category}"
         super().__init__(category, name, *args, **kwargs)
         self.divider = divider
 
@@ -38,14 +38,14 @@ class NavItem(Action):
             return ENABLED
 
         if not current.startswith("navigation:"):
-            current = "navigation:" + current
+            current = f"navigation:{current}"
 
         status = ACTIVE if current == self.path else ENABLED
         return status
 
     @property
     def path(self) -> str:
-        return self.category + ":" + self.name
+        return f"{self.category}:{self.name}"
 
 
 class NavGroup(NavItem):
@@ -97,7 +97,7 @@ class NavGroup(NavItem):
             return ENABLED
 
         if not current.startswith("navigation:"):
-            current = "navigation:" + current
+            current = f"navigation:{current}"
         status = ACTIVE if current in self._paths else ENABLED
         return status
 

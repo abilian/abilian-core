@@ -276,7 +276,7 @@ class TagPanel(AdminPanel):
         return render_template("admin/tags.html", namespaces=namespaces)
 
     def install_additional_rules(self, add_url_rule: Callable) -> None:
-        panel_endpoint = "." + self.id
+        panel_endpoint = f".{self.id}"
         ns_base = "/<string:ns>/"
         add_url_rule(
             ns_base,
@@ -284,7 +284,7 @@ class TagPanel(AdminPanel):
             view_func=NSView.as_view("ns", view_endpoint=panel_endpoint),
         )
 
-        tag_base = ns_base + "<int:object_id>/"
+        tag_base = f"{ns_base}<int:object_id>/"
         add_url_rule(
             tag_base,
             endpoint="tag_edit",
@@ -292,7 +292,7 @@ class TagPanel(AdminPanel):
         )
 
         add_url_rule(
-            tag_base + "delete",
+            f"{tag_base}delete",
             endpoint="tag_delete",
             view_func=TagEdit.as_view("tag_delete", view_endpoint=panel_endpoint),
         )

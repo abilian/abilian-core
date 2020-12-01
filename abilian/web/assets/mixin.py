@@ -42,8 +42,8 @@ class AssetManagerMixin(Flask):
         # bundles for JS translations
         languages = self.config["BABEL_ACCEPT_LANGUAGES"]
         for lang in languages:
-            code = "js-i18n-" + lang
-            filename = "lang-" + lang + "-%(version)s.min.js"
+            code = f"js-i18n-{lang}"
+            filename = f"lang-{lang}-%(version)s.min.js"
             self._assets_bundles[code] = {
                 "options": {"output": filename, "filters": js_filters}
             }
@@ -86,7 +86,7 @@ class AssetManagerMixin(Flask):
         core_bundles.init_app(self)
 
         # static minified are here
-        assets.url = self.static_url_path + "/min"
+        assets.url = f"{self.static_url_path}/min"
         assets.append_path(str(assets_dir), assets.url)
         self.add_static_url(
             "min", str(assets_dir), endpoint="webassets_static", roles=Anonymous
@@ -163,7 +163,7 @@ class AssetManagerMixin(Flask):
                     pass
                     # logger.debug('i18n JS not found, skipped: "%s"', filename)
                 else:
-                    self.register_asset("js-i18n-" + lang, filename)
+                    self.register_asset(f"js-i18n-{lang}", filename)
 
     def register_base_assets(self) -> None:
         """Register assets needed by Abilian.

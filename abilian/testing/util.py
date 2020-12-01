@@ -24,7 +24,7 @@ __all__ = (
 
 def path_from_url(url):
     url = str(url)
-    return "/" + "/".join(URL.from_text(url).path)
+    return f"/{'/'.join(URL.from_text(url).path)}"
 
 
 def client_login(client, user):

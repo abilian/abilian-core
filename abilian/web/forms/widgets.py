@@ -93,7 +93,7 @@ def linkify_url(value: str) -> str:
 
     url = value
     if not url.startswith("http://") and not url.startswith("https://"):
-        url = "http://" + url
+        url = f"http://{url}"
 
     url = parse.urlsplit(url).geturl()
     if '"' in url:
@@ -718,7 +718,7 @@ class TextArea(BaseTextArea):
                 "".format(resizeable, self._resizeable_valid)
             )
         if resizeable:
-            self.resizeable = "resizeable-" + resizeable
+            self.resizeable = f"resizeable-{resizeable}"
         else:
             self.resizeable = "not-resizeable"
 
@@ -728,7 +728,7 @@ class TextArea(BaseTextArea):
     def __call__(self, *args, **kwargs):
         if self.resizeable:
             css = kwargs.get("class_", "")
-            kwargs["class_"] = css + " " + self.resizeable
+            kwargs["class_"] = f"{css} {self.resizeable}"
 
         if self.rows and "rows" not in kwargs:
             kwargs["rows"] = self.rows
@@ -1141,14 +1141,14 @@ class DateTimeInput:
             )
             + self.date(
                 field,
-                id=field_id + "-date",
-                name=field_name + "-date",
+                id=f"{field_id}-date",
+                name=f"{field_name}-date",
                 value=date_value,
             )
             + self.time(
                 field,
-                id=field_id + "-time",
-                name=field_name + "-time",
+                id=f"{field_id}-time",
+                name=f"{field_name}-time",
                 value=time_value,
             )
             + Markup("</div>")
@@ -1195,7 +1195,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
         for k, v in on_off_options.items():
             if k not in self._ON_OFF_VALID_OPTIONS:
                 continue
-            self.on_off_options["data-" + k] = v
+            self.on_off_options[f"data-{k}"] = v
 
         if self.on_off_mode:
             self.on_off_options["data-toggle"] = "on-off"
@@ -1461,7 +1461,7 @@ class TabularFieldListWidget:
         if len(field):
             assert isinstance(field[0], wtforms.fields.FormField)
             field_names = [f.short_name for f in field[0] if not f.is_hidden]
-            data_type = field.entries[0].__class__.__name__ + "Data"
+            data_type = f"{field.entries[0].__class__.__name__}Data"
             Data = namedtuple(data_type, field_names)
             labels = Data(*[f.label for f in field[0] if not f.is_hidden])
 
@@ -1482,7 +1482,7 @@ class ModelListWidget:
 
         field_names = field._field_names
         labels = field._field_labels
-        data_type = field.entries[0].object_data.__class__.__name__ + "Data"
+        data_type = f"{field.entries[0].object_data.__class__.__name__}Data"
         Data = namedtuple(data_type, field_names)
         labels = Data(*labels)
 
@@ -1634,7 +1634,7 @@ class Select2Ajax:
         json_data = {}
         if values:
             json_data["values"] = values
-            data_node_id = s2_params["dataNodeId"] = field.id + "-json"
+            data_node_id = s2_params["dataNodeId"] = f"{field.id}-json"
 
         kwargs["data-init-with"] = "select2ajax"
         kwargs["data-init-params"] = json.dumps(s2_params)

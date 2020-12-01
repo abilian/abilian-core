@@ -124,7 +124,7 @@ def test_entity_type() -> None:
     class MyType(Entity):
         pass
 
-    expected = __name__ + ".MyType"
+    expected = f"{__name__}.MyType"
     assert MyType.entity_type == expected
     assert MyType._object_type() == expected
 

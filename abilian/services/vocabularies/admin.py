@@ -66,7 +66,7 @@ class VocabularyPanel(AdminPanel):
 
     def voc_edit_url(self, item):
         return url_for(
-            "." + self.id + "_edit",
+            f".{self.id}_edit",
             group=item.Meta.group or "_",
             Model=item.Meta.name,
             object_id=item.id,
@@ -110,7 +110,7 @@ class VocabularyPanel(AdminPanel):
             return do_return()
 
         if return_to is not None:
-            return_endpoint += "_" + return_to
+            return_endpoint += f"_{return_to}"
 
         if return_to == "group":
             return_args["group"] = group or "_"
@@ -178,17 +178,17 @@ class VocabularyPanel(AdminPanel):
         return render_template("admin/vocabularies.html", **ctx)
 
     def install_additional_rules(self, add_url_rule: Callable) -> None:
-        panel_endpoint = "." + self.id
+        panel_endpoint = f".{self.id}"
         group_base = "/<string:group>/"
         add_url_rule(group_base, endpoint="group", view_func=self.group_view)
         # models
-        base = group_base + "<string:Model>/"
+        base = f"{group_base}<string:Model>/"
         add_url_rule(base, endpoint="model", view_func=self.model_view)
 
         edit_view = Edit.as_view("edit", view_endpoint=panel_endpoint)
-        add_url_rule(base + "<int:object_id>", view_func=edit_view)
+        add_url_rule(f"{base}<int:object_id>", view_func=edit_view)
         add_url_rule(
-            base + "new", view_func=Create.as_view("new", view_endpoint=panel_endpoint)
+            f"{base}new", view_func=Create.as_view("new", view_endpoint=panel_endpoint)
         )
 
     def url_value_preprocess(self, endpoint, view_args):

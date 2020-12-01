@@ -461,7 +461,7 @@ class Module(metaclass=ModuleMeta):
             Form=self.view_form_class,
             **kw,
         )
-        view_endpoint = self.endpoint + ".entity_view"
+        view_endpoint = f"{self.endpoint}.entity_view"
 
         self._setup_view(
             "/<int:entity_id>/edit",
@@ -551,7 +551,7 @@ class Module(metaclass=ModuleMeta):
                 "create",
                 title=_l("Create New"),
                 icon=FAIcon("plus"),
-                endpoint=Endpoint(self.endpoint + ".entity_new"),
+                endpoint=Endpoint(f"{self.endpoint}.entity_new"),
                 button="default",
             )
         ]
@@ -758,7 +758,7 @@ class Module(metaclass=ModuleMeta):
         cls = self.managed_class
         query = db.session.query(cls.id, cls.name)
         query = (
-            query.filter(cls.name.ilike("%" + q + "%"))
+            query.filter(cls.name.ilike(f"%{q}%"))
             .distinct()
             .order_by(cls.name)
             .limit(self.JSON2_SEARCH_LENGTH)
@@ -847,7 +847,7 @@ class CRUDApp:
         if name is None:
             name = self.__class__.__module__
             modules_signature = ",".join(str(module.id) for module in self.modules)
-            name = name + "-" + modules_signature
+            name = f"{name}-{modules_signature}"
 
         self.name = name
         self.app = app
