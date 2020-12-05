@@ -27,8 +27,7 @@ def path_from_url(url):
     return f"/{'/'.join(URL.from_text(url).path)}"
 
 
-def client_login(client, user):
-    # type: (FlaskClient, User) -> ContextManager
+def client_login(client: FlaskClient, user: User) -> ContextManager:
 
     data = {"email": user.email, "password": user._password}
     response = client.post(url_for("login.login_post"), data=data)

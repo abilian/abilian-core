@@ -77,7 +77,7 @@ class BaseFileDownload(View):
         """
         :param attach: if True, return file as an attachment.
         """
-        response = self.make_response(*args, **kwargs)  # type: Response
+        response: Response = self.make_response(*args, **kwargs)
         response.content_type = self.get_content_type(*args, **kwargs)
 
         if attach:

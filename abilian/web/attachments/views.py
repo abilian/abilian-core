@@ -44,7 +44,7 @@ class BaseAttachmentView:
     Form = AttachmentForm
 
     #: owning entity
-    entity = None  # type: Optional[Entity]
+    entity: Optional[Entity] = None
 
     def init_object(self, args, kwargs):
         args, kwargs = super().init_object(args, kwargs)

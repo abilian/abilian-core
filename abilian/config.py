@@ -59,6 +59,6 @@ class DefaultConfig:
     MAIL_ADDRESS_TAG_CHAR = None
 
 
-default_config = dict(Flask.default_config)  # type: Dict[str, Any]
+default_config: Dict[str, Any] = dict(Flask.default_config)
 default_config.update(vars(DefaultConfig))
 default_config = ImmutableDict(default_config)

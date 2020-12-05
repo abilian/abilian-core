@@ -11,7 +11,7 @@ from abilian.web.forms.filters import strip
 from abilian.web.forms.validators import required
 
 ALLOWED_TAGS = ["b", "i", "del", "s", "u", "small", "strong", "em"]
-ALLOWED_ATTRIBUTES = {}  # type: Dict[str, List[str]]
+ALLOWED_ATTRIBUTES: Dict[str, List[str]] = {}
 
 
 class EditForm(ModelForm):

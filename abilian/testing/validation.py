@@ -17,14 +17,12 @@ class ValidationError(AssertionError):
     pass
 
 
-def validate_response(response):
-    # type: (Response) -> Response
+def validate_response(response: Response) -> Response:
     assert_valid(response)
     return response
 
 
-def assert_valid(response):
-    # type: (Response) -> None
+def assert_valid(response: Response) -> None:
     if response.direct_passthrough:
         return
 
@@ -48,14 +46,12 @@ def assert_valid(response):
         raise AssertionError(f"Unknown mime type: {response.mimetype}")
 
 
-def assert_html_valid(response):
-    # type: (Response) -> None
+def assert_html_valid(response: Response) -> None:
     assert_html_valid_using_htmlhint(response)
     assert_html_valid_using_external_service(response)
 
 
-def assert_html_valid_using_htmlhint(response):
-    # type: (Response) -> None
+def assert_html_valid_using_htmlhint(response: Response) -> None:
     with NamedTemporaryFile() as tmpfile:
         tmpfile.write(response.data)
         tmpfile.flush()
@@ -68,8 +64,7 @@ def assert_html_valid_using_htmlhint(response):
             raise ValidationError(msg)
 
 
-def assert_html_valid_using_external_service(response):
-    # type: (Response) -> None
+def assert_html_valid_using_external_service(response: Response) -> None:
     config = current_app.config
     validator_url = config.get("VALIDATOR_URL") or os.environ.get("VALIDATOR_URL")
 
@@ -93,8 +88,7 @@ def assert_html_valid_using_external_service(response):
             raise ValidationError(msg)
 
 
-def assert_json_valid(response):
-    # type: (Response) -> None
+def assert_json_valid(response: Response) -> None:
     try:
         json.loads(response.data)
     except Exception:

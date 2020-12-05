@@ -45,7 +45,7 @@ def photo(user):
         if request.if_none_match and etag in request.if_none_match:
             return Response(status=304)
 
-    response = make_response(data)  # type: Response
+    response: Response = make_response(data)
     response.content_type = "image/jpeg"
 
     if not self_photo:
