@@ -7,7 +7,7 @@ cache:
     - node_modules
 
 python:
-  - 3.9
+  - 3.9-dev
   - 3.8
   - 3.7
   - 3.6
@@ -15,16 +15,15 @@ python:
 addons:
   postgresql: "9.6"
 
+env:
+  matrix:
+    - SQLALCHEMY_URI=""
+    - SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
+
 matrix:
   include:
-    - python: 3.6
-      env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
-    - python: 3.6
-      env: TOXENV=lint
     - python: 3.8
-      env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
-    - python: 3.9
-      env: SQLALCHEMY_URI=postgresql://postgres@localhost/abilian
+      env: TOXENV=lint
 
 # Install OS and global dependencies
 before_install:
