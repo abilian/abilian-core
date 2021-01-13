@@ -13,15 +13,13 @@ packages:
   - poppler-utils
   - nodejs-dev
   - npm
-  - yarn
 
 sources:
   - https://github.com/abilian/abilian-core
+
 tasks:
   - test-py38: |
-      # yarn global add less
       sudo npm install -g less
-      lessc -v
       cd abilian-core
       tox -e py38
   - lint: |
