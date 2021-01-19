@@ -3,8 +3,7 @@ import datetime
 from itertools import count
 
 import sqlalchemy as sa
-from sqlalchemy import Column, Date, ForeignKey, Integer, Text, Unicode, \
-    UnicodeText
+from sqlalchemy import Column, Date, ForeignKey, Integer, Text, Unicode, UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm.attributes import NEVER_SET

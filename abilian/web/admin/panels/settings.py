@@ -2,8 +2,7 @@
 from datetime import timedelta
 from typing import Optional
 
-from flask import current_app, flash, redirect, render_template, request, \
-    url_for
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_babel import gettext as _
 from flask_babel import lazy_gettext as _l
 from flask_babel.speaklater import LazyString

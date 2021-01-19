@@ -14,8 +14,15 @@ from typing import Any, Callable, Collection, Dict, Optional, Union
 import jinja2
 import sqlalchemy as sa
 import sqlalchemy.exc
-from flask import Blueprint, Flask, abort, appcontext_pushed, g, request, \
-    request_started
+from flask import (
+    Blueprint,
+    Flask,
+    abort,
+    appcontext_pushed,
+    g,
+    request,
+    request_started,
+)
 from flask.config import Config, ConfigAttribute
 from flask.helpers import locked_cached_property
 from flask_migrate import Migrate
@@ -27,10 +34,21 @@ import abilian.i18n
 from abilian.config import default_config
 from abilian.core import extensions, signals
 from abilian.core.celery import FlaskCelery
-from abilian.services import Service, activity_service, antivirus, \
-    audit_service, auth_service, conversion_service, index_service, \
-    preferences_service, repository_service, security_service, \
-    session_repository_service, settings_service, vocabularies_service
+from abilian.services import (
+    Service,
+    activity_service,
+    antivirus,
+    audit_service,
+    auth_service,
+    conversion_service,
+    index_service,
+    preferences_service,
+    repository_service,
+    security_service,
+    session_repository_service,
+    settings_service,
+    vocabularies_service,
+)
 from abilian.services.security import Anonymous
 from abilian.services.security.models import Role
 from abilian.web import csrf

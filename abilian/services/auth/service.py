@@ -6,8 +6,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from flask import Flask, current_app, g, redirect, request, url_for
 from flask_babel import lazy_gettext as _l
-from flask_login import current_user, login_user, user_logged_in, \
-    user_logged_out
+from flask_login import current_user, login_user, user_logged_in, user_logged_out
 from werkzeug.exceptions import Forbidden
 from werkzeug.wrappers import Response
 

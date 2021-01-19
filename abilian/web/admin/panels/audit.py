@@ -6,8 +6,12 @@ from typing import Callable, Dict
 import pytz
 import sqlalchemy as sa
 import sqlalchemy.orm
-from flask import get_template_attribute, render_template, \
-    render_template_string, request
+from flask import (
+    get_template_attribute,
+    render_template,
+    render_template_string,
+    request,
+)
 from flask_babel import format_date, get_locale
 from markupsafe import Markup
 from werkzeug.exceptions import InternalServerError

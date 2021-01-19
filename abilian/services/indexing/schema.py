@@ -1,9 +1,23 @@
 """"""
-from whoosh.analysis import CharsetFilter, LowercaseFilter, NgramFilter, \
-    PathTokenizer, RegexTokenizer
+from whoosh.analysis import (
+    CharsetFilter,
+    LowercaseFilter,
+    NgramFilter,
+    PathTokenizer,
+    RegexTokenizer,
+)
+
 #: A Whoosh analyzer that splits on word boundaries and folds accents and case.
-from whoosh.fields import DATETIME, ID, KEYWORD, NUMERIC, TEXT, FieldType, \
-    Schema, SchemaClass
+from whoosh.fields import (
+    DATETIME,
+    ID,
+    KEYWORD,
+    NUMERIC,
+    TEXT,
+    FieldType,
+    Schema,
+    SchemaClass,
+)
 from whoosh.formats import Existence
 from whoosh.support.charset import accent_map
 

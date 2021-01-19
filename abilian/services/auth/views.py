@@ -9,13 +9,25 @@ from datetime import datetime
 from typing import Any, Dict, Optional, Tuple, Union
 from urllib.parse import urljoin, urlparse
 
-from flask import Flask, _request_ctx_stack, current_app, flash, jsonify, \
-    redirect, render_template, request, url_for
-from flask_login import login_user, logout_user, user_logged_in, \
-    user_logged_out
+from flask import (
+    Flask,
+    _request_ctx_stack,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from flask_login import login_user, logout_user, user_logged_in, user_logged_out
 from flask_mail import Message
-from itsdangerous import BadSignature, SignatureExpired, TimedSerializer, \
-    URLSafeTimedSerializer
+from itsdangerous import (
+    BadSignature,
+    SignatureExpired,
+    TimedSerializer,
+    URLSafeTimedSerializer,
+)
 from sqlalchemy import sql
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.datastructures import ImmutableMultiDict

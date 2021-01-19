@@ -7,10 +7,14 @@ from flask_babel import LazyString
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy import sql
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy.schema import CheckConstraint, Column, ForeignKey, Index, \
-    UniqueConstraint
-from sqlalchemy.types import Boolean, DateTime, Enum, Integer, String, \
-    UnicodeText
+from sqlalchemy.schema import (
+    CheckConstraint,
+    Column,
+    ForeignKey,
+    Index,
+    UniqueConstraint,
+)
+from sqlalchemy.types import Boolean, DateTime, Enum, Integer, String, UnicodeText
 
 from abilian.core.entities import Entity
 from abilian.core.extensions import db

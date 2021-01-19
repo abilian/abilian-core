@@ -14,8 +14,7 @@ from abilian.i18n import _, _l
 from abilian.web import nav, url_for
 from abilian.web.action import ButtonAction, actions
 from abilian.web.blueprints import Blueprint
-from abilian.web.views import BaseObjectView, ObjectCreate, ObjectDelete, \
-    ObjectEdit
+from abilian.web.views import BaseObjectView, ObjectCreate, ObjectDelete, ObjectEdit
 
 from .forms import AttachmentForm
 

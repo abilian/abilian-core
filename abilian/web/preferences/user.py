@@ -4,8 +4,7 @@ from io import BytesIO
 
 import babel.dates
 import PIL.Image
-from flask import current_app, flash, g, redirect, render_template, request, \
-    url_for
+from flask import current_app, flash, g, redirect, render_template, request, url_for
 from werkzeug.exceptions import InternalServerError
 from wtforms.fields import StringField
 from wtforms.validators import ValidationError

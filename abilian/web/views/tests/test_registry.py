@@ -6,6 +6,7 @@ from pytest import fixture, raises
 
 from abilian.app import Application
 from abilian.core.entities import Entity
+
 # needed if running only this test, else SA won't have registered this mapping
 # required by Entity.owner_id, etc
 # noinspection PyUnresolvedReferences

@@ -10,8 +10,16 @@ from collections import OrderedDict
 from typing import Any, Callable, Collection, Dict, List, Optional, Tuple
 
 import sqlalchemy as sa
-from flask import Request, current_app, g, redirect, render_template, \
-    request, session, url_for
+from flask import (
+    Request,
+    current_app,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask.blueprints import Blueprint, BlueprintSetupState
 from flask_login import current_user
 from sqlalchemy import Date, DateTime, func, orm
@@ -28,13 +36,26 @@ from abilian.services.security import READ  # noqa
 from abilian.services.vocabularies.models import BaseVocabulary
 
 from . import search
-from .action import Action, ActionDropDown, ActionGroup, ActionGroupItem, \
-    Endpoint, FAIcon, actions
-from .forms.widgets import AjaxMainTableView, Panel, RelatedTableView, Row, \
-    SingleView
+from .action import (
+    Action,
+    ActionDropDown,
+    ActionGroup,
+    ActionGroupItem,
+    Endpoint,
+    FAIcon,
+    actions,
+)
+from .forms.widgets import AjaxMainTableView, Panel, RelatedTableView, Row, SingleView
 from .nav import BreadcrumbItem
-from .views import JSONView, JSONWhooshSearch, ObjectCreate, ObjectDelete, \
-    ObjectEdit, ObjectView, default_view
+from .views import (
+    JSONView,
+    JSONWhooshSearch,
+    ObjectCreate,
+    ObjectDelete,
+    ObjectEdit,
+    ObjectView,
+    default_view,
+)
 
 logger = logging.getLogger(__name__)
 

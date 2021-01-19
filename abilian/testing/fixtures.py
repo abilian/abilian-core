@@ -76,8 +76,11 @@ def test_request_context(app: Flask) -> Iterator[RequestContext]:
 def db(app_context: AppContext) -> Iterator[SQLAlchemy]:
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
-    from abilian.testing.util import cleanup_db, ensure_services_started, \
-        stop_all_services
+    from abilian.testing.util import (
+        cleanup_db,
+        ensure_services_started,
+        stop_all_services,
+    )
 
     stop_all_services(app_context.app)
     ensure_services_started(["repository", "session_repository"])

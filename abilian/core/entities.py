@@ -4,8 +4,17 @@ import collections
 import re
 from datetime import datetime
 from inspect import isclass
-from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Optional, \
-    Tuple, Type, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    FrozenSet,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    cast,
+)
 
 import sqlalchemy as sa
 from flask import current_app
@@ -402,8 +411,14 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
         permission on this object."""
         from abilian.services import get_service
         from abilian.services.indexing import indexable_role
-        from abilian.services.security import READ, Admin, Anonymous, \
-            Creator, Owner, SecurityService
+        from abilian.services.security import (
+            READ,
+            Admin,
+            Anonymous,
+            Creator,
+            Owner,
+            SecurityService,
+        )
 
         result = []
         security = cast(SecurityService, get_service("security"))

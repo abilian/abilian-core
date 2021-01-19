@@ -19,8 +19,7 @@ from werkzeug.datastructures import ImmutableMultiDict
 from wtforms import Field
 from wtforms import FieldList as BaseFieldList
 from wtforms import FormField as BaseFormField
-from wtforms import SelectField, SelectFieldBase, SelectMultipleField, \
-    ValidationError
+from wtforms import SelectField, SelectFieldBase, SelectMultipleField, ValidationError
 from wtforms.compat import text_type
 from wtforms.ext.csrf import SecureForm
 from wtforms.validators import DataRequired, Optional

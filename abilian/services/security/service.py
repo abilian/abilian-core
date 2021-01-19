@@ -1,8 +1,19 @@
 """Security service, manages roles and permissions."""
 from functools import wraps
 from itertools import chain
-from typing import TYPE_CHECKING, Any, Callable, Collection, Dict, FrozenSet, \
-    List, Optional, Set, Type, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    FrozenSet,
+    List,
+    Optional,
+    Set,
+    Type,
+    Union,
+)
 
 import sqlalchemy as sa
 from flask import g
@@ -18,13 +29,31 @@ from abilian.core.models import Model
 from abilian.core.models.subjects import Group, Principal, User
 from abilian.core.util import unwrap
 from abilian.services import Service, ServiceState
-from abilian.services.security.models import CREATE, DELETE, MANAGE, \
-    PERMISSIONS_ATTR, READ, WRITE, Admin
+from abilian.services.security.models import (
+    CREATE,
+    DELETE,
+    MANAGE,
+    PERMISSIONS_ATTR,
+    READ,
+    WRITE,
+    Admin,
+)
 from abilian.services.security.models import Anonymous as AnonymousRole
-from abilian.services.security.models import Authenticated, Creator, \
-    FolderishModel, InheritSecurity, Manager, Owner, Permission, \
-    PermissionAssignment, Reader, Role, RoleAssignment, SecurityAudit, \
-    Writer
+from abilian.services.security.models import (
+    Authenticated,
+    Creator,
+    FolderishModel,
+    InheritSecurity,
+    Manager,
+    Owner,
+    Permission,
+    PermissionAssignment,
+    Reader,
+    Role,
+    RoleAssignment,
+    SecurityAudit,
+    Writer,
+)
 
 if TYPE_CHECKING:
     from abilian.app import Application

@@ -6,8 +6,15 @@ from wtforms.fields import Field
 from abilian.core.entities import Entity
 from abilian.core.models.subjects import User
 from abilian.services import get_service
-from abilian.services.security import CREATE, READ, WRITE, Anonymous, \
-    Permission, Role, SecurityService
+from abilian.services.security import (
+    CREATE,
+    READ,
+    WRITE,
+    Anonymous,
+    Permission,
+    Role,
+    SecurityService,
+)
 
 
 class FormPermissions:
