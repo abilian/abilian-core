@@ -9,6 +9,9 @@ to your `conftest.py`.
 Replaced the too-complex UnitTest-based testing framework.
 -> DI and functions over complex inheritance hierarchies FTW!
 """
+from __future__ import annotations
+
+import typing
 from typing import Any, Iterator
 
 from flask import Flask
@@ -17,11 +20,9 @@ from flask.testing import FlaskClient
 from pytest import fixture
 from sqlalchemy.orm import Session
 
-from abilian.app import create_app
-from abilian.core.models.subjects import User
-from abilian.core.sqlalchemy import SQLAlchemy
-from abilian.testing.util import cleanup_db, ensure_services_started, \
-    stop_all_services
+if typing.TYPE_CHECKING:
+    from abilian.core.models.subjects import User
+    from abilian.core.sqlalchemy import SQLAlchemy
 
 
 class TestConfig:
@@ -48,6 +49,8 @@ def app(config: Any) -> Flask:
     # We currently return a fresh app for each test.
     # Using session-scoped app doesn't currently work.
     # Note: the impact on speed is minimal.
+    from abilian.app import create_app
+
     return create_app(config=config)
 
 
@@ -73,6 +76,8 @@ def test_request_context(app: Flask) -> Iterator[RequestContext]:
 def db(app_context: AppContext) -> Iterator[SQLAlchemy]:
     """Return a fresh db for each test."""
     from abilian.core.extensions import db
+    from abilian.testing.util import cleanup_db, ensure_services_started, \
+        stop_all_services
 
     stop_all_services(app_context.app)
     ensure_services_started(["repository", "session_repository"])
@@ -104,6 +109,8 @@ def db_session(db: SQLAlchemy) -> Session:
 
 @fixture
 def user(db: SQLAlchemy) -> User:
+    from abilian.core.models.subjects import User
+
     user = User(
         first_name="Joe",
         last_name="Test",
@@ -118,6 +125,8 @@ def user(db: SQLAlchemy) -> User:
 
 @fixture
 def admin_user(db: SQLAlchemy) -> User:
+    from abilian.core.models.subjects import User
+
     user = User(
         first_name="Jim",
         last_name="Admin",

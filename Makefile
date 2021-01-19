@@ -5,18 +5,7 @@ SRC=abilian
 # The package name
 PKG=abilian
 
-# FIXME: We have a parallelism issue with soffice conversion
-# NCPU ?= $(shell sysctl -n hw.ncpu || echo 1)
-NCPU=1
-
-# pytest-sugar seems to be incompatible with pytest-xdist
-# -s: no terminal capture.
-# PYTEST_MULTI=-n $(NCPU) -p no:sugar -s
-PYTEST_MULTI=-n $(NCPU)
-
-
 all: test lint
-
 
 #
 # Setup
@@ -45,17 +34,17 @@ test-all: test test-readme
 
 test:
 	@echo "--> Running Python tests"
-	pytest --ff -x -p no:randomly $(PYTEST_MULTI)
+	pytest --ff -x -p no:randomly
 	@echo ""
 
 test-randomly:
 	@echo "--> Running Python tests in random order"
-	pytest $(PYTEST_MULTI)
+	pytest
 	@echo ""
 
 test-with-coverage:
 	@echo "--> Running Python tests"
-	py.test $(PYTEST_MULTI) --cov $(PKG)
+	pytest --cov $(PKG)
 	@echo ""
 
 test-with-typeguard:
@@ -159,8 +148,7 @@ doc-pdf:
 	make -C docs/_build/latex all-pdf
 
 clean:
-	rm -f **/*.pyc
-	find . -type d -empty -delete
+	find . -type d -name __pycache__ -depth -exec rm -rf {} \;
 	rm -rf *.egg-info *.egg .coverage .eggs .cache .mypy_cache .pyre \
 		.pytest_cache .pytest .DS_Store  docs/_build docs/cache docs/tmp \
 		dist build pip-wheel-metadata junit-*.xml htmlcov coverage.xml \
