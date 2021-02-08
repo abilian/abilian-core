@@ -124,8 +124,7 @@ format-py:
 	isort abilian demo tests *.py
 
 format-js:
-	npx prettier --write --trailing-comma es5 \
-		'abilian/web/resources/js/**/*.js'
+	yarn run prettier --write abilian/web/resources/js
 
 #	yarn run prettier --write \
 #		--trailing-comma es5 --tab-width 2 \
