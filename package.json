@@ -24,8 +24,5 @@
     "rules": {
       "selector-list-comma-newline-after": "always-multi-line"
     }
-  },
-  "prettier": {
-    "trailingComma": "es5"
   }
 }
