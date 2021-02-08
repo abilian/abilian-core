@@ -1,4 +1,4 @@
-require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
+require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function (
   Abilian,
   FileInput,
   $,
@@ -9,13 +9,13 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
   /**
    * Image input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)
    */
-  var RESIZE_MODES = {
+  const RESIZE_MODES = {
     SCALE: "scale",
     FIT: "fit",
     CROP: "crop",
   };
 
-  var defaults = {
+  const defaults = {
     width: 55,
     height: 55,
     resize_mode: "FIT",
@@ -24,7 +24,7 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
   function ImageInput(node, options) {
     FileInput.call(this, node, $.extend({}, defaults, options));
     this.preview_node = node.find(".upload_preview").get(0);
-    var $preview = $(this.preview_node);
+    const $preview = $(this.preview_node);
     this.width = $preview.data("width") || options.width;
     this.height = $preview.data("height") || options.height;
     this.resize_mode = RESIZE_MODES[options.resize_mode] || RESIZE_MODES.FIT;
@@ -33,21 +33,24 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
 
   ImageInput.prototype = Object.create(FileInput.prototype);
 
-  ImageInput.prototype.createFileNode = function(file) {
-    var self = this;
-    var el = FileInput.prototype.createFileNode.call(self, file);
-    var image = api.Image(file);
+  ImageInput.prototype.createFileNode = function (file) {
+    const self = this;
+    const el = FileInput.prototype.createFileNode.call(self, file);
+    const image = api.Image(file);
 
-    api.getInfo(file, function(err, infos) {
+    api.getInfo(file, function (err, infos) {
       if (err) {
+        console.log(err);
         return;
       }
 
-      var resize_fun = self["resize_" + self.resize_mode];
-      var preview;
-
-      preview = resize_fun.call(self, image, infos);
-      preview.get(function(err /** String */, img /** HTMLElement */) {
+      const resize_fun = self["resize_" + self.resize_mode];
+      const preview = resize_fun.call(self, image, infos);
+      preview.get(function (err /** String */, img /** HTMLElement */) {
+        if (err) {
+          console.log(err);
+          return;
+        }
         el.prepend(img);
       });
     });
@@ -55,15 +58,15 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
   };
 
   /* resize mode functions */
-  ImageInput.prototype.resize_scale = function(image, infos) {
+  ImageInput.prototype.resize_scale = function (image, infos) {
     return image.resize(this.width, this.height, "max");
   };
 
-  ImageInput.prototype.resize_fit = function(image, infos) {
-    var w_ratio = infos.width / this.width;
-    var h_ratio = infos.height / this.height;
-    var width;
-    var height;
+  ImageInput.prototype.resize_fit = function (image, infos) {
+    const w_ratio = infos.width / this.width;
+    const h_ratio = infos.height / this.height;
+    let width;
+    let height;
 
     if (w_ratio > h_ratio) {
       /* wider than taller: set target width to max width */
@@ -77,25 +80,25 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function(
     return image.resize(width, height, "preview");
   };
 
-  ImageInput.prototype.resize_crop = function(image, infos) {
+  ImageInput.prototype.resize_crop = function (image, infos) {
     return image.resize(this.width, this.height, "preview");
   };
 
   function createImageInput(options) {
-    var element = $(this);
-    var opts = $.extend({}, defaults, options);
-    var widget = new ImageInput(element, opts);
+    const element = $(this);
+    const opts = $.extend({}, defaults, options);
+    const widget = new ImageInput(element, opts);
     element.data("image-input", widget);
     return widget;
   }
 
   Abilian.registerWidgetCreator("imageInput", createImageInput);
 
-  $.fn.imageInput = function(options) {
-    var opts = $.extend({}, defaults, options);
-    return this.each(function() {
-      var node = $(this);
-      var widget = node.data("image-input");
+  $.fn.imageInput = function (options) {
+    const opts = $.extend({}, defaults, options);
+    return this.each(function () {
+      const node = $(this);
+      let widget = node.data("image-input");
       if (widget === undefined) {
         widget = new ImageInput(node, opts);
         node.data("image-input", widget);

@@ -1,15 +1,15 @@
-require(["AbilianWidget"], function(Abilian) {
+require(["AbilianWidget"], function (Abilian) {
   "use strict";
 
   function initRichTextWidget(params) {
-    var element = this;
+    const element = this;
     // var name = this.attr["name"];
     // var rows = parseInt(element.attr("rows")) || 10;
     // var editor = null;
 
-    var config = {};
+    const config = {};
 
-    var profile = this.attr("data-profile");
+    const profile = this.attr("data-profile");
     console.log(profile);
 
     if (profile === "minimal") {

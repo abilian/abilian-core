@@ -1,4 +1,4 @@
-require(["AbilianWidget", "jquery"], function(Abilian, $) {
+require(["AbilianWidget", "jquery"], function (Abilian, $) {
   "use strict";
 
   function tagsFormatter(tagsToReplace) {
@@ -7,7 +7,7 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
     }
 
     function safeTagsReplace(element) {
-      var output = element.text.replace(/&amp;/g, replaceTag);
+      let output = element.text.replace(/&amp;/g, replaceTag);
       output = output.replace(/&lt;/g, replaceTag);
       output = output.replace(/&gt;/g, replaceTag);
       return output;
@@ -16,24 +16,24 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
     return safeTagsReplace;
   }
 
-  var DEFAULT_PARAMS = {
+  const DEFAULT_PARAMS = {
     containerCssClass: "form-control",
   };
 
   function initSelect2(params) {
-    var initParams = $.extend({}, DEFAULT_PARAMS, params);
+    const initParams = $.extend({}, DEFAULT_PARAMS, params);
 
     // replace the escaped html with proper tags
     // to be displayed in the select
     if ("makeHtml" in params) {
-      var tagsToReplace = {
+      const tagsToReplace = {
         "&amp;": "&",
         "&lt;": "<",
         "&gt;": ">",
       };
 
       // select2 parameters for formating function
-      var formatter = tagsFormatter(tagsToReplace);
+      const formatter = tagsFormatter(tagsToReplace);
       initParams.formatResult = formatter;
       initParams.formatSelection = formatter;
     }
@@ -43,25 +43,25 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
 
   Abilian.registerWidgetCreator("select2", initSelect2);
 
-  var DEFAULT_AJAX_PARAMS = {
+  const DEFAULT_AJAX_PARAMS = {
     dataType: "json",
     quietMillis: 100,
-    data: function(term, page) {
+    data: function (term, page) {
       return { q: term };
     },
-    results: function(data, page) {
+    results: function (data, page) {
       return { results: data.results, more: false };
     },
   };
 
   function initSelect2Ajax(params) {
-    var initParams = $.extend({}, DEFAULT_PARAMS, params);
-    var data = null;
+    const initParams = $.extend({}, DEFAULT_PARAMS, params);
+    let data = null;
 
     if (params.dataNodeId !== undefined) {
       data = JSON.parse($("#" + params.dataNodeId).html());
 
-      initParams.initSelection = function(element, callback) {
+      initParams.initSelection = function (element, callback) {
         if (data.values.length > 0) {
           callback(data.values.length === 1 ? data.values[0] : data.values);
         }
@@ -81,11 +81,11 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
     }
 
     if (params.formatResult) {
-      initParams.formatResult = function() {
-        var f = params.formatResult.split(".");
-        var formatter = window;
+      initParams.formatResult = function () {
+        const f = params.formatResult.split(".");
+        let formatter = window;
 
-        for (var i = 0; i < f.length; i++) {
+        for (let i = 0; i < f.length; i++) {
           formatter = formatter[f[i]];
         }
 
@@ -94,11 +94,11 @@ require(["AbilianWidget", "jquery"], function(Abilian, $) {
     }
 
     if (params.formatSelection) {
-      initParams.formatSelection = function() {
-        var f = params.formatSelection.split(".");
-        var formatter = window;
+      initParams.formatSelection = function () {
+        const f = params.formatSelection.split(".");
+        let formatter = window;
 
-        for (var i = 0; i < f.length; i++) {
+        for (let i = 0; i < f.length; i++) {
           formatter = formatter[f[i]];
         }
 

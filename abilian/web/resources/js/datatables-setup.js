@@ -1,7 +1,7 @@
 // Tweaks for integrating datatables + bootstrap
 /* Default class modification */
 
-require(["jquery", "jquery.dataTables"], function($) {
+require(["jquery", "jquery.dataTables"], function ($) {
   "use strict";
 
   $.extend($.fn.dataTableExt.oStdClasses, {
@@ -9,7 +9,7 @@ require(["jquery", "jquery.dataTables"], function($) {
   });
 
   /* API method to get paging information */
-  $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
+  $.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
     return {
       iStart: oSettings._iDisplayStart,
       iEnd: oSettings.fnDisplayEnd(),
@@ -26,9 +26,9 @@ require(["jquery", "jquery.dataTables"], function($) {
   /* Bootstrap style pagination control */
   $.extend($.fn.dataTableExt.oPagination, {
     bootstrap: {
-      fnInit: function(oSettings, nPaging, fnDraw) {
+      fnInit: function (oSettings, nPaging, fnDraw) {
         var oLang = oSettings.oLanguage.oPaginate;
-        var fnClickHandler = function(e) {
+        var fnClickHandler = function (e) {
           e.preventDefault();
           if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
             fnDraw(oSettings);
@@ -50,7 +50,7 @@ require(["jquery", "jquery.dataTables"], function($) {
         $(els[1]).bind("click.DT", { action: "next" }, fnClickHandler);
       },
 
-      fnUpdate: function(oSettings, fnDraw) {
+      fnUpdate: function (oSettings, fnDraw) {
         var iListLength = 5;
         var oPaging = oSettings.oInstance.fnPagingInfo();
         var an = oSettings.aanFeatures.p;
@@ -78,16 +78,14 @@ require(["jquery", "jquery.dataTables"], function($) {
 
         for (i = 0, iLen = an.length; i < iLen; i++) {
           // Remove the middle elements
-          $("li:gt(0)", an[i])
-            .filter(":not(:last)")
-            .remove();
+          $("li:gt(0)", an[i]).filter(":not(:last)").remove();
 
           // Add the new list items and their event handlers
           for (j = iStart; j <= iEnd; j++) {
             sClass = j === oPaging.iPage + 1 ? 'class="active"' : "";
             $("<li " + sClass + '><a href="#">' + j + "</a></li>")
               .insertBefore($("li:last", an[i])[0])
-              .bind("click", function(e) {
+              .bind("click", function (e) {
                 e.preventDefault();
                 oSettings._iDisplayStart =
                   (parseInt($("a", this).text(), 10) - 1) * oPaging.iLength;
@@ -118,7 +116,7 @@ require(["jquery", "jquery.dataTables"], function($) {
   /* datatable: sort types and filters */
   $.extend($.fn.dataTableExt.oSort, {
     "string-non-null-pre": $.fn.dataTableExt.oSort["html-pre"],
-    "string-non-null-asc": function(x, y) {
+    "string-non-null-asc": function (x, y) {
       if (x === y) {
         return 0;
       }
@@ -130,7 +128,7 @@ require(["jquery", "jquery.dataTables"], function($) {
       }
       return $.fn.dataTableExt.oSort["string-asc"](x, y);
     },
-    "string-non-null-desc": function(x, y) {
+    "string-non-null-desc": function (x, y) {
       if (x === y) {
         return 0;
       }
