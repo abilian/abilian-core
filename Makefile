@@ -93,7 +93,7 @@ lint-js:
 
 lint-less:
 	@echo "--> Linting LESS files"
-	yarn run stylelint ./abilian/web/resources/less/*.less
+	yarn run stylelint ./abilian/web/resources/less/
 	@echo ""
 
 lint-rst:
@@ -116,7 +116,7 @@ lint-bandit:
 #
 # Formatting
 #
-format: format-py format-js
+format: format-py format-js format-less
 
 format-py:
 	docformatter -i -r abilian
@@ -126,9 +126,8 @@ format-py:
 format-js:
 	yarn run prettier --write abilian/web/resources/js
 
-#	yarn run prettier --write \
-#		--trailing-comma es5 --tab-width 2 \
-#		'abilian/web/resources/less/**/*.less'
+format-less:
+	yarn run prettier --write --tab-width 2 abilian/web/resources/less/
 
 
 #
