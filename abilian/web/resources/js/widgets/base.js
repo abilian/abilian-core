@@ -16,9 +16,7 @@ define("AbilianWidget", ["AbilianNS", "jquery"], (Abilian, $) => {
     widgetsCreators[name] = createFun;
   };
 
-  Abilian.getWidgetCreator = (name) => {
-    return widgetsCreators[name];
-  };
+  Abilian.getWidgetCreator = (name) => widgetsCreators[name];
 
   /*
    * Initialiaze a single element.
