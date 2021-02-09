@@ -1,9 +1,9 @@
-require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function (
+require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], (
   Abilian,
   FileInput,
   $,
   api
-) {
+) => {
   "use strict";
 
   /**
@@ -38,7 +38,7 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function (
     const el = FileInput.prototype.createFileNode.call(self, file);
     const image = api.Image(file);
 
-    api.getInfo(file, function (err, infos) {
+    api.getInfo(file, (err, infos) => {
       if (err) {
         console.log(err);
         return;
@@ -46,7 +46,7 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], function (
 
       const resize_fun = self["resize_" + self.resize_mode];
       const preview = resize_fun.call(self, image, infos);
-      preview.get(function (err /** String */, img /** HTMLElement */) {
+      preview.get((err /** String */, img /** HTMLElement */) => {
         if (err) {
           console.log(err);
           return;

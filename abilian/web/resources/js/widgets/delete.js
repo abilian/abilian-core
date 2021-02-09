@@ -1,7 +1,7 @@
 /**
  Allow to setup a delete button for urls managed by abilian.web.views.object.ObjectDelete.
  */
-require(["AbilianWidget", "jquery", "bootbox"], function (Abilian, $, bootbox) {
+require(["AbilianWidget", "jquery", "bootbox"], (Abilian, $, bootbox) => {
   "use strict";
 
   const defaults = {
@@ -18,7 +18,7 @@ require(["AbilianWidget", "jquery", "bootbox"], function (Abilian, $, bootbox) {
     this.elt = elt;
     this.options = $.extend({}, defaults, options);
     this.url = elt.attr("href");
-    elt.on("click", function (e) {
+    elt.on("click", (e) => {
       e.preventDefault();
       self.openModal();
     });

@@ -1,9 +1,9 @@
-define("widget.FileInput", [
-  "AbilianWidget",
-  "jquery",
-  "FileAPI",
-  "Hogan",
-], function (Abilian, $, api, Hogan) {
+define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
+  Abilian,
+  $,
+  api,
+  Hogan
+) => {
   "use strict";
   /**
    * File input widget. Uses FileAPI (http://mailru.github.io/FileAPI/)

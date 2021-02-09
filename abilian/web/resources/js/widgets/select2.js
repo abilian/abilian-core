@@ -1,4 +1,4 @@
-require(["AbilianWidget", "jquery"], function (Abilian, $) {
+require(["AbilianWidget", "jquery"], (Abilian, $) => {
   "use strict";
 
   function tagsFormatter(tagsToReplace) {
@@ -61,7 +61,7 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
     if (params.dataNodeId !== undefined) {
       data = JSON.parse($("#" + params.dataNodeId).html());
 
-      initParams.initSelection = function (element, callback) {
+      initParams.initSelection = (element, callback) => {
         if (data.values.length > 0) {
           callback(data.values.length === 1 ? data.values[0] : data.values);
         }

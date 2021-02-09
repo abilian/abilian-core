@@ -1,4 +1,4 @@
-require(["AbilianWidget", "jquery"], function (Abilian, $) {
+require(["AbilianWidget", "jquery"], (Abilian, $) => {
   "use strict";
   // multiple row widget
   function DynamicRowWidget(table, options) {
@@ -18,7 +18,7 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
       '<th><span class="glyphicon glyphicon-plus"></span></th>'
     );
     self.addButton.css({ width: "1em" });
-    self.addButton.click(function (e) {
+    self.addButton.click((e) => {
       self.addRow();
       e.preventDefault();
     });
@@ -35,7 +35,7 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
     }
     if (self.options.indexOf("bottom") > -1) {
       const bottom_addButton = self.addButton.clone();
-      bottom_addButton.click(function (e) {
+      bottom_addButton.click((e) => {
         self.addRow();
         e.preventDefault();
       });

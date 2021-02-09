@@ -1,4 +1,4 @@
-require(["AbilianWidget", "jquery"], function (Abilian, $) {
+require(["AbilianWidget", "jquery"], (Abilian, $) => {
   "use strict";
 
   function initTagsSelect(params) {
@@ -11,7 +11,7 @@ require(["AbilianWidget", "jquery"], function (Abilian, $) {
     // as of Select2 3.5, we cannot use a <select> and
     // createSearchChoices. We must convert it to a hidden input
     const values = (this.val() || []).join(opts.separator);
-    const choices = $.map(this.get(0).options, function (option) {
+    const choices = $.map(this.get(0).options, (option) => {
       return option.value;
     });
     const input = $('<input type="hidden" />')
