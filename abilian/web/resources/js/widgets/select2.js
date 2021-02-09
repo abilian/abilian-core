@@ -59,7 +59,7 @@ require(["AbilianWidget", "jquery"], (Abilian, $) => {
     let data = null;
 
     if (params.dataNodeId !== undefined) {
-      data = JSON.parse($("#" + params.dataNodeId).html());
+      data = JSON.parse($(`#${params.dataNodeId}`).html());
 
       initParams.initSelection = (element, callback) => {
         if (data.values.length > 0) {

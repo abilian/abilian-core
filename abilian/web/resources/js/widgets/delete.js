@@ -27,14 +27,11 @@ require(["AbilianWidget", "jquery", "bootbox"], (Abilian, $, bootbox) => {
   ConfirmDialog.prototype.openModal = function () {
     const self = this;
     const title =
-      '<strong class="text-danger">' +
-      '<i class="glyphicon glyphicon-warning-sign"></i> ' +
-      this.options.title +
-      "</strong>";
+      `<strong class="text-danger"><i class="glyphicon glyphicon-warning-sign"></i> ${this.options.title}</strong>`;
 
     bootbox.dialog({
       title: title,
-      message: '<p class="lead">' + this.options.message + "</p>",
+      message: `<p class="lead">${this.options.message}</p>`,
       closeButton: true,
       buttons: {
         confirm: {

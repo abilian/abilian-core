@@ -173,7 +173,7 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
       const progress = (evt.loaded / evt.total) * 100;
       this.getElementForFile(file)
         .find(".progress-bar")
-        .css({ width: progress + "%" });
+        .css({ width: `${progress}%` });
     },
 
     onFileComplete: function (err, xhr, file, options) {

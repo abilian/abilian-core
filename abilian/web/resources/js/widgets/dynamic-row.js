@@ -66,9 +66,9 @@ require(["AbilianWidget", "jquery"], (Abilian, $) => {
       newRow.find("input").each(function () {
         const item = $(this);
         const shortName = item.data("shortName");
-        let name = self.prefix + "-" + self.currentIndex;
+        let name = `${self.prefix}-${self.currentIndex}`;
         if (shortName) {
-          name = name + "-" + shortName;
+          name = `${name}-${shortName}`;
         }
         item.attr("name", name);
         item.attr("id", name);

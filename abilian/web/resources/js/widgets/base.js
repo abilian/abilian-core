@@ -28,7 +28,7 @@ define("AbilianWidget", ["AbilianNS", "jquery"], (Abilian, $) => {
     const creatorFunc = widgetsCreators[creatorName];
 
     if (creatorFunc === undefined) {
-      throw new Error('Unknown widget constructor: "' + creatorName + '"');
+      throw new Error(`Unknown widget constructor: "${creatorName}"`);
     }
 
     if (!(params instanceof Array)) {

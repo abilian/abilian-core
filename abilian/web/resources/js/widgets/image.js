@@ -44,7 +44,7 @@ require(["AbilianWidget", "widget.FileInput", "jquery", "FileAPI"], (
         return;
       }
 
-      const resize_fun = self["resize_" + self.resize_mode];
+      const resize_fun = self[`resize_${self.resize_mode}`];
       const preview = resize_fun.call(self, image, infos);
       preview.get((err /** String */, img /** HTMLElement */) => {
         if (err) {
