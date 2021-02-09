@@ -59,7 +59,7 @@ require(["AbilianWidget", "jquery"], (Abilian, $) => {
   }
 
   DynamicRowWidget.prototype = {
-    addRow: function () {
+    addRow() {
       const self = this;
       const newRow = self.templateRow.clone(true, true);
 

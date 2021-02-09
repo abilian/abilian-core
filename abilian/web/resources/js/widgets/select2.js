@@ -46,24 +46,25 @@ require(["AbilianWidget", "jquery"], (Abilian, $) => {
   const DEFAULT_AJAX_PARAMS = {
     dataType: "json",
     quietMillis: 100,
-    data: function (term, page) {
+    data(term, page) {
       return { q: term };
     },
-    results: function (data, page) {
+    results(data, page) {
       return { results: data.results, more: false };
     },
   };
 
   function initSelect2Ajax(params) {
     const initParams = $.extend({}, DEFAULT_PARAMS, params);
-    let data = null;
+    // let data = null;
 
     if (params.dataNodeId !== undefined) {
-      data = JSON.parse($(`#${params.dataNodeId}`).html());
+      const data = JSON.parse($(`#${params.dataNodeId}`).html());
+      const values = data.values;
 
       initParams.initSelection = (element, callback) => {
-        if (data.values.length > 0) {
-          callback(data.values.length === 1 ? data.values[0] : data.values);
+        if (values.length > 0) {
+          callback(values.length === 1 ? values[0] : values);
         }
       };
     }

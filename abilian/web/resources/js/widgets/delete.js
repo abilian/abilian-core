@@ -26,8 +26,7 @@ require(["AbilianWidget", "jquery", "bootbox"], (Abilian, $, bootbox) => {
 
   ConfirmDialog.prototype.openModal = function () {
     const self = this;
-    const title =
-      `<strong class="text-danger"><i class="glyphicon glyphicon-warning-sign"></i> ${this.options.title}</strong>`;
+    const title = `<strong class="text-danger"><i class="glyphicon glyphicon-warning-sign"></i> ${this.options.title}</strong>`;
 
     bootbox.dialog({
       title: title,
@@ -37,7 +36,7 @@ require(["AbilianWidget", "jquery", "bootbox"], (Abilian, $, bootbox) => {
         confirm: {
           label: this.options.label,
           className: "btn-danger", // or btn-primary, or btn-danger, or nothing at all
-          callback: function () {
+          callback() {
             self.onConfirm();
           },
         },
@@ -58,18 +57,18 @@ require(["AbilianWidget", "jquery", "bootbox"], (Abilian, $, bootbox) => {
     form.setAttribute("enctype", "multipart/form-data");
 
     // csrf
-    let input = document.createElement("input");
-    input.setAttribute("type", "hidden");
-    input.setAttribute("name", Abilian.csrf_fieldname);
-    input.setAttribute("value", Abilian.csrf_token);
-    form.appendChild(input);
+    const input1 = document.createElement("input");
+    input1.setAttribute("type", "hidden");
+    input1.setAttribute("name", Abilian.csrf_fieldname);
+    input1.setAttribute("value", Abilian.csrf_token);
+    form.appendChild(input1);
 
     // action value
-    input = document.createElement("input");
-    input.setAttribute("type", "hidden");
-    input.setAttribute("name", "__action");
-    input.setAttribute("value", "delete");
-    form.appendChild(input);
+    const input2 = document.createElement("input");
+    input2.setAttribute("type", "hidden");
+    input2.setAttribute("name", "__action");
+    input2.setAttribute("value", "delete");
+    form.appendChild(input2);
 
     document.body.appendChild(form);
     form.submit();

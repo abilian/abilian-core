@@ -58,7 +58,7 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
   }
 
   FileInput.prototype = {
-    addFiles: function (evt) {
+    addFiles(evt) {
       const self = this;
       let files = api.getFiles(evt);
 
@@ -72,7 +72,7 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
       });
     },
 
-    setupExistingFileNode: function (node) {
+    setupExistingFileNode(node) {
       const button = node.find("button");
       const unwrappedButton = button.get(0);
       const deleted = button.data("deleted");
@@ -94,18 +94,18 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
       button.on("click", { node: node }, this.onExistingNodeChange.bind(this));
     },
 
-    setupFileNode: function (node) {
+    setupFileNode(node) {
       node.find("a.close").on("click", this.removeFileNode.bind(this));
     },
 
-    addFileNode: function (input, file) {
+    addFileNode(input, file) {
       const el = this.createFileNode(file);
       this.setupFileNode(el);
       this.listNode.append(el);
       this.triggerUpload(el, file);
     },
 
-    triggerUpload: function (element, file) {
+    triggerUpload(element, file) {
       const uid = api.uid(file);
       this.currentlyUploaded[uid] = true;
 
@@ -121,12 +121,12 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
       });
     },
 
-    removeFileNode: function (evt) {
+    removeFileNode(evt) {
       evt.preventDefault();
       $(evt.target).parent(".file-item").remove();
     },
 
-    createFileNode: function (file) {
+    createFileNode(file) {
       const infos = this.getFileInfos(file);
       const el = $(this.options.fileItemTemplate.render(infos));
       const progress = $(this.options.progressTemplate).css({
@@ -137,12 +137,12 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
       return el;
     },
 
-    getElementForFile: function (file) {
+    getElementForFile(file) {
       const uid = api.uid(file);
       return $(document.getElementById(uid));
     },
 
-    getFileInfos: function (file) {
+    getFileInfos(file) {
       return {
         name: this.sanitizeFilename(file.name),
         type: file.type,
@@ -151,32 +151,32 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
       };
     },
 
-    onExistingNodeChange: function (evt) {
+    onExistingNodeChange(evt) {
       const button = $(evt.target);
       const markerInputElement = evt.target.markerInputElement;
       const isActive = button.hasClass("active");
 
       button.toggleClass("active");
 
-      if (!isActive) {
-        button.removeClass("btn-default");
-        button.addClass("btn-danger");
-        button.parent(".file-item").append(markerInputElement);
-      } else {
+      if (isActive) {
         button.removeClass("btn-danger");
         button.addClass("btn-default");
         $(markerInputElement).remove();
+      } else {
+        button.removeClass("btn-default");
+        button.addClass("btn-danger");
+        button.parent(".file-item").append(markerInputElement);
       }
     },
 
-    onFileProgress: function (evt, file, xhr, options) {
+    onFileProgress(evt, file, xhr, options) {
       const progress = (evt.loaded / evt.total) * 100;
       this.getElementForFile(file)
         .find(".progress-bar")
         .css({ width: `${progress}%` });
     },
 
-    onFileComplete: function (err, xhr, file, options) {
+    onFileComplete(err, xhr, file, options) {
       const $el = this.getElementForFile(xhr.currentFile);
       const uid = api.uid(xhr.currentFile);
 
@@ -200,18 +200,18 @@ define("widget.FileInput", ["AbilianWidget", "jquery", "FileAPI", "Hogan"], (
       $el.append($input);
     },
 
-    onFormSubmit: function (e) {
+    onFormSubmit(e) {
       if (Object.keys(this.currentlyUploaded).length > 0) {
         e.preventDefault();
         alert("Des fichiers sont en cours d'envoi"); // FIXME: i18n
       }
     },
 
-    sanitizeFilename: function (filename) {
+    sanitizeFilename(filename) {
       return filename.replace(/\\/g, "/").replace(/.*\//, "");
     },
 
-    humanSize: function (size) {
+    humanSize(size) {
       let unit = "b";
       let divider = null;
 
