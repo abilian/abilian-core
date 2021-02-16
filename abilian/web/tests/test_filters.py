@@ -66,12 +66,12 @@ def test_linkify() -> None:
     tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
     rendered = tmpl.render()
     el = html5lib.parseFragment(rendered)
-    assert len(el.getchildren()) == 1
+    assert len(list(el)) == 1
 
-    el = el.getchildren()[0]
-    assert el.tag == "{http://www.w3.org/1999/xhtml}a"
-    assert el.text == "http://test.example.com"
-    assert sorted(el.items()) == [
+    el1 = el[0]
+    assert el1.tag == "{http://www.w3.org/1999/xhtml}a"
+    assert el1.text == "http://test.example.com"
+    assert sorted(el1.items()) == [
         ("href", "http://test.example.com"),
         ("rel", "nofollow"),
     ]
