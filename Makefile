@@ -1,7 +1,5 @@
 .PHONY: all develop test lint clean doc format
 
-# The source directory
-SRC=abilian
 # The package name
 PKG=abilian
 
@@ -68,17 +66,17 @@ lint-all: lint lint-mypy lint-bandit
 
 lint-py:
 	@echo "--> Linting Python files /w flake8"
-	flake8 $(SRC)
+	flake8 src tests
 	@echo ""
 
 lint-mypy:
 	@echo "--> Typechecking Python files w/ mypy"
-	mypy $(SRC)
+	mypy src tests
 	@echo ""
 
 lint-py3k:
 	@echo "--> Checking Python 3 compatibility"
-	pylint --py3k -j3 abilian
+	pylint --py3k -j3 src tests
 	@echo ""
 
 lint-travis:
@@ -88,12 +86,12 @@ lint-travis:
 
 lint-js:
 	@echo "--> Linting JS files"
-	yarn run eslint abilian/web/resources/js/
+	yarn run eslint src/abilian/web/resources/js/
 	@echo ""
 
 lint-less:
 	@echo "--> Linting LESS files"
-	yarn run stylelint ./abilian/web/resources/less/
+	yarn run stylelint src/abilian/web/resources/less/
 	@echo ""
 
 lint-rst:
@@ -109,7 +107,7 @@ lint-doc:
 
 lint-bandit:
 	@echo "--> Linting python w/ Bandit"
-	bandit -s B101 `find abilian -name '*.py' | grep -v test`
+	bandit -s B101 `find src -name '*.py' | grep -v test`
 	@echo ""
 
 
@@ -119,15 +117,15 @@ lint-bandit:
 format: format-py format-js format-less
 
 format-py:
-	docformatter -i -r abilian
-	black abilian demo tests *.py
-	isort abilian demo tests *.py
+	docformatter -i -r src
+	black src demo tests *.py
+	isort src abilian demo tests *.py
 
 format-js:
-	yarn run prettier --write abilian/web/resources/js
+	yarn run prettier --write src/abilian/web/resources/js
 
 format-less:
-	yarn run prettier --write --tab-width 2 abilian/web/resources/less/
+	yarn run prettier --write --tab-width 2 src/abilian/web/resources/less/
 
 
 #

@@ -483,12 +483,12 @@ class SingleView(View):
 
                 value = Markup(field.render_view(entity=item))
                 if value == "":
-                    # related models may have [] as value, but we don't discard this type
-                    # of value in order to let widget a chance to render something useful
-                    # like an 'add model' button.
+                    # related models may have [] as value, but we don't discard
+                    # this type # of value in order to let widget a chance
+                    # to render something useful like an 'add model' button.
                     #
-                    # if it renders an empty string, there's really no point in rendering
-                    # a line for this empty field
+                    # if it renders an empty string, there's really no point
+                    # in rendering a line for this empty field
                     continue
 
                 label = self.label_for(field, mapper, name)
