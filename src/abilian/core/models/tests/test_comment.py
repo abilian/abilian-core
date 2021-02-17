@@ -41,14 +41,23 @@ def test_default_ordering(app: Flask, db: SQLAlchemy) -> None:
     now = datetime.now()
     c1 = Comment(entity=commentable, body="comment #1")
     c1.created_at = now - timedelta(10)
-    db.session.flush()
     c2 = Comment(entity=commentable, body="comment #2")
-    c2.created_at = now - timedelta(5)
+    c2.created_at = now
     db.session.flush()
 
     query = Comment.query.filter(Comment.entity == commentable)
     assert query.all() == [c1, c2]
 
-    c1.created_at = c2.created_at
-    c2.created_at = c1.created_at - timedelta(5)
+
+def test_default_ordering_reverse(app: Flask, db: SQLAlchemy) -> None:
+    commentable = CommentableContent(name="commentable objet")
+    db.session.add(commentable)
+    now = datetime.now()
+    c1 = Comment(entity=commentable, body="comment #1")
+    c1.created_at = now
+    c2 = Comment(entity=commentable, body="comment #2")
+    c2.created_at = now - timedelta(10)
+    db.session.flush()
+
+    query = Comment.query.filter(Comment.entity == commentable)
     assert query.all() == [c2, c1]

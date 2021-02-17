@@ -210,7 +210,7 @@ class EntityMeta(BaseMeta):
 
             default_permissions = d.get("__default_permissions__")
             if default_permissions is not None:
-                if isinstance(default_permissions, collections.Mapping):
+                if isinstance(default_permissions, collections.abc.Mapping):
                     default_permissions = default_permissions.items()
                 elif not isinstance(default_permissions, collections.Set):
                     raise TypeError(

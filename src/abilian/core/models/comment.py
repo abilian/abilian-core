@@ -7,7 +7,7 @@ from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, UnicodeText
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
 
-from abilian.core.entities import Entity
+from abilian.core.entities import Entity, EntityQuery
 from abilian.services.security import CREATE, DELETE, WRITE, Anonymous, Owner
 
 #: name of backref on target :class:`Entity` object
@@ -60,21 +60,15 @@ def for_entity(obj, check_commentable=False):
     return getattr(obj, ATTRIBUTE)
 
 
+class CommentQuery(EntityQuery):
+    def all(self):
+        return EntityQuery.all(self.order_by(Comment.created_at))
+
+
 class Comment(Entity):
     """A Comment related to an :class:`Entity`."""
 
     __default_permissions__ = {WRITE: {Owner}, DELETE: {Owner}, CREATE: {Anonymous}}
-
-    @declared_attr
-    def __mapper_args__(cls):
-        # we cannot use super(Comment, cls): declared_attr happens during class
-        # construction. super(cls, cls) could work; as long as `cls` is not a
-        # subclass of `Comment`: it would enter into an infinite loop.
-        #
-        # Entity.__mapper_args__ calls the descriptor with 'Entity', not `cls`.
-        args = Entity.__dict__["__mapper_args__"].fget(cls)
-        args["order_by"] = cls.created_at
-        return args
 
     entity_id = Column(Integer, ForeignKey(Entity.id), nullable=False)
 
@@ -94,7 +88,7 @@ class Comment(Entity):
     #: comment's main content
     body = Column(UnicodeText(), CheckConstraint("trim(body) != ''"), nullable=False)
 
-    query: BaseQuery
+    query_class = CommentQuery
 
     @property
     def history(self):
@@ -104,6 +98,6 @@ class Comment(Entity):
         class_ = self.__class__
         mod_ = class_.__module__
         classname = class_.__name__
-        return "<{}.{} instance at 0x{:x} entity id={!r}".format(
-            mod_, classname, id(self), self.entity_id
+        return "<{}.{} instance at 0x{:x} entity id={!r} date={}".format(
+            mod_, classname, id(self), self.entity_id, self.created_at
         )

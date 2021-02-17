@@ -1,14 +1,12 @@
 """"""
 import abc
-from typing import Any, Dict
 
 import sqlalchemy as sa
 import sqlalchemy.event
 from sqlalchemy import Column, ForeignKey, Integer, UnicodeText
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
 
-from abilian.core.entities import Entity
+from abilian.core.entities import Entity, EntityQuery
 
 from .blob import Blob
 
@@ -64,22 +62,15 @@ def for_entity(obj, check_support_attachments=False):
     return getattr(obj, ATTRIBUTE)
 
 
+class AttachmentQuery(EntityQuery):
+    def all(self):
+        return EntityQuery.all(self.order_by(Attachment.created_at))
+
+
 class Attachment(Entity):
     """An Attachment owned by an :class:`Entity`."""
 
     __auditable_entity__ = ("entity", "attachment", ("id", "name"))
-
-    @declared_attr
-    def __mapper_args__(cls) -> Dict[str, Any]:
-        # we cannot use super(Attachment, cls): declared_attr happens during
-        # class construction. super(cls, cls) could work; as long as `cls`
-        # is not a subclass of `Attachment`: it would enter into
-        # an infinite loop.
-        #
-        # Entity.__mapper_args__ calls the descriptor with 'Entity', not `cls`.
-        args = Entity.__dict__["__mapper_args__"].fget(cls)
-        args["order_by"] = cls.created_at
-        return args
 
     entity_id = Column(Integer, ForeignKey(Entity.id), nullable=False)
 
@@ -101,6 +92,8 @@ class Attachment(Entity):
     blob = relationship(Blob, cascade="all, delete", foreign_keys=[blob_id])
 
     description = Column(UnicodeText(), nullable=False, default="", server_default="")
+
+    query_class = AttachmentQuery
 
     def __repr__(self):
         class_ = self.__class__
