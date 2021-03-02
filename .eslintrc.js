@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   // See: https://github.com/prettier/eslint-config-prettier
-  extends: ["prettier", "prettier/standard", "plugin:requirejs/recommended"],
+  extends: ["prettier", "plugin:requirejs/recommended"],
   // required to lint *.vue files
   plugins: ["html", "requirejs"],
   env: {
