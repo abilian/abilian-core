@@ -1,4 +1,40 @@
 steps:
-  - label: ":python:"
+  - label: ":python: tox"
     commands:
       - tox
+
+  - label: ":python: 3.7"
+    command:
+      - "python -m pip install tox"
+      - "tox -e py37"
+    plugins:
+      - docker#v3.7.0:
+          image: "python:3.7"
+          mount-buildkite-agent: false
+
+  - label: ":python: 3.8"
+    command:
+      - "python -m pip install tox"
+      - "tox -e py38"
+    plugins:
+      - docker#v3.7.0:
+          image: "python:3.8"
+          mount-buildkite-agent: false
+
+  - label: ":python: 3.9"
+    command:
+      - "python -m pip install tox"
+      - "tox -e py39"
+    plugins:
+      - docker#v3.7.0:
+          image: "python:3.9"
+          mount-buildkite-agent: false
+
+  - label: ":python: lint"
+    command:
+      - "python -m pip install tox"
+      - "tox -e lint"
+    plugins:
+      - docker#v3.7.0:
+          image: "python:3.9"
+          mount-buildkite-agent: false
