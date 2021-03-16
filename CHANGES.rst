@@ -1,6 +1,11 @@
 Changelog for Abilian Core
 ==========================
 
+v0.11.18 (2021-03-16)
+---------------------
+
+- Prevent upgrading to SQLAlchemy 1.4
+
 v0.11.10 (2020-08-04)
 ---------------------
 - Fix tests.
