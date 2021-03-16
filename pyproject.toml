@@ -25,6 +25,8 @@ Flask-Talisman = ">=0.6"
 werkzeug = "<1"
 Flask-Babel = ">=0.11,<2"
 
+# We're not ready for SQLAlchemy 1.4 yet (due to sqlalchemy_utils).
+sqlalchemy = "~1.3"
 # flask-sqlachemy 2.2 breaks our apps.
 flask-sqlalchemy = "<=2.1"
 
