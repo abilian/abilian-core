@@ -22,7 +22,7 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name="abilian-core",
-    version="0.11.17",
+    version="0.11.18",
     description="A framework for enterprise applications (CRM, ERP, collaboration...), based on Flask and SQLAlchemy",
     python_requires="<4,>=3.6.1",
     project_urls={"repository": "https://github.com/abilian/abilian-core"},
@@ -333,7 +333,7 @@ setup(
         "pyyaml",
         "redis==3.*,>=3.0.0",
         "sentry-sdk[flask]",
-        "sqlalchemy==1.*,>=1.1.0",
+        "sqlalchemy==1.*,==1.3.*,>=1.1.0,>=1.3.0",
         "sqlparse",
         "tqdm",
         "webassets<2",
