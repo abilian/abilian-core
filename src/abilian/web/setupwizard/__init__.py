@@ -3,7 +3,7 @@ import logging
 import socket
 from collections import OrderedDict, namedtuple
 from pathlib import Path
-from typing import Dict, Text
+from typing import Dict
 
 import redis
 import sqlalchemy as sa
@@ -37,7 +37,7 @@ setup = Blueprint(
 
 _dialects = OrderedDict((("sqlite", "SQLite (for demo)"), ("postgresql", "PostgreSQL")))
 
-_dialects_unavailable: Dict[Text, Text] = OrderedDict()
+_dialects_unavailable: Dict[str, str] = OrderedDict()
 
 for dialect, _label in _dialects.items():
     d = sa.dialects.registry.load(dialect)

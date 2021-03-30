@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import Any, Dict, Text
+from typing import Any, Dict
 
 from flask import Flask
 from flask_assets import Bundle
@@ -105,7 +105,7 @@ class AssetManagerMixin(Flask):
 
         for name, data in self._assets_bundles.items():
             bundles = data.get("bundles", [])
-            options: Dict[Text, Any] = data.get("options", {})
+            options: Dict[str, Any] = data.get("options", {})
             filters = options.get("filters") or []
             options["filters"] = []
             for f in filters:

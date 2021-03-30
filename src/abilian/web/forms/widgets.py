@@ -8,7 +8,7 @@ import logging
 import re
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Sequence, Text, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 from urllib import parse
 
 import bleach
@@ -647,8 +647,8 @@ class TextInput(wtforms.widgets.TextInput):
     :class:`abilian.web.action.Icon`.
     """
 
-    pre_icon: Optional[Text] = None
-    post_icon: Optional[Text] = None
+    pre_icon: Optional[str] = None
+    post_icon: Optional[str] = None
 
     def __init__(
         self,
