@@ -144,7 +144,8 @@ doc-pdf:
 	make -C docs/_build/latex all-pdf
 
 clean:
-	find . -type d -name __pycache__ -depth -exec rm -rf {} \;
+	find . -type f -name *.pyc -delete
+	find . -type d -name __pycache__ -delete
 	rm -rf *.egg-info *.egg .coverage .eggs .cache .mypy_cache .pyre \
 		.pytest_cache .pytest .DS_Store  docs/_build docs/cache docs/tmp \
 		dist build pip-wheel-metadata junit-*.xml htmlcov coverage.xml \
