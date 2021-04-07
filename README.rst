@@ -134,16 +134,14 @@ Roadmap & getting involved
 
 If you need help or for general discussions about the Abilian Platform, we
 recommend joing the `Abilian Users
-<https://groups.google.com/forum/#!forum/abilian-users>`_ forum on Google
+<https://groups.google.com/g/abilian-users>`_ forum on Google
 Groups.
-
-We have a `roadmap on Pivotal
-Tracker <https://www.pivotaltracker.com/s/projects/878951>`_ that we use
-internally to manage our iterative delivery process.
 
 For features and bug requests (or is it the other way around?), we
 recommend that you use the `GitHub issue
 tracker <https://github.com/abilian/abilian-core/issues>`_.
+
+Read the `Contributing Guide <CONTRIBUTING.md>`_ for more information.
 
 
 Install
@@ -152,7 +150,7 @@ Install
 If you are a Python web developer (which is the primary target for this
 project), you probably already know about:
 
--  Python 2.7
+-  Python 3.8+
 -  Virtualenv
 -  Poetry (https://poetry.eustace.io/)
 
@@ -206,7 +204,7 @@ We are also specially grateful to:
 -  Everyone who has been involved with and produced open source software
    for the Flask ecosystem (Kiran Jonnalagadda and the
    `HasGeek <https://hasgeek.com/>`_ team, Max Countryman, Matt Wright,
-   Matt Good, Thomas Johansson, James Crasta, and probably many others).
+   Matt Good, Thomas Johansson, James Crasta, and many others).
 -  The creators of Django, Pylons, TurboGears, Pyramid and Zope, for
    even more inspiration.
 -  The whole Python community.
@@ -214,7 +212,7 @@ We are also specially grateful to:
 Links
 =====
 
-- `Discussion list (Google Groups) <https://groups.google.com/forum/#!forum/abilian-users>`_
+- `Discussion list (Google Groups) <https://groups.google.com/g/abilian-users>`_
 - `Documentation <http://docs.abilian.com/>`_
 - `GitHub repository <https://github.com/abilian/abilian-core>`_
 - `Corporate support <http://www.abilian.com>`_
