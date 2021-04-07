@@ -3,7 +3,7 @@
 Welcome to the Abilian Core documentation
 =========================================
 
-.. image:: images/abilian-logo-baseline.png
+.. image:: https://abilian.com/static/images/logo-abilian-baseline.png
    :alt: Abilian - Connected we work
    :width: 300
    :class: floatingflask

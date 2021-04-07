@@ -41,7 +41,7 @@ autodoc_default_options = {"members": None, "undoc-members": None}
 
 # sphinx.ext.intersphinx configuration
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.6/", None),
+    "python": ("https://docs.python.org/3.9/", None),
     "flask": ("https://flask.palletsprojects.com/", None),
     "babel": ("https://babel.pocoo.org/docs/", "inventories/babel.inv"),
     "flaskbabel": ("https://pythonhosted.org/Flask-Babel/", None),
@@ -63,7 +63,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Abilian"
-copyright = "2012-2019, Abilian SAS"
+copyright = "2012-2021, Abilian SAS"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
