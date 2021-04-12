@@ -77,9 +77,9 @@ closure==20191111 \
     --hash=sha256:a133ac625c55697645b1c41745e167572633982128ee7f06e401fd76cb4e292f
 cssmin==0.2.0 \
     --hash=sha256:e012f0cc8401efcf2620332339011564738ae32be8c84b2e43ce8beaec1067b6
-decorator==5.0.5; python_version >= "3.5" \
-    --hash=sha256:b7157d62ea3c2c0c57b81a05e4569853e976a3dda5dd7a1cb86be78978c3c5f8 \
-    --hash=sha256:acda948ffcfe4bd0c4a57834b74ad968b91925b8201b740ca9d46fb8c5c618ce
+decorator==5.0.6; python_version >= "3.5" \
+    --hash=sha256:d9f2d2863183a3c0df05f4b786f2e6b8752c093b3547a558f287bf3022fd2bf4 \
+    --hash=sha256:f2e71efb39412bfd23d878e896a51b07744f2e2250b2e87d158e76828c5ae202
 deprecated==1.2.12; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0") \
     --hash=sha256:08452d69b6b5bc66e8330adde0a4f8642e969b9e1702904d137eeb29c8ffc771 \
     --hash=sha256:6d2de2de7931a968874481ef30208fd4e08da39177d61d3d4ebdf4366e7dbca1
@@ -375,8 +375,8 @@ sentry-sdk==1.0.0 \
 six==1.15.0; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" or python_full_version >= "3.5.0" or python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.6" or python_full_version >= "3.6.0" or python_version >= "3.4" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.4" \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259
-sqlalchemy-utils==0.36.8 \
-    --hash=sha256:fb66e9956e41340011b70b80f898fde6064ec1817af77199ee21ace71d7d6ab0
+sqlalchemy-utils==0.37.0 \
+    --hash=sha256:c7bec2c982b31ec6133ba519f73f07653bbb7e7b3c23836bb8d9133045386b68
 sqlalchemy==1.3.24; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0") \
     --hash=sha256:87a2725ad7d41cd7376373c15fd8bf674e9c33ca56d0b8036add2d634dba372e \
     --hash=sha256:f597a243b8550a3a0b15122b14e49d8a7e622ba1c9d29776af741f1845478d79 \
