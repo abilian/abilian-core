@@ -26,7 +26,7 @@ jobs:
           sudo yarn global add less
       - if: ${{ matrix.os == 'macos' }}
         run: |
-          brew install libmagic poppler
+          brew install libmagic poppler imagemagick
           yarn global add less
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
