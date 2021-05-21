@@ -125,7 +125,7 @@ format-js:
 	yarn run prettier --write src/abilian/web/resources/js
 
 format-less:
-	yarn run prettier --write --tab-width 2 src/abilian/web/resources/less/
+	yarn run prettier --write --tab-width 2 src/abilian/web/resources/less/*.less
 
 
 #
