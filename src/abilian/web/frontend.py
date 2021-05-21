@@ -132,7 +132,7 @@ def expose(url: str = "/", methods: Tuple[str] = ("GET",)) -> Callable:
 
 
 def labelize(s: str) -> str:
-    return " ".join([w.capitalize() for w in s.split("_")])
+    return " ".join(w.capitalize() for w in s.split("_"))
 
 
 def make_single_view(form: Form, **options) -> SingleView:
