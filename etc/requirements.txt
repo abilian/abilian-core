@@ -1,5 +1,6 @@
-alembic==1.6.2; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0") \
-    --hash=sha256:fb9a39a7c68e55490be962fb5f70463d384d340e6563d6e3911447778e3b4576
+alembic==1.6.3; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0") \
+    --hash=sha256:5a01e9ac338e7380aea1d8a038fcc927cf309cc0b90ede4472c601282054f1b3 \
+    --hash=sha256:6d243986586709e9358accdd5ba35d16dd7ca5572681f0d683638ced407504c8
 amqp==2.6.1; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" \
     --hash=sha256:aa7f313fb887c91f15474c1229907a04dac0b8135822d6603437803424c0aa59 \
     --hash=sha256:70cdb10628468ff14e57ec2f751c7aa9e48e7e3651cfd62d431213c0c4e58f21
