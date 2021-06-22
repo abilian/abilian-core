@@ -105,7 +105,7 @@ bp.route("/<int:entity_id>/<int:object_id>/edit")(edit_view)
 
 
 class CommentCreateView(BaseCommentView, ObjectCreate):
-    """ """
+    """"""
 
     _message_success = _l("Comment added")
 
