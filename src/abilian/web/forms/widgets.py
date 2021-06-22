@@ -1463,7 +1463,7 @@ class TabularFieldListWidget:
             field_names = [f.short_name for f in field[0] if not f.is_hidden]
             data_type = f"{field.entries[0].__class__.__name__}Data"
             Data = namedtuple(data_type, field_names)
-            labels = Data(*[f.label for f in field[0] if not f.is_hidden])
+            labels = Data(*(f.label for f in field[0] if not f.is_hidden))
 
         return Markup(render_template(self.template, labels=labels, field=field))
 
