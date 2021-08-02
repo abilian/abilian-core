@@ -317,16 +317,19 @@ class SessionRepositoryService(Service):
         If parameter is a scoped_session instance, a new session will be
         instaniated.
         """
-        session = model_or_session
-        if not isinstance(session, (Session, sa.orm.scoped_session)):
-            if session is not None:
-                session = sa.orm.object_session(model_or_session)
+        if model_or_session is None:
+            return db.session
 
-            if session is None:
-                session = db.session
+        if isinstance(model_or_session, Session):
+            return model_or_session
 
-        if isinstance(session, sa.orm.scoped_session):
-            session = session()
+        if isinstance(model_or_session, sa.orm.scoped_session):
+            return model_or_session()
+
+        session = sa.orm.object_session(model_or_session)
+
+        if session is None:
+            return db.session
 
         return session
 
@@ -356,11 +359,15 @@ class SessionRepositoryService(Service):
         content: Union[IO, bytes, str],
         encoding: str = "utf-8",
     ) -> None:
+        _assert_uuid(uuid)
+
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         transaction.set(uuid, content, encoding)
 
     def delete(self, session: Union[Session, Blob], uuid: UUID) -> None:
+        _assert_uuid(uuid)
+
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         if self.get(session, uuid) is not None:
