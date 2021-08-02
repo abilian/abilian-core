@@ -1,5 +1,6 @@
 """"""
 import uuid
+from pathlib import Path
 
 from pytest import raises
 from sqlalchemy.orm import Session
@@ -37,23 +38,12 @@ def test_transaction_lifetime(session: Session) -> None:
     # assert transaction is root_transaction
 
 
-def test_accessors_bad_uuid_type(session: Session) -> None:
-    uuid_str = b"4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9"
-
-    with raises(ValueError):
-        session_repository.get(session, uuid_str)
-    with raises(ValueError):
-        session_repository.set(session, uuid_str, "")
-    with raises(ValueError):
-        session_repository.delete(session, uuid_str)
-
-
 def test_accessors_non_existent_entry(session: Session) -> None:
     # non-existent
     u = uuid.uuid4()
-    null = object()
+    default = Path("/tmp/dont-care")
     assert session_repository.get(session, u) is None
-    assert session_repository.get(session, u, default=null) is null
+    assert session_repository.get(session, u, default=default) is default
 
 
 def test_accessors_set_get_delete(session: Session) -> None:
@@ -61,7 +51,9 @@ def test_accessors_set_get_delete(session: Session) -> None:
     content = b"my file content"
     u1 = uuid.uuid4()
     session_repository.set(session, u1, content)
-    assert session_repository.get(session, u1).open("rb").read() == content
+    path = session_repository.get(session, u1)
+    assert isinstance(path, Path)
+    assert path.open("rb").read() == content
     assert repository.get(u1) is None
 
     # delete
@@ -80,7 +72,9 @@ def test_accessors_set_get_delete(session: Session) -> None:
 def test_transaction(session: Session) -> None:
     u = uuid.uuid4()
     repository.set(u, b"first draft")
-    assert session_repository.get(session, u).open("rb").read() == b"first draft"
+    path = session_repository.get(session, u)
+    assert isinstance(path, Path)
+    assert path.open("rb").read() == b"first draft"
 
     session_repository.set(session, u, b"new content")
 
@@ -91,7 +85,9 @@ def test_transaction(session: Session) -> None:
     assert session_repository.get(session, u) is None
 
     db_tr.rollback()
-    assert session_repository.get(session, u).open("rb").read() == b"new content"
+    path = session_repository.get(session, u)
+    assert isinstance(path, Path)
+    assert path.open("rb").read() == b"new content"
 
     # delete and commit
     with session.begin(nested=True):
@@ -111,7 +107,9 @@ def test_transaction(session: Session) -> None:
     assert session_repository.get(session, u) is None
 
     db_tr.rollback()
-    assert session_repository.get(session, u).open("rb").read() == b"first draft"
+    path = session_repository.get(session, u)
+    assert isinstance(path, Path)
+    assert path.open("rb").read() == b"first draft"
 
     session.rollback()
 
@@ -139,7 +137,9 @@ def test_transaction(session: Session) -> None:
         with session.begin(nested=True):
             session_repository.set(session, u, b"transaction 2")
 
-        assert session_repository.get(session, u).open("rb").read() == b"transaction 2"
+        path = session_repository.get(session, u)
+        assert isinstance(path, Path)
+        assert path.open("rb").read() == b"transaction 2"
 
 
 def test_transaction_path(session: Session) -> None:
@@ -160,6 +160,8 @@ def test_transaction_path(session: Session) -> None:
 
     assert root_transaction.path.exists()
 
-    content = session_repository.get(session, u).open("rb").read()
+    path = session_repository.get(session, u)
+    assert isinstance(path, Path)
+    content = path.open("rb").read()
     assert content == b"my file content"
     assert root_transaction.path.exists()

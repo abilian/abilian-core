@@ -1,4 +1,3 @@
-""""""
 import uuid
 from pathlib import Path
 
@@ -12,9 +11,6 @@ UUID = uuid.UUID(UUID_STR)
 
 
 def test_rel_path(session: Session) -> None:
-    with raises(ValueError):
-        repository.rel_path(UUID_STR)
-
     p = repository.rel_path(UUID)
     expected = Path("4f", "80", "4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9")
     assert isinstance(p, Path)
@@ -22,9 +18,6 @@ def test_rel_path(session: Session) -> None:
 
 
 def test_abs_path(session: Session) -> None:
-    with raises(ValueError):
-        repository.abs_path(UUID_STR)
-
     p = repository.abs_path(UUID)
     assert isinstance(p, Path)
 
@@ -34,13 +27,7 @@ def test_abs_path(session: Session) -> None:
     # self.assertEquals(p, expected)
 
 
-def test_get(session: Session) -> None:
-    with raises(ValueError):
-        repository.get(UUID_STR)
-
-    with raises(ValueError):
-        assert repository[UUID_STR]
-
+def test_get_with_some_content(session: Session):
     p = repository.abs_path(UUID)
     if not p.parent.exists():
         p.parent.mkdir(parents=True)
@@ -50,16 +37,18 @@ def test_get(session: Session) -> None:
     assert val == p
     assert val.open("rb").read() == b"my file content"
 
-    # non-existent
-    u = uuid.UUID("bcdc32ac-498d-4544-9e7f-fb2c75097011")
-    null = object()
-    assert repository.get(u) is None
-    assert repository.get(u, default=null) is null
-
     # __getitem__
     val = repository[UUID]
     assert val == p
     assert val.open("rb").read() == b"my file content"
+
+
+def test_get_with_non_existing_content(session: Session):
+    # non-existent
+    u = uuid.UUID("bcdc32ac-498d-4544-9e7f-fb2c75097011")
+    default_path = Path("/tmp/default-path")
+    assert repository.get(u) is None
+    assert repository.get(u, default=default_path) is default_path
 
     # __getitem__ non-existent
     with raises(KeyError):

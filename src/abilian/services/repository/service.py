@@ -1,4 +1,5 @@
-""""""
+from __future__ import annotations
+
 import shutil
 import typing
 import weakref
@@ -8,9 +9,11 @@ from uuid import UUID, uuid1
 
 import sqlalchemy as sa
 import sqlalchemy.event
+from devtools import debug
 from flask import _app_ctx_stack
 from flask.globals import _lookup_app_object
 from sqlalchemy.engine.base import Connection
+from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.session import Session, SessionTransaction
 from sqlalchemy.orm.unitofwork import UOWTransaction
 
@@ -27,7 +30,7 @@ _NULL_MARK = object()
 
 def _assert_uuid(uuid: Any) -> None:
     if not isinstance(uuid, UUID):
-        raise ValueError("Not an uuid.UUID instance", uuid)
+        raise TypeError("Not an uuid.UUID instance", uuid)
 
 
 class RepositoryServiceState(ServiceState):
@@ -41,7 +44,7 @@ class RepositoryService(Service):
     name = "repository"
     AppStateClass = RepositoryServiceState
 
-    def init_app(self, app: "Application") -> None:
+    def init_app(self, app: Application) -> None:
         super().init_app(app)
 
         path = app.data_dir / "files"
@@ -59,6 +62,7 @@ class RepositoryService(Service):
         :param:uuid: :class:`UUID` instance
         """
         _assert_uuid(uuid)
+
         filename = str(uuid)
         return Path(filename[0:2], filename[2:4], filename)
 
@@ -67,6 +71,8 @@ class RepositoryService(Service):
 
         :param:uuid: :class:`UUID` instance
         """
+        _assert_uuid(uuid)
+
         top = self.app_state.path
         rel_path = self.rel_path(uuid)
         dest = top / rel_path
@@ -79,18 +85,22 @@ class RepositoryService(Service):
 
         :param:uuid: :class:`UUID` instance
         """
+        _assert_uuid(uuid)
+
         path = self.abs_path(uuid)
         if not path.exists():
             return default
         return path
 
-    def set(self, uuid: UUID, content: Any, encoding: str = "utf-8") -> None:
+    def set(self, uuid: UUID, content: Any, encoding: Optional[str] = "utf-8") -> None:
         """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
         :param:content: string, bytes, or any object with a `read()` method
         :param:encoding: encoding to use when content is Unicode
         """
+        _assert_uuid(uuid)
+
         dest = self.abs_path(uuid)
         if not dest.parent.exists():
             dest.parent.mkdir(0o775, parents=True)
@@ -112,6 +122,8 @@ class RepositoryService(Service):
         :param:uuid: :class:`UUID` instance
         :raises:KeyError if file does not exists
         """
+        _assert_uuid(uuid)
+
         dest = self.abs_path(uuid)
         if not dest.exists():
             raise KeyError("No file can be found for this uuid", uuid)
@@ -119,15 +131,21 @@ class RepositoryService(Service):
         dest.unlink()
 
     def __getitem__(self, uuid: UUID) -> Path:
+        _assert_uuid(uuid)
+
         value = self.get(uuid)
         if value is None:
             raise KeyError("No file can be found for this uuid", uuid)
         return value
 
     def __setitem__(self, uuid: UUID, content: Any) -> None:
+        _assert_uuid(uuid)
+
         self.set(uuid, content)
 
     def __delitem__(self, uuid: UUID) -> None:
+        _assert_uuid(uuid)
+
         self.delete(uuid)
 
 
@@ -144,7 +162,7 @@ class SessionRepositoryState(ServiceState):
         try:
             return _lookup_app_object(_REPOSITORY_TRANSACTION)
         except AttributeError:
-            reg = {}
+            reg: Dict[int, Any] = {}
             setattr(_app_ctx_stack.top, _REPOSITORY_TRANSACTION, reg)
             return reg
 
@@ -157,8 +175,10 @@ class SessionRepositoryState(ServiceState):
         setattr(top, _REPOSITORY_TRANSACTION, value)
 
     # transaction <-> db session accessors
-    def get_transaction(self, session: Session) -> Optional["RepositoryTransaction"]:
-        if isinstance(session, sa.orm.scoped_session):
+    def get_transaction(
+        self, session: Union[Session, scoped_session]
+    ) -> Optional[RepositoryTransaction]:
+        if isinstance(session, scoped_session):
             session = session()
 
         s_id = id(session)
@@ -172,20 +192,18 @@ class SessionRepositoryState(ServiceState):
         return transaction
 
     def set_transaction(
-        self, session: Session, transaction: "RepositoryTransaction"
+        self,
+        session: Union[Session, scoped_session],
+        transaction: RepositoryTransaction,
     ) -> None:
-        """
-        :param:session: :class:`sqlalchemy.orm.session.Session` instance
-        :param:transaction: :class:`RepositoryTransaction` instance
-        """
-        if isinstance(session, sa.orm.scoped_session):
+        if isinstance(session, scoped_session):
             session = session()
 
         s_id = id(session)
         self.transactions[s_id] = (weakref.ref(session), transaction)
 
     def create_transaction(
-        self, session: Session, transaction: "RepositoryTransaction"
+        self, session: Session, transaction: RepositoryTransaction
     ) -> None:
         if not self.running:
             return
@@ -196,7 +214,7 @@ class SessionRepositoryState(ServiceState):
         self.set_transaction(session, transaction)
 
     def end_transaction(
-        self, session: Session, transaction: "RepositoryTransaction"
+        self, session: Session, transaction: RepositoryTransaction
     ) -> None:
         if not self.running:
             return
@@ -262,7 +280,7 @@ class SessionRepositoryService(Service):
         self.__listening = False
         super().__init__(*args, **kwargs)
 
-    def init_app(self, app: "Application") -> None:
+    def init_app(self, app: Application) -> None:
         super().init_app(app)
 
         path = Path(app.instance_path, "tmp", "files_transactions")
@@ -289,14 +307,15 @@ class SessionRepositoryService(Service):
     def _session_for(self, model_or_session: Union[Model, Session]) -> Session:
         """Return session instance for object parameter.
 
-        If parameter is a session instance, it is return as is.
+        If parameter is a session instance, it is returned as is.
+
         If parameter is a registered model instance, its session will be used.
 
         If parameter is a detached model instance, or None, application scoped
-        session will be used (db.session())
+        session will be used (db.session()).
 
         If parameter is a scoped_session instance, a new session will be
-        instanciated.
+        instaniated.
         """
         session = model_or_session
         if not isinstance(session, (Session, sa.orm.scoped_session)):
@@ -311,12 +330,13 @@ class SessionRepositoryService(Service):
 
         return session
 
-    # repository interface
+    # Repository interface
     def get(
         self, session: Union[Session, Blob], uuid: UUID, default: Any = None
     ) -> Union[None, object, Path]:
         # assert isinstance(session, Session)
-        # assert isinstance(uuid, UUID)
+        _assert_uuid(uuid)
+
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         try:
@@ -383,7 +403,7 @@ session_repository = SessionRepositoryService()
 
 class RepositoryTransaction:
     def __init__(
-        self, root_path: Path, parent: Optional["RepositoryTransaction"] = None
+        self, root_path: Path, parent: Optional[RepositoryTransaction] = None
     ) -> None:
         self.path = root_path / str(uuid1())
         # if parent is not None and parent.cleared:
