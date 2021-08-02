@@ -34,13 +34,6 @@ common: &common
         key: v2-deps-{{ .Environment.CIRCLE_JOB }}-{{ checksum "poetry.lock" }}
 
 jobs:
-  lint:
-    <<: *common
-    docker:
-      - image: circleci/python:3.8
-        environment:
-          - TOXENV=lint
-          - UPLOAD_COVERAGE=0
   py38:
     <<: *common
     docker:
@@ -53,12 +46,25 @@ jobs:
       - image: circleci/python:3.9
         environment:
           TOXENV=py39
+  lint:
+    <<: *common
+    docker:
+      - image: circleci/python:3.8
+        environment:
+          - TOXENV=lint
+          - UPLOAD_COVERAGE=0
+  safety:
+    <<: *common
+    docker:
+      - image: circleci/python:3.9
+        environment:
+          - TOXENV=safety
 
 workflows:
   version: 2
   test:
     jobs:
-      - lint
-      - safety
       - py38
       - py39
+      - lint
+      - safety
