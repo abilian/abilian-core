@@ -13,5 +13,5 @@ Vagrant.configure("2") do |config|
     d.image = "ubuntu/bionic"
   end
 
-  config.vm.provision :shell, path: "deploy/provision.sh"
+  config.vm.provision :shell, path: "etc/provision.sh"
 end

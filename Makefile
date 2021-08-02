@@ -52,7 +52,7 @@ test-with-typeguard:
 
 vagrant-tests:
 	vagrant up
-	vagrant ssh -c /vagrant/deploy/vagrant_test.sh
+	vagrant ssh -c /vagrant/etc/vagrant_test.sh
 
 
 #
