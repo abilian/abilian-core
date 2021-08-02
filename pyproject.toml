@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "abilian-core"
 version = "0.11.20"
-description = "A framework for enterprise applications (CRM, ERP, collaboration...), based on Flask and SQLAlchemy"
+description = "A framework for enterprise applications (CRM, ERP, collaboration...)."
 authors = ["Abilian SAS"]
-license = "LGPL"
+license = "LGPL-2.0-or-later"
 readme = "README.rst"
 repository = "https://github.com/abilian/abilian-core"
 packages = [{ include = "abilian", from = "src" }]
