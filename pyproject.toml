@@ -106,12 +106,13 @@ cssmin = "*"
 closure = "*"
 devtools = "*"
 
+
 [tool.poetry.dev-dependencies]
 Flask-DebugToolbar = ">=0.10"
 
 # For running tests (pytest and friends)
-pytest = ">=2.4.0"
-pytest-flask = "^1"
+pytest = "*"
+pytest-flask = "*"
 pytest-xdist = "*"
 pytest-randomly = "*"
 pytest-repeat = "*"
@@ -158,7 +159,7 @@ Sphinx = ">=1.5.5"
 sphinx-rtd-theme = "*"
 
 # Used to generate changelogs
-gitchangelog = "^3.0"
+gitchangelog = "*"
 
 # Used by functional tests
 requests = "*"
@@ -176,7 +177,7 @@ docutils = "*"
 # portray = "^1.3"
 
 # Check deps
-# safety = "^1.9"
+safety = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools"]

@@ -4,7 +4,7 @@ from random import randint
 import nox
 from nox.sessions import Session
 
-PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
+PYTHON_VERSIONS = ["3.8", "3.9"]
 PACKAGE = "abilian"
 DB_DRIVERS = ["postgres", "postgres+pg8000"]
 
