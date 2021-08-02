@@ -12,7 +12,7 @@ nox.options.reuse_existing_virtualenvs = True
 nox.options.sessions = ("pytest", "lint")
 
 
-@nox.session(python="python3.6")
+@nox.session(python="python3.9")
 def lint(session):
     session.install("psycopg2-binary")
     session.run("poetry", "install", "-q")
