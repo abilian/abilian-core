@@ -1,8 +1,8 @@
 About
 =====
 
-.. image:: https://api.travis-ci.org/abilian/abilian-core.svg
-   :target: https://travis-ci.org/abilian/abilian-core
+.. image:: https://circleci.com/gh/abilian/abilian-core.svg?style=svg
+   :target: https://circleci.com/gh/abilian/abilian-core
 
 .. image:: https://coveralls.io/repos/abilian/abilian-core/badge.svg?branch=master
    :target: https://coveralls.io/r/abilian/abilian-core?branch=master
