@@ -194,13 +194,14 @@ class SessionRepositoryState(ServiceState):
     def set_transaction(
         self,
         session: Union[Session, scoped_session],
-        transaction: RepositoryTransaction,
+        transaction: Optional[RepositoryTransaction],
     ) -> None:
+
         if isinstance(session, scoped_session):
             session = session()
 
-        s_id = id(session)
-        self.transactions[s_id] = (weakref.ref(session), transaction)
+        session_id = id(session)
+        self.transactions[session_id] = (weakref.ref(session), transaction)
 
     def create_transaction(
         self, session: Session, transaction: RepositoryTransaction
@@ -227,16 +228,16 @@ class SessionRepositoryState(ServiceState):
                 tr.commit(session)
             self.set_transaction(session, tr._parent)
 
-    def begin(self, session: Session) -> Optional[Any]:
+    def begin(self, session: Session):
         if not self.running:
-            return None
+            return
 
         tr = self.get_transaction(session)
         if tr is None:
             # FIXME: return or create a new one?
-            return None
+            return
 
-        return tr.begin(session)
+        tr.begin(session)
 
     def commit(self, session: Session) -> None:
         if not self.running:
@@ -417,8 +418,8 @@ class RepositoryTransaction:
         #   parent = None
 
         self._parent = parent
-        self._deleted = set()
-        self._set = set()
+        self._deleted: Set[UUID] = set()
+        self._set: Set[UUID] = set()
         self.__cleared = False
 
     @property
@@ -510,7 +511,10 @@ class RepositoryTransaction:
         self._add_to(uuid, self._deleted, self._set)
 
     def set(
-        self, uuid: UUID, content: Union[IO, bytes, str], encoding: str = "utf-8"
+        self,
+        uuid: UUID,
+        content: Union[IO, bytes, str],
+        encoding: Optional[str] = "utf-8",
     ) -> None:
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
