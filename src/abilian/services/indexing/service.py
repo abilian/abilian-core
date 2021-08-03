@@ -239,7 +239,7 @@ class WhooshIndexService(Service):
     def search(
         self,
         q: str,
-        index: str = "default",
+        index_name: str = "default",
         fields: Optional[Dict[str, float]] = None,
         Models: Tuple[Type[Model]] = (),
         object_types: Tuple[str] = (),
@@ -250,7 +250,7 @@ class WhooshIndexService(Service):
         """Interface to search indexes.
 
         :param q: unparsed search string.
-        :param index: name of index to use for search.
+        :param index_name: name of index to use for search.
         :param fields: optionnal mapping of field names -> boost factor?
         :param Models: list of Model classes to limit search on.
         :param object_types: same as `Models`, but directly the model string.
@@ -261,7 +261,7 @@ class WhooshIndexService(Service):
             :meth:`whoosh.searching.Search.search`. This includes `limit`,
             `groupedby` and `sortedby`
         """
-        index = self.app_state.indexes[index]
+        index = self.app_state.indexes[index_name]
         if not fields:
             fields = self.default_search_fields
 
@@ -426,7 +426,7 @@ class WhooshIndexService(Service):
 
         primary_field = "id"
         state = self.app_state
-        items = []
+        items: List[Tuple[str, str, int, dict]] = []
         for op, obj in state.to_update:
             model_name = fqcn(obj.__class__)
             if model_name not in self.adapted or not self.adapted[model_name].indexable:
@@ -439,6 +439,7 @@ class WhooshIndexService(Service):
 
         if items:
             index_update.apply_async(kwargs={"index": "default", "items": items})
+
         self.clear_update_queue()
 
     def get_document(self, obj: Entity, adapter: SAAdapter = None) -> Dict[str, Any]:

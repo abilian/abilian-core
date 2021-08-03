@@ -54,8 +54,8 @@ class AuditableMeta:
 
 class AuditServiceState(ServiceState):
 
-    all_model_classes = None
-    model_class_names = None
+    all_model_classes: Set[type]
+    model_class_names: Dict[str, type]
 
     # set to True when creating audit entries, to avoid examining a session full
     # of audit entries
@@ -63,8 +63,8 @@ class AuditServiceState(ServiceState):
 
     def __init__(self, service: AuditService, *args: Any, **kwargs: Any) -> None:
         super().__init__(service, *args, **kwargs)
-        self.all_model_classes: Set[type] = set()
-        self.model_class_names: Dict[str, type] = {}
+        self.all_model_classes = set()
+        self.model_class_names = {}
 
 
 class AuditService(Service):
