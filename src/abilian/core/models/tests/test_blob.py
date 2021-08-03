@@ -95,11 +95,16 @@ def test_value(app: Flask, db: SQLAlchemy):
     tr.commit()
 
     assert repository.get(blob.uuid) is None
-    assert session_repository.get(blob, blob.uuid).open("rb").read() == content
+
+    path = session_repository.get(blob, blob.uuid)
+    assert path
+    assert path.open("rb").read() == content
     assert blob.value == content
 
     session.commit()
-    assert repository.get(blob.uuid).open("rb").read() == content
+    path = repository.get(blob.uuid)
+    assert path
+    assert path.open("rb").read() == content
     assert blob.value == content
 
     session.begin(nested=True)  # match session.rollback
@@ -108,22 +113,30 @@ def test_value(app: Flask, db: SQLAlchemy):
         session.delete(blob)
         # object marked for deletion, but instance attribute should still be
         # readable
-        fd = session_repository.get(blob, blob.uuid).open("rb")
+        path = session_repository.get(blob, blob.uuid)
+        assert path
+        fd = path.open("rb")
         assert fd.read() == content
 
     # commit in transaction: session_repository has no content, 'physical'
     # repository still has content
     assert session_repository.get(blob, blob.uuid) is None
-    assert repository.get(blob.uuid).open("rb").read() == content
+    path = repository.get(blob.uuid)
+    assert path
+    assert path.open("rb").read() == content
 
     # rollback: session_repository has content again
     session.rollback()
-    assert session_repository.get(blob, blob.uuid).open("rb").read() == content
+    path = session_repository.get(blob, blob.uuid)
+    assert path
+    assert path.open("rb").read() == content
 
     session.delete(blob)
     session.flush()
     assert session_repository.get(blob, blob.uuid) is None
-    assert repository.get(blob.uuid).open("rb").read() == content
+    path = repository.get(blob.uuid)
+    assert path
+    assert path.open("rb").read() == content
 
     session.commit()
     assert repository.get(blob.uuid) is None
