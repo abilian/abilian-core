@@ -82,14 +82,15 @@ class Blob(Model):
         if self.value:
             self.meta["md5"] = str(hashlib.md5(self.value).hexdigest())
 
-        if hasattr(value, "filename"):
-            filename = value.filename
+        filename = getattr(value, "filename", None)
+        if filename:
             if isinstance(filename, bytes):
                 filename = filename.decode("utf-8")
             self.meta["filename"] = filename
 
-        if hasattr(value, "content_type"):
-            self.meta["mimetype"] = value.content_type
+        content_type = getattr(value, "content_type", None)
+        if content_type:
+            self.meta["mimetype"] = content_type
 
     @value.deleter
     def value(self):
@@ -103,7 +104,8 @@ class Blob(Model):
         """Return md5 from meta, or compute it if absent."""
         md5 = self.meta.get("md5")
         if md5 is None:
-            md5 = str(hashlib.md5(self.value).hexdigest())
+            if self.value:
+                md5 = str(hashlib.md5(self.value).hexdigest())
 
         return md5
 
