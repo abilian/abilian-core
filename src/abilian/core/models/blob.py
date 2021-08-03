@@ -7,7 +7,8 @@ from __future__ import annotations
 import hashlib
 import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
+from typing.io import IO
 
 import sqlalchemy as sa
 from sqlalchemy.event import listens_for
@@ -16,6 +17,7 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.orm.unitofwork import UOWTransaction
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer
+from typeguard import typechecked
 
 from abilian.core.models.base import Model
 from abilian.core.sqlalchemy import UUID, JSONDict
@@ -67,7 +69,7 @@ class Blob(Model):
         return v.open("rb").read()
 
     @value.setter
-    def value(self, value: bytes):
+    def value(self, value: Union[bytes, str, IO]):
         """Store binary content to applications's repository and update
         `self.meta['md5']`.
 
@@ -77,7 +79,8 @@ class Blob(Model):
         from abilian.services.repository import session_repository as repository
 
         repository.set(self, self.uuid, value)
-        self.meta["md5"] = str(hashlib.md5(self.value).hexdigest())
+        if self.value:
+            self.meta["md5"] = str(hashlib.md5(self.value).hexdigest())
 
         if hasattr(value, "filename"):
             filename = value.filename
