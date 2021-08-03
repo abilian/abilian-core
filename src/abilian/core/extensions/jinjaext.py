@@ -18,7 +18,7 @@ class DeferredJS:
 
     name = "deferred_js"
 
-    def __init__(self, app: None = None) -> None:
+    def __init__(self, app: Flask = None) -> None:
         if app is not None:
             self.init_app(app)
 

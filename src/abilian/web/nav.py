@@ -71,7 +71,7 @@ class NavGroup(NavItem):
     """
 
     def __init__(
-        self, category: str, name: str, items: Tuple[()] = (), *args: Any, **kwargs: Any
+        self, category: str, name: str, items: Tuple[NavItem] = (), *args, **kwargs
     ) -> None:
         NavItem.__init__(self, category, name, *args, **kwargs)
         self.items = list(items)

@@ -1,4 +1,3 @@
-""""""
 from __future__ import annotations
 
 import html
@@ -11,7 +10,7 @@ from sqlalchemy.sql.expression import asc, desc, func, nullslast
 
 from abilian.core.models.subjects import Group, User
 from abilian.i18n import _l
-from abilian.services import get_service
+from abilian.services import get_security_service, get_service
 from abilian.services.security.models import Role
 from abilian.web.action import ButtonAction, FAIcon
 from abilian.web.nav import BreadcrumbItem
@@ -26,7 +25,7 @@ class JsonGroupsList(base.JSONView):
     """JSON group list for datatable."""
 
     def data(self, *args, **kw) -> Dict:
-        security = get_service("security")
+        security = get_security_service()
         length = int(kw.get("iDisplayLength", 0))
         start = int(kw.get("iDisplayStart", 0))
         sort_dir = kw.get("sSortDir_0", "asc")
@@ -126,7 +125,7 @@ class GroupView(GroupBase, views.ObjectView):
 
     @property
     def template_kwargs(self):
-        security = get_service("security")
+        security = get_security_service()
         kw = super().template_kwargs
         members = list(self.obj.members)
         members.sort(key=lambda u: (u.last_name, u.first_name))
@@ -152,7 +151,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
 
     def get_form_kwargs(self):
         kw = super().get_form_kwargs()
-        security = get_service("security")
+        security = get_security_service()
         roles = [
             r for r in security.get_roles(self.obj, no_group_roles=True) if r.assignable
         ]
@@ -160,7 +159,7 @@ class GroupEdit(GroupBase, views.ObjectEdit):
         return kw
 
     def after_populate_obj(self):
-        security = get_service("security")
+        security = get_security_service()
         current_roles = security.get_roles(self.obj, no_group_roles=True)
         current_roles = {r for r in current_roles if r.assignable}
         new_roles = {Role(r) for r in self.form.roles.data}
