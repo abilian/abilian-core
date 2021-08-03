@@ -32,7 +32,7 @@ test-all: test test-readme
 
 test:
 	@echo "--> Running Python tests"
-	pytest --ff -x -p no:randomly
+	pytest -n auto --ff -x -p no:randomly
 	@echo ""
 
 test-randomly:
