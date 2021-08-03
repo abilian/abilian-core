@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from abilian.app import Application
 from abilian.core.signals import register_js_api
 from abilian.web import url_for

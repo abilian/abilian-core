@@ -3,6 +3,8 @@
 This should eventually allow implementing very custom CRM-style
 application.
 """
+from __future__ import annotations
+
 import copy
 import logging
 import re

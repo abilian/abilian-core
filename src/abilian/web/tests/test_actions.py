@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from flask import Flask
 from flask.ctx import AppContext, RequestContext
 from jinja2 import Markup

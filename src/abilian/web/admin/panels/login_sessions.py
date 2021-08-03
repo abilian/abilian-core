@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 import pygeoip
 from flask import render_template
 

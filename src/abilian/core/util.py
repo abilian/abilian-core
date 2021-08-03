@@ -1,4 +1,6 @@
 """Various tools that don't belong some place specific."""
+from __future__ import annotations
+
 import functools
 import hashlib
 import logging

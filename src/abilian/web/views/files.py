@@ -1,4 +1,6 @@
 """Base classes for file download."""
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 
 from flask import Response, request, send_file

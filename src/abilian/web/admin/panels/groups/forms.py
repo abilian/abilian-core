@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from wtforms.fields import BooleanField, StringField
 
 from abilian.i18n import _l

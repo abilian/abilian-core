@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 import hashlib
 
 from flask import Blueprint, Response, g, make_response, request

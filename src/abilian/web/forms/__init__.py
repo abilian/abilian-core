@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .fields import *  # noqa
 from .filters import *  # noqa
 from .form import *  # noqa

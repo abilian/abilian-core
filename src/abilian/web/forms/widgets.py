@@ -2,6 +2,8 @@
 
 NOTE: code is currently quite messy. Needs to be refactored.
 """
+from __future__ import annotations
+
 import base64
 import html
 import logging

@@ -1,4 +1,6 @@
 """Extension for sending informations to upstream server."""
+from __future__ import annotations
+
 import typing
 from typing import Any
 

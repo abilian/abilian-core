@@ -2,6 +2,8 @@
 
 References to files stored in a on-disk repository
 """
+from __future__ import annotations
+
 import hashlib
 import uuid
 from pathlib import Path

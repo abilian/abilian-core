@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from textwrap import dedent
 from typing import Iterator

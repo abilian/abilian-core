@@ -1,4 +1,6 @@
 """Admin panel for tags."""
+from __future__ import annotations
+
 import logging
 from typing import Callable, List
 

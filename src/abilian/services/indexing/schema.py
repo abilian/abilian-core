@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from typing import Union
 
 from flask_login import AnonymousUserMixin

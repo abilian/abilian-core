@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sqlalchemy import Column, Text, UnicodeText
 
 from abilian.core.entities import SEARCHABLE, Entity

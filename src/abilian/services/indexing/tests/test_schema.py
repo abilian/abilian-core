@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from flask_login import AnonymousUserMixin
 
 from abilian.services.indexing.schema import indexable_role

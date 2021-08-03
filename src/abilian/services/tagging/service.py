@@ -1,6 +1,9 @@
 """"""
 
 
+from __future__ import annotations
+
+
 class Taggable:
     """Mixin trait for taggable objects.
 

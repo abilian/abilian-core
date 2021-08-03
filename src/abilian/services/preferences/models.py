@@ -1,4 +1,6 @@
 """Models for user preferences."""
+from __future__ import annotations
+
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import backref, relation

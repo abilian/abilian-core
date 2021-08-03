@@ -1,4 +1,6 @@
 """Objects to schema adapters."""
+from __future__ import annotations
+
 import logging
 from abc import ABCMeta, abstractmethod
 from operator import attrgetter

@@ -3,6 +3,8 @@
 They are implemented as Flask extensions (see:
 http://flask.pocoo.org/docs/extensiondev/ )
 """
+from __future__ import annotations
+
 from flask import current_app
 
 # This one must be imported first

@@ -1,5 +1,7 @@
 """"""
 
+from __future__ import annotations
+
 from flask import Flask, current_app
 from flask_login import current_user
 

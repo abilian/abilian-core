@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from datetime import timedelta
 from typing import Any, Callable, Dict, Optional

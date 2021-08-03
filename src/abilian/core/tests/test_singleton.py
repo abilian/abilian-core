@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from abilian.core.singleton import UniqueName
 
 

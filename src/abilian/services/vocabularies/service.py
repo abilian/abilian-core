@@ -1,4 +1,6 @@
 """Vocabularies service."""
+from __future__ import annotations
+
 import typing
 from inspect import isclass
 

@@ -1,5 +1,7 @@
 """Base class for entities, objects that are managed by the Abilian framwework
 (unlike SQLAlchemy models which are considered lower-level)."""
+from __future__ import annotations
+
 import collections
 import re
 from datetime import datetime
@@ -162,8 +164,8 @@ BaseMeta = db.Model.__class__
 
 class EntityQuery(db.Model.query_class):
     def with_permission(
-        self, permission: "Permission", user: Optional["User"] = None
-    ) -> "EntityQuery":
+        self, permission: Permission, user: Optional[User] = None
+    ) -> EntityQuery:
         from abilian.services import get_service
 
         security = get_service("security")

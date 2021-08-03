@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Callable, Collection, Dict, List, Optional, Union, cast
 
 from flask_login import current_user

@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from .extension import Admin
 from .panel import AdminPanel
 

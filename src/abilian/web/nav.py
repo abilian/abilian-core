@@ -4,6 +4,8 @@ Abilian define theses categories:   `section`:     Used for navigation
 elements relevant to site section   `user`:     User for element that
 should appear in user menu
 """
+from __future__ import annotations
+
 import typing
 from typing import Any, Dict, Optional, Tuple, Union
 

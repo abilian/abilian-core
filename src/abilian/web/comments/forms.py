@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from wtforms.fields import TextAreaField
 
 from abilian.core.models.comment import Comment

@@ -1,5 +1,7 @@
 """View decorators for controlling some aspect of HTTP, mainly: Cache
 headers."""
+from __future__ import annotations
+
 from functools import wraps
 
 from flask import make_response

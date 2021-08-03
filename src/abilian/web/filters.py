@@ -1,4 +1,6 @@
 """Add a few specific filters to Jinja2."""
+from __future__ import annotations
+
 import re
 from calendar import timegm
 from datetime import date, datetime

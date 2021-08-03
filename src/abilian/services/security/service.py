@@ -461,7 +461,7 @@ class SecurityService(Service):
 
     def has_role(
         self,
-        principal: Principal,
+        principal: Union[Principal, Role, None],
         role: Union[Collection[Role], Role, str],
         object: Optional[Model] = None,
     ) -> bool:
@@ -541,6 +541,7 @@ class SecurityService(Service):
         """Grant `role` to `user` (either globally, if `obj` is None, or on the
         specific `obj`)."""
         assert principal
+
         principal = unwrap(principal)
         session = object_session(obj) if obj is not None else db.session
         manager = self._current_user_manager(session=session)

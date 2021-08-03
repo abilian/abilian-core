@@ -12,6 +12,8 @@ your entry point before anything has been imported:
  logging.getLogger('PATCH').setLevel(logging.INFO)
 
 """
+from __future__ import annotations
+
 import logging
 
 __all__ = ["patch_logger"]

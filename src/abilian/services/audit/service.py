@@ -5,6 +5,8 @@ TODO: In the future, we may decide to:
 - Make Models that have the __auditable__ property (set to True) auditable.
 - Make Entities that have the __auditable__ property set to False not auditable.
 """
+from __future__ import annotations
+
 import logging
 from datetime import datetime
 from inspect import isclass

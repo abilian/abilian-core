@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from flask import current_app
 from wtforms.fields import StringField
 

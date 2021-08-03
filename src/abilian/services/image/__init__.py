@@ -1,5 +1,7 @@
 """Provides tools (currently: only functions, not a real service) for image
 processing."""
+from __future__ import annotations
+
 import hashlib
 from io import BytesIO
 from typing import Any, Dict, Tuple, Union

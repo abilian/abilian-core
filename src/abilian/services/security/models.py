@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from datetime import datetime
 from functools import total_ordering
 from typing import List, Union

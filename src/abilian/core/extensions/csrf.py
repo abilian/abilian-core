@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from flask import current_app, flash, request
 from flask.signals import request_started
 from flask_wtf.csrf import CsrfProtect

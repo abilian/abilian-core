@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Callable, Iterator, Optional, Tuple, Union
 
 from pytest import fixture, raises

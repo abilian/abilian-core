@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 import sqlalchemy as sa
 import sqlalchemy.exc
 from pytest import mark, raises

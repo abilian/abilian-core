@@ -2,6 +2,8 @@
 
 # Note: Because of issues with circular dependencies, Abilian-specific
 # extensions are created later.
+from __future__ import annotations
+
 import sqlite3
 from typing import Any
 

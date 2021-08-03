@@ -42,6 +42,8 @@ And just type:
 
     $ python setup.py extract_messages
 """
+from __future__ import annotations
+
 import importlib
 import os
 import re
@@ -222,7 +224,7 @@ class Translations(BaseTranslations):
     translations, when used with :func:`_get_translations_multi_paths`.
     """
 
-    def merge(self, translations: "Translations") -> "Translations":
+    def merge(self, translations: Translations) -> Translations:
         if isinstance(translations, GNUTranslations):
 
             for msgkey, msgstr in translations._catalog.items():

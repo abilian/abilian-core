@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from datetime import datetime
 from itertools import chain
 from typing import Callable, Dict

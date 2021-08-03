@@ -1,5 +1,7 @@
 """Base Flask application class, used by tests or to be extended in real
 applications."""
+from __future__ import annotations
+
 import errno
 import importlib
 import logging.config

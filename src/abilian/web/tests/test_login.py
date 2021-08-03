@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from flask import Flask, jsonify, session
 from flask_login import current_user
 

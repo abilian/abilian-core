@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abilian.core.extensions import db
 from abilian.services import Service
 

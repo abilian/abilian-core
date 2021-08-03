@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from typing import Callable
 
 from flask import render_template

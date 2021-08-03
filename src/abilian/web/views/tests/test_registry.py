@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 import sqlalchemy as sa
 from flask import Blueprint
 from flask.ctx import RequestContext

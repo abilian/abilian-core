@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abilian.core.models.subjects import User
 
 

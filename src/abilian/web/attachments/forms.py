@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 from wtforms.fields import StringField
 
 from abilian.core.models.attachment import Attachment

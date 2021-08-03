@@ -1,4 +1,6 @@
 """"""
+from __future__ import annotations
+
 import sqlalchemy as sa
 
 from abilian.core.models.tag import Tag, entity_tag_tbl
