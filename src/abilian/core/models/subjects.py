@@ -5,6 +5,8 @@ See ICOM-ics-v1.0 "Subject Branch".
 TODO: I'm not a big fan of the "subject" name. Could be replaced by something
 else, like "people" or "principal" ?
 """
+from __future__ import annotations
+
 import random
 import string
 from abc import ABCMeta, abstractmethod
@@ -128,7 +130,7 @@ class BcryptPasswordStrategy(PasswordStrategy):
     def name(self):
         return "bcrypt"
 
-    def authenticate(self, user: "User", password: str) -> bool:
+    def authenticate(self, user: User, password: str) -> bool:
         current_passwd = user.password
         # crypt work only on bytes, not str (Unicode)
         if isinstance(current_passwd, str):
@@ -138,7 +140,7 @@ class BcryptPasswordStrategy(PasswordStrategy):
 
         return bcrypt.hashpw(password, current_passwd) == current_passwd
 
-    def process(self, user: "User", password: str) -> str:
+    def process(self, user: User, password: str) -> str:
         if isinstance(password, str):
             password = password.encode("utf-8")
         return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
@@ -157,13 +159,13 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     def has_role(self, role, context=None):
         from abilian.services import get_service
 
-        security = get_service("security")
-        return security.has_role(self, role, context)
+        security_service = get_service("security")
+        return security_service.has_role(self, role, context)
 
 
 def set_entity_type(
-    cls: Union[Type["User"], Type["Group"]]
-) -> Union[Type["User"], Type["Group"]]:
+    cls: Union[Type[User], Type[Group]]
+) -> Union[Type[User], Type[Group]]:
     """Decorator used to set the class' entity_type after the class has been
     declared.
 

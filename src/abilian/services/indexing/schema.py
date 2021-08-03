@@ -1,4 +1,6 @@
 """"""
+from typing import Union
+
 from whoosh.analysis import (
     CharsetFilter,
     LowercaseFilter,
@@ -21,7 +23,7 @@ from whoosh.fields import (
 from whoosh.formats import Existence
 from whoosh.support.charset import accent_map
 
-from abilian.core.models.subjects import Group, User
+from abilian.core.models.subjects import Group, Principal, User
 from abilian.core.util import unwrap
 from abilian.services.security.models import Anonymous, Role
 
@@ -78,26 +80,26 @@ def DefaultSearchSchema(*args, **kwargs) -> Schema:
     return schema
 
 
-def indexable_role(principal: Role) -> str:
+def indexable_role(role_or_principal: Union[Role, Principal]) -> str:
     """Return a string suitable for query against `allowed_roles_and_users`
     field.
 
-    :param principal: It can be :data:`Anonymous`, :data:`Authenticated`,
+    :param role_or_principal: It can be :data:`Anonymous`, :data:`Authenticated`,
       or an instance of :class:`User` or :class:`Group`.
     """
-    principal = unwrap(principal)
+    role_or_principal = unwrap(role_or_principal)
 
-    if hasattr(principal, "is_anonymous") and principal.is_anonymous:
+    if hasattr(role_or_principal, "is_anonymous") and role_or_principal.is_anonymous:
         # transform anonymous user to anonymous role
-        principal = Anonymous
+        role_or_principal = Anonymous
 
-    if isinstance(principal, Role):
-        return f"role:{principal.name}"
-    elif isinstance(principal, User):
-        fmt = "user:{:d}"
-    elif isinstance(principal, Group):
-        fmt = "group:{:d}"
-    else:
-        raise ValueError(repr(principal))
+    if isinstance(role_or_principal, Role):
+        return f"role:{role_or_principal.name}"
 
-    return fmt.format(principal.id)
+    if isinstance(role_or_principal, User):
+        return f"user:{role_or_principal.id:d}"
+
+    if isinstance(role_or_principal, Group):
+        return f"group:{role_or_principal.id:d}"
+
+    raise ValueError(repr(role_or_principal))
