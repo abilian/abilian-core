@@ -318,6 +318,8 @@ class Group(Principal, db.Model):
 
     name = Column(UnicodeText, nullable=False, info=SEARCHABLE)
     description = Column(UnicodeText, info=SEARCHABLE)
+    photo = deferred(Column(LargeBinary))
+    public = Column(Boolean, default=False, nullable=False)
 
     members = relationship(
         "User",
@@ -326,10 +328,6 @@ class Group(Principal, db.Model):
         backref=backref("groups", lazy="select", collection_class=set),
     )
     admins = relationship("User", collection_class=set, secondary=administratorship)
-
-    photo = deferred(Column(LargeBinary))
-
-    public = Column(Boolean, default=False, nullable=False)
 
     @hybrid_property
     def members_count(self):
