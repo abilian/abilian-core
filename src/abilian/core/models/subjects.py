@@ -303,7 +303,7 @@ def _add_user_indexes(mapper: Mapper, cls: type):
     # it in __table_args__.
     #
     # see: https://groups.google.com/d/msg/sqlalchemy/CgSJUlelhGs/_Nj3f201hs4J
-    email_column = getattr(cls, "email")
+    email_column = cls.email
     idx = sa.schema.Index(
         "user_unique_lowercase_email", sa.sql.func.lower(email_column), unique=True
     )

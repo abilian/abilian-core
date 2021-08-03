@@ -75,24 +75,26 @@ def test_updated_at(session: Session):
     assert contact.updated_at > updated
 
 
-def test_auto_slug(session: Session):
+def test_auto_slug_1(session: Session):
     contact1 = DummyContact(name="Pacôme Hégésippe Adélard Ladislas")
     session.add(contact1)
     session.flush()
     assert contact1.slug == "pacome-hegesippe-adelard-ladislas"
-
-    # test when name is None
-    contact2 = DummyContact()
-    session.add(contact2)
-    session.flush()
-    expected = f"dummycontact-{contact2.id}"
-    assert contact2.slug == expected
 
     # test numbering if slug already exists:
     contact3 = DummyContact(name="Pacôme Hégésippe Adélard Ladislas")
     session.add(contact3)
     session.flush()
     assert contact3.slug == "pacome-hegesippe-adelard-ladislas-1"
+
+
+def test_auto_slug_2(session: Session):
+    # test when name is None
+    contact2 = DummyContact()
+    session.add(contact2)
+    session.flush()
+    expected = f"dummycontact-{contact2.id}"
+    assert contact2.slug == expected
 
 
 def test_polymorphic_update_timestamp(session: Session):
@@ -102,6 +104,7 @@ def test_polymorphic_update_timestamp(session: Session):
 
     updated_at = contact.updated_at
     assert updated_at
+
     contact.email = "p@example.com"
     session.flush()
     assert contact.updated_at > updated_at
@@ -129,18 +132,24 @@ def test_entity_type():
     assert MyType.entity_type == expected
     assert MyType._object_type() == expected
 
+
+def test_fixed_entity_type():
     class Fixed(Entity):
         entity_type = "some.fixed.module.fixed_type"
 
     assert Fixed.entity_type == "some.fixed.module.fixed_type"
     assert Fixed._object_type() == "some.fixed.module.fixed_type"
 
+
+def test_other_base():
     class OtherBase(Entity):
         ENTITY_TYPE_BASE = "some.module"
 
     assert OtherBase.entity_type == "some.module.OtherBase"
     assert OtherBase._object_type() == "some.module.OtherBase"
 
+
+def test_inherited_base():
     # test when ENTITY_TYPE_BASE is in ancestors
     class Base:
         ENTITY_TYPE_BASE = "from.ancestor"
@@ -152,19 +161,27 @@ def test_entity_type():
     assert InheritedBase._object_type() == "from.ancestor.InheritedBase"
 
 
-def test_info():
+def test_info_searchable():
     info = SEARCHABLE
+    assert isinstance(info, Info)
     assert info["searchable"]
 
+
+def test_info_not_searchable():
     info = NOT_SEARCHABLE
+    assert isinstance(info, Info)
     assert not info["searchable"]
 
-    info = SEARCHABLE + AUDITABLE
-    assert info["searchable"]
-    assert info["auditable"]
-    assert isinstance(info, Info)
 
-    info = SEARCHABLE | AUDITABLE
+def test_info_searchable_and_auditable():
+    info = SEARCHABLE + AUDITABLE
+    assert isinstance(info, Info)
     assert info["searchable"]
     assert info["auditable"]
+
+
+def test_info_searchable_or_auditable():
+    info = SEARCHABLE | AUDITABLE
     assert isinstance(info, Info)
+    assert info["searchable"]
+    assert info["auditable"]

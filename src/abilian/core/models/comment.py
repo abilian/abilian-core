@@ -2,11 +2,9 @@
 from __future__ import annotations
 
 import abc
-from typing import Any
+from typing import Any, Type
 
-from flask_sqlalchemy import BaseQuery
 from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, UnicodeText
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import backref, relationship
 
 from abilian.core.entities import Entity, EntityQuery
@@ -20,7 +18,7 @@ class Commentable(metaclass=abc.ABCMeta):
     id: int
 
 
-def register(cls: type) -> type:
+def register(cls: Type[Entity]) -> type:
     """Register an :class:`Entity` as a commentable class.
 
     Can be used as a class decorator:
