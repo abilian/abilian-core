@@ -94,14 +94,14 @@ def _delete_tables(db: SQLAlchemy) -> None:
             pass
 
 
-def ensure_services_started(services: List[str]) -> None:
+def ensure_services_started(services: List[str]):
     for service_name in services:
         service = get_service(service_name)
         if not service.running:
             service.start()
 
 
-def stop_all_services(app: Application) -> None:
+def stop_all_services(app: Application):
     for service in app.services.values():
         if service.running:
             service.stop()

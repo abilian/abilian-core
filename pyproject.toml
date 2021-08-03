@@ -188,6 +188,7 @@ types-pyyaml = "^5.4.3"
 types-redis = "^3.5.4"
 types-requests = "^2.25.1"
 types-setuptools = "^57.0.0"
+watchgod = "^0.7"
 
 
 [build-system]
