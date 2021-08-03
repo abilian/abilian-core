@@ -17,7 +17,7 @@ ATTRIBUTE = "__comments__"
 
 
 class Commentable(metaclass=abc.ABCMeta):
-    pass
+    id: int
 
 
 def register(cls: type) -> type:

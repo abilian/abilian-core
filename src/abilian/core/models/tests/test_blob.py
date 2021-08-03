@@ -4,6 +4,11 @@ from __future__ import annotations
 import uuid
 from io import StringIO
 
+#
+# Unit tests
+#
+from pathlib import Path
+
 from flask import Flask
 
 from abilian.core.models.blob import Blob
@@ -12,9 +17,6 @@ from abilian.services import repository_service as repository
 from abilian.services import session_repository_service as session_repository
 
 
-#
-# Unit tests
-#
 def test_auto_uuid():
     blob = Blob()
     assert blob.uuid is not None
@@ -98,12 +100,14 @@ def test_value(app: Flask, db: SQLAlchemy):
 
     path = session_repository.get(blob, blob.uuid)
     assert path
+    assert isinstance(path, Path)
     assert path.open("rb").read() == content
     assert blob.value == content
 
     session.commit()
     path = repository.get(blob.uuid)
     assert path
+    assert isinstance(path, Path)
     assert path.open("rb").read() == content
     assert blob.value == content
 
@@ -115,6 +119,7 @@ def test_value(app: Flask, db: SQLAlchemy):
         # readable
         path = session_repository.get(blob, blob.uuid)
         assert path
+        assert isinstance(path, Path)
         fd = path.open("rb")
         assert fd.read() == content
 
@@ -123,12 +128,14 @@ def test_value(app: Flask, db: SQLAlchemy):
     assert session_repository.get(blob, blob.uuid) is None
     path = repository.get(blob.uuid)
     assert path
+    assert isinstance(path, Path)
     assert path.open("rb").read() == content
 
     # rollback: session_repository has content again
     session.rollback()
     path = session_repository.get(blob, blob.uuid)
     assert path
+    assert isinstance(path, Path)
     assert path.open("rb").read() == content
 
     session.delete(blob)
@@ -136,6 +143,7 @@ def test_value(app: Flask, db: SQLAlchemy):
     assert session_repository.get(blob, blob.uuid) is None
     path = repository.get(blob.uuid)
     assert path
+    assert isinstance(path, Path)
     assert path.open("rb").read() == content
 
     session.commit()

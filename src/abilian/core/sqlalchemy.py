@@ -69,6 +69,7 @@ class SQLAlchemy(SAExtension):
                 # implicit BEGIN/COMMIT statements made by pysqlite (a COMMIT kills all
                 # savepoints made).
                 connect_args["isolation_level"] = None
+
         elif info.drivername.startswith("postgres"):
             options.setdefault("client_encoding", "utf8")
 

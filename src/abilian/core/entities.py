@@ -498,7 +498,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 # TODO: make this unecessary
 @event.listens_for(Entity, "class_instrument", propagate=True)
 def register_metadata(cls: Type[Entity]):
-    cls.__editable__ = set()
+    editable_columns = set()
 
     # TODO: use SQLAlchemy 0.8 introspection
     if hasattr(cls, "__table__"):
@@ -511,7 +511,9 @@ def register_metadata(cls: Type[Entity]):
         info = column.info
 
         if info.get("editable", True):
-            cls.__editable__.add(name)
+            editable_columns.add(name)
+
+    cls.__editable__ = frozenset(editable_columns)
 
 
 @event.listens_for(Session, "before_flush")

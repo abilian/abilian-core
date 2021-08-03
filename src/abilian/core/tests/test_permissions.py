@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from abilian.core.entities import Entity
 from abilian.core.sqlalchemy import SQLAlchemy
-from abilian.services import security
+from abilian.services import get_security_service, security
 
 
 def test_default_permissions(app: Flask, db: SQLAlchemy, session: Session):
@@ -41,15 +41,13 @@ def test_default_permissions(app: Flask, db: SQLAlchemy, session: Session):
     query = session.query(PA.role).filter(PA.object == obj)
 
     assert query.filter(PA.permission == security.READ).all() == [(security.Anonymous,)]
-
     assert query.filter(PA.permission == security.WRITE).all() == [(security.Owner,)]
-
     assert query.filter(PA.permission == security.DELETE).all() == [(security.Owner,)]
 
     # special case:
     assert query.filter(PA.permission == security.CREATE).all() == []
 
-    security_svc = app.services["security"]
+    security_svc = get_security_service()
     permissions = security_svc.get_permissions_assignments(obj)
     assert permissions == {
         security.READ: {security.Anonymous},
