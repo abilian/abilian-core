@@ -18,7 +18,7 @@ _BaseMeta = db.Model.__class__
 
 
 class VocabularyQuery(BaseQuery):
-    def active(self) -> "VocabularyQuery":
+    def active(self) -> VocabularyQuery:
         """Returns only valid vocabulary items."""
         return self.filter_by(active=True)
 
@@ -46,11 +46,11 @@ class _VocabularyMeta(_BaseMeta):
     """
 
     def __new__(
-        cls: Type["_VocabularyMeta"],
+        cls: Type[_VocabularyMeta],
         name: str,
         bases: Tuple[Type[Model], ...],
         d: Dict[str, Any],
-    ) -> Type["BaseVocabulary"]:
+    ) -> Type[BaseVocabulary]:
         meta = d.get("Meta")
         tblprefix = "vocabulary_"
 

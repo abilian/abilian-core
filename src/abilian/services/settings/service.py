@@ -15,11 +15,11 @@ class SettingsNamespace:
     Basically it prefixes keys with namespace name and a colon.
     """
 
-    def __init__(self, name: str, service: "SettingsService") -> None:
+    def __init__(self, name: str, service: SettingsService) -> None:
         self.name = name
         self.service = service
 
-    def namespace(self, name: str) -> "SettingsNamespace":
+    def namespace(self, name: str) -> SettingsNamespace:
         """A namespace within this namespace."""
         return SettingsNamespace(self.ns(name), self.service)
 

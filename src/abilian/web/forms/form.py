@@ -55,7 +55,7 @@ class FormContext:
         self.user = user
         self.obj = obj
 
-    def __enter__(self) -> "FormContext":
+    def __enter__(self) -> FormContext:
         if not has_app_context():
             return self
 

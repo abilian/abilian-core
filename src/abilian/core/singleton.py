@@ -8,7 +8,7 @@ from sqlalchemy.types import String, TypeDecorator
 
 class ValueSingletonMeta(type):
     def __new__(
-        mcs: Type["ValueSingletonMeta"],
+        mcs: Type[ValueSingletonMeta],
         name: str,
         bases: Tuple[Type],
         dct: Dict[str, Any],

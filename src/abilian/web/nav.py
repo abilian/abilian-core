@@ -34,7 +34,7 @@ class NavItem(Action):
         self.divider = divider
 
     @getset
-    def status(self, value: Optional[Any] = None) -> "Status":
+    def status(self, value: Optional[Any] = None) -> Status:
         current = g.nav.get("active")
         if current is None:
             return ENABLED
@@ -93,7 +93,7 @@ class NavGroup(NavItem):
         return params
 
     @getset
-    def status(self, value: Optional[Any] = None) -> "Status":
+    def status(self, value: Optional[Any] = None) -> Status:
         current = g.nav.get("active")
         if current is None:
             return ENABLED

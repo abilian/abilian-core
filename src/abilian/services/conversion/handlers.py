@@ -214,7 +214,7 @@ class PdfToPpmHandler(Handler):
     accepts_mime_types = ["application/pdf", "application/x-pdf"]
     produces_mime_types = ["image/jpeg"]
 
-    def convert(self, blob: bytes, size: int = 500) -> List[bytes]:
+    def convert(self, blob: bytes, size: int = 500, **kw) -> List[bytes]:
         """Size is the maximum horizontal size."""
         file_list: List[str] = []
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:

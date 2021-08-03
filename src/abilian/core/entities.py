@@ -166,15 +166,16 @@ class EntityQuery(db.Model.query_class):
     def with_permission(
         self, permission: Permission, user: Optional[User] = None
     ) -> EntityQuery:
-        from abilian.services import get_service
+        from abilian.services import get_security_service
 
-        security = get_service("security")
-        if hasattr(self, "_query_entity_zero"):
-            # SQLAlchemy 1.1+
-            model = self._query_entity_zero().entity_zero.entity
-        else:
-            # SQLAlchemy 1.0
-            model = self._entity_zero().entity_zero.entity
+        security = get_security_service()
+        model = self._query_entity_zero().entity_zero.entity
+        # if hasattr(self, "_query_entity_zero"):
+        #     # SQLAlchemy 1.1+
+        #     model = self._query_entity_zero().entity_zero.entity
+        # else:
+        #     # SQLAlchemy 1.0
+        #     model = self._entity_zero().entity_zero.entity
         expr = security.query_entity_with_permission(permission, user, Model=model)
         return self.filter(expr)
 
@@ -187,7 +188,7 @@ class EntityMeta(BaseMeta):
     """
 
     def __new__(
-        mcs: Type["EntityMeta"],
+        mcs: Type[EntityMeta],
         classname: str,
         bases: Tuple[Type, ...],
         d: Dict[str, Any],

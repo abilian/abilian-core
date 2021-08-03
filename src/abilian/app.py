@@ -483,7 +483,7 @@ def setup(app: Flask) -> None:
     init_debug_toolbar(app)
 
 
-def init_debug_toolbar(app: Union[Application, Application]) -> None:
+def init_debug_toolbar(app: Flask) -> None:
     if not app.debug or app.testing:
         return
 

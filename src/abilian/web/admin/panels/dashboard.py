@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Set, Tuple
 
 import pandas as pd
 import sqlalchemy as sa
@@ -155,7 +155,8 @@ def uniquelogins(sessions: List[Any]) -> Tuple[List[Any], List[Any], List[Any]]:
     # sessions = LoginSession.query.order_by(LoginSession.started_at.asc()).all()
     if not sessions:
         return [], [], []
-    dates = {}
+
+    dates: Dict[str, Set[User]] = {}
     for session in sessions:
         user = session.user
         # time value is discarded to aggregate on days only

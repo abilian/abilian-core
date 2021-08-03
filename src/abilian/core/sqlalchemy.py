@@ -139,7 +139,7 @@ class MutationDict(Mutable, dict):
     """Provides a dictionary type with mutability support."""
 
     @classmethod
-    def coerce(cls, key: str, value: Dict) -> "MutationDict":
+    def coerce(cls, key: str, value: Dict) -> MutationDict:
         """Convert plain dictionaries to MutationDict."""
         if not isinstance(value, MutationDict):
             if isinstance(value, dict):
@@ -195,7 +195,7 @@ class MutationList(Mutable, list):
     """Provides a list type with mutability support."""
 
     @classmethod
-    def coerce(cls, key: str, value: List) -> "MutationList":
+    def coerce(cls, key: str, value: List) -> MutationList:
         """Convert list to MutationList."""
         if not isinstance(value, MutationList):
             if isinstance(value, list):

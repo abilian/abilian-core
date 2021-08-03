@@ -77,7 +77,7 @@ class LoginSession(db.Model):
     user_agent = Column(String(512), default="", nullable=False)
 
     @staticmethod
-    def new() -> "LoginSession":
+    def new() -> LoginSession:
         user_agent = request.environ.get("HTTP_USER_AGENT", "")
         forwared_for = request.headers.getlist("X-Forwarded-For")
         if not forwared_for:

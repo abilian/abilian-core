@@ -580,5 +580,5 @@ class TestingStorage(RamStorage):
     tests are ran in parallel, including different abilian-based packages.
     """
 
-    def temp_storage(self, name: str = None) -> "TestingStorage":
+    def temp_storage(self, name: str = None) -> TestingStorage:
         return TestingStorage()
