@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
     from abilian.app import Application
 
 
-def init_app(app: "Application") -> None:
+def init_app(app: Application) -> None:
     register_filters()
 
     assets = app.extensions["webassets"]

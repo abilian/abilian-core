@@ -57,7 +57,7 @@ class UpstreamInfo:
             header = f"X-{key}"
             response.headers[header] = val
 
-    def user_loaded(self, app: Flask, user: "User", *args: Any, **kwargs: Any) -> None:
+    def user_loaded(self, app: Flask, user: User, *args: Any, **kwargs: Any) -> None:
         _request_ctx_stack.top.upstream_info["Username"] = user.email
 
 

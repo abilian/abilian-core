@@ -57,7 +57,7 @@ class Changes:
     def set_column_changes(self, name: str, old_value: Any, new_value: Any) -> None:
         self.columns[name] = (old_value, new_value)
 
-    def set_related_changes(self, name: str, changes: "Changes") -> None:
+    def set_related_changes(self, name: str, changes: Changes) -> None:
         assert isinstance(changes, Changes)
         self.columns[name] = changes
 

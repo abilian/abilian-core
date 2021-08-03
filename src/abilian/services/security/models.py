@@ -120,7 +120,7 @@ class Role(UniqueName):
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name}, {self.label})"
 
-    def __lt__(self, other: "Role") -> bool:
+    def __lt__(self, other: Role) -> bool:
         return str(self.label).__lt__(str(other.label))
 
     @classmethod

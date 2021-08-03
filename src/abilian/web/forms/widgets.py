@@ -459,7 +459,7 @@ class AjaxMainTableView(View):
 class SingleView(View):
     """View on a single object."""
 
-    def __init__(self, form: Form, *panels: "Panel", **options: Any) -> None:
+    def __init__(self, form: Form, *panels: Panel, **options: Any) -> None:
         self.form = form
         self.panels = panels
         self.options = options
@@ -566,7 +566,7 @@ class Panel:
     designs eventually.
     """
 
-    def __init__(self, label: str, *rows: "Row") -> None:
+    def __init__(self, label: str, *rows: Row) -> None:
         self.label = label
         self.rows = rows
 

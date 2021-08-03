@@ -30,7 +30,7 @@ class UploadForm(Form):
 
 
 class BaseUploadsView:
-    uploads: "FileUploadsExtension"
+    uploads: FileUploadsExtension
     user: User
 
     def prepare_args(self, args, kwargs):

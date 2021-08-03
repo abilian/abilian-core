@@ -70,12 +70,12 @@ class ModuleAction(Action):
     """
 
     def __init__(
-        self, module: "Module", group: str, name: str, *args, **kwargs
+        self, module: Module, group: str, name: str, *args, **kwargs
     ) -> None:
         self.group = group
         super().__init__(module.action_category, name, *args, **kwargs)
 
-    def pre_condition(self, context: Dict[str, "Module"]) -> bool:
+    def pre_condition(self, context: Dict[str, Module]) -> bool:
         module = actions.context.get("module")
         if not module:
             return False
@@ -152,9 +152,9 @@ class ModuleView:
     """
 
     #: :class:`Module` instance
-    module: "Module"
+    module: Module
 
-    def __init__(self, module: "Module", *args, **kwargs) -> None:
+    def __init__(self, module: Module, *args, **kwargs) -> None:
         self.module = module
         super().__init__(*args, **kwargs)
 
@@ -583,7 +583,7 @@ class Module(metaclass=ModuleMeta):
 
         actions.register(*ACTIONS)
 
-    def create_blueprint(self, crud_app: "CRUDApp") -> Blueprint:
+    def create_blueprint(self, crud_app: CRUDApp) -> Blueprint:
         """Create a Flask blueprint for this module."""
         # Store admin instance
         self.crud_app = crud_app

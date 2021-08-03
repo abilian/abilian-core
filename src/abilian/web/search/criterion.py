@@ -146,7 +146,7 @@ class TextSearchCriterion(BaseCriterion):
     def filter(
         self,
         query: EntityQuery,
-        module: "Module",
+        module: Module,
         request: Request,
         searched_text: str,
         *args,

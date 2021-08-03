@@ -42,7 +42,7 @@ def get_vocabulary(name: str, group: str = "") -> None:
 class VocabularyService(Service):
     name = "vocabularies"
 
-    def init_app(self, app: "Application") -> None:
+    def init_app(self, app: Application) -> None:
         super().init_app(app)
         app.register_jinja_loaders(jinja2.PackageLoader(__name__))
 

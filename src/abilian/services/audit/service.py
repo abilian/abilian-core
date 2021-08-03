@@ -61,7 +61,7 @@ class AuditServiceState(ServiceState):
     # of audit entries
     creating_entries = False
 
-    def __init__(self, service: "AuditService", *args: Any, **kwargs: Any) -> None:
+    def __init__(self, service: AuditService, *args: Any, **kwargs: Any) -> None:
         super().__init__(service, *args, **kwargs)
         self.all_model_classes: Set[type] = set()
         self.model_class_names: Dict[str, type] = {}
@@ -73,7 +73,7 @@ class AuditService(Service):
 
     _listening = False
 
-    def init_app(self, app: "Application") -> None:
+    def init_app(self, app: Application) -> None:
         super().init_app(app)
 
         if not self._listening:

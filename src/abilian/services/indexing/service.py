@@ -73,7 +73,7 @@ def fqcn(cls: Any) -> str:
 
 class IndexServiceState(ServiceState):
     def __init__(
-        self, service: "WhooshIndexService", *args: Any, **kwargs: Any
+        self, service: WhooshIndexService, *args: Any, **kwargs: Any
     ) -> None:
         super().__init__(service, *args, **kwargs)
         self.whoosh_base = None
@@ -110,7 +110,7 @@ class WhooshIndexService(Service):
         self.schemas = {"default": DefaultSearchSchema()}
         self._listening = False
 
-    def init_app(self, app: "Application") -> None:
+    def init_app(self, app: Application) -> None:
         super().init_app(app)
         state = app.extensions[self.name]
 
@@ -132,7 +132,7 @@ class WhooshIndexService(Service):
         appcontext_pushed.connect(self.clear_update_queue, app)
         signals.register_js_api.connect(self._do_register_js_api)
 
-    def _do_register_js_api(self, sender: "Application") -> None:
+    def _do_register_js_api(self, sender: Application) -> None:
         app = sender
         js_api = app.js_api.setdefault("search", {})
         js_api["object_types"] = self.searchable_object_types()

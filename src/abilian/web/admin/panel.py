@@ -19,7 +19,7 @@ class AdminPanel:
     id: str = ""
     label: str = ""
     icon: str = ""
-    admin: "Admin"
+    admin: Admin
 
     def url_value_preprocess(self, endpoint: str, view_args: Dict[Any, Any]) -> None:
         """Panel can preprocess values for their views.

@@ -13,8 +13,8 @@ __all__ = ["Setting", "empty_value"]
 
 class TransformerRegistry:
     def __init__(self) -> None:
-        self.encoders: Dict[str, Optional[Callable]] = {}
-        self.decoders: Dict[str, Optional[Callable]] = {}
+        self.encoders: Dict[str, Callable] = {}
+        self.decoders: Dict[str, Callable] = {}
 
     def encode(self, type_: str, value: Any) -> str:
         return self.encoders.get(type_, str)(value)
@@ -33,6 +33,7 @@ class TransformerRegistry:
     ) -> None:
         assert type_
         assert any((encoder, decoder))
+
         if encoder:
             self.encoders[type_] = encoder
         if decoder:
