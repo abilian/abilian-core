@@ -170,7 +170,7 @@ class MutationDict(Mutable, dict):
         dict.clear(self)
         self.changed()
 
-    def update(self, other: Dict, **kw: Any):
+    def update(self, other, **kw):
         dict.update(self, other, **kw)
         self.changed()
 

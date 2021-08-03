@@ -43,4 +43,5 @@ def _log_config(config):
         width = 80 - indent
         v = pformat(v, width=width).replace("\n", f"\n{' ' * indent}")
         lines.append(f"{prefix}{k}: {v}")
+
     logger.info("\n".join(lines))

@@ -63,6 +63,7 @@ class Indexable:
         ("object_key", (("object_key", ID(stored=True, unique=True)),)),
         ("object_type", (("object_type", ID(stored=True)),)),
     )
+    id: int
 
     @classmethod
     def _object_type(cls) -> str:

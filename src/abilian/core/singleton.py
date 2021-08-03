@@ -7,12 +7,15 @@ from sqlalchemy.types import String, TypeDecorator
 
 
 class ValueSingletonMeta(type):
+    __instances__: Dict[str, Any]
+
     def __new__(
         mcs: Type[ValueSingletonMeta],
         name: str,
         bases: Tuple[Type],
         dct: Dict[str, Any],
-    ) -> Type:
+    ) -> ValueSingletonMeta:
+
         dct["__instances__"] = {}
         dct.setdefault("__slots__", ())
         new_type = type.__new__(mcs, name, bases, dct)
@@ -25,7 +28,13 @@ class ValueSingletonMeta(type):
         if value not in cls.__instances__:
             value_instance = type.__call__(cls, value, *args, **kwargs)
             cls.__instances__[getattr(value_instance, cls.attr)] = value_instance
-        return cls.__instances__[value.lower()]
+
+        result = cls.__instances__[value.lower()]
+
+        # from devtools import debug
+        # debug(result)
+        # assert False
+        return result
 
 
 class UniqueName(metaclass=ValueSingletonMeta):
