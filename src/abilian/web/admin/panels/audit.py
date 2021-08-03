@@ -88,7 +88,7 @@ class AuditPanel(AdminPanel):
     label = "Audit trail"
     icon = "list-alt"
 
-    def install_additional_rules(self, add_url_rule: Callable) -> None:
+    def install_additional_rules(self, add_url_rule: Callable):
         add_url_rule("/search_users", view_func=JSONUserSearch.as_view("search_users"))
 
     def get(self) -> str:
@@ -283,7 +283,7 @@ class BaseEntryPresenter:
 
 
 class AuditEntryPresenter(BaseEntryPresenter):
-    def __init__(self, entry: AuditEntry) -> None:
+    def __init__(self, entry: AuditEntry):
         assert isinstance(entry, AuditEntry)
         super().__init__(entry.user, entry.happened_at)
         self.entry = entry
@@ -331,7 +331,7 @@ class AuditEntryPresenter(BaseEntryPresenter):
 
 
 class SecurityEntryPresenter(BaseEntryPresenter):
-    def __init__(self, entry: SecurityAudit) -> None:
+    def __init__(self, entry: SecurityAudit):
         assert isinstance(entry, SecurityAudit)
         super().__init__(entry.manager, entry.happened_at)
         self.entry = entry

@@ -6,5 +6,5 @@ from flask import Flask
 from .extension import CommentExtension
 
 
-def register_plugin(app: Flask) -> None:
+def register_plugin(app: Flask):
     CommentExtension(app)

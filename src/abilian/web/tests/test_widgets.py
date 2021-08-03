@@ -48,7 +48,7 @@ class DummyForm(Form):
     email = StringField("email", view_widget=EmailWidget())
 
 
-def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
+def test_table_view(app: Flask, test_request_context: RequestContext):
     @default_view(app, WidgetTestModel)
     @app.route("/dummy_view/<object_id>")
     def dummy_view(object_id):
@@ -69,7 +69,7 @@ def test_table_view(app: Flask, test_request_context: RequestContext) -> None:
     assert "10000" in res
 
 
-def test_single_view(test_request_context: RequestContext) -> None:
+def test_single_view(test_request_context: RequestContext):
     model = WidgetTestModel(name="Renault Megane", price=10000, email="joe@example.com")
     panels = [Panel("main", Row("name"), Row("price"), Row("email"))]
     form = DummyForm(obj=model)
@@ -102,33 +102,33 @@ EXPECTED = (
 )
 
 
-def test_http() -> None:
+def test_http():
     value = "http://example.com"
     result = linkify_url(value)
     assert result == EXPECTED
 
 
-def test_no_http() -> None:
+def test_no_http():
     value = "example.com"
     result = linkify_url(value)
     assert result == EXPECTED
 
 
-def test1() -> None:
+def test1():
     result = text2html("a")
     assert result == "a"
 
 
-def test2() -> None:
+def test2():
     result = text2html("a\nb")
     assert str(result) == "<p>a</p>\n<p>b</p>"
 
 
-def test3() -> None:
+def test3():
     result = text2html("a\n\nb")
     assert str(result) == "<p>a</p>\n<p>b</p>"
 
 
-def test4() -> None:
+def test4():
     result = text2html("a\n<a>toto</a>")
     assert str(result) == "<p>a</p>\n<p>&lt;a&gt;toto&lt;/a&gt;</p>"

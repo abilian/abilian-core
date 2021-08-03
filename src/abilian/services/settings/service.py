@@ -15,7 +15,7 @@ class SettingsNamespace:
     Basically it prefixes keys with namespace name and a colon.
     """
 
-    def __init__(self, name: str, service: SettingsService) -> None:
+    def __init__(self, name: str, service: SettingsService):
         self.name = name
         self.service = service
 
@@ -45,7 +45,7 @@ class SettingsNamespace:
         """Proxy to :meth:`SettingsService.get`"""
         return self.service.get(self.ns(key))
 
-    def set(self, key: str, *args, **kwargs) -> None:
+    def set(self, key: str, *args, **kwargs):
         return self.service.set(self.ns(key), *args, **kwargs)
 
     def delete(self, key: str, silent: bool = True) -> Optional[Any]:
@@ -96,7 +96,7 @@ class SettingsService(Service):
         s = self._get_setting(key)
         return s.value
 
-    def set(self, key: str, value: Any, type_: Optional[str] = None) -> None:
+    def set(self, key: str, value: Any, type_: Optional[str] = None):
         try:
             s = self._get_setting(key)
         except KeyError:
@@ -109,7 +109,7 @@ class SettingsService(Service):
         db.session.add(s)
         s.value = value
 
-    def delete(self, key: str, silent: bool = True) -> None:
+    def delete(self, key: str, silent: bool = True):
         try:
             s = self._get_setting(key)
         except KeyError:

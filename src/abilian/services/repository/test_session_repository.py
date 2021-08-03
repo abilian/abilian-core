@@ -11,7 +11,7 @@ from . import repository, session_repository
 from .service import RepositoryTransaction
 
 
-def test_transaction_lifetime(session: Session) -> None:
+def test_transaction_lifetime(session: Session):
     state = session_repository.app_state
     root_transaction = state.get_transaction(session)
     assert isinstance(root_transaction, RepositoryTransaction)
@@ -40,7 +40,7 @@ def test_transaction_lifetime(session: Session) -> None:
     # assert transaction is root_transaction
 
 
-def test_accessors_non_existent_entry(session: Session) -> None:
+def test_accessors_non_existent_entry(session: Session):
     # non-existent
     u = uuid.uuid4()
     default = Path("/tmp/dont-care")
@@ -48,7 +48,7 @@ def test_accessors_non_existent_entry(session: Session) -> None:
     assert session_repository.get(session, u, default=default) is default
 
 
-def test_accessors_set_get_delete(session: Session) -> None:
+def test_accessors_set_get_delete(session: Session):
     # set
     content = b"my file content"
     u1 = uuid.uuid4()
@@ -71,7 +71,7 @@ def test_accessors_set_get_delete(session: Session) -> None:
     assert repository.get(u2) is not None
 
 
-def test_transaction(session: Session) -> None:
+def test_transaction(session: Session):
     u = uuid.uuid4()
     repository.set(u, b"first draft")
     path = session_repository.get(session, u)
@@ -144,7 +144,7 @@ def test_transaction(session: Session) -> None:
         assert path.open("rb").read() == b"transaction 2"
 
 
-def test_transaction_path(session: Session) -> None:
+def test_transaction_path(session: Session):
     """Test RepositoryTransaction create storage only when needed."""
     u = uuid.uuid4()
 

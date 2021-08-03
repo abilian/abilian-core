@@ -12,7 +12,7 @@ __all__ = ["Setting", "empty_value"]
 
 
 class TransformerRegistry:
-    def __init__(self) -> None:
+    def __init__(self):
         self.encoders: Dict[str, Callable] = {}
         self.decoders: Dict[str, Callable] = {}
 
@@ -30,7 +30,7 @@ class TransformerRegistry:
         type_: str,
         encoder: Optional[Callable] = None,
         decoder: Optional[Callable] = None,
-    ) -> None:
+    ):
         assert type_
         assert any((encoder, decoder))
 
@@ -76,7 +76,7 @@ class Setting(db.Model):
         return self._type
 
     @type.setter
-    def type(self, type_: str) -> None:
+    def type(self, type_: str):
         if not (
             type_ in self.transformers.encoders and type_ in self.transformers.decoders
         ):

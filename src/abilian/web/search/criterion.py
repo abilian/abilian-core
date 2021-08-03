@@ -34,7 +34,7 @@ class BaseCriterion:
 
     def __init__(
         self, name: str, label: str = "", form_default_value: Any = _UNDEFINED
-    ) -> None:
+    ):
         self.name = name
         self.label = label
 
@@ -49,7 +49,7 @@ class BaseCriterion:
             raise ValueError("Model not set")
         return self._model
 
-    def _set_model(self, model: Type[Model]) -> None:
+    def _set_model(self, model: Type[Model]):
         if self._model is not None:
             raise ValueError("Model already set")
 
@@ -93,7 +93,7 @@ class TextSearchCriterion(BaseCriterion):
         label: str = "",
         attributes: Optional[Tuple[str, str]] = None,
         search_fmt: str = "%{q}%",
-    ) -> None:
+    ):
         super().__init__(name, label)
         self.attributes = dict.fromkeys(
             attributes if attributes is not None else (name,)

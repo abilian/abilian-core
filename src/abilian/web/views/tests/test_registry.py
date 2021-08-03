@@ -31,18 +31,18 @@ def registry(app: Application) -> Registry:
     return app.default_view
 
 
-def test_register_class(app: Application, registry: Registry) -> None:
+def test_register_class(app: Application, registry: Registry):
     registry.register(RegEntity, lambda ignored: "")
     assert RegEntity.entity_type in registry._map
 
 
-def test_register_instance(app: Application, registry: Registry) -> None:
+def test_register_instance(app: Application, registry: Registry):
     obj = RegEntity()
     registry.register(obj, lambda ignored: "")
     assert RegEntity.entity_type in registry._map
 
 
-def test_custom_url_func(app: Application, registry: Registry) -> None:
+def test_custom_url_func(app: Application, registry: Registry):
     name = "obj"
     obj = RegEntity(id=1, name=name)
 
@@ -61,7 +61,7 @@ def test_custom_url_func(app: Application, registry: Registry) -> None:
 
 def test_default_url_func(
     app: Application, registry: Registry, test_request_context: RequestContext
-) -> None:
+):
     obj = RegEntity(id=1)
 
     @app.route("/regentities_path/<int:object_id>/view", endpoint="regentity.view")
@@ -77,7 +77,7 @@ def test_default_url_func(
 
 def test_default_view_decorator(
     app: Application, registry: Registry, test_request_context: RequestContext
-) -> None:
+):
     bp = Blueprint("registry", __name__, url_prefix="/blueprint")
 
     @default_view(bp, RegEntity)

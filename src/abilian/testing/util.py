@@ -76,7 +76,7 @@ def login(user, remember=False, force=False):
     return LoginContext()
 
 
-def cleanup_db(db: SQLAlchemy) -> None:
+def cleanup_db(db: SQLAlchemy):
     """Drop all the tables, in a way that doesn't raise integrity errors."""
 
     # Need to run this sequence twice for some reason
@@ -86,7 +86,7 @@ def cleanup_db(db: SQLAlchemy) -> None:
     db.drop_all()
 
 
-def _delete_tables(db: SQLAlchemy) -> None:
+def _delete_tables(db: SQLAlchemy):
     for table in reversed(db.metadata.sorted_tables):
         try:
             db.session.execute(table.delete())

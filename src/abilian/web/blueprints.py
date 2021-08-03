@@ -44,7 +44,7 @@ class Blueprint(BaseBlueprint):
         import_name: str,
         allowed_roles: Union[None, str, Role, Collection[Role]] = None,
         **kwargs: Any
-    ) -> None:
+    ):
         """
         :param allowed_roles: role or list of roles required to access any view in this
             blueprint.

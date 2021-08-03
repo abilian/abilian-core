@@ -155,7 +155,7 @@ class FileField(BaseFileField):
     blob = None
     blob_attr = "value"
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any):
         try:
             self.multiple = kwargs.pop("multiple")
         except KeyError:
@@ -201,7 +201,7 @@ class FileField(BaseFileField):
     def has_file(self):
         return self._has_uploads
 
-    def process(self, formdata: ImmutableMultiDict, *args, **kwargs) -> None:
+    def process(self, formdata: ImmutableMultiDict, *args, **kwargs):
         delete_arg = f"__{self.name}_delete__"
         self.delete_files_index = (
             formdata.getlist(delete_arg) if formdata and delete_arg in formdata else []
@@ -209,7 +209,7 @@ class FileField(BaseFileField):
 
         return super().process(formdata, *args, **kwargs)
 
-    def process_data(self, value: None) -> None:
+    def process_data(self, value: None):
         if isinstance(value, db.Model):
             self.blob = value
             value = getattr(value, self.blob_attr)
@@ -217,7 +217,7 @@ class FileField(BaseFileField):
         self.object_data = value
         return super().process_data(value)
 
-    def process_formdata(self, valuelist: List[str]) -> None:
+    def process_formdata(self, valuelist: List[str]):
         uploads = current_app.extensions["uploads"]
         if self.delete_files_index:
             self.data = None
@@ -293,7 +293,7 @@ class DateTimeField(Field):
         validators: Any = None,
         use_naive: bool = True,
         **kwargs: Any,
-    ) -> None:
+    ):
         """
         :param use_naive: if `False`, dates are considered entered using user's
         timezone; different users with different timezones will see corrected
@@ -321,7 +321,7 @@ class DateTimeField(Field):
             dt_fmt = locale.datetime_formats["short"].format(time_fmt, date_fmt)
             return format_datetime(self.data, dt_fmt) if self.data else ""
 
-    def process_data(self, value: datetime) -> None:
+    def process_data(self, value: datetime):
         if value is not None:
             if not value.tzinfo:
                 if self.use_naive:
@@ -333,7 +333,7 @@ class DateTimeField(Field):
 
         super().process_data(value)
 
-    def process_formdata(self, valuelist: List[str]) -> None:
+    def process_formdata(self, valuelist: List[str]):
         if valuelist:
             date_str = " ".join(valuelist)
             locale = get_locale()
@@ -360,7 +360,7 @@ class DateTimeField(Field):
                 self.data = None
                 raise ValueError(self.gettext("Not a valid datetime value"))
 
-    def populate_obj(self, obj: Any, name: str) -> None:
+    def populate_obj(self, obj: Any, name: str):
         dt = self.data
         if dt and self.use_naive:
             dt = dt.replace(tzinfo=None)
@@ -375,7 +375,7 @@ class DateField(Field):
 
     def __init__(
         self, label: Union[str, None] = None, validators: Any = None, **kwargs: Any
-    ) -> None:
+    ):
         super().__init__(label, validators, **kwargs)
 
     def _value(self) -> str:
@@ -393,7 +393,7 @@ class DateField(Field):
             )
             return format_date(self.data, date_fmt) if self.data else ""
 
-    def process_formdata(self, valuelist: List[str]) -> None:
+    def process_formdata(self, valuelist: List[str]):
         valuelist = [i for i in valuelist if i.strip()]
 
         if valuelist:
@@ -762,7 +762,7 @@ class JsonSelect2MultipleField(JsonSelect2Field):
 class LocaleSelectField(SelectField):
     widget = Select2()
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any):
         kwargs["coerce"] = LocaleSelectField.coerce
         kwargs["choices"] = list(i18n.supported_app_locales())
         super().__init__(*args, **kwargs)
@@ -791,7 +791,7 @@ class LocaleSelectField(SelectField):
 class TimezoneField(SelectField):
     widget = Select2()
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any):
         kwargs["coerce"] = babel.dates.get_timezone
         kwargs["choices"] = list(i18n.timezones_choices())
         super().__init__(*args, **kwargs)

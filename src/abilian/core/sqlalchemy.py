@@ -31,9 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 @listens_for(sa.pool.Pool, "checkout")
-def ping_connection(
-    dbapi_connection: Connection, connection_record, connection_proxy
-) -> None:
+def ping_connection(dbapi_connection: Connection, connection_record, connection_proxy):
     """Ensure connections are valid.
 
     From: `http://docs.sqlalchemy.org/en/rel_0_8/core/pooling.html`
@@ -60,9 +58,7 @@ class SQLAlchemy(SAExtension):
     Add our custom driver hacks.
     """
 
-    def apply_driver_hacks(
-        self, app: Flask, info: URL, options: Dict[str, Any]
-    ) -> None:
+    def apply_driver_hacks(self, app: Flask, info: URL, options: Dict[str, Any]):
         SAExtension.apply_driver_hacks(self, app, info, options)
 
         if info.drivername == "sqlite":
@@ -155,11 +151,11 @@ class MutationDict(Mutable, dict):
     def __getstate__(self) -> Dict:
         return dict(self)
 
-    def __setstate__(self, state: Dict) -> None:
+    def __setstate__(self, state: Dict):
         self.update(state)
 
     # dict methods
-    def __setitem__(self, key: str, value: Union[int, str]) -> None:
+    def __setitem__(self, key: str, value: Union[int, str]):
         """Detect dictionary set events and emit change events."""
         dict.__setitem__(self, key, value)
         self.changed()
@@ -173,7 +169,7 @@ class MutationDict(Mutable, dict):
         dict.clear(self)
         self.changed()
 
-    def update(self, other: Dict, **kw: Any) -> None:
+    def update(self, other: Dict, **kw: Any):
         dict.update(self, other, **kw)
         self.changed()
 
@@ -218,7 +214,7 @@ class MutationList(Mutable, list):
         list.__setitem__(self, idx, value)
         self.changed()
 
-    def __delitem__(self, idx: Any) -> None:
+    def __delitem__(self, idx: Any):
         list.__delitem__(self, idx)
         self.changed()
 
@@ -244,7 +240,7 @@ class MutationList(Mutable, list):
         self.changed()
         return result
 
-    def append(self, item: Any) -> None:
+    def append(self, item: Any):
         list.append(self, item)
         self.changed()
 

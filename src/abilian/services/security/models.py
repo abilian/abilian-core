@@ -65,7 +65,7 @@ class Permission(UniqueName):
         name: str,
         label: Union[None, str, LazyString] = None,
         assignable: bool = True,
-    ) -> None:
+    ):
         super().__init__(name)
         if label is None:
             label = f"permission_{str(name)}"
@@ -105,7 +105,7 @@ class Role(UniqueName):
         name: str,
         label: Union[None, str, LazyString] = None,
         assignable: bool = True,
-    ) -> None:
+    ):
         super().__init__(name)
         if label is None:
             label = f"role_{str(name)}"

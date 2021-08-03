@@ -88,7 +88,7 @@ class NamedIconBase(Icon):
 
     template: Template
 
-    def __init__(self, name: str = "") -> None:
+    def __init__(self, name: str = ""):
         self.name = name
 
     def __html__(self) -> str:
@@ -158,7 +158,7 @@ class DynamicIcon(Icon):
         size: Optional[int] = None,
         url_args: Optional[Callable] = None,
         **fixed_url_args,
-    ) -> None:
+    ):
         self.endpoint = endpoint
         self.css = css
         self.fixed_url_args = {}
@@ -207,7 +207,7 @@ class StaticIcon(DynamicIcon):
         height: int = 12,
         css: str = "",
         size: Optional[int] = None,
-    ) -> None:
+    ):
         DynamicIcon.__init__(
             self, endpoint, width, height, css, size, filename=filename
         )
@@ -216,7 +216,7 @@ class StaticIcon(DynamicIcon):
 class Endpoint:
 
     # FIXME: *args doesn't seem to be relevant.
-    def __init__(self, name: str, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, name: str, *args: Any, **kwargs: Any):
         self.name = name
         self.args = args
         self.kwargs = kwargs
@@ -275,7 +275,7 @@ class Action:
         template_string: Optional[Any] = None,
         button: Optional[Any] = None,
         css: Optional[Any] = None,
-    ) -> None:
+    ):
         """
         :param endpoint: A :class:`Endpoint` instance, a string for a simple
         endpoint, a tuple ``(endpoint_name, kwargs)`` or a callable which
@@ -354,7 +354,7 @@ class Action:
     def title(self, title: Union[LazyString, str]):
         self._title = title
 
-    def _build_css_class(self) -> None:
+    def _build_css_class(self):
         css_cat = self.CSS_CLASS.format(
             action=self, category=self.category, name=self.name
         )
@@ -398,7 +398,7 @@ class Action:
         return endpoint
 
     @endpoint.setter
-    def endpoint(self, endpoint: Optional[Endpoint]) -> None:
+    def endpoint(self, endpoint: Optional[Endpoint]):
         self._endpoint = endpoint
 
     def available(self, context: Dict[str, Any]) -> bool:
@@ -492,7 +492,7 @@ class ButtonAction(Action):
         btn_class: str = "default",
         *args: Any,
         **kwargs: Any,
-    ) -> None:
+    ):
         Action.__init__(self, category, name, *args, **kwargs)
         self.submit_name = submit_name
         self.btn_class = btn_class
@@ -563,7 +563,7 @@ class ActionRegistry:
 
     __EXTENSION_NAME = "abilian:actions"
 
-    def init_app(self, app: Flask) -> None:
+    def init_app(self, app: Flask):
         if self.__EXTENSION_NAME in app.extensions:
             log.warning(
                 "ActionRegistry.init_app: actions already enabled on this application"
@@ -584,7 +584,7 @@ class ActionRegistry:
             app = current_app
         return self.__EXTENSION_NAME in app.extensions
 
-    def register(self, *actions: Any) -> None:
+    def register(self, *actions: Any):
         """Register `actions` in the current application. All `actions` must be
         an instance of :class:`.Action` or one of its subclasses.
 
@@ -638,7 +638,7 @@ class ActionRegistry:
         return current_app.extensions[self.__EXTENSION_NAME]
 
     @staticmethod
-    def _init_context(sender: Flask) -> None:
+    def _init_context(sender: Flask):
         g.action_context = {}
 
     @property

@@ -18,11 +18,11 @@ class DeferredJS:
 
     name = "deferred_js"
 
-    def __init__(self, app: Flask = None) -> None:
+    def __init__(self, app: Flask = None):
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app: Flask) -> None:
+    def init_app(self, app: Flask):
         if self.name in app.extensions:
             return
 
@@ -30,11 +30,11 @@ class DeferredJS:
         request_started.connect(self.reset_request, app)
         got_request_exception.connect(self.reset_request, app)
 
-    def reset_request(self, sender: Flask, **extra: Any) -> None:
+    def reset_request(self, sender: Flask, **extra: Any):
         self.reset_deferred()
 
     @staticmethod
-    def reset_deferred() -> None:
+    def reset_deferred():
         g.deferred_js = []
 
 

@@ -21,10 +21,10 @@ class Registry:
     There is one registry per application instance.
     """
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any):
         self._map: Dict[str, Callable] = {}
 
-    def register(self, entity: Union[Entity, Type[Entity]], url_func: Callable) -> None:
+    def register(self, entity: Union[Entity, Type[Entity]], url_func: Callable):
         """Associate a `url_func` with entity's type.
 
         :param:entity: an :class:`abilian.core.extensions.db.Model` class or
@@ -95,7 +95,7 @@ class default_view:
         id_attr: str = "object_id",
         endpoint: Optional[Any] = None,
         kw_func: Optional[Any] = None,
-    ) -> None:
+    ):
         self.app_or_blueprint = app_or_blueprint
         self.is_bp = isinstance(app_or_blueprint, Blueprint)
         self.entity = entity
@@ -128,7 +128,7 @@ class default_view:
         if self.is_bp:
 
             @self.app_or_blueprint.record_once
-            def set_default_view(state: BlueprintSetupState) -> None:
+            def set_default_view(state: BlueprintSetupState):
                 state.app.default_view.register(self.entity, default_url)
 
         else:

@@ -35,7 +35,7 @@ def _default_comment_view(obj, obj_type, obj_id, **kwargs):
 
 
 @bp.record_once
-def register_default_view(state: BlueprintSetupState) -> None:
+def register_default_view(state: BlueprintSetupState):
     state.app.default_view.register(Comment, _default_comment_view)
 
 

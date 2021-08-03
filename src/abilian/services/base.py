@@ -24,7 +24,7 @@ class ServiceState:
 
     running = False
 
-    def __init__(self, service: Service, running: bool = False) -> None:
+    def __init__(self, service: Service, running: bool = False):
         self.service = service
         self.running = running
         self.logger = logging.getLogger(fqcn(self.__class__))
@@ -39,7 +39,7 @@ class Service:
     #: service name in Application.extensions / Application.services
     name = ""
 
-    def __init__(self, app: Optional[Any] = None) -> None:
+    def __init__(self, app: Optional[Any] = None):
         if self.name is None:
             msg = f"Service must have a name ({fqcn(self.__class__)})"
             raise ValueError(msg)
@@ -48,21 +48,21 @@ class Service:
         if app:
             self.init_app(app)
 
-    def init_app(self, app: Application) -> None:
+    def init_app(self, app: Application):
         app.extensions[self.name] = self.AppStateClass(self)
         app.services[self.name] = self
 
-    def start(self, ignore_state: bool = False) -> None:
+    def start(self, ignore_state: bool = False):
         """Starts the service."""
         self.logger.debug("Start service")
         self._toggle_running(True, ignore_state)
 
-    def stop(self, ignore_state: bool = False) -> None:
+    def stop(self, ignore_state: bool = False):
         """Stops the service."""
         self.logger.debug("Stop service")
         self._toggle_running(False, ignore_state)
 
-    def _toggle_running(self, run_state: bool, ignore_state: bool = False) -> None:
+    def _toggle_running(self, run_state: bool, ignore_state: bool = False):
         state = self.app_state
         run_state = bool(run_state)
         if not ignore_state:

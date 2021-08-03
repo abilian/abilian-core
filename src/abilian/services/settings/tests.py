@@ -9,7 +9,7 @@ from pytest import raises
 from .models import Setting, empty_value
 
 
-def test_type_set() -> None:
+def test_type_set():
     s = Setting()
     # registered base type: no failure
     s.type = "int"
@@ -36,13 +36,13 @@ OBJ = [1, 2, "été", {"1": "1", "2": "2"}]
         ("json", OBJ),
     ],
 )
-def test_set_get(type_: str, value: Any) -> None:
+def test_set_get(type_: str, value: Any):
     s = Setting(key="key", type=type_)
     s.value = value
     assert s.value == value
 
 
-def test_empty_value() -> None:
+def test_empty_value():
     s = Setting(key="key", type="json")
     assert s.value == empty_value
 

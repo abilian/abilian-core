@@ -39,7 +39,7 @@ class AdminPanel(PreferencePanel):
 
 
 class Application(BaseApplication):
-    def init_extensions(self) -> None:
+    def init_extensions(self):
         super().init_extensions()
         prefs = cast(PreferenceService, self.services["preferences"])
         prefs.app_state.panels = []
@@ -54,7 +54,7 @@ def app(config: type) -> Application:
     return app
 
 
-def test_preferences(app: Application, session: Session) -> None:
+def test_preferences(app: Application, session: Session):
     user = User(email="test@example.com")
     assert UserPreference.query.all() == []
 
@@ -77,7 +77,7 @@ def test_preferences(app: Application, session: Session) -> None:
     assert UserPreference.query.all() == []
 
 
-def test_preferences_with_various_types(app: Application, session: Session) -> None:
+def test_preferences_with_various_types(app: Application, session: Session):
     user = User(email="test@example.com")
     preference_service = PreferenceService()
 
@@ -92,7 +92,7 @@ def test_preferences_with_various_types(app: Application, session: Session) -> N
     assert preferences == {"some_int": 1, "some_bool": True}
 
 
-def test_visible_panels(app: Application, db: SQLAlchemy) -> None:
+def test_visible_panels(app: Application, db: SQLAlchemy):
     user = User(email="test@example.com")
     security = cast(SecurityService, app.services["security"])
 

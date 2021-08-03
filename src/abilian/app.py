@@ -79,7 +79,7 @@ class ServiceManager:
 
     services: Dict[str, Service]
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.services = {}
 
     def start_services(self):
@@ -105,13 +105,13 @@ class PluginManager:
         "abilian.web.attachments",
     )
 
-    def register_plugin(self, name: str) -> None:
+    def register_plugin(self, name: str):
         """Load and register a plugin given its package name."""
         logger.info(f"Registering plugin: {name}")
         module = importlib.import_module(name)
         module.register_plugin(self)  # type: ignore
 
-    def register_plugins(self) -> None:
+    def register_plugins(self):
         """Load plugins listed in config variable 'PLUGINS'."""
         registered = set()
         for plugin_fqdn in chain(self.APP_PLUGINS, self.config["PLUGINS"]):
@@ -148,7 +148,7 @@ class Application(
     #: celery app class
     celery_app_cls = FlaskCelery
 
-    def __init__(self, name: Optional[Any] = None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, name: Optional[Any] = None, *args: Any, **kwargs: Any):
         name = name or __name__
 
         Flask.__init__(self, name, *args, **kwargs)
@@ -160,7 +160,7 @@ class Application(
         self.default_view = ViewRegistry()
         self.js_api = {}
 
-    def setup(self, config: Optional[type]) -> None:
+    def setup(self, config: Optional[type]):
         self.configure(config)
 
         # At this point we have loaded all external config files:
@@ -228,7 +228,7 @@ class Application(
 
         setup(self)
 
-    def setup_nav_and_breadcrumbs(self, app: Flask) -> None:
+    def setup_nav_and_breadcrumbs(self, app: Flask):
         """Listener for `request_started` event.
 
         If you want to customize first items of breadcrumbs, override
@@ -238,7 +238,7 @@ class Application(
         g.breadcrumb = []
         self.init_breadcrumbs()
 
-    def init_breadcrumbs(self) -> None:
+    def init_breadcrumbs(self):
         """Insert the first element in breadcrumbs.
 
         This happens during `request_started` event, which is triggered
@@ -247,10 +247,10 @@ class Application(
         g.breadcrumb.append(BreadcrumbItem(icon="home", url=f"/{request.script_root}"))
 
     # TODO: remove
-    def install_id_generator(self, sender: Flask, **kwargs: Any) -> None:
+    def install_id_generator(self, sender: Flask, **kwargs: Any):
         g.id_generator = count(start=1)
 
-    def configure(self, config: Optional[type]) -> None:
+    def configure(self, config: Optional[type]):
         if config:
             self.config.from_object(config)
 
@@ -309,7 +309,7 @@ class Application(
 
         return path
 
-    def init_extensions(self) -> None:
+    def init_extensions(self):
         """Initialize flask extensions, helpers and services."""
         extensions.redis.init_app(self)
         extensions.mail.init_app(self)
@@ -406,7 +406,7 @@ class Application(
         view_func: Callable,
         roles: Collection[Role] = (),
         **options: Any,
-    ) -> None:
+    ):
         """See :meth:`Flask.add_url_rule`.
 
         If `roles` parameter is present, it must be a
@@ -420,9 +420,7 @@ class Application(
                 endpoint, allow_access_for_roles(roles), endpoint=True
             )
 
-    def add_access_controller(
-        self, name: str, func: Callable, endpoint: bool = False
-    ) -> None:
+    def add_access_controller(self, name: str, func: Callable, endpoint: bool = False):
         """Add an access controller.
 
         If `name` is None it is added at application level, else if is
@@ -442,7 +440,7 @@ class Application(
 
     def add_static_url(
         self, url_path: str, directory: str, endpoint: str, roles: Collection[Role] = ()
-    ) -> None:
+    ):
         """Add a new url rule for static files.
 
         :param url_path: subpath from application static url path. No heading
@@ -471,7 +469,7 @@ class Application(
         )
 
 
-def setup(app: Flask) -> None:
+def setup(app: Flask):
     config = app.config
 
     # CSP
@@ -483,7 +481,7 @@ def setup(app: Flask) -> None:
     init_debug_toolbar(app)
 
 
-def init_debug_toolbar(app: Flask) -> None:
+def init_debug_toolbar(app: Flask):
     if not app.debug or app.testing:
         return
 

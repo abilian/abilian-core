@@ -30,7 +30,7 @@ class VocabularyQuery(BaseQuery):
         except sa.orm.exc.NoResultFound:
             return None
 
-    def by_position(self, position: int) -> None:
+    def by_position(self, position: int):
         """Like `.get()`, but by position number."""
         # don't use .first(), so that MultipleResultsFound can be raised
         try:

@@ -28,7 +28,7 @@ if typing.TYPE_CHECKING:
 _NULL_MARK = object()
 
 
-def _assert_uuid(uuid: Any) -> None:
+def _assert_uuid(uuid: Any):
     if not isinstance(uuid, UUID):
         raise TypeError("Not an uuid.UUID instance", uuid)
 
@@ -44,7 +44,7 @@ class RepositoryService(Service):
     name = "repository"
     AppStateClass = RepositoryServiceState
 
-    def init_app(self, app: Application) -> None:
+    def init_app(self, app: Application):
         super().init_app(app)
 
         path = app.data_dir / "files"
@@ -92,7 +92,7 @@ class RepositoryService(Service):
             return default
         return path
 
-    def set(self, uuid: UUID, content: Any, encoding: Optional[str] = "utf-8") -> None:
+    def set(self, uuid: UUID, content: Any, encoding: Optional[str] = "utf-8"):
         """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
@@ -116,7 +116,7 @@ class RepositoryService(Service):
         with dest.open(mode, encoding=encoding) as f:
             f.write(content)
 
-    def delete(self, uuid: UUID) -> None:
+    def delete(self, uuid: UUID):
         """Delete file with given uuid.
 
         :param:uuid: :class:`UUID` instance
@@ -138,12 +138,12 @@ class RepositoryService(Service):
             raise KeyError("No file can be found for this uuid", uuid)
         return value
 
-    def __setitem__(self, uuid: UUID, content: Any) -> None:
+    def __setitem__(self, uuid: UUID, content: Any):
         _assert_uuid(uuid)
 
         self.set(uuid, content)
 
-    def __delitem__(self, uuid: UUID) -> None:
+    def __delitem__(self, uuid: UUID):
         _assert_uuid(uuid)
 
         self.delete(uuid)
@@ -195,7 +195,7 @@ class SessionRepositoryState(ServiceState):
         self,
         session: Union[Session, scoped_session],
         transaction: Optional[RepositoryTransaction],
-    ) -> None:
+    ):
 
         if isinstance(session, scoped_session):
             session = session()
@@ -203,9 +203,7 @@ class SessionRepositoryState(ServiceState):
         session_id = id(session)
         self.transactions[session_id] = (weakref.ref(session), transaction)
 
-    def create_transaction(
-        self, session: Session, transaction: RepositoryTransaction
-    ) -> None:
+    def create_transaction(self, session: Session, transaction: RepositoryTransaction):
         if not self.running:
             return
 
@@ -214,9 +212,7 @@ class SessionRepositoryState(ServiceState):
         transaction = RepositoryTransaction(root_path, parent)
         self.set_transaction(session, transaction)
 
-    def end_transaction(
-        self, session: Session, transaction: RepositoryTransaction
-    ) -> None:
+    def end_transaction(self, session: Session, transaction: RepositoryTransaction):
         if not self.running:
             return
 
@@ -239,7 +235,7 @@ class SessionRepositoryState(ServiceState):
 
         tr.begin(session)
 
-    def commit(self, session: Session) -> None:
+    def commit(self, session: Session):
         if not self.running:
             return
 
@@ -249,14 +245,14 @@ class SessionRepositoryState(ServiceState):
 
         tr.commit(session)
 
-    def flush(self, session: Session, flush_context: UOWTransaction) -> None:
+    def flush(self, session: Session, flush_context: UOWTransaction):
         # when sqlalchemy is flushing it is done in a sub-transaction,
         # not the root one. So when calling our 'commit' from here
         # we are not in our root transaction, so changes will not be
         # written to repository.
         self.commit(session)
 
-    def rollback(self, session: Session) -> None:
+    def rollback(self, session: Session):
         if not self.running:
             return
 
@@ -277,11 +273,11 @@ class SessionRepositoryService(Service):
     name = "session_repository"
     AppStateClass = SessionRepositoryState
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         self.__listening = False
         super().__init__(*args, **kwargs)
 
-    def init_app(self, app: Application) -> None:
+    def init_app(self, app: Application):
         super().init_app(app)
 
         path = Path(app.instance_path, "tmp", "files_transactions")
@@ -294,7 +290,7 @@ class SessionRepositoryService(Service):
         if not self.__listening:
             self.start_listening()
 
-    def start_listening(self) -> None:
+    def start_listening(self):
         self.__listening = True
         listen = sa.event.listen
         listen(Session, "after_transaction_create", self.create_transaction)
@@ -359,14 +355,14 @@ class SessionRepositoryService(Service):
         uuid: UUID,
         content: Union[IO, bytes, str],
         encoding: str = "utf-8",
-    ) -> None:
+    ):
         _assert_uuid(uuid)
 
         session = self._session_for(session)
         transaction = self.app_state.get_transaction(session)
         transaction.set(uuid, content, encoding)
 
-    def delete(self, session: Union[Session, Blob], uuid: UUID) -> None:
+    def delete(self, session: Union[Session, Blob], uuid: UUID):
         _assert_uuid(uuid)
 
         session = self._session_for(session)
@@ -394,15 +390,15 @@ class SessionRepositoryService(Service):
         return self.app_state.begin(session)
 
     @Service.if_running
-    def commit(self, session: Session) -> None:
+    def commit(self, session: Session):
         return self.app_state.commit(session)
 
     @Service.if_running
-    def flush(self, session: Session, flush_context: UOWTransaction) -> None:
+    def flush(self, session: Session, flush_context: UOWTransaction):
         return self.app_state.flush(session, flush_context)
 
     @Service.if_running
-    def rollback(self, session: Session) -> None:
+    def rollback(self, session: Session):
         return self.app_state.rollback(session)
 
 
@@ -410,9 +406,7 @@ session_repository = SessionRepositoryService()
 
 
 class RepositoryTransaction:
-    def __init__(
-        self, root_path: Path, parent: Optional[RepositoryTransaction] = None
-    ) -> None:
+    def __init__(self, root_path: Path, parent: Optional[RepositoryTransaction] = None):
         self.path = root_path / str(uuid1())
         # if parent is not None and parent.cleared:
         #   parent = None
@@ -426,11 +420,11 @@ class RepositoryTransaction:
     def cleared(self) -> bool:
         return self.__cleared
 
-    def __del__(self) -> None:
+    def __del__(self):
         if not self.cleared:
             self._clear()
 
-    def _clear(self) -> None:
+    def _clear(self):
         if self.__cleared:
             return
 
@@ -443,14 +437,14 @@ class RepositoryTransaction:
         del self._set
         self.__cleared = True
 
-    def begin(self, session: Optional[Session] = None) -> None:
+    def begin(self, session: Optional[Session] = None):
         if not self.path.exists():
             self.path.mkdir(0o700)
 
-    def rollback(self, session: Optional[Session] = None) -> None:
+    def rollback(self, session: Optional[Session] = None):
         self._clear()
 
-    def commit(self, session: Optional[Session] = None) -> None:
+    def commit(self, session: Optional[Session] = None):
         """Merge modified objects into parent transaction.
 
         Once commited a transaction object is not usable anymore
@@ -467,7 +461,7 @@ class RepositoryTransaction:
             self._commit_repository()
         self._clear()
 
-    def _commit_repository(self) -> None:
+    def _commit_repository(self):
         assert self._parent is None
 
         for uuid in self._deleted:
@@ -480,7 +474,7 @@ class RepositoryTransaction:
             content = self.path / str(uuid)
             repository.set(uuid, content.open("rb"))
 
-    def _commit_parent(self) -> None:
+    def _commit_parent(self):
         p = self._parent
         assert p
         p._deleted |= self._deleted
@@ -497,7 +491,7 @@ class RepositoryTransaction:
             # content_path.replace is not available with python < 3.3.
             content_path.rename(p.path / str(uuid))
 
-    def _add_to(self, uuid: UUID, dest: Set[UUID], other: Set[UUID]) -> None:
+    def _add_to(self, uuid: UUID, dest: Set[UUID], other: Set[UUID]):
         """Add `item` to `dest` set, ensuring `item` is not present in `other`
         set."""
         _assert_uuid(uuid)
@@ -507,7 +501,7 @@ class RepositoryTransaction:
             pass
         dest.add(uuid)
 
-    def delete(self, uuid: UUID) -> None:
+    def delete(self, uuid: UUID):
         self._add_to(uuid, self._deleted, self._set)
 
     def set(
@@ -515,7 +509,7 @@ class RepositoryTransaction:
         uuid: UUID,
         content: Union[IO, bytes, str],
         encoding: Optional[str] = "utf-8",
-    ) -> None:
+    ):
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 

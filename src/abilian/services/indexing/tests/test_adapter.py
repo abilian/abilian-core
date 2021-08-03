@@ -34,27 +34,27 @@ class SubclassEntityIndexable(Entity):
     pass
 
 
-def test_can_adapt() -> None:
+def test_can_adapt():
     assert not SAAdapter.can_adapt(SANotAdaptable)
     assert SAAdapter.can_adapt(SANotIndexable)
     assert SAAdapter.can_adapt(Indexable)
     assert SAAdapter.can_adapt(Entity)
 
 
-def test_build_attrs_1() -> None:
+def test_build_attrs_1():
     schema = Schema()
     adapter = SAAdapter(SANotIndexable, schema)
     assert not adapter.indexable
     assert adapter.doc_attrs == {}
 
 
-def test_build_attrs_2() -> None:
+def test_build_attrs_2():
     schema = Schema()
     adapter = SAAdapter(Entity, schema)
     assert adapter.indexable == False
 
 
-def test_build_attrs_3() -> None:
+def test_build_attrs_3():
     schema = Schema()
     adapter = SAAdapter(SubclassEntityIndexable, schema)
     assert adapter.indexable
@@ -98,7 +98,7 @@ def test_build_attrs_3() -> None:
     }
 
 
-def test_build_attrs_4() -> None:
+def test_build_attrs_4():
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)
     assert adapter.indexable
@@ -147,7 +147,7 @@ def test_get_document(app, db):
         assert adapter.get_document(obj) == expected
 
 
-def test_get_document_with_schema() -> None:
+def test_get_document_with_schema():
     # test retrieve related attributes
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)

@@ -22,7 +22,7 @@ class AttachmentExtension:
     It is also available in templates as `attachments`.
     """
 
-    def __init__(self, app: Flask) -> None:
+    def __init__(self, app: Flask):
         app.extensions["attachments"] = self
         app.add_template_global(self, "attachments")
         app.register_blueprint(blueprint)

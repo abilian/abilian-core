@@ -228,7 +228,7 @@ class User(Principal, UserMixin, db.Model):
         else:
             return False
 
-    def set_password(self, password: str) -> None:
+    def set_password(self, password: str):
         """Encrypts and sets password."""
         self.password = self.__password_strategy__.process(self, password)
 
@@ -298,7 +298,7 @@ class User(Principal, UserMixin, db.Model):
 
 
 @listens_for(User, "mapper_configured", propagate=True)
-def _add_user_indexes(mapper: Mapper, class_: type) -> None:
+def _add_user_indexes(mapper: Mapper, class_: type):
     # this is a functional index (indexes on a function result), we cannot define
     # it in __table_args__.
     #

@@ -17,11 +17,11 @@ if typing.TYPE_CHECKING:
 class UpstreamInfo:
     """Extension for sending informations to upstream server."""
 
-    def __init__(self, app: Flask = None) -> None:
+    def __init__(self, app: Flask = None):
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app: Flask) -> None:
+    def init_app(self, app: Flask):
         app.extensions["upstream"] = self
         request_started.connect(self.request_started, sender=app)
         request_finished.connect(self.request_finished, sender=app)
@@ -35,10 +35,10 @@ class UpstreamInfo:
                 val = frozenset(val)
             config[key] = val
 
-    def request_started(self, app: Flask) -> None:
+    def request_started(self, app: Flask):
         _request_ctx_stack.top.upstream_info = {"Username": "Anonymous"}
 
-    def request_finished(self, app: Flask, response: Response) -> None:
+    def request_finished(self, app: Flask, response: Response):
         info = _request_ctx_stack.top.upstream_info
         config = app.config
         default_enabled = bool(config["ABILIAN_UPSTREAM_INFO_ENABLED"])
@@ -57,7 +57,7 @@ class UpstreamInfo:
             header = f"X-{key}"
             response.headers[header] = val
 
-    def user_loaded(self, app: Flask, user: User, *args: Any, **kwargs: Any) -> None:
+    def user_loaded(self, app: Flask, user: User, *args: Any, **kwargs: Any):
         _request_ctx_stack.top.upstream_info["Username"] = user.email
 
 

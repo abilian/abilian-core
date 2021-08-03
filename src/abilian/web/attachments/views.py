@@ -31,7 +31,7 @@ def _default_attachment_view(obj, obj_type, obj_id, **kwargs):
 
 
 @bp.record_once
-def register_default_view(state: BlueprintSetupState) -> None:
+def register_default_view(state: BlueprintSetupState):
     state.app.default_view.register(Attachment, _default_attachment_view)
 
 

@@ -41,7 +41,7 @@ class Cache:
         else:
             return None
 
-    def set(self, key: CacheKey, value: Union[str, bytes]) -> None:
+    def set(self, key: CacheKey, value: Union[str, bytes]):
         path = self._path(key)
         path.parent.mkdir(parents=True, exist_ok=True)
         if key[0] == "txt":
@@ -53,5 +53,5 @@ class Cache:
 
     __setitem__ = set
 
-    def clear(self) -> None:
+    def clear(self):
         pass

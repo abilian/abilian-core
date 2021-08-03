@@ -90,15 +90,15 @@ _ACTIONS = (
 class AuthServiceState(ServiceState):
     """State class for :class:`AuthService`"""
 
-    def __init__(self, service: AuthService, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, service: AuthService, *args: Any, **kwargs: Any):
         super().__init__(service, *args, **kwargs)
         self.bp_access_controllers: Dict[Optional[str], List[Callable]] = {None: []}
         self.endpoint_access_controllers: Dict[str, List[Callable]] = {}
 
-    def add_bp_access_controller(self, blueprint: str, func: Callable) -> None:
+    def add_bp_access_controller(self, blueprint: str, func: Callable):
         self.bp_access_controllers.setdefault(blueprint, []).append(func)
 
-    def add_endpoint_access_controller(self, endpoint: str, func: Callable) -> None:
+    def add_endpoint_access_controller(self, endpoint: str, func: Callable):
         self.endpoint_access_controllers.setdefault(endpoint, []).append(func)
 
 
@@ -106,7 +106,7 @@ class AuthService(Service):
     name = "auth"
     AppStateClass = AuthServiceState
 
-    def init_app(self, app: Flask) -> None:
+    def init_app(self, app: Flask):
         login_manager.init_app(app)
         login_manager.login_view = "login.login_form"
 
@@ -148,7 +148,7 @@ class AuthService(Service):
         user_loaded.send(app, user=user)
         return user
 
-    def user_logged_in(self, app: Application, user: User) -> None:
+    def user_logged_in(self, app: Application, user: User):
         # `g.user` is used as `current_user`, but `current_user` is actually looking
         # for `request.user` whereas `g` is on app local stack.
         #
@@ -166,7 +166,7 @@ class AuthService(Service):
             and (security.has_role(user, "admin") or security.has_role(user, "manager"))
         )
 
-    def user_logged_out(self, app: Application, user: User) -> None:
+    def user_logged_out(self, app: Application, user: User):
         if hasattr(g, "user"):
             del g.user
             del g.logged_user
@@ -228,7 +228,7 @@ class AuthService(Service):
 
         return None
 
-    def update_user_session_data(self) -> None:
+    def update_user_session_data(self):
         user = current_user
         if current_user.is_anonymous:
             return
@@ -244,7 +244,7 @@ class AuthService(Service):
         refresh_login_session(user)
 
 
-def refresh_login_session(user: User) -> None:
+def refresh_login_session(user: User):
     now = datetime.utcnow()
     session = LoginSession.query.get_active_for(user)
     if not session:

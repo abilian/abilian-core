@@ -23,21 +23,21 @@ USER_TZ = pytz.timezone(user_tz())
 
 
 # test filters
-def test_strip() -> None:
+def test_strip():
     assert filters.strip(None) == ""
     assert filters.strip(4) == 4
     assert filters.strip(" a string ") == "a string"
     assert filters.strip(" voilà ") == "voilà"
 
 
-def test_uppercase() -> None:
+def test_uppercase():
     assert filters.uppercase(None) is None
     assert filters.uppercase(4) == 4
     assert filters.uppercase(" a string ") == " A STRING "
     assert filters.uppercase(" Voilà ") == " VOILÀ "
 
 
-def test_lowercase() -> None:
+def test_lowercase():
     assert filters.lowercase(None) is None
     assert filters.lowercase(4) == 4
     assert filters.lowercase(" A STRING ") == " a string "
@@ -45,7 +45,7 @@ def test_lowercase() -> None:
 
 
 # FormPermissions
-def test_form_permissions_controller() -> None:
+def test_form_permissions_controller():
     security_mock = mock.Mock()
     has_role = security_mock.has_role = mock.Mock()
     has_role.return_value = True
@@ -129,12 +129,12 @@ def test_form_permissions_controller() -> None:
         assert has_role.call_args[-1]["role"] == [Owner, MarkRole]
 
 
-def patch_babel(app: Application) -> None:
+def patch_babel(app: Application):
     app.extensions["babel"].timezone_selector_func = None
     app.extensions["babel"].timezoneselector(user_tz)
 
 
-def test_datetime_field(app: Application) -> None:
+def test_datetime_field(app: Application):
     """Test fields supports date with year < 1900."""
 
     assert "fr" in app.config["BABEL_ACCEPT_LANGUAGES"]
@@ -170,7 +170,7 @@ def test_datetime_field(app: Application) -> None:
         assert field.data == expected_datetime
 
 
-def test_datetime_field_naive(app: Application) -> None:
+def test_datetime_field_naive(app: Application):
     """Test fields supports date with year < 1900."""
     patch_babel(app)
 
@@ -194,7 +194,7 @@ def test_datetime_field_naive(app: Application) -> None:
         assert obj.dt == datetime.datetime(1789, 6, 17, 10, 42)
 
 
-def test_datetime_field_force_4digit_year(app: Application) -> None:
+def test_datetime_field_force_4digit_year(app: Application):
     # use 'en': short date pattern is 'M/d/yy'
     patch_babel(app)
 
@@ -205,7 +205,7 @@ def test_datetime_field_force_4digit_year(app: Application) -> None:
         assert field._value() == "1/23/2011, 6:42 PM"
 
 
-def test_date_field(app: Application) -> None:
+def test_date_field(app: Application):
     """Test fields supports date with year < 1900."""
     patch_babel(app)
 
@@ -217,7 +217,7 @@ def test_date_field(app: Application) -> None:
         assert field._value() == "17/06/1789"
 
 
-def test_datefield_force_4digit_year(app: Application) -> None:
+def test_datefield_force_4digit_year(app: Application):
     patch_babel(app)
 
     # use 'en': short date pattern is 'M/d/yy'

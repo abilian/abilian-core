@@ -28,7 +28,7 @@ def session() -> Session:
     return session
 
 
-def test() -> None:
+def test():
     contact = DummyContact(first_name="John")
     assert contact.creator is None
     assert contact.owner is None
@@ -38,7 +38,7 @@ def test() -> None:
     contact.creator = user
 
 
-def test_auto_slug_property(session: Session) -> None:
+def test_auto_slug_property(session: Session):
     obj = DummyContact(name="a b c")
     session.add(obj)
     session.flush()
@@ -62,7 +62,7 @@ def test_auto_slug_property(session: Session) -> None:
     assert "\u002d" in slug
 
 
-def test_updated_at(session: Session) -> None:
+def test_updated_at(session: Session):
     contact = DummyContact()
     session.add(contact)
     session.commit()
@@ -75,7 +75,7 @@ def test_updated_at(session: Session) -> None:
     assert contact.updated_at > updated
 
 
-def test_auto_slug(session: Session) -> None:
+def test_auto_slug(session: Session):
     contact1 = DummyContact(name="Pacôme Hégésippe Adélard Ladislas")
     session.add(contact1)
     session.flush()
@@ -95,7 +95,7 @@ def test_auto_slug(session: Session) -> None:
     assert contact3.slug == "pacome-hegesippe-adelard-ladislas-1"
 
 
-def test_polymorphic_update_timestamp(session: Session) -> None:
+def test_polymorphic_update_timestamp(session: Session):
     contact = DummyContact(name="Pacôme Hégésippe Adélard Ladislas")
     session.add(contact)
     session.flush()
@@ -107,7 +107,7 @@ def test_polymorphic_update_timestamp(session: Session) -> None:
     assert contact.updated_at > updated_at
 
 
-def test_meta(session: Session) -> None:
+def test_meta(session: Session):
     e = DummyContact(name="test")
     e.meta["key"] = "value"
     e.meta["number"] = 42
@@ -121,7 +121,7 @@ def test_meta(session: Session) -> None:
     assert e.meta["number"] == 42
 
 
-def test_entity_type() -> None:
+def test_entity_type():
     class MyType(Entity):
         pass
 
@@ -152,7 +152,7 @@ def test_entity_type() -> None:
     assert InheritedBase._object_type() == "from.ancestor.InheritedBase"
 
 
-def test_info() -> None:
+def test_info():
     info = SEARCHABLE
     assert info["searchable"]
 

@@ -4,12 +4,12 @@ from __future__ import annotations
 from abilian.web.action import FAIcon, Glyphicon, StaticIcon
 
 
-def test_glyphicons() -> None:
+def test_glyphicons():
     icon = Glyphicon("ok")
     assert icon.__html__() == '<i class="glyphicon glyphicon-ok"></i>'
 
 
-def test_faicons() -> None:
+def test_faicons():
     icon = FAIcon("check")
     assert icon.__html__() == '<i class="fa fa-check"></i>'
 

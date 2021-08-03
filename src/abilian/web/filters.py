@@ -270,7 +270,7 @@ def obj_to_url(obj):
         return ""
 
 
-def init_filters(env: Environment) -> None:
+def init_filters(env: Environment):
     env.filters["nl2br"] = nl2br
     env.filters["paragraphs"] = paragraphs
     env.filters["date_age"] = date_age

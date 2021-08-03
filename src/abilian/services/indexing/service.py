@@ -83,7 +83,7 @@ def fqcn(cls: Any) -> str:
 
 
 class IndexServiceState(ServiceState):
-    def __init__(self, service: WhooshIndexService, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, service: WhooshIndexService, *args: Any, **kwargs: Any):
         super().__init__(service, *args, **kwargs)
         self.whoosh_base = None
         self.indexes: Dict[str, Index] = {}
@@ -98,7 +98,7 @@ class IndexServiceState(ServiceState):
         return _lookup_app_object(_pending_indexation_attr)
 
     @to_update.setter
-    def to_update(self, value: List) -> None:
+    def to_update(self, value: List):
         top = _app_ctx_stack.top
         if top is None:
             raise RuntimeError("working outside of application context")
@@ -112,14 +112,14 @@ class WhooshIndexService(Service):
     name = "indexing"
     AppStateClass = IndexServiceState
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.adapters_cls = [SAAdapter]
         self.adapted = {}
         self.schemas = {"default": DefaultSearchSchema()}
         self._listening = False
 
-    def init_app(self, app: Application) -> None:
+    def init_app(self, app: Application):
         super().init_app(app)
         state = app.extensions[self.name]
 
@@ -141,7 +141,7 @@ class WhooshIndexService(Service):
         appcontext_pushed.connect(self.clear_update_queue, app)
         signals.register_js_api.connect(self._do_register_js_api)
 
-    def _do_register_js_api(self, sender: Application) -> None:
+    def _do_register_js_api(self, sender: Application):
         app = sender
         js_api = app.js_api.setdefault("search", {})
         js_api["object_types"] = self.searchable_object_types()
@@ -166,16 +166,16 @@ class WhooshIndexService(Service):
         """
         self.app_state.value_provider_funcs.append(func)
 
-    def clear_update_queue(self, app: Optional[Flask] = None) -> None:
+    def clear_update_queue(self, app: Optional[Flask] = None):
         self.app_state.to_update = []
 
-    def start(self, ignore_state: bool = False) -> None:
+    def start(self, ignore_state: bool = False):
         super().start(ignore_state)
         self.register_classes()
         self.init_indexes()
         self.clear_update_queue()
 
-    def init_indexes(self) -> None:
+    def init_indexes(self):
         """Create indexes for schemas."""
         state = self.app_state
 
@@ -195,7 +195,7 @@ class WhooshIndexService(Service):
 
             state.indexes[name] = index
 
-    def clear(self) -> None:
+    def clear(self):
         """Remove all content from indexes, and unregister all classes.
 
         After clear() the service is stopped. It must be started again
@@ -365,7 +365,7 @@ class WhooshIndexService(Service):
     def search_for_class(self, query, cls, index="default", **search_args):
         return self.search(query, Models=(fqcn(cls),), index=index, **search_args)
 
-    def register_classes(self) -> None:
+    def register_classes(self):
         state = self.app_state
         classes = (
             cls
@@ -376,7 +376,7 @@ class WhooshIndexService(Service):
             if cls not in state.indexed_classes:
                 self.register_class(cls, app_state=state)
 
-    def register_class(self, cls: type, app_state: IndexServiceState = None) -> None:
+    def register_class(self, cls: type, app_state: IndexServiceState = None):
         """Register a model class."""
         state = app_state if app_state is not None else self.app_state
 
@@ -391,7 +391,7 @@ class WhooshIndexService(Service):
         state.indexed_classes.add(cls)
         state.indexed_fqcn.add(cls_fqcn)
 
-    def after_flush(self, session: Session, flush_context: UOWTransaction) -> None:
+    def after_flush(self, session: Session, flush_context: UOWTransaction):
         if not self.running or session is not db.session():
             return
 
@@ -411,7 +411,7 @@ class WhooshIndexService(Service):
 
                 to_update.append((key, obj))
 
-    def after_commit(self, session: Session) -> None:
+    def after_commit(self, session: Session):
         """Any db updates go through here.
 
         We check if any of these models have ``__searchable__`` fields,
@@ -512,7 +512,7 @@ service = WhooshIndexService()
 
 
 @shared_task
-def index_update(index: str, items: List[List[Union[Dict, int, str]]]) -> None:
+def index_update(index: str, items: List[List[Union[Dict, int, str]]]):
     """
     :param:index: index name
     :param:items: list of (operation, full class name, primary key, data) tuples.

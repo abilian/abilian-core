@@ -53,7 +53,7 @@ class TagsExtension:
     It is also available in templates as `tags`.
     """
 
-    def __init__(self, app: Flask) -> None:
+    def __init__(self, app: Flask):
         app.extensions["tags"] = self
         app.add_template_global(self, "tags")
         app.register_blueprint(tags_bp)

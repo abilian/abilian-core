@@ -278,7 +278,7 @@ def get_serializer(name: str) -> TimedSerializer:
     return URLSafeTimedSerializer(secret_key=secret_key, salt=salt)
 
 
-def send_reset_password_instructions(user: User) -> None:
+def send_reset_password_instructions(user: User):
     """Send the reset password instructions email for the specified user.
 
     :param user: The user to send the instructions to
@@ -339,7 +339,7 @@ def get_token_status(
     return expired, invalid, user
 
 
-def send_mail(subject: str, recipient: str, template: str, **context: Any) -> None:
+def send_mail(subject: str, recipient: str, template: str, **context: Any):
     """Send an email using the Flask-Mail extension.
 
     :param subject: Email subject
@@ -365,14 +365,14 @@ def send_mail(subject: str, recipient: str, template: str, **context: Any) -> No
 # Logging
 #
 @user_logged_in.connect
-def log_session_start(app: Flask, user: User) -> None:
+def log_session_start(app: Flask, user: User):
     session = LoginSession.new()
     db.session.add(session)
     db.session.commit()
 
 
 @user_logged_out.connect
-def log_session_end(app: Flask, user: User) -> None:
+def log_session_end(app: Flask, user: User):
     if user.is_anonymous:
         return
 

@@ -21,7 +21,7 @@ class OwnedMixin:
         ("owner_name", (("owner_name", STORED),)),
     )
 
-    def __init__(self, *args: List, **kwargs: Dict[str, Any]) -> None:
+    def __init__(self, *args: List, **kwargs: Dict[str, Any]):
         try:
             user = g.user
             if not self.creator and not g.user.is_anonymous:

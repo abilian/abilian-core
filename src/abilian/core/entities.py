@@ -56,7 +56,7 @@ class ValidationError(Exception):
     pass
 
 
-def validation_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
+def validation_listener(mapper: Mapper, connection: Connection, target: Any):
     if hasattr(target, "_validate"):
         target._validate()
 
@@ -68,17 +68,17 @@ event.listen(mapper, "before_update", validation_listener)
 #
 # CRUD events. TODO: connect to signals instead?
 #
-def before_insert_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
+def before_insert_listener(mapper: Mapper, connection: Connection, target: Any):
     if hasattr(target, "_before_insert"):
         target._before_insert()
 
 
-def before_update_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
+def before_update_listener(mapper: Mapper, connection: Connection, target: Any):
     if hasattr(target, "_before_update"):
         target._before_update()
 
 
-def before_delete_listener(mapper: Mapper, connection: Connection, target: Any) -> None:
+def before_delete_listener(mapper: Mapper, connection: Connection, target: Any):
     if hasattr(target, "_before_delete"):
         target._before_delete()
 
@@ -88,21 +88,21 @@ event.listen(mapper, "before_update", before_update_listener)
 event.listen(mapper, "before_delete", before_delete_listener)
 
 
-def auto_slug_on_insert(mapper: Mapper, connection: Connection, target: Any) -> None:
+def auto_slug_on_insert(mapper: Mapper, connection: Connection, target: Any):
     """Generate a slug from :prop:`Entity.auto_slug` for new entities, unless
     slug is already set."""
     if target.slug is None and target.name:
         target.slug = target.auto_slug
 
 
-def auto_slug_after_insert(mapper: Mapper, connection: Connection, target: Any) -> None:
+def auto_slug_after_insert(mapper: Mapper, connection: Connection, target: Any):
     """Generate a slug from entity_type and id, unless slug is already set."""
     if target.slug is None:
         target.slug = f"{target.entity_class.lower()}{target.SLUG_SEPARATOR}{target.id}"
 
 
 @event.listens_for(Session, "after_attach")
-def setup_default_permissions(session: Session, instance: Any) -> None:
+def setup_default_permissions(session: Session, instance: Any):
     """Setup default permissions on newly created entities according to.
 
     :attr:`Entity.__default_permissions__`.
@@ -117,7 +117,7 @@ def setup_default_permissions(session: Session, instance: Any) -> None:
     _setup_default_permissions(instance)
 
 
-def _setup_default_permissions(instance: Any) -> None:
+def _setup_default_permissions(instance: Any):
     """Separate method to conveniently call it from scripts for example."""
     from abilian.services import get_service
     from abilian.services.security import SecurityService
@@ -241,9 +241,7 @@ class EntityMeta(BaseMeta):
         event.listen(cls, "after_insert", auto_slug_after_insert)
         return cls
 
-    def __init__(
-        cls, classname: str, bases: Tuple[Type, ...], d: Dict[str, Any]
-    ) -> None:
+    def __init__(cls, classname: str, bases: Tuple[Type, ...], d: Dict[str, Any]):
         bases = cls.__bases__
         BaseMeta.__init__(cls, classname, bases, d)
 
@@ -499,7 +497,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 
 # TODO: make this unecessary
 @event.listens_for(Entity, "class_instrument", propagate=True)
-def register_metadata(cls: Type[Entity]) -> None:
+def register_metadata(cls: Type[Entity]):
     cls.__editable__ = set()
 
     # TODO: use SQLAlchemy 0.8 introspection
@@ -519,7 +517,7 @@ def register_metadata(cls: Type[Entity]) -> None:
 @event.listens_for(Session, "before_flush")
 def polymorphic_update_timestamp(
     session: Session, flush_context: UOWTransaction, instances: Any
-) -> None:
+):
     """This listener ensures an update statement is emited for "entity" table
     to update 'updated_at'.
 

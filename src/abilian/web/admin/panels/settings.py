@@ -29,7 +29,7 @@ class Key:
         type_: str,
         label: Optional[LazyString] = None,
         description: Optional[LazyString] = None,
-    ) -> None:
+    ):
         self.id = id
         self.type = type_
         self.label = label
@@ -46,7 +46,7 @@ class SessionLifeTimeKey(Key):
 
     template = "admin/settings_session_lifetime.html"
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__(
             "PERMANENT_SESSION_LIFETIME",
             "timedelta",

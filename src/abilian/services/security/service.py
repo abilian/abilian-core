@@ -176,17 +176,17 @@ class SecurityService(Service):
     name = "security"
     AppStateClass = SecurityServiceState
 
-    def init_app(self, app: Application) -> None:
+    def init_app(self, app: Application):
         super().init_app(app)
         state = app.extensions[self.name]
         state.use_cache = True
 
-    def _needs_flush(self) -> None:
+    def _needs_flush(self):
         """Mark next security queries needs DB flush to have up to date
         information."""
         self.app_state.needs_db_flush = True
 
-    def clear(self) -> None:
+    def clear(self):
         pass
 
     def _current_user_manager(self, session: Session = None) -> User:
@@ -220,7 +220,7 @@ class SecurityService(Service):
         )
 
     # inheritance
-    def set_inherit_security(self, obj: FolderishModel, inherit_security: bool) -> None:
+    def set_inherit_security(self, obj: FolderishModel, inherit_security: bool):
         assert isinstance(obj, InheritSecurity)
         assert isinstance(obj, Entity)
 
@@ -371,7 +371,7 @@ class SecurityService(Service):
 
     def _set_role_cache(
         self, principal: Principal, cache: Dict[Optional[str], Set[Role]]
-    ) -> None:
+    ):
         principal.__roles_cache__ = cache
 
     def _fill_role_cache(
@@ -392,7 +392,7 @@ class SecurityService(Service):
     @require_flush
     def _fill_role_cache_batch(
         self, principals: Collection[Principal], overwrite: bool = False
-    ) -> None:
+    ):
         """Fill role cache for `principals` (Users and/or Groups), in order to
         avoid too many queries when checking role access with 'has_role'."""
         if not self.app_state.use_cache:
@@ -450,7 +450,7 @@ class SecurityService(Service):
 
             self._set_role_cache(user, all_roles)
 
-    def _clear_role_cache(self, principal: Principal) -> None:
+    def _clear_role_cache(self, principal: Principal):
         if hasattr(principal, "__roles_cache__"):
             del principal.__roles_cache__
 
@@ -537,7 +537,7 @@ class SecurityService(Service):
 
     def grant_role(
         self, principal: Principal, role: Union[Role, str], obj: Optional[Model] = None
-    ) -> None:
+    ):
         """Grant `role` to `user` (either globally, if `obj` is None, or on the
         specific `obj`)."""
         assert principal
@@ -603,7 +603,7 @@ class SecurityService(Service):
         principal: Principal,
         role: Union[Role, str],
         object: Optional[Model] = None,
-    ) -> None:
+    ):
         """Ungrant `role` to `user` (either globally, if `object` is None, or
         on the specific `object`)."""
 
@@ -879,7 +879,7 @@ class SecurityService(Service):
 
     def add_permission(
         self, permission: Permission, role: Role, obj: Optional[Model] = None
-    ) -> None:
+    ):
         session = None
         if obj is not None:
             session = object_session(obj)
@@ -897,7 +897,7 @@ class SecurityService(Service):
 
     def delete_permission(
         self, permission: Permission, role: Role, obj: Optional[Model] = None
-    ) -> None:
+    ):
         session = None
         if obj is not None:
             session = object_session(obj)

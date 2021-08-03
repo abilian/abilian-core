@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
     from abilian.app import Application
 
 
-def init_app(app: Application) -> None:
+def init_app(app: Application):
     register_filters()
 
     assets = app.extensions["webassets"]
@@ -29,7 +29,7 @@ def init_app(app: Application) -> None:
     app.before_first_request(requirejs_config)
 
 
-def requirejs_config() -> None:
+def requirejs_config():
     assets = current_app.extensions["webassets"]
     config = assets.requirejs_config
 

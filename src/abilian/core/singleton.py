@@ -37,7 +37,7 @@ class UniqueName(metaclass=ValueSingletonMeta):
     __slots__ = ("_hash", "__name")
     attr = "name"
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str):
         self.__name = str(name).strip().lower()
         self._hash = hash(self.__name)
 
@@ -75,7 +75,7 @@ class UniqueNameType(TypeDecorator):
     Type: type
     default_max_length = 100
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         assert self.Type is not None
         kwargs.setdefault("length", self.default_max_length)
         TypeDecorator.__init__(self, *args, **kwargs)

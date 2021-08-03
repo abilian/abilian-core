@@ -69,7 +69,7 @@ class ModuleAction(Action):
     `'module:{module.endpoint}'`
     """
 
-    def __init__(self, module: Module, group: str, name: str, *args, **kwargs) -> None:
+    def __init__(self, module: Module, group: str, name: str, *args, **kwargs):
         self.group = group
         super().__init__(module.action_category, name, *args, **kwargs)
 
@@ -152,7 +152,7 @@ class ModuleView:
     #: :class:`Module` instance
     module: Module
 
-    def __init__(self, module: Module, *args, **kwargs) -> None:
+    def __init__(self, module: Module, *args, **kwargs):
         self.module = module
         super().__init__(*args, **kwargs)
 
@@ -357,7 +357,7 @@ class ModuleMeta(type):
     the class) to avoid calculating them for each view class instance.
     """
 
-    def __init__(cls, classname: str, bases: Tuple, fields: Dict[str, Any]) -> None:
+    def __init__(cls, classname: str, bases: Tuple, fields: Dict[str, Any]):
         type.__init__(cls, classname, bases, fields)
 
         # Gather exposed views
@@ -441,7 +441,7 @@ class Module(metaclass=ModuleMeta):
     tableview_options = {}  # type: ignore
     _urls: List[Tuple] = []
 
-    def __init__(self) -> None:
+    def __init__(self):
         # If endpoint name is not provided, get it from the class name
         if self.endpoint is None:
             class_name = self.__class__.__name__
@@ -538,13 +538,13 @@ class Module(metaclass=ModuleMeta):
     def get_component(self, name):
         return self.__components.get(name)
 
-    def _setup_view(self, url: str, attr: str, cls: Any, *args, **kwargs) -> None:
+    def _setup_view(self, url: str, attr: str, cls: Any, *args, **kwargs):
         """Register class based views."""
         view = cls.as_view(attr, *args, **kwargs)
         setattr(self, attr, view)
         self._urls.append((url, attr, view.methods))
 
-    def init_related_views(self) -> None:
+    def init_related_views(self):
         related_views = []
         for view in self.related_views:
             if not isinstance(view, RelatedView):
@@ -564,7 +564,7 @@ class Module(metaclass=ModuleMeta):
 
         return groups
 
-    def register_actions(self) -> None:
+    def register_actions(self):
         ACTIONS = [
             ModuleAction(
                 self,
@@ -611,10 +611,10 @@ class Module(metaclass=ModuleMeta):
 
         return self.blueprint
 
-    def _setup_breadcrumb_preprocessors(self, state: BlueprintSetupState) -> None:
+    def _setup_breadcrumb_preprocessors(self, state: BlueprintSetupState):
         self.blueprint.url_value_preprocessor(self._add_breadcrumb)
 
-    def _add_breadcrumb(self, endpoint: str, values: Dict[Any, Any]) -> None:
+    def _add_breadcrumb(self, endpoint: str, values: Dict[Any, Any]):
         g.breadcrumb.append(
             BreadcrumbItem(label=self.label, url=Endpoint(".list_view"))
         )
@@ -862,9 +862,7 @@ class CRUDApp:
 
     modules: Collection[Module]
 
-    def __init__(
-        self, app: Application, modules: None = None, name: None = None
-    ) -> None:
+    def __init__(self, app: Application, modules: None = None, name: None = None):
         if name is None:
             name = self.__class__.__module__
             modules_signature = ",".join(str(module.id) for module in self.modules)
@@ -887,7 +885,7 @@ class CRUDApp:
 
         return None
 
-    def add_module(self, module: Module) -> None:
+    def add_module(self, module: Module):
         self.app.register_blueprint(self.create_blueprint(module))
         module.register_actions()
 

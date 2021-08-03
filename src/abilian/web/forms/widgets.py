@@ -154,9 +154,7 @@ class BaseTableView(View):
 
     columns: List[Dict[str, Any]]
 
-    def __init__(
-        self, columns: List[Dict[str, Any]], options: Optional[Any] = None
-    ) -> None:
+    def __init__(self, columns: List[Dict[str, Any]], options: Optional[Any] = None):
         if self.show_search is None:
             self.show_search = self.show_controls
 
@@ -169,7 +167,7 @@ class BaseTableView(View):
             self.show_search = self.options.get("show_search", self.show_controls)
             self.paginate = self.options.get("paginate", self.paginate)
 
-    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]) -> None:
+    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]):
         # TODO
         default_width = f"{(0.99 / len(columns) * 100):2.0f}%"
         for col in columns:
@@ -316,7 +314,7 @@ class AjaxMainTableView(View):
         search_criterions: Tuple = (),
         name: Optional[str] = None,
         options: Optional[Dict[str, Any]] = None,
-    ) -> None:
+    ):
         self.columns = []
         self.init_columns(columns)
         self.ajax_source = ajax_source
@@ -325,7 +323,7 @@ class AjaxMainTableView(View):
         self.save_state = name is not None
         self.options = options or {}
 
-    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]) -> None:
+    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]):
         # TODO: compute the correct width for each column.
         default_width = 0.99 / len(columns)
         for col in columns:
@@ -459,7 +457,7 @@ class AjaxMainTableView(View):
 class SingleView(View):
     """View on a single object."""
 
-    def __init__(self, form: Form, *panels: Panel, **options: Any) -> None:
+    def __init__(self, form: Form, *panels: Panel, **options: Any):
         self.form = form
         self.panels = panels
         self.options = options
@@ -566,7 +564,7 @@ class Panel:
     designs eventually.
     """
 
-    def __init__(self, label: str, *rows: Row) -> None:
+    def __init__(self, label: str, *rows: Row):
         self.label = label
         self.rows = rows
 
@@ -588,7 +586,7 @@ class Row:
     designs eventually.
     """
 
-    def __init__(self, *cols: str) -> None:
+    def __init__(self, *cols: str):
         self.cols = cols
 
     def __iter__(self):
@@ -657,7 +655,7 @@ class TextInput(wtforms.widgets.TextInput):
         input_type: Optional[Any] = None,
         pre_icon: Optional[Any] = None,
         post_icon: Optional[Any] = None,
-    ) -> None:
+    ):
         super().__init__(input_type)
 
         if pre_icon is not None:
@@ -711,7 +709,7 @@ class TextArea(BaseTextArea):
         rows: Optional[int] = None,
         *args: Any,
         **kwargs: Any,
-    ) -> None:
+    ):
         super().__init__(*args, **kwargs)
 
         if resizeable not in self._resizeable_valid:
@@ -745,7 +743,7 @@ class FileInput:
     file-inputs-into-shape-with-bootstrap-3/
     """
 
-    def __init__(self, template: str = "widgets/file_input.html") -> None:
+    def __init__(self, template: str = "widgets/file_input.html"):
         self.template = template
 
     def __call__(self, field, **kwargs):
@@ -852,7 +850,7 @@ class ImageInput(FileInput):
         height: int = 120,
         resize_mode: str = image.CROP,
         valid_extensions: Tuple[str, str, str] = ("jpg", "jpeg", "png"),
-    ) -> None:
+    ):
         super().__init__(template=template)
         self.resize_mode = resize_mode
         self.valid_extensions = valid_extensions
@@ -1035,7 +1033,7 @@ class TimeInput(Input):
         showInputs: bool = False,
         disableFocus: bool = False,
         modalBackdrop: bool = False,
-    ) -> None:
+    ):
         super().__init__()
 
         if template is not None:
@@ -1090,7 +1088,7 @@ class DateTimeInput:
     """if corresponding field.raw_data exist it is used to initialize default
     date & time (raw_data example: ["10/10/16 | 09:00"])"""
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.date = DateInput()
         self.time = TimeInput()
 
@@ -1190,7 +1188,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
     )
     on_off_options: Dict[str, Any]
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any):
         self.on_off_mode = kwargs.pop("on_off_mode", False)
         self.on_off_options = {}
         on_off_options = kwargs.pop("on_off_options", {})
@@ -1217,7 +1215,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
 class PasswordInput(BasePasswordInput):
     """Supports setting 'autocomplete' at instanciation time."""
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any):
         self.autocomplete = kwargs.pop("autocomplete", None)
         super().__init__(*args, **kwargs)
 
@@ -1383,7 +1381,7 @@ class ListWidget(wtforms.widgets.ListWidget):
 
     def __init__(
         self, html_tag: str = "ul", prefix_label: bool = True, show_label: bool = True
-    ) -> None:
+    ):
         super().__init__(html_tag, prefix_label)
         self.show_label = show_label
 
@@ -1519,7 +1517,7 @@ class Select2(Select):
         js_init: str = "select2",
         *args: Any,
         **kwargs: Any,
-    ) -> None:
+    ):
         super().__init__(*args, **kwargs)
         self.js_init = js_init
 

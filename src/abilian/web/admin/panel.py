@@ -21,7 +21,7 @@ class AdminPanel:
     icon: str = ""
     admin: Admin
 
-    def url_value_preprocess(self, endpoint: str, view_args: Dict[Any, Any]) -> None:
+    def url_value_preprocess(self, endpoint: str, view_args: Dict[Any, Any]):
         """Panel can preprocess values for their views.
 
         This method is called only if the endpoint is for `get()`, `post()`, or
@@ -30,7 +30,7 @@ class AdminPanel:
         This is also the right place to add items to the breadcrumbs.
         """
 
-    def install_additional_rules(self, add_url_rule: Callable) -> None:
+    def install_additional_rules(self, add_url_rule: Callable):
         """This method can be redefined in subclasses to install custom url
         rules.
 

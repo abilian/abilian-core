@@ -9,5 +9,5 @@ from .extension import TagsExtension
 __all__ = ["TagsExtension", "TagCriterion"]
 
 
-def register_plugin(app: Flask) -> None:
+def register_plugin(app: Flask):
     TagsExtension(app)

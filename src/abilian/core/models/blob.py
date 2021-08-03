@@ -87,7 +87,7 @@ class Blob(Model):
             self.meta["mimetype"] = value.content_type
 
     @value.deleter
-    def value(self) -> None:
+    def value(self):
         """Remove value from repository."""
         from abilian.services.repository import session_repository as repository
 
@@ -111,9 +111,7 @@ class Blob(Model):
 
 
 @listens_for(sa.orm.Session, "after_flush")
-def _blob_propagate_delete_content(
-    session: Session, flush_context: UOWTransaction
-) -> None:
+def _blob_propagate_delete_content(session: Session, flush_context: UOWTransaction):
     deleted = (obj for obj in session.deleted if isinstance(obj, Blob))
     for blob in deleted:
         del blob.value

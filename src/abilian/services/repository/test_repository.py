@@ -12,14 +12,14 @@ UUID_STR = "4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9"
 UUID = uuid.UUID(UUID_STR)
 
 
-def test_rel_path(session: Session) -> None:
+def test_rel_path(session: Session):
     p = repository.rel_path(UUID)
     expected = Path("4f", "80", "4f80f02f-52e3-4fe2-b9f2-2c3e99449ce9")
     assert isinstance(p, Path)
     assert p == expected
 
 
-def test_abs_path(session: Session) -> None:
+def test_abs_path(session: Session):
     p = repository.abs_path(UUID)
     assert isinstance(p, Path)
 
@@ -57,14 +57,14 @@ def test_get_with_non_existing_content(session: Session):
         assert repository[u]
 
 
-def test_set(session: Session) -> None:
+def test_set(session: Session):
     u1 = uuid.uuid4()
     p = repository.abs_path(u1)
     repository.set(u1, b"my file content")
     assert p.open("rb").read() == b"my file content"
 
 
-def test_setitem(session: Session) -> None:
+def test_setitem(session: Session):
     u1 = uuid.uuid4()
     p = repository.abs_path(u1)
     repository[u1] = b"my file content"
@@ -72,7 +72,7 @@ def test_setitem(session: Session) -> None:
     # FIXME: test Unicode content
 
 
-def test_delete(session: Session) -> None:
+def test_delete(session: Session):
     u1 = uuid.uuid4()
     repository.set(u1, b"my file content")
     p = repository.abs_path(u1)
@@ -82,7 +82,7 @@ def test_delete(session: Session) -> None:
     assert not p.exists()
 
 
-def test_delitem(session: Session) -> None:
+def test_delitem(session: Session):
     u1 = uuid.uuid4()
     repository.set(u1, b"my file content")
     p = repository.abs_path(u1)
@@ -92,7 +92,7 @@ def test_delitem(session: Session) -> None:
     assert not p.exists()
 
 
-def test_delete_non_existent(session: Session) -> None:
+def test_delete_non_existent(session: Session):
     # non-existent
     u1 = uuid.uuid4()
     with raises(KeyError):

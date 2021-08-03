@@ -9,7 +9,7 @@ from abilian.core.sqlalchemy import SQLAlchemy
 from abilian.services import security
 
 
-def test_default_permissions(app: Flask, db: SQLAlchemy, session: Session) -> None:
+def test_default_permissions(app: Flask, db: SQLAlchemy, session: Session):
     class MyRestrictedType(Entity):
         __default_permissions__ = {
             security.READ: {security.Anonymous},

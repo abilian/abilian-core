@@ -30,7 +30,7 @@ class BaseMixin(IdMixin, TimestampedMixin, OwnedMixin):
     def __tablename__(cls):
         return cls.__name__.lower()
 
-    def __init__(self) -> None:
+    def __init__(self):
         OwnedMixin.__init__(self)
 
     def __repr__(self):

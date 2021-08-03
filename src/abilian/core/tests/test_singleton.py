@@ -12,20 +12,20 @@ class NS2(UniqueName):
     pass
 
 
-def test_singleton() -> None:
+def test_singleton():
     val = NS1("val")
     other_val = NS1("val")
     assert val is other_val
     assert id(val) == id(other_val)
 
 
-def test_equality() -> None:
+def test_equality():
     val = NS1("val")
     assert val == "val"
     assert val == "val"
 
 
-def test_namespaces() -> None:
+def test_namespaces():
     ns1_val = NS1("val")
     ns2_val = NS2("val")
     assert ns1_val is not ns2_val

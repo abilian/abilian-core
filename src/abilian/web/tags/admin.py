@@ -277,7 +277,7 @@ class TagPanel(AdminPanel):
 
         return render_template("admin/tags.html", namespaces=namespaces)
 
-    def install_additional_rules(self, add_url_rule: Callable) -> None:
+    def install_additional_rules(self, add_url_rule: Callable):
         panel_endpoint = f".{self.id}"
         ns_base = "/<string:ns>/"
         add_url_rule(

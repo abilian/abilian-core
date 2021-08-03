@@ -44,7 +44,7 @@ def reindex(clear: bool, progressive: bool, batch_size: int):
 
 
 class Reindexer:
-    def __init__(self, clear: bool, progressive: bool, batch_size: int) -> None:
+    def __init__(self, clear: bool, progressive: bool, batch_size: int):
         self.clear = clear
         self.progressive = progressive
         self.batch_size = int(batch_size or 0)
@@ -76,7 +76,7 @@ class Reindexer:
         except StopIteration:
             pass
 
-    def reindex_class(self, cls: Entity) -> None:
+    def reindex_class(self, cls: Entity):
         current_object_type = cls._object_type()
 
         if not self.clear and current_object_type not in self.cleared:

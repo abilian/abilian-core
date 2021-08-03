@@ -39,7 +39,7 @@ __all__ = (
 # patch flask.ext.mail.Message.send to always set enveloppe_from default mail
 # sender
 # FIXME: we'ld rather subclass Message and update all imports
-def _message_send(self: Any, connection: flask_mail.Connection) -> None:
+def _message_send(self: Any, connection: flask_mail.Connection):
     """Send a single message instance.
 
     If TESTING is True the message will not actually be sent.
@@ -69,7 +69,7 @@ deferred_js = DeferredJS()
 @sa.event.listens_for(db.metadata, "before_drop")
 def _filter_metadata_for_connection(
     target: MetaData, connection: Connection, **kw: Any
-) -> None:
+):
     """Listener to control what indexes get created.
 
     Useful for skipping postgres-specific indexes on a sqlite for example.
@@ -96,7 +96,7 @@ def get_extension(name: str):
     return current_app.extensions.get(name)
 
 
-def _install_get_display_value(cls: Any) -> None:
+def _install_get_display_value(cls: Any):
 
     _MARK = object()
 
@@ -143,7 +143,7 @@ sa.event.listen(db.Model, "class_instrument", _install_get_display_value)
 # Make Sqlite a bit more well-behaved.
 #
 @sa.event.listens_for(Engine, "connect")
-def _set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
+def _set_sqlite_pragma(dbapi_connection: Any, connection_record: Any):
     if isinstance(dbapi_connection, sqlite3.Connection):  # pragma: no cover
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON;")

@@ -28,7 +28,7 @@ class NavItem(Action):
 
     def __init__(
         self, category: str, name: str, divider: bool = False, *args: Any, **kwargs: Any
-    ) -> None:
+    ):
         category = f"navigation:{category}"
         super().__init__(category, name, *args, **kwargs)
         self.divider = divider
@@ -72,18 +72,18 @@ class NavGroup(NavItem):
 
     def __init__(
         self, category: str, name: str, items: Tuple[NavItem] = (), *args, **kwargs
-    ) -> None:
+    ):
         NavItem.__init__(self, category, name, *args, **kwargs)
         self.items = list(items)
         self._paths = {self.path}
         for i in self.items:
             self._paths.add(i.path)
 
-    def append(self, item: NavItem) -> None:
+    def append(self, item: NavItem):
         self.items.append(item)
         self._paths.add(item.path)
 
-    def insert(self, pos: int, item: NavItem) -> None:
+    def insert(self, pos: int, item: NavItem):
         self.items.insert(pos, item)
         self._paths.add(item.path)
 
@@ -132,7 +132,7 @@ class BreadcrumbItem:
         url: Union[str, Endpoint] = "#",
         icon: Optional[str] = None,
         description: Optional[Any] = None,
-    ) -> None:
+    ):
         # don't test 'label or...': if label is a lazy_gettext, it will be
         # resolved. If this item is created in a url_value_preprocessor, it will
         # setup i18n before auth has loaded user, so i18n will fallback on browser

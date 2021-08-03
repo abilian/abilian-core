@@ -50,7 +50,7 @@ class FormContext:
         permission: Optional[Permission] = None,
         user: Optional[User] = None,
         obj: Any = None,
-    ) -> None:
+    ):
         self.permission = permission
         self.user = user
         self.obj = obj
@@ -78,7 +78,7 @@ class FormContext:
         g.__form_ctx__ = self
         return self
 
-    def __exit__(self, exc_type: None, exc_val: None, exc_tb: None) -> None:
+    def __exit__(self, exc_type: None, exc_val: None, exc_tb: None):
         if not has_app_context():
             return
 
@@ -91,7 +91,7 @@ class Form(BaseForm):
     #: :class:`FormPermissions` instance
     _permissions = None
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         permission = kwargs.pop("permission", None)
         user = kwargs.pop("user", None)
         obj = kwargs.get("obj")
@@ -179,7 +179,7 @@ if not _PATCHED:
 
     _wtforms_Field_init = Field.__init__
 
-    def _core_field_init(self: Any, *args: Any, **kwargs: Any) -> None:
+    def _core_field_init(self: Any, *args: Any, **kwargs: Any):
         view_widget = None
         if "view_widget" in kwargs:
             view_widget = kwargs.pop("view_widget")

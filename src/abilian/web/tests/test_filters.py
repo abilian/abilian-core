@@ -29,12 +29,12 @@ def user_tz() -> str:
 USER_TZ = timezone(user_tz())
 
 
-def test_labelize() -> None:
+def test_labelize():
     labelize = filters.labelize
     assert labelize("test_case") == "Test Case"
 
 
-def test_filesize() -> None:
+def test_filesize():
     filesize = filters.filesize
     assert str(filesize("100")) == "100&nbsp;B"
     assert str(filesize(100)) == "100&nbsp;B"
@@ -47,7 +47,7 @@ def test_filesize() -> None:
     assert str(filesize(100000000000)) == "100&nbsp;GB"
 
 
-def test_roughsize() -> None:
+def test_roughsize():
     roughsize = filters.roughsize
     assert "6" == roughsize(6)
     assert "15" == roughsize(15)
@@ -56,7 +56,7 @@ def test_roughsize() -> None:
     assert "55+" == roughsize(57, mod=5)
 
 
-def test_abbrev() -> None:
+def test_abbrev():
     abbrev = filters.abbrev
     assert "test" == abbrev("test", 20)
     assert "Longer test...e truncated" == abbrev(
@@ -64,7 +64,7 @@ def test_abbrev() -> None:
     )
 
 
-def test_linkify() -> None:
+def test_linkify():
     tmpl = env.from_string('{{ "http://test.example.com"|linkify}}')
     rendered = tmpl.render()
     el = html5lib.parseFragment(rendered)
@@ -79,7 +79,7 @@ def test_linkify() -> None:
     ]
 
 
-def test_nl2br() -> None:
+def test_nl2br():
     tmpl = env.from_string(
         '{{ "first line\nsecond line\n\n  third, indented" | nl2br }}'
     )
@@ -89,7 +89,7 @@ def test_nl2br() -> None:
     )
 
 
-def test_paragraphs() -> None:
+def test_paragraphs():
     markdown_text = dedent(
         """\
         {{ "First paragraph
@@ -129,7 +129,7 @@ def app() -> Iterator[Flask]:
         yield app
 
 
-def test_date_age(app: Flask) -> None:
+def test_date_age(app: Flask):
     date_age = filters.date_age
     now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
     assert date_age(None) == ""
@@ -152,7 +152,7 @@ def test_date_age(app: Flask) -> None:
     #     assert date_age(dt) == "2012-06-10 16:30 (2 hours ago)"
 
 
-def test_age(app: Flask) -> None:
+def test_age(app: Flask):
     age = filters.age
     now = datetime.datetime(2012, 6, 10, 10, 10, 10, tzinfo=utc)
     d1m = datetime.datetime(2012, 6, 10, 10, 10, 0, tzinfo=utc)

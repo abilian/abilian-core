@@ -21,11 +21,11 @@ __all__ = ["ActivityService"]
 class ActivityService(Service):
     name = "activity"
 
-    def start(self, ignore_state: bool = False) -> None:
+    def start(self, ignore_state: bool = False):
         super().start(ignore_state)
         activity.connect(self.log_activity)
 
-    def stop(self, ignore_state: bool = False) -> None:
+    def stop(self, ignore_state: bool = False):
         super().stop(ignore_state)
         activity.disconnect(self.log_activity)
 
@@ -36,7 +36,7 @@ class ActivityService(Service):
         verb: str,
         object: Any,
         target: Optional[Entity] = None,
-    ) -> None:
+    ):
         assert self.running
         if not isinstance(object, Entity):
             # generic forms may send signals inconditionnaly. For now we have activity

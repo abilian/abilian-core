@@ -79,7 +79,7 @@ class SAAdapter(SchemaAdapter):
     * define new fields on schema
     """
 
-    def __init__(self, model_class: Type[Model], schema: Schema) -> None:
+    def __init__(self, model_class: Type[Model], schema: Schema):
         """
         :param:model_class: a sqlalchemy model class
         :param:schema: :class:`whoosh.fields.Schema` instance
@@ -104,7 +104,7 @@ class SAAdapter(SchemaAdapter):
                 result += cls.__index_to__
         return tuple(result)
 
-    def _build_doc_attrs(self, model_class: Type[Model], schema: Schema) -> None:
+    def _build_doc_attrs(self, model_class: Type[Model], schema: Schema):
         mapper = sa.inspect(model_class)
 
         args = self.doc_attrs
@@ -114,7 +114,7 @@ class SAAdapter(SchemaAdapter):
 
         def setup_field(
             attr_name: str, field_name: Union[Tuple[str, Union[type, ID]], str]
-        ) -> None:
+        ):
             field_def = False
             if not isinstance(field_name, str):
                 field_name, field_def = field_name

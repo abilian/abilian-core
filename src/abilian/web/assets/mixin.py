@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class AssetManagerMixin(Flask):
-    def init_assets(self) -> None:
+    def init_assets(self):
         if self.debug:
             js_filters = None
         else:
@@ -50,7 +50,7 @@ class AssetManagerMixin(Flask):
                 "options": {"output": filename, "filters": js_filters}
             }
 
-    def setup_asset_extension(self) -> None:
+    def setup_asset_extension(self):
         assets = self.extensions["webassets"] = AssetsEnv(self)
         if self.debug:
             assets.debug = True
@@ -94,7 +94,7 @@ class AssetManagerMixin(Flask):
             "min", str(assets_dir), endpoint="webassets_static", roles=Anonymous
         )
 
-    def _finalize_assets_setup(self) -> None:
+    def _finalize_assets_setup(self):
         assets = self.extensions["webassets"]
         assets_dir = Path(assets.directory)
         closure_base_args = [
@@ -122,7 +122,7 @@ class AssetManagerMixin(Flask):
             if bundles:
                 assets.register(name, Bundle(*bundles, **options))
 
-    def register_asset(self, type_: str, *assets: Any) -> None:
+    def register_asset(self, type_: str, *assets: Any):
         """Register webassets bundle to be served on all pages.
 
         :param type_: `"css"`, `"js-top"` or `"js""`.
@@ -147,7 +147,7 @@ class AssetManagerMixin(Flask):
 
             self._assets_bundles[type_].setdefault("bundles", []).append(asset)
 
-    def register_i18n_js(self, *paths: str) -> None:
+    def register_i18n_js(self, *paths: str):
         """Register templates path translations files, like
         `select2/select2_locale_{lang}.js`.
 
@@ -167,7 +167,7 @@ class AssetManagerMixin(Flask):
                 else:
                     self.register_asset(f"js-i18n-{lang}", filename)
 
-    def register_base_assets(self) -> None:
+    def register_base_assets(self):
         """Register assets needed by Abilian.
 
         This is done in a separate method in order to allow applications

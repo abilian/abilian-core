@@ -29,7 +29,7 @@ def _grouped_vocabularies():
     return by_group
 
 
-def get_vocabulary(name: str, group: str = "") -> None:
+def get_vocabulary(name: str, group: str = ""):
     name = name.lower()
     vocs = _grouped_vocabularies()
     for voc in vocs.get(group, ()):
@@ -42,7 +42,7 @@ def get_vocabulary(name: str, group: str = "") -> None:
 class VocabularyService(Service):
     name = "vocabularies"
 
-    def init_app(self, app: Application) -> None:
+    def init_app(self, app: Application):
         super().init_app(app)
         app.register_jinja_loaders(jinja2.PackageLoader(__name__))
 
@@ -54,7 +54,7 @@ class VocabularyService(Service):
     def grouped_vocabularies(self):
         return _grouped_vocabularies()
 
-    def get_vocabulary(self, name: str, group: str = "") -> None:
+    def get_vocabulary(self, name: str, group: str = ""):
         return get_vocabulary(name, group=group)
 
 

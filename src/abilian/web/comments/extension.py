@@ -18,7 +18,7 @@ class CommentExtension:
     It is also available in templates as `comments`.
     """
 
-    def __init__(self, app: Flask) -> None:
+    def __init__(self, app: Flask):
         app.extensions["comments"] = self
         app.add_template_global(self, "comments")
         app.register_blueprint(blueprint)

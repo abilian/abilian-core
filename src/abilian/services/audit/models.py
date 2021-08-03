@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class Changes:
     """Trace object modifications."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.columns = {}
         self.collections = {}
 
@@ -54,14 +54,14 @@ class Changes:
 
         return c
 
-    def set_column_changes(self, name: str, old_value: Any, new_value: Any) -> None:
+    def set_column_changes(self, name: str, old_value: Any, new_value: Any):
         self.columns[name] = (old_value, new_value)
 
-    def set_related_changes(self, name: str, changes: Changes) -> None:
+    def set_related_changes(self, name: str, changes: Changes):
         assert isinstance(changes, Changes)
         self.columns[name] = changes
 
-    def _collection_change(self, name: str, value: Any, add: bool) -> None:
+    def _collection_change(self, name: str, value: Any, add: bool):
         colls = self.collections
         to_add, to_remove = colls.setdefault(name, (set(), set()))
         if not add:
@@ -73,7 +73,7 @@ class Changes:
         if value in to_remove:
             to_remove.remove(value)
 
-    def collection_append(self, name: str, value: Any) -> None:
+    def collection_append(self, name: str, value: Any):
         self._collection_change(name, value, add=True)
 
     def collection_remove(self, name: str, value: Any):
@@ -177,7 +177,7 @@ class AuditEntry(db.Model):
 
         return changes
 
-    def set_changes(self, changes: Changes) -> None:
+    def set_changes(self, changes: Changes):
         changes = self._format_changes(changes)
         self.changes_pickle = pickle.dumps(changes, protocol=2)
 

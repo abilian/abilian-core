@@ -26,7 +26,7 @@ def svc(app: Application) -> Iterator[Union[Iterator, Iterator[WhooshIndexServic
         yield svc
 
 
-def test_app_state(app: Application, svc: WhooshIndexService) -> None:
+def test_app_state(app: Application, svc: WhooshIndexService):
     state = svc.app_state
     assert IndexedContact in state.indexed_classes
     assert IndexedContact.entity_type in svc.adapted
@@ -35,7 +35,7 @@ def test_app_state(app: Application, svc: WhooshIndexService) -> None:
 
 def test_index_only_after_final_commit(
     app: Application, session: Session, svc: WhooshIndexService
-) -> None:
+):
     contact = IndexedContact(name="John Doe")
 
     state = svc.app_state
@@ -57,7 +57,7 @@ def test_index_only_after_final_commit(
     assert state.to_update == []
 
 
-def test_clear(app: Application, svc: WhooshIndexService) -> None:
+def test_clear(app: Application, svc: WhooshIndexService):
     # just check no exception happens
     svc.clear()
 

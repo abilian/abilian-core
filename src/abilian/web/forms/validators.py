@@ -56,7 +56,7 @@ class Email(validators.Email):
 
 
 class CorrectInputRequired(validators.DataRequired):
-    def __call__(self, form: Form, field: Field) -> None:
+    def __call__(self, form: Form, field: Field):
         if (
             field.data is None
             or (isinstance(field.data, str) and not field.data.strip())
@@ -242,7 +242,7 @@ def siret_validator() -> Callable:
     """Validate a SIRET: check its length (14), its final code, and pass it
     through the Luhn algorithm."""
 
-    def _validate_siret(form: Form, field: Field, siret: str = "") -> None:
+    def _validate_siret(form: Form, field: Field, siret: str = ""):
         """SIRET validator.
 
         A WTForm validator wants a form and a field as parameters. We

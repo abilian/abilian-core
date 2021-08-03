@@ -30,7 +30,7 @@ class FormPermissions:
         fields_read: Optional[Dict[str, Collection[Role]]] = None,
         fields_write: Optional[Dict[str, Collection[Role]]] = None,
         existing: Optional[Any] = None,
-    ) -> None:
+    ):
         """
         :param default: default roles when not specified for field. Can be:
 

@@ -17,7 +17,7 @@ class DummyModel2(Entity):
     query: Query
 
 
-def test_list_attribute(session: Session) -> None:
+def test_list_attribute(session: Session):
     model = DummyModel2(list_attr=[1, 2, 3])
     session.add(model)
     session.commit()
@@ -33,7 +33,7 @@ def test_list_attribute(session: Session) -> None:
     assert model2.list_attr == [2, 3, 4]
 
 
-def test_dict_attribute(session: Session) -> None:
+def test_dict_attribute(session: Session):
     model = DummyModel2(dict_attr={"a": 3, "b": 4})
     session.add(model)
     session.commit()
@@ -46,7 +46,7 @@ def test_dict_attribute(session: Session) -> None:
     assert model2.dict_attr == {"a": 3, "b": 4, "c": 5}
 
 
-def test_uuid_attribute(session: Session) -> None:
+def test_uuid_attribute(session: Session):
     # uuid from string
     model = DummyModel2(uuid="c5ad316a-2cd0-4f78-a49b-cff216c10713")
     session.add(model)

@@ -37,11 +37,11 @@ class Converter:
     cache_dir: Path
     handlers: List[Handler]
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.handlers = []
         self.cache = Cache()
 
-    def init_app(self, app: Flask) -> None:
+    def init_app(self, app: Flask):
         self.init_work_dirs(
             cache_dir=Path(app.instance_path, CACHE_DIR),
             tmp_dir=Path(app.instance_path, TMP_DIR),
@@ -52,7 +52,7 @@ class Converter:
         for handler in self.handlers:
             handler.init_app(app)
 
-    def init_work_dirs(self, cache_dir: Path, tmp_dir: Path) -> None:
+    def init_work_dirs(self, cache_dir: Path, tmp_dir: Path):
         self.tmp_dir = tmp_dir
         self.cache_dir = cache_dir
         self.cache.cache_dir = self.cache_dir
@@ -62,13 +62,13 @@ class Converter:
         if not self.cache_dir.exists():
             self.cache_dir.mkdir()
 
-    def clear(self) -> None:
+    def clear(self):
         self.cache.clear()
         for d in (self.tmp_dir, self.cache_dir):
             shutil.rmtree(bytes(d))
             d.mkdir()
 
-    def register_handler(self, handler: Handler) -> None:
+    def register_handler(self, handler: Handler):
         self.handlers.append(handler)
 
     # TODO: refactor, pass a "File" or "Document" or "Blob" object

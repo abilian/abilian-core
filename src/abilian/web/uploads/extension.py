@@ -54,7 +54,7 @@ class FileUploadsExtension:
     A periodic task cleans the temporary repository.
     """
 
-    def __init__(self, app: Application) -> None:
+    def __init__(self, app: Application):
         app.extensions["uploads"] = self
         app.add_template_global(self, "uploads")
         app.register_blueprint(blueprint)
@@ -76,7 +76,7 @@ class FileUploadsExtension:
 
         path.resolve()
 
-    def _do_register_js_api(self, sender: Application) -> None:
+    def _do_register_js_api(self, sender: Application):
         app = sender
         js_api = app.js_api.setdefault("upload", {})
         js_api["newFileUrl"] = url_for("uploads.new_file")

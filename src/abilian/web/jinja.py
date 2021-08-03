@@ -20,7 +20,7 @@ from abilian.web.views.images import user_photo_url
 
 
 class JinjaManagerMixin(Flask):
-    def __init__(self) -> None:
+    def __init__(self):
         self._jinja_loaders = []
 
     #
@@ -64,7 +64,7 @@ class JinjaManagerMixin(Flask):
             options["undefined"] = jinja2.StrictUndefined
         return options
 
-    def register_jinja_loaders(self, *loaders: PackageLoader) -> None:
+    def register_jinja_loaders(self, *loaders: PackageLoader):
         """Register one or many `jinja2.Loader` instances for templates lookup.
 
         During application initialization plugins can register a loader so that

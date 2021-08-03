@@ -181,7 +181,7 @@ class Babel(BabelBase):
 
     _translations_paths: List[Tuple[str, str]]
 
-    def init_app(self, app: Flask) -> None:
+    def init_app(self, app: Flask):
         super().init_app(app)
         assert app.root_path
         self._translations_paths = [
@@ -193,7 +193,7 @@ class Babel(BabelBase):
         module_name: str,
         translations_dir: str = "translations",
         domain: str = "messages",
-    ) -> None:
+    ):
         """Add translations from external module.
 
         For example::
@@ -352,12 +352,12 @@ class ensure_request_context:
 
     _rq_ctx = None
 
-    def __enter__(self) -> None:
+    def __enter__(self):
         if _request_ctx_stack.top is None:
             ctx = self._rq_ctx = current_app.test_request_context()
             ctx.__enter__()
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: Any):
         ctx = self._rq_ctx
         self._rq_ctx = None
 

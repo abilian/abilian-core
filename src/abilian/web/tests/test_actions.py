@@ -30,7 +30,7 @@ OTHER_CAT = Action(
 ALL_ACTIONS = (BASIC, CONDITIONAL, OTHER_CAT)
 
 
-def setup_actions(app: Application) -> None:
+def setup_actions(app: Application):
     actions.init_app(app)
     for a in ALL_ACTIONS:
         a.enabled = True
@@ -39,13 +39,13 @@ def setup_actions(app: Application) -> None:
     actions.context["show_all"] = True
 
 
-def test_installed(app_context: AppContext) -> None:
+def test_installed(app_context: AppContext):
     assert actions.installed()  # test current_app (==self.app)
     assert actions.installed(app_context.app)
     assert not actions.installed(Flask("dummyapp"))
 
 
-def test_actions(app_context: AppContext) -> None:
+def test_actions(app_context: AppContext):
     setup_actions(app_context.app)
 
     all_actions = actions.actions()
@@ -55,7 +55,7 @@ def test_actions(app_context: AppContext) -> None:
     assert all_actions["cat_2:sub"] == [OTHER_CAT]
 
 
-def test_for_category(app_context: AppContext) -> None:
+def test_for_category(app_context: AppContext):
     setup_actions(app_context.app)
 
     cat_1 = actions.for_category("cat_1")
@@ -65,14 +65,14 @@ def test_for_category(app_context: AppContext) -> None:
     assert cat_2 == [OTHER_CAT]
 
 
-def test_conditional(app_context: AppContext) -> None:
+def test_conditional(app_context: AppContext):
     setup_actions(app_context.app)
 
     actions.context["show_all"] = False
     assert actions.for_category("cat_1") == [BASIC]
 
 
-def test_enabled(app_context: AppContext) -> None:
+def test_enabled(app_context: AppContext):
     setup_actions(app_context.app)
 
     assert CONDITIONAL.enabled
@@ -83,13 +83,13 @@ def test_enabled(app_context: AppContext) -> None:
     assert actions.for_category("cat_1") == [BASIC]
 
 
-def test_action_url_from_context() -> None:
+def test_action_url_from_context():
     url = OTHER_CAT.url({"for": "having", "2 keys": "in context"})
     assert url == "http://count?2"
     assert OTHER_CAT.url({}) == "http://count?0"
 
 
-def test_render(app: Application, test_request_context: RequestContext) -> None:
+def test_render(app: Application, test_request_context: RequestContext):
     setup_actions(app)
 
     assert BASIC.render() == Markup(
