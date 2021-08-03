@@ -298,14 +298,13 @@ class User(Principal, UserMixin, db.Model):
 
 
 @listens_for(User, "mapper_configured", propagate=True)
-def _add_user_indexes(mapper: Mapper, cls: type):
+def _add_user_indexes(mapper: Mapper, cls: Type[User]):
     # this is a functional index (indexes on a function result), we cannot define
     # it in __table_args__.
     #
     # see: https://groups.google.com/d/msg/sqlalchemy/CgSJUlelhGs/_Nj3f201hs4J
-    email_column = cls.email
     idx = sa.schema.Index(
-        "user_unique_lowercase_email", sa.sql.func.lower(email_column), unique=True
+        "user_unique_lowercase_email", sa.sql.func.lower(cls.email), unique=True
     )
     idx.info["engines"] = ("postgresql",)
 
@@ -337,7 +336,7 @@ class Group(Principal, db.Model):
         return len(self.members)
 
     @members_count.expression
-    def members_count(cls):
+    def members_count_expression(cls):
         return (
             sa.sql.select([sa.sql.func.count(membership.c.user_id)])
             .where(membership.c.group_id == cls.id)
