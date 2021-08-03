@@ -1,4 +1,3 @@
-""""""
 from typing import cast
 
 from flask_login import current_user, login_user

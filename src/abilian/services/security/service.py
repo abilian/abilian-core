@@ -1,4 +1,6 @@
 """Security service, manages roles and permissions."""
+from __future__ import annotations
+
 from functools import wraps
 from itertools import chain
 from typing import (
@@ -100,7 +102,7 @@ def require_flush(fun: Callable) -> Callable:
     """
 
     @wraps(fun)
-    def ensure_flushed(service: "SecurityService", *args: Any, **kwargs: Any) -> Any:
+    def ensure_flushed(service: SecurityService, *args: Any, **kwargs: Any) -> Any:
         if service.app_state.needs_db_flush:
             session = db.session()
             if not session._flushing and any(
@@ -174,7 +176,7 @@ class SecurityService(Service):
     name = "security"
     AppStateClass = SecurityServiceState
 
-    def init_app(self, app: "Application") -> None:
+    def init_app(self, app: Application) -> None:
         super().init_app(app)
         state = app.extensions[self.name]
         state.use_cache = True

@@ -1,6 +1,7 @@
 """"""
 from typing import Union
 
+from flask_login import AnonymousUserMixin
 from whoosh.analysis import (
     CharsetFilter,
     LowercaseFilter,
@@ -89,7 +90,11 @@ def indexable_role(role_or_principal: Union[Role, Principal]) -> str:
     """
     role_or_principal = unwrap(role_or_principal)
 
-    if hasattr(role_or_principal, "is_anonymous") and role_or_principal.is_anonymous:
+    if isinstance(role_or_principal, AnonymousUserMixin):
+        # transform anonymous user to anonymous role
+        role_or_principal = Anonymous
+
+    if isinstance(role_or_principal, User) and role_or_principal.is_anonymous:
         # transform anonymous user to anonymous role
         role_or_principal = Anonymous
 

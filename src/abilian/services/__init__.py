@@ -31,3 +31,7 @@ settings_service = SettingsService()
 
 def get_service(service: str) -> Service:
     return current_app.services[service]
+
+
+def get_security_service():
+    return security_service

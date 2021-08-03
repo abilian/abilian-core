@@ -6,6 +6,8 @@ Notes:
 - For application settings use
   :class:`abilian.services.settings.SettingsService`.
 """
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from flask import Blueprint, Flask, g, redirect, request, url_for
@@ -40,11 +42,11 @@ user_menu.insert(0, _PREF_NAV_ITEM)
 
 
 class PreferenceState(ServiceState):
-    panels: List["PreferencePanel"]
+    panels: List[PreferencePanel]
     blueprint: Blueprint
     blueprint_registered: bool
 
-    def __init__(self, service: "PreferenceService", *args: Any, **kwargs: Any) -> None:
+    def __init__(self, service: PreferenceService, *args: Any, **kwargs: Any) -> None:
         super().__init__(service, *args, **kwargs)
         self.panels = []
         self.nav_paths = {}
@@ -59,7 +61,7 @@ class PreferenceService(Service):
     name = "preferences"
     AppStateClass = PreferenceState
 
-    def init_app(self, app: "Application", *panels: Any) -> None:
+    def init_app(self, app: Application, *panels: Any) -> None:
         super().init_app(app)
 
         with app.app_context():
@@ -106,7 +108,7 @@ class PreferenceService(Service):
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
             raise ValueError(
-                "Extension already initialized for app, " "cannot add more panel"
+                "Extension already initialized for app, cannot add more panel"
             )
 
         state.panels.append(panel)

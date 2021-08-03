@@ -1,8 +1,9 @@
-""""""
+from __future__ import annotations
+
 import logging
 import typing
 from datetime import datetime, timedelta
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional
 
 from flask import Flask, current_app, g, redirect, request, url_for
 from flask_babel import lazy_gettext as _l
@@ -89,7 +90,7 @@ _ACTIONS = (
 class AuthServiceState(ServiceState):
     """State class for :class:`AuthService`"""
 
-    def __init__(self, service: "AuthService", *args: Any, **kwargs: Any) -> None:
+    def __init__(self, service: AuthService, *args: Any, **kwargs: Any) -> None:
         super().__init__(service, *args, **kwargs)
         self.bp_access_controllers: Dict[Optional[str], List[Callable]] = {None: []}
         self.endpoint_access_controllers: Dict[str, List[Callable]] = {}
@@ -147,23 +148,25 @@ class AuthService(Service):
         user_loaded.send(app, user=user)
         return user
 
-    def user_logged_in(self, app: "Application", user: User) -> None:
+    def user_logged_in(self, app: Application, user: User) -> None:
         # `g.user` is used as `current_user`, but `current_user` is actually looking
         # for `request.user` whereas `g` is on app local stack.
         #
         # `g.logged_user` is the actual user. In the future for example we may allow
         # a manager to see site as another user (impersonate), or propose a "see as
         # anonymous" function
+        from abilian.services import get_security_service
+
         g.user = g.logged_user = user
         is_anonymous = user is None or user.is_anonymous
-        security = app.services.get("security")
+        security = get_security_service()
         g.is_manager = (
             user
             and not is_anonymous
             and (security.has_role(user, "admin") or security.has_role(user, "manager"))
         )
 
-    def user_logged_out(self, app: "Application", user: User) -> None:
+    def user_logged_out(self, app: Application, user: User) -> None:
         if hasattr(g, "user"):
             del g.user
             del g.logged_user
@@ -176,7 +179,7 @@ class AuthService(Service):
 
         return redirect(url_for(login_manager.login_view, **kw))
 
-    def do_access_control(self) -> Union[None, Response]:
+    def do_access_control(self) -> Optional[Response]:
         """`before_request` handler to check if user should be redirected to
         login page."""
         from abilian.services import get_service
@@ -254,6 +257,7 @@ def refresh_login_session(user: User) -> None:
         session = LoginSession.new()
         db.session.add(session)
         db.session.commit()
+
     elif from_now > timedelta(minutes=1):
         session.last_active_at = now
         db.session.commit()

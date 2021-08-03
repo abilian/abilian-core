@@ -1,4 +1,5 @@
-""""""
+from __future__ import annotations
+
 from datetime import datetime
 
 from flask import request
@@ -16,7 +17,7 @@ _MARK = object()
 class LoginSessionQuery(BaseQuery):
     def get_active_for(
         self, user: User, user_agent: object = _MARK, ip_address: object = _MARK
-    ) -> "LoginSession":
+    ) -> LoginSession:
         """Return last known session for given user.
 
         :param user: user session

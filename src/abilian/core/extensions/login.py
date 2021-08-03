@@ -1,4 +1,5 @@
-""""""
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Set
 
 from flask_login import AnonymousUserMixin, LoginManager
@@ -15,7 +16,7 @@ class AnonymousUser(AnonymousUserMixin):
         return security.has_role(self, role)
 
     @property
-    def groups(self) -> Set["Group"]:
+    def groups(self) -> Set[Group]:
         return set()
 
 
