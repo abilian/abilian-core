@@ -23,6 +23,7 @@ from sqlalchemy.orm import backref, deferred, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Boolean, DateTime, Integer, LargeBinary, UnicodeText
+from typeguard import typechecked
 
 from abilian.core import sqlalchemy as sa_types
 from abilian.core.util import fqcn
@@ -131,6 +132,8 @@ class BcryptPasswordStrategy(PasswordStrategy):
         return "bcrypt"
 
     def authenticate(self, user: User, password: str) -> bool:
+        assert isinstance(password, str)
+
         current_passwd = user.password
         # crypt work only on bytes, not str (Unicode)
         if isinstance(current_passwd, str):
@@ -144,11 +147,6 @@ class BcryptPasswordStrategy(PasswordStrategy):
         if isinstance(password, str):
             password = password.encode("utf-8")
         return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
-
-
-class UserQuery(BaseQuery):
-    def get_by_email(self, email):
-        return self.filter_by(email=email).one()
 
 
 class Principal(IdMixin, TimestampedMixin, Indexable):
@@ -183,9 +181,6 @@ class User(Principal, UserMixin, db.Model):
     __exportable__ = __editable__ + ["created_at", "updated_at", "id"]
 
     __password_strategy__ = BcryptPasswordStrategy()
-
-    query_class = UserQuery
-    query: UserQuery
 
     # Basic information
     first_name = Column(UnicodeText, info=SEARCHABLE)
