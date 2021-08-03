@@ -157,9 +157,9 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
     __index_to__ = (("name", ("name", "name_prefix", "text")),)
 
     def has_role(self, role, context=None):
-        from abilian.services import get_service
+        from abilian.services import get_security_service
 
-        security_service = get_service("security")
+        security_service = get_security_service()
         return security_service.has_role(self, role, context)
 
 

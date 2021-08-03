@@ -143,7 +143,7 @@ class Application(
     default_view: ViewRegistry
 
     #: json serializable dict to land in Javascript under Abilian.api
-    js_api: Dict[str, str]
+    js_api: Dict[str, Any]
 
     #: celery app class
     celery_app_cls = FlaskCelery

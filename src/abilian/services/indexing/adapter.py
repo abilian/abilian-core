@@ -79,12 +79,15 @@ class SAAdapter(SchemaAdapter):
     * define new fields on schema
     """
 
+    doc_attrs: Dict[str, Any]
+
     def __init__(self, model_class: Type[Model], schema: Schema):
         """
         :param:model_class: a sqlalchemy model class
         :param:schema: :class:`whoosh.fields.Schema` instance
         """
         assert issubclass(model_class, db.Model)
+
         self.model_class = model_class
         self.indexable = getattr(model_class, "__indexable__", False)
         self.index_to = self.get_index_to(model_class)

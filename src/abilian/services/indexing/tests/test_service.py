@@ -1,7 +1,7 @@
 """"""
 from __future__ import annotations
 
-from typing import Iterator, Union
+from typing import Generator, Iterator, Union, cast
 
 import sqlalchemy as sa
 from pytest import fixture
@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from abilian.app import Application
 from abilian.core.entities import Entity
+from abilian.services import get_service
 from abilian.services.indexing.service import WhooshIndexService
 
 
@@ -19,11 +20,11 @@ class IndexedContact(Entity):
 
 
 @fixture
-def svc(app: Application) -> Iterator[Union[Iterator, Iterator[WhooshIndexService]]]:
-    svc = app.services["indexing"]
+def svc(app: Application) -> Iterator[WhooshIndexService]:
+    _svc = cast(WhooshIndexService, get_service("indexing"))
     with app.app_context():
-        svc.start()
-        yield svc
+        _svc.start()
+        yield _svc
 
 
 def test_app_state(app: Application, svc: WhooshIndexService):
