@@ -513,8 +513,9 @@ class RepositoryTransaction:
         self.begin()
         self._add_to(uuid, self._set, self._deleted)
 
-        if hasattr(content, "read"):
-            content = content.read()
+        if isinstance(content, IO):
+            if hasattr(content, "read"):
+                content = content.read()
 
         if isinstance(content, bytes):
             mode = "wb"

@@ -57,7 +57,6 @@ class SQLAlchemy(SAExtension):
 
     Add our custom driver hacks.
     """
-
     def apply_driver_hacks(self, app: Flask, info: URL, options: Dict[str, Any]):
         SAExtension.apply_driver_hacks(self, app, info, options)
 
