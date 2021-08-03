@@ -59,10 +59,12 @@ class Blob(Model):
         return f.stat().st_size if f is not None else 0
 
     @property
-    def value(self) -> bytes:
+    def value(self) -> Optional[bytes]:
         """Binary value content."""
         v = self.file
-        return v.open("rb").read() if v is not None else v
+        if v is None:
+            return None
+        return v.open("rb").read()
 
     @value.setter
     def value(self, value: bytes):

@@ -304,15 +304,15 @@ class SessionRepositoryService(Service):
     def _session_for(self, model_or_session: Union[Model, Session]) -> Session:
         """Return session instance for object parameter.
 
-        If parameter is a session instance, it is returned as is.
+        - If parameter is a session instance, it is returned as is.
 
-        If parameter is a registered model instance, its session will be used.
+        - If parameter is a registered model instance, its session will be used.
 
-        If parameter is a detached model instance, or None, application scoped
-        session will be used (db.session()).
+        - If parameter is a detached model instance, or None, application scoped
+          session will be used (db.session()).
 
-        If parameter is a scoped_session instance, a new session will be
-        instaniated.
+        - If parameter is a scoped_session instance, a new session will be
+          instaniated.
         """
         if model_or_session is None:
             return db.session
@@ -332,8 +332,8 @@ class SessionRepositoryService(Service):
 
     # Repository interface
     def get(
-        self, session: Union[Session, Blob], uuid: UUID, default: Any = None
-    ) -> Union[None, object, Path]:
+        self, session: Union[Session, Blob], uuid: UUID, default: Optional[Path] = None
+    ) -> Optional[Path]:
         # assert isinstance(session, Session)
         _assert_uuid(uuid)
 

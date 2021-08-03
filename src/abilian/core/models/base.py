@@ -28,7 +28,7 @@ class Info(dict):
         # dict.copy would return an instance of dict
         return self.__class__(**self)
 
-    def __add__(self, other: Info) -> Info:
+    def __add__(self, other: dict) -> Info:
         d = self.copy()
         d.update(other)
         return d
