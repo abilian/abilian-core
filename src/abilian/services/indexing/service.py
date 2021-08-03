@@ -14,7 +14,18 @@ from __future__ import annotations
 import logging
 from inspect import isclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Type, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Collection,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    Union,
+)
 
 import sqlalchemy as sa
 from celery import shared_task
@@ -72,9 +83,7 @@ def fqcn(cls: Any) -> str:
 
 
 class IndexServiceState(ServiceState):
-    def __init__(
-        self, service: WhooshIndexService, *args: Any, **kwargs: Any
-    ) -> None:
+    def __init__(self, service: WhooshIndexService, *args: Any, **kwargs: Any) -> None:
         super().__init__(service, *args, **kwargs)
         self.whoosh_base = None
         self.indexes: Dict[str, Index] = {}
@@ -241,10 +250,10 @@ class WhooshIndexService(Service):
         q: str,
         index_name: str = "default",
         fields: Optional[Dict[str, float]] = None,
-        Models: Tuple[Type[Model]] = (),
-        object_types: Tuple[str] = (),
+        Models: Collection[Type[Model]] = (),
+        object_types: Collection[str] = (),
         prefix: bool = True,
-        facet_by_type: None = None,
+        facet_by_type: bool = False,
         **search_args,
     ):
         """Interface to search indexes.
@@ -295,22 +304,22 @@ class WhooshIndexService(Service):
             )
             filters.append(filter_q)
 
-        object_types = set(object_types)
+        object_types_set = set(object_types)
         for m in Models:
             object_type = m.entity_type
             if not object_type:
                 continue
-            object_types.add(object_type)
+            object_types_set.add(object_type)
 
-        if object_types:
-            object_types &= self.app_state.indexed_fqcn
+        if object_types_set:
+            object_types_set &= self.app_state.indexed_fqcn
         else:
             # ensure we don't show content types previously indexed but not yet
             # cleaned from index
-            object_types = self.app_state.indexed_fqcn
+            object_types_set = self.app_state.indexed_fqcn
 
         # limit object_type
-        filter_q = wq.Or([wq.Term("object_type", t) for t in object_types])
+        filter_q = wq.Or([wq.Term("object_type", t) for t in object_types_set])
         filters.append(filter_q)
 
         for func in self.app_state.search_filter_funcs:
@@ -324,17 +333,15 @@ class WhooshIndexService(Service):
             query = filter_q & query
 
         if facet_by_type:
-            if not object_types:
-                object_types = [t[0] for t in self.searchable_object_types()]
+            if not object_types_set:
+                object_types_set = {t[0] for t in self.searchable_object_types()}
 
             # limit number of documents to score, per object type
             collapse_limit = 5
             search_args["groupedby"] = "object_type"
             search_args["collapse"] = "object_type"
             search_args["collapse_limit"] = collapse_limit
-            search_args["limit"] = search_args["collapse_limit"] * max(
-                len(object_types), 1
-            )
+            search_args["limit"] = collapse_limit * max(len(object_types_set), 1)
 
         with index.searcher(closereader=False) as searcher:
             # 'closereader' is needed, else results cannot by used outside 'with'

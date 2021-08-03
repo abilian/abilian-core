@@ -69,9 +69,7 @@ class ModuleAction(Action):
     `'module:{module.endpoint}'`
     """
 
-    def __init__(
-        self, module: Module, group: str, name: str, *args, **kwargs
-    ) -> None:
+    def __init__(self, module: Module, group: str, name: str, *args, **kwargs) -> None:
         self.group = group
         super().__init__(module.action_category, name, *args, **kwargs)
 
