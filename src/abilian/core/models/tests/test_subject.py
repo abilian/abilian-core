@@ -25,6 +25,8 @@ def test_user(app: Flask, db: SQLAlchemy):
     db.session.add(user)
     db.session.flush()
 
+    assert not user.is_online
+
 
 def test_group(app: Flask, db: SQLAlchemy):
     group = Group(name="test_group")
@@ -43,6 +45,12 @@ def test_follow(app: Flask, db: SQLAlchemy):
 
     assert not user1.is_following(user2)
 
+    user1.follow(user2)
+    assert user1.is_following(user2)
+
+    user1.unfollow(user2)
+    assert not user1.is_following(user2)
+
 
 def test_group_membership(app: Flask, db: SQLAlchemy):
     user = User(email="test@test.com")
@@ -51,4 +59,11 @@ def test_group_membership(app: Flask, db: SQLAlchemy):
     db.session.add(group)
     db.session.flush()
 
+    assert not user.is_member_of(group)
+
+    user.join(group)
+    assert user.is_member_of(group)
+    assert user in group.members
+
+    user.leave(group)
     assert not user.is_member_of(group)
