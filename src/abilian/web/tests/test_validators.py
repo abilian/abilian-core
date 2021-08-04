@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Iterator, Optional, Tuple, Union
+from typing import Callable, Iterator
 
 from pytest import fixture, raises
 from wtforms import Form, StringField
@@ -15,9 +15,7 @@ class DummyForm(Form):
 
 
 class DummyField:
-    def __init__(
-        self, data: str, errors: Tuple[()] = (), raw_data: Optional[Any] = None
-    ):
+    def __init__(self, data: str, errors=(), raw_data=None):
         self.data = data
         self.errors = list(errors)
         self.raw_data = raw_data
@@ -32,7 +30,7 @@ def error_message(validator: Callable, form: DummyForm, field: DummyField) -> st
 
 
 @fixture()
-def validator() -> Iterator[Union[Iterator, Iterator[Callable]]]:
+def validator() -> Iterator[Callable]:
     yield siret_validator()
 
 

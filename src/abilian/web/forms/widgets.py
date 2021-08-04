@@ -333,7 +333,8 @@ class AjaxMainTableView(View):
                 column = col
             assert isinstance(column, dict)
             if "label" not in column:
-                column["label"] = labelize(column["name"])
+                name = str(column["name"])
+                column["label"] = labelize(name)
 
             column.setdefault("sorting", ["asc", "desc"])
 
