@@ -16,14 +16,12 @@ from typing import Type, Union
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin
-from flask_sqlalchemy import BaseQuery
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint
 from sqlalchemy.types import Boolean, DateTime, Integer, LargeBinary, UnicodeText
-from typeguard import typechecked
 
 from abilian.core import sqlalchemy as sa_types
 from abilian.core.util import fqcn

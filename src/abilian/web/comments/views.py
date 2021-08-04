@@ -1,7 +1,6 @@
 """"""
 from __future__ import annotations
 
-from abc import ABCMeta
 from datetime import datetime
 from typing import Optional
 

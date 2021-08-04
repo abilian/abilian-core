@@ -17,7 +17,6 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.orm.unitofwork import UOWTransaction
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer
-from typeguard import typechecked
 
 from abilian.core.models.base import Model
 from abilian.core.sqlalchemy import UUID, JSONDict

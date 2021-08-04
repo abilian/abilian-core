@@ -4,7 +4,6 @@ from __future__ import annotations
 import uuid
 from pathlib import Path
 
-from pytest import raises
 from sqlalchemy.orm import Session
 
 from . import repository, session_repository

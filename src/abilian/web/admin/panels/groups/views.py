@@ -10,7 +10,7 @@ from sqlalchemy.sql.expression import asc, desc, func, nullslast
 
 from abilian.core.models.subjects import Group, User
 from abilian.i18n import _l
-from abilian.services import get_security_service, get_service
+from abilian.services import get_security_service
 from abilian.services.security.models import Role
 from abilian.web.action import ButtonAction, FAIcon
 from abilian.web.nav import BreadcrumbItem

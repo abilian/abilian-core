@@ -9,7 +9,6 @@ from uuid import UUID, uuid1
 
 import sqlalchemy as sa
 import sqlalchemy.event
-from devtools import debug
 from flask import _app_ctx_stack
 from flask.globals import _lookup_app_object
 from sqlalchemy.engine.base import Connection

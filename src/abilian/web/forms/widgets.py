@@ -25,7 +25,7 @@ from markupsafe import Markup
 from sqlalchemy.orm.mapper import Mapper
 from wtforms.fields import Field, IntegerField, Label, StringField
 from wtforms.form import Form
-from wtforms.widgets import HTMLString, Input
+from wtforms.widgets import Input
 from wtforms.widgets import PasswordInput as BasePasswordInput
 from wtforms.widgets import Select
 from wtforms.widgets import TextArea as BaseTextArea
