@@ -209,7 +209,7 @@ route("/users/default")(
 )
 
 
-def user_url_args(user: User, size: int) -> Tuple[str, Dict[str, Any]]:
+def user_url_args(user: User, size: int) -> tuple[str, dict[str, Any]]:
     endpoint = "images.user_default"
     kwargs = {"s": size, "md5": DEFAULT_AVATAR_MD5}
 

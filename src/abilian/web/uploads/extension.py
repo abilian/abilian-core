@@ -60,7 +60,7 @@ class FileUploadsExtension:
         app.register_blueprint(blueprint)
         signals.register_js_api.connect(self._do_register_js_api)
 
-        self.config: Dict[str, Any] = {}
+        self.config: dict[str, Any] = {}
         self.config.update(DEFAULT_CONFIG)
         self.config.update(app.config.get("FILE_UPLOADS", {}))
         app.config["FILE_UPLOADS"] = self.config
@@ -112,7 +112,7 @@ class FileUploadsExtension:
 
         return handle
 
-    def get_file(self, user: User, handle: str) -> Optional[PosixPath]:
+    def get_file(self, user: User, handle: str) -> PosixPath | None:
         """Retrieve a file for a user.
 
         :returns: a :class:`pathlib.Path` instance to this file,
@@ -132,7 +132,7 @@ class FileUploadsExtension:
 
         return file_path
 
-    def get_metadata_file(self, user: User, handle: str) -> Optional[PosixPath]:
+    def get_metadata_file(self, user: User, handle: str) -> PosixPath | None:
         content = self.get_file(user, handle)
         if content is None:
             return None
@@ -143,7 +143,7 @@ class FileUploadsExtension:
 
         return metafile
 
-    def get_metadata(self, user: User, handle: str) -> Dict[str, str]:
+    def get_metadata(self, user: User, handle: str) -> dict[str, str]:
         metafile = self.get_metadata_file(user, handle)
         if metafile is None:
             return {}

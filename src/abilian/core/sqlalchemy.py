@@ -58,7 +58,7 @@ class SQLAlchemy(SAExtension):
     Add our custom driver hacks.
     """
 
-    def apply_driver_hacks(self, app: Flask, info: URL, options: Dict[str, Any]):
+    def apply_driver_hacks(self, app: Flask, info: URL, options: dict[str, Any]):
         SAExtension.apply_driver_hacks(self, app, info, options)
 
         if info.drivername == "sqlite":
@@ -136,7 +136,7 @@ class MutationDict(Mutable, dict):
     """Provides a dictionary type with mutability support."""
 
     @classmethod
-    def coerce(cls, key: str, value: Dict) -> MutationDict:
+    def coerce(cls, key: str, value: dict) -> MutationDict:
         """Convert plain dictionaries to MutationDict."""
         if not isinstance(value, MutationDict):
             if isinstance(value, dict):
@@ -149,14 +149,14 @@ class MutationDict(Mutable, dict):
 
     #  pickling support. see:
     #  http://docs.sqlalchemy.org/en/rel_0_8/orm/extensions/mutable.html#supporting-pickling
-    def __getstate__(self) -> Dict:
+    def __getstate__(self) -> dict:
         return dict(self)
 
-    def __setstate__(self, state: Dict):
+    def __setstate__(self, state: dict):
         self.update(state)
 
     # dict methods
-    def __setitem__(self, key: str, value: Union[int, str]):
+    def __setitem__(self, key: str, value: int | str):
         """Detect dictionary set events and emit change events."""
         dict.__setitem__(self, key, value)
         self.changed()
@@ -192,7 +192,7 @@ class MutationList(Mutable, list):
     """Provides a list type with mutability support."""
 
     @classmethod
-    def coerce(cls, key: str, value: List) -> MutationList:
+    def coerce(cls, key: str, value: list) -> MutationList:
         """Convert list to MutationList."""
         if not isinstance(value, MutationList):
             if isinstance(value, list):
@@ -275,14 +275,14 @@ class JSON(sa.types.TypeDecorator):
 
     impl = sa.types.Text
 
-    def process_bind_param(self, value: Any, dialect: Dialect) -> Optional[str]:
+    def process_bind_param(self, value: Any, dialect: Dialect) -> str | None:
         if value is not None:
             value = json.dumps(value)
         return value
 
     def process_result_value(
-        self, value: Optional[str], dialect: Dialect
-    ) -> Union[Dict[str, Any], List[int], None]:
+        self, value: str | None, dialect: Dialect
+    ) -> dict[str, Any] | list[int] | None:
         if value is not None:
             value = json.loads(value)
         return value
@@ -344,8 +344,8 @@ class UUID(sa.types.TypeDecorator):
             return dialect.type_descriptor(sa.types.CHAR(32))
 
     def process_bind_param(
-        self, value: Union[None, str, uuid.UUID], dialect: Dialect
-    ) -> Optional[str]:
+        self, value: None | str | uuid.UUID, dialect: Dialect
+    ) -> str | None:
         if value is None:
             return value
         elif dialect.name == "postgresql":
@@ -357,8 +357,8 @@ class UUID(sa.types.TypeDecorator):
             return value.hex
 
     def process_result_value(
-        self, value: Optional[str], dialect: Dialect
-    ) -> Optional[uuid.UUID]:
+        self, value: str | None, dialect: Dialect
+    ) -> uuid.UUID | None:
         return value if value is None else uuid.UUID(value)
 
     def compare_against_backend(self, dialect, conn_type):
@@ -378,8 +378,8 @@ class Locale(sa.types.TypeDecorator):
         return babel.Locale
 
     def process_bind_param(
-        self, value: Optional[Any], dialect: Dialect
-    ) -> Optional[Any]:
+        self, value: Any | None, dialect: Dialect
+    ) -> Any | None:
         if value is None:
             return None
 
@@ -399,8 +399,8 @@ class Locale(sa.types.TypeDecorator):
         return code
 
     def process_result_value(
-        self, value: Optional[Any], dialect: Dialect
-    ) -> Optional[Any]:
+        self, value: Any | None, dialect: Dialect
+    ) -> Any | None:
         return None if value is None else babel.Locale.parse(value)
 
 
@@ -414,8 +414,8 @@ class Timezone(sa.types.TypeDecorator):
         return pytz.tzfile.DstTzInfo
 
     def process_bind_param(
-        self, value: Optional[Any], dialect: Dialect
-    ) -> Optional[Any]:
+        self, value: Any | None, dialect: Dialect
+    ) -> Any | None:
         if value is None:
             return None
 
@@ -429,8 +429,8 @@ class Timezone(sa.types.TypeDecorator):
         return value.zone
 
     def process_result_value(
-        self, value: Optional[Any], dialect: Dialect
-    ) -> Optional[Any]:
+        self, value: Any | None, dialect: Dialect
+    ) -> Any | None:
         return None if value is None else babel.dates.get_timezone(value)
 
 

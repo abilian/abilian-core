@@ -31,7 +31,7 @@ MUGSHOT_SIZE = 45
 class JsonUsersList(base.JSONView):
     """JSON user list for datatable."""
 
-    def data(self, *args, **kw) -> Dict:
+    def data(self, *args, **kw) -> dict:
         security = cast(SecurityService, get_service("security"))
         length = int(kw.get("iDisplayLength", 0))
         start = int(kw.get("iDisplayStart", 0))

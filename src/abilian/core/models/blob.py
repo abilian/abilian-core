@@ -47,7 +47,7 @@ class Blob(Model):
             self.value = value
 
     @property
-    def file(self) -> Optional[Path]:
+    def file(self) -> Path | None:
         """Return :class:`pathlib.Path` object used for storing value."""
         from abilian.services.repository import session_repository as repository
 
@@ -60,7 +60,7 @@ class Blob(Model):
         return f.stat().st_size if f is not None else 0
 
     @property
-    def value(self) -> Optional[bytes]:
+    def value(self) -> bytes | None:
         """Binary value content."""
         v = self.file
         if v is None:
@@ -68,7 +68,7 @@ class Blob(Model):
         return v.open("rb").read()
 
     @value.setter
-    def value(self, value: Union[bytes, str, IO]):
+    def value(self, value: bytes | str | IO):
         """Store binary content to applications's repository and update
         `self.meta['md5']`.
 

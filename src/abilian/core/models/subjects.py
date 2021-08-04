@@ -169,8 +169,8 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
 
 
 def set_entity_type(
-    cls: Union[Type[User], Type[Group]]
-) -> Union[Type[User], Type[Group]]:
+    cls: type[User] | type[Group]
+) -> type[User] | type[Group]:
     """Decorator used to set the class' entity_type after the class has been
     declared.
 
@@ -300,7 +300,7 @@ class User(Principal, UserMixin, db.Model):
 
 
 @listens_for(User, "mapper_configured", propagate=True)
-def _add_user_indexes(mapper: Mapper, cls: Type[User]):
+def _add_user_indexes(mapper: Mapper, cls: type[User]):
     # this is a functional index (indexes on a function result), we cannot define
     # it in __table_args__.
     #

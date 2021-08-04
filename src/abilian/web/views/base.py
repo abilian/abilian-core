@@ -89,12 +89,12 @@ class JSONView(View):
     """
 
     def prepare_args(
-        self, args: Tuple, kwargs: Dict[Any, Any]
-    ) -> Tuple[Tuple, Dict[Any, Any]]:
+        self, args: tuple, kwargs: dict[Any, Any]
+    ) -> tuple[tuple, dict[Any, Any]]:
         kwargs.update({k: v for k, v in request.args.items()})
         return args, kwargs
 
-    def data(self, *args, **kwargs) -> Dict:
+    def data(self, *args, **kwargs) -> dict:
         """This method should return data to be serialized using JSON."""
         raise NotImplementedError
 

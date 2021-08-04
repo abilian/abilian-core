@@ -6,7 +6,7 @@ from typing import Union
 __all__ = ["strip", "uppercase", "lowercase"]
 
 
-def strip(data: Union[None, int, str]) -> Union[int, str]:
+def strip(data: None | int | str) -> int | str:
     """Strip data if data is a string."""
     if data is None:
         return ""
@@ -15,13 +15,13 @@ def strip(data: Union[None, int, str]) -> Union[int, str]:
     return data.strip()
 
 
-def uppercase(data: Union[None, int, str]) -> Union[None, int, str]:
+def uppercase(data: None | int | str) -> None | int | str:
     if not isinstance(data, str):
         return data
     return data.upper()
 
 
-def lowercase(data: Union[None, int, str]) -> Union[None, int, str]:
+def lowercase(data: None | int | str) -> None | int | str:
     if not isinstance(data, str):
         return data
     return data.lower()

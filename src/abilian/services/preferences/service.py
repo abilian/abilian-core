@@ -42,7 +42,7 @@ user_menu.insert(0, _PREF_NAV_ITEM)
 
 
 class PreferenceState(ServiceState):
-    panels: List[PreferencePanel]
+    panels: list[PreferencePanel]
     blueprint: Blueprint
     blueprint_registered: bool
 
@@ -69,7 +69,7 @@ class PreferenceService(Service):
             for panel in panels:
                 self.register_panel(panel)
 
-    def get_preferences(self, user: Optional[User] = None) -> Dict[str, Any]:
+    def get_preferences(self, user: User | None = None) -> dict[str, Any]:
         """Return a string->value dictionnary representing the given user
         preferences.
 
@@ -102,7 +102,7 @@ class PreferenceService(Service):
         #  http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html#deleting-from-collections
         user.preferences = []
 
-    def register_panel(self, panel: PreferencePanel, app: Optional[Flask] = None):
+    def register_panel(self, panel: PreferencePanel, app: Flask | None = None):
         state = self.app_state if app is None else app.extensions[self.name]
         if state.blueprint_registered:
             raise ValueError(
@@ -147,7 +147,7 @@ class PreferenceService(Service):
         bp.url_value_preprocessor(self.build_breadcrumbs)
 
         @bp.context_processor
-        def inject_menu() -> Dict[str, List[Dict[str, Any]]]:
+        def inject_menu() -> dict[str, list[dict[str, Any]]]:
             menu = []
             for panel in self.app_state.panels:
                 if not panel.is_accessible():

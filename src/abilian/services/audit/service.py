@@ -33,15 +33,15 @@ log = logging.getLogger(__name__)
 
 
 class AuditableMeta:
-    backref_attr: Optional[str] = None
-    audited_attrs: Set[InstrumentedAttribute]
-    collection_attrs: Set[InstrumentedAttribute]
-    enduser_ids: List[str]
+    backref_attr: str | None = None
+    audited_attrs: set[InstrumentedAttribute]
+    collection_attrs: set[InstrumentedAttribute]
+    enduser_ids: list[str]
 
     def __init__(
         self,
-        name: Optional[str] = None,
-        id_attr: Optional[str] = None,
+        name: str | None = None,
+        id_attr: str | None = None,
         related: bool = False,
     ):
         self.name = name
@@ -54,8 +54,8 @@ class AuditableMeta:
 
 class AuditServiceState(ServiceState):
 
-    all_model_classes: Set[type]
-    model_class_names: Dict[str, type]
+    all_model_classes: set[type]
+    model_class_names: dict[str, type]
 
     # set to True when creating audit entries, to avoid examining a session full
     # of audit entries
@@ -106,7 +106,7 @@ class AuditService(Service):
             self.register_class(cls, app_state=state)
 
     def register_class(
-        self, entity_class: Any, app_state: Optional[AuditServiceState] = None
+        self, entity_class: Any, app_state: AuditServiceState | None = None
     ):
         if not hasattr(entity_class, "__table__"):
             return
@@ -255,7 +255,7 @@ class AuditService(Service):
         finally:
             self.app_state.creating_entries = False
 
-    def log(self, session: Session, model: Any, op_type: int) -> Optional[AuditEntry]:
+    def log(self, session: Session, model: Any, op_type: int) -> AuditEntry | None:
         if not self.is_auditable(model):
             return None
 
@@ -352,11 +352,11 @@ def format_large_value(value: Any) -> Any:
 
 def get_model_changes(
     entity_type: str,
-    year: Optional[int] = None,
-    month: Optional[int] = None,
-    day: Optional[int] = None,
-    hour: Optional[int] = None,
-    since: Optional[datetime] = None,
+    year: int | None = None,
+    month: int | None = None,
+    day: int | None = None,
+    hour: int | None = None,
+    since: datetime | None = None,
 ) -> Query:
     """Get models modified at the given date with the Audit service.
 

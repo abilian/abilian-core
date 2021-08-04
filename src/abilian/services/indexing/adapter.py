@@ -79,9 +79,9 @@ class SAAdapter(SchemaAdapter):
     * define new fields on schema
     """
 
-    doc_attrs: Dict[str, Any]
+    doc_attrs: dict[str, Any]
 
-    def __init__(self, model_class: Type[Model], schema: Schema):
+    def __init__(self, model_class: type[Model], schema: Schema):
         """
         :param:model_class: a sqlalchemy model class
         :param:schema: :class:`whoosh.fields.Schema` instance
@@ -99,7 +99,7 @@ class SAAdapter(SchemaAdapter):
     def can_adapt(obj_cls: Any) -> bool:
         return issubclass(obj_cls, db.Model)
 
-    def get_index_to(self, model_class: Type[Model]) -> Tuple:
+    def get_index_to(self, model_class: type[Model]) -> tuple:
         result = []
         classes = model_class.mro()
         for cls in classes:
@@ -107,7 +107,7 @@ class SAAdapter(SchemaAdapter):
                 result += cls.__index_to__
         return tuple(result)
 
-    def _build_doc_attrs(self, model_class: Type[Model], schema: Schema):
+    def _build_doc_attrs(self, model_class: type[Model], schema: Schema):
         mapper = sa.inspect(model_class)
 
         args = self.doc_attrs
@@ -116,7 +116,7 @@ class SAAdapter(SchemaAdapter):
         field_definitions = {}
 
         def setup_field(
-            attr_name: str, field_name: Union[Tuple[str, Union[type, ID]], str]
+            attr_name: str, field_name: tuple[str, type | ID] | str
         ):
             field_def = False
             if not isinstance(field_name, str):
@@ -172,14 +172,14 @@ class SAAdapter(SchemaAdapter):
             schema.add(field_name, field_def)
 
     def retrieve(
-        self, pk: int, _session: Optional[Session] = None, **data: Any
+        self, pk: int, _session: Session | None = None, **data: Any
     ) -> Entity:
         if _session is None:
             _session = db.session()
         return _session.query(self.model_class).get(pk)
 
-    def get_document(self, obj: Model) -> Dict[str, Any]:
-        result: Dict[str, Any] = {}
+    def get_document(self, obj: Model) -> dict[str, Any]:
+        result: dict[str, Any] = {}
         if not self.indexable:
             return result
 

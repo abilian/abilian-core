@@ -49,7 +49,7 @@ class NewUploadView(BaseUploadsView, JSONView):
     #: file handle to be returned
     handle = None
 
-    def data(self, *args, **kwargs) -> Dict:
+    def data(self, *args, **kwargs) -> dict:
         return {"handle": self.handle, "url": url_for(".handle", handle=self.handle)}
 
     def post(self, *args, **kwargs):
@@ -99,7 +99,7 @@ class UploadView(BaseUploadsView, View):
             add_etags=False,
         )
 
-    def delete(self, handle, *args, **kwargs) -> Dict:
+    def delete(self, handle, *args, **kwargs) -> dict:
         if self.uploads.get_file(self.user, handle) is None:
             raise NotFound()
         self.uploads.remove_file(self.user, handle)

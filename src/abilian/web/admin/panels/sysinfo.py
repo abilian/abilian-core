@@ -20,7 +20,7 @@ class SysinfoPanel(AdminPanel):
         uname = os.popen("uname -a").read()
         python_version = sys.version.strip()
 
-        packages: List[Dict[str, str]] = []
+        packages: list[dict[str, str]] = []
 
         for dist in pkg_resources.working_set:
             package = {

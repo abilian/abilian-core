@@ -34,7 +34,7 @@ def _assert_uuid(uuid: Any):
 
 class RepositoryServiceState(ServiceState):
     #: :class:`Path` path to application repository
-    path: Optional[Path] = None
+    path: Path | None = None
 
 
 class RepositoryService(Service):
@@ -78,7 +78,7 @@ class RepositoryService(Service):
         assert top in dest.parents
         return dest
 
-    def get(self, uuid: UUID, default: Optional[Path] = None) -> Optional[Path]:
+    def get(self, uuid: UUID, default: Path | None = None) -> Path | None:
         """Return absolute :class:`Path` object for given uuid, if this uuid
         exists in repository, or `default` if it doesn't.
 
@@ -91,7 +91,7 @@ class RepositoryService(Service):
             return default
         return path
 
-    def set(self, uuid: UUID, content: Any, encoding: Optional[str] = "utf-8"):
+    def set(self, uuid: UUID, content: Any, encoding: str | None = "utf-8"):
         """Store binary content with uuid as key.
 
         :param:uuid: :class:`UUID` instance
@@ -157,11 +157,11 @@ class SessionRepositoryState(ServiceState):
     path: Path
 
     @property
-    def transactions(self) -> Dict[int, Any]:
+    def transactions(self) -> dict[int, Any]:
         try:
             return _lookup_app_object(_REPOSITORY_TRANSACTION)
         except AttributeError:
-            reg: Dict[int, Any] = {}
+            reg: dict[int, Any] = {}
             setattr(_app_ctx_stack.top, _REPOSITORY_TRANSACTION, reg)
             return reg
 
@@ -175,8 +175,8 @@ class SessionRepositoryState(ServiceState):
 
     # transaction <-> db session accessors
     def get_transaction(
-        self, session: Union[Session, scoped_session]
-    ) -> Optional[RepositoryTransaction]:
+        self, session: Session | scoped_session
+    ) -> RepositoryTransaction | None:
         if isinstance(session, scoped_session):
             session = session()
 
@@ -192,8 +192,8 @@ class SessionRepositoryState(ServiceState):
 
     def set_transaction(
         self,
-        session: Union[Session, scoped_session],
-        transaction: Optional[RepositoryTransaction],
+        session: Session | scoped_session,
+        transaction: RepositoryTransaction | None,
     ):
 
         if isinstance(session, scoped_session):
@@ -300,7 +300,7 @@ class SessionRepositoryService(Service):
         listen(Session, "after_rollback", self.rollback)
         # appcontext_tearing_down.connect(self.clear_transaction, app)
 
-    def _session_for(self, model_or_session: Union[Model, Session]) -> Session:
+    def _session_for(self, model_or_session: Model | Session) -> Session:
         """Return session instance for object parameter.
 
         - If parameter is a session instance, it is returned as is.
@@ -331,8 +331,8 @@ class SessionRepositoryService(Service):
 
     # Repository interface
     def get(
-        self, session: Union[Session, Blob], uuid: UUID, default: Optional[Path] = None
-    ) -> Optional[Path]:
+        self, session: Session | Blob, uuid: UUID, default: Path | None = None
+    ) -> Path | None:
         # assert isinstance(session, Session)
         _assert_uuid(uuid)
 
@@ -350,9 +350,9 @@ class SessionRepositoryService(Service):
 
     def set(
         self,
-        session: Union[Session, Blob],
+        session: Session | Blob,
         uuid: UUID,
-        content: Union[IO, bytes, str],
+        content: IO | bytes | str,
         encoding: str = "utf-8",
     ):
         _assert_uuid(uuid)
@@ -361,7 +361,7 @@ class SessionRepositoryService(Service):
         transaction = self.app_state.get_transaction(session)
         transaction.set(uuid, content, encoding)
 
-    def delete(self, session: Union[Session, Blob], uuid: UUID):
+    def delete(self, session: Session | Blob, uuid: UUID):
         _assert_uuid(uuid)
 
         session = self._session_for(session)
@@ -373,19 +373,19 @@ class SessionRepositoryService(Service):
     @Service.if_running
     def create_transaction(
         self, session: Session, transaction: SessionTransaction
-    ) -> Optional[Any]:
+    ) -> Any | None:
         return self.app_state.create_transaction(session, transaction)
 
     @Service.if_running
     def end_transaction(
         self, session: Session, transaction: SessionTransaction
-    ) -> Optional[Any]:
+    ) -> Any | None:
         return self.app_state.end_transaction(session, transaction)
 
     @Service.if_running
     def begin(
         self, session: Session, transaction: SessionTransaction, connection: Connection
-    ) -> Optional[Any]:
+    ) -> Any | None:
         return self.app_state.begin(session)
 
     @Service.if_running
@@ -405,14 +405,14 @@ session_repository = SessionRepositoryService()
 
 
 class RepositoryTransaction:
-    def __init__(self, root_path: Path, parent: Optional[RepositoryTransaction] = None):
+    def __init__(self, root_path: Path, parent: RepositoryTransaction | None = None):
         self.path = root_path / str(uuid1())
         # if parent is not None and parent.cleared:
         #   parent = None
 
         self._parent = parent
-        self._deleted: Set[UUID] = set()
-        self._set: Set[UUID] = set()
+        self._deleted: set[UUID] = set()
+        self._set: set[UUID] = set()
         self.__cleared = False
 
     @property
@@ -436,14 +436,14 @@ class RepositoryTransaction:
         del self._set
         self.__cleared = True
 
-    def begin(self, session: Optional[Session] = None):
+    def begin(self, session: Session | None = None):
         if not self.path.exists():
             self.path.mkdir(0o700)
 
-    def rollback(self, session: Optional[Session] = None):
+    def rollback(self, session: Session | None = None):
         self._clear()
 
-    def commit(self, session: Optional[Session] = None):
+    def commit(self, session: Session | None = None):
         """Merge modified objects into parent transaction.
 
         Once commited a transaction object is not usable anymore
@@ -490,7 +490,7 @@ class RepositoryTransaction:
             # content_path.replace is not available with python < 3.3.
             content_path.rename(p.path / str(uuid))
 
-    def _add_to(self, uuid: UUID, dest: Set[UUID], other: Set[UUID]):
+    def _add_to(self, uuid: UUID, dest: set[UUID], other: set[UUID]):
         """Add `item` to `dest` set, ensuring `item` is not present in `other`
         set."""
         _assert_uuid(uuid)
@@ -506,8 +506,8 @@ class RepositoryTransaction:
     def set(
         self,
         uuid: UUID,
-        content: Union[IO, bytes, str],
-        encoding: Optional[str] = "utf-8",
+        content: IO | bytes | str,
+        encoding: str | None = "utf-8",
     ):
         self.begin()
         self._add_to(uuid, self._set, self._deleted)

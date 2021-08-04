@@ -20,7 +20,7 @@ encoding_sniffer = Magic(mime_encoding=True)
 
 
 @fixture
-def converter() -> Iterator[Union[Iterator, Iterator[Converter]]]:
+def converter() -> Iterator[Iterator | Iterator[Converter]]:
     from abilian.services.conversion import converter as c
 
     cache_dir = Path(tempfile.mkdtemp(suffix="unittest"))

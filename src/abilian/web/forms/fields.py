@@ -217,7 +217,7 @@ class FileField(BaseFileField):
         self.object_data = value
         return super().process_data(value)
 
-    def process_formdata(self, valuelist: List[str]):
+    def process_formdata(self, valuelist: list[str]):
         uploads = current_app.extensions["uploads"]
         if self.delete_files_index:
             self.data = None
@@ -289,7 +289,7 @@ class DateTimeField(Field):
 
     def __init__(
         self,
-        label: Union[str, None] = None,
+        label: str | None = None,
         validators: Any = None,
         use_naive: bool = True,
         **kwargs: Any,
@@ -333,7 +333,7 @@ class DateTimeField(Field):
 
         super().process_data(value)
 
-    def process_formdata(self, valuelist: List[str]):
+    def process_formdata(self, valuelist: list[str]):
         if valuelist:
             date_str = " ".join(valuelist)
             locale = get_locale()
@@ -374,7 +374,7 @@ class DateField(Field):
     widget = DateInput()
 
     def __init__(
-        self, label: Union[str, None] = None, validators: Any = None, **kwargs: Any
+        self, label: str | None = None, validators: Any = None, **kwargs: Any
     ):
         super().__init__(label, validators, **kwargs)
 
@@ -393,7 +393,7 @@ class DateField(Field):
             )
             return format_date(self.data, date_fmt) if self.data else ""
 
-    def process_formdata(self, valuelist: List[str]):
+    def process_formdata(self, valuelist: list[str]):
         valuelist = [i for i in valuelist if i.strip()]
 
         if valuelist:

@@ -31,7 +31,7 @@ class BaseObjectView(View):
     title: str
 
     #: Model class
-    Model: Type
+    Model: type
 
     #: primary key name to look for in url arguments
     pk = "object_id"
@@ -116,7 +116,7 @@ class ObjectView(BaseObjectView):
     template = "default/object_view.html"
 
     #: View form class. Form object used to show objects fields
-    Form: Type
+    Form: type
 
     #: required permission. Must be an instance of
     #: :class:`abilian.services.security.Permission`
@@ -567,7 +567,7 @@ class JSONBaseSearch(JSONView):
         kwargs["q"] = kwargs.get("q", "").replace("%", " ").lower()
         return args, kwargs
 
-    def data(self, q, *args, **kwargs) -> Dict:
+    def data(self, q, *args, **kwargs) -> dict:
         if self.minimum_input_length and len(q) < self.minimum_input_length:
             msg = f"Minimum query length is {self.minimum_input_length:d}"
             raise BadRequest(msg)

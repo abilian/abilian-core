@@ -151,12 +151,12 @@ class DynamicIcon(Icon):
 
     def __init__(
         self,
-        endpoint: Optional[Union[str, Callable]] = None,
+        endpoint: str | Callable | None = None,
         width: int = 12,
         height: int = 12,
         css: str = "",
-        size: Optional[int] = None,
-        url_args: Optional[Callable] = None,
+        size: int | None = None,
+        url_args: Callable | None = None,
         **fixed_url_args,
     ):
         self.endpoint = endpoint
@@ -171,7 +171,7 @@ class DynamicIcon(Icon):
         self.width = width
         self.height = height
 
-    def get_url_args(self) -> Dict[str, str]:
+    def get_url_args(self) -> dict[str, str]:
         kw = {}
         kw.update(self.fixed_url_args)
         return kw
@@ -206,7 +206,7 @@ class StaticIcon(DynamicIcon):
         width: int = 12,
         height: int = 12,
         css: str = "",
-        size: Optional[int] = None,
+        size: int | None = None,
     ):
         DynamicIcon.__init__(
             self, endpoint, width, height, css, size, filename=filename
@@ -221,7 +221,7 @@ class Endpoint:
         self.args = args
         self.kwargs = kwargs
 
-    def get_kwargs(self) -> Dict[str, str]:
+    def get_kwargs(self) -> dict[str, str]:
         """Hook for subclasses.
 
         The key and values in the returned dictionnary can be safely
@@ -264,17 +264,17 @@ class Action:
         self,
         category: str,
         name: str,
-        title: Union[LazyString, str] = "",
+        title: LazyString | str = "",
         description: str = "",
-        icon: Union[str, Icon, None] = None,
-        url: Union[str, Callable] = "",
-        endpoint: Optional[Endpoint] = None,
-        condition: Optional[Callable] = None,
-        status: Optional[Any] = None,
-        template: Optional[Any] = None,
-        template_string: Optional[Any] = None,
-        button: Optional[Any] = None,
-        css: Optional[Any] = None,
+        icon: str | Icon | None = None,
+        url: str | Callable = "",
+        endpoint: Endpoint | None = None,
+        condition: Callable | None = None,
+        status: Any | None = None,
+        template: Any | None = None,
+        template_string: Any | None = None,
+        button: Any | None = None,
+        css: Any | None = None,
     ):
         """
         :param endpoint: A :class:`Endpoint` instance, a string for a simple
@@ -332,7 +332,7 @@ class Action:
 
     #: Boolean. Disabled actions are unconditionnaly skipped.
     @getset
-    def enabled(self, value: Optional[bool] = None) -> bool:
+    def enabled(self, value: bool | None = None) -> bool:
         enabled = self._enabled
         if value is not None:
             assert isinstance(value, bool)
@@ -347,11 +347,11 @@ class Action:
         return value
 
     @property
-    def title(self) -> Union[LazyString, str]:
+    def title(self) -> LazyString | str:
         return self._get_and_call("title")
 
     @title.setter
-    def title(self, title: Union[LazyString, str]):
+    def title(self, title: LazyString | str):
         self._title = title
 
     def _build_css_class(self):
@@ -362,11 +362,11 @@ class Action:
         self.css_class = css_cat
 
     @property
-    def description(self) -> Union[LazyString, str]:
+    def description(self) -> LazyString | str:
         return self._get_and_call("description")
 
     @description.setter
-    def description(self, description: Union[LazyString, str]):
+    def description(self, description: LazyString | str):
         self._description = description
 
     @property
@@ -378,7 +378,7 @@ class Action:
         self._icon = icon
 
     @property
-    def endpoint(self) -> Optional[Endpoint]:
+    def endpoint(self) -> Endpoint | None:
         endpoint = self._get_and_call("endpoint")
         if endpoint is None:
             return None
@@ -398,10 +398,10 @@ class Action:
         return endpoint
 
     @endpoint.setter
-    def endpoint(self, endpoint: Optional[Endpoint]):
+    def endpoint(self, endpoint: Endpoint | None):
         self._endpoint = endpoint
 
-    def available(self, context: Dict[str, Any]) -> bool:
+    def available(self, context: dict[str, Any]) -> bool:
         """Determine if this actions is available in this `context`.
 
         :param context: a dict whose content is left to application needs; if
@@ -415,7 +415,7 @@ class Action:
         except Exception:
             return False
 
-    def pre_condition(self, context: Dict[str, Any]) -> bool:
+    def pre_condition(self, context: dict[str, Any]) -> bool:
         """Called by :meth:`.available` before checking condition.
 
         Subclasses may override it to ease creating actions with
@@ -424,7 +424,7 @@ class Action:
         """
         return True
 
-    def _check_condition(self, context: Dict[str, Any]) -> bool:
+    def _check_condition(self, context: dict[str, Any]) -> bool:
         if self.condition is None:
             return True
 
@@ -445,7 +445,7 @@ class Action:
         params = self.get_render_args(**kwargs)
         return Markup(template.render(params))
 
-    def get_render_args(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_render_args(self, **kwargs: Any) -> dict[str, Any]:
         params = {"action": self}
         params.update(actions.context)
         params.update(kwargs)
@@ -453,7 +453,7 @@ class Action:
         params["url"] = self.url(params)
         return params
 
-    def url(self, context: Dict[str, Any] = None) -> str:
+    def url(self, context: dict[str, Any] = None) -> str:
         if callable(self._url):
             return self._url(context)
 
@@ -574,10 +574,10 @@ class ActionRegistry:
         appcontext_pushed.connect(self._init_context, app)
 
         @app.context_processor
-        def add_registry_to_jinja_context() -> Dict[str, ActionRegistry]:
+        def add_registry_to_jinja_context() -> dict[str, ActionRegistry]:
             return {"actions": self}
 
-    def installed(self, app: Optional[Flask] = None) -> bool:
+    def installed(self, app: Flask | None = None) -> bool:
         """Return `True` if the registry has been installed in current
         applications."""
         if app is None:
@@ -600,7 +600,7 @@ class ActionRegistry:
             reg = self._state["categories"].setdefault(cat, [])
             reg.append(action)
 
-    def actions(self, context: Optional[Any] = None) -> Dict[str, Any]:
+    def actions(self, context: Any | None = None) -> dict[str, Any]:
         """Return a mapping of category => actions list.
 
         Actions are filtered according to :meth:`.Action.available`.
@@ -617,7 +617,7 @@ class ActionRegistry:
             result[cat] = [a for a in actions if a.available(context)]
         return result
 
-    def for_category(self, category: str, context: Any = None) -> List[Action]:
+    def for_category(self, category: str, context: Any = None) -> list[Action]:
         """Returns actions list for this category in current application.
 
         Actions are filtered according to :meth:`.Action.available`.
@@ -642,7 +642,7 @@ class ActionRegistry:
         g.action_context = {}
 
     @property
-    def context(self) -> Dict[str, bool]:
+    def context(self) -> dict[str, bool]:
         """Return action context (dict type).
 
         Applications can modify it to suit their needs.

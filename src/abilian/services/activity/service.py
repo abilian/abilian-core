@@ -35,7 +35,7 @@ class ActivityService(Service):
         actor: User,
         verb: str,
         object: Any,
-        target: Optional[Entity] = None,
+        target: Entity | None = None,
     ):
         assert self.running
         if not isinstance(object, Entity):
@@ -65,7 +65,7 @@ class ActivityService(Service):
         session.add(entry)
 
     @staticmethod
-    def entries_for_actor(actor: User, limit: int = 50) -> List[ActivityEntry]:
+    def entries_for_actor(actor: User, limit: int = 50) -> list[ActivityEntry]:
         return (
             ActivityEntry.query.filter(ActivityEntry.actor == actor).limit(limit).all()
         )

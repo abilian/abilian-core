@@ -86,7 +86,7 @@ class EntityTagList(BaseEntityTagView, BaseObjectView, JSONView):
     def get(self, *args, **kwargs):
         return JSONView.get(self, *args, **kwargs)
 
-    def data(self, *args, **kwargs) -> Dict:
+    def data(self, *args, **kwargs) -> dict:
         tags = sorted(self.extension.entity_tags(self.entity))
         return {"result": tags}
 

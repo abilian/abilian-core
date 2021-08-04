@@ -34,7 +34,7 @@ class NavItem(Action):
         self.divider = divider
 
     @getset
-    def status(self, value: Optional[Any] = None) -> Status:
+    def status(self, value: Any | None = None) -> Status:
         current = g.nav.get("active")
         if current is None:
             return ENABLED
@@ -71,7 +71,7 @@ class NavGroup(NavItem):
     """
 
     def __init__(
-        self, category: str, name: str, items: Tuple[NavItem] = (), *args, **kwargs
+        self, category: str, name: str, items: tuple[NavItem] = (), *args, **kwargs
     ):
         NavItem.__init__(self, category, name, *args, **kwargs)
         self.items = list(items)
@@ -87,13 +87,13 @@ class NavGroup(NavItem):
         self.items.insert(pos, item)
         self._paths.add(item.path)
 
-    def get_render_args(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_render_args(self, **kwargs: Any) -> dict[str, Any]:
         params = super().get_render_args(**kwargs)
         params["action_items"] = [a for a in self.items if a.available(params)]
         return params
 
     @getset
-    def status(self, value: Optional[Any] = None) -> Status:
+    def status(self, value: Any | None = None) -> Status:
         current = g.nav.get("active")
         if current is None:
             return ENABLED
@@ -128,10 +128,10 @@ class BreadcrumbItem:
 
     def __init__(
         self,
-        label: Union[LazyString, str] = "",
-        url: Union[str, Endpoint] = "#",
-        icon: Optional[str] = None,
-        description: Optional[Any] = None,
+        label: LazyString | str = "",
+        url: str | Endpoint = "#",
+        icon: str | None = None,
+        description: Any | None = None,
     ):
         # don't test 'label or...': if label is a lazy_gettext, it will be
         # resolved. If this item is created in a url_value_preprocessor, it will

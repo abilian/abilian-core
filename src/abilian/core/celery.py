@@ -87,7 +87,7 @@ class FlaskLoader(BaseLoader):
             engine = db.get_engine(app, bind)
             engine.dispose()
 
-    def read_configuration(self, env: str = "") -> Dict[str, Any]:
+    def read_configuration(self, env: str = "") -> dict[str, Any]:
         app = self.flask_app
         app.config.setdefault("CELERY_DEFAULT_EXCHANGE", app.name)
         app.config.setdefault("CELERY_DEFAULT_QUEUE", app.name)
@@ -105,7 +105,7 @@ class FlaskTask(Task):
 
     abstract = True
 
-    def __call__(self, *args: List, **kwargs: Dict[str, Any]) -> Optional[Any]:
+    def __call__(self, *args: list, **kwargs: dict[str, Any]) -> Any | None:
         if is_eager():
             # this is here mainly because flask_sqlalchemy (as of 2.0) will
             # remove session on app context teardown.

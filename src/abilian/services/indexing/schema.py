@@ -83,7 +83,7 @@ def DefaultSearchSchema(*args, **kwargs) -> Schema:
     return schema
 
 
-def indexable_role(role_or_principal: Union[Role, Principal]) -> str:
+def indexable_role(role_or_principal: Role | Principal) -> str:
     """Return a string suitable for query against `allowed_roles_and_users`
     field.
 

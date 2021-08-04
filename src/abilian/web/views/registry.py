@@ -22,9 +22,9 @@ class Registry:
     """
 
     def __init__(self, *args: Any, **kwargs: Any):
-        self._map: Dict[str, Callable] = {}
+        self._map: dict[str, Callable] = {}
 
-    def register(self, entity: Union[Entity, Type[Entity]], url_func: Callable):
+    def register(self, entity: Entity | type[Entity], url_func: Callable):
         """Associate a `url_func` with entity's type.
 
         :param:entity: an :class:`abilian.core.extensions.db.Model` class or
@@ -39,9 +39,9 @@ class Registry:
 
     def url_for(
         self,
-        entity: Union[db.Model, Hit, Dict, None] = None,
-        object_type: Optional[str] = None,
-        object_id: Optional[int] = None,
+        entity: db.Model | Hit | dict | None = None,
+        object_type: str | None = None,
+        object_id: int | None = None,
         **kwargs: Any,
     ) -> str:
         """Return canonical view URL for given entity instance.
@@ -66,7 +66,7 @@ class Registry:
             object_id = getter("id")(entity)
             object_type = getter("object_type")(entity)
 
-        url_func: Optional[Callable] = self._map.get(object_type)
+        url_func: Callable | None = self._map.get(object_type)
         if url_func is not None:
             return url_func(entity, object_type, object_id, **kwargs)
 
@@ -90,11 +90,11 @@ class default_view:
 
     def __init__(
         self,
-        app_or_blueprint: Union["Application", Blueprint],
+        app_or_blueprint: Application | Blueprint,
         entity: Entity,
         id_attr: str = "object_id",
-        endpoint: Optional[Any] = None,
-        kw_func: Optional[Any] = None,
+        endpoint: Any | None = None,
+        kw_func: Any | None = None,
     ):
         self.app_or_blueprint = app_or_blueprint
         self.is_bp = isinstance(app_or_blueprint, Blueprint)

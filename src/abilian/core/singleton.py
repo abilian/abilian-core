@@ -7,13 +7,13 @@ from sqlalchemy.types import String, TypeDecorator
 
 
 class ValueSingletonMeta(type):
-    __instances__: Dict[str, Any]
+    __instances__: dict[str, Any]
 
     def __new__(
-        mcs: Type[ValueSingletonMeta],
+        mcs: type[ValueSingletonMeta],
         name: str,
-        bases: Tuple[Type],
-        dct: Dict[str, Any],
+        bases: tuple[type],
+        dct: dict[str, Any],
     ) -> ValueSingletonMeta:
 
         dct["__instances__"] = {}
@@ -89,12 +89,12 @@ class UniqueNameType(TypeDecorator):
         kwargs.setdefault("length", self.default_max_length)
         TypeDecorator.__init__(self, *args, **kwargs)
 
-    def process_bind_param(self, value: Any, dialect: Dialect) -> Optional[str]:
+    def process_bind_param(self, value: Any, dialect: Dialect) -> str | None:
         if value is not None:
             value = str(value)
         return value
 
-    def process_result_value(self, value: Optional[str], dialect: Dialect) -> Any:
+    def process_result_value(self, value: str | None, dialect: Dialect) -> Any:
         if value is not None:
             value = self.Type(value)
         return value

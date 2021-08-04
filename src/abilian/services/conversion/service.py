@@ -35,7 +35,7 @@ CACHE_DIR = "cache"
 class Converter:
     tmp_dir: Path
     cache_dir: Path
-    handlers: List[Handler]
+    handlers: list[Handler]
 
     def __init__(self):
         self.handlers = []

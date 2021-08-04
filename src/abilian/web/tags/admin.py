@@ -111,7 +111,7 @@ class NSView(View):
             flash(_("Unknown action"))
             self.get(self.ns)
 
-    def _get_selected_tags(self) -> List[Tag]:
+    def _get_selected_tags(self) -> list[Tag]:
 
         if self.__selected_tags is None:
             tag_ids = request.form.getlist("selected", type=int)
@@ -230,7 +230,7 @@ class BaseTagView:
 class TagEdit(BaseTagView, ObjectEdit):
     _message_success = _l("Tag edited")
     has_changes = False
-    _entities_to_reindex: List[Entity] = []
+    _entities_to_reindex: list[Entity] = []
 
     def after_populate_obj(self):
         session = sa.orm.object_session(self.obj)

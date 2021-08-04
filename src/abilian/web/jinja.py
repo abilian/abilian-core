@@ -43,7 +43,7 @@ class JinjaManagerMixin(Flask):
         return env
 
     @locked_cached_property
-    def jinja_options(self) -> Dict[str, Any]:
+    def jinja_options(self) -> dict[str, Any]:
         options = dict(Flask.jinja_options)
 
         jinja_exts = options.setdefault("extensions", [])

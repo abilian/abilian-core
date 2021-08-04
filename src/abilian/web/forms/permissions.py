@@ -25,11 +25,11 @@ class FormPermissions:
     def __init__(
         self,
         default: Role = Anonymous,
-        read: Union[None, Role, Collection[Role]] = None,
-        write: Union[None, Role, Collection[Role]] = None,
-        fields_read: Optional[Dict[str, Collection[Role]]] = None,
-        fields_write: Optional[Dict[str, Collection[Role]]] = None,
-        existing: Optional[Any] = None,
+        read: None | Role | Collection[Role] = None,
+        write: None | Role | Collection[Role] = None,
+        fields_read: dict[str, Collection[Role]] | None = None,
+        fields_write: dict[str, Collection[Role]] | None = None,
+        existing: Any | None = None,
     ):
         """
         :param default: default roles when not specified for field. Can be:
@@ -61,8 +61,8 @@ class FormPermissions:
             )
 
         self.default = default_dict
-        self.form: Dict[Permission, Any] = {}
-        self.fields: Dict[str, Dict[Permission, Collection[Role]]] = {}
+        self.form: dict[Permission, Any] = {}
+        self.fields: dict[str, dict[Permission, Collection[Role]]] = {}
 
         if existing is not None:
             # copy existing formpermissions instance
@@ -101,9 +101,9 @@ class FormPermissions:
     def has_permission(
         self,
         permission: Permission,
-        field: Optional[str] = None,
-        obj: Union[None, Entity, object] = None,
-        user: Optional[User] = None,
+        field: str | None = None,
+        obj: None | Entity | object = None,
+        user: User | None = None,
     ) -> bool:
         if user is None:
             user = cast(User, current_user)
@@ -119,7 +119,7 @@ class FormPermissions:
         )
         definition = None
 
-        def eval_roles(fun: Callable) -> List[Role]:
+        def eval_roles(fun: Callable) -> list[Role]:
             return fun(permission=permission, field=field, obj=obj)
 
         if field is None:

@@ -21,7 +21,7 @@ class AdminPanel:
     icon: str = ""
     admin: Admin
 
-    def url_value_preprocess(self, endpoint: str, view_args: Dict[Any, Any]):
+    def url_value_preprocess(self, endpoint: str, view_args: dict[Any, Any]):
         """Panel can preprocess values for their views.
 
         This method is called only if the endpoint is for `get()`, `post()`, or

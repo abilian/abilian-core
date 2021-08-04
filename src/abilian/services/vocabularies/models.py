@@ -46,11 +46,11 @@ class _VocabularyMeta(_BaseMeta):
     """
 
     def __new__(
-        cls: Type[_VocabularyMeta],
+        cls: type[_VocabularyMeta],
         name: str,
-        bases: Tuple[Type[Model], ...],
-        d: Dict[str, Any],
-    ) -> Type[BaseVocabulary]:
+        bases: tuple[type[Model], ...],
+        d: dict[str, Any],
+    ) -> type[BaseVocabulary]:
         meta = d.get("Meta")
         tblprefix = "vocabulary_"
 

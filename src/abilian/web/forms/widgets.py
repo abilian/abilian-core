@@ -114,7 +114,7 @@ def linkify_url(value: str) -> str:
     return f'<a href="{url}">{value}</a>&nbsp;<i class="fa fa-external-link"></i>'
 
 
-def text2html(text: str) -> Union[Markup, str]:
+def text2html(text: str) -> Markup | str:
     text = text.strip()
     if re.search("<(p|br)>", text.lower()):
         return text
@@ -134,11 +134,11 @@ class Column:
 
 
 class View:
-    options: Dict[str, Any] = {}
+    options: dict[str, Any] = {}
 
     def get_templates(
         self, specific_template_name: str, default_template: str
-    ) -> List[str]:
+    ) -> list[str]:
         specific_template = self.options.get(specific_template_name)
         if specific_template:
             return [specific_template, default_template]
@@ -152,9 +152,9 @@ class BaseTableView(View):
     show_search = None
     paginate = False
 
-    columns: List[Dict[str, Any]]
+    columns: list[dict[str, Any]]
 
-    def __init__(self, columns: List[Dict[str, Any]], options: Optional[Any] = None):
+    def __init__(self, columns: list[dict[str, Any]], options: Any | None = None):
         if self.show_search is None:
             self.show_search = self.show_controls
 
@@ -167,7 +167,7 @@ class BaseTableView(View):
             self.show_search = self.options.get("show_search", self.show_controls)
             self.paginate = self.options.get("paginate", self.paginate)
 
-    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]):
+    def init_columns(self, columns: Sequence[str | dict[str, Any]]):
         # TODO
         default_width = f"{(0.99 / len(columns) * 100):2.0f}%"
         for col in columns:
@@ -182,7 +182,7 @@ class BaseTableView(View):
                 column["label"] = labelize(column["name"])
             self.columns.append(column)
 
-    def render(self, entities: List[Entity], **kwargs: Any) -> Markup:
+    def render(self, entities: list[Entity], **kwargs: Any) -> Markup:
         aoColumns = []
         aaSorting = []
         offset = 0
@@ -228,7 +228,7 @@ class BaseTableView(View):
             render_template(templates, table=table, js=Markup(js), view=self, **kwargs)
         )
 
-    def render_line(self, entity: Entity) -> List[Union[Markup, str]]:
+    def render_line(self, entity: Entity) -> list[Markup | str]:
         line = []
         make_link_on = self.options.get("make_link_on")
 
@@ -304,16 +304,16 @@ class AjaxMainTableView(View):
 
     show_controls = False
     paginate = True
-    columns: List[Dict[str, Any]]
-    options: Dict[str, Any]
+    columns: list[dict[str, Any]]
+    options: dict[str, Any]
 
     def __init__(
         self,
-        columns: List[Dict[str, Any]],
+        columns: list[dict[str, Any]],
         ajax_source: str,
-        search_criterions: Tuple = (),
-        name: Optional[str] = None,
-        options: Optional[Dict[str, Any]] = None,
+        search_criterions: tuple = (),
+        name: str | None = None,
+        options: dict[str, Any] | None = None,
     ):
         self.columns = []
         self.init_columns(columns)
@@ -323,7 +323,7 @@ class AjaxMainTableView(View):
         self.save_state = name is not None
         self.options = options or {}
 
-    def init_columns(self, columns: Sequence[Union[str, Dict[str, Any]]]):
+    def init_columns(self, columns: Sequence[str | dict[str, Any]]):
         # TODO: compute the correct width for each column.
         default_width = 0.99 / len(columns)
         for col in columns:
@@ -463,7 +463,7 @@ class SingleView(View):
         self.panels = panels
         self.options = options
 
-    def render(self, item: Entity, related_views: Tuple[()] = ()) -> Markup:
+    def render(self, item: Entity, related_views: tuple[()] = ()) -> Markup:
         mapper = sa.orm.class_mapper(item.__class__)
         panels = []
         _to_skip = (None, False, 0, 0.0, "", "-")
@@ -648,14 +648,14 @@ class TextInput(wtforms.widgets.TextInput):
     :class:`abilian.web.action.Icon`.
     """
 
-    pre_icon: Optional[str] = None
-    post_icon: Optional[str] = None
+    pre_icon: str | None = None
+    post_icon: str | None = None
 
     def __init__(
         self,
-        input_type: Optional[Any] = None,
-        pre_icon: Optional[Any] = None,
-        post_icon: Optional[Any] = None,
+        input_type: Any | None = None,
+        pre_icon: Any | None = None,
+        post_icon: Any | None = None,
     ):
         super().__init__(input_type)
 
@@ -706,8 +706,8 @@ class TextArea(BaseTextArea):
 
     def __init__(
         self,
-        resizeable: Optional[str] = None,
-        rows: Optional[int] = None,
+        resizeable: str | None = None,
+        rows: int | None = None,
         *args: Any,
         **kwargs: Any,
     ):
@@ -850,7 +850,7 @@ class ImageInput(FileInput):
         width: int = 120,
         height: int = 120,
         resize_mode: str = image.CROP,
-        valid_extensions: Tuple[str, str, str] = ("jpg", "jpeg", "png"),
+        valid_extensions: tuple[str, str, str] = ("jpg", "jpeg", "png"),
     ):
         super().__init__(template=template)
         self.resize_mode = resize_mode
@@ -1158,7 +1158,7 @@ class DateTimeInput:
 
 class DefaultViewWidget:
     def render_view(
-        self, field: Union[IntegerField, StringField], **kwargs: Any
+        self, field: IntegerField | StringField, **kwargs: Any
     ) -> str:
         value = field.object_data
         if isinstance(value, str):
@@ -1187,7 +1187,7 @@ class BooleanWidget(wtforms.widgets.CheckboxInput):
             "wrapper-class",
         )
     )
-    on_off_options: Dict[str, Any]
+    on_off_options: dict[str, Any]
 
     def __init__(self, *args: Any, **kwargs: Any):
         self.on_off_mode = kwargs.pop("on_off_mode", False)

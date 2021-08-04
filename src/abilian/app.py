@@ -77,7 +77,7 @@ class ServiceManager:
     """Mixin that provides lifecycle (register/start/stop) support for
     services."""
 
-    services: Dict[str, Service]
+    services: dict[str, Service]
 
     def __init__(self):
         self.services = {}
@@ -143,12 +143,12 @@ class Application(
     default_view: ViewRegistry
 
     #: json serializable dict to land in Javascript under Abilian.api
-    js_api: Dict[str, Any]
+    js_api: dict[str, Any]
 
     #: celery app class
     celery_app_cls = FlaskCelery
 
-    def __init__(self, name: Optional[Any] = None, *args: Any, **kwargs: Any):
+    def __init__(self, name: Any | None = None, *args: Any, **kwargs: Any):
         name = name or __name__
 
         Flask.__init__(self, name, *args, **kwargs)
@@ -160,7 +160,7 @@ class Application(
         self.default_view = ViewRegistry()
         self.js_api = {}
 
-    def setup(self, config: Optional[type]):
+    def setup(self, config: type | None):
         self.configure(config)
 
         # At this point we have loaded all external config files:
@@ -250,7 +250,7 @@ class Application(
     def install_id_generator(self, sender: Flask, **kwargs: Any):
         g.id_generator = count(start=1)
 
-    def configure(self, config: Optional[type]):
+    def configure(self, config: type | None):
         if config:
             self.config.from_object(config)
 
@@ -505,7 +505,7 @@ def init_debug_toolbar(app: Flask):
 
 
 def create_app(
-    config: Optional[type] = None, app_class: type = Application, **kw: Any
+    config: type | None = None, app_class: type = Application, **kw: Any
 ) -> Application:
     app = app_class(**kw)
     app.setup(config=config)

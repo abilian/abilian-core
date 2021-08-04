@@ -37,7 +37,7 @@ class WidgetTestModel(Entity):
         super().__init__(*args, **kw)
         self._display_value_called = False
 
-    def display_value(self, attr: str) -> Union[int, str]:
+    def display_value(self, attr: str) -> int | str:
         self._display_value_called = True
         return getattr(self, attr)
 

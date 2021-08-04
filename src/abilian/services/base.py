@@ -39,7 +39,7 @@ class Service:
     #: service name in Application.extensions / Application.services
     name = ""
 
-    def __init__(self, app: Optional[Any] = None):
+    def __init__(self, app: Any | None = None):
         if self.name is None:
             msg = f"Service must have a name ({fqcn(self.__class__)})"
             raise ValueError(msg)
@@ -100,7 +100,7 @@ class Service:
         running state."""
 
         @wraps(meth)
-        def check_running(self: Any, *args: Any, **kwargs: Any) -> Optional[Any]:
+        def check_running(self: Any, *args: Any, **kwargs: Any) -> Any | None:
             if not self.running:
                 return
             return meth(self, *args, **kwargs)

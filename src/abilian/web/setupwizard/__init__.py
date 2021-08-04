@@ -39,7 +39,7 @@ setup = Blueprint(
 
 _dialects = OrderedDict((("sqlite", "SQLite (for demo)"), ("postgresql", "PostgreSQL")))
 
-_dialects_unavailable: Dict[str, str] = OrderedDict()
+_dialects_unavailable: dict[str, str] = OrderedDict()
 
 for dialect, _label in _dialects.items():
     d = sa.dialects.registry.load(dialect)

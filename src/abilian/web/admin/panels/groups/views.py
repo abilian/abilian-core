@@ -24,7 +24,7 @@ from .forms import GroupAdminForm
 class JsonGroupsList(base.JSONView):
     """JSON group list for datatable."""
 
-    def data(self, *args, **kw) -> Dict:
+    def data(self, *args, **kw) -> dict:
         security = get_security_service()
         length = int(kw.get("iDisplayLength", 0))
         start = int(kw.get("iDisplayStart", 0))

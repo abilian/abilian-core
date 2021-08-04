@@ -56,8 +56,8 @@ HAS_LIBREOFFICE = has_libreoffice()
 class Handler(metaclass=ABCMeta):
     """Abstract base class for handlers."""
 
-    accepts_mime_types: List[str] = []
-    produces_mime_types: List[str] = []
+    accepts_mime_types: list[str] = []
+    produces_mime_types: list[str] = []
 
     def __init__(self, *args, **kwargs):
         self.log = logger.getChild(self.__class__.__name__)
@@ -214,9 +214,9 @@ class PdfToPpmHandler(Handler):
     accepts_mime_types = ["application/pdf", "application/x-pdf"]
     produces_mime_types = ["image/jpeg"]
 
-    def convert(self, blob: bytes, size: int = 500, **kw) -> List[bytes]:
+    def convert(self, blob: bytes, size: int = 500, **kw) -> list[bytes]:
         """Size is the maximum horizontal size."""
-        file_list: List[str] = []
+        file_list: list[str] = []
         with make_temp_file(blob) as in_fn, make_temp_file() as out_fn:
             try:
                 subprocess.check_call(["pdftoppm", "-jpeg", in_fn, out_fn])

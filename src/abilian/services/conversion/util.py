@@ -25,10 +25,10 @@ def get_tmp_dir() -> Path:
 # Utils
 @contextmanager
 def make_temp_file(
-    blob: Optional[bytes] = None,
+    blob: bytes | None = None,
     prefix: str = "tmp",
     suffix: str = "",
-    tmp_dir: Optional[Path] = None,
+    tmp_dir: Path | None = None,
 ) -> Iterator[str]:
 
     if tmp_dir is None:

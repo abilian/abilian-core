@@ -164,7 +164,7 @@ BaseMeta = db.Model.__class__
 
 class EntityQuery(db.Model.query_class):
     def with_permission(
-        self, permission: Permission, user: Optional[User] = None
+        self, permission: Permission, user: User | None = None
     ) -> EntityQuery:
         from abilian.services import get_security_service
 
@@ -188,10 +188,10 @@ class EntityMeta(BaseMeta):
     """
 
     def __new__(
-        mcs: Type[EntityMeta],
+        mcs: type[EntityMeta],
         classname: str,
-        bases: Tuple[Type, ...],
-        d: Dict[str, Any],
+        bases: tuple[type, ...],
+        d: dict[str, Any],
     ) -> Any:
         if d["__module__"] != EntityMeta.__module__ or classname != "Entity":
             if not any(issubclass(b, _EntityInherit) for b in bases):
@@ -241,7 +241,7 @@ class EntityMeta(BaseMeta):
         event.listen(cls, "after_insert", auto_slug_after_insert)
         return cls
 
-    def __init__(cls, classname: str, bases: Tuple[Type, ...], d: Dict[str, Any]):
+    def __init__(cls, classname: str, bases: tuple[type, ...], d: dict[str, Any]):
         bases = cls.__bases__
         BaseMeta.__init__(cls, classname, bases, d)
 
@@ -312,7 +312,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
     query_class = EntityQuery
 
     @declared_attr
-    def __mapper_args__(cls) -> Dict[str, Any]:
+    def __mapper_args__(cls) -> dict[str, Any]:
         if cls.__module__ == __name__ and cls.__name__ == "Entity":
             return {"polymorphic_on": "_entity_type"}
 
@@ -365,9 +365,9 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 
     # Default magic metadata, should not be necessary
     # TODO: remove
-    __editable__: FrozenSet = frozenset()
-    __searchable__: FrozenSet = frozenset()
-    __auditable__: FrozenSet = frozenset()
+    __editable__: frozenset = frozenset()
+    __searchable__: frozenset = frozenset()
+    __auditable__: frozenset = frozenset()
 
     def __init__(self, *args, **kwargs):
         db.Model.__init__(self, *args, **kwargs)
@@ -448,7 +448,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
         return " ".join(result)
 
     @property
-    def _indexable_tags(self) -> List[Tag]:
+    def _indexable_tags(self) -> list[Tag]:
         """Index tag ids for tags defined in this Entity's default tags
         namespace."""
         tags = current_app.extensions.get("tags")
@@ -490,7 +490,7 @@ class Entity(Indexable, BaseMixin, Model, metaclass=EntityMeta):
 
 # TODO: make this unecessary
 @event.listens_for(Entity, "class_instrument", propagate=True)
-def register_metadata(cls: Type[Entity]):
+def register_metadata(cls: type[Entity]):
     editable_columns = set()
 
     # TODO: use SQLAlchemy 0.8 introspection

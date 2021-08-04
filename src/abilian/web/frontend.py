@@ -73,7 +73,7 @@ class ModuleAction(Action):
         self.group = group
         super().__init__(module.action_category, name, *args, **kwargs)
 
-    def pre_condition(self, context: Dict[str, Module]) -> bool:
+    def pre_condition(self, context: dict[str, Module]) -> bool:
         module = actions.context.get("module")
         if not module:
             return False
@@ -115,7 +115,7 @@ def add_to_recent_items(entity, type="ignored"):
     session["recent_items"] = g.recent_items = new_recent_items
 
 
-def expose(url: str = "/", methods: Tuple[str] = ("GET",)) -> Callable:
+def expose(url: str = "/", methods: tuple[str] = ("GET",)) -> Callable:
     """Use this decorator to expose views in your view classes.
 
     `url`   Relative URL for the view `methods`   Allowed HTTP methods.
@@ -323,7 +323,7 @@ class EntityDelete(BaseEntityView, ObjectDelete):
 class ListJson(ModuleView, JSONView):
     """JSON endpoint, for AJAX-backed table views."""
 
-    def data(self, *args, **kwargs) -> Dict:
+    def data(self, *args, **kwargs) -> dict:
         echo = int(kwargs.get("sEcho", 0))
         length = int(kwargs.get("iDisplayLength", 10))
         start = int(kwargs.get("iDisplayStart", 0))
@@ -357,7 +357,7 @@ class ModuleMeta(type):
     the class) to avoid calculating them for each view class instance.
     """
 
-    def __init__(cls, classname: str, bases: Tuple, fields: Dict[str, Any]):
+    def __init__(cls, classname: str, bases: tuple, fields: dict[str, Any]):
         type.__init__(cls, classname, bases, fields)
 
         # Gather exposed views
@@ -408,9 +408,9 @@ class Module(metaclass=ModuleMeta):
     label: str = None
     managed_class: type = None
     list_view = None
-    list_view_columns: List[Dict[str, Any]] = []
+    list_view_columns: list[dict[str, Any]] = []
     single_view = None
-    components: Tuple = ()
+    components: tuple = ()
 
     # class based views. If not provided will be automaticaly created from
     # EntityView etc defined below
@@ -432,14 +432,14 @@ class Module(metaclass=ModuleMeta):
     static_folder = None
     view_template = None
     view_options = None
-    related_views: List["RelatedView"] = []
+    related_views: list[RelatedView] = []
     blueprint = None
     search_criterions = (
         search.TextSearchCriterion("name", attributes=("name", "nom")),
     )
     # used mostly to change datatable search_label
     tableview_options = {}  # type: ignore
-    _urls: List[Tuple] = []
+    _urls: list[tuple] = []
 
     def __init__(self):
         # If endpoint name is not provided, get it from the class name
@@ -614,7 +614,7 @@ class Module(metaclass=ModuleMeta):
     def _setup_breadcrumb_preprocessors(self, state: BlueprintSetupState):
         self.blueprint.url_value_preprocessor(self._add_breadcrumb)
 
-    def _add_breadcrumb(self, endpoint: str, values: Dict[Any, Any]):
+    def _add_breadcrumb(self, endpoint: str, values: dict[Any, Any]):
         g.breadcrumb.append(
             BreadcrumbItem(label=self.label, url=Endpoint(".list_view"))
         )
@@ -668,7 +668,7 @@ class Module(metaclass=ModuleMeta):
         return query
 
     def ordered_query(
-        self, request: Request, query: Optional[EntityQuery] = None
+        self, request: Request, query: EntityQuery | None = None
     ) -> EntityQuery:
         """Order query according to request args.
 

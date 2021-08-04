@@ -14,7 +14,7 @@ def allow_anonymous(user: User, roles: Collection[Role], **kwargs: Any) -> bool:
     return True
 
 
-def allow_access_for_roles(roles: Union[Collection[Role], Role]) -> Callable:
+def allow_access_for_roles(roles: Collection[Role] | Role) -> Callable:
     """Access control helper to check user's roles against a list of valid
     roles."""
     if isinstance(roles, Role):
@@ -42,7 +42,7 @@ class Blueprint(BaseBlueprint):
         self,
         name: str,
         import_name: str,
-        allowed_roles: Union[None, str, Role, Collection[Role]] = None,
+        allowed_roles: None | str | Role | Collection[Role] = None,
         **kwargs: Any
     ):
         """

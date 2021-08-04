@@ -32,13 +32,13 @@ class Admin:
 
     def __init__(self, *panels: Any, **kwargs: Any):
         self.app = None
-        self.panels: List[AdminPanel] = []
-        self._panels_endpoints: Dict[str, AdminPanel] = {}
-        self.nav_paths: Dict[str, str] = {}
-        self.breadcrumb_items: Dict[AdminPanel, BreadcrumbItem] = {}
+        self.panels: list[AdminPanel] = []
+        self._panels_endpoints: dict[str, AdminPanel] = {}
+        self.nav_paths: dict[str, str] = {}
+        self.breadcrumb_items: dict[AdminPanel, BreadcrumbItem] = {}
         self.setup_blueprint()
 
-        def condition(context: Dict[str, bool]) -> bool:
+        def condition(context: dict[str, bool]) -> bool:
             return not current_user.is_anonymous and security.has_role(
                 current_user, AdminRole
             )
@@ -140,8 +140,8 @@ class Admin:
 
         def add_url_rule(
             rule: str,
-            endpoint: Optional[Any] = None,
-            view_func: Optional[Callable] = None,
+            endpoint: Any | None = None,
+            view_func: Callable | None = None,
             **kwargs: Any,
         ):
             if not rule:
@@ -175,12 +175,12 @@ class Admin:
             if not security.has_role(user, "admin"):
                 raise Forbidden()
 
-    def panel_preprocess_value(self, endpoint: str, view_args: Dict[Any, Any]):
+    def panel_preprocess_value(self, endpoint: str, view_args: dict[Any, Any]):
         panel = self._panels_endpoints.get(endpoint)
         if panel is not None:
             panel.url_value_preprocess(endpoint, view_args)
 
-    def build_breadcrumbs(self, endpoint: str, view_args: Dict[Any, Any]):
+    def build_breadcrumbs(self, endpoint: str, view_args: dict[Any, Any]):
         g.breadcrumb.append(self.root_breadcrumb_item)
         g.nav["active"] = self.nav_paths.get(endpoint, self.nav_root.path)
         panel = self._panels_endpoints.get(endpoint)

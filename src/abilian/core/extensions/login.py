@@ -16,7 +16,7 @@ class AnonymousUser(AnonymousUserMixin):
         return security.has_role(self, role)
 
     @property
-    def groups(self) -> Set[Group]:
+    def groups(self) -> set[Group]:
         return set()
 
 

@@ -46,14 +46,14 @@ class FormContext:
     field filtering according to original permission and user passed to top
     form `__init__` method."""
 
-    permission: Optional[Permission]
-    user: Optional[User]
+    permission: Permission | None
+    user: User | None
     obj: Any
 
     def __init__(
         self,
-        permission: Optional[Permission] = None,
-        user: Optional[User] = None,
+        permission: Permission | None = None,
+        user: User | None = None,
         obj: Any = None,
     ):
         self.permission = permission
@@ -92,10 +92,10 @@ class FormContext:
 
 class Form(BaseForm):
 
-    _groups: Dict[str, List[Field]] = OrderedDict()
+    _groups: dict[str, list[Field]] = OrderedDict()
 
     #: :class:`FormPermissions` instance
-    _permissions: Optional[FormPermissions] = None
+    _permissions: FormPermissions | None = None
 
     def __init__(self, *args, **kwargs):
         permission = kwargs.pop("permission", None)

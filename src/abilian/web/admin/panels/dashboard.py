@@ -64,7 +64,7 @@ class DashboardPanel(AdminPanel):
         )
 
 
-def stats_since(dt: timedelta) -> Dict[str, int]:
+def stats_since(dt: timedelta) -> dict[str, int]:
     new_members = new_documents = new_messages = 0
     after_date = datetime.utcnow() - dt
     session = db.session()
@@ -109,7 +109,7 @@ def unix_time_millis(dt):
     return (dt - epoch).total_seconds() * 1000.0
 
 
-def newlogins(sessions: List[Any]) -> Tuple[List[Any], List[Any]]:
+def newlogins(sessions: list[Any]) -> tuple[list[Any], list[Any]]:
     """Brand new logins each day, and total of users each day.
 
     :return: data, total
@@ -146,7 +146,7 @@ def newlogins(sessions: List[Any]) -> Tuple[List[Any], List[Any]]:
     return data, total
 
 
-def uniquelogins(sessions: List[Any]) -> Tuple[List[Any], List[Any], List[Any]]:
+def uniquelogins(sessions: list[Any]) -> tuple[list[Any], list[Any], list[Any]]:
     """Unique logins per days/weeks/months.
 
     :return: daily, weekly, monthly
@@ -156,7 +156,7 @@ def uniquelogins(sessions: List[Any]) -> Tuple[List[Any], List[Any], List[Any]]:
     if not sessions:
         return [], [], []
 
-    dates: Dict[str, Set[User]] = {}
+    dates: dict[str, set[User]] = {}
     for session in sessions:
         user = session.user
         # time value is discarded to aggregate on days only

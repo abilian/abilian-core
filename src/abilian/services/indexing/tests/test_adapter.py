@@ -151,7 +151,7 @@ def test_get_document_with_schema():
     # test retrieve related attributes
     schema = Schema(id=NUMERIC(bits=64, signed=False, stored=True, unique=True))
     adapter = SAAdapter(Indexable, schema)
-    expected: Dict[str, Any] = {"id": 1, "num": 42}
+    expected: dict[str, Any] = {"id": 1, "num": 42}
     obj = Indexable(**expected)
     obj.related = type("Related", (object,), {"name": None})()
     expected["name"] = obj.related.name = "related name"

@@ -19,7 +19,7 @@ class Cache:
     def __contains__(self, key: CacheKey) -> bool:
         return self._path(key).exists()
 
-    def get(self, key: CacheKey) -> Union[str, bytes, None]:
+    def get(self, key: CacheKey) -> str | bytes | None:
         if key[0] == "txt":
             return self.get_text(key)
         else:
@@ -27,21 +27,21 @@ class Cache:
 
     __getitem__ = get
 
-    def get_bytes(self, key: CacheKey) -> Optional[bytes]:
+    def get_bytes(self, key: CacheKey) -> bytes | None:
         if key in self:
             path = self._path(key)
             return path.read_bytes()
         else:
             return None
 
-    def get_text(self, key: CacheKey) -> Optional[str]:
+    def get_text(self, key: CacheKey) -> str | None:
         if key in self:
             path = self._path(key)
             return path.read_text("utf8")
         else:
             return None
 
-    def set(self, key: CacheKey, value: Union[str, bytes]):
+    def set(self, key: CacheKey, value: str | bytes):
         path = self._path(key)
         path.parent.mkdir(parents=True, exist_ok=True)
         if key[0] == "txt":

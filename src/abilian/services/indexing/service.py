@@ -86,19 +86,19 @@ class IndexServiceState(ServiceState):
     def __init__(self, service: WhooshIndexService, *args: Any, **kwargs: Any):
         super().__init__(service, *args, **kwargs)
         self.whoosh_base = None
-        self.indexes: Dict[str, Index] = {}
-        self.indexed_classes: Set[type] = set()
-        self.indexed_fqcn: Set[str] = set()
+        self.indexes: dict[str, Index] = {}
+        self.indexed_classes: set[type] = set()
+        self.indexed_fqcn: set[str] = set()
         self.search_filter_funcs = []
         self.value_provider_funcs = []
         self.url_for_hit = url_for_hit
 
     @property
-    def to_update(self) -> List[Tuple[str, Entity]]:
+    def to_update(self) -> list[tuple[str, Entity]]:
         return _lookup_app_object(_pending_indexation_attr)
 
     @to_update.setter
-    def to_update(self, value: List):
+    def to_update(self, value: list):
         top = _app_ctx_stack.top
         if top is None:
             raise RuntimeError("working outside of application context")
@@ -166,7 +166,7 @@ class WhooshIndexService(Service):
         """
         self.app_state.value_provider_funcs.append(func)
 
-    def clear_update_queue(self, app: Optional[Flask] = None):
+    def clear_update_queue(self, app: Flask | None = None):
         self.app_state.to_update = []
 
     def start(self, ignore_state: bool = False):
@@ -220,7 +220,7 @@ class WhooshIndexService(Service):
         return self.app_state.indexes[name]
 
     @property
-    def default_search_fields(self) -> Dict[str, float]:
+    def default_search_fields(self) -> dict[str, float]:
         """Return default field names and boosts to be used for searching.
 
         Can be configured with `SEARCH_DEFAULT_BOOSTS`
@@ -230,7 +230,7 @@ class WhooshIndexService(Service):
             config = {"name": 1.5, "name_prefix": 1.3, "description": 1.3, "text": 1.0}
         return config
 
-    def searchable_object_types(self) -> List:
+    def searchable_object_types(self) -> list:
         """List of (object_types, friendly name) present in the index."""
         try:
             idx = self.index()
@@ -249,8 +249,8 @@ class WhooshIndexService(Service):
         self,
         q: str,
         index_name: str = "default",
-        fields: Optional[Dict[str, float]] = None,
-        Models: Collection[Type[Model]] = (),
+        fields: dict[str, float] | None = None,
+        Models: Collection[type[Model]] = (),
         object_types: Collection[str] = (),
         prefix: bool = True,
         facet_by_type: bool = False,
@@ -433,7 +433,7 @@ class WhooshIndexService(Service):
 
         primary_field = "id"
         state = self.app_state
-        items: List[Tuple[str, str, int, dict]] = []
+        items: list[tuple[str, str, int, dict]] = []
         for op, obj in state.to_update:
             model_name = fqcn(obj.__class__)
             if model_name not in self.adapted or not self.adapted[model_name].indexable:
@@ -449,7 +449,7 @@ class WhooshIndexService(Service):
 
         self.clear_update_queue()
 
-    def get_document(self, obj: Entity, adapter: SAAdapter = None) -> Dict[str, Any]:
+    def get_document(self, obj: Entity, adapter: SAAdapter = None) -> dict[str, Any]:
         if adapter is None:
             class_name = fqcn(obj.__class__)
             adapter = self.adapted.get(class_name)
@@ -512,7 +512,7 @@ service = WhooshIndexService()
 
 
 @shared_task
-def index_update(index: str, items: List[List[Union[Dict, int, str]]]):
+def index_update(index: str, items: list[list[dict | int | str]]):
     """
     :param:index: index name
     :param:items: list of (operation, full class name, primary key, data) tuples.

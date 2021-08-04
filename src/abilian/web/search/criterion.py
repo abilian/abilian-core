@@ -49,7 +49,7 @@ class BaseCriterion:
             raise ValueError("Model not set")
         return self._model
 
-    def _set_model(self, model: Type[Model]):
+    def _set_model(self, model: type[Model]):
         if self._model is not None:
             raise ValueError("Model already set")
 
@@ -91,7 +91,7 @@ class TextSearchCriterion(BaseCriterion):
         self,
         name: str,
         label: str = "",
-        attributes: Optional[Tuple[str, str]] = None,
+        attributes: tuple[str, str] | None = None,
         search_fmt: str = "%{q}%",
     ):
         assert isinstance(search_fmt, str)

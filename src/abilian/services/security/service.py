@@ -74,7 +74,7 @@ __all__ = [
 ]
 
 #: default security matrix
-DEFAULT_PERMISSION_ROLE: Dict[Permission, FrozenSet[Role]] = {}
+DEFAULT_PERMISSION_ROLE: dict[Permission, frozenset[Role]] = {}
 prm = DEFAULT_PERMISSION_ROLE
 prm[MANAGE] = frozenset({Admin, Manager})
 prm[WRITE] = frozenset({Admin, Manager, Writer})
@@ -119,7 +119,7 @@ def require_flush(fun: Callable) -> Callable:
 
 
 def query_pa_no_flush(
-    session: Session, permission: Permission, role: Role, obj: Optional[Model]
+    session: Session, permission: Permission, role: Role, obj: Model | None
 ):
     """Query for a :class:`PermissionAssignment` using `session` without any
     `flush()`.
@@ -251,10 +251,10 @@ class SecurityService(Service):
     @require_flush
     def get_roles(
         self,
-        principal: Union[AnonymousUser, Group, User],
-        object: Optional[Model] = None,
+        principal: AnonymousUser | Group | User,
+        object: Model | None = None,
         no_group_roles: bool = False,
-    ) -> List[Role]:
+    ) -> list[Role]:
         """Get all the roles attached to given `principal`, on a given
         `object`.
 
@@ -300,7 +300,7 @@ class SecurityService(Service):
         anonymous: bool = True,
         users: bool = True,
         groups: bool = True,
-        object: Optional[Model] = None,
+        object: Model | None = None,
         as_list: bool = True,
     ) -> Collection[Principal]:
         """Return all users which are assigned given role."""
@@ -331,7 +331,7 @@ class SecurityService(Service):
         return list(principals)
 
     @require_flush
-    def _all_roles(self, principal: Principal) -> Dict[Optional[str], Set[Role]]:
+    def _all_roles(self, principal: Principal) -> dict[str | None, set[Role]]:
         query = (
             db.session.query(RoleAssignment.object_id, RoleAssignment.role)
             .outerjoin(Entity)
@@ -359,7 +359,7 @@ class SecurityService(Service):
 
         return all_roles
 
-    def _role_cache(self, principal: Principal) -> Dict[Optional[str], Set[Role]]:
+    def _role_cache(self, principal: Principal) -> dict[str | None, set[Role]]:
         if not self._has_role_cache(principal):
             # FIXME: should call _fill_role_cache?
             principal.__roles_cache__ = {}
@@ -370,13 +370,13 @@ class SecurityService(Service):
         return hasattr(principal, "__roles_cache__")
 
     def _set_role_cache(
-        self, principal: Principal, cache: Dict[Optional[str], Set[Role]]
+        self, principal: Principal, cache: dict[str | None, set[Role]]
     ):
         principal.__roles_cache__ = cache
 
     def _fill_role_cache(
         self, principal: Principal, overwrite: bool = False
-    ) -> Dict[Optional[str], Set[Role]]:
+    ) -> dict[str | None, set[Role]]:
         """Fill role cache for `principal` (User or Group), in order to avoid
         too many queries when checking role access with 'has_role'.
 
@@ -423,8 +423,8 @@ class SecurityService(Service):
             filter_cond.append(RoleAssignment.group_id.in_(g.id for g in groups))
 
         query = query.filter(sql.or_(*filter_cond))
-        ra_users: Dict[User, Dict[str, Set[Role]]] = {}
-        ra_groups: Dict[Group, Dict[str, Set[Role]]] = {}
+        ra_users: dict[User, dict[str, set[Role]]] = {}
+        ra_groups: dict[Group, dict[str, set[Role]]] = {}
         for ra in query.all():
             if ra.user:
                 all_roles = ra_users.setdefault(ra.user, {})
@@ -461,9 +461,9 @@ class SecurityService(Service):
 
     def has_role(
         self,
-        principal: Union[Principal, Role, None],
-        role: Union[Collection[Role], Role, str],
-        object: Optional[Model] = None,
+        principal: Principal | Role | None,
+        role: Collection[Role] | Role | str,
+        object: Model | None = None,
     ) -> bool:
         """True if `principal` has `role` (either globally, if `object` is
         None, or on the specific `object`).
@@ -536,7 +536,7 @@ class SecurityService(Service):
         return len(valid_roles & roles) > 0
 
     def grant_role(
-        self, principal: Principal, role: Union[Role, str], obj: Optional[Model] = None
+        self, principal: Principal, role: Role | str, obj: Model | None = None
     ):
         """Grant `role` to `user` (either globally, if `obj` is None, or on the
         specific `obj`)."""
@@ -601,8 +601,8 @@ class SecurityService(Service):
     def ungrant_role(
         self,
         principal: Principal,
-        role: Union[Role, str],
-        object: Optional[Model] = None,
+        role: Role | str,
+        object: Model | None = None,
     ):
         """Ungrant `role` to `user` (either globally, if `object` is None, or
         on the specific `object`)."""
@@ -649,7 +649,7 @@ class SecurityService(Service):
         self._clear_role_cache(principal)
 
     @require_flush
-    def get_role_assignements(self, obj: Model) -> List:
+    def get_role_assignements(self, obj: Model) -> list:
         session = object_session(obj) if obj is not None else db.session
         if not session:
             session = db.session()
@@ -677,10 +677,10 @@ class SecurityService(Service):
     def has_permission(
         self,
         user: User,
-        permission: Union[Permission, str],
-        obj: Optional[Model] = None,
+        permission: Permission | str,
+        obj: Model | None = None,
         inherit: bool = False,
-        roles: Union[None, Role, str, List[Union[Role, str]]] = None,
+        roles: None | Role | str | list[Role | str] = None,
     ) -> bool:
         """
         :param obj: target object to check permissions.
@@ -758,8 +758,8 @@ class SecurityService(Service):
     def query_entity_with_permission(
         self,
         permission: Permission,
-        user: Optional[User] = None,
-        Model: Type[Model] = Entity,
+        user: User | None = None,
+        Model: type[Model] = Entity,
     ) -> Exists:
         """Filter a query on an :class:`Entity` or on of its subclasses.
 
@@ -846,8 +846,8 @@ class SecurityService(Service):
         return filter_expr
 
     def get_permissions_assignments(
-        self, obj: Optional[Model] = None, permission: Optional[Permission] = None
-    ) -> Dict[Permission, Set[Role]]:
+        self, obj: Model | None = None, permission: Permission | None = None
+    ) -> dict[Permission, set[Role]]:
         """
         :param permission: return only roles having this permission
 
@@ -871,14 +871,14 @@ class SecurityService(Service):
         if permission:
             pa = pa.filter(PermissionAssignment.permission == permission)
 
-        results: Dict[permission, Set[Role]] = {}
+        results: dict[permission, set[Role]] = {}
         for permission, role in pa.yield_per(1000):
             results.setdefault(permission, set()).add(role)
 
         return results
 
     def add_permission(
-        self, permission: Permission, role: Role, obj: Optional[Model] = None
+        self, permission: Permission, role: Role, obj: Model | None = None
     ):
         session = None
         if obj is not None:
@@ -896,7 +896,7 @@ class SecurityService(Service):
         session.add(pa)
 
     def delete_permission(
-        self, permission: Permission, role: Role, obj: Optional[Model] = None
+        self, permission: Permission, role: Role, obj: Model | None = None
     ):
         session = None
         if obj is not None:
@@ -916,8 +916,8 @@ class SecurityService(Service):
     def filter_with_permission(
         self,
         user: User,
-        permission: Union[Permission, str],
-        obj_list: List[Model],
+        permission: Permission | str,
+        obj_list: list[Model],
         inherit=False,
     ):
         user = unwrap(user)

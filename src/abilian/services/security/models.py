@@ -63,7 +63,7 @@ class Permission(UniqueName):
     def __init__(
         self,
         name: str,
-        label: Union[None, str, LazyString] = None,
+        label: None | str | LazyString = None,
         assignable: bool = True,
     ):
         super().__init__(name)
@@ -103,7 +103,7 @@ class Role(UniqueName):
     def __init__(
         self,
         name: str,
-        label: Union[None, str, LazyString] = None,
+        label: None | str | LazyString = None,
         assignable: bool = True,
     ):
         super().__init__(name)
@@ -218,7 +218,7 @@ class RoleAssignment(Model):
 # The solution is to build specific UNIQUE indexes, only for postgres
 #
 # noinspection PyComparisonWithNone
-def _postgres_indexes1() -> List[Index]:
+def _postgres_indexes1() -> list[Index]:
     role = RoleAssignment.role
     user_id = RoleAssignment.user_id
     group_id = RoleAssignment.group_id
@@ -348,7 +348,7 @@ class PermissionAssignment(db.Model):
         )
 
 
-def _postgres_indexes2() -> List[Index]:
+def _postgres_indexes2() -> list[Index]:
     # we need a unique index for when object_id is NULL; when it's not the
     # uniqueconstraint will just work.
     PA = PermissionAssignment

@@ -63,7 +63,7 @@ class SignalsDebugPanel(DebugPanel):
     user_enable = True
     has_content = True
 
-    events: List[dict] = []
+    events: list[dict] = []
 
     def nav_title(self):
         return "Signals"

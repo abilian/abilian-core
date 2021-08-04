@@ -125,7 +125,7 @@ def default_country() -> str:
 
 def country_choices(
     first: str = "", default_country_first: bool = True
-) -> List[Tuple[str, str]]:
+) -> list[tuple[str, str]]:
     """Return a list of (code, countries), alphabetically sorted on localized
     country name.
 
@@ -141,7 +141,7 @@ def country_choices(
     if first == "" and default_country_first:
         first = default_country()
 
-    def sortkey(item: Tuple[str, str]) -> str:
+    def sortkey(item: tuple[str, str]) -> str:
         if first is not None and item[0] == first:
             return "0"
         return to_lower_ascii(item[1])
@@ -150,7 +150,7 @@ def country_choices(
     return territories
 
 
-def supported_app_locales() -> Iterator[Tuple[Locale, str]]:
+def supported_app_locales() -> Iterator[tuple[Locale, str]]:
     """Language codes and labels supported by current application.
 
     :return: an iterable of `(:class:`babel.Locale`, label)`, label being the
@@ -179,7 +179,7 @@ def timezones_choices():
 class Babel(BabelBase):
     """Allow to load translations from other modules."""
 
-    _translations_paths: List[Tuple[str, str]]
+    _translations_paths: list[tuple[str, str]]
 
     def init_app(self, app: Flask):
         super().init_app(app)
@@ -251,7 +251,7 @@ class Translations(BaseTranslations):
         return self
 
 
-def _get_translations_multi_paths() -> Optional[Translations]:
+def _get_translations_multi_paths() -> Translations | None:
     """Return the correct gettext translations that should be used for this
     request.
 
@@ -303,7 +303,7 @@ flask_babel.get_translations = _get_translations_multi_paths
 babel = Babel()
 
 
-def localeselector() -> Optional[str]:
+def localeselector() -> str | None:
     """Default locale selector used in abilian applications."""
     # if a user is logged in, use the locale from the user settings
     user = getattr(g, "user", None)
@@ -324,7 +324,7 @@ def timezoneselector() -> tzinfo:
     return LOCALTZ
 
 
-def get_template_i18n(template_name: str, locale: Locale) -> List[str]:
+def get_template_i18n(template_name: str, locale: Locale) -> list[str]:
     """Build template list with preceding locale if found."""
     if locale is None:
         return [template_name]
@@ -368,7 +368,7 @@ class ensure_request_context:
 def render_template_i18n(template_name_or_list: str, **context: Any) -> str:
     """Try to build an ordered list of template to satisfy the current
     locale."""
-    template_list: List[str] = []
+    template_list: list[str] = []
     # Use locale if present in **context
     if "locale" in context:
         locale = Locale.parse(context["locale"])

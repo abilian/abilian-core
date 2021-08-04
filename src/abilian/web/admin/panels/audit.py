@@ -40,7 +40,7 @@ def format_date_for_input(date):
 class JSONUserSearch(JSONView):
     """Search users by fullname."""
 
-    def data(self, *args, **kwargs) -> Dict:
+    def data(self, *args, **kwargs) -> dict:
         q: str = kwargs["q"]
         q = q.replace("%", " ").strip().lower()
 
@@ -181,7 +181,7 @@ class AuditPanel(AdminPanel):
 
         # group entries by day
         entries = []
-        day_entries: List[BaseEntryPresenter] = []
+        day_entries: list[BaseEntryPresenter] = []
         current_day = None
 
         for e in all_entries:

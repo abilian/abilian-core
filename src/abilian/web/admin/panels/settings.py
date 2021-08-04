@@ -27,8 +27,8 @@ class Key:
         self,
         id: str,
         type_: str,
-        label: Optional[LazyString] = None,
-        description: Optional[LazyString] = None,
+        label: LazyString | None = None,
+        description: LazyString | None = None,
     ):
         self.id = id
         self.type = type_

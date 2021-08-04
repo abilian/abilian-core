@@ -36,7 +36,7 @@ def fqcn(cls: type) -> str:
     return str(f"{cls.__module__}.{cls.__name__}")
 
 
-def friendly_fqcn(cls_or_cls_name: Union[type, str]) -> str:
+def friendly_fqcn(cls_or_cls_name: type | str) -> str:
     """Friendly name of fully qualified class name.
 
     :param cls_or_cls_name: a string or a class
@@ -217,7 +217,7 @@ class BasePresenter:
         return [cls(model) for model in models]
 
 
-def encode_string(string_or_bytes: Union[str, bytes]) -> bytes:
+def encode_string(string_or_bytes: str | bytes) -> bytes:
     """Encode a string to bytes, if it isn't already.
 
     :param string_or_bytes: The string to encode.
@@ -231,7 +231,7 @@ def encode_string(string_or_bytes: Union[str, bytes]) -> bytes:
         return string_or_bytes
 
 
-def md5(data: Union[str, bytes, None]):
+def md5(data: str | bytes | None):
     """md5 function, as in flask-security."""
     # flask-security is not needed anywhere else and as of 1.7.5 has
     # strong dependency requirements that prevent us from upgrading a

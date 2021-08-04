@@ -31,11 +31,11 @@ __all__ = ["AuthService", "user_menu"]
 logger = logging.getLogger(__name__)
 
 
-def is_anonymous(context: Dict[str, bool]) -> bool:
+def is_anonymous(context: dict[str, bool]) -> bool:
     return current_user.is_anonymous
 
 
-def is_authenticated(context: Dict[str, bool]) -> bool:
+def is_authenticated(context: dict[str, bool]) -> bool:
     return not is_anonymous(context)
 
 
@@ -45,7 +45,7 @@ def _user_photo_endpoint() -> str:
     return images.user_url_args(current_user, 16)[0]
 
 
-def _user_photo_icon_args(icon: DynamicIcon, url_args: Dict) -> Dict[str, Any]:
+def _user_photo_icon_args(icon: DynamicIcon, url_args: dict) -> dict[str, Any]:
     from abilian.web.views import images  # lazy import avoid circular import
 
     return images.user_url_args(current_user, max(icon.width, icon.height))[1]
@@ -92,8 +92,8 @@ class AuthServiceState(ServiceState):
 
     def __init__(self, service: AuthService, *args: Any, **kwargs: Any):
         super().__init__(service, *args, **kwargs)
-        self.bp_access_controllers: Dict[Optional[str], List[Callable]] = {None: []}
-        self.endpoint_access_controllers: Dict[str, List[Callable]] = {}
+        self.bp_access_controllers: dict[str | None, list[Callable]] = {None: []}
+        self.endpoint_access_controllers: dict[str, list[Callable]] = {}
 
     def add_bp_access_controller(self, blueprint: str, func: Callable):
         self.bp_access_controllers.setdefault(blueprint, []).append(func)
@@ -125,7 +125,7 @@ class AuthService(Service):
             actions.register(*_ACTIONS)
 
     @login_manager.user_loader
-    def load_user(user_id: str) -> Optional[User]:
+    def load_user(user_id: str) -> User | None:
         try:
             user = User.query.get(user_id)
 
@@ -179,7 +179,7 @@ class AuthService(Service):
 
         return redirect(url_for(login_manager.login_view, **kw))
 
-    def do_access_control(self) -> Optional[Response]:
+    def do_access_control(self) -> Response | None:
         """`before_request` handler to check if user should be redirected to
         login page."""
         from abilian.services import get_service
@@ -202,7 +202,7 @@ class AuthService(Service):
         endpoint = request.endpoint
         blueprint = request.blueprint
 
-        access_controllers: List[Callable] = []
+        access_controllers: list[Callable] = []
         access_controllers.extend(state.bp_access_controllers.get(None, []))
 
         if blueprint and blueprint in state.bp_access_controllers:

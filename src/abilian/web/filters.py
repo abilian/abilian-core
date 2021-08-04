@@ -30,7 +30,7 @@ def autoescape(filter_func: Callable) -> Callable:
     @wraps(filter_func)
     def _autoescape(
         eval_ctx: EvalContext, *args: str, **kwargs: Any
-    ) -> Union[Markup, str]:
+    ) -> Markup | str:
         result = filter_func(*args, **kwargs)
         if eval_ctx.autoescape:
             result = Markup(result)
@@ -63,7 +63,7 @@ def labelize(s: str) -> str:
     return " ".join(w.capitalize() for w in s.split("_"))
 
 
-def filesize(d: Union[int, str]) -> Markup:
+def filesize(d: int | str) -> Markup:
     if not isinstance(d, int):
         d = int(d)
 
@@ -97,7 +97,7 @@ def roughsize(size: int, above: int = 20, mod: int = 10) -> str:
     return f"{(size - size % mod):d}+"
 
 
-def datetimeparse(s) -> Optional[datetime]:
+def datetimeparse(s) -> datetime | None:
     """Parse a string date time to a datetime object.
 
     Suitable for dates serialized with .isoformat()
@@ -113,10 +113,10 @@ def datetimeparse(s) -> Optional[datetime]:
 
 
 def age(
-    dt: Optional[datetime],
-    now: Optional[datetime] = None,
+    dt: datetime | None,
+    now: datetime | None = None,
     add_direction: bool = True,
-    date_threshold: Optional[Any] = None,
+    date_threshold: Any | None = None,
 ) -> str:
     """
     :param dt: :class:`datetime<datetime>` instance to format
@@ -171,7 +171,7 @@ def age(
     )
 
 
-def date_age(dt: Optional[datetime], now: Optional[datetime] = None) -> str:
+def date_age(dt: datetime | None, now: datetime | None = None) -> str:
     # Fail silently for now XXX
     if not dt:
         return ""

@@ -70,7 +70,7 @@ def login_form():
     return render_template("login/login.html", next_url=next_url)
 
 
-def do_login(form: Union[Dict[str, Any], ImmutableMultiDict]) -> Dict[str, Any]:
+def do_login(form: dict[str, Any] | ImmutableMultiDict) -> dict[str, Any]:
     email = form.get("email", "").lower()
     password = form.get("password")
     next_url = form.get("next", "")
@@ -108,7 +108,7 @@ def do_login(form: Union[Dict[str, Any], ImmutableMultiDict]) -> Dict[str, Any]:
 
 @csrf.exempt
 @route("/login", methods=["POST"])
-def login_post() -> Union[Tuple[str, int], Response]:
+def login_post() -> tuple[str, int] | Response:
     res = do_login(request.form)
     if "error" in res:
         code = res.pop("code")
@@ -145,7 +145,7 @@ def logout():
 
 @csrf.exempt
 @route("/api/logout", methods=["POST"])
-def logout_json() -> Tuple[str, int, Dict[str, str]]:
+def logout_json() -> tuple[str, int, dict[str, str]]:
     logout_user()
     return "{}", 200, {"content-type": "application/json"}
 
@@ -162,7 +162,7 @@ def forgotten_pw_form() -> str:
 
 @route("/forgotten_pw", methods=["POST"])
 @csrf.exempt
-def forgotten_pw(new_user: bool = False) -> Union[str, Response, Tuple[str, int]]:
+def forgotten_pw(new_user: bool = False) -> str | Response | tuple[str, int]:
     """Reset password for users who have already activated their accounts."""
     email = request.form.get("email", "").lower()
 
@@ -200,7 +200,7 @@ def forgotten_pw(new_user: bool = False) -> Union[str, Response, Tuple[str, int]
 
 
 @route("/reset_password/<token>")
-def reset_password(token: str) -> Union[str, Response]:
+def reset_password(token: str) -> str | Response:
     expired, invalid, user = reset_password_token_status(token)
     if invalid:
         flash(_("Invalid reset password token."), "error")
@@ -272,7 +272,7 @@ def random_password():
 
 
 def get_serializer(name: str) -> TimedSerializer:
-    config: Dict[str, Any] = current_app.config
+    config: dict[str, Any] = current_app.config
     secret_key: bytes = config.get("SECRET_KEY")
     salt = config.get(f"SECURITY_{name.upper()}_SALT")
     return URLSafeTimedSerializer(secret_key=secret_key, salt=salt)
@@ -318,7 +318,7 @@ def reset_password_token_status(token: str) -> Any:
 
 def get_token_status(
     token, serializer_name, max_age=None
-) -> Tuple[bool, bool, Optional[User]]:
+) -> tuple[bool, bool, User | None]:
     serializer = get_serializer(serializer_name)
     # max_age = get_max_age(max_age)
     user, data = None, None

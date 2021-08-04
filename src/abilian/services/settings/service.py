@@ -27,18 +27,18 @@ class SettingsNamespace:
         """Returns full key name for use in settings service."""
         return ":".join((self.name, key))
 
-    def keys(self, prefix: str = "") -> List[str]:
+    def keys(self, prefix: str = "") -> list[str]:
         prefix = ":".join((self.name, prefix))
         start = len(self.name) + 1  # +1 for colon
         return [k[start:] for k in self.service.keys(prefix=prefix)]
 
-    def iteritems(self, prefix: str = "") -> Iterator[Tuple[str, int]]:
+    def iteritems(self, prefix: str = "") -> Iterator[tuple[str, int]]:
         prefix = ":".join((self.name, prefix))
         start = len(self.name) + 1  # +1 for colon
         for k, v in self.service.iteritems(prefix=prefix):
             yield (k[start:], v)
 
-    def as_dict(self, prefix: str = "") -> Dict[str, int]:
+    def as_dict(self, prefix: str = "") -> dict[str, int]:
         return dict(self.iteritems(prefix))
 
     def get(self, key: str) -> int:
@@ -48,7 +48,7 @@ class SettingsNamespace:
     def set(self, key: str, *args, **kwargs):
         return self.service.set(self.ns(key), *args, **kwargs)
 
-    def delete(self, key: str, silent: bool = True) -> Optional[Any]:
+    def delete(self, key: str, silent: bool = True) -> Any | None:
         return self.service.delete(self.ns(key), silent=silent)
 
 
@@ -58,7 +58,7 @@ class SettingsService(Service):
     def namespace(self, name: str) -> SettingsNamespace:
         return SettingsNamespace(name, self)
 
-    def keys(self, prefix: Optional[str] = None) -> List[str]:
+    def keys(self, prefix: str | None = None) -> list[str]:
         """List all keys, with optional prefix filtering."""
         query = Setting.query
         if prefix:
@@ -68,7 +68,7 @@ class SettingsService(Service):
         # want 'key'
         return [i[0] for i in query.yield_per(1000).values(Setting.key)]
 
-    def iteritems(self, prefix: Optional[str] = None) -> Iterator[Tuple[str, Any]]:
+    def iteritems(self, prefix: str | None = None) -> Iterator[tuple[str, Any]]:
         """Like dict.iteritems."""
         query = Setting.query
         if prefix:
@@ -79,7 +79,7 @@ class SettingsService(Service):
 
     items = iteritems
 
-    def as_dict(self, prefix: Optional[str] = None) -> Dict[str, Any]:
+    def as_dict(self, prefix: str | None = None) -> dict[str, Any]:
         """Return a mapping key -> value of settings, with optional prefix
         filtering."""
         return dict(self.iteritems(prefix))
@@ -96,7 +96,7 @@ class SettingsService(Service):
         s = self._get_setting(key)
         return s.value
 
-    def set(self, key: str, value: Any, type_: Optional[str] = None):
+    def set(self, key: str, value: Any, type_: str | None = None):
         try:
             s = self._get_setting(key)
         except KeyError:

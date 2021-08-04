@@ -26,10 +26,10 @@ CROP = "crop"
 RESIZE_MODES = frozenset({SCALE, FIT, CROP})
 
 # TODO: cache to file
-cache: Dict[Any, bytes] = {}
+cache: dict[Any, bytes] = {}
 
 
-def open_image(img: Union[BytesIO, bytes]) -> Image.Image:
+def open_image(img: BytesIO | bytes) -> Image.Image:
     if isinstance(img, bytes):
         img = BytesIO(img)
 
@@ -46,7 +46,7 @@ def get_format(img):
     return image.format
 
 
-def get_size(img: bytes) -> Tuple[int, int]:
+def get_size(img: bytes) -> tuple[int, int]:
     image = open_image(img)
     return image.size
 

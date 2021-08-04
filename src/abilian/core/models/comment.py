@@ -18,7 +18,7 @@ class Commentable(metaclass=abc.ABCMeta):
     id: int
 
 
-def register(cls: Type[Entity]) -> type:
+def register(cls: type[Entity]) -> type:
     """Register an :class:`Entity` as a commentable class.
 
     Can be used as a class decorator:
