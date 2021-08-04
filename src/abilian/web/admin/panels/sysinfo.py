@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import sys
+from typing import Dict, List
 
 import pkg_resources
 from flask import current_app, render_template
@@ -19,15 +20,18 @@ class SysinfoPanel(AdminPanel):
         uname = os.popen("uname -a").read()
         python_version = sys.version.strip()
 
-        packages = []
+        packages: List[Dict[str, str]] = []
 
         for dist in pkg_resources.working_set:
             package = {
                 "name": dist.project_name,
                 "key": dist.key,
-                "version": dist.version if dist.has_version() else "Unknown version",
-                "vcs": None,
+                "vcs": "",
             }
+            try:
+                package["version"] = dist.version
+            except ValueError:
+                package["version"] = "Unknown version"
 
             # FIXME: broken by pip 10
             # location = text_type(Path(dist.location).resolve())
@@ -50,7 +54,7 @@ class SysinfoPanel(AdminPanel):
             #     )
 
             packages.append(package)
-            packages.sort(key=lambda d: d.get("key"))
+            packages.sort(key=lambda d: d["key"])
 
         config_values = [(k, repr(v)) for k, v in sorted(current_app.config.items())]
 

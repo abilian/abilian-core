@@ -1,9 +1,8 @@
-""""""
 from __future__ import annotations
 
 from datetime import datetime
 from itertools import chain
-from typing import Callable, Dict
+from typing import Callable, Dict, List
 
 import pytz
 import sqlalchemy as sa
@@ -41,7 +40,8 @@ def format_date_for_input(date):
 class JSONUserSearch(JSONView):
     """Search users by fullname."""
 
-    def data(self, q, *args, **kwargs) -> Dict:
+    def data(self, *args, **kwargs) -> Dict:
+        q: str = kwargs["q"]
         q = q.replace("%", " ").strip().lower()
 
         if not q or len(q) < 2:
@@ -181,7 +181,7 @@ class AuditPanel(AdminPanel):
 
         # group entries by day
         entries = []
-        day_entries = None
+        day_entries: List[BaseEntryPresenter] = []
         current_day = None
 
         for e in all_entries:

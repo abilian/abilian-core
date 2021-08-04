@@ -223,7 +223,8 @@ class BaseTagView:
     def view_url(self):
         return url_for(".tags_ns", ns=self.ns)
 
-    index_url = view_url
+    def index_url(self):
+        return self.view_url()
 
 
 class TagEdit(BaseTagView, ObjectEdit):

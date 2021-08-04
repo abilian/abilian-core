@@ -61,7 +61,7 @@ class FormPermissions:
             )
 
         self.default = default_dict
-        self.form = {}
+        self.form: Dict[Permission, Any] = {}
         self.fields = {}
 
         if existing is not None:

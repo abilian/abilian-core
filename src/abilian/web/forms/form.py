@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import logging
+import typing
 from collections import OrderedDict
 from functools import partial
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 from flask import g, has_app_context
 from flask_login import current_user
@@ -19,6 +20,10 @@ from abilian.i18n import _, _n
 from abilian.services.security import Permission
 
 from .widgets import DefaultViewWidget
+
+if typing.TYPE_CHECKING:
+    from abilian.web.forms import FormPermissions
+
 
 logger = logging.getLogger(__name__)
 
@@ -87,9 +92,10 @@ class FormContext:
 
 class Form(BaseForm):
 
-    _groups = OrderedDict()
+    _groups: Dict[str, List[Field]] = OrderedDict()
+
     #: :class:`FormPermissions` instance
-    _permissions = None
+    _permissions: Optional[FormPermissions] = None
 
     def __init__(self, *args, **kwargs):
         permission = kwargs.pop("permission", None)

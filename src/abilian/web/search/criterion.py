@@ -94,16 +94,18 @@ class TextSearchCriterion(BaseCriterion):
         attributes: Optional[Tuple[str, str]] = None,
         search_fmt: str = "%{q}%",
     ):
+        assert isinstance(search_fmt, str)
+
         super().__init__(name, label)
         self.attributes = dict.fromkeys(
             attributes if attributes is not None else (name,)
         )
         self._attributes_prepared = False
 
-        if isinstance(search_fmt, str):
-            search_fmt = [search_fmt]
+        # if isinstance(search_fmt, str):
+        #     search_fmt = [search_fmt]
 
-        self.search_fmt = search_fmt
+        self.search_fmt = [search_fmt]
 
     def _prepare_attributes(self):
         to_del = []
