@@ -62,7 +62,7 @@ class FormPermissions:
 
         self.default = default_dict
         self.form: Dict[Permission, Any] = {}
-        self.fields = {}
+        self.fields: Dict[str, Dict[Permission, Collection[Role]]] = {}
 
         if existing is not None:
             # copy existing formpermissions instance
