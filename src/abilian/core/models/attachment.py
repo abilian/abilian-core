@@ -21,7 +21,7 @@ class SupportAttachment(metaclass=abc.ABCMeta):
 
 
 def register(cls):
-    """Register an :class:`~.Entity` as a attachmentable class.
+    """Register an :class:`~.Entity` as an attachable class.
 
     Can be used as a class decorator:
 
