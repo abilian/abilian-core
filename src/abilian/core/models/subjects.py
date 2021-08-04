@@ -16,6 +16,7 @@ from typing import Type, Union
 import bcrypt
 import sqlalchemy as sa
 from flask_login import UserMixin
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, deferred, relationship
@@ -147,10 +148,18 @@ class BcryptPasswordStrategy(PasswordStrategy):
         return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
 
 
+class UserQuery(BaseQuery):
+    def get_by_email(self, email):
+        return self.filter_by(email=email).one()
+
+
 class Principal(IdMixin, TimestampedMixin, Indexable):
     """A principal is either a User or a Group."""
 
     __index_to__ = (("name", ("name", "name_prefix", "text")),)
+
+    query_class = UserQuery
+    query: UserQuery
 
     def has_role(self, role, context=None):
         from abilian.services import get_security_service
