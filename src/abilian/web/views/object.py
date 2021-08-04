@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict
+from typing import Dict, Optional, Type
 
 import sqlalchemy as sa
 import sqlalchemy.exc
@@ -28,22 +28,22 @@ class BaseObjectView(View):
     """Base class common to all database objects views."""
 
     #: form title
-    title = None
+    title: str
 
     #: Model class
-    Model = None
+    Model: Type
 
     #: primary key name to look for in url arguments
     pk = "object_id"
 
     #: object instance for this view
-    obj = None
+    obj: object
 
     #: object id
-    object_id = None
+    object_id: int
 
     #: template to render
-    template = None
+    template: str
 
     #: default templates inherit from "base_template". This allows to use
     #: generic templates with a custom base
@@ -116,14 +116,15 @@ class ObjectView(BaseObjectView):
     template = "default/object_view.html"
 
     #: View form class. Form object used to show objects fields
-    Form = None
+    Form: Type
 
     #: required permission. Must be an instance of
     #: :class:`abilian.services.security.Permission`
     permission = READ
 
     #: form instance for this view
-    form = None
+    # TODO
+    form: object
 
     def __init__(self, Model=None, pk=None, Form=None, template=None, *args, **kwargs):
         super().__init__(Model, pk, *args, **kwargs)

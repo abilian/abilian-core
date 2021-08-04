@@ -132,7 +132,8 @@ class UserBase:
     def index_url(self):
         return url_for(".users")
 
-    view_url = index_url
+    def view_url(self):
+        return self.index_url()
 
 
 class UserEdit(UserBase, views.ObjectEdit):
