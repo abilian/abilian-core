@@ -189,6 +189,7 @@ types-redis = "^3.5.4"
 types-requests = "^2.25.1"
 types-setuptools = "^57.0.0"
 watchgod = "^0.7"
+portray = "^1.7.0"
 
 
 [build-system]
