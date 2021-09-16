@@ -58,9 +58,11 @@ vagrant-tests:
 #
 # Various Checkers
 #
-lint: lint-py lint-js lint-rst lint-doc lint-circleci
+lint-common: lint-py lint-js lint-rst lint-doc
 
-lint-ci: lint
+lint: lint-common lint-circleci
+
+lint-ci: lint-common
 
 lint-all: lint lint-mypy lint-bandit
 
