@@ -58,7 +58,7 @@ vagrant-tests:
 #
 # Various Checkers
 #
-lint: lint-py lint-js lint-rst lint-doc
+lint: lint-py lint-js lint-rst lint-doc lint-circleci
 
 lint-ci: lint
 
@@ -79,9 +79,9 @@ lint-py3k:
 	pylint --py3k -j3 src tests
 	@echo ""
 
-lint-travis:
-	@echo "--> Linting .travis.yml files"
-	travis lint --no-interactive
+lint-circleci:
+	@echo "--> Checking CircleCI config"
+	circleci config validate
 	@echo ""
 
 lint-js:
