@@ -377,9 +377,7 @@ class Locale(sa.types.TypeDecorator):
     def python_type(self):
         return babel.Locale
 
-    def process_bind_param(
-        self, value: Any | None, dialect: Dialect
-    ) -> Any | None:
+    def process_bind_param(self, value: Any | None, dialect: Dialect) -> Any | None:
         if value is None:
             return None
 
@@ -398,9 +396,7 @@ class Locale(sa.types.TypeDecorator):
 
         return code
 
-    def process_result_value(
-        self, value: Any | None, dialect: Dialect
-    ) -> Any | None:
+    def process_result_value(self, value: Any | None, dialect: Dialect) -> Any | None:
         return None if value is None else babel.Locale.parse(value)
 
 
@@ -413,9 +409,7 @@ class Timezone(sa.types.TypeDecorator):
     def python_type(self):
         return pytz.tzfile.DstTzInfo
 
-    def process_bind_param(
-        self, value: Any | None, dialect: Dialect
-    ) -> Any | None:
+    def process_bind_param(self, value: Any | None, dialect: Dialect) -> Any | None:
         if value is None:
             return None
 
@@ -428,9 +422,7 @@ class Timezone(sa.types.TypeDecorator):
 
         return value.zone
 
-    def process_result_value(
-        self, value: Any | None, dialect: Dialect
-    ) -> Any | None:
+    def process_result_value(self, value: Any | None, dialect: Dialect) -> Any | None:
         return None if value is None else babel.dates.get_timezone(value)
 
 

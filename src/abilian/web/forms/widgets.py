@@ -1157,9 +1157,7 @@ class DateTimeInput:
 
 
 class DefaultViewWidget:
-    def render_view(
-        self, field: IntegerField | StringField, **kwargs: Any
-    ) -> str:
+    def render_view(self, field: IntegerField | StringField, **kwargs: Any) -> str:
         value = field.object_data
         if isinstance(value, str):
             return text2html(value)

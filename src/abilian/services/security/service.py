@@ -369,9 +369,7 @@ class SecurityService(Service):
     def _has_role_cache(self, principal: Principal) -> bool:
         return hasattr(principal, "__roles_cache__")
 
-    def _set_role_cache(
-        self, principal: Principal, cache: dict[str | None, set[Role]]
-    ):
+    def _set_role_cache(self, principal: Principal, cache: dict[str | None, set[Role]]):
         principal.__roles_cache__ = cache
 
     def _fill_role_cache(

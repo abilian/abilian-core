@@ -28,9 +28,7 @@ def autoescape(filter_func: Callable) -> Callable:
 
     @evalcontextfilter
     @wraps(filter_func)
-    def _autoescape(
-        eval_ctx: EvalContext, *args: str, **kwargs: Any
-    ) -> Markup | str:
+    def _autoescape(eval_ctx: EvalContext, *args: str, **kwargs: Any) -> Markup | str:
         result = filter_func(*args, **kwargs)
         if eval_ctx.autoescape:
             result = Markup(result)

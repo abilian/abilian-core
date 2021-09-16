@@ -168,9 +168,7 @@ class Principal(IdMixin, TimestampedMixin, Indexable):
         return security_service.has_role(self, role, context)
 
 
-def set_entity_type(
-    cls: type[User] | type[Group]
-) -> type[User] | type[Group]:
+def set_entity_type(cls: type[User] | type[Group]) -> type[User] | type[Group]:
     """Decorator used to set the class' entity_type after the class has been
     declared.
 

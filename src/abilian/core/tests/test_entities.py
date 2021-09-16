@@ -14,21 +14,20 @@ from abilian.core.models.subjects import User
 
 from .dummy import DummyContact
 
+# @fixture
+# def session() -> Session:
+#     engine = create_engine("sqlite:///:memory:", echo=False)
+#     session_class = sessionmaker(bind=engine)
+#     session = session_class()
+#
+#     # flask-sqlalchemy as listeners looking for this
+#     session._model_changes = {}
+#
+#     DummyContact.metadata.create_all(engine)
+#     return session
 
-@fixture
-def session() -> Session:
-    engine = create_engine("sqlite:///:memory:", echo=False)
-    session_class = sessionmaker(bind=engine)
-    session = session_class()
 
-    # flask-sqlalchemy as listeners looking for this
-    session._model_changes = {}
-
-    DummyContact.metadata.create_all(engine)
-    return session
-
-
-def test():
+def test_dummy():
     contact = DummyContact(first_name="John")
     assert contact.creator is None
     assert contact.owner is None

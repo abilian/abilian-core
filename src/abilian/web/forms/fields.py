@@ -373,9 +373,7 @@ class DateField(Field):
 
     widget = DateInput()
 
-    def __init__(
-        self, label: str | None = None, validators: Any = None, **kwargs: Any
-    ):
+    def __init__(self, label: str | None = None, validators: Any = None, **kwargs: Any):
         super().__init__(label, validators, **kwargs)
 
     def _value(self) -> str:

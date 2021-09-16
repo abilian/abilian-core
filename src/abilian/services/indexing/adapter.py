@@ -115,9 +115,7 @@ class SAAdapter(SchemaAdapter):
         # After all field have been discovered, we add the missing ones.
         field_definitions = {}
 
-        def setup_field(
-            attr_name: str, field_name: tuple[str, type | ID] | str
-        ):
+        def setup_field(attr_name: str, field_name: tuple[str, type | ID] | str):
             field_def = False
             if not isinstance(field_name, str):
                 field_name, field_def = field_name
@@ -171,9 +169,7 @@ class SAAdapter(SchemaAdapter):
             )
             schema.add(field_name, field_def)
 
-    def retrieve(
-        self, pk: int, _session: Session | None = None, **data: Any
-    ) -> Entity:
+    def retrieve(self, pk: int, _session: Session | None = None, **data: Any) -> Entity:
         if _session is None:
             _session = db.session()
         return _session.query(self.model_class).get(pk)
