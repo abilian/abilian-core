@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "abilian-core"
-version = "0.11.23"
+version = "0.11.24"
 description = "A framework for enterprise applications (CRM, ERP, collaboration...)."
 authors = ["Abilian SAS"]
 license = "LGPL-2.0-or-later"
