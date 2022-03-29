@@ -14,7 +14,7 @@ include = ["src/**/*"]
 python = "^3.8"
 
 # Flask and friends
-Flask = "^1.0"
+Flask = "~1.1.4"
 Flask-Assets = ">=0.12"
 Flask-Mail = ">=0.9.1"
 Flask-Migrate = ">=2.0"
@@ -24,7 +24,9 @@ Flask-Talisman = ">=0.6"
 # Pinned dependencies
 werkzeug = "<1"
 Flask-Babel = ">=0.11,<2"
-jinja2 = "<3"
+jinja2 = "~2"
+markupsafe = "~2.0"
+itsdangerous = "~1"
 
 # We're not ready for SQLAlchemy 1.4 yet (due to sqlalchemy_utils).
 sqlalchemy = "~1.3"
@@ -39,6 +41,7 @@ webassets = "< 2"
 
 # Forms add-ons
 WTForms-Alchemy = ">=0.12"
+wtforms = "~2.3"
 wtforms-sqlalchemy = "*"
 
 # can parse isoformat / used in a jinja filter
