@@ -41,9 +41,6 @@ webassets = "< 2"
 WTForms-Alchemy = ">=0.12"
 wtforms-sqlalchemy = "*"
 
-# pathlib is included in python 3.4, and very useful
-pathlib = "*"
-
 # can parse isoformat / used in a jinja filter
 python-dateutil = "^2.4.0"
 
@@ -101,7 +98,7 @@ pandas = ">=0.17"
 #
 # Assets management (might not be necessary if distributing compiled assets)
 #
-jsmin = "*"
+jsmin = "~3.0"
 cssmin = "*"
 closure = "*"
 devtools = "*"
