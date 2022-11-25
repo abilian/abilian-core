@@ -133,7 +133,7 @@ flake8-mutable = "*"
 flake8-pytest = "*"
 flake8-super-call = "*"
 flake8-tidy-imports = "*"
-mastool = "*"
+# mastool = "*"
 mccabe = "*"
 
 mypy = "*"
@@ -191,6 +191,9 @@ types-setuptools = "^57.0.0"
 watchgod = "^0.7"
 portray = "^1.7.0"
 
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.138"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools"]
