@@ -5,6 +5,7 @@ TODO: most of this is currently only stubs and needs to be implemented.
 NOTE: the `rule` property is supposed to be useful for generating client-side
 validation code.
 """
+
 from __future__ import annotations
 
 from typing import Callable

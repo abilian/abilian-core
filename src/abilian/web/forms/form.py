@@ -1,4 +1,5 @@
 """Extensions to WTForms fields, widgets and validators."""
+
 from __future__ import annotations
 
 import logging

@@ -1,4 +1,5 @@
 """"""
+
 from __future__ import annotations
 
 import json
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 CHUNK_SIZE = 64 * 1024
 
 DEFAULT_CONFIG = {
-    "USER_QUOTA": 100 * 1024 ** 2,  # max 100 Mb for all current files
+    "USER_QUOTA": 100 * 1024**2,  # max 100 Mb for all current files
     "USER_MAX_FILES": 1000,  # max number of files per user
     "DELETE_STALLED_AFTER": 60 * 60 * 24,  # delete files remaining after 1 day
 }

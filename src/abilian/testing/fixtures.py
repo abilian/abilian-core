@@ -9,6 +9,7 @@ to your `conftest.py`.
 Replaced the too-complex UnitTest-based testing framework.
 -> DI and functions over complex inheritance hierarchies FTW!
 """
+
 from __future__ import annotations
 
 import typing

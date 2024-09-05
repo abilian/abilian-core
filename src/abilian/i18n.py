@@ -42,6 +42,7 @@ And just type:
 
     $ python setup.py extract_messages
 """
+
 from __future__ import annotations
 
 import importlib
@@ -270,7 +271,7 @@ def _get_translations_multi_paths() -> Translations | None:
 
         # reverse order: thus the application catalog is loaded last, so that
         # translations from libraries can be overriden
-        for (dirname, domain) in reversed(babel_ext._translations_paths):
+        for dirname, domain in reversed(babel_ext._translations_paths):
             trs = Translations.load(
                 dirname, locales=[flask_babel.get_locale()], domain=domain
             )

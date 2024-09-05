@@ -1,4 +1,5 @@
 """"""
+
 from __future__ import annotations
 
 from abilian.web.action import FAIcon, Glyphicon, StaticIcon

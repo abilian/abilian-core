@@ -1,4 +1,5 @@
 """Field filters for WTForm."""
+
 from __future__ import annotations
 
 from typing import Union

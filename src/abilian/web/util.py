@@ -3,6 +3,7 @@
 See https://docs.djangoproject.com/en/dev/topics/http/shortcuts/ for
 more ideas of stuff to implement.
 """
+
 from __future__ import annotations
 
 from typing import Any

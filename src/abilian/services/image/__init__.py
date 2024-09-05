@@ -1,5 +1,6 @@
 """Provides tools (currently: only functions, not a real service) for image
 processing."""
+
 from __future__ import annotations
 
 import hashlib

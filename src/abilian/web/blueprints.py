@@ -1,4 +1,5 @@
 """"""
+
 from __future__ import annotations
 
 from typing import Any, Callable, Collection, Union, cast
@@ -43,7 +44,7 @@ class Blueprint(BaseBlueprint):
         name: str,
         import_name: str,
         allowed_roles: None | str | Role | Collection[Role] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ):
         """
         :param allowed_roles: role or list of roles required to access any view in this

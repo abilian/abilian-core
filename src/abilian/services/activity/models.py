@@ -6,6 +6,7 @@ See: http://stackoverflow.com/questions/1443960/
 
 TODO: Look wether other attributes from the spec need to be implemented.
 """
+
 from __future__ import annotations
 
 import logging

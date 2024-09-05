@@ -1,4 +1,5 @@
 """Blueprint for views of dynamic images."""
+
 from __future__ import annotations
 
 import colorsys

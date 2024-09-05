@@ -1,4 +1,5 @@
 """Additional data types for sqlalchemy."""
+
 from __future__ import annotations
 
 import json

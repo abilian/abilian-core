@@ -1,4 +1,5 @@
 """"""
+
 from __future__ import annotations
 
 from .schema import indexable_role
