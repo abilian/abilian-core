@@ -116,6 +116,7 @@ pytest-cov = "*"
 typeguard = "*"
 nox = "*"
 tox = "*"
+
 # Static code analysis: flake* and friends
 flake8 = "*"
 flake8-assertive = "*"
