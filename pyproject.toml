@@ -104,7 +104,7 @@ devtools = "*"
 
 Flask-DebugToolbar = ">=0.10"
 
-ruff = "^0.0.138"
+ruff = "*"
 
 # For running tests (pytest and friends)
 pytest = "*"
@@ -132,16 +132,19 @@ flake8-tidy-imports = "*"
 # mastool = "*"
 mccabe = "*"
 mypy = "*"
+
 # Later
 # flake8-pep3101
 # this one tries too hard
 # pep8-naming
+
 # Development tools
 pre-commit = "*"
+
 # Formatting
 isort = "*"
 docformatter = "*"
-black = { version = "*", allow-prereleases = true }
+black = "*"
 
 ## To build docs
 ## (Doesn't work w/ sphinx 1.4.5)
